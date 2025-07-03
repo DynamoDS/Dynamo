@@ -51,7 +51,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         private const string nodeClusterAutocompleteMLEndpoint = "MLNodeClusterAutocomplete";
         private const double minClusterConfidenceScore = 0.001;
         private static Assembly dynamoCoreWpfAssembly;
-        private ClusterResultItem lastAddedCluster = null;
+        private string lastSerializedAddedCluster = null;
 
         private bool _isSingleAutocomplete;
         public bool IsInput => PortViewModel.PortType == PortType.Input;
@@ -438,7 +438,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             FilteredHighConfidenceResults = new List<NodeSearchElementViewModel>();
             FilteredLowConfidenceResults = new List<NodeSearchElementViewModel>();
             SearchInput = string.Empty;
-            lastAddedCluster = null;
+            lastSerializedAddedCluster = null;
         }
 
         internal MLNodeAutoCompletionRequest GenerateRequestForMLAutocomplete()
@@ -831,11 +831,12 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         {
             if (clusterResultItem == null || clusterResultItem.Topology == null)
                 return;
-            if (lastAddedCluster == clusterResultItem)
+            var nextCluster = JsonConvert.SerializeObject(clusterResultItem);
+            if (lastSerializedAddedCluster == nextCluster)
             {
                 return; // Avoid adding the same cluster multiple times when filtered items dont change
             }
-            lastAddedCluster = clusterResultItem;
+            lastSerializedAddedCluster = nextCluster;
 
             List<ModelBase> createdClusterItems = new List<ModelBase>();
 
