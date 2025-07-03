@@ -39,6 +39,138 @@ namespace Dynamo.Core
     /// </summary>
     public class CustomNodeManager : LogSourceBase, ICustomNodeSource, ICustomNodeManager, IDisposable
     {
+        private class JsonCache<T>
+        {
+            private readonly string cacheFilePath;
+            private readonly ConcurrentDictionary<string, T> cache = new();
+            private volatile bool dirty;
+
+            public JsonCache(string filePath)
+            {
+                cacheFilePath = filePath;
+                Deserialize();
+            }
+
+            public void Set(string key, T value)
+            {
+                cache.AddOrUpdate(key, value, (k, v) => value);
+                dirty = true;
+            }
+
+            public bool TryGet(string key, out T value) => cache.TryGetValue(key, out value);
+
+            private void Remove(string key)
+            {
+                if (cache.TryRemove(key, out _))
+                    dirty = true;
+            }
+
+            /// <summary>
+            /// Removes stale entries that don't correspond to existing files
+            /// </summary>
+            public void RemoveStaleEntries()
+            {
+                // Create a snapshot of keys to avoid modification during enumeration
+                var keysSnapshot = cache.Keys.ToList();
+
+                foreach (var key in keysSnapshot)
+                {
+                    try
+                    {
+                        // Extract file path from cache key (path + lastWriteTime + length)
+                        var filePath = ExtractFilePathFromCacheKey(key);
+                        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+                        {
+                            Remove(key);
+                        }
+                        else
+                        {
+                            // Check if the file's write time and length match the cached key
+                            var fileInfo = new FileInfo(filePath);
+                            var lastWriteTime = fileInfo.LastWriteTimeUtc;
+                            var length = fileInfo.Length;
+                            var newKey = filePath + lastWriteTime + length;
+                            if (newKey != key)
+                            {
+                                // File has been updated, remove from cache
+                                Remove(key);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // If we can't check the file (permissions, IO error, etc.), remove the entry
+                        // This prevents keeping potentially stale entries due to access issues
+                        Remove(key);
+                        Debug.WriteLine($"Error checking cache entry {key}: {ex.Message}");
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Extracts file path from cache key
+            /// </summary>
+            private string ExtractFilePathFromCacheKey(string key)
+            {
+                try
+                {
+                    // Cache key format: path + lastWriteTime + length
+                    int idx = key.IndexOf(".dyf", StringComparison.OrdinalIgnoreCase);
+                    return idx >= 0 ? key.Substring(0, idx + 4) : string.Empty;
+                }
+                catch
+                {
+                    // If extraction fails, return empty string
+                }
+                return string.Empty;
+            }
+
+            private void Deserialize()
+            {
+                try
+                {
+                    if (File.Exists(cacheFilePath))
+                    {
+                        var json = File.ReadAllText(cacheFilePath);
+                        var loaded = JsonSerializer.Deserialize<Dictionary<string, T>>(json);
+                        if (loaded != null)
+                        {
+                            foreach (var kv in loaded)
+                            {
+                                cache.TryAdd(kv.Key, kv.Value);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // If deserialization fails, continue with empty cache
+                    // This prevents crashes due to corrupted cache files
+                    Debug.WriteLine($"Failed to deserialize cache: {ex.Message}");
+                    cache.Clear();
+                }
+            }
+
+            public void Serialize()
+            {
+                if (!dirty) return;
+
+                try
+                {
+                    // Create a snapshot to avoid serialization issues if cache is modified during serialization
+                    var snapshot = new Dictionary<string, T>(cache);
+                    var json = JsonSerializer.Serialize(snapshot, new JsonSerializerOptions { WriteIndented = true });
+                    File.WriteAllText(cacheFilePath, json);
+                    dirty = false;
+                }
+                catch (Exception ex)
+                {
+                    // Log error but don't throw - serialization failure shouldn't crash the app
+                    Debug.WriteLine($"Failed to serialize cache: {ex.Message}");
+                }
+            }
+        }
+
         /// <summary>
         /// This function creates CustomNodeManager
         /// </summary>
@@ -724,7 +856,6 @@ namespace Dynamo.Core
                 }
                 if (ex == null)
                 {
-                    // TODO: Add resource string
                     throw new InvalidOperationException(Resources.UnknownErrorProcessingFile);
                 }
                 throw ex;
@@ -1438,147 +1569,7 @@ namespace Dynamo.Core
             loadedCustomNodes.ToList().ForEach(x => Uninitialize(x.Value.FunctionId));
             
             // Dispose cache
-            customNodeInfoCache?.Dispose();
+            customNodeInfoCache?.Serialize();
         }
     }
-
-    //Location temporary
-    internal class JsonCache<T> : IDisposable
-    {
-        private readonly string cacheFilePath;
-        private readonly ConcurrentDictionary<string, T> cache = new();
-        private volatile bool dirty;
-
-        public JsonCache(string filePath)
-        {
-            cacheFilePath = filePath;
-            Deserialize();
-        }
-
-        public void Set(string key, T value)
-        {
-            cache.AddOrUpdate(key, value, (k, v) => value);
-            dirty = true;
-        }
-
-        public bool TryGet(string key, out T value) => cache.TryGetValue(key, out value);
-
-        private void Remove(string key)
-        {
-            if (cache.TryRemove(key, out _))
-                dirty = true;
-        }
-
-        /// <summary>
-        /// Removes stale entries that don't correspond to existing files
-        /// </summary>
-        public void RemoveStaleEntries()
-        {
-            // Create a snapshot of keys to avoid modification during enumeration
-            var keysSnapshot = cache.Keys.ToList();
-            
-            foreach (var key in keysSnapshot)
-            {
-                try
-                {
-                    // Extract file path from cache key (path + lastWriteTime + length)
-                    var filePath = ExtractFilePathFromCacheKey(key);
-                    if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
-                    {
-                        Remove(key);
-                    }
-                    else
-                    {
-                        // Check if the file's write time and length match the cached key
-                        var fileInfo = new FileInfo(filePath);
-                        var lastWriteTime = fileInfo.LastWriteTimeUtc;
-                        var length = fileInfo.Length;
-                        var newKey = filePath + lastWriteTime + length;
-                        if (newKey != key)
-                        {
-                            // File has been updated, remove from cache
-                            Remove(key);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    // If we can't check the file (permissions, IO error, etc.), remove the entry
-                    // This prevents keeping potentially stale entries due to access issues
-                    Remove(key);
-                    Debug.WriteLine($"Error checking cache entry {key}: {ex.Message}");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Extracts file path from cache key
-        /// </summary>
-        private string ExtractFilePathFromCacheKey(string key)
-        {
-            try
-            {
-                // Cache key format: path + lastWriteTime + length
-                int idx = key.IndexOf(".dyf", StringComparison.OrdinalIgnoreCase);
-                return idx >= 0 ? key.Substring(0, idx + 4) : string.Empty;
-            }
-            catch
-            {
-                // If extraction fails, return empty string
-            }
-            return string.Empty;
-        }
-
-        private void Deserialize()
-        {
-            try
-            {
-                if (File.Exists(cacheFilePath))
-                {
-                    var json = File.ReadAllText(cacheFilePath);
-                    var loaded = JsonSerializer.Deserialize<Dictionary<string, T>>(json);
-                    if (loaded != null)
-                    {
-                        foreach (var kv in loaded)
-                        {
-                            cache.TryAdd(kv.Key, kv.Value);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // If deserialization fails, continue with empty cache
-                // This prevents crashes due to corrupted cache files
-                System.Diagnostics.Debug.WriteLine($"Failed to deserialize cache: {ex.Message}");
-                cache.Clear();
-            }
-        }
-
-        private void Serialize()
-        {
-            if (!dirty) return;
-
-            try
-            {
-                // Create a snapshot to avoid serialization issues if cache is modified during serialization
-                var snapshot = new Dictionary<string, T>(cache);
-                var json = JsonSerializer.Serialize(snapshot, new JsonSerializerOptions { WriteIndented = true });
-                File.WriteAllText(cacheFilePath, json);
-                dirty = false;
-            }
-            catch (Exception ex)
-            {
-                // Log error but don't throw - serialization failure shouldn't crash the app
-                System.Diagnostics.Debug.WriteLine($"Failed to serialize cache: {ex.Message}");
-            }
-        }
-
-
-        public void Dispose()
-        {
-            Serialize();
-        }
-    }
-
 }
