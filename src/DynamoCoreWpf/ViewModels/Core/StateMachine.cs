@@ -30,6 +30,7 @@ namespace Dynamo.ViewModels
 
         private readonly StateMachine stateMachine = null;
         private List<DraggedNode> draggedNodes = new List<DraggedNode>();
+        private Dictionary<Guid, Point> draggedGroupOriginalPositions = new();
 
         // When a new connector is created or a single connector is selected,
         // activeConnectors has array size of 1.
@@ -65,7 +66,8 @@ namespace Dynamo.ViewModels
         [JsonIgnore]
         internal ConnectorViewModel FirstActiveConnector
         {
-            get {
+            get
+            {
                 if (null != activeConnectors && activeConnectors.Count() > 0)
                 {
                     return activeConnectors[0];
@@ -148,6 +150,14 @@ namespace Dynamo.ViewModels
             if (draggedNodes.Count <= 0) // There is nothing to drag.
             {
                 throw new InvalidOperationException(Wpf.Properties.Resources.InvalidDraggingOperationMessgae);
+            }
+
+            // Track original positions of any selected annotation groups at the beginning of a drag
+            // This allows us to later determine whether the group was truly moved or just clicked
+            draggedGroupOriginalPositions.Clear();
+            foreach (var group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>())
+            {
+                draggedGroupOriginalPositions[group.GUID] = new Point(group.X, group.Y);
             }
         }
 
@@ -762,6 +772,28 @@ namespace Dynamo.ViewModels
                         var dragedGroups = DynamoSelection.Instance.Selection
                             .OfType<AnnotationModel>()
                             .ToList();
+
+                        // DYN-8893: Prevent accidental grouping when overlapping groups are clicked without dragging
+                        // If a group visually overlaps another and is simply clicked (not dragged),
+                        // grouping can be mistakenly triggered. To avoid this, we record original positions
+                        // of dragged groups and compare them on mouse release. Grouping only proceeds if
+                        // a group was actually moved. This check is skipped if only nodes are selected
+                        bool anyGroupMoved = dragedGroups.All(group =>
+                        {
+                            if (!owningWorkspace.draggedGroupOriginalPositions.TryGetValue(group.GUID, out var originalPos))
+                                return true; // Assume moved if not tracked
+
+                            var current = group.Position;
+                            return Math.Abs(originalPos.X - current.X) > 0.1 && Math.Abs(originalPos.Y - current.Y) > 0.1;
+                        });
+
+                        // If we're dealing with groups and none of them moved, we shouldn't group them
+                        if (!anyGroupMoved && dragedGroups.Any())
+                        {
+                            dropGroup.NodeHoveringState = false;
+                            SetCurrentState(State.None);
+                            return false;
+                        }
 
                         // We do not want to add dragged groups content twice
                         // so we filter it out here.
