@@ -43,6 +43,21 @@ namespace Dynamo.NodeAutoComplete.Views
             }), DispatcherPriority.ApplicationIdle);
         }
 
+        private void OwnerMoved(object sender, EventArgs e) => UpdatePosition();
+
+        private void UpdatePosition()
+        {
+            ViewModel.PortViewModel.SetupNodeAutoCompleteClusterWindowPlacement(this);
+        }
+
+        private void Owner_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(NodeModel.Position))
+            {
+                UpdatePosition();
+            }
+        }
+
         private void SubscribeEvents()
         {
             if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
@@ -55,6 +70,8 @@ namespace Dynamo.NodeAutoComplete.Views
             HomeWorkspaceModel.WorkspaceClosed += CloseAutoComplete;
             ViewModel.ParentNodeRemoved += OnParentNodeRemoved;
             ViewModel.RefocusSearchBox += OnRefocusSearchbox;
+            Owner.LocationChanged += OwnerMoved;
+            ViewModel.PortViewModel.PortModel.Owner.PropertyChanged += Owner_PropertyChanged;
         }
 
         private void UnsubscribeEvents(object sender, System.ComponentModel.CancelEventArgs e)
@@ -69,6 +86,8 @@ namespace Dynamo.NodeAutoComplete.Views
             HomeWorkspaceModel.WorkspaceClosed -= CloseAutoComplete;
             ViewModel.ParentNodeRemoved -= OnParentNodeRemoved;
             ViewModel.RefocusSearchBox -= OnRefocusSearchbox;
+            Owner.LocationChanged -= OwnerMoved;
+            ViewModel.PortViewModel.PortModel.Owner.PropertyChanged -= Owner_PropertyChanged;
         }
 
         private void LoadAndPopulate()
