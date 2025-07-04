@@ -10,6 +10,7 @@
              Width="Auto"
              MouseLeftButtonDown="AnnotationView_OnMouseLeftButtonDown"
              MouseRightButtonDown="AnnotationView_OnMouseRightButtonDown"
+             MouseRightButtonUp="AnnotationView_OnMouseRightButtonUp"
              Canvas.Left="{Binding Left, Mode=TwoWay}"
              Canvas.Top="{Binding Top, Mode=TwoWay}"
              AllowDrop="True"

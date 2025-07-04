@@ -991,8 +991,12 @@ namespace Dynamo.Nodes
         private void AnnotationView_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             ViewModel.SelectAll();
+        }
 
-            if (groupContextMenuPopup != null)
+
+        private void AnnotationView_OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (!groupContextMenuPopup.IsOpen)
             {
                 OpenContextMenuAtMouse();
                 e.Handled = true;
@@ -1006,7 +1010,6 @@ namespace Dynamo.Nodes
 
 
 
-        
 
 
 
