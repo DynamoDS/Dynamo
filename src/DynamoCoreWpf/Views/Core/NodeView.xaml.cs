@@ -173,6 +173,7 @@ namespace Dynamo.Controls
 
         //Brushes
         private static SolidColorBrush _primaryCharcoal100 = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PrimaryCharcoal100Brush"] as SolidColorBrush;
+        private static SolidColorBrush _primaryCharcoal200 = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PrimaryCharcoal200Brush"] as SolidColorBrush;
         private static SolidColorBrush _blue300 = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["Blue300Brush"] as SolidColorBrush;
         private static SolidColorBrush _darkBlue200 = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["DarkBlue200Brush"] as SolidColorBrush;
         private static SolidColorBrush _nodeDismissedWarningsGlyphForeground = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeDismissedWarningsGlyphForeground"] as SolidColorBrush;
@@ -230,6 +231,7 @@ namespace Dynamo.Controls
             _nodeButtonDots.Freeze();
             _defaultNodeIcon.Freeze();
             _primaryCharcoal100.Freeze();
+            _primaryCharcoal200.Freeze();
             _blue300.Freeze();
             _nodeDismissedWarningsGlyphBackground.Freeze();
             _nodeDismissedWarningsGlyphForeground.Freeze();
@@ -395,7 +397,8 @@ namespace Dynamo.Controls
                 VerticalAlignment = VerticalAlignment.Center,
                 FontSize = 16,
                 FontWeight = FontWeights.Medium,
-                Foreground = _primaryCharcoal100,
+                Foreground = _primaryCharcoal200,
+                Background = null,
                 IsHitTestVisible = false,
                 TextAlignment = TextAlignment.Center,
                 FontFamily = _artifactElementReg,
@@ -416,14 +419,15 @@ namespace Dynamo.Controls
                 VerticalAlignment = VerticalAlignment.Center,
                 FontSize = 16,
                 FontWeight = FontWeights.Medium,
-                Foreground = _primaryCharcoal100,
+                Foreground = _primaryCharcoal200,
                 SelectionBrush = _blue300,
                 SelectionOpacity = 0.2,
                 IsHitTestVisible = true,
                 BorderThickness = new Thickness(0),
                 TextAlignment = TextAlignment.Center,
                 Visibility = Visibility.Collapsed,
-                FontFamily = _artifactElementReg
+                FontFamily = _artifactElementReg,
+                Background = null
             };
 
             EditableNameBox.LostFocus += EditableNameBox_OnLostFocus;
