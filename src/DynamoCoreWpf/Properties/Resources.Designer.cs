@@ -3723,7 +3723,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ungr_oup.
+        ///   Looks up a localized string similar to Ungroup.
         /// </summary>
         public static string GroupContextMenuUngroup {
             get {

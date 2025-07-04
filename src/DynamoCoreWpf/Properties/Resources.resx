@@ -2044,7 +2044,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Font Size</value>
   </data>
   <data name="GroupContextMenuUngroup" xml:space="preserve">
-    <value>Ungr_oup</value>
+    <value>Ungroup</value>
   </data>
   <data name="GroupContextMenuGraphLayout" xml:space="preserve">
     <value>Cleanup Node Layout</value>

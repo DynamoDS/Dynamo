@@ -75,22 +75,22 @@ namespace Dynamo.Nodes
         private static readonly CollectionHasMoreThanNItemsToBoolConverter _collectionHasMoreThanNItemsToBoolConverter = new CollectionHasMoreThanNItemsToBoolConverter();
         private static readonly BackgroundConditionEvaluator _backgroundConditionEvaluator = new BackgroundConditionEvaluator();
         private static readonly ColorToSolidColorBrushConverter _colorToSolidColorBrushConverter = new ColorToSolidColorBrushConverter();
-        private static readonly MenuItemCheckConverter _menuItemCheckConverter = new MenuItemCheckConverter();
+        //private static readonly MenuItemCheckConverter _menuItemCheckConverter = new MenuItemCheckConverter();
         private static readonly StringToBrushColorConverter _stringToBrushColorConverter = new StringToBrushColorConverter();
 
         //Styles
-        private static readonly Style _contextMenuSeparatorStyle = SharedDictionaryManager.DynamoModernDictionary["ContextMenuSeparatorStyle"] as Style;
-        private static readonly Style _contextMenuItemFixedWidthStyle = SharedDictionaryManager.DynamoModernDictionary["ContextMenuItemFixedWidthStyle"] as Style;
-        private static readonly Style _menuItemGroupStyle = SharedDictionaryManager.DynamoModernDictionary["MenuItemGroupStyle"] as Style;
-        private static readonly Style _contextMenuStyle = SharedDictionaryManager.DynamoModernDictionary["ContextMenuStyle"] as Style;
+        //private static readonly Style _contextMenuSeparatorStyle = SharedDictionaryManager.DynamoModernDictionary["ContextMenuSeparatorStyle"] as Style;
+        //private static readonly Style _contextMenuItemFixedWidthStyle = SharedDictionaryManager.DynamoModernDictionary["ContextMenuItemFixedWidthStyle"] as Style;
+        //private static readonly Style _menuItemGroupStyle = SharedDictionaryManager.DynamoModernDictionary["MenuItemGroupStyle"] as Style;
+        //private static readonly Style _contextMenuStyle = SharedDictionaryManager.DynamoModernDictionary["ContextMenuStyle"] as Style;
         private static readonly Style _createGenericToolTipLightStyle = CreateGenericToolTipLightStyle();
         private static readonly Style _dynamoToolTipTopStyle = GetDynamoToolTipTopStyle();
-        private static readonly Style _groupStyleSeparatorStyle = CreateGroupStyleSeparatorStyle();
-        private static readonly Style _colorSelectorListBoxStyle = CreateColorSelectorListBoxStyle();
-        private static readonly Style _colorSelectorListBoxItemStyle = CreateColorSelectorListBoxItemStyle();
+        //private static readonly Style _groupStyleSeparatorStyle = CreateGroupStyleSeparatorStyle();
+        //private static readonly Style _colorSelectorListBoxStyle = CreateColorSelectorListBoxStyle();
+        //private static readonly Style _colorSelectorListBoxItemStyle = CreateColorSelectorListBoxItemStyle();
         private static readonly Style _groupResizeThumbStyle = CreateGroupResizeThumbStyle();
 
-        private static readonly StyleSelector _groupStyleItemSelector = new GroupStyleItemSelector();
+        //private static readonly StyleSelector _groupStyleItemSelector = new GroupStyleItemSelector();
 
         //Font
         private static FontFamily _artifaktElementRegular = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
@@ -214,6 +214,9 @@ namespace Dynamo.Nodes
         {
             Loaded -= AnnotationView_Loaded;
             DataContextChanged -= AnnotationView_DataContextChanged;
+            ViewModel.WorkspaceViewModel.InCanvasSearchViewModel.PropertyChanged -= OnSearchViewModelPropertyChanged;
+            ViewModel.WorkspaceViewModel.Nodes.CollectionChanged -= OnWorkspaceNodesChanged;
+
             if (groupTextBlock != null)
                 groupTextBlock.SizeChanged -= GroupTextBlock_SizeChanged;
             if (collapsedAnnotationRectangle != null)
@@ -298,22 +301,18 @@ namespace Dynamo.Nodes
                 }
                 ViewModel.UpdateProxyPortsPosition();
 
-
-                // Construct the context menu as popup
+                // Create and attach the popup menu for group annotations
                 CreateAndAttachAnnotationPopup();
-                // Listen to changes in the seaeach model so that the other items
-                // can be closed when the user starts typing into the search box 
-                ViewModel.WorkspaceViewModel.InCanvasSearchViewModel.PropertyChanged += OnSearchViewModelPropertyChanged; // REMEMBRT TO UNSUBSCRIBE !
 
-                var nodes = ViewModel.WorkspaceViewModel.Nodes;
-                nodes.CollectionChanged += OnWorkspaceNodesChanged;
+                // Subscribe to search box activity to close the other popup items when typing
+                var searchVM = ViewModel.WorkspaceViewModel.InCanvasSearchViewModel;
+                searchVM.PropertyChanged += OnSearchViewModelPropertyChanged;
 
-                // Turn off the flag so taht only node created from this search are automatically added to groups
-                groupContextMenuPopup.Closed += (s, e) =>
-                {
-                    isSearchFromGroupContext = false;
-                };
+                // Add new nodes to group when search is triggered from group
+                ViewModel.WorkspaceViewModel.Nodes.CollectionChanged += OnWorkspaceNodesChanged;
 
+                // Reset group context flag when popup closes
+                groupContextMenuPopup.Closed += (_, __) => isSearchFromGroupContext = false;
             }
         }
 
@@ -369,7 +368,9 @@ namespace Dynamo.Nodes
             groupPopupPanel.Children.Add(CreateSearchBox());
 
             // Add "Delete Group" menu item with extra top margin to separate it visually from the search box
-            var deleteGroupItem = CreatePopupItem("Delete Group", OnDeleteAnnotation);
+            var deleteGroupItem = CreatePopupItem(
+                Wpf.Properties.Resources.GroupContextMenuDeleteGroup,
+                OnDeleteAnnotation);
             var deleteGroupWrapper = new Border()
             {
                 Margin = new Thickness(0, 10, 0, 0),
@@ -377,27 +378,52 @@ namespace Dynamo.Nodes
             };
             groupPopupPanel.Children.Add(deleteGroupWrapper);
 
-            groupPopupPanel.Children.Add(CreateCheckablePopupItem("Freeze Group", () =>
-                ViewModel.ToggleIsFrozenGroupCommand?.Execute(null),
+            groupPopupPanel.Children.Add(CreateCheckablePopupItem(
+                Wpf.Properties.Resources.GroupContextMenuFreezeGroup,
+                () => ViewModel.ToggleIsFrozenGroupCommand?.Execute(null),
                 () => ViewModel.AnnotationModel.IsFrozen));
 
-            groupPopupPanel.Children.Add(CreatePopupItem("Ungroup", OnUngroupAnnotation));
-            groupPopupPanel.Children.Add(CreateCheckablePopupItem("Preview Geometry", () =>
-                ViewModel.ToggleIsVisibleGroupCommand?.Execute(null),
+            groupPopupPanel.Children.Add(CreatePopupItem(
+                Wpf.Properties.Resources.GroupContextMenuUngroup,
+                OnUngroupAnnotation));
+
+            groupPopupPanel.Children.Add(CreateCheckablePopupItem(
+                Wpf.Properties.Resources.GroupContextMenuPreview,
+                () => ViewModel.ToggleIsVisibleGroupCommand?.Execute(null),
                 () => ViewModel.AnnotationModel.IsVisible));
 
-            groupPopupPanel.Children.Add(CreatePopupItem("Remove from Group",
+            groupPopupPanel.Children.Add(CreatePopupItem(
+                Wpf.Properties.Resources.ContextUnGroupFromSelection,
                 () => ViewModel.RemoveGroupFromGroupCommand?.Execute(null),
                 isEnabled: CanExecuteCommand(ViewModel.RemoveGroupFromGroupCommand)));
 
-            groupPopupPanel.Children.Add(CreatePopupItem("Add Group to This Group",
+            groupPopupPanel.Children.Add(CreatePopupItem(
+                Wpf.Properties.Resources.GroupContextMenuAddGroupToGroup,
                 () => ViewModel.AddGroupToGroupCommand?.Execute(null),
                 isEnabled: CanExecuteCommand(ViewModel.AddGroupToGroupCommand)));
 
-            groupPopupPanel.Children.Add(CreatePopupItem("Cleanup Node Layout", OnGraphLayoutAnnotation));
-            groupPopupPanel.Children.Add(CreateSubmenuItem("Group Style", CreateGroupStyleSelector));
-            groupPopupPanel.Children.Add(CreateSubmenuItem("Color", CreateColorSelector));
-            groupPopupPanel.Children.Add(CreateSubmenuItem("Font Size", CreateFontSizeSelector));
+            groupPopupPanel.Children.Add(CreatePopupItem(
+                Wpf.Properties.Resources.GroupContextMenuGraphLayout,
+                OnGraphLayoutAnnotation));
+
+            groupPopupPanel.Children.Add(CreateSubmenuItem(
+                Wpf.Properties.Resources.GroupStyleContextAnnotation,
+                CreateGroupStyleSelector));
+
+            groupPopupPanel.Children.Add(CreateSubmenuItem(
+                Wpf.Properties.Resources.GroupContextMenuColor,
+                CreateColorSelector));
+
+            // Add "Delete Group" menu item with extra bottom margin
+            var fontSizeItem = CreateSubmenuItem(
+                Wpf.Properties.Resources.GroupContextMenuFont,
+                CreateFontSizeSelector);
+            var frontSizeWrapper = new Border()
+            {
+                Margin = new Thickness(0, 0, 0, 10),
+                Child = fontSizeItem
+            };
+            groupPopupPanel.Children.Add(frontSizeWrapper);
 
             return groupPopupPanel;
         }
@@ -423,7 +449,7 @@ namespace Dynamo.Nodes
             groupContextMenuPopup.Child = border;
         }
 
-        // CODE FOR EACH CONTROL HERE:
+        
 
         // Create Search Box
         private UIElement CreateSearchBox()
@@ -431,7 +457,6 @@ namespace Dynamo.Nodes
             var searchBar = new InCanvasSearchControl
             {
                 DataContext = ViewModel.WorkspaceViewModel.InCanvasSearchViewModel,
-                //Margin = new Thickness(0, 0, 0, 10),
                 Width = 230
             };
 
@@ -459,7 +484,6 @@ namespace Dynamo.Nodes
             var text = new TextBlock
             {
                 Text = label,
-                //Foreground = isEnabled ? _nodeContextMenuForeground : Brushes.Gray,
                 Foreground = _nodeContextMenuForeground,
                 FontFamily = _artifaktElementRegular,
                 FontSize = 13,
@@ -670,7 +694,6 @@ namespace Dynamo.Nodes
                     Margin = new Thickness(3),
                     Cursor = Cursors.Hand
                 };
-                //rect.MouseLeftButtonUp += (s, e) => OnNodeColorSelectionChanged(s, null);
                 rect.MouseLeftButtonUp += OnNodeColorRectangleClicked;
 
                 panel.Children.Add(rect);
@@ -761,7 +784,6 @@ namespace Dynamo.Nodes
 
                 var border = new Border
                 {
-                    //Padding = new Thickness(15, 5, 15, 5),
                     Background = Brushes.Transparent,
                     MinWidth = 150,
                     Child = innerStack
@@ -788,8 +810,6 @@ namespace Dynamo.Nodes
                         ViewModel.Background = (Color)ColorConverter.ConvertFromString("#" + groupStyle.HexColorString);
                     }
 
-                    // Optionally update font if your GroupStyleItem defines it
-
                     groupContextMenuPopup.IsOpen = false;
                 };
 
@@ -804,57 +824,13 @@ namespace Dynamo.Nodes
             };
         }
 
-        // HELPERS
 
+        // HELPERS
         private bool CanExecuteCommand(DelegateCommand command)
         {
             return command != null && command.CanExecute(null);
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        //private void OnNodeColorSelectionChanged(object sender, SelectionChangedEventArgs e)
-        //{
-        //    if (e.AddedItems == null || (e.AddedItems.Count <= 0))
-        //        return;
-
-        //    //store the old one
-        //    if (e.RemovedItems != null && e.RemovedItems.Count > 0)
-        //    {
-        //        var orectangle = e.AddedItems[0] as Rectangle;
-        //        if (orectangle != null)
-        //        {
-        //            var brush = orectangle.Fill as SolidColorBrush;
-        //            if (brush != null)
-        //            {
-        //                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-        //                 new DynCmd.UpdateModelValueCommand(
-        //                 System.Guid.Empty, ViewModel.AnnotationModel.GUID, "Background", brush.Color.ToString()));
-        //            }
-
-        //        }
-        //    }
-
-        //    var rectangle = e.AddedItems[0] as Rectangle;
-        //    if (rectangle != null)
-        //    {
-        //        var brush = rectangle.Fill as SolidColorBrush;
-        //        if (brush != null)
-        //            ViewModel.Background = brush.Color;
-        //    }
-        //}
         private void OnNodeColorRectangleClicked(object sender, MouseButtonEventArgs e)
         {
             if (sender is Rectangle rectangle)
@@ -993,7 +969,9 @@ namespace Dynamo.Nodes
             ViewModel.SelectAll();
         }
 
-
+        /// <summary>
+        /// Handles the OnMouseRightButtonU event of the AnnotationView control - opens the context menu.
+        /// </summary>
         private void AnnotationView_OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (!groupContextMenuPopup.IsOpen)
@@ -1019,8 +997,6 @@ namespace Dynamo.Nodes
 
         private void OpenContextMenuAtMouse()
         {
-            
-
             var workspaceView = FindParent<WorkspaceView>(this);
             if (workspaceView == null) return;
 
@@ -1036,7 +1012,6 @@ namespace Dynamo.Nodes
             isSearchFromGroupContext = true;
 
             var mousePosInOuter = Mouse.GetPosition(outerCanvas);
-
 
             // Convert mouse position from outerCanvas to WorkspaceElements
             var workspaceElements = workspaceView.FindName("WorkspaceElements") as UIElement;
@@ -1067,15 +1042,7 @@ namespace Dynamo.Nodes
             groupContextMenuPopup.IsOpen = true;
         }
 
-        private void RebuildAnnotationPopup()
-        {
-            if (groupContextMenuPopup == null) return;
-
-            // Recreate the entire panel with current state
-            var panel = CreatePopupPanel();
-            groupContextMenuPopup.Child = panel;
-        }
-
+        // MOVE TO UTILITIES !!!
         private T FindParent<T>(DependencyObject child) where T : DependencyObject
         {
             var parentObject = VisualTreeHelper.GetParent(child);
@@ -1278,11 +1245,10 @@ namespace Dynamo.Nodes
             SetModelAreaHeight();
         }
 
-        private void contextMenu_Click(object sender, RoutedEventArgs e)
+        private void contextMenu_Click(object sender, RoutedEventArgs e) 
         {
             ViewModel.SelectAll();
-            this.AnnotationGrid.ContextMenu.DataContext = ViewModel;
-            this.AnnotationGrid.ContextMenu.IsOpen = true;
+            OpenContextMenuAtMouse();
         }
 
         private void AnnotationRectangleThumb_DragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
@@ -1324,35 +1290,35 @@ namespace Dynamo.Nodes
             SetTextHeight();
         }
 
-        /// <summary>
-        /// According to the current GroupStyle selected (or not selected) in the ContextMenu several actions can be executed.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void GroupStyleCheckmark_Click(object sender, RoutedEventArgs e)
-        {
-            var menuItemSelected = sender as MenuItem;
-            if (menuItemSelected == null) return;
+        ///// <summary>
+        ///// According to the current GroupStyle selected (or not selected) in the ContextMenu several actions can be executed.
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //private void GroupStyleCheckmark_Click(object sender, RoutedEventArgs e)
+        //{
+        //    var menuItemSelected = sender as MenuItem;
+        //    if (menuItemSelected == null) return;
 
-            var groupStyleItemSelected = menuItemSelected.DataContext as GroupStyleItem;
-            if (groupStyleItemSelected == null) return;
+        //    var groupStyleItemSelected = menuItemSelected.DataContext as GroupStyleItem;
+        //    if (groupStyleItemSelected == null) return;
 
-            ViewModel.UpdateGroupStyle(groupStyleItemSelected);
-            // Tracking selecting group style item and if it is a default style by Dynamo
-            Logging.Analytics.TrackEvent(Actions.Select, Categories.GroupStyleOperations, nameof(GroupStyleItem), groupStyleItemSelected.IsDefault ? 1 : 0);
-        }
+        //    ViewModel.UpdateGroupStyle(groupStyleItemSelected);
+        //    // Tracking selecting group style item and if it is a default style by Dynamo
+        //    Logging.Analytics.TrackEvent(Actions.Select, Categories.GroupStyleOperations, nameof(GroupStyleItem), groupStyleItemSelected.IsDefault ? 1 : 0);
+        //}
 
-        /// <summary>
-        /// When the GroupStyle Submenu is opened then we need to re-load the GroupStyles in the ContextMenu (in case more Styles were added in Preferences panel).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void GroupStyleAnnotation_SubmenuOpened(object sender, RoutedEventArgs e)
-        {
-            ViewModel.ReloadGroupStyles();
-            // Tracking loading group style items
-            Logging.Analytics.TrackEvent(Actions.Load, Categories.GroupStyleOperations, nameof(GroupStyleItem) + "s");
-        }
+        ///// <summary>
+        ///// When the GroupStyle Submenu is opened then we need to re-load the GroupStyles in the ContextMenu (in case more Styles were added in Preferences panel).
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //private void GroupStyleAnnotation_SubmenuOpened(object sender, RoutedEventArgs e)
+        //{
+        //    ViewModel.ReloadGroupStyles();
+        //    // Tracking loading group style items
+        //    Logging.Analytics.TrackEvent(Actions.Load, Categories.GroupStyleOperations, nameof(GroupStyleItem) + "s");
+        //}
 
         #endregion
 
@@ -2400,191 +2366,191 @@ namespace Dynamo.Nodes
 
         #region Context Menu
 
-        private static MenuItem CreateMenuItem
-        (
-            string name = null,
-            string header = null,
-            Binding command = null,
-            string commandParameter = null,
-            bool isCheckable = false,
-            Binding isChecked = null,
-            Binding visibility = null,
-            Binding isEnabled = null,
-            Binding itemsSource = null,
-            string hotkey = null
-        )
-        {
-            MenuItem menuItem = new MenuItem { Header = header, IsCheckable = isCheckable };
+        //private static MenuItem CreateMenuItem
+        //(
+        //    string name = null,
+        //    string header = null,
+        //    Binding command = null,
+        //    string commandParameter = null,
+        //    bool isCheckable = false,
+        //    Binding isChecked = null,
+        //    Binding visibility = null,
+        //    Binding isEnabled = null,
+        //    Binding itemsSource = null,
+        //    string hotkey = null
+        //)
+        //{
+        //    MenuItem menuItem = new MenuItem { Header = header, IsCheckable = isCheckable };
 
-            if (!string.IsNullOrWhiteSpace(name)) menuItem.Name = name;
-            if (command != null) menuItem.SetBinding(MenuItem.CommandProperty, command);
-            if (commandParameter != null) menuItem.CommandParameter = commandParameter;
-            if (isChecked != null) menuItem.SetBinding(MenuItem.IsCheckedProperty, isChecked);
-            if (visibility != null) menuItem.SetBinding(UIElement.VisibilityProperty, visibility);
-            if (isEnabled != null) menuItem.SetBinding(UIElement.IsEnabledProperty, isEnabled);
-            if (itemsSource != null) menuItem.SetBinding(ItemsControl.ItemsSourceProperty, itemsSource);
-            if (!string.IsNullOrWhiteSpace(hotkey)) menuItem.InputGestureText = hotkey;
+        //    if (!string.IsNullOrWhiteSpace(name)) menuItem.Name = name;
+        //    if (command != null) menuItem.SetBinding(MenuItem.CommandProperty, command);
+        //    if (commandParameter != null) menuItem.CommandParameter = commandParameter;
+        //    if (isChecked != null) menuItem.SetBinding(MenuItem.IsCheckedProperty, isChecked);
+        //    if (visibility != null) menuItem.SetBinding(UIElement.VisibilityProperty, visibility);
+        //    if (isEnabled != null) menuItem.SetBinding(UIElement.IsEnabledProperty, isEnabled);
+        //    if (itemsSource != null) menuItem.SetBinding(ItemsControl.ItemsSourceProperty, itemsSource);
+        //    if (!string.IsNullOrWhiteSpace(hotkey)) menuItem.InputGestureText = hotkey;
 
-            return menuItem;
-        }
+        //    return menuItem;
+        //}
 
-        private void CreateAndSetContextMenu(Grid grid)
-        {
-            var contextMenu = new ContextMenu
-            {
-                Name = "AnnotationContextMenu",
-                Background = _midGreyBrush,
-                Style = _contextMenuStyle,
-            };
+        //private void CreateAndSetContextMenu(Grid grid)
+        //{
+        //    var contextMenu = new ContextMenu
+        //    {
+        //        Name = "AnnotationContextMenu",
+        //        Background = _midGreyBrush,
+        //        Style = _contextMenuStyle,
+        //    };
 
-            // Delete Annotation
-            var deleteMenuItem = CreateMenuItem(
-                name: "DeleteAnnotation",
-                header: Wpf.Properties.Resources.GroupContextMenuDeleteGroup);
-            deleteMenuItem.Click += OnDeleteAnnotation;
-            contextMenu.Items.Add(deleteMenuItem);
+        //    // Delete Annotation
+        //    var deleteMenuItem = CreateMenuItem(
+        //        name: "DeleteAnnotation",
+        //        header: Wpf.Properties.Resources.GroupContextMenuDeleteGroup);
+        //    deleteMenuItem.Click += OnDeleteAnnotation;
+        //    contextMenu.Items.Add(deleteMenuItem);
 
-            // Freeze Annotation
-            contextMenu.Items.Add(CreateMenuItem(
-                name: "FreezeAnnotation",
-                header: Wpf.Properties.Resources.GroupContextMenuFreezeGroup,
-                command: new Binding
-                {
-                    Source = ViewModel,
-                    Path = new PropertyPath(nameof(ViewModel.ToggleIsFrozenGroupCommand))
-                },
-                isCheckable: true,
-                isChecked: new Binding
-                {
-                    Source = ViewModel,
-                    Path = new PropertyPath(nameof(ViewModel.AnnotationModel.IsFrozen)),
-                    Mode = BindingMode.OneWay
-                }));
+        //    // Freeze Annotation
+        //    contextMenu.Items.Add(CreateMenuItem(
+        //        name: "FreezeAnnotation",
+        //        header: Wpf.Properties.Resources.GroupContextMenuFreezeGroup,
+        //        command: new Binding
+        //        {
+        //            Source = ViewModel,
+        //            Path = new PropertyPath(nameof(ViewModel.ToggleIsFrozenGroupCommand))
+        //        },
+        //        isCheckable: true,
+        //        isChecked: new Binding
+        //        {
+        //            Source = ViewModel,
+        //            Path = new PropertyPath(nameof(ViewModel.AnnotationModel.IsFrozen)),
+        //            Mode = BindingMode.OneWay
+        //        }));
 
-            // Ungroup Annotation
-            var ungroupMenuItem = CreateMenuItem(
-                name: "UngroupAnnotation",
-                header: Wpf.Properties.Resources.GroupContextMenuUngroup);
-            ungroupMenuItem.Click += OnUngroupAnnotation;
-            contextMenu.Items.Add(ungroupMenuItem);
+        //    // Ungroup Annotation
+        //    var ungroupMenuItem = CreateMenuItem(
+        //        name: "UngroupAnnotation",
+        //        header: Wpf.Properties.Resources.GroupContextMenuUngroup);
+        //    ungroupMenuItem.Click += OnUngroupAnnotation;
+        //    contextMenu.Items.Add(ungroupMenuItem);
 
-            // Preview Annotation
-            contextMenu.Items.Add(CreateMenuItem(
-                name: "PreviewAnnotation",
-                header: Wpf.Properties.Resources.GroupContextMenuPreview,
-                command: new Binding
-                {
-                    Source = ViewModel,
-                    Path = new PropertyPath(nameof(ViewModel.ToggleIsVisibleGroupCommand))
-                },
-                isCheckable: true,
-                isChecked: new Binding
-                {
-                    Source = ViewModel,
-                    Path = new PropertyPath(nameof(ViewModel.AnnotationModel.IsVisible)),
-                    Mode = BindingMode.OneWay
-                }));
+        //    // Preview Annotation
+        //    contextMenu.Items.Add(CreateMenuItem(
+        //        name: "PreviewAnnotation",
+        //        header: Wpf.Properties.Resources.GroupContextMenuPreview,
+        //        command: new Binding
+        //        {
+        //            Source = ViewModel,
+        //            Path = new PropertyPath(nameof(ViewModel.ToggleIsVisibleGroupCommand))
+        //        },
+        //        isCheckable: true,
+        //        isChecked: new Binding
+        //        {
+        //            Source = ViewModel,
+        //            Path = new PropertyPath(nameof(ViewModel.AnnotationModel.IsVisible)),
+        //            Mode = BindingMode.OneWay
+        //        }));
 
-            // Ungroup from Selection
-            contextMenu.Items.Add(CreateMenuItem(
-                name: "unGroup_cm",
-                header: Wpf.Properties.Resources.ContextUnGroupFromSelection,
-                command: new Binding
-                {
-                    Source = ViewModel,
-                    Path = new PropertyPath(nameof(ViewModel.RemoveGroupFromGroupCommand))
-                }));
+        //    // Ungroup from Selection
+        //    contextMenu.Items.Add(CreateMenuItem(
+        //        name: "unGroup_cm",
+        //        header: Wpf.Properties.Resources.ContextUnGroupFromSelection,
+        //        command: new Binding
+        //        {
+        //            Source = ViewModel,
+        //            Path = new PropertyPath(nameof(ViewModel.RemoveGroupFromGroupCommand))
+        //        }));
 
-            // Add Group to Group
-            contextMenu.Items.Add(CreateMenuItem(
-                name: "AddGroupToGroup",
-                header: Wpf.Properties.Resources.GroupContextMenuAddGroupToGroup,
-                command: new Binding
-                {
-                    Source = ViewModel,
-                    Path = new PropertyPath(nameof(ViewModel.AddGroupToGroupCommand))
-                }));
+        //    // Add Group to Group
+        //    contextMenu.Items.Add(CreateMenuItem(
+        //        name: "AddGroupToGroup",
+        //        header: Wpf.Properties.Resources.GroupContextMenuAddGroupToGroup,
+        //        command: new Binding
+        //        {
+        //            Source = ViewModel,
+        //            Path = new PropertyPath(nameof(ViewModel.AddGroupToGroupCommand))
+        //        }));
 
-            // Graph Layout
-            var graphLayoutMenuItem = CreateMenuItem(
-                name: "GraphLayoutAnnotation",
-                header: Wpf.Properties.Resources.GroupContextMenuGraphLayout);
-            graphLayoutMenuItem.Click += OnGraphLayoutAnnotation;
-            contextMenu.Items.Add(graphLayoutMenuItem);
+        //    // Graph Layout
+        //    var graphLayoutMenuItem = CreateMenuItem(
+        //        name: "GraphLayoutAnnotation",
+        //        header: Wpf.Properties.Resources.GroupContextMenuGraphLayout);
+        //    graphLayoutMenuItem.Click += OnGraphLayoutAnnotation;
+        //    contextMenu.Items.Add(graphLayoutMenuItem);
 
-            // Group Style
-            var groupStyleMenuItem = CreateMenuItem(
-                name: "GroupStyleAnnotation",
-                header: Wpf.Properties.Resources.GroupStyleContextAnnotation,
-                itemsSource: new Binding
-                {
-                    Source = ViewModel,
-                    Path = new PropertyPath(nameof(ViewModel.GroupStyleList))
-                });
-            groupStyleMenuItem.Style = _menuItemGroupStyle;
-            groupStyleMenuItem.ItemContainerStyleSelector = _groupStyleItemSelector;
-            groupStyleMenuItem.SubmenuOpened += GroupStyleAnnotation_SubmenuOpened;
-            groupStyleMenuItem.Resources.Add("GroupStyleSeparatorStyle", _groupStyleSeparatorStyle);
-            groupStyleMenuItem.Resources.Add("GroupStyleItemStyle", CreateGroupStyleItemStyle());
-            contextMenu.Items.Add(groupStyleMenuItem);
+        //    // Group Style
+        //    var groupStyleMenuItem = CreateMenuItem(
+        //        name: "GroupStyleAnnotation",
+        //        header: Wpf.Properties.Resources.GroupStyleContextAnnotation,
+        //        itemsSource: new Binding
+        //        {
+        //            Source = ViewModel,
+        //            Path = new PropertyPath(nameof(ViewModel.GroupStyleList))
+        //        });
+        //    groupStyleMenuItem.Style = _menuItemGroupStyle;
+        //    groupStyleMenuItem.ItemContainerStyleSelector = _groupStyleItemSelector;
+        //    groupStyleMenuItem.SubmenuOpened += GroupStyleAnnotation_SubmenuOpened;
+        //    groupStyleMenuItem.Resources.Add("GroupStyleSeparatorStyle", _groupStyleSeparatorStyle);
+        //    groupStyleMenuItem.Resources.Add("GroupStyleItemStyle", CreateGroupStyleItemStyle());
+        //    contextMenu.Items.Add(groupStyleMenuItem);
 
-            // Color Menu
-            var colorMenuItem = CreateMenuItem(
-                name: "ColorMenuItem",
-                header: Wpf.Properties.Resources.GroupContextMenuColor);
-            colorMenuItem.Style = _contextMenuItemFixedWidthStyle;
+        //    // Color Menu
+        //    var colorMenuItem = CreateMenuItem(
+        //        name: "ColorMenuItem",
+        //        header: Wpf.Properties.Resources.GroupContextMenuColor);
+        //    colorMenuItem.Style = _contextMenuItemFixedWidthStyle;
 
-            var colorListBox = new ListBox
-            {
-                Height = double.NaN,
-                ItemContainerStyle = _colorSelectorListBoxItemStyle,
-                Style = _colorSelectorListBoxStyle
-            };
-            //colorListBox.SelectionChanged += OnNodeColorSelectionChanged;
+        //    var colorListBox = new ListBox
+        //    {
+        //        Height = double.NaN,
+        //        ItemContainerStyle = _colorSelectorListBoxItemStyle,
+        //        Style = _colorSelectorListBoxStyle
+        //    };
+        //    //colorListBox.SelectionChanged += OnNodeColorSelectionChanged;
 
-            foreach (var color in new[]
-            {
-                "#d4b6db", "#ffb8d8", "#ffc999", "#e8f7ad", "#b9f9e1", "#a4e1ff", "#b5b5b5", "#FFFFFF",
-                "#bb87c6", "#ff7bac", "#ffaa45", "#c1d676", "#71c6a8", "#48b9ff", "#848484", "#d8d8d8"
-            })
-            {
-                colorListBox.Items.Add(new Rectangle
-                {
-                    Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color))
-                });
-            }
-            colorMenuItem.Items.Add(colorListBox);
-            contextMenu.Items.Add(colorMenuItem);
+        //    foreach (var color in new[]
+        //    {
+        //        "#d4b6db", "#ffb8d8", "#ffc999", "#e8f7ad", "#b9f9e1", "#a4e1ff", "#b5b5b5", "#FFFFFF",
+        //        "#bb87c6", "#ff7bac", "#ffaa45", "#c1d676", "#71c6a8", "#48b9ff", "#848484", "#d8d8d8"
+        //    })
+        //    {
+        //        colorListBox.Items.Add(new Rectangle
+        //        {
+        //            Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(color))
+        //        });
+        //    }
+        //    colorMenuItem.Items.Add(colorListBox);
+        //    contextMenu.Items.Add(colorMenuItem);
 
-            // Font Size Menu
-            var fontMenuItem = CreateMenuItem(
-                name: "ChangeSize",
-                header: Wpf.Properties.Resources.GroupContextMenuFont);
-            fontMenuItem.Style = _contextMenuItemFixedWidthStyle;
+        //    // Font Size Menu
+        //    var fontMenuItem = CreateMenuItem(
+        //        name: "ChangeSize",
+        //        header: Wpf.Properties.Resources.GroupContextMenuFont);
+        //    fontMenuItem.Style = _contextMenuItemFixedWidthStyle;
 
-            foreach (var size in new[] { 14, 18, 24, 30, 36, 48, 60, 72, 96 })
-            {
-                fontMenuItem.Items.Add(CreateMenuItem(
-                    name: $"FontSize{size}",
-                    header: size.ToString(),
-                    command: new Binding
-                    {
-                        Source = ViewModel,
-                        Path = new PropertyPath(nameof(ViewModel.ChangeFontSize))
-                    },
-                    commandParameter: size.ToString(),
-                    isChecked: new Binding
-                    {
-                        Source = ViewModel,
-                        Path = new PropertyPath(nameof(ViewModel.FontSize)),
-                        Converter = _menuItemCheckConverter,
-                        ConverterParameter = size
-                    }));
-            }
-            contextMenu.Items.Add(fontMenuItem);
+        //    foreach (var size in new[] { 14, 18, 24, 30, 36, 48, 60, 72, 96 })
+        //    {
+        //        fontMenuItem.Items.Add(CreateMenuItem(
+        //            name: $"FontSize{size}",
+        //            header: size.ToString(),
+        //            command: new Binding
+        //            {
+        //                Source = ViewModel,
+        //                Path = new PropertyPath(nameof(ViewModel.ChangeFontSize))
+        //            },
+        //            commandParameter: size.ToString(),
+        //            isChecked: new Binding
+        //            {
+        //                Source = ViewModel,
+        //                Path = new PropertyPath(nameof(ViewModel.FontSize)),
+        //                Converter = _menuItemCheckConverter,
+        //                ConverterParameter = size
+        //            }));
+        //    }
+        //    contextMenu.Items.Add(fontMenuItem);
 
-            grid.ContextMenu = contextMenu;
-        }
+        //    grid.ContextMenu = contextMenu;
+        //}
 
         #endregion
 
@@ -2592,256 +2558,256 @@ namespace Dynamo.Nodes
 
         #region Setup Styles
 
-        private static Style CreateContextMenuItemStyle() // CREATE SOMETHIG LIKE THIS FOR POPUP
-        {
-            var style = new Style(typeof(MenuItem));
+        //private static Style CreateContextMenuItemStyle() // CREATE SOMETHIG LIKE THIS FOR POPUP
+        //{
+        //    var style = new Style(typeof(MenuItem));
 
-            // Basic setters
-            style.Setters.Add(new Setter(MenuItem.IsCheckedProperty, new DynamicResourceExtension("IsChecked")));
-            style.Setters.Add(new Setter(MenuItem.HeightProperty, double.NaN)); // Auto
-            style.Setters.Add(new Setter(MenuItem.MinWidthProperty, 250.0));
-            style.Setters.Add(new Setter(MenuItem.WidthProperty, double.NaN)); // Auto
-            style.Setters.Add(new Setter(MenuItem.PaddingProperty, new Thickness(20, 0, 0, 0)));
+        //    // Basic setters
+        //    style.Setters.Add(new Setter(MenuItem.IsCheckedProperty, new DynamicResourceExtension("IsChecked")));
+        //    style.Setters.Add(new Setter(MenuItem.HeightProperty, double.NaN)); // Auto
+        //    style.Setters.Add(new Setter(MenuItem.MinWidthProperty, 250.0));
+        //    style.Setters.Add(new Setter(MenuItem.WidthProperty, double.NaN)); // Auto
+        //    style.Setters.Add(new Setter(MenuItem.PaddingProperty, new Thickness(20, 0, 0, 0)));
 
-            // Create the control template
-            var template = new ControlTemplate(typeof(MenuItem));
+        //    // Create the control template
+        //    var template = new ControlTemplate(typeof(MenuItem));
 
-            // Create the main DockPanel
-            var dockPanelFactory = new FrameworkElementFactory(typeof(DockPanel), "dockPanel");
-            dockPanelFactory.SetValue(DockPanel.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
-            dockPanelFactory.SetValue(Panel.BackgroundProperty, Brushes.Transparent);
-            dockPanelFactory.SetValue(UIElement.SnapsToDevicePixelsProperty, true);
+        //    // Create the main DockPanel
+        //    var dockPanelFactory = new FrameworkElementFactory(typeof(DockPanel), "dockPanel");
+        //    dockPanelFactory.SetValue(DockPanel.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
+        //    dockPanelFactory.SetValue(Panel.BackgroundProperty, Brushes.Transparent);
+        //    dockPanelFactory.SetValue(UIElement.SnapsToDevicePixelsProperty, true);
 
-            // Create checkbox (checkmark)
-            var checkBoxFactory = new FrameworkElementFactory(typeof(Label), "checkBox");
-            checkBoxFactory.SetValue(Label.MarginProperty, new Thickness(0, 0, -20, 0));
-            checkBoxFactory.SetValue(Label.HorizontalAlignmentProperty, HorizontalAlignment.Left);
-            checkBoxFactory.SetValue(Label.VerticalAlignmentProperty, VerticalAlignment.Center);
-            checkBoxFactory.SetValue(Label.HorizontalContentAlignmentProperty, HorizontalAlignment.Center);
-            checkBoxFactory.SetValue(Label.VerticalContentAlignmentProperty, VerticalAlignment.Center);
-            checkBoxFactory.SetValue(Label.ContentProperty, "✓");
-            checkBoxFactory.SetValue(DockPanel.DockProperty, Dock.Left);
-            checkBoxFactory.SetValue(Label.FontSizeProperty, 9.0);
-            checkBoxFactory.SetValue(Label.ForegroundProperty, _preferencesWindowButtonColor);
-            checkBoxFactory.SetValue(UIElement.VisibilityProperty, Visibility.Collapsed);
+        //    // Create checkbox (checkmark)
+        //    var checkBoxFactory = new FrameworkElementFactory(typeof(Label), "checkBox");
+        //    checkBoxFactory.SetValue(Label.MarginProperty, new Thickness(0, 0, -20, 0));
+        //    checkBoxFactory.SetValue(Label.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+        //    checkBoxFactory.SetValue(Label.VerticalAlignmentProperty, VerticalAlignment.Center);
+        //    checkBoxFactory.SetValue(Label.HorizontalContentAlignmentProperty, HorizontalAlignment.Center);
+        //    checkBoxFactory.SetValue(Label.VerticalContentAlignmentProperty, VerticalAlignment.Center);
+        //    checkBoxFactory.SetValue(Label.ContentProperty, "✓");
+        //    checkBoxFactory.SetValue(DockPanel.DockProperty, Dock.Left);
+        //    checkBoxFactory.SetValue(Label.FontSizeProperty, 9.0);
+        //    checkBoxFactory.SetValue(Label.ForegroundProperty, _preferencesWindowButtonColor);
+        //    checkBoxFactory.SetValue(UIElement.VisibilityProperty, Visibility.Collapsed);
 
-            // Create ContentPresenter
-            var contentPresenterFactory = new FrameworkElementFactory(typeof(ContentPresenter), "ContentPresenter");
-            contentPresenterFactory.SetValue(ContentPresenter.MarginProperty, new TemplateBindingExtension(Control.PaddingProperty));
-            contentPresenterFactory.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Center);
-            contentPresenterFactory.SetValue(ContentPresenter.ContentSourceProperty, "Header");
-            contentPresenterFactory.SetValue(DockPanel.DockProperty, Dock.Left);
-            contentPresenterFactory.SetValue(ContentPresenter.RecognizesAccessKeyProperty, true);
-            contentPresenterFactory.SetValue(UIElement.SnapsToDevicePixelsProperty, new TemplateBindingExtension(UIElement.SnapsToDevicePixelsProperty));
-            contentPresenterFactory.SetValue(TextBlock.ForegroundProperty, _nodeContextMenuForeground);
+        //    // Create ContentPresenter
+        //    var contentPresenterFactory = new FrameworkElementFactory(typeof(ContentPresenter), "ContentPresenter");
+        //    contentPresenterFactory.SetValue(ContentPresenter.MarginProperty, new TemplateBindingExtension(Control.PaddingProperty));
+        //    contentPresenterFactory.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Center);
+        //    contentPresenterFactory.SetValue(ContentPresenter.ContentSourceProperty, "Header");
+        //    contentPresenterFactory.SetValue(DockPanel.DockProperty, Dock.Left);
+        //    contentPresenterFactory.SetValue(ContentPresenter.RecognizesAccessKeyProperty, true);
+        //    contentPresenterFactory.SetValue(UIElement.SnapsToDevicePixelsProperty, new TemplateBindingExtension(UIElement.SnapsToDevicePixelsProperty));
+        //    contentPresenterFactory.SetValue(TextBlock.ForegroundProperty, _nodeContextMenuForeground);
 
-            // Create submenu arrow
-            var subMenuArrowFactory = new FrameworkElementFactory(typeof(Label), "subMenuArrow");
-            subMenuArrowFactory.SetValue(Label.MarginProperty, new Thickness(0, 0, 15, 7));
-            subMenuArrowFactory.SetValue(Label.PaddingProperty, new Thickness(0));
-            subMenuArrowFactory.SetValue(Label.VerticalAlignmentProperty, VerticalAlignment.Center);
-            subMenuArrowFactory.SetValue(Label.ContentProperty, ">");
-            subMenuArrowFactory.SetValue(DockPanel.DockProperty, Dock.Right);
-            subMenuArrowFactory.SetValue(Label.FontFamilyProperty, _artifaktElementRegular);
-            subMenuArrowFactory.SetValue(Label.FontSizeProperty, 13.0);
-            subMenuArrowFactory.SetValue(Label.ForegroundProperty, _blue300Brush);
+        //    // Create submenu arrow
+        //    var subMenuArrowFactory = new FrameworkElementFactory(typeof(Label), "subMenuArrow");
+        //    subMenuArrowFactory.SetValue(Label.MarginProperty, new Thickness(0, 0, 15, 7));
+        //    subMenuArrowFactory.SetValue(Label.PaddingProperty, new Thickness(0));
+        //    subMenuArrowFactory.SetValue(Label.VerticalAlignmentProperty, VerticalAlignment.Center);
+        //    subMenuArrowFactory.SetValue(Label.ContentProperty, ">");
+        //    subMenuArrowFactory.SetValue(DockPanel.DockProperty, Dock.Right);
+        //    subMenuArrowFactory.SetValue(Label.FontFamilyProperty, _artifaktElementRegular);
+        //    subMenuArrowFactory.SetValue(Label.FontSizeProperty, 13.0);
+        //    subMenuArrowFactory.SetValue(Label.ForegroundProperty, _blue300Brush);
 
-            // Create and set ScaleTransform for submenu arrow
-            var scaleTransform = new ScaleTransform(1, 1.5);
-            subMenuArrowFactory.SetValue(Label.RenderTransformProperty, scaleTransform);
+        //    // Create and set ScaleTransform for submenu arrow
+        //    var scaleTransform = new ScaleTransform(1, 1.5);
+        //    subMenuArrowFactory.SetValue(Label.RenderTransformProperty, scaleTransform);
 
-            // Create submenu arrow style
-            var arrowStyle = new Style(typeof(Label));
-            arrowStyle.Setters.Add(new Setter(UIElement.VisibilityProperty, Visibility.Hidden));
+        //    // Create submenu arrow style
+        //    var arrowStyle = new Style(typeof(Label));
+        //    arrowStyle.Setters.Add(new Setter(UIElement.VisibilityProperty, Visibility.Hidden));
 
-            var arrowTrigger = new DataTrigger();
-            arrowTrigger.Binding = new Binding("HasItems")
-            {
-                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(MenuItem), 1)
-            };
-            arrowTrigger.Value = true;
-            arrowTrigger.Setters.Add(new Setter(UIElement.VisibilityProperty, Visibility.Visible));
-            arrowStyle.Triggers.Add(arrowTrigger);
+        //    var arrowTrigger = new DataTrigger();
+        //    arrowTrigger.Binding = new Binding("HasItems")
+        //    {
+        //        RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(MenuItem), 1)
+        //    };
+        //    arrowTrigger.Value = true;
+        //    arrowTrigger.Setters.Add(new Setter(UIElement.VisibilityProperty, Visibility.Visible));
+        //    arrowStyle.Triggers.Add(arrowTrigger);
 
-            subMenuArrowFactory.SetValue(FrameworkElement.StyleProperty, arrowStyle);
+        //    subMenuArrowFactory.SetValue(FrameworkElement.StyleProperty, arrowStyle);
 
-            // Create Popup for submenu
-            var popupFactory = new FrameworkElementFactory(typeof(Popup), "PART_Popup");
-            popupFactory.SetValue(Popup.AllowsTransparencyProperty, true);
-            popupFactory.SetValue(UIElement.FocusableProperty, false);
-            popupFactory.SetValue(Popup.HorizontalOffsetProperty, 0.0);
-            popupFactory.SetValue(Popup.PlacementProperty, PlacementMode.Right);
-            popupFactory.SetValue(Popup.VerticalOffsetProperty, -2.0);
-            popupFactory.SetBinding(Popup.IsOpenProperty, new Binding("IsSubmenuOpen")
-            {
-                RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent)
-            });
+        //    // Create Popup for submenu
+        //    var popupFactory = new FrameworkElementFactory(typeof(Popup), "PART_Popup");
+        //    popupFactory.SetValue(Popup.AllowsTransparencyProperty, true);
+        //    popupFactory.SetValue(UIElement.FocusableProperty, false);
+        //    popupFactory.SetValue(Popup.HorizontalOffsetProperty, 0.0);
+        //    popupFactory.SetValue(Popup.PlacementProperty, PlacementMode.Right);
+        //    popupFactory.SetValue(Popup.VerticalOffsetProperty, -2.0);
+        //    popupFactory.SetBinding(Popup.IsOpenProperty, new Binding("IsSubmenuOpen")
+        //    {
+        //        RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent)
+        //    });
 
-            // Create Border for Popup
-            var popupBorderFactory = new FrameworkElementFactory(typeof(Border));
-            popupBorderFactory.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Control.BackgroundProperty));
-            popupBorderFactory.SetValue(Border.BorderBrushProperty, Brushes.Transparent);
-            popupBorderFactory.SetValue(Border.BorderThicknessProperty, new Thickness(0));
+        //    // Create Border for Popup
+        //    var popupBorderFactory = new FrameworkElementFactory(typeof(Border));
+        //    popupBorderFactory.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(Control.BackgroundProperty));
+        //    popupBorderFactory.SetValue(Border.BorderBrushProperty, Brushes.Transparent);
+        //    popupBorderFactory.SetValue(Border.BorderThicknessProperty, new Thickness(0));
 
-            // Create ScrollViewer for submenu
-            var scrollViewerFactory = new FrameworkElementFactory(typeof(ScrollViewer), "SubMenuScrollViewer");
-            scrollViewerFactory.SetValue(ScrollViewer.CanContentScrollProperty, true);
-            scrollViewerFactory.SetValue(FrameworkElement.StyleProperty, new DynamicResourceExtension(new ComponentResourceKey(typeof(FrameworkElement), "MenuScrollViewer")));
+        //    // Create ScrollViewer for submenu
+        //    var scrollViewerFactory = new FrameworkElementFactory(typeof(ScrollViewer), "SubMenuScrollViewer");
+        //    scrollViewerFactory.SetValue(ScrollViewer.CanContentScrollProperty, true);
+        //    scrollViewerFactory.SetValue(FrameworkElement.StyleProperty, new DynamicResourceExtension(new ComponentResourceKey(typeof(FrameworkElement), "MenuScrollViewer")));
 
-            // Create Grid for ItemsPresenter
-            var gridFactory = new FrameworkElementFactory(typeof(Grid));
-            gridFactory.SetValue(RenderOptions.ClearTypeHintProperty, ClearTypeHint.Enabled);
+        //    // Create Grid for ItemsPresenter
+        //    var gridFactory = new FrameworkElementFactory(typeof(Grid));
+        //    gridFactory.SetValue(RenderOptions.ClearTypeHintProperty, ClearTypeHint.Enabled);
 
-            // Create ItemsPresenter
-            var itemsPresenterFactory = new FrameworkElementFactory(typeof(ItemsPresenter), "ItemsPresenter");
-            itemsPresenterFactory.SetValue(Grid.IsSharedSizeScopeProperty, true);
-            itemsPresenterFactory.SetValue(KeyboardNavigation.DirectionalNavigationProperty, KeyboardNavigationMode.Cycle);
-            itemsPresenterFactory.SetValue(KeyboardNavigation.TabNavigationProperty, KeyboardNavigationMode.Cycle);
-            itemsPresenterFactory.SetValue(UIElement.SnapsToDevicePixelsProperty, new TemplateBindingExtension(UIElement.SnapsToDevicePixelsProperty));
+        //    // Create ItemsPresenter
+        //    var itemsPresenterFactory = new FrameworkElementFactory(typeof(ItemsPresenter), "ItemsPresenter");
+        //    itemsPresenterFactory.SetValue(Grid.IsSharedSizeScopeProperty, true);
+        //    itemsPresenterFactory.SetValue(KeyboardNavigation.DirectionalNavigationProperty, KeyboardNavigationMode.Cycle);
+        //    itemsPresenterFactory.SetValue(KeyboardNavigation.TabNavigationProperty, KeyboardNavigationMode.Cycle);
+        //    itemsPresenterFactory.SetValue(UIElement.SnapsToDevicePixelsProperty, new TemplateBindingExtension(UIElement.SnapsToDevicePixelsProperty));
 
-            // Build the visual tree
-            gridFactory.AppendChild(itemsPresenterFactory);
-            scrollViewerFactory.AppendChild(gridFactory);
-            popupBorderFactory.AppendChild(scrollViewerFactory);
-            popupFactory.AppendChild(popupBorderFactory);
+        //    // Build the visual tree
+        //    gridFactory.AppendChild(itemsPresenterFactory);
+        //    scrollViewerFactory.AppendChild(gridFactory);
+        //    popupBorderFactory.AppendChild(scrollViewerFactory);
+        //    popupFactory.AppendChild(popupBorderFactory);
 
-            // Add all elements to DockPanel
-            dockPanelFactory.AppendChild(checkBoxFactory);
-            dockPanelFactory.AppendChild(contentPresenterFactory);
-            dockPanelFactory.AppendChild(subMenuArrowFactory);
-            dockPanelFactory.AppendChild(popupFactory);
+        //    // Add all elements to DockPanel
+        //    dockPanelFactory.AppendChild(checkBoxFactory);
+        //    dockPanelFactory.AppendChild(contentPresenterFactory);
+        //    dockPanelFactory.AppendChild(subMenuArrowFactory);
+        //    dockPanelFactory.AppendChild(popupFactory);
 
-            // Set the template's visual tree
-            template.VisualTree = dockPanelFactory;
+        //    // Set the template's visual tree
+        //    template.VisualTree = dockPanelFactory;
 
-            // Add triggers
-            // Disabled trigger
-            var disabledTrigger = new Trigger { Property = UIElement.IsEnabledProperty, Value = false };
-            disabledTrigger.Setters.Add(new Setter(TextBlock.OpacityProperty, 0.5, "ContentPresenter"));
-            template.Triggers.Add(disabledTrigger);
+        //    // Add triggers
+        //    // Disabled trigger
+        //    var disabledTrigger = new Trigger { Property = UIElement.IsEnabledProperty, Value = false };
+        //    disabledTrigger.Setters.Add(new Setter(TextBlock.OpacityProperty, 0.5, "ContentPresenter"));
+        //    template.Triggers.Add(disabledTrigger);
 
-            // MouseOver trigger
-            var mouseOverTrigger = new Trigger { Property = MenuItem.IsMouseOverProperty, Value = true };
-            mouseOverTrigger.Setters.Add(new Setter(TextBlock.ForegroundProperty, Brushes.White, "ContentPresenter"));
-            mouseOverTrigger.Setters.Add(new Setter(DockPanel.BackgroundProperty, _nodeContextMenuBackgroundHighlight, "dockPanel"));
-            template.Triggers.Add(mouseOverTrigger);
+        //    // MouseOver trigger
+        //    var mouseOverTrigger = new Trigger { Property = MenuItem.IsMouseOverProperty, Value = true };
+        //    mouseOverTrigger.Setters.Add(new Setter(TextBlock.ForegroundProperty, Brushes.White, "ContentPresenter"));
+        //    mouseOverTrigger.Setters.Add(new Setter(DockPanel.BackgroundProperty, _nodeContextMenuBackgroundHighlight, "dockPanel"));
+        //    template.Triggers.Add(mouseOverTrigger);
 
-            // MouseOut trigger
-            var mouseOutTrigger = new Trigger { Property = MenuItem.IsMouseOverProperty, Value = false };
-            mouseOutTrigger.Setters.Add(new Setter(DockPanel.BackgroundProperty, _nodeContextMenuBackground, "dockPanel"));
-            template.Triggers.Add(mouseOutTrigger);
+        //    // MouseOut trigger
+        //    var mouseOutTrigger = new Trigger { Property = MenuItem.IsMouseOverProperty, Value = false };
+        //    mouseOutTrigger.Setters.Add(new Setter(DockPanel.BackgroundProperty, _nodeContextMenuBackground, "dockPanel"));
+        //    template.Triggers.Add(mouseOutTrigger);
 
-            // Checked trigger
-            var checkedTrigger = new Trigger { Property = MenuItem.IsCheckedProperty, Value = true };
-            checkedTrigger.Setters.Add(new Setter(UIElement.VisibilityProperty, Visibility.Visible, "checkBox"));
-            checkedTrigger.Setters.Add(new Setter(TextBlock.FontFamilyProperty, _artifaktElementBold, "ContentPresenter"));
-            template.Triggers.Add(checkedTrigger);
+        //    // Checked trigger
+        //    var checkedTrigger = new Trigger { Property = MenuItem.IsCheckedProperty, Value = true };
+        //    checkedTrigger.Setters.Add(new Setter(UIElement.VisibilityProperty, Visibility.Visible, "checkBox"));
+        //    checkedTrigger.Setters.Add(new Setter(TextBlock.FontFamilyProperty, _artifaktElementBold, "ContentPresenter"));
+        //    template.Triggers.Add(checkedTrigger);
 
-            // Add template to style
-            style.Setters.Add(new Setter(Control.TemplateProperty, template));
+        //    // Add template to style
+        //    style.Setters.Add(new Setter(Control.TemplateProperty, template));
 
-            return style;
-        }
+        //    return style;
+        //}
 
-        private Style CreateGroupStyleItemStyle()
-        {
-            var style = new Style(typeof(MenuItem));
+        //private Style CreateGroupStyleItemStyle()
+        //{
+        //    var style = new Style(typeof(MenuItem));
 
-            // Add IsChecked binding
-            style.Setters.Add(new Setter(MenuItem.IsCheckedProperty, new Binding("IsChecked")));
+        //    // Add IsChecked binding
+        //    style.Setters.Add(new Setter(MenuItem.IsCheckedProperty, new Binding("IsChecked")));
 
-            // Add Click event handler
-            style.Setters.Add(new EventSetter(MenuItem.ClickEvent, new RoutedEventHandler(GroupStyleCheckmark_Click)));
+        //    // Add Click event handler
+        //    style.Setters.Add(new EventSetter(MenuItem.ClickEvent, new RoutedEventHandler(GroupStyleCheckmark_Click)));
 
-            // Create template
-            var template = new ControlTemplate(typeof(MenuItem));
+        //    // Create template
+        //    var template = new ControlTemplate(typeof(MenuItem));
 
-            // Create StackPanel
-            var stackPanelFactory = new FrameworkElementFactory(typeof(StackPanel));
-            stackPanelFactory.Name = "groupStyleStackPanel";
-            stackPanelFactory.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
-            stackPanelFactory.SetValue(FrameworkElement.MinWidthProperty, 150.0);
-            stackPanelFactory.SetValue(Panel.BackgroundProperty, _midGreyBrush);
+        //    // Create StackPanel
+        //    var stackPanelFactory = new FrameworkElementFactory(typeof(StackPanel));
+        //    stackPanelFactory.Name = "groupStyleStackPanel";
+        //    stackPanelFactory.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
+        //    stackPanelFactory.SetValue(FrameworkElement.MinWidthProperty, 150.0);
+        //    stackPanelFactory.SetValue(Panel.BackgroundProperty, _midGreyBrush);
 
-            // Create Label (Color Picker)
-            var labelFactory = new FrameworkElementFactory(typeof(Label));
-            labelFactory.Name = "buttonColorPicker";
-            labelFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(5, 0, 5, 0));
-            labelFactory.SetValue(Control.FontFamilyProperty, _artifaktElementRegular);
-            labelFactory.SetValue(Control.FontSizeProperty, 14.0);
-            labelFactory.SetValue(FrameworkElement.WidthProperty, 15.0);
-            labelFactory.SetValue(FrameworkElement.HeightProperty, 15.0);
-            labelFactory.SetBinding(Control.BackgroundProperty, new Binding("HexColorString")
-            {
-                Converter = _stringToBrushColorConverter
-            });
+        //    // Create Label (Color Picker)
+        //    var labelFactory = new FrameworkElementFactory(typeof(Label));
+        //    labelFactory.Name = "buttonColorPicker";
+        //    labelFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(5, 0, 5, 0));
+        //    labelFactory.SetValue(Control.FontFamilyProperty, _artifaktElementRegular);
+        //    labelFactory.SetValue(Control.FontSizeProperty, 14.0);
+        //    labelFactory.SetValue(FrameworkElement.WidthProperty, 15.0);
+        //    labelFactory.SetValue(FrameworkElement.HeightProperty, 15.0);
+        //    labelFactory.SetBinding(Control.BackgroundProperty, new Binding("HexColorString")
+        //    {
+        //        Converter = _stringToBrushColorConverter
+        //    });
 
-            // Create TextBlock
-            var textBlockFactory = new FrameworkElementFactory(typeof(TextBlock));
-            textBlockFactory.SetBinding(TextBlock.TextProperty, new Binding("Name"));
-            textBlockFactory.SetValue(TextBlock.TextTrimmingProperty, TextTrimming.CharacterEllipsis);
-            textBlockFactory.SetValue(FrameworkElement.MaxWidthProperty, 148.0);
-            textBlockFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(5, 0, 5, 0));
-            textBlockFactory.SetValue(TextBlock.ForegroundProperty, _nodeContextMenuForeground);
-            textBlockFactory.SetValue(TextBlock.FontFamilyProperty, _artifaktElementRegular);
-            textBlockFactory.SetValue(TextBlock.FontSizeProperty, 14.0);
-            textBlockFactory.SetValue(TextBlock.FontWeightProperty, FontWeights.Medium);
+        //    // Create TextBlock
+        //    var textBlockFactory = new FrameworkElementFactory(typeof(TextBlock));
+        //    textBlockFactory.SetBinding(TextBlock.TextProperty, new Binding("Name"));
+        //    textBlockFactory.SetValue(TextBlock.TextTrimmingProperty, TextTrimming.CharacterEllipsis);
+        //    textBlockFactory.SetValue(FrameworkElement.MaxWidthProperty, 148.0);
+        //    textBlockFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(5, 0, 5, 0));
+        //    textBlockFactory.SetValue(TextBlock.ForegroundProperty, _nodeContextMenuForeground);
+        //    textBlockFactory.SetValue(TextBlock.FontFamilyProperty, _artifaktElementRegular);
+        //    textBlockFactory.SetValue(TextBlock.FontSizeProperty, 14.0);
+        //    textBlockFactory.SetValue(TextBlock.FontWeightProperty, FontWeights.Medium);
 
-            // Build visual tree
-            stackPanelFactory.AppendChild(labelFactory);
-            stackPanelFactory.AppendChild(textBlockFactory);
-            template.VisualTree = stackPanelFactory;
+        //    // Build visual tree
+        //    stackPanelFactory.AppendChild(labelFactory);
+        //    stackPanelFactory.AppendChild(textBlockFactory);
+        //    template.VisualTree = stackPanelFactory;
 
-            // Add triggers
-            var mouseOverTrigger = new Trigger
-            {
-                Property = UIElement.IsMouseOverProperty,
-                Value = true
-            };
-            mouseOverTrigger.Setters.Add(new Setter(Panel.BackgroundProperty,
-                _nodeContextMenuBackgroundHighlight, "groupStyleStackPanel"));
-            template.Triggers.Add(mouseOverTrigger);
+        //    // Add triggers
+        //    var mouseOverTrigger = new Trigger
+        //    {
+        //        Property = UIElement.IsMouseOverProperty,
+        //        Value = true
+        //    };
+        //    mouseOverTrigger.Setters.Add(new Setter(Panel.BackgroundProperty,
+        //        _nodeContextMenuBackgroundHighlight, "groupStyleStackPanel"));
+        //    template.Triggers.Add(mouseOverTrigger);
 
-            var mouseNotOverTrigger = new Trigger
-            {
-                Property = UIElement.IsMouseOverProperty,
-                Value = false
-            };
-            mouseNotOverTrigger.Setters.Add(new Setter(Panel.BackgroundProperty,
-                _nodeContextMenuBackground, "groupStyleStackPanel"));
-            template.Triggers.Add(mouseNotOverTrigger);
+        //    var mouseNotOverTrigger = new Trigger
+        //    {
+        //        Property = UIElement.IsMouseOverProperty,
+        //        Value = false
+        //    };
+        //    mouseNotOverTrigger.Setters.Add(new Setter(Panel.BackgroundProperty,
+        //        _nodeContextMenuBackground, "groupStyleStackPanel"));
+        //    template.Triggers.Add(mouseNotOverTrigger);
 
-            // Add template to style
-            style.Setters.Add(new Setter(Control.TemplateProperty, template));
+        //    // Add template to style
+        //    style.Setters.Add(new Setter(Control.TemplateProperty, template));
 
-            return style;
-        }
+        //    return style;
+        //}
 
-        private static Style CreateGroupStyleSeparatorStyle()
-        {
-            var style = new Style(typeof(MenuItem));
+        //private static Style CreateGroupStyleSeparatorStyle()
+        //{
+        //    var style = new Style(typeof(MenuItem));
 
-            var template = new ControlTemplate(typeof(MenuItem));
+        //    var template = new ControlTemplate(typeof(MenuItem));
 
-            // Create outer border
-            var outerBorderFactory = new FrameworkElementFactory(typeof(Border));
-            outerBorderFactory.SetValue(FrameworkElement.HeightProperty, 1.0);
-            outerBorderFactory.SetValue(Border.BackgroundProperty, _midGreyBrush);
+        //    // Create outer border
+        //    var outerBorderFactory = new FrameworkElementFactory(typeof(Border));
+        //    outerBorderFactory.SetValue(FrameworkElement.HeightProperty, 1.0);
+        //    outerBorderFactory.SetValue(Border.BackgroundProperty, _midGreyBrush);
 
-            // Create inner border
-            var innerBorderFactory = new FrameworkElementFactory(typeof(Border));
-            innerBorderFactory.SetValue(FrameworkElement.HeightProperty, 1.0);
-            innerBorderFactory.SetValue(FrameworkElement.MaxWidthProperty, 150.0);
-            innerBorderFactory.SetValue(Border.BackgroundProperty, _nodeContextMenuSeparatorColor);
+        //    // Create inner border
+        //    var innerBorderFactory = new FrameworkElementFactory(typeof(Border));
+        //    innerBorderFactory.SetValue(FrameworkElement.HeightProperty, 1.0);
+        //    innerBorderFactory.SetValue(FrameworkElement.MaxWidthProperty, 150.0);
+        //    innerBorderFactory.SetValue(Border.BackgroundProperty, _nodeContextMenuSeparatorColor);
 
-            // Build visual tree
-            outerBorderFactory.AppendChild(innerBorderFactory);
-            template.VisualTree = outerBorderFactory;
+        //    // Build visual tree
+        //    outerBorderFactory.AppendChild(innerBorderFactory);
+        //    template.VisualTree = outerBorderFactory;
 
-            style.Setters.Add(new Setter(Control.TemplateProperty, template));
+        //    style.Setters.Add(new Setter(Control.TemplateProperty, template));
 
-            return style;
-        }
+        //    return style;
+        //}
 
         private static Style CreateGenericToolTipLightStyle()
         {
@@ -2999,180 +2965,180 @@ namespace Dynamo.Nodes
             return customTooltipStyle;
         }
 
-        private static Style CreateColorSelectorListBoxStyle()
-        {
-            var style = new Style(typeof(ListBox));
+        //private static Style CreateColorSelectorListBoxStyle()
+        //{
+        //    var style = new Style(typeof(ListBox));
 
-            // Add basic property setters
-            style.Setters.Add(new Setter(UIElement.SnapsToDevicePixelsProperty, true));
-            style.Setters.Add(new Setter(FrameworkElement.OverridesDefaultStyleProperty, true));
-            style.Setters.Add(new Setter(ScrollViewer.HorizontalScrollBarVisibilityProperty, ScrollBarVisibility.Disabled));
-            style.Setters.Add(new Setter(ScrollViewer.VerticalScrollBarVisibilityProperty, ScrollBarVisibility.Hidden));
-            style.Setters.Add(new Setter(ScrollViewer.CanContentScrollProperty, true));
-            style.Setters.Add(new Setter(FrameworkElement.WidthProperty, 150.0));
-            style.Setters.Add(new Setter(FrameworkElement.HeightProperty, 54.0));
+        //    // Add basic property setters
+        //    style.Setters.Add(new Setter(UIElement.SnapsToDevicePixelsProperty, true));
+        //    style.Setters.Add(new Setter(FrameworkElement.OverridesDefaultStyleProperty, true));
+        //    style.Setters.Add(new Setter(ScrollViewer.HorizontalScrollBarVisibilityProperty, ScrollBarVisibility.Disabled));
+        //    style.Setters.Add(new Setter(ScrollViewer.VerticalScrollBarVisibilityProperty, ScrollBarVisibility.Hidden));
+        //    style.Setters.Add(new Setter(ScrollViewer.CanContentScrollProperty, true));
+        //    style.Setters.Add(new Setter(FrameworkElement.WidthProperty, 150.0));
+        //    style.Setters.Add(new Setter(FrameworkElement.HeightProperty, 54.0));
 
-            // Create the ControlTemplate
-            var template = new ControlTemplate(typeof(ListBox));
+        //    // Create the ControlTemplate
+        //    var template = new ControlTemplate(typeof(ListBox));
 
-            // Create the Grid
-            var gridFactory = new FrameworkElementFactory(typeof(Grid));
-            gridFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 13, 4, 8));
+        //    // Create the Grid
+        //    var gridFactory = new FrameworkElementFactory(typeof(Grid));
+        //    gridFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 13, 4, 8));
 
-            // Create the ScrollViewer
-            var scrollViewerFactory = new FrameworkElementFactory(typeof(ScrollViewer));
-            scrollViewerFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(0));
-            scrollViewerFactory.SetValue(UIElement.FocusableProperty, false);
+        //    // Create the ScrollViewer
+        //    var scrollViewerFactory = new FrameworkElementFactory(typeof(ScrollViewer));
+        //    scrollViewerFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(0));
+        //    scrollViewerFactory.SetValue(UIElement.FocusableProperty, false);
 
-            // Create the WrapPanel
-            var wrapPanelFactory = new FrameworkElementFactory(typeof(WrapPanel));
-            wrapPanelFactory.SetValue(Panel.IsItemsHostProperty, true);
+        //    // Create the WrapPanel
+        //    var wrapPanelFactory = new FrameworkElementFactory(typeof(WrapPanel));
+        //    wrapPanelFactory.SetValue(Panel.IsItemsHostProperty, true);
 
-            // Build the visual tree
-            scrollViewerFactory.AppendChild(wrapPanelFactory);
-            gridFactory.AppendChild(scrollViewerFactory);
-            template.VisualTree = gridFactory;
+        //    // Build the visual tree
+        //    scrollViewerFactory.AppendChild(wrapPanelFactory);
+        //    gridFactory.AppendChild(scrollViewerFactory);
+        //    template.VisualTree = gridFactory;
 
-            // Add the template setter
-            style.Setters.Add(new Setter(Control.TemplateProperty, template));
+        //    // Add the template setter
+        //    style.Setters.Add(new Setter(Control.TemplateProperty, template));
 
-            return style;
-        }
+        //    return style;
+        //}
 
-        private static Style CreateColorSelectorListBoxItemStyle()
-        {
-            var style = new Style(typeof(ListBoxItem));
+        //private static Style CreateColorSelectorListBoxItemStyle()
+        //{
+        //    var style = new Style(typeof(ListBoxItem));
 
-            // Add basic setters
-            style.Setters.Add(new Setter(UIElement.SnapsToDevicePixelsProperty, true));
-            style.Setters.Add(new Setter(ListBoxItem.OverridesDefaultStyleProperty, true));
-            style.Setters.Add(new Setter(FrameworkElement.WidthProperty, 18.0));
-            style.Setters.Add(new Setter(FrameworkElement.HeightProperty, 20.0));
+        //    // Add basic setters
+        //    style.Setters.Add(new Setter(UIElement.SnapsToDevicePixelsProperty, true));
+        //    style.Setters.Add(new Setter(ListBoxItem.OverridesDefaultStyleProperty, true));
+        //    style.Setters.Add(new Setter(FrameworkElement.WidthProperty, 18.0));
+        //    style.Setters.Add(new Setter(FrameworkElement.HeightProperty, 20.0));
 
-            // Create the control template
-            var template = new ControlTemplate(typeof(ListBoxItem));
+        //    // Create the control template
+        //    var template = new ControlTemplate(typeof(ListBoxItem));
 
-            // Create the root Grid
-            var grid = new Grid
-            {
-                Margin = new Thickness(0, 0, 4, 5),
-                SnapsToDevicePixels = true,
-                Background = new SolidColorBrush(Colors.Transparent)
-            };
+        //    // Create the root Grid
+        //    var grid = new Grid
+        //    {
+        //        Margin = new Thickness(0, 0, 4, 5),
+        //        SnapsToDevicePixels = true,
+        //        Background = new SolidColorBrush(Colors.Transparent)
+        //    };
 
-            // Add ContentPresenter
-            var contentPresenter = new ContentPresenter();
-            grid.Children.Add(contentPresenter);
+        //    // Add ContentPresenter
+        //    var contentPresenter = new ContentPresenter();
+        //    grid.Children.Add(contentPresenter);
 
-            // Add Border
-            var border = new Border
-            {
-                Name = "Border",
-                Opacity = 0.25,
-                BorderThickness = new Thickness(1),
-                BorderBrush = Brushes.Black,
-                Background = Brushes.Transparent
-            };
-            grid.Children.Add(border);
+        //    // Add Border
+        //    var border = new Border
+        //    {
+        //        Name = "Border",
+        //        Opacity = 0.25,
+        //        BorderThickness = new Thickness(1),
+        //        BorderBrush = Brushes.Black,
+        //        Background = Brushes.Transparent
+        //    };
+        //    grid.Children.Add(border);
 
-            // Create visual states
-            var visualStateGroups = VisualStateManager.GetVisualStateGroups(grid);
+        //    // Create visual states
+        //    var visualStateGroups = VisualStateManager.GetVisualStateGroups(grid);
 
-            // Common States Group
-            var commonStatesGroup = new VisualStateGroup { Name = "CommonStates" };
+        //    // Common States Group
+        //    var commonStatesGroup = new VisualStateGroup { Name = "CommonStates" };
 
-            // Normal state
-            var normalState = new VisualState { Name = "Normal" };
-            commonStatesGroup.States.Add(normalState);
+        //    // Normal state
+        //    var normalState = new VisualState { Name = "Normal" };
+        //    commonStatesGroup.States.Add(normalState);
 
-            // MouseOver state
-            var mouseOverState = new VisualState { Name = "MouseOver" };
-            var mouseOverStoryboard = new Storyboard();
-            var mouseOverAnimation = new DoubleAnimationUsingKeyFrames();
-            Storyboard.SetTargetName(mouseOverAnimation, "Border");
-            Storyboard.SetTargetProperty(mouseOverAnimation, new PropertyPath(Border.OpacityProperty));
-            mouseOverAnimation.KeyFrames.Add(new EasingDoubleKeyFrame(1.0, KeyTime.FromTimeSpan(TimeSpan.Zero)));
-            mouseOverStoryboard.Children.Add(mouseOverAnimation);
-            mouseOverState.Storyboard = mouseOverStoryboard;
-            commonStatesGroup.States.Add(mouseOverState);
+        //    // MouseOver state
+        //    var mouseOverState = new VisualState { Name = "MouseOver" };
+        //    var mouseOverStoryboard = new Storyboard();
+        //    var mouseOverAnimation = new DoubleAnimationUsingKeyFrames();
+        //    Storyboard.SetTargetName(mouseOverAnimation, "Border");
+        //    Storyboard.SetTargetProperty(mouseOverAnimation, new PropertyPath(Border.OpacityProperty));
+        //    mouseOverAnimation.KeyFrames.Add(new EasingDoubleKeyFrame(1.0, KeyTime.FromTimeSpan(TimeSpan.Zero)));
+        //    mouseOverStoryboard.Children.Add(mouseOverAnimation);
+        //    mouseOverState.Storyboard = mouseOverStoryboard;
+        //    commonStatesGroup.States.Add(mouseOverState);
 
-            // Selection States Group
-            var selectionStatesGroup = new VisualStateGroup { Name = "SelectionStates" };
+        //    // Selection States Group
+        //    var selectionStatesGroup = new VisualStateGroup { Name = "SelectionStates" };
 
-            // Unselected state
-            var unselectedState = new VisualState { Name = "Unselected" };
-            selectionStatesGroup.States.Add(unselectedState);
+        //    // Unselected state
+        //    var unselectedState = new VisualState { Name = "Unselected" };
+        //    selectionStatesGroup.States.Add(unselectedState);
 
-            // Selected state
-            var selectedState = new VisualState { Name = "Selected" };
-            var selectedStoryboard = new Storyboard();
-            var selectedAnimation = new DoubleAnimationUsingKeyFrames();
-            Storyboard.SetTargetName(selectedAnimation, "Border");
-            Storyboard.SetTargetProperty(selectedAnimation, new PropertyPath(Border.OpacityProperty));
-            selectedAnimation.KeyFrames.Add(new EasingDoubleKeyFrame(1.0, KeyTime.FromTimeSpan(TimeSpan.Zero)));
-            selectedStoryboard.Children.Add(selectedAnimation);
-            selectedState.Storyboard = selectedStoryboard;
-            selectionStatesGroup.States.Add(selectedState);
+        //    // Selected state
+        //    var selectedState = new VisualState { Name = "Selected" };
+        //    var selectedStoryboard = new Storyboard();
+        //    var selectedAnimation = new DoubleAnimationUsingKeyFrames();
+        //    Storyboard.SetTargetName(selectedAnimation, "Border");
+        //    Storyboard.SetTargetProperty(selectedAnimation, new PropertyPath(Border.OpacityProperty));
+        //    selectedAnimation.KeyFrames.Add(new EasingDoubleKeyFrame(1.0, KeyTime.FromTimeSpan(TimeSpan.Zero)));
+        //    selectedStoryboard.Children.Add(selectedAnimation);
+        //    selectedState.Storyboard = selectedStoryboard;
+        //    selectionStatesGroup.States.Add(selectedState);
 
-            // SelectedUnfocused state
-            var selectedUnfocusedState = new VisualState { Name = "SelectedUnfocused" };
-            selectionStatesGroup.States.Add(selectedUnfocusedState);
+        //    // SelectedUnfocused state
+        //    var selectedUnfocusedState = new VisualState { Name = "SelectedUnfocused" };
+        //    selectionStatesGroup.States.Add(selectedUnfocusedState);
 
-            // Add visual state groups
-            visualStateGroups.Add(commonStatesGroup);
-            visualStateGroups.Add(selectionStatesGroup);
+        //    // Add visual state groups
+        //    visualStateGroups.Add(commonStatesGroup);
+        //    visualStateGroups.Add(selectionStatesGroup);
 
-            // Create the template
-            var gridFactory = new FrameworkElementFactory(typeof(Grid));
-            gridFactory.SetValue(FrameworkElement.MarginProperty, grid.Margin);
-            gridFactory.SetValue(UIElement.SnapsToDevicePixelsProperty, grid.SnapsToDevicePixels);
-            gridFactory.SetValue(Panel.BackgroundProperty, grid.Background);
+        //    // Create the template
+        //    var gridFactory = new FrameworkElementFactory(typeof(Grid));
+        //    gridFactory.SetValue(FrameworkElement.MarginProperty, grid.Margin);
+        //    gridFactory.SetValue(UIElement.SnapsToDevicePixelsProperty, grid.SnapsToDevicePixels);
+        //    gridFactory.SetValue(Panel.BackgroundProperty, grid.Background);
 
-            var contentPresenterFactory = new FrameworkElementFactory(typeof(ContentPresenter));
-            gridFactory.AppendChild(contentPresenterFactory);
+        //    var contentPresenterFactory = new FrameworkElementFactory(typeof(ContentPresenter));
+        //    gridFactory.AppendChild(contentPresenterFactory);
 
-            var borderFactory = new FrameworkElementFactory(typeof(Border), "Border");
-            borderFactory.SetValue(Border.OpacityProperty, border.Opacity);
-            borderFactory.SetValue(Border.BorderThicknessProperty, border.BorderThickness);
-            borderFactory.SetValue(Border.BorderBrushProperty, border.BorderBrush);
-            borderFactory.SetValue(Border.BackgroundProperty, border.Background);
-            gridFactory.AppendChild(borderFactory);
+        //    var borderFactory = new FrameworkElementFactory(typeof(Border), "Border");
+        //    borderFactory.SetValue(Border.OpacityProperty, border.Opacity);
+        //    borderFactory.SetValue(Border.BorderThicknessProperty, border.BorderThickness);
+        //    borderFactory.SetValue(Border.BorderBrushProperty, border.BorderBrush);
+        //    borderFactory.SetValue(Border.BackgroundProperty, border.Background);
+        //    gridFactory.AppendChild(borderFactory);
 
-            template.VisualTree = gridFactory;
-            style.Setters.Add(new Setter(Control.TemplateProperty, template));
+        //    template.VisualTree = gridFactory;
+        //    style.Setters.Add(new Setter(Control.TemplateProperty, template));
 
-            return style;
-        }
+        //    return style;
+        //}
 
-        private static Style GetContextMenuStyle()
-        {
-            var contextMenuStyle = new Style(typeof(ContextMenu));
-            contextMenuStyle.Setters.Add(new Setter(ContextMenu.PlacementProperty, PlacementMode.MousePoint));
-            contextMenuStyle.Setters.Add(new Setter(ContextMenu.ForegroundProperty, _primaryCharcoal100));
-            contextMenuStyle.Setters.Add(new Setter(ContextMenu.FontSizeProperty, 13.0));
-            contextMenuStyle.Setters.Add(new Setter(ContextMenu.FontFamilyProperty, _artifaktElementRegular));
-            contextMenuStyle.Setters.Add(new Setter(ContextMenu.FontWeightProperty, FontWeights.Medium));
-            contextMenuStyle.Setters.Add(new Setter(ContextMenu.SnapsToDevicePixelsProperty, true));
-            contextMenuStyle.Setters.Add(new Setter(ContextMenu.OverridesDefaultStyleProperty, true));
+        //private static Style GetContextMenuStyle()
+        //{
+        //    var contextMenuStyle = new Style(typeof(ContextMenu));
+        //    contextMenuStyle.Setters.Add(new Setter(ContextMenu.PlacementProperty, PlacementMode.MousePoint));
+        //    contextMenuStyle.Setters.Add(new Setter(ContextMenu.ForegroundProperty, _primaryCharcoal100));
+        //    contextMenuStyle.Setters.Add(new Setter(ContextMenu.FontSizeProperty, 13.0));
+        //    contextMenuStyle.Setters.Add(new Setter(ContextMenu.FontFamilyProperty, _artifaktElementRegular));
+        //    contextMenuStyle.Setters.Add(new Setter(ContextMenu.FontWeightProperty, FontWeights.Medium));
+        //    contextMenuStyle.Setters.Add(new Setter(ContextMenu.SnapsToDevicePixelsProperty, true));
+        //    contextMenuStyle.Setters.Add(new Setter(ContextMenu.OverridesDefaultStyleProperty, true));
 
-            var contextMenuTemplate = new ControlTemplate(typeof(ContextMenu));
-            var border = new FrameworkElementFactory(typeof(Border));
-            border.Name = "Border";
-            border.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(ContextMenu.BackgroundProperty));
-            border.SetValue(Border.BorderThicknessProperty, new Thickness(0));
+        //    var contextMenuTemplate = new ControlTemplate(typeof(ContextMenu));
+        //    var border = new FrameworkElementFactory(typeof(Border));
+        //    border.Name = "Border";
+        //    border.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(ContextMenu.BackgroundProperty));
+        //    border.SetValue(Border.BorderThicknessProperty, new Thickness(0));
 
-            var stackPanel = new FrameworkElementFactory(typeof(StackPanel));
-            stackPanel.SetValue(StackPanel.MarginProperty, new Thickness(0, 10, 0, 0));
-            stackPanel.SetValue(StackPanel.ClipToBoundsProperty, true);
-            stackPanel.SetValue(StackPanel.OrientationProperty, Orientation.Vertical);
-            stackPanel.SetValue(StackPanel.IsItemsHostProperty, true);
+        //    var stackPanel = new FrameworkElementFactory(typeof(StackPanel));
+        //    stackPanel.SetValue(StackPanel.MarginProperty, new Thickness(0, 10, 0, 0));
+        //    stackPanel.SetValue(StackPanel.ClipToBoundsProperty, true);
+        //    stackPanel.SetValue(StackPanel.OrientationProperty, Orientation.Vertical);
+        //    stackPanel.SetValue(StackPanel.IsItemsHostProperty, true);
 
-            border.AppendChild(stackPanel);
-            contextMenuTemplate.VisualTree = border;
-            contextMenuStyle.Setters.Add(new Setter(ContextMenu.TemplateProperty, contextMenuTemplate));
+        //    border.AppendChild(stackPanel);
+        //    contextMenuTemplate.VisualTree = border;
+        //    contextMenuStyle.Setters.Add(new Setter(ContextMenu.TemplateProperty, contextMenuTemplate));
 
-            return contextMenuStyle;
-        }
+        //    return contextMenuStyle;
+        //}
 
         #endregion
 
