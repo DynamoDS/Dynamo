@@ -481,7 +481,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool CanAddGroupToGroup(object obj)
+        internal bool CanAddGroupToGroup(object obj)
         {
             // First make sure this group is selected
             // and that it does not already belong to
@@ -592,7 +592,7 @@ namespace Dynamo.ViewModels
             return result;
         }
 
-        private bool CanUngroupGroup(object parameters)
+        internal bool CanUngroupGroup(object parameters)
         {
             return BelongsToGroup();
         }

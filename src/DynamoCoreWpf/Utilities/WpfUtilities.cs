@@ -1,3 +1,4 @@
+using Dynamo.UI.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -109,6 +110,19 @@ namespace Dynamo.Utilities
         {
             await Task.Delay(delay);
             await ds.BeginInvoke(callback);
+        }
+
+        /// <summary>
+        /// Recursively searches up the visual tree from the specified child to find the first parent of type <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of parent to search for.</typeparam>
+        /// <param name="child">The starting element in the visual tree.</param>
+        /// <returns>The first parent of type <typeparamref name="T"/> if found; otherwise, <c>null</c>.</returns>
+        public static T FindParent<T>(DependencyObject child) where T : DependencyObject
+        {
+            var parent = VisualTreeHelper.GetParent(child);
+            if (parent == null) return null;
+            return parent is T typedParent ? typedParent : FindParent<T>(parent);
         }
 
     }
