@@ -1161,8 +1161,7 @@ namespace Dynamo.Controls
             Unloaded += OnNodeViewUnloaded;
             nodeBackground.Loaded += NodeViewReady;
 
-            nodeBorder.SizeChanged += OnSizeChangedBorder;
-            this.SizeChanged += OnSizeChangedNodeView;
+            nodeBorder.SizeChanged += OnSizeChanged;
             DataContextChanged += OnDataContextChanged;
 
             Panel.SetZIndex(this, 1);
@@ -1582,8 +1581,7 @@ namespace Dynamo.Controls
             EditableNameBox.LostFocus -= EditableNameBox_OnLostFocus;
             EditableNameBox.KeyDown -= EditableNameBox_KeyDown;
             optionsButton.Click -= DisplayNodeContextMenu;
-            nodeBorder.SizeChanged -= OnSizeChangedBorder;
-            this.SizeChanged -= OnSizeChangedNodeView;
+            nodeBorder.SizeChanged -= OnSizeChanged;
             nodeBackground.Loaded -= NodeViewReady;
 
             if (previewControl != null)
@@ -1605,20 +1603,13 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="eventArgs"></param>
-        private void OnSizeChangedBorder(object sender, SizeChangedEventArgs e)
+        private void OnSizeChanged(object sender, EventArgs eventArgs)
         {
-            if (ViewModel != null)
-            {
-                ViewModel.WidthBorder = e.NewSize.Width;
-                ViewModel.HeightBorder = e.NewSize.Height;              
-            }
-        }
+            if (ViewModel == null || ViewModel.PreferredSize.HasValue) return;
 
-        private void OnSizeChangedNodeView(object sender, SizeChangedEventArgs e)
-        {
-            if (ViewModel != null)
+            var size = new[] { ActualWidth, nodeBorder.ActualHeight };
+            if (ViewModel.SetModelSizeCommand.CanExecute(size))
             {
-                var size = new[] { e.NewSize.Width, e.NewSize.Height };
                 ViewModel.SetModelSizeCommand.Execute(size);
             }
         }
@@ -1644,21 +1635,6 @@ namespace Dynamo.Controls
             if (null != ViewModel) return;
 
             ViewModel = e.NewValue as NodeViewModel;
-
-            //This code should be only executed when loading a graph, if the node is being added to the workspace manually then the Width and Height should be auto-calculated.
-            //The default Width and Height values for nodes is 100 so only should be executed on graph loading if both values are 100
-            if (ViewModel.Width > NodeModel.DefaultWidth && ViewModel.Height > NodeModel.DefaultHeight)
-            {
-                Width = ViewModel.Width;
-                Height = ViewModel.Height;
-            }
-
-            if (ViewModel.WidthBorder > NodeModel.DefaultWidth && ViewModel.HeightBorder > NodeModel.DefaultHeight)
-            {
-                nodeBorder.Width = ViewModel.WidthBorder;
-                nodeBorder.Height = ViewModel.HeightBorder;
-            }
-
 
             //Set NodeIcon
             if (ViewModel.ImageSource == null)
@@ -1695,7 +1671,7 @@ namespace Dynamo.Controls
             nodeBorder.Height = size.Height;
             nodeBorder.RenderSize = size;
         }
-
+    
         private void SetCustomNodeVisuals()
         {
             customNodeBorder0 = new Border()
