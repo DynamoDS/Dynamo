@@ -38,6 +38,7 @@ namespace Dynamo.Nodes
     public partial class AnnotationView : IViewModelView<AnnotationViewModel>
     {
         internal Grid AnnotationGrid;
+        internal Popup GroupContextMenuPopup;
         private Grid frozenButtonZoomedOutGrid;
         private Grid textBlockGrid;
         private TextBlock groupTextBlock;
@@ -51,7 +52,6 @@ namespace Dynamo.Nodes
         private ItemsControl inputPortControl;
         private ItemsControl outputPortControl;
         private Thumb mainGroupThumb;
-        private Popup groupContextMenuPopup;
         private StackPanel groupPopupPanel;
 
         private bool _isUpdatingLayout = false;
@@ -299,7 +299,7 @@ namespace Dynamo.Nodes
                 ViewModel.WorkspaceViewModel.Nodes.CollectionChanged += OnWorkspaceNodesChanged;
 
                 // Reset group context flag when popup closes
-                groupContextMenuPopup.Closed += (_, __) => isSearchFromGroupContext = false;
+                GroupContextMenuPopup.Closed += (_, __) => isSearchFromGroupContext = false;
             }
         }
 
@@ -388,7 +388,7 @@ namespace Dynamo.Nodes
         /// </summary>
         private void AnnotationView_OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (!groupContextMenuPopup.IsOpen)
+            if (!GroupContextMenuPopup.IsOpen)
             {
                 OpenContextMenuAtMouse();
                 e.Handled = true;
@@ -656,13 +656,13 @@ namespace Dynamo.Nodes
                 Child = CreatePopupPanel()
             };
 
-            groupContextMenuPopup.Child = border;
-            groupContextMenuPopup.PlacementTarget = outerCanvas;
-            groupContextMenuPopup.Placement = PlacementMode.Absolute;
-            groupContextMenuPopup.HorizontalOffset = mousePosInOuter.X;
-            groupContextMenuPopup.VerticalOffset = mousePosInOuter.Y + 110;
+            GroupContextMenuPopup.Child = border;
+            GroupContextMenuPopup.PlacementTarget = outerCanvas;
+            GroupContextMenuPopup.Placement = PlacementMode.Absolute;
+            GroupContextMenuPopup.HorizontalOffset = mousePosInOuter.X;
+            GroupContextMenuPopup.VerticalOffset = mousePosInOuter.Y + 110;
 
-            groupContextMenuPopup.IsOpen = true;
+            GroupContextMenuPopup.IsOpen = true;
         }
         private void OnSearchViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -714,7 +714,7 @@ namespace Dynamo.Nodes
                     // Update the ViewModel color
                     ViewModel.Background = brush.Color;
 
-                    groupContextMenuPopup.IsOpen = false;
+                    GroupContextMenuPopup.IsOpen = false;
                 }
             }
         }
@@ -1769,7 +1769,7 @@ namespace Dynamo.Nodes
 
         private void CreateAndAttachAnnotationPopup()
         {
-            groupContextMenuPopup = new Popup
+            GroupContextMenuPopup = new Popup
             {
                 Name = "AnnotationContextPopup",
                 Placement = PlacementMode.MousePoint,
@@ -1785,7 +1785,7 @@ namespace Dynamo.Nodes
                 Child = CreatePopupPanel()
             };
 
-            groupContextMenuPopup.Child = border;
+            GroupContextMenuPopup.Child = border;
         }
 
         private StackPanel CreatePopupPanel()
@@ -1872,7 +1872,7 @@ namespace Dynamo.Nodes
             {
                 if (flags.HasFlag(ShowHideFlags.Hide))
                 {
-                    groupContextMenuPopup.IsOpen = false;
+                    GroupContextMenuPopup.IsOpen = false;
                 }
             };
 
@@ -2145,7 +2145,7 @@ namespace Dynamo.Nodes
                         ViewModel.Background = (Color)ColorConverter.ConvertFromString("#" + groupStyle.HexColorString);
                     }
 
-                    groupContextMenuPopup.IsOpen = false;
+                    GroupContextMenuPopup.IsOpen = false;
                 };
 
                 stack.Children.Add(border);
@@ -2174,7 +2174,7 @@ namespace Dynamo.Nodes
                 border.MouseLeftButtonUp += (s, e) =>
                 {
                     onClick?.Invoke();
-                    groupContextMenuPopup.IsOpen = false;
+                    GroupContextMenuPopup.IsOpen = false;
                 };
 
                 border.MouseEnter += (s, e) => border.Background = _nodeContextMenuBackgroundHighlight;
