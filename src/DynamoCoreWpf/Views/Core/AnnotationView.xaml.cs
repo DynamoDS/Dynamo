@@ -670,7 +670,9 @@ namespace Dynamo.Nodes
                     Margin = new Thickness(3),
                     Cursor = Cursors.Hand
                 };
-                rect.MouseLeftButtonUp += (s, e) => OnNodeColorSelectionChanged(s, null);
+                //rect.MouseLeftButtonUp += (s, e) => OnNodeColorSelectionChanged(s, null);
+                rect.MouseLeftButtonUp += OnNodeColorRectangleClicked;
+
                 panel.Children.Add(rect);
             }
 
@@ -712,6 +714,8 @@ namespace Dynamo.Nodes
 
         private UIElement CreateGroupStyleSelector()
         {
+            ViewModel.ReloadGroupStyles();
+
             var stack = new StackPanel { Orientation = Orientation.Vertical };
 
             foreach (var groupStyle in ViewModel.GroupStyleList)
@@ -770,6 +774,22 @@ namespace Dynamo.Nodes
                 {
                     ViewModel.AnnotationModel.GroupStyleId = groupStyle.GroupStyleId;
                     ViewModel.GroupStyleId = groupStyle.GroupStyleId;
+
+                    // Apply background color
+                    if (!string.IsNullOrEmpty(groupStyle.HexColorString))
+                    {
+                        ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                            new DynCmd.UpdateModelValueCommand(
+                                Guid.Empty,
+                                ViewModel.AnnotationModel.GUID,
+                                "Background",
+                                "#" + groupStyle.HexColorString));
+
+                        ViewModel.Background = (Color)ColorConverter.ConvertFromString("#" + groupStyle.HexColorString);
+                    }
+
+                    // Optionally update font if your GroupStyleItem defines it
+
                     groupContextMenuPopup.IsOpen = false;
                 };
 
@@ -805,36 +825,94 @@ namespace Dynamo.Nodes
 
 
 
-        private void OnNodeColorSelectionChanged(object sender, SelectionChangedEventArgs e)
+        //private void OnNodeColorSelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    if (e.AddedItems == null || (e.AddedItems.Count <= 0))
+        //        return;
+
+        //    //store the old one
+        //    if (e.RemovedItems != null && e.RemovedItems.Count > 0)
+        //    {
+        //        var orectangle = e.AddedItems[0] as Rectangle;
+        //        if (orectangle != null)
+        //        {
+        //            var brush = orectangle.Fill as SolidColorBrush;
+        //            if (brush != null)
+        //            {
+        //                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+        //                 new DynCmd.UpdateModelValueCommand(
+        //                 System.Guid.Empty, ViewModel.AnnotationModel.GUID, "Background", brush.Color.ToString()));
+        //            }
+
+        //        }
+        //    }
+
+        //    var rectangle = e.AddedItems[0] as Rectangle;
+        //    if (rectangle != null)
+        //    {
+        //        var brush = rectangle.Fill as SolidColorBrush;
+        //        if (brush != null)
+        //            ViewModel.Background = brush.Color;
+        //    }
+        //}
+        private void OnNodeColorRectangleClicked(object sender, MouseButtonEventArgs e)
         {
-            if (e.AddedItems == null || (e.AddedItems.Count <= 0))
-                return;
-
-            //store the old one
-            if (e.RemovedItems != null && e.RemovedItems.Count > 0)
+            if (sender is Rectangle rectangle)
             {
-                var orectangle = e.AddedItems[0] as Rectangle;
-                if (orectangle != null)
+                if (rectangle.Fill is SolidColorBrush brush)
                 {
-                    var brush = orectangle.Fill as SolidColorBrush;
-                    if (brush != null)
-                    {
-                        ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                         new DynCmd.UpdateModelValueCommand(
-                         System.Guid.Empty, ViewModel.AnnotationModel.GUID, "Background", brush.Color.ToString()));
-                    }
+                    // Update the model background color
+                    ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                        new DynCmd.UpdateModelValueCommand(
+                            Guid.Empty,
+                            ViewModel.AnnotationModel.GUID,
+                            "Background",
+                            brush.Color.ToString()));
 
+                    // Also update the ViewModel color
+                    ViewModel.Background = brush.Color;
+
+                    groupContextMenuPopup.IsOpen = false;
                 }
             }
-
-            var rectangle = e.AddedItems[0] as Rectangle;
-            if (rectangle != null)
-            {
-                var brush = rectangle.Fill as SolidColorBrush;
-                if (brush != null)
-                    ViewModel.Background = brush.Color;
-            }
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         /// <summary>
         /// This function will clear the selection and then select only the annotation node to delete it for ungrouping.
         /// </summary>
@@ -2459,7 +2537,7 @@ namespace Dynamo.Nodes
                 ItemContainerStyle = _colorSelectorListBoxItemStyle,
                 Style = _colorSelectorListBoxStyle
             };
-            colorListBox.SelectionChanged += OnNodeColorSelectionChanged;
+            //colorListBox.SelectionChanged += OnNodeColorSelectionChanged;
 
             foreach (var color in new[]
             {
