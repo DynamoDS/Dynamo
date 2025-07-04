@@ -61,32 +61,10 @@ namespace Dynamo.Controls
             get { return inputGrid; }
         }
 
-        private Grid _inputGrid = null;
-
         //Todo add message to mark this as deprecated or ContentGrid?  Currently only one item references ContentGrid.  Most use inputGrid
-        public Grid inputGrid
-        {
-            get
-            {
-                if (_inputGrid == null)
-                {
-                    _inputGrid = new Grid()
-                    {
-                        Name = "inputGrid",
-                        MinHeight = Configuration.Configurations.PortHeightInPixels,
-                        VerticalAlignment = VerticalAlignment.Stretch,
-                        HorizontalAlignment = HorizontalAlignment.Stretch,
-                    };
 
-                    Canvas.SetZIndex(_inputGrid, 5);
-                    _inputGrid.SetBinding(Grid.IsEnabledProperty, new Binding("IsInteractionEnabled"));
-
-                    centralGrid.Children.Add(_inputGrid);
-                }
-
-                return _inputGrid;
-            }
-        }
+        [Obsolete("This method is deprecated and will be removed in a future version of Dynamo, use the ContentGrid")]
+        public Grid inputGrid = null;
 
         public NodeViewModel ViewModel
         {
@@ -157,7 +135,7 @@ namespace Dynamo.Controls
         internal Border customNodeBorder0; //for testing
         internal Grid zoomGlyphsGrid; //for testing
         internal Rectangle nodeColorOverlayZoomOut; //for testing
-
+        internal Grid centralGrid = null;
 
         //View items referenced outside of NodeView internal to DynamoCoreWPF previously from xaml but now loaded on demand.
         private Canvas _expansionBay;
@@ -186,64 +164,10 @@ namespace Dynamo.Controls
             }
         }
 
-        private Grid _centralGrid;
-        internal Grid centralGrid
-        {
-            get
-            {
-                if(_centralGrid == null)
-                {
-                    _centralGrid = new Grid()
-                    {
-                        Name = "centralGrid",
-                        Margin = new Thickness(6, 6, 6, 3),
-                        VerticalAlignment = VerticalAlignment.Top
-                    };
-
-                    _centralGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-                    _centralGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
-                    _centralGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
-                    Grid.SetRow(_centralGrid, 2);
-                    Grid.SetColumn(_centralGrid, 1);
-                    Canvas.SetZIndex(_centralGrid, 4);
-
-                    grid.Children.Add(_centralGrid);
-                }
-
-                return _centralGrid;
-            }
-        }
-
         //View items referenced outside of NodeView as previously from xaml outside of DynamoCoreWPF
         public ContextMenu MainContextMenu = new ContextMenu();
         public Grid grid;
-
-        private Grid _presentationGrid = null;
-        public Grid PresentationGrid
-        {
-            get
-            {
-                if(_presentationGrid == null)
-                {
-                    _presentationGrid = new Grid()
-                    {
-                        Name = "PresentationGrid",
-                        Margin = new Thickness(6, 6, 6, -3),
-                        HorizontalAlignment = HorizontalAlignment.Left,
-                        VerticalAlignment = VerticalAlignment.Bottom,
-                        Visibility = Visibility.Collapsed
-                    };
-
-                    Grid.SetRow(_presentationGrid, 2);
-                    Grid.SetColumn(_presentationGrid, 1);
-                    Canvas.SetZIndex(_presentationGrid, 3);
-
-                    grid.Children.Add(_presentationGrid);
-                }
-
-                return _presentationGrid;
-            }
-        }
+        public Grid PresentationGrid = null;
 
         //Static resources mostly from DynamoModern themes but some from DynamoColorsAndBrushes.xaml
 
@@ -1138,6 +1062,48 @@ namespace Dynamo.Controls
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
 
+
+            PresentationGrid = new Grid()
+            {
+                Name = "PresentationGrid",
+                Margin = new Thickness(6, 6, 6, -3),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Visibility = Visibility.Collapsed
+            };
+
+            Grid.SetRow(PresentationGrid, 2);
+            Grid.SetColumn(PresentationGrid, 1);
+            Canvas.SetZIndex(PresentationGrid, 3);
+
+            centralGrid = new Grid()
+            {
+                Name = "centralGrid",
+                Margin = new Thickness(6, 6, 6, 3),
+                VerticalAlignment = VerticalAlignment.Top
+            };
+
+            centralGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            centralGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
+            centralGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
+            Grid.SetRow(centralGrid, 2);
+            Grid.SetColumn(centralGrid, 1);
+            Canvas.SetZIndex(centralGrid, 4);
+
+            inputGrid = new Grid()
+            {
+                Name = "inputGrid",
+                MinHeight = Configuration.Configurations.PortHeightInPixels,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+            };
+
+            Canvas.SetZIndex(inputGrid, 5);
+            inputGrid.SetBinding(Grid.IsEnabledProperty, new Binding("IsInteractionEnabled"));
+
+            centralGrid.Children.Add(inputGrid);
+
+
             //TODO DebugAST Canvas.  Do we need this?
 
             grid.Children.Add(nodeBackground);
@@ -1154,6 +1120,8 @@ namespace Dynamo.Controls
             grid.Children.Add(zoomGlyphsGrid);
             grid.Children.Add(nodeHoveringStateBorder);
             grid.Children.Add(warningBar);
+            grid.Children.Add(PresentationGrid);
+            grid.Children.Add(centralGrid);
 
             this.Content = grid;
 
