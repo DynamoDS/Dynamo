@@ -29,6 +29,8 @@ using System.Text.Json;
 using System.Xml;
 using Symbol = Dynamo.Graph.Nodes.CustomNodes.Symbol;
 using System.Threading.Tasks;
+using Autodesk.DesignScript.Geometry;
+using System.Security.Policy;
 
 namespace Dynamo.Core
 {
@@ -183,10 +185,12 @@ namespace Dynamo.Core
             this.migrationManager = migrationManager;
             this.libraryServices = libraryServices;
 
-            // With the following code to use a user-specific cache path:
+            // Use a user-specific cache path
+            // On Linux, this usually resolves to ~/.local/share
+            // On Windows, this resolves to %APPDATA%
             string cacheDir = Environment.GetFolderPath(
-                Environment.OSVersion.Platform == PlatformID.Unix ? Environment.SpecialFolder.LocalApplicationData // On Linux, this usually resolves to ~/.local/share
-                    : Environment.SpecialFolder.ApplicationData      // On Windows, this resolves to %APPDATA%
+                Environment.OSVersion.Platform == PlatformID.Unix ? Environment.SpecialFolder.LocalApplicationData 
+                    : Environment.SpecialFolder.ApplicationData
             );
             string appSubDir = Path.Combine(cacheDir, "Dynamo", "Cache");
             Directory.CreateDirectory(appSubDir);
@@ -1568,7 +1572,6 @@ namespace Dynamo.Core
             InfoUpdated = null;
             loadedCustomNodes.ToList().ForEach(x => Uninitialize(x.Value.FunctionId));
             
-            // Dispose cache
             customNodeInfoCache?.Serialize();
         }
     }
