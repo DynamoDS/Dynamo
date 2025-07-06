@@ -2610,14 +2610,6 @@ Dynamo.ViewModels.NodeViewModel.X.get -> double
 Dynamo.ViewModels.NodeViewModel.X.set -> void
 Dynamo.ViewModels.NodeViewModel.Y.get -> double
 Dynamo.ViewModels.NodeViewModel.Y.set -> void
-Dynamo.ViewModels.NodeViewModel.Width.get -> double
-Dynamo.ViewModels.NodeViewModel.Width.set -> void
-Dynamo.ViewModels.NodeViewModel.Height.get -> double
-Dynamo.ViewModels.NodeViewModel.Height.set -> void
-Dynamo.ViewModels.NodeViewModel.WidthBorder.get -> double
-Dynamo.ViewModels.NodeViewModel.WidthBorder.set -> void
-Dynamo.ViewModels.NodeViewModel.HeightBorder.get -> double
-Dynamo.ViewModels.NodeViewModel.HeightBorder.set -> void
 Dynamo.ViewModels.NodeViewModel.ZIndex.get -> int
 Dynamo.ViewModels.NodeViewModel.ZIndex.set -> void
 Dynamo.ViewModels.NoteEventArgs
