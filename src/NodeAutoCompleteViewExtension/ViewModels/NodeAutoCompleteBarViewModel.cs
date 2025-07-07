@@ -307,6 +307,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
             NodeAutoCompleteUtilities.PostAutoLayoutNodes(node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, PortViewModel.PortType, null);
 
+            if (PortViewModel.PortType == PortType.Input)
+            {
+                node.NodeModel.MarkNodeAsModified();
+            }
+
             (node.WorkspaceViewModel.Model as HomeWorkspaceModel)?.MarkNodesAsModifiedAndRequestRun(transientNodes.Select(x => x.NodeModel));
 
             ToggleUndoRedoLocked(false);
@@ -903,7 +908,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     var portIndex = clusterResultItem.EntryNodeOutPort;
                     if (entryNode.OutPorts.Count > portIndex && !entryNode.OutPorts[portIndex].Connectors.Any())
                     {
+                        // Temporarily disable modification events (only necessary to add nodes to the input)
+                        var oldFlag = PortViewModel.NodeViewModel.NodeModel.RaisesModificationEvents;
+                        PortViewModel.NodeViewModel.NodeModel.RaisesModificationEvents = false;
                         entryConnector = ConnectorModel.Make(entryNode, PortViewModel.NodeViewModel.NodeModel, portIndex, PortViewModel.PortModel.Index);
+                        PortViewModel.NodeViewModel.NodeModel.RaisesModificationEvents = oldFlag;
                     }
                 }
                 if (entryConnector != null)
