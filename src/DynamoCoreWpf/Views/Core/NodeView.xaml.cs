@@ -493,6 +493,7 @@ namespace Dynamo.Controls
                 FontSize = 16,
                 FontWeight = FontWeights.Medium,
                 Foreground = _primaryCharcoal100,
+                Background = Brushes.Transparent,
                 SelectionBrush = _blue300,
                 SelectionOpacity = 0.2,
                 IsHitTestVisible = true,
