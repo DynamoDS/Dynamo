@@ -245,6 +245,17 @@ namespace DSOffice
 
                     currentRowIndex++;
                 }
+
+                // Force re-calculation of formulas on opening the Excel file
+                var workbook = document.WorkbookPart.Workbook;
+                var calcProps = workbook.Elements<CalculationProperties>().FirstOrDefault();
+                if (calcProps == null)
+                {
+                    calcProps = new CalculationProperties();
+                    workbook.AppendChild(calcProps);
+                }
+                calcProps.FullCalculationOnLoad = true;
+
                 return true;
             }
         }
