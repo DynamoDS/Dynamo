@@ -264,6 +264,7 @@ namespace Dynamo.Controls
 
         // Converters
         private static InverseBooleanToVisibilityCollapsedConverter _inverseBooleanToVisibilityCollapsedConverter = new InverseBooleanToVisibilityCollapsedConverter();
+        private static InverseBoolToVisibilityConverter _inverseBooleanToVisibilityConverter = new InverseBoolToVisibilityConverter();
         private static BoolToVisibilityCollapsedConverter _boolToVisibilityCollapsedConverter = new BoolToVisibilityCollapsedConverter();
         private static BoolToVisibilityConverter _booleanToVisibilityConverter = new BoolToVisibilityConverter();
         private static EmptyToVisibilityCollapsedConverter _emptyToVisibilityCollapsedConverter = new EmptyToVisibilityCollapsedConverter();
@@ -1163,6 +1164,12 @@ namespace Dynamo.Controls
 
             nodeBorder.SizeChanged += OnSizeChanged;
             DataContextChanged += OnDataContextChanged;
+
+            this.SetBinding(UserControl.VisibilityProperty, new Binding("IsHidden")
+            {
+                Converter = _inverseBooleanToVisibilityConverter,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
 
             Panel.SetZIndex(this, 1);
         }
