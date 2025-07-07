@@ -79,7 +79,7 @@ namespace Dynamo.Graph.Workspaces
             List<GraphLayout.Graph> layoutSubgraphs;
             List<List<GraphLayout.Node>> subgraphClusters;
 
-            GenerateCombinedGraph(workspace, isGroupLayout, out layoutSubgraphs, out subgraphClusters);
+            GenerateCombinedGraphAutolayout(workspace, out layoutSubgraphs, out subgraphClusters);
 
             var misplacedGuidSet = misplacedNodes.Select(x => x.GUID).ToHashSet();
             foreach (var node in layoutSubgraphs.First().Nodes)
@@ -327,6 +327,72 @@ namespace Dynamo.Graph.Workspaces
                 }
             }
 
+        }
+
+
+        /// <summary>
+        /// <param name="workspace">A <see cref="WorkspaceModel"/>.</param>
+        /// This method extracts all models from the workspace and puts them
+        /// into the combined graph object, LayoutSubgraphs.First().
+        /// Simplified version for autocomplete only (no grouping and no note attaching).
+        /// <param name="layoutSubgraphs"></param>
+        /// <param name="subgraphClusters"></param>
+        /// </summary>
+        private static void GenerateCombinedGraphAutolayout(this WorkspaceModel workspace,
+            out List<GraphLayout.Graph> layoutSubgraphs, out List<List<GraphLayout.Node>> subgraphClusters)
+        {
+            layoutSubgraphs = new List<GraphLayout.Graph>
+            {
+                new GraphLayout.Graph()
+            };
+            var combinedGraph = layoutSubgraphs.First();
+            subgraphClusters = new List<List<GraphLayout.Node>>();
+
+            foreach (NodeModel node in workspace.Nodes)
+            {
+                combinedGraph.AddNode(node.GUID, node.Width, node.Height, node.X, node.Y,
+                        node.IsSelected || DynamoSelection.Instance.Selection.Count == 0);
+            }
+
+            // Adding all connectorPins (belonging to all connectors) as graph.nodes to the combined graph.
+            foreach (ConnectorModel edge in workspace.Connectors)
+            {
+                foreach (var pin in edge.ConnectorPinModels)
+                {
+                    combinedGraph.AddNode(pin.GUID,
+                        pin.Width,
+                        pin.Height,
+                        pin.CenterX,
+                        pin.CenterY,
+                        pin.IsSelected || DynamoSelection.Instance.Selection.Count == 0);
+                }
+            }
+
+            foreach (ConnectorModel edge in workspace.Connectors)
+            {
+                AddConnectorEdgesIncludingPinEdges(combinedGraph, edge);
+            }
+
+            var sortedNotes = workspace.Notes.OrderBy(x => x.PinnedNode is null);
+            foreach (NoteModel note in sortedNotes)
+            {
+                // If the note is pinned to a node we dont want to
+                // modify its posistion as it is tied to the node.
+                if (note.PinnedNode != null)
+                {
+                    // We add this note to the LinkedNotes on the 
+                    // pinned node. 
+                    var graphNode = combinedGraph.FindNode(note.PinnedNode.GUID);
+                    if (graphNode is null) continue;
+                    var height = note.PinnedNode.Rect.Top - note.Rect.Top;
+                    graphNode.LinkNote(note, note.Width, height);
+                }
+            }
+
+            // Add all nodes to one big cluster
+            List<GraphLayout.Node> bigcluster = new List<GraphLayout.Node>();
+            bigcluster.AddRange(combinedGraph.Nodes);
+            subgraphClusters.Add(bigcluster);
         }
 
         /// <summary>
