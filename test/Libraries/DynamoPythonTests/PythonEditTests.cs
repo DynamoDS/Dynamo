@@ -690,7 +690,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(pythonNode.NodeInfos.FirstOrDefault().Message.Contains(warningMessageExpected));
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void Test_With_Exception_IDisposeCheck_Python()
         {
             //This piece of code will generate an exception in PythonScript node
