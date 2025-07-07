@@ -1570,6 +1570,9 @@ namespace Dynamo.Core
         {
             // Unsubscribe event handlers
             InfoUpdated = null;
+            CustomNodeRemoved = null;
+            DefinitionUpdated = null;
+
             loadedCustomNodes.ToList().ForEach(x => Uninitialize(x.Value.FunctionId));
             
             customNodeInfoCache?.Serialize();

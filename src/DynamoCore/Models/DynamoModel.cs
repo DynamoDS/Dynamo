@@ -1505,51 +1505,48 @@ namespace Dynamo.Models
             var customNodeSearchRegistry = new HashSet<Guid>();
             CustomNodeManager.InfoUpdated += info =>
             {
-                if (customNodeSearchRegistry.Contains(info.FunctionId))
+                //just bail in service mode.
+                if (IsServiceMode)
                 {
-                    var existingElement = SearchModel?.Entries.OfType<CustomNodeSearchElement>().FirstOrDefault(x =>
-                        String.Compare(x.Path, info.Path, StringComparison.OrdinalIgnoreCase) == 0 &&
-                        !String.IsNullOrEmpty(x.Path));
-
-                    if (existingElement != null)
-                    {
-                        existingElement.SyncWithCustomNodeInfo(info);
-                        bool isCategoryChanged = existingElement.FullCategoryName != info.Category;
-                        SearchModel.Update(existingElement, isCategoryChanged);
-                    }
+                    return;
                 }
-                else // Handle new custom node.
+
+                if (customNodeSearchRegistry.Contains(info.FunctionId)
+                        || !info.IsVisibleInDynamoLibrary)
                 {
-                    //just bail in service mode.
-                    if (IsServiceMode || !info.IsVisibleInDynamoLibrary)
-                    {
-                        return;
-                    }
-
-                    customNodeSearchRegistry.Add(info.FunctionId);
-                    var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
-                    SearchModel.Add(searchElement);
-
-                    //Indexing node packages installed using PackageManagerSearch
-                    var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
-                    LuceneUtility.AddNodeTypeToSearchIndex(searchElement, iDoc);
-
-                    CustomNodeManager.CustomNodeRemoved += id =>
-                    {
-                        if (info.FunctionId == id)
-                        {
-                            customNodeSearchRegistry.Remove(info.FunctionId);
-                            SearchModel.Remove(searchElement);
-                            var workspacesToRemove =
-                                _workspaces.FindAll(w =>
-                                {
-                                    var model = w as CustomNodeWorkspaceModel;
-                                    return model != null && model.CustomNodeId == id;
-                                });
-                            workspacesToRemove.ForEach(RemoveWorkspace);
-                        }
-                    };
+                    return;
                 }
+
+                customNodeSearchRegistry.Add(info.FunctionId);
+                var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
+                SearchModel.Add(searchElement);
+
+                //Indexing node packages installed using PackageManagerSearch
+                var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
+                LuceneUtility.AddNodeTypeToSearchIndex(searchElement, iDoc);
+
+                Action<CustomNodeInfo> infoUpdatedHandler = newInfo =>
+                {
+                    if (info.FunctionId == newInfo.FunctionId)
+                    {
+                        bool isCategoryChanged = searchElement.FullCategoryName != newInfo.Category;
+                        searchElement.SyncWithCustomNodeInfo(newInfo);
+                        SearchModel.Update(searchElement, isCategoryChanged);
+                    }
+                };
+                CustomNodeManager.InfoUpdated += infoUpdatedHandler;
+                CustomNodeManager.CustomNodeRemoved += id =>
+                {
+                    CustomNodeManager.InfoUpdated -= infoUpdatedHandler;
+                    if (info.FunctionId == id)
+                    {
+                        customNodeSearchRegistry.Remove(info.FunctionId);
+                        SearchModel.Remove(searchElement);
+                        var workspacesToRemove = _workspaces.FindAll(w => w is CustomNodeWorkspaceModel
+                            && (w as CustomNodeWorkspaceModel).CustomNodeId == id);
+                        workspacesToRemove.ForEach(w => RemoveWorkspace(w));
+                    }
+                };
             };
 
             CustomNodeManager.DefinitionUpdated += UpdateCustomNodeDefinition;
