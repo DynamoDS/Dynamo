@@ -278,7 +278,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expression at line {0}.
+        ///   Looks up a localized string similar to Value of expression at line {0}.
         /// </summary>
         public static string CodeBlockTempIdentifierOutputLabel {
             get {

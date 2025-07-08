@@ -1032,7 +1032,7 @@ namespace Dynamo.Graph.Nodes
                 if (i >= outputPortNames.Count) break;
 
                 var label = outputPortNames[i];
-                var tooltip = string.Format(Resources.CodeBlockTempIdentifierOutputLabel, def.Value) + " : " + outputPortTooltips[i];
+                var tooltip = IsTempIdentifier(def.Key) ? string.Format(Resources.CodeBlockTempIdentifierOutputLabel, def.Value) : def.Key;
 
                 // Trim long labels
                 int maxLength = Configurations.CBNMaxPortNameLength;

@@ -668,7 +668,7 @@ value : bool = false</value>
 Resolve or remove the unresolved nodes and try again.</value>
   </data>
   <data name="CodeBlockTempIdentifierOutputLabel" xml:space="preserve">
-    <value>Expression at line {0}</value>
+    <value>Value of expression at line {0}</value>
   </data>
   <data name="InvalidInputSymbolCustomNodeWarning" xml:space="preserve">
     <value>This custom node contains an invalid input. Please fix the input before saving the custom node.</value>
