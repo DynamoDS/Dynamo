@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -655,6 +654,7 @@ namespace Dynamo.Nodes
                 Background = _midGreyBrush,
                 Child = CreatePopupPanel()
             };
+            border.PreviewKeyDown += GroupContextMenu_KeyDown;
 
             GroupContextMenuPopup.Child = border;
             GroupContextMenuPopup.PlacementTarget = outerCanvas;
@@ -664,6 +664,7 @@ namespace Dynamo.Nodes
 
             GroupContextMenuPopup.IsOpen = true;
         }
+
         private void OnSearchViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName != nameof(SearchViewModel.SearchText)) return;
@@ -716,6 +717,16 @@ namespace Dynamo.Nodes
 
                     GroupContextMenuPopup.IsOpen = false;
                 }
+            }
+        }
+
+        private void GroupContextMenu_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.O && Keyboard.Modifiers == System.Windows.Input.ModifierKeys.None)
+            {
+                OnUngroupAnnotation(this, new RoutedEventArgs());
+                e.Handled = true;
+                GroupContextMenuPopup.IsOpen = false;
             }
         }
 
@@ -1896,7 +1907,7 @@ namespace Dynamo.Nodes
             };
 
             // Main label
-            var text = new TextBlock
+            var text = new AccessText
             {
                 Text = label,
                 FontSize = 13,
@@ -1931,6 +1942,14 @@ namespace Dynamo.Nodes
                     }
                 }
             }, isEnabled);
+
+            border.Focusable = true;
+            border.FocusVisualStyle = null;
+
+            border.MouseEnter += (s, e) =>
+            {
+                if (s is UIElement element) element.Focus();
+            };
 
             return border;
         }
