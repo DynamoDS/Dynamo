@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Cluster" xml:space="preserve">
-    <value>Cluster</value>
+    <value>Shluk</value>
   </data>
   <data name="ExtensionName" xml:space="preserve">
     <value>Automatické dokončování uzlů rozšíření pohledu</value>
   </data>
   <data name="NodeTypeMatch" xml:space="preserve">
-    <value>Shoda typů uzlů</value>
+    <value>Shoda typu uzlu</value>
   </data>
   <data name="Single" xml:space="preserve">
     <value>Jeden</value>

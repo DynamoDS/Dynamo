@@ -22,6 +22,7 @@ using Dynamo.UI.Controls;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using ModifierKeys = System.Windows.Input.ModifierKeys;
 using Dynamo.Views;
 using Dynamo.Wpf.Utilities;
 using DynCmd = Dynamo.Models.DynamoModel;
@@ -148,6 +149,7 @@ namespace Dynamo.Nodes
             Loaded += AnnotationView_Loaded;
             DataContextChanged += AnnotationView_DataContextChanged;
             this.groupTextBlock.SizeChanged += GroupTextBlock_SizeChanged;
+            PreviewMouseDoubleClick += OnAnnotationDoubleClick;
 
             // Because the size of the collapsedAnnotationRectangle doesn't necessarily change 
             // when going from Visible to collapse (and other way around), we need to also listen
