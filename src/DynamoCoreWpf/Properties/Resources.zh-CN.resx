@@ -401,6 +401,12 @@
   <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
     <value>下载警告</value>
   </data>
+  <data name="CopyToClipboardTooltip" xml:space="preserve">
+    <value>复制到剪贴板</value>
+  </data>
+  <data name="CopyToClipboardFailedMessage" xml:space="preserve">
+    <value>复制到剪贴板失败</value>
+  </data>
   <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
     <value>Dynamo 的更新可用，单击以安装。</value>
   </data>
@@ -3229,7 +3235,7 @@
     <value>置信度会显示在每个建议节点的旁边，表示该节点是理想选择的估计概率。启用后，该设置会隐藏不符合指定置信度的建议节点。可以单击“低置信度”标题以显示相应节点。</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Number of results for Recommended Nodes</value>
+    <value>建议的节点结果数</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>输入</value>
@@ -3791,6 +3797,18 @@
   </data>
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
     <value>此组已冻结。单击以取消冻结。</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
+    <value>启用新 UI</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
+    <value>启用新的浮动菜单以获取节点建议，以实现更简化的工作流。关闭可返回到传统的弹出对话框。</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
+    <value>转储节点图标数据(D)</value>
+  </data>
+  <data name="NodeIconDataIsDumped" xml:space="preserve">
+    <value>节点图标数据转储到“{0}”。</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

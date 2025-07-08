@@ -124,7 +124,7 @@
     <value>No se puede actualizar el conjunto</value>
   </data>
   <data name="DownloadPackageDisabled" xml:space="preserve">
-    <value>Package download is disabled in no-network mode.</value>
+    <value>La descarga de paquetes está desactivada en modo sin red.</value>
   </data>
   <data name="InvalidPackageFolderWarning" xml:space="preserve">
     <value>La carpeta '{0}' no existe</value>

@@ -1,4 +1,4 @@
-﻿using Dynamo.UI.Commands;
+using Dynamo.UI.Commands;
 
 namespace Dynamo.ViewModels
 {
@@ -13,6 +13,17 @@ namespace Dynamo.ViewModels
         private DelegateCommand openDocumentationLinkCommand;
         private DelegateCommand dismissMessageCommand;
         private DelegateCommand undismissMessageCommand;
+        private DelegateCommand copyTextToClipboardCommand;
+
+        public DelegateCommand CopyTextToClipboardCommand
+        {
+            get
+            {
+                if (copyTextToClipboardCommand == null)
+                    copyTextToClipboardCommand = new DelegateCommand(CopyTextToClipboard, CanCopyTextToClipboard);
+                return copyTextToClipboardCommand;
+            }
+        }
 
         public DelegateCommand UpdateContentCommand
         {

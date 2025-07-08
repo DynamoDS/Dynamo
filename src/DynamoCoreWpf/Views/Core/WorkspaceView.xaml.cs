@@ -901,6 +901,11 @@ namespace Dynamo.Views
                 GeoScalingPopup.IsOpen = false;
             
             if(PortContextMenu.IsOpen) DestroyPortContextMenu();
+
+            if (!ViewModel.IsPanning && e.MiddleButton == MouseButtonState.Pressed)
+            {
+                ViewModel.RequestTogglePanMode();
+            }
         }
 
         /// <summary>
@@ -937,6 +942,11 @@ namespace Dynamo.Views
                 // (not node, note, not buttons from viewControlPanel such as zoom, pan and so on)
                 ContextMenuPopup.IsOpen = true;
             }
+
+            if (ViewModel.IsPanning && e.MiddleButton == MouseButtonState.Released)
+            {
+                ViewModel.RequestTogglePanMode();
+            }
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)
@@ -959,22 +969,6 @@ namespace Dynamo.Views
                 }
                 else
                     ViewModel.CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
-            }
-
-            if (ViewModel.IsInIdleState)
-            {
-                // Find the dependency object directly under the mouse 
-                // cursor, then see if it represents a port. If it does,
-                // then determine its type, we would like to show the 
-                // "ArcRemoving" cursor when the mouse is over an out port.
-                Point mouse = e.GetPosition((UIElement)sender);
-                var dependencyObject = ElementUnderMouseCursor(mouse);
-                PortViewModel pvm = PortFromHitTestResult(dependencyObject);
-
-                if (null != pvm && (pvm.PortType == PortType.Input))
-                    this.Cursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
-                else
-                    this.Cursor = null;
             }
 
             // If selection is going to be dragged and ctrl is pressed.
@@ -1127,35 +1121,6 @@ namespace Dynamo.Views
         {
             workBench = sender as DragCanvas;
             workBench.owningWorkspace = this;
-        }
-
-        private PortViewModel PortFromHitTestResult(DependencyObject depObject)
-        {
-            Grid grid = depObject as Grid;
-            if (null != grid)
-                return grid.DataContext as PortViewModel;
-
-            return null;
-        }
-
-        private DependencyObject ElementUnderMouseCursor(Point mouseCursor)
-        {
-            hitResultsList.Clear();
-            VisualTreeHelper.HitTest(this, null, DirectHitTestCallback,
-                new PointHitTestParameters(mouseCursor));
-
-            return ((hitResultsList.Count > 0) ? hitResultsList[0] : null);
-        }
-
-        private HitTestResultBehavior DirectHitTestCallback(HitTestResult result)
-        {
-            if (null != result && (null != result.VisualHit))
-            {
-                hitResultsList.Add(result.VisualHit);
-                return HitTestResultBehavior.Stop;
-            }
-
-            return HitTestResultBehavior.Continue;
         }
 
         private void OnWorkspaceDrop(object sender, DragEventArgs e)

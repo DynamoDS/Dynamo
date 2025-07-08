@@ -124,7 +124,7 @@
     <value>Не удалось обновить сборку</value>
   </data>
   <data name="DownloadPackageDisabled" xml:space="preserve">
-    <value>Package download is disabled in no-network mode.</value>
+    <value>В режиме без подключения к сети скачивание пакетов отключено.</value>
   </data>
   <data name="InvalidPackageFolderWarning" xml:space="preserve">
     <value>Папка '{0}' не существует</value>

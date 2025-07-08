@@ -89,7 +89,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to All recommendations are below the specified confidence level. You can try them or adjust the confidence settings in Preferences..
+        ///   Looks up a localized string similar to No confident suggestions available. The model is continuously improving - check back soon.
         /// </summary>
         public static string AutocompleteLowConfidenceMessage {
             get {
