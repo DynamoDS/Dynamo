@@ -432,7 +432,7 @@ namespace Dynamo.Controls
 
             var runDescription = new Run();
             runDescription.SetBinding(Run.TextProperty, new Binding("Description") { Mode = BindingMode.OneWay });
-            textBlock4.Inlines.Add(runOriginalName);
+            textBlock4.Inlines.Add(runDescription);
 
             // Add TextBlocks to inner StackPanel
             tooltipStackPanel.Children.Add(textBlock1);
