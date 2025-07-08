@@ -658,10 +658,7 @@ namespace Dynamo.Nodes
 
             GroupContextMenuPopup.Child = border;
             GroupContextMenuPopup.PlacementTarget = outerCanvas;
-            GroupContextMenuPopup.Placement = PlacementMode.Absolute;
-            GroupContextMenuPopup.HorizontalOffset = mousePosInOuter.X;
-            GroupContextMenuPopup.VerticalOffset = mousePosInOuter.Y + 110;
-
+            GroupContextMenuPopup.Placement = PlacementMode.MousePoint;
             GroupContextMenuPopup.IsOpen = true;
         }
 
@@ -1995,47 +1992,22 @@ namespace Dynamo.Nodes
             layoutGrid.Children.Add(arrow);
 
             var border = WrapWithMenuBorder(layoutGrid);
-            bool isMouseOverItem = false;
-            bool isMouseOverPopup = false;
-
-            DispatcherTimer closeTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMilliseconds(200)
-            };
-
-            closeTimer.Tick += (s, e) =>
-            {
-                if (!isMouseOverItem && !isMouseOverPopup)
-                {
-                    popup.IsOpen = false;
-                    border.Background = Brushes.Transparent;
-                }
-                closeTimer.Stop();
-            };
 
             border.MouseEnter += (s, e) =>
             {
-                isMouseOverItem = true;
-                if (!popup.IsOpen)
-                {
-                    popup.Child = submenuContentFactory.Invoke();
-                    popup.PlacementTarget = border;
-                    popup.IsOpen = true;
-                }
+                popup.Child = submenuContentFactory.Invoke();
+                popup.PlacementTarget = border;
+                popup.IsOpen = true;
                 border.Background = _nodeContextMenuBackgroundHighlight;
             };
 
             border.MouseLeave += (s, e) =>
             {
-                isMouseOverItem = false;
-                closeTimer.Start();
-            };
-
-            popup.MouseEnter += (s, e) => isMouseOverPopup = true;
-            popup.MouseLeave += (s, e) =>
-            {
-                isMouseOverPopup = false;
-                closeTimer.Start();
+                if (!popup.IsMouseOver)
+                {
+                    popup.IsOpen = false;
+                    border.Background = Brushes.Transparent;
+                }
             };
 
             return new Grid { Children = { border, popup } };
