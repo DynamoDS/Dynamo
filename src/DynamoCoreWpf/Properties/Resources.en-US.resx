@@ -4176,4 +4176,7 @@ To make this file into a new template, save it to a different folder, then move 
     <value>Node Icon Data is dumped to \"{0}\".</value>
     <comment>Debug menu | Dump all node icons</comment>
   </data>
+  <data name="AutocompletePlaceholder" xml:space="preserve">
+    <value>Node autocomplete is always improving, no results have been found</value>
+  </data>
 </root>

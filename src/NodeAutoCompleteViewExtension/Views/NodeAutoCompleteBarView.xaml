@@ -167,7 +167,7 @@
                             TabIndex="0"
                         >
                             <ComboBox.Style>
-                                <Style BasedOn="{StaticResource PackageManagerSmallComboBox}" TargetType="ComboBox">
+                                <Style BasedOn="{StaticResource AutocompleteDropdown}" TargetType="ComboBox">
                                 </Style>
                             </ComboBox.Style>
                             <ComboBox.Tag>
