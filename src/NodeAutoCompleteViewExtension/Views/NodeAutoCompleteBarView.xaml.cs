@@ -66,6 +66,7 @@ namespace Dynamo.NodeAutoComplete.Views
             }), DispatcherPriority.ApplicationIdle);
         }
 
+<<<<<<< HEAD
         private void OwnerMoved(object sender, EventArgs e) => UpdatePosition();
 
         private void UpdatePosition()
@@ -81,6 +82,8 @@ namespace Dynamo.NodeAutoComplete.Views
             }
         }
 
+=======
+>>>>>>> e126d733ea (remove unused)
         // When triggered, they will result in the autocomplete bar window being destroyed.
         private void SubscribeToAppEvents()
         {
@@ -112,6 +115,7 @@ namespace Dynamo.NodeAutoComplete.Views
             ViewModel.dynamoViewModel.Model.WorkspaceRemoveStarted -= OnWorkspaceRemoved;
         }
 
+<<<<<<< HEAD
         void WorkspaceModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
@@ -124,6 +128,8 @@ namespace Dynamo.NodeAutoComplete.Views
             }
         }
 
+=======
+>>>>>>> e126d733ea (remove unused)
         //Hide the window and unsubscribe from model events.
         //Note that the window is not destroyed, it is just hidden so that it can be reused.
         internal void OnHideNodeAutoCompleteBar(bool delayTransientDeletion = false)
