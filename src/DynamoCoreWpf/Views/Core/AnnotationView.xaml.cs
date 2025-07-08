@@ -112,6 +112,8 @@ namespace Dynamo.Nodes
         private static readonly BitmapImage _menuWhiteImage = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/menu_white_48px.png"));
         private static readonly BitmapImage _menuHoverImage = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/menu_hover_48px.png"));
 
+        private EventHandler _groupContextMenuClosedHandler;
+
         public AnnotationViewModel ViewModel { get; private set; }
         public static DependencyProperty SelectAllTextOnFocus;
         static AnnotationView()
@@ -202,6 +204,8 @@ namespace Dynamo.Nodes
             DataContextChanged -= AnnotationView_DataContextChanged;
             ViewModel.WorkspaceViewModel.InCanvasSearchViewModel.PropertyChanged -= OnSearchViewModelPropertyChanged;
             ViewModel.WorkspaceViewModel.Nodes.CollectionChanged -= OnWorkspaceNodesChanged;
+            if (_groupContextMenuClosedHandler != null)
+                GroupContextMenuPopup.Closed -= _groupContextMenuClosedHandler;
 
             if (groupTextBlock != null)
                 groupTextBlock.SizeChanged -= GroupTextBlock_SizeChanged;
@@ -298,7 +302,8 @@ namespace Dynamo.Nodes
                 ViewModel.WorkspaceViewModel.Nodes.CollectionChanged += OnWorkspaceNodesChanged;
 
                 // Reset group context flag when popup closes
-                GroupContextMenuPopup.Closed += (_, __) => isSearchFromGroupContext = false;
+                _groupContextMenuClosedHandler = (s, e) => isSearchFromGroupContext = false;
+                GroupContextMenuPopup.Closed += _groupContextMenuClosedHandler;
             }
         }
 
@@ -1857,12 +1862,12 @@ namespace Dynamo.Nodes
             var fontSizeItem = CreateSubmenuItem(
                 Wpf.Properties.Resources.GroupContextMenuFont,
                 CreateFontSizeSelector);
-            var frontSizeWrapper = new Border()
+            var fontSizeWrapper = new Border()
             {
                 Margin = new Thickness(0, 0, 0, 10),
                 Child = fontSizeItem
             };
-            groupPopupPanel.Children.Add(frontSizeWrapper);
+            groupPopupPanel.Children.Add(fontSizeWrapper);
 
             return groupPopupPanel;
         }
