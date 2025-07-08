@@ -370,7 +370,9 @@ namespace DSOffice
                             {
                                 if (numberFormatId != 0)
                                 {
-                                    var numberingFormat = (NumberingFormat)stylesheet.NumberingFormats.ElementAt(numberFormatId);
+                                    var numberingFormat = (NumberingFormat)stylesheet.NumberingFormats?.ElementAt(numberFormatId);
+                                    if (numberingFormat == null) return value.ToString();
+
                                     var formatted = value.ToString(numberingFormat.FormatCode);
                                     return formatted;
                                 }
