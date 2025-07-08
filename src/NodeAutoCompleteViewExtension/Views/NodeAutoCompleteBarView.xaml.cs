@@ -35,14 +35,6 @@ namespace Dynamo.NodeAutoComplete.Views
             LoadAndPopulate();
         }
 
-        private void OnRefocusSearchbox()
-        {
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                AutoCompleteSearchBox.Focus();
-            }), DispatcherPriority.ApplicationIdle);
-        }
-
         private void SubscribeEvents()
         {
             if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
@@ -54,7 +46,6 @@ namespace Dynamo.NodeAutoComplete.Views
             }
             HomeWorkspaceModel.WorkspaceClosed += CloseAutoComplete;
             ViewModel.ParentNodeRemoved += OnParentNodeRemoved;
-            ViewModel.RefocusSearchBox += OnRefocusSearchbox;
         }
 
         private void UnsubscribeEvents(object sender, System.ComponentModel.CancelEventArgs e)
@@ -68,7 +59,6 @@ namespace Dynamo.NodeAutoComplete.Views
             }
             HomeWorkspaceModel.WorkspaceClosed -= CloseAutoComplete;
             ViewModel.ParentNodeRemoved -= OnParentNodeRemoved;
-            ViewModel.RefocusSearchBox -= OnRefocusSearchbox;
         }
 
         private void LoadAndPopulate()

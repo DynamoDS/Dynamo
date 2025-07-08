@@ -486,14 +486,15 @@
                                         Background="#535353"
                                         BorderBrush="{DynamicResource MidLightBlueBrush}"
                                         BorderThickness="0,6,0,0" />
-                                <ContentControl x:Name="SearchSlot"
-                                    Content="{TemplateBinding Tag}"
-                                    Visibility="{Binding Content, RelativeSource={RelativeSource Self}, Converter={StaticResource NullToVisibiltyConverter}}"
-                                    Margin="0,6,0,0"
-                                    VerticalAlignment="Top"/>
-                                <ScrollViewer Margin="0,36,0,0" SnapsToDevicePixels="True">
-                                    <StackPanel KeyboardNavigation.DirectionalNavigation="Contained"
-                                                IsItemsHost="True" />
+                                <ScrollViewer Margin="0,6,0,6" SnapsToDevicePixels="True">
+                                    <StackPanel KeyboardNavigation.DirectionalNavigation="Contained">
+                                        <ContentControl x:Name="SearchSlot"
+                                            Content="{TemplateBinding Tag}"
+                                            Visibility="{Binding Content, RelativeSource={RelativeSource Self}, Converter={StaticResource NullToVisibiltyConverter}}"
+                                        />
+
+                                        <StackPanel IsItemsHost="True" />
+                                    </StackPanel>
                                 </ScrollViewer>
                             </Grid>
                         </Popup>
