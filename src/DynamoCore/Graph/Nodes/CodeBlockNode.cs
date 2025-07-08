@@ -41,7 +41,8 @@ namespace Dynamo.Graph.Nodes
         private string code = string.Empty;
         private List<string> inputIdentifiers = new List<string>();
         private List<string> inputPortNames = new List<string>();
-        private Dictionary<string, string> outputPortNames = new Dictionary<string, string>();
+        private List<string> outputPortNames = new List<string>();
+        private List<string> outputPortTooltips = new List<string>();
         private string previewVariable;
         private readonly LibraryServices libraryServices;
 
@@ -170,7 +171,7 @@ namespace Dynamo.Graph.Nodes
             ShouldFocus = false;
             code = userCode;
 
-            ProcessCodeDirect(ProcessCode, isCodeBlockNodeFirstPass : true);
+            ProcessCodeDirect(ProcessCode, isCodeBlockNodeFirstPass: true);
         }
 
         /// <summary>
@@ -600,7 +601,7 @@ namespace Dynamo.Graph.Nodes
                 {
                     func = targetClass.ProcTable.GetPropertyGetterByName(funcName);
                 }
-                if(func != null) type = func.ReturnType;
+                if (func != null) type = func.ReturnType;
 
                 return type;
             }
@@ -784,6 +785,9 @@ namespace Dynamo.Graph.Nodes
             ParseParam = new ParseParam(GUID, code, resolver);
 
             codeStatements.Clear();
+            outputPortNames.Clear();
+            outputPortTooltips.Clear();
+
             try
             {
                 var priorNames = libraryServices.GetPriorNames();
@@ -798,7 +802,20 @@ namespace Dynamo.Graph.Nodes
                         {
                             // Create a statement variable from the generated nodes
                             codeStatements.Add(Statement.CreateInstance(parsedNode));
-                        }                        
+
+                            if (parsedNode is BinaryExpressionNode binExp)
+                            {
+                                var right = binExp.RightNode;
+                                var left = binExp.LeftNode;
+
+                                var portLabel = IsTempIdentifier(left.Name)
+                                    ? CodeBlockUtils.InferStaticTypeFromNode(right)
+                                    : left.Name;
+
+                                outputPortNames.Add(portLabel);
+                            }
+                        }
+                        outputPortTooltips = CodeBlockUtils.GetCleanedCodeExpressionsForTooltips(code);
                     }
                     else
                     {
@@ -806,7 +823,6 @@ namespace Dynamo.Graph.Nodes
                         OutPorts.Clear();
                         InPorts.Clear();
                         inputPortNames.Clear();
-                        outputPortNames.Clear();
                     }
                 }
 
@@ -857,22 +873,6 @@ namespace Dynamo.Graph.Nodes
                 {
                     inputIdentifiers.Clear();
                     inputPortNames.Clear();
-                }
-
-                // Collect output port labels and tooltips for assignment and expression statements.
-                outputPortNames.Clear();
-
-                foreach (var statement in codeStatements)
-                {
-                    var binExpr = statement.AstNode as BinaryExpressionNode;
-                    if (binExpr != null && binExpr.LeftNode != null)
-                    {
-                        var leftName = binExpr.LeftNode.Name;
-
-                        outputPortNames[leftName] = IsTempIdentifier(leftName) ?
-                            binExpr.RightNode.ToString() :
-                            leftName;
-                    }
                 }
 
                 // Set preview variable after gathering input identifiers. As a variable
@@ -990,12 +990,12 @@ namespace Dynamo.Graph.Nodes
             {
                 foreach (var outputPortIndex in outputPortIndexes)
                 {
-                  var tooltip = string.Format(Resources.CodeBlockTempIdentifierOutputLabel, outputPortIndex);
-                  OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
-                  {
-                    LineIndex = outputPortIndex, // Logical line index.
-                    Height = Configurations.CodeBlockOutputPortHeightInPixels
-                  }));
+                    var tooltip = string.Format(Resources.CodeBlockTempIdentifierOutputLabel, outputPortIndex);
+                    OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
+                    {
+                        LineIndex = outputPortIndex, // Logical line index.
+                        Height = Configurations.CodeBlockOutputPortHeightInPixels
+                    }));
                 }
             }
 
@@ -1025,22 +1025,29 @@ namespace Dynamo.Graph.Nodes
             // Clear out all the output port models
             OutPorts.RemoveAll((p) => true);
 
-            // Add an output port for each definition. If there is only one port, force it to the top (LineIndex = 0)
-            // regardless of code line, so it is not shifted by comments or empty lines.
-            int totalPorts = allDefs.Count();
+            int i = 0;
+
             foreach (var def in allDefs)
             {
-                string portLabel = outputPortNames.TryGetValue(def.Key, out var label) ? label : string.Empty;
-                int lineIndex = (totalPorts == 1) ? 0 : def.Value - 1;
-                var portHeight = ((totalPorts == 1) ? Configurations.PortHeightInPixels : Configurations.CodeBlockOutputPortHeightInPixels);
+                if (i >= outputPortNames.Count) break;
 
-                OutPorts.Add(new PortModel(PortType.Output, this, new PortData(portLabel, portLabel)
+                var label = outputPortNames[i];
+                var tooltip = string.Format(Resources.CodeBlockTempIdentifierOutputLabel, def.Value) + " : " + outputPortTooltips[i];
+
+                // Trim long labels
+                int maxLength = Configurations.CBNMaxPortNameLength;
+                if (label.Length > maxLength) label = label.Remove(maxLength - 3) + "...";
+
+                OutPorts.Add(new PortModel(PortType.Output, this, new PortData(label, tooltip)
                 {
-                    LineIndex = lineIndex,
-                    Height = portHeight,
+                    LineIndex = def.Value - 1, // Logical line index.
+                    Height = Configurations.CodeBlockOutputPortHeightInPixels,
                 }));
+
+                i++;
             }
         }
+
 
         /// <summary>
         ///     Deletes all the connections and saves their data (the start and end port)
@@ -1140,6 +1147,7 @@ namespace Dynamo.Graph.Nodes
                                 connector.GUID = oldConnector.GUID;
                             }
                         }
+                        outportConnections[varName] = null;
                     }
                 }
             }
@@ -1290,7 +1298,7 @@ namespace Dynamo.Graph.Nodes
             return string.Format("{0}_{1}", identifierName, AstIdentifierGuid);
         }
 
-        
+
 
         private class IdentifierInPlaceMapper : AstReplacer
         {
@@ -1517,7 +1525,7 @@ namespace Dynamo.Graph.Nodes
                 //Or node not completely implemented YET
             }
         }
-        
+
         /// <summary>
         /// Returns the names of the variables that have been declared in the statement
         /// </summary>
@@ -1572,7 +1580,7 @@ namespace Dynamo.Graph.Nodes
         {
             var lhs = leftNode as TypedIdentifierNode;
             if (lhs != null)
-                return new IdentifierNode((IdentifierNode) leftNode);
+                return new IdentifierNode((IdentifierNode)leftNode);
 
             var identiferNode = leftNode as IdentifierNode;
             if (identiferNode != null)
@@ -1729,7 +1737,7 @@ namespace Dynamo.Graph.Nodes
             Row = identNode.line;
             StartColumn = identNode.col;
         }
-        
+
         /// <summary>
         /// Moves column index back only if variable is not an expression.
         /// </summary>

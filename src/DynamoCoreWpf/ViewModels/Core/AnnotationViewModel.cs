@@ -32,8 +32,12 @@ namespace Dynamo.ViewModels
         private ObservableCollection<Dynamo.Configuration.StyleItem> groupStyleList;
         private IEnumerable<Configuration.StyleItem> preferencesStyleItemsList;
         private PreferenceSettings preferenceSettings;
-        // TODO: Investigate why collapsed group ports appear 0.655px taller than actual port height.
-        // This constant is currently used to visually align collapsed ports for CBNs with multiple outputs.
+
+        // Collapsed proxy ports for Code Block Nodes appear visually misaligned - 0.655px
+        // taller compared to their actual ports. This is due to the fixed height - 16.345px
+        // used inside CBNs for code lines, while proxy ports use 14px height + 3px top margin.
+        // To compensate for this visual mismatch and keep connector alignment consistent,
+        // we apply this adjusted proxy height.
         private const double CodeBlockCollapsedPortVisualHeight = 17;
 
         public readonly WorkspaceViewModel WorkspaceViewModel;
@@ -809,10 +813,9 @@ namespace Dynamo.ViewModels
                 case PortType.Input:
                     return new Point2D(Left, y);
                 case PortType.Output:
-                    if (portModel.Owner is CodeBlockNodeModel && portModel.Owner.OutPorts.Count > 1)
+                    if (portModel.Owner is CodeBlockNodeModel)
                     {
                         // Special case because code block outputs are smaller than regular outputs.
-                        // Applies only for code block nodes with more that one output.
                         return new Point2D(Left + Width, y - 7);
                     }
                     return new Point2D(Left + Width, y);
@@ -862,14 +865,7 @@ namespace Dynamo.ViewModels
                     newPortViewModels.Add(portViewModel);
                     // calculate new position for the proxy outports
                     group.Center = CalculatePortPosition(group, verticalPosition);
-                    if (group.Owner is CodeBlockNodeModel cbn && cbn.OutPorts.Count > 1)
-                    {
-                        verticalPosition += CodeBlockCollapsedPortVisualHeight;
-                    }
-                    else
-                    {
-                        verticalPosition += originalPort.Height;
-                    }
+                    verticalPosition += originalPort.Height;
                 }
             }
             return newPortViewModels;
@@ -903,14 +899,7 @@ namespace Dynamo.ViewModels
                 {
                     // calculate new position for the proxy outports.
                     model.Center = CalculatePortPosition(model, verticalPosition);
-                    if (model.Owner is CodeBlockNodeModel cbn && cbn.OutPorts.Count > 1)
-                    {
-                        verticalPosition += CodeBlockCollapsedPortVisualHeight;
-                    }
-                    else
-                    {
-                        verticalPosition += model.Height;
-                    }
+                    verticalPosition += model.Height;
                 }
             }
         }

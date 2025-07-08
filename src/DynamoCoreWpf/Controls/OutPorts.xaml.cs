@@ -300,18 +300,15 @@ namespace Dynamo.UI.Controls
             NodeAutoCompleteHover.MouseEnter += OnMouseEnterHover;
             NodeAutoCompleteHover.MouseLeave += OnMouseLeaveHover;
 
-            // Adjust the properties for the CodeBlock OutPort
-            if (viewModel.IsOnlyOutputPortInCodeBlock)
-            {
-                PortNameTextBox.MaxWidth = 135;
-                PortNameTextBox.TextTrimming = TextTrimming.CharacterEllipsis;
-            }
-            else if (viewModel.IsPortCondensed)
+            //Adjust the properties for the CodeBlock OutPort
+            if (viewModel.IsPortCondensed)
             {
                 MainGrid.Height = 14;
                 MainGrid.Margin = new Thickness(0, 3, 0, 0);
-                PortBackgroundBorder.CornerRadius = new CornerRadius(5, 0, 0, 5);
+
+                PortBackgroundBorder.CornerRadius = new CornerRadius(4, 0, 0, 4);
                 PortBackgroundBorder.Height = 13;
+
                 PortNameGrid.Height = 14;
                 PortNameGrid.Margin = new Thickness(0, 2, 2, 0);
                 PortNameTextBox.Margin = new Thickness(9, 0, 0, 1);

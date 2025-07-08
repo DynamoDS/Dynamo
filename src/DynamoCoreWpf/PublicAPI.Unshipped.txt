@@ -2783,7 +2783,6 @@ Dynamo.ViewModels.PortViewModel.Highlight.set -> void
 Dynamo.ViewModels.PortViewModel.IsConnected.get -> bool
 Dynamo.ViewModels.PortViewModel.IsEnabled.get -> bool
 Dynamo.ViewModels.PortViewModel.IsHitTestVisible.get -> bool
-Dynamo.ViewModels.PortViewModel.IsOnlyOutputPortInCodeBlock.get -> bool
 Dynamo.ViewModels.PortViewModel.IsPortCondensed.get -> bool
 Dynamo.ViewModels.PortViewModel.IsSelected.get -> bool
 Dynamo.ViewModels.PortViewModel.MarginThickness.get -> System.Windows.Thickness
