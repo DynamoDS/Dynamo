@@ -109,8 +109,11 @@ namespace DynamoCoreWpfTests
                 .OfType<Border>()
                 .FirstOrDefault(child =>
                 (child.Child as Panel)?.Children
-                .OfType<TextBlock>()
-                .Any(tb => tb.Text.Contains("Ungroup")) == true);
+                .OfType<AccessText>()
+                .Any(t => t.Text.Equals("Ungr_oup")) == true);
+
+            // Ensure the 'Ungroup' menu item exists before simulating the click
+            Assert.IsNotNull(ungrp, "The Ungroup element was not found in the context menu.");
 
             ungrp.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
             {
