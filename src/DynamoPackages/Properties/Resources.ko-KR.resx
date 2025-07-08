@@ -124,7 +124,7 @@
     <value>조합을 업데이트할 수 없음</value>
   </data>
   <data name="DownloadPackageDisabled" xml:space="preserve">
-    <value>Package download is disabled in no-network mode.</value>
+    <value>네트워크 연결 안 됨 모드에서는 패키지 다운로드가 비활성화됩니다.</value>
   </data>
   <data name="InvalidPackageFolderWarning" xml:space="preserve">
     <value>'{0}' 폴더가 존재하지 않습니다.</value>

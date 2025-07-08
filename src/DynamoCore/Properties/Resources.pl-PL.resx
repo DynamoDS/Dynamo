@@ -858,7 +858,7 @@ Ten pakiet prawdopodobnie zawiera zablokowany zespół. Po odblokowaniu zespołu
     <value>Nie ma jeszcze żadnych zaleceń. Możesz spróbować przełączyć na autouzupełnianie zgodnego typu węzła.</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
-    <value>No confident suggestions available. The model is continuously improving - check back soon.</value>
+    <value>Brak solidnych sugestii. Model jest stale udoskonalany — sprawdź ponownie wkrótce.</value>
   </data>
   <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
     <value>Pokaż zalecenia wypadające poniżej poziomu pewności.</value>
@@ -897,6 +897,6 @@ Ten pakiet prawdopodobnie zawiera zablokowany zespół. Po odblokowaniu zespołu
     <value>Ten węzeł jest obecnie eksperymentalny. Jego zachowanie, nazwa i podpis mogą ulec zmianie.</value>
   </data>
   <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
-    <value>Click on the sparkle icon next to the port to activate Node Autocomplete.</value>
+    <value>Kliknij ikonę błysku obok portu, aby aktywować autouzupełnianie węzłów.</value>
   </data>
 </root>

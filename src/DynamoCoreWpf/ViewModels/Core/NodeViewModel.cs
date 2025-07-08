@@ -729,57 +729,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
-        ///     Returns or set the Width of the NodeView.
-        /// </summary>
-        [JsonProperty(Order = 9)]
-        public double Width
-        {
-            get { return NodeModel.Width; }
-            set
-            {
-                NodeModel.Width = value;
-            }
-        }
-
-        /// <summary>
-        ///     Returns or set the Height of the NodeView.
-        /// </summary>
-        [JsonProperty(Order = 10)]
-        public double Height
-        {
-            get { return NodeModel.Height; }
-            set
-            {
-                NodeModel.Height = value;
-            }
-        }
-        /// <summary>
-        ///     Returns or set the Width of the Node's border that is added inside the NodeView.
-        /// </summary>
-        [JsonProperty(Order = 11)]
-        public double WidthBorder
-        {
-            get { return NodeModel.WidthBorder; }
-            set
-            {
-                NodeModel.WidthBorder = value;
-            }
-        }
-
-        /// <summary>
-        ///     Returns or set the Height of the Node's border that is added inside the NodeView.
-        /// </summary>
-        [JsonProperty(Order = 12)]
-        public double HeightBorder
-        {
-            get { return NodeModel.HeightBorder; }
-            set
-            {
-                NodeModel.HeightBorder = value;
-            }
-        }
-
         [JsonIgnore]
         public ImageSource ImageSource
         {
