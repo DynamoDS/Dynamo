@@ -97,7 +97,7 @@ namespace Dynamo.ViewModels
                 return this.PortModel.Owner is CodeBlockNodeModel && PortType == PortType.Output;
             }
         }
-        
+
         /// <summary>
         /// If port is enabled.
         /// </summary>

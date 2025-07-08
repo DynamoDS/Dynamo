@@ -171,7 +171,7 @@ namespace Dynamo.Graph.Nodes
             ShouldFocus = false;
             code = userCode;
 
-            ProcessCodeDirect(ProcessCode, isCodeBlockNodeFirstPass: true);
+            ProcessCodeDirect(ProcessCode, isCodeBlockNodeFirstPass : true);
         }
 
         /// <summary>
@@ -601,7 +601,7 @@ namespace Dynamo.Graph.Nodes
                 {
                     func = targetClass.ProcTable.GetPropertyGetterByName(funcName);
                 }
-                if (func != null) type = func.ReturnType;
+                if(func != null) type = func.ReturnType;
 
                 return type;
             }
@@ -990,12 +990,12 @@ namespace Dynamo.Graph.Nodes
             {
                 foreach (var outputPortIndex in outputPortIndexes)
                 {
-                    var tooltip = string.Format(Resources.CodeBlockTempIdentifierOutputLabel, outputPortIndex);
-                    OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
-                    {
-                        LineIndex = outputPortIndex, // Logical line index.
-                        Height = Configurations.CodeBlockOutputPortHeightInPixels
-                    }));
+                  var tooltip = string.Format(Resources.CodeBlockTempIdentifierOutputLabel, outputPortIndex);
+                  OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
+                  {
+                    LineIndex = outputPortIndex, // Logical line index.
+                    Height = Configurations.CodeBlockOutputPortHeightInPixels
+                  }));
                 }
             }
 
@@ -1580,7 +1580,7 @@ namespace Dynamo.Graph.Nodes
         {
             var lhs = leftNode as TypedIdentifierNode;
             if (lhs != null)
-                return new IdentifierNode((IdentifierNode)leftNode);
+                return new IdentifierNode((IdentifierNode) leftNode);
 
             var identiferNode = leftNode as IdentifierNode;
             if (identiferNode != null)

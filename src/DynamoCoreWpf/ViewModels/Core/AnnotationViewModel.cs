@@ -868,6 +868,7 @@ namespace Dynamo.ViewModels
                     verticalPosition += originalPort.Height;
                 }
             }
+
             return newPortViewModels;
         }
 

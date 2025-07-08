@@ -1652,7 +1652,7 @@ namespace Dynamo.Controls
             }
 
             //Add the adjusted Style for CodeBlockNodeModel to add overrides for Measure / Layout
-            if (ViewModel.NodeModel is CodeBlockNodeModel)
+            if(ViewModel.NodeModel is CodeBlockNodeModel)
             {
                 outputPortControl.Margin = new Thickness(0, 12, -24, 0);
                 outputPortControl.Style = _codeBlockNodeItemControlStyle;
