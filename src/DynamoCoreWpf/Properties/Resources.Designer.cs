@@ -169,7 +169,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Node autocomplete is always improving, no results have been found.
+        ///   Looks up a localized string similar to No suggestions available.
+        /// </summary>
+        public static string AutocompleteNoSuggestions {
+            get {
+                return ResourceManager.GetString("AutocompleteNoSuggestions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The model is continuously improving - check back soon.
         /// </summary>
         public static string AutocompletePlaceholder {
             get {

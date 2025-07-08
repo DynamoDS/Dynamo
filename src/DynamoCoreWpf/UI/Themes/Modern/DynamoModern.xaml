@@ -546,6 +546,13 @@
                                           ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                                           ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
                                           IsHitTestVisible="False" />
+                        <TextBlock x:Name="BoxPlaceholder"
+                                 Text="{x:Static p:Resources.AutocompleteNoSuggestions}"
+                                 Foreground="LightGray"
+                                 VerticalAlignment="Center"
+                                 FontSize="12"
+                                 Margin="6,0,0,0"
+                                 Visibility="Collapsed"/>
                         <TextBox x:Name="PART_EditableTextBox"
                                  Margin="3,3,23,3"
                                  Padding="10"
@@ -579,6 +586,7 @@
                                     Margin="0,6,0,0"
                                     VerticalAlignment="Top"/>
                                 <TextBlock x:Name="NoItemsPlaceholder"
+                                           FontSize="12"
                                            Text="{x:Static p:Resources.AutocompletePlaceholder}"
                                            Foreground="LightGray"
                                            HorizontalAlignment="Center"
@@ -601,11 +609,15 @@
                             <Setter Property="ScrollViewer.Visibility" Value="Collapsed" />
                             <Setter TargetName="NoItemsPlaceholder" Property="Visibility" Value="Visible" />
                             <Setter TargetName="SearchSlot" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="BoxPlaceholder" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="ContentSite" Property="Visibility" Value="Collapsed"/>
                         </Trigger>
                         <Trigger Property="HasItems" Value="true">
                             <Setter Property="ScrollViewer.Visibility" Value="Visible" />
                             <Setter TargetName="NoItemsPlaceholder" Property="Visibility" Value="Collapsed" />
                             <Setter TargetName="SearchSlot" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="BoxPlaceholder" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="ContentSite" Property="Visibility" Value="Visible"/>
                         </Trigger>
                         <Trigger Property="IsGrouping" Value="true">
                             <Setter Property="ScrollViewer.CanContentScroll" Value="false" />
