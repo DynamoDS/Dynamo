@@ -458,10 +458,6 @@ namespace Dynamo.Models
                 activeStartPorts[i] = connector.End;
             }
             CurrentWorkspace.SaveAndDeleteModels(selectedConnectors.ToList<ModelBase>());
-            for (int i = 0; i < numOfConnectors; i++) //delete the connectors
-            {
-                selectedConnectors[i].Delete();
-            }
             return;
         }
 
