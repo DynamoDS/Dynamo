@@ -344,6 +344,10 @@ namespace Dynamo.NodeAutoComplete.Services
                 return new List<SingleResultItem>();
             
             var singleResultItem = new SingleResultItem(predictedNode, matchingPortModel.Index);
+            if(string.IsNullOrEmpty(singleResultItem.CreationName))
+            {
+                return new List<SingleResultItem>();
+            }
             return new List<SingleResultItem> { singleResultItem };
         }
     }
