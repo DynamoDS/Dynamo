@@ -1490,6 +1490,26 @@ namespace Dynamo.Controls
         }
     }
 
+    public class ConditionalPackageTextConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values.Length == 2 && values[0] is bool isCustomFunction && values[1] is string packageName)
+            {
+                if (isCustomFunction && !string.IsNullOrEmpty(packageName))
+                {
+                    return "\x0a" + Dynamo.Wpf.Properties.Resources.NodeTooltipPackage + packageName;
+                }
+            }
+            return string.Empty;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     /// <summary>
     /// Evaluates if the value is null and converts it to Visible or Collapsed state
     /// </summary>
