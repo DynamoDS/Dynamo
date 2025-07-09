@@ -88,9 +88,9 @@ namespace Dynamo.Configuration
         internal const int DefaultMaxNumRecentFiles = 10;
 
         /// <summary>
-        /// The default time interval between backup files. 1 minute.
+        /// The default time interval between backup files. 5 minute.
         /// </summary>
-        internal const int DefaultBackupInterval = 60000;
+        internal const int DefaultBackupInterval = 300000;
 
         /// <summary>
         /// Indicates the default render precision, i.e. the maximum number of tessellation divisions
@@ -1108,6 +1108,13 @@ namespace Dynamo.Configuration
                         {
                             namespaces[index] = "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.PanelSurface";
                         }
+                    }
+
+                    // If the backup interval is set to 60000ms (1 minute) - old backup interval, reset it to the new default value.
+                    var savedBackUpInterval = settings?.BackupInterval;
+                    if (savedBackUpInterval == 60000)
+                    {
+                        settings.BackupInterval = DefaultBackupInterval;
                     }
 
                     fs.Close(); // Release file lock
