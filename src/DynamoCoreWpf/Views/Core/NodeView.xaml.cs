@@ -61,32 +61,10 @@ namespace Dynamo.Controls
             get { return inputGrid; }
         }
 
-        private Grid _inputGrid = null;
-
         //Todo add message to mark this as deprecated or ContentGrid?  Currently only one item references ContentGrid.  Most use inputGrid
-        public Grid inputGrid
-        {
-            get
-            {
-                if (_inputGrid == null)
-                {
-                    _inputGrid = new Grid()
-                    {
-                        Name = "inputGrid",
-                        MinHeight = Configuration.Configurations.PortHeightInPixels,
-                        VerticalAlignment = VerticalAlignment.Stretch,
-                        HorizontalAlignment = HorizontalAlignment.Stretch,
-                    };
 
-                    Canvas.SetZIndex(_inputGrid, 5);
-                    _inputGrid.SetBinding(Grid.IsEnabledProperty, new Binding("IsInteractionEnabled"));
-
-                    centralGrid.Children.Add(_inputGrid);
-                }
-
-                return _inputGrid;
-            }
-        }
+        [Obsolete("This method is deprecated and will be removed in a future version of Dynamo, use the ContentGrid")]
+        public Grid inputGrid = null;
 
         public NodeViewModel ViewModel
         {
@@ -157,7 +135,7 @@ namespace Dynamo.Controls
         internal Border customNodeBorder0; //for testing
         internal Grid zoomGlyphsGrid; //for testing
         internal Rectangle nodeColorOverlayZoomOut; //for testing
-
+        internal Grid centralGrid = null;
 
         //View items referenced outside of NodeView internal to DynamoCoreWPF previously from xaml but now loaded on demand.
         private Canvas _expansionBay;
@@ -186,69 +164,16 @@ namespace Dynamo.Controls
             }
         }
 
-        private Grid _centralGrid;
-        internal Grid centralGrid
-        {
-            get
-            {
-                if(_centralGrid == null)
-                {
-                    _centralGrid = new Grid()
-                    {
-                        Name = "centralGrid",
-                        Margin = new Thickness(6, 6, 6, 3),
-                        VerticalAlignment = VerticalAlignment.Top
-                    };
-
-                    _centralGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-                    _centralGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
-                    _centralGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
-                    Grid.SetRow(_centralGrid, 2);
-                    Grid.SetColumn(_centralGrid, 1);
-                    Canvas.SetZIndex(_centralGrid, 4);
-
-                    grid.Children.Add(_centralGrid);
-                }
-
-                return _centralGrid;
-            }
-        }
-
         //View items referenced outside of NodeView as previously from xaml outside of DynamoCoreWPF
         public ContextMenu MainContextMenu = new ContextMenu();
         public Grid grid;
-
-        private Grid _presentationGrid = null;
-        public Grid PresentationGrid
-        {
-            get
-            {
-                if(_presentationGrid == null)
-                {
-                    _presentationGrid = new Grid()
-                    {
-                        Name = "PresentationGrid",
-                        Margin = new Thickness(6, 6, 6, -3),
-                        HorizontalAlignment = HorizontalAlignment.Left,
-                        VerticalAlignment = VerticalAlignment.Bottom,
-                        Visibility = Visibility.Collapsed
-                    };
-
-                    Grid.SetRow(_presentationGrid, 2);
-                    Grid.SetColumn(_presentationGrid, 1);
-                    Canvas.SetZIndex(_presentationGrid, 3);
-
-                    grid.Children.Add(_presentationGrid);
-                }
-
-                return _presentationGrid;
-            }
-        }
+        public Grid PresentationGrid = null;
 
         //Static resources mostly from DynamoModern themes but some from DynamoColorsAndBrushes.xaml
 
         //Brushes
         private static SolidColorBrush _primaryCharcoal100 = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PrimaryCharcoal100Brush"] as SolidColorBrush;
+        private static SolidColorBrush _primaryCharcoal200 = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PrimaryCharcoal200Brush"] as SolidColorBrush;
         private static SolidColorBrush _blue300 = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["Blue300Brush"] as SolidColorBrush;
         private static SolidColorBrush _darkBlue200 = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["DarkBlue200Brush"] as SolidColorBrush;
         private static SolidColorBrush _nodeDismissedWarningsGlyphForeground = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeDismissedWarningsGlyphForeground"] as SolidColorBrush;
@@ -264,10 +189,12 @@ namespace Dynamo.Controls
 
         // Converters
         private static InverseBooleanToVisibilityCollapsedConverter _inverseBooleanToVisibilityCollapsedConverter = new InverseBooleanToVisibilityCollapsedConverter();
+        private static InverseBoolToVisibilityConverter _inverseBooleanToVisibilityConverter = new InverseBoolToVisibilityConverter();
         private static BoolToVisibilityCollapsedConverter _boolToVisibilityCollapsedConverter = new BoolToVisibilityCollapsedConverter();
         private static BoolToVisibilityConverter _booleanToVisibilityConverter = new BoolToVisibilityConverter();
         private static EmptyToVisibilityCollapsedConverter _emptyToVisibilityCollapsedConverter = new EmptyToVisibilityCollapsedConverter();
         private static ZoomToVisibilityCollapsedConverter _zoomToVisibilityCollapsedConverter = new ZoomToVisibilityCollapsedConverter();
+        private static ConditionalPackageTextConverter _conditionalPackageTextConverter = new ConditionalPackageTextConverter();
 
         // Font
         private static FontFamily _artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
@@ -306,6 +233,7 @@ namespace Dynamo.Controls
             _nodeButtonDots.Freeze();
             _defaultNodeIcon.Freeze();
             _primaryCharcoal100.Freeze();
+            _primaryCharcoal200.Freeze();
             _blue300.Freeze();
             _nodeDismissedWarningsGlyphBackground.Freeze();
             _nodeDismissedWarningsGlyphForeground.Freeze();
@@ -379,69 +307,44 @@ namespace Dynamo.Controls
                 Style = DynamoToolTipTopStyle
             };
 
-            // Create outer StackPanel
-            StackPanel tooltipStackPanel = new StackPanel
+            // Create consolidated TextBlock for tooltip
+            TextBlock consolidatedTooltipTextBlock = new TextBlock
             {
                 MaxWidth = 320,
                 Margin = new Thickness(10),
-                Orientation = Orientation.Vertical
-            };
-
-            // Create TextBlocks
-            // TODO Maybe bound the whole text on the model with a string constructor vs this set of inline constructors
-            // That would remove the stackPanel also
-            TextBlock textBlock1 = new TextBlock
-            {
                 FontFamily = _artifactElementReg,
                 FontWeight = FontWeights.Medium,
                 TextWrapping = TextWrapping.Wrap
             };
 
-            textBlock1.Inlines.Add(new Run { Text = Dynamo.Wpf.Properties.Resources.NodeTooltipOriginalName });
+            // Build the tooltip text using individual runs
+            consolidatedTooltipTextBlock.Inlines.Add(new Run { Text = Dynamo.Wpf.Properties.Resources.NodeTooltipOriginalName });
 
             var runOriginalName = new Run();
             runOriginalName.SetBinding(Run.TextProperty, new Binding("OriginalName") { Mode = BindingMode.OneWay });
-            textBlock1.Inlines.Add(runOriginalName);
+            consolidatedTooltipTextBlock.Inlines.Add(runOriginalName);
 
-            TextBlock textBlock2 = new TextBlock
-            {
-                FontFamily = _artifactElementReg,
-                FontWeight = FontWeights.Light,
-                TextWrapping = TextWrapping.Wrap
-            };
+            // Add conditional package section using a MultiBinding
+            var runPackageSection = new Run { FontWeight = FontWeights.Light };
+            var packageMultiBinding = new MultiBinding();
+            packageMultiBinding.Bindings.Add(new Binding("IsCustomFunction") { Mode = BindingMode.OneWay });
+            packageMultiBinding.Bindings.Add(new Binding("PackageName") { Mode = BindingMode.OneWay });
+            packageMultiBinding.Converter = _conditionalPackageTextConverter;
+            runPackageSection.SetBinding(Run.TextProperty, packageMultiBinding);
+            consolidatedTooltipTextBlock.Inlines.Add(runPackageSection);
 
-            textBlock2.SetBinding(UIElement.VisibilityProperty, new Binding("IsCustomFunction") { Converter = _boolToVisibilityCollapsedConverter });
-            textBlock2.Inlines.Add(new Run { Text = Dynamo.Wpf.Properties.Resources.NodeTooltipOriginalName });
+            // Add line break before description
+            consolidatedTooltipTextBlock.Inlines.Add(new Run { Text = "\x0a\x0a" });
 
-            var runPackageName = new Run();
-            runPackageName.SetBinding(Run.TextProperty, new Binding("PackageName") { Mode = BindingMode.OneWay });
-            textBlock2.Inlines.Add(runPackageName);
-
-            TextBlock textBlock3 = new TextBlock
-            {
-                Text = "\x0a"
-            };
-
-            TextBlock textBlock4 = new TextBlock
-            {
-                FontFamily = _artifactElementReg,
-                FontWeight = FontWeights.Medium,
-                TextWrapping = TextWrapping.Wrap
-            };
-            textBlock4.Inlines.Add(new Run { Text = Dynamo.Wpf.Properties.Resources.NodeTooltipDescription });
+            // Add "Description:" text and bound Description
+            consolidatedTooltipTextBlock.Inlines.Add(new Run { Text = Dynamo.Wpf.Properties.Resources.NodeTooltipDescription });
 
             var runDescription = new Run();
             runDescription.SetBinding(Run.TextProperty, new Binding("Description") { Mode = BindingMode.OneWay });
-            textBlock4.Inlines.Add(runOriginalName);
+            consolidatedTooltipTextBlock.Inlines.Add(runDescription);
 
-            // Add TextBlocks to inner StackPanel
-            tooltipStackPanel.Children.Add(textBlock1);
-            tooltipStackPanel.Children.Add(textBlock2);
-            tooltipStackPanel.Children.Add(textBlock3);
-            tooltipStackPanel.Children.Add(textBlock4);
-
-            // Set Grid as content of DynamoToolTip
-            dynamoToolTip.Content = tooltipStackPanel;
+            // Set consolidated TextBlock as content of DynamoToolTip
+            dynamoToolTip.Content = consolidatedTooltipTextBlock;
             nameBackground.ToolTip = dynamoToolTip;
 
             var nodeHeaderContent = new DockPanel()
@@ -471,7 +374,8 @@ namespace Dynamo.Controls
                 VerticalAlignment = VerticalAlignment.Center,
                 FontSize = 16,
                 FontWeight = FontWeights.Medium,
-                Foreground = _primaryCharcoal100,
+                Foreground = _primaryCharcoal200,
+                Background = null,
                 IsHitTestVisible = false,
                 TextAlignment = TextAlignment.Center,
                 FontFamily = _artifactElementReg,
@@ -492,14 +396,15 @@ namespace Dynamo.Controls
                 VerticalAlignment = VerticalAlignment.Center,
                 FontSize = 16,
                 FontWeight = FontWeights.Medium,
-                Foreground = _primaryCharcoal100,
+                Foreground = _primaryCharcoal200,
                 SelectionBrush = _blue300,
                 SelectionOpacity = 0.2,
                 IsHitTestVisible = true,
                 BorderThickness = new Thickness(0),
                 TextAlignment = TextAlignment.Center,
                 Visibility = Visibility.Collapsed,
-                FontFamily = _artifactElementReg
+                FontFamily = _artifactElementReg,
+                Background = null
             };
 
             EditableNameBox.LostFocus += EditableNameBox_OnLostFocus;
@@ -1138,6 +1043,48 @@ namespace Dynamo.Controls
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
 
+
+            PresentationGrid = new Grid()
+            {
+                Name = "PresentationGrid",
+                Margin = new Thickness(6, 6, 6, -3),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Visibility = Visibility.Collapsed
+            };
+
+            Grid.SetRow(PresentationGrid, 2);
+            Grid.SetColumn(PresentationGrid, 1);
+            Canvas.SetZIndex(PresentationGrid, 3);
+
+            centralGrid = new Grid()
+            {
+                Name = "centralGrid",
+                Margin = new Thickness(6, 6, 6, 3),
+                VerticalAlignment = VerticalAlignment.Top
+            };
+
+            centralGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            centralGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
+            centralGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
+            Grid.SetRow(centralGrid, 2);
+            Grid.SetColumn(centralGrid, 1);
+            Canvas.SetZIndex(centralGrid, 4);
+
+            inputGrid = new Grid()
+            {
+                Name = "inputGrid",
+                MinHeight = Configuration.Configurations.PortHeightInPixels,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+            };
+
+            Canvas.SetZIndex(inputGrid, 5);
+            inputGrid.SetBinding(Grid.IsEnabledProperty, new Binding("IsInteractionEnabled"));
+
+            centralGrid.Children.Add(inputGrid);
+
+
             //TODO DebugAST Canvas.  Do we need this?
 
             grid.Children.Add(nodeBackground);
@@ -1154,6 +1101,8 @@ namespace Dynamo.Controls
             grid.Children.Add(zoomGlyphsGrid);
             grid.Children.Add(nodeHoveringStateBorder);
             grid.Children.Add(warningBar);
+            grid.Children.Add(PresentationGrid);
+            grid.Children.Add(centralGrid);
 
             this.Content = grid;
 
@@ -1161,9 +1110,14 @@ namespace Dynamo.Controls
             Unloaded += OnNodeViewUnloaded;
             nodeBackground.Loaded += NodeViewReady;
 
-            nodeBorder.SizeChanged += OnSizeChangedBorder;
-            this.SizeChanged += OnSizeChangedNodeView;
+            nodeBorder.SizeChanged += OnSizeChanged;
             DataContextChanged += OnDataContextChanged;
+
+            this.SetBinding(UserControl.VisibilityProperty, new Binding("IsHidden")
+            {
+                Converter = _inverseBooleanToVisibilityConverter,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
 
             Panel.SetZIndex(this, 1);
         }
@@ -1582,8 +1536,7 @@ namespace Dynamo.Controls
             EditableNameBox.LostFocus -= EditableNameBox_OnLostFocus;
             EditableNameBox.KeyDown -= EditableNameBox_KeyDown;
             optionsButton.Click -= DisplayNodeContextMenu;
-            nodeBorder.SizeChanged -= OnSizeChangedBorder;
-            this.SizeChanged -= OnSizeChangedNodeView;
+            nodeBorder.SizeChanged -= OnSizeChanged;
             nodeBackground.Loaded -= NodeViewReady;
 
             if (previewControl != null)
@@ -1605,20 +1558,13 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="eventArgs"></param>
-        private void OnSizeChangedBorder(object sender, SizeChangedEventArgs e)
+        private void OnSizeChanged(object sender, EventArgs eventArgs)
         {
-            if (ViewModel != null)
-            {
-                ViewModel.WidthBorder = e.NewSize.Width;
-                ViewModel.HeightBorder = e.NewSize.Height;              
-            }
-        }
+            if (ViewModel == null || ViewModel.PreferredSize.HasValue) return;
 
-        private void OnSizeChangedNodeView(object sender, SizeChangedEventArgs e)
-        {
-            if (ViewModel != null)
+            var size = new[] { ActualWidth, nodeBorder.ActualHeight };
+            if (ViewModel.SetModelSizeCommand.CanExecute(size))
             {
-                var size = new[] { e.NewSize.Width, e.NewSize.Height };
                 ViewModel.SetModelSizeCommand.Execute(size);
             }
         }
@@ -1644,21 +1590,6 @@ namespace Dynamo.Controls
             if (null != ViewModel) return;
 
             ViewModel = e.NewValue as NodeViewModel;
-
-            //This code should be only executed when loading a graph, if the node is being added to the workspace manually then the Width and Height should be auto-calculated.
-            //The default Width and Height values for nodes is 100 so only should be executed on graph loading if both values are 100
-            if (ViewModel.Width > NodeModel.DefaultWidth && ViewModel.Height > NodeModel.DefaultHeight)
-            {
-                Width = ViewModel.Width;
-                Height = ViewModel.Height;
-            }
-
-            if (ViewModel.WidthBorder > NodeModel.DefaultWidth && ViewModel.HeightBorder > NodeModel.DefaultHeight)
-            {
-                nodeBorder.Width = ViewModel.WidthBorder;
-                nodeBorder.Height = ViewModel.HeightBorder;
-            }
-
 
             //Set NodeIcon
             if (ViewModel.ImageSource == null)
@@ -1695,7 +1626,7 @@ namespace Dynamo.Controls
             nodeBorder.Height = size.Height;
             nodeBorder.RenderSize = size;
         }
-
+    
         private void SetCustomNodeVisuals()
         {
             customNodeBorder0 = new Border()

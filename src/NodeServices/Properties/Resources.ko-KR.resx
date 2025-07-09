@@ -118,6 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="WebRequestOfflineWarning" xml:space="preserve">
-    <value>The Web Request node is unavailable in No Network mode.</value>
+    <value>네트워크 연결 안 됨 모드에서는 웹 요청 노드를 사용할 수 없습니다.</value>
   </data>
 </root>

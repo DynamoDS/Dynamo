@@ -50,6 +50,13 @@ namespace Dynamo.ViewModels
         private const double MinSpacing = 50;
         private const double MinChangeThreshold = 1;
 
+        // Collapsed proxy ports for Code Block Nodes appear visually misaligned - 0.655px
+        // taller compared to their actual ports. This is due to the fixed height - 16.345px
+        // used inside CBNs for code lines, while proxy ports use 14px height + 3px top margin.
+        // To compensate for this visual mismatch and keep connector alignment consistent,
+        // we apply this adjusted proxy height.
+        private const double CodeBlockCollapsedPortVisualHeight = 17;
+
         public readonly WorkspaceViewModel WorkspaceViewModel;
 
         #region Properties

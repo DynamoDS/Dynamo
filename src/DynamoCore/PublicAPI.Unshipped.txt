@@ -1336,10 +1336,6 @@ Dynamo.Graph.Workspaces.ExtraNodeViewInfo.ShowGeometry -> bool
 Dynamo.Graph.Workspaces.ExtraNodeViewInfo.UserDescription -> string
 Dynamo.Graph.Workspaces.ExtraNodeViewInfo.X -> double
 Dynamo.Graph.Workspaces.ExtraNodeViewInfo.Y -> double
-Dynamo.Graph.Workspaces.ExtraNodeViewInfo.Width -> double
-Dynamo.Graph.Workspaces.ExtraNodeViewInfo.Height -> double
-Dynamo.Graph.Workspaces.ExtraNodeViewInfo.WidthBorder -> double
-Dynamo.Graph.Workspaces.ExtraNodeViewInfo.HeightBorder -> double
 Dynamo.Graph.Workspaces.ExtraNoteViewInfo
 Dynamo.Graph.Workspaces.ExtraNoteViewInfo.ExtraNoteViewInfo() -> void
 Dynamo.Graph.Workspaces.ExtraNoteViewInfo.Id -> string
@@ -3094,10 +3090,6 @@ virtual Dynamo.Graph.ModelBase.ShouldSerializeY() -> bool
 virtual Dynamo.Graph.ModelBase.UpdateValueCore(Dynamo.Graph.UpdateValueParams updateValueParams) -> bool
 virtual Dynamo.Graph.ModelBase.Width.get -> double
 virtual Dynamo.Graph.ModelBase.Width.set -> void
-virtual Dynamo.Graph.ModelBase.WidthBorder.get -> double
-virtual Dynamo.Graph.ModelBase.WidthBorder.set -> void
-virtual Dynamo.Graph.ModelBase.HeightBorder.get -> double
-virtual Dynamo.Graph.ModelBase.HeightBorder.set -> void
 virtual Dynamo.Graph.Nodes.FunctionCallNodeController<T>.AssignIdentifiersForFunctionCall(Dynamo.Graph.Nodes.NodeModel model, ProtoCore.AST.AssociativeAST.AssociativeNode rhs, System.Collections.Generic.List<ProtoCore.AST.AssociativeAST.AssociativeNode> resultAst) -> void
 virtual Dynamo.Graph.Nodes.FunctionCallNodeController<T>.BuildAstForPartialMultiOutput(Dynamo.Graph.Nodes.NodeModel model, ProtoCore.AST.AssociativeAST.AssociativeNode rhs, System.Collections.Generic.List<ProtoCore.AST.AssociativeAST.AssociativeNode> resultAst) -> void
 virtual Dynamo.Graph.Nodes.FunctionCallNodeController<T>.BuildOutputAst(Dynamo.Graph.Nodes.NodeModel model, System.Collections.Generic.List<ProtoCore.AST.AssociativeAST.AssociativeNode> inputAstNodes, System.Collections.Generic.List<ProtoCore.AST.AssociativeAST.AssociativeNode> resultAst) -> void

@@ -22,6 +22,7 @@ using Dynamo.UI.Controls;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using ModifierKeys = System.Windows.Input.ModifierKeys;
 using Dynamo.Views;
 using Dynamo.Wpf.Utilities;
 using DynCmd = Dynamo.Models.DynamoModel;
@@ -162,6 +163,7 @@ namespace Dynamo.Nodes
             Loaded += AnnotationView_Loaded;
             DataContextChanged += AnnotationView_DataContextChanged;
             this.groupTextBlock.SizeChanged += GroupTextBlock_SizeChanged;
+            PreviewMouseDoubleClick += OnAnnotationDoubleClick;
 
             // Because the size of the collapsedAnnotationRectangle doesn't necessarily change 
             // when going from Visible to collapse (and other way around), we need to also listen
@@ -216,6 +218,7 @@ namespace Dynamo.Nodes
         {
             Loaded -= AnnotationView_Loaded;
             DataContextChanged -= AnnotationView_DataContextChanged;
+            PreviewMouseDoubleClick -= OnAnnotationDoubleClick;
             if (groupTextBlock != null)
                 groupTextBlock.SizeChanged -= GroupTextBlock_SizeChanged;
             if (collapsedAnnotationRectangle != null)
@@ -302,6 +305,29 @@ namespace Dynamo.Nodes
 
                 CreateAndSetContextMenu(AnnotationGrid);
             }
+        }
+
+        private void OnAnnotationDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.Shift || Keyboard.Modifiers == ModifierKeys.Control)
+                return;
+
+            var workspace = WpfUtilities.FindParent<WorkspaceView>(this);
+            if (workspace == null)
+                return;
+
+            var clickPosition = e.GetPosition(workspace.WorkspaceElements);
+            var model = ViewModel.AnnotationModel;
+
+            // Define the area below the text block where nodes reside
+            var annoRectArea = new Rect(model.X, model.Y + model.TextBlockHeight, model.Width, model.ModelAreaHeight);
+
+            // Only create CBN if click is in model area (not in the title/text area)
+            if (!annoRectArea.Contains(clickPosition))
+                return;
+
+            workspace.ViewModel?.HandleAnnotationDoubleClick(clickPosition, model);
+            e.Handled = true;
         }
 
         private void OnNodeColorSelectionChanged(object sender, SelectionChangedEventArgs e)
