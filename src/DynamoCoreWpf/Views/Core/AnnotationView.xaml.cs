@@ -1810,7 +1810,11 @@ namespace Dynamo.Nodes
                 Orientation = Orientation.Vertical
             };
 
-            groupPopupPanel.Children.Add(CreateSearchBox());
+            // Show search box only if the group is expanded
+            if (ViewModel.IsExpanded)
+            {
+                groupPopupPanel.Children.Add(CreateSearchBox());
+            }            
 
             // Add "Delete Group" menu item with extra top margin to separate it visually from the search box
             var deleteGroupItem = CreatePopupItem(
@@ -2738,26 +2742,6 @@ namespace Dynamo.Nodes
             ViewModel.AnnotationModel.TextBlockHeight =
                 this.groupDescriptionControls.DesiredSize.Height +
                 this.groupNameControl.DesiredSize.Height;
-        }
-        
-        private (double maxWidth, double totalHeight) MeasurePortBounds(ItemsControl portControl)
-        {
-            double maxWidth = 0;
-            double totalHeight = 0;
-
-            foreach (var item in portControl.Items)
-            {
-                if (portControl.ItemContainerGenerator.ContainerFromItem(item) is FrameworkElement container && container.IsVisible)
-                {
-                    container.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-                    var size = container.DesiredSize;
-
-                    maxWidth = Math.Max(maxWidth, size.Width);
-                    totalHeight += size.Height;
-                }
-            }
-
-            return (maxWidth, totalHeight);
         }
     }
 }
