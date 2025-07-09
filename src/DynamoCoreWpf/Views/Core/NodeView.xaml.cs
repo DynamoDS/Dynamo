@@ -1491,36 +1491,54 @@ namespace Dynamo.Controls
             }
         }
 
-        public static BitmapImage GetNodeImage(string nodeName)
+        private static ResourceSet _nodeImageResourceSet;
+        private static readonly object _resourceSetLock = new object();
+
+        private static bool EnsureNodeImageResourceSetLoaded()
         {
+            bool success = true;
+            if (_nodeImageResourceSet == null)
+            {
+                lock (_resourceSetLock)
+                {
+                    if (_nodeImageResourceSet == null)
+                    {
+                        var assembly = Assembly.GetExecutingAssembly();
+                        var stream = assembly.GetManifestResourceStream("Dynamo.Wpf.NodeCacheImages.resources");
+                        if (stream == null)
+                            success = false;
+                        _nodeImageResourceSet = new ResourceSet(stream);
+                    }
+                }
+            }
+
+            return success;
+        }
+
+        internal static BitmapImage GetNodeImage(string nodeName)
+        {
+            if (!EnsureNodeImageResourceSetLoaded())
+            {
+                return null;
+            }
+
             // Check cache first
             if (_cachedImages.TryGetValue(nodeName, out BitmapImage cachedImage))
                 return cachedImage;
 
             try
             {
-                var assembly = Assembly.GetExecutingAssembly();
+                // Get the resource value
+                var base64String = _nodeImageResourceSet.GetString(nodeName);
 
-                // Access the resource directly using the exact name from the error message
-                using (var stream = assembly.GetManifestResourceStream("Dynamo.Wpf.NodeCacheImages.resources"))
+                if (!string.IsNullOrEmpty(base64String))
                 {
-                    if (stream == null)
-                        throw new InvalidOperationException("Could not find NodeCacheImages.resources");
-
-                    using (var resourceSet = new ResourceSet(stream))
-                    {
-                        // Get the resource value
-                        var base64String = resourceSet.GetString(nodeName);
-
-                        if (!string.IsNullOrEmpty(base64String))
-                        {
-                            byte[] imageBytes = Convert.FromBase64String(base64String);
-                            var bi = BytesToBitmapImage(imageBytes);
-                            _cachedImages[nodeName] = bi;
-                            return bi;
-                        }
-                    }
+                    byte[] imageBytes = Convert.FromBase64String(base64String);
+                    var bi = BytesToBitmapImage(imageBytes);
+                    _cachedImages[nodeName] = bi;
+                    return bi;
                 }
+                _cachedImages[nodeName] = null;
                 return null;
             }
             catch (Exception ex)
@@ -1571,12 +1589,12 @@ namespace Dynamo.Controls
             ViewModel = e.NewValue as NodeViewModel;
 
             //Enable deferred node loading when node count is above the set threshold.
-            if (!ViewModel.WorkspaceViewModel.NodeCountOptimizationEnabled)
-            {
-                SetNodeBackgroundHeaderAndPortsVisible();
-            }
-            else
-            {
+            //if (ViewModel.WorkspaceViewModel.NodeCountOptimizationEnabled)
+            //{
+            //    SetNodeBackgroundHeaderAndPortsVisible();
+            //}
+            //else
+            //{
                 var nodeName = GetNodeName(ViewModel);
                 var bitmap = GetNodeImage(nodeName);
                 if (bitmap != null)
@@ -1695,22 +1713,22 @@ namespace Dynamo.Controls
 
                     grid.Children.Add(imageControl);
 
-                    Dispatcher.CurrentDispatcher.BeginInvoke(() =>
-                    {
-                        if (imageControl != null)
-                        {
-                            grid.Children.Remove(imageControl);
-                            imageControl = null;
+                    //Dispatcher.CurrentDispatcher.BeginInvoke(() =>
+                    //{
+                    //    if (imageControl != null)
+                    //    {
+                    //        grid.Children.Remove(imageControl);
+                    //        imageControl = null;
 
-                            SetNodeBackgroundHeaderAndPortsVisible();
-                        }
-                    }, DispatcherPriority.Background);
+                    //        SetNodeBackgroundHeaderAndPortsVisible();
+                    //    }
+                    //}, DispatcherPriority.Background);
                 }
                 else
                 {
                     SetNodeBackgroundHeaderAndPortsVisible();
                 }
-            }
+            //}
 
             //This code should be only executed when loading a graph, if the node is being added to the workspace manually then the Width and Height should be auto-calculated.
             //The default Width and Height values for nodes is 100 so only should be executed on graph loading if both values are 100
