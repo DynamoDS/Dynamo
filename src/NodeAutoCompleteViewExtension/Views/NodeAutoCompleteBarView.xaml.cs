@@ -168,7 +168,7 @@ namespace Dynamo.NodeAutoComplete.Views
             //TODO: Transient node operations shouldn't be recorded in the undo-redo stack
             Dispatcher.BeginInvoke(new Action(() =>
             {
-                ViewModel?.DeleteTransientNodes();
+                ViewModel?.DiscardResult();
                 ViewModel?.ToggleUndoRedoLocked(false);
             }), DispatcherPriority.Loaded);
 
