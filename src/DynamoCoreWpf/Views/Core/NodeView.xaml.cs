@@ -1676,19 +1676,19 @@ namespace Dynamo.Controls
                 }
             }
 
-            //This code should be only executed when loading a graph, if the node is being added to the workspace manually then the Width and Height should be auto-calculated.
-            //The default Width and Height values for nodes is 100 so only should be executed on graph loading if both values are 100
-            if (ViewModel.Width > NodeModel.DefaultWidth && ViewModel.Height > NodeModel.DefaultHeight)
-            {
-                Width = ViewModel.Width;
-                Height = ViewModel.Height;
-            }
+            ////This code should be only executed when loading a graph, if the node is being added to the workspace manually then the Width and Height should be auto-calculated.
+            ////The default Width and Height values for nodes is 100 so only should be executed on graph loading if both values are 100
+            //if (ViewModel.Width > NodeModel.DefaultWidth && ViewModel.Height > NodeModel.DefaultHeight)
+            //{
+            //    Width = ViewModel.Width;
+            //    Height = ViewModel.Height;
+            //}
 
-            if (ViewModel.WidthBorder > NodeModel.DefaultWidth && ViewModel.HeightBorder > NodeModel.DefaultHeight)
-            {
-                nodeBorder.Width = ViewModel.WidthBorder;
-                nodeBorder.Height = ViewModel.HeightBorder;
-            }
+            //if (ViewModel.WidthBorder > NodeModel.DefaultWidth && ViewModel.HeightBorder > NodeModel.DefaultHeight)
+            //{
+            //    nodeBorder.Width = ViewModel.WidthBorder;
+            //    nodeBorder.Height = ViewModel.HeightBorder;
+            //}
 
 
             //Set NodeIcon
