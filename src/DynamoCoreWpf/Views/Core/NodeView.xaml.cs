@@ -1589,7 +1589,7 @@ namespace Dynamo.Controls
             ViewModel = e.NewValue as NodeViewModel;
 
             //Enable deferred node loading when node count is above the set threshold.
-            if (ViewModel.WorkspaceViewModel.NodeCountOptimizationEnabled)
+            if (!ViewModel.WorkspaceViewModel.NodeCountOptimizationEnabled)
             {
                 SetNodeBackgroundHeaderAndPortsVisible();
             }
