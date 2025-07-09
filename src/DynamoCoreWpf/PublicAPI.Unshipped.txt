@@ -123,6 +123,10 @@ Dynamo.Controls.CompareToParameterConverter
 Dynamo.Controls.CompareToParameterConverter.CompareToParameterConverter() -> void
 Dynamo.Controls.CompareToParameterConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.CompareToParameterConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ConditionalPackageTextConverter
+Dynamo.Controls.ConditionalPackageTextConverter.ConditionalPackageTextConverter() -> void
+Dynamo.Controls.ConditionalPackageTextConverter.Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ConditionalPackageTextConverter.ConvertBack(object value, System.Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) -> object[]
 Dynamo.Controls.ConfidenceScoreFormattingConverter
 Dynamo.Controls.ConfidenceScoreFormattingConverter.ConfidenceScoreFormattingConverter() -> void
 Dynamo.Controls.ConfidenceScoreFormattingConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object

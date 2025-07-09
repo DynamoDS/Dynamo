@@ -194,6 +194,7 @@ namespace Dynamo.Controls
         private static BoolToVisibilityConverter _booleanToVisibilityConverter = new BoolToVisibilityConverter();
         private static EmptyToVisibilityCollapsedConverter _emptyToVisibilityCollapsedConverter = new EmptyToVisibilityCollapsedConverter();
         private static ZoomToVisibilityCollapsedConverter _zoomToVisibilityCollapsedConverter = new ZoomToVisibilityCollapsedConverter();
+        private static ConditionalPackageTextConverter _conditionalPackageTextConverter = new ConditionalPackageTextConverter();
 
         // Font
         private static FontFamily _artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
@@ -306,69 +307,44 @@ namespace Dynamo.Controls
                 Style = DynamoToolTipTopStyle
             };
 
-            // Create outer StackPanel
-            StackPanel tooltipStackPanel = new StackPanel
+            // Create consolidated TextBlock for tooltip
+            TextBlock consolidatedTooltipTextBlock = new TextBlock
             {
                 MaxWidth = 320,
                 Margin = new Thickness(10),
-                Orientation = Orientation.Vertical
-            };
-
-            // Create TextBlocks
-            // TODO Maybe bound the whole text on the model with a string constructor vs this set of inline constructors
-            // That would remove the stackPanel also
-            TextBlock textBlock1 = new TextBlock
-            {
                 FontFamily = _artifactElementReg,
                 FontWeight = FontWeights.Medium,
                 TextWrapping = TextWrapping.Wrap
             };
 
-            textBlock1.Inlines.Add(new Run { Text = Dynamo.Wpf.Properties.Resources.NodeTooltipOriginalName });
+            // Build the tooltip text using individual runs
+            consolidatedTooltipTextBlock.Inlines.Add(new Run { Text = Dynamo.Wpf.Properties.Resources.NodeTooltipOriginalName });
 
             var runOriginalName = new Run();
             runOriginalName.SetBinding(Run.TextProperty, new Binding("OriginalName") { Mode = BindingMode.OneWay });
-            textBlock1.Inlines.Add(runOriginalName);
+            consolidatedTooltipTextBlock.Inlines.Add(runOriginalName);
 
-            TextBlock textBlock2 = new TextBlock
-            {
-                FontFamily = _artifactElementReg,
-                FontWeight = FontWeights.Light,
-                TextWrapping = TextWrapping.Wrap
-            };
+            // Add conditional package section using a MultiBinding
+            var runPackageSection = new Run { FontWeight = FontWeights.Light };
+            var packageMultiBinding = new MultiBinding();
+            packageMultiBinding.Bindings.Add(new Binding("IsCustomFunction") { Mode = BindingMode.OneWay });
+            packageMultiBinding.Bindings.Add(new Binding("PackageName") { Mode = BindingMode.OneWay });
+            packageMultiBinding.Converter = _conditionalPackageTextConverter;
+            runPackageSection.SetBinding(Run.TextProperty, packageMultiBinding);
+            consolidatedTooltipTextBlock.Inlines.Add(runPackageSection);
 
-            textBlock2.SetBinding(UIElement.VisibilityProperty, new Binding("IsCustomFunction") { Converter = _boolToVisibilityCollapsedConverter });
-            textBlock2.Inlines.Add(new Run { Text = Dynamo.Wpf.Properties.Resources.NodeTooltipOriginalName });
+            // Add line break before description
+            consolidatedTooltipTextBlock.Inlines.Add(new Run { Text = "\x0a\x0a" });
 
-            var runPackageName = new Run();
-            runPackageName.SetBinding(Run.TextProperty, new Binding("PackageName") { Mode = BindingMode.OneWay });
-            textBlock2.Inlines.Add(runPackageName);
-
-            TextBlock textBlock3 = new TextBlock
-            {
-                Text = "\x0a"
-            };
-
-            TextBlock textBlock4 = new TextBlock
-            {
-                FontFamily = _artifactElementReg,
-                FontWeight = FontWeights.Medium,
-                TextWrapping = TextWrapping.Wrap
-            };
-            textBlock4.Inlines.Add(new Run { Text = Dynamo.Wpf.Properties.Resources.NodeTooltipDescription });
+            // Add "Description:" text and bound Description
+            consolidatedTooltipTextBlock.Inlines.Add(new Run { Text = Dynamo.Wpf.Properties.Resources.NodeTooltipDescription });
 
             var runDescription = new Run();
             runDescription.SetBinding(Run.TextProperty, new Binding("Description") { Mode = BindingMode.OneWay });
-            textBlock4.Inlines.Add(runDescription);
+            consolidatedTooltipTextBlock.Inlines.Add(runDescription);
 
-            // Add TextBlocks to inner StackPanel
-            tooltipStackPanel.Children.Add(textBlock1);
-            tooltipStackPanel.Children.Add(textBlock2);
-            tooltipStackPanel.Children.Add(textBlock3);
-            tooltipStackPanel.Children.Add(textBlock4);
-
-            // Set Grid as content of DynamoToolTip
-            dynamoToolTip.Content = tooltipStackPanel;
+            // Set consolidated TextBlock as content of DynamoToolTip
+            dynamoToolTip.Content = consolidatedTooltipTextBlock;
             nameBackground.ToolTip = dynamoToolTip;
 
             var nodeHeaderContent = new DockPanel()
