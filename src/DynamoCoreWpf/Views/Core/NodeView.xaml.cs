@@ -1437,36 +1437,54 @@ namespace Dynamo.Controls
             }
         }
 
-        public static BitmapImage GetNodeImage(string nodeName)
+        private static ResourceSet _nodeImageResourceSet;
+        private static readonly object _resourceSetLock = new object();
+
+        private static bool EnsureNodeImageResourceSetLoaded()
         {
+            bool success = true;
+            if (_nodeImageResourceSet == null)
+            {
+                lock (_resourceSetLock)
+                {
+                    if (_nodeImageResourceSet == null)
+                    {
+                        var assembly = Assembly.GetExecutingAssembly();
+                        var stream = assembly.GetManifestResourceStream("Dynamo.Wpf.NodeCacheImages.resources");
+                        if (stream == null)
+                            success = false;
+                        _nodeImageResourceSet = new ResourceSet(stream);
+                    }
+                }
+            }
+
+            return success;
+        }
+
+        internal static BitmapImage GetNodeImage(string nodeName)
+        {
+            if (!EnsureNodeImageResourceSetLoaded())
+            {
+                return null;
+            }
+
             // Check cache first
             if (_cachedImages.TryGetValue(nodeName, out BitmapImage cachedImage))
                 return cachedImage;
 
             try
             {
-                var assembly = Assembly.GetExecutingAssembly();
+                // Get the resource value
+                var base64String = _nodeImageResourceSet.GetString(nodeName);
 
-                // Access the resource directly using the exact name from the error message
-                using (var stream = assembly.GetManifestResourceStream("Dynamo.Wpf.NodeCacheImages.resources"))
+                if (!string.IsNullOrEmpty(base64String))
                 {
-                    if (stream == null)
-                        throw new InvalidOperationException("Could not find NodeCacheImages.resources");
-
-                    using (var resourceSet = new ResourceSet(stream))
-                    {
-                        // Get the resource value
-                        var base64String = resourceSet.GetString(nodeName);
-
-                        if (!string.IsNullOrEmpty(base64String))
-                        {
-                            byte[] imageBytes = Convert.FromBase64String(base64String);
-                            var bi = BytesToBitmapImage(imageBytes);
-                            _cachedImages[nodeName] = bi;
-                            return bi;
-                        }
-                    }
+                    byte[] imageBytes = Convert.FromBase64String(base64String);
+                    var bi = BytesToBitmapImage(imageBytes);
+                    _cachedImages[nodeName] = bi;
+                    return bi;
                 }
+                _cachedImages[nodeName] = null;
                 return null;
             }
             catch (Exception ex)
