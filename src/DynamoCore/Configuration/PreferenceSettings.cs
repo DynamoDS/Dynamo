@@ -1110,9 +1110,9 @@ namespace Dynamo.Configuration
                         }
                     }
 
-                    // If the backup interval is set to 60000ms (1 minute) - old backup interval, reset it to the new default value.
+                    // If the backup interval is set to OldDefaultBackupInterval (60000ms - 1 minute), reset it to the new default value.
                     var savedBackUpInterval = settings?.BackupInterval;
-                    if (savedBackUpInterval == 60000)
+                    if (savedBackUpInterval == OldDefaultBackupInterval)
                     {
                         settings.BackupInterval = DefaultBackupInterval;
                     }
