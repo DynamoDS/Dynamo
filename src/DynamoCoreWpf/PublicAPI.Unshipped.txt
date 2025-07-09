@@ -123,6 +123,10 @@ Dynamo.Controls.CompareToParameterConverter
 Dynamo.Controls.CompareToParameterConverter.CompareToParameterConverter() -> void
 Dynamo.Controls.CompareToParameterConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.CompareToParameterConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ConditionalPackageTextConverter
+Dynamo.Controls.ConditionalPackageTextConverter.ConditionalPackageTextConverter() -> void
+Dynamo.Controls.ConditionalPackageTextConverter.Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ConditionalPackageTextConverter.ConvertBack(object value, System.Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) -> object[]
 Dynamo.Controls.ConfidenceScoreFormattingConverter
 Dynamo.Controls.ConfidenceScoreFormattingConverter.ConfidenceScoreFormattingConverter() -> void
 Dynamo.Controls.ConfidenceScoreFormattingConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -467,10 +471,10 @@ Dynamo.Controls.NodeView
 Dynamo.Controls.NodeView.ContentGrid.get -> System.Windows.Controls.Grid
 Dynamo.Controls.NodeView.grid -> System.Windows.Controls.Grid
 Dynamo.Controls.NodeView.InitializeComponent() -> void
-Dynamo.Controls.NodeView.inputGrid.get -> System.Windows.Controls.Grid
+Dynamo.Controls.NodeView.inputGrid -> System.Windows.Controls.Grid
 Dynamo.Controls.NodeView.MainContextMenu -> System.Windows.Controls.ContextMenu
 Dynamo.Controls.NodeView.NodeView() -> void
-Dynamo.Controls.NodeView.PresentationGrid.get -> System.Windows.Controls.Grid
+Dynamo.Controls.NodeView.PresentationGrid -> System.Windows.Controls.Grid
 Dynamo.Controls.NodeView.SetToolTipDelegate
 Dynamo.Controls.NodeView.topControl -> Dynamo.Controls.NodeView
 Dynamo.Controls.NodeView.TopControl.get -> Dynamo.Controls.NodeView
@@ -5810,7 +5814,9 @@ static readonly Dynamo.UI.FrozenResources.PreviewIconPinnedBrush -> System.Windo
 static readonly Dynamo.UI.FrozenResources.WarningFrameFill -> System.Windows.Media.SolidColorBrush
 static readonly Dynamo.UI.FrozenResources.WarningFrameStrokeColor -> System.Windows.Media.SolidColorBrush
 static readonly Dynamo.UI.FrozenResources.WarningTextForeground -> System.Windows.Media.SolidColorBrush
+static readonly Dynamo.ViewModels.PortViewModel.PortBackgroundColorDefault -> System.Windows.Media.SolidColorBrush
 static readonly Dynamo.ViewModels.PortViewModel.PortBackgroundColorPreviewOff -> System.Windows.Media.SolidColorBrush
+static readonly Dynamo.ViewModels.PortViewModel.PortBorderBrushColorDefault -> System.Windows.Media.SolidColorBrush
 static readonly Dynamo.Wpf.UI.GuidedTour.CustomRichTextBox.CustomTextProperty -> System.Windows.DependencyProperty
 static readonly Dynamo.Wpf.UI.MouseBehaviour.MouseXProperty -> System.Windows.DependencyProperty
 static readonly Dynamo.Wpf.UI.MouseBehaviour.MouseYProperty -> System.Windows.DependencyProperty
