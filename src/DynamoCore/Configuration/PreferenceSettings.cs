@@ -88,7 +88,7 @@ namespace Dynamo.Configuration
         internal const int DefaultMaxNumRecentFiles = 10;
 
         /// <summary>
-        /// The default time interval between backup files. 5 minute.
+        /// The default time interval between backup files. 5 minutes.
         /// </summary>
         internal const int DefaultBackupInterval = 300000;
 
