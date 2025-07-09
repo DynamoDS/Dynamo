@@ -1152,12 +1152,10 @@ namespace Dynamo.Controls
             nodeHeaderContent.Visibility = Visibility.Visible;
             inputPortControl.Visibility = Visibility.Visible;
             outputPortControl.Visibility = Visibility.Visible;
-#if DEBUG
             if (ViewModel != null)
             {
                 ViewModel.WorkspaceViewModel.OnNodeViewLoaded();
             }
-#endif
         }
 
         private static Style GetNodeButtonStyle()
@@ -2133,7 +2131,6 @@ namespace Dynamo.Controls
         {
             if (e.ClickCount == 2)
             {
-                Debug.WriteLine("Name double clicked!");
                 // If workspace is zoomed-out, open an Edit Name dialog, otherwise rename inline
                 if (viewModel.WorkspaceViewModel.Zoom < Configurations.ZoomDirectEditThreshold)
                 {
