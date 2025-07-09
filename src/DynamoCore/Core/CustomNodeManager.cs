@@ -1,3 +1,12 @@
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
+using System.Xml;
 using Dynamo.Engine;
 using Dynamo.Engine.NodeToCode;
 using Dynamo.Exceptions;
@@ -19,18 +28,7 @@ using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
-using System.Xml;
 using Symbol = Dynamo.Graph.Nodes.CustomNodes.Symbol;
-using System.Threading.Tasks;
-using Autodesk.DesignScript.Geometry;
-using System.Security.Policy;
 
 namespace Dynamo.Core
 {
