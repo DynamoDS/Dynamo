@@ -717,7 +717,7 @@ namespace Dynamo.Tests
             pythonNode.OnNodeModified();
             ViewModel.HomeSpace.Run();
 
-            //Verity that we have 1 warning in the python node
+            //Verify that we have 1 warning in the python node
             Assert.AreEqual(pythonNode.NodeInfos.Count, 1);
             //Check that the warning message expected is correct
             Assert.IsTrue(pythonNode.NodeInfos.FirstOrDefault().Message.Contains(warningMessageExpected));
