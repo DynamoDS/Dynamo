@@ -728,7 +728,7 @@ namespace Dynamo.Tests
             pythonNode.OnNodeModified();
             ViewModel.HomeSpace.Run();
 
-            //Verity that we don't have warnings in the python node
+            //Verify that we don't have warnings in the python node
             Assert.AreEqual(pythonNode.NodeInfos.Count, 0);
             //Verify Watch node has the value 3 meaning that the object was disposed 3 times (even when there was an exception in the second run)
             Assert.That(watchNode.OutputData.InitialValue, Is.EqualTo("3"));
