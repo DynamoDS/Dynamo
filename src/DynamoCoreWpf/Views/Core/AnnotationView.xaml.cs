@@ -188,6 +188,11 @@ namespace Dynamo.Nodes
                 IsHitTestVisible = true
             };
 
+            AnnotationGrid.SetBinding(VisibilityProperty, new Binding("IsCollapsed")
+            {
+                Converter = _inverseBooleanToVisibilityCollapsedConverter
+            });
+
             // Add RowDefinitions
             AnnotationGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             AnnotationGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
