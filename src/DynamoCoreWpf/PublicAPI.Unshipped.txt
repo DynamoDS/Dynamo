@@ -471,10 +471,10 @@ Dynamo.Controls.NodeView
 Dynamo.Controls.NodeView.ContentGrid.get -> System.Windows.Controls.Grid
 Dynamo.Controls.NodeView.grid -> System.Windows.Controls.Grid
 Dynamo.Controls.NodeView.InitializeComponent() -> void
-Dynamo.Controls.NodeView.inputGrid.get -> System.Windows.Controls.Grid
+Dynamo.Controls.NodeView.inputGrid -> System.Windows.Controls.Grid
 Dynamo.Controls.NodeView.MainContextMenu -> System.Windows.Controls.ContextMenu
 Dynamo.Controls.NodeView.NodeView() -> void
-Dynamo.Controls.NodeView.PresentationGrid.get -> System.Windows.Controls.Grid
+Dynamo.Controls.NodeView.PresentationGrid -> System.Windows.Controls.Grid
 Dynamo.Controls.NodeView.SetToolTipDelegate
 Dynamo.Controls.NodeView.topControl -> Dynamo.Controls.NodeView
 Dynamo.Controls.NodeView.TopControl.get -> Dynamo.Controls.NodeView
@@ -2808,7 +2808,6 @@ Dynamo.ViewModels.PortViewModel.MouseLeftButtonDownOnLevelCommand.get -> Dynamo.
 Dynamo.ViewModels.PortViewModel.MouseLeftUseLevelCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.PortViewModel.NodeAutoCompleteCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.PortViewModel.NodeAutoCompleteMarkerEnabled.get -> bool
-Dynamo.ViewModels.PortViewModel.NodeAutoCompleteMarkerEnabled.set -> void
 Dynamo.ViewModels.PortViewModel.NodePortContextMenuCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.PortViewModel.PortBackgroundColor.get -> System.Windows.Media.SolidColorBrush
 Dynamo.ViewModels.PortViewModel.PortBackgroundColor.set -> void
@@ -5832,7 +5831,9 @@ static readonly Dynamo.UI.FrozenResources.PreviewIconPinnedBrush -> System.Windo
 static readonly Dynamo.UI.FrozenResources.WarningFrameFill -> System.Windows.Media.SolidColorBrush
 static readonly Dynamo.UI.FrozenResources.WarningFrameStrokeColor -> System.Windows.Media.SolidColorBrush
 static readonly Dynamo.UI.FrozenResources.WarningTextForeground -> System.Windows.Media.SolidColorBrush
+static readonly Dynamo.ViewModels.PortViewModel.PortBackgroundColorDefault -> System.Windows.Media.SolidColorBrush
 static readonly Dynamo.ViewModels.PortViewModel.PortBackgroundColorPreviewOff -> System.Windows.Media.SolidColorBrush
+static readonly Dynamo.ViewModels.PortViewModel.PortBorderBrushColorDefault -> System.Windows.Media.SolidColorBrush
 static readonly Dynamo.Wpf.UI.GuidedTour.CustomRichTextBox.CustomTextProperty -> System.Windows.DependencyProperty
 static readonly Dynamo.Wpf.UI.MouseBehaviour.MouseXProperty -> System.Windows.DependencyProperty
 static readonly Dynamo.Wpf.UI.MouseBehaviour.MouseYProperty -> System.Windows.DependencyProperty

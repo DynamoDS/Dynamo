@@ -405,7 +405,7 @@
     <value>Копировать в буфер обмена</value>
   </data>
   <data name="CopyToClipboardFailedMessage" xml:space="preserve">
-    <value>Copy to clipboard failed</value>
+    <value>Не удалось копировать в буфер обмена</value>
   </data>
   <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
     <value>Доступно обновление для Dynamo. Нажмите, чтобы установить его.</value>
@@ -3237,7 +3237,7 @@
     <value>Уровень надежности отображается рядом с каждым рекомендуемым узлом и представляет собой предполагаемую вероятность удачного выбора узла. При включении этого параметра рекомендуемые узлы, которые не соответствуют заданному уровню надежности, скрываются. Для отображения узлов можно щелкнуть заголовок «Низкая надежность».</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Number of results for Recommended Nodes</value>
+    <value>Количество результатов для рекомендуемых узлов</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>Импорт</value>
@@ -3801,16 +3801,16 @@
     <value>Эта группа заморожена. Щелкните, чтобы разморозить.</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>Enable New UI</value>
+    <value>Включить новый интерфейс</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
-    <value>Enable the new floating menu for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog.</value>
+    <value>Включите новое плавающее меню для подсказок в отношении узлов, чтобы оптимизировать рабочий процесс. Отключите параметр, чтобы вернуться к стандартному всплывающему диалоговому окну.</value>
   </data>
   <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
-    <value>_Dump Node Icon Data</value>
+    <value>_Дамп данных значка узла</value>
   </data>
   <data name="NodeIconDataIsDumped" xml:space="preserve">
-    <value>Node Icon Data is dumped to \"{0}\".</value>
+    <value>Данные значка узла доступны в папке «{0}».</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

@@ -852,7 +852,7 @@ Il pacchetto non è stato caricato perché prima era stato caricato un altro pac
     <value>Non sono ancora presenti suggerimenti. È possibile provare a passare al completamento automatico per tipo di nodo.</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
-    <value>No confident suggestions available. The model is continuously improving - check back soon.</value>
+    <value>Nessun suggerimento affidabile disponibile. Il modello viene migliorato continuamente. Ricontrollare più tardi.</value>
   </data>
   <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
     <value>Mostra i suggerimenti che sono sotto il livello di affidabilità.</value>
@@ -891,6 +891,6 @@ Il pacchetto non è stato caricato perché prima era stato caricato un altro pac
     <value>Questo nodo è attualmente sperimentale. Il suo comportamento, il suo nome e la sua firma sono soggetti a modifiche.</value>
   </data>
   <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
-    <value>Click on the sparkle icon next to the port to activate Node Autocomplete.</value>
+    <value>Fare clic sull'icona a forma di scintilla accanto alla porta per attivare Completamento automatico nodi.</value>
   </data>
 </root>

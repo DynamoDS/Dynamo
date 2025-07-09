@@ -405,7 +405,7 @@
     <value>Copia negli Appunti</value>
   </data>
   <data name="CopyToClipboardFailedMessage" xml:space="preserve">
-    <value>Copy to clipboard failed</value>
+    <value>Copia negli Appunti non riuscita</value>
   </data>
   <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
     <value>È disponibile un aggiornamento di Dynamo. Fare clic per installarlo.</value>
@@ -3219,7 +3219,7 @@ Provare a posizionare il nodo **ByOrigin** evidenziato.</value>
     <value>Il livello di affidabilità viene visualizzato accanto a ciascun nodo consigliato e rappresenta la probabilità stimata che il nodo sia una buona scelta. Quando è attivata, questa impostazione nasconde i nodi consigliati che non soddisfano il livello di affidabilità specificato. È possibile fare clic sull'intestazione Bassa affidabilità per mostrare i nodi.</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Number of results for Recommended Nodes</value>
+    <value>Numero di risultati per i nodi consigliati</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>Importa</value>
@@ -3783,16 +3783,16 @@ Per trasformare questo file in un nuovo modello, salvarlo in un'altra cartella e
     <value>Questo gruppo è congelato. Fare clic per scongelare.</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>Enable New UI</value>
+    <value>Attiva nuova interfaccia utente</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
-    <value>Enable the new floating menu for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog.</value>
+    <value>Attiva il nuovo menu mobile per i suggerimenti relativi ai nodi per un workflow più semplificato. Disattivare per tornare alla tradizionale finestra di dialogo a comparsa.</value>
   </data>
   <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
-    <value>_Dump Node Icon Data</value>
+    <value>_Rimuovi dati icona nodo</value>
   </data>
   <data name="NodeIconDataIsDumped" xml:space="preserve">
-    <value>Node Icon Data is dumped to \"{0}\".</value>
+    <value>I dati sull'icona del nodo sono stati rimossi in \"{0}\".</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

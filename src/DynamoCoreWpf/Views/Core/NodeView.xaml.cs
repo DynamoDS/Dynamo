@@ -49,7 +49,6 @@ namespace Dynamo.Controls
         /// Old ZIndex of node. It's set, when mouse leaves node.
         /// </summary>
         private int oldZIndex;
-
         private bool nodeWasClicked;
 
         public NodeView TopControl
@@ -62,32 +61,10 @@ namespace Dynamo.Controls
             get { return inputGrid; }
         }
 
-        private Grid _inputGrid = null;
-
         //Todo add message to mark this as deprecated or ContentGrid?  Currently only one item references ContentGrid.  Most use inputGrid
-        public Grid inputGrid
-        {
-            get
-            {
-                if (_inputGrid == null)
-                {
-                    _inputGrid = new Grid()
-                    {
-                        Name = "inputGrid",
-                        MinHeight = Configuration.Configurations.PortHeightInPixels,
-                        VerticalAlignment = VerticalAlignment.Stretch,
-                        HorizontalAlignment = HorizontalAlignment.Stretch,
-                    };
 
-                    Canvas.SetZIndex(_inputGrid, 5);
-                    _inputGrid.SetBinding(Grid.IsEnabledProperty, new Binding("IsInteractionEnabled"));
-
-                    centralGrid.Children.Add(_inputGrid);
-                }
-
-                return _inputGrid;
-            }
-        }
+        [Obsolete("This method is deprecated and will be removed in a future version of Dynamo, use the ContentGrid")]
+        public Grid inputGrid = null;
 
         public NodeViewModel ViewModel
         {
@@ -158,7 +135,7 @@ namespace Dynamo.Controls
         internal Border customNodeBorder0; //for testing
         internal Grid zoomGlyphsGrid; //for testing
         internal Rectangle nodeColorOverlayZoomOut; //for testing
-
+        internal Grid centralGrid = null;
 
         //View items referenced outside of NodeView internal to DynamoCoreWPF previously from xaml but now loaded on demand.
         private Canvas _expansionBay;
@@ -187,69 +164,16 @@ namespace Dynamo.Controls
             }
         }
 
-        private Grid _centralGrid;
-        internal Grid centralGrid
-        {
-            get
-            {
-                if(_centralGrid == null)
-                {
-                    _centralGrid = new Grid()
-                    {
-                        Name = "centralGrid",
-                        Margin = new Thickness(6, 6, 6, 3),
-                        VerticalAlignment = VerticalAlignment.Top
-                    };
-
-                    _centralGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-                    _centralGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
-                    _centralGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
-                    Grid.SetRow(_centralGrid, 2);
-                    Grid.SetColumn(_centralGrid, 1);
-                    Canvas.SetZIndex(_centralGrid, 4);
-
-                    grid.Children.Add(_centralGrid);
-                }
-
-                return _centralGrid;
-            }
-        }
-
         //View items referenced outside of NodeView as previously from xaml outside of DynamoCoreWPF
         public ContextMenu MainContextMenu = new ContextMenu();
         public Grid grid;
-
-        private Grid _presentationGrid = null;
-        public Grid PresentationGrid
-        {
-            get
-            {
-                if(_presentationGrid == null)
-                {
-                    _presentationGrid = new Grid()
-                    {
-                        Name = "PresentationGrid",
-                        Margin = new Thickness(6, 6, 6, -3),
-                        HorizontalAlignment = HorizontalAlignment.Left,
-                        VerticalAlignment = VerticalAlignment.Bottom,
-                        Visibility = Visibility.Collapsed
-                    };
-
-                    Grid.SetRow(_presentationGrid, 2);
-                    Grid.SetColumn(_presentationGrid, 1);
-                    Canvas.SetZIndex(_presentationGrid, 3);
-
-                    grid.Children.Add(_presentationGrid);
-                }
-
-                return _presentationGrid;
-            }
-        }
+        public Grid PresentationGrid = null;
 
         //Static resources mostly from DynamoModern themes but some from DynamoColorsAndBrushes.xaml
 
         //Brushes
         private static SolidColorBrush _primaryCharcoal100 = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PrimaryCharcoal100Brush"] as SolidColorBrush;
+        private static SolidColorBrush _primaryCharcoal200 = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PrimaryCharcoal200Brush"] as SolidColorBrush;
         private static SolidColorBrush _blue300 = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["Blue300Brush"] as SolidColorBrush;
         private static SolidColorBrush _darkBlue200 = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["DarkBlue200Brush"] as SolidColorBrush;
         private static SolidColorBrush _nodeDismissedWarningsGlyphForeground = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeDismissedWarningsGlyphForeground"] as SolidColorBrush;
@@ -265,6 +189,7 @@ namespace Dynamo.Controls
 
         // Converters
         private static InverseBooleanToVisibilityCollapsedConverter _inverseBooleanToVisibilityCollapsedConverter = new InverseBooleanToVisibilityCollapsedConverter();
+        private static InverseBoolToVisibilityConverter _inverseBooleanToVisibilityConverter = new InverseBoolToVisibilityConverter();
         private static BoolToVisibilityCollapsedConverter _boolToVisibilityCollapsedConverter = new BoolToVisibilityCollapsedConverter();
         private static BoolToVisibilityConverter _booleanToVisibilityConverter = new BoolToVisibilityConverter();
         private static EmptyToVisibilityCollapsedConverter _emptyToVisibilityCollapsedConverter = new EmptyToVisibilityCollapsedConverter();
@@ -296,6 +221,9 @@ namespace Dynamo.Controls
         #region constructors
         static NodeView()
         {
+            //Set bitmap scaling mode to low quality for default node icon.
+            RenderOptions.SetBitmapScalingMode(_defaultNodeIcon, BitmapScalingMode.LowQuality);
+
             //Freeze the static resource to reduce memory overhead
             _frozenImageSource.Freeze();
             _transientImageSource.Freeze();
@@ -304,6 +232,7 @@ namespace Dynamo.Controls
             _nodeButtonDots.Freeze();
             _defaultNodeIcon.Freeze();
             _primaryCharcoal100.Freeze();
+            _primaryCharcoal200.Freeze();
             _blue300.Freeze();
             _nodeDismissedWarningsGlyphBackground.Freeze();
             _nodeDismissedWarningsGlyphForeground.Freeze();
@@ -469,7 +398,8 @@ namespace Dynamo.Controls
                 VerticalAlignment = VerticalAlignment.Center,
                 FontSize = 16,
                 FontWeight = FontWeights.Medium,
-                Foreground = _primaryCharcoal100,
+                Foreground = _primaryCharcoal200,
+                Background = null,
                 IsHitTestVisible = false,
                 TextAlignment = TextAlignment.Center,
                 FontFamily = _artifactElementReg,
@@ -490,14 +420,15 @@ namespace Dynamo.Controls
                 VerticalAlignment = VerticalAlignment.Center,
                 FontSize = 16,
                 FontWeight = FontWeights.Medium,
-                Foreground = _primaryCharcoal100,
+                Foreground = _primaryCharcoal200,
                 SelectionBrush = _blue300,
                 SelectionOpacity = 0.2,
                 IsHitTestVisible = true,
                 BorderThickness = new Thickness(0),
                 TextAlignment = TextAlignment.Center,
                 Visibility = Visibility.Collapsed,
-                FontFamily = _artifactElementReg
+                FontFamily = _artifactElementReg,
+                Background = null
             };
 
             EditableNameBox.LostFocus += EditableNameBox_OnLostFocus;
@@ -641,6 +572,8 @@ namespace Dynamo.Controls
                 Source = _frozenImageSource
             };
 
+            RenderOptions.SetBitmapScalingMode(FrozenImage, BitmapScalingMode.LowQuality);
+
             FrozenImage.SetBinding(Grid.VisibilityProperty, new Binding("IsFrozen")
             {
                 Converter = _boolToVisibilityCollapsedConverter,
@@ -659,6 +592,8 @@ namespace Dynamo.Controls
                 Source = _transientImageSource
             };
 
+            RenderOptions.SetBitmapScalingMode(TransientImage, BitmapScalingMode.LowQuality);
+
             TransientImage.SetBinding(Grid.VisibilityProperty, new Binding("IsTransient")
             {
                 Converter = _boolToVisibilityCollapsedConverter,
@@ -676,6 +611,8 @@ namespace Dynamo.Controls
                 Stretch = Stretch.UniformToFill,
                 Source = _hiddenEyeImageSource
             };
+
+            RenderOptions.SetBitmapScalingMode(HiddenEyeImage, BitmapScalingMode.LowQuality);
 
             HiddenEyeImage.SetBinding(Grid.VisibilityProperty, new Binding("IsVisible")
             {
@@ -1031,6 +968,7 @@ namespace Dynamo.Controls
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
                 TargetNullValue = null
             });
+            RenderOptions.SetBitmapScalingMode(zoomStateImgOne, BitmapScalingMode.LowQuality);
 
             zoomGlyphRowZero.Children.Add(zoomStateImgOne);
 
@@ -1062,6 +1000,7 @@ namespace Dynamo.Controls
                 Converter = _emptyToVisibilityCollapsedConverter,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
+            RenderOptions.SetBitmapScalingMode(zoomStateImgTwo, BitmapScalingMode.LowQuality);
 
             // Image in column 1
             var zoomStateImgThree = new Image
@@ -1085,6 +1024,7 @@ namespace Dynamo.Controls
                 Converter = _emptyToVisibilityCollapsedConverter,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
+            RenderOptions.SetBitmapScalingMode(zoomStateImgThree, BitmapScalingMode.LowQuality);
 
             zoomGlyphRowOne.Children.Add(zoomStateImgTwo);
             zoomGlyphRowOne.Children.Add(zoomStateImgThree);
@@ -1127,6 +1067,48 @@ namespace Dynamo.Controls
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
 
+
+            PresentationGrid = new Grid()
+            {
+                Name = "PresentationGrid",
+                Margin = new Thickness(6, 6, 6, -3),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Visibility = Visibility.Collapsed
+            };
+
+            Grid.SetRow(PresentationGrid, 2);
+            Grid.SetColumn(PresentationGrid, 1);
+            Canvas.SetZIndex(PresentationGrid, 3);
+
+            centralGrid = new Grid()
+            {
+                Name = "centralGrid",
+                Margin = new Thickness(6, 6, 6, 3),
+                VerticalAlignment = VerticalAlignment.Top
+            };
+
+            centralGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            centralGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
+            centralGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
+            Grid.SetRow(centralGrid, 2);
+            Grid.SetColumn(centralGrid, 1);
+            Canvas.SetZIndex(centralGrid, 4);
+
+            inputGrid = new Grid()
+            {
+                Name = "inputGrid",
+                MinHeight = Configuration.Configurations.PortHeightInPixels,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+            };
+
+            Canvas.SetZIndex(inputGrid, 5);
+            inputGrid.SetBinding(Grid.IsEnabledProperty, new Binding("IsInteractionEnabled"));
+
+            centralGrid.Children.Add(inputGrid);
+
+
             //TODO DebugAST Canvas.  Do we need this?
 
             grid.Children.Add(nodeBackground);
@@ -1143,6 +1125,8 @@ namespace Dynamo.Controls
             grid.Children.Add(zoomGlyphsGrid);
             grid.Children.Add(nodeHoveringStateBorder);
             grid.Children.Add(warningBar);
+            grid.Children.Add(PresentationGrid);
+            grid.Children.Add(centralGrid);
 
             this.Content = grid;
 
@@ -1152,6 +1136,12 @@ namespace Dynamo.Controls
 
             nodeBorder.SizeChanged += OnSizeChanged;
             DataContextChanged += OnDataContextChanged;
+
+            this.SetBinding(UserControl.VisibilityProperty, new Binding("IsHidden")
+            {
+                Converter = _inverseBooleanToVisibilityConverter,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
 
             Panel.SetZIndex(this, 1);
         }
@@ -1536,6 +1526,21 @@ namespace Dynamo.Controls
 
         #endregion
 
+        private void DelayPreviewControlAction()
+        {
+            if (!IsMouseOver) return;
+
+            TryShowPreviewBubbles();
+        }
+
+        private void InitialTryShowPreviewBubble()
+        {
+            // Always set old ZIndex to the last value, even if mouse is not over the node.
+            oldZIndex = NodeViewModel.StaticZIndex;
+
+            viewModel.WorkspaceViewModel.DelayNodePreviewControl.Debounce(300, DelayPreviewControlAction);
+        }
+
         private void OnNodeViewUnloaded(object sender, RoutedEventArgs e)
         {
             ViewModel.NodeLogic.DispatchedToUI -= NodeLogic_DispatchedToUI;
@@ -1763,7 +1768,14 @@ namespace Dynamo.Controls
             // try to show the preview bubble without new mouse enter event. 
             if (IsMouseOver)
             {
-                Dispatcher.BeginInvoke(new Action(TryShowPreviewBubbles), DispatcherPriority.Loaded);
+                if (DynCmd.IsTestMode)
+                {
+                    Dispatcher.BeginInvoke(new Action(TryShowPreviewBubbles), DispatcherPriority.Loaded);
+                }
+                else
+                {
+                    InitialTryShowPreviewBubble();
+                }
             }
         }
 
@@ -2065,15 +2077,19 @@ namespace Dynamo.Controls
             // if the node is located under "Hide preview bubbles" menu item and the item is clicked,
             // ViewModel.DynamoViewModel.ShowPreviewBubbles will be updated AFTER node mouse enter event occurs
             // so, wait while ShowPreviewBubbles binding updates value
-            Dispatcher.BeginInvoke(new Action(TryShowPreviewBubbles), DispatcherPriority.Loaded);
+            if (DynCmd.IsTestMode)
+            {
+                Dispatcher.BeginInvoke(new Action(TryShowPreviewBubbles), DispatcherPriority.Loaded);
+            }
+            else
+            {
+                InitialTryShowPreviewBubble();
+            }
         }
 
         private void TryShowPreviewBubbles()
         {
             nodeWasClicked = false;
-
-            // Always set old ZIndex to the last value, even if mouse is not over the node.
-            oldZIndex = NodeViewModel.StaticZIndex;
 
             // There is no need run further.
             if (IsPreviewDisabled()) return;
@@ -2099,23 +2115,30 @@ namespace Dynamo.Controls
             // Or the user is selecting nodes
             // Or preview is disabled for this node
             // Or preview shouldn't be shown for some nodes (e.g. number sliders, watch nodes etc.)
-            // Or node is frozen.
-            // Or node is transient state.
+            // Or node is frozen
+            // Or we are panning the view.
             return !ViewModel.DynamoViewModel.ShowPreviewBubbles ||
                 ViewModel.WorkspaceViewModel.IsConnecting ||
                 ViewModel.WorkspaceViewModel.IsSelecting || !previewEnabled ||
-                !ViewModel.IsPreviewInsetVisible || ViewModel.IsFrozen || viewModel.IsTransient;
+                !ViewModel.IsPreviewInsetVisible || ViewModel.IsFrozen ||
+                ViewModel.WorkspaceViewModel.IsPanning;
         }
 
         private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
         {
             ViewModel.ZIndex = oldZIndex;
+            viewModel.WorkspaceViewModel.DelayNodePreviewControl.Cancel();
 
-            //Watch nodes doesn't have Preview so we should avoid to use any method/property in PreviewControl class due that Preview is created automatically
+            // The preview hasn't been instantiated yet, we should stop here 
+            if (previewControl == null) return;
+
+            // Watch nodes doesn't have Preview so we should avoid to use any method/property in PreviewControl class due that Preview is created automatically
             if (ViewModel.NodeModel != null && ViewModel.NodeModel is CoreNodeModels.Watch) return;
 
             // If mouse in over node/preview control or preview control is pined, we can not hide preview control.
-            if (IsMouseOver || PreviewControl.IsMouseOver || PreviewControl.StaysOpen || IsMouseInsidePreview(e) ||
+            // check the field and not the property because that will trigger the instantiation
+            if (IsMouseOver || previewControl?.IsMouseOver == true ||
+                previewControl?.StaysOpen == true || IsMouseInsidePreview(e) ||
                 (Mouse.Captured is DragCanvas && IsMouseInsideNodeOrPreview(e.GetPosition(this)))) return;
 
             // If it's expanded, then first condense it.
