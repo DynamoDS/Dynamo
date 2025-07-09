@@ -1082,8 +1082,8 @@ namespace DynamoCoreWpfTests
 
             var expectedOutPortNames = new List<string>
             {
-                string.Empty,
-                string.Empty,
+                "x",
+                "y",
                 "list"
             };
 
