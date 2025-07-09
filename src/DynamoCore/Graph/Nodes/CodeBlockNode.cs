@@ -41,6 +41,8 @@ namespace Dynamo.Graph.Nodes
         private string code = string.Empty;
         private List<string> inputIdentifiers = new List<string>();
         private List<string> inputPortNames = new List<string>();
+        private List<string> outputPortNames = new List<string>();
+        private List<string> outputPortTooltips = new List<string>();
         private string previewVariable;
         private readonly LibraryServices libraryServices;
 
@@ -783,6 +785,9 @@ namespace Dynamo.Graph.Nodes
             ParseParam = new ParseParam(GUID, code, resolver);
 
             codeStatements.Clear();
+            outputPortNames.Clear();
+            outputPortTooltips.Clear();
+
             try
             {
                 var priorNames = libraryServices.GetPriorNames();
@@ -797,7 +802,20 @@ namespace Dynamo.Graph.Nodes
                         {
                             // Create a statement variable from the generated nodes
                             codeStatements.Add(Statement.CreateInstance(parsedNode));
-                        }                        
+
+                            if (parsedNode is BinaryExpressionNode binExp)
+                            {
+                                var right = binExp.RightNode;
+                                var left = binExp.LeftNode;
+
+                                var portLabel = IsTempIdentifier(left.Name)
+                                    ? CodeBlockUtils.InferStaticTypeFromNode(right)
+                                    : left.Name;
+
+                                outputPortNames.Add(portLabel);
+                            }
+                        }
+                        outputPortTooltips = CodeBlockUtils.GetCleanedCodeExpressionsForTooltips(code);
                     }
                     else
                     {
@@ -1007,15 +1025,26 @@ namespace Dynamo.Graph.Nodes
             // Clear out all the output port models
             OutPorts.RemoveAll((p) => true);
 
+            int i = 0;
+
             foreach (var def in allDefs)
             {
+                if (i >= outputPortNames.Count) break;
+
+                var label = outputPortNames[i];
                 var tooltip = IsTempIdentifier(def.Key) ? string.Format(Resources.CodeBlockTempIdentifierOutputLabel, def.Value) : def.Key;
 
-                OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
+                // Trim long labels
+                int maxLength = Configurations.CBNMaxPortNameLength;
+                if (label.Length > maxLength) label = label.Remove(maxLength - 3) + "...";
+
+                OutPorts.Add(new PortModel(PortType.Output, this, new PortData(label, tooltip)
                 {
                     LineIndex = def.Value - 1, // Logical line index.
                     Height = Configurations.CodeBlockOutputPortHeightInPixels,
                 }));
+
+                i++;
             }
         }
 
@@ -1269,7 +1298,7 @@ namespace Dynamo.Graph.Nodes
             return string.Format("{0}_{1}", identifierName, AstIdentifierGuid);
         }
 
-        
+
 
         private class IdentifierInPlaceMapper : AstReplacer
         {
@@ -1496,7 +1525,7 @@ namespace Dynamo.Graph.Nodes
                 //Or node not completely implemented YET
             }
         }
-        
+
         /// <summary>
         /// Returns the names of the variables that have been declared in the statement
         /// </summary>
@@ -1708,7 +1737,7 @@ namespace Dynamo.Graph.Nodes
             Row = identNode.line;
             StartColumn = identNode.col;
         }
-        
+
         /// <summary>
         /// Moves column index back only if variable is not an expression.
         /// </summary>
