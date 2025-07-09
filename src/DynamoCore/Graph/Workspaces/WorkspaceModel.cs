@@ -90,10 +90,6 @@ namespace Dynamo.Graph.Workspaces
         public string Name;
         public double X;
         public double Y;
-        public double Width = ModelBase.DefaultWidth;
-        public double Height = ModelBase.DefaultWidth;
-        public double WidthBorder;
-        public double HeightBorder;
         public bool ShowGeometry;
         public bool Excluded;
         public bool IsSetAsInput;
@@ -147,6 +143,10 @@ namespace Dynamo.Graph.Workspaces
         public string PinnedNode;
         public double WidthAdjustment;
         public double HeightAdjustment;
+        public bool IsOptionalInPortsCollapsed;
+        public bool IsUnconnectedOutPortsCollapsed;
+        public bool hasToggledOptionalInPorts;
+        public bool HasToggledUnconnectedOutPorts;
 
         // TODO, Determine if these are required
         public double Left;
@@ -175,7 +175,11 @@ namespace Dynamo.Graph.Workspaces
                 this.GroupStyleId == other.GroupStyleId &&
                 this.Background == other.Background &&
                 this.WidthAdjustment == other.WidthAdjustment &&
-                this.HeightAdjustment == other.HeightAdjustment;
+                this.HeightAdjustment == other.HeightAdjustment &&
+                this.IsOptionalInPortsCollapsed == other.IsOptionalInPortsCollapsed &&
+                this.IsUnconnectedOutPortsCollapsed == other.IsUnconnectedOutPortsCollapsed &&
+                this.hasToggledOptionalInPorts == other.hasToggledOptionalInPorts &&
+                this.HasToggledUnconnectedOutPorts == other.HasToggledUnconnectedOutPorts;
 
             //TODO try to get rid of these if possible
             //needs investigation if we are okay letting them get 
@@ -2499,10 +2503,6 @@ namespace Dynamo.Graph.Workspaces
                         nodeModel.X = nodeViewInfo.X + offsetX;
                         nodeModel.Y = nodeViewInfo.Y + offsetY;
                     }
-                    nodeModel.Width = nodeViewInfo.Width;
-                    nodeModel.Height = nodeViewInfo.Height;
-                    nodeModel.WidthBorder = nodeViewInfo.WidthBorder;
-                    nodeModel.HeightBorder = nodeViewInfo.HeightBorder;
                     nodeModel.IsFrozen = nodeViewInfo.Excluded;
                     nodeModel.IsSetAsInput = nodeViewInfo.IsSetAsInput;
                     nodeModel.IsSetAsOutput = nodeViewInfo.IsSetAsOutput;
@@ -2715,6 +2715,11 @@ namespace Dynamo.Graph.Workspaces
             annotationModel.GUID = annotationGuidValue;
             annotationModel.HeightAdjustment = annotationViewInfo.HeightAdjustment;
             annotationModel.WidthAdjustment = annotationViewInfo.WidthAdjustment;
+            annotationModel.IsOptionalInPortsCollapsed = annotationViewInfo.IsOptionalInPortsCollapsed;
+            annotationModel.IsUnconnectedOutPortsCollapsed = annotationViewInfo.IsUnconnectedOutPortsCollapsed;
+            annotationModel.HasToggledOptionalInPorts = annotationViewInfo.hasToggledOptionalInPorts;
+            annotationModel.HasToggledUnconnectedOutPorts = annotationViewInfo.HasToggledUnconnectedOutPorts;
+
             annotationModel.UpdateGroupFrozenStatus();
 
             annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
