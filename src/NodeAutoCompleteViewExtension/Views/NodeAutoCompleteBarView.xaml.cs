@@ -72,6 +72,7 @@ namespace Dynamo.NodeAutoComplete.Views
             ViewModel.RefocusSearchBox += OnRefocusSearchbox;
             Owner.LocationChanged += OwnerMoved;
             ViewModel.PortViewModel.PortModel.Owner.PropertyChanged += Owner_PropertyChanged;
+            ViewModel.PortViewModel.NodeViewModel.WorkspaceViewModel.Model.PropertyChanged += WorkspaceModel_PropertyChanged;
         }
 
         private void UnsubscribeEvents(object sender, System.ComponentModel.CancelEventArgs e)
@@ -88,6 +89,19 @@ namespace Dynamo.NodeAutoComplete.Views
             ViewModel.RefocusSearchBox -= OnRefocusSearchbox;
             Owner.LocationChanged -= OwnerMoved;
             ViewModel.PortViewModel.PortModel.Owner.PropertyChanged -= Owner_PropertyChanged;
+            ViewModel.PortViewModel.NodeViewModel.WorkspaceViewModel.Model.PropertyChanged -= WorkspaceModel_PropertyChanged;
+        }
+
+        void WorkspaceModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "X":
+                case "Y":
+                case "Zoom":
+                    Dispatcher.BeginInvoke(UpdatePosition, DispatcherPriority.Loaded);
+                    break;
+            }
         }
 
         private void LoadAndPopulate()

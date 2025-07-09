@@ -992,6 +992,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             LastRequestGuid = Guid.NewGuid();
             var myRequest = LastRequestGuid;
             SelectedIndex = -1;
+            RaisePropertyChanged(nameof(IsSingleAutocomplete));//port may have changed between single and cluster autocomplete
 
             //start a background thread to make the http request
             Task.Run(() =>
