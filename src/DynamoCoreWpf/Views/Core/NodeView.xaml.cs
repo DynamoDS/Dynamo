@@ -1588,13 +1588,13 @@ namespace Dynamo.Controls
 
             ViewModel = e.NewValue as NodeViewModel;
 
-            //Enable deferred node loading when node count is above the set threshold.
-            //if (ViewModel.WorkspaceViewModel.NodeCountOptimizationEnabled)
-            //{
-            //    SetNodeBackgroundHeaderAndPortsVisible();
-            //}
-            //else
-            //{
+            Enable deferred node loading when node count is above the set threshold.
+            if (ViewModel.WorkspaceViewModel.NodeCountOptimizationEnabled)
+            {
+                SetNodeBackgroundHeaderAndPortsVisible();
+            }
+            else
+            {
                 var nodeName = GetNodeName(ViewModel);
                 var bitmap = GetNodeImage(nodeName);
                 if (bitmap != null)
@@ -1713,22 +1713,22 @@ namespace Dynamo.Controls
 
                     grid.Children.Add(imageControl);
 
-                    //Dispatcher.CurrentDispatcher.BeginInvoke(() =>
-                    //{
-                    //    if (imageControl != null)
-                    //    {
-                    //        grid.Children.Remove(imageControl);
-                    //        imageControl = null;
+                    Dispatcher.CurrentDispatcher.BeginInvoke(() =>
+                    {
+                        if (imageControl != null)
+                        {
+                            grid.Children.Remove(imageControl);
+                            imageControl = null;
 
-                    //        SetNodeBackgroundHeaderAndPortsVisible();
-                    //    }
-                    //}, DispatcherPriority.Background);
+                            SetNodeBackgroundHeaderAndPortsVisible();
+                        }
+                    }, DispatcherPriority.Background);
                 }
                 else
                 {
                     SetNodeBackgroundHeaderAndPortsVisible();
                 }
-            //}
+            }
 
             //This code should be only executed when loading a graph, if the node is being added to the workspace manually then the Width and Height should be auto-calculated.
             //The default Width and Height values for nodes is 100 so only should be executed on graph loading if both values are 100
