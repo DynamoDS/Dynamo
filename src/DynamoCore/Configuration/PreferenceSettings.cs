@@ -93,6 +93,11 @@ namespace Dynamo.Configuration
         internal const int DefaultBackupInterval = 300000;
 
         /// <summary>
+        /// The old time interval between backup files. 1 minute.
+        /// </summary>
+        private const int OldDefaultBackupInterval = 60000;
+
+        /// <summary>
         /// Indicates the default render precision, i.e. the maximum number of tessellation divisions
         /// </summary>
         internal const int DefaultRenderPrecision = 128;
