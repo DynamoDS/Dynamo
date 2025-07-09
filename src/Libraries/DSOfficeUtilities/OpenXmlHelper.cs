@@ -245,6 +245,17 @@ namespace DSOffice
 
                     currentRowIndex++;
                 }
+
+                // Force re-calculation of formulas on opening the Excel file
+                var workbook = document.WorkbookPart.Workbook;
+                var calcProps = workbook.Elements<CalculationProperties>().FirstOrDefault();
+                if (calcProps == null)
+                {
+                    calcProps = new CalculationProperties();
+                    workbook.AppendChild(calcProps);
+                }
+                calcProps.FullCalculationOnLoad = true;
+
                 return true;
             }
         }
@@ -359,7 +370,9 @@ namespace DSOffice
                             {
                                 if (numberFormatId != 0)
                                 {
-                                    var numberingFormat = (NumberingFormat)stylesheet.NumberingFormats.ElementAt(numberFormatId);
+                                    var numberingFormat = (NumberingFormat)stylesheet.NumberingFormats?.ElementAt(numberFormatId);
+                                    if (numberingFormat == null) return value.ToString();
+
                                     var formatted = value.ToString(numberingFormat.FormatCode);
                                     return formatted;
                                 }

@@ -37,7 +37,7 @@
       "Outputs": [
         {
           "Id": "8234ec6cc018433da0605ddfb17cdc2b",
-          "Name": "",
+          "Name": "[int]",
           "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
           "Level": 2,
