@@ -1,5 +1,5 @@
 {
-  "Uuid": "5ddc6800-cca5-493e-8a33-f6450038ca11",
+  "Uuid": "edd9e95c-26a5-4ec2-bd1b-ca2a80bc827b",
   "IsCustomNode": false,
   "Description": "",
   "Name": "2080_JSONTESTCRASH undo_redo",
@@ -13,11 +13,11 @@
       "ConcreteType": "Dynamo.Graph.Nodes.UNKNOWNTYPE, DynamoCore",
       "NodeType": "CodeBlockNode",
       "Code": "4;",
-      "Id": "875b287444604b9d976d8d0473692552",
+      "Id": "158f8f25ddb746c88323ae262e87611e",
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "8079554f4ddf46c49480b1bd4b3d45e4",
+          "Id": "cddfa508b4a246fd94f79792d303cbf5",
           "Name": "",
           "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
@@ -31,26 +31,18 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "Height": 127.0,
-      "Width": 154.0,
-      "WidthBorder": 156.0,
-      "HeightBorder": 117.0,
-      "Id": "4371809e0640406a9c99d62e2bba0826",
+      "Id": "6cbd0760736f4235a03b38fb359e9957",
       "NodeType": "CodeBlockNode",
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "2766199ea67e45cb8741617b209eb292",
-          "Name": "",
+          "Id": "8234ec6cc018433da0605ddfb17cdc2b",
+          "Name": "[int]",
           "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
-          "KeepListStructure": false,
-          "Height": 16.345,
-          "Width": 100.0,
-          "WidthBorder": 100.0,
-          "HeightBorder": 100.0
+          "KeepListStructure": false
         }
       ],
       "Replication": "Disabled",
@@ -71,7 +63,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "3.6.0.6885",
+      "Version": "2.19.0.4737",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -90,32 +82,24 @@
     "ConnectorPins": [],
     "NodeViews": [
       {
-        "Id": "875b287444604b9d976d8d0473692552",
+        "Id": "158f8f25ddb746c88323ae262e87611e",
         "Name": "Code Block",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
         "X": 179.8,
-        "Y": 160.39999999999992,
-        "Width": 154.0,
-        "Height": 167.0,
-        "WidthBorder": 156.0,
-        "HeightBorder": 161.0
+        "Y": 160.39999999999992
       },
       {
-        "Id": "4371809e0640406a9c99d62e2bba0826",
+        "Id": "6cbd0760736f4235a03b38fb359e9957",
         "Name": "Code Block",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
         "X": 76.8,
-        "Y": 162.4,
-        "Width": 154.0,
-        "Height": 127.0,
-        "WidthBorder": 156.0,
-        "HeightBorder": 117.0
+        "Y": 162.4
       }
     ],
     "Annotations": [],
