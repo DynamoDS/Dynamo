@@ -3216,12 +3216,15 @@ Dynamo.ViewModels.WorkspaceViewModel.IsPanning.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.IsSelecting.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.IsSnapping.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.IsSnapping.set -> void
+Dynamo.ViewModels.WorkspaceViewModel.LoadedNodesCount.get -> int
+Dynamo.ViewModels.WorkspaceViewModel.LoadedNodesCount.set -> void
 Dynamo.ViewModels.WorkspaceViewModel.Name.get -> string
 Dynamo.ViewModels.WorkspaceViewModel.NodeAutoCompleteSearchViewModel.get -> Dynamo.ViewModels.NodeAutoCompleteSearchViewModel
 Dynamo.ViewModels.WorkspaceViewModel.NodeCountOptimizationEnabled.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.NodeCountOptimizationEnabled.set -> void
 Dynamo.ViewModels.WorkspaceViewModel.NodeFromSelectionCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.WorkspaceViewModel.Nodes.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.NodeViewModel>
+Dynamo.ViewModels.WorkspaceViewModel.NodesLoading.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.NodeToCodeCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.WorkspaceViewModel.Notes.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.NoteViewModel>
 Dynamo.ViewModels.WorkspaceViewModel.PasteCommand.get -> Dynamo.UI.Commands.DelegateCommand

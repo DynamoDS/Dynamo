@@ -1,3 +1,21 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Resources;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Selection;
@@ -8,22 +26,6 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Views;
 using Dynamo.Wpf.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Windows.Threading;
 using DynCmd = Dynamo.Models.DynamoModel;
 using Label = System.Windows.Controls.Label;
 using Thickness = System.Windows.Thickness;
@@ -128,6 +130,8 @@ namespace Dynamo.Controls
         private Rectangle nodeBackground;
         private ItemsControl outputPortControl;
         private Button optionsButton;
+        private Image imageControl;
+        private DockPanel nodeHeaderContent;
 
         //View items referenced outside of NodeView internal to DynamoCoreWPF previously from xaml
         internal Border nodeBorder;
@@ -194,6 +198,10 @@ namespace Dynamo.Controls
         private static BoolToVisibilityConverter _booleanToVisibilityConverter = new BoolToVisibilityConverter();
         private static EmptyToVisibilityCollapsedConverter _emptyToVisibilityCollapsedConverter = new EmptyToVisibilityCollapsedConverter();
         private static ZoomToVisibilityCollapsedConverter _zoomToVisibilityCollapsedConverter = new ZoomToVisibilityCollapsedConverter();
+        private static IValueConverter _sZoomFadeControl = SharedDictionaryManager.DynamoModernDictionary["SZoomFadeControl"] as IValueConverter;
+        private static IValueConverter _sZoomFadeInControl = SharedDictionaryManager.DynamoModernDictionary["SZoomFadeInControl"] as IValueConverter;
+        private static IValueConverter _sZoomFadeOutPreview = SharedDictionaryManager.DynamoModernDictionary["SZoomFadeOutPreview"] as IValueConverter;
+        private static IValueConverter _sZoomFadeInPreview = SharedDictionaryManager.DynamoModernDictionary["SZoomFadeInPreview"] as IValueConverter;
         private static ConditionalPackageTextConverter _conditionalPackageTextConverter = new ConditionalPackageTextConverter();
 
         // Font
@@ -210,16 +218,21 @@ namespace Dynamo.Controls
             Stretch = Stretch.UniformToFill
         };
 
-        private static Style _zoomFadeOpacity_OneToZeroStyle = GetZoomFadeOpacity_OneToZeroAnimatedStyle();
-        private static Style _zoomFadeOpacity_50PercentToZeroStyle = GetZoomFadeOpacity_50PercentToZeroAnimatedStyle();
-        private static Style _zoomFadeInOpacity_ZeroTo50PercentStyle = GetZoomFadeInOpacity_ZeroTo50PercentAnimatedStyle();
         private static Style _nodeButtonStyle = GetNodeButtonStyle();
         private static Style _codeBlockNodeItemControlStyle = GetCodeBlockPortItemControlStyle();
         internal static readonly Style DynamoToolTipTopStyle = GetDynamoToolTipTopStyle();
+        private static Binding _sZoomFadeControlStyleBinding = GetFadeToOpacityStyleBinding(_sZoomFadeControl);
+        private static Binding _sZoomFadeInControlStyleBinding = GetFadeToOpacityStyleBinding(_sZoomFadeInControl);
+        private static Binding _sZoomFadeInPreviewStyleBinding = GetFadeToOpacityStyleBinding(_sZoomFadeInPreview);
+        private static Binding _sZoomFadeOutPreviewStyleBinding = GetFadeToOpacityStyleBinding(_sZoomFadeOutPreview);
         // Initiate context menu style as static resource.
         private static ContextMenu nodeContextMenu = GetNodeContextMenu();
 
         #region constructors
+        private static readonly Dictionary<string, BitmapImage> _cachedImages =
+        new Dictionary<string, BitmapImage>(StringComparer.OrdinalIgnoreCase);
+
+        //Freeze the static resource to reduce memory overhead... Not sure we need this. 
         static NodeView()
         {
             //Set bitmap scaling mode to low quality for default node icon.
@@ -244,6 +257,7 @@ namespace Dynamo.Controls
             _nodeContextMenuSeparatorColor.Freeze();
             _nodeOptionsButtonBackground.Freeze();
             _nodeHoverColor.Freeze();
+            LoadBmpPorts();
         }
 
         public NodeView()
@@ -272,7 +286,8 @@ namespace Dynamo.Controls
             nodeBackground = new Rectangle()
             {
                 Name = "nodeBackground",
-                Fill = _darkerGreyBrush
+                Fill = _darkerGreyBrush,
+                Visibility = Visibility.Collapsed, // Default visibility; will be updated by binding
             };
 
             Grid.SetRow(nodeBackground, 2);
@@ -289,6 +304,7 @@ namespace Dynamo.Controls
                 CornerRadius = new CornerRadius(8, 8, 0, 0),
                 Background = _darkMidGreyBrush,
                 IsHitTestVisible = true,
+                Visibility = Visibility.Collapsed
             };
 
             Grid.SetRow(nameBackground, 1);
@@ -347,11 +363,12 @@ namespace Dynamo.Controls
             dynamoToolTip.Content = consolidatedTooltipTextBlock;
             nameBackground.ToolTip = dynamoToolTip;
 
-            var nodeHeaderContent = new DockPanel()
+            nodeHeaderContent = new DockPanel()
             {
                 Name = "nodeHeaderContent",
                 VerticalAlignment = VerticalAlignment.Top,
                 Margin = new Thickness(6),
+                Visibility = Visibility.Collapsed
             };
 
             Grid.SetRow(nodeHeaderContent, 1);
@@ -378,14 +395,14 @@ namespace Dynamo.Controls
                 Background = null,
                 IsHitTestVisible = false,
                 TextAlignment = TextAlignment.Center,
-                FontFamily = _artifactElementReg,
-                Style = _zoomFadeOpacity_OneToZeroStyle
+                FontFamily = _artifactElementReg
             };
 
             NameBlock.SetBinding(TextBlock.TextProperty, new Binding("Name")
             {
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
+            NameBlock.SetBinding(TextBlock.StyleProperty, _sZoomFadeControlStyleBinding);
 
             nodeHeaderContent.Children.Add(NameBlock);
 
@@ -423,7 +440,7 @@ namespace Dynamo.Controls
                 Background = Brushes.Transparent,
             };
 
-            Canvas.SetZIndex(renameIndicator, 5);
+            SetValue(Panel.ZIndexProperty, 5);
             renameIndicator.SetValue(DockPanel.DockProperty, Dock.Right);
 
             // Create and configure the Ellipse
@@ -472,7 +489,7 @@ namespace Dynamo.Controls
             });
 
             dynamoRenameToolTip.Content = toolTipTextBlock;
-            nodeRenamedBlueDot.ToolTip = dynamoRenameToolTip;
+            renameIndicator.ToolTip = dynamoRenameToolTip;
 
             #endregion
 
@@ -483,7 +500,8 @@ namespace Dynamo.Controls
                 Name = "inputPortControl",
                 Margin = new Thickness(-25, 3, 0, 0),
                 VerticalAlignment = VerticalAlignment.Top,
-                HorizontalContentAlignment = HorizontalAlignment.Stretch
+                HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                Visibility = Visibility.Collapsed
             };
 
             inputPortControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("InPorts"));
@@ -497,6 +515,7 @@ namespace Dynamo.Controls
                 Margin = new Thickness(0, 3, -24, 5),
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                Visibility = Visibility.Collapsed
             };
 
             outputPortControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("OutPorts"));
@@ -514,9 +533,9 @@ namespace Dynamo.Controls
                 Margin = new System.Windows.Thickness(0, 0, 2, 2),
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Bottom,
-                Orientation = Orientation.Horizontal,
-                Style = _zoomFadeOpacity_OneToZeroStyle
+                Orientation = Orientation.Horizontal
             };
+            GlyphStackPanel.SetBinding(StackPanel.StyleProperty, _sZoomFadeControlStyleBinding);
 
             var experimentalIcon = new FontAwesome5.ImageAwesome()
             {
@@ -628,6 +647,7 @@ namespace Dynamo.Controls
                 Converter = new LacingToAbbreviationConverter(),
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
+            LacingIconGlyph.SetBinding(Label.StyleProperty, _sZoomFadeControlStyleBinding);
 
             var alertsGlyph = new Grid
             {
@@ -636,6 +656,7 @@ namespace Dynamo.Controls
                 MinWidth = 16,
                 Margin = new Thickness(0, 0, 3, 0)
             };
+            alertsGlyph.SetBinding(Grid.StyleProperty, _sZoomFadeControlStyleBinding);
 
             // Create the Border
             Border border = new Border
@@ -820,7 +841,6 @@ namespace Dynamo.Controls
                 Margin = new Thickness(-8),
                 Fill = _darkBlue200,
                 IsHitTestVisible = false,
-                Style = _zoomFadeOpacity_50PercentToZeroStyle 
             };
             Grid.SetRow(nodeColorOverlayZoomIn, 1);
             Grid.SetRowSpan(nodeColorOverlayZoomIn, 4);
@@ -834,6 +854,7 @@ namespace Dynamo.Controls
                 Mode = BindingMode.OneWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
+            nodeColorOverlayZoomIn.SetBinding(Rectangle.StyleProperty, _sZoomFadeOutPreviewStyleBinding);
 
             // Node color overlay when zoomed In for Transient state
             var nodeTransientColorOverlayZoomIn = new Rectangle
@@ -842,7 +863,6 @@ namespace Dynamo.Controls
                 Margin = new Thickness(-8),
                 Fill = _nodeTransientOverlayColor,
                 IsHitTestVisible = false,
-                Style = _zoomFadeOpacity_50PercentToZeroStyle
             };
             Grid.SetRow(nodeTransientColorOverlayZoomIn, 1);
             Grid.SetRowSpan(nodeTransientColorOverlayZoomIn, 4);
@@ -856,6 +876,7 @@ namespace Dynamo.Controls
                 Mode = BindingMode.OneWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
+            nodeTransientColorOverlayZoomIn.SetBinding(Rectangle.StyleProperty, _sZoomFadeOutPreviewStyleBinding);
 
             #endregion
 
@@ -867,7 +888,6 @@ namespace Dynamo.Controls
                 Name = "nodeColorOverlayZoomOut",
                 Margin = new Thickness(-8),
                 IsHitTestVisible = false,
-                Style = _zoomFadeInOpacity_ZeroTo50PercentStyle
             };
             Grid.SetRow(nodeColorOverlayZoomOut, 1);
             Grid.SetRowSpan(nodeColorOverlayZoomOut, 4);
@@ -879,6 +899,7 @@ namespace Dynamo.Controls
             {
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
+            nodeColorOverlayZoomOut.SetBinding(Rectangle.StyleProperty, _sZoomFadeInPreviewStyleBinding);
 
             // Create the main Grid
             zoomGlyphsGrid = new Grid
@@ -889,7 +910,6 @@ namespace Dynamo.Controls
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 IsHitTestVisible = false,
-                Style = _zoomFadeInOpacity_ZeroTo50PercentStyle
             };
             Grid.SetRow(zoomGlyphsGrid, 0);
             Grid.SetRowSpan(zoomGlyphsGrid, 4);
@@ -903,6 +923,7 @@ namespace Dynamo.Controls
                 RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
                 Converter = _zoomToVisibilityCollapsedConverter
             });
+            zoomGlyphsGrid.SetBinding(Grid.StyleProperty, _sZoomFadeInControlStyleBinding);
 
             // StackPanel
             var stackPanel = new StackPanel
@@ -1124,6 +1145,19 @@ namespace Dynamo.Controls
         #endregion
 
         #region Styles methods
+        private void SetNodeBackgroundHeaderAndPortsVisible()
+        {
+            nodeBackground.Visibility = Visibility.Visible;
+            nameBackground.Visibility = Visibility.Visible;
+            nodeHeaderContent.Visibility = Visibility.Visible;
+            inputPortControl.Visibility = Visibility.Visible;
+            outputPortControl.Visibility = Visibility.Visible;
+            if (ViewModel != null)
+            {
+                ViewModel.WorkspaceViewModel.OnNodeViewLoaded();
+            }
+        }
+
         private static Style GetNodeButtonStyle()
         {
             // Create the Style
@@ -1237,13 +1271,13 @@ namespace Dynamo.Controls
             var tooltipGeometry = new PathGeometry();
             tooltipGeometry.Figures.Add(tooltipPathFigure);
 
-            FrameworkElementFactory pathFactory = new FrameworkElementFactory(typeof(Path));
-            pathFactory.SetValue(Path.HorizontalAlignmentProperty, HorizontalAlignment.Center);
-            pathFactory.SetValue(Path.VerticalAlignmentProperty, VerticalAlignment.Center);
-            pathFactory.SetValue(Path.FillProperty, infoBubbleBackNormalBrush);
-            pathFactory.SetValue(Path.StrokeProperty, infoBubbleEdgeNormalBrush);
-            pathFactory.SetValue(Path.StrokeThicknessProperty, 1.0);
-            pathFactory.SetValue(Path.DataProperty, tooltipGeometry);
+            FrameworkElementFactory pathFactory = new FrameworkElementFactory(typeof(System.Windows.Shapes.Path));
+            pathFactory.SetValue(System.Windows.Shapes.Path.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            pathFactory.SetValue(System.Windows.Shapes.Path.VerticalAlignmentProperty, VerticalAlignment.Center);
+            pathFactory.SetValue(System.Windows.Shapes.Path.FillProperty, infoBubbleBackNormalBrush);
+            pathFactory.SetValue(System.Windows.Shapes.Path.StrokeProperty, infoBubbleEdgeNormalBrush);
+            pathFactory.SetValue(System.Windows.Shapes.Path.StrokeThicknessProperty, 1.0);
+            pathFactory.SetValue(System.Windows.Shapes.Path.DataProperty, tooltipGeometry);
             pathFactory.SetValue(Grid.RowProperty, 1);
             gridFactory.AppendChild(pathFactory);
 
@@ -1258,222 +1292,6 @@ namespace Dynamo.Controls
             customTooltipStyle.Setters.Add(new Setter(DynamoToolTip.TemplateProperty, toolTipTemplate));
 
             return customTooltipStyle;
-        }
-
-        private static Style GetZoomFadeOpacity_50PercentToZeroStyle()
-        {
-            Binding zoomBinding = new Binding("DataContext.Zoom")
-            {
-                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
-                Converter = new ZoomToBooleanConverter()
-            };
-
-            // Define the DataTrigger
-            DataTrigger dataTrigger = new DataTrigger
-            {
-                Binding = zoomBinding,
-                Value = true
-            };
-
-            // Define the setter for the DataTrigger to change Opacity to 0.5
-            Setter opacitySetter = new Setter(UIElement.OpacityProperty, 0.5);
-            dataTrigger.Setters.Add(opacitySetter);
-
-            // Create a Style to hold the DataTrigger and initial Opacity setter
-            Style controlStyle = new Style(typeof(FrameworkElement));
-            controlStyle.Setters.Add(new Setter(UIElement.OpacityProperty, 0.0));
-            controlStyle.Triggers.Add(dataTrigger);
-
-            return controlStyle;
-        }
-
-        private static Style GetZoomFadeOpacity_50PercentToZeroAnimatedStyle()
-        {
-            Binding zoomBinding = new Binding("DataContext.Zoom")
-            {
-                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
-                Converter = new ZoomToBooleanConverter()
-            };
-
-            // Define the DataTrigger
-            DataTrigger dataTrigger = new DataTrigger
-            {
-                Binding = zoomBinding,
-                Value = true
-            };
-
-            // EnterActions: Fade out to .5
-            var enterStoryboard = new Storyboard();
-            var enterAnimation = new DoubleAnimation
-            {
-                To = 0.5,
-                Duration = new Duration(TimeSpan.FromSeconds(0.5))
-            };
-            Storyboard.SetTargetProperty(enterAnimation, new PropertyPath("Opacity"));
-            enterStoryboard.Children.Add(enterAnimation);
-            dataTrigger.EnterActions.Add(new BeginStoryboard { Storyboard = enterStoryboard });
-
-            // ExitActions: Fade in to 0.0
-            var exitStoryboard = new Storyboard();
-            var exitAnimation = new DoubleAnimation
-            {
-                To = 0.0,
-                Duration = new Duration(TimeSpan.FromSeconds(0.5))
-            };
-            Storyboard.SetTargetProperty(exitAnimation, new PropertyPath("Opacity"));
-            exitStoryboard.Children.Add(exitAnimation);
-            dataTrigger.ExitActions.Add(new BeginStoryboard { Storyboard = exitStoryboard });
-
-            // Create a Style to hold the DataTrigger and initial Opacity setter
-            Style controlStyle = new Style(typeof(FrameworkElement));
-            controlStyle.Setters.Add(new Setter(UIElement.OpacityProperty, 0.0));
-            controlStyle.Triggers.Add(dataTrigger);
-
-            return controlStyle;
-        }
-
-        private static Style GetZoomFadeOpacity_OneToZeroStyle()
-        {
-            Binding zoomBinding = new Binding("DataContext.Zoom")
-            {
-                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
-                Converter = new ZoomToBooleanConverter()
-            };
-
-            // Define the DataTrigger
-            DataTrigger dataTrigger = new DataTrigger
-            {
-                Binding = zoomBinding,
-                Value = true
-            };
-
-            // Define the setter for the DataTrigger to change Opacity to 1
-            Setter opacitySetter = new Setter(UIElement.OpacityProperty, 1.0);
-            dataTrigger.Setters.Add(opacitySetter);
-
-            // Create a Style to hold the DataTrigger and initial Opacity setter
-            Style controlStyle = new Style(typeof(FrameworkElement));
-            controlStyle.Setters.Add(new Setter(UIElement.OpacityProperty, 0.0));
-            controlStyle.Triggers.Add(dataTrigger);
-
-            return controlStyle;
-        }
-
-        private static Style GetZoomFadeOpacity_OneToZeroAnimatedStyle()
-        {
-            Binding zoomBinding = new Binding("DataContext.Zoom")
-            {
-                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
-                Converter = new ZoomToBooleanConverter()
-            };
-
-            // Define the DataTrigger
-            DataTrigger dataTrigger = new DataTrigger
-            {
-                Binding = zoomBinding,
-                Value = true
-            };
-
-            // EnterActions: Fade out to 1
-            var enterStoryboard = new Storyboard();
-            var enterAnimation = new DoubleAnimation
-            {
-                To = 1.0,
-                Duration = new Duration(TimeSpan.FromSeconds(0.5))
-            };
-            Storyboard.SetTargetProperty(enterAnimation, new PropertyPath("Opacity"));
-            enterStoryboard.Children.Add(enterAnimation);
-            dataTrigger.EnterActions.Add(new BeginStoryboard { Storyboard = enterStoryboard });
-
-            // ExitActions: Fade in to 0.0
-            var exitStoryboard = new Storyboard();
-            var exitAnimation = new DoubleAnimation
-            {
-                To = 0.0,
-                Duration = new Duration(TimeSpan.FromSeconds(0.5))
-            };
-            Storyboard.SetTargetProperty(exitAnimation, new PropertyPath("Opacity"));
-            exitStoryboard.Children.Add(exitAnimation);
-            dataTrigger.ExitActions.Add(new BeginStoryboard { Storyboard = exitStoryboard });
-
-            // Create a Style to hold the DataTrigger and initial Opacity setter
-            Style controlStyle = new Style(typeof(FrameworkElement));
-            controlStyle.Setters.Add(new Setter(UIElement.OpacityProperty, 0.0));
-            controlStyle.Triggers.Add(dataTrigger);
-
-            return controlStyle;
-        }
-
-        private static Style GetZoomFadeInOpacity_ZeroTo50PercentStyle()
-        {
-            Binding zoomBinding = new Binding("DataContext.Zoom")
-            {
-                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
-                Converter = new ZoomToBooleanConverter()
-            };
-
-            // Define the DataTrigger
-            DataTrigger dataTrigger = new DataTrigger
-            {
-                Binding = zoomBinding,
-                Value = true
-            };
-
-            // Define the setter for the DataTrigger to change Opacity to 0.0
-            Setter opacitySetter = new Setter(UIElement.OpacityProperty, 0.0);
-            dataTrigger.Setters.Add(opacitySetter);
-
-            // Create a Style to hold the DataTrigger and initial Opacity setter
-            Style controlStyle = new Style(typeof(FrameworkElement));
-            controlStyle.Setters.Add(new Setter(UIElement.OpacityProperty, 0.5));
-            controlStyle.Triggers.Add(dataTrigger);
-
-            return controlStyle;
-        }
-
-        private static Style GetZoomFadeInOpacity_ZeroTo50PercentAnimatedStyle()
-        {
-            Binding zoomBinding = new Binding("DataContext.Zoom")
-            {
-                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
-                Converter = new ZoomToBooleanConverter()
-            };
-
-            // Define the DataTrigger
-            DataTrigger dataTrigger = new DataTrigger
-            {
-                Binding = zoomBinding,
-                Value = true
-            };
-
-            // EnterActions: Fade out to 0.0
-            var enterStoryboard = new Storyboard();
-            var enterAnimation = new DoubleAnimation
-            {
-                To = 0.0,
-                Duration = new Duration(TimeSpan.FromSeconds(0.5))
-            };
-            Storyboard.SetTargetProperty(enterAnimation, new PropertyPath("Opacity"));
-            enterStoryboard.Children.Add(enterAnimation);
-            dataTrigger.EnterActions.Add(new BeginStoryboard { Storyboard = enterStoryboard });
-
-            // ExitActions: Fade in to 0.5
-            var exitStoryboard = new Storyboard();
-            var exitAnimation = new DoubleAnimation
-            {
-                To = 0.5,
-                Duration = new Duration(TimeSpan.FromSeconds(0.5))
-            };
-            Storyboard.SetTargetProperty(exitAnimation, new PropertyPath("Opacity"));
-            exitStoryboard.Children.Add(exitAnimation);
-            dataTrigger.ExitActions.Add(new BeginStoryboard { Storyboard = exitStoryboard });
-
-            // Create a Style to hold the DataTrigger and initial Opacity setter
-            Style controlStyle = new Style(typeof(FrameworkElement));
-            controlStyle.Setters.Add(new Setter(UIElement.OpacityProperty, 0.5));
-            controlStyle.Triggers.Add(dataTrigger);
-
-            return controlStyle;
         }
 
         private static Style GetCodeBlockPortItemControlStyle()
@@ -1500,8 +1318,58 @@ namespace Dynamo.Controls
             return inOutPortControlStyle;
         }
 
+        private static Binding GetFadeToOpacityStyleBinding(IValueConverter conv)
+        {
+            return new Binding("DataContext.NodeCountOptimizationEnabled")
+            {
+                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
+                Converter = conv
+            };
+        }
+
         #endregion
 
+        //Set up pixel arrays for the port markers 
+        static byte[] bluePixels = new byte[5 * 29 * 4];
+        static byte[] bluePixelsDefault = new byte[4 * 27 * 4];
+        static byte[] redPixels = new byte[5 * 29 * 4];
+        static byte[] greyPixels = new byte[5 * 29 * 4];
+
+        //Initialize the port arrays
+        private static void LoadBmpPorts()
+        {
+            for (int i = 0; i < bluePixels.Length; i += 4)
+            {
+                bluePixels[i + 0] = 231; // Blue
+                bluePixels[i + 1] = 192; // Green
+                bluePixels[i + 2] = 106; // Red
+                bluePixels[i + 3] = 255; // Alpha
+            }
+
+            for (int i = 0; i < bluePixelsDefault.Length; i += 4)
+            {
+                bluePixelsDefault[i + 0] = 231; // Blue
+                bluePixelsDefault[i + 1] = 192; // Green
+                bluePixelsDefault[i + 2] = 106; // Red
+                bluePixelsDefault[i + 3] = 255; // Alpha
+            }
+
+            for (int i = 0; i < redPixels.Length; i += 4)
+            {
+                redPixels[i + 0] = 85; // Blue
+                redPixels[i + 1] = 85; // Green
+                redPixels[i + 2] = 235; // Red
+                redPixels[i + 3] = 255; // Alpha
+            }
+
+            for (int i = 0; i < greyPixels.Length; i += 4)
+            {
+                greyPixels[i + 0] = 153; // Blue
+                greyPixels[i + 1] = 153; // Green
+                greyPixels[i + 2] = 153; // Red
+                greyPixels[i + 3] = 255; // Alpha
+            }
+        }
         private void DelayPreviewControlAction()
         {
             if (!IsMouseOver) return;
@@ -1529,8 +1397,6 @@ namespace Dynamo.Controls
             ViewModel.NodeLogic.PropertyChanged -= NodeLogic_PropertyChanged;
             ViewModel.NodeModel.ConnectorAdded -= NodeModel_ConnectorAdded;
             MouseLeave -= NodeView_MouseLeave;
-
-            ViewModel.WorkspaceViewModel.PropertyChanged -= OnWorkspaceView_PropertyChanged;
 
             nameBackground.MouseDown -= NameBlock_OnMouseDown;
             EditableNameBox.LostFocus -= EditableNameBox_OnLostFocus;
@@ -1569,6 +1435,81 @@ namespace Dynamo.Controls
             }
         }
 
+        private static ResourceSet _nodeImageResourceSet;
+        private static readonly object _resourceSetLock = new object();
+
+        private static bool EnsureNodeImageResourceSetLoaded()
+        {
+            bool success = true;
+            if (_nodeImageResourceSet == null)
+            {
+                lock (_resourceSetLock)
+                {
+                    if (_nodeImageResourceSet == null)
+                    {
+                        var assembly = Assembly.GetExecutingAssembly();
+                        var stream = assembly.GetManifestResourceStream("Dynamo.Wpf.NodeCacheImages.resources");
+                        if (stream == null)
+                            success = false;
+                        _nodeImageResourceSet = new ResourceSet(stream);
+                    }
+                }
+            }
+
+            return success;
+        }
+
+        internal static BitmapImage GetNodeImage(string nodeName)
+        {
+            if (!EnsureNodeImageResourceSetLoaded())
+            {
+                return null;
+            }
+
+            // Check cache first
+            if (_cachedImages.TryGetValue(nodeName, out BitmapImage cachedImage))
+                return cachedImage;
+
+            try
+            {
+                // Get the resource value
+                var base64String = _nodeImageResourceSet.GetString(nodeName);
+
+                if (!string.IsNullOrEmpty(base64String))
+                {
+                    byte[] imageBytes = Convert.FromBase64String(base64String);
+                    var bi = BytesToBitmapImage(imageBytes);
+                    _cachedImages[nodeName] = bi;
+                    return bi;
+                }
+                _cachedImages[nodeName] = null;
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _cachedImages[nodeName] = null;
+                return null;
+            }
+        }
+
+        private static BitmapImage BytesToBitmapImage(byte[] imageBytes)
+        {
+            if (imageBytes == null || imageBytes.Length == 0)
+                return null;
+
+            using (var memoryStream = new MemoryStream(imageBytes))
+            {
+                var bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memoryStream;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+                bitmapImage.Freeze();
+
+                return bitmapImage;
+            }
+        }
+
         /// <summary>
         /// This event handler is called soon as the NodeViewModel is bound to this 
         /// NodeView, which happens way before OnNodeViewLoaded event is sent. 
@@ -1590,6 +1531,148 @@ namespace Dynamo.Controls
             if (null != ViewModel) return;
 
             ViewModel = e.NewValue as NodeViewModel;
+
+            //Enable deferred node loading when node count is above the set threshold.
+            if (!ViewModel.WorkspaceViewModel.NodeCountOptimizationEnabled)
+            {
+                SetNodeBackgroundHeaderAndPortsVisible();
+            }
+            else
+            {
+                var nodeName = GetNodeName(ViewModel);
+                var bitmap = GetNodeImage(nodeName);
+                if (bitmap != null)
+                {
+                    var writeableBitmap = new WriteableBitmap(bitmap);
+
+                    // Define rectangle position and size
+                    int width = 5, height = 29;
+                    int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
+                    int bufferWidth = 5;
+                    int imageHeight = writeableBitmap.PixelHeight;
+
+                    byte[] transparentPixels = new byte[bufferWidth * imageHeight * bytesPerPixel];
+
+                    // Fill with transparent pixels (all zeros = transparent)
+                    for (int i = 0; i < transparentPixels.Length; i += 4)
+                    {
+                        transparentPixels[i + 0] = 0;   // Blue
+                        transparentPixels[i + 1] = 0;   // Green  
+                        transparentPixels[i + 2] = 0;   // Red
+                        transparentPixels[i + 3] = 0;   // Alpha (transparent)
+                    }
+
+                    // Write transparent pixels to the left 5px of the image
+                    writeableBitmap.WritePixels(
+                        new Int32Rect(0, 0, bufferWidth, imageHeight),
+                        transparentPixels,
+                        bufferWidth * bytesPerPixel,
+                        0
+                    );
+
+                    int j = 0;
+
+                    foreach (var item in ViewModel.InPorts)
+                    {
+                        var model = item as InPortViewModel;
+                        // Define the rectangle's position and size
+                        int x = 0; // X coordinate
+                        int y = 51 + j; // Y coordinate
+
+                        if (model.PortValueMarkerColor.Color.R == 106)
+                        {
+                            writeableBitmap.WritePixels(
+                                new Int32Rect(x + 5, y, width, height),
+                                bluePixels,
+                                width * bytesPerPixel,
+                                0
+                            );
+                        }
+                        else if (model.PortValueMarkerColor.Color.R == 235)
+                        {
+                            writeableBitmap.WritePixels(
+                                new Int32Rect(x + 5, y, width, height),
+                                redPixels,
+                                width * bytesPerPixel,
+                                0
+                            );
+                        }
+                        else
+                        {
+                            writeableBitmap.WritePixels(
+                                new Int32Rect(x + 5, y, width, height),
+                                greyPixels,
+                                width * bytesPerPixel,
+                                0
+                            );
+                        }
+
+                        if (model.PortDefaultValueMarkerVisible)
+                        {
+                            writeableBitmap.WritePixels(
+                                new Int32Rect(x, y + 1, width - 1, height - 2),
+                                bluePixelsDefault,
+                                (width - 1) * bytesPerPixel,
+                                0
+                            );
+                        }
+
+                        j += 34;
+                    }
+
+                    j = 0;
+                    foreach (var item in ViewModel.OutPorts)
+                    {
+                        var model = item as OutPortViewModel;
+                        // Define the rectangle's position and size
+                        int x = (int)writeableBitmap.Width - 5; // X coordinate 
+                        int y = 51 + j; // Y coordinate 
+
+                        if (model.PortDefaultValueMarkerVisible)
+                        {
+                            writeableBitmap.WritePixels(
+                                new Int32Rect(x, y, width, height),
+                                greyPixels,
+                                width * bytesPerPixel,
+                                0
+                            );
+                        }
+
+                        j += 34;
+                    }
+
+                    // Create the Image control
+                    imageControl = new Image
+                    {
+                        Source = writeableBitmap,
+                        Margin = new Thickness(-5, 0, 0, 0),
+                        Width = writeableBitmap.PixelWidth,   // Set width to pixel width
+                        Height = writeableBitmap.PixelHeight, // Set height to pixel height
+                        Stretch = System.Windows.Media.Stretch.None // Prevent scaling
+                    };
+
+                    Grid.SetRow(imageControl, 1);
+                    Grid.SetRowSpan(imageControl, 3);
+                    Grid.SetColumnSpan(imageControl, 3);
+
+                    grid.Children.Add(imageControl);
+
+                    Dispatcher.CurrentDispatcher.BeginInvoke(() =>
+                    {
+                        if (imageControl != null)
+                        {
+                            grid.Children.Remove(imageControl);
+                            imageControl = null;
+
+                            SetNodeBackgroundHeaderAndPortsVisible();
+                        }
+                    }, DispatcherPriority.Background);
+                }
+                else
+                {
+                    SetNodeBackgroundHeaderAndPortsVisible();
+                }
+            }
 
             //Set NodeIcon
             if (ViewModel.ImageSource == null)
@@ -1695,6 +1778,84 @@ namespace Dynamo.Controls
             grid.Children.Add(customFunctionCanvas);
         }
 
+        internal static string GetNodeQualifiedName(NodeModel nodeModel)
+        {
+            string result = string.Empty;
+            switch (nodeModel)
+            {
+                case Graph.Nodes.CustomNodes.Function function:
+                    var category = function.Category;
+                    var name = function.Name;
+                    result = GetNodeNameWithInputs(function, $"{category}.{name}");
+                    break;
+
+                case Graph.Nodes.ZeroTouch.DSFunctionBase dSFunction:
+                    var descriptor = dSFunction.Controller.Definition;
+                    result = GetNodeNameWithInputs(nodeModel, $"{descriptor.QualifiedName}");
+                    break;
+
+                case NodeModel node:
+                    var type = node.GetType();
+                    result = GetNodeNameWithInputs(nodeModel, $"{type.FullName}");
+                    break;
+            }
+
+            if (string.IsNullOrEmpty(result))
+                return result;
+
+            // Remove each invalid character from the name
+            string sanitizedName = result;
+            foreach (char invalidChar in System.IO.Path.GetInvalidFileNameChars())
+            {
+                sanitizedName = sanitizedName.Replace(invalidChar.ToString(), string.Empty);
+            }
+
+            return sanitizedName;
+        }
+
+        internal static string GetNodeNameWithInputs(NodeModel node, string prefix)
+        {
+            var inputNames = node.InPorts.Select(x => x.Name).ToArray();
+            var fullName = $"{prefix}({string.Join(", ", inputNames)})";
+            // Match https://github.com/DynamoDS/Dynamo/blame/master/src/DynamoCore/Search/SearchElements/ZeroTouchSearchElement.cs#L51
+            if (fullName.Length > 250)
+            {
+                //only take first 2 characters from each input
+                var truncatedInputNames = inputNames.Select(name => name.Length >= 2 ?
+                    name.Substring(0, 2) : name).ToArray();
+                fullName = $"{prefix}({string.Join(", ", truncatedInputNames)})";
+            }
+            return fullName;
+        }
+
+        /// <summary>
+        /// Returns the name of the node based on its original name.
+        /// For some operators, that cannot be named as files, it returns a descriptive name rather than symbols.
+        /// </summary>
+        /// <returns></returns>
+        private static string GetNodeName(NodeViewModel nvm)
+        {
+            switch (nvm.OriginalName)
+            {
+                case "*":
+                    return "mul";
+                case "<":
+                    return "lt";
+                case "<=": 
+                    return "le";
+                case ">":
+                    return "gt";
+                case ">=":
+                    return "ge";
+                case "||":
+                    return "or";
+                case "/":
+                    return "div";
+                default:
+                    return GetNodeQualifiedName(nvm.NodeModel);
+            }
+        }
+
         private void OnNodeViewLoaded(object sender, RoutedEventArgs e)
         {
             // We no longer cache the DataContext (NodeViewModel) here because 
@@ -1712,30 +1873,6 @@ namespace Dynamo.Controls
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
             ViewModel.NodeModel.ConnectorAdded += NodeModel_ConnectorAdded;
             MouseLeave += NodeView_MouseLeave;
-
-            ViewModel.WorkspaceViewModel.PropertyChanged += OnWorkspaceView_PropertyChanged;
-        }
-
-        private void OnWorkspaceView_PropertyChanged(object sender, PropertyChangedEventArgs args)
-        {
-            switch (args.PropertyName)
-            {
-                //Todo Does this need to dispatched on UIThread
-                case "NodeCountOptimizationEnabled":
-                    if (ViewModel.WorkspaceViewModel.NodeCountOptimizationEnabled)
-                    {
-                        _zoomFadeOpacity_OneToZeroStyle = GetZoomFadeOpacity_OneToZeroAnimatedStyle();
-                        _zoomFadeOpacity_50PercentToZeroStyle = GetZoomFadeOpacity_50PercentToZeroAnimatedStyle();
-                        _zoomFadeInOpacity_ZeroTo50PercentStyle = GetZoomFadeInOpacity_ZeroTo50PercentAnimatedStyle();
-                    }
-                    else
-                    {
-                        _zoomFadeOpacity_OneToZeroStyle = GetZoomFadeOpacity_OneToZeroStyle();
-                        _zoomFadeOpacity_50PercentToZeroStyle = GetZoomFadeOpacity_50PercentToZeroStyle();
-                        _zoomFadeInOpacity_ZeroTo50PercentStyle = GetZoomFadeInOpacity_ZeroTo50PercentStyle();
-                    }
-                    break;
-            }
         }
 
         private void NodeModel_ConnectorAdded(Graph.Connectors.ConnectorModel obj)
@@ -1994,7 +2131,6 @@ namespace Dynamo.Controls
         {
             if (e.ClickCount == 2)
             {
-                Debug.WriteLine("Name double clicked!");
                 // If workspace is zoomed-out, open an Edit Name dialog, otherwise rename inline
                 if (viewModel.WorkspaceViewModel.Zoom < Configurations.ZoomDirectEditThreshold)
                 {
@@ -2053,6 +2189,16 @@ namespace Dynamo.Controls
 
         private void OnNodeViewMouseEnter(object sender, MouseEventArgs e)
         {
+            if (imageControl != null)
+            {
+                grid.Dispatcher.Invoke(() =>
+                {
+                    grid.Children.Remove(imageControl);
+                    imageControl = null;
+
+                    SetNodeBackgroundHeaderAndPortsVisible();
+                });
+            }
             // if the node is located under "Hide preview bubbles" menu item and the item is clicked,
             // ViewModel.DynamoViewModel.ShowPreviewBubbles will be updated AFTER node mouse enter event occurs
             // so, wait while ShowPreviewBubbles binding updates value
