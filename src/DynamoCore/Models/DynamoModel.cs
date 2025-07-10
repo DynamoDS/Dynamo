@@ -1506,7 +1506,7 @@ namespace Dynamo.Models
             CustomNodeManager.InfoUpdated += info =>
             {
                 //just bail in service mode.
-                if (IsServiceMode)
+                if (IsServiceMode || SearchModel == null)
                 {
                     return;
                 }
@@ -1515,17 +1515,21 @@ namespace Dynamo.Models
                         || !info.IsVisibleInDynamoLibrary)
                     return;
 
-               
-                var elements = SearchModel?.Entries.OfType<CustomNodeSearchElement>().
-                                Where(x =>
-                                {
-                                    // Search for common paths and get rid of empty paths.
-                                    // It can be empty just in case it's just created node.
-                                    return String.Compare(x.Path, info.Path, StringComparison.OrdinalIgnoreCase) == 0 &&
-                                        !String.IsNullOrEmpty(x.Path);
-                                }).ToList();
+                // this is a hot path that will get hit for every single node definition; avoid linq
+                var elements = new List<CustomNodeSearchElement>();
+                foreach (var entry in SearchModel.Entries)
+                {
+                    if (entry is not CustomNodeSearchElement cnSearch ||
+                        string.IsNullOrWhiteSpace(cnSearch?.Path) ||
+                        string.Compare(cnSearch.Path, info.Path, StringComparison.OrdinalIgnoreCase) != 0)
+                    {
+                        continue;
+                    }
 
-                if (elements.Any())
+                    elements.Add(cnSearch);
+                }
+
+                if (elements.Count != 0)
                 {
                     foreach (var element in elements)
                     {
@@ -1535,7 +1539,6 @@ namespace Dynamo.Models
                     return;
                 }
                 
-
                 customNodeSearchRegistry.Add(info.FunctionId);
                 var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
                 SearchModel.Add(searchElement);
