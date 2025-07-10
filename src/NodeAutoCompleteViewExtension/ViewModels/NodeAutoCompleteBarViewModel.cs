@@ -405,6 +405,14 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
         }
 
+        internal bool IsUserAuthenticated
+        {
+            get
+            {
+                return dynamoViewModel?.Model?.AuthenticationManager?.IsLoggedIn() == true || !IsDisplayingMLRecommendation;
+            }
+        }
+
         internal event Action<NodeModel> ParentNodeRemoved;
         internal event Action RefocusSearchBox;
 
@@ -426,6 +434,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             DefaultResults = dynamoViewModel.DefaultAutocompleteCandidates.Values;
             ServiceVersion = string.Empty;
             localAutoCompleteService = new LocalAutoCompleteService(dynamoViewModel);
+            
+            if (dynamoViewModel?.Model?.AuthenticationManager != null)
+            {
+                RaisePropertyChanged(nameof(IsUserAuthenticated));
+            }
         }
 
         /// <summary>

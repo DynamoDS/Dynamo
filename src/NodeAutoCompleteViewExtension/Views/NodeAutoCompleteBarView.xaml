@@ -7,6 +7,7 @@
              xmlns:local="clr-namespace:Dynamo.PackageManager.UI;assembly=DynamoCoreWpf"
              xmlns:dynconverters="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
              xmlns:resxother="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
+             xmlns:properties="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
              mc:Ignorable="d"
              WindowStyle="None"
              AllowsTransparency="True"
@@ -86,6 +87,13 @@
                                  FontSize="12"
                                  Margin="6,0,0,0"
                                  Visibility="Collapsed"/>
+                                <TextBlock x:Name="LoginNeededTitlePlaceholder"
+                                           Text="{Binding AutocompleteMLTitle}"
+                                           Foreground="LightGray"
+                                           VerticalAlignment="Center"
+                                           FontSize="12"
+                                           Margin="6,0,0,0"
+                                           Visibility="Collapsed"/>
                                 <TextBox x:Name="PART_EditableTextBox"
                                  Margin="3,3,23,3"
                                  Padding="10"
@@ -129,6 +137,18 @@
                                            TextAlignment="Center"
                                            Visibility="Visible"
                                            Margin="6"/>
+                                        <!-- Login Needed Placeholders -->
+                                        <TextBlock x:Name="LoginNeededMessagePlaceholder"
+                                           FontSize="12"
+                                           Text="{Binding AutocompleteMLMessage}"
+                                           Foreground="LightGray"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           MaxWidth="{TemplateBinding ActualWidth}"
+                                           TextWrapping="Wrap"
+                                           TextAlignment="Center"
+                                           Visibility="Collapsed"
+                                           Margin="6,48,6,6"/>
                                         <ScrollViewer Margin="0,36,0,0" SnapsToDevicePixels="True">
                                             <StackPanel KeyboardNavigation.DirectionalNavigation="Contained"
                                                 IsItemsHost="True" />
@@ -144,6 +164,8 @@
                                     <Setter TargetName="SearchSlot" Property="Visibility" Value="Collapsed" />
                                     <Setter TargetName="BoxPlaceholder" Property="Visibility" Value="Visible"/>
                                     <Setter TargetName="ContentSite" Property="Visibility" Value="Collapsed"/>
+                                    <Setter TargetName="LoginNeededTitlePlaceholder" Property="Visibility" Value="Collapsed"/>
+                                    <Setter TargetName="LoginNeededMessagePlaceholder" Property="Visibility" Value="Collapsed"/>
                                 </Trigger>
                                 <Trigger Property="HasItems" Value="true">
                                     <Setter Property="ScrollViewer.Visibility" Value="Visible" />
@@ -151,7 +173,17 @@
                                     <Setter TargetName="SearchSlot" Property="Visibility" Value="Visible" />
                                     <Setter TargetName="BoxPlaceholder" Property="Visibility" Value="Collapsed"/>
                                     <Setter TargetName="ContentSite" Property="Visibility" Value="Visible"/>
+                                    <Setter TargetName="LoginNeededTitlePlaceholder" Property="Visibility" Value="Collapsed"/>
+                                    <Setter TargetName="LoginNeededMessagePlaceholder" Property="Visibility" Value="Collapsed"/>
                                 </Trigger>
+                                <DataTrigger Binding="{Binding DisplayAutocompleteMLStaticPage}" Value="True">
+                                    <Setter TargetName="LoginNeededTitlePlaceholder" Property="Visibility" Value="Visible"/>
+                                    <Setter TargetName="LoginNeededMessagePlaceholder" Property="Visibility" Value="Visible"/>
+                                    <Setter TargetName="NoItemsPlaceholder" Property="Visibility" Value="Collapsed"/>
+                                    <Setter TargetName="BoxPlaceholder" Property="Visibility" Value="Collapsed"/>
+                                    <Setter TargetName="SearchSlot" Property="Visibility" Value="Collapsed"/>
+                                    <Setter TargetName="ContentSite" Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
                                 <Trigger Property="IsGrouping" Value="true">
                                     <Setter Property="ScrollViewer.CanContentScroll" Value="false" />
                                 </Trigger>
