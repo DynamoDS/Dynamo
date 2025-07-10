@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
 using System.Xml;
 using Dynamo.Engine;
 using Dynamo.Engine.NodeToCode;
@@ -26,6 +29,8 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using Symbol = Dynamo.Graph.Nodes.CustomNodes.Symbol;
+using System.Diagnostics;
+
 
 namespace Dynamo.Core
 {
@@ -36,6 +41,138 @@ namespace Dynamo.Core
     /// </summary>
     public class CustomNodeManager : LogSourceBase, ICustomNodeSource, ICustomNodeManager, IDisposable
     {
+        private class JsonCache<T>
+        {
+            private readonly string cacheFilePath;
+            private readonly ConcurrentDictionary<string, T> cache = new();
+            private volatile bool dirty;
+
+            public JsonCache(string filePath)
+            {
+                cacheFilePath = filePath;
+                Deserialize();
+            }
+
+            public void Set(string key, T value)
+            {
+                cache.AddOrUpdate(key, value, (k, v) => value);
+                dirty = true;
+            }
+
+            public bool TryGet(string key, out T value) => cache.TryGetValue(key, out value);
+
+            private void Remove(string key)
+            {
+                if (cache.TryRemove(key, out _))
+                    dirty = true;
+            }
+
+            /// <summary>
+            /// Removes stale entries that don't correspond to existing files
+            /// </summary>
+            public void RemoveStaleEntries()
+            {
+                // Create a snapshot of keys to avoid modification during enumeration
+                var keysSnapshot = cache.Keys.ToList();
+
+                foreach (var key in keysSnapshot)
+                {
+                    try
+                    {
+                        // Extract file path from cache key (path + lastWriteTime + length)
+                        var filePath = ExtractFilePathFromCacheKey(key);
+                        if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+                        {
+                            Remove(key);
+                        }
+                        else
+                        {
+                            // Check if the file's write time and length match the cached key
+                            var fileInfo = new FileInfo(filePath);
+                            var lastWriteTime = fileInfo.LastWriteTimeUtc;
+                            var length = fileInfo.Length;
+                            var newKey = filePath + lastWriteTime + length;
+                            if (newKey != key)
+                            {
+                                // File has been updated, remove from cache
+                                Remove(key);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // If we can't check the file (permissions, IO error, etc.), remove the entry
+                        // This prevents keeping potentially stale entries due to access issues
+                        Remove(key);
+                        Debug.WriteLine($"Error checking cache entry {key}: {ex.Message}");
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Extracts file path from cache key
+            /// </summary>
+            private string ExtractFilePathFromCacheKey(string key)
+            {
+                try
+                {
+                    // Cache key format: path + lastWriteTime + length
+                    int idx = key.IndexOf(".dyf", StringComparison.OrdinalIgnoreCase);
+                    return idx >= 0 ? key.Substring(0, idx + 4) : string.Empty;
+                }
+                catch
+                {
+                    // If extraction fails, return empty string
+                }
+                return string.Empty;
+            }
+
+            private void Deserialize()
+            {
+                try
+                {
+                    if (File.Exists(cacheFilePath))
+                    {
+                        var json = File.ReadAllText(cacheFilePath);
+                        var loaded = JsonSerializer.Deserialize<Dictionary<string, T>>(json);
+                        if (loaded != null)
+                        {
+                            foreach (var kv in loaded)
+                            {
+                                cache.TryAdd(kv.Key, kv.Value);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // If deserialization fails, continue with empty cache
+                    // This prevents crashes due to corrupted cache files
+                    Debug.WriteLine($"Failed to deserialize cache: {ex.Message}");
+                    cache.Clear();
+                }
+            }
+
+            public void Serialize()
+            {
+                if (!dirty) return;
+
+                try
+                {
+                    // Create a snapshot to avoid serialization issues if cache is modified during serialization
+                    var snapshot = new Dictionary<string, T>(cache);
+                    var json = JsonSerializer.Serialize(snapshot, new JsonSerializerOptions { WriteIndented = true });
+                    File.WriteAllText(cacheFilePath, json);
+                    dirty = false;
+                }
+                catch (Exception ex)
+                {
+                    // Log error but don't throw - serialization failure shouldn't crash the app
+                    Debug.WriteLine($"Failed to serialize cache: {ex.Message}");
+                }
+            }
+        }
+
         /// <summary>
         /// This function creates CustomNodeManager
         /// </summary>
@@ -49,17 +186,37 @@ namespace Dynamo.Core
             this.libraryServices = libraryServices;
         }
 
+        internal CustomNodeManager(NodeFactory nodeFactory, MigrationManager migrationManager, LibraryServices libraryServices,
+            bool useCustomNodeCache) : this(nodeFactory, migrationManager, libraryServices)
+        {
+            this.useCustomNodeCache = useCustomNodeCache;
+
+            if (!useCustomNodeCache) return;
+
+
+            // Use a user-specific cache path
+            string cacheDir = Path.Combine(libraryServices.PathManager.GetUserDataFolder(), "Cache");
+            Directory.CreateDirectory(cacheDir);
+            string cacheFilePath = Path.Combine(cacheDir, "CustomNodeInfoCache.temp");
+
+            customNodeInfoCache = new JsonCache<CustomNodeInfo>(cacheFilePath);
+
+            // Cleanup stale entries on startup in background
+            _ = Task.Run(() => customNodeInfoCache.RemoveStaleEntries());
+        }
+
         #region Fields and properties
 
-        private LibraryServices libraryServices;
+        private readonly LibraryServices libraryServices;
+        private readonly JsonCache<CustomNodeInfo> customNodeInfoCache;
 
-        private readonly OrderedSet<Guid> loadOrder = new OrderedSet<Guid>();
+        private readonly bool useCustomNodeCache;
 
-        private readonly Dictionary<Guid, CustomNodeDefinition> loadedCustomNodes =
-            new Dictionary<Guid, CustomNodeDefinition>();
+        private readonly OrderedSet<Guid> loadOrder = new();
 
-        private readonly Dictionary<Guid, CustomNodeWorkspaceModel> loadedWorkspaceModels =
-            new Dictionary<Guid, CustomNodeWorkspaceModel>();
+        private readonly Dictionary<Guid, CustomNodeDefinition> loadedCustomNodes = new();
+
+        private readonly Dictionary<Guid, CustomNodeWorkspaceModel> loadedWorkspaceModels = new();
 
         private readonly NodeFactory nodeFactory;
         private readonly MigrationManager migrationManager;
@@ -174,7 +331,7 @@ namespace Dynamo.Core
         ///     the given id could not be found.
         /// </param>
         /// <param name="isTestMode">
-        ///     Flag specifying whether or not this should operate in "test mode".
+        ///     Flag specifying whether this should operate in "test mode".
         /// </param>
         /// <param name="def">
         ///     Custom node definition data
@@ -394,7 +551,7 @@ namespace Dynamo.Core
         /// </summary>
         /// <param name="path">Path on disk to scan for custom nodes.</param>
         /// <param name="isTestMode">
-        ///     Flag specifying whether or not this should operate in "test mode".
+        ///     Flag specifying whether this should operate in "test mode".
         /// </param>
         /// <param name="isPackageMember">
         ///     Indicates whether custom node comes from package or not.
@@ -464,7 +621,6 @@ namespace Dynamo.Core
                 Log(e);
                 yield break;
             }
-
             foreach (var file in dyfs)
             {
                 CustomNodeInfo info;
@@ -480,23 +636,11 @@ namespace Dynamo.Core
         /// </summary>
         private void SetNodeInfo(CustomNodeInfo newInfo)
         {
-            var guids = NodeInfos.Where(x =>
-                        {
-                            return !string.IsNullOrEmpty(x.Value.Path) &&
-                                string.Compare(x.Value.Path, newInfo.Path, StringComparison.OrdinalIgnoreCase) == 0;
-                        }).Select(x => x.Key).ToList();
-
-           
-            foreach (var guid in guids)
-            {
-                NodeInfos.Remove(guid);
-            }
-
-            // we need to check with the packageManager that this node if this node is in a package or not - 
+            // we need to check with the packageManager if this node is in a package or not - 
             // currently the package data is lost when the customNode workspace is loaded.
             // we'll only do this check for customNode infos which don't have a package currently to verify if this
             // is correct.
-            if(newInfo.IsPackageMember == false)
+            if (newInfo.IsPackageMember == false)
             {
                 var owningPackage = this.OnRequestCustomNodeOwner(newInfo.FunctionId);
                 
@@ -509,18 +653,17 @@ namespace Dynamo.Core
             }
 
 
-            CustomNodeInfo info;
             // if the custom node is part of a package make sure it does not overwrite another node
-            if (newInfo.IsPackageMember && NodeInfos.TryGetValue(newInfo.FunctionId, out info))
+            if (newInfo.IsPackageMember && NodeInfos.TryGetValue(newInfo.FunctionId, out CustomNodeInfo info))
             {
                 var newInfoPath = String.IsNullOrEmpty(newInfo.Path) ? string.Empty : Path.GetDirectoryName(newInfo.Path);
                 var infoPath = String.IsNullOrEmpty(info.Path) ? string.Empty : Path.GetDirectoryName(info.Path);
                 var message = string.Format(Resources.MessageCustomNodePackageFailedToLoad,
                     infoPath, newInfoPath);
 
-               
+
                 //only try to compare package info if both customNodeInfos have package info.
-                if(info.IsPackageMember && info.PackageInfo != null)
+                if (info.IsPackageMember && info.PackageInfo != null)
                 {
                     // if these are different packages raise an error.
                     // TODO (for now we don't raise an error for different
@@ -538,7 +681,7 @@ namespace Dynamo.Core
                 }
                 else //(newInfo has owning Package, oldInfo does not)
                 {
-                   
+
                     // This represents the case where a previous info was not from a package, but the current info
                     // has an owning package.
                     var looseCustomNodeToPackageMessage = String.Format(Properties.Resources.FunctionDefinitionOverwrittenMessage, newInfo.Name, newInfo.PackageInfo, info.Name);
@@ -668,49 +811,69 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Returns a boolean indicating if successfully get a CustomNodeInfo object from a workspace path
+        /// Returns a boolean indicating if a CustomNodeInfo object from a workspace path is successfully obtained
         /// </summary>
         /// <param name="path">The path from which to get the guid</param>
         /// <param name="isTestMode">
-        ///     Flag specifying whether or not this should operate in "test mode".
+        /// Flag specifying whether this should operate in "test mode" or not.
         /// </param>
         /// <param name="info"></param>
         /// <returns>The custom node info object - null if we failed</returns>
         internal bool TryGetInfoFromPath(string path, bool isTestMode, out CustomNodeInfo info)
         {
-            WorkspaceInfo header = null;
-            XmlDocument xmlDoc;
-            string jsonDoc;
-            Exception ex;
             try
             {
-                if (DynamoUtilities.PathHelper.isValidJson(path, out jsonDoc, out ex))
+                var fileInfo = new FileInfo(path);
+                var lastWriteTime = fileInfo.LastWriteTimeUtc;
+                var length = fileInfo.Length;
+
+                //create a fast check for checking if the file has been loaded before.  Could also do a file hash but we don't care too much about false negatives
+                var key = path + lastWriteTime + length;
+
+                if (useCustomNodeCache && customNodeInfoCache.TryGet(key, out info))
                 {
-                    if (!WorkspaceInfo.FromJsonDocument(jsonDoc, path, isTestMode, false, AsLogger(), out header))
+                    return true;
+                }
+
+                if (CustomNodeInfo.GetFromJsonDocument(path, out info, out var ex))
+                {
+                    if (useCustomNodeCache)
+                    {
+                        customNodeInfoCache.Set(key, info);
+                    }
+
+                    return true;
+                }
+
+                if (DynamoUtilities.PathHelper.isValidXML(path, out var xmlDoc, out ex))
+                {
+                    if (!WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, false, AsLogger(), out var header))
                     {
                         Log(String.Format(Properties.Resources.FailedToLoadHeader, path));
                         info = null;
                         return false;
                     }
-                }
-                else if (DynamoUtilities.PathHelper.isValidXML(path, out xmlDoc, out ex))
-                {
-                    if (!WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, false, AsLogger(), out header))
+
+                    info = new CustomNodeInfo(
+                        Guid.Parse(header.ID),
+                        header.Name,
+                        header.Category,
+                        header.Description,
+                        path,
+                        header.IsVisibleInDynamoLibrary);
+
+                    if (useCustomNodeCache)
                     {
-                        Log(String.Format(Properties.Resources.FailedToLoadHeader, path));
-                        info = null;
-                        return false;
+                        customNodeInfoCache.Set(key, info);
                     }
+
+                    return true;
                 }
-                else throw ex;
-                info = new CustomNodeInfo(
-                    Guid.Parse(header.ID),
-                    header.Name,
-                    header.Category,
-                    header.Description,
-                    path,
-                    header.IsVisibleInDynamoLibrary);
-                return true;
+                if (ex == null)
+                {
+                    throw new InvalidOperationException(Resources.UnknownErrorProcessingFile);
+                }
+                throw ex;
             }
             catch (Exception e)
             {
@@ -1416,7 +1579,17 @@ namespace Dynamo.Core
         /// </summary>
         public void Dispose()
         {
-            this.loadedCustomNodes.ToList().ForEach(x => Uninitialize(x.Value.FunctionId));
+            // Unsubscribe event handlers
+            InfoUpdated = null;
+            CustomNodeRemoved = null;
+            DefinitionUpdated = null;
+
+            loadedCustomNodes.ToList().ForEach(x => Uninitialize(x.Value.FunctionId));
+
+            if (useCustomNodeCache)
+            {
+                customNodeInfoCache?.Serialize();
+            }
         }
     }
 }

@@ -194,7 +194,8 @@ namespace Dynamo.Applications
             bool cliMode = true,
             string userDataFolder = "",
             string commonDataFolder = "",
-            bool serviceMode = false)
+            bool serviceMode = false,
+            bool useCustomNodeCache = false)
         {
             var normalizedCLILocale = string.IsNullOrEmpty(cliLocale) ? null : cliLocale;
             IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);
@@ -214,7 +215,8 @@ namespace Dynamo.Applications
                 noNetworkMode: noNetworkMode,
                 info: analyticsInfo,
                 isServiceMode: serviceMode,
-                cliLocale: normalizedCLILocale
+                cliLocale: normalizedCLILocale,
+                useCustomNodeCache
             );
             model.IsASMLoaded = isASMloaded;
             return model;
@@ -285,7 +287,8 @@ namespace Dynamo.Applications
         /// <param name="asmPath">Path to directory containing geometry library binaries</param>
         /// <param name="info">Host analytics info specifying Dynamo launching host related information.</param>
         /// <returns></returns>
-        public static DynamoModel MakeModel(bool CLImode, string CLIlocale, bool noNetworkMode, string asmPath = "", HostAnalyticsInfo info = new HostAnalyticsInfo())
+        public static DynamoModel MakeModel(bool CLImode, string CLIlocale, bool noNetworkMode, string asmPath = "",
+            HostAnalyticsInfo info = new HostAnalyticsInfo())
         {
             var model = PrepareModel(
                 cliLocale: CLIlocale,
@@ -293,6 +296,22 @@ namespace Dynamo.Applications
                 noNetworkMode: noNetworkMode,
                 analyticsInfo: info,
                 cliMode: CLImode);
+            return model;
+        }
+
+        internal static DynamoModel MakeModel(bool CLImode, string CLIlocale, bool noNetworkMode, bool useCustomNodeCache,
+            string asmPath = "", HostAnalyticsInfo info = new HostAnalyticsInfo())
+        {
+            var model = PrepareModel(
+                cliLocale: CLIlocale,
+                asmPath: asmPath,
+                noNetworkMode: noNetworkMode,
+                analyticsInfo: info,
+                cliMode: CLImode,
+                userDataFolder: "",
+                commonDataFolder: "",
+                serviceMode: false,
+                useCustomNodeCache);
             return model;
         }
 
@@ -371,7 +390,8 @@ namespace Dynamo.Applications
             bool noNetworkMode,
             HostAnalyticsInfo info = new HostAnalyticsInfo(),
             bool isServiceMode = false,
-            string cliLocale = null)
+            string cliLocale = null,
+            bool useCustomNodeCache = false)
         {
 
             var config = new DynamoModel.DefaultStartConfiguration
@@ -387,6 +407,7 @@ namespace Dynamo.Applications
                 Preferences = PreferenceSettings.Instance,
                 NoNetworkMode = noNetworkMode,
                 CLILocale = cliLocale,
+                UseCustomNodeCache = useCustomNodeCache,
                 //Breaks all Lucene calls. TI enable this would require a lot of refactoring around Lucene usage in Dynamo.
                 //IsHeadless = CLImode
             };
