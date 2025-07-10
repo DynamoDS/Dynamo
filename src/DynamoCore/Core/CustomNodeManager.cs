@@ -199,7 +199,6 @@ namespace Dynamo.Core
             Directory.CreateDirectory(cacheDir);
             string cacheFilePath = Path.Combine(cacheDir, "CustomNodeInfoCache.temp");
 
-            // Before deserialization
             customNodeInfoCache = new JsonCache<CustomNodeInfo>(cacheFilePath);
 
             // Cleanup stale entries on startup in background

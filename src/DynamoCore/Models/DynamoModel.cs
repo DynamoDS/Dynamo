@@ -600,6 +600,10 @@ namespace Dynamo.Models
             public bool CLIMode { get; set; }
             public string CLILocale { get; set; }
 
+            /// <summary>
+            /// If true, a custom node cache stores custom node info objects
+            /// in a dictionary, so they don't have to be reloaded from the DYF.
+            /// </summary>
             internal bool UseCustomNodeCache { get; set; }
         }
 
