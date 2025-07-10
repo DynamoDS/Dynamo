@@ -18,10 +18,10 @@
         >
     <Window.Style>
         <Style TargetType="Window">
-            <Setter Property="Width" Value="620" />
+            <Setter Property="Width" Value="600" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsDNAClusterPlacementEnabled}" Value="False">
-                    <Setter Property="Width" Value="510"/>
+                    <Setter Property="Width" Value="490"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -94,6 +94,7 @@
                     x:Name="gripHandle"
                     PreviewMouseLeftButtonDown="GripHandle_MouseLeftButtonDown"
                     Grid.Column="0"
+                    Visibility="Collapsed"
                 >
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
