@@ -29,6 +29,7 @@ using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Greg;
@@ -195,12 +196,12 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 if (isOpen) 
                 {
                     SubscribeWindowEvents();
-                    EnableUIBlocking(true);
+                    EnableUiBlocking(true);
                 }
                 else 
                 {
                     UnsubscribeWindowEvents();
-                    EnableUIBlocking(false);
+                    EnableUiBlocking(false);
                 }
             }
         }
@@ -1450,7 +1451,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
         }
 
-        private void EnableUIBlocking(bool enable)
+        private void EnableUiBlocking(bool enable)
         {
             var mainWindow = Application.Current.MainWindow as DynamoView;
             mainWindow?.EnableOverlayBlocker(enable);
