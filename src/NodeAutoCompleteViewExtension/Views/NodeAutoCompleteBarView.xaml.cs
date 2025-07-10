@@ -8,6 +8,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.NodeAutoComplete.ViewModels;
+using Dynamo.ViewModels;
 
 namespace Dynamo.NodeAutoComplete.Views
 {
@@ -22,8 +23,22 @@ namespace Dynamo.NodeAutoComplete.Views
 
         // Prepare the autocomplete bar window and reuse it whenever possible.
         // Only a single instance of the window will be allowed at any given time.
-        static internal void PrepareAndShowNodeAutoCompleteBar(Window window, NodeAutoCompleteBarViewModel viewModel)
-        {
+        static internal void PrepareAndShowNodeAutoCompleteBar(Window window, NodeAutoCompleteBarViewModel viewModel, PortViewModel newPortViewModel)
+        {            
+            bool sameNode = false;
+            var existingPort = viewModel.PortViewModel;
+            if (existingPort != null)
+            {
+                existingPort.Highlight = Visibility.Collapsed;
+                if (ReferenceEquals(existingPort.NodeViewModel, newPortViewModel.NodeViewModel))
+                {
+                    sameNode = true;
+                }
+            }
+
+            bool samePort = sameNode && ReferenceEquals(existingPort, newPortViewModel);
+            viewModel.PortViewModel = newPortViewModel;
+
             // A new window will be created (replacing any existing one) whenever a new viewModel is provided.
             // Each workspace gets its own viewModel. For example, when opening a custom node alongside the current workspace.
             if (_controlInstance is null || !ReferenceEquals(_controlInstance.ViewModel, viewModel))
@@ -35,14 +50,25 @@ namespace Dynamo.NodeAutoComplete.Views
             // When a window is already open, adjust its position to the target port without repeating the full event subscription setup.
             if (_controlInstance?.IsVisible is true)
             {
-                //Analytics.TrackEvent(Actions.Open, Categories.NodeAutoCompleteOperations);
-                if (_controlInstance?.ViewModel?.PortViewModel != null)
+                if (samePort)
+                {
+                    _controlInstance.ViewModel.PortViewModel.Highlight = Visibility.Visible;
+                    return;
+                }
+
+                //No need to re-subscribe to events for the same node.
+                if (sameNode)
                 {
                     _controlInstance.ViewModel.PortViewModel.Highlight = Visibility.Visible;
                     _controlInstance.ViewModel.PortViewModel?.SetupNodeAutoCompleteClusterWindowPlacement(_controlInstance);
+                    _controlInstance.ViewModel?.PopulateAutoComplete();
                 }
-
-                _controlInstance?.ViewModel?.PopulateAutoComplete();
+                else
+                {
+                    _controlInstance?.OnHideNodeAutoCompleteBar();
+                    _controlInstance.ViewModel.PortViewModel = newPortViewModel; //PortViewModel was reset OnHide
+                    _controlInstance?.OnShowNodeAutoCompleteBar();
+                }
             }
             else
             {
@@ -70,7 +96,10 @@ namespace Dynamo.NodeAutoComplete.Views
 
         private void UpdatePosition()
         {
-            ViewModel.PortViewModel.SetupNodeAutoCompleteClusterWindowPlacement(this);
+            if ( ViewModel.PortViewModel != null)
+            {
+                ViewModel.PortViewModel.SetupNodeAutoCompleteClusterWindowPlacement(this);
+            }
         }
 
         private void Owner_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -112,6 +141,31 @@ namespace Dynamo.NodeAutoComplete.Views
             ViewModel.dynamoViewModel.Model.WorkspaceRemoveStarted -= OnWorkspaceRemoved;
         }
 
+        private void SubscribeToOtherEvents()
+        {
+            ViewModel.ParentNodeRemoved += OnParentNodeRemoved;
+            ViewModel.RefocusSearchBox += OnRefocusSearchbox;
+            Owner.LocationChanged += OwnerMoved;
+            if (ViewModel.PortViewModel != null)
+            {
+                ViewModel.PortViewModel.PortModel.Owner.PropertyChanged += Owner_PropertyChanged;
+                ViewModel.PortViewModel.NodeViewModel.WorkspaceViewModel.Model.PropertyChanged += WorkspaceModel_PropertyChanged;
+            }
+
+        }
+
+        private void UnsubscribeFromOtherEvents()
+        {
+            ViewModel.ParentNodeRemoved -= OnParentNodeRemoved;
+            ViewModel.RefocusSearchBox -= OnRefocusSearchbox;
+            Owner.LocationChanged -= OwnerMoved;
+            if (ViewModel.PortViewModel != null)
+            {
+                ViewModel.PortViewModel.PortModel.Owner.PropertyChanged -= Owner_PropertyChanged;
+                ViewModel.PortViewModel.NodeViewModel.WorkspaceViewModel.Model.PropertyChanged -= WorkspaceModel_PropertyChanged;
+            }
+        }
+
         void WorkspaceModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
@@ -130,15 +184,14 @@ namespace Dynamo.NodeAutoComplete.Views
         {
             if (ViewModel != null)
             {
-                ViewModel.IsOpen = false;
-
-                ViewModel.ParentNodeRemoved -= OnParentNodeRemoved;
-                ViewModel.RefocusSearchBox -= OnRefocusSearchbox;
-                Owner.LocationChanged -= OwnerMoved;
-                ViewModel.PortViewModel.PortModel.Owner.PropertyChanged -= Owner_PropertyChanged;
-                ViewModel.PortViewModel.NodeViewModel.WorkspaceViewModel.Model.PropertyChanged -= WorkspaceModel_PropertyChanged;
+                ViewModel.IsOpen = false;                
+                ViewModel.IsDropDownOpen = false;
+                if (ViewModel.PortViewModel != null)
+                {
+                    ViewModel.PortViewModel.Highlight = Visibility.Hidden;
+                }
                 
-                ViewModel.PortViewModel.Highlight = Visibility.Hidden;
+                UnsubscribeFromOtherEvents();
             }
 
             Hide();
@@ -152,12 +205,14 @@ namespace Dynamo.NodeAutoComplete.Views
                 {
                     ViewModel?.DeleteTransientNodes();
                     ViewModel?.ToggleUndoRedoLocked(false);
+                    ViewModel.PortViewModel = null;
                 }), DispatcherPriority.Loaded);
             }
             else
             {
                 ViewModel?.DeleteTransientNodes();
                 ViewModel?.ToggleUndoRedoLocked(false);
+                ViewModel.PortViewModel = null;
             }
         }
 
@@ -168,20 +223,9 @@ namespace Dynamo.NodeAutoComplete.Views
             if (ViewModel != null)
             {
                 ViewModel.IsOpen = true;
-                ViewModel.ParentNodeRemoved += OnParentNodeRemoved;
-                ViewModel.RefocusSearchBox += OnRefocusSearchbox;
-                Owner.LocationChanged += OwnerMoved;
-
-                if (ViewModel.PortViewModel != null)
-                {
-                    ViewModel.PortViewModel.PortModel.Owner.PropertyChanged += Owner_PropertyChanged;
-                    ViewModel.PortViewModel.NodeViewModel.WorkspaceViewModel.Model.PropertyChanged += WorkspaceModel_PropertyChanged;
-
-                    ViewModel.PortViewModel.SetupNodeAutoCompleteClusterWindowPlacement(this);
-
-                    ViewModel.PortViewModel.Highlight = Visibility.Visible;
-                }
-
+                ViewModel.PortViewModel.Highlight = Visibility.Visible;
+                ViewModel.PortViewModel.SetupNodeAutoCompleteClusterWindowPlacement(this);
+                SubscribeToOtherEvents();
             }
 
             Show();
@@ -197,7 +241,11 @@ namespace Dynamo.NodeAutoComplete.Views
         private void ResetNodeAutoCompleteBar()
         {
             UnsubscribeFromAppEvents();
-            OnHideNodeAutoCompleteBar();
+            if (IsVisible)
+            {
+                OnHideNodeAutoCompleteBar();
+            }
+            
             Close();
             _controlInstance = null;
         }

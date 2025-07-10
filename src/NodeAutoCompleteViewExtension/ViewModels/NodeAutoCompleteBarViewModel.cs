@@ -791,8 +791,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         // Delete all transient nodes in the workspace
         internal void DeleteTransientNodes()
         {
-            var node = PortViewModel.NodeViewModel;
-            var wsViewModel = node.WorkspaceViewModel;
+            var node = PortViewModel?.NodeViewModel;
+            var wsViewModel = node?.WorkspaceViewModel;
 
             var transientNodes = wsViewModel.Nodes.Where(x => x.IsTransient).ToList();
             var transientConnectors = wsViewModel.Connectors.Where(c => c.IsTransient).ToList();

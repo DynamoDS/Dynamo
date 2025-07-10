@@ -167,6 +167,7 @@ namespace Dynamo.NodeAutoComplete
         }
 
         private static NodeAutoCompleteBarViewModel nodeAutoCompleteBarViewModel;
+        private static Guid lastWorkspaceId;
 
         private void OnNodeAutoCompleteBarRequested(Window parentWindow, ViewModelBase viewModelBase)
         {
@@ -177,20 +178,14 @@ namespace Dynamo.NodeAutoComplete
             }
 
             DynamoViewModel dynamoViewModel = portViewModel?.NodeViewModel?.WorkspaceViewModel?.DynamoViewModel;
-            if (nodeAutoCompleteBarViewModel is null || !ReferenceEquals(nodeAutoCompleteBarViewModel.dynamoViewModel, dynamoViewModel))
+            if (nodeAutoCompleteBarViewModel is null || lastWorkspaceId != dynamoViewModel.CurrentSpace.Guid)
             {
                 nodeAutoCompleteBarViewModel = new NodeAutoCompleteBarViewModel(dynamoViewModel);
             }
 
-            var existingPort = nodeAutoCompleteBarViewModel.PortViewModel;
-            if (existingPort != null)
-            {
-                existingPort.Highlight = Visibility.Collapsed;
-            }
+            lastWorkspaceId = dynamoViewModel.CurrentSpace.Guid;
 
-            nodeAutoCompleteBarViewModel.PortViewModel = portViewModel;
-
-            NodeAutoCompleteBarView.PrepareAndShowNodeAutoCompleteBar(parentWindow, nodeAutoCompleteBarViewModel);
+            NodeAutoCompleteBarView.PrepareAndShowNodeAutoCompleteBar(parentWindow, nodeAutoCompleteBarViewModel, portViewModel);
         }
     }
 }
