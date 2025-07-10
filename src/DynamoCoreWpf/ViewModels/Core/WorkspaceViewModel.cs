@@ -10,11 +10,13 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using Dynamo.Configuration;
+using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
@@ -856,6 +858,12 @@ namespace Dynamo.ViewModels
 
                     Model.FileName = filePath;
                     Model.OnSaved();
+
+                    if (saveContext.Equals(SaveContext.SaveAs))
+                    {
+                        DynamoViewModel.Model.ClearCurrentWorkspace();
+                        DynamoViewModel.Model.OpenJsonFileFromPath(saveContent, filePath, false);
+                    }
                 }
 
                 // If a new CustomNodeWorkspaceModel is created, store that info in CustomNodeManager without creating an instance of the custom node.
