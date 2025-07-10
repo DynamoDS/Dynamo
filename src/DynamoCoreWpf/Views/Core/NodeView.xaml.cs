@@ -1839,9 +1839,12 @@ namespace Dynamo.Controls
         private void ViewModel_RequestClusterAutoCompletePopupPlacementTarget(Window window, double spacing)
         {
             Point targetPoints = PointToLocal(0, ActualHeight, this);
-                
-            window.Left = targetPoints.X;
-            window.Top = targetPoints.Y + spacing;
+            window.Left = Math.Clamp(targetPoints.X,
+                    SystemParameters.VirtualScreenLeft,
+                    SystemParameters.VirtualScreenLeft + SystemParameters.VirtualScreenWidth - window.Width);
+            window.Top = Math.Clamp(targetPoints.Y + spacing,
+                SystemParameters.VirtualScreenTop,
+                SystemParameters.VirtualScreenTop + SystemParameters.VirtualScreenHeight - window.Height);
         }
 
         private void ViewModel_RequestPortContextMenuPlacementTarget(Popup popup)
