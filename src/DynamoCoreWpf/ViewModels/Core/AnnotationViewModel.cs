@@ -1491,13 +1491,29 @@ namespace Dynamo.ViewModels
             bool isHorizontal,
             HashSet<ModelBase> skip)
         {
+            // Track already processed items from prior horizontal/vertical pass
             var visited = new HashSet<ModelBase>(skip);
-            foreach (var node in expandingGroup.Nodes)
-                visited.Add(node);
+
+            // Ensure expanding group and all its content (including nested groups) are ignored
+            if (!visited.Any())
+            {
+                visited.Add(expandingGroup);
+
+                foreach (var node in expandingGroup.Nodes)
+                {
+                    visited.Add(node);
+
+                    if (node is AnnotationModel nestedGroup)
+                    {
+                        foreach (var nestedNode in nestedGroup.Nodes)
+                            visited.Add(nestedNode);
+                    }
+                }
+            }
 
             var toProcess = new List<ModelBase>();
             var directlyAffected = new List<ModelBase>();
-            var otherGroups = WorkspaceViewModel.Model.Annotations.Where(g => g != expandingGroup);
+            var otherGroups = WorkspaceViewModel.Model.Annotations.Where(g => !visited.Contains(g));
             var allGroupedItems = WorkspaceViewModel.Model.Annotations.SelectMany(g => g.Nodes);
             double smallestSpacing = double.MaxValue;
 

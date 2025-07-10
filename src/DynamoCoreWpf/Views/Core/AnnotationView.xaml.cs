@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -476,7 +475,7 @@ namespace Dynamo.Nodes
                 ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
             }
         }
-        
+
         /// <summary>
         /// Handles the SizeChanged event of the groupTextBlock control.
         /// This function calculates the height of a group based on font size
@@ -696,7 +695,7 @@ namespace Dynamo.Nodes
             // Tracking loading group style items
             Logging.Analytics.TrackEvent(Actions.Load, Categories.GroupStyleOperations, nameof(GroupStyleItem) + "s");
         }
-        
+
         #endregion
 
         #region Control Templates
@@ -2805,7 +2804,6 @@ namespace Dynamo.Nodes
         }
 
         #endregion
-
 
         private void SetModelAreaHeight()
         {
