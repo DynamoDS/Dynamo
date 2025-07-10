@@ -187,8 +187,17 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             {
                 if (isOpen == value) return;
                 isOpen = value;
-                if (isOpen) SubscribeWindowEvents();
-                else UnsubscribeWindowEvents();
+                
+                if (isOpen) 
+                {
+                    SubscribeWindowEvents();
+                    EnableUIBlocking(true);
+                }
+                else 
+                {
+                    UnsubscribeWindowEvents();
+                    EnableUIBlocking(false);
+                }
             }
         }
 
@@ -1435,6 +1444,12 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 //if we can't find a match then dist should indicate that.
                 return int.MaxValue;
             }
+        }
+
+        private void EnableUIBlocking(bool enable)
+        {
+            var mainWindow = Application.Current.MainWindow as DynamoView;
+            mainWindow?.EnableOverlayBlocker(enable);
         }
     }
 }
