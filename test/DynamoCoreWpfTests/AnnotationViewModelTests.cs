@@ -734,6 +734,8 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(groupVm.IsExpanded, "Group should be collapsed");
             Assert.AreEqual(newName, groupVm.AnnotationText, "Group should be renamed");
 
+            // Undo group auto layout
+            ViewModel.UndoCommand.Execute(null);
             // Undo collapse
             ViewModel.UndoCommand.Execute(null);
             Assert.IsTrue(groupVm.IsExpanded, "Group should be expanded after undo");

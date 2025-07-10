@@ -683,7 +683,7 @@ namespace Dynamo.Graph.Annotations
 
         /// <summary>
         /// Updates the group boundary based on the nodes / notes selection.
-        /// </summary>      
+        /// </summary>
         internal void UpdateBoundaryFromSelection()
         {
             var selectedModelsList = nodes.ToList();

@@ -488,7 +488,6 @@ namespace Dynamo.Nodes
             if (ViewModel != null && (e.HeightChanged || e.WidthChanged) && !_isUpdatingLayout)
             {
                 _isUpdatingLayout = true;
-                
                 // Use Dispatcher.BeginInvoke to batch layout updates
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
@@ -1480,7 +1479,6 @@ namespace Dynamo.Nodes
 
             // Create the Polygon
             var polygonFactory = new FrameworkElementFactory(typeof(Polygon));
-
             // Set Points collection
             var points = new PointCollection
             {
@@ -2922,7 +2920,7 @@ namespace Dynamo.Nodes
             return template;
         }
 
-        private Style CreateBaseCollapsedPortToggleStyle()  
+        private Style CreateBaseCollapsedPortToggleStyle()
         {
             var style = new Style(typeof(ToggleButton));
             style.Setters.Add(new Setter(Control.BackgroundProperty, Brushes.Transparent));
