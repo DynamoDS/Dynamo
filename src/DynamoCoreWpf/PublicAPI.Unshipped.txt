@@ -3283,6 +3283,7 @@ Dynamo.Views.WorkspaceView.CursorState.UsualPointer = 10 -> Dynamo.Views.Workspa
 Dynamo.Views.WorkspaceView.Dispose() -> void
 Dynamo.Views.WorkspaceView.HideAllPopUp(object sender) -> void
 Dynamo.Views.WorkspaceView.InitializeComponent() -> void
+Dynamo.Views.WorkspaceView.OuterCanvas.get -> System.Windows.Controls.Grid
 Dynamo.Views.WorkspaceView.ViewModel.get -> Dynamo.ViewModels.WorkspaceViewModel
 Dynamo.Views.WorkspaceView.vm_UnpinAllPreviewBubblesTriggered(object sender, System.EventArgs e) -> void
 Dynamo.Views.WorkspaceView.WorkspacePropertyEditClick(object sender, System.Windows.RoutedEventArgs routedEventArgs) -> void

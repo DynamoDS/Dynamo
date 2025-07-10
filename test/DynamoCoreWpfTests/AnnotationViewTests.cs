@@ -103,10 +103,22 @@ namespace DynamoCoreWpfTests
             Assert.That(groupContent.All(x => x.IsCollapsed == true));
 
             // Act
-            var ungrp = annotationView.AnnotationGrid.ContextMenu.Items
-                .OfType<MenuItem>()
-                .FirstOrDefault(x => x.Name == "UngroupAnnotation");
-            ungrp.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            var popupContent = (annotationView.GroupContextMenuPopup.Child as Border)?.Child as Panel;
+
+            var ungrp = popupContent.Children
+                .OfType<Border>()
+                .FirstOrDefault(child =>
+                (child.Child as Panel)?.Children
+                .OfType<AccessText>()
+                .Any(t => t.Text.Equals("Ungr_oup")) == true);
+
+            // Ensure the 'Ungroup' menu item exists before simulating the click
+            Assert.IsNotNull(ungrp, "The Ungroup element was not found in the context menu.");
+
+            ungrp.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
+            {
+                RoutedEvent = UIElement.MouseLeftButtonUpEvent
+            });
 
             // Assert
             Assert.That(groupContent.All(x => x.IsCollapsed == false));
