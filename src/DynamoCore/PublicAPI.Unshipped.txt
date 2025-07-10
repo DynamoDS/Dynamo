@@ -400,6 +400,7 @@ Dynamo.CustomNodeDefinition.ReturnKeys.get -> System.Collections.Generic.IEnumer
 Dynamo.CustomNodeDefinition.Returns.get -> System.Collections.Generic.IEnumerable<System.Tuple<string, string>>
 Dynamo.CustomNodeDefinition.ReturnType.get -> ProtoCore.Type
 Dynamo.CustomNodeInfo
+Dynamo.CustomNodeInfo.CustomNodeInfo() -> void
 Dynamo.CustomNodeInfo.Category.get -> string
 Dynamo.CustomNodeInfo.Category.set -> void
 Dynamo.CustomNodeInfo.CustomNodeInfo(System.Guid functionId, string name, string category, string description, string path, bool isVisibleInDynamoLibrary = true) -> void
@@ -410,6 +411,7 @@ Dynamo.CustomNodeInfo.FunctionId.set -> void
 Dynamo.CustomNodeInfo.IsPackageMember.get -> bool
 Dynamo.CustomNodeInfo.IsPackageMember.set -> void
 Dynamo.CustomNodeInfo.IsVisibleInDynamoLibrary.get -> bool
+Dynamo.CustomNodeInfo.IsVisibleInDynamoLibrary.set -> void
 Dynamo.CustomNodeInfo.Name.get -> string
 Dynamo.CustomNodeInfo.Name.set -> void
 Dynamo.CustomNodeInfo.PackageInfo.get -> Dynamo.Graph.Workspaces.PackageInfo
@@ -2998,6 +3000,7 @@ static Dynamo.Properties.Resources.WarningInvalidOutput.get -> string
 static Dynamo.Properties.Resources.WatermarkLabelText.get -> string
 static Dynamo.Properties.Resources.WelcomeMessage.get -> string
 static Dynamo.Properties.Resources.WorkbenchNotOpen.get -> string
+static Dynamo.Properties.Resources.UnknownErrorProcessingFile.get -> string
 static Dynamo.Scheduler.AsyncTaskExtensions.AllComplete(this System.Collections.Generic.IEnumerable<Dynamo.Scheduler.AsyncTask> tasks, System.Action<System.Collections.Generic.IEnumerable<Dynamo.Scheduler.AsyncTask>> action) -> System.IDisposable
 static Dynamo.Scheduler.AsyncTaskExtensions.Then(this Dynamo.Scheduler.AsyncTask task, Dynamo.Scheduler.AsyncTaskCompletedHandler action) -> System.IDisposable
 static Dynamo.Scheduler.AsyncTaskExtensions.ThenPost(this Dynamo.Scheduler.AsyncTask task, Dynamo.Scheduler.AsyncTaskCompletedHandler action, System.Threading.SynchronizationContext context = null) -> System.IDisposable
@@ -3161,3 +3164,5 @@ virtual Dynamo.Search.SearchElements.NodeSearchElement.GenerateInputParameters()
 virtual Dynamo.Search.SearchElements.NodeSearchElement.GenerateOutputParameters() -> System.Collections.Generic.IEnumerable<string>
 virtual Dynamo.Search.SearchElements.NodeSearchElement.OnItemProduced(Dynamo.Graph.Nodes.NodeModel obj) -> void
 virtual Dynamo.Search.SearchElements.SearchElementBase.CreationName.get -> string
+
+
