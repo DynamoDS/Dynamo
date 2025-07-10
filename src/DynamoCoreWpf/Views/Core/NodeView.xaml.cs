@@ -1803,12 +1803,9 @@ namespace Dynamo.Controls
             if (string.IsNullOrEmpty(result))
                 return result;
 
-            // Define the specific invalid characters to remove
-            char[] invalidChars = { '/', '\\', ':', '*', '?', '"', '<', '>', '|' };
-
             // Remove each invalid character from the name
             string sanitizedName = result;
-            foreach (char invalidChar in invalidChars)
+            foreach (char invalidChar in System.IO.Path.GetInvalidFileNameChars())
             {
                 sanitizedName = sanitizedName.Replace(invalidChar.ToString(), string.Empty);
             }
