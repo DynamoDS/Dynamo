@@ -22,7 +22,6 @@ using Dynamo.UI.Controls;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using ModifierKeys = System.Windows.Input.ModifierKeys;
 using Dynamo.Views;
 using Dynamo.Wpf.Utilities;
 using DynCmd = Dynamo.Models.DynamoModel;
@@ -39,6 +38,7 @@ namespace Dynamo.Nodes
     {
         internal Grid AnnotationGrid;
         internal Popup GroupContextMenuPopup;
+        internal Grid GroupStyleSelectorGrid;
         private Grid frozenButtonZoomedOutGrid;
         private Grid textBlockGrid;
         private TextBlock groupTextBlock;
@@ -1855,9 +1855,10 @@ namespace Dynamo.Nodes
                 Wpf.Properties.Resources.GroupContextMenuGraphLayout,
                 () => OnGraphLayoutAnnotation(this, new RoutedEventArgs())));
 
-            groupPopupPanel.Children.Add(CreateSubmenuItem(
+            GroupStyleSelectorGrid = CreateSubmenuItem(
                 Wpf.Properties.Resources.GroupStyleContextAnnotation,
-                CreateGroupStyleSelector));
+                CreateGroupStyleSelector);
+            groupPopupPanel.Children.Add(GroupStyleSelectorGrid);
 
             groupPopupPanel.Children.Add(CreateSubmenuItem(
                 Wpf.Properties.Resources.GroupContextMenuColor,
@@ -1961,7 +1962,7 @@ namespace Dynamo.Nodes
             return border;
         }
 
-        private UIElement CreateSubmenuItem(string label, Func<UIElement> submenuContentFactory)
+        private Grid CreateSubmenuItem(string label, Func<UIElement> submenuContentFactory)
         {
             var popup = new Popup
             {
