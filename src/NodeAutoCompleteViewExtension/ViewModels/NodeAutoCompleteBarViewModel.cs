@@ -32,13 +32,15 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
+using Dynamo.Wpf.Views.GuidedTour;
 using Greg;
 using Newtonsoft.Json;
-using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using ProtoCore.Utils;
 using RestSharp;
 using DataFormat = RestSharp.DataFormat;
+using IdentifierNode = ProtoCore.AST.AssociativeAST.IdentifierNode;
+using TypedIdentifierNode = ProtoCore.AST.AssociativeAST.TypedIdentifierNode;
 
 namespace Dynamo.NodeAutoComplete.ViewModels
 {
@@ -1454,10 +1456,33 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         private void EnableUiBlocking(bool enable)
         {
             var mainWindow = Application.Current.MainWindow as DynamoView;
-            mainWindow?.EnableOverlayBlocker(enable);
+            //mainWindow?.EnableOverlayBlocker(enable);
 
             Grid mainGrid = mainWindow.FindName("mainGrid") as Grid;
             mainGrid.IsHitTestVisible = !enable;
+
+            Grid backgroundGrid = mainWindow.FindName("background_grid") as Grid;
+            if (enable)
+            {
+                var backgroundElement = new GuideBackground(mainWindow)
+                {   
+                    Name = "DNABackground",
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Visibility = Visibility.Visible
+                };
+
+
+                backgroundGrid.Children.Add(backgroundElement);
+            }
+            else
+            {
+                var backgroundElement = backgroundGrid.Children.OfType<GuideBackground>().Where(element => element.Name == "DNABackground").FirstOrDefault();
+                if (backgroundElement != null)
+                {
+                    backgroundGrid.Children.Remove(backgroundElement);
+                }
+            }
         }
     }
 }
