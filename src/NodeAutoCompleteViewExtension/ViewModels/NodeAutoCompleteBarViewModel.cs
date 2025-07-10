@@ -7,9 +7,12 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using Dynamo.Configuration;
+using Dynamo.Controls;
 using Dynamo.Engine;
 using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
@@ -34,6 +37,7 @@ using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using ProtoCore.Utils;
 using RestSharp;
+using DataFormat = RestSharp.DataFormat;
 
 namespace Dynamo.NodeAutoComplete.ViewModels
 {
@@ -879,7 +883,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     var typeInfo = new NodeModelTypeId(nodeItem.Type.Id);
 
                     NodeModel newNode = dynamoModel.CreateNodeFromNameOrType(Guid.NewGuid(), typeInfo.FullName, true);
-
+                    
                     if (newNode != null)
                     {
                         newNode.X = offset; // Adjust X position
@@ -1450,6 +1454,9 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         {
             var mainWindow = Application.Current.MainWindow as DynamoView;
             mainWindow?.EnableOverlayBlocker(enable);
+
+            Grid mainGrid = mainWindow.FindName("mainGrid") as Grid;
+            mainGrid.IsHitTestVisible = !enable;
         }
     }
 }
