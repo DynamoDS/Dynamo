@@ -195,23 +195,10 @@ namespace Dynamo.ViewModels
             RequestNodeAutoCompleteViewExtension?.Invoke(clusterNodeAutoComplete);
         }
 
-        private Stopwatch nodeLoadStopwatch = new Stopwatch();
         //internal event Action NodeViewLoaded;
         internal void OnNodeViewLoaded()
         {
-            if (LoadedNodesCount < Nodes.Count)
-            {
-                if (!nodeLoadStopwatch.IsRunning)
-                {
-                    nodeLoadStopwatch.Restart();
-                }
-            }
             LoadedNodesCount++;
-            if (LoadedNodesCount == Nodes.Count)
-            {
-                nodeLoadStopwatch.Stop();
-                DynamoViewModel.Model.Logger.Log($"{LoadedNodesCount} nodes loaded in {nodeLoadStopwatch.ElapsedMilliseconds} ms");
-            }
         }
 
         #endregion
