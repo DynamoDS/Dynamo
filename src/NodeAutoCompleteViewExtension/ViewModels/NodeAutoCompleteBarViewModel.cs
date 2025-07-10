@@ -198,12 +198,10 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 if (isOpen) 
                 {
                     SubscribeWindowEvents();
-                    EnableUiBlocking(true);
                 }
                 else 
                 {
                     UnsubscribeWindowEvents();
-                    EnableUiBlocking(false);
                 }
             }
         }
@@ -825,11 +823,22 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             var transientNodes = wsViewModel.Nodes.Where(x => x.IsTransient).ToList();
             if (transientNodes.Any())
             {
+                // Unblock node operations during transient cleanup
+                dynamoViewModel.Model.IsNodeOperationsBlocked = false;
+
                 dynamoViewModel.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(transientNodes.Select(x => x.Id), true));
+
                 //remove the deletion of the elements from the undo stack
                 wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
                 //remove the layout of the elements from the undo stack
                 wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
+
+                // Block node operations as user might be iterating still
+                if (IsOpen)
+                {
+                    dynamoViewModel.Model.IsNodeOperationsBlocked = true;
+                }
+
             }
         }
 
@@ -1131,12 +1140,18 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         {
             dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved += NodeViewModel_Removed;
             dynamoViewModel.PreferenceSettings.AutocompletePreferencesChanged += OnPreferencesChanged;
+
+            // Block node operations during autocomplete
+            dynamoViewModel.Model.IsNodeOperationsBlocked = true;
         }
 
         private void UnsubscribeWindowEvents()
         {
             dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved -= NodeViewModel_Removed;
             dynamoViewModel.PreferenceSettings.AutocompletePreferencesChanged -= OnPreferencesChanged;
+
+            // Unblock node operations when autocomplete is closed
+            dynamoViewModel.Model.IsNodeOperationsBlocked = false;
         }
 
         internal void NodeViewModel_Removed(NodeModel node)
@@ -1453,36 +1468,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
         }
 
-        private void EnableUiBlocking(bool enable)
-        {
-            var mainWindow = Application.Current.MainWindow as DynamoView;
-            //mainWindow?.EnableOverlayBlocker(enable);
-
-            Grid mainGrid = mainWindow.FindName("mainGrid") as Grid;
-            mainGrid.IsHitTestVisible = !enable;
-
-            Grid backgroundGrid = mainWindow.FindName("background_grid") as Grid;
-            if (enable)
-            {
-                var backgroundElement = new GuideBackground(mainWindow)
-                {   
-                    Name = "DNABackground",
-                    HorizontalAlignment = HorizontalAlignment.Left,
-                    VerticalAlignment = VerticalAlignment.Top,
-                    Visibility = Visibility.Visible
-                };
-
-
-                backgroundGrid.Children.Add(backgroundElement);
-            }
-            else
-            {
-                var backgroundElement = backgroundGrid.Children.OfType<GuideBackground>().FirstOrDefault(element => element.Name == "DNABackground");
-                if (backgroundElement != null)
-                {
-                    backgroundGrid.Children.Remove(backgroundElement);
-                }
-            }
-        }
+       
     }
 }

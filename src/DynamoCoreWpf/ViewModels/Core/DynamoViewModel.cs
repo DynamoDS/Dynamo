@@ -517,6 +517,11 @@ namespace Dynamo.ViewModels
 
         public bool IsMouseDown { get; set; }
 
+        /// <summary>
+        /// Flag to block node creation and deletion operations during autocomplete
+        /// </summary>
+        internal bool IsNodeOperationsBlocked { get; set; }
+
         public ConnectorType ConnectorType
         {
             get

@@ -30,6 +30,12 @@ namespace Dynamo.Models
         /// <param name="command">Command to execute</param>
         public void ExecuteCommand(RecordableCommand command)
         {
+            // Check if node operations are blocked (e.g., during autocomplete)
+            if (IsNodeOperationBlocked(command))
+            {
+                return; // Block the command execution
+            }
+
             if (CommandStarting != null)
                 CommandStarting(command);
 
@@ -37,6 +43,23 @@ namespace Dynamo.Models
 
             if (CommandCompleted != null)
                 CommandCompleted(command);
+        }
+
+        /// <summary>
+        /// Checks if the given command should be blocked during autocomplete operations
+        /// </summary>
+        /// <param name="command">The command to check</param>
+        /// <returns>True if the command should be blocked, false otherwise</returns>
+        private bool IsNodeOperationBlocked(RecordableCommand command)
+        {
+            // Check if node operations are blocked
+            if (!IsNodeOperationsBlocked)
+            {
+                return false; // Not blocked
+            }
+
+            // Block node creation and deletion commands
+            return true;
         }
         
         private PortModel[] activeStartPorts;

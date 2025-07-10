@@ -402,6 +402,11 @@ namespace Dynamo.Models
         /// </summary>
         public AuthenticationManager AuthenticationManager { get; set; }
 
+        /// <summary>
+        /// Flag to block node creation and deletion operations during autocomplete
+        /// </summary>
+        internal bool IsNodeOperationsBlocked { get; set; }
+
         internal static string DefaultPythonEngine { get; private set; }
 
         internal static DynamoUtilities.DynamoFeatureFlagsManager FeatureFlags { get; private set; }
