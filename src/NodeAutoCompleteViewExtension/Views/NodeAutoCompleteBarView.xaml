@@ -137,7 +137,6 @@
                                            TextAlignment="Center"
                                            Visibility="Visible"
                                            Margin="6"/>
-                                        <!-- Login Needed Placeholders -->
                                         <TextBlock x:Name="LoginNeededMessagePlaceholder"
                                            FontSize="12"
                                            Text="{Binding AutocompleteMLMessage}"
