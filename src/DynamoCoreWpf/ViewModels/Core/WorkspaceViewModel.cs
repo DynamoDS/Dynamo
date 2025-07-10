@@ -859,7 +859,7 @@ namespace Dynamo.ViewModels
                     Model.FileName = filePath;
                     Model.OnSaved();
 
-                    if (saveContext.Equals(SaveContext.SaveAs))
+                    if (Path.GetExtension(filePath).Equals(".dyn") && saveContext.Equals(SaveContext.SaveAs))
                     {
                         DynamoViewModel.Model.ClearCurrentWorkspace();
                         DynamoViewModel.Model.OpenJsonFileFromPath(saveContent, filePath, false);
