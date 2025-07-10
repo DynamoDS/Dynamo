@@ -428,7 +428,7 @@ namespace Dynamo.Controls
                 Background = Brushes.Transparent,
             };
 
-            renameIndicator.SetValue(DockPanel.ZIndexProperty, 5);
+            Panel.SetZIndex(renameIndicator, 5);
             renameIndicator.SetValue(DockPanel.DockProperty, Dock.Right);
 
             // Create and configure the Ellipse
