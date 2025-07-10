@@ -29,6 +29,8 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using Symbol = Dynamo.Graph.Nodes.CustomNodes.Symbol;
+using System.Diagnostics;
+
 
 namespace Dynamo.Core
 {
@@ -182,19 +184,24 @@ namespace Dynamo.Core
             this.nodeFactory = nodeFactory;
             this.migrationManager = migrationManager;
             this.libraryServices = libraryServices;
+        }
+
+        internal CustomNodeManager(NodeFactory nodeFactory, MigrationManager migrationManager, LibraryServices libraryServices,
+            bool useCustomNodeCache) : this(nodeFactory, migrationManager, libraryServices)
+        {
+            this.useCustomNodeCache = useCustomNodeCache;
+
+            if (!useCustomNodeCache) return;
+
 
             // Use a user-specific cache path
-            // On Linux, this usually resolves to ~/.local/share
-            // On Windows, this resolves to %APPDATA%
-            string cacheDir = Environment.GetFolderPath(
-                Environment.OSVersion.Platform == PlatformID.Unix ? Environment.SpecialFolder.LocalApplicationData 
-                    : Environment.SpecialFolder.ApplicationData
-            );
-            string appSubDir = Path.Combine(cacheDir, "Dynamo", "Cache");
-            Directory.CreateDirectory(appSubDir);
-            string cacheFilePath = Path.Combine(appSubDir, "CustomNodeInfoCache.temp");
+            string cacheDir = Path.Combine(libraryServices.PathManager.GetUserDataFolder(), "Cache");
+            Directory.CreateDirectory(cacheDir);
+            string cacheFilePath = Path.Combine(cacheDir, "CustomNodeInfoCache.temp");
+
+            // Before deserialization
             customNodeInfoCache = new JsonCache<CustomNodeInfo>(cacheFilePath);
-            
+
             // Cleanup stale entries on startup in background
             _ = Task.Run(() => customNodeInfoCache.RemoveStaleEntries());
         }
@@ -203,6 +210,8 @@ namespace Dynamo.Core
 
         private readonly LibraryServices libraryServices;
         private readonly JsonCache<CustomNodeInfo> customNodeInfoCache;
+
+        private readonly bool useCustomNodeCache;
 
         private readonly OrderedSet<Guid> loadOrder = new();
 
@@ -613,7 +622,6 @@ namespace Dynamo.Core
                 Log(e);
                 yield break;
             }
-
             foreach (var file in dyfs)
             {
                 CustomNodeInfo info;
@@ -823,14 +831,17 @@ namespace Dynamo.Core
                 //create a fast check for checking if the file has been loaded before.  Could also do a file hash but we don't care too much about false negatives
                 var key = path + lastWriteTime + length;
 
-                if (customNodeInfoCache.TryGet(key, out info))
+                if (useCustomNodeCache && customNodeInfoCache.TryGet(key, out info))
                 {
                     return true;
                 }
 
                 if (CustomNodeInfo.GetFromJsonDocument(path, out info, out var ex))
                 {
-                    customNodeInfoCache.Set(key, info);
+                    if (useCustomNodeCache)
+                    {
+                        customNodeInfoCache.Set(key, info);
+                    }
 
                     return true;
                 }
@@ -852,7 +863,10 @@ namespace Dynamo.Core
                         path,
                         header.IsVisibleInDynamoLibrary);
 
-                    customNodeInfoCache.Set(key, info);
+                    if (useCustomNodeCache)
+                    {
+                        customNodeInfoCache.Set(key, info);
+                    }
 
                     return true;
                 }
@@ -1572,8 +1586,11 @@ namespace Dynamo.Core
             DefinitionUpdated = null;
 
             loadedCustomNodes.ToList().ForEach(x => Uninitialize(x.Value.FunctionId));
-            
-            customNodeInfoCache?.Serialize();
+
+            if (useCustomNodeCache)
+            {
+                customNodeInfoCache?.Serialize();
+            }
         }
     }
 }

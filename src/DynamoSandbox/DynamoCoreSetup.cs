@@ -142,7 +142,7 @@ namespace DynamoSandbox
         private void LoadDynamoView()
         {
             DynamoModel model;
-            model = StartupUtils.MakeModel(false, CLILocale, noNetworkMode, ASMPath ?? string.Empty, analyticsInfo);
+            model = StartupUtils.MakeModel(false, CLILocale, noNetworkMode, useCustomNodeCache: true, ASMPath ?? string.Empty, analyticsInfo);
             model.CERLocation = CERLocation;
 
             viewModel = DynamoViewModel.Start(

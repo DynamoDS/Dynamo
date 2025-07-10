@@ -599,6 +599,8 @@ namespace Dynamo.Models
             /// </summary>
             public bool CLIMode { get; set; }
             public string CLILocale { get; set; }
+
+            internal bool UseCustomNodeCache { get; set; }
         }
 
         /// <summary>
@@ -638,6 +640,7 @@ namespace Dynamo.Models
         {
             DynamoModel.IsCrashing = false;
 
+            bool useCustomNodeCache = false;
             if (config is DefaultStartConfiguration defaultStartConfig)
             {
                 // This is not exposed in IStartConfiguration to avoid a breaking change.
@@ -646,6 +649,7 @@ namespace Dynamo.Models
                 CLIMode = defaultStartConfig.CLIMode;
                 IsServiceMode = defaultStartConfig.IsServiceMode;
                 CLILocale = defaultStartConfig.CLILocale;
+                useCustomNodeCache = defaultStartConfig.UseCustomNodeCache;
             }
 
             if (config is IStartConfigCrashReporter cerConfig)
@@ -916,7 +920,7 @@ namespace Dynamo.Models
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
 
-            CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
+            CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices, useCustomNodeCache);
 
             LuceneSearch.LuceneUtilityNodeSearch = new LuceneSearchUtility(this, LuceneSearchUtility.DefaultNodeIndexStartConfig);
 
