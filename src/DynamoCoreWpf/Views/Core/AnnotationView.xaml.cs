@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -58,7 +57,7 @@ namespace Dynamo.Nodes
         private Grid outputPortsGrid;
         private Grid groupContent;
         private Border nodeCountBorder;
-
+        
         private Thumb mainGroupThumb;
 
         private bool _isUpdatingLayout = false;
@@ -187,6 +186,11 @@ namespace Dynamo.Nodes
                 Height = Double.NaN,
                 IsHitTestVisible = true
             };
+
+            AnnotationGrid.SetBinding(VisibilityProperty, new Binding("IsCollapsed")
+            {
+                Converter = _inverseBooleanToVisibilityCollapsedConverter
+            });
 
             // Add RowDefinitions
             AnnotationGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -470,7 +474,6 @@ namespace Dynamo.Nodes
             {
                 ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
             }
-            
         }
 
         /// <summary>

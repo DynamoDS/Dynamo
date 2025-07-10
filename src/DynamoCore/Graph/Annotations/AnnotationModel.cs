@@ -548,24 +548,6 @@ namespace Dynamo.Graph.Annotations
             }
         }
 
-        private double minCollapsedPortAreaHeight;
-        /// <summary>
-        /// Gets or sets the minimum height of the port area when the group is collapsed.
-        /// Used to calculate the total height of the collapsed group based on proxy ports
-        /// </summary>
-        public double MinCollapsedPortAreaHeight
-        {
-            get => minCollapsedPortAreaHeight;
-            set
-            {
-                if (minCollapsedPortAreaHeight != value)
-                {
-                    minCollapsedPortAreaHeight = value;
-                    RaisePropertyChanged(nameof(MinCollapsedPortAreaHeight));
-                }
-            }
-        }
-
         #endregion
 
         /// <summary>
