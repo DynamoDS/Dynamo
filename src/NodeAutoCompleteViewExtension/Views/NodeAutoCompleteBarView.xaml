@@ -129,7 +129,7 @@
                                            TextWrapping="Wrap"
                                            TextAlignment="Center"
                                            Visibility="Collapsed"
-                                           Margin="6,0,0,0"/>
+                                           Margin="4"/>
                                         <ScrollViewer Margin="0,36,0,0" SnapsToDevicePixels="True">
                                             <StackPanel KeyboardNavigation.DirectionalNavigation="Contained"
                                                 IsItemsHost="True" />
