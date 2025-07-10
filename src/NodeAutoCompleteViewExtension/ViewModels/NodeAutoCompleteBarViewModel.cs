@@ -1477,7 +1477,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
             else
             {
-                var backgroundElement = backgroundGrid.Children.OfType<GuideBackground>().Where(element => element.Name == "DNABackground").FirstOrDefault();
+                var backgroundElement = backgroundGrid.Children.OfType<GuideBackground>().FirstOrDefault(element => element.Name == "DNABackground");
                 if (backgroundElement != null)
                 {
                     backgroundGrid.Children.Remove(backgroundElement);
