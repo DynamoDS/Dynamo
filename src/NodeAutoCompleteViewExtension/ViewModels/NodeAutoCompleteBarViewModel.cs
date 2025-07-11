@@ -910,9 +910,15 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     {
                         // Temporarily disable modification events (only necessary to add nodes to the input)
                         var oldFlag = PortViewModel.NodeViewModel.NodeModel.RaisesModificationEvents;
-                        PortViewModel.NodeViewModel.NodeModel.RaisesModificationEvents = false;
-                        entryConnector = ConnectorModel.Make(entryNode, PortViewModel.NodeViewModel.NodeModel, portIndex, PortViewModel.PortModel.Index);
-                        PortViewModel.NodeViewModel.NodeModel.RaisesModificationEvents = oldFlag;
+                        try
+                        {
+                            PortViewModel.NodeViewModel.NodeModel.RaisesModificationEvents = false;
+                            entryConnector = ConnectorModel.Make(entryNode, PortViewModel.NodeViewModel.NodeModel, portIndex, PortViewModel.PortModel.Index);
+                        }
+                        finally
+                        {
+                            PortViewModel.NodeViewModel.NodeModel.RaisesModificationEvents = oldFlag;
+                        }
                     }
                 }
                 if (entryConnector != null)
