@@ -202,9 +202,11 @@ namespace ProtoCore.Utils
             try
             {
                 //defining the global Assoc block that wraps the entire .ds source file
-                ProtoCore.LanguageCodeBlock globalBlock = new ProtoCore.LanguageCodeBlock();
-                globalBlock.Language = ProtoCore.Language.Associative;
-                globalBlock.Code = code;
+                var globalBlock = new ProtoCore.LanguageCodeBlock
+                {
+                    Language = ProtoCore.Language.Associative,
+                    Code = code
+                };
 
                 //passing the global Assoc wrapper block to the compiler
                 ProtoCore.CompileTime.Context context = new ProtoCore.CompileTime.Context();
@@ -246,18 +248,17 @@ namespace ProtoCore.Utils
             }
         }
 
-        public static bool TryLoadAssemblyIntoCore(Core core, string assemblyPath)
+        public static bool TryLoadAssemblyIntoCore(Core core, string /*assemblyPath*/ code)
         {
             bool parsingPreloadFlag = core.IsParsingPreloadedAssembly;
             bool parsingCbnFlag = core.IsParsingCodeBlockNode;
             core.IsParsingPreloadedAssembly = true;
             core.IsParsingCodeBlockNode = false;
 
-            int blockId;
-            string importStatement = @"import (""" + ToLiteral(assemblyPath) + @""");";
+            //string importStatement = @"import (""" + ToLiteral(assemblyPath) + @""");";
 
             core.ResetForPrecompilation();
-            var status = PreCompile(importStatement, core, null, out blockId);
+            var status = PreCompile(/*importStatement*/ code, core, null, out _);
 
             core.IsParsingPreloadedAssembly = parsingPreloadFlag;
             core.IsParsingCodeBlockNode = parsingCbnFlag;
