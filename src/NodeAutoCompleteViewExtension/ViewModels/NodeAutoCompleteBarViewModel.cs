@@ -807,6 +807,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 {
                     connector.ConnectorModel.Delete();
                     connector.ConnectorModel.Dispose();
+                    wsViewModel.Connectors.Remove(connector);
                 }
             }
 
