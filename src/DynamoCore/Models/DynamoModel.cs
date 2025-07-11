@@ -324,9 +324,10 @@ namespace Dynamo.Models
             get { return currentWorkspace; }
             set
             {
-                if (Equals(value, currentWorkspace)) return;                
-                OnWorkspaceHidden(currentWorkspace);
+                if (Equals(value, currentWorkspace)) return;
+                var old = currentWorkspace;
                 currentWorkspace = value;
+                OnWorkspaceHidden(old);
                 OnPropertyChanged(nameof(CurrentWorkspace));
             }
         }

@@ -201,14 +201,12 @@ namespace Dynamo.NodeAutoComplete.Views
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
                     ViewModel.DeleteTransientNodes();
-                    ViewModel.ToggleUndoRedoLocked(false);
                     ViewModel.PortViewModel = null;
                 }), DispatcherPriority.Loaded);
             }
             else
             {
                 ViewModel.DeleteTransientNodes();
-                ViewModel.ToggleUndoRedoLocked(false);
                 ViewModel.PortViewModel = null;
             }
         }
