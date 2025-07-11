@@ -78,6 +78,13 @@ namespace Dynamo.Views
             }
         }
 
+        /// <summary>
+        /// Gets the outer canvas used for overlay elements like context menus and tooltips.
+        /// This canvas is not affected by zoom or pan, so it can be used to place UI elements
+        /// at a fixed screen size regardless of workspace scaling.
+        /// </summary>
+        public Grid OuterCanvas => outerCanvas;
+
         internal bool IsSnappedToPort
         {
             get

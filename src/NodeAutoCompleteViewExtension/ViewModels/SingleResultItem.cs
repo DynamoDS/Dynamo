@@ -39,7 +39,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             IconName = nodeModel.GetType().Name;
             Description = nodeModel.Name;
             Parameters = $"({string.Join(", ", nodeModel.InPorts.Select(x => x.Name))})";
-            CreationName = string.IsNullOrWhiteSpace(nodeModel.CreationName) ? nodeModel.GetOriginalName() : nodeModel.CreationName;
+            CreationName = nodeModel.CreationName;
             Probability = score;
             Title = Description;
             InitTopology(portToConnect);

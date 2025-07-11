@@ -4162,11 +4162,11 @@ To make this file into a new template, save it to a different folder, then move 
     <value>This group is frozen. Click to unfreeze.</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>Enable New UI</value>
+    <value>Enable Floating Toolbar</value>
     <comment>Preferences | Features | Experimental | Enable Node AutoComplete New UI</comment>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
-    <value>Enable the new floating menu for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog.</value>
+    <value>Enable a floating toolbar for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog.</value>
   </data>
   <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
     <value>_Dump Node Icon Data</value>

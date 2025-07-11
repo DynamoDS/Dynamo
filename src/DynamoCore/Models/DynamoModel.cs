@@ -599,6 +599,12 @@ namespace Dynamo.Models
             /// </summary>
             public bool CLIMode { get; set; }
             public string CLILocale { get; set; }
+
+            /// <summary>
+            /// If true, a custom node cache stores custom node info objects
+            /// in a dictionary, so they don't have to be reloaded from the DYF.
+            /// </summary>
+            internal bool UseCustomNodeCache { get; set; }
         }
 
         /// <summary>
@@ -638,6 +644,7 @@ namespace Dynamo.Models
         {
             DynamoModel.IsCrashing = false;
 
+            bool useCustomNodeCache = false;
             if (config is DefaultStartConfiguration defaultStartConfig)
             {
                 // This is not exposed in IStartConfiguration to avoid a breaking change.
@@ -646,6 +653,7 @@ namespace Dynamo.Models
                 CLIMode = defaultStartConfig.CLIMode;
                 IsServiceMode = defaultStartConfig.IsServiceMode;
                 CLILocale = defaultStartConfig.CLILocale;
+                useCustomNodeCache = defaultStartConfig.UseCustomNodeCache;
             }
 
             if (config is IStartConfigCrashReporter cerConfig)
@@ -916,7 +924,7 @@ namespace Dynamo.Models
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
 
-            CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
+            CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices, useCustomNodeCache);
 
             LuceneSearch.LuceneUtilityNodeSearch = new LuceneSearchUtility(this, LuceneSearchUtility.DefaultNodeIndexStartConfig);
 
@@ -1513,28 +1521,9 @@ namespace Dynamo.Models
 
                 if (customNodeSearchRegistry.Contains(info.FunctionId)
                         || !info.IsVisibleInDynamoLibrary)
-                    return;
-
-               
-                var elements = SearchModel?.Entries.OfType<CustomNodeSearchElement>().
-                                Where(x =>
-                                {
-                                    // Search for common paths and get rid of empty paths.
-                                    // It can be empty just in case it's just created node.
-                                    return String.Compare(x.Path, info.Path, StringComparison.OrdinalIgnoreCase) == 0 &&
-                                        !String.IsNullOrEmpty(x.Path);
-                                }).ToList();
-
-                if (elements.Any())
                 {
-                    foreach (var element in elements)
-                    {
-                        element.SyncWithCustomNodeInfo(info);
-                        SearchModel.Update(element);
-                    }
                     return;
                 }
-                
 
                 customNodeSearchRegistry.Add(info.FunctionId);
                 var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
@@ -1542,13 +1531,9 @@ namespace Dynamo.Models
 
                 //Indexing node packages installed using PackageManagerSearch
                 var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
-                if (searchElement != null)
-                {
-                    LuceneUtility.AddNodeTypeToSearchIndex(searchElement, iDoc);
-                }
+                LuceneUtility.AddNodeTypeToSearchIndex(searchElement, iDoc);
 
-                Action<CustomNodeInfo> infoUpdatedHandler = null;
-                infoUpdatedHandler = newInfo =>
+                Action<CustomNodeInfo> infoUpdatedHandler = newInfo =>
                 {
                     if (info.FunctionId == newInfo.FunctionId)
                     {
@@ -2197,7 +2182,7 @@ namespace Dynamo.Models
         /// execution mode specified in the file and set manual mode</param>
         /// <param name="isTemplate">Set this to true to indicate that the file is a template</param>
         /// <returns>True if workspace was opened successfully</returns>
-        private bool OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool isTemplate = false)
+        internal bool OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool isTemplate = false)
         {
             try
             {

@@ -152,8 +152,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 RaisePropertyChanged(nameof(HasPrevious));
                 RaisePropertyChanged(nameof(HasNext));
                 RaisePropertyChanged(nameof(FilteredView));
+                RaisePropertyChanged(nameof(HasUnfilteredResults));
             }
         }
+
+        public bool HasUnfilteredResults => DropdownResults != null && DropdownResults.Any();
 
         /// <summary>
         /// Return the filter associated currently with dropdown results.
@@ -186,10 +189,20 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
             set
             {
-                if (isOpen == value) return;
+                if (isOpen == value)
+                {
+                    return;
+                }
+
                 isOpen = value;
-                if (isOpen) SubscribeWindowEvents();
-                else UnsubscribeWindowEvents();
+                if (isOpen)
+                {
+                    SubscribeWindowEvents();
+                }
+                else
+                {
+                    UnsubscribeWindowEvents();
+                }
             }
         }
 
@@ -310,18 +323,15 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
             NodeAutoCompleteUtilities.PostAutoLayoutNodes(node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, PortViewModel.PortType, null);
 
+            if (PortViewModel.PortType == PortType.Input)
+            {
+                node.NodeModel.MarkNodeAsModified();
+            }
+
             (node.WorkspaceViewModel.Model as HomeWorkspaceModel)?.MarkNodesAsModifiedAndRequestRun(transientNodes.Select(x => x.NodeModel));
 
-            ToggleUndoRedoLocked(false);
-        }
-
-        internal void ToggleUndoRedoLocked(bool toggle = true)
-        {
-            var node = PortViewModel.NodeViewModel;
-            //unlock undo/redo
-            node.WorkspaceViewModel.Model.IsUndoRedoLocked = toggle;
-            //allow for undo/redo again
-            node.DynamoViewModel.RaiseCanExecuteUndoRedo();
+            //add the new items to the undo recorder (this ensures the elements are valid at this point in time before any other manipulation occurs)
+            DynamoModel.RecordUndoModels(node.WorkspaceViewModel.Model, createdClusterItems);
         }
 
         /// <summary>
@@ -552,19 +562,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             MLNodeAutoCompletionResponse MLresults = null;
 
             // Get results from the ML API.
-            try
-            {
-                MLresults = GetGenericAutocompleteResult<MLNodeAutoCompletionResponse>(nodeAutocompleteMLEndpoint);
-            }
-            catch (Exception ex)
-            {
-                dynamoViewModel.Model.Logger.Log("Unable to fetch ML Node autocomplete results: " + ex.Message);
-                DisplayAutocompleteMLStaticPage = true;
-                AutocompleteMLTitle = Resources.LoginNeededTitle;
-                AutocompleteMLMessage = Resources.LoginNeededMessage;
-                Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "NewExperience_UnabletoFetch");
-                return new List<SingleResultItem>();
-            }
+            MLresults = GetGenericAutocompleteResult<MLNodeAutoCompletionResponse>(nodeAutocompleteMLEndpoint);
 
             // no results
             if (MLresults == null || MLresults.Results.Count() == 0)
@@ -800,17 +798,28 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         // Delete all transient nodes in the workspace
         private void DeleteTransientNodes()
         {
-            var node = PortViewModel.NodeViewModel;
-            var wsViewModel = node.WorkspaceViewModel;
+            var node = PortViewModel?.NodeViewModel;
+            var wsViewModel = node?.WorkspaceViewModel;
 
             var transientNodes = wsViewModel.Nodes.Where(x => x.IsTransient).ToList();
+            var transientConnectors = wsViewModel.Connectors.Where(c => c.IsTransient).ToList();
+
+            if (transientConnectors.Any())
+            {
+                foreach (var connector in transientConnectors)
+                {
+                    connector.ConnectorModel.Delete();
+                    connector.ConnectorModel.Dispose();
+                    wsViewModel.Connectors.Remove(connector);
+                }
+            }
+
             if (transientNodes.Any())
             {
-                dynamoViewModel.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(transientNodes.Select(x => x.Id), true));
-                //remove the deletion of the elements from the undo stack
-                wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
-                //remove the layout of the elements from the undo stack
-                wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
+                foreach (var transientNode in transientNodes)
+                {
+                    wsViewModel.Model.RemoveAndDisposeNode(transientNode.NodeModel);
+                }
             }
         }
 
@@ -835,8 +844,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         }
 
         // Add Cluster from server result into the workspace
+        private List<ModelBase> createdClusterItems = new List<ModelBase>();
         internal void AddCluster(ClusterResultItem clusterResultItem)
         {
+            createdClusterItems.Clear();
+
             if (clusterResultItem == null || clusterResultItem.Topology == null)
                 return;
             var nextCluster = JsonConvert.SerializeObject(clusterResultItem);
@@ -846,15 +858,10 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
             lastSerializedAddedCluster = nextCluster;
 
-            List<ModelBase> createdClusterItems = new List<ModelBase>();
-
             var workspaceViewModel = PortViewModel.NodeViewModel.WorkspaceViewModel;
             var workspaceModel = workspaceViewModel.Model;
             var dynamoModel = PortViewModel.NodeViewModel.DynamoViewModel.Model;
             var entryNodeId = clusterResultItem.Topology.Nodes.ElementAtOrDefault(clusterResultItem.EntryNodeIndex)?.Id;
-
-            // Lock undo/redo
-            ToggleUndoRedoLocked(true);
 
             // Delete any existing transient nodes
             DeleteTransientNodes();
@@ -875,7 +882,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     var typeInfo = new NodeModelTypeId(nodeItem.Type.Id);
 
                     NodeModel newNode = dynamoModel.CreateNodeFromNameOrType(Guid.NewGuid(), typeInfo.FullName, true);
-
+                    
                     if (newNode != null)
                     {
                         newNode.X = offset; // Adjust X position
@@ -908,7 +915,17 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     var portIndex = clusterResultItem.EntryNodeOutPort;
                     if (entryNode.OutPorts.Count > portIndex && !entryNode.OutPorts[portIndex].Connectors.Any())
                     {
-                        entryConnector = ConnectorModel.Make(entryNode, PortViewModel.NodeViewModel.NodeModel, portIndex, PortViewModel.PortModel.Index);
+                        // Temporarily disable modification events (only necessary to add nodes to the input)
+                        var oldFlag = PortViewModel.NodeViewModel.NodeModel.RaisesModificationEvents;
+                        try
+                        {
+                            PortViewModel.NodeViewModel.NodeModel.RaisesModificationEvents = false;
+                            entryConnector = ConnectorModel.Make(entryNode, PortViewModel.NodeViewModel.NodeModel, portIndex, PortViewModel.PortModel.Index);
+                        }
+                        finally
+                        {
+                            PortViewModel.NodeViewModel.NodeModel.RaisesModificationEvents = oldFlag;
+                        }
                     }
                 }
                 if (entryConnector != null)
@@ -948,9 +965,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     }
                 }
             }
-
-            //add the new items to the undo recorder (this ensures the elements are valid at this point in time before any other manipulation occurs)
-            DynamoModel.RecordUndoModels(workspaceModel, createdClusterItems);
 
             // Perform auto-layout for the newly added nodes
             NodeAutoCompleteUtilities.PostAutoLayoutNodes(
@@ -997,25 +1011,41 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             LastRequestGuid = Guid.NewGuid();
             var myRequest = LastRequestGuid;
             SelectedIndex = -1;
+            RaisePropertyChanged(nameof(IsSingleAutocomplete));//port may have changed between single and cluster autocomplete
 
             //start a background thread to make the http request
             Task.Run(() =>
             {
                 List<SingleResultItem> fullSingleResults = null;
                 MLNodeClusterAutoCompletionResponse fullResults = null;
-                if (effectiveIsSingle)
+
+                try
                 {
-                    fullSingleResults = GetSingleAutocompleteResults().ToList();
-                    fullResults = new MLNodeClusterAutoCompletionResponse
+                    if (effectiveIsSingle)
                     {
-                        Version = "0.0",
-                        NumberOfResults = fullSingleResults.Count,
-                        Results = fullSingleResults,
-                    };
+                        fullSingleResults = GetSingleAutocompleteResults().ToList();
+                        fullResults = new MLNodeClusterAutoCompletionResponse
+                        {
+                            Version = "0.0",
+                            NumberOfResults = fullSingleResults.Count,
+                            Results = fullSingleResults,
+                        };
+                    }
+                    else
+                    {
+                        fullResults = GetGenericAutocompleteResult<MLNodeClusterAutoCompletionResponse>(nodeClusterAutocompleteMLEndpoint);
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    fullResults = GetGenericAutocompleteResult<MLNodeClusterAutoCompletionResponse>(nodeClusterAutocompleteMLEndpoint);
+                    dynamoViewModel.Model.Logger.Log("Unable to fetch ML Node autocomplete results: " + ex.Message);
+                    DisplayAutocompleteMLStaticPage = true;
+                    AutocompleteMLTitle = Resources.LoginNeededTitle;
+                    AutocompleteMLMessage = Resources.LoginNeededMessage;
+                    Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "UnabletoFetch");
+                    DropdownResults = new List<DNADropdownViewModel>();
+                    IsDropDownOpen = true;
+                    return;
                 }
 
                 dynamoViewModel.UIDispatcher.BeginInvoke(() =>

@@ -7,6 +7,7 @@
              xmlns:local="clr-namespace:Dynamo.PackageManager.UI;assembly=DynamoCoreWpf"
              xmlns:dynconverters="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
              xmlns:resxother="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
+             xmlns:properties="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
              mc:Ignorable="d"
              WindowStyle="None"
              AllowsTransparency="True"
@@ -18,10 +19,10 @@
         >
     <Window.Style>
         <Style TargetType="Window">
-            <Setter Property="Width" Value="620" />
+            <Setter Property="Width" Value="600" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsDNAClusterPlacementEnabled}" Value="False">
-                    <Setter Property="Width" Value="510"/>
+                    <Setter Property="Width" Value="490"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -47,6 +48,131 @@
             </Style>
             <Style x:Key="RectangleStyle" TargetType="Rectangle">
                 <Setter Property="Opacity" Value="0" />
+            </Style>
+            <Style x:Key="AutocompleteDropdown" TargetType="{x:Type ComboBox}">
+                <Setter Property="SnapsToDevicePixels" Value="true" />
+                <Setter Property="OverridesDefaultStyle" Value="true" />
+                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+                <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+                <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
+                <Setter Property="MinWidth" Value="40" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="MinHeight" Value="20" />
+                <Setter Property="MaxHeight" Value="40" />
+                <Setter Property="FontSize" Value="10" />
+                <Setter Property="Foreground" Value="#C7C7C7" />
+                <Setter Property="ItemContainerStyle" Value="{DynamicResource PackageManagerComboBoxItemStyle}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ComboBox">
+                            <Grid>
+                                <ToggleButton Name="ToggleButton"
+                                      Grid.Column="2"
+                                      ClickMode="Press"
+                                      Focusable="false"
+                                      IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                      Template="{DynamicResource PackageManagerComboBoxToggleButton}" />
+                                <ContentPresenter Name="ContentSite"
+                                          Margin="1,3,12,3"
+                                          HorizontalAlignment="Left"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding SelectionBoxItem}"
+                                          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                          ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                          IsHitTestVisible="False" />
+                                <TextBlock x:Name="TitlePlaceholder"
+                                           Text="{Binding AutocompleteMLTitle}"
+                                           Foreground="LightGray"
+                                           VerticalAlignment="Center"
+                                           FontSize="12"
+                                           Margin="6,0,0,0"
+                                           Visibility="Collapsed"/>
+                                <TextBox x:Name="PART_EditableTextBox"
+                                 Margin="3,3,23,3"
+                                 Padding="10"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center"
+                                 Background="#666666"
+                                 CaretBrush="#bbbbbb"
+                                 Focusable="True"
+                                 Foreground="#bbbbbb"
+                                 IsReadOnly="{TemplateBinding IsReadOnly}"
+                                 Style="{x:Null}"
+                                 Template="{StaticResource ComboBoxTextBox}"
+                                 Visibility="Hidden" />
+                                <Popup Name="Popup"
+                               AllowsTransparency="True"
+                               Focusable="False"
+                               IsOpen="{TemplateBinding IsDropDownOpen}"
+                               Placement="Bottom"
+                               PopupAnimation="Slide">
+                                    <Grid Name="DropDown"
+                                  MinWidth="{TemplateBinding ActualWidth}"
+                                  MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                  SnapsToDevicePixels="True">
+                                        <Border x:Name="DropDownBorder"
+                                        Background="#535353"
+                                        BorderBrush="{DynamicResource MidLightBlueBrush}"
+                                        BorderThickness="0,6,0,0" />
+                                        <ContentControl x:Name="SearchSlot"
+                                    Content="{TemplateBinding Tag}"
+                                    Visibility="{Binding HasUnfilteredResults, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    Margin="0,6,0,0"
+                                    VerticalAlignment="Top"/>
+                                        <TextBlock x:Name="MessagePlaceholder"
+                                           FontSize="12"
+                                           Text="{Binding AutocompleteMLMessage}"
+                                           Foreground="LightGray"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           MaxWidth="{TemplateBinding ActualWidth}"
+                                           TextWrapping="Wrap"
+                                           TextAlignment="Center"
+                                           Visibility="Collapsed"
+                                           Margin="4"/>
+                                        <ScrollViewer Margin="0,36,0,0" SnapsToDevicePixels="True">
+                                            <StackPanel KeyboardNavigation.DirectionalNavigation="Contained"
+                                                IsItemsHost="True" />
+                                        </ScrollViewer>
+                                    </Grid>
+                                </Popup>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="HasItems" Value="false">
+                                    <Setter TargetName="DropDownBorder" Property="MinHeight" Value="70" />
+                                    <Setter Property="ScrollViewer.Visibility" Value="Collapsed" />
+                                    <Setter TargetName="ContentSite" Property="Visibility" Value="Collapsed"/>
+                                    <Setter TargetName="TitlePlaceholder" Property="Visibility" Value="Collapsed"/>
+                                    <Setter TargetName="MessagePlaceholder" Property="Visibility" Value="Collapsed"/>
+                                </Trigger>
+                                <Trigger Property="HasItems" Value="true">
+                                    <Setter Property="ScrollViewer.Visibility" Value="Visible" />
+                                    <Setter TargetName="ContentSite" Property="Visibility" Value="Visible"/>
+                                    <Setter TargetName="TitlePlaceholder" Property="Visibility" Value="Collapsed"/>
+                                    <Setter TargetName="MessagePlaceholder" Property="Visibility" Value="Collapsed"/>
+                                </Trigger>
+                                <DataTrigger Binding="{Binding DisplayAutocompleteMLStaticPage}" Value="True">
+                                    <Setter TargetName="TitlePlaceholder" Property="Visibility" Value="Visible"/>
+                                    <Setter TargetName="MessagePlaceholder" Property="Visibility" Value="Visible"/>
+                                    <Setter TargetName="ContentSite" Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                                <Trigger Property="IsGrouping" Value="true">
+                                    <Setter Property="ScrollViewer.CanContentScroll" Value="false" />
+                                </Trigger>
+                                <Trigger SourceName="Popup" Property="Popup.AllowsTransparency" Value="true">
+                                    <Setter TargetName="DropDownBorder" Property="CornerRadius" Value="0" />
+                                    <Setter TargetName="DropDownBorder" Property="Margin" Value="0,0,0,0" />
+                                </Trigger>
+                                <Trigger Property="IsEditable" Value="true">
+                                    <Setter Property="IsTabStop" Value="false" />
+                                    <Setter TargetName="PART_EditableTextBox" Property="Visibility" Value="Visible" />
+                                    <Setter TargetName="ContentSite" Property="Visibility" Value="Hidden" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers />
             </Style>
             <dynconverters:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <dynconverters:InverseBoolToVisibilityConverter  x:Key="InverseBooleanToVisibilityConverter"/>
@@ -94,6 +220,7 @@
                     x:Name="gripHandle"
                     PreviewMouseLeftButtonDown="GripHandle_MouseLeftButtonDown"
                     Grid.Column="0"
+                    Visibility="Collapsed"
                 >
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
@@ -167,7 +294,7 @@
                             TabIndex="0"
                         >
                             <ComboBox.Style>
-                                <Style BasedOn="{StaticResource PackageManagerSmallComboBox}" TargetType="ComboBox">
+                                <Style BasedOn="{StaticResource AutocompleteDropdown}" TargetType="ComboBox">
                                 </Style>
                             </ComboBox.Style>
                             <ComboBox.Tag>

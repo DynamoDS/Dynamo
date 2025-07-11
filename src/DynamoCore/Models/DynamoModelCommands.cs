@@ -38,7 +38,7 @@ namespace Dynamo.Models
             if (CommandCompleted != null)
                 CommandCompleted(command);
         }
-        
+
         private PortModel[] activeStartPorts;
         private PortModel firstStartPort;
 

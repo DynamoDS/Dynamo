@@ -486,14 +486,8 @@
                                         Background="#535353"
                                         BorderBrush="{DynamicResource MidLightBlueBrush}"
                                         BorderThickness="0,6,0,0" />
-                                <ContentControl x:Name="SearchSlot"
-                                    Content="{TemplateBinding Tag}"
-                                    Visibility="{Binding Content, RelativeSource={RelativeSource Self}, Converter={StaticResource NullToVisibiltyConverter}}"
-                                    Margin="0,6,0,0"
-                                    VerticalAlignment="Top"/>
-                                <ScrollViewer Margin="0,36,0,0" SnapsToDevicePixels="True">
-                                    <StackPanel KeyboardNavigation.DirectionalNavigation="Contained"
-                                                IsItemsHost="True" />
+                                <ScrollViewer Margin="0,6,0,6" SnapsToDevicePixels="True">
+                                    <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
                                 </ScrollViewer>
                             </Grid>
                         </Popup>
@@ -520,7 +514,6 @@
         </Setter>
         <Style.Triggers />
     </Style>
-
 
     <!--  NodeView c ustomization styles  -->
     <ControlTemplate x:Key="NodeViewComboBoxToggleButton" TargetType="ToggleButton">

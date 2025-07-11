@@ -34,7 +34,7 @@ namespace Dynamo.ViewModels
         // vertical offset accounts for the port margins
         private const int verticalOffset = 17;
         private const int portVerticalMidPoint = 17;
-        private const int portToggleOffset = 30;
+        private const int portToggleOffset = 32;
         private ObservableCollection<Dynamo.Configuration.StyleItem> groupStyleList;
         private IEnumerable<Configuration.StyleItem> preferencesStyleItemsList;
         private PreferenceSettings preferenceSettings;
@@ -49,13 +49,6 @@ namespace Dynamo.ViewModels
         private const double CBNProxyPortVisualHeight = 17;
         private const double MinSpacing = 50;
         private const double MinChangeThreshold = 1;
-
-        // Collapsed proxy ports for Code Block Nodes appear visually misaligned - 0.655px
-        // taller compared to their actual ports. This is due to the fixed height - 16.345px
-        // used inside CBNs for code lines, while proxy ports use 14px height + 3px top margin.
-        // To compensate for this visual mismatch and keep connector alignment consistent,
-        // we apply this adjusted proxy height.
-        private const double CodeBlockCollapsedPortVisualHeight = 17;
 
         public readonly WorkspaceViewModel WorkspaceViewModel;
 
@@ -589,7 +582,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool CanAddGroupToGroup(object obj)
+        internal bool CanAddGroupToGroup(object obj)
         {
             // First make sure this group is selected
             // and that it does not already belong to
@@ -700,7 +693,7 @@ namespace Dynamo.ViewModels
             return result;
         }
 
-        private bool CanUngroupGroup(object parameters)
+        internal bool CanUngroupGroup(object parameters)
         {
             return BelongsToGroup();
         }
@@ -1498,13 +1491,29 @@ namespace Dynamo.ViewModels
             bool isHorizontal,
             HashSet<ModelBase> skip)
         {
+            // Track already processed items from prior horizontal/vertical pass
             var visited = new HashSet<ModelBase>(skip);
-            foreach (var node in expandingGroup.Nodes)
-                visited.Add(node);
+
+            // Ensure expanding group and all its content (including nested groups) are ignored
+            if (!visited.Any())
+            {
+                visited.Add(expandingGroup);
+
+                foreach (var node in expandingGroup.Nodes)
+                {
+                    visited.Add(node);
+
+                    if (node is AnnotationModel nestedGroup)
+                    {
+                        foreach (var nestedNode in nestedGroup.Nodes)
+                            visited.Add(nestedNode);
+                    }
+                }
+            }
 
             var toProcess = new List<ModelBase>();
             var directlyAffected = new List<ModelBase>();
-            var otherGroups = WorkspaceViewModel.Model.Annotations.Where(g => g != expandingGroup);
+            var otherGroups = WorkspaceViewModel.Model.Annotations.Where(g => !visited.Contains(g));
             var allGroupedItems = WorkspaceViewModel.Model.Annotations.SelectMany(g => g.Nodes);
             double smallestSpacing = double.MaxValue;
 

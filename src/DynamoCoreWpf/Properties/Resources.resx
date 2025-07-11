@@ -2697,7 +2697,7 @@ Uninstall the following packages: {0}?</value>
     <comment>Preferences | Features | Experimental | Enable Node Auto Complete</comment>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>Enable New UI</value>
+    <value>Enable Floating Toolbar</value>
     <comment>Preferences | Features | Experimental | Enable Node Auto Complete New UI</comment>
   </data>
   <data name="ErrorLoadingIcon" xml:space="preserve">
@@ -2874,7 +2874,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Learn more about Node Autocomplete feature.</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
-    <value>Enable the new floating menu for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog.</value>
+    <value>Enable a floating toolbar for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog.</value>
   </data>
   <data name="AddStyleButton" xml:space="preserve">
     <value>Add Style</value>
