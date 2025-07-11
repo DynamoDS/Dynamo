@@ -7,12 +7,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using Dynamo.Configuration;
-using Dynamo.Controls;
 using Dynamo.Engine;
 using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
@@ -29,18 +26,15 @@ using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
-using Dynamo.Wpf.Views.GuidedTour;
 using Greg;
 using Newtonsoft.Json;
+using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using ProtoCore.Utils;
 using RestSharp;
-using DataFormat = RestSharp.DataFormat;
-using IdentifierNode = ProtoCore.AST.AssociativeAST.IdentifierNode;
-using TypedIdentifierNode = ProtoCore.AST.AssociativeAST.TypedIdentifierNode;
+
 
 namespace Dynamo.NodeAutoComplete.ViewModels
 {
