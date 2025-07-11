@@ -856,6 +856,12 @@ namespace Dynamo.ViewModels
 
                     Model.FileName = filePath;
                     Model.OnSaved();
+
+                    if (Path.GetExtension(filePath).Equals(".dyn") && saveContext.Equals(SaveContext.SaveAs))
+                    {
+                        DynamoViewModel.Model.ClearCurrentWorkspace();
+                        DynamoViewModel.Model.OpenJsonFileFromPath(saveContent, filePath, false);
+                    }
                 }
 
                 // If a new CustomNodeWorkspaceModel is created, store that info in CustomNodeManager without creating an instance of the custom node.

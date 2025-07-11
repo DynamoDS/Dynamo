@@ -1877,7 +1877,7 @@ namespace Dynamo.Controls
         private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
         {
             ViewModel.ZIndex = oldZIndex;
-            viewModel.WorkspaceViewModel.DelayNodePreviewControl.Cancel();
+            viewModel.WorkspaceViewModel.DelayNodePreviewControl?.Cancel();
 
             // The preview hasn't been instantiated yet, we should stop here 
             if (previewControl == null) return;
