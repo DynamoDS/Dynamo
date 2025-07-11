@@ -4549,8 +4549,6 @@ static Dynamo.Wpf.Properties.Resources.AddFileToPackageDialogTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.AddStyleButton.get -> string
 static Dynamo.Wpf.Properties.Resources.AddToLibraryButton.get -> string
 static Dynamo.Wpf.Properties.Resources.AgreeToMLAutocompleteTOUText.get -> string
-static Dynamo.Wpf.Properties.Resources.AutocompleteNoSuggestions.get -> string
-static Dynamo.Wpf.Properties.Resources.AutocompletePlaceholder.get -> string
 static Dynamo.Wpf.Properties.Resources.Autodesk360SignInButtonTitleToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.AutodeskSignIn.get -> string
 static Dynamo.Wpf.Properties.Resources.Automatic.get -> string

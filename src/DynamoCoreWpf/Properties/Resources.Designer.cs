@@ -169,24 +169,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No suggestions available.
-        /// </summary>
-        public static string AutocompleteNoSuggestions {
-            get {
-                return ResourceManager.GetString("AutocompleteNoSuggestions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The model is continuously improving - check back soon.
-        /// </summary>
-        public static string AutocompletePlaceholder {
-            get {
-                return ResourceManager.GetString("AutocompletePlaceholder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Autodesk A360.
         /// </summary>
         public static string Autodesk360SignInButtonTitleToolTip {

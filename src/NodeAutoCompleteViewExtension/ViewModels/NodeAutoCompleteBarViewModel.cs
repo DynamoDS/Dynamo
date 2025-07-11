@@ -151,8 +151,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 RaisePropertyChanged(nameof(HasPrevious));
                 RaisePropertyChanged(nameof(HasNext));
                 RaisePropertyChanged(nameof(FilteredView));
+                RaisePropertyChanged(nameof(HasUnfilteredResults));
             }
         }
+
+        public bool HasUnfilteredResults => DropdownResults != null && DropdownResults.Any();
 
         /// <summary>
         /// Return the filter associated currently with dropdown results.
@@ -554,19 +557,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             MLNodeAutoCompletionResponse MLresults = null;
 
             // Get results from the ML API.
-            try
-            {
-                MLresults = GetGenericAutocompleteResult<MLNodeAutoCompletionResponse>(nodeAutocompleteMLEndpoint);
-            }
-            catch (Exception ex)
-            {
-                dynamoViewModel.Model.Logger.Log("Unable to fetch ML Node autocomplete results: " + ex.Message);
-                DisplayAutocompleteMLStaticPage = true;
-                AutocompleteMLTitle = Resources.LoginNeededTitle;
-                AutocompleteMLMessage = Resources.LoginNeededMessage;
-                Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "UnabletoFetch");
-                return new List<SingleResultItem>();
-            }
+            MLresults = GetGenericAutocompleteResult<MLNodeAutoCompletionResponse>(nodeAutocompleteMLEndpoint);
 
             // no results
             if (MLresults == null || MLresults.Results.Count() == 0)
@@ -1015,19 +1006,33 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 List<SingleResultItem> fullSingleResults = null;
                 MLNodeClusterAutoCompletionResponse fullResults = null;
 
-                if (IsSingleAutocomplete || !IsDisplayingMLRecommendation)
+                try
                 {
-                    fullSingleResults = GetSingleAutocompleteResults().ToList();
-                    fullResults = new MLNodeClusterAutoCompletionResponse
+                    if (IsSingleAutocomplete || !IsDisplayingMLRecommendation)
                     {
-                        Version = "0.0",
-                        NumberOfResults = fullSingleResults.Count,
-                        Results = fullSingleResults,
-                    };
+                        fullSingleResults = GetSingleAutocompleteResults().ToList();
+                        fullResults = new MLNodeClusterAutoCompletionResponse
+                        {
+                            Version = "0.0",
+                            NumberOfResults = fullSingleResults.Count,
+                            Results = fullSingleResults,
+                        };
+                    }
+                    else
+                    {
+                        fullResults = GetGenericAutocompleteResult<MLNodeClusterAutoCompletionResponse>(nodeClusterAutocompleteMLEndpoint);
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    fullResults = GetGenericAutocompleteResult<MLNodeClusterAutoCompletionResponse>(nodeClusterAutocompleteMLEndpoint);
+                    dynamoViewModel.Model.Logger.Log("Unable to fetch ML Node autocomplete results: " + ex.Message);
+                    DisplayAutocompleteMLStaticPage = true;
+                    AutocompleteMLTitle = Resources.LoginNeededTitle;
+                    AutocompleteMLMessage = Resources.LoginNeededMessage;
+                    Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "UnabletoFetch");
+                    DropdownResults = new List<DNADropdownViewModel>();
+                    IsDropDownOpen = true;
+                    return;
                 }
 
                 dynamoViewModel.UIDispatcher.BeginInvoke(() =>
