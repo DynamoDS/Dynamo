@@ -309,16 +309,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
             (node.WorkspaceViewModel.Model as HomeWorkspaceModel)?.MarkNodesAsModifiedAndRequestRun(transientNodes.Select(x => x.NodeModel));
 
-            ToggleUndoRedoLocked(false);
-        }
-
-        internal void ToggleUndoRedoLocked(bool toggle = true)
-        {
-            var node = PortViewModel.NodeViewModel;
-            //unlock undo/redo
-            node.WorkspaceViewModel.Model.IsUndoRedoLocked = toggle;
-            //allow for undo/redo again
-            node.DynamoViewModel.RaiseCanExecuteUndoRedo();
+            //add the new items to the undo recorder (this ensures the elements are valid at this point in time before any other manipulation occurs)
+            DynamoModel.RecordUndoModels(node.WorkspaceViewModel.Model, createdClusterItems);
         }
 
         /// <summary>
@@ -840,8 +832,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         }
 
         // Add Cluster from server result into the workspace
+        private List<ModelBase> createdClusterItems = new List<ModelBase>();
         internal void AddCluster(ClusterResultItem clusterResultItem)
         {
+            createdClusterItems.Clear();
+
             if (clusterResultItem == null || clusterResultItem.Topology == null)
                 return;
             var nextCluster = JsonConvert.SerializeObject(clusterResultItem);
@@ -851,15 +846,10 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
             lastSerializedAddedCluster = nextCluster;
 
-            List<ModelBase> createdClusterItems = new List<ModelBase>();
-
             var workspaceViewModel = PortViewModel.NodeViewModel.WorkspaceViewModel;
             var workspaceModel = workspaceViewModel.Model;
             var dynamoModel = PortViewModel.NodeViewModel.DynamoViewModel.Model;
             var entryNodeId = clusterResultItem.Topology.Nodes.ElementAtOrDefault(clusterResultItem.EntryNodeIndex)?.Id;
-
-            // Lock undo/redo
-            ToggleUndoRedoLocked(true);
 
             // Delete any existing transient nodes
             DeleteTransientNodes();
@@ -953,9 +943,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     }
                 }
             }
-
-            //add the new items to the undo recorder (this ensures the elements are valid at this point in time before any other manipulation occurs)
-            DynamoModel.RecordUndoModels(workspaceModel, createdClusterItems);
 
             // Perform auto-layout for the newly added nodes
             NodeAutoCompleteUtilities.PostAutoLayoutNodes(
