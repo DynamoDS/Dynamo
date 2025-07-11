@@ -59,6 +59,7 @@ namespace Dynamo.Nodes
         private Grid outputPortsGrid;
         private Grid groupContent;
         private Border nodeCountBorder;
+        private InCanvasSearchControl searchBar;
         
         private Thumb mainGroupThumb;
         private StackPanel groupPopupPanel;
@@ -740,6 +741,8 @@ namespace Dynamo.Nodes
         {
             if (e.Key == Key.O && Keyboard.Modifiers == System.Windows.Input.ModifierKeys.None)
             {
+                if (searchBar != null && searchBar.IsKeyboardFocusWithin) return;
+
                 OnUngroupAnnotation(this, new RoutedEventArgs());
                 e.Handled = true;
                 GroupContextMenuPopup.IsOpen = false;
@@ -1854,7 +1857,7 @@ namespace Dynamo.Nodes
 
         private UIElement CreateSearchBox()
         {
-            var searchBar = new InCanvasSearchControl
+            searchBar = new InCanvasSearchControl
             {
                 DataContext = ViewModel.WorkspaceViewModel.InCanvasSearchViewModel,
                 Width = 230
@@ -2449,7 +2452,7 @@ namespace Dynamo.Nodes
 
             // Add ContentPresenter
             var contentPresenterFactory = new FrameworkElementFactory(typeof(ContentPresenter));
-            contentPresenterFactory.SetValue(Grid.ColumnSpanProperty, 3);
+            contentPresenterFactory.SetValue(Grid.ColumnSpanProperty, 4);
             contentPresenterFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(4));
             contentPresenterFactory.SetValue(ContentPresenter.ContentSourceProperty, "Header");
             contentPresenterFactory.SetValue(ContentPresenter.RecognizesAccessKeyProperty, true);
