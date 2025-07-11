@@ -270,28 +270,13 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Extracts cleaned individual code expressions as tooltip strings from a full code block.
         /// </summary>
-        internal static List<string> GetCleanedCodeExpressionsForTooltips(string code)
+        internal static string GetTooltipForNode(AssociativeNode node)
         {
-            if (string.IsNullOrWhiteSpace(code))
-                return new List<string>();
+            if (node == null)
+                return string.Empty;
 
-            // Filter out full-line comments and remove inline comments
-            var cleanedCode = string.Join(" ",
-                code.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-                    .Where(line => !line.TrimStart().StartsWith("//"))
-                    .Select(line =>
-                    {
-                        var idx = line.IndexOf("//");
-                        return idx >= 0 ? line.Substring(0, idx) : line;
-                    }));
-
-            // Split by semicolon and return trimmed expressions
-            return cleanedCode
-                .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(expr => expr.Trim())
-                .Where(expr => !string.IsNullOrEmpty(expr))
-                .Select(expr => expr + ";")
-                .ToList();
+            var codeGen = new ProtoCore.CodeGenDS(new[] { node });
+            return codeGen.GenerateCode();
         }
 
         /// <summary>

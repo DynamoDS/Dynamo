@@ -41,10 +41,9 @@ namespace Dynamo.Graph.Nodes
         private string code = string.Empty;
         private List<string> inputIdentifiers = new List<string>();
         private List<string> inputPortNames = new List<string>();
-        private List<string> outputPortNames = new List<string>();
-        private List<string> outputPortTooltips = new List<string>();
         private string previewVariable;
         private readonly LibraryServices libraryServices;
+        private Dictionary<string, (string Label, string Tooltip)> outportMetadata = new();
 
         private bool shouldFocus = true;
         internal ParseParam ParseParam { get; private set; }
@@ -785,8 +784,7 @@ namespace Dynamo.Graph.Nodes
             ParseParam = new ParseParam(GUID, code, resolver);
 
             codeStatements.Clear();
-            outputPortNames.Clear();
-            outputPortTooltips.Clear();
+            outportMetadata.Clear();
 
             try
             {
@@ -812,10 +810,13 @@ namespace Dynamo.Graph.Nodes
                                     ? CodeBlockUtils.InferStaticTypeFromNode(right)
                                     : left.Name;
 
-                                outputPortNames.Add(portLabel);
+                                var portTooltip = IsTempIdentifier(left.Name)
+                                    ? CodeBlockUtils.GetTooltipForNode(right)
+                                    : CodeBlockUtils.GetTooltipForNode(parsedNode);
+
+                                outportMetadata[left.Name] = (portLabel , portTooltip);
                             }
                         }
-                        outputPortTooltips = CodeBlockUtils.GetCleanedCodeExpressionsForTooltips(code);
                     }
                     else
                     {
@@ -1025,26 +1026,25 @@ namespace Dynamo.Graph.Nodes
             // Clear out all the output port models
             OutPorts.RemoveAll((p) => true);
 
-            int i = 0;
-
             foreach (var def in allDefs)
             {
-                if (i >= outputPortNames.Count) break;
+                if (!outportMetadata.TryGetValue(def.Key, out var metadata))
+                {
+                    metadata = ("", "");
+                }
 
-                var label = outputPortNames[i];
-                var tooltip = IsTempIdentifier(def.Key) ? string.Format(Resources.CodeBlockTempIdentifierOutputLabel, def.Value) : def.Key;
+                var label = metadata.Label;
+                var tooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, def.Value)} : {metadata.Tooltip}";
 
                 // Trim long labels
                 int maxLength = Configurations.CBNMaxPortNameLength;
-                if (label.Length > maxLength) label = label.Remove(maxLength - 3) + "...";
+                if (label.Length > Configurations.CBNMaxPortNameLength) label = label.Remove(maxLength - 3) + "...";
 
                 OutPorts.Add(new PortModel(PortType.Output, this, new PortData(label, tooltip)
                 {
                     LineIndex = def.Value - 1, // Logical line index.
                     Height = Configurations.CodeBlockOutputPortHeightInPixels,
                 }));
-
-                i++;
             }
         }
 
