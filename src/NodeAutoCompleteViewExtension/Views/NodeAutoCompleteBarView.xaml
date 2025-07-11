@@ -116,7 +116,7 @@
                                         BorderThickness="0,6,0,0" />
                                         <ContentControl x:Name="SearchSlot"
                                     Content="{TemplateBinding Tag}"
-                                    Visibility="{Binding Content, RelativeSource={RelativeSource Self}, Converter={StaticResource NullToVisibiltyConverter}}"
+                                    Visibility="{Binding HasUnfilteredResults, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     Margin="0,6,0,0"
                                     VerticalAlignment="Top"/>
                                         <TextBlock x:Name="MessagePlaceholder"
@@ -141,14 +141,12 @@
                                 <Trigger Property="HasItems" Value="false">
                                     <Setter TargetName="DropDownBorder" Property="MinHeight" Value="70" />
                                     <Setter Property="ScrollViewer.Visibility" Value="Collapsed" />
-                                    <Setter TargetName="SearchSlot" Property="Visibility" Value="Collapsed" />
                                     <Setter TargetName="ContentSite" Property="Visibility" Value="Collapsed"/>
                                     <Setter TargetName="TitlePlaceholder" Property="Visibility" Value="Collapsed"/>
                                     <Setter TargetName="MessagePlaceholder" Property="Visibility" Value="Collapsed"/>
                                 </Trigger>
                                 <Trigger Property="HasItems" Value="true">
                                     <Setter Property="ScrollViewer.Visibility" Value="Visible" />
-                                    <Setter TargetName="SearchSlot" Property="Visibility" Value="Visible" />
                                     <Setter TargetName="ContentSite" Property="Visibility" Value="Visible"/>
                                     <Setter TargetName="TitlePlaceholder" Property="Visibility" Value="Collapsed"/>
                                     <Setter TargetName="MessagePlaceholder" Property="Visibility" Value="Collapsed"/>
@@ -156,7 +154,6 @@
                                 <DataTrigger Binding="{Binding DisplayAutocompleteMLStaticPage}" Value="True">
                                     <Setter TargetName="TitlePlaceholder" Property="Visibility" Value="Visible"/>
                                     <Setter TargetName="MessagePlaceholder" Property="Visibility" Value="Visible"/>
-                                    <Setter TargetName="SearchSlot" Property="Visibility" Value="Collapsed"/>
                                     <Setter TargetName="ContentSite" Property="Visibility" Value="Collapsed"/>
                                 </DataTrigger>
                                 <Trigger Property="IsGrouping" Value="true">
