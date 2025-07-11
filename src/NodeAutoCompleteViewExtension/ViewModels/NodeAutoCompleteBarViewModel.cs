@@ -771,6 +771,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
             if (IsDisplayingMLRecommendation)
             {
+                //Tracking Analytics when raising Node Autocomplete with the Recommended Nodes option selected (Machine Learning)
+                Analytics.TrackEvent(
+                    Actions.View,
+                    Categories.NodeAutoCompleteOperations,
+                    "MLRecommendation_NewExperience_Single");
                 return GetNodeAutocompleMLResults();
             }
             else
@@ -793,6 +798,14 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     return objectTypeMatchingElements.Select(x => new SingleResultItem(x, 1.0));
                 }
             }
+        }
+        /// <summary>
+        /// Key function to populate node autocomplete results to display
+        /// </summary>
+        internal MLNodeClusterAutoCompletionResponse GetClusterAutocompleteResults()
+        {
+            Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "MLRecommendation_NewExperience_Cluster");
+            return GetGenericAutocompleteResult<MLNodeClusterAutoCompletionResponse>(nodeClusterAutocompleteMLEndpoint);
         }
 
         // Delete all transient nodes in the workspace
@@ -1016,14 +1029,13 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             //start a background thread to make the http request
             Task.Run(() =>
             {
-                List<SingleResultItem> fullSingleResults = null;
                 MLNodeClusterAutoCompletionResponse fullResults = null;
 
                 try
                 {
                     if (effectiveIsSingle)
                     {
-                        fullSingleResults = GetSingleAutocompleteResults().ToList();
+                        var fullSingleResults = GetSingleAutocompleteResults().ToList();
                         fullResults = new MLNodeClusterAutoCompletionResponse
                         {
                             Version = "0.0",
@@ -1033,7 +1045,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     }
                     else
                     {
-                        fullResults = GetGenericAutocompleteResult<MLNodeClusterAutoCompletionResponse>(nodeClusterAutocompleteMLEndpoint);
+                        fullResults = GetClusterAutocompleteResults();
                     }
                 }
                 catch (Exception ex)
