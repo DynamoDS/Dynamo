@@ -188,10 +188,20 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
             set
             {
-                if (isOpen == value) return;
+                if (isOpen == value)
+                {
+                    return;
+                }
+
                 isOpen = value;
-                if (isOpen) SubscribeWindowEvents();
-                else UnsubscribeWindowEvents();
+                if (isOpen)
+                {
+                    SubscribeWindowEvents();
+                }
+                else
+                {
+                    UnsubscribeWindowEvents();
+                }
             }
         }
 

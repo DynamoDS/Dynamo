@@ -96,7 +96,7 @@ namespace Dynamo.NodeAutoComplete.Views
 
         private void UpdatePosition()
         {
-            if ( ViewModel.PortViewModel != null)
+            if (ViewModel.PortViewModel != null)
             {
                 ViewModel.PortViewModel.SetupNodeAutoCompleteClusterWindowPlacement(this);
             }
@@ -182,17 +182,14 @@ namespace Dynamo.NodeAutoComplete.Views
         //Note that the window is not destroyed, it is just hidden so that it can be reused.
         internal void OnHideNodeAutoCompleteBar(bool delayTransientDeletion = false)
         {
-            if (ViewModel != null)
+            ViewModel.IsDropDownOpen = false;
+            ViewModel.IsOpen = false;
+            if (ViewModel.PortViewModel != null)
             {
-                ViewModel.IsOpen = false;                
-                ViewModel.IsDropDownOpen = false;
-                if (ViewModel.PortViewModel != null)
-                {
-                    ViewModel.PortViewModel.Highlight = Visibility.Hidden;
-                }
-                
-                UnsubscribeFromOtherEvents();
+                ViewModel.PortViewModel.Highlight = Visibility.Hidden;
             }
+                
+            UnsubscribeFromOtherEvents();
 
             Hide();
 
@@ -203,15 +200,15 @@ namespace Dynamo.NodeAutoComplete.Views
             {
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    ViewModel?.DeleteTransientNodes();
-                    ViewModel?.ToggleUndoRedoLocked(false);
+                    ViewModel.DeleteTransientNodes();
+                    ViewModel.ToggleUndoRedoLocked(false);
                     ViewModel.PortViewModel = null;
                 }), DispatcherPriority.Loaded);
             }
             else
             {
-                ViewModel?.DeleteTransientNodes();
-                ViewModel?.ToggleUndoRedoLocked(false);
+                ViewModel.DeleteTransientNodes();
+                ViewModel.ToggleUndoRedoLocked(false);
                 ViewModel.PortViewModel = null;
             }
         }
@@ -220,20 +217,17 @@ namespace Dynamo.NodeAutoComplete.Views
         {
             //Analytics.TrackEvent(Actions.Open, Categories.NodeAutoCompleteOperations);
 
-            if (ViewModel != null)
-            {
-                ViewModel.IsOpen = true;
-                ViewModel.PortViewModel.Highlight = Visibility.Visible;
-                ViewModel.PortViewModel.SetupNodeAutoCompleteClusterWindowPlacement(this);
-                SubscribeToOtherEvents();
-            }
+            ViewModel.IsOpen = true;
+            ViewModel.PortViewModel.Highlight = Visibility.Visible;
+            ViewModel.PortViewModel.SetupNodeAutoCompleteClusterWindowPlacement(this);
+            SubscribeToOtherEvents();
 
             Show();
 
             // Call asynchronously to populate data when the window is ready.
             Dispatcher.BeginInvoke(new Action(() =>
             {
-                ViewModel?.PopulateAutoComplete();
+                ViewModel.PopulateAutoComplete();
             }), DispatcherPriority.Loaded);
         }
 
