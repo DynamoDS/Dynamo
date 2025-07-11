@@ -266,16 +266,49 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                <Image
-                    x:Name="imageAI"
-                    Grid.Column="1"
-                    Source="/DynamoCoreWpf;component/UI/Images/NodeStates/transient-64px.png"
-                    Width="24px"
-                    Height="24px"
-                    Margin="5"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Stretch="UniformToFill" />
+                <Button x:Name="imageAI"
+                        Click="ImageAI_Click"
+                        Grid.Column="1"
+                        ToolTip="Learn more about Node Autocomplete"
+                        TabIndex="1">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Button}">
+                                        <Grid>
+                                            <Border x:Name="BackgroundBorder"
+                                                    Background="Transparent"
+                                                    CornerRadius="10,0,0,10"
+                                                    Width="36"/>
+                                            <Image x:Name="PrevImage"
+                                                   Width="24px"
+                                                   Height="24px"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   Source="/DynamoCoreWpf;component/UI/Images/NodeStates/transient-64px.png"
+                                                   Stretch="UniformToFill" />
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver"
+                                                     Value="True">
+                                                <Setter TargetName="BackgroundBorder"
+                                                        Property="Background"
+                                                        Value="{StaticResource DarkGreyBrush}" />
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver"
+                                                     Value="False">
+                                                <Setter TargetName="BackgroundBorder"
+                                                        Property="Background"
+                                                        Value="Transparent" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
                 <Border BorderThickness="1"
                         CornerRadius="5"
                         Padding="0"

@@ -8,6 +8,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.NodeAutoComplete.ViewModels;
+using Dynamo.ViewModels;
 
 namespace Dynamo.NodeAutoComplete.Views
 {
@@ -184,6 +185,11 @@ namespace Dynamo.NodeAutoComplete.Views
         {
             ViewModel?.ConsolidateTransientNodes();
             CloseAutoComplete();
+        }
+
+        internal void ImageAI_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
         }
 
         internal void CloseAutoCompleteWindow(object sender, RoutedEventArgs e)
