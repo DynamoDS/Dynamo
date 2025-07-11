@@ -17,7 +17,6 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
-using Microsoft.VisualBasic;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
