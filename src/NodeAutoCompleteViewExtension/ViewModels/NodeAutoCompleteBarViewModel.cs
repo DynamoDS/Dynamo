@@ -571,7 +571,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 AutocompleteMLTitle = Resources.AutocompleteNoRecommendationsTitle;
                 AutocompleteMLMessage = Resources.AutocompleteNoRecommendationsMessage;
 
-                Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "NewExperience_FallbackToLocalAutocomplete");
+                Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "FallbackToLocalAutocomplete_NewExperience_Single");
                 return localAutoCompleteService.TryGetLocalAutoCompleteResult(PortViewModel.NodeViewModel.NodeModel, PortViewModel.PortModel);
             }
             ServiceVersion = MLresults.Version;
@@ -779,7 +779,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 Analytics.TrackEvent(
                     Actions.View,
                     Categories.NodeAutoCompleteOperations,
-                    "NewExperience_ObjectType");
+                    "ObjectType_NewExperience_Single");
                 // Only call GetMatchingSearchElements() for object type match comparison
                 var objectTypeMatchingElements = GetMatchingSearchElements().ToList();
                 // If node match searchElements found, use default suggestions. 
@@ -1042,7 +1042,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     DisplayAutocompleteMLStaticPage = true;
                     AutocompleteMLTitle = Resources.LoginNeededTitle;
                     AutocompleteMLMessage = Resources.LoginNeededMessage;
-                    Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "UnabletoFetch");
+                    Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations,
+                        effectiveIsSingle ? "UnabletoFetch_NewExperience_Single" : "UnabletoFetch_NewExperience_Cluster");
                     DropdownResults = new List<DNADropdownViewModel>();
                     IsDropDownOpen = true;
                     return;
