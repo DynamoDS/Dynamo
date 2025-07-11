@@ -63,6 +63,7 @@ namespace Dynamo.UI.Views
         internal Action<string> RequestLogMessage;
         internal Action RequestApplicationLoaded;
         internal Action<string, string> RequestShowDialog;
+        internal Action RequestCancelUpload;
 
         private PackageUpdateRequest previousPackageDetails;
 
@@ -102,6 +103,7 @@ namespace Dynamo.UI.Views
             RequestLogMessage = LogMessage;
             RequestApplicationLoaded = ApplicationLoaded;
             RequestShowDialog = ShowDialog;
+            RequestCancelUpload = CancelUpload;
 
             DataContextChanged += OnDataContextChanged;
         }
@@ -250,7 +252,8 @@ namespace Dynamo.UI.Views
                             RequestClearMarkdownContent,
                             RequestLogMessage,
                             RequestApplicationLoaded,
-                            RequestShowDialog));
+                            RequestShowDialog,
+                            RequestCancelUpload));
 
                 }
                 catch (Exception ex)
@@ -835,28 +838,45 @@ namespace Dynamo.UI.Views
         /// <exception cref="NotImplementedException"></exception>
         internal void ShowDialog(string title, string message)
         {
-            var ownerWindow = Window.GetWindow(this);
-
-            MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK :
-                    MessageBoxService.Show(
-                    ownerWindow,
-                    message,
-                    title,
-                    MessageBoxButton.OKCancel,
-                    MessageBoxImage.Warning);
-
-            if (response == MessageBoxResult.OK)
+            if (string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(message))
             {
-                SendDialogResult("Yes");
+                LogMessage("Dialog title or message is null or empty.");
+                return;
             }
-            else
+
+            try
             {
-                SendDialogResult("Cancel");
+                var result = System.Windows.MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Information);
+                switch (result)
+                {
+                    case MessageBoxResult.OK:
+                        SendDialogResult("OK");
+                        break;
+                    default:
+                        SendDialogResult("Cancel");
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage(ex);
             }
         }
 
         /// <summary>
-        ///  Notify the front-end that the upload was cancelled
+        /// Handles cancellation of file upload operations
+        /// </summary>
+        internal void CancelUpload()
+        {
+            if (publishPackageViewModel != null)
+            {
+                publishPackageViewModel.CancelFileLoading();
+                LogMessage("File upload cancelled by user.");
+            }
+        }
+
+        /// <summary>
+        /// Handles the upload cancelled event from the view model
         /// </summary>
         /// <exception cref="NotImplementedException"></exception>
         private void OnUploadCancelled()
@@ -1104,6 +1124,7 @@ namespace Dynamo.UI.Views
         readonly Action<string> RequestLogMessage;
         readonly Action RequestApplicationLoaded;
         readonly Action<string, string> RequestShowDialog;
+        readonly Action RequestCancelUpload;
 
         public ScriptWizardObject(
             Action<string> requestAddFileOrFolder,
@@ -1120,7 +1141,8 @@ namespace Dynamo.UI.Views
             Action requestClearMarkdownContent,
             Action<string> requestLogMessage,
             Action requestApplicationLoaded,
-            Action<string, string> requestShowDialog)
+            Action<string, string> requestShowDialog,
+            Action requestCancelUpload)
         {
             RequestAddFileOrFolder = requestAddFileOrFolder;
             RequestRemoveFileOrFolder = requestRemoveFileOrFolder;
@@ -1137,6 +1159,7 @@ namespace Dynamo.UI.Views
             RequestLogMessage = requestLogMessage;
             RequestApplicationLoaded = requestApplicationLoaded;
             RequestShowDialog = requestShowDialog;
+            RequestCancelUpload = requestCancelUpload;
         }
 
         [DynamoJSInvokable]
@@ -1229,6 +1252,12 @@ namespace Dynamo.UI.Views
         public void ShowDialog(string title, string message)
         {
             RequestShowDialog(title, message);
+        }
+
+        [DynamoJSInvokable]
+        public void CancelUpload()
+        {
+            RequestCancelUpload();
         }
     }
 
