@@ -35,7 +35,6 @@ using ProtoCore.Mirror;
 using ProtoCore.Utils;
 using RestSharp;
 
-
 namespace Dynamo.NodeAutoComplete.ViewModels
 {
     /// <summary>
@@ -188,15 +187,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             {
                 if (isOpen == value) return;
                 isOpen = value;
-                
-                if (isOpen) 
-                {
-                    SubscribeWindowEvents();
-                }
-                else 
-                {
-                    UnsubscribeWindowEvents();
-                }
+                if (isOpen) SubscribeWindowEvents();
+                else UnsubscribeWindowEvents();
             }
         }
 
@@ -815,24 +807,23 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             var wsViewModel = node.WorkspaceViewModel;
 
             var transientNodes = wsViewModel.Nodes.Where(x => x.IsTransient).ToList();
+            var transientConnectors = wsViewModel.Connectors.Where(c => c.IsTransient).ToList();
+
+            if (transientConnectors.Any())
+            {
+                foreach (var connector in transientConnectors)
+                {
+                    connector.ConnectorModel.Delete();
+                    connector.ConnectorModel.Dispose();
+                }
+            }
+
             if (transientNodes.Any())
             {
-                // Unblock node operations during transient cleanup
-                dynamoViewModel.Model.IsNodeOperationsBlocked = false;
-
-                dynamoViewModel.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(transientNodes.Select(x => x.Id), true));
-
-                //remove the deletion of the elements from the undo stack
-                wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
-                //remove the layout of the elements from the undo stack
-                wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
-
-                // Block node operations as user might be iterating still
-                if (IsOpen)
+                foreach (var transientNode in transientNodes)
                 {
-                    dynamoViewModel.Model.IsNodeOperationsBlocked = true;
+                    wsViewModel.Model.RemoveAndDisposeNode(transientNode.NodeModel);
                 }
-
             }
         }
 
@@ -1134,18 +1125,12 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         {
             dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved += NodeViewModel_Removed;
             dynamoViewModel.PreferenceSettings.AutocompletePreferencesChanged += OnPreferencesChanged;
-
-            // Block node operations during autocomplete
-            dynamoViewModel.Model.IsNodeOperationsBlocked = true;
         }
 
         private void UnsubscribeWindowEvents()
         {
             dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved -= NodeViewModel_Removed;
             dynamoViewModel.PreferenceSettings.AutocompletePreferencesChanged -= OnPreferencesChanged;
-
-            // Unblock node operations when autocomplete is closed
-            dynamoViewModel.Model.IsNodeOperationsBlocked = false;
         }
 
         internal void NodeViewModel_Removed(NodeModel node)
@@ -1461,7 +1446,5 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 return int.MaxValue;
             }
         }
-
-       
     }
 }
