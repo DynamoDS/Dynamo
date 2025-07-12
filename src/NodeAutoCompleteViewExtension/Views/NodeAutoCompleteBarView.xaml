@@ -269,7 +269,7 @@
                 <Button x:Name="imageAI"
                         Click="ImageAI_Click"
                         Grid.Column="1"
-                        ToolTip="Learn more about Node Autocomplete"
+                        ToolTip="{x:Static resxother:Resources.PreferencesViewEnableNodeAutoCompleteTooltipText}"
                         TabIndex="1">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
