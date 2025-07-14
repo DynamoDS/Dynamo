@@ -849,13 +849,13 @@ value: bool = false</value>
     <value>노드 라이브러리를 로드하는 중...</value>
   </data>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
-    <value>권장 사항 없음</value>
+    <value>No suggestions available</value>
   </data>
   <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
     <value>낮은 신뢰도</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>아직 추천받은 항목이 없습니다. 노드 유형 일치 자동 완성으로 전환해 볼 수 있습니다.</value>
+    <value>The model is continuously improving - check back soon</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
     <value>현재 확실한 추천을 제공할 수 없습니다. 모델은 계속 개선 중이니, 나중에 다시 확인해 주십시오.</value>
@@ -898,5 +898,8 @@ value: bool = false</value>
   </data>
   <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
     <value>포트 옆에 있는 반짝임 아이콘을 클릭하여 노드 자동 완성을 활성화하십시오.</value>
+  </data>
+  <data name="UnknownErrorProcessingFile" xml:space="preserve">
+    <value>An unknown error occurred while processing the file.</value>
   </data>
 </root>
