@@ -308,11 +308,15 @@ namespace Dynamo.Graph.Nodes
                 case IdentifierNode idNode:
                     return idNode.Value;
                 case IdentifierListNode:
-                    return "[identifier list]";
+                    if (ProtoCore.Utils.CoreUtils.TryGetPropertyName(node.ToString(), out string _))
+                        return "[property]";
+                    return "[function]";
                 case FunctionCallNode:
                     return "[function]";
                 case InlineConditionalNode:
                     return "[conditional]";
+                case LanguageBlockNode:
+                    return "[language block]";
                 default:
                     return "[unknown]";
             }

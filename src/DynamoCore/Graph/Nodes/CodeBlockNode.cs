@@ -1026,19 +1026,21 @@ namespace Dynamo.Graph.Nodes
             // Clear out all the output port models
             OutPorts.RemoveAll((p) => true);
 
+            int maxLength = Configurations.CBNMaxPortNameLength;
+
             foreach (var def in allDefs)
             {
+                // Try to retrieve the output metadata (label and tooltip) for this output variable.
+                // If not found, fallback to empty strings to avoid null issues.
                 if (!outportMetadata.TryGetValue(def.Key, out var metadata))
                 {
-                    metadata = ("", "");
+                    metadata = (string.Empty, string.Empty);
                 }
 
                 var label = metadata.Label;
                 var tooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, def.Value)} : {metadata.Tooltip}";
-
-                // Trim long labels
-                int maxLength = Configurations.CBNMaxPortNameLength;
-                if (label.Length > Configurations.CBNMaxPortNameLength) label = label.Remove(maxLength - 3) + "...";
+                if (label.Length > maxLength)
+                    label = label.Remove(maxLength - 3) + "...";
 
                 OutPorts.Add(new PortModel(PortType.Output, this, new PortData(label, tooltip)
                 {
@@ -1047,7 +1049,6 @@ namespace Dynamo.Graph.Nodes
                 }));
             }
         }
-
 
         /// <summary>
         ///     Deletes all the connections and saves their data (the start and end port)
