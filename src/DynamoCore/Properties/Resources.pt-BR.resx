@@ -849,13 +849,13 @@ Este pacote provavelmente contém uma montagem bloqueada. Será necessário carr
     <value>Carregando a biblioteca de nós...</value>
   </data>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
-    <value>Nenhuma recomendação</value>
+    <value>No suggestions available</value>
   </data>
   <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
     <value>Baixa confiança</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>Ainda não há recomendações. É possível tentar alternar para o preenchimento automático da correspondência do tipo nó.</value>
+    <value>The model is continuously improving - check back soon</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
     <value>Não há sugestões confiáveis disponíveis. O modelo está sendo melhorado continuamente – verifique novamente em breve.</value>
@@ -898,5 +898,8 @@ Este pacote provavelmente contém uma montagem bloqueada. Será necessário carr
   </data>
   <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
     <value>Clique no ícone de brilho ao lado da porta para ativar o preenchimento automático de nós.</value>
+  </data>
+  <data name="UnknownErrorProcessingFile" xml:space="preserve">
+    <value>An unknown error occurred while processing the file.</value>
   </data>
 </root>

@@ -3795,16 +3795,34 @@ Pour transformer ce fichier en nouveau gabarit, enregistrez-le dans un autre dos
     <value>Ce groupe est bloqué. Cliquez pour le débloquer.</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>Activer la nouvelle interface utilisateur</value>
+    <value>Enable Floating Toolbar</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
-    <value>Activez le nouveau menu flottant pour les suggestions de noeuds afin d'obtenir un flux de travail plus rationalisé. Désactivez-le pour revenir à la boîte de dialogue contextuelle classique.</value>
+    <value>Enable a floating toolbar for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog.</value>
   </data>
   <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
     <value>Données de l'icône du noeud _Dump</value>
   </data>
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>Les données de l'icône du noeud sont vidées vers \"{0}\".</value>
+  </data>
+  <data name="GroupOptionalInportsText" xml:space="preserve">
+    <value>Facultatif</value>
+  </data>
+  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
+    <value>Sans contrainte</value>
+  </data>
+  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
+    <value>Collapsed Group</value>
+  </data>
+  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
+    <value>Collapse to minimal size by default</value>
+  </data>
+  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
+    <value>Hide optional input ports by default</value>
+  </data>
+  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
+    <value>Hide unconnected output ports by default</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
