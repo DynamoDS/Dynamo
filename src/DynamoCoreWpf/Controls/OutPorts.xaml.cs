@@ -215,6 +215,7 @@ namespace Dynamo.UI.Controls
             DataContextChanged += OnDataContextChanged;
             Loaded += OnPortViewLoaded;
             Unloaded += OnPortViewUnloaded;
+            MainGrid.PreviewMouseRightButtonUp += (s, e) => e.Handled = true;
         }
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
