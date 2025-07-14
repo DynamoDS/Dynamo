@@ -42,7 +42,6 @@ namespace Dynamo.Graph.Nodes
         private List<string> inputIdentifiers = new List<string>();
         private List<string> inputPortNames = new List<string>();
         private List<string> outputPortNames = new List<string>();
-        private List<string> outputPortTooltips = new List<string>();
         private string previewVariable;
         private readonly LibraryServices libraryServices;
 
@@ -786,7 +785,6 @@ namespace Dynamo.Graph.Nodes
 
             codeStatements.Clear();
             outputPortNames.Clear();
-            outputPortTooltips.Clear();
 
             try
             {
@@ -815,7 +813,6 @@ namespace Dynamo.Graph.Nodes
                                 outputPortNames.Add(portLabel);
                             }
                         }
-                        outputPortTooltips = CodeBlockUtils.GetCleanedCodeExpressionsForTooltips(code);
                     }
                     else
                     {

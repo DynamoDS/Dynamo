@@ -268,33 +268,6 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Extracts cleaned individual code expressions as tooltip strings from a full code block.
-        /// </summary>
-        internal static List<string> GetCleanedCodeExpressionsForTooltips(string code)
-        {
-            if (string.IsNullOrWhiteSpace(code))
-                return new List<string>();
-
-            // Filter out full-line comments and remove inline comments
-            var cleanedCode = string.Join(" ",
-                code.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-                    .Where(line => !line.TrimStart().StartsWith("//"))
-                    .Select(line =>
-                    {
-                        var idx = line.IndexOf("//");
-                        return idx >= 0 ? line.Substring(0, idx) : line;
-                    }));
-
-            // Split by semicolon and return trimmed expressions
-            return cleanedCode
-                .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(expr => expr.Trim())
-                .Where(expr => !string.IsNullOrEmpty(expr))
-                .Select(expr => expr + ";")
-                .ToList();
-        }
-
-        /// <summary>
         /// Infers a human-readable static type label (e.g., [int], [string]) from an associative AST node.
         /// </summary>
         internal static string InferStaticTypeFromNode(AssociativeNode node)
@@ -323,11 +296,15 @@ namespace Dynamo.Graph.Nodes
                 case IdentifierNode idNode:
                     return idNode.Value;
                 case IdentifierListNode:
-                    return "[identifier list]";
+                    if(ProtoCore.Utils.CoreUtils.TryGetPropertyName(node.ToString(), out string _))
+                        return "[property]";
+                    return "[function]";
                 case FunctionCallNode:
                     return "[function]";
                 case InlineConditionalNode:
                     return "[conditional]";
+                case LanguageBlockNode:
+                    return "[language block]";
                 default:
                     return "[unknown]";
             }
