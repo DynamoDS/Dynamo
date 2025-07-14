@@ -1123,6 +1123,7 @@ Dynamo.PackageManager.PublishPackageViewModel.UploadHandle.get -> Dynamo.Package
 Dynamo.PackageManager.PublishPackageViewModel.UploadHandle.set -> void
 Dynamo.PackageManager.PublishPackageViewModel.Uploading.get -> bool
 Dynamo.PackageManager.PublishPackageViewModel.Uploading.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.UploadProgress -> System.Action<int, int, string>
 Dynamo.PackageManager.PublishPackageViewModel.UploadState.get -> Dynamo.PackageManager.PackageUploadHandle.State
 Dynamo.PackageManager.PublishPackageViewModel.UploadState.set -> void
 Dynamo.PackageManager.PublishPackageViewModel.UploadType.get -> Dynamo.PackageManager.PackageUploadHandle.UploadType
@@ -1724,12 +1725,14 @@ Dynamo.UI.Views.ScriptWizardObject.OpenFolder(string path) -> void
 Dynamo.UI.Views.ScriptWizardObject.Publish() -> void
 Dynamo.UI.Views.ScriptWizardObject.RemoveFileOrFolder(string name) -> void
 Dynamo.UI.Views.ScriptWizardObject.Reset() -> void
+Dynamo.UI.Views.ScriptWizardObject.ScriptWizardObject(System.Action<string> requestAddFileOrFolder, System.Action<string> requestRemoveFileOrFolder, System.Action<bool> requestRetainFolderStructure, System.Action<string> requestUpdatePackageDetails, System.Action requestSubmit, System.Action requestPublish, System.Action requestReset, System.Action<string> requestToggleNodeLibraryOnItem, System.Action<string> requestOpenFolder, System.Action<string> requestUpdateCompatibilityMatrix, System.Action requestLoadMarkdownContent, System.Action requestClearMarkdownContent, System.Action<string> requestLogMessage, System.Action requestApplicationLoaded, System.Action<string, string> requestShowDialog, System.Action requestCancelUpload, System.Action<int, int, string> requestUploadProgress) -> void
 Dynamo.UI.Views.ScriptWizardObject.ShowDialog(string title, string message) -> void
 Dynamo.UI.Views.ScriptWizardObject.Submit() -> void
 Dynamo.UI.Views.ScriptWizardObject.ToggleNodeLibraryOnItem(string name) -> void
 Dynamo.UI.Views.ScriptWizardObject.ToggleRetainFolderStructure(bool flag) -> void
 Dynamo.UI.Views.ScriptWizardObject.UpdateCompatibilityMatrix(string jsonPayload) -> void
 Dynamo.UI.Views.ScriptWizardObject.UpdatePackageDetails(string jsonPayload) -> void
+Dynamo.UI.Views.ScriptWizardObject.UploadProgress(int currentFile, int totalFiles, string currentFileName) -> void
 Dynamo.UI.Views.SplashScreen
 Dynamo.UI.Views.SplashScreen.CloseWasExplicit.get -> bool
 Dynamo.UI.Views.SplashScreen.DynamicSplashScreenReady -> Dynamo.UI.Views.SplashScreen.DynamicSplashScreenReadyHandler

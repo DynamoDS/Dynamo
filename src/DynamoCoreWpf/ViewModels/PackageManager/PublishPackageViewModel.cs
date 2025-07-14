@@ -995,6 +995,7 @@ namespace Dynamo.PackageManager
         private CancellationTokenSource _fileLoadingCancellation;
 
         public event Action UploadCancelled;
+        public event Action<int, int, string> UploadProgress;
 
         #endregion
 
@@ -2053,6 +2054,9 @@ namespace Dynamo.PackageManager
             _fileLoadingCancellation?.Cancel();
             _fileLoadingCancellation = new CancellationTokenSource();
 
+            // Clear any previous warnings
+            duplicateAssemblyWarnings.Clear();
+
             // Show progress indication
             UploadState = PackageUploadHandle.State.Uploading;
             Uploading = true;
@@ -2112,8 +2116,14 @@ namespace Dynamo.PackageManager
                 return filePaths.Where(filePath => !existingPackageContents.Contains(filePath)).ToList();
             }, cancellationToken);
 
+            var totalFiles = filesToAdd.Count;
+            var processedFiles = 0;
+
+            // Send initial progress
+            UploadProgress?.Invoke(0, totalFiles, "Starting file processing...");
+
             // Process files in batches
-            for (int i = 0; i < filesToAdd.Count; i += batchSize)
+            for (var i = 0; i < filesToAdd.Count; i += batchSize)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -2125,9 +2135,16 @@ namespace Dynamo.PackageManager
                     foreach (var filePath in batch)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
+                        
+                        processedFiles++;
                         ProcessSingleFileInBackground(filePath);
                     }
                 }, cancellationToken);
+
+                // Send progress update only after each batch (not every file!)
+                var lastFileInBatch = batch.LastOrDefault();
+                var fileName = lastFileInBatch != null ? Path.GetFileName(lastFileInBatch) : "Processing...";
+                UploadProgress?.Invoke(processedFiles, totalFiles, fileName);
 
                 // Yield control to UI thread properly
                 await System.Windows.Application.Current.Dispatcher.BeginInvoke(
@@ -2135,12 +2152,18 @@ namespace Dynamo.PackageManager
                     DispatcherPriority.Background);
             }
 
+            // Send final progress
+            UploadProgress?.Invoke(totalFiles, totalFiles, "Processing complete");
+
             // Final UI updates - only once at the end
             RefreshPackageContents();
             RaisePropertyChanged(nameof(PackageContents));
             RefreshDependencyNames();
             UploadState = PackageUploadHandle.State.Ready;
             Uploading = false;
+            
+            // Show any duplicate assembly warnings collected during processing
+            ShowCollectedWarnings();
         }
 
         /// <summary>
@@ -2240,18 +2263,17 @@ namespace Dynamo.PackageManager
                         {
                             var assemName = assem.GetName().Name;
 
-                            // Check for duplicates
-                            if (!this.RetainFolderStructureOverride &&
-                                this.Assemblies.Any(x => assemName == x.Assembly.GetName().Name) &&
-                                !duplicateAssemblyWarningTriggered)
+                            // Check for duplicates - use lock to prevent race conditions
+                            lock (duplicateAssemblyWarningLock)
                             {
-                                MessageBoxService.Show(Owner,
-                                    string.Format(Resources.PackageDuplicateAssemblyWarning, dynamoViewModel.BrandingResourceProvider.ProductName),
-                                    Resources.PackageDuplicateAssemblyWarningTitle,
-                                    MessageBoxButton.OK,
-                                    MessageBoxImage.Stop);
-                                duplicateAssemblyWarningTriggered = true;
-                                return;
+                                if (!this.RetainFolderStructureOverride &&
+                                    this.Assemblies.Any(x => assemName == x.Assembly.GetName().Name) &&
+                                    !duplicateAssemblyWarnings.Contains(assemName))
+                                {
+                                    // Collect duplicate assembly names for later warning
+                                    duplicateAssemblyWarnings.Add(assemName);
+                                    return;
+                                }
                             }
 
                             Assemblies.Add(new PackageAssembly()
@@ -2306,23 +2328,40 @@ namespace Dynamo.PackageManager
             this.RootFolder = rootFolder ?? string.Empty;
             UploadState = PackageUploadHandle.State.Ready;
 
-            // For small lists, process synchronously
+            // For small lists, process synchronously but still freeze UI during processing
             if (filePaths.Count <= 10)
             {
-                List<string> existingPackageContents = PackageItemRootViewModel.GetFiles(PackageContents.ToList())
-                    .Where(x => x.FileInfo != null)
-                    .Select(x => x.FileInfo.FullName)
-                    .ToList();
-
-                foreach (var filePath in filePaths)
+                Uploading = true;
+                try
                 {
-                    if (existingPackageContents.Contains(filePath)) continue;
-                    AddFile(filePath);
-                }
+                    // Send initial progress to freeze UI
+                    UploadProgress?.Invoke(0, filePaths.Count, "Starting file processing...");
+                    
+                    var existingPackageContents = PackageItemRootViewModel.GetFiles(PackageContents.ToList())
+                        .Where(x => x.FileInfo != null)
+                        .Select(x => x.FileInfo.FullName)
+                        .ToList();
 
-                RefreshPackageContents();
-                RaisePropertyChanged(nameof(PackageContents));
-                RefreshDependencyNames();
+                    var processedCount = 0;
+                    foreach (var filePath in filePaths)
+                    {
+                        if (existingPackageContents.Contains(filePath)) continue;
+                        
+                        AddFile(filePath);
+                        processedCount++;
+                    }
+
+                    // Send completion progress
+                    UploadProgress?.Invoke(filePaths.Count, filePaths.Count, "Processing complete");
+                    
+                    RefreshPackageContents();
+                    RaisePropertyChanged(nameof(PackageContents));
+                    RefreshDependencyNames();
+                }
+                finally
+                {
+                    Uploading = false;
+                }
                 return;
             }
 
@@ -2598,6 +2637,8 @@ namespace Dynamo.PackageManager
         // A boolean flag used to trigger only once the message prompt
         // When the user has attempted to load an existing dll from another path
         private bool duplicateAssemblyWarningTriggered = false;
+        private readonly object duplicateAssemblyWarningLock = new object();
+        private readonly List<string> duplicateAssemblyWarnings = new List<string>();
 
         private void AddDllFile(string filename)
         {
@@ -3275,6 +3316,28 @@ namespace Dynamo.PackageManager
             rootItemPreview.AddChildRecursively(docItemPreview);
 
             return rootItemPreview;
+        }
+
+        /// <summary>
+        /// Shows any duplicate assembly warnings that were collected during processing
+        /// </summary>
+        private void ShowCollectedWarnings()
+        {
+            if (duplicateAssemblyWarnings.Count > 0)
+            {
+                var duplicateNames = string.Join(", ", duplicateAssemblyWarnings);
+                var warningMessage = string.Format(Resources.PackageDuplicateAssemblyWarning, dynamoViewModel.BrandingResourceProvider.ProductName) + 
+                                   $"\n\nDuplicate assemblies found: {duplicateNames}";
+                
+                MessageBoxService.Show(Owner,
+                    warningMessage,
+                    Resources.PackageDuplicateAssemblyWarningTitle,
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                
+                // Clear the warnings after showing them
+                duplicateAssemblyWarnings.Clear();
+            }
         }
 
         /// <summary>
