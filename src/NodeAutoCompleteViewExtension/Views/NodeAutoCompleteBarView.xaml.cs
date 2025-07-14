@@ -334,6 +334,11 @@ namespace Dynamo.NodeAutoComplete.Views
             OnHideNodeAutoCompleteBar();
         }
 
+        internal void ImageAI_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
+        }
+
         internal void CloseAutoCompleteWindow(object sender, RoutedEventArgs e)
         {
             OnHideNodeAutoCompleteBar();
