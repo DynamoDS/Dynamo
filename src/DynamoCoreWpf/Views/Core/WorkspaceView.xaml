@@ -518,7 +518,7 @@
                     </Setter>
                 </Style>
             </Popup.Resources>
-            <StackPanel>
+            <StackPanel x:Name="ContextMenuStackView">
             <ui:InCanvasSearchControl Margin="8,4,8,0" DataContext="{Binding InCanvasSearchViewModel}" RequestShowInCanvasSearch="ShowHideContextMenu"
                                                       Width="{Binding ElementName=ContextMenuPopup, Path=ActualWidth}" />
             <ItemsControl Style="{StaticResource WorkspaceContextMenuStyle}">
