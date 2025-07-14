@@ -1296,6 +1296,9 @@ namespace Dynamo.ViewModels
                     HandleColorOverlayChange();
                     RaisePropertyChanged(nameof(NodeOverlayVisible));
                     break;
+                case "IsTransient":
+                    HandleColorOverlayChange();
+                    break;
             }
         }
 
