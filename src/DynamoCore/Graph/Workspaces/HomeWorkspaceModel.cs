@@ -474,7 +474,7 @@ namespace Dynamo.Graph.Workspaces
         {
             base.NodeModified(node);
 
-            if (!silenceNodeModifications)
+            if (!silenceNodeModifications && !node.IsTransient)
             {
                 RequestRun();
             }
