@@ -752,7 +752,7 @@ namespace Dynamo.Graph.Workspaces
                         node.Y = n.Y + n.NotesHeight + offsetY;
                     }
                     node.ReportPosition();
-                    workspace.HasUnsavedChanges = true;
+                    //workspace.HasUnsavedChanges = true;
 
                     double noteOffset = -n.NotesHeight;
                     foreach (NoteModel note in n.LinkedNotes)

@@ -323,11 +323,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
             NodeAutoCompleteUtilities.PostAutoLayoutNodes(node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, PortViewModel.PortType, null);
 
-            if (PortViewModel.PortType == PortType.Input)
-            {
-                node.NodeModel.MarkNodeAsModified();
-            }
-
+            node.WorkspaceViewModel.Model.HasUnsavedChanges = true;
             (node.WorkspaceViewModel.Model as HomeWorkspaceModel)?.MarkNodesAsModifiedAndRequestRun(transientNodes.Select(x => x.NodeModel));
 
             //add the new items to the undo recorder (this ensures the elements are valid at this point in time before any other manipulation occurs)
