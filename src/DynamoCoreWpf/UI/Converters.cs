@@ -3069,25 +3069,6 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
-    /// Converter is used in WorkspaceView. It makes context menu longer.
-    /// Since context menu includes now inCanvasSearch, it should be align according its' new height.
-    /// </summary>
-    public class WorkspaceContextMenuHeightConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            double actualContextMenuHeight = (double)value;
-
-            return actualContextMenuHeight + Configurations.InCanvasSearchTextBoxHeight;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    /// <summary>
     /// Checks if the item is last. In that case, this converter controls 
     /// the last tree view item's  horizontal and vertical line height
     /// </summary>
