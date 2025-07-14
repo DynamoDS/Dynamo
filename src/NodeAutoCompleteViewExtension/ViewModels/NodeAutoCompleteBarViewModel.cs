@@ -1109,7 +1109,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     }
                     // this runs synchronously on the UI thread, so the UI can't disappear during execution
                     DropdownResults = comboboxResults;
-                    IsDropDownOpen = true;
                     if (FilteredView.Cast<DNADropdownViewModel>().Any())
                     {
                         SelectedIndex = 0;

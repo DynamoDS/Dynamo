@@ -15,6 +15,7 @@
              ShowInTaskbar="False"
              ResizeMode="NoResize"
              Height="45"
+             PreviewTextInput="NodeAutoCompleteBarView_PreviewTextInput"
              PreviewKeyDown="OnAutoCompleteKeyDown"
         >
     <Window.Style>
