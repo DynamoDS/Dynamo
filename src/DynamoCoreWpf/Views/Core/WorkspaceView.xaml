@@ -33,9 +33,7 @@
                     <ControlTemplate TargetType="{x:Type ItemsControl}">
                         <Border>
                             <StackPanel Margin="8,0,8,8"
-                                        Name="ContextMenuPanel"
-                                        Height="{Binding ElementName=MenuItems, Path=ActualHeight, 
-                                                     Converter={StaticResource WorkspaceContextMenuHeightConverter}}">
+                                        Name="ContextMenuPanel">
                                 <Border BorderThickness="0"
                                     Name="MenuItems"
                                     Background="#666666"
@@ -520,9 +518,9 @@
                     </Setter>
                 </Style>
             </Popup.Resources>
-            <StackPanel x:Name="ContextMenuStack">
+            <StackPanel>
             <ui:InCanvasSearchControl Margin="8,4,8,0" DataContext="{Binding InCanvasSearchViewModel}" RequestShowInCanvasSearch="ShowHideContextMenu"
-                                                      Width="{Binding ElementName=ContextMenuStack, Path=ActualWidth}" />
+                                                      Width="{Binding ElementName=ContextMenuPopup, Path=ActualWidth}" />
             <ItemsControl Style="{StaticResource WorkspaceContextMenuStyle}">
                 <ItemsControl.Resources>
                     <Style TargetType="Separator">
