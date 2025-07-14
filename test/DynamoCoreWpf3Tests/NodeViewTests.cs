@@ -45,7 +45,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Category("Failure")]
         public void ZIndex_Test_MouseDown()
         {
             // Reset zindex to start value.
@@ -68,7 +67,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Category("Failure")]
         public void ZIndex_Test_MouseEnter_Leave()
         {
             // Reset zindex to start value.
@@ -110,7 +108,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Category("Failure")]
         public void ZIndex_NodeAsMemberOfGroup()
         {
             // Reset zindex to start value.
@@ -410,7 +407,6 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Category("Failure")]
         public void ZoomWarningFileFromPathTest()
         {
             // Arrange
