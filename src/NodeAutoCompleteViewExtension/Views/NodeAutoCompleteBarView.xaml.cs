@@ -9,6 +9,7 @@ using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.NodeAutoComplete.ViewModels;
 using Dynamo.ViewModels;
+using Dynamo.Views;
 
 namespace Dynamo.NodeAutoComplete.Views
 {
@@ -146,6 +147,7 @@ namespace Dynamo.NodeAutoComplete.Views
             ViewModel.ParentNodeRemoved += OnParentNodeRemoved;
             ViewModel.RefocusSearchBox += OnRefocusSearchbox;
             Owner.LocationChanged += OwnerMoved;
+            DynamoModel.RequestHideNodeAutoCompleteBar += OnHideNodeAutoCompleteBarAction;
             if (ViewModel.PortViewModel != null)
             {
                 ViewModel.PortViewModel.PortModel.Owner.PropertyChanged += Owner_PropertyChanged;
@@ -159,6 +161,7 @@ namespace Dynamo.NodeAutoComplete.Views
             ViewModel.ParentNodeRemoved -= OnParentNodeRemoved;
             ViewModel.RefocusSearchBox -= OnRefocusSearchbox;
             Owner.LocationChanged -= OwnerMoved;
+            DynamoModel.RequestHideNodeAutoCompleteBar -= OnHideNodeAutoCompleteBarAction;
             if (ViewModel.PortViewModel != null)
             {
                 ViewModel.PortViewModel.PortModel.Owner.PropertyChanged -= Owner_PropertyChanged;
@@ -176,6 +179,11 @@ namespace Dynamo.NodeAutoComplete.Views
                     Dispatcher.BeginInvoke(UpdatePosition, DispatcherPriority.Loaded);
                     break;
             }
+        }
+
+        private void OnHideNodeAutoCompleteBarAction()
+        {
+            OnHideNodeAutoCompleteBar();
         }
 
         //Hide the window and unsubscribe from model events.

@@ -67,7 +67,7 @@ namespace Dynamo.Views
         private Point inCanvasSearchPosition;
         private List<DependencyObject> hitResultsList = new List<DependencyObject>();
 
-        static internal event Action<Window, ViewModelBase> RequesNodeAutoCompleteBar;
+        static internal event Action<Window, ViewModelBase> RequestShowNodeAutoCompleteBar;
         private double currentRenderScale = -1;
 
         public WorkspaceViewModel ViewModel
@@ -210,7 +210,7 @@ namespace Dynamo.Views
 
         private void ShowNodeAutoCompleteBar(PortViewModel viewModel)
         {
-            RequesNodeAutoCompleteBar?.Invoke(Window.GetWindow(this), viewModel);
+            RequestShowNodeAutoCompleteBar?.Invoke(Window.GetWindow(this), viewModel);
         }
 
         private void ShowHidePortContextMenu(ShowHideFlags flag, PortViewModel portViewModel)
