@@ -1964,7 +1964,7 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
-    /// Hides (collapses) if the zoom level is smaller than or equal than the designated value
+    /// Hides (collapses) if the zoom level is smaller than or equal to the designated value
     /// </summary>
     public class ZoomToInverseVisibilityCollapsedConverter : IValueConverter
     {
