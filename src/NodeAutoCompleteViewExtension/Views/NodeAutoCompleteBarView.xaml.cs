@@ -344,5 +344,15 @@ namespace Dynamo.NodeAutoComplete.Views
             OnHideNodeAutoCompleteBar();
         }
 
+        private void NodeAutoCompleteBarView_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if(ViewModel != null && ViewModel.HasUnfilteredResults && !ViewModel.IsDropDownOpen)
+            {
+                ViewModel.IsDropDownOpen = true;
+                AutoCompleteSearchBox.Text = e.Text;
+                AutoCompleteSearchBox.CaretIndex = AutoCompleteSearchBox.Text.Length;
+                e.Handled = true;
+            }
+        }
     }
 }
