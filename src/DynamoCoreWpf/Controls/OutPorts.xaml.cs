@@ -1,7 +1,3 @@
-using Dynamo.Configuration;
-using Dynamo.Controls;
-using Dynamo.Microsoft.Xaml.Behaviors;
-using Dynamo.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,6 +13,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Dynamo.Configuration;
+using Dynamo.Controls;
+using Dynamo.Microsoft.Xaml.Behaviors;
+using Dynamo.ViewModels;
+using Dynamo.Views;
 
 namespace Dynamo.UI.Controls
 {
@@ -43,6 +44,7 @@ namespace Dynamo.UI.Controls
         private static SolidColorBrush _nodeTransientOverlayColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeTransientOverlayColor"] as SolidColorBrush;
         private static SolidColorBrush _portMouseOverColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortMouseOverColor"] as SolidColorBrush;
         private static SolidColorBrush _portValueMarkerColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["UnSelectedLayoutForeground"] as SolidColorBrush;
+        private static readonly ZoomToInverseVisibilityCollapsedConverter _zoomToInverseVisibilityCollapsedConverter = new ZoomToInverseVisibilityCollapsedConverter();
 
         //Hold the instance color for the port Background Color.  This is so it can be set differently for CodeBlock
         private SolidColorBrush portBackGroundColor = PortViewModel.PortBackgroundColorDefault;
@@ -203,6 +205,11 @@ namespace Dynamo.UI.Controls
 
             nodeAutoCompleteMarker.Child = nodeAutoCompleteMarkerLabel; 
             NodeAutoCompleteHover.Children.Add(nodeAutoCompleteMarker);
+            NodeAutoCompleteHover.SetBinding(UIElement.VisibilityProperty, new Binding("DataContext.Zoom")
+            {
+                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
+                Converter = _zoomToInverseVisibilityCollapsedConverter
+            });
 
             MainGrid.Children.Add(PortSnapping);
             MainGrid.Children.Add(PortBackgroundBorder);

@@ -1,5 +1,3 @@
-using Dynamo.Microsoft.Xaml.Behaviors;
-using Dynamo.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,6 +13,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Dynamo.Controls;
+using Dynamo.Microsoft.Xaml.Behaviors;
+using Dynamo.ViewModels;
+using Dynamo.Views;
 
 namespace Dynamo.UI.Controls
 {
@@ -44,6 +46,7 @@ namespace Dynamo.UI.Controls
 
         private static BooleanToVisibilityConverter _booleanToVisibilityConverter = new BooleanToVisibilityConverter();
         private static FontFamily _artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
+        private static readonly ZoomToInverseVisibilityCollapsedConverter _zoomToInverseVisibilityCollapsedConverter = new ZoomToInverseVisibilityCollapsedConverter();
 
         static InPorts()
         {
@@ -209,6 +212,11 @@ namespace Dynamo.UI.Controls
 
             nodeAutoCompleteMarker.Child = nodeAutoCompleteMarkerLabel;
             NodeAutoCompleteHover.Children.Add(nodeAutoCompleteMarker);
+            NodeAutoCompleteHover.SetBinding(UIElement.VisibilityProperty, new Binding("DataContext.Zoom")
+            {
+                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
+                Converter = _zoomToInverseVisibilityCollapsedConverter
+            });
 
             MainGrid.Children.Add(PortSnapping);
             MainGrid.Children.Add(PortBackgroundBorder);
