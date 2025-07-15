@@ -336,16 +336,16 @@ namespace Dynamo.Nodes
                 return;
 
             var clickPosition = e.GetPosition(workspace.WorkspaceElements);
-            var model = ViewModel.AnnotationModel;
+            var annotationModel = ViewModel.AnnotationModel;
 
             // Define the area below the text block where nodes reside
-            var annoRectArea = new Rect(model.X, model.Y + model.TextBlockHeight, model.Width, model.ModelAreaHeight);
+            var annoRectArea = new Rect(annotationModel.X, annotationModel.Y + annotationModel.TextBlockHeight, annotationModel.Width, annotationModel.ModelAreaHeight);
 
             // Only create CBN if click is in model area (not in the title/text area)
             if (!annoRectArea.Contains(clickPosition))
                 return;
 
-            workspace.ViewModel?.HandleAnnotationDoubleClick(clickPosition, model);
+            workspace.ViewModel?.HandleAnnotationDoubleClick(clickPosition, annotationModel);
             e.Handled = true;
         }
 
