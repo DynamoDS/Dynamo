@@ -276,7 +276,7 @@ namespace Dynamo.Graph.Nodes
                 return string.Empty;
 
             var codeGen = new ProtoCore.CodeGenDS(new[] { node });
-            return codeGen.GenerateCode();
+            return codeGen.GenerateCode().TrimEnd('\n');
         }
 
         /// <summary>
