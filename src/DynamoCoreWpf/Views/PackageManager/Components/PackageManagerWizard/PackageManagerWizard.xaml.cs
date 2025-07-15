@@ -879,28 +879,23 @@ namespace Dynamo.UI.Views
         /// <exception cref="NotImplementedException"></exception>
         internal void ShowDialog(string title, string message)
         {
-            if (string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(message))
-            {
-                LogMessage("Dialog title or message is null or empty.");
-                return;
-            }
+            var ownerWindow = Window.GetWindow(this);
 
-            try
+            MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK :
+                    MessageBoxService.Show(
+                    ownerWindow,
+                    message,
+                    title,
+                    MessageBoxButton.OKCancel,
+                    MessageBoxImage.Warning);
+
+            if (response == MessageBoxResult.OK)
             {
-                var result = System.Windows.MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Information);
-                switch (result)
-                {
-                    case MessageBoxResult.OK:
-                        SendDialogResult("OK");
-                        break;
-                    default:
-                        SendDialogResult("Cancel");
-                        break;
-                }
+                SendDialogResult("Yes");
             }
-            catch (Exception ex)
+            else
             {
-                LogMessage(ex);
+                SendDialogResult("Cancel");
             }
         }
 
