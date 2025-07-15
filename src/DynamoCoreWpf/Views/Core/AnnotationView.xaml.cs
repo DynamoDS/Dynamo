@@ -28,6 +28,7 @@ using DynCmd = Dynamo.Models.DynamoModel;
 using EventTrigger = System.Windows.EventTrigger;
 using TextBox = System.Windows.Controls.TextBox;
 using Thickness = System.Windows.Thickness;
+using ModifierKeys = System.Windows.Input.ModifierKeys;
 
 namespace Dynamo.Nodes
 {
@@ -159,6 +160,7 @@ namespace Dynamo.Nodes
             Loaded += AnnotationView_Loaded;
             DataContextChanged += AnnotationView_DataContextChanged;
             this.groupTextBlock.SizeChanged += GroupTextBlock_SizeChanged;
+            PreviewMouseDoubleClick += OnAnnotationDoubleClick;
 
             // Because the size of the collapsedAnnotationRectangle doesn't necessarily change 
             // when going from Visible to collapse (and other way around), we need to also listen
@@ -218,6 +220,7 @@ namespace Dynamo.Nodes
         {
             Loaded -= AnnotationView_Loaded;
             DataContextChanged -= AnnotationView_DataContextChanged;
+            PreviewMouseDoubleClick -= OnAnnotationDoubleClick;
             ViewModel.WorkspaceViewModel.InCanvasSearchViewModel.PropertyChanged -= OnSearchViewModelPropertyChanged;
             ViewModel.WorkspaceViewModel.Nodes.CollectionChanged -= OnWorkspaceNodesChanged;
             if (_groupContextMenuClosedHandler != null)
@@ -321,6 +324,29 @@ namespace Dynamo.Nodes
                 _groupContextMenuClosedHandler = (s, e) => isSearchFromGroupContext = false;
                 GroupContextMenuPopup.Closed += _groupContextMenuClosedHandler;
             }
+        }
+
+        private void OnAnnotationDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.Shift || Keyboard.Modifiers == ModifierKeys.Control)
+                return;
+
+            var workspace = WpfUtilities.FindParent<WorkspaceView>(this);
+            if (workspace == null)
+                return;
+
+            var clickPosition = e.GetPosition(workspace.WorkspaceElements);
+            var model = ViewModel.AnnotationModel;
+
+            // Define the area below the text block where nodes reside
+            var annoRectArea = new Rect(model.X, model.Y + model.TextBlockHeight, model.Width, model.ModelAreaHeight);
+
+            // Only create CBN if click is in model area (not in the title/text area)
+            if (!annoRectArea.Contains(clickPosition))
+                return;
+
+            workspace.ViewModel?.HandleAnnotationDoubleClick(clickPosition, model);
+            e.Handled = true;
         }
 
         /// <summary>
