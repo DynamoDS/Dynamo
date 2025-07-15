@@ -788,6 +788,10 @@ Dynamo.Controls.ZoomToBooleanConverter
 Dynamo.Controls.ZoomToBooleanConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.ZoomToBooleanConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.ZoomToBooleanConverter.ZoomToBooleanConverter() -> void
+Dynamo.Controls.ZoomToInverseVisibilityCollapsedConverter
+Dynamo.Controls.ZoomToInverseVisibilityCollapsedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ZoomToInverseVisibilityCollapsedConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ZoomToInverseVisibilityCollapsedConverter.ZoomToInverseVisibilityCollapsedConverter() -> void
 Dynamo.Controls.ZoomToOpacityConverter
 Dynamo.Controls.ZoomToOpacityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.ZoomToOpacityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
