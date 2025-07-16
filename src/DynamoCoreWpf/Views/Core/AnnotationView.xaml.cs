@@ -743,9 +743,9 @@ namespace Dynamo.Nodes
 
         private void OnNodeColorRectangleClicked(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Rectangle rectangle)
+            if (sender is Label label)
             {
-                if (rectangle.Fill is SolidColorBrush brush)
+                if (label.Background is SolidColorBrush brush)
                 {
                     // Update the model background color
                     ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
@@ -1189,7 +1189,7 @@ namespace Dynamo.Nodes
         {
             groupExpander = new Expander
             {
-                Name = "GroupExpander"
+                Name = "GroupExpander",
             };
 
             Grid.SetRow(groupExpander, 0);
@@ -2189,17 +2189,21 @@ namespace Dynamo.Nodes
             return border;
         }
 
-        private Rectangle CreateColorSwatch(string hexColor)
+        private Label CreateColorSwatch(string hexColor)
         {
-            var rect = new Rectangle
+            var name = "C" + hexColor.Replace("#", "");
+            var rect = new Label
             {
                 Width = 13,
                 Height = 13,
-                Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(hexColor)),
+                Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(hexColor)),
                 Margin = new Thickness(3),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Name = name,
             };
 
+            rect.SetValue(System.Windows.Automation.AutomationProperties.NameProperty, name);
+            
             return rect;
         }
 
@@ -2509,6 +2513,8 @@ namespace Dynamo.Nodes
             imageFactory.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Bottom);
             imageFactory.SetValue(FrameworkElement.HorizontalAlignmentProperty, HorizontalAlignment.Right);
             imageFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 0, 2.5, 2.5));
+            imageFactory.SetValue(System.Windows.Automation.AutomationProperties.NameProperty, "WarningErrorIcon");
+            imageFactory.SetValue(System.Windows.Automation.AutomationProperties.AutomationIdProperty, "WarningErrorIcon");
 
             var imageStyle = new Style(typeof(Image));
 
@@ -2584,6 +2590,8 @@ namespace Dynamo.Nodes
 
             // Create frozen button
             var buttonFactory = new FrameworkElementFactory(typeof(Button));
+            buttonFactory.SetValue(System.Windows.Automation.AutomationProperties.NameProperty, "FrezzeButton");
+            buttonFactory.SetValue(System.Windows.Automation.AutomationProperties.AutomationIdProperty, "FrezzeButton");
             buttonFactory.SetValue(FrameworkElement.WidthProperty, 16.0);
             buttonFactory.SetValue(FrameworkElement.HeightProperty, 16.0);
             buttonFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 0, 3.5, 3));
@@ -2620,6 +2628,8 @@ namespace Dynamo.Nodes
             toggleButtonFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 0, 0, 2.5));
             toggleButtonFactory.SetValue(Control.TemplateProperty, expanderTemplate);
             toggleButtonFactory.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Bottom);
+            toggleButtonFactory.SetValue(System.Windows.Automation.AutomationProperties.NameProperty, "ExpanderToggle");
+            toggleButtonFactory.SetValue(System.Windows.Automation.AutomationProperties.AutomationIdProperty, "ExpanderToggle");
 
             toggleButtonFactory.SetBinding(ToggleButton.IsCheckedProperty, new Binding("IsExpanded")
             {
@@ -2642,7 +2652,8 @@ namespace Dynamo.Nodes
             buttonFactory.SetValue(FrameworkElement.HeightProperty, 16.0);
             buttonFactory.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Bottom);
             buttonFactory.AddHandler(Button.ClickEvent, new RoutedEventHandler(contextMenu_Click));
-
+            buttonFactory.SetValue(System.Windows.Automation.AutomationProperties.NameProperty, "ContextMenu");
+            buttonFactory.SetValue(System.Windows.Automation.AutomationProperties.AutomationIdProperty, "ContextMenu");
             // Create button style
             var buttonStyle = new Style(typeof(Button));
             buttonStyle.Setters.Add(new Setter(Button.OverridesDefaultStyleProperty, true));
