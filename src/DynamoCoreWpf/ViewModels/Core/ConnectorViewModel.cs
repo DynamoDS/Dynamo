@@ -390,8 +390,7 @@ namespace Dynamo.ViewModels
 
             //reduce ZIndex if one of associated nodes is collapsed
             bool oneNodeInCollapsedGroup = OneConnectingNodeInCollapsedGroup(firstNode, lastNode);
-            bool bothNodesInCollapsedGroup = ConnectingNodesBothInCollapsedGroup(firstNode, lastNode);
-            if (oneNodeInCollapsedGroup && !bothNodesInCollapsedGroup)
+            if (oneNodeInCollapsedGroup)
             {
                 var lowestIndex = new int[] { this.Nodevm.ZIndex, this.NodeEnd.ZIndex }
                 .OrderBy(x => x)
@@ -410,11 +409,6 @@ namespace Dynamo.ViewModels
         {
             if (firstNode == null || lastNode == null) return false;
             return firstNode.IsNodeInCollapsedGroup || lastNode.IsNodeInCollapsedGroup;
-        }
-        private bool ConnectingNodesBothInCollapsedGroup(NodeViewModel firstNode, NodeViewModel lastNode)
-        {
-            if (firstNode == null || lastNode == null) return false;
-            return firstNode.IsNodeInCollapsedGroup && lastNode.IsNodeInCollapsedGroup;
         }
 
         /// <summary>
@@ -1514,7 +1508,11 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void SetCollapsedByNodeViewModel()
         {
-            if (Nodevm?.IsCollapsed == true && NodeEnd?.IsCollapsed == true)
+            // Check if the connector is between two proxy ports. 
+            // Connectors between proxy ports should not be collapsed.
+            bool bothEndsAreProxyPorts = ConnectorModel.Start.IsProxyPort && ConnectorModel.End.IsProxyPort;
+
+            if (Nodevm?.IsCollapsed == true && NodeEnd?.IsCollapsed == true && !bothEndsAreProxyPorts)
             {
                 IsCollapsed = true;
             }
