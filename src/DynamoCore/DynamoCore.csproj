@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -126,7 +126,6 @@
         <LibGProtoGeometryDLL Include="$(LibGMainPackagePath)\tools\netstandard2.0\$(LibGOsToken)\ProtoGeometry.dll" />
         <LibGProtoGeometryXML Include="$(LibGMainPackagePath)\tools\netstandard2.0\$(LibGOsToken)\ProtoGeometry.XML" />
         <LibGMainDeps Include="$(LibGMainPackagePath)\tools\netstandard2.0\$(LibGOsToken)\asm_deps.csproj" />
-        <LibGProtoGeometryUICulture Include="$(LibGMainPackagePath)\tools\netstandard2.0\$(LibGOsToken)\$(UICulture)\*" />
         <LibGMain Include="$(LibGMainPackagePath)\tools\netstandard2.0\$(LibGOsToken)\$(LIBGVerMain)\*" />
         <LibGSecondary Include="$(LibGSecondaryPackagePath)\tools\netstandard2.0\$(LibGOsToken)\$(LIBGVerSecondary)\*" />
         <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
@@ -207,7 +206,10 @@
     <Copy SourceFiles="@(LibGProtoGeometryDLL)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)\$(UICulture)" />
-    <Copy SourceFiles="@(LibGProtoGeometryUICulture)" DestinationFolder="$(OutputPath)\$(UICulture)" />
+    <ItemGroup>
+      <LibGProtoGeometryUICultureAllLanguages Include="$(LibGMainPackagePath)\tools\netstandard2.0\$(LibGOsToken)\**\*.resources.dll;$(LibGMainPackagePath)\tools\netstandard2.0\$(LibGOsToken)\**\*.resx" />
+    </ItemGroup>
+    <Copy SourceFiles="@(LibGProtoGeometryUICultureAllLanguages)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" />
     <Copy SourceFiles="@(LibGMainDeps)" DestinationFolder="$(OutputPath)$(LIBGVerMain)\asm_deps\" />
     <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command Copy-Item -Path '$(LibGProtoGeometryLibGLocale)' -Destination '$(OutputPath)' -Recurse -Force" />
     <Copy SourceFiles="@(LibGSecondary)" DestinationFolder="$(OutputPath)$(LIBGVerSecondary)\" />
