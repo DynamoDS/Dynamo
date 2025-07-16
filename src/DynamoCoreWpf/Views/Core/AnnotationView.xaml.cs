@@ -28,6 +28,7 @@ using DynCmd = Dynamo.Models.DynamoModel;
 using EventTrigger = System.Windows.EventTrigger;
 using TextBox = System.Windows.Controls.TextBox;
 using Thickness = System.Windows.Thickness;
+using ModifierKeys = System.Windows.Input.ModifierKeys;
 
 namespace Dynamo.Nodes
 {
@@ -59,6 +60,7 @@ namespace Dynamo.Nodes
         private Grid outputPortsGrid;
         private Grid groupContent;
         private Border nodeCountBorder;
+        private InCanvasSearchControl searchBar;
         
         private Thumb mainGroupThumb;
         private StackPanel groupPopupPanel;
@@ -158,6 +160,7 @@ namespace Dynamo.Nodes
             Loaded += AnnotationView_Loaded;
             DataContextChanged += AnnotationView_DataContextChanged;
             this.groupTextBlock.SizeChanged += GroupTextBlock_SizeChanged;
+            PreviewMouseDoubleClick += OnAnnotationDoubleClick;
 
             // Because the size of the collapsedAnnotationRectangle doesn't necessarily change 
             // when going from Visible to collapse (and other way around), we need to also listen
@@ -217,6 +220,7 @@ namespace Dynamo.Nodes
         {
             Loaded -= AnnotationView_Loaded;
             DataContextChanged -= AnnotationView_DataContextChanged;
+            PreviewMouseDoubleClick -= OnAnnotationDoubleClick;
             ViewModel.WorkspaceViewModel.InCanvasSearchViewModel.PropertyChanged -= OnSearchViewModelPropertyChanged;
             ViewModel.WorkspaceViewModel.Nodes.CollectionChanged -= OnWorkspaceNodesChanged;
             if (_groupContextMenuClosedHandler != null)
@@ -320,6 +324,29 @@ namespace Dynamo.Nodes
                 _groupContextMenuClosedHandler = (s, e) => isSearchFromGroupContext = false;
                 GroupContextMenuPopup.Closed += _groupContextMenuClosedHandler;
             }
+        }
+
+        private void OnAnnotationDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.Shift || Keyboard.Modifiers == ModifierKeys.Control)
+                return;
+
+            var workspace = WpfUtilities.FindParent<WorkspaceView>(this);
+            if (workspace == null)
+                return;
+
+            var clickPosition = e.GetPosition(workspace.WorkspaceElements);
+            var annotationModel = ViewModel.AnnotationModel;
+
+            // Define the area below the text block where nodes reside
+            var annoRectArea = new Rect(annotationModel.X, annotationModel.Y + annotationModel.TextBlockHeight, annotationModel.Width, annotationModel.ModelAreaHeight);
+
+            // Only create CBN if click is in model area (not in the title/text area)
+            if (!annoRectArea.Contains(clickPosition))
+                return;
+
+            workspace.ViewModel?.HandleAnnotationDoubleClick(clickPosition, annotationModel);
+            e.Handled = true;
         }
 
         /// <summary>
@@ -740,6 +767,8 @@ namespace Dynamo.Nodes
         {
             if (e.Key == Key.O && Keyboard.Modifiers == System.Windows.Input.ModifierKeys.None)
             {
+                if (searchBar != null && searchBar.IsKeyboardFocusWithin) return;
+
                 OnUngroupAnnotation(this, new RoutedEventArgs());
                 e.Handled = true;
                 GroupContextMenuPopup.IsOpen = false;
@@ -1854,7 +1883,7 @@ namespace Dynamo.Nodes
 
         private UIElement CreateSearchBox()
         {
-            var searchBar = new InCanvasSearchControl
+            searchBar = new InCanvasSearchControl
             {
                 DataContext = ViewModel.WorkspaceViewModel.InCanvasSearchViewModel,
                 Width = 230
@@ -2449,7 +2478,7 @@ namespace Dynamo.Nodes
 
             // Add ContentPresenter
             var contentPresenterFactory = new FrameworkElementFactory(typeof(ContentPresenter));
-            contentPresenterFactory.SetValue(Grid.ColumnSpanProperty, 3);
+            contentPresenterFactory.SetValue(Grid.ColumnSpanProperty, 4);
             contentPresenterFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(4));
             contentPresenterFactory.SetValue(ContentPresenter.ContentSourceProperty, "Header");
             contentPresenterFactory.SetValue(ContentPresenter.RecognizesAccessKeyProperty, true);

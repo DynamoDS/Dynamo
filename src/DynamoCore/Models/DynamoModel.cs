@@ -2182,7 +2182,7 @@ namespace Dynamo.Models
         /// execution mode specified in the file and set manual mode</param>
         /// <param name="isTemplate">Set this to true to indicate that the file is a template</param>
         /// <returns>True if workspace was opened successfully</returns>
-        private bool OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool isTemplate = false)
+        internal bool OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool isTemplate = false)
         {
             try
             {

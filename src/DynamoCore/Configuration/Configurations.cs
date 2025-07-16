@@ -374,12 +374,6 @@ namespace Dynamo.Configuration
 
         #endregion
 
-        #region InCanvasSearch
-
-        internal const double InCanvasSearchTextBoxHeight = 40.0;
-
-        #endregion
-
         #region Backup
 
         /// <summary>

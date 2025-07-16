@@ -1633,12 +1633,12 @@ namespace Dynamo.Graph.Workspaces
 
             AddNode(node);
 
-            HasUnsavedChanges = true;
-
-            if (node is CodeBlockNodeModel cbn
-                && string.IsNullOrEmpty(cbn.Code)) return;
-
-            RequestRun();
+            if (!node.IsTransient)
+            {
+                HasUnsavedChanges = true;
+                if (node is CodeBlockNodeModel cbn && string.IsNullOrEmpty(cbn.Code)) return;
+                RequestRun();
+            }
         }
 
         protected virtual void RegisterNode(NodeModel node)
@@ -1670,6 +1670,11 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         protected virtual void NodeModified(NodeModel node)
         {
+            if (node.IsTransient)
+            {
+                return;
+            }
+
             HasUnsavedChanges = true;
         }
 
@@ -1689,7 +1694,10 @@ namespace Dynamo.Graph.Workspaces
             OnNodeRemoved(model);
             // Force this change to address the edge case that user deleting the right edge
             // node and do not see unsaved changes, e.g. the watch node at end of the graph
-            HasUnsavedChanges = true;
+            if (!model.IsTransient)
+            {
+                HasUnsavedChanges = true;
+            }
 
             if (dispose)
             {

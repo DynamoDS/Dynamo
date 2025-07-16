@@ -2345,6 +2345,7 @@ namespace Dynamo.ViewModels
         {
             try
             {
+                filePath = Model.CurrentWorkspace.FileName;
                 string fileContentsInUse = String.IsNullOrEmpty(filePath) ? fileContents : File.ReadAllText(filePath);
                 if (string.IsNullOrEmpty(fileContentsInUse))
                 {
