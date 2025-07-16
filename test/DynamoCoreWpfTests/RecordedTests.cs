@@ -2512,8 +2512,8 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(expectedTooltip, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
-            var forthLineContent = "y = 8;";
-            expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 4)} : {forthLineContent}";
+            var fourthLineContent = "y = 8;";
+            expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 4)} : {fourthLineContent}";
             Assert.AreEqual(expectedTooltip, cbn.OutPorts[1].ToolTip);
             Assert.AreEqual(3, cbn.OutPorts[1].LineIndex);
         }
