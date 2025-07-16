@@ -1027,7 +1027,7 @@ namespace Dynamo.Graph.Nodes
             OutPorts.RemoveAll((p) => true);
 
             int maxLabelLength = Configurations.CBNMaxPortNameLength;
-            int maxToolpipLength = Configurations.CBNMaxTooltipLength;
+            int maxTooltipLength = Configurations.CBNMaxTooltipLength;
 
             foreach (var def in allDefs)
             {
@@ -1043,8 +1043,8 @@ namespace Dynamo.Graph.Nodes
                     label = label.Remove(maxLabelLength - 3) + "...";
 
                 var tooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, def.Value)} : {metadata.Tooltip}";
-                if (tooltip.Length > maxToolpipLength)
-                    tooltip = tooltip.Remove(maxToolpipLength - 3) + "...";
+                if (tooltip.Length > maxTooltipLength)
+                    tooltip = tooltip.Remove(maxTooltipLength - 3) + "...";
 
                 OutPorts.Add(new PortModel(PortType.Output, this, new PortData(label, tooltip)
                 {

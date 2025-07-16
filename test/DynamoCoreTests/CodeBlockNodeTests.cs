@@ -2114,7 +2114,7 @@ var06 = g;
             RunModel(openPath);
 
             var intLineContent = "1";
-            var imperativeBlockContent = "[Imperative]\n{\nreturn = 5;\n\n}\n";
+            var imperativeBlockContent = "[Imperative]\n{\nreturn = 5;\n\n}";
             var stringLiteralContent = "foo";
 
             var cbn = GetModel().Workspaces.First().Nodes.First() as CodeBlockNodeModel;
