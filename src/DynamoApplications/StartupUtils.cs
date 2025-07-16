@@ -194,8 +194,7 @@ namespace Dynamo.Applications
             bool cliMode = true,
             string userDataFolder = "",
             string commonDataFolder = "",
-            bool serviceMode = false,
-            bool useCustomNodeCache = false)
+            bool serviceMode = false)
         {
             var normalizedCLILocale = string.IsNullOrEmpty(cliLocale) ? null : cliLocale;
             IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);
@@ -215,8 +214,7 @@ namespace Dynamo.Applications
                 noNetworkMode: noNetworkMode,
                 info: analyticsInfo,
                 isServiceMode: serviceMode,
-                cliLocale: normalizedCLILocale,
-                useCustomNodeCache
+                cliLocale: normalizedCLILocale
             );
             model.IsASMLoaded = isASMloaded;
             return model;
@@ -299,22 +297,6 @@ namespace Dynamo.Applications
             return model;
         }
 
-        internal static DynamoModel MakeModel(bool CLImode, string CLIlocale, bool noNetworkMode, bool useCustomNodeCache,
-            string asmPath = "", HostAnalyticsInfo info = new HostAnalyticsInfo())
-        {
-            var model = PrepareModel(
-                cliLocale: CLIlocale,
-                asmPath: asmPath,
-                noNetworkMode: noNetworkMode,
-                analyticsInfo: info,
-                cliMode: CLImode,
-                userDataFolder: "",
-                commonDataFolder: "",
-                serviceMode: false,
-                useCustomNodeCache);
-            return model;
-        }
-
         /// <summary>
         /// It returns an IPathResolver based on the mode and some locations
         /// </summary>
@@ -390,8 +372,7 @@ namespace Dynamo.Applications
             bool noNetworkMode,
             HostAnalyticsInfo info = new HostAnalyticsInfo(),
             bool isServiceMode = false,
-            string cliLocale = null,
-            bool useCustomNodeCache = false)
+            string cliLocale = null)
         {
 
             var config = new DynamoModel.DefaultStartConfiguration
@@ -406,8 +387,7 @@ namespace Dynamo.Applications
                 IsServiceMode = isServiceMode,
                 Preferences = PreferenceSettings.Instance,
                 NoNetworkMode = noNetworkMode,
-                CLILocale = cliLocale,
-                UseCustomNodeCache = useCustomNodeCache,
+                CLILocale = cliLocale
                 //Breaks all Lucene calls. TI enable this would require a lot of refactoring around Lucene usage in Dynamo.
                 //IsHeadless = CLImode
             };
