@@ -424,6 +424,10 @@ namespace Dynamo.UI.Controls
                 {
                     recentFiles.RemoveRange(e.OldStartingIndex, removedItemsCount);
                 }
+                else
+                {
+                    RefreshRecentFileList(sender as IEnumerable<string>, true);
+                }
             }
             else
             {
