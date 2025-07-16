@@ -1189,7 +1189,7 @@ namespace Dynamo.Nodes
         {
             groupExpander = new Expander
             {
-                Name = "GroupExpander",
+                Name = "GroupExpander"
             };
 
             Grid.SetRow(groupExpander, 0);
