@@ -2128,7 +2128,10 @@ namespace Dynamo.Controls
                 ViewModel?.NodeModel?.HasTransientConnections() is true)
             {
                 e.Handled = true;
-                grid.ContextMenu.Visibility = Visibility.Collapsed;
+                if (grid.ContextMenu != null)
+                {
+                    grid.ContextMenu.Visibility = Visibility.Collapsed;
+                }
                 return;
             }
 
