@@ -2649,15 +2649,10 @@ namespace DynamoCoreWpfTests.PackageManager
             // Debug: Check if we have initial files
             Assert.IsTrue(allFiles.Count > 0, $"Should have files in {nodePath}");
             
-            // For this test, we'll just use the files we have since the exact count doesn't matter
-            // as much as testing the async processing path works
             var largeFileList = new List<string>(allFiles);
             
             // Debug: Check what files we actually have
             Assert.IsTrue(largeFileList.Count > 0, $"Should have collected files. Found: {largeFileList.Count}");
-            
-            // Force async processing by using the large file list path
-            // (The implementation should handle any size gracefully)
             
             var vm = new PublishPackageViewModel(this.ViewModel);
             
