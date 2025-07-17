@@ -1034,7 +1034,7 @@ namespace Dynamo.PackageManager
             DependencyNames = string.Join(", ", Dependencies.Select(x => x.name));
         }
 
-        private void RefreshPackageContents()
+        internal void RefreshPackageContents()
         {
             PackageContents.Clear();
 
@@ -2056,6 +2056,7 @@ namespace Dynamo.PackageManager
 
             // Clear any previous warnings
             duplicateAssemblyWarnings.Clear();
+            failedFileErrors.Clear();
 
             // Show progress indication
             UploadState = PackageUploadHandle.State.Uploading;
@@ -2090,7 +2091,11 @@ namespace Dynamo.PackageManager
             }
             catch (Exception ex)
             {
-                ErrorString = $"Error loading files: {ex.Message}";
+                // Collect error for later display instead of immediate ErrorString assignment
+                lock (failedFileErrorsLock)
+                {
+                    failedFileErrors.Add($"Error loading files: {ex.Message}");
+                }
                 UploadState = PackageUploadHandle.State.Error;
                 Uploading = false;
             }
@@ -2162,8 +2167,9 @@ namespace Dynamo.PackageManager
             UploadState = PackageUploadHandle.State.Ready;
             Uploading = false;
             
-            // Show any duplicate assembly warnings collected during processing
-            ShowCollectedWarnings();
+            // Show any duplicate assembly warnings collected during processing on UI thread
+            // Then generate preview after dialogs are dismissed
+            ShowCollectedErrors();
         }
 
         /// <summary>
@@ -2293,6 +2299,12 @@ namespace Dynamo.PackageManager
                         dynamoViewModel.Model.Logger.Log($"Error processing DLL file {filename}: {ex.Message}");
                         // Add as additional file if assembly loading fails
                         AdditionalFiles.Add(filename);
+                        
+                        // Collect failed file errors for later display
+                        lock (failedFileErrorsLock)
+                        {
+                            failedFileErrors.Add(filename);
+                        }
                     }
                 }), DispatcherPriority.Background);
             }
@@ -2380,7 +2392,11 @@ namespace Dynamo.PackageManager
             }
             catch (Exception ex)
             {
-                ErrorString = $"Error processing files: {ex.Message}";
+                // Collect error for later display instead of immediate ErrorString assignment
+                lock (failedFileErrorsLock)
+                {
+                    failedFileErrors.Add($"Error processing files: {ex.Message}");
+                }
                 UploadState = PackageUploadHandle.State.Error;
                 Uploading = false;
             }
@@ -2445,7 +2461,11 @@ namespace Dynamo.PackageManager
             }
             catch (Exception ex)
             {
-                ErrorString = $"Error loading markdown files: {ex.Message}";
+                // Collect error for later display instead of immediate ErrorString assignment
+                lock (failedFileErrorsLock)
+                {
+                    failedFileErrors.Add($"Error loading markdown files: {ex.Message}");
+                }
                 MarkdownFiles = new List<string>();
             }
             finally
@@ -2628,8 +2648,11 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
-                UploadState = PackageUploadHandle.State.Error;
-                ErrorString = String.Format(Resources.MessageFailedToAddFile, filename);
+                // Collect failed file errors for later display
+                lock (failedFileErrorsLock)
+                {
+                    failedFileErrors.Add(filename);
+                }
                 dynamoViewModel.Model.Logger.Log(e);
             }
         }
@@ -2639,6 +2662,8 @@ namespace Dynamo.PackageManager
         private bool duplicateAssemblyWarningTriggered = false;
         private readonly object duplicateAssemblyWarningLock = new object();
         private readonly List<string> duplicateAssemblyWarnings = new List<string>();
+        private readonly List<string> failedFileErrors = new List<string>();
+        private readonly object failedFileErrorsLock = new object();
 
         private void AddDllFile(string filename)
         {
@@ -2678,8 +2703,11 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
-                UploadState = PackageUploadHandle.State.Error;
-                ErrorString = String.Format(Resources.MessageFailedToAddFile, filename);
+                // Collect failed file errors for later display
+                lock (failedFileErrorsLock)
+                {
+                    failedFileErrors.Add(filename);
+                }
                 dynamoViewModel.Model.Logger.Log(e);
             }
         }
@@ -3222,6 +3250,8 @@ namespace Dynamo.PackageManager
             }
         }
 
+
+
         internal PackageItemRootViewModel GetExistingRootItemViewModel(string publishPath, string packageName)
         {
             if (!PackageContents.Any()) return null;
@@ -3319,10 +3349,29 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Shows any duplicate assembly warnings that were collected during processing
+        /// Shows any duplicate assembly warnings and failed file errors that were collected during processing
         /// </summary>
-        private void ShowCollectedWarnings()
+        private void ShowCollectedErrors()
         {
+            // Show failed file errors first and wait for user response
+            if (failedFileErrors.Count > 0)
+            {
+                var failedFiles = string.Join("\n• ", failedFileErrors);
+                var errorMessage = failedFileErrors.Count == 1 
+                    ? string.Format(Resources.MessageFailedToAddFile, failedFileErrors[0])
+                    : $"Failed to add the following files:\n\n• {failedFiles}";
+                
+                MessageBoxService.Show(Owner,
+                    errorMessage,
+                    Resources.FileNotPublishCaption,
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                
+                // Clear the errors after showing them
+                failedFileErrors.Clear();
+            }
+
+            // Only show duplicate assembly warnings AFTER user dismisses the first dialog
             if (duplicateAssemblyWarnings.Count > 0)
             {
                 var duplicateNames = string.Join(", ", duplicateAssemblyWarnings);
