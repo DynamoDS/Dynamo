@@ -27,6 +27,8 @@ using EventTrigger = System.Windows.EventTrigger;
 using TextBox = System.Windows.Controls.TextBox;
 using Thickness = System.Windows.Thickness;
 using ModifierKeys = System.Windows.Input.ModifierKeys;
+using System.ComponentModel;
+using System.Collections.Specialized;
 
 namespace Dynamo.Nodes
 {
@@ -52,6 +54,7 @@ namespace Dynamo.Nodes
         private ItemsControl outputPortControl;
         private Thumb mainGroupThumb;
         private StackPanel groupPopupPanel;
+        private InCanvasSearchControl searchBar;
 
         private bool _isUpdatingLayout = false;
         private bool isSearchFromGroupContext;
