@@ -5045,6 +5045,7 @@ static Dynamo.Wpf.Properties.Resources.MessageErrorOpeningInvalidPath.get -> str
 static Dynamo.Wpf.Properties.Resources.MessageExcessiveLoadTime.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageExcessiveLoadTimeTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToAddFile.get -> string
+static Dynamo.Wpf.Properties.Resources.MessageFailedToAddMultipleFiles.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToApplyCustomization.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToAttachToRowColumn.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToDelete.get -> string
@@ -5105,6 +5106,7 @@ static Dynamo.Wpf.Properties.Resources.NodeAutocomplete.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeAutoCompleteNotAvailableForCollapsedGroups.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeAutoCompleteToolTip.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDuplicateAssembliesFoundMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoCompleteNewUI.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoCompleteNewUITooltipText.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeContextMenuEnablePeriodicUpdate.get -> string

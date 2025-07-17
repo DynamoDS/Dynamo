@@ -3376,7 +3376,7 @@ namespace Dynamo.PackageManager
             {
                 var duplicateNames = string.Join(", ", duplicateAssemblyWarnings);
                 var warningMessage = string.Format(Resources.PackageDuplicateAssemblyWarning, dynamoViewModel.BrandingResourceProvider.ProductName) +
-                                     string.Format(Resources.PackageDupliateAssembliesFoundMessage, duplicateNames);
+                                     string.Format(Resources.PackageDuplicateAssembliesFoundMessage, duplicateNames);
                 
                 MessageBoxService.Show(Owner,
                     warningMessage,

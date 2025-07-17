@@ -6136,9 +6136,9 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to \n\nDuplicate assemblies found: {0}.
         /// </summary>
-        public static string PackageDupliateAssembliesFoundMessage {
+        public static string PackageDuplicateAssembliesFoundMessage {
             get {
-                return ResourceManager.GetString("PackageDupliateAssembliesFoundMessage", resourceCulture);
+                return ResourceManager.GetString("PackageDuplicateAssembliesFoundMessage", resourceCulture);
             }
         }
         
