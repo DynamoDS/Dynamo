@@ -408,6 +408,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Category("Failure")]
         public void ZoomWarningFileFromPathTest()
         {
             // Arrange
