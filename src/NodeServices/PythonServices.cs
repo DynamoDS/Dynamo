@@ -192,7 +192,7 @@ namespace Dynamo.PythonServices
             AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler((object sender, AssemblyLoadEventArgs args) => LoadDefaultPythonEngine(args.LoadedAssembly));
         }
 
-        private void LoadDefaultPythonEngine(Assembly a)
+        internal void LoadDefaultPythonEngine(Assembly a)
         {
             if (a == null ||
                 a.GetName().Name != CPythonAssemblyName)
