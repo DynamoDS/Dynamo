@@ -3357,9 +3357,9 @@ namespace Dynamo.PackageManager
             if (failedFileErrors.Count > 0)
             {
                 var failedFiles = string.Join("\n• ", failedFileErrors);
-                var errorMessage = failedFileErrors.Count == 1 
+                var errorMessage = failedFileErrors.Count == 1
                     ? string.Format(Resources.MessageFailedToAddFile, failedFileErrors[0])
-                    : $"Failed to add the following files:\n\n• {failedFiles}";
+                    : string.Format(Resources.MessageFailedToAddMultipleFiles, failedFiles);
                 
                 MessageBoxService.Show(Owner,
                     errorMessage,
@@ -3375,8 +3375,8 @@ namespace Dynamo.PackageManager
             if (duplicateAssemblyWarnings.Count > 0)
             {
                 var duplicateNames = string.Join(", ", duplicateAssemblyWarnings);
-                var warningMessage = string.Format(Resources.PackageDuplicateAssemblyWarning, dynamoViewModel.BrandingResourceProvider.ProductName) + 
-                                   $"\n\nDuplicate assemblies found: {duplicateNames}";
+                var warningMessage = string.Format(Resources.PackageDuplicateAssemblyWarning, dynamoViewModel.BrandingResourceProvider.ProductName) +
+                                     string.Format(Resources.PackageDupliateAssembliesFoundMessage, duplicateNames);
                 
                 MessageBoxService.Show(Owner,
                     warningMessage,

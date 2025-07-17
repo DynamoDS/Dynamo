@@ -1023,6 +1023,7 @@ Dynamo.PackageManager.PublishPackageViewModel.BaseVersionHeader.set -> void
 Dynamo.PackageManager.PublishPackageViewModel.BuildVersion.get -> string
 Dynamo.PackageManager.PublishPackageViewModel.BuildVersion.set -> void
 Dynamo.PackageManager.PublishPackageViewModel.CancelCommand.get -> Prism.Commands.DelegateCommand
+Dynamo.PackageManager.PublishPackageViewModel.CancelFileLoading() -> void
 Dynamo.PackageManager.PublishPackageViewModel.CanEditName.get -> bool
 Dynamo.PackageManager.PublishPackageViewModel.ClearMarkdownDirectoryCommand.get -> Prism.Commands.DelegateCommand
 Dynamo.PackageManager.PublishPackageViewModel.CompatibilityMatrix.get -> System.Collections.Generic.ICollection<Greg.Requests.PackageCompatibility>
