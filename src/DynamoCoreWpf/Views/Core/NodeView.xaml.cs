@@ -872,6 +872,7 @@ namespace Dynamo.Controls
                 Name = "nodeColorOverlayZoomOut",
                 Margin = new Thickness(-8),
                 IsHitTestVisible = false,
+                Opacity = 0.5
             };
             Grid.SetRow(nodeColorOverlayZoomOut, 1);
             Grid.SetRowSpan(nodeColorOverlayZoomOut, 4);
@@ -884,6 +885,14 @@ namespace Dynamo.Controls
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
             nodeColorOverlayZoomOut.SetBinding(Rectangle.StyleProperty, sZoomFadeInPreviewStyleBinding);
+
+
+            // Visibility binding
+            nodeColorOverlayZoomOut.SetBinding(UIElement.VisibilityProperty, new Binding("DataContext.Zoom")
+            {
+                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
+                Converter = zoomToVisibilityCollapsedConverter
+            });
 
             // Create the main Grid
             zoomGlyphsGrid = new Grid
