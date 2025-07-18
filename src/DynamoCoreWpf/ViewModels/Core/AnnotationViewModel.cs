@@ -1841,7 +1841,6 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("Width");
                     RaisePropertyChanged(nameof(ModelAreaRect));
                     UpdateAllGroupedGroups();
-                    RedrawConnectors(false);
                     break;
                 case "Height":
                     RaisePropertyChanged("Height");

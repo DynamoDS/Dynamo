@@ -310,19 +310,8 @@ namespace Dynamo.Nodes
                 }
                 ViewModel.UpdateProxyPortsPosition();
 
-                // Create and attach the popup menu for group annotations
-                CreateAndAttachAnnotationPopup();
-
-                // Subscribe to search box activity to close the other popup items when typing
-                var searchVM = ViewModel.WorkspaceViewModel.InCanvasSearchViewModel;
-                searchVM.PropertyChanged += OnSearchViewModelPropertyChanged;
-
                 // Add new nodes to group when search is triggered from group
                 ViewModel.WorkspaceViewModel.Nodes.CollectionChanged += OnWorkspaceNodesChanged;
-
-                // Reset group context flag when popup closes
-                _groupContextMenuClosedHandler = (s, e) => isSearchFromGroupContext = false;
-                GroupContextMenuPopup.Closed += _groupContextMenuClosedHandler;
             }
         }
 
@@ -434,11 +423,8 @@ namespace Dynamo.Nodes
         /// </summary>
         private void AnnotationView_OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (!GroupContextMenuPopup.IsOpen)
-            {
-                OpenContextMenuAtMouse();
-                e.Handled = true;
-            }
+            OpenContextMenuAtMouse();
+            e.Handled = true;
         }
 
         /// <summary>
@@ -666,6 +652,9 @@ namespace Dynamo.Nodes
 
         private void OpenContextMenuAtMouse()
         {
+            // Create and attach the popup menu for group annotations
+            CreateAndAttachAnnotationPopup();
+
             var workspaceView = WpfUtilities.FindParent<WorkspaceView>(this);
             if (workspaceView == null) return;
 
@@ -1786,6 +1775,9 @@ namespace Dynamo.Nodes
 
         private void CreateAndAttachAnnotationPopup()
         {
+            // If the context menu is already created, no need to recreate or re-subscribe
+            if (GroupContextMenuPopup != null) return;
+
             GroupContextMenuPopup = new Popup
             {
                 Name = "AnnotationContextPopup",
@@ -1803,6 +1795,12 @@ namespace Dynamo.Nodes
             };
 
             GroupContextMenuPopup.Child = border;
+
+            // Subscribe to search box activity to close the other popup items when typing
+            var searchVM = ViewModel.WorkspaceViewModel.InCanvasSearchViewModel;
+            searchVM.PropertyChanged += OnSearchViewModelPropertyChanged;
+            _groupContextMenuClosedHandler = (s, e) => isSearchFromGroupContext = false;
+            GroupContextMenuPopup.Closed += _groupContextMenuClosedHandler;
         }
 
         private StackPanel CreatePopupPanel()
