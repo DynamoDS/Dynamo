@@ -411,7 +411,7 @@ namespace Dynamo.Logging
         /// <summary>
         /// Begin logging.
         /// </summary>
-        protected void StartLoggingToConsoleAndFile(string logDirectory)
+        protected virtual void StartLoggingToConsoleAndFile(string logDirectory)
         {
             lock (this.guardMutex)
             {
