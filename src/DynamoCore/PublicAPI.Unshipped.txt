@@ -3020,6 +3020,7 @@ static Dynamo.Wpf.Interfaces.LayoutSpecification.FromJSONString(string jsonText)
 static readonly Dynamo.Configuration.Configurations.AutodeskAsString -> string
 static readonly Dynamo.Configuration.Configurations.BackupFolderName -> string
 static readonly Dynamo.Configuration.Configurations.CBNMaxPortNameLength -> int
+static readonly Dynamo.Configuration.Configurations.CBNMaxTooltipLength -> int
 static readonly Dynamo.Configuration.Configurations.CodeBlockOutputPortHeightInPixels -> double
 static readonly Dynamo.Configuration.Configurations.ConnectorBaseThickness -> double
 static readonly Dynamo.Configuration.Configurations.DoubleSliderTextBoxWidth -> double
