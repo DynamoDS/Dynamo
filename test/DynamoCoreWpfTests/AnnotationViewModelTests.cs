@@ -734,8 +734,6 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(groupVm.IsExpanded, "Group should be collapsed");
             Assert.AreEqual(newName, groupVm.AnnotationText, "Group should be renamed");
 
-            // Undo group auto layout
-            ViewModel.UndoCommand.Execute(null);
             // Undo collapse
             ViewModel.UndoCommand.Execute(null);
             Assert.IsTrue(groupVm.IsExpanded, "Group should be expanded after undo");
@@ -1071,7 +1069,7 @@ namespace DynamoCoreWpfTests
 
             var group1ViewModel = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == groupName);
             var inPortsBefore = group1ViewModel.InPorts.ToList();
-            var outPortsBefore = group1ViewModel.UnconnectedOutPorts.ToList();
+            var outPortsBefore = group1ViewModel.OutPorts.ToList();
 
             var expectedInPortNames = new List<string>
             {
@@ -1094,9 +1092,9 @@ namespace DynamoCoreWpfTests
 
             // Assert
             Assert.That(inPortsBefore.Count != group1ViewModel.InPorts.Count);
-            Assert.That(outPortsBefore.Count != group1ViewModel.UnconnectedOutPorts.Count);
+            Assert.That(outPortsBefore.Count != group1ViewModel.OutPorts.Count);
             CollectionAssert.AreEquivalent(expectedInPortNames, group1ViewModel.InPorts.Select(x => x.PortModel.Name));
-            CollectionAssert.AreEquivalent(expectedOutPortNames, group1ViewModel.UnconnectedOutPorts.Select(x => x.PortModel.Name));
+            CollectionAssert.AreEquivalent(expectedOutPortNames, group1ViewModel.OutPorts.Select(x => x.PortModel.Name));
             Assert.That(group1ViewModel.NodeContentCount == 5);
         }
 

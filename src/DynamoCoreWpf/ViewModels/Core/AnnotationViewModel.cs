@@ -2,18 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Notes;
-using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Selection;
@@ -34,21 +29,9 @@ namespace Dynamo.ViewModels
         // vertical offset accounts for the port margins
         private const int verticalOffset = 17;
         private const int portVerticalMidPoint = 17;
-        private const int portToggleOffset = 32;
         private ObservableCollection<Dynamo.Configuration.StyleItem> groupStyleList;
         private IEnumerable<Configuration.StyleItem> preferencesStyleItemsList;
         private PreferenceSettings preferenceSettings;
-        private double heightBeforeToggle;
-        private double widthBeforeToggle;
-
-        // Collapsed proxy ports for Code Block Nodes appear visually misaligned - 0.655px
-        // taller compared to their actual ports. This is due to the fixed height - 16.345px
-        // used inside CBNs for code lines, while proxy ports use 14px height + 3px top margin.
-        // To compensate for this visual mismatch and keep connector alignment consistent,
-        // we apply this adjusted proxy height.
-        private const double CBNProxyPortVisualHeight = 17;
-        private const double MinSpacing = 50;
-        private const double MinChangeThreshold = 1;
 
         public readonly WorkspaceViewModel WorkspaceViewModel;
 
@@ -250,21 +233,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private ObservableCollection<PortViewModel> optionalInPorts;
-        /// <summary>
-        /// Collection of optional input ports.
-        /// These are inputs using default values or unconnected.
-        /// </summary>
-        [JsonIgnore]
-        public ObservableCollection<PortViewModel> OptionalInPorts
-        {
-            get => optionalInPorts;
-            private set
-            {
-                optionalInPorts = value;
-            }
-        }
-
         private ObservableCollection<PortViewModel> outPorts;
         /// <summary>
         /// Collection of all output ports on this group.
@@ -279,74 +247,6 @@ namespace Dynamo.ViewModels
             private set
             {
                 outPorts = value;
-            }
-        }
-
-        private ObservableCollection<PortViewModel> unconnectedOutPorts;
-        /// <summary>
-        /// Collection of unconnected output ports in the group.
-        /// </summary>
-        [JsonIgnore]
-        public ObservableCollection<PortViewModel> UnconnectedOutPorts
-        {
-            get => unconnectedOutPorts;
-            private set
-            {
-                unconnectedOutPorts = value;
-            }
-        }
-
-        private bool isOptionalInPortsCollapsed;
-        /// <summary>
-        /// Controls visibility of optional input ports in the group.
-        /// </summary>
-        [JsonIgnore]
-        public bool IsOptionalInPortsCollapsed
-        {
-            get => isOptionalInPortsCollapsed;
-            set
-            {
-                if (isOptionalInPortsCollapsed == value) return;
-
-                // Record for undo
-                var undoRecorder = WorkspaceViewModel.Model.UndoRecorder;
-                using (undoRecorder.BeginActionGroup())
-                    undoRecorder.RecordModificationForUndo(annotationModel);
-
-                isOptionalInPortsCollapsed = value;
-                annotationModel.IsOptionalInPortsCollapsed = value;
-
-                RaisePropertyChanged(nameof(IsOptionalInPortsCollapsed));
-                WorkspaceViewModel.HasUnsavedChanges = true;
-
-                HandlePrePortToggleLayout();
-            }
-        }
-
-        private bool isUnconnectedOutPortsCollapsed;
-        /// <summary>
-        /// Controls visibility of unconnected output ports in the group.
-        /// </summary>
-        public bool IsUnconnectedOutPortsCollapsed
-        {
-            get => isUnconnectedOutPortsCollapsed;
-            set
-            {
-                if (isUnconnectedOutPortsCollapsed == value) return;
-
-                // Record for undo
-                var undoRecorder = WorkspaceViewModel.Model.UndoRecorder;
-                using (undoRecorder.BeginActionGroup())
-                    undoRecorder.RecordModificationForUndo(annotationModel);
-
-
-                isUnconnectedOutPortsCollapsed = value;
-                annotationModel.IsUnconnectedOutPortsCollapsed = value;
-
-                RaisePropertyChanged(nameof(IsUnconnectedOutPortsCollapsed));
-                WorkspaceViewModel.HasUnsavedChanges = true;
-
-                HandlePrePortToggleLayout();
             }
         }
 
@@ -374,7 +274,6 @@ namespace Dynamo.ViewModels
 
                 // Methods to collapse or expand the group based on the new value of IsExpanded.
                 ManageAnnotationMVExpansionAndCollapse();
-                HandlePrePortToggleLayout();
             }
         }
 
@@ -723,16 +622,6 @@ namespace Dynamo.ViewModels
 
             this.WorkspaceViewModel = workspaceViewModel;
             this.preferenceSettings = WorkspaceViewModel.DynamoViewModel.PreferenceSettings;
-            preferenceSettings.PropertyChanged += OnPreferenceChanged;
-
-            isOptionalInPortsCollapsed = annotationModel.HasToggledOptionalInPorts
-                ? annotationModel.IsOptionalInPortsCollapsed
-                : preferenceSettings.OptionalInPortsCollapsed;
-
-            isUnconnectedOutPortsCollapsed = annotationModel.HasToggledUnconnectedOutPorts
-                ? annotationModel.IsUnconnectedOutPortsCollapsed
-                : preferenceSettings.UnconnectedOutPortsCollapsed;
-
             model.PropertyChanged += model_PropertyChanged;
             model.RemovedFromGroup += OnModelRemovedFromGroup;
             model.AddedToGroup += OnModelAddedToGroup;
@@ -753,8 +642,6 @@ namespace Dynamo.ViewModels
 
             InPorts = new ObservableCollection<PortViewModel>();
             OutPorts = new ObservableCollection<PortViewModel>();
-            OptionalInPorts = new ObservableCollection<PortViewModel>();
-            UnconnectedOutPorts = new ObservableCollection<PortViewModel>();
 
             ViewModelBases = this.WorkspaceViewModel.GetViewModelsInternal(annotationModel.Nodes.Select(x => x.GUID));
 
@@ -779,40 +666,8 @@ namespace Dynamo.ViewModels
             groupStyleList = new ObservableCollection<Configuration.StyleItem>();
             //This will add the GroupStyles created in Preferences panel to the Group Style Context menu.
             LoadGroupStylesFromPreferences(preferenceSettings.GroupStyleItemsList);
-
-            // Passes the CollapseToMinSize from PreferenceSettings to the model
-            if (preferenceSettings.CollapseToMinSize)
-            {
-                annotationModel.IsCollapsedToMinSize = true;
-            }
         }
 
-        private void OnPreferenceChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(IPreferences.OptionalInPortsCollapsed):
-                    if (!annotationModel.HasToggledOptionalInPorts)
-                    {
-                        IsOptionalInPortsCollapsed = preferenceSettings.OptionalInPortsCollapsed;
-                    }
-                    break;
-                case nameof(IPreferences.UnconnectedOutPortsCollapsed):
-                    if (!annotationModel.HasToggledUnconnectedOutPorts)
-                    {
-                        IsUnconnectedOutPortsCollapsed = preferenceSettings.UnconnectedOutPortsCollapsed;
-                    }
-                    break;
-                case nameof(IPreferences.CollapseToMinSize):
-                    annotationModel.IsCollapsedToMinSize = preferenceSettings.CollapseToMinSize;
-                    // Update the boundary only if the group is collapsed
-                    if (!IsExpanded)
-                    {
-                        annotationModel.UpdateBoundaryFromSelection();
-                    }
-                    break;
-            }
-        }
 
         /// <summary>
         /// Creates input ports for the group based on its Nodes.
@@ -822,8 +677,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void SetGroupInputPorts()
         {
-            List<PortViewModel> mainPortViewModels;
-            List<PortViewModel> optionalPortViewModels;
+            List<PortViewModel> newPortViewModels;
 
             // we need to store the original ports here
             // as we need those later for when we
@@ -846,15 +700,11 @@ namespace Dynamo.ViewModels
             // visually add them to the group but they
             // should still reference their NodeModel
             // owner
-            var newPortViewModels = CreateProxyInPorts(originalInPorts);
-            mainPortViewModels = newPortViewModels.Main;
-            optionalPortViewModels = newPortViewModels.Optional;
+            newPortViewModels = CreateProxyInPorts(originalInPorts);
 
-            if (mainPortViewModels != null)
-                InPorts.AddRange(mainPortViewModels);
-
-            if (optionalPortViewModels != null)
-                OptionalInPorts.AddRange(optionalPortViewModels);
+            if (newPortViewModels == null) return;
+            InPorts.AddRange(newPortViewModels);
+            return;
         }
 
         /// <summary>
@@ -864,11 +714,10 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void SetGroupOutPorts()
         {
-            List<PortViewModel> mainPortViewModels;
-            List<PortViewModel> unconnectedPortViewModels;
+            List<PortViewModel> newPortViewModels;
 
             // we need to store the original ports here
-            // as we need those later for when we
+            // as we need thoese later for when we
             // need to collapse the groups content
             if (this.AnnotationModel.HasNestedGroups)
             {
@@ -888,15 +737,11 @@ namespace Dynamo.ViewModels
             // visually add them to the group but they
             // should still reference their NodeModel
             // owner
-            var newPortViewModels = CreateProxyOutPorts(originalOutPorts);
-            mainPortViewModels = newPortViewModels.Main;
-            unconnectedPortViewModels = newPortViewModels.Unconnected;
+            newPortViewModels = CreateProxyOutPorts(originalOutPorts);
 
-            if (mainPortViewModels != null)
-                OutPorts.AddRange(mainPortViewModels);
-
-            if (unconnectedPortViewModels != null)
-                UnconnectedOutPorts.AddRange(unconnectedPortViewModels);
+            if (newPortViewModels == null) return;
+            OutPorts.AddRange(newPortViewModels);
+            return;
         }
 
         internal IEnumerable<PortModel> GetGroupInPorts(IEnumerable<NodeModel> ownerNodes = null)
@@ -971,192 +816,53 @@ namespace Dynamo.ViewModels
             return new Point2D();
         }
 
-        private (List<PortViewModel> Main, List<PortViewModel> Optional) CreateProxyInPorts(IEnumerable<PortModel> groupPortModels)
+        private List<PortViewModel> CreateProxyInPorts(IEnumerable<PortModel> groupPortModels)
         {
             var originalPortViewModels = WorkspaceViewModel.Nodes
                 .SelectMany(x => x.InPorts)
                 .Where(x => groupPortModels.Contains(x.PortModel))
                 .ToList();
 
-            var mainPortViewModels = new List<PortViewModel>();
-            var optionalPortViewModels = new List<PortViewModel>();
-
+            var newPortViewModels = new List<PortViewModel>();
             double verticalPosition = 0;
-
             foreach (var groupPort in groupPortModels)
             {
-                // Track proxy connection changes while group is collapsed
-                groupPort.PropertyChanged += OnPortConnectionChanged;
-
                 var originalPort = originalPortViewModels.FirstOrDefault(x => x.PortModel.GUID == groupPort.GUID);
                 if (originalPort != null)
                 {
                     var portViewModel = originalPort.CreateProxyPortViewModel(groupPort);
-
-                    if (!originalPort.UsingDefaultValue || groupPort.Connectors.Any())
-                    {
-                        mainPortViewModels.Add(portViewModel);
-
-                        // Calculate new position for the proxy inports
-                        groupPort.Center = CalculatePortPosition(groupPort, verticalPosition);
-                        verticalPosition += originalPort.Height;
-                    }
-                    else
-                    {
-                        // Defer position setting for optional (unconnected) ports
-                        optionalPortViewModels.Add(portViewModel);
-                    }
+                    newPortViewModels.Add(portViewModel);
+                    // calculate new position for the proxy outports
+                    groupPort.Center = CalculatePortPosition(groupPort, verticalPosition);
+                    verticalPosition += originalPort.Height;
                 }
             }
-            // Leave space for toggle button
-            verticalPosition += portToggleOffset;
-
-            // Position optional input ports
-            foreach (var portViewModel in optionalPortViewModels)
-            {
-                var groupPort = portViewModel.PortModel;
-                groupPort.Center = CalculatePortPosition(groupPort, verticalPosition);
-                verticalPosition += groupPort.Height;
-            }
-
-            return (mainPortViewModels, optionalPortViewModels);
+            return newPortViewModels;
         }
 
-        private (List<PortViewModel> Main, List<PortViewModel> Unconnected) CreateProxyOutPorts(IEnumerable<PortModel> groupPortModels)
+        private List<PortViewModel> CreateProxyOutPorts(IEnumerable<PortModel> groupPortModels)
         {
             var originalPortViewModels = WorkspaceViewModel.Nodes
                 .SelectMany(x => x.OutPorts)
                 .Where(x => groupPortModels.Contains(x.PortModel))
                 .ToList();
 
-            var mainPortViewModels = new List<PortViewModel>();
-            var unconnectedPortViewModels = new List<PortViewModel>();
-
+            var newPortViewModels = new List<PortViewModel>();
             double verticalPosition = 0;
-
-            foreach (var groupPort in groupPortModels)
+            foreach (var group in groupPortModels)
             {
-                // Track proxy connection changes while group is collapsed
-                groupPort.PropertyChanged += OnPortConnectionChanged;
-
-                var originalPort = originalPortViewModels.FirstOrDefault(x => x.PortModel.GUID == groupPort.GUID);
+                var originalPort = originalPortViewModels.FirstOrDefault(x => x.PortModel.GUID == group.GUID);
                 if (originalPort != null)
                 {
-                    var portViewModel = originalPort.CreateProxyPortViewModel(groupPort);
-
-                    if (originalPort.IsConnected)
-                    {
-                        mainPortViewModels.Add(portViewModel);
-
-                        // Calculate new position for the proxy inports
-                        groupPort.Center = CalculatePortPosition(groupPort, verticalPosition);
-                        verticalPosition += originalPort.Height;
-                    }
-                    else
-                    {
-                        // Defer position setting for unconnected ports
-                        unconnectedPortViewModels.Add(portViewModel);
-                    }
+                    var portViewModel = originalPort.CreateProxyPortViewModel(group);
+                    newPortViewModels.Add(portViewModel);
+                    // calculate new position for the proxy outports
+                    group.Center = CalculatePortPosition(group, verticalPosition);
+                    verticalPosition += originalPort.Height;
                 }
             }
-            // Leave space for toggle button
-            verticalPosition += portToggleOffset;
 
-            // Position unconnected output ports
-            foreach (var portViewModel in unconnectedPortViewModels)
-            {
-                var groupPort = portViewModel.PortModel;
-                groupPort.Center = CalculatePortPosition(groupPort, verticalPosition);
-                verticalPosition += groupPort.Height;
-            }
-
-            return (mainPortViewModels, unconnectedPortViewModels);
-        }
-
-        private void OnPortConnectionChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName != nameof(PortModel.IsConnected)) return;
-            if (sender is not PortModel port) return;
-
-            Application.Current.Dispatcher.BeginInvoke(() =>
-            {
-                var proxyPortVM = FindPortViewModel(port);
-                if (proxyPortVM == null) return;
-
-                bool updatedInputs = false;
-                bool updatedOutputs = false;
-
-                if (port.PortType == PortType.Input)
-                {
-                    // Connected input ports should be in the InPorts collection.
-                    if (port.Connectors.Any() && OptionalInPorts.Contains(proxyPortVM))
-                    {
-                        OptionalInPorts.Remove(proxyPortVM);
-                        InPorts.Add(proxyPortVM);
-                        updatedInputs = true;
-                    }
-                    // Disconnected optional ports using default value go to OptionalInPorts.
-                    else if (!port.Connectors.Any() && port.UsingDefaultValue)
-                    {
-                        InPorts.Remove(proxyPortVM);
-                        OptionalInPorts.Add(proxyPortVM);
-                        updatedInputs = true;
-                    }
-                }
-
-                if (port.PortType == PortType.Output)
-                {
-                    if (port.IsConnected && UnconnectedOutPorts.Contains(proxyPortVM))
-                    {
-                        UnconnectedOutPorts.Remove(proxyPortVM);
-                        OutPorts.Add(proxyPortVM);
-                        updatedOutputs = true;
-                    }
-                    else if (!port.IsConnected && !UnconnectedOutPorts.Contains(proxyPortVM))
-                    {
-                        OutPorts.Remove(proxyPortVM);
-                        UnconnectedOutPorts.Add(proxyPortVM);
-                        updatedOutputs = true;
-                    }
-                }
-
-                if (updatedInputs)
-                {
-                    UpdateProxyPortsPosition();
-                    RaisePropertyChanged(nameof(InPorts));
-                    RaisePropertyChanged(nameof(OptionalInPorts));
-                }
-                if (updatedOutputs)
-                {
-
-                    UpdateProxyPortsPosition();
-                    RaisePropertyChanged(nameof(OutPorts));
-                    RaisePropertyChanged(nameof(UnconnectedOutPorts));
-                }
-            });
-        }
-
-        private PortViewModel FindPortViewModel(PortModel model)
-        {
-            return OutPorts.Concat(UnconnectedOutPorts)
-                           .Concat(InPorts)
-                           .Concat(OptionalInPorts)
-                           .FirstOrDefault(pvm => pvm.PortModel == model);
-        }
-
-        private void UnsubscribeFromProxyPortEvents()
-        {
-            if (originalInPorts != null)
-            {
-                foreach (var port in originalInPorts)
-                    port.PropertyChanged -= OnPortConnectionChanged;
-            }
-
-            if (originalOutPorts != null)
-            {
-                foreach (var port in originalOutPorts)
-                    port.PropertyChanged -= OnPortConnectionChanged;
-            }
+            return newPortViewModels;
         }
 
         internal void UpdateProxyPortsPosition()
@@ -1180,43 +886,16 @@ namespace Dynamo.ViewModels
             }
 
             verticalPosition = 0;
-            // Update all input ports
-            verticalPosition = PositionPorts(inPorts, verticalPosition);
-            verticalPosition += portToggleOffset;
-            verticalPosition = PositionPorts(optionalInPorts, verticalPosition);
-
-            // Reset vertical position for output ports
-            verticalPosition = 0;
-
-            verticalPosition = PositionPorts(outPorts, verticalPosition);
-            verticalPosition += portToggleOffset;
-            PositionPorts(unconnectedOutPorts, verticalPosition);
-        }
-
-        private double PositionPorts(IEnumerable<PortViewModel> portViewModels, double startY)
-        {
-            double y = startY;
-
-            foreach (var portVM in portViewModels)
+            for (int i = 0; i < outPorts.Count(); i++)
             {
-                var model = portVM?.PortModel;
-                if (model?.IsProxyPort == true)
+                var model = outPorts[i]?.PortModel;
+                if (model != null && model.IsProxyPort)
                 {
-                    model.Center = CalculatePortPosition(model, y);
-
-                    bool isCondensedCBN = model.Owner is CodeBlockNodeModel &&
-                              !InPorts.Contains(portVM) &&
-                              !OptionalInPorts.Contains(portVM);
-
-                    double height = isCondensedCBN ?
-                        CBNProxyPortVisualHeight :
-                        model.Height;
-
-                    y += height;
+                    // calculate new position for the proxy outports.
+                    model.Center = CalculatePortPosition(model, verticalPosition);
+                    verticalPosition += model.Height;
                 }
             }
-
-            return y;
         }
 
         internal void ClearSelection()
@@ -1297,15 +976,8 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void RedrawConnectors(bool isCollapsedCheck = false)
+        private void RedrawConnectors()
         {
-            if (isCollapsedCheck && IsExpanded)
-                return;
-
-            // Suppress boundary updates while redrawing connectors to avoid
-            // redundant UpdateBoundaryFromSelection calls caused by connector repositioning
-            annotationModel.SuppressBoundaryUpdate = true;
-
             var allNodes = this.Nodes
                 .OfType<AnnotationModel>()
                 .SelectMany(x => x.Nodes.OfType<NodeModel>())
@@ -1321,9 +993,6 @@ namespace Dynamo.ViewModels
                 connectorViewModel.Redraw();
                 connector.Start.Owner.ReportPosition();
             }
-
-            // Re-enable boundary updates once internal redraw is complete
-            annotationModel.SuppressBoundaryUpdate = false;
         }
 
         /// <summary>
@@ -1391,17 +1060,14 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void ManageAnnotationMVExpansionAndCollapse()
         {
-            if (InPorts.Any() || OutPorts.Any() || OptionalInPorts.Any() || UnconnectedOutPorts.Any())
+            if (InPorts.Any() || OutPorts.Any())
             {
                 InPorts.Clear();
                 OutPorts.Clear();
-                OptionalInPorts.Clear();
-                UnconnectedOutPorts.Clear();
             }
 
             if (annotationModel.IsExpanded)
             {
-                UnsubscribeFromProxyPortEvents();
                 this.ShowGroupContents();
             }
             else
@@ -1416,314 +1082,6 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged(nameof(IsExpanded));
             RedrawConnectors();
             ReportNodesPosition();
-        }
-
-        /// <summary>
-        /// Adjusts layout by moving nearby elements to prevent overlap when the group expands.
-        /// </summary>
-        internal void UpdateLayoutForGroupExpansion()
-        {
-            var model = annotationModel;
-
-            double deltaY = ModelAreaHeight - heightBeforeToggle;
-            double deltaX = Width - widthBeforeToggle;
-
-            // Log the current size
-            heightBeforeToggle = ModelAreaHeight;
-            widthBeforeToggle = Width;
-
-            // Skip layout update if changes are negligible
-            if (deltaX < MinChangeThreshold && deltaY < MinChangeThreshold)
-                return;
-
-            var alreadyMoved = new HashSet<ModelBase>();
-            var undoRecorder = WorkspaceViewModel.Model.UndoRecorder;
-
-            using (undoRecorder.BeginActionGroup())
-            {
-                if (deltaY > MinChangeThreshold)
-                    ApplySpacing(model, isHorizontal: false, alreadyMoved);
-
-                if (deltaX > MinChangeThreshold)
-                    ApplySpacing(model, isHorizontal: true, alreadyMoved);
-            }
-        }
-
-        /// <summary>
-        /// Applies spacing to reposition nearby models when a group expands, avoiding overlaps and updating boundaries.
-        /// </summary>
-        private void ApplySpacing(AnnotationModel expandingGroup, bool isHorizontal, HashSet<ModelBase> alreadyMoved)
-        {
-            var offsets = GetAffectedModels(expandingGroup, isHorizontal, alreadyMoved);
-            if (offsets.Count == 0) return;
-
-            // Ensure changes to all affected models are tracked for Undo
-            WorkspaceViewModel.Model.RecordModelsForModification(offsets.Keys.ToList());
-
-            foreach (var (model, offset) in offsets)
-            {
-                // Skip moving groups directly, just update pinned notes to ensure boundaries update
-                if (model is AnnotationModel) continue;
-                
-                if (isHorizontal)
-                    model.X += offset;
-                else
-                    model.Y += offset;
-
-                model.ReportPosition();
-                alreadyMoved.Add(model);
-            }
-
-            // To ensure group boundaries are updated correctly
-            foreach (var note in WorkspaceViewModel.Model.Annotations
-                .SelectMany(group => group.Nodes.OfType<NoteModel>())
-                .Where(note => note.PinnedNode != null))
-            {
-                note.ReportPosition();
-            }
-        }
-
-        /// <summary>
-        /// Calculates all models affected by a group's expansion and the offset needed to reposition them.
-        /// </summary>
-        private Dictionary<ModelBase, double> GetAffectedModels(
-            AnnotationModel expandingGroup,
-            bool isHorizontal,
-            HashSet<ModelBase> skip)
-        {
-            // Track already processed items from prior horizontal/vertical pass
-            var visited = new HashSet<ModelBase>(skip);
-
-            // Ensure expanding group and all its content (including nested groups) are ignored
-            if (!visited.Any())
-            {
-                visited.Add(expandingGroup);
-
-                foreach (var node in expandingGroup.Nodes)
-                {
-                    visited.Add(node);
-
-                    if (node is AnnotationModel nestedGroup)
-                    {
-                        foreach (var nestedNode in nestedGroup.Nodes)
-                            visited.Add(nestedNode);
-                    }
-                }
-            }
-
-            var toProcess = new List<ModelBase>();
-            var directlyAffected = new List<ModelBase>();
-            var otherGroups = WorkspaceViewModel.Model.Annotations.Where(g => !visited.Contains(g));
-            var allGroupedItems = WorkspaceViewModel.Model.Annotations.SelectMany(g => g.Nodes);
-            double smallestSpacing = double.MaxValue;
-
-            var expandedBounds = GetExpandingGroupBounds(expandingGroup);
-            visited.Add(expandingGroup);
-            foreach (var node in expandingGroup.Nodes) visited.Add(node);
-
-            // Pick direction-specific helpers
-            Func<Rect2D, Rect2D, bool> overlaps = isHorizontal ? IsRightAndVerticallyOverlapping : IsBelowAndHorizontallyOverlapping;
-            Func<Rect2D, Rect2D, double> getSpacing = isHorizontal ? (a, b) => b.Left - a.Right : (a, b) => b.Top - a.Bottom;
-
-            // --- Step 1: Find directly affected items ---
-            // Groups
-            foreach (var group in otherGroups)
-            {
-                if (overlaps(expandedBounds, group.Rect))
-                {
-                    var spacing = getSpacing(expandedBounds, group.Rect);
-                    if (spacing < MinSpacing)
-                    {
-                        smallestSpacing = Math.Min(smallestSpacing, spacing);
-                        directlyAffected.Add(group);
-                        foreach (var node in group.Nodes)
-                            visited.Add(node);
-                    }
-                }
-            }
-
-            // Free-standing items
-            var freeItems = WorkspaceViewModel.Model.Notes.Cast<ModelBase>()
-                .Concat(WorkspaceViewModel.Model.Nodes.Cast<ModelBase>())
-                .Where(item => !allGroupedItems.Contains(item))
-                .ToList();
-
-            foreach (var item in freeItems)
-            {
-                if (overlaps(expandedBounds, item.Rect))
-                {
-                    var spacing = getSpacing(expandedBounds, item.Rect);
-                    if (spacing < MinSpacing)
-                    {
-                        smallestSpacing = Math.Min(smallestSpacing, spacing);
-                        directlyAffected.Add(item is NoteModel { PinnedNode: NodeModel pinned } ? pinned : item);
-                    }
-                }
-            }
-
-            // --- Step 2: Initialize movement ---
-            var moveBy = MinSpacing - smallestSpacing;
-            if (moveBy <= 0) return new();
-
-            var allToMove = new Dictionary<ModelBase, double>();
-            foreach (var model in directlyAffected)
-            {
-                toProcess.Add(model);
-                allToMove[model] = moveBy;
-
-                if (model is AnnotationModel group)
-                {
-                    foreach (var node in group.Nodes)
-                    {
-                        if (node is not NoteModel { PinnedNode: not null })
-                            allToMove[node] = moveBy;
-                    }
-                }
-            }
-
-            // --- Step 3: Recursively propagate movement downstream ---
-            for (int i = 0; i < toProcess.Count; i++)
-            {
-                var current = toProcess[i];
-                var offset = allToMove.GetValueOrDefault(current, moveBy);
-                var currentBounds = current.Rect;
-
-                // Simulate the moved position
-                currentBounds = isHorizontal
-                    ? new Rect2D(currentBounds.X, currentBounds.Y, currentBounds.Width + offset, currentBounds.Height)
-                    : new Rect2D(currentBounds.X, currentBounds.Y, currentBounds.Width, currentBounds.Height + offset);
-
-                // Groups
-                foreach (var group in otherGroups)
-                {
-                    if (!overlaps(currentBounds, group.Rect)) continue;
-
-                    var requiredOffset = MinSpacing - getSpacing(currentBounds, group.Rect);
-                    if (requiredOffset <= 0) continue;
-
-                    allToMove[group] = Math.Max(requiredOffset, allToMove.GetValueOrDefault(group, 0));
-                    toProcess.Add(group);
-
-                    foreach (var node in group.Nodes)
-                    {
-                        if (node is NoteModel note && note.PinnedNode != null) continue;
-
-                        allToMove[node] = Math.Max(requiredOffset, allToMove.GetValueOrDefault(node, 0));
-                        visited.Add(node);
-                    }
-                }
-
-                // Free-standing items
-                foreach (var item in freeItems)
-                {
-                    if (!overlaps(currentBounds, item.Rect)) continue;
-
-                    var requiredOffset = MinSpacing - getSpacing(currentBounds, item.Rect);
-                    if (requiredOffset <= 0) continue;
-
-                    if (item is NoteModel note && note.PinnedNode is NodeModel pinned)
-                    {
-                        if (!visited.Contains(pinned))
-                        {
-                            allToMove[pinned] = Math.Max(requiredOffset, allToMove.GetValueOrDefault(pinned, 0));
-                            toProcess.Add(pinned);
-                        }
-                    }
-                    else
-                    {
-                        allToMove[item] = Math.Max(requiredOffset, allToMove.GetValueOrDefault(item, 0));
-                        toProcess.Add(item);
-                    }
-                }
-            }
-
-            AddExternalConnectorPinsToMove(allToMove);
-            return allToMove;
-        }
-
-        /// <summary>
-        /// Adds external connector pins to the movement list if they connect nodes from different groups.
-        /// </summary>
-        private void AddExternalConnectorPinsToMove(Dictionary<ModelBase, double> allToMove)
-        {
-            // Get all moved nodes
-            var movedNodes = allToMove.Keys.OfType<NodeModel>().ToList();
-
-            // Collect only moved groups
-            var movedGroups = allToMove.Keys.OfType<AnnotationModel>();
-
-            // Map each node to its group
-            var nodeToGroup = new Dictionary<NodeModel, AnnotationModel>();
-
-            foreach (var group in movedGroups)
-            {
-                foreach (var node in group.Nodes.OfType<NodeModel>())
-                {
-                    nodeToGroup[node] = group;
-                }
-            }
-
-            foreach (var node in movedNodes)
-            {
-                if (!allToMove.TryGetValue(node, out var nodeOffset)) continue;
-
-                foreach (var connector in node.AllConnectors)
-                {
-                    var startNode = connector.Start.Owner;
-                    var endNode = connector.End.Owner;
-
-                    bool sameGroup =
-                        nodeToGroup.TryGetValue(startNode, out var groupA) &&
-                        nodeToGroup.TryGetValue(endNode, out var groupB) &&
-                        groupA == groupB;
-
-                    if (sameGroup) continue;
-
-                    // Add each pin with the largest offset from its connected node (if multiple nodes affect it)
-                    foreach (var pin in connector.ConnectorPinModels)
-                    {
-                        if (!allToMove.TryGetValue(pin, out var existingOffset))
-                        {
-                            allToMove[pin] = nodeOffset;
-                        }
-                        else
-                        {
-                            allToMove[pin] = Math.Max(existingOffset, nodeOffset);
-                        }
-                    }
-                }
-            }
-        }
-
-        private static Rect2D GetExpandingGroupBounds(AnnotationModel group)
-        {
-            var width = group.Width;
-            var height = group.ModelAreaHeight + group.TextBlockHeight;           
-
-            return new Rect2D(group.X, group.Y, width, height);
-        }
-
-        private bool IsBelowAndHorizontallyOverlapping(Rect2D thisGroup, Rect2D other)
-        {
-            return other.Top > thisGroup.Top &&
-                other.Left < thisGroup.Right &&
-                other.Right > thisGroup.Left;
-        }
-
-        private bool IsRightAndVerticallyOverlapping(Rect2D thisGroup, Rect2D other)
-        {
-            return other.Left > thisGroup.Left &&
-                other.Top < thisGroup.Bottom &&
-                other.Bottom > thisGroup.Top;
-        }
-
-        private void HandlePrePortToggleLayout()
-        {
-            Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() =>
-            {
-                UpdateLayoutForGroupExpansion();
-            }),
-            DispatcherPriority.ApplicationIdle);
         }
 
         private void UpdateFontSize(object parameter)
@@ -1841,7 +1199,6 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("Width");
                     RaisePropertyChanged(nameof(ModelAreaRect));
                     UpdateAllGroupedGroups();
-                    RedrawConnectors(false);
                     break;
                 case "Height":
                     RaisePropertyChanged("Height");
@@ -1882,14 +1239,7 @@ namespace Dynamo.ViewModels
                 case nameof(IsExpanded):
                     ManageAnnotationMVExpansionAndCollapse();
                     break;
-                case nameof(AnnotationModel.IsOptionalInPortsCollapsed):
-                    isOptionalInPortsCollapsed = annotationModel.IsOptionalInPortsCollapsed;
-                    RaisePropertyChanged(nameof(IsOptionalInPortsCollapsed));
-                    break;
-                case nameof(AnnotationModel.IsUnconnectedOutPortsCollapsed):
-                    IsUnconnectedOutPortsCollapsed = annotationModel.IsUnconnectedOutPortsCollapsed;
-                    RaisePropertyChanged(nameof(IsUnconnectedOutPortsCollapsed));
-                    break;
+
             }
         }
 
