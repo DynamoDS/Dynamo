@@ -996,6 +996,8 @@ namespace Dynamo.Graph.Annotations
         /// completely inside that group</param>
         internal void AddToTargetAnnotationModel(ModelBase model, bool checkOverlap = false)
         {
+            if (model is null) return;
+            if ((model as NodeModel)?.IsTransient == true) return;
             var list = this.Nodes.ToList();
             if (model.GUID == this.GUID) return;
             if (list.Where(x => x.GUID == model.GUID).Any()) return;
