@@ -222,6 +222,8 @@ namespace DynamoShapeManager
             return false;
         }
 
+        private static readonly Regex libgRegex = new Regex(@"^libg_(\d\d\d)_(\d)_(\d)$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
         /// <summary>
         /// Get the corresponding libG preloader location for the target ASM loading version.
         /// If there is exact match preloader version to the target ASM version, use it, 
@@ -253,11 +255,10 @@ namespace DynamoShapeManager
 
                 // Use regex to get all the libG versions supported
                 var libgFolders = rootDir.EnumerateDirectories("libg_*", SearchOption.TopDirectoryOnly);
-                var regExp = new Regex(@"^libg_(\d\d\d)_(\d)_(\d)$", RegexOptions.IgnoreCase);
                 var preloaderVersions = new List<Version>();
                 foreach (var folder in libgFolders)
                 {
-                    var match = regExp.Match(folder.Name);
+                    var match = libgRegex.Match(folder.Name);
                     if (match.Groups.Count == 4 && Convert.ToInt32(match.Groups[1].Value) <= version.Major)
                     {
                         preloaderVersions.Add(new Version(
