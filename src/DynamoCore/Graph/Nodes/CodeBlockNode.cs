@@ -1042,7 +1042,7 @@ namespace Dynamo.Graph.Nodes
                 if (label.Length > maxLabelLength)
                     label = label.Remove(maxLabelLength - 3) + "...";
 
-                var tooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, def.Value)} : {metadata.Tooltip}";
+                var tooltip = metadata.Tooltip;
                 if (tooltip.Length > maxTooltipLength)
                     tooltip = tooltip.Remove(maxTooltipLength - 3) + "...";
 

@@ -1415,23 +1415,19 @@ namespace DynamoCoreWpfTests
             //    > ToolTip stores name of variable
             //    > Margina thickness is for height.(is a multiple of 20, except for the first)
             var firstLineContent = "a = (0..10);";
-            var expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 1)} : {firstLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[0].ToolTip);
+            Assert.AreEqual(firstLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
             var thirdLineContent = "b = DesignScript.Builtin.Get.ValueAtIndex(a, 4);";
-            expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 3)} : {thirdLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[1].ToolTip);
+            Assert.AreEqual(thirdLineContent, cbn.OutPorts[1].ToolTip);
             Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
             var seventhLineContent = "c = 2;";
-            expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 7)} : {seventhLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[2].ToolTip);
+            Assert.AreEqual(seventhLineContent, cbn.OutPorts[2].ToolTip);
             Assert.IsTrue(Math.Abs(cbn.OutPorts[2].MarginThickness.Top - 3*codeBlockPortHeight) <= tolerance);
 
-            var ninthLineContent_ = "d = (x + y) - (DSCore.Math.Pi);";
-            expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 9)} : {ninthLineContent_}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[3].ToolTip);
+            var ninthLineContent = "d = (x + y) - (DSCore.Math.Pi);";
+            Assert.AreEqual(ninthLineContent, cbn.OutPorts[3].ToolTip);
             Assert.IsTrue(Math.Abs(cbn.OutPorts[3].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
             //CBN Input Ports
@@ -1556,13 +1552,11 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, cbn.OutPorts.Count);
 
             var thirdLineContent = "a = 3;";
-            var expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 3)} : {thirdLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[0].ToolTip);
+            Assert.AreEqual(thirdLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(2, cbn.OutPorts[0].LineIndex);
 
             var tenthLineContent = "c = 2;";
-            expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 10)} : {tenthLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[1].ToolTip);
+            Assert.AreEqual(tenthLineContent, cbn.OutPorts[1].ToolTip);
             Assert.AreEqual(9, cbn.OutPorts[1].LineIndex);
         }
 
@@ -1871,8 +1865,7 @@ namespace DynamoCoreWpfTests
 
             //Check output port tooltip content
             var lineContent = "a = 10;";
-            var expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 1)} : {lineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[0].ToolTip);
+            Assert.AreEqual(lineContent, cbn.OutPorts[0].ToolTip);
 
             //Check the position of ports
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
@@ -1897,8 +1890,7 @@ namespace DynamoCoreWpfTests
 
             //Check output port tooltip content
             var lineContent = "a = 10;";
-            var expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 1)} : {lineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[0].ToolTip);
+            Assert.AreEqual(lineContent, cbn.OutPorts[0].ToolTip);
 
             //Check the position of ports
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
@@ -2106,18 +2098,15 @@ namespace DynamoCoreWpfTests
 
             //Check the position of ports
             var firstLineContent = "a = 1;";
-            var expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 1)} : {firstLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[0].ToolTip);
+            Assert.AreEqual(firstLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
             var secondLineContent = "b = 2;";
-            expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 2)} : {secondLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[1].ToolTip);
+            Assert.AreEqual(secondLineContent, cbn.OutPorts[1].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[1].MarginThickness.Top);
 
             var thirdLineContent = "c = 3;";
-            expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 3)} : {thirdLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[2].ToolTip);
+            Assert.AreEqual(thirdLineContent, cbn.OutPorts[2].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[2].MarginThickness.Top);
 
         }
@@ -2148,13 +2137,11 @@ namespace DynamoCoreWpfTests
 
             //Check the position of ports
             var firstLineContent = "a[0] = 3;";
-            var expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 1)} : {firstLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[0].ToolTip);
+            Assert.AreEqual(firstLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
             var forthLineContent = "b = 1;";
-            expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 4)} : {forthLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[2].ToolTip);
+            Assert.AreEqual(forthLineContent, cbn.OutPorts[2].ToolTip);
             Assert.AreEqual(3, cbn.OutPorts[2].LineIndex);
         }
 
@@ -2182,13 +2169,11 @@ namespace DynamoCoreWpfTests
 
             //Check the position of ports
             var firstLineContent = "a = 1;";
-            var expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 1)} : {firstLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[0].ToolTip);
+            Assert.AreEqual(firstLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
             var thirdLineContent = "c = 3;";
-            expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 3)} : {thirdLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[1].ToolTip);
+            Assert.AreEqual(thirdLineContent, cbn.OutPorts[1].ToolTip);
             Assert.AreEqual(2, cbn.OutPorts[1].LineIndex);
 
             var connector = cbn.OutPorts[1].Connectors[0] as ConnectorModel;
@@ -2218,8 +2203,7 @@ namespace DynamoCoreWpfTests
 
             //Check the position of ports
             var firstLineContent = "a = 1;";
-            var expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 1)} : {firstLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[0].ToolTip);
+            Assert.AreEqual(firstLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
             //Out ports with temporary tooltips.
@@ -2250,13 +2234,11 @@ namespace DynamoCoreWpfTests
 
             //Check the position of ports
             var firstLineContent = "a = 1;";
-            var expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 1)} : {firstLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[0].ToolTip);
+            Assert.AreEqual(firstLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
             var forthLineContent = "b = 2;";
-            expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 4)} : {forthLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[1].ToolTip);
+            Assert.AreEqual(forthLineContent, cbn.OutPorts[1].ToolTip);
             Assert.AreEqual(3, cbn.OutPorts[1].LineIndex);
         }
 
@@ -2283,22 +2265,19 @@ namespace DynamoCoreWpfTests
 
             //Check the position of ports
             var firstLineContent = "a = 1;";
-            var expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 1)} : {firstLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[0].ToolTip);
+            Assert.AreEqual(firstLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
             Assert.AreEqual(2, cbn.OutPorts[1].LineIndex); // Random tool-tip.
 
             var fifthLineContent = "d = 12;";
-            expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 5)} : {fifthLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[2].ToolTip);
+            Assert.AreEqual(fifthLineContent, cbn.OutPorts[2].ToolTip);
             Assert.AreEqual(4, cbn.OutPorts[2].LineIndex);
 
             Assert.AreEqual(6, cbn.OutPorts[3].LineIndex); // Random tool-tip.
 
             var ninthLineContent = "h = 56;";
-            expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 9)} : {ninthLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[4].ToolTip);
+            Assert.AreEqual(ninthLineContent, cbn.OutPorts[4].ToolTip);
             Assert.AreEqual(8, cbn.OutPorts[4].LineIndex);
         }
 
@@ -2345,8 +2324,7 @@ namespace DynamoCoreWpfTests
 
             //Check the position of ports
             var firstLineContent = "a[2] = 4;";
-            var expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 1)} : {firstLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[0].ToolTip);
+            Assert.AreEqual(firstLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
         }
 
@@ -2370,13 +2348,11 @@ namespace DynamoCoreWpfTests
 
             //Check the position of ports
             var firstLineContent = "vector1 = Autodesk.DesignScript.Geometry.Vector.ByCoordinates(num1, num2, num2);";
-            var expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 1)} : {firstLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[0].ToolTip);
+            Assert.AreEqual(firstLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
             var secondLineContent = "vector2 = Autodesk.DesignScript.Geometry.Vector.ByCoordinates(num2, num1, num2);";
-            expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 2)} : {secondLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[1].ToolTip);
+            Assert.AreEqual(secondLineContent, cbn.OutPorts[1].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[1].MarginThickness.Top);
         }
 
@@ -2421,8 +2397,7 @@ namespace DynamoCoreWpfTests
 
             //Check the position of ports
             var firstLineContent = "a = 1;";
-            var expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 1)} : {firstLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[0].ToolTip);
+            Assert.AreEqual(firstLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
         }
 
@@ -2508,13 +2483,11 @@ namespace DynamoCoreWpfTests
 
             //Check output port tooltip content
             var firstLineContent = "x = 2;";
-            var expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 1)} : {firstLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[0].ToolTip);
+            Assert.AreEqual(firstLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
             var forthLineContent = "y = 8;";
-            expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 4)} : {forthLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[1].ToolTip);
+            Assert.AreEqual(forthLineContent, cbn.OutPorts[1].ToolTip);
             Assert.AreEqual(3, cbn.OutPorts[1].LineIndex);
         }
 
@@ -2536,13 +2509,11 @@ namespace DynamoCoreWpfTests
 
             //Check the position of ports and their names
             var thirdLineContent = "a = 10;";
-            var expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 3)} : {thirdLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[0].ToolTip);
+            Assert.AreEqual(thirdLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(2, cbn.OutPorts[0].LineIndex);
 
             var sixthLineContent = "b = 10;";
-            expectedTooltip = $"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 6)} : {sixthLineContent}";
-            Assert.AreEqual(expectedTooltip, cbn.OutPorts[1].ToolTip);
+            Assert.AreEqual(sixthLineContent, cbn.OutPorts[1].ToolTip);
             Assert.AreEqual(5, cbn.OutPorts[1].LineIndex);
         }
 

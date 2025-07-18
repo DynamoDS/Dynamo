@@ -2115,13 +2115,13 @@ var06 = g;
 
             var intLineContent = "1";
             var imperativeBlockContent = "[Imperative]\n{\nreturn = 5;\n\n}";
-            var stringLiteralContent = "foo";
+            var stringLiteralContent = "\"foo\""; ;
 
             var cbn = GetModel().Workspaces.First().Nodes.First() as CodeBlockNodeModel;
 
-            Assert.AreEqual($"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 1)} : {intLineContent}", cbn.OutPorts[0].ToolTip);
-            Assert.AreEqual($"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 2)} : {imperativeBlockContent}", cbn.OutPorts[1].ToolTip);
-            Assert.AreEqual($"{string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 4)} : \"{stringLiteralContent}\"", cbn.OutPorts[2].ToolTip);
+            Assert.AreEqual(intLineContent, cbn.OutPorts[0].ToolTip);
+            Assert.AreEqual(imperativeBlockContent, cbn.OutPorts[1].ToolTip);
+            Assert.AreEqual(stringLiteralContent, cbn.OutPorts[2].ToolTip);
         }
     }
 
