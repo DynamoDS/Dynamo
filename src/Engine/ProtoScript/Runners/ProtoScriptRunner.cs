@@ -21,14 +21,15 @@ namespace ProtoScript.Runners
                 //String strSource = ProtoCore.Utils.LexerUtils.HashAngleReplace(code);    
 
                 //defining the global Assoc block that wraps the entire .ds source file
-                ProtoCore.LanguageCodeBlock globalBlock = new ProtoCore.LanguageCodeBlock();
-                globalBlock.Language = ProtoCore.Language.Associative;
-                globalBlock.Code = code;
+                var globalBlock = new ProtoCore.LanguageCodeBlock
+                {
+                    Language = ProtoCore.Language.Associative,
+                    Code = code
+                };
 
                 //passing the global Assoc wrapper block to the compiler
                 ProtoCore.Language id = globalBlock.Language;
-                int blockId = Constants.kInvalidIndex;
-                core.Compilers[id].Compile(out blockId, null, globalBlock, context, EventSink);
+                core.Compilers[id].Compile(out _, null, globalBlock, context, EventSink);
 
                 core.BuildStatus.ReportBuildResult();
                 buildSucceeded = core.BuildStatus.BuildSucceeded;
@@ -145,15 +146,13 @@ namespace ProtoScript.Runners
         {
             try
             {
-                Executable exe = runtimeCore.DSExecutable;
-                Validity.Assert(exe.CodeBlocks.Count == 1);
+                Validity.Assert(runtimeCore.DSExecutable.CodeBlocks.Count == 1);
                 CodeBlock codeBlock = runtimeCore.DSExecutable.CodeBlocks[0];
-                int codeBlockID = codeBlock.codeBlockId;
 
                 // Comment Jun:
                 // On first bounce, the stackframe depth is initialized to -1 in the Stackfame constructor.
                 // Passing it to bounce() increments it so the first depth is always 0
-                ProtoCore.DSASM.StackFrame stackFrame = new ProtoCore.DSASM.StackFrame(core.GlobOffset);
+                var stackFrame = new ProtoCore.DSASM.StackFrame(core.GlobOffset);
                 stackFrame.FramePointer = runtimeCore.RuntimeMemory.FramePointer;
 
                 // Comment Jun: Tell the new bounce stackframe that this is an implicit bounce
@@ -165,7 +164,7 @@ namespace ProtoScript.Runners
                 int locals = 0; // This is the global scope, there are no locals
                 if (runtimeCore.CurrentExecutive.CurrentDSASMExec == null)
                 {
-                    ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore);
+                    var interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore);
                     runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
                 }
 
