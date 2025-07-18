@@ -1122,6 +1122,13 @@ namespace Dynamo.Configuration
                         settings.BackupInterval = DefaultBackupInterval;
                     }
 
+                    //Do not add invalid paths for recent files list
+                    var recentFiles = settings?.RecentFiles;
+                    if (recentFiles != null)
+                    {
+                        settings.RecentFiles = recentFiles.Where(path => !string.IsNullOrEmpty(path) && DynamoUtilities.PathHelper.IsValidPath(path)).ToList();
+                    }
+
                     fs.Close(); // Release file lock
                 }
             }
