@@ -830,45 +830,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Indicates if the optional input ports are collapsed by default.
-        /// </summary>
-        public bool OptionalInputsCollapsed
-        {
-            get => preferenceSettings.OptionalInPortsCollapsed;
-            set
-            {
-                preferenceSettings.OptionalInPortsCollapsed = value;
-                RaisePropertyChanged(nameof(OptionalInputsCollapsed));
-            }
-        }
-
-        /// <summary>
-        /// Indicates if the unconnected output ports are hidden by default.
-        /// </summary>
-        public bool UnconnectedOutputsCollapsed
-        {
-            get => preferenceSettings.UnconnectedOutPortsCollapsed;
-            set
-            {
-                preferenceSettings.UnconnectedOutPortsCollapsed = value;
-                RaisePropertyChanged(nameof(UnconnectedOutputsCollapsed));
-            }
-        }
-
-        /// <summary>
-        /// Indicates if the groups should be collapsed to minimal size by default.
-        /// </summary>
-        public bool CollapseToMinSize
-        {
-            get => preferenceSettings.CollapseToMinSize;
-            set
-            {
-                preferenceSettings.CollapseToMinSize = value;
-                RaisePropertyChanged(nameof(CollapseToMinSize));
-            }
-        }
-
-        /// <summary>
         /// Indicates if Host units should be used for graphic helpers for Dynamo Revit
         /// Also toggles between Host and Dynamo units 
         /// </summary>
@@ -1928,15 +1889,6 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(ShowDefaultGroupDescription):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowDefaultGroupDescription), System.Globalization.CultureInfo.InvariantCulture);
-                    goto default;
-                case nameof(OptionalInputsCollapsed):
-                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewHideInportsDescription), System.Globalization.CultureInfo.InvariantCulture);
-                    goto default;
-                case nameof(UnconnectedOutputsCollapsed):
-                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewHideOutportsDescription), System.Globalization.CultureInfo.InvariantCulture);
-                    goto default;
-                case nameof(CollapseToMinSize):
-                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewCollapseToMinSizeDescription), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(ShowCodeBlockLineNumber):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowCodeBlockNodeLineNumber), System.Globalization.CultureInfo.InvariantCulture);

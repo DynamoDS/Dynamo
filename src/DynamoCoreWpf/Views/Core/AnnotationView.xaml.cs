@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -29,6 +27,8 @@ using EventTrigger = System.Windows.EventTrigger;
 using TextBox = System.Windows.Controls.TextBox;
 using Thickness = System.Windows.Thickness;
 using ModifierKeys = System.Windows.Input.ModifierKeys;
+using System.ComponentModel;
+using System.Collections.Specialized;
 
 namespace Dynamo.Nodes
 {
@@ -51,19 +51,10 @@ namespace Dynamo.Nodes
         private Border collapsedAnnotationRectangle;
         private Expander groupExpander;
         private ItemsControl inputPortControl;
-        private ItemsControl optionalInputPortControl;
-        private ToggleButton inputToggleControl;
         private ItemsControl outputPortControl;
-        private ItemsControl unconnectedOutputPortControl;
-        private ToggleButton outputToggleControl;
-        private Grid inputPortsGrid;
-        private Grid outputPortsGrid;
-        private Grid groupContent;
-        private Border nodeCountBorder;
-        private InCanvasSearchControl searchBar;
-        
         private Thumb mainGroupThumb;
         private StackPanel groupPopupPanel;
+        private InCanvasSearchControl searchBar;
 
         private bool _isUpdatingLayout = false;
         private bool isSearchFromGroupContext;
@@ -367,7 +358,7 @@ namespace Dynamo.Nodes
                 {
                     this.ViewModel.IsExpanded = true;
                 }
-
+                 
                 ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                    new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
                 ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
@@ -426,7 +417,7 @@ namespace Dynamo.Nodes
 
         private void AnnotationView_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            ViewModel.SelectAll();
+            ViewModel.SelectAll();                      
         }
 
         /// <summary>
@@ -484,6 +475,7 @@ namespace Dynamo.Nodes
             if (ViewModel != null && (e.HeightChanged || e.WidthChanged) && !_isUpdatingLayout)
             {
                 _isUpdatingLayout = true;
+                
                 // Use Dispatcher.BeginInvoke to batch layout updates
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
@@ -608,7 +600,6 @@ namespace Dynamo.Nodes
 
         private void CollapsedAnnotationRectangle_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            GetMinWidthOnCollapsed();
             SetModelAreaHeight();
         }
 
@@ -1534,6 +1525,7 @@ namespace Dynamo.Nodes
             var thumb = new Thumb();
             thumb.Name = "ResizeThumb";
             thumb.DragDelta += AnnotationRectangleThumb_DragDelta;
+            
 
             thumb.Style = _groupResizeThumbStyle;
             thumb.MouseEnter += Thumb_MouseEnter;
@@ -1559,6 +1551,7 @@ namespace Dynamo.Nodes
 
             // Create the Polygon
             var polygonFactory = new FrameworkElementFactory(typeof(Polygon));
+            
             // Set Points collection
             var points = new PointCollection
             {
@@ -1597,6 +1590,8 @@ namespace Dynamo.Nodes
             };
 
             // Set bindings
+            border.SetBinding(FrameworkElement.WidthProperty, new Binding("Width"));
+            border.SetBinding(FrameworkElement.HeightProperty, new Binding("ModelAreaHeight"));
             border.SetBinding(UIElement.VisibilityProperty, new Binding("IsExpanded")
             {
                 ElementName = "GroupExpander",
@@ -1635,16 +1630,51 @@ namespace Dynamo.Nodes
             grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
             // Add children
-            inputPortsGrid = CreateInputPortsGrid();
-            outputPortsGrid = CreateOutputPortsGrid();
-            groupContent = CreateGroupContent();
+            inputPortControl = CreateInputPortControl();
+            outputPortControl = CreateOutputPortControl();
+            var groupContent = CreateGroupContent();
 
-            grid.Children.Add(inputPortsGrid);
-            grid.Children.Add(outputPortsGrid);
-
+            grid.Children.Add(inputPortControl);
+            grid.Children.Add(outputPortControl);
             grid.Children.Add(groupContent);
 
             return grid;
+        }
+
+        private ItemsControl CreateInputPortControl()
+        {
+            var itemsControl = new ItemsControl
+            {
+                Name = "inputPortControl",
+                HorizontalContentAlignment = HorizontalAlignment.Left,
+                Margin = new Thickness(-25, 10, -25, 10)
+            };
+
+            Panel.SetZIndex(itemsControl, 20);
+            Grid.SetColumn(itemsControl, 0);
+            Grid.SetRow(itemsControl, 0);
+
+            itemsControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("InPorts"));
+
+            return itemsControl;
+        }
+
+        private ItemsControl CreateOutputPortControl()
+        {
+            var itemsControl = new ItemsControl
+            {
+                Name = "outputPortControl",
+                HorizontalContentAlignment = HorizontalAlignment.Right,
+                Margin = new Thickness(-25, 10, -25, 10)
+            };
+
+            Panel.SetZIndex(itemsControl, 20);
+            Grid.SetColumn(itemsControl, 2);
+            Grid.SetRow(itemsControl, 0);
+
+            itemsControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("OutPorts"));
+
+            return itemsControl;
         }
 
         private Grid CreateGroupContent()
@@ -1745,7 +1775,7 @@ namespace Dynamo.Nodes
 
         private Border CreateNodeCountBorder()
         {
-            nodeCountBorder = new Border
+            var border = new Border
             {
                 Name = "NodeCount",
                 BorderThickness = new Thickness(1),
@@ -1759,7 +1789,7 @@ namespace Dynamo.Nodes
                 VerticalAlignment = VerticalAlignment.Bottom,
             };
 
-            Grid.SetColumn(nodeCountBorder, 1);
+            Grid.SetColumn(border, 1);
 
             // Create and add TextBlock
             var textBlock = new TextBlock
@@ -1775,9 +1805,9 @@ namespace Dynamo.Nodes
                 StringFormat = "+{0}"
             });
 
-            nodeCountBorder.Child = textBlock;
+            border.Child = textBlock;
 
-            return nodeCountBorder;
+            return border;
         }
 
         #endregion
@@ -2747,277 +2777,25 @@ namespace Dynamo.Nodes
                 this.groupDescriptionControls.DesiredSize.Height +
                 this.groupNameControl.DesiredSize.Height;
         }
-
-        private ControlTemplate CreateCollapsedPortToggleButtonTemplate()
+        
+        private (double maxWidth, double totalHeight) MeasurePortBounds(ItemsControl portControl)
         {
-            var template = new ControlTemplate(typeof(ToggleButton));
+            double maxWidth = 0;
+            double totalHeight = 0;
 
-            var border = new FrameworkElementFactory(typeof(Border));
-            border.SetValue(Border.BackgroundProperty, Brushes.Transparent);
-
-            var stackPanel = new FrameworkElementFactory(typeof(StackPanel));
-            stackPanel.SetValue(StackPanel.MarginProperty, new TemplateBindingExtension(MarginProperty));
-            stackPanel.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
-
-            // TextBlock with MultiBinding text
-            var label = new FrameworkElementFactory(typeof(TextBlock));
-            label.SetValue(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
-            label.SetBinding(TextBlock.ForegroundProperty, new Binding("Background")
+            foreach (var item in portControl.Items)
             {
-                Converter = _textForegroundSaturationColorConverter,
-                ConverterParameter = "groupPortToggle"
-            });
+                if (portControl.ItemContainerGenerator.ContainerFromItem(item) is FrameworkElement container && container.IsVisible)
+                {
+                    container.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                    var size = container.DesiredSize;
 
-            var multiBinding = new MultiBinding { StringFormat = "{0} {1}" };
-            multiBinding.Bindings.Add(new Binding("Tag") { RelativeSource = RelativeSource.TemplatedParent });
-            multiBinding.Bindings.Add(new Binding("Content") { RelativeSource = RelativeSource.TemplatedParent });
-            label.SetBinding(TextBlock.TextProperty, multiBinding);
-
-            // Arrow Path
-            var path = new FrameworkElementFactory(typeof(Path));
-            path.SetValue(FrameworkElement.WidthProperty, 8.0);
-            path.SetValue(FrameworkElement.HeightProperty, 6.0);
-            path.SetValue(FrameworkElement.MarginProperty, new Thickness(6, 0, 0, 0));
-            path.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Center);
-            path.SetValue(Path.DataProperty, Geometry.Parse("M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"));
-            path.SetBinding(Shape.FillProperty, new Binding("Background")
-            {
-                Converter = _textForegroundSaturationColorConverter,
-                ConverterParameter = "groupPortToggle"
-            });
-
-            // RotateTransform bound to IsChecked via converter
-            var rotateTransform = new RotateTransform();
-            var rotateBinding = new Binding("IsChecked")
-            {
-                RelativeSource = RelativeSource.TemplatedParent,
-                Converter = new BooleanToAngleConverter()
-            };
-            BindingOperations.SetBinding(rotateTransform, RotateTransform.AngleProperty, rotateBinding);
-            path.SetValue(Path.RenderTransformProperty, rotateTransform);
-            path.SetValue(Path.RenderTransformOriginProperty, new Point(0.5, 0.5));
-
-            // Compose visual tree
-            stackPanel.AppendChild(label);
-            stackPanel.AppendChild(path);
-            border.AppendChild(stackPanel);
-            template.VisualTree = border;
-
-            return template;
-        }
-
-        private Style CreateBaseCollapsedPortToggleStyle()
-        {
-            var style = new Style(typeof(ToggleButton));
-            style.Setters.Add(new Setter(Control.BackgroundProperty, Brushes.Transparent));
-            style.Setters.Add(new Setter(Control.BorderThicknessProperty, new Thickness(0)));
-            style.Setters.Add(new Setter(Control.CursorProperty, Cursors.Hand));
-            style.Setters.Add(new Setter(Control.TemplateProperty, CreateCollapsedPortToggleButtonTemplate()));
-            style.Setters.Add(new Setter(Control.HeightProperty, 30.0));
-
-            return style;
-        }
-
-        private Grid CreateInputPortsGrid()
-        {
-            var grid = new Grid
-            {
-                Name = "inputPortsGrid"
-            };
-            Grid.SetRow(grid, 0);
-            Grid.SetColumn(grid, 0);
-
-            // Define rows
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(34) });
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-
-            // Main Input Ports
-            inputPortControl = new ItemsControl
-            {
-                Name = "inputPortControl",
-                HorizontalContentAlignment = HorizontalAlignment.Left,
-                Margin = new Thickness(-25, 10, 0, 0)
-            };
-            Panel.SetZIndex(inputPortControl, 20);
-            Grid.SetRow(inputPortControl, 0);
-            inputPortControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("InPorts"));
-            grid.Children.Add(inputPortControl);
-
-            // Toggle Button for Collapsing Optional Ports
-            inputToggleControl = new ToggleButton
-            {
-                Name = "inputToggleControl",
-                Margin = new Thickness(5, 0, -20, 0),
-                HorizontalAlignment = HorizontalAlignment.Left,
-                Content = Wpf.Properties.Resources.GroupOptionalInportsText
-            };
-            inputToggleControl.Click += OptionalPortsToggle_Click;
-            inputToggleControl.SetBinding(ToggleButton.IsCheckedProperty, new Binding("IsOptionalInPortsCollapsed") { Mode = BindingMode.TwoWay });
-            inputToggleControl.SetBinding(ToggleButton.TagProperty, new Binding("OptionalInPorts.Count"));
-            Grid.SetRow(inputToggleControl, 1);
-
-            var toggleStyle = CreateBaseCollapsedPortToggleStyle();
-
-            // Add DataTrigger to hide toggle if no optional ports exist
-            var trigger = new DataTrigger
-            {
-                Binding = new Binding("OptionalInPorts.Count"),
-                Value = 0
-            };
-            trigger.Setters.Add(new Setter(VisibilityProperty, Visibility.Collapsed));
-            toggleStyle.Triggers.Add(trigger);
-
-            inputToggleControl.Style = toggleStyle;
-            grid.Children.Add(inputToggleControl);
-
-            // Optional Input Ports
-            optionalInputPortControl = new ItemsControl
-            {
-                Name = "optionalInputPortControl",
-                HorizontalContentAlignment = HorizontalAlignment.Left,
-                Margin = new Thickness(-25, 0, 0, 0)
-            };
-            Panel.SetZIndex(optionalInputPortControl, 20);
-            Grid.SetRow(optionalInputPortControl, 2);
-            optionalInputPortControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("OptionalInPorts"));
-
-            // Style to collapse/expand based on IsOptionalInPortsCollapsed
-            var optionalStyle = new Style(typeof(ItemsControl));
-            optionalStyle.Setters.Add(new Setter(VisibilityProperty, Visibility.Collapsed));
-
-            var optionalTrigger = new DataTrigger
-            {
-                Binding = new Binding("IsOptionalInPortsCollapsed"),
-                Value = false
-            };
-            optionalTrigger.Setters.Add(new Setter(VisibilityProperty, Visibility.Visible));
-            optionalStyle.Triggers.Add(optionalTrigger);
-
-            optionalInputPortControl.Style = optionalStyle;
-            grid.Children.Add(optionalInputPortControl);
-
-            return grid;
-        }
-
-        private Grid CreateOutputPortsGrid()
-        {
-            var grid = new Grid
-            {
-                Name = "outputPortsGrid"
-            };
-            Grid.SetRow(grid, 0);
-            Grid.SetColumn(grid, 2);
-
-            // Define rows
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-
-            // Main Output Ports
-            outputPortControl = new ItemsControl
-            {
-                Name = "outputPortControl",
-                HorizontalContentAlignment = HorizontalAlignment.Right,
-                Margin = new Thickness(0, 10, -25, 0)
-            };
-            Panel.SetZIndex(outputPortControl, 20);
-            Grid.SetRow(outputPortControl, 0);
-            outputPortControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("OutPorts"));
-            grid.Children.Add(outputPortControl);
-
-            // Toggle Button for Collapsing Unconnected Ports
-            outputToggleControl = new ToggleButton
-            {
-                Name = "outputToggleControl",
-                Margin = new Thickness(0, 0, 5, 0),
-                HorizontalAlignment = HorizontalAlignment.Right,
-                Content = Wpf.Properties.Resources.GroupUnconnectedOutportsText
-            };
-            outputToggleControl.Click += UnconnectedPortsToggle_Click;
-            outputToggleControl.SetBinding(ToggleButton.IsCheckedProperty, new Binding("IsUnconnectedOutPortsCollapsed") { Mode = BindingMode.TwoWay });
-            outputToggleControl.SetBinding(ToggleButton.TagProperty, new Binding("UnconnectedOutPorts.Count"));
-            Grid.SetRow(outputToggleControl, 1);
-
-            var toggleStyle = CreateBaseCollapsedPortToggleStyle();
-
-            // Add DataTrigger to hide toggle if no unconnected ports exist
-            var trigger = new DataTrigger
-            {
-                Binding = new Binding("UnconnectedOutPorts.Count"),
-                Value = 0
-            };
-            trigger.Setters.Add(new Setter(VisibilityProperty, Visibility.Collapsed));
-            toggleStyle.Triggers.Add(trigger);
-
-            outputToggleControl.Style = toggleStyle;
-            grid.Children.Add(outputToggleControl);
-
-            // Unconnected Output Ports
-            unconnectedOutputPortControl = new ItemsControl
-            {
-                Name = "unconnectedOutputPortControl",
-                HorizontalContentAlignment = HorizontalAlignment.Right,
-                Margin = new Thickness(0, 0, -25, 0)
-            };
-            Panel.SetZIndex(unconnectedOutputPortControl, 20);
-            Grid.SetRow(unconnectedOutputPortControl, 2);
-            unconnectedOutputPortControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("UnconnectedOutPorts"));
-
-            var optionalStyle = new Style(typeof(ItemsControl));
-            optionalStyle.Setters.Add(new Setter(VisibilityProperty, Visibility.Collapsed));
-            var optionalTrigger = new DataTrigger
-            {
-                Binding = new Binding("IsUnconnectedOutPortsCollapsed"),
-                Value = false
-            };
-            optionalTrigger.Setters.Add(new Setter(VisibilityProperty, Visibility.Visible));
-            optionalStyle.Triggers.Add(optionalTrigger);
-            unconnectedOutputPortControl.Style = optionalStyle;
-
-            grid.Children.Add(unconnectedOutputPortControl);
-
-            return grid;
-        }
-
-        /// <summary>
-        /// Calculates the minimum width required for a collapsed group,
-        /// considering input/output ports, toggles, and their visibility states.
-        /// </summary>
-        private void GetMinWidthOnCollapsed()
-        {
-            if (ViewModel != null)
-            {
-                ViewModel.AnnotationModel.MinWidthOnCollapsed =
-                inputPortsGrid.ActualWidth +
-                outputPortsGrid.ActualWidth;
+                    maxWidth = Math.Max(maxWidth, size.Width);
+                    totalHeight += size.Height;
+                }
             }
-        }
 
-        /// <summary>
-        /// Handles the click event for the optional input ports toggle button.
-        /// Sets a flag indicating the user has manually toggled this state.
-        /// </summary>
-        private void OptionalPortsToggle_Click(object sender, RoutedEventArgs e)
-        {
-            // Mark it as manually changed by user
-            if (!ViewModel.AnnotationModel.HasToggledOptionalInPorts)
-            {
-                ViewModel.AnnotationModel.HasToggledOptionalInPorts = true;
-            }
-        }
-
-        /// <summary>
-        /// Handles the click event for the unconnected output ports toggle button.
-        /// Sets a flag indicating the user has manually toggled this state.
-        /// </summary>
-        private void UnconnectedPortsToggle_Click(object sender, RoutedEventArgs e)
-        {
-            // Mark it as manually changed by user
-            if (!ViewModel.AnnotationModel.HasToggledUnconnectedOutPorts)
-            {
-                ViewModel.AnnotationModel.HasToggledUnconnectedOutPorts = true;
-            }
+            return (maxWidth, totalHeight);
         }
     }
 }
