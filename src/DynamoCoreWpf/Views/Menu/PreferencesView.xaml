@@ -1181,10 +1181,6 @@
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
                                         <Label Grid.Row="0"
                                                Content="{x:Static p:Resources.PreferencesViewGroupStylesHeader}"
@@ -1295,7 +1291,7 @@
                                                 </ItemsPanelTemplate>
                                             </ListBox.ItemsPanel>
                                         </ListBox>
-                                        <Grid Grid.Row="4" Margin="0,12,0,0">
+                                        <Grid Grid.Row="4" Margin="0,5,0,20">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"/>
@@ -1311,69 +1307,6 @@
                                                               Style="{StaticResource EllipseToggleButton1}"/>
                                                 <Label Grid.Column="1"
                                                        Content="{x:Static p:Resources.PreferencesViewShowDefaultGroupDescription}"
-                                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                            </Grid>
-                                        </Grid>
-                                        <!--Hide ports-->
-                                        <Label Grid.Row="5"
-                                               Content="{x:Static p:Resources.PreferencesViewCollapsedGroupHeader}"
-                                               Margin="-3,12,0,0"
-                                               FontWeight="Bold"
-                                               Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                        <Grid Grid.Row="6" Margin="0,12,0,0">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <ToggleButton Width="{StaticResource ToggleButtonWidth}"
-                                                              Height="{StaticResource ToggleButtonHeight}"
-                                                              VerticalAlignment="Center"
-                                                              Margin="2,0,0,0"
-                                                              Grid.Column="0"
-                                                              IsEnabled="True"
-                                                              IsChecked="{Binding Path=OptionalInputsCollapsed}"
-                                                              Style="{StaticResource EllipseToggleButton1}"/>
-                                                <Label Grid.Column="1"
-                                                       Content="{x:Static p:Resources.PreferencesViewHideInportsDescription}"
-                                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                            </Grid>
-                                        </Grid>
-                                        <Grid Grid.Row="7" Margin="0,12,0,0">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <ToggleButton Width="{StaticResource ToggleButtonWidth}"
-                                                              Height="{StaticResource ToggleButtonHeight}"
-                                                              VerticalAlignment="Center"
-                                                              Margin="2,0,0,0"
-                                                              Grid.Column="0"
-                                                              IsEnabled="True"
-                                                              IsChecked="{Binding Path=UnconnectedOutputsCollapsed}"
-                                                              Style="{StaticResource EllipseToggleButton1}"/>
-                                                <Label Grid.Column="1"
-                                                       Content="{x:Static p:Resources.PreferencesViewHideOutportsDescription}"
-                                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                            </Grid>
-                                        </Grid>
-                                        <Grid Grid.Row="8" Margin="0,12,0,5">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <ToggleButton Width="{StaticResource ToggleButtonWidth}"
-                                                              Height="{StaticResource ToggleButtonHeight}"
-                                                              VerticalAlignment="Center"
-                                                              Margin="2,0,0,0"
-                                                              Grid.Column="0"
-                                                              IsEnabled="True"
-                                                              IsChecked="{Binding Path=CollapseToMinSize}"
-                                                              Style="{StaticResource EllipseToggleButton1}"/>
-                                                <Label Grid.Column="1"
-                                                       Content="{x:Static p:Resources.PreferencesViewCollapseToMinSizeDescription}"
                                                        Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                             </Grid>
                                         </Grid>
