@@ -34,7 +34,6 @@ namespace Dynamo.Logging
         /// The message to be logged.
         /// </summary>
         public string Message { get; set; }
-    
         /// <summary>
         /// The log level at which to log the message.
         /// </summary>
@@ -123,7 +122,7 @@ namespace Dynamo.Logging
         /// <summary>
         /// Returns full path to log file
         /// </summary>
-        public string LogPath 
+        public string LogPath
         {
             get { return _logPath; }
         }
@@ -205,11 +204,11 @@ namespace Dynamo.Logging
         /// <param name="message"></param>
         /// <param name="level"></param>
         /// <param name="reportModification"></param>
-        private void Log(string message, LogLevel level, bool reportModification)
+        protected virtual void Log(string message, LogLevel level, bool reportModification)
         {
             lock (this.guardMutex)
             {
-                // In test mode or service mode, write the logs only to std out. 
+                // In test mode or service mode, write the logs only to std out.
                 if ((testMode && !cliMode) || serviceMode)
                 {
                     Console.WriteLine(string.Format("{0} : {1}", DateTime.UtcNow.ToString("u"), message));
@@ -412,7 +411,7 @@ namespace Dynamo.Logging
         /// <summary>
         /// Begin logging.
         /// </summary>
-        private void StartLoggingToConsoleAndFile(string logDirectory)
+        protected virtual void StartLoggingToConsoleAndFile(string logDirectory)
         {
             lock (this.guardMutex)
             {
@@ -471,7 +470,7 @@ namespace Dynamo.Logging
         /// <summary>
         /// Disposes the logger and finishes logging.
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
         {
             Dispose(_isDisposed);
 
