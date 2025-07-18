@@ -386,7 +386,6 @@ namespace DynamoCoreWpfTests
         /// Current zoom level is 0.4 (hard-coded in multiple Converters
         /// </summary>
         [Test]
-        [Category("Failure")]
         public void ZoomChangeVisibilityTest()
         {
             // Arrange
@@ -398,6 +397,10 @@ namespace DynamoCoreWpfTests
             NodeViewModel nodeViewModel = (nodeViewWarningWarningFrozenHidden.DataContext as NodeViewModel);
             WorkspaceViewModel wvm = nodeViewModel.WorkspaceViewModel as WorkspaceViewModel;
 
+            // Graph is saved in zoomed out state, so these should be true, before adjusting the zoom level
+            Assert.AreEqual(nodeViewWarningWarningFrozenHidden.zoomGlyphsGrid.Visibility, System.Windows.Visibility.Visible);   // The Grid containing the Glyphs
+            Assert.AreEqual(nodeViewWarningWarningFrozenHidden.nodeColorOverlayZoomOut.Opacity, 0.5);  // The Color State Border overlay
+
             // Zoom out, less than 0.4
             wvm.Zoom = 0.3;
             Assert.AreEqual(nodeViewWarningWarningFrozenHidden.zoomGlyphsGrid.Visibility, System.Windows.Visibility.Visible);   // The Grid containing the Glyphs
@@ -406,7 +409,7 @@ namespace DynamoCoreWpfTests
             // Zoom in, more than 0.4
             wvm.Zoom = 0.6;
             Assert.AreEqual(nodeViewWarningWarningFrozenHidden.zoomGlyphsGrid.Visibility, System.Windows.Visibility.Collapsed);
-            Assert.AreEqual(nodeViewWarningWarningFrozenHidden.nodeColorOverlayZoomOut.Opacity, 0);  
+            Assert.AreEqual(nodeViewWarningWarningFrozenHidden.nodeColorOverlayZoomOut.Visibility, System.Windows.Visibility.Collapsed);
         }
 
         [Test]
