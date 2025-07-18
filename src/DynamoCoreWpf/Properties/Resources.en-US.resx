@@ -4176,22 +4176,4 @@ To make this file into a new template, save it to a different folder, then move 
     <value>Node Icon Data is dumped to \"{0}\".</value>
     <comment>Debug menu | Dump all node icons</comment>
   </data>
-  <data name="GroupOptionalInportsText" xml:space="preserve">
-    <value>Optional</value>
-  </data>
-  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
-    <value>Unconnected</value>
-  </data>
-  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
-    <value>Collapsed Group</value>
-  </data>
-  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
-    <value>Collapse to minimal size by default</value>
-  </data>
-  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
-    <value>Hide optional input ports by default</value>
-  </data>
-  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
-    <value>Hide unconnected output ports by default</value>
-  </data>
 </root>
