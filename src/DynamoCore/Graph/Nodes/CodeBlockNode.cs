@@ -1089,22 +1089,23 @@ namespace Dynamo.Graph.Nodes
                 inport.DestroyConnectors();
 
             //----------------------------Outputs---------------------------------
+            // For output ports, we now use the port's index as the key instead of relying on ToolTip text.
+            // This ensures stable and predictable mapping between ports and their saved connections.
             for (int i = 0; i < OutPorts.Count; i++)
             {
                 PortModel portModel = OutPorts[i];
-                string portName = portModel.ToolTip;
                 if (portModel.Connectors.Count != 0)
                 {
-                    outportConnections.Add(portName, new List<ConnectorModel>());
+                    outportConnections.Add(i, new List<ConnectorModel>());
                     foreach (ConnectorModel connector in portModel.Connectors)
                     {
-                        (outportConnections[portName] as List<ConnectorModel>).Add(connector);
+                        (outportConnections[i] as List<ConnectorModel>).Add(connector);
                         outportPins.Add(connector.GUID, new List<ConnectorPinModel>());
                         (outportPins[connector.GUID] as List<ConnectorPinModel>).AddRange(connector.ConnectorPinModels);
                     }
                 }
                 else
-                    outportConnections.Add(portName, null);
+                    outportConnections.Add(i, null);
             }
 
             //Delete the connectors
@@ -1160,11 +1161,11 @@ namespace Dynamo.Graph.Nodes
             //----------------------------Outputs--------------------------------
             /*The matching is done in three parts:
              *Step 1:
-             *   First, it tries to match the connectors wrt to the defined 
-             *   variable name. Hence it first checks to see if any of the old 
-             *   variable names are present. If so, if there were any connectors 
-             *   presnt then it makes the new connectors. As it iterates through 
-             *   the new ports, it also finds the ports that didnt exist before
+             *   First, it tries to match the connectors with respect to the output port index, 
+             *   which corresponds to the logical line index in the code block. If a saved
+             *   connection exists for this index, it recreates the connector. As it iterates 
+             *   through the new ports, it also keeps track of any ports that couldn't be matched, 
+             *   storing their indices for Step 2.
              */
             List<int> undefinedIndices = new List<int>();
             for (int i = 0; i < OutPorts.Count; i++)
@@ -1181,8 +1182,7 @@ namespace Dynamo.Graph.Nodes
 
                 // Attempting to match the connector by name failed, 
                 // store the index to match in step 2 next
-                string varName = OutPorts[i].ToolTip;
-                if (!outportConnections.Contains(varName))
+                if (!outportConnections.Contains(i))
                 {
                     undefinedIndices.Add(i);
                     continue;
@@ -1190,9 +1190,9 @@ namespace Dynamo.Graph.Nodes
 
                 // Attempting to match the connector by name succeeded, 
                 // create the connector using the matched port index
-                if (outportConnections[varName] != null)
+                if (outportConnections[i] != null)
                 {
-                    foreach (var oldConnector in (outportConnections[varName] as List<ConnectorModel>))
+                    foreach (var oldConnector in (outportConnections[i] as List<ConnectorModel>))
                     {
                         var endPortModel = oldConnector.End;
                         NodeModel endNode = endPortModel.Owner;
@@ -1206,7 +1206,7 @@ namespace Dynamo.Graph.Nodes
                         }
                     }
 
-                    outportConnections[varName] = null;
+                    outportConnections[i] = null;
                 }
             }
 
@@ -1239,7 +1239,7 @@ namespace Dynamo.Graph.Nodes
 
             /*
              *Step 3:
-             *   The final step. Now that the priorties are finished, the 
+             *   The final step. Now that the priorities are finished, the 
              *   function tries to reuse any existing connections by attaching 
              *   them to any ports that have not already been given connections
              */
