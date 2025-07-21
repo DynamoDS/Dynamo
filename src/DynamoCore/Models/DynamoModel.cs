@@ -680,7 +680,7 @@ namespace Dynamo.Models
             HostAnalyticsInfo = config.HostAnalyticsInfo;
 
             DebugSettings = new DebugSettings();
-            if(Logger == null)
+            if (Logger == null)
             {
                 // If logger is not provided, create a new one.
                 Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory, IsTestMode, CLIMode, IsServiceMode);
