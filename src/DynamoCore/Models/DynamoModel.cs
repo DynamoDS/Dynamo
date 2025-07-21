@@ -605,6 +605,11 @@ namespace Dynamo.Models
             /// </summary>
             public bool CLIMode { get; set; }
             public string CLILocale { get; set; }
+            /// <summary>
+            /// Gets or sets the logger instance used for logging messages and events.
+            /// This property should be set to a valid <see cref="DynamoLogger"/> instance
+            /// to enable logging during the initialization and runtime of Dynamo.
+            /// </summary>
             public DynamoLogger Logger { get; set; }
         }
 
