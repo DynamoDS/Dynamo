@@ -825,6 +825,7 @@ namespace Dynamo.Controls
                 Margin = new Thickness(-8),
                 Fill = darkBlue200,
                 IsHitTestVisible = false,
+                Opacity = 0.5,
             };
             Grid.SetRow(nodeColorOverlayZoomIn, 1);
             Grid.SetRowSpan(nodeColorOverlayZoomIn, 4);
