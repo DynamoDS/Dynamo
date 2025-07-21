@@ -556,7 +556,7 @@ namespace Dynamo.Models
             public string CERLocation { get; set; }
         }
 
-        // Remove this interface in Dynamo3.0 and merge it back into IStartConfiguration.
+        // Remove this interface in Dynamo4.0 and merge it back into IStartConfiguration.
         /// <summary>
         /// Use this interface to set the CER (crash error reporting) tool path.
         /// </summary>
@@ -568,8 +568,16 @@ namespace Dynamo.Models
             CrashReporterStartupOptions CRStartConfig { get; set; }
         }
 
+        //TODO remove in dynamo 4.0
+        /// <summary>
+        /// Provides a mechanism to configure logging for DynamoModel.
+        /// Implement this interface to supply a logger instance for capturing logs during initialization and runtime.
+        /// </summary>
         public interface IStartConfigurationLogger
         {
+            /// <summary>
+            /// Specify the logger instance.
+            /// </summary>
             DynamoLogger Logger { get; set; }
         }
 
