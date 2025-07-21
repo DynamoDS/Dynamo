@@ -24,6 +24,7 @@ using Dynamo.PackageManager;
 using Dynamo.Properties;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
@@ -832,6 +833,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             {
                 foreach (var transientNode in transientNodes)
                 {
+                    DynamoSelection.Instance?.Selection?.Remove(transientNode.NodeModel);
                     wsViewModel.Model.RemoveAndDisposeNode(transientNode.NodeModel);
                 }
             }
