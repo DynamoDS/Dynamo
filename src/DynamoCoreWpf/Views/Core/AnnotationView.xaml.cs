@@ -1590,8 +1590,6 @@ namespace Dynamo.Nodes
             };
 
             // Set bindings
-            border.SetBinding(FrameworkElement.WidthProperty, new Binding("Width"));
-            border.SetBinding(FrameworkElement.HeightProperty, new Binding("ModelAreaHeight"));
             border.SetBinding(UIElement.VisibilityProperty, new Binding("IsExpanded")
             {
                 ElementName = "GroupExpander",
