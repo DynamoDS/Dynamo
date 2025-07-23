@@ -814,7 +814,7 @@ namespace Dynamo.Graph.Nodes
                                     ? CodeBlockUtils.GetTooltipForNode(right)
                                     : CodeBlockUtils.GetTooltipForNode(parsedNode);
 
-                                outportMetadata[left.Name] = (portLabel , portTooltip);
+                                outportMetadata[left.Name] = (portLabel, portTooltip);
                             }
                         }
                     }
@@ -1046,11 +1046,16 @@ namespace Dynamo.Graph.Nodes
                 if (tooltip.Length > maxTooltipLength)
                     tooltip = tooltip.Remove(maxTooltipLength - 3) + "...";
 
+                var currentLineIndexKey = IsTempIdentifier(def.Key) ? $"Line {def.Key}" : def.Key;
+
                 OutPorts.Add(new PortModel(PortType.Output, this, new PortData(label, tooltip)
                 {
                     LineIndex = def.Value - 1, // Logical line index.
                     Height = Configurations.CodeBlockOutputPortHeightInPixels,
-                }));
+                })
+                {
+                    LineIndexKey = currentLineIndexKey,
+                });
             }
         }
 
@@ -1094,18 +1099,20 @@ namespace Dynamo.Graph.Nodes
             for (int i = 0; i < OutPorts.Count; i++)
             {
                 PortModel portModel = OutPorts[i];
+                string key = portModel.LineIndexKey;
+
                 if (portModel.Connectors.Count != 0)
                 {
-                    outportConnections.Add(i, new List<ConnectorModel>());
+                    outportConnections.Add(key, new List<ConnectorModel>());
                     foreach (ConnectorModel connector in portModel.Connectors)
                     {
-                        (outportConnections[i] as List<ConnectorModel>).Add(connector);
+                        (outportConnections[key] as List<ConnectorModel>).Add(connector);
                         outportPins.Add(connector.GUID, new List<ConnectorPinModel>());
                         (outportPins[connector.GUID] as List<ConnectorPinModel>).AddRange(connector.ConnectorPinModels);
                     }
                 }
                 else
-                    outportConnections.Add(i, null);
+                    outportConnections.Add(key, null);
             }
 
             //Delete the connectors
@@ -1161,11 +1168,11 @@ namespace Dynamo.Graph.Nodes
             //----------------------------Outputs--------------------------------
             /*The matching is done in three parts:
              *Step 1:
-             *   First, it tries to match the connectors with respect to the output port index, 
-             *   which corresponds to the logical line index in the code block. If a saved
-             *   connection exists for this index, it recreates the connector. As it iterates 
-             *   through the new ports, it also keeps track of any ports that couldn't be matched, 
-             *   storing their indices for Step 2.
+             *   First, it tries to match the connectors wrt to the defined 
+             *   variable line index key. Hence it first checks to see if any of the old 
+             *   variable line index keys are present. If so, if there were any connectors 
+             *   present then it makes the new connectors. As it iterates through 
+             *   the new ports, it also finds the ports that didn't exist before
              */
             List<int> undefinedIndices = new List<int>();
             for (int i = 0; i < OutPorts.Count; i++)
@@ -1180,19 +1187,21 @@ namespace Dynamo.Graph.Nodes
                     continue;
                 }
 
-                // Attempting to match the connector by name failed, 
+                // Attempting to match the connector by line index key failed, 
                 // store the index to match in step 2 next
-                if (!outportConnections.Contains(i))
+                string key = OutPorts[i].LineIndexKey;
+
+                if (!outportConnections.Contains(key))
                 {
                     undefinedIndices.Add(i);
                     continue;
                 }
 
-                // Attempting to match the connector by name succeeded, 
+                // Attempting to match the connector by line index key succeeded, 
                 // create the connector using the matched port index
-                if (outportConnections[i] != null)
+                if (outportConnections[key] != null)
                 {
-                    foreach (var oldConnector in (outportConnections[i] as List<ConnectorModel>))
+                    foreach (var oldConnector in (outportConnections[key] as List<ConnectorModel>))
                     {
                         var endPortModel = oldConnector.End;
                         NodeModel endNode = endPortModel.Owner;
@@ -1206,7 +1215,7 @@ namespace Dynamo.Graph.Nodes
                         }
                     }
 
-                    outportConnections[i] = null;
+                    outportConnections[key] = null;
                 }
             }
 
