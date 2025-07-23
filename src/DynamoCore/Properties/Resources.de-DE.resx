@@ -849,13 +849,13 @@ Dieses Paket enthält wahrscheinlich eine blockierte Assembly. Sie müssen das P
     <value>Blockbibliothek wird geladen...</value>
   </data>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
-    <value>No suggestions available</value>
+    <value>Keine Empfehlungen verfügbar</value>
   </data>
   <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
     <value>Geringe Zuverlässigkeit</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>The model is continuously improving - check back soon</value>
+    <value>Das Modell wird fortlaufend verbessert - schauen Sie bald wieder vorbei</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
     <value>Keine zuverlässigen Vorschläge verfügbar. Das Modell wird fortlaufend verbessert; sehen Sie demnächst noch einmal nach.</value>
@@ -900,6 +900,6 @@ Dieses Paket enthält wahrscheinlich eine blockierte Assembly. Sie müssen das P
     <value>Klicken Sie auf das Funkensymbol neben dem Anschluss, um die automatische Blockvervollständigung zu aktivieren.</value>
   </data>
   <data name="UnknownErrorProcessingFile" xml:space="preserve">
-    <value>An unknown error occurred while processing the file.</value>
+    <value>Beim Verarbeiten der Datei ist ein unbekannter Fehler aufgetreten.</value>
   </data>
 </root>

@@ -849,13 +849,13 @@ Ten pakiet prawdopodobnie zawiera zablokowany zespół. Po odblokowaniu zespołu
     <value>Wczytywanie biblioteki węzłów...</value>
   </data>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
-    <value>No suggestions available</value>
+    <value>Brak dostępnych sugestii</value>
   </data>
   <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
     <value>Niska pewność</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>The model is continuously improving - check back soon</value>
+    <value>Ten model jest stale ulepszany — zajrzyj tu wkrótce</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
     <value>Brak solidnych sugestii. Model jest stale udoskonalany — sprawdź ponownie wkrótce.</value>
@@ -900,6 +900,6 @@ Ten pakiet prawdopodobnie zawiera zablokowany zespół. Po odblokowaniu zespołu
     <value>Kliknij ikonę błysku obok portu, aby aktywować autouzupełnianie węzłów.</value>
   </data>
   <data name="UnknownErrorProcessingFile" xml:space="preserve">
-    <value>An unknown error occurred while processing the file.</value>
+    <value>Podczas przetwarzania pliku wystąpił nieznany błąd.</value>
   </data>
 </root>

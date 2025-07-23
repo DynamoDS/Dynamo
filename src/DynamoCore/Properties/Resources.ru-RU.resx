@@ -849,13 +849,13 @@
     <value>Загрузка библиотеки узлов...</value>
   </data>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
-    <value>No suggestions available</value>
+    <value>Рекомендации отсутствуют</value>
   </data>
   <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
     <value>Низкая надежность</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>The model is continuously improving - check back soon</value>
+    <value>Модель непрерывно совершенствуется, проверьте результаты позже</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
     <value>Нет доступных надежных подсказок. Модель регулярно совершенствуется, проверьте позже.</value>
@@ -900,6 +900,6 @@
     <value>Щелкните значок искры рядом с портом, чтобы активировать функцию автозаполнения узла.</value>
   </data>
   <data name="UnknownErrorProcessingFile" xml:space="preserve">
-    <value>An unknown error occurred while processing the file.</value>
+    <value>При обработке файла произошла неизвестная ошибка.</value>
   </data>
 </root>
