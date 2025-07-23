@@ -849,13 +849,13 @@ value : bool = false</value>
     <value>正在載入節點資源庫...</value>
   </data>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
-    <value>No suggestions available</value>
+    <value>沒有建議</value>
   </data>
   <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
     <value>低信賴</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>The model is continuously improving - check back soon</value>
+    <value>模型持續改進中 - 請稍後再回來查看</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
     <value>沒有讓人信賴的建議。模型持續改進中 - 請稍後再回來查看。</value>
@@ -900,6 +900,6 @@ value : bool = false</value>
     <value>請按一下埠旁邊的發光圖示，以啟用「節點自動完成」。</value>
   </data>
   <data name="UnknownErrorProcessingFile" xml:space="preserve">
-    <value>An unknown error occurred while processing the file.</value>
+    <value>處理檔案時發生不明錯誤。</value>
   </data>
 </root>

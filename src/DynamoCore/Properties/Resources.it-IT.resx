@@ -843,13 +843,13 @@ Il pacchetto non è stato caricato perché prima era stato caricato un altro pac
     <value>Caricamento della libreria di nodi in corso...</value>
   </data>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
-    <value>No suggestions available</value>
+    <value>Nessun suggerimento disponibile</value>
   </data>
   <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
     <value>Bassa affidabilità</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>The model is continuously improving - check back soon</value>
+    <value>Il modello è in costante miglioramento: controllare nuovamente in seguito</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
     <value>Nessun suggerimento affidabile disponibile. Il modello viene migliorato continuamente. Ricontrollare più tardi.</value>
@@ -894,6 +894,6 @@ Il pacchetto non è stato caricato perché prima era stato caricato un altro pac
     <value>Fare clic sull'icona a forma di scintilla accanto alla porta per attivare Completamento automatico nodi.</value>
   </data>
   <data name="UnknownErrorProcessingFile" xml:space="preserve">
-    <value>An unknown error occurred while processing the file.</value>
+    <value>Errore sconosciuto durante l'elaborazione del file.</value>
   </data>
 </root>
