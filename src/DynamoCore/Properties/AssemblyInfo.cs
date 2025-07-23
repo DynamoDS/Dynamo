@@ -58,6 +58,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("DocumentationBrowserViewExtension")]
 [assembly: InternalsVisibleTo("Notifications")]
 [assembly: InternalsVisibleTo("NodeAutoCompleteViewExtension")]
+// Internals are visible to the MCP View Extension and Extension, depending on final implementation.
 [assembly: InternalsVisibleTo("MCPExtension")]
 [assembly: InternalsVisibleTo("MCPViewExtension")]
 
