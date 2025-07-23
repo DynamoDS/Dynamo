@@ -2040,7 +2040,7 @@ namespace DynamoCoreWpfTests
             //Check the CBN
             var cbn = GetNode("8630afc1-3d59-4e76-9fca-faa12e6973ea") as CodeBlockNodeModel;
             var connector = cbn.OutPorts[1].Connectors[0] as ConnectorModel;
-            Assert.AreEqual(1, connector.End.Index);
+            Assert.AreEqual(2, connector.End.Index);
         }
 
         [Test, Apartment(ApartmentState.STA)]

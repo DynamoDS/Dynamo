@@ -1097,7 +1097,9 @@ namespace Dynamo.Graph.Nodes
             for (int i = 0; i < OutPorts.Count; i++)
             {
                 PortModel portModel = OutPorts[i];
-                string key = portModel.LineIndexKey;
+
+                // Use LineIndexKey for stable identification; fall back to ToolTip if it's null (e.g. in error cases).
+                string key = portModel.LineIndexKey ?? portModel.ToolTip;
 
                 if (portModel.Connectors.Count != 0)
                 {
