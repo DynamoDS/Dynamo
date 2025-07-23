@@ -971,7 +971,7 @@ namespace Dynamo.ViewModels
 
                     //if any of the required packages use a pre 3.x version of Dynamo, show a dialog to the user
                     //allowing them to cancel the package download
-                    if (preDYN3Deps.Any())
+                    if (preDYN4Deps.Any())
                     {
                         var res = MessageBoxService.Show(ViewModelOwner,
                         $"{string.Format(Resources.MessagePackageOlderDynamo, DynamoViewModel.BrandingResourceProvider.ProductName)} {Resources.MessagePackOlderDynamoLink}",
