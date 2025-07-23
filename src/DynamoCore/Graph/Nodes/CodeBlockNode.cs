@@ -1094,8 +1094,6 @@ namespace Dynamo.Graph.Nodes
                 inport.DestroyConnectors();
 
             //----------------------------Outputs---------------------------------
-            // For output ports, we now use the port's index as the key instead of relying on ToolTip text.
-            // This ensures stable and predictable mapping between ports and their saved connections.
             for (int i = 0; i < OutPorts.Count; i++)
             {
                 PortModel portModel = OutPorts[i];
