@@ -2662,7 +2662,7 @@ Ce package sera déchargé après le prochain redémarrage de Dynamo.</value>
     <value>Ajouter un dossier</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
-    <value>Chemin vers les fichiers Markdown (facultatif)</value>
+    <value>Chemin d'accès au fichier Markdown (facultatif)</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectoryToolTip" xml:space="preserve">
     <value>Un emplacement facultatif qui permet de documenter votre package au format markdown.</value>
@@ -2883,7 +2883,7 @@ Pour installer la dernière version d'un package, cliquez sur Installer. \n
 %./UI/Images/alert.png% Le package d'exemple Autodesk est déjà installé sur votre ordinateur.</value>
   </data>
   <data name="PackagesGuideDependenciesText" xml:space="preserve">
-    <value>\nSi vous avez besoin d'autres logiciels ou outils pour utiliser ce package, ces derniers sont répertoriés sous Exigences de version et de package.</value>
+    <value>\nSi vous avez besoin d'autres logiciels ou outils pour utiliser ce package, ces derniers sont répertoriés sous Versions et conditions applicables aux packages.</value>
   </data>
   <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
     <value>Dépendances du package</value>
@@ -3795,34 +3795,16 @@ Pour transformer ce fichier en nouveau gabarit, enregistrez-le dans un autre dos
     <value>Ce groupe est bloqué. Cliquez pour le débloquer.</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>Enable Floating Toolbar</value>
+    <value>Activer la barre d'outils flottante</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
-    <value>Enable a floating toolbar for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog.</value>
+    <value>Activez une barre d'outils flottante contenant les suggestions de noeuds afin de simplifier le flux de travail. Désactivez-la pour revenir à la boîte de dialogue contextuelle classique.</value>
   </data>
   <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
     <value>Données de l'icône du noeud _Dump</value>
   </data>
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>Les données de l'icône du noeud sont vidées vers \"{0}\".</value>
-  </data>
-  <data name="GroupOptionalInportsText" xml:space="preserve">
-    <value>Facultatif</value>
-  </data>
-  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
-    <value>Sans contrainte</value>
-  </data>
-  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
-    <value>Collapsed Group</value>
-  </data>
-  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
-    <value>Collapse to minimal size by default</value>
-  </data>
-  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
-    <value>Hide optional input ports by default</value>
-  </data>
-  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
-    <value>Hide unconnected output ports by default</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

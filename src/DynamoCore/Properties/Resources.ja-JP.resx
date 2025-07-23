@@ -846,13 +846,13 @@ value : bool = false</value>
     <value>ノード ライブラリをロードしています...</value>
   </data>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
-    <value>No suggestions available</value>
+    <value>提案なし</value>
   </data>
   <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
     <value>低信頼度</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>The model is continuously improving - check back soon</value>
+    <value>モデルは継続的に改善されるので、のちほど確認してください</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
     <value>確実な提案はありません。モデルは継続的に改善されるので、のちほど確認してください。</value>
@@ -897,6 +897,6 @@ value : bool = false</value>
     <value>ポートの横にある輝きアイコンをクリックして、ノード オートコンプリートを有効化します。</value>
   </data>
   <data name="UnknownErrorProcessingFile" xml:space="preserve">
-    <value>An unknown error occurred while processing the file.</value>
+    <value>ファイルの処理中に不明なエラーが発生しました。</value>
   </data>
 </root>

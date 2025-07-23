@@ -849,13 +849,13 @@ Ce package contient probablement un ensemble qui est bloqué. Vous devrez charge
     <value>Chargement de la bibliothèque de noeuds…</value>
   </data>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
-    <value>No suggestions available</value>
+    <value>Aucune suggestion disponible</value>
   </data>
   <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
     <value>Confiance faible</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>The model is continuously improving - check back soon</value>
+    <value>Le modèle est amélioré en permanence. Réessayez ultérieurement</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
     <value>Aucune suggestion de confiance n'est disponible. Le modèle est constamment amélioré, revenez voir ultérieurement.</value>
@@ -900,6 +900,6 @@ Ce package contient probablement un ensemble qui est bloqué. Vous devrez charge
     <value>Cliquez sur l'icône scintillante à côté du port pour activer la saisie automatique du noeud.</value>
   </data>
   <data name="UnknownErrorProcessingFile" xml:space="preserve">
-    <value>An unknown error occurred while processing the file.</value>
+    <value>Une erreur inconnue s'est produite lors du traitement du fichier.</value>
   </data>
 </root>
