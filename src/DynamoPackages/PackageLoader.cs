@@ -276,7 +276,7 @@ namespace Dynamo.PackageManager
                 Log($"Loaded Package {package.Name} {package.VersionName} from {package.RootDirectory}");
                 try
                 {
-                    if (dynamoVersion.Major == 3 && Version.Parse(package.EngineVersion).Major < 3)
+                    if (dynamoVersion.Major == 4 && Version.Parse(package.EngineVersion).Major < 3)
                     {
                         Log($@"{package.Name} {package.VersionName} has an engine version of {package.EngineVersion},
                         it may not be compatible with this version of Dynamo due to .NET runtime changes. ");
