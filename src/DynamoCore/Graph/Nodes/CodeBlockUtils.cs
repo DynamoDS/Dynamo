@@ -270,28 +270,14 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Extracts cleaned individual code expressions as tooltip strings from a full code block.
         /// </summary>
-        internal static List<string> GetCleanedCodeExpressionsForTooltips(string code)
+        internal static string GetTooltipForNode(AssociativeNode node)
         {
-            if (string.IsNullOrWhiteSpace(code))
-                return new List<string>();
+            if (node == null)
+                return string.Empty;
 
-            // Filter out full-line comments and remove inline comments
-            var cleanedCode = string.Join(" ",
-                code.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-                    .Where(line => !line.TrimStart().StartsWith("//"))
-                    .Select(line =>
-                    {
-                        var idx = line.IndexOf("//");
-                        return idx >= 0 ? line.Substring(0, idx) : line;
-                    }));
+            var codeGen = new ProtoCore.CodeGenDS(new[] { node });
 
-            // Split by semicolon and return trimmed expressions
-            return cleanedCode
-                .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(expr => expr.Trim())
-                .Where(expr => !string.IsNullOrEmpty(expr))
-                .Select(expr => expr + ";")
-                .ToList();
+            return codeGen.GenerateCode().TrimEnd('\n').Trim(';');
         }
 
         /// <summary>
@@ -304,32 +290,36 @@ namespace Dynamo.Graph.Nodes
             switch (node)
             {
                 case IntNode:
-                    return "[int]";
+                    return "integer";
                 case DoubleNode:
-                    return "[double]";
+                    return "double";
                 case BooleanNode:
-                    return "[bool]";
+                    return "boolean";
                 case StringNode:
-                    return "[string]";
+                    return "string";
                 case NullNode:
-                    return "[null]";
+                    return "null";
                 case CharNode:
-                    return "[char]";
+                    return "character";
                 case ExprListNode:
                 case ArrayNode:
-                    return "[list]";
+                    return "list";
                 case RangeExprNode:
-                    return "[range]";
+                    return "range";
                 case IdentifierNode idNode:
                     return idNode.Value;
                 case IdentifierListNode:
-                    return "[identifier list]";
+                    if (ProtoCore.Utils.CoreUtils.TryGetPropertyName(node.ToString(), out string _))
+                        return "property";
+                    return "function";
                 case FunctionCallNode:
-                    return "[function]";
+                    return "function";
                 case InlineConditionalNode:
-                    return "[conditional]";
+                    return "conditional";
+                case LanguageBlockNode:
+                    return "language block";
                 default:
-                    return "[unknown]";
+                    return "unknown";
             }
         }
     }
