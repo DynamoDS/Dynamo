@@ -943,6 +943,7 @@ namespace Dynamo.ViewModels
         {
             var viewModel = new AnnotationViewModel(this, annotation);
             Annotations.Add(viewModel);
+            viewModel.SnapInputEvent += nodeViewModel_SnapInputEvent;
         }
 
         private void Model_AnnotationRemoved(AnnotationModel annotation)
