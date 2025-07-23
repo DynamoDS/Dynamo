@@ -2634,14 +2634,15 @@ namespace Dynamo.Nodes
             });
 
             // Create button tooltip
-            var toolTipFactory = new FrameworkElementFactory(typeof(ToolTip));
-            toolTipFactory.SetValue(FrameworkElement.StyleProperty, _createGenericToolTipLightStyle);
-
-            var textBlockFactory = new FrameworkElementFactory(typeof(TextBlock));
-            textBlockFactory.SetValue(TextBlock.TextProperty, Wpf.Properties.Resources.GroupFrozenButtonToolTip);
-
-            toolTipFactory.AppendChild(textBlockFactory);
-            buttonFactory.SetValue(ToolTipProperty, toolTipFactory);
+            var tooltip = new ToolTip
+            {
+                Style = _createGenericToolTipLightStyle,
+                Content = new TextBlock
+                {
+                    Text = Wpf.Properties.Resources.GroupFrozenButtonToolTip
+                }
+            };
+            buttonFactory.SetValue(Button.ToolTipProperty, tooltip);
 
             gridFactory.AppendChild(buttonFactory);
             return gridFactory;
