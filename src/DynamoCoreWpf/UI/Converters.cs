@@ -3917,20 +3917,36 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
-    /// Returns a dark or light color depending on the contrast ration of the color with the background color
-    /// Contrast ration should be larger than 4.5:1
+    /// Returns a dark or light color depending on the contrast ratio of the color with the background color
+    /// Contrast ratio should be larger than 4.5:1
     /// Contrast calculation algorithm from https://stackoverflow.com/questions/70187918/adapt-given-color-pairs-to-adhere-to-w3c-accessibility-standard-for-epubs/70192373#70192373
+    ///
+    /// Expected values for controlType:
+    /// - "groupPortToggle" : applies alternate dark color for optional/unconnected port toggle controls
+    /// - null : applies default dark color for annotation text and description
     /// </summary>
     public class TextForegroundSaturationColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            var controlType = parameter as string;
+
+            // Text and description colors
             var lightColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WhiteColor"];
             var darkColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["DarkerGrey"];
+            // Port toggle colors
+            var lightColorToggle = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["Blue350"];
+            var darkColorToggle = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["Blue450"];
 
             var backgroundColor = (System.Windows.Media.Color)value;
-
             var contrastRatio = GetContrastRatio(darkColor, backgroundColor);
+
+            // Custom scheme override
+            if (controlType == "groupPortToggle")
+            {
+                lightColor = lightColorToggle;
+                darkColor = darkColorToggle;
+            }
 
             return contrastRatio < 4.5 ? new SolidColorBrush(lightColor) : new SolidColorBrush(darkColor);
         }
@@ -4334,6 +4350,23 @@ namespace Dynamo.Controls
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converts a boolean value to an angle for rotating an arrow icon.
+    /// Returns 0° when true (expanded), and 180° when false (collapsed).
+    /// </summary>
+    public class BooleanToAngleConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return (value is bool isChecked && isChecked) ? 0.0 : 180.0;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return Binding.DoNothing;
         }
     }
 }

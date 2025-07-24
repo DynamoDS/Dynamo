@@ -80,6 +80,9 @@ namespace Dynamo.Configuration
         private string backupLocation;
         private string templateFilePath;
         private bool isMLAutocompleteTOUApproved;
+        private bool optionalInputsCollapsed;
+        private bool unconnectedOutputsCollapsed;
+        private bool collapseToMinSize;
 
         #region Constants
         /// <summary>
@@ -194,6 +197,48 @@ namespace Dynamo.Configuration
         /// Indicates if groups should display the default description.
         /// </summary>
         public bool ShowDefaultGroupDescription { get; set; }
+
+        /// <summary>
+        /// Indicates if the optional input ports are collapsed by default.
+        /// </summary>
+        public bool OptionalInPortsCollapsed
+        {
+            get => optionalInputsCollapsed;
+            set
+            {
+                if (optionalInputsCollapsed == value) return;
+                optionalInputsCollapsed = value;
+                RaisePropertyChanged(nameof(OptionalInPortsCollapsed));
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the unconnected output ports are hidden by default.
+        /// </summary>
+        public bool UnconnectedOutPortsCollapsed
+        {
+            get => unconnectedOutputsCollapsed;
+            set
+            {
+                if (unconnectedOutputsCollapsed == value) return;
+                unconnectedOutputsCollapsed = value;
+                RaisePropertyChanged(nameof(UnconnectedOutPortsCollapsed));
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the groups should be collapsed to minimal size by default.
+        /// </summary>
+        public bool CollapseToMinSize
+        {
+            get => collapseToMinSize;
+            set
+            {
+                if (collapseToMinSize == value) return;
+                collapseToMinSize = value;
+                RaisePropertyChanged(nameof(CollapseToMinSize));
+            }
+        }
 
         /// <summary>
         /// Indicates if Host units should be used for graphic helpers for Dynamo Revit
@@ -1001,6 +1046,9 @@ namespace Dynamo.Configuration
             DefaultRunType = RunType.Automatic;
             DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
             ShowDefaultGroupDescription = true;
+            OptionalInPortsCollapsed = true;
+            UnconnectedOutPortsCollapsed = true;
+            CollapseToMinSize = true;
 
             BackupInterval = DefaultBackupInterval;
             BackupFilesCount = 1;
