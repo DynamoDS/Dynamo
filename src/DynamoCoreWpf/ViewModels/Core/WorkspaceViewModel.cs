@@ -485,6 +485,27 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// When enabled, some child wpf framework elements will not animate opacity changes.
+        /// Useful for improving performance during zoom.
+        /// This property is deprecated and will be removed in a future version of Dynamo, use NodeCountOptimizationEnabled instead.
+        /// </summary>
+        [JsonIgnore]
+        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo, use NodeCountOptimizationEnabled instead.")]
+        public bool StopNodeViewOpacityAnimations
+        {
+            get => stopNodeViewOpacityAnimations;
+            set
+            {
+                if (stopNodeViewOpacityAnimations != value)
+                {
+                    stopNodeViewOpacityAnimations = value;
+                    RaisePropertyChanged(nameof(StopNodeViewOpacityAnimations));
+                }
+            }
+        }
+        private bool stopNodeViewOpacityAnimations = false;
+
        /// <summary>
        /// When enabled, some child WPF framework elements will not animate opacity changes,
        /// and will enable bitmap cache on zoomed out state.
