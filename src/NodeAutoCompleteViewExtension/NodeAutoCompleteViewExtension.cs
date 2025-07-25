@@ -80,7 +80,7 @@ namespace Dynamo.NodeAutoComplete
 
         public override void Shutdown()
         {
-            WorkspaceView.RequesNodeAutoCompleteBar -= OnNodeAutoCompleteBarRequested;
+            WorkspaceView.RequestShowNodeAutoCompleteBar -= OnShowNodeAutoCompleteBarRequested;
         }
 
         public override void Startup(ViewStartupParams viewStartupParams)
@@ -147,7 +147,7 @@ namespace Dynamo.NodeAutoComplete
 #endif
             }
 
-            WorkspaceView.RequesNodeAutoCompleteBar += OnNodeAutoCompleteBarRequested;
+            WorkspaceView.RequestShowNodeAutoCompleteBar += OnShowNodeAutoCompleteBarRequested;
 
         }
 
@@ -169,7 +169,7 @@ namespace Dynamo.NodeAutoComplete
         private static NodeAutoCompleteBarViewModel nodeAutoCompleteBarViewModel;
         private static Guid lastWorkspaceId;
 
-        private void OnNodeAutoCompleteBarRequested(Window parentWindow, ViewModelBase viewModelBase)
+        private void OnShowNodeAutoCompleteBarRequested(Window parentWindow, ViewModelBase viewModelBase)
         {
             PortViewModel portViewModel = viewModelBase as PortViewModel;
             if (parentWindow is null || portViewModel is null)

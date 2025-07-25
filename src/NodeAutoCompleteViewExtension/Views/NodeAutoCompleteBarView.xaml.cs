@@ -9,6 +9,7 @@ using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.NodeAutoComplete.ViewModels;
 using Dynamo.ViewModels;
+using Dynamo.Views;
 
 namespace Dynamo.NodeAutoComplete.Views
 {
@@ -146,6 +147,7 @@ namespace Dynamo.NodeAutoComplete.Views
             ViewModel.ParentNodeRemoved += OnParentNodeRemoved;
             ViewModel.RefocusSearchBox += OnRefocusSearchbox;
             Owner.LocationChanged += OwnerMoved;
+            DynamoModel.RequestHideNodeAutoCompleteBar += OnHideNodeAutoCompleteBarAction;
             if (ViewModel.PortViewModel != null)
             {
                 ViewModel.PortViewModel.PortModel.Owner.PropertyChanged += Owner_PropertyChanged;
@@ -159,6 +161,7 @@ namespace Dynamo.NodeAutoComplete.Views
             ViewModel.ParentNodeRemoved -= OnParentNodeRemoved;
             ViewModel.RefocusSearchBox -= OnRefocusSearchbox;
             Owner.LocationChanged -= OwnerMoved;
+            DynamoModel.RequestHideNodeAutoCompleteBar -= OnHideNodeAutoCompleteBarAction;
             if (ViewModel.PortViewModel != null)
             {
                 ViewModel.PortViewModel.PortModel.Owner.PropertyChanged -= Owner_PropertyChanged;
@@ -176,6 +179,11 @@ namespace Dynamo.NodeAutoComplete.Views
                     Dispatcher.BeginInvoke(UpdatePosition, DispatcherPriority.Loaded);
                     break;
             }
+        }
+
+        private void OnHideNodeAutoCompleteBarAction()
+        {
+            OnHideNodeAutoCompleteBar();
         }
 
         //Hide the window and unsubscribe from model events.
@@ -200,13 +208,13 @@ namespace Dynamo.NodeAutoComplete.Views
             {
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    ViewModel.DeleteTransientNodes();
+                    ViewModel.DiscardResult();
                     ViewModel.PortViewModel = null;
                 }), DispatcherPriority.Loaded);
             }
             else
             {
-                ViewModel.DeleteTransientNodes();
+                ViewModel.DiscardResult();
                 ViewModel.PortViewModel = null;
             }
         }
@@ -334,10 +342,25 @@ namespace Dynamo.NodeAutoComplete.Views
             OnHideNodeAutoCompleteBar();
         }
 
+        internal void ImageAI_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
+        }
+
         internal void CloseAutoCompleteWindow(object sender, RoutedEventArgs e)
         {
             OnHideNodeAutoCompleteBar();
         }
 
+        private void NodeAutoCompleteBarView_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            if(ViewModel != null && ViewModel.HasUnfilteredResults && !ViewModel.IsDropDownOpen)
+            {
+                ViewModel.IsDropDownOpen = true;
+                AutoCompleteSearchBox.Text = e.Text;
+                AutoCompleteSearchBox.CaretIndex = AutoCompleteSearchBox.Text.Length;
+                e.Handled = true;
+            }
+        }
     }
 }

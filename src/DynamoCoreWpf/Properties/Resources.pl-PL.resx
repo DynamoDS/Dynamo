@@ -3801,10 +3801,10 @@ Aby ustawić ten plik jako nowy szablon, zapisz go w innym folderze, a następni
     <value>Ta grupa jest zablokowana. Kliknij, aby odblokować.</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>Włącz nowy interfejs użytkownika</value>
+    <value>Włącz przestawny pasek narzędzi</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
-    <value>Włącz nowe menu przestawne dla sugestii dotyczących węzłów, aby usprawnić proces roboczy. Wyłącz tę opcję, aby powrócić do tradycyjnego wyskakującego okna dialogowego.</value>
+    <value>Włącz przestawny pasek narzędzi dla sugestii dotyczących węzłów, aby usprawnić proces roboczy. Wyłącz tę opcję, aby powrócić do tradycyjnego wyskakującego okna dialogowego.</value>
   </data>
   <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
     <value>_Zrzuć dane ikon węzłów</value>

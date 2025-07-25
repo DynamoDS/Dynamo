@@ -744,7 +744,7 @@ Keine Sorge: Sie erhalten die Möglichkeit, Ihre Arbeit zu speichern.</value>
     <value>Arbeitsbereich als Bild exportieren</value>
   </data>
   <data name="DynamoViewToolbarNewButtonTooltip" xml:space="preserve">
-    <value>Neu [Strg + N]</value>
+    <value>Neu [Ctrl + N]</value>
   </data>
   <data name="DynamoViewToolbarOpenButtonTooltip" xml:space="preserve">
     <value>Öffnen [Strg + O]</value>
@@ -3250,7 +3250,7 @@ Sie können dies unter Voreinstellungen -&gt; Sicherheit verwalten.</value>
     <value>Einstellungsdateien ({0})|{0}</value>
   </data>
   <data name="ImportSettingsDialogTitle" xml:space="preserve">
-    <value>Einstellungen importieren</value>
+    <value>Einstell. importieren</value>
   </data>
   <data name="ImportSettingsSuccessMessage" xml:space="preserve">
     <value>Import erfolgreich</value>
@@ -3799,10 +3799,10 @@ Führen Sie #Download und Installation=https://manage.autodesk.com/products/upda
     <value>Diese Gruppe ist eingefroren. Klicken Sie, um sie freizugeben.</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>Neue Benutzeroberfläche aktivieren</value>
+    <value>Verschiebbaren Werkzeugkasten aktivieren</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
-    <value>Aktivieren Sie das neue verschiebbare Menü für Blockvorschläge, um einen optimierten Arbeitsablauf zu ermöglichen. Deaktivieren Sie diese Option, um zum herkömmlichen Popup-Dialogfeld zurückzukehren.</value>
+    <value>Aktivieren Sie einen verschiebbaren Werkzeugkasten für Blockvorschläge, um einen optimierten Arbeitsablauf zu ermöglichen. Deaktivieren Sie diese Option, um zum herkömmlichen Popup-Dialogfeld zurückzukehren.</value>
   </data>
   <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
     <value>_Blocksymboldaten ausgeben</value>

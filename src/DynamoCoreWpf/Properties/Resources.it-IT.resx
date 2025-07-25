@@ -3783,10 +3783,10 @@ Per trasformare questo file in un nuovo modello, salvarlo in un'altra cartella e
     <value>Questo gruppo è congelato. Fare clic per scongelare.</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>Attiva nuova interfaccia utente</value>
+    <value>Attiva barra degli strumenti mobile</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
-    <value>Attiva il nuovo menu mobile per i suggerimenti relativi ai nodi per un workflow più semplificato. Disattivare per tornare alla tradizionale finestra di dialogo a comparsa.</value>
+    <value>Attiva una barra degli strumenti mobile per i suggerimenti relativi ai nodi per un workflow più semplificato. Disattivare per tornare alla tradizionale finestra di dialogo a comparsa.</value>
   </data>
   <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
     <value>_Rimuovi dati icona nodo</value>

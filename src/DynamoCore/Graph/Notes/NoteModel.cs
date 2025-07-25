@@ -146,7 +146,15 @@ namespace Dynamo.Graph.Notes
             Text = helper.ReadString("text", "New Note");
             X = helper.ReadDouble("x", 0.0);
             Y = helper.ReadDouble("y", 0.0);
-            PinnedNodeGuid = helper.ReadGuid("pinnedNode", Guid.Empty);
+
+            try
+            {
+                PinnedNodeGuid = helper.ReadGuid("pinnedNode");
+            }
+            catch (Exception) { }
+
+            if (pinnedNode != null && helper.ReadGuid("pinnedNode") != Guid.Empty)
+                pinnedNode.GUID = helper.ReadGuid("pinnedNode");
 
             // Notify listeners that the position of the note has changed, 
             // then parent group will also redraw itself.

@@ -136,7 +136,6 @@
     <controls:ElementTypeToShortConverter x:Key="ElementTypeToShortConverter" />
     <controls:GroupTitleVisibilityConverter x:Key="GroupTitleVisibilityConverter" />
     <controls:LibraryViewModeToBoolConverter x:Key="LibraryViewModeToBoolConverter" />
-    <controls:WorkspaceContextMenuHeightConverter x:Key="WorkspaceContextMenuHeightConverter" />
     <controls:TreeViewLineConverter x:Key="TreeViewLineConverter" />
     <controls:TreeViewLineMarginConverter x:Key="TreeViewLineMarginConverter" />
     <controls:TreeViewHLineMarginConverter x:Key="TreeViewHLineMarginConverter" />

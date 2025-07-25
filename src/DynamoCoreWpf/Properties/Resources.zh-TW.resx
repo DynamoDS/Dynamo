@@ -3800,10 +3800,10 @@
     <value>此群組已凍結。按一下可解凍。</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>啟用新的 UI</value>
+    <value>啟用浮動工具列</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
-    <value>對節點建議啟用新的浮動式功能表，使用更簡化的工作流程。關閉可回到傳統的快顯對話方塊。</value>
+    <value>對節點建議啟用浮動工具列，使用更簡化的工作流程。關閉可回到傳統的快顯對話方塊。</value>
   </data>
   <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
     <value>傾印節點圖示資料(_D)</value>

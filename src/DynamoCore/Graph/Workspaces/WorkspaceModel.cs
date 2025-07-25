@@ -143,10 +143,6 @@ namespace Dynamo.Graph.Workspaces
         public string PinnedNode;
         public double WidthAdjustment;
         public double HeightAdjustment;
-        public bool IsOptionalInPortsCollapsed;
-        public bool IsUnconnectedOutPortsCollapsed;
-        public bool hasToggledOptionalInPorts;
-        public bool HasToggledUnconnectedOutPorts;
 
         // TODO, Determine if these are required
         public double Left;
@@ -175,11 +171,7 @@ namespace Dynamo.Graph.Workspaces
                 this.GroupStyleId == other.GroupStyleId &&
                 this.Background == other.Background &&
                 this.WidthAdjustment == other.WidthAdjustment &&
-                this.HeightAdjustment == other.HeightAdjustment &&
-                this.IsOptionalInPortsCollapsed == other.IsOptionalInPortsCollapsed &&
-                this.IsUnconnectedOutPortsCollapsed == other.IsUnconnectedOutPortsCollapsed &&
-                this.hasToggledOptionalInPorts == other.hasToggledOptionalInPorts &&
-                this.HasToggledUnconnectedOutPorts == other.HasToggledUnconnectedOutPorts;
+                this.HeightAdjustment == other.HeightAdjustment;
 
             //TODO try to get rid of these if possible
             //needs investigation if we are okay letting them get 
@@ -1633,12 +1625,12 @@ namespace Dynamo.Graph.Workspaces
 
             AddNode(node);
 
-            HasUnsavedChanges = true;
-
-            if (node is CodeBlockNodeModel cbn
-                && string.IsNullOrEmpty(cbn.Code)) return;
-
-            RequestRun();
+            if (!node.IsTransient)
+            {
+                HasUnsavedChanges = true;
+                if (node is CodeBlockNodeModel cbn && string.IsNullOrEmpty(cbn.Code)) return;
+                RequestRun();
+            }
         }
 
         protected virtual void RegisterNode(NodeModel node)
@@ -1670,6 +1662,11 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         protected virtual void NodeModified(NodeModel node)
         {
+            if (node.IsTransient)
+            {
+                return;
+            }
+
             HasUnsavedChanges = true;
         }
 
@@ -1689,7 +1686,10 @@ namespace Dynamo.Graph.Workspaces
             OnNodeRemoved(model);
             // Force this change to address the edge case that user deleting the right edge
             // node and do not see unsaved changes, e.g. the watch node at end of the graph
-            HasUnsavedChanges = true;
+            if (!model.IsTransient)
+            {
+                HasUnsavedChanges = true;
+            }
 
             if (dispose)
             {
@@ -2715,11 +2715,6 @@ namespace Dynamo.Graph.Workspaces
             annotationModel.GUID = annotationGuidValue;
             annotationModel.HeightAdjustment = annotationViewInfo.HeightAdjustment;
             annotationModel.WidthAdjustment = annotationViewInfo.WidthAdjustment;
-            annotationModel.IsOptionalInPortsCollapsed = annotationViewInfo.IsOptionalInPortsCollapsed;
-            annotationModel.IsUnconnectedOutPortsCollapsed = annotationViewInfo.IsUnconnectedOutPortsCollapsed;
-            annotationModel.HasToggledOptionalInPorts = annotationViewInfo.hasToggledOptionalInPorts;
-            annotationModel.HasToggledUnconnectedOutPorts = annotationViewInfo.HasToggledUnconnectedOutPorts;
-
             annotationModel.UpdateGroupFrozenStatus();
 
             annotationModel.ModelBaseRequested += annotationModel_GetModelBase;

@@ -1,20 +1,15 @@
-using Dynamo.Microsoft.Xaml.Behaviors;
-using Dynamo.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Dynamo.Controls;
+using Dynamo.Microsoft.Xaml.Behaviors;
+using Dynamo.ViewModels;
+using Dynamo.Views;
 
 namespace Dynamo.UI.Controls
 {
@@ -44,6 +39,7 @@ namespace Dynamo.UI.Controls
 
         private static BooleanToVisibilityConverter _booleanToVisibilityConverter = new BooleanToVisibilityConverter();
         private static FontFamily _artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
+        private static readonly ZoomToInverseVisibilityCollapsedConverter _zoomToInverseVisibilityCollapsedConverter = new ZoomToInverseVisibilityCollapsedConverter();
 
         static InPorts()
         {
@@ -72,7 +68,8 @@ namespace Dynamo.UI.Controls
             MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Name = "GapBetweenPortNameAndUseLevelSpinner", Width = new GridLength(6) });
             MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Name = "UseLevelSpinnerColumn", Width = new GridLength(0) });
             MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Name = "ChevronColumn", Width = new GridLength(0) });
-            MainGrid.ContextMenuOpening += (s,e) => {
+            MainGrid.ContextMenuOpening += (s, e) =>
+            {
                 e.Handled = true; // Suppress the default context menu
             };
 
@@ -209,6 +206,11 @@ namespace Dynamo.UI.Controls
 
             nodeAutoCompleteMarker.Child = nodeAutoCompleteMarkerLabel;
             NodeAutoCompleteHover.Children.Add(nodeAutoCompleteMarker);
+            NodeAutoCompleteHover.SetBinding(UIElement.VisibilityProperty, new Binding("DataContext.Zoom")
+            {
+                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
+                Converter = _zoomToInverseVisibilityCollapsedConverter
+            });
 
             MainGrid.Children.Add(PortSnapping);
             MainGrid.Children.Add(PortBackgroundBorder);

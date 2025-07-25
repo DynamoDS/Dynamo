@@ -125,8 +125,6 @@ Dynamo.Configuration.PreferenceSettings.BackupInterval.get -> int
 Dynamo.Configuration.PreferenceSettings.BackupInterval.set -> void
 Dynamo.Configuration.PreferenceSettings.BackupLocation.get -> string
 Dynamo.Configuration.PreferenceSettings.BackupLocation.set -> void
-Dynamo.Configuration.PreferenceSettings.CollapseToMinSize.get -> bool
-Dynamo.Configuration.PreferenceSettings.CollapseToMinSize.set -> void
 Dynamo.Configuration.PreferenceSettings.ConnectorType.get -> Dynamo.Graph.Connectors.ConnectorType
 Dynamo.Configuration.PreferenceSettings.ConnectorType.set -> void
 Dynamo.Configuration.PreferenceSettings.ConsoleHeight.get -> int
@@ -219,8 +217,6 @@ Dynamo.Configuration.PreferenceSettings.NumberFormat.get -> string
 Dynamo.Configuration.PreferenceSettings.NumberFormat.set -> void
 Dynamo.Configuration.PreferenceSettings.OpenFileInManualExecutionMode.get -> bool
 Dynamo.Configuration.PreferenceSettings.OpenFileInManualExecutionMode.set -> void
-Dynamo.Configuration.PreferenceSettings.OptionalInPortsCollapsed.get -> bool
-Dynamo.Configuration.PreferenceSettings.OptionalInPortsCollapsed.set -> void
 Dynamo.Configuration.PreferenceSettings.PackageDirectoriesToUninstall.get -> System.Collections.Generic.List<string>
 Dynamo.Configuration.PreferenceSettings.PackageDirectoriesToUninstall.set -> void
 Dynamo.Configuration.PreferenceSettings.PackageDownloadTouAccepted.get -> bool
@@ -264,8 +260,6 @@ Dynamo.Configuration.PreferenceSettings.StaticFields() -> System.Collections.Gen
 Dynamo.Configuration.PreferenceSettings.TemplateFilePath.get -> string
 Dynamo.Configuration.PreferenceSettings.TemplateFilePath.set -> void
 Dynamo.Configuration.PreferenceSettings.TrustedLocations.get -> System.Collections.Generic.List<string>
-Dynamo.Configuration.PreferenceSettings.UnconnectedOutPortsCollapsed.get -> bool
-Dynamo.Configuration.PreferenceSettings.UnconnectedOutPortsCollapsed.set -> void
 Dynamo.Configuration.PreferenceSettings.UseHardwareAcceleration.get -> bool
 Dynamo.Configuration.PreferenceSettings.UseHardwareAcceleration.set -> void
 Dynamo.Configuration.PreferenceSettings.UseHostScaleUnits.get -> bool
@@ -708,30 +702,18 @@ Dynamo.Graph.Annotations.AnnotationModel.GroupState.get -> Dynamo.Graph.Nodes.El
 Dynamo.Graph.Annotations.AnnotationModel.GroupStyleId.get -> System.Guid
 Dynamo.Graph.Annotations.AnnotationModel.GroupStyleId.set -> void
 Dynamo.Graph.Annotations.AnnotationModel.HasNestedGroups.get -> bool
-Dynamo.Graph.Annotations.AnnotationModel.HasToggledOptionalInPorts.get -> bool
-Dynamo.Graph.Annotations.AnnotationModel.HasToggledOptionalInPorts.set -> void
-Dynamo.Graph.Annotations.AnnotationModel.HasToggledUnconnectedOutPorts.get -> bool
-Dynamo.Graph.Annotations.AnnotationModel.HasToggledUnconnectedOutPorts.set -> void
 Dynamo.Graph.Annotations.AnnotationModel.HeightAdjustment.get -> double
 Dynamo.Graph.Annotations.AnnotationModel.HeightAdjustment.set -> void
 Dynamo.Graph.Annotations.AnnotationModel.InitialHeight.get -> double
 Dynamo.Graph.Annotations.AnnotationModel.InitialHeight.set -> void
 Dynamo.Graph.Annotations.AnnotationModel.InitialTop.get -> double
 Dynamo.Graph.Annotations.AnnotationModel.InitialTop.set -> void
-Dynamo.Graph.Annotations.AnnotationModel.IsCollapsedToMinSize.get -> bool
-Dynamo.Graph.Annotations.AnnotationModel.IsCollapsedToMinSize.set -> void
 Dynamo.Graph.Annotations.AnnotationModel.IsExpanded.get -> bool
 Dynamo.Graph.Annotations.AnnotationModel.IsExpanded.set -> void
 Dynamo.Graph.Annotations.AnnotationModel.IsFrozen.get -> bool
-Dynamo.Graph.Annotations.AnnotationModel.IsOptionalInPortsCollapsed.get -> bool
-Dynamo.Graph.Annotations.AnnotationModel.IsOptionalInPortsCollapsed.set -> void
-Dynamo.Graph.Annotations.AnnotationModel.IsUnconnectedOutPortsCollapsed.get -> bool
-Dynamo.Graph.Annotations.AnnotationModel.IsUnconnectedOutPortsCollapsed.set -> void
 Dynamo.Graph.Annotations.AnnotationModel.IsVisible.get -> bool
 Dynamo.Graph.Annotations.AnnotationModel.loadFromXML.get -> bool
 Dynamo.Graph.Annotations.AnnotationModel.loadFromXML.set -> void
-Dynamo.Graph.Annotations.AnnotationModel.MinWidthOnCollapsed.get -> double
-Dynamo.Graph.Annotations.AnnotationModel.MinWidthOnCollapsed.set -> void
 Dynamo.Graph.Annotations.AnnotationModel.ModelAreaHeight.get -> double
 Dynamo.Graph.Annotations.AnnotationModel.ModelAreaHeight.set -> void
 Dynamo.Graph.Annotations.AnnotationModel.ModelBaseRequested -> System.Func<System.Guid, Dynamo.Graph.ModelBase>
@@ -1302,16 +1284,12 @@ Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.ExtraAnnotationViewInfo() -> voi
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.FontSize -> double
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.GroupStyleId -> System.Guid
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.HasNestedGroups -> bool
-Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.hasToggledOptionalInPorts -> bool
-Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.HasToggledUnconnectedOutPorts -> bool
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.Height -> double
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.HeightAdjustment -> double
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.Id -> string
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.InitialHeight -> double
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.InitialTop -> double
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.IsExpanded -> bool
-Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.IsOptionalInPortsCollapsed -> bool
-Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.IsUnconnectedOutPortsCollapsed -> bool
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.Left -> double
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.Nodes -> System.Collections.Generic.IEnumerable<string>
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.PinnedNode -> string
@@ -1586,8 +1564,6 @@ Dynamo.Interfaces.IPreferences.BackgroundPreviews.get -> System.Collections.Gene
 Dynamo.Interfaces.IPreferences.BackgroundPreviews.set -> void
 Dynamo.Interfaces.IPreferences.BackupFiles.get -> System.Collections.Generic.List<string>
 Dynamo.Interfaces.IPreferences.BackupFiles.set -> void
-Dynamo.Interfaces.IPreferences.CollapseToMinSize.get -> bool
-Dynamo.Interfaces.IPreferences.CollapseToMinSize.set -> void
 Dynamo.Interfaces.IPreferences.ConnectorType.get -> Dynamo.Graph.Connectors.ConnectorType
 Dynamo.Interfaces.IPreferences.ConnectorType.set -> void
 Dynamo.Interfaces.IPreferences.ConsoleHeight.get -> int
@@ -1611,8 +1587,6 @@ Dynamo.Interfaces.IPreferences.MaxNumRecentFiles.get -> int
 Dynamo.Interfaces.IPreferences.MaxNumRecentFiles.set -> void
 Dynamo.Interfaces.IPreferences.NumberFormat.get -> string
 Dynamo.Interfaces.IPreferences.NumberFormat.set -> void
-Dynamo.Interfaces.IPreferences.OptionalInPortsCollapsed.get -> bool
-Dynamo.Interfaces.IPreferences.OptionalInPortsCollapsed.set -> void
 Dynamo.Interfaces.IPreferences.PackageDirectoriesToUninstall.get -> System.Collections.Generic.List<string>
 Dynamo.Interfaces.IPreferences.PackageDirectoriesToUninstall.set -> void
 Dynamo.Interfaces.IPreferences.PythonTemplateFilePath.get -> string
@@ -1631,8 +1605,6 @@ Dynamo.Interfaces.IPreferences.ShowPreviewBubbles.get -> bool
 Dynamo.Interfaces.IPreferences.ShowPreviewBubbles.set -> void
 Dynamo.Interfaces.IPreferences.TemplateFilePath.get -> string
 Dynamo.Interfaces.IPreferences.TemplateFilePath.set -> void
-Dynamo.Interfaces.IPreferences.UnconnectedOutPortsCollapsed.get -> bool
-Dynamo.Interfaces.IPreferences.UnconnectedOutPortsCollapsed.set -> void
 Dynamo.Interfaces.IPreferences.WindowH.get -> double
 Dynamo.Interfaces.IPreferences.WindowH.set -> void
 Dynamo.Interfaces.IPreferences.WindowW.get -> double
@@ -1683,7 +1655,6 @@ Dynamo.Linting.Rules.NodeLinterRule
 Dynamo.Linting.Rules.NodeLinterRule.NodeLinterRule() -> void
 Dynamo.Logging.DynamoLogger
 Dynamo.Logging.DynamoLogger.ClearStartupNotifications() -> void
-Dynamo.Logging.DynamoLogger.Dispose() -> void
 Dynamo.Logging.DynamoLogger.DynamoLogger(Dynamo.Configuration.DebugSettings debugSettings, string logDirectory, bool isTestMode, bool isCLIMode, bool isServiceMode) -> void
 Dynamo.Logging.DynamoLogger.Log(string message) -> void
 Dynamo.Logging.DynamoLogger.Log(string message, Dynamo.Logging.LogLevel level) -> void
@@ -1877,6 +1848,7 @@ Dynamo.Models.DynamoModel.DefaultStartConfiguration.IsHeadless.get -> bool
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.IsHeadless.set -> void
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.IsServiceMode.get -> bool
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.IsServiceMode.set -> void
+Dynamo.Models.DynamoModel.DefaultStartConfiguration.Logger.set -> void
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.NoNetworkMode.get -> bool
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.NoNetworkMode.set -> void
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.PathResolver.get -> Dynamo.Interfaces.IPathResolver
@@ -3048,6 +3020,7 @@ static Dynamo.Wpf.Interfaces.LayoutSpecification.FromJSONString(string jsonText)
 static readonly Dynamo.Configuration.Configurations.AutodeskAsString -> string
 static readonly Dynamo.Configuration.Configurations.BackupFolderName -> string
 static readonly Dynamo.Configuration.Configurations.CBNMaxPortNameLength -> int
+static readonly Dynamo.Configuration.Configurations.CBNMaxTooltipLength -> int
 static readonly Dynamo.Configuration.Configurations.CodeBlockOutputPortHeightInPixels -> double
 static readonly Dynamo.Configuration.Configurations.ConnectorBaseThickness -> double
 static readonly Dynamo.Configuration.Configurations.DoubleSliderTextBoxWidth -> double
@@ -3160,6 +3133,7 @@ virtual Dynamo.Graph.Workspaces.WorkspaceModel.RegisterNode(Dynamo.Graph.Nodes.N
 virtual Dynamo.Graph.Workspaces.WorkspaceModel.ResetWorkspaceCore() -> void
 virtual Dynamo.Graph.Workspaces.WorkspaceModel.Save(string filePath, bool isBackup = false, Dynamo.Engine.EngineController engine = null) -> void
 virtual Dynamo.Linting.Rules.LinterRule.CleanupRule(Dynamo.Graph.Workspaces.WorkspaceModel muribundWorkspaceModel) -> void
+virtual Dynamo.Logging.DynamoLogger.Dispose() -> void
 virtual Dynamo.Models.DynamoModel.InsertFileImpl(Dynamo.Models.DynamoModel.InsertFileCommand command) -> void
 virtual Dynamo.Models.DynamoModel.OnCleanup() -> void
 virtual Dynamo.Models.DynamoModel.OnDeletionComplete(object sender, System.EventArgs e) -> void
@@ -3192,5 +3166,4 @@ virtual Dynamo.Search.SearchElements.NodeSearchElement.GenerateInputParameters()
 virtual Dynamo.Search.SearchElements.NodeSearchElement.GenerateOutputParameters() -> System.Collections.Generic.IEnumerable<string>
 virtual Dynamo.Search.SearchElements.NodeSearchElement.OnItemProduced(Dynamo.Graph.Nodes.NodeModel obj) -> void
 virtual Dynamo.Search.SearchElements.SearchElementBase.CreationName.get -> string
-
-
+virtual Dynamo.Search.SearchElements.SearchElementBase.CreationName.get -> string

@@ -3801,10 +3801,10 @@ Para transformar este arquivo em um novo modelo, salve-o em uma pasta diferente 
     <value>Esse grupo está congelado. Clique para descongelar.</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>Ativar nova interface do usuário</value>
+    <value>Ativar barra de ferramentas flutuante</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
-    <value>Ative o novo menu flutuante para obter sugestões de nós para um fluxo de trabalho mais simplificado. Desative para retornar à caixa de diálogo pop-up tradicional.</value>
+    <value>Ative uma barra de ferramentas flutuante para as sugestões de nós para obter um fluxo de trabalho mais simplificado. Desative para retornar à caixa de diálogo pop-up tradicional.</value>
   </data>
   <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
     <value>_Descarregar dados do ícone de nó</value>

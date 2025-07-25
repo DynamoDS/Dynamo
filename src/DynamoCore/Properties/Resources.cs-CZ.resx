@@ -847,13 +847,13 @@ Tento balíček pravděpodobně obsahuje sestavu, která je blokována. Po odblo
     <value>Načítání knihovny uzlů...</value>
   </data>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
-    <value>Žádná doporučení</value>
+    <value>Žádná doporučení nejsou k dispozici</value>
   </data>
   <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
     <value>Nízká spolehlivost</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>Zatím nejsou žádná doporučení. Můžete zkusit přepnout na automatické dokončování shody typu uzlů.</value>
+    <value>Model se neustále vylepšuje – zkuste to brzy znovu</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
     <value>Nejsou dostupná žádná spolehlivá doporučení. Model se neustále vylepšuje – zkuste to brzy znovu.</value>
@@ -896,5 +896,8 @@ Tento balíček pravděpodobně obsahuje sestavu, která je blokována. Po odblo
   </data>
   <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
     <value>Kliknutím na ikonu jiskřivky vedle portu aktivujete automatické dokončování uzlů.</value>
+  </data>
+  <data name="UnknownErrorProcessingFile" xml:space="preserve">
+    <value>Při zpracování souboru došlo k neznámé chybě.</value>
   </data>
 </root>

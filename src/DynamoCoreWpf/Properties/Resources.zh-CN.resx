@@ -3757,7 +3757,7 @@
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>您的系统上似乎未设置 Autodesk Identity Manager。要确保完全访问所有功能，请使用 Autodesk Identity Manager 登录您的 Autodesk 帐户。
-#请在此处或通过 Autodesk Access 下载并安装=https://manage.autodesk.com/products/updates，然后登录。</value>
+请在此处或通过 Autodesk Access #下载并安装=https://manage.autodesk.com/products/updates，然后登录。</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>下载 Autodesk Identity Manager</value>
@@ -3799,10 +3799,10 @@
     <value>此组已冻结。单击以取消冻结。</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>启用新 UI</value>
+    <value>启用浮动工具栏</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
-    <value>启用新的浮动菜单以获取节点建议，以实现更简化的工作流。关闭可返回到传统的弹出对话框。</value>
+    <value>启用浮动工具栏以获取节点建议，以实现更简化的工作流。关闭可返回到传统的弹出对话框。</value>
   </data>
   <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
     <value>转储节点图标数据(D)</value>

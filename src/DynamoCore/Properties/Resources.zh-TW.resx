@@ -855,7 +855,7 @@ value : bool = false</value>
     <value>低信賴</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>還沒有任何建議。您可以嘗試切換到節點類型相符自動完成。</value>
+    <value>模型持續改進中 - 請稍後再回來查看</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
     <value>沒有讓人信賴的建議。模型持續改進中 - 請稍後再回來查看。</value>
@@ -898,5 +898,8 @@ value : bool = false</value>
   </data>
   <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
     <value>請按一下埠旁邊的發光圖示，以啟用「節點自動完成」。</value>
+  </data>
+  <data name="UnknownErrorProcessingFile" xml:space="preserve">
+    <value>處理檔案時發生不明錯誤。</value>
   </data>
 </root>

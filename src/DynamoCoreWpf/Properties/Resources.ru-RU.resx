@@ -2664,7 +2664,7 @@
     <value>Добавить папку</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
-    <value>Путь к файлам разметки (необязательно)</value>
+    <value>Путь к файлам Markdown (необязательно)</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectoryToolTip" xml:space="preserve">
     <value>Необязательная папка для документирования пакета в формате пометки.</value>
@@ -3801,10 +3801,10 @@
     <value>Эта группа заморожена. Щелкните, чтобы разморозить.</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>Включить новый интерфейс</value>
+    <value>Включить плавающую панель инструментов</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
-    <value>Включите новое плавающее меню для подсказок в отношении узлов, чтобы оптимизировать рабочий процесс. Отключите параметр, чтобы вернуться к стандартному всплывающему диалоговому окну.</value>
+    <value>Включите плавающую панель инструментов для получения рекомендаций в отношении узлов, чтобы оптимизировать рабочий процесс. Отключите параметр, чтобы вернуться к стандартному всплывающему диалоговому окну.</value>
   </data>
   <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
     <value>_Дамп данных значка узла</value>

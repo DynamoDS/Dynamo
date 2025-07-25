@@ -3801,10 +3801,10 @@ Dynamo を再起動してアンインストールを完了します。
     <value>このグループはフリーズされています。クリックすると、フリーズが解除されます。</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>新規 UI を有効にする</value>
+    <value>フローティング ツールバーを有効にする</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
-    <value>ノードの提案のための新しいフローティング メニューを有効にすることで、ワークフローさらに合理化できます。オフにすると、従来のポップアップ ダイアログに戻ります。</value>
+    <value>ノードを提案するフローティング ツールバーを有効にすることで、ワークフローをより効率化できます。オフにすると、従来のポップアップ ダイアログに戻ります。</value>
   </data>
   <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
     <value>ノード アイコン データをダンプ(_D)</value>

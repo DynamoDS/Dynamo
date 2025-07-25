@@ -3799,10 +3799,10 @@
     <value>이 그룹은 동결되었습니다. 동결을 해제하려면 클릭하십시오.</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>새 UI 활성화</value>
+    <value>부동 도구막대 활성화</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
-    <value>워크플로우를 간소화하려면 노드 추천을 위한 새로운 플로팅 메뉴를 활성화하십시오. 기존의 팝업 방식으로 돌아가려면 비활성화하면 됩니다.</value>
+    <value>더 효율적인 워크폴로우를 위해 노드 제안용 부동 도구막대를 활성화하십시오. 기존의 팝업 대화상자로 돌아가려면 비활성화하십시오.</value>
   </data>
   <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
     <value>_노드 아이콘 데이터 덤프</value>
