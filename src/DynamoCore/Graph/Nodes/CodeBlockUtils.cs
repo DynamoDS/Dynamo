@@ -304,7 +304,9 @@ namespace Dynamo.Graph.Nodes
                 case ExprListNode:
                 case ArrayNode:
                     return "list";
-                case RangeExprNode:
+                case RangeExprNode ren:
+                    if (ren.HasRangeAmountOperator)
+                        return "sequence";
                     return "range";
                 case IdentifierNode idNode:
                     return idNode.Value;
