@@ -63,6 +63,27 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Converter is used in WorkspaceView. It makes context menu longer.
+    /// Since context menu includes now inCanvasSearch, it should be align according its' new height.
+    /// </summary>
+    [Obsolete("This class is deprecated and will be removed in a future version of Dynamo.")]
+    public class WorkspaceContextMenuHeightConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            double actualContextMenuHeight = (double)value;
+
+            return actualContextMenuHeight + 40.0;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
     public class ToolTipFirstLineOnly : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
