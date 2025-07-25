@@ -22,6 +22,9 @@ namespace Dynamo.ViewModels
 {
     public class AnnotationViewModel : ViewModelBase
     {
+        public delegate void SnapInputEventHandler(PortViewModel portViewModel);
+        public event SnapInputEventHandler SnapInputEvent;
+
         private AnnotationModel annotationModel;
         private IEnumerable<PortModel> originalInPorts;
         private IEnumerable<PortModel> originalOutPorts;
@@ -835,6 +838,8 @@ namespace Dynamo.ViewModels
                     // calculate new position for the proxy outports
                     groupPort.Center = CalculatePortPosition(groupPort, verticalPosition);
                     verticalPosition += originalPort.Height;
+
+                    AttachProxyPortEventHandlers(portViewModel);
                 }
             }
             return newPortViewModels;
@@ -859,11 +864,68 @@ namespace Dynamo.ViewModels
                     // calculate new position for the proxy outports
                     group.Center = CalculatePortPosition(group, verticalPosition);
                     verticalPosition += originalPort.Height;
+
+                    AttachProxyPortEventHandlers(portViewModel);
                 }
             }
 
             return newPortViewModels;
         }
+
+        #region Proxy Port Snapping Events
+
+        private void AttachProxyPortEventHandlers(PortViewModel portViewModel)
+        {
+            portViewModel.MouseEnter += ProxyPort_MouseEnter;
+            portViewModel.MouseLeave += ProxyPort_MouseLeave;
+            portViewModel.MouseLeftButtonDown += ProxyPort_MouseLeftButtonDown;
+        }
+
+        private void DetachProxyPortEventHandlers()
+        {
+            foreach (var portViewModel in InPorts)
+            {
+                portViewModel.MouseEnter -= ProxyPort_MouseEnter;
+                portViewModel.MouseLeave -= ProxyPort_MouseLeave;
+                portViewModel.MouseLeftButtonDown -= ProxyPort_MouseLeftButtonDown;
+            }
+
+            foreach (var portViewModel in OutPorts)
+            {
+                portViewModel.MouseEnter -= ProxyPort_MouseEnter;
+                portViewModel.MouseLeave -= ProxyPort_MouseLeave;
+                portViewModel.MouseLeftButtonDown -= ProxyPort_MouseLeftButtonDown;
+            }
+        }
+
+        private void ProxyPort_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is PortViewModel portViewModel)
+            {
+                portViewModel.EventType = PortEventType.MouseEnter;
+                SnapInputEvent?.Invoke(portViewModel);
+            }
+        }
+
+        private void ProxyPort_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is PortViewModel portViewModel)
+            {
+                portViewModel.EventType = PortEventType.MouseLeave;
+                SnapInputEvent?.Invoke(portViewModel);
+            }
+        }
+
+        private void ProxyPort_MouseLeftButtonDown(object sender, EventArgs e)
+        {
+            if (sender is PortViewModel portViewModel)
+            {
+                portViewModel.EventType = PortEventType.MouseLeftButtonDown;
+                SnapInputEvent?.Invoke(portViewModel);
+            }
+        }
+
+        #endregion
 
         internal void UpdateProxyPortsPosition()
         {
@@ -1062,6 +1124,7 @@ namespace Dynamo.ViewModels
         {
             if (InPorts.Any() || OutPorts.Any())
             {
+                DetachProxyPortEventHandlers();
                 InPorts.Clear();
                 OutPorts.Clear();
             }
