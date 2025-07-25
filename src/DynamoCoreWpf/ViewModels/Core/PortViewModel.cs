@@ -389,6 +389,10 @@ namespace Dynamo.ViewModels
 
         private CustomPopupPlacement[] PlacePortContextMenu(Size popupSize, Size targetSize, Point offset)
         {
+            // Offset to center the popup over the visible port
+            // Port visual is vertically centered inside a 34px InPorts control with 29px port height
+            const double portMarginOffset = 2.5;
+
             // The actual zoom here is confusing
             // What matters is the zoom factor measured from the scaled : unscaled node size
             var zoom = node.WorkspaceViewModel.Zoom;
@@ -411,14 +415,14 @@ namespace Dynamo.ViewModels
             // Calculate absolute popup halfheight to deduct from the overall y pos
             // Then add the header, port height and port index position
             var popupHeightOffset = - popupSize.Height * 0.5;
-            var headerHeightOffset = NodeModel.HeaderHeight * zoom;
-            var portHalfHeight = PortModel.Height * 0.5 * zoom;
-            var rowOffset = PortModel.Index * PortModel.Height * zoom;
-            var customNodeOffset = NodeModel.CustomNodeTopBorderHeight * zoom;
+            var headerHeightOffset = NodeModel.HeaderHeight;
+            var portHalfHeight = PortModel.Height * 0.5;
+            var rowOffset = PortModel.Index * PortModel.Height;
+            var customNodeOffset = NodeModel.CustomNodeTopBorderHeight;
 
             // popupSize.Height is already DPI-scaled (in screen pixels), so we do NOT apply dpiScale to it
             // All other layout values are in logical units and must be multiplied by dpiScale for correct placement
-            var y = popupHeightOffset + (headerHeightOffset + portHalfHeight + rowOffset + customNodeOffset) * dpiScale;
+            var y = popupHeightOffset + (headerHeightOffset + portHalfHeight + rowOffset + customNodeOffset + portMarginOffset) * zoom * dpiScale;
 
             var placement = new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None);
 
