@@ -504,7 +504,6 @@ namespace Dynamo.ViewModels
                 }
             }
         }
-        private bool stopNodeViewOpacityAnimations = false;
 
        /// <summary>
        /// When enabled, some child WPF framework elements will not animate opacity changes,
