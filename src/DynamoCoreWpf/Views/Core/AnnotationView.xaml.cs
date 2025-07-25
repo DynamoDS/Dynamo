@@ -2518,16 +2518,25 @@ namespace Dynamo.Nodes
             gridFactory.AppendChild(contentPresenterFactory);
 
             // Add Warning/Error Icon
-            gridFactory.AppendChild(CreateWarningErrorIcon());
+            var warningIcon = CreateWarningErrorIcon();
+            warningIcon.SetValue(Grid.ColumnProperty, 0);
+            warningIcon.SetValue(FrameworkElement.HorizontalAlignmentProperty, HorizontalAlignment.Right);
+            gridFactory.AppendChild(warningIcon);
 
             // Add Frozen Button Grid
-            gridFactory.AppendChild(CreateFrozenButtonGrid());
+            var frozenButtonGrid = CreateFrozenButtonGrid();
+            frozenButtonGrid.SetValue(Grid.ColumnProperty, 1);
+            gridFactory.AppendChild(frozenButtonGrid);
 
             // Add Expander Toggle Button
-            gridFactory.AppendChild(CreateExpanderToggleButton());
+            var expanderToggle = CreateExpanderToggleButton();
+            expanderToggle.SetValue(Grid.ColumnProperty, 2);
+            gridFactory.AppendChild(expanderToggle);
 
             // Add Context Menu Button
-            gridFactory.AppendChild(CreateContextMenuButton());
+            var contextMenuButton = CreateContextMenuButton();
+            contextMenuButton.SetValue(Grid.ColumnProperty, 3);
+            gridFactory.AppendChild(contextMenuButton);
 
             return gridFactory;
         }
@@ -2569,28 +2578,35 @@ namespace Dynamo.Nodes
             return imageFactory;
         }
 
-        private FrameworkElementFactory CreateToolTip()
+        private ToolTip CreateToolTip()
         {
-            var toolTip = new FrameworkElementFactory(typeof(DynamoToolTip));
-            toolTip.SetValue(DynamoToolTip.AttachmentSideProperty, DynamoToolTip.Side.Top);
-            toolTip.SetValue(FrameworkElement.StyleProperty, _dynamoToolTipTopStyle);
-            toolTip.SetValue(FrameworkElement.MarginProperty, new Thickness(5, 0, 0, 0));
+            var groupText = new TextBlock()
+            {
+                Margin = new Thickness(0, 0, 0, 10),
+            };
+            groupText.SetBinding(TextBlock.TextProperty, new Binding("AnnotationText"));
 
-            var stackPanel = new FrameworkElementFactory(typeof(StackPanel));
-            stackPanel.SetValue(StackPanel.OrientationProperty, Orientation.Vertical);
-            stackPanel.SetValue(FrameworkElement.MaxWidthProperty, 320.0);
+            var groupDescription = new TextBlock()
+            {
+                TextWrapping = TextWrapping.WrapWithOverflow,
+            };
+            groupDescription.SetBinding(TextBlock.TextProperty, new Binding("AnnotationDescriptionText"));
 
-            var textBlock1 = new FrameworkElementFactory(typeof(TextBlock));
-            textBlock1.SetBinding(TextBlock.TextProperty, new Binding("AnnotationText"));
-            textBlock1.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 0, 0, 10));
+            var stackPanel = new StackPanel
+            {
+                Orientation = Orientation.Vertical,
+                MaxWidth = 320
+            };
+            stackPanel.Children.Add(groupText);
+            stackPanel.Children.Add(groupDescription);
 
-            var textBlock2 = new FrameworkElementFactory(typeof(TextBlock));
-            textBlock2.SetBinding(TextBlock.TextProperty, new Binding("AnnotationDescriptionText"));
-            textBlock2.SetValue(TextBlock.TextWrappingProperty, TextWrapping.WrapWithOverflow);
-
-            stackPanel.AppendChild(textBlock1);
-            stackPanel.AppendChild(textBlock2);
-            toolTip.AppendChild(stackPanel);
+            var toolTip = new DynamoToolTip
+            {
+                AttachmentSide = DynamoToolTip.Side.Top,
+                Style = _dynamoToolTipTopStyle,
+                Margin = new Thickness(5, 0, 0, 0),
+                Content = stackPanel
+            };
 
             return toolTip;
         }
@@ -2634,14 +2650,15 @@ namespace Dynamo.Nodes
             });
 
             // Create button tooltip
-            var toolTipFactory = new FrameworkElementFactory(typeof(ToolTip));
-            toolTipFactory.SetValue(FrameworkElement.StyleProperty, _createGenericToolTipLightStyle);
-
-            var textBlockFactory = new FrameworkElementFactory(typeof(TextBlock));
-            textBlockFactory.SetValue(TextBlock.TextProperty, Wpf.Properties.Resources.GroupFrozenButtonToolTip);
-
-            toolTipFactory.AppendChild(textBlockFactory);
-            buttonFactory.SetValue(ToolTipProperty, toolTipFactory);
+            var tooltip = new ToolTip
+            {
+                Style = _createGenericToolTipLightStyle,
+                Content = new TextBlock
+                {
+                    Text = Wpf.Properties.Resources.GroupFrozenButtonToolTip
+                }
+            };
+            buttonFactory.SetValue(Button.ToolTipProperty, tooltip);
 
             gridFactory.AppendChild(buttonFactory);
             return gridFactory;
@@ -2785,26 +2802,6 @@ namespace Dynamo.Nodes
             ViewModel.AnnotationModel.TextBlockHeight =
                 this.groupDescriptionControls.DesiredSize.Height +
                 this.groupNameControl.DesiredSize.Height;
-        }
-        
-        private (double maxWidth, double totalHeight) MeasurePortBounds(ItemsControl portControl)
-        {
-            double maxWidth = 0;
-            double totalHeight = 0;
-
-            foreach (var item in portControl.Items)
-            {
-                if (portControl.ItemContainerGenerator.ContainerFromItem(item) is FrameworkElement container && container.IsVisible)
-                {
-                    container.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-                    var size = container.DesiredSize;
-
-                    maxWidth = Math.Max(maxWidth, size.Width);
-                    totalHeight += size.Height;
-                }
-            }
-
-            return (maxWidth, totalHeight);
         }
     }
 }
