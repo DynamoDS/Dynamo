@@ -328,6 +328,7 @@ namespace CoreNodeModelsWpf.Charts
             PortConnected -= BarChartNodeModel_PortConnected;
             PortDisconnected -= BarChartNodeModel_PortDisconnected;
             VMDataBridge.DataBridge.Instance.UnregisterCallback(GUID.ToString());
+            base.Dispose();
         }
 
         #endregion
