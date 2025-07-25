@@ -3231,6 +3231,8 @@ Dynamo.ViewModels.WorkspaceViewModel.SetZoomCommand.get -> Dynamo.UI.Commands.De
 Dynamo.ViewModels.WorkspaceViewModel.ShowAllWiresCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.WorkspaceViewModel.ShowHideAllGeometryPreviewCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.WorkspaceViewModel.ShowInCanvasSearchCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.WorkspaceViewModel.StopNodeViewOpacityAnimations.get -> bool
+Dynamo.ViewModels.WorkspaceViewModel.StopNodeViewOpacityAnimations.set -> void
 Dynamo.ViewModels.WorkspaceViewModel.UnpinAllPreviewBubblesTriggered -> Dynamo.ViewModels.ViewEventHandler
 Dynamo.ViewModels.WorkspaceViewModel.Watch3DViewModels.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.Watch3DFullscreenViewModel>
 Dynamo.ViewModels.WorkspaceViewModel.Watch3DViewModels.set -> void
