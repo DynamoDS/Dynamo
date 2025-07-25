@@ -490,6 +490,7 @@ namespace Dynamo.ViewModels
         /// Useful for improving performance during zoom.
         /// This property is deprecated and will be removed in a future version of Dynamo, use NodeCountOptimizationEnabled instead.
         /// </summary>
+        private bool stopNodeViewOpacityAnimations = false;
         [JsonIgnore]
         [Obsolete("This property is deprecated and will be removed in a future version of Dynamo, use NodeCountOptimizationEnabled instead.")]
         public bool StopNodeViewOpacityAnimations
