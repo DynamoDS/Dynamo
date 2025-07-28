@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -105,6 +105,20 @@ namespace Dynamo.Tests
             File.Delete(tempPath);
         }
 
+        [Test]
+        public void InfinityInputDoesNotThrowWarning()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\infinity.dyn");
+            RunModel(openPath);
+
+            // Infinity input to watch node does not throw warning on node.
+            var watch = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<Watch>("66acad8b-fe19-491c-b609-0b6c1e5f17d7");
+            Assert.AreEqual(ElementState.Active, watch.State);
+
+            // Infinity input to object.Type node does not throw warning on node.
+            var objType = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<Graph.Nodes.ZeroTouch.DSFunction>("8f47ab85-222a-4356-a72a-9597e2d88db6");
+            Assert.AreEqual(ElementState.Active, objType.State);
+        }
 
         /// <summary>
         /// Confirm that a node with multiple outputs evaluates successfully.

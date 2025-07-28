@@ -74,6 +74,12 @@ namespace CoreNodeModelsWpf.Charts
         {
             PortUpdated?.Invoke(this, args);
         }
+
+        /// <summary>
+        /// Indicates that this node supports resizing via UI.
+        /// </summary>
+        [JsonIgnore]
+        public override bool IsResizable => true;
         #endregion
 
         #region Constructors
@@ -314,6 +320,7 @@ namespace CoreNodeModelsWpf.Charts
             PortConnected -= HeatSeriesNodeModel_PortConnected;
             PortDisconnected -= HeatSeriesNodeModel_PortDisconnected;
             VMDataBridge.DataBridge.Instance.UnregisterCallback(GUID.ToString());
+            base.Dispose();
         }
 
         #endregion

@@ -1,0 +1,38 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>列表索引必须是数值</h2>
+<p> 此错误消息指示您试图使用非整数的索引值来访问列表中的元素。 </p>
+
+<p>从 Dynamo 2.0 开始，列表是值的集合，其中列表中的每个值只能使用整数索引值(索引值范围从 0 到列表大小减 1)进行访问。 </p>
+
+<p>在此处阅读有关 Dynamo 1.X 与 Dynamo 2.X 之间差异的更多信息(包括已更改的访问列表中元素的方式）。 </p>
+
+<h4>如何修复</h4>
+<p>确保用于访问列表元素的索引值确实是一个整数(例如，是 2 而不是 “2” 或 2.0)。 </p>
+
+<h4>更多信息</h4>
+<p>要了解更多信息，请查看 <a href="https://forum.dynamobim.com/search?q=list%20indices%20must%20be%20numeric"><span>Dynamobim 论坛上讨论“<strong>list indices must be numeric</strong>”的帖子</span></a>。</p>
+
+</body>

@@ -24,6 +24,7 @@ namespace Dynamo.PackageManager
     {
         public bool IsNodeLibrary { get; set; }
         public Assembly Assembly { get; set; }
+        public string LocalFilePath {get;set;}
 
         public string Name
         {
@@ -132,13 +133,6 @@ namespace Dynamo.PackageManager
             get { return Path.Combine(RootDirectory, "doc"); }
         }
 
-        [Obsolete("This property will be removed in 3.0. Please use the LoadState property instead.")]
-        public bool Loaded {
-            get {
-                return LoadState.State == PackageLoadState.StateTypes.Loaded;
-            }
-        }
-
         private bool typesVisibleInManager;
         public bool TypesVisibleInManager
         {
@@ -193,15 +187,6 @@ namespace Dynamo.PackageManager
             get { return RootDirectory.StartsWith(PathManager.BuiltinPackagesDirectory); }
         }
 
-        [Obsolete("This property will be removed in Dynamo 3.0. Use LoadState.ScheduledState instead")]
-        public bool MarkedForUninstall
-        {
-            get {
-                return BuiltInPackage ? LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForUnload :
-                  LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForDeletion;
-            }
-        }
-
         public PackageLoadState LoadState = new PackageLoadState();
 
         private string _group = "";
@@ -232,6 +217,7 @@ namespace Dynamo.PackageManager
         public ObservableCollection<CustomNodeInfo> LoadedCustomNodes { get; private set; }
         public ObservableCollection<PackageDependency> Dependencies { get; private set; }
         public ObservableCollection<PackageFileInfo> AdditionalFiles { get; private set; }
+        public ObservableCollection<PackageCompatibility> CompatibilityMatrix { get; private set; }
 
         /// <summary>
         ///     A header used to create the package, this data does not reflect runtime
@@ -257,6 +243,7 @@ namespace Dynamo.PackageManager
             Dependencies = new ObservableCollection<PackageDependency>();
             LoadedCustomNodes = new ObservableCollection<CustomNodeInfo>();
             AdditionalFiles = new ObservableCollection<PackageFileInfo>();
+            CompatibilityMatrix = new ObservableCollection<PackageCompatibility>();
             Header = PackageUploadBuilder.NewRequestBody(this);
         }
 
@@ -294,6 +281,8 @@ namespace Dynamo.PackageManager
                     CopyrightYear = body.copyright_year,
                     Header = body
                 };
+
+                pkg.SetCompatibility(body.compatibility_matrix);
                 
                 foreach (var dep in body.dependencies)
                     pkg.Dependencies.Add(dep);
@@ -309,6 +298,8 @@ namespace Dynamo.PackageManager
 
         }
 
+        //TODO: why are we skipping backup files and folders, any particular reason?
+        //TODO: can we remove the part where we skip the original pkg.json file? This is handled later anyways
         public void EnumerateAdditionalFiles()
         {
             if (String.IsNullOrEmpty(RootDirectory) || !Directory.Exists(RootDirectory)) return;
@@ -319,8 +310,9 @@ namespace Dynamo.PackageManager
                 RootDirectory,
                 "*",
                 SearchOption.AllDirectories)
-                .Where(x => !x.ToLower().EndsWith(".dyf") && !x.ToLower().EndsWith(".dll") &&
-                    !x.ToLower().EndsWith("pkg.json") && !x.ToLower().EndsWith(".backup") &&
+                .Where(x => !x.ToLower().EndsWith(".dyf") && !x.ToLower().EndsWith(".dll")
+                        //&& !x.ToLower().EndsWith("pkg.json")
+                     && !x.ToLower().EndsWith(".backup") &&
                     !x.ToLower().Contains(backupFolderName))
                 .Select(x => new PackageFileInfo(RootDirectory, x));
 
@@ -328,7 +320,8 @@ namespace Dynamo.PackageManager
             AdditionalFiles.AddRange(nonDyfDllFiles);
         }
 
-        public IEnumerable<string> EnumerateAssemblyFilesInBinDirectory()
+        //TODO can we make this internal?
+        public IEnumerable<string> EnumerateAssemblyFilesInPackage()
         {
             if (String.IsNullOrEmpty(RootDirectory) || !Directory.Exists(RootDirectory)) 
                 return new List<string>();
@@ -358,6 +351,22 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
+        /// Set the compatibility matrix for the package.
+        /// </summary>
+        /// <param name="cmpList">Package compatibility info</param>
+        internal void SetCompatibility(IEnumerable<PackageCompatibility> cmpList)
+        {
+            // Clear the old compatibility matrix, not checking for an empty list here
+            // as user should be able to remove compatibility as well
+            if (cmpList != null)
+            {
+                CompatibilityMatrix.Clear();
+                CompatibilityMatrix.AddRange(cmpList);
+                Header.compatibility_matrix = cmpList;
+            }
+        }
+
+        /// <summary>
         ///     Enumerates all assemblies in the package. This method currently has the side effect that it will
         ///     load all binaries in the package bin folder unless the package is loaded from a special package path
         ///     I.E. Builtin Packages.
@@ -373,7 +382,6 @@ namespace Dynamo.PackageManager
             // Use the pkg header to determine which assemblies to load and prevent multiple enumeration
             // In earlier packages, this field could be null, which is correctly handled by IsNodeLibrary
             var nodeLibraries = Header.node_libraries;
-            
             foreach (var assemFile in new DirectoryInfo(BinaryDirectory).EnumerateFiles("*.dll"))
             {
                 Assembly assem;

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Dynamo.Configuration;
 using Dynamo.Graph.Connectors;
 
 namespace Dynamo.Interfaces
@@ -18,6 +19,11 @@ namespace Dynamo.Interfaces
         /// Indicates if preview bubbles should be displayed on nodes.
         /// </summary>
         bool ShowPreviewBubbles { get; set; }
+
+        /// <summary>
+        /// Indicates if groups should display the default description.
+        /// </summary>
+        public bool ShowDefaultGroupDescription { get; set; }
 
         /// <summary>
         /// Returns height of console
@@ -48,25 +54,13 @@ namespace Dynamo.Interfaces
         /// <summary>
         /// Indicates whether background preview is active or not.
         /// </summary>
-        [Obsolete("Property will be deprecated in Dynamo 3.0, please use BackgroundPreviews")]
+        [Obsolete("Property will be deprecated in a future version of Dynamo, please use BackgroundPreviews")]
         bool IsBackgroundPreviewActive { get; set; }
 
         /// <summary>
         /// Returns the decimal precision used to display numbers.
         /// </summary>
         string NumberFormat { get; set; }
-
-        /// <summary>
-        /// Indicates whether usage reporting is approved or not.
-        /// </summary>
-        [Obsolete("Property will be deprecated in Dynamo 3.0")]
-        bool IsUsageReportingApproved { get; set; }
-
-        /// <summary>
-        /// Indicates whether Google analytics reporting is approved or not.
-        /// </summary>
-        [Obsolete("Property will be deprecated in Dynamo 3.0")]
-        bool IsAnalyticsReportingApproved { get; set; }
 
         /// <summary>
         /// Indicates whether ADP analytics reporting is approved or not.
@@ -144,6 +138,10 @@ namespace Dynamo.Interfaces
         /// Return full path to the Python (.py) file to use as a starting template when creating a new PythonScript Node.
         /// </summary>
         string PythonTemplateFilePath { get; set; }
+        /// <summary>
+        /// Return full path of the template directory with template file(s) to use as a starting template when creating a new graph from a template.
+        /// </summary>
+        string TemplateFilePath { get; set; }
 
         /// <summary>
         /// Returns active state of specified background preview 
@@ -158,6 +156,12 @@ namespace Dynamo.Interfaces
         /// <param name="name">Background preview name</param>
         /// <param name="value">Active state to set</param>
         void SetIsBackgroundPreviewActive(string name, bool value);
+
+        [Obsolete("This property is not needed anymore in the preference settings and can be removed in a future version of Dynamo.")]
+        /// <summary>
+        /// Return a list of GraphChecksumItems
+        /// </summary>
+        List<GraphChecksumItem> GraphChecksumItemsList { get; set; }
     }
 
     /// <summary>

@@ -12,12 +12,9 @@
   <ItemGroup>
       <PackageReference Include="Moq" Version="4.18.4"/>
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+      <PackageReference Include="NUnit" Version="3.13.3" />
+      <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
   </ItemGroup>
-    <!--net6.0 net8.0 etc-->
-    <ItemGroup Condition=" '$(TargetFramework)' != 'net48' ">
-        <PackageReference Include="NUnit" Version="3.13.3" />
-        <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
-    </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoUtilities\DynamoUtilities.csproj">
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>

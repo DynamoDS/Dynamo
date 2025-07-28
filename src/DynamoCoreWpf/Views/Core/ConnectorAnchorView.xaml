@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.Controls.ConnectorAnchorView"
+<UserControl x:Class="Dynamo.Controls.ConnectorAnchorView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -64,8 +64,8 @@
                 x:Name="AnchorButton"
                 Canvas.Top="{Binding CurrentPosition.Y}"
                 Canvas.Left="{Binding CurrentPosition.X}"
-                Height="{Binding AnchorSize}"
-                Width="{Binding AnchorSize}"
+                Height="{Binding ScaledAnchorSize}"
+                Width="{Binding ScaledAnchorSize}"
                 ToolTipService.ShowDuration="{x:Static Member=System:Int32.MaxValue}">
             <Button.ToolTip>
                 <ToolTip Style="{StaticResource ConnectorTooltip}"
@@ -95,7 +95,7 @@
                 </Image>
             </StackPanel>
             <Button.RenderTransform>
-                <TranslateTransform X="-7.5" Y="-7.5" />
+                <TranslateTransform X="{Binding AnchorOffset}" Y="{Binding AnchorOffset}" />
             </Button.RenderTransform>
         </Button>
 
@@ -104,8 +104,8 @@
                 Style="{StaticResource TransparentButtonWithTriggers}"
                 Canvas.Top="{Binding CurrentPosition.Y}"
                 Canvas.Left="{Binding CurrentPosition.X}"
-                Height="{Binding MarkerSize}"
-                Width="{Binding MarkerSize}"
+                Height="{Binding ScaledMarkerSize}"
+                Width="{Binding ScaledMarkerSize}"
                 Command="{Binding PlaceWatchNodeCommand}"
                 MouseEnter="OnWatchIconHover"
                 MouseLeave="OnWatchIconUnhover">
@@ -129,7 +129,7 @@
                 </Image>
             </StackPanel>
             <Button.RenderTransform>
-                <TranslateTransform X="0" Y="-37" />
+                <TranslateTransform X="0" Y="{Binding MarkerOffsetY}" />
             </Button.RenderTransform>
         </Button>
         <!--pin icon-->
@@ -137,8 +137,8 @@
                 Style="{StaticResource TransparentButtonWithTriggers}"
                 Canvas.Top="{Binding CurrentPosition.Y}"
                 Canvas.Left="{Binding CurrentPosition.X}"
-                Height="{Binding MarkerSize}"
-                Width="{Binding MarkerSize}"
+                Height="{Binding ScaledMarkerSize}"
+                Width="{Binding ScaledMarkerSize}"
                 Command="{Binding PinConnectorCommand}"
                 MouseEnter="OnPinIconHover"
                 MouseLeave="OnPinIconUnhover">
@@ -162,7 +162,7 @@
                 </Image>
             </StackPanel>
             <Button.RenderTransform>
-                <TranslateTransform X="-30" Y="-37" />
+                <TranslateTransform X="{Binding MarkerOffsetX}" Y="{Binding MarkerOffsetY}" />
             </Button.RenderTransform>
         </Button>
     </Canvas>

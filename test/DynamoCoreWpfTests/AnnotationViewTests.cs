@@ -103,10 +103,85 @@ namespace DynamoCoreWpfTests
             Assert.That(groupContent.All(x => x.IsCollapsed == true));
 
             // Act
-            annotationView.UngroupAnnotation.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            var popupContent = (annotationView.GroupContextMenuPopup.Child as Border)?.Child as Panel;
+
+            var ungrp = popupContent.Children
+                .OfType<Border>()
+                .FirstOrDefault(child =>
+                (child.Child as Panel)?.Children
+                .OfType<AccessText>()
+                .Any(t => t.Text.Equals("Ungr_oup")) == true);
+
+            // Ensure the 'Ungroup' menu item exists before simulating the click
+            Assert.IsNotNull(ungrp, "The Ungroup element was not found in the context menu.");
+
+            ungrp.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
+            {
+                RoutedEvent = UIElement.MouseLeftButtonUpEvent
+            });
 
             // Assert
             Assert.That(groupContent.All(x => x.IsCollapsed == false));
+        }
+
+        [Test]
+        public void AddConnectorPinsToGroups()
+        {
+            // Arrange
+            Open(@"core\annotationViewModelTests\groupsTestFile.dyn");
+
+            var groupGuid = new Guid("8324afb7-2d77-4a75-aa5e-f10e59964c2b");
+            var connectorGuid = new Guid("17318da5-dd19-4962-a7b7-51344001f14b");
+
+            // Act
+            var ws = this.Model.CurrentWorkspace;
+            var group1 = ws.Annotations.FirstOrDefault(annotation => annotation.GUID == groupGuid);
+            var connector = ws.Connectors.FirstOrDefault(connector => connector.GUID == connectorGuid);
+            var connectorPin = connector.ConnectorPinModels.FirstOrDefault();
+
+            // Assert
+            Assert.IsNotNull(group1, $"Expected to find annotation group with GUID {groupGuid}, but it was not found.");
+            Assert.IsNotNull(connector, $"Expected to find connector with GUID {connectorGuid}, but it was not found.");
+            Assert.IsNotNull(connectorPin, "Expected to find a ConnectorPinModel associated with the connector, but it was not found.");
+
+            var initialNodeCount = group1.Nodes.Count();
+            Assert.AreEqual(2, initialNodeCount, $"Expected the group to contain 2 nodes initially, but found {initialNodeCount}.");
+
+            // Act: Add the connectorPin to the group
+            group1.AddToTargetAnnotationModel(connectorPin);
+
+            // Assert
+            var finalNodeCount = group1.Nodes.Count();
+            Assert.AreEqual(3, finalNodeCount, $"Expected the group to contain 3 nodes after adding the connector pin, but found {finalNodeCount}.");
+        }
+
+        [Test]
+        public void DoubleClickOnGroupAddsCodeBlockNode()
+        {
+            // Arrange
+            Open(@"core\annotationViewModelTests\groupsTestFile.dyn");
+
+            var groupGuid = new Guid("8324afb7-2d77-4a75-aa5e-f10e59964c2b");
+
+            // Act
+            var ws = this.Model.CurrentWorkspace;
+            var group1 = ws.Annotations.FirstOrDefault(annotation => annotation.GUID == groupGuid);
+
+            // Verify the initial node count in the group
+            var initialNodeCount = group1.Nodes.Count();
+            Assert.AreEqual(2, initialNodeCount, "Expected group to have 2 nodes initially");
+
+            var workspaceView = View.WorkspaceTabs.ChildrenOfType<WorkspaceView>().First();
+            var workspaceViewModel = workspaceView.ViewModel;
+
+            // This is the click position within the group's model area.
+            var clickPosition = new Point(group1.X + 1, group1.Y + group1.TextBlockHeight + 1);
+
+            // Act: Simulate double-click
+            workspaceViewModel.HandleAnnotationDoubleClick(clickPosition, group1);
+
+            // Assert
+            Assert.AreEqual(3, group1.Nodes.Count(), "Expected group to have 3 nodes after double click.");
         }
     }
 }

@@ -1,0 +1,276 @@
+{
+  "Uuid": "a19b2b4a-e4e6-43ab-9b41-f8d218bff28f",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "String.GetNumber",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.String.GetNumber@string",
+      "Id": "84582b7320c14598a4b77bfb68ad1c57",
+      "Inputs": [
+        {
+          "Id": "17974372abbe4e0d9124975da45f71b3",
+          "Name": "string",
+          "Description": "Target string to be get\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f5d1b9eeab0748389ed53f2ac0686c97",
+          "Name": "str",
+          "Description": "Number In string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get all of the number strings from the target string as a string\n\nString.GetNumber (string: string): string"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "i need about 350",
+      "Id": "83fb135a43954cab8beafa342610f5af",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a324eda445d14554924212a18e37b748",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "a3ef97a3c521498d934d295377224667",
+      "Inputs": [
+        {
+          "Id": "04d2be94c7534cab8cd10732319ddb28",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "281438e9a5d04a60955fe1939b56fe25",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Object.Type@var",
+      "Id": "39a032ba96b347f583d156268634f23b",
+      "Inputs": [
+        {
+          "Id": "019819ab7d4b46b682d4b3f1206c3abb",
+          "Name": "object",
+          "Description": "Object to query type\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "826ecda79ada4253af4142c2d6e9f1e3",
+          "Name": "string",
+          "Description": "Type of object.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the type of object represented as string.\n\nObject.Type (object: var): string"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "cc4d8a7dea3d4b37aac252b8cddfcb55",
+      "Inputs": [
+        {
+          "Id": "2dfa2f1cacf142f79542c161b7de5526",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "81eeb390825541a3a863b65d00368446",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "f5d1b9eeab0748389ed53f2ac0686c97",
+      "End": "04d2be94c7534cab8cd10732319ddb28",
+      "Id": "66350dc9d54648ab866ec020908c5f39",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f5d1b9eeab0748389ed53f2ac0686c97",
+      "End": "019819ab7d4b46b682d4b3f1206c3abb",
+      "Id": "3b2671b3c5fd4cf682620c3bf8a33518",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "a324eda445d14554924212a18e37b748",
+      "End": "17974372abbe4e0d9124975da45f71b3",
+      "Id": "415f7e8334cc49dcbc3ff6358d7f43b0",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "826ecda79ada4253af4142c2d6e9f1e3",
+      "End": "2dfa2f1cacf142f79542c161b7de5526",
+      "Id": "fefb38b4cec44835b418f3bfb114593b",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.14",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.14.0.3835",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "String.GetNumber",
+        "ShowGeometry": true,
+        "Id": "84582b7320c14598a4b77bfb68ad1c57",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 619.20000000000016,
+        "Y": 428.8
+      },
+      {
+        "Name": "String",
+        "ShowGeometry": true,
+        "Id": "83fb135a43954cab8beafa342610f5af",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 333.60000000000014,
+        "Y": 428.8
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "a3ef97a3c521498d934d295377224667",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1224.8000000000002,
+        "Y": 271.8
+      },
+      {
+        "Name": "Object.Type",
+        "ShowGeometry": true,
+        "Id": "39a032ba96b347f583d156268634f23b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 928.00000000000023,
+        "Y": 585.8
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "cc4d8a7dea3d4b37aac252b8cddfcb55",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1224.8000000000002,
+        "Y": 585.8
+      }
+    ],
+    "Annotations": [],
+    "X": -48.799999999999841,
+    "Y": -68.799999999999955,
+    "Zoom": 1.0
+  }
+}

@@ -135,4 +135,7 @@
   <data name="VerticesDivisibleByThreeExceptionMessage" xml:space="preserve">
     <value>The number of vertices supplied must be divisible by three.</value>
   </data>
+  <data name="ByMeshColorsInvalidColorCountMessage" xml:space="preserve">
+      <value>The color count is invalid. It must equal 1 (single color), or equal the face count (per-face color), or equal the vertex count (per-vertex color), or equal the triangle count multiplied by three (per-triangle-vertex color). If you want to color multiple meshes, you may need to use List Levels.</value>
+  </data>
 </root>

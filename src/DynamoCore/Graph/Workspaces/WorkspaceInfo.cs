@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Xml;
+using Dynamo.Configuration;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -202,7 +203,7 @@ namespace Dynamo.Graph.Workspaces
                     Double.TryParse((viewObject.TryGetValue("Zoom", out value) ? value.ToString() : "1.0"), out zoom);
 
                     // Parse the following info when "View" block contains a "Dynamo" block
-                    if (viewObject.TryGetValue("Dynamo", out value))
+                    if (viewObject.TryGetValue(Configurations.DynamoAsString, out value))
                     {
                         JObject dynamoObject = value.ToObject<JObject>();
                         Double.TryParse((dynamoObject.TryGetValue("ScaleFactor", out value) ? value.ToString(): "1.0"), out scaleFactor);

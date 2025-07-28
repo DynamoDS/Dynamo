@@ -11,6 +11,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Xml;
 using System.Globalization;
+using Dynamo.Configuration;
 
 namespace Dynamo.Models
 {
@@ -30,24 +31,6 @@ namespace Dynamo.Models
 
             // See property for more details.
             protected bool redundant = false;
-
-            /// <summary>
-            /// Settings that is used for serializing commands
-            /// </summary>
-            protected static JsonSerializerSettings jsonSettings;
-
-            /// <summary>
-            /// Initialize commands serializing settings
-            /// </summary>
-            static RecordableCommand()
-            {
-                jsonSettings = new JsonSerializerSettings()
-                {
-                    TypeNameHandling = TypeNameHandling.Objects,
-                    ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                    Culture = CultureInfo.InvariantCulture
-                };
-            }
 
             #endregion
 
@@ -107,18 +90,6 @@ namespace Dynamo.Models
                 XmlElement element = document.CreateElement(commandName);
                 SerializeCore(element);
                 return element;
-            }
-
-            /// <summary>
-            /// This method serializes the RecordableCommand object in the json form.
-            /// The resulting string contains command type name and all the
-            /// arguments that are required by this command.
-            /// </summary>
-            /// <returns>The string can be used for reconstructing RecordableCommand
-            /// using Deserialize method</returns>
-            internal string Serialize()
-            {
-                return JsonConvert.SerializeObject(this, jsonSettings);
             }
 
             /// <summary>
@@ -220,29 +191,6 @@ namespace Dynamo.Models
                 throw new ArgumentException(message);
             }
 
-            /// <summary>
-            /// Call this static method to reconstruct a RecordableCommand from json
-            /// string that contains command name - name of corresponding class inherited
-            /// from RecordableCommand, - and all the arguments that are required by this
-            /// command.
-            /// </summary>
-            /// <param name="jsonString">Json string that contains command name and all
-            /// its arguments.</param>
-            /// <returns>Reconstructed RecordableCommand</returns>
-            internal static RecordableCommand Deserialize(string jsonString)
-            {
-                RecordableCommand command = null;
-                try
-                {
-                    command = JsonConvert.DeserializeObject(jsonString, jsonSettings) as RecordableCommand;
-                    command.IsInPlaybackMode = true;
-                    return command;
-                }
-                catch
-                {
-                    throw new ApplicationException("Invalid jsonString for creating RecordableCommand");
-                }
-            }
             #endregion
 
             #region Public Command Properties
@@ -458,7 +406,7 @@ namespace Dynamo.Models
             #region Public Class Methods
 
             /// <summary>
-            ///
+            /// Constructor
             /// </summary>
             /// <param name="filePath">The path to the file.</param>
             /// <param name="forceManualExecutionMode">Should the file be opened in manual execution mode?</param>
@@ -466,6 +414,20 @@ namespace Dynamo.Models
             {
                 FilePath = filePath;
                 ForceManualExecutionMode = forceManualExecutionMode;
+                IsTemplate = false;
+            }
+
+            /// <summary>
+            /// Constructor
+            /// </summary>
+            /// <param name="filePath">The path to the file.</param>
+            /// <param name="forceManualExecutionMode">Should the file be opened in manual execution mode?</param>
+            /// <param name="isTemplate">Is Dynamo opening a template file?</param>
+            public OpenFileCommand(string filePath, bool forceManualExecutionMode, bool isTemplate)
+            {
+                FilePath = filePath;
+                ForceManualExecutionMode = forceManualExecutionMode;
+                IsTemplate = isTemplate;
             }
 
             private static string TryFindFile(string xmlFilePath, string uriString = null)
@@ -507,6 +469,7 @@ namespace Dynamo.Models
             [DataMember]
             internal string FilePath { get; private set; }
             internal bool ForceManualExecutionMode { get; private set; }
+            internal bool IsTemplate { get; private set; }
             private DynamoModel dynamoModel;
 
             #endregion
@@ -516,7 +479,14 @@ namespace Dynamo.Models
             protected override void ExecuteCore(DynamoModel dynamoModel)
             {
                 this.dynamoModel = dynamoModel;
-                dynamoModel.OpenFileImpl(this);
+                if (IsTemplate)
+                {
+                    dynamoModel.OpenTemplateImpl(this);
+                }
+                else
+                {
+                    dynamoModel.OpenFileImpl(this);
+                }
             }
 
             protected override void SerializeCore(XmlElement element)
@@ -528,8 +498,8 @@ namespace Dynamo.Models
             internal override void TrackAnalytics()
             {
                 // Log file open action and the number of nodes in the opened workspace
-                Dynamo.Logging.Analytics.TrackFileOperationEvent(
-                    FilePath,
+                Dynamo.Logging.Analytics.TrackTaskFileOperationEvent(
+                    Path.GetFileName(FilePath),
                     Logging.Actions.Open,
                     dynamoModel.CurrentWorkspace.Nodes.Count());
 
@@ -628,8 +598,8 @@ namespace Dynamo.Models
             internal override void TrackAnalytics()
             {
                 // Log file open action and the number of nodes in the opened workspace
-                Dynamo.Logging.Analytics.TrackFileOperationEvent(
-                    FilePath,
+                Dynamo.Logging.Analytics.TrackTaskFileOperationEvent(
+                    Path.GetFileName(FilePath),
                     Logging.Actions.Open,
                     dynamoModel.CurrentWorkspace.Nodes.Count());
 
@@ -705,7 +675,7 @@ namespace Dynamo.Models
             internal override void TrackAnalytics()
             {
                 // Log file open action and the number of nodes in the opened workspace
-                Dynamo.Logging.Analytics.TrackFileOperationEvent(
+                Dynamo.Logging.Analytics.TrackTaskFileOperationEvent(
                     "In memory json file",
                     Logging.Actions.Open,
                     dynamoModel.CurrentWorkspace.Nodes.Count());
@@ -821,12 +791,13 @@ namespace Dynamo.Models
         [DataContract]
         public class CreateNodeCommand : ModelBasedRecordableCommand
         {
-            private void SetProperties(double x, double y, bool defaultPosition, bool transformCoordinates)
+            private void SetProperties(double x, double y, bool defaultPosition, bool transformCoordinates, bool isTransient)
             {
                 X = x;
                 Y = y;
                 DefaultPosition = defaultPosition;
                 TransformCoordinates = transformCoordinates;
+                IsTransient = isTransient;
             }
 
             #region Public Class Methods
@@ -843,7 +814,7 @@ namespace Dynamo.Models
                 : base(node != null ? new[] { node.GUID } : new[] { Guid.Empty })
             {
                 Node = node;
-                SetProperties(x, y, defaultPosition, transformCoordinates);
+                SetProperties(x, y, defaultPosition, transformCoordinates, false);
             }
 
             /// <summary>
@@ -859,7 +830,7 @@ namespace Dynamo.Models
                 : base(new[] { Guid.Empty })
             {
                 NodeXml = node;
-                SetProperties(x, y, defaultPosition, transformCoordinates);
+                SetProperties(x, y, defaultPosition, transformCoordinates, false);
             }
 
             /// <summary>
@@ -876,7 +847,7 @@ namespace Dynamo.Models
                 : base(nodeId)
             {
                 Name = nodeName;
-                SetProperties(x, y, defaultPosition, transformCoordinates);
+                SetProperties(x, y, defaultPosition, transformCoordinates, false);
             }
 
             /// <summary>
@@ -894,7 +865,26 @@ namespace Dynamo.Models
                 : base(new[] { Guid.Parse(nodeId) })
             {
                 Name = nodeName;
-                SetProperties(x, y, defaultPosition, transformCoordinates);
+                SetProperties(x, y, defaultPosition, transformCoordinates, false);
+            }
+
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="nodeId"></param>
+            /// <param name="nodeName"></param>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <param name="defaultPosition"></param>
+            /// <param name="transformCoordinates"></param>
+            /// <param name="isTransient"></param>
+            [JsonConstructor]
+            internal CreateNodeCommand(string nodeId, string nodeName,
+                double x, double y, bool defaultPosition, bool transformCoordinates, bool isTransient)
+                : base(new[] { Guid.Parse(nodeId) })
+            {
+                Name = nodeName;
+                SetProperties(x, y, defaultPosition, transformCoordinates, isTransient);
             }
 
             internal static CreateNodeCommand DeserializeCore(XmlElement element)
@@ -929,6 +919,8 @@ namespace Dynamo.Models
             // If it was deserialized
             internal XmlElement NodeXml { get; private set; }
 
+            // Node will be creted in transient state.
+            internal bool IsTransient { get; private set; } = false;
 
             [DataMember]
             internal double X { get; private set; }
@@ -981,10 +973,16 @@ namespace Dynamo.Models
 
             internal override void TrackAnalytics()
             {
-                Dynamo.Logging.Analytics.TrackEvent(
-                    Logging.Actions.Create,
-                    Logging.Categories.NodeOperations,
-                    (Node != null) ? Node.GetOriginalName() : Name ?? "");
+                // For custom nodes, Node is null until the node has been created
+                // Including the custom node cases should not be encouraged since
+                // GetOriginalName() will return the Guid of custom node
+                if (Node != null)
+                {
+                    Logging.Analytics.TrackEvent(
+                        Logging.Actions.Create,
+                        Logging.Categories.NodeOperations,
+                        Node.GetOriginalName() ?? string.Empty);
+                }
             }
 
             #endregion
@@ -1588,15 +1586,16 @@ namespace Dynamo.Models
                 BeginCreateConnections
             }
 
-            void setProperties(int portIndex, PortType portType, Mode mode)
+            void SetProperties(int portIndex, PortType portType, Mode mode)
             {
                 PortIndex = portIndex;
                 Type = portType;
                 ConnectionMode = mode;
+                IsHidden = !PreferenceSettings.Instance.ShowConnector;
             }
 
             /// <summary>
-            ///
+            /// Recordable command ConnectionCommand constructor
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="portIndex"></param>
@@ -1606,11 +1605,11 @@ namespace Dynamo.Models
             public MakeConnectionCommand(string nodeId, int portIndex, PortType portType, Mode mode)
                 : base(new[] { Guid.Parse(nodeId) })
             {
-                setProperties(portIndex, portType, mode);
+                SetProperties(portIndex, portType, mode);
             }
 
             /// <summary>
-            ///
+            /// Recordable command ConnectionCommand constructor
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="portIndex"></param>
@@ -1619,11 +1618,11 @@ namespace Dynamo.Models
             public MakeConnectionCommand(Guid nodeId, int portIndex, PortType portType, Mode mode)
                 : base(new[] { nodeId })
             {
-                setProperties(portIndex, portType, mode);
+                SetProperties(portIndex, portType, mode);
             }
 
             /// <summary>
-            ///
+            /// Recordable command ConnectionCommand constructor
             /// </summary>
             /// <param name="nodeId"></param>
             /// <param name="portIndex"></param>
@@ -1632,7 +1631,7 @@ namespace Dynamo.Models
             public MakeConnectionCommand(IEnumerable<Guid> nodeId, int portIndex, PortType portType, Mode mode)
                 : base(nodeId)
             {
-                setProperties(portIndex, portType, mode);
+                SetProperties(portIndex, portType, mode);
             }
 
             internal static MakeConnectionCommand DeserializeCore(XmlElement element)
@@ -1641,7 +1640,6 @@ namespace Dynamo.Models
                 int portIndex = helper.ReadInteger("PortIndex");
                 var portType = ((PortType)helper.ReadInteger("Type"));
                 var mode = ((Mode)helper.ReadInteger("ConnectionMode"));
-
                 var modelGuids = DeserializeGuid(element, helper);
 
                 return new MakeConnectionCommand(modelGuids, portIndex, portType, mode);
@@ -1660,6 +1658,9 @@ namespace Dynamo.Models
             [DataMember]
             public Mode ConnectionMode { get; private set; }
 
+            [DataMember]
+            internal bool IsHidden { get; private set; }
+
             #endregion
 
             #region Protected Overridable Methods
@@ -1676,6 +1677,7 @@ namespace Dynamo.Models
                 helper.SetAttribute("PortIndex", PortIndex);
                 helper.SetAttribute("Type", ((int)Type));
                 helper.SetAttribute("ConnectionMode", ((int)ConnectionMode));
+                helper.SetAttribute("IsHidden", IsHidden);
             }
 
             #endregion
@@ -1687,6 +1689,8 @@ namespace Dynamo.Models
         [DataContract]
         public class DeleteModelCommand : ModelBasedRecordableCommand
         {
+            internal bool CanDeleteTransientNodes { get; set; } = false;
+
             #region Public Class Methods
 
             /// <summary>
@@ -1707,6 +1711,16 @@ namespace Dynamo.Models
             /// </summary>
             /// <param name="modelGuids"></param>
             public DeleteModelCommand(IEnumerable<Guid> modelGuids) : base(modelGuids) { }
+
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="modelGuids"></param>
+            /// <param name="canDeleteTransientNodes"></param>
+            internal DeleteModelCommand(IEnumerable<Guid> modelGuids, bool canDeleteTransientNodes) : base(modelGuids)
+            {
+                CanDeleteTransientNodes = canDeleteTransientNodes;
+            }
 
             internal static DeleteModelCommand DeserializeCore(XmlElement element)
             {
@@ -1795,7 +1809,7 @@ namespace Dynamo.Models
 
             internal override void TrackAnalytics()
             {
-                Dynamo.Logging.Analytics.TrackCommandEvent(
+                Dynamo.Logging.Analytics.TrackTaskCommandEvent(
                     CmdOperation.ToString()); // "Undo" or "Redo"
             }
 
@@ -2271,7 +2285,12 @@ namespace Dynamo.Models
                 {
                     annotationText = Resources.GroupNameDefaultText;
                 }
-                if (string.IsNullOrEmpty(annotationDescriptionText))
+
+                if (!PreferenceSettings.Instance.ShowDefaultGroupDescription)
+                {
+                    annotationDescriptionText = string.Empty;
+                }
+                else if (string.IsNullOrEmpty(annotationDescriptionText))
                 {
                     annotationDescriptionText = Resources.GroupDefaultText;
                 }

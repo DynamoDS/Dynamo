@@ -315,6 +315,22 @@
                         </Button.Resources>
                     </Button>
                     <Button Style="{StaticResource IconButton}"
+                            Name="ConvertTabsToSpacesButton"
+                            Click="OnConvertTabsToSpacesClicked"
+                            ToolTipService.ShowOnDisabled="True"
+                            ToolTipService.IsEnabled="True"
+                            IsEnabled="True">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorConvertTabsToSpacesButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Button.ToolTip>
+                        <Button.Resources>
+                            <Image x:Key="Shape"
+                                   Source="/PythonNodeModelsWpf;component/Resources/tabs.png" />
+                            <Image x:Key="HighlightShape"
+                                   Source="/PythonNodeModelsWpf;component/Resources/tabs_hover.png" />
+                        </Button.Resources>
+                    </Button>
+                    <Button Style="{StaticResource IconButton}"
                             Name="MoreInfoButton"
                             Click="OnMoreInfoClicked">
                         <Button.ToolTip>
@@ -400,9 +416,9 @@
                         <TextBlock Margin="15 5" FontSize="14" Foreground="Black" FontFamily="{StaticResource ArtifaktElementRegular}" TextWrapping="WrapWithOverflow" Text="{x:Static p:Resources.PythonScriptUnsavedChangesPromptText}"/>
                     </StackPanel>
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" Grid.Column="2">
-                        <Button 
+                        <Button Name="ResumeButton"
                             Style="{StaticResource UnSaveButtonStyle}" Content="Keep editing" Click="ResumeButton_OnClick"></Button>
-                        <Button 
+                        <Button Name="CloseWarningBarButton"
                             Style="{StaticResource UnSaveButtonStyle}" Content="Close" Click="CloseWarningBarButton_OnClick"></Button>
                     </StackPanel>
                 </Grid>

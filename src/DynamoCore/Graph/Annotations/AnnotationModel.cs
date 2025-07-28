@@ -170,7 +170,7 @@ namespace Dynamo.Graph.Annotations
                 RaisePropertyChanged("Background");
             }
         }
-              
+
         private HashSet<ModelBase> nodes;
         /// <summary>
         /// Returns collection of models (nodes and notes) which the group contains
@@ -194,15 +194,18 @@ namespace Dynamo.Graph.Annotations
                     }
                 }
 
-                // First remove all pins from the input
-                var valuesWithoutPins = value
-                    .Where(x => !(x is ConnectorPinModel));
+                // First separate all pins from the input
+                var pinModels = value.OfType<ConnectorPinModel>().ToList();
+                var valuesWithoutPins = value.Except(pinModels);
 
-                // then recalculate which pins belongs to the
-                // group and add them to the nodes collection
-                var pinModels = GetPinsFromNodes(value.OfType<NodeModel>());
-                nodes = valuesWithoutPins.Concat(pinModels)
-                    .ToHashSet<ModelBase>();
+                // Then recalculate which pins belong to the group based on the nodes
+                var pinsFromNodes = GetPinsFromNodes(valuesWithoutPins.OfType<NodeModel>());
+
+                // Then filter out pins that have been marked as removed
+                pinsFromNodes = pinsFromNodes.Where(p => !removedPins.Contains(p.GUID)).ToArray();  
+
+                // Combine all
+                nodes = valuesWithoutPins.Concat(pinModels).Concat(pinsFromNodes).ToHashSet<ModelBase>();
 
                 if (nodes != null && nodes.Any())
                 {
@@ -214,7 +217,7 @@ namespace Dynamo.Graph.Annotations
                 }
                 UpdateBoundaryFromSelection();
                 RaisePropertyChanged(nameof(Nodes));
-            }            
+            }
         }
 
         /// <summary>
@@ -261,7 +264,6 @@ namespace Dynamo.Graph.Annotations
                 UpdateBoundaryFromSelection();
             }
         }
-
 
         private double textMaxWidth;
         /// <summary>
@@ -323,6 +325,11 @@ namespace Dynamo.Graph.Annotations
                 RaisePropertyChanged(nameof(PinnedNode));
             }
         }
+
+        /// <summary>
+        /// Stores the GUIDs of connector pins that have been marked as removed from the group.
+        /// </summary>
+        private HashSet<Guid> removedPins = new HashSet<Guid>();
 
         private double widthAdjustment;
         /// <summary>
@@ -415,6 +422,27 @@ namespace Dynamo.Graph.Annotations
                 }
             }
         }
+
+        private bool isFrozen = false;
+        /// <summary>
+        /// Returns whether or not all nodes in the group are frozen.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsFrozen
+        {
+            get
+            {
+                return isFrozen;
+            }
+            internal set
+            {
+                if (value != isFrozen)
+                {
+                    isFrozen = value;
+                    RaisePropertyChanged(nameof(IsFrozen));
+                }
+            }
+        }
         #endregion
 
         /// <summary>
@@ -464,6 +492,22 @@ namespace Dynamo.Graph.Annotations
             return connectorPinsToAdd;
         }
 
+        /// <summary>
+        /// Marks a connector pin as removed by adding its GUID to the removedPins set.
+        /// </summary>
+        internal void MarkPinAsRemoved(ConnectorPinModel pin)
+        {
+            removedPins.Add(pin.GUID);
+        }
+
+        /// <summary>
+        /// Clears the set of removed connector pins.
+        /// </summary>
+        private void ClearRemovedPins()
+        {
+            removedPins.Clear();
+        }
+
         private void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
@@ -480,6 +524,9 @@ namespace Dynamo.Graph.Annotations
                     break;
                 case nameof(NodeModel.State):
                     UpdateErrorAndWarningIconVisibility();
+                    break;
+                case nameof(NodeModel.IsFrozen):
+                    UpdateGroupFrozenStatus();
                     break;
             }
         }
@@ -499,7 +546,32 @@ namespace Dynamo.Graph.Annotations
                 UpdateBoundaryFromSelection();
             }
         }
-      
+
+        /// <summary>
+        /// The method updates the group frozen status. If all nodes and nested groups are frozen, it sets to true, else false.
+        /// </summary>
+        /// <returns>Frozen state of a group</returns>
+        internal void UpdateGroupFrozenStatus()
+        {
+            // Check for any non-frozen node in the group
+            var nonFrozenNodeInGroup = this.Nodes.OfType<NodeModel>().Any(x => !x.IsFrozen);
+            if (nonFrozenNodeInGroup)
+            {
+                this.IsFrozen = false;
+                return;
+            }
+
+            // Check for any non-frozen nested group in the group
+            var nonFrozenGroupInGroup = this.Nodes.OfType<AnnotationModel>().Any(x => !x.IsFrozen);
+            if (nonFrozenGroupInGroup)
+            {
+                this.IsFrozen = false;
+                return;
+            }
+
+            this.IsFrozen = true;
+        }
+
         /// <summary>
         /// Updates the group boundary based on the nodes / notes selection.
         /// </summary>      
@@ -657,6 +729,9 @@ namespace Dynamo.Graph.Annotations
                 case nameof(AnnotationDescriptionText):
                     AnnotationDescriptionText = value;
                     break;
+                case nameof(IsExpanded):
+                    IsExpanded = Convert.ToBoolean(value);
+                    break;
             }
 
             return base.UpdateValueCore(updateValueParams);
@@ -680,6 +755,7 @@ namespace Dynamo.Graph.Annotations
             helper.SetAttribute("TextblockHeight", this.TextBlockHeight);
             helper.SetAttribute("backgrouund", (this.Background == null ? "" : this.Background.ToString()));
             helper.SetAttribute(nameof(IsSelected), IsSelected);
+            helper.SetAttribute(nameof(IsExpanded), this.IsExpanded);
 
             //Serialize Selected models
             XmlDocument xmlDoc = element.OwnerDocument;            
@@ -711,12 +787,13 @@ namespace Dynamo.Graph.Annotations
             this.textBlockHeight = helper.ReadDouble("TextblockHeight", DoubleValue);
             this.InitialTop = helper.ReadDouble("InitialTop", DoubleValue);
             this.InitialHeight = helper.ReadDouble("InitialHeight", DoubleValue);
-            this.IsSelected = helper.ReadBoolean(nameof(IsSelected), false);            
+            this.IsSelected = helper.ReadBoolean(nameof(IsSelected), false);
+            this.IsExpanded = helper.ReadBoolean(nameof(IsExpanded), true);
 
             if (IsSelected)
                 DynamoSelection.Instance.Selection.Add(this);
             else
-                DynamoSelection.Instance.Selection.Remove(this);
+                DynamoSelection.Instance.Selection.Remove(this);  
 
             //Deserialize Selected models
             if (element.HasChildNodes)
@@ -756,6 +833,7 @@ namespace Dynamo.Graph.Annotations
             RaisePropertyChanged(nameof(GroupStyleId));
             RaisePropertyChanged(nameof(AnnotationText));
             RaisePropertyChanged(nameof(Nodes));
+            RaisePropertyChanged(nameof(IsExpanded));
             this.ReportPosition();
         }
 
@@ -767,6 +845,8 @@ namespace Dynamo.Graph.Annotations
         /// completely inside that group</param>
         internal void AddToTargetAnnotationModel(ModelBase model, bool checkOverlap = false)
         {
+            if (model is null) return;
+            if ((model as NodeModel)?.IsTransient == true) return;
             var list = this.Nodes.ToList();
             if (model.GUID == this.GUID) return;
             if (list.Where(x => x.GUID == model.GUID).Any()) return;
@@ -867,6 +947,7 @@ namespace Dynamo.Graph.Annotations
                     model.Disposed -= model_Disposed;
                 }
             }
+            ClearRemovedPins();
             base.Dispose();
         }     
     }   

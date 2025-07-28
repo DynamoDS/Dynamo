@@ -1133,7 +1133,7 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Converting a double to an int may lose information. href=testing.html.
+        ///   Looks up a localized string similar to Converting a double to an int may lose information..
         /// </summary>
         public static string kConvertDoubleToInt {
             get {

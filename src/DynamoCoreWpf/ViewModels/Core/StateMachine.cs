@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Utilities;
@@ -32,6 +30,7 @@ namespace Dynamo.ViewModels
 
         private readonly StateMachine stateMachine = null;
         private List<DraggedNode> draggedNodes = new List<DraggedNode>();
+        private Dictionary<Guid, Point> draggedGroupOriginalPositions = new();
 
         // When a new connector is created or a single connector is selected,
         // activeConnectors has array size of 1.
@@ -67,7 +66,8 @@ namespace Dynamo.ViewModels
         [JsonIgnore]
         internal ConnectorViewModel FirstActiveConnector
         {
-            get {
+            get
+            {
                 if (null != activeConnectors && activeConnectors.Count() > 0)
                 {
                     return activeConnectors[0];
@@ -151,6 +151,14 @@ namespace Dynamo.ViewModels
             {
                 throw new InvalidOperationException(Wpf.Properties.Resources.InvalidDraggingOperationMessgae);
             }
+
+            // Track original positions of any selected annotation groups at the beginning of a drag
+            // This allows us to later determine whether the group was truly moved or just clicked
+            draggedGroupOriginalPositions.Clear();
+            foreach (var group in DynamoSelection.Instance.Selection.OfType<AnnotationModel>())
+            {
+                draggedGroupOriginalPositions[group.GUID] = new Point(group.X, group.Y);
+            }
         }
 
         internal void UpdateDraggedSelection(Point2D mouseCursor)
@@ -176,8 +184,17 @@ namespace Dynamo.ViewModels
         {
             bool isInPort = portType == PortType.Input;
 
-            if (!(Model.GetModelInternal(nodeId) is NodeModel node)) return;
-            PortModel portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
+            if (Model.GetModelInternal(nodeId) is not NodeModel node) return;
+            PortModel portModel;
+            try
+            {
+                portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
+            }
+            catch(Exception ex)
+            {
+                this.DynamoViewModel.Model.Logger.Log("Failed to make connection: " + ex.Message);
+                return;
+            }
 
             // Test if port already has a connection, if so grab it and begin connecting 
             // to somewhere else (we don't allow the grabbing of the start connector).
@@ -199,7 +216,7 @@ namespace Dynamo.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                    this.DynamoViewModel.Model.Logger.Log(ex.Message);
                 }
             }
         }
@@ -325,6 +342,7 @@ namespace Dynamo.ViewModels
                     foreach (ConnectorViewModel a in activeConnectors)
                     {
                         this.WorkspaceElements.Remove(a);
+                        a.Dispose();
                     }
                 }
                 this.activeConnectors = null;
@@ -755,6 +773,28 @@ namespace Dynamo.ViewModels
                             .OfType<AnnotationModel>()
                             .ToList();
 
+                        // DYN-8893: Prevent accidental grouping when overlapping groups are clicked without dragging
+                        // If a group visually overlaps another and is simply clicked (not dragged),
+                        // grouping can be mistakenly triggered. To avoid this, we record original positions
+                        // of dragged groups and compare them on mouse release. Grouping only proceeds if
+                        // a group was actually moved. This check is skipped if only nodes are selected
+                        bool anyGroupMoved = dragedGroups.All(group =>
+                        {
+                            if (!owningWorkspace.draggedGroupOriginalPositions.TryGetValue(group.GUID, out var originalPos))
+                                return true; // Assume moved if not tracked
+
+                            var current = group.Position;
+                            return Math.Abs(originalPos.X - current.X) > 0.1 && Math.Abs(originalPos.Y - current.Y) > 0.1;
+                        });
+
+                        // If we're dealing with groups and none of them moved, we shouldn't group them
+                        if (!anyGroupMoved && dragedGroups.Any())
+                        {
+                            dropGroup.NodeHoveringState = false;
+                            SetCurrentState(State.None);
+                            return false;
+                        }
+
                         // We do not want to add dragged groups content twice
                         // so we filter it out here.
                         var modelsToAdd = DynamoSelection.Instance.Selection
@@ -763,7 +803,7 @@ namespace Dynamo.ViewModels
                             .ToList();
 
                         // AddModelsToGroupModelCommand adds models to the selected group
-                        // therefor we add the dropGroup to the selection before calling
+                        // therefore we add the dropGroup to the selection before calling
                         // the command.
                         DynamoSelection.Instance.Selection.AddUnique(dropGroup.AnnotationModel);
 
@@ -796,7 +836,9 @@ namespace Dynamo.ViewModels
                             owningWorkspace.DynamoViewModel.AddModelsToGroupModelCommand.Execute(null);
                         }
                         dropGroup.NodeHoveringState = false;
-                        dropGroup.SelectAll();
+                        //select only those models which were added to the group
+                        DynamoSelection.Instance.ClearSelection();
+                        DynamoSelection.Instance.Selection.AddRange(modelsToAdd);
                     }
 
                     SetCurrentState(State.None); // Dragging operation ended.
@@ -1056,10 +1098,6 @@ namespace Dynamo.ViewModels
                     return false;
 
                 var portModel = portViewModel.PortModel;
-
-                // When the connect command is triggered, set portDisconnectedByConnectCommand flag based on the port connectors.
-                // If the current port has any connectors, then it will be disconnected. Otherwise a new connection will be made. 
-                portViewModel.inputPortDisconnectedByConnectCommand = portViewModel.PortType == PortType.Input && portModel.Connectors.Count > 0;
 
                 var workspaceViewModel = owningWorkspace.DynamoViewModel.CurrentSpaceViewModel;
 

@@ -128,12 +128,6 @@ namespace ProtoCore.SyntaxAnalysis
             return VisitAssociativeNode(node);
         }
 
-        [Obsolete("VisitIfStatementNode method is deprecated and not used. To be remove in 3.0")]
-        public virtual TAssociative VisitIfStatementNode(IfStatementNode node)
-        {
-            return VisitAssociativeNode(node);
-        }
-
         public virtual TAssociative VisitInlineConditionalNode(InlineConditionalNode node)
         {
             return VisitAssociativeNode(node);

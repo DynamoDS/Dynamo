@@ -4,7 +4,6 @@
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:localui="clr-namespace:Dynamo.Wpf.UI.GuidedTour"
-        xmlns:w="clr-namespace:System.Windows;assembly=PresentationCore"
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
         Title="{x:Static p:Resources.GenericTaskDialogTitle}"
         MinWidth="400"
@@ -14,7 +13,8 @@
         SizeToContent="WidthAndHeight"
         Style="{DynamicResource DynamoWindowStyle}"
         WindowStartupLocation="CenterOwner"
-        WindowStyle="None">
+        WindowStyle="None"
+        ToolTipService.IsEnabled="false">
     <Window.Background>
         <SolidColorBrush Opacity="0" />
     </Window.Background>
@@ -34,7 +34,9 @@
         <KeyBinding Command="Close" Key="Esc"/>
     </Window.InputBindings>
 
-    <Grid Background="Transparent" MouseDown="UIElement_OnMouseDown">
+    <Grid Background="Transparent"
+          MouseDown="UIElement_OnMouseDown">
+        
         <Border Name="MainBorder"
                 Background="White"
                 CornerRadius="4 "
@@ -137,8 +139,19 @@
 
                 <!--  Body Text  -->
                 <TextBlock Name="BodyTextBlock"
-                           Grid.Row="1"
-                           Margin="20"
+                   Margin="20"
+                   Grid.Row="1"
+                   VerticalAlignment="Center"
+                   DockPanel.Dock="Left"
+                   FontFamily="{StaticResource ArtifaktElementRegular}"
+                   FontSize="14px"
+                   Foreground="#3C3C3C"
+                   Text="{Binding BodyText, UpdateSourceTrigger=PropertyChanged}"
+                   TextWrapping="Wrap" />
+                <!-- Body text in scrollable text box -->
+                <ScrollViewer Name="ScrollableBodyTextBlock" VerticalScrollBarVisibility="Auto"
+                              Margin="20" MaxHeight="250" Grid.Row="1" Visibility="Collapsed">
+                    <TextBlock 
                            VerticalAlignment="Center"
                            DockPanel.Dock="Left"
                            FontFamily="{StaticResource ArtifaktElementRegular}"
@@ -146,6 +159,8 @@
                            Foreground="#3C3C3C"
                            Text="{Binding BodyText, UpdateSourceTrigger=PropertyChanged}"
                            TextWrapping="Wrap" />
+                </ScrollViewer>
+                <!-- Body text in custom rich text box, mostly used in guided tours -->
                 <localui:CustomRichTextBox x:Name="ContentRichTextBox" 
                                            IsDocumentEnabled="True"
                                            Visibility="Collapsed"

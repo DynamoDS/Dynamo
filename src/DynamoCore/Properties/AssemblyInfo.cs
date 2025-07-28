@@ -10,6 +10,8 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("DynamoCoreWpf")]
 [assembly: InternalsVisibleTo("DynamoCoreTests")]
 [assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
+[assembly: InternalsVisibleTo("DynamoCoreWpf2Tests")]
+[assembly: InternalsVisibleTo("DynamoCoreWpf3Tests")]
 [assembly: InternalsVisibleTo("DynamoRevitDS")]
 [assembly: InternalsVisibleTo("DynamoMSOfficeTests")]
 [assembly: InternalsVisibleTo("CoreNodeModels")]
@@ -31,6 +33,7 @@ using System.Runtime.CompilerServices;
 // For workspace package dependency collection
 [assembly: InternalsVisibleTo("DynamoPackages")]
 [assembly: InternalsVisibleTo("WorkspaceDependencyViewExtension")]
+[assembly: InternalsVisibleTo("DynamoMLDataPipeline")]
 [assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
 [assembly: InternalsVisibleTo("PythonNodeModels")]
 [assembly: InternalsVisibleTo("LibraryViewExtensionWebView2")]
@@ -39,10 +42,10 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("LintingViewExtension")]
 [assembly: InternalsVisibleTo("GenerativeDesign.Dynamo.ViewExtension")]
 [assembly: InternalsVisibleTo("GenerativeDesign.Dynamo.PackAndGo")]
-[assembly: InternalsVisibleTo("DynamoPlayerExtension")]
 [assembly: InternalsVisibleTo("DynamoPlayer.Extension")]
 [assembly: InternalsVisibleTo("DynamoPlayer.Workflows")]
-[assembly: InternalsVisibleTo("DynamoPlayer.WorkflowsUi")]
+[assembly: InternalsVisibleTo("DynamoPlayer")]
+[assembly: InternalsVisibleTo("DynamoConnector")]
 [assembly: InternalsVisibleTo("DSCPython")]
 [assembly: InternalsVisibleTo("DynamoPythonTests")]
 [assembly: InternalsVisibleTo("GraphMetadataViewExtension")]
@@ -53,6 +56,13 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("GraphNodeManagerViewExtension")]
 [assembly: InternalsVisibleTo("ExportSampleImagesViewExtension")]
 [assembly: InternalsVisibleTo("DocumentationBrowserViewExtension")]
+[assembly: InternalsVisibleTo("Notifications")]
+[assembly: InternalsVisibleTo("NodeAutoCompleteViewExtension")]
+// Internals are visible to the MCP View Extension and Extension, depending on final implementation.
+[assembly: InternalsVisibleTo("MCPExtension")]
+[assembly: InternalsVisibleTo("MCPViewExtension")]
 
-
+// Disable PublicAPIAnalyzer errors for this type as they're already added to the public API text file
+#pragma warning disable RS0016 
 [assembly: TypeForwardedTo(typeof(Dynamo.Scheduler.Disposable))]
+#pragma warning restore RS0016

@@ -29,6 +29,23 @@ namespace CoreNodeModels.Input
     public class CustomSelection : DSDropDownBase
     {
         private List<DynamoDropDownItem> serializedItems;
+        private bool isVisibleDropDownTextBlock = false;
+
+        /// <summary>
+        /// This property will Collapse or make Visible the TextBlock for the ComboBox template "RefreshComboBox" (by default will be Collapsed)
+        /// </summary>
+        public bool IsVisibleDropDownTextBlock
+        {
+            get
+            {
+                return isVisibleDropDownTextBlock;
+            }
+            set
+            {
+                isVisibleDropDownTextBlock = value;
+                RaisePropertyChanged(nameof(IsVisibleDropDownTextBlock));
+            }
+        }
 
         /// <summary>
         /// Copy of <see cref="DSDropDownBase.Items"/> to be serialized./>
@@ -131,35 +148,52 @@ namespace CoreNodeModels.Input
             serializedItems = Items.ToList();
         }
 
-        [Obsolete]
         protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
         {
-            nodeElement.SetAttribute("serializedItems", JsonConvert.SerializeObject(Items));
-
             base.SerializeCore(nodeElement, context);
+
+            if (context == SaveContext.Copy)
+            {
+                var doc = nodeElement.OwnerDocument;
+
+                foreach (var item in Items)
+                {
+                    var itemElement = doc.CreateElement("CustomItem");
+                    itemElement.SetAttribute("Name", item.Name);
+                    itemElement.SetAttribute("Value", item.Item?.ToString() ?? string.Empty);
+                    nodeElement.AppendChild(itemElement);
+                }
+            }
         }
 
-        [Obsolete]
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            XmlAttribute itemsAttribute = nodeElement.Attributes["serializedItems"];
-
-            if (itemsAttribute == null)
-            {
-                return;
-            }
-
-            List<DynamoDropDownItem> items = JsonConvert.DeserializeObject<List<DynamoDropDownItem>>(itemsAttribute.Value);
-
-            Items.Clear();
-
-            foreach (DynamoDropDownItem item in items)
-            {
-                Items.Add(item);
-            }
-
             base.DeserializeCore(nodeElement, context);
-        }
 
+            if (context == SaveContext.Copy)
+            {
+                Items.Clear();
+                foreach (XmlNode child in nodeElement.ChildNodes)
+                {
+                    if (child is XmlElement itemElement && itemElement.Name == "CustomItem")
+                    {
+                        var name = itemElement.GetAttribute("Name");
+                        var value = itemElement.GetAttribute("Value");
+                        Items.Add(new DynamoDropDownItem(name, value));
+                    }
+                }
+                // Restore the selected index from the attribute
+                var attrib = nodeElement.Attributes["index"];
+                if (attrib != null && Items.Count > 0)
+                {
+                    var indexStr = attrib.Value;
+                    SelectedIndex = ParseSelectedIndex(indexStr, Items);
+                }
+                else
+                {
+                    SelectedIndex = 0;
+                }
+            }
+        }
     }
 }

@@ -1,0 +1,641 @@
+{
+  "Uuid": "cf72e12a-1d31-41a4-ab92-aa6ce3979ebe",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "defineDataTest",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NumberType": "Integer",
+      "MaximumValue": 100,
+      "MinimumValue": 0,
+      "StepValue": 1,
+      "Id": "bd4701b5fcdc473cab6421a36c3b52c0",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ad1a61af4bfe4e5c8707d1e3a09082e1",
+          "Name": "",
+          "Description": "Int64",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Produces integer values",
+      "InputValue": 1
+    },
+    {
+      "ConcreteType": "CoreNodeModels.DefineData, CoreNodeModels",
+      "IsAutoMode": false,
+      "IsList": false,
+      "DisplayValue": "Boolean",
+      "SelectedIndex": 0,
+      "SelectedString": "Boolean",
+      "Id": "e02596f99e1f43a29f619909ec58ca34",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "7ae840df61d547e3a195516f1db9e25a",
+          "Name": ">",
+          "Description": "Input data to be validated",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "79907c8420d2451c9ecb89f1561c55c8",
+          "Name": ">",
+          "Description": "Data if validation is successful",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Validates and returns data from a currently or previously connected node"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.DefineData, CoreNodeModels",
+      "IsAutoMode": true,
+      "IsList": false,
+      "DisplayValue": "Integer",
+      "SelectedIndex": 16,
+      "SelectedString": "Integer",
+      "Id": "ee55714364bc4961981c2794af48b79f",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "8e27dce923a04e179366df9e983ff1d8",
+          "Name": ">",
+          "Description": "Input data to be validated",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e8d0d8672f71478c879b3aaa0d001f51",
+          "Name": ">",
+          "Description": "Data if validation is successful",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Validates and returns data from a currently or previously connected node"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "Id": "ad915e9e5723427091d730a429187118",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "9716b7fb5f854ce7a47d1e0b1e5bcf9a",
+          "Name": "item0",
+          "Description": "Item Index #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "645eafc0880f40b4ad89bbfe6424fc9f",
+          "Name": "item1",
+          "Description": "Item Index #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c4207252c8674731a157b798849b896d",
+          "Name": "list",
+          "Description": "A list (type: var[]..[])",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Makes a new list from the given inputs"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "cd3d005562014d3a9a1eb3d64ff0ef7b",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "379bebe1a47b4d8bac23eae415ca1242",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "40419a18da214bf5b3638066c97bce16",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "5;\n10;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "fa7ad490bd3041cbbd97a2789c9d8054",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "67910f267a614e45b1dac07142c7cdcf",
+          "Name": "width",
+          "Description": "Width of rectangle\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "eef2d2086e054ba69ea521f6dc18adfe",
+          "Name": "length",
+          "Description": "Length of rectangle\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3ceefa50599d4e8cbae7d2d1b9e5c629",
+          "Name": "Rectangle",
+          "Description": "Rectangle created by width and length",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength@double,double",
+      "Replication": "Auto",
+      "Description": "Create a Rectangle centered at the WCS origin in the WCS XY Plane, with specified width (X Axis length), and length (Y Axis length).\n\nRectangle.ByWidthLength (width: double = 1, length: double = 1): Rectangle"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "01e94d59bc0741c4a16a7d1c4a447238",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "91853caf0c124ff7830d1fa82830c2a9",
+          "Name": "startPoint",
+          "Description": "Line start point\n\nPoint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5c1147f20ab74216bb792deffb20e312",
+          "Name": "endPoint",
+          "Description": "Line end point\n\nPoint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a8f7bb98e62f4bbca2f037b8c9504e34",
+          "Name": "Line",
+          "Description": "Line from start and end point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
+      "Replication": "Auto",
+      "Description": "Creates a straight Line between two input Points.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "675b26556dd2494899d1444652fc37da",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c8503c8cacbf48b385c6910f75995e75",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ea615b3cd33c4c93a1c1640f7100c354",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "Point.ByCoordinates(0,0,0);\nPoint.ByCoordinates(2.5,5,0);"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.DefineData, CoreNodeModels",
+      "IsAutoMode": true,
+      "IsList": true,
+      "DisplayValue": "Curve",
+      "SelectedIndex": 3,
+      "SelectedString": "Curve",
+      "Id": "0cbb9f475a2848988d28575cb15c4455",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "052c0d58b246497bb2af4dc624424f49",
+          "Name": ">",
+          "Description": "Input data to be validated",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ad7da215e5c5478eb49ebef501915f6a",
+          "Name": ">",
+          "Description": "Data if validation is successful",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Validates and returns data from a currently or previously connected node"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "Id": "f6078fc86cc646038d12f78e6cee67e9",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "af9bc5a57dbb46f88a53c92824b4d20c",
+          "Name": "item0",
+          "Description": "Item Index #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2bc2d6230ca14ef0b52ca29c63a3b0dc",
+          "Name": "item1",
+          "Description": "Item Index #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "08b62c56449b497fba3dfbf92586fd13",
+          "Name": "item2",
+          "Description": "Item Index #2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9b3a51c4cffa48d286295fec6dd2e737",
+          "Name": "list",
+          "Description": "A list (type: var[]..[])",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Makes a new list from the given inputs"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.DefineData, CoreNodeModels",
+      "IsAutoMode": true,
+      "IsList": false,
+      "DisplayValue": "Select Types",
+      "SelectedIndex": 3,
+      "SelectedString": "Curve",
+      "Id": "39edfbf6a83b48159bb02d7ebcff39f3",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "26cf5389623f405c9782df624c260cb0",
+          "Name": ">",
+          "Description": "Input data to be validated",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "fde7d9a8a8c148b9968bbc4e718f7591",
+          "Name": ">",
+          "Description": "Data if validation is successful",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Validates and returns data from a currently or previously connected node"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "ad1a61af4bfe4e5c8707d1e3a09082e1",
+      "End": "7ae840df61d547e3a195516f1db9e25a",
+      "Id": "8c09f4b985c24feabeee1afcd3f2baa8",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ad1a61af4bfe4e5c8707d1e3a09082e1",
+      "End": "8e27dce923a04e179366df9e983ff1d8",
+      "Id": "3294265d35f04828893cb901ba7443bf",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c4207252c8674731a157b798849b896d",
+      "End": "052c0d58b246497bb2af4dc624424f49",
+      "Id": "7eccb52662a84b15ac23b595fc8d86ec",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "379bebe1a47b4d8bac23eae415ca1242",
+      "End": "67910f267a614e45b1dac07142c7cdcf",
+      "Id": "54c2eca60ec44a7b92548f24937802b1",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "40419a18da214bf5b3638066c97bce16",
+      "End": "eef2d2086e054ba69ea521f6dc18adfe",
+      "Id": "8642331a5b1c437580715260578b615f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "40419a18da214bf5b3638066c97bce16",
+      "End": "08b62c56449b497fba3dfbf92586fd13",
+      "Id": "05a84055da184b95acd18fb967b86360",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "3ceefa50599d4e8cbae7d2d1b9e5c629",
+      "End": "9716b7fb5f854ce7a47d1e0b1e5bcf9a",
+      "Id": "c4e1cc67164c45cdba14a8bb8ae98e60",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "3ceefa50599d4e8cbae7d2d1b9e5c629",
+      "End": "af9bc5a57dbb46f88a53c92824b4d20c",
+      "Id": "b6c90131aeac4a58aa42e5af1d191ee6",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "a8f7bb98e62f4bbca2f037b8c9504e34",
+      "End": "645eafc0880f40b4ad89bbfe6424fc9f",
+      "Id": "327aabdec2e0460189b541c879e5a197",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "a8f7bb98e62f4bbca2f037b8c9504e34",
+      "End": "2bc2d6230ca14ef0b52ca29c63a3b0dc",
+      "Id": "adad4eac5f4b4bb3a2ba666a01130c0d",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c8503c8cacbf48b385c6910f75995e75",
+      "End": "91853caf0c124ff7830d1fa82830c2a9",
+      "Id": "437c67aebcdf447bab71b14962cb30ad",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ea615b3cd33c4c93a1c1640f7100c354",
+      "End": "5c1147f20ab74216bb792deffb20e312",
+      "Id": "80edc59650514f44ae23621a5f6570b8",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "9b3a51c4cffa48d286295fec6dd2e737",
+      "End": "26cf5389623f405c9782df624c260cb0",
+      "Id": "c90538905cde472b901408878ce88740",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": true,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.1",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.1.0.3411",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "bd4701b5fcdc473cab6421a36c3b52c0",
+        "Name": "Integer Slider",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 197.0,
+        "Y": 329.0
+      },
+      {
+        "Id": "e02596f99e1f43a29f619909ec58ca34",
+        "Name": "DefineData",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 681.0,
+        "Y": 222.196040355943
+      },
+      {
+        "Id": "ee55714364bc4961981c2794af48b79f",
+        "Name": "DefineData",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 681.3348622103015,
+        "Y": 411.09245715165434
+      },
+      {
+        "Id": "ad915e9e5723427091d730a429187118",
+        "Name": "Heterogeneous list",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 408.57225153843103,
+        "Y": 835.1837559927692
+      },
+      {
+        "Id": "cd3d005562014d3a9a1eb3d64ff0ef7b",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -237.87940905332403,
+        "Y": 771.9955745036967
+      },
+      {
+        "Id": "fa7ad490bd3041cbbd97a2789c9d8054",
+        "Name": "Rectangle.ByWidthLength",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -43.10723729021197,
+        "Y": 765.6462415683419
+      },
+      {
+        "Id": "01e94d59bc0741c4a16a7d1c4a447238",
+        "Name": "Line.ByStartPointEndPoint",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -43.10723729021197,
+        "Y": 939.6894836356171
+      },
+      {
+        "Id": "675b26556dd2494899d1444652fc37da",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -377.29778469238886,
+        "Y": 951.6128713306066
+      },
+      {
+        "Id": "0cbb9f475a2848988d28575cb15c4455",
+        "Name": "DefineData - OK",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 703.2446101139733,
+        "Y": 834.637765553523
+      },
+      {
+        "Id": "f6078fc86cc646038d12f78e6cee67e9",
+        "Name": "Non-confirming list",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 408.5803072432876,
+        "Y": 1108.3734446905523
+      },
+      {
+        "Id": "39edfbf6a83b48159bb02d7ebcff39f3",
+        "Name": "DefineData - Error",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 689.0700990612935,
+        "Y": 1108.8570721366125
+      }
+    ],
+    "Annotations": [],
+    "X": -105.67634628757276,
+    "Y": -772.5060609492067,
+    "Zoom": 1.1649228193041177
+  }
+}

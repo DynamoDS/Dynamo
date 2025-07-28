@@ -277,12 +277,22 @@ namespace Dynamo.Tests
             {
                 var valueA = kvp.Value;
                 var valueB = b.NodeDataMap[kvp.Key];
+                var valANodeName = a.NodeTypeMap[kvp.Key].FullName;
 
                 // Ignore IntegerSlider nodes as they are being read as IntegerSlider64Bit JSON nodes.
                 // TODO: Remove this filter once we deprecate IntegerSlider nodes in a future Dynamo version.
-                if (a.NodeTypeMap[kvp.Key].FullName == "CoreNodeModels.Input.IntegerSlider")
+                if (valANodeName == "CoreNodeModels.Input.IntegerSlider")
                 {
                     Assert.AreEqual("CoreNodeModels.Input.IntegerSlider64Bit", b.NodeTypeMap[kvp.Key].FullName);
+                    continue;
+                }
+                //ignore file name/object nodes - the result is dependent on where the graph was run.
+                //which is modified during this test.
+
+                if (valANodeName.ToLower() == "corenodemodels.input.filename" ||
+                    valANodeName.ToLower()== "corenodemodels.input.fileobject"||
+                    valANodeName.ToLower() == "corenodemodels.input.directory")
+                {
                     continue;
                 }
 
@@ -389,12 +399,23 @@ namespace Dynamo.Tests
                 //convert the old guid to the new guid
                 var newGuid = GuidUtility.Create(GuidUtility.UrlNamespace, modelGuidsToIDmap[kvp.Key]);
                 var valueB = b.NodeDataMap[newGuid];
+                var valANodeName = a.NodeTypeMap[kvp.Key].FullName;
 
                 // Ignore IntegerSlider nodes as they are being read as IntegerSlider64Bit JSON nodes.
                 // TODO: Remove this filter once we deprecate IntegerSlider nodes in a future Dynamo version.
-                if (a.NodeTypeMap[kvp.Key].FullName == "CoreNodeModels.Input.IntegerSlider")
+                if (valANodeName == "CoreNodeModels.Input.IntegerSlider")
                 {
                     Assert.AreEqual("CoreNodeModels.Input.IntegerSlider64Bit", b.NodeTypeMap[newGuid].FullName);
+                    continue;
+                }
+
+                //ignore file name/object nodes - the result is dependent on where the graph was run.
+                //which is modified during this test.
+
+                if (valANodeName.ToLower() == "corenodemodels.input.filename" ||
+                    valANodeName.ToLower() == "corenodemodels.input.fileobject" ||
+                    valANodeName.ToLower() == "corenodemodels.input.directory")
+                {
                     continue;
                 }
 
@@ -581,10 +602,14 @@ namespace Dynamo.Tests
     [TestFixture, Category("Serialization")]
     public class SerializationTests : DynamoModelTestBase
     {
-        public static string jsonNonGuidFolderName = "json_nonGuidIds";
-        public static string jsonFolderName = "json";
-        public static string jsonFolderNameDifferentCulture = "json_differentCulture";
+        private static Dictionary<string, string> testFilesCache = [];
+        public static string jsonNonGuidFolderName = $"json_nonGuidIds_{Environment.ProcessId}";
+        public static string jsonFolderName = $"json_{Environment.ProcessId}";
+        public static string jsonFolderNameDifferentCulture = $"json_differentCulture_{Environment.ProcessId}";
         private const int MAXNUM_SERIALIZATIONTESTS_TOEXECUTE = 300;
+
+        // Filter out dyns that change during testing
+        private static HashSet<string> filterOutFromSerializationTests = ["updateInputNodeModel.dyn"];
 
         private TimeSpan lastExecutionDuration = new TimeSpan();
         private Dictionary<Guid, string> modelsGuidToIdMap = new Dictionary<Guid, string>();
@@ -636,6 +661,7 @@ namespace Dynamo.Tests
                     Console.WriteLine(e.Message);
                 }
             }
+            CacheTestFiles();
         }
 
         [OneTimeTearDown]
@@ -756,7 +782,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(ztNode.InPorts.First().ToolTip, "1st point of arc\n\nPoint");
 
             var nodeModelNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("c848cc3cb24a477f8248e53fc9304cc1")).First();
-            Assert.AreEqual(nodeModelNode.InPorts.First().ToolTip, "List of colors to include in the range");
+            Assert.AreEqual(nodeModelNode.InPorts.First().ToolTip, "List of colors to include in the range (disabled)");
 
         }
         [Test]
@@ -914,11 +940,26 @@ namespace Dynamo.Tests
                 serializationTestUtils.SaveWorkspaceComparisonData);
         }
 
-        public static object[] FindWorkspaces()
+        private void CacheTestFiles()
         {
+            testFilesCache.Clear();
             var di = new DirectoryInfo(TestDirectory);
             var fis = di.GetFiles("*.dyn", SearchOption.AllDirectories);
-            return fis.Select(fi => fi.FullName).Take(MAXNUM_SERIALIZATIONTESTS_TOEXECUTE).ToArray();
+            var testFiles = fis.Where(fi => !filterOutFromSerializationTests.Contains(fi.Name)).Select(fi => fi.FullName).Take(MAXNUM_SERIALIZATIONTESTS_TOEXECUTE).ToArray();
+
+            foreach (var testFile in testFiles) {
+                testFilesCache.Add(Guid.NewGuid().ToString(), testFile);
+            }
+        }
+
+        internal static string GetTestFileNameFromGuid(string guid)
+        {
+            return testFilesCache.GetValueOrDefault(guid);
+        }
+
+        public static object[] FindWorkspaces()
+        {
+            return [.. testFilesCache.Keys];
         }
 
         /// <summary>
@@ -926,11 +967,14 @@ namespace Dynamo.Tests
         /// the test directory, opens them and executes, then converts them to
         /// json and executes again, comparing the values from the two runs.
         /// </summary>
-        /// <param name="filePath">The path to a .dyn file. This parameter is supplied
-        /// by the test framework.</param>
+        /// <param name="fileId">A random guid assigned to a .dyn file. This parameter is supplied
+        /// by the test framework. You can get the file path by calling GetTestFileNameFromGuid(fileId).</param>
         [Test, TestCaseSource(nameof(FindWorkspaces)), Category("JsonTestExclude")]
-        public void SerializationTest(string filePath)
+        public void SerializationTest(string fileId)
         {
+            string filePath = GetTestFileNameFromGuid(fileId);
+            Console.WriteLine($"Running test {TestContext.CurrentContext.Test.ClassName}.{TestContext.CurrentContext.Test.MethodName} with file {filePath}");
+
             modelsGuidToIdMap.Clear();
             DoWorkspaceOpenAndCompare(filePath, jsonFolderName, ConvertCurrentWorkspaceToJsonAndSave,
                 serializationTestUtils.CompareWorkspaceModels,
@@ -943,11 +987,14 @@ namespace Dynamo.Tests
         /// json and executes again, comparing the values from the two runs
         /// while being in a different culture.
         /// </summary>
-        /// <param name="filePath">The path to a .dyn file. This parameter is supplied
-        /// by the test framework.</param>
+        /// <param name="fileId">A random guid assigned to a .dyn file. This parameter is supplied
+        /// by the test framework. You can get the file path by calling GetTestFileNameFromGuid(fileId).</param>
         [Test, TestCaseSource(nameof(FindWorkspaces)), Category("JsonTestExclude")]
-        public void SerializationInDifferentCultureTest(string filePath)
+        public void SerializationInDifferentCultureTest(string fileId)
         {
+            string filePath = GetTestFileNameFromGuid(fileId);
+            Console.WriteLine($"Running test {TestContext.CurrentContext.Test.ClassName}.{TestContext.CurrentContext.Test.MethodName} with file {filePath}");
+
             var frCulture = CultureInfo.CreateSpecificCulture("fr-FR");
 
             // Save current culture - usually "en-US"
@@ -974,11 +1021,14 @@ namespace Dynamo.Tests
         /// This set of tests has slightly modified json where the id properties
         /// are altered when serialized to test deserialization of non-guid ids.
         /// </summary>
-        /// <param name="filePath">The path to a .dyn file. This parameter is supplied
-        /// by the test framework.</param>
+        /// <param name="fileId">A random guid assigned to a .dyn file. This parameter is supplied
+        /// by the test framework. You can get the file path by calling GetTestFileNameFromGuid(fileId).</param>
         [Test, TestCaseSource(nameof(FindWorkspaces)), Category("JsonTestExclude")]
-        public void SerializationNonGuidIdsTest(string filePath)
+        public void SerializationNonGuidIdsTest(string fileId)
         {
+            string filePath = GetTestFileNameFromGuid(fileId);
+            Console.WriteLine($"Running test {TestContext.CurrentContext.Test.ClassName}.{TestContext.CurrentContext.Test.MethodName} with file {filePath}");
+
             modelsGuidToIdMap.Clear();
             DoWorkspaceOpenAndCompare(filePath, jsonNonGuidFolderName,
                 ConvertCurrentWorkspaceToNonGuidJsonAndSave,

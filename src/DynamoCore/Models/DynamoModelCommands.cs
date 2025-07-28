@@ -24,6 +24,8 @@ namespace Dynamo.Models
         internal event RecordableCommandHandler CommandStarting;
         internal event RecordableCommandHandler CommandCompleted;
 
+        static internal event Action RequestHideNodeAutoCompleteBar;
+
         /// <summary>
         /// Executes specified command
         /// </summary>
@@ -38,7 +40,7 @@ namespace Dynamo.Models
             if (CommandCompleted != null)
                 CommandCompleted(command);
         }
-        
+
         private PortModel[] activeStartPorts;
         private PortModel firstStartPort;
 
@@ -46,10 +48,18 @@ namespace Dynamo.Models
         {
             string filePath = command.FilePath;
             bool forceManualMode = command.ForceManualExecutionMode;
+            bool isTemplate = command.IsTemplate;
             OpenFileFromPath(filePath, forceManualMode);
 
             //clear the clipboard to avoid copying between dyns
             //ClipBoard.Clear();
+        }
+
+        protected virtual void OpenTemplateImpl(OpenFileCommand command)
+        {
+            string filePath = command.FilePath;
+            bool forceManualMode = command.ForceManualExecutionMode;
+            OpenTemplateFromPath(filePath, forceManualMode);
         }
 
         protected virtual void OpenFileFromJsonImpl(OpenFileFromJsonCommand command)
@@ -80,6 +90,8 @@ namespace Dynamo.Models
 
         private void CreateNodeImpl(CreateNodeCommand command)
         {
+            RequestHideNodeAutoCompleteBar?.Invoke();
+
             var node = GetNodeFromCommand(command);
             if (node == null)
             {
@@ -88,6 +100,7 @@ namespace Dynamo.Models
 
             node.X = command.X;
             node.Y = command.Y;
+            node.IsTransient = command.IsTransient;
 
             AddNodeToCurrentWorkspace(node, centered: command.DefaultPosition);
             CurrentWorkspace.RecordCreatedModel(node);
@@ -207,7 +220,7 @@ namespace Dynamo.Models
             return null;
         }
 
-        private NodeModel CreateNodeFromNameOrType(Guid nodeId, string name)
+        internal NodeModel CreateNodeFromNameOrType(Guid nodeId, string name, bool isTransient = false)
         {
             NodeModel node;
 
@@ -219,6 +232,7 @@ namespace Dynamo.Models
                     ? new DSVarArgFunction(functionItem) as NodeModel
                     : new DSFunction(functionItem);
                 node.GUID = nodeId;
+                node.IsTransient = isTransient;
                 return node;
             }
 
@@ -226,6 +240,7 @@ namespace Dynamo.Models
             if (NodeFactory.CreateNodeFromTypeName(name, out node))
             {
                 node.GUID = nodeId;
+                node.IsTransient = isTransient;
             }
             return node;
         }
@@ -285,8 +300,15 @@ namespace Dynamo.Models
 
         private void AddSelectionAndRecordUndo(ModelBase model)
         {
-            WorkspaceModel.RecordModelsForModification(new List<ModelBase>() { model }, CurrentWorkspace.UndoRecorder);
-            DynamoSelection.Instance.Selection.AddUnique(model);
+            try
+            {
+                WorkspaceModel.RecordModelsForModification(new List<ModelBase>() { model }, CurrentWorkspace.UndoRecorder);
+                DynamoSelection.Instance.Selection.AddUnique(model);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError("Failed to add model(s) to selection." + "\n" + ex.Message);
+            }
         }
 
         private void ClearSelectionAndRecordUndo()
@@ -306,6 +328,8 @@ namespace Dynamo.Models
 
         private void MakeConnectionImpl(MakeConnectionCommand command)
         {
+            RequestHideNodeAutoCompleteBar?.Invoke();
+
             Guid nodeId = command.ModelGuid;
 
             switch (command.ConnectionMode)
@@ -326,7 +350,7 @@ namespace Dynamo.Models
                     EndShiftReconnections(nodeId, command.PortIndex, command.Type);
                     break;
 
-                // TODO - can be removed in Dynamo 3.0 - DYN-1729
+                // TODO - can be removed in a future version of Dynamo - DYN-1729
                 case MakeConnectionCommand.Mode.EndAndStartCtrlConnection:
                     BeginCreateConnections(nodeId, command.PortIndex, command.Type);
                     break;
@@ -350,31 +374,38 @@ namespace Dynamo.Models
             bool isInPort = portType == PortType.Input;
             activeStartPorts = null;
 
-            if (!(CurrentWorkspace.GetModelInternal(nodeId) is NodeModel node))
+            if (CurrentWorkspace.GetModelInternal(nodeId) is not NodeModel node)
                 return;
-            PortModel portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
-
-            // Test if port already has a connection, if so grab it and begin connecting 
-            // to somewhere else (we don't allow the grabbing of the start connector).
-            if (portModel.Connectors.Count > 0 && portModel.Connectors[0].Start != portModel)
+            try
             {
-                activeStartPorts = new PortModel[] { portModel.Connectors[0].Start };
-                firstStartPort = portModel.Connectors[0].Start;
-                // Disconnect the connector model from its start and end ports
-                // and remove it from the connectors collection. This will also
-                // remove the view model.
-                ConnectorModel connector = portModel.Connectors[0];
-                if (CurrentWorkspace.Connectors.Contains(connector))
+                PortModel portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
+
+                // Test if port already has a connection, if so grab it and begin connecting 
+                // to somewhere else (we don't allow the grabbing of the start connector).
+                if (portModel.Connectors.Count > 0 && portModel.Connectors[0].Start != portModel)
                 {
-                    var models = new List<ModelBase> { connector };
-                    CurrentWorkspace.SaveAndDeleteModels(models);
-                    connector.Delete();
+                    activeStartPorts = new PortModel[] { portModel.Connectors[0].Start };
+                    firstStartPort = portModel.Connectors[0].Start;
+                    // Disconnect the connector model from its start and end ports
+                    // and remove it from the connectors collection. This will also
+                    // remove the view model.
+                    ConnectorModel connector = portModel.Connectors[0];
+                    if (CurrentWorkspace.Connectors.Contains(connector))
+                    {
+                        var models = new List<ModelBase> { connector };
+                        CurrentWorkspace.SaveAndDeleteModels(models);
+                        connector.Delete();
+                    }
+                }
+                else
+                {
+                    activeStartPorts = new PortModel[] { portModel };
+                    firstStartPort = isInPort ? null : portModel; // Only assign firstStartPort if the port selected is an output port
                 }
             }
-            else
+            catch (Exception ex)
             {
-                activeStartPorts = new PortModel[] { portModel };
-                firstStartPort = isInPort ? null : portModel; // Only assign firstStartPort if the port selected is an output port
+                Logger.LogError("Failed to begin connection." + "\n" + ex.Message);
             }
         }
 
@@ -433,10 +464,6 @@ namespace Dynamo.Models
                 activeStartPorts[i] = connector.End;
             }
             CurrentWorkspace.SaveAndDeleteModels(selectedConnectors.ToList<ModelBase>());
-            for (int i = 0; i < numOfConnectors; i++) //delete the connectors
-            {
-                selectedConnectors[i].Delete();
-            }
             return;
         }
 
@@ -552,6 +579,8 @@ namespace Dynamo.Models
 
         private void DeleteModelImpl(DeleteModelCommand command)
         {
+            RequestHideNodeAutoCompleteBar?.Invoke();
+
             var modelsToDelete = new List<ModelBase>();
             if (command.ModelGuid == Guid.Empty)
             {
@@ -561,6 +590,12 @@ namespace Dynamo.Models
             else
             {
                 modelsToDelete.AddRange(command.ModelGuids.Select(guid => CurrentWorkspace.GetModelInternal(guid)));
+            }
+
+            if (!command.CanDeleteTransientNodes)
+            {
+                // Remove transient nodes from the list of models to delete.
+                modelsToDelete.RemoveAll(model => (model as NodeModel)?.IsTransient == true);
             }
 
             DeleteModelInternal(modelsToDelete);

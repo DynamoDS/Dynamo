@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
@@ -585,6 +585,17 @@ namespace Dynamo.Tests
             var nurbsSurfaceWeights1 = GetFlattenedPreviewValues("51525d19-3de9-4329-8249-6ddfb45aa8ac");
             Assert.AreEqual(nurbsSurfaceWeights1, new object[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 });
 
+        }
+
+        [Test]
+        public void PolyCurveByPointsExtraLargeScaleSetting_Returns3Curves()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\PolycurveByPoints.dyn");
+            RunModel(openPath);
+
+            var polyCurve = GetPreviewValue("c730df73-7ce9-43c1-8f97-87608fb48e43") as PolyCurve;
+            Assert.IsNotNull(polyCurve);
+            Assert.AreEqual(3, polyCurve.NumberOfCurves);
         }
 
         [Test]

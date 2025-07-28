@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
+using System.Windows.Threading;
 using System.Xml;
 using CoreNodeModels;
 using CoreNodeModels.Input;
@@ -16,7 +17,6 @@ using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
@@ -99,7 +99,6 @@ namespace WpfVisualizationTests
                 StartInTestMode = true,
                 PathResolver = pathResolver,
                 GeometryFactoryPath = preloader.GeometryFactoryPath,
-                UpdateManager = this.UpdateManager,
                 ProcessMode = TaskProcessMode.Synchronous,
                 Preferences = PreferenceSettings.Instance
             });
@@ -119,7 +118,7 @@ namespace WpfVisualizationTests
             View = new DynamoView(ViewModel);
             View.Show();
 
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
         }
 
         /// <summary>
@@ -758,6 +757,30 @@ namespace WpfVisualizationTests
         }
 
         [Test]
+        public void HelixWatch3DViewModel_DisableGrid_AxesNotVisible()
+        {
+            var bPreviewVm = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
+            var grid = bPreviewVm.Element3DDictionary[HelixWatch3DViewModel.DefaultGridName];
+
+            Assert.IsNotNull(bPreviewVm, "HelixWatch3D has not been loaded");
+
+            // Ensure background grid and axes are enabled and check effects
+            bPreviewVm.IsGridVisible = true;
+            Assert.IsTrue(grid.Visibility == Visibility.Visible, "Background grid has not been drawn");
+            Assert.IsTrue(bPreviewVm.IsAxesVisible, "Axes have not been drawn");
+
+            // Disable background grid and axes and check effects
+            bPreviewVm.IsGridVisible = false;          
+            Assert.IsTrue(grid.Visibility == Visibility.Hidden, "Background grid has not been hidden");
+            Assert.IsFalse(bPreviewVm.IsAxesVisible, "Axes have not been hidden");
+
+            // Re-enable background grid and axes and check effects
+            bPreviewVm.IsGridVisible = true;
+            Assert.IsTrue(grid.Visibility == Visibility.Visible, "Background grid has not been re-drawn");
+            Assert.IsTrue(bPreviewVm.IsAxesVisible, "Axes have not been re-drawn");
+        }
+
+        [Test]
         public void HelixWatch3DViewModel_ChangeBackgroundVisibility_CanNavigateButtonsAreCorrect()
         {
             var bPreviewVm = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
@@ -836,12 +859,12 @@ namespace WpfVisualizationTests
             OpenVisualizationTest("Display.ByGeometryColor.dyn");
             RunCurrentModel();
             Assert.AreEqual(4, BackgroundPreviewGeometry.Count());
-            DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEvents();
             var dynGeometry = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>();
             Assert.IsFalse((dynGeometry.FirstOrDefault().SceneNode.RenderCore as DynamoGeometryMeshCore).dataCore.IsFrozenData);
             // Freeze the ByGeometryColor node and check the frozen flag.
             Model.CurrentWorkspace.Nodes.Where(x => x.Name.Contains("ByGeometryColor")).FirstOrDefault().IsFrozen = true;
-            DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEvents();
             Assert.IsTrue((dynGeometry.FirstOrDefault().SceneNode.RenderCore as DynamoGeometryMeshCore).dataCore.IsFrozenData);
         }
 
@@ -953,7 +976,7 @@ namespace WpfVisualizationTests
             var nodeView = View.ChildrenOfType<NodeView>().First(nv => nv.ViewModel.Name == "Watch");
             var parentTreeViewItem = nodeView.ChildOfType<TreeViewItem>();
 
-            // Selcting a sphere object 70 different times to render new labels again.
+            // Selecting a sphere object 70 different times to render new labels again.
             for (int i = 0; i < 30; i++)
             {
 
@@ -1119,7 +1142,7 @@ namespace WpfVisualizationTests
             var nodes = nodeIds.Select(workspace.NodeFromWorkspace).ToList();
             Assert.IsFalse(nodes.Any(n => n == null)); // Nothing should be null.
 
-            // Ensure that visulations match our expectations
+            // Ensure that visualizations match our expectations
             // Initially, all nodes has shortest lacing strategy
             // 5 points for point0 node, 2 points for point1 and point2 node
             Assert.AreEqual(9, BackgroundPreviewGeometry.TotalPoints());
@@ -1251,7 +1274,10 @@ namespace WpfVisualizationTests
 
             output.RenderPackagesUpdated += TestRenderPackageUpdate;
 
-            output.RequestVisualUpdateAsync(ViewModel.Model.Scheduler, ViewModel.Model.EngineController, new HelixRenderPackageFactory(), true);
+            var factory = new HelixRenderPackageFactory();
+            factory.TessellationParameters.UseRenderInstancing = true;
+
+            output.RequestVisualUpdateAsync(ViewModel.Model.Scheduler, ViewModel.Model.EngineController, factory, true);
         }
 
         private void TestRenderPackageUpdate(NodeModel nodeModel, RenderPackageCache renderPackages) {
@@ -1291,7 +1317,7 @@ namespace WpfVisualizationTests
             }
 
             var treeViewItem = nodeView.ChildOfType<TreeViewItem>();
-            // find TreeViewItem by given index in multi-dimentional array
+            // find TreeViewItem by given index in multi-dimensional array
             foreach (var index in indexes)
             {
                 treeViewItem = treeViewItem.ChildrenOfType<TreeViewItem>().ElementAt(index);
@@ -1448,6 +1474,41 @@ X: 0.5 Y: -0.5 Z: -0.5".Replace(" ",string.Empty),
         }
 
         [Test]
+        public void StandardCurvesAndInstancedCurvesAndAreAddedToBackGroundPreviewForWhenTesselatedFromOneNodeExample1()
+        {
+            ViewModel.RenderPackageFactoryViewModel.UseRenderInstancing = true;
+
+            Model.LibraryServices.ImportLibrary("FFITarget.dll");
+            OpenVisualizationTest("MixedListOfInstancedAndStandardCurves.dyn");
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+
+            //this graph displays a 3 lines.
+            Assert.AreEqual(3, BackgroundPreviewGeometry.TotalCurvesMinusInstances());
+
+            //this graph displays 2 rectangle instances.
+            Assert.AreEqual(2, BackgroundPreviewGeometry.TotalLineInstancesToRender());
+
+            Assert.AreEqual(false, BackgroundPreviewGeometry.AnyLargerIndicesThanVertexCount());
+
+            Assert.AreEqual(false, BackgroundPreviewGeometry.AnyNegativeIndices());
+        }
+
+        [Test]
+        public void InstanceGeometryWithinCodeBlock()
+        {
+            ViewModel.RenderPackageFactoryViewModel.UseRenderInstancing = true;
+
+            Model.LibraryServices.ImportLibrary("FFITarget.dll");
+            OpenVisualizationTest("InstancingWithinCodeBlock.dyn");
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+
+            //this graph displays 2 rectangle instances.
+            Assert.AreEqual(2, BackgroundPreviewGeometry.TotalLineInstancesToRender());
+        }
+
+        [Test]
         public void Watch3dNodeDisposal_DoesNotBreakBackGroundPreview()
         {
            OpenVisualizationTest("FirstRunWatch3D.dyn");
@@ -1570,6 +1631,45 @@ X: 0.5 Y: -0.5 Z: -0.5".Replace(" ",string.Empty),
             return lines.Any()
                 ? lines.SelectMany(g => ((LineGeometryModel3D)g).Geometry.Positions).Count()/2
                 : 0;
+        }
+
+        public static int TotalCurvesMinusInstances(this IEnumerable<Element3D> dictionary)
+        {
+            var lines = dictionary.Where(g => g is LineGeometryModel3D && !keyList.Contains(g.Name) && ((LineGeometryModel3D)g).Instances == null).ToArray();
+
+            return lines.Any()
+                ? lines.SelectMany(g => ((LineGeometryModel3D)g).Geometry.Positions).Count() / 2
+                : 0;
+        }
+
+        public static bool AnyNegativeIndices(this IEnumerable<Element3D> dictionary)
+        {
+            var lines = dictionary.Where(g => g is LineGeometryModel3D && !keyList.Contains(g.Name) && ((LineGeometryModel3D)g).Instances == null).ToArray();
+
+            foreach(var line in lines)
+            {
+                var indices = ((LineGeometryModel3D)line).Geometry.Indices;
+                if (indices.Any(i => i < 0))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public static bool AnyLargerIndicesThanVertexCount(this IEnumerable<Element3D> dictionary)
+        {
+            var lines = dictionary.Where(g => g is LineGeometryModel3D && !keyList.Contains(g.Name) && ((LineGeometryModel3D)g).Instances == null).ToArray();
+
+            foreach (var line in lines)
+            {
+                var max = ((LineGeometryModel3D)line).Geometry.Positions.Count();
+
+                var indices = ((LineGeometryModel3D)line).Geometry.Indices;
+                if (indices.Any(i => i > max))
+                    return true;
+            }
+
+            return false;
         }
 
         public static int TotalText(this IEnumerable<Element3D> dictionary)

@@ -483,6 +483,17 @@ namespace PythonNodeModelsWpf
                 Dynamo.Logging.Categories.PythonOperations);
             NodeModel.RequestCodeMigration(e);
         }
+        private void OnConvertTabsToSpacesClicked(object sender, RoutedEventArgs e)
+        {
+            if (NodeModel == null)
+                throw new NullReferenceException(nameof(NodeModel));
+
+            if (editText.Document != null && !String.IsNullOrEmpty(editText.Document.Text))
+            {
+                var convertedText = PythonIndentationStrategy.ConvertTabsToSpaces(editText.Document.Text);
+                editText.Document.Text = convertedText;
+            }
+        }
 
         private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
         {
@@ -629,6 +640,9 @@ namespace PythonNodeModelsWpf
             {
                 var senderContext = (sender as Button)?.DataContext;
 
+                //At this point the user choses to close the window without saving the script, so mark the script as saved.
+                IsSaved = true;
+
                 if (this.Equals(senderContext))
                 {
                     Close();
@@ -678,6 +692,7 @@ namespace PythonNodeModelsWpf
             this.ZoomOutButton.IsEnabled = false;
             this.EngineSelectorComboBox.IsEnabled = false;
             this.MigrationAssistantButton.IsEnabled = false;
+            this.ConvertTabsToSpacesButton.IsEnabled = false;
             this.MoreInfoButton.IsEnabled = false;
             this.SaveButtonBar.Visibility = Visibility.Collapsed;
             this.UnsavedChangesStatusBar.Visibility = Visibility.Visible;
@@ -695,6 +710,7 @@ namespace PythonNodeModelsWpf
             this.ZoomOutButton.IsEnabled = true;
             this.EngineSelectorComboBox.IsEnabled = true;
             this.MigrationAssistantButton.IsEnabled = true;
+            this.ConvertTabsToSpacesButton.IsEnabled = true;
             this.MoreInfoButton.IsEnabled = true;
             this.SaveButtonBar.Visibility = Visibility.Visible;
             this.UnsavedChangesStatusBar.Visibility = Visibility.Collapsed;

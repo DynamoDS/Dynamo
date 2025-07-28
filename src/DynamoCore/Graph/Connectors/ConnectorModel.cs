@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Xml;
+using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Utilities;
@@ -46,6 +47,21 @@ namespace Dynamo.Graph.Connectors
                 RaisePropertyChanged(nameof(IsHidden));
             }
         }
+
+        private bool isTransient = false;
+        /// <summary>
+        /// IsTransient flag controlling the transient state of the connector
+        /// </summary>
+        internal bool IsTransient
+        {
+            get { return isTransient; }
+            set
+            {
+                isTransient = value;
+                RaisePropertyChanged(nameof(IsTransient));
+            }
+        }
+        
         /// <summary>
         /// Returns start port model.
         /// </summary>
@@ -159,6 +175,9 @@ namespace Dynamo.Graph.Connectors
             GUID = guid;
             Start = start.OutPorts[startIndex];
             PortModel endPort = end.InPorts[endIndex];
+            // Reading visibility settings from preferences and setting the visibility of the connector
+            // so that setting changes within the session can be relfected instantly
+            IsHidden = !PreferenceSettings.Instance.ShowConnector;
 
             Debug.WriteLine("Creating a connector between ports {0}(owner:{1}) and {2}(owner:{3}).",
                 start.GUID, Start.Owner == null ? "null" : Start.Owner.Name, end.GUID, endPort.Owner == null ? "null" : endPort.Owner.Name);
@@ -236,14 +255,16 @@ namespace Dynamo.Graph.Connectors
         /// </summary>
         internal void Delete()
         {
-            if (Start != null && Start.Connectors.Contains(this))
+            try
             {
-                Start.Connectors.Remove(this);
+                Start?.Connectors.Remove(this);
+                End?.Connectors.Remove(this);
             }
-            if (End != null && End.Connectors.Contains(this))
+            catch (Exception ex)
             {
-                End.Connectors.Remove(this);
+                Log("Exception caught when deleting connectors: "+ ex.Message);
             }
+
             OnDeleted();
         }
 

@@ -1,8 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.Loader;
 using CoreNodeModels;
+using Dynamo.Configuration;
 using Dynamo.Engine.CodeCompletion;
 using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
@@ -1518,6 +1521,29 @@ var06 = g;
             AssertPreviewValue(cbn8.AstIdentifierGuid, new object[] { new[] { 0, 2, 4, 6, 8 }, 2.2 });
         }
 
+
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestTooltipAndLabelMaxLength()
+        {
+            var longString = new string('x', 1000);
+            var identifier = "very_long_string_identifier";
+            var code = $"\"{identifier}\" = \"{longString}\";";
+
+            Assert.Greater(longString.Length, Configurations.CBNMaxTooltipLength);
+            Assert.Greater(identifier.Length, Configurations.CBNMaxPortNameLength);
+
+            var cbn = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(cbn, code);
+
+            foreach (var port in cbn.OutPorts)
+            {
+                Assert.LessOrEqual(port.ToolTip.Length, Configurations.CBNMaxTooltipLength);
+                Assert.LessOrEqual(port.Name.Length, Configurations.CBNMaxPortNameLength);
+            }
+        }
+
         #region CodeBlockUtils Specific Tests
         [Test]
         [Category("UnitTests")]
@@ -1798,6 +1824,22 @@ var06 = g;
             // Assert that node throws type mismatch warning
             Assert.IsTrue(codeBlockNodeOne.Infos.Any(x => x.Message.Contains(
                 ProtoCore.Properties.Resources.kConvertNonConvertibleTypes)));
+        }
+
+        [Test]
+        public void ImportStatementInCodeBlock_DoesNotLoadAssemblyIntoProcess()
+        {
+            var codeBlockNode = CreateCodeBlockNode();
+            var guid = codeBlockNode.GUID.ToString();
+
+            string assemblyName = "TestCodeBlockNodeSecurityIssue";
+            UpdateCodeBlockNodeContent(codeBlockNode, $"import(\"{assemblyName}.dll\")");
+
+            var loadedAssemblies = AssemblyLoadContext.All.SelectMany(context => context.Assemblies);
+
+            var asm = loadedAssemblies.Any(assembly => assembly.GetName().Name.Equals(assemblyName, StringComparison.OrdinalIgnoreCase));
+
+            Assert.False(asm);
         }
 
         [Test]
@@ -2095,10 +2137,14 @@ var06 = g;
             string openPath = Path.Combine(TestDirectory, @"core\cbn\OutputPortLabels.dyn");
             RunModel(openPath);
 
+            var intLineContent = "1";
+            var imperativeBlockContent = "[Imperative]\n{\nreturn = 5;\n\n}";
+            var stringLiteralContent = "\"foo\""; ;
+
             var cbn = GetModel().Workspaces.First().Nodes.First() as CodeBlockNodeModel;
-            Assert.AreEqual(string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 1), cbn.OutPorts.First().ToolTip); 
-            Assert.AreEqual(string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 2), cbn.OutPorts.ElementAt(1).ToolTip); 
-            Assert.AreEqual(string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 4), cbn.OutPorts.ElementAt(2).ToolTip); 
+            Assert.AreEqual(intLineContent, cbn.OutPorts[0].ToolTip);
+            Assert.AreEqual(imperativeBlockContent, cbn.OutPorts[1].ToolTip);
+            Assert.AreEqual(stringLiteralContent, cbn.OutPorts[2].ToolTip);
         }
     }
 
@@ -2458,10 +2504,13 @@ var06 = g;
             string code = "im";
             var completions = codeCompletionServices.SearchCompletions(code, Guid.Empty);
 
-            // Expected 3 completion items
-            Assert.AreEqual(3, completions.Count());
+            Assert.AreEqual(5, completions.Count());
 
-            string[] expected = { "Imperative", "Minimal", "MinimalTracedClass" };
+            string[] expected = { "ClassWithExperimentalMethod",
+                "ExperimentalClass",
+                "Imperative",
+                "Minimal",
+                "MinimalTracedClass" };
             var actual = completions.Select(x => x.Text).OrderBy(x => x);
 
             Assert.AreEqual(expected, actual);

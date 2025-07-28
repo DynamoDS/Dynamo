@@ -1,0 +1,207 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AreaFromStringDescription" xml:space="preserve">
+    <value>面積を入力します。</value>
+  </data>
+  <data name="AreaFromStringPortDataAreaToolTip" xml:space="preserve">
+    <value>面積。十進表記の平方メートルとして内部的に格納されます。</value>
+  </data>
+  <data name="AreaFromStringSearchTags" xml:space="preserve">
+    <value>Imperial;Metric;Area;Project;units</value>
+  </data>
+  <data name="ConvertUnitsDescription" xml:space="preserve">
+    <value>選択した単位系間で値を変換します</value>
+  </data>
+  <data name="ConvertUnitsSearchTags" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CovertUnitInputTooltip" xml:space="preserve">
+    <value>変換する値</value>
+  </data>
+  <data name="CovertUnitOutputTooltip" xml:space="preserve">
+    <value>変換された値</value>
+  </data>
+  <data name="EditHeader" xml:space="preserve">
+    <value>編集...</value>
+  </data>
+  <data name="LegthFromStringObsoleteMessage" xml:space="preserve">
+    <value>は使用されなくなりました。Parse Unit Input ノードを使用してください。</value>
+  </data>
+  <data name="LengthFromStringDescription" xml:space="preserve">
+    <value>フィートとインチで定義された長さがフィート単位の数値表現となります。</value>
+  </data>
+  <data name="LengthFromStringPortDataLengthToolTip" xml:space="preserve">
+    <value>数値表現(フィート)</value>
+  </data>
+  <data name="LengthFromStringSearchTags" xml:space="preserve">
+    <value>Imperial;Metric;Length;Project;units</value>
+  </data>
+  <data name="ParseUnitInputDescription" xml:space="preserve">
+    <value>単位値を含む入力文字列を、式に相当する値に変換します</value>
+  </data>
+  <data name="ParseUnitInputSearchTags" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ParseUnitInputUnitTooltip" xml:space="preserve">
+    <value>選択された単位</value>
+  </data>
+  <data name="ParseUnitInputValueTooltip" xml:space="preserve">
+    <value>変換された式の値</value>
+  </data>
+  <data name="QuantitiesUIDescription" xml:space="preserve">
+    <value>数量タイプを選択</value>
+  </data>
+  <data name="QuantitiesUISearchTags" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SchemaLoadWarning" xml:space="preserve">
+    <value>指定されたパスから Unit Schemas をロード中に問題が発生しました:</value>
+  </data>
+  <data name="SymbolsUIDescription" xml:space="preserve">
+    <value>記号タイプを選択</value>
+  </data>
+  <data name="SymbolsUISearchTags" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UnitsUIDescription" xml:space="preserve">
+    <value>単位タイプを選択</value>
+  </data>
+  <data name="UnitsUISearchTags" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UnitTypesDescription" xml:space="preserve">
+    <value>測定単位を選択します。</value>
+  </data>
+  <data name="UnitTypesObsoleteMessage" xml:space="preserve">
+    <value>は使用されなくなりました。Units ドロップダウン ノードを使用してください。</value>
+  </data>
+  <data name="UnitTypesSearchTags" xml:space="preserve">
+    <value>units;unittypes;</value>
+  </data>
+  <data name="VolumeFromStringDescription" xml:space="preserve">
+    <value>容積を入力します。</value>
+  </data>
+  <data name="VolumeFromStringPortDataVolumeToolTip" xml:space="preserve">
+    <value>容積。十進表記の立方メートルとして内部的に格納されます。</value>
+  </data>
+  <data name="VolumeFromStringSearchTags" xml:space="preserve">
+    <value>Imperial;Metric;volume;Project;units</value>
+  </data>
+</root>

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using DSOffice.Properties;
 
 namespace DSOffice
 {
@@ -20,19 +21,29 @@ namespace DSOffice
         /// <search>write,text,file</search>
         public static void ExportCSV(string filePath, object[][] data)
         {
-            using (var writer = new StreamWriter(DSCore.IO.FileSystem.AbsolutePath(filePath)))
+            try
             {
-                foreach (var line in data)
+                using (var writer = new StreamWriter(DSCore.IO.FileSystem.AbsolutePath(filePath)))
                 {
-                    int count = 0;
-                    foreach (var entry in line)
+                    foreach (var line in data)
                     {
-                        writer.Write(entry);
-                        if (++count < line.Length)
-                            writer.Write(",");
+                        int count = 0;
+                        foreach (var entry in line)
+                        {
+                            writer.Write(entry);
+                            if (++count < line.Length)
+                                writer.Write(",");
+                        }
+                        writer.WriteLine();
                     }
-                    writer.WriteLine();
                 }
+            }
+            catch (Exception ex)
+            {
+                if (ex is DirectoryNotFoundException)
+                    throw new Exception(Resources.StreamWriterNotFoundException);
+                else
+                    throw;
             }
         }
 

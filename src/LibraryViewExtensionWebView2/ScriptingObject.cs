@@ -94,11 +94,6 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 {
                     controller.ImportLibrary();
                 }
-                else if (funcName == "logEventsToInstrumentation")
-                {
-                    var data = (simpleRPCPayload["data"] as JArray).Children();
-                    controller.LogEventsToInstrumentation(data.ElementAt(0).Value<string>(), data.ElementAt(1).Value<string>());
-                }
                 else if (funcName == "performSearch")
                 {
                     var data = simpleRPCPayload["data"] as string;
@@ -106,7 +101,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
                     var searchStream = controller.searchResultDataProvider.GetResource(data, out extension);
                     var searchReader = new StreamReader(searchStream);
                     var results = searchReader.ReadToEnd();
-                    //send back results to libjs
+                    //send back results to librarie.js
                     LibraryViewController.ExecuteScriptFunctionAsync(controller.browser, "completeSearch", results);
                     searchReader.Dispose();
                 }

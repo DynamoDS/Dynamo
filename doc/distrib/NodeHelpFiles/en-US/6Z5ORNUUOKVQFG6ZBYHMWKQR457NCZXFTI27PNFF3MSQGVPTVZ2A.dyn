@@ -1,0 +1,448 @@
+{
+  "Uuid": "ece24c9b-d93e-4fa1-b16e-71cd10d2af16",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "dc4a442c37e84394ad07a302e20a6f8b",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "9784079fe97a46c3a22d0a0e45f4ed3c",
+          "Name": "circle",
+          "Description": "Circle",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "65f8d02ebb5940148f47645f2d784ad1",
+          "Name": "numberSides",
+          "Description": "int\nDefault value : 5",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d151ff5499504c9b9df740c8c356b1cd",
+          "Name": "Polygon",
+          "Description": "Polygon",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Polygon.RegularPolygon@Autodesk.DesignScript.Geometry.Circle,int",
+      "Replication": "Auto",
+      "Description": "Construct an inscribed Polygon Curve within a circle.\n\nPolygon.RegularPolygon (circle: Circle, numberSides: int = 5): Polygon"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "b1d759dfde434ef69437cf238612a5c4",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "54c4b5d6359a46d5ba55420ffdf2f4f3",
+          "Name": "centerPoint",
+          "Description": "Center point of circle\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5c011c76e4ce461f9e8dbc3d0d18cd20",
+          "Name": "radius",
+          "Description": "Radius\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b540749554364616a1fb3544c5b71a93",
+          "Name": "Circle",
+          "Description": "Circle created with center point and radius",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "Replication": "Auto",
+      "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NumberType": "Double",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "Id": "f7194dc99489408d8178b17fe8ad7b67",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "cfb5ead61e1d486e918fe5406d11d448",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Produces numeric values",
+      "InputValue": 5.0
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "b7ab4ba94b0c440a864bd977ed4fbcb5",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "1e11a702229844d8864bda95258a31da",
+          "Name": "geometry",
+          "Description": "Autodesk.DesignScript.Geometry.Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "fe7ea0724167405e8286c90a5bcc3f97",
+          "Name": "Geometry[]",
+          "Description": "Geometry[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Explode",
+      "Replication": "Auto",
+      "Description": "Separates compound or non-separated elements into their component parts.\n\nGeometry.Explode ( ): Geometry[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "6671c6bb1ad0486383be9b14c20f6c90",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "6079ad5b8f2049a9a7c0e1c278ccbaa1",
+          "Name": "list",
+          "Description": "List to shuffle.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "232e7e9a8c6943c188e95c16da3018ce",
+          "Name": "list",
+          "Description": "Randomized list.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.List.Shuffle@var[]..[]",
+      "Replication": "Auto",
+      "Description": "Shuffles a list, randomizing the order of its items.\n\nList.Shuffle (list: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "663c199ddc3040cba375dacb6e307c82",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "ecb20e97f60f4dc88e98d2f0763fa8cf",
+          "Name": "curves",
+          "Description": "Curves to group together to create one or more PolyCurves\n\nCurve[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4d925950694f4ae18518e7ff1226f5b1",
+          "Name": "joinTolerance",
+          "Description": "Tolerance to determine size of gap allowed between curves to be joined\n\ndouble\nDefault value : 0.001",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "aec70093cac74b20999296f6969c5df3",
+          "Name": "trimCurves",
+          "Description": "bool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "540825a8fa3c4952b2cb72ff1214ca2f",
+          "Name": "trimLength",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e6ce669af362485cb312cfc259214773",
+          "Name": "PolyCurve[]..[]",
+          "Description": "PolyCurve[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves@Autodesk.DesignScript.Geometry.Curve[],double,bool,double",
+      "Replication": "Auto",
+      "Description": "Make one or more polycurves by grouping connected curves. Choose a preferred join tolerance between 1e-6 and 1e-3 units.\n\nPolyCurve.ByGroupedCurves (curves: Curve[], joinTolerance: double = 0.001, trimCurves: bool = false, trimLength: double = 0): PolyCurve[]..[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "d151ff5499504c9b9df740c8c356b1cd",
+      "End": "1e11a702229844d8864bda95258a31da",
+      "Id": "d6f2bd8421f344d596164c383b75fe68",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "b540749554364616a1fb3544c5b71a93",
+      "End": "9784079fe97a46c3a22d0a0e45f4ed3c",
+      "Id": "b07f2eb1a4014e85bc88d1281aa0b231",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "cfb5ead61e1d486e918fe5406d11d448",
+      "End": "5c011c76e4ce461f9e8dbc3d0d18cd20",
+      "Id": "977f938c8e3749d98571be14d011fa76",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "cfb5ead61e1d486e918fe5406d11d448",
+      "End": "65f8d02ebb5940148f47645f2d784ad1",
+      "Id": "9ef92bfd51784d32ba8633d89a9456e4",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "fe7ea0724167405e8286c90a5bcc3f97",
+      "End": "6079ad5b8f2049a9a7c0e1c278ccbaa1",
+      "Id": "4c6f6f42918a49e0871000b36bae1d2d",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "232e7e9a8c6943c188e95c16da3018ce",
+      "End": "ecb20e97f60f4dc88e98d2f0763fa8cf",
+      "Id": "9c340984557248b59699414653037026",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 100.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.0.5874",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -21.393106460571289,
+      "EyeY": 61.044334411621094,
+      "EyeZ": 28.072494506835938,
+      "LookX": 16.393106460571289,
+      "LookY": -50.044334411621094,
+      "LookZ": -36.072494506835938,
+      "UpX": 0.26176926493644714,
+      "UpY": 0.77439266443252563,
+      "UpZ": -0.57601475715637207
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "dc4a442c37e84394ad07a302e20a6f8b",
+        "Name": "Polygon.RegularPolygon",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 970.375,
+        "Y": 289.0
+      },
+      {
+        "Id": "b1d759dfde434ef69437cf238612a5c4",
+        "Name": "Circle.ByCenterPointRadius",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 593.875,
+        "Y": 141.5
+      },
+      {
+        "Id": "f7194dc99489408d8178b17fe8ad7b67",
+        "Name": "Number Slider",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 145.875,
+        "Y": 323.0
+      },
+      {
+        "Id": "b7ab4ba94b0c440a864bd977ed4fbcb5",
+        "Name": "Geometry.Explode",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1301.0,
+        "Y": 289.0
+      },
+      {
+        "Id": "6671c6bb1ad0486383be9b14c20f6c90",
+        "Name": "List.Shuffle",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1630.5,
+        "Y": 289.0
+      },
+      {
+        "Id": "663c199ddc3040cba375dacb6e307c82",
+        "Name": "PolyCurve.ByGroupedCurves",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2022.5,
+        "Y": 289.0
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "89ece4adfd1140659fbe17344abd5f1e",
+        "Title": "Creating a pentagon, exploding it and randomizing the curves",
+        "DescriptionText": " ",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "dc4a442c37e84394ad07a302e20a6f8b",
+          "b1d759dfde434ef69437cf238612a5c4",
+          "f7194dc99489408d8178b17fe8ad7b67",
+          "b7ab4ba94b0c440a864bd977ed4fbcb5",
+          "6671c6bb1ad0486383be9b14c20f6c90",
+          "5d3c8627243e431ba68a170bec2b7398"
+        ],
+        "HasNestedGroups": false,
+        "Left": 135.875,
+        "Top": 68.5,
+        "Width": 1724.625,
+        "Height": 398.5,
+        "FontSize": 36.0,
+        "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
+        "InitialTop": 141.5,
+        "InitialHeight": 326.5,
+        "TextblockHeight": 63.0,
+        "Background": "#FFA4E1FF"
+      },
+      {
+        "Id": "5d3c8627243e431ba68a170bec2b7398",
+        "Title": "All curves are random and thus do not have an ordered way of being joined together. ",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 1579.5,
+        "Top": 224.0,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "6671c6bb1ad0486383be9b14c20f6c90"
+      },
+      {
+        "Id": "29b69a89b6db459b86f2b8b83145b7a5",
+        "Title": "This node will group curves based on their proximity to other curves, either touching or within a join tolerance to correct re-order and connect them into a single PolyCurve.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 2019.0,
+        "Top": 195.0,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": 85.857822538222308,
+    "Y": 159.35939758889697,
+    "Zoom": 0.48393088887524149
+  }
+}

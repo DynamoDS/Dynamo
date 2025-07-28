@@ -1,0 +1,404 @@
+{
+  "Uuid": "020ec6d3-433e-4256-9f8b-be3f7777eabe",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DynamoUnits.Unit.AreUnitsConvertible",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "cccd31f8b3fd4ea3a750670941f84298",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "cc1c5f499e91431599b82c740051c7f1",
+          "Name": "fromUnit",
+          "Description": "Unit Object\n\nUnit",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f1b1352750b741c2a203396f9854b9ff",
+          "Name": "toUnit",
+          "Description": "Unit Object\n\nUnit",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "37deca5ebe8548679879169be24a84fb",
+          "Name": "bool",
+          "Description": "bool",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DynamoUnits.Unit.AreUnitsConvertible@DynamoUnits.Unit,DynamoUnits.Unit",
+      "Replication": "Auto",
+      "Description": "Determine whether two Unit objects are convertible\n\nUnit.AreUnitsConvertible (fromUnit: Unit, toUnit: Unit): bool"
+    },
+    {
+      "ConcreteType": "UnitsUI.Units, UnitsNodeModels",
+      "SelectedIndex": 146,
+      "SelectedString": "Kilometers",
+      "Id": "6efd79afde9e43bb8c31e153225af59f",
+      "NodeType": "ExtensionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d330ae00fedf4253818da461051d94d6",
+          "Name": "Unit",
+          "Description": "The selected Unit",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Unit type"
+    },
+    {
+      "ConcreteType": "UnitsUI.Units, UnitsNodeModels",
+      "SelectedIndex": 124,
+      "SelectedString": "Kilocalories",
+      "Id": "20fdc2d91d52434cb207f62ae294831b",
+      "NodeType": "ExtensionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "bb7cc98a80624b738565aed2a5ccd72f",
+          "Name": "Unit",
+          "Description": "The selected Unit",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Unit type"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 57.6,
+      "WatchHeight": 38.4,
+      "Id": "53a7357637454d04a59a47cbc627f600",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "cf737142f8b34c89a295fe3cb88bb299",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7d9b4ee6e5d744f29b0b194054071555",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "UnitsUI.Units, UnitsNodeModels",
+      "SelectedIndex": 146,
+      "SelectedString": "Kilometers",
+      "Id": "ddde0f10c2e24045acafbeef5bba229d",
+      "NodeType": "ExtensionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2ac56e09073b449eb414b3feb43c862c",
+          "Name": "Unit",
+          "Description": "The selected Unit",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Unit type"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "ddec1d28c20d4708a6480bad5df5bb35",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "85f3b55766ce4d30b54ca96bed8f6cd3",
+          "Name": "fromUnit",
+          "Description": "Unit Object\n\nUnit",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "855a0c01f7c64eb6bd54a44a7b843c10",
+          "Name": "toUnit",
+          "Description": "Unit Object\n\nUnit",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "52f63f0cd417451aa325c4b40a33f8d3",
+          "Name": "bool",
+          "Description": "bool",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DynamoUnits.Unit.AreUnitsConvertible@DynamoUnits.Unit,DynamoUnits.Unit",
+      "Replication": "Auto",
+      "Description": "Determine whether two Unit objects are convertible\n\nUnit.AreUnitsConvertible (fromUnit: Unit, toUnit: Unit): bool"
+    },
+    {
+      "ConcreteType": "UnitsUI.Units, UnitsNodeModels",
+      "SelectedIndex": 212,
+      "SelectedString": "Miles",
+      "Id": "27e648157159468881eb12a5b8e99a64",
+      "NodeType": "ExtensionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8a510a547a7c4692955ad97d3b2d3862",
+          "Name": "Unit",
+          "Description": "The selected Unit",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Unit type"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 49.6,
+      "WatchHeight": 38.4,
+      "Id": "9a97c23e2a004d57a0eb532ca9d0140c",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "2aac029feafe43a1a172d27b8f55f477",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "63105e5e306745ebb2055636ec132dbf",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "37deca5ebe8548679879169be24a84fb",
+      "End": "cf737142f8b34c89a295fe3cb88bb299",
+      "Id": "b808771cb18e47749fa168174c52065c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d330ae00fedf4253818da461051d94d6",
+      "End": "cc1c5f499e91431599b82c740051c7f1",
+      "Id": "f19203b1fe994702bb0ac3b927b246bb",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "bb7cc98a80624b738565aed2a5ccd72f",
+      "End": "f1b1352750b741c2a203396f9854b9ff",
+      "Id": "8b9c50491dbd47bf801961322c5d4483",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2ac56e09073b449eb414b3feb43c862c",
+      "End": "85f3b55766ce4d30b54ca96bed8f6cd3",
+      "Id": "f05487b324924b5eae218202519d531b",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "52f63f0cd417451aa325c4b40a33f8d3",
+      "End": "2aac029feafe43a1a172d27b8f55f477",
+      "Id": "4cbdbaba816f4316aadb9c84b82bc4fb",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8a510a547a7c4692955ad97d3b2d3862",
+      "End": "855a0c01f7c64eb6bd54a44a7b843c10",
+      "Id": "420231d785154009935802ab8e4b6a05",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.0.5742",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "cccd31f8b3fd4ea3a750670941f84298",
+        "Name": "Unit.AreUnitsConvertible",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 410.0,
+        "Y": 278.0
+      },
+      {
+        "Id": "6efd79afde9e43bb8c31e153225af59f",
+        "Name": "Units",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 88.0,
+        "Y": 283.0
+      },
+      {
+        "Id": "20fdc2d91d52434cb207f62ae294831b",
+        "Name": "Units",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 83.0,
+        "Y": 439.0
+      },
+      {
+        "Id": "53a7357637454d04a59a47cbc627f600",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 730.0,
+        "Y": 284.0
+      },
+      {
+        "Id": "ddde0f10c2e24045acafbeef5bba229d",
+        "Name": "Units",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 89.0,
+        "Y": -49.0
+      },
+      {
+        "Id": "ddec1d28c20d4708a6480bad5df5bb35",
+        "Name": "Unit.AreUnitsConvertible",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 412.0,
+        "Y": -44.0
+      },
+      {
+        "Id": "27e648157159468881eb12a5b8e99a64",
+        "Name": "Units",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 85.0,
+        "Y": 102.0
+      },
+      {
+        "Id": "9a97c23e2a004d57a0eb532ca9d0140c",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 741.0,
+        "Y": -41.0
+      }
+    ],
+    "Annotations": [],
+    "X": 266.6258188072128,
+    "Y": 211.20207081029798,
+    "Zoom": 0.6399940389744142
+  }
+}

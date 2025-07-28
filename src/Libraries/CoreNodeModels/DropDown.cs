@@ -59,7 +59,7 @@ namespace CoreNodeModels
             set
             {
                 items = value;
-                RaisePropertyChanged("Items");
+                RaisePropertyChanged(nameof(Items));
             }
         }
 
@@ -106,7 +106,6 @@ namespace CoreNodeModels
                     selectedString = GetSelectedStringFromItem(Items.ElementAt(value));
                 }
 
-                OnNodeModified();
                 RaisePropertyChanged("SelectedIndex");
                 RaisePropertyChanged("SelectedString");
             }
@@ -137,12 +136,12 @@ namespace CoreNodeModels
                     if (item != null)
                     {
                         selectedIndex = Items.IndexOf(item);
-                        RaisePropertyChanged("SelectedIndex");
+                        RaisePropertyChanged(nameof(SelectedIndex));
                     }
                 }
 
                 selectedString = value;
-                RaisePropertyChanged("SelectedString");
+                RaisePropertyChanged(nameof(SelectedString));
             }
         }
 
@@ -202,6 +201,8 @@ namespace CoreNodeModels
                 {
                     Warning(Dynamo.Properties.Resources.NothingIsSelectedWarning);
                 }
+
+                OnNodeModified();
 
                 return true;
             }

@@ -1,10 +1,13 @@
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
+using Microsoft.Win32;
 
 namespace Dynamo.UI
 {
@@ -55,8 +58,8 @@ namespace Dynamo.UI
             }
         }
 
-        public string FileName 
-        { 
+        public string FileName
+        {
             get { return _fileName; }
         }
 
@@ -72,32 +75,81 @@ namespace Dynamo.UI
             _dialog = new NativeFileOpenDialog();
             if (!enableCustomDialog) return;
             IFileDialogCustomize customize = (IFileDialogCustomize) _dialog;
-            customize.AddCheckButton(RunManualCheckboxId, 
+            customize.AddCheckButton(RunManualCheckboxId,
                 Dynamo.Wpf.Properties.Resources.FileDialogManualMode,
                 model.PreferenceSettings.OpenFileInManualExecutionMode);
         }
 
         public DialogResult ShowDialog()
         {
-            int result = _dialog.Show(GetActiveWindow());
-            if (result < 0)
+            try
             {
-                if ((uint) result == (uint) HRESULT.E_CANCELLED)
-                    return DialogResult.Cancel;
-                throw Marshal.GetExceptionForHR(result);
+                int result = _dialog.Show(GetActiveWindow());
+                if (result < 0)
+                {
+                    if ((uint)result == (uint)HRESULT.E_CANCELLED)
+                        return DialogResult.Cancel;
+                    throw Marshal.GetExceptionForHR(result);
+                }
+
+                IShellItem dialogResult;
+                _dialog.GetResult(out dialogResult);
+                dialogResult.GetDisplayName(SIGDN.SIGDN_DESKTOPABSOLUTEEDITING, out _fileName);
+
+                IFileDialogCustomize customize = (IFileDialogCustomize)_dialog;
+                if (!enableCustomDialog) return DialogResult.OK;
+
+                customize.GetCheckButtonState(RunManualCheckboxId, out _runManualMode);
+                model.PreferenceSettings.OpenFileInManualExecutionMode = _runManualMode;
+
+                return DialogResult.OK;
             }
+            catch(Exception ex)
+            {
+                model.Model.Logger.Log(ex.Message);
+                return DialogResult.Cancel;
+            }
+        }
+        /// <summary>
+        /// The method is used to get the last accessed path by the user
+        /// </summary>
+        /// <returns>The last accessed path by the user, can be null</returns>
+        internal string GetLastAccessedPath()
+        {
+            return ApplicationGetLastOpenSavePath(Path.GetFileName(Environment.ProcessPath));
+        }
+        /// <summary>
+        /// Fetches last accessed location from Windows registry
+        /// Solution taken from : https://stackoverflow.com/a/61583119
+        /// </summary>
+        private string ApplicationGetLastOpenSavePath(string executableName)
+        {
+            if (string.IsNullOrEmpty(executableName)) return null;
+            string lastVisitedPath = string.Empty;
+            try
+            {
+                var lastVisitedKey = Registry.CurrentUser.OpenSubKey(
+                    @"Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRU", false);
 
-            IShellItem dialogResult;
-            _dialog.GetResult(out dialogResult);
-            dialogResult.GetDisplayName(SIGDN.SIGDN_FILESYSPATH, out _fileName);
+                string[] values = lastVisitedKey.GetValueNames();
+                foreach (string value in values)
+                {
+                    if (value == "MRUListEx") continue;
+                    var keyValue = (byte[])lastVisitedKey.GetValue(value);
 
-            IFileDialogCustomize customize = (IFileDialogCustomize) _dialog;
-            if (!enableCustomDialog) return DialogResult.OK;
+                    string appName = Encoding.Unicode.GetString(keyValue, 0, executableName.Length * 2);
+                    if (!appName.Equals(executableName)) continue;
 
-            customize.GetCheckButtonState(RunManualCheckboxId, out _runManualMode);
-            model.PreferenceSettings.OpenFileInManualExecutionMode = _runManualMode;
-
-            return DialogResult.OK;
+                    int offset = executableName.Length * 2 + "\0\0".Length;  // clearly null terminated :)
+                    lastVisitedPath = GetPathFromIDList(keyValue, offset);
+                    break;
+                }
+            }
+            catch (Exception)
+            {
+                //let the method return empty string in case of exception
+            }
+            return lastVisitedPath;
         }
 
         [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
@@ -105,6 +157,48 @@ namespace Dynamo.UI
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
         public static extern IntPtr GetActiveWindow();
+
+        private string GetPathFromIDList(byte[] idList, int offset)
+        {
+            try
+            {
+                int buffer = 520;  // 520 = MAXPATH * 2
+                var sb = new StringBuilder(buffer);
+
+                IntPtr ptr = Marshal.AllocHGlobal(idList.Length);
+                Marshal.Copy(idList, offset, ptr, idList.Length - offset);
+
+                // or -> bool result = SHGetPathFromIDListW(ptr, sb);
+                bool result = SHGetPathFromIDListEx(ptr, sb, buffer, GPFIDL_FLAGS.GPFIDL_UNCPRINTER);
+                Marshal.FreeHGlobal(ptr);
+                return result ? sb.ToString() : string.Empty;
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
+
+        [DllImport("shell32.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
+        internal static extern bool SHGetPathFromIDListW(
+            IntPtr pidl,
+            [MarshalAs(UnmanagedType.LPTStr)]
+    StringBuilder pszPath);
+
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        internal static extern bool SHGetPathFromIDListEx(
+            IntPtr pidl,
+            [MarshalAs(UnmanagedType.LPTStr)]
+    [In,Out] StringBuilder pszPath,
+            int cchPath,
+            GPFIDL_FLAGS uOpts);
+
+        internal enum GPFIDL_FLAGS : uint
+        {
+            GPFIDL_DEFAULT = 0x0000,
+            GPFIDL_ALTNAME = 0x0001,
+            GPFIDL_UNCPRINTER = 0x0002
+        }
     }
 
     public class DynamoFolderBrowserDialog
@@ -120,9 +214,9 @@ namespace Dynamo.UI
             try
             {
                 // If the caller did not specify a starting path, or set it to null,
-                // it is not healthy as it causes SHCreateItemFromParsingName to 
+                // it is not healthy as it causes SHCreateItemFromParsingName to
                 // throw E_INVALIDARG (0x80070057). Setting it to an empty string.
-                // 
+                //
                 if (SelectedPath == null)
                     SelectedPath = string.Empty;
 
@@ -157,7 +251,7 @@ namespace Dynamo.UI
 
                 return DialogResult.OK;
             }
-            finally 
+            finally
             {
                 if (dialog != null)
                     Marshal.FinalReleaseComObject(dialog);

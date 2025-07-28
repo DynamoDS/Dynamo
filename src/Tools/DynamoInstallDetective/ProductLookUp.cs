@@ -351,6 +351,62 @@ namespace DynamoInstallDetective
 #if NET6_0_OR_GREATER
     [SupportedOSPlatform("windows")]
 #endif
+    ///
+    /// Helper class for looking up the install directories for all installed ASC components
+    ///
+    public class InstalledAscLookUp : InstalledProductLookUp
+    {
+        const string asc = @"Autodesk Shared Components";
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="fileLookup">File to look for</param>
+        public InstalledAscLookUp(string fileLookup) : base(asc, fileLookup)
+        {
+        }
+
+        /// <summary>
+        /// Get all major ASC versions
+        /// </summary>
+        /// <returns></returns>
+        internal override IEnumerable<(string DisplayName, string ProductKey)> GetProductNameAndCodeList()
+        {
+            var list = AscSdkWrapper.GetMajorVersions().Select(x => (DisplayName: x, ProductKey: string.Empty));
+            return list;
+        }
+
+        /// <summary>
+        /// The result is never used but still needs to be overridden
+        /// </summary>
+        /// <returns></returns>
+        public override IEnumerable<string> GetProductNameList()
+        {
+            var list = new List<string>();
+            return list;
+        }
+
+        /// <summary>
+        /// Get the install location for the ASC component
+        /// </summary>
+        /// <param name="name">ASC major verion</param>
+        /// <returns></returns>
+        public override string GetInstallLocationFromProductName(string name)
+        {
+            AscSdkWrapper asc = new AscSdkWrapper(name);
+            string path = string.Empty;
+            if(asc.GetInstalledPath(ref path) == AscSdkWrapper.ASC_STATUS.SUCCESS)
+            {
+                return path;
+            }
+
+            return null;
+        }
+    }
+
+#if NET6_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+#endif
     class InstalledProduct : IInstalledProduct
     {
         public string ProductName { get; set; }

@@ -1,0 +1,739 @@
+{
+  "Uuid": "b43ec02a-241a-48c9-be66-dbd3766a4584",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "List.SortByFunction",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Math.Sin": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Geometry": {
+        "Key": "Autodesk.DesignScript.Geometry.Geometry",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "a34bc3d883854789a7331a9bc024fcc5",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b7754699416a4c43b15bc6851ff4e9e9",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "49a4768159f945928d5c2c89b9bb13b1",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "Math.RandomList(20);\nMath.RandomList(20);"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "40a68775f5cd4e099a8dbd3a902cfb75",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [
+        {
+          "Id": "0930ace161be45fbbefa2f788abf087a",
+          "Name": "x",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "55da9101dd594e44bfb4083584e49176",
+          "Name": "y",
+          "Description": "y",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f74b31f8c7614c6c902d2c61d01d7d72",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "Point.ByCoordinates(10*x,10*y);"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "783add990252426fa578cfea2cda50a2",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "15b5d9d4d5f14d6d937e7b7383b512e9",
+          "Name": "points",
+          "Description": "Points for nurbs curve\n\nPoint[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "86b3211bed97426dbf46f245bb3c6faa",
+          "Name": "NurbsCurve",
+          "Description": "Nurbscurve created from points",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints@Autodesk.DesignScript.Geometry.Point[]",
+      "Replication": "Auto",
+      "Description": "Create a BSplineCurve by using explicit control points. NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems for extrusion, sweep, and other operations. They should be avoided. Use a PolyCurve instead. NOTE 2: If the curve is periodic (closed), then the first and last points MUST be the same.\n\nNurbsCurve.ByControlPoints (points: Point[]): NurbsCurve"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "a9fc237260f2471099132b72c36a7ebb",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "b814fda099b44458a6a9e7ac76d92d10",
+          "Name": "list",
+          "Description": "list of values\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "678b656e576a4f57b9cd240baeb86144",
+          "Name": "sortFunction",
+          "Description": "function used to sort list\n\nFunction",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3e6b0053d5c54958bd6b40d8402add81",
+          "Name": "sortedList",
+          "Description": "type: var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "List.SortByFunction@var[]..[],Function",
+      "Replication": "Auto",
+      "Description": "Use a function to determine how list items should be sorted.\n\nList.SortByFunction (list: var[]..[], sortFunction: Function): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "dac4654d4b50405bab82284ad3e5714d",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "c61013bccf224b33b6983eed1cbb7c55",
+          "Name": "point",
+          "Description": "Autodesk.DesignScript.Geometry.Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "51506aa025ff4e1bb23c81523a2aa6a8",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.X",
+      "Replication": "Auto",
+      "Description": "Get the X component of a Point\n\nPoint.X: double"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "5dea9cd52c1b4884ad17f6653656a758",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "cd7afaf2dba54313b14621b7a672ee26",
+          "Name": "points",
+          "Description": "Points for nurbs curve\n\nPoint[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c61325c9d6a844ecb4ed892aed457b32",
+          "Name": "NurbsCurve",
+          "Description": "Nurbscurve created from points",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints@Autodesk.DesignScript.Geometry.Point[]",
+      "Replication": "Auto",
+      "Description": "Create a BSplineCurve by using explicit control points. NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems for extrusion, sweep, and other operations. They should be avoided. Use a PolyCurve instead. NOTE 2: If the curve is periodic (closed), then the first and last points MUST be the same.\n\nNurbsCurve.ByControlPoints (points: Point[]): NurbsCurve"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "5e537627d95048dab7a1b853bb9d1d70",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "8b3d96c762d04da7aeaaa4d9e7a4529e",
+          "Name": "geometry",
+          "Description": "Autodesk.DesignScript.Geometry.Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cc7310d3615f41c7a8203a1b8b3e08e2",
+          "Name": "xTranslation",
+          "Description": "Displacement along X-axis.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d746f6e5412543d8aeaa884aa0c7e896",
+          "Name": "yTranslation",
+          "Description": "Displacement along Y-axis.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ddf4cd9886aa4f0eb28a184d8b61ada9",
+          "Name": "zTranslation",
+          "Description": "Displacement along Z-axis.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "940082ebff8f441684d5ad176d94dfab",
+          "Name": "Geometry",
+          "Description": "Transformed Geometry.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Translate@double,double,double",
+      "Replication": "Auto",
+      "Description": "Translates any given geometry by the given displacements in the x, y, and z directions defined in WCS respectively.\n\nGeometry.Translate (xTranslation: double = 0, yTranslation: double = 0, zTranslation: double = 0): Geometry"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "7ec3288272ea44ba8a30efc8e878821c",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f8131a3bdb014cd38b9397ae540a1256",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "10;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "547e2b15be0f427ebdf0efd998c9d2fa",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b24fa777e5044d1b8dbc1550a6c6f41d",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "20;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "72a277a2a6a3468d948b9373bd1ffb62",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "5f90ddc19b1f4813b72f01a3e2885410",
+          "Name": "geometry",
+          "Description": "Autodesk.DesignScript.Geometry.Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "15397e23fd0f40fba6cdce772cf212df",
+          "Name": "xTranslation",
+          "Description": "Displacement along X-axis.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6ca35f3b39cb4e28b999098d11520cd7",
+          "Name": "yTranslation",
+          "Description": "Displacement along Y-axis.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d3aed79af66a45db89fc3aef3bdc32bd",
+          "Name": "zTranslation",
+          "Description": "Displacement along Z-axis.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "257f8f9e8a314adcb043c6941c7897c9",
+          "Name": "Geometry",
+          "Description": "Transformed Geometry.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Translate@double,double,double",
+      "Replication": "Auto",
+      "Description": "Translates any given geometry by the given displacements in the x, y, and z directions defined in WCS respectively.\n\nGeometry.Translate (xTranslation: double = 0, yTranslation: double = 0, zTranslation: double = 0): Geometry"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "6068fb1205ca4ddb9f310d56e4497fa5",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "eee111eaaafc42aeb22c0d2bd2587417",
+          "Name": "list",
+          "Description": "list of values\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5e035e58854d4866b48a8cd62844a677",
+          "Name": "sortFunction",
+          "Description": "function used to sort list\n\nFunction",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "85045319ae1b47b0bfcbf8c367d4e633",
+          "Name": "sortedList",
+          "Description": "type: var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "List.SortByFunction@var[]..[],Function",
+      "Replication": "Auto",
+      "Description": "Use a function to determine how list items should be sorted.\n\nList.SortByFunction (list: var[]..[], sortFunction: Function): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "a1ca58fd1f7145fd9b6660b1d9533bf4",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "f8c5eea106c641899a8d1f6ced51fa5b",
+          "Name": "points",
+          "Description": "Points for nurbs curve\n\nPoint[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b95d3986e5d54cb8ad9a785bfaac444f",
+          "Name": "NurbsCurve",
+          "Description": "Nurbscurve created from points",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints@Autodesk.DesignScript.Geometry.Point[]",
+      "Replication": "Auto",
+      "Description": "Create a BSplineCurve by using explicit control points. NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems for extrusion, sweep, and other operations. They should be avoided. Use a PolyCurve instead. NOTE 2: If the curve is periodic (closed), then the first and last points MUST be the same.\n\nNurbsCurve.ByControlPoints (points: Point[]): NurbsCurve"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "484d99eee45f4ac2a0e432bf3e0ed6c3",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "ab3147a57dfe496b968aef584c1fe4b9",
+          "Name": "point",
+          "Description": "Autodesk.DesignScript.Geometry.Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6e63e64f8b604b22a130c831e2c0b6ee",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.Y",
+      "Replication": "Auto",
+      "Description": "Get the Y component of a Point\n\nPoint.Y: double"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "b7754699416a4c43b15bc6851ff4e9e9",
+      "End": "0930ace161be45fbbefa2f788abf087a",
+      "Id": "a3474db6aa59497b8365b84f9abe26df",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "49a4768159f945928d5c2c89b9bb13b1",
+      "End": "55da9101dd594e44bfb4083584e49176",
+      "Id": "706d373844f24c459224213dc644e416",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f74b31f8c7614c6c902d2c61d01d7d72",
+      "End": "eee111eaaafc42aeb22c0d2bd2587417",
+      "Id": "534ad18da68c471890a32e505032e1fe",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f74b31f8c7614c6c902d2c61d01d7d72",
+      "End": "b814fda099b44458a6a9e7ac76d92d10",
+      "Id": "b290efe1b33948e3a1d8672294fe4d04",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f74b31f8c7614c6c902d2c61d01d7d72",
+      "End": "15b5d9d4d5f14d6d937e7b7383b512e9",
+      "Id": "505b2647f7ba4921a80ecae104b1a7f0",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "3e6b0053d5c54958bd6b40d8402add81",
+      "End": "8b3d96c762d04da7aeaaa4d9e7a4529e",
+      "Id": "09efad53751c4d74865e244cd74d696f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "51506aa025ff4e1bb23c81523a2aa6a8",
+      "End": "678b656e576a4f57b9cd240baeb86144",
+      "Id": "cd9529165337433380cf32990d3e9d7f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "940082ebff8f441684d5ad176d94dfab",
+      "End": "cd7afaf2dba54313b14621b7a672ee26",
+      "Id": "43070e7cdf0f4ab4bb5a5568ef656fe4",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f8131a3bdb014cd38b9397ae540a1256",
+      "End": "cc7310d3615f41c7a8203a1b8b3e08e2",
+      "Id": "af9b045be42a486dbd032a0d3d80246c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "b24fa777e5044d1b8dbc1550a6c6f41d",
+      "End": "15397e23fd0f40fba6cdce772cf212df",
+      "Id": "3f5b25e10dea4b5aa89e8083add6acfd",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "257f8f9e8a314adcb043c6941c7897c9",
+      "End": "f8c5eea106c641899a8d1f6ced51fa5b",
+      "Id": "c38efd4c946647edb74db5b824940713",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "85045319ae1b47b0bfcbf8c367d4e633",
+      "End": "5f90ddc19b1f4813b72f01a3e2885410",
+      "Id": "eb0800c68e3346ea8c7f4f247a1a7352",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "6e63e64f8b604b22a130c831e2c0b6ee",
+      "End": "5e035e58854d4866b48a8cd62844a677",
+      "Id": "a03547224db04f1aaec166f1baaf0631",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.0.5742",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": 16.726314544677734,
+      "EyeY": 20.129474639892578,
+      "EyeZ": 8.0907392501831055,
+      "LookX": -0.070718042552471161,
+      "LookY": -14.076128005981445,
+      "LookZ": -13.043798446655273,
+      "UpX": -0.0030941260047256947,
+      "UpY": 0.82114923000335693,
+      "UpZ": -0.57070517539978027
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "a34bc3d883854789a7331a9bc024fcc5",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -108.66335369327658,
+        "Y": 105.26135129218801
+      },
+      {
+        "Id": "40a68775f5cd4e099a8dbd3a902cfb75",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 232.33664630672342,
+        "Y": 96.606351292188037
+      },
+      {
+        "Id": "783add990252426fa578cfea2cda50a2",
+        "Name": "NurbsCurve.ByControlPoints",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1407.3366463067234,
+        "Y": 175.77885129218802
+      },
+      {
+        "Id": "a9fc237260f2471099132b72c36a7ebb",
+        "Name": "List.SortByFunction",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 687.33664630672342,
+        "Y": 161.77885129218802
+      },
+      {
+        "Id": "dac4654d4b50405bab82284ad3e5714d",
+        "Name": "Point.X",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 232.33664630672342,
+        "Y": 274.77885129218805
+      },
+      {
+        "Id": "5dea9cd52c1b4884ad17f6653656a758",
+        "Name": "NurbsCurve.ByControlPoints",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1407.3366463067234,
+        "Y": 322.77885129218805
+      },
+      {
+        "Id": "5e537627d95048dab7a1b853bb9d1d70",
+        "Name": "Geometry.Translate",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1049.3366463067234,
+        "Y": 272.77885129218805
+      },
+      {
+        "Id": "7ec3288272ea44ba8a30efc8e878821c",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 687.33664630672342,
+        "Y": 339.60635129218804
+      },
+      {
+        "Id": "547e2b15be0f427ebdf0efd998c9d2fa",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 687.33664630672342,
+        "Y": 664.60635129218792
+      },
+      {
+        "Id": "72a277a2a6a3468d948b9373bd1ffb62",
+        "Name": "Geometry.Translate",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1049.3366463067234,
+        "Y": 519.778851292188
+      },
+      {
+        "Id": "6068fb1205ca4ddb9f310d56e4497fa5",
+        "Name": "List.SortByFunction",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 687.33664630672342,
+        "Y": 486.77885129218805
+      },
+      {
+        "Id": "a1ca58fd1f7145fd9b6660b1d9533bf4",
+        "Name": "NurbsCurve.ByControlPoints",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1407.3366463067234,
+        "Y": 469.77885129218805
+      },
+      {
+        "Id": "484d99eee45f4ac2a0e432bf3e0ed6c3",
+        "Name": "Point.Y",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 232.33664630672342,
+        "Y": 520.77885129218794
+      }
+    ],
+    "Annotations": [],
+    "X": 108.66212032371095,
+    "Y": -30.258246163124795,
+    "Zoom": 0.61703316676792574
+  }
+}

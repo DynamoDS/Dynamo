@@ -1,0 +1,191 @@
+{
+  "Uuid": "1b49faf2-ec06-4f18-8796-3df2fb5ea278",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Unit.ByTypeID",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "dc6b7aeb97a94126b686e0d8dab2cc7d",
+      "Inputs": [
+        {
+          "Id": "9ddbcc394f374af8b7bbdf2bdd0f7c7f",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e386804ca20d477cbbb4ec566b0fdfd0",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "autodesk.unit.unit:feet-1.0.1",
+      "Id": "21a98d49cf4b494c8729675c527cd0f5",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "750538358ee74db9aae1ca352889c9a4",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DynamoUnits.Unit.ByTypeID@string",
+      "Id": "b07977d149414f4aabd8f241dca1f2ba",
+      "Inputs": [
+        {
+          "Id": "0abaea0ebc424baaa7c3b8d2d17cd6f4",
+          "Name": "typeId",
+          "Description": "Forge TypeId string\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e59c85d6661642f98c475915cc388f85",
+          "Name": "Unit",
+          "Description": "Unit object",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a Unit object from its Forge type schema identifier string.\n\nUnit.ByTypeID (typeId: string): Unit"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "750538358ee74db9aae1ca352889c9a4",
+      "End": "0abaea0ebc424baaa7c3b8d2d17cd6f4",
+      "Id": "d966f3483de548f29ca7b340005f3f6c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e59c85d6661642f98c475915cc388f85",
+      "End": "9ddbcc394f374af8b7bbdf2bdd0f7c7f",
+      "Id": "735636a7c8694738baff14a23788eaff",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.14",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "2.0",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.13.1.3887",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "dc6b7aeb97a94126b686e0d8dab2cc7d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 827.18056155507566,
+        "Y": 204.66263498920094
+      },
+      {
+        "Name": "String",
+        "ShowGeometry": true,
+        "Id": "21a98d49cf4b494c8729675c527cd0f5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 201.58056155507563,
+        "Y": 204.66263498920091
+      },
+      {
+        "Name": "Unit.ByTypeID",
+        "ShowGeometry": true,
+        "Id": "b07977d149414f4aabd8f241dca1f2ba",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 538.3805615550757,
+        "Y": 204.66263498920091
+      }
+    ],
+    "Annotations": [],
+    "X": -99.288000000000011,
+    "Y": -43.72199999999998,
+    "Zoom": 1.1575
+  }
+}

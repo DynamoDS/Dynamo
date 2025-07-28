@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Xml;
 using System.Threading;
 using CoreNodeModels.Input;
@@ -16,16 +15,15 @@ using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.Properties;
 using Dynamo.Scheduler;
 using Dynamo.Tests;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using DynamoShapeManager;
 using NUnit.Framework;
 using ProtoCore;
 using PythonNodeModels;
 using SystemTestServices;
-using TestServices;
 
 namespace DynamoCoreWpfTests
 {
@@ -38,6 +36,7 @@ namespace DynamoCoreWpfTests
         protected System.Random randomizer = null;
         private IEnumerable<string> customNodesToBeLoaded;
         private CommandCallback commandCallback;
+        private TestDiagnostics testDiagnostics = new();
 
         // Geometry preloading related members.
         protected bool preloadGeometry;
@@ -51,42 +50,19 @@ namespace DynamoCoreWpfTests
 
         public override void Setup()
         {
+            testDiagnostics.StartupDiagnostics();
+
+            base.Setup();
             // Fixed seed randomizer for predictability.
             randomizer = new System.Random(123456);
-            SetupDirectories();
-
-            // We do not call "base.Init()" here because we want to be able 
-            // to create our own copy of Controller here with command file path.
-            // 
-            // base.Init();
         }
 
         public override void Cleanup()
         {
-            base.Cleanup();
-            Exit();
-        }
-
-        protected void Exit()
-        {
+            testDiagnostics.BeforeCleanupDiagnostics();
             commandCallback = null;
-            if (this.ViewModel != null)
-            {
-                // There are exceptions made to certain test cases where async evaluation 
-                // needs to be permitted. IsTestMode is marked as false for these test cases
-                // to emulate the real UI async scenario. Since the UI takes care of shutting down
-                // the Model in such a case, we need to make sure it is not shut down twice
-                // by checking for IsTestMode here as well
-                if (DynamoModel.IsTestMode)
-                {
-                    var shutdownParams = new DynamoViewModel.ShutdownParams(
-                        shutdownHost: false, allowCancellation: false);
-                    ViewModel.PerformShutdownSequence(shutdownParams);
-                }
-                this.ViewModel = null;
-            }
-
-            preloader = null; // Invalid preloader object for the test.
+            base.Cleanup();
+            testDiagnostics.AfterCleanupDiagnostics();
         }
 
         #endregion
@@ -157,59 +133,11 @@ namespace DynamoCoreWpfTests
             commandFilePath = Path.Combine(commandFilePath, @"core\recorded\");
             commandFilePath = Path.Combine(commandFilePath, commandFileName);
 
-            if (this.ViewModel != null)
-            {
-                var message = "Multiple DynamoViewModel instances detected!";
-                throw new InvalidOperationException(message);
-            }
-
-            var geometryFactoryPath = string.Empty;
-            //preloadGeometry = true;
-            if (preloadGeometry && (preloader == null))
-            {
-                var assemblyPath = Assembly.GetExecutingAssembly().Location;
-                preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
-                preloader.Preload();
-
-                geometryFactoryPath = preloader.GeometryFactoryPath;
-                preloadGeometry = false;
-            }
-
-            TestPathResolver pathResolver = null;
-            var preloadedLibraries = new List<string>();
-            GetLibrariesToPreload(preloadedLibraries);
-
-            if (preloadedLibraries.Any())
-            {
-                // Only when any library needs preloading will a path resolver be 
-                // created, otherwise DynamoModel gets created without preloading 
-                // any library.
-                // 
-                pathResolver = new TestPathResolver();
-                foreach (var preloadedLibrary in preloadedLibraries.Distinct())
-                {
-                    pathResolver.AddPreloadLibraryPath(preloadedLibrary);
-                }
-            }
-
-            var model = DynamoModel.Start(
-                new DynamoModel.DefaultStartConfiguration()
-                {
-                    StartInTestMode = true,
-                    PathResolver = pathResolver,
-                    GeometryFactoryPath = geometryFactoryPath,
-                    ProcessMode = TaskProcessMode.Synchronous
-                });
-
-            // Create the DynamoViewModel to control the view
-            this.ViewModel = DynamoViewModel.Start(
-                new DynamoViewModel.StartConfiguration()
-                {
-                    CommandFilePath = commandFilePath,
-                    DynamoModel = model
-                });
+            CommandFilePath = commandFilePath;
 
             ViewModel.HomeSpace.RunSettings.RunType = RunType.Automatic;
+
+            ViewModel.InitializeAutomationSettings(CommandFilePath);
 
             // Load all custom nodes if there is any specified for this test.
             if (this.customNodesToBeLoaded != null)
@@ -228,6 +156,7 @@ namespace DynamoCoreWpfTests
             RegisterCommandCallback(commandCallback);
 
             // Create the view.
+            // dynamoView will be closed by the ViewModel's automationSettings object.
             dynamoView = new DynamoView(this.ViewModel);
             dynamoView.ShowDialog();
 
@@ -236,6 +165,12 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(this.ViewModel.Model.CurrentWorkspace);
             workspace = this.ViewModel.Model.CurrentWorkspace;
             workspaceViewModel = this.ViewModel.CurrentSpaceViewModel;
+
+            var automation = this.ViewModel.Automation;
+            if (automation != null)
+            {
+                automation.PlaybackStateChanged -= OnAutomationPlaybackStateChanged;
+            }
         }
 
         private void RegisterCommandCallback(CommandCallback commandCallback)
@@ -1479,16 +1414,20 @@ namespace DynamoCoreWpfTests
             //CBN OutPut Ports 
             //    > ToolTip stores name of variable
             //    > Margina thickness is for height.(is a multiple of 20, except for the first)
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
+            var firstLineContent = "a = (0..10)";
+            Assert.AreEqual(firstLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
-            Assert.AreEqual("b", cbn.OutPorts[1].ToolTip);
+            var thirdLineContent = "b = DesignScript.Builtin.Get.ValueAtIndex(a, 4)";
+            Assert.AreEqual(thirdLineContent, cbn.OutPorts[1].ToolTip);
             Assert.IsTrue(Math.Abs(cbn.OutPorts[1].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
-            Assert.AreEqual("c", cbn.OutPorts[2].ToolTip);
+            var seventhLineContent = "c = 2";
+            Assert.AreEqual(seventhLineContent, cbn.OutPorts[2].ToolTip);
             Assert.IsTrue(Math.Abs(cbn.OutPorts[2].MarginThickness.Top - 3*codeBlockPortHeight) <= tolerance);
 
-            Assert.AreEqual("d", cbn.OutPorts[3].ToolTip);
+            var ninthLineContent = "d = (x + y) - (DSCore.Math.Pi)";
+            Assert.AreEqual(ninthLineContent, cbn.OutPorts[3].ToolTip);
             Assert.IsTrue(Math.Abs(cbn.OutPorts[3].MarginThickness.Top - codeBlockPortHeight) <= tolerance);
 
             //CBN Input Ports
@@ -1612,10 +1551,12 @@ namespace DynamoCoreWpfTests
             Assert.AreNotEqual(ElementState.Error, cbn.State);
             Assert.AreEqual(2, cbn.OutPorts.Count);
 
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
+            var thirdLineContent = "a = 3";
+            Assert.AreEqual(thirdLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(2, cbn.OutPorts[0].LineIndex);
 
-            Assert.AreEqual("c", cbn.OutPorts[1].ToolTip);
+            var tenthLineContent = "c = 2";
+            Assert.AreEqual(tenthLineContent, cbn.OutPorts[1].ToolTip);
             Assert.AreEqual(9, cbn.OutPorts[1].LineIndex);
         }
 
@@ -1857,7 +1798,8 @@ namespace DynamoCoreWpfTests
             // a code block node causes downstream addition node to result in "null"
             // instead of retaining its value of "16". Modifying the code block node
             // in this case should not have caused such issue.
-            // 
+            //
+            using (Disposable.Create(() => { DynamoModel.IsTestMode = true; }))
             RunCommandsFromFile("UpdatingCbnShouldCauseDownstreamExecution.xml", (commandTag) =>
             {
                 switch (commandTag)
@@ -1921,8 +1863,11 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, cbn.OutPorts.Count);
             Assert.AreEqual(0, cbn.InPorts.Count);
 
+            //Check output port tooltip content
+            var lineContent = "a = 10";
+            Assert.AreEqual(lineContent, cbn.OutPorts[0].ToolTip);
+
             //Check the position of ports
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
         }
@@ -1943,8 +1888,11 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, cbn.OutPorts.Count);
             Assert.AreEqual(0, cbn.InPorts.Count);
 
+            //Check output port tooltip content
+            var lineContent = "a = 10";
+            Assert.AreEqual(lineContent, cbn.OutPorts[0].ToolTip);
+
             //Check the position of ports
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
         }
@@ -2149,13 +2097,16 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
+            var firstLineContent = "a = 1";
+            Assert.AreEqual(firstLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
-            Assert.AreEqual("b", cbn.OutPorts[1].ToolTip);
+            var secondLineContent = "b = 2";
+            Assert.AreEqual(secondLineContent, cbn.OutPorts[1].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[1].MarginThickness.Top);
 
-            Assert.AreEqual("c", cbn.OutPorts[2].ToolTip);
+            var thirdLineContent = "c = 3";
+            Assert.AreEqual(thirdLineContent, cbn.OutPorts[2].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[2].MarginThickness.Top);
 
         }
@@ -2185,10 +2136,12 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
+            var firstLineContent = "a[0] = 3";
+            Assert.AreEqual(firstLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
-            Assert.AreEqual("b", cbn.OutPorts[2].ToolTip);
+            var fourthLineContent = "b = 1";
+            Assert.AreEqual(fourthLineContent, cbn.OutPorts[2].ToolTip);
             Assert.AreEqual(3, cbn.OutPorts[2].LineIndex);
         }
 
@@ -2215,10 +2168,12 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
+            var firstLineContent = "a = 1";
+            Assert.AreEqual(firstLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
-            Assert.AreEqual("c", cbn.OutPorts[1].ToolTip);
+            var thirdLineContent = "c = 3";
+            Assert.AreEqual(thirdLineContent, cbn.OutPorts[1].ToolTip);
             Assert.AreEqual(2, cbn.OutPorts[1].LineIndex);
 
             var connector = cbn.OutPorts[1].Connectors[0] as ConnectorModel;
@@ -2247,7 +2202,8 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
+            var firstLineContent = "a = 1";
+            Assert.AreEqual(firstLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
             //Out ports with temporary tooltips.
@@ -2277,10 +2233,12 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
+            var firstLineContent = "a = 1";
+            Assert.AreEqual(firstLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
-            Assert.AreEqual("b", cbn.OutPorts[1].ToolTip);
+            var fourthLineContent = "b = 2";
+            Assert.AreEqual(fourthLineContent, cbn.OutPorts[1].ToolTip);
             Assert.AreEqual(3, cbn.OutPorts[1].LineIndex);
         }
 
@@ -2306,17 +2264,20 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
+            var firstLineContent = "a = 1";
+            Assert.AreEqual(firstLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
             Assert.AreEqual(2, cbn.OutPorts[1].LineIndex); // Random tool-tip.
 
-            Assert.AreEqual("d", cbn.OutPorts[2].ToolTip);
+            var fifthLineContent = "d = 12";
+            Assert.AreEqual(fifthLineContent, cbn.OutPorts[2].ToolTip);
             Assert.AreEqual(4, cbn.OutPorts[2].LineIndex);
 
             Assert.AreEqual(6, cbn.OutPorts[3].LineIndex); // Random tool-tip.
 
-            Assert.AreEqual("h", cbn.OutPorts[4].ToolTip);
+            var ninthLineContent = "h = 56";
+            Assert.AreEqual(ninthLineContent, cbn.OutPorts[4].ToolTip);
             Assert.AreEqual(8, cbn.OutPorts[4].LineIndex);
         }
 
@@ -2362,7 +2323,8 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
+            var firstLineContent = "a[2] = 4";
+            Assert.AreEqual(firstLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
         }
 
@@ -2385,10 +2347,12 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("vector1", cbn.OutPorts[0].ToolTip);
+            var firstLineContent = "vector1 = Autodesk.DesignScript.Geometry.Vector.ByCoordinates(num1, num2, num2)";
+            Assert.AreEqual(firstLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
 
-            Assert.AreEqual("vector2", cbn.OutPorts[1].ToolTip);
+            var secondLineContent = "vector2 = Autodesk.DesignScript.Geometry.Vector.ByCoordinates(num2, num1, num2)";
+            Assert.AreEqual(secondLineContent, cbn.OutPorts[1].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[1].MarginThickness.Top);
         }
 
@@ -2432,7 +2396,8 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
+            var firstLineContent = "a = 1";
+            Assert.AreEqual(firstLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].MarginThickness.Top);
         }
 
@@ -2450,23 +2415,28 @@ namespace DynamoCoreWpfTests
             // Run playback is recorded in command file
             RunCommandsFromFile("TestCBNOperationWithoutNodeToCode.xml");
             AssertValue("c_089fbe21a34547759592b683550558dd", 8);
+        }
 
-            // Reset current test case
-            Exit();
-            Setup();
-
+        [Test, Apartment(ApartmentState.STA)]
+        [Category("RegressionTests")]
+        public void TestCBNWithNodeToCode_2()
+        {
+            Assert.Inconclusive("Node To Code feature has been removed");
             // Run playback is recorded in command file
             RunCommandsFromFile("TestCBNOperationWithNodeToCode.xml");
             AssertValue("c_089fbe21a34547759592b683550558dd", 8);
+        }
 
-            // Reset current test case
-            Exit();
-            Setup();
-
+        [Test, Apartment(ApartmentState.STA)]
+        [Category("RegressionTests")]
+        public void TestCBNWithNodeToCode_3()
+        {
+            Assert.Inconclusive("Node To Code feature has been removed");
             // Run playback is recorded in command file
             RunCommandsFromFile("TestCBNOperationWithNodeToCodeUndo.xml");
             AssertValue("c_089fbe21a34547759592b683550558dd", 8);
         }
+
 
         [Test, Apartment(ApartmentState.STA)]
         [Category("RegressionTests")]
@@ -2509,10 +2479,15 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports and their names
-            Assert.AreEqual("x", cbn.OutPorts[0].ToolTip);
+
+
+            //Check output port tooltip content
+            var firstLineContent = "x = 2";
+            Assert.AreEqual(firstLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(0, cbn.OutPorts[0].LineIndex);
 
-            Assert.AreEqual("y", cbn.OutPorts[1].ToolTip);
+            var fourthLiuneContent = "y = 8";
+            Assert.AreEqual(fourthLiuneContent, cbn.OutPorts[1].ToolTip);
             Assert.AreEqual(3, cbn.OutPorts[1].LineIndex);
         }
 
@@ -2533,10 +2508,12 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, cbn.InPorts.Count);
 
             //Check the position of ports and their names
-            Assert.AreEqual("a", cbn.OutPorts[0].ToolTip);
+            var thirdLineContent = "a = 10";
+            Assert.AreEqual(thirdLineContent, cbn.OutPorts[0].ToolTip);
             Assert.AreEqual(2, cbn.OutPorts[0].LineIndex);
 
-            Assert.AreEqual("b", cbn.OutPorts[1].ToolTip);
+            var sixthLineContent = "b = 10";
+            Assert.AreEqual(sixthLineContent, cbn.OutPorts[1].ToolTip);
             Assert.AreEqual(5, cbn.OutPorts[1].LineIndex);
         }
 
@@ -2555,13 +2532,15 @@ namespace DynamoCoreWpfTests
             
             AssertValue("e_babc481696e6495c84897a650d1bfb25", 1);
             AssertValue("p_d4d53e201514434983e17cb5c533a3e0", 0);
-            
-            Exit();
-            Setup();
-            
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void DS_FunctionRedef01_2()
+        {
             // redefine function - test if the CBN reexecuted
             RunCommandsFromFile("Function_redef01a.xml");
-            
+
             AssertValue("e_babc481696e6495c84897a650d1bfb25", 3);
             AssertValue("p_d4d53e201514434983e17cb5c533a3e0", 0);
         }
@@ -2578,10 +2557,12 @@ namespace DynamoCoreWpfTests
 
             AssertValue("d_0ce2353ce5d6445f83b72db7e3861ce0", 1);
             AssertValue("p_c9827e41855647f68e9d6c600a2e45ee", 0);
+        }
 
-            Exit();
-            Setup();
-
+        [Test]
+        [Category("RegressionTests")]
+        public void DS_FunctionRedef02_2()
+        {
             // redefine function call - CBN with function definition is not expected to be executed
             RunCommandsFromFile("Function_redef02a.xml");
 
@@ -2601,9 +2582,12 @@ namespace DynamoCoreWpfTests
 
             AssertValue("c_f34e01e225e446349eb8e815e8ee580d", 0);
             AssertValue("d_f34e01e225e446349eb8e815e8ee580d", 1);
+        }
 
-            Exit();
-            Setup();
+        [Test]
+        [Category("RegressionTests")]
+        public void DS_FunctionRedef03_2()
+        {
 
             // redefine function call - CBN with function definition is not expected to be executed
             RunCommandsFromFile("Function_redef03a.xml");
@@ -2623,13 +2607,15 @@ namespace DynamoCoreWpfTests
 
             AssertValue("c_275d7a3d2b984f0e808d2aba03c6ff4f", 1);
             AssertValue("b_9b638b99d63145838b82662a60cdf6bc", 0);
-            
-            Exit();
-            Setup();
-            
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void DS_FunctionRedef04_2()
+        {
             // redefine function call - change type of argument
             RunCommandsFromFile("Function_redef04a.xml");
-            
+
             AssertValue("c_275d7a3d2b984f0e808d2aba03c6ff4f", new object[] { 1, 2, 3 });
             AssertValue("b_9b638b99d63145838b82662a60cdf6bc", 0);
         }
@@ -3721,6 +3707,7 @@ namespace DynamoCoreWpfTests
         [Category("RegressionTests"), Category("Failure")]
         public void TestCancelExecution()
         {
+            using (Disposable.Create(() => { DynamoModel.IsTestMode = true; }))
             RunCommandsFromFile("TestCancelExecutionFunctionCall.xml", (commandTag) =>
             {
                 // We need to run asynchronously for this test case as we need to 
@@ -3742,15 +3729,14 @@ namespace DynamoCoreWpfTests
                 {
                     AssertNullValues();
                 }
-         
             });
-            
         }
 
         [Test, Apartment(ApartmentState.STA)]
         [Category("Failure")]
         public void TestCancelExecutionWhileLoop()
         {
+            using (Disposable.Create(() => { DynamoModel.IsTestMode = true; }))
             RunCommandsFromFile("TestCancelExecutionWhileLoop.xml", (commandTag) =>
             {
                 // We need to run asynchronously for this test case as we need to 

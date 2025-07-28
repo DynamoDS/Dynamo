@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Runtime;
@@ -131,13 +132,6 @@ namespace DSCPython
         }
     }
 
-    [SupressImportIntoVM]
-    [Obsolete("Deprecated. Please use Dynamo.PythonServices.EvaluationState instead.")]
-    public enum EvaluationState { Begin, Success, Failed }
-
-    [SupressImportIntoVM]
-    [Obsolete("Deprecated. Please use evaluation handlers from Dynamo.PythonServices instead.")]
-    public delegate void EvaluationEventHandler(EvaluationState state, PyScope scope, string code, IList bindingValues);
 
     /// <summary>
     ///     Evaluates a Python script in the Dynamo context.
@@ -152,6 +146,8 @@ namespace DSCPython
 
         private static PyScope globalScope;
         private static DynamoLogger dynamoLogger;
+        private static string path;
+
         internal static DynamoLogger DynamoLogger {
             get
             { // Session is null when running unit tests.
@@ -268,60 +264,66 @@ for modname,mod in sys.modules.copy().items():
             {
                 PythonEngine.Initialize();
                 PythonEngine.BeginAllowThreads();
-                
-            }
+
                 using (Py.GIL())
+                using (PyScope scope = Py.CreateScope())
                 {
-                    if (globalScope == null)
+                    scope.Exec("import sys" + Environment.NewLine + "path = str(sys.path)");
+                    path = scope.Get<string>("path");
+                }
+            }
+
+            using (Py.GIL())
+            {
+                globalScope ??= CreateGlobalScope();
+                using (PyScope scope = Py.CreateScope())
+                {
+                    if (path is not null)
                     {
-                        globalScope = CreateGlobalScope();
+                        // Reset the 'sys.path' value to the default python paths on node evaluation. See https://github.com/DynamoDS/Dynamo/pull/10977. 
+                        var pythonNodeSetupCode = "import sys" + Environment.NewLine + $"sys.path = {path}";
+                        scope.Exec(pythonNodeSetupCode);
                     }
 
-                    using (PyScope scope = Py.CreateScope())
+                    ProcessAdditionalBindings(scope, bindingNames, bindingValues);
+
+                    int amt = Math.Min(bindingNames.Count, bindingValues.Count);
+
+                    for (int i = 0; i < amt; i++)
                     {
-                        // Reset the 'sys.path' value to the default python paths on node evaluation. 
-                        var pythonNodeSetupCode = "import sys" + Environment.NewLine + "sys.path = sys.path[0:3]";
-                        scope.Exec(pythonNodeSetupCode);
+                        scope.Set((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]).ToPython());
+                    }
 
-                        ProcessAdditionalBindings(scope, bindingNames, bindingValues);
+                    try
+                    {
+                        OnEvaluationBegin(scope, code, bindingValues);
+                        scope.Exec(code);
+                        var result = scope.Contains("OUT") ? scope.Get("OUT") : null;
 
-                        int amt = Math.Min(bindingNames.Count, bindingValues.Count);
-
-                        for (int i = 0; i < amt; i++)
+                        return OutputMarshaler.Marshal(result);
+                    }
+                    catch (Exception e)
+                    {
+                        evaluationSuccess = false;
+                        var traceBack = GetTraceBack(e);
+                        if (!string.IsNullOrEmpty(traceBack))
                         {
-                            scope.Set((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]).ToPython());
+                            // Throw a new error including trace back info added to the message
+                            throw new InvalidOperationException($"{e.Message} {traceBack}", e);
                         }
-
-                        try
+                        else
                         {
-                            OnEvaluationBegin(scope, code, bindingValues);
-                            scope.Exec(code);
-                            var result = scope.Contains("OUT") ? scope.Get("OUT") : null;
-
-                            return OutputMarshaler.Marshal(result);
-                        }
-                        catch (Exception e)
-                        {
-                            evaluationSuccess = false;
-                            var traceBack = GetTraceBack(e);
-                            if (!string.IsNullOrEmpty(traceBack))
-                            {
-                                // Throw a new error including trace back info added to the message
-                                throw new InvalidOperationException($"{e.Message} {traceBack}", e);
-                            }
-                            else
-                            {
 #pragma warning disable CA2200 // Rethrow to preserve stack details
-                                throw e;
+                            throw e;
 #pragma warning restore CA2200 // Rethrow to preserve stack details
-                            }
                         }
-                        finally
-                        {
-                            OnEvaluationEnd(evaluationSuccess, scope, code, bindingValues);
-                        }
+                    }
+                    finally
+                    {
+                        OnEvaluationEnd(evaluationSuccess, scope, code, bindingValues);
                     }
                 }
+            }
         }
 
         public static object EvaluatePythonScript(
@@ -453,6 +455,53 @@ sys.stdout = DynamoStdOut({0})
         }
 
         #region Marshalling
+
+        /// <summary>
+        /// Add additional data marshalers to handle host data.
+        /// </summary>
+        [SupressImportIntoVM]
+        internal override void RegisterHostDataMarshalers()
+        {
+            DataMarshaler dataMarshalerToUse = HostDataMarshaler as DataMarshaler;
+            dataMarshalerToUse?.RegisterMarshaler((PyObject pyObj) =>
+            {
+                try
+                {
+                    using (Py.GIL())
+                    {
+                        if (PyDict.IsDictType(pyObj))
+                        {
+                            using (var pyDict = new PyDict(pyObj))
+                            {
+                                var dict = new PyDict();
+                                foreach (PyObject item in pyDict.Items())
+                                {
+                                    dict.SetItem(
+                                        ConverterExtension.ToPython(dataMarshalerToUse.Marshal(item.GetItem(0))),
+                                        ConverterExtension.ToPython(dataMarshalerToUse.Marshal(item.GetItem(1)))
+                                    );
+                                }
+                                return dict;
+                            }
+                        }
+                        var unmarshalled = pyObj.AsManagedObject(typeof(object));
+
+                        // Avoid calling this marshaler infinitely.
+                        if (unmarshalled is PyObject)
+                        {
+                            return unmarshalled;
+                        }
+
+                        return dataMarshalerToUse.Marshal(unmarshalled);
+                    }
+                }
+                catch (Exception e)
+                {
+                    DynamoLogger?.Log($"error marshaling python object {pyObj.Handle} {e.Message}");                    
+                    return pyObj;
+                }
+            });
+        }
 
         /// <summary>
         ///     Data Marshaler for all data coming into a Python node.
@@ -628,22 +677,7 @@ sys.stdout = DynamoStdOut({0})
         ///     Emitted immediately before execution begins
         /// </summary>
         [SupressImportIntoVM]
-        [Obsolete("Deprecated. Please use EvaluationStarted instead")]
-        public static event EvaluationEventHandler EvaluationBegin;
-
-
-        /// <summary>
-        ///     Emitted immediately before execution begins
-        /// </summary>
-        [SupressImportIntoVM]
         public override event EvaluationStartedEventHandler EvaluationStarted;
-
-        /// <summary>
-        ///     Emitted immediately after execution ends or fails
-        /// </summary>
-        [SupressImportIntoVM]
-        [Obsolete("Deprecated. Please use EvaluationFinished instead.")]
-        public static event EvaluationEventHandler EvaluationEnd;
 
         /// <summary>
         ///     Emitted immediately after execution ends or fails
@@ -661,9 +695,6 @@ sys.stdout = DynamoStdOut({0})
                                               string code,
                                               IList bindingValues)
         {
-            // Call deprecated events until they are completely removed.
-            EvaluationBegin?.Invoke(EvaluationState.Begin, scope, code, bindingValues);
-
             if (EvaluationStarted != null)
             {
                 EvaluationStarted(code, bindingValues, (n, v) => { scope.Set(n, InputMarshaler.Marshal(v).ToPython()); });
@@ -686,11 +717,6 @@ sys.stdout = DynamoStdOut({0})
                                             string code,
                                             IList bindingValues)
         {
-            // Call deprecated events until they are completely removed.
-            EvaluationEnd?.Invoke(isSuccessful ? 
-                EvaluationState.Success : 
-                EvaluationState.Failed, scope, code, bindingValues);
-
             if (EvaluationFinished != null)
             {
                 EvaluationFinished(isSuccessful ? Dynamo.PythonServices.EvaluationState.Success : Dynamo.PythonServices.EvaluationState.Failed, 

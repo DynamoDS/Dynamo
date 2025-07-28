@@ -62,6 +62,7 @@ namespace CoreNodeModelsWpf.Nodes
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new DoubleInputDisplay(),
+                ConverterCulture = CultureInfo.InvariantCulture,
                 NotifyOnValidationError = false,
                 Source = nodeModel,
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit

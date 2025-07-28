@@ -67,7 +67,6 @@ namespace Dynamo.UI
         private static ResourceDictionary outPortsDictionary;
         private static ResourceDictionary inPortsDictionary;
         private static ResourceDictionary _liveChartDictionary;
-        
 
         public static string ThemesDirectory 
         {
@@ -213,14 +212,6 @@ namespace Dynamo.UI
             get {
                 return _connectorsDictionary ??
                        (_connectorsDictionary = new ResourceDictionary() {Source = ConnectorsDictionaryUri});            
-            }
-        }
-
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortsDictionary or OutPortsDictionary")]
-        public static ResourceDictionary PortsDictionary
-        {
-            get {
-                return _portsDictionary ?? (_portsDictionary = new ResourceDictionary() {Source = PortsDictionaryUri});
             }
         }
 

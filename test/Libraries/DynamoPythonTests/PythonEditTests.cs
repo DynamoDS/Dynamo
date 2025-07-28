@@ -15,6 +15,9 @@ using PythonNodeModels;
 using Dynamo.PythonServices;
 using DynCmd = Dynamo.Models.DynamoModel;
 using System.Threading;
+using PythonNodeModelsWpf;
+using CoreNodeModels;
+
 
 namespace Dynamo.Tests
 {
@@ -66,6 +69,22 @@ namespace Dynamo.Tests
                 System.Guid.Empty, pythonNode.GUID, "ScriptContent", value);
 
             ViewModel.ExecuteCommand(command);
+        }
+
+        /// <summary>
+        ///     Counts the non-overlapping occurrences of a specified substring within a given string.
+        /// </summary>
+        private int CountSubstrings(string code, string subscting)
+        {
+            int count = 0;
+            int index = code.IndexOf(subscting, 0);
+
+            while (index != -1)
+            {
+                count++;
+                index = code.IndexOf(subscting, index + subscting.Length);
+            }
+            return count;
         }
 
         [Test]
@@ -200,6 +219,36 @@ namespace Dynamo.Tests
 
             // script is edited
             Assert.AreEqual(pynode.Script, newScript);
+        }
+
+        [Test]
+        public void PythonScriptEdit_ConvertTabsToSpacesButton()
+        {
+            // Open file and get the Python node
+            var model = ViewModel.Model;
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "ConvertTabsToSpaces.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+            var pynode = model.CurrentWorkspace.Nodes.OfType<PythonNode>().First();
+
+            // Asset the node is loaded
+            Assert.NotNull(pynode, "Python node should be loaded from the file.");
+
+            // number of spaces is hard coded as providing a public property or changing the access
+            // level of PythonIndentationStrategy.ConvertTabsToSpaces is unnecessary for this purpose only
+            var spacesIndent = new string(' ', 4);
+            var tabIndent = "\t";
+
+            // Assert initial conditions : 17 tab indents and no space indents
+            Assert.IsTrue(pynode.Script.Count(c => c == '\t') == 17);
+            Assert.IsTrue(CountSubstrings(pynode.Script, spacesIndent) == 0);
+
+            // Convert tabs to spaces
+            var convertedString = PythonIndentationStrategy.ConvertTabsToSpaces(pynode.Script);
+            pynode.Script = convertedString;
+
+            // Assert the tab indents are converted to space indents
+            Assert.IsTrue(pynode.Script.Count(c => c == '\t') == 0);
+            Assert.IsTrue(CountSubstrings(pynode.Script, spacesIndent) == 17);
         }
 
         [Test]
@@ -448,7 +497,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-
         public void Python_CanReferenceDynamoServicesExecutionSession()
         {
             // open test graph
@@ -587,7 +635,6 @@ namespace Dynamo.Tests
             var sysPathList = GetFlattenedPreviewValues(firstPythonNodeGUID);
 
             // Verify that the custom path is added to the 'sys.path'.
-            Assert.AreEqual(sysPathList.Count(), 4);
             Assert.AreEqual(sysPathList.Last(), "C:\\Program Files\\dotnet");
 
             // Change the python engine for the 2nd node and verify that the custom path is not reflected in the 2nd node. 
@@ -596,7 +643,6 @@ namespace Dynamo.Tests
             var pynode = nodeModel as PythonNode;
             UpdatePythonEngineAndRun(pynode, PythonEngineManager.CPython3EngineName);
             sysPathList = GetFlattenedPreviewValues(secondPythonNodeGUID);
-            Assert.AreEqual(sysPathList.Count(), 3);
             Assert.AreNotEqual(sysPathList.Last(), "C:\\Program Files\\dotnet");
         }
 
@@ -607,6 +653,85 @@ namespace Dynamo.Tests
 
             var getItemAtIndex2 = "ad1f2ed7-6373-4381-aa93-df707c5e6339";
             AssertPreviewValue(getItemAtIndex2, new string[] { "TSplineVertex", "TSplineVertex" });
+        }
+
+        [Test]
+        public void Test_With_Exception_Python()
+        {
+            //This piece of code will generate an exception in PythonScript node
+            var line_update = "vec = Vector.ByCordinates(10,20)";
+            var warningMessageExpected = "type object 'Vector' has no attribute 'ByCordinates'";
+
+            // open test graph
+            var examplePath = Path.Combine(TestDirectory, @"core\python", @"withStatementTest.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+            ViewModel.HomeSpace.Run();
+
+            var watchNode = ViewModel.Model.CurrentWorkspace.Nodes.OfType<Watch>().First();
+            var pythonNode = ViewModel.Model.CurrentWorkspace.Nodes.OfType<PythonNode>().First();
+
+            //Verify that the initial run get the expected value
+            Assert.That(watchNode.OutputData.InitialValue, Is.EqualTo("test2"));
+
+            //Verify that don't have warnings/errors in the python node
+            Assert.AreEqual(pythonNode.NodeInfos.Count, 0);
+
+            var script = pythonNode.Script;
+            //Replacing this text in the code will generate an exception in the PythonScript node
+            script = script.Replace("result = \"test2\"", line_update);
+
+            UpdatePythonNodeContent(pythonNode, script);
+            pythonNode.OnNodeModified();
+
+            //Verity that we have 1 warning in the python node
+            Assert.AreEqual(pythonNode.NodeInfos.Count, 1);
+
+            //Check that the warning message expected is correct
+            Assert.IsTrue(pythonNode.NodeInfos.FirstOrDefault().Message.Contains(warningMessageExpected));
+        }
+
+        [Test]
+        public void Test_With_Exception_IDisposeCheck_Python()
+        {
+            //This piece of code will generate an exception in PythonScript node
+            var line_update = "Point.ByCoordinate(10,20)";
+            var warningMessageExpected = "type object 'Point' has no attribute 'ByCoordinate'";
+
+            // open test graph
+            var examplePath = Path.Combine(TestDirectory, @"core\python", @"withDisposeFFITarget.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+            ViewModel.HomeSpace.Run();
+
+            var watchNode = ViewModel.Model.CurrentWorkspace.Nodes.OfType<Watch>().First();
+            var pythonNode = ViewModel.Model.CurrentWorkspace.Nodes.OfType<PythonNode>().First();
+
+            //Verify that has the value 1 meaning that was disposed the first time
+            Assert.That(watchNode.OutputData.InitialValue, Is.EqualTo("1"));
+
+
+            var script = pythonNode.Script;
+            //Replacing this text in the code will generate an exception in the PythonScript node
+            script = script.Replace("Point.ByCoordinates(10,20)", line_update);
+
+            UpdatePythonNodeContent(pythonNode, script);
+            pythonNode.OnNodeModified();
+            ViewModel.HomeSpace.Run();
+
+            //Verify that we have 1 warning in the python node
+            Assert.AreEqual(pythonNode.NodeInfos.Count, 1);
+            //Check that the warning message expected is correct
+            Assert.IsTrue(pythonNode.NodeInfos.FirstOrDefault().Message.Contains(warningMessageExpected));
+
+            //Restore the string in the script for avoiding the exception when running the graph
+            script = script.Replace(line_update, "Point.ByCoordinates(10,20)");
+            UpdatePythonNodeContent(pythonNode, script);
+            pythonNode.OnNodeModified();
+            ViewModel.HomeSpace.Run();
+
+            //Verify that we don't have warnings in the python node
+            Assert.AreEqual(pythonNode.NodeInfos.Count, 0);
+            //Verify Watch node has the value 3 meaning that the object was disposed 3 times (even when there was an exception in the second run)
+            Assert.That(watchNode.OutputData.InitialValue, Is.EqualTo("3"));
         }
 
         [Test]

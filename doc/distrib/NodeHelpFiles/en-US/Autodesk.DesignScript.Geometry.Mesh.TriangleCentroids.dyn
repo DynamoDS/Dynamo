@@ -1,0 +1,326 @@
+{
+  "Uuid": "a161e887-368b-43e6-922d-242d40758fea",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.Mesh.TriangleCentroids",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.ImportFile@string",
+      "Id": "fb6ba12e262a4c6099d1a8ca9c84d04a",
+      "Inputs": [
+        {
+          "Id": "fcd4b6e34b2944c88434764e3dae9530",
+          "Name": "fileName",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "eb26d25617b44087bfbe9b490bd1fe5a",
+          "Name": "Mesh[]",
+          "Description": "Mesh[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Imports a file, parsing it into a number of Meshes. Currently supported formats are: .mix -- Meshmixer .obj -- Wavefront\n\nMesh.ImportFile (fileName: string): Mesh[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "P:\\Shared\\Archilizer\\Clients\\Autodesk\\Projects\\23 - Q4\\Nodes Documentation\\Mesh Toolkit Graphs\\Example Bunny\\stanford_bunny_tri.obj",
+      "InputValue": "Example Bunny\\stanford_bunny_tri.obj",
+      "NodeType": "ExtensionNode",
+      "Id": "473c4e96f4dd489d9126bc983f9b90d5",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "cde002b21c524c819bcb95d03de946b8",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system to get its filename"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByStartPointDirectionLength@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,double",
+      "Id": "02bab8b419f34a68b5be7b913d6f2d42",
+      "Inputs": [
+        {
+          "Id": "4d90de03337b4ff1a06f0bfaf970b6b4",
+          "Name": "startPoint",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d15e4cde268d40ad92d737d64021586a",
+          "Name": "direction",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0f9d6c6ff4284774b46cb83f0c64c0c1",
+          "Name": "length",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5af196dd4c7f4a2bbbc27360c7433cd1",
+          "Name": "Line",
+          "Description": "Line",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a straight Line starting at start Point, extending in Vector direction by specified length.\n\nLine.ByStartPointDirectionLength (startPoint: Point, direction: Vector, length: double = 1): Line"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "5;",
+      "Id": "46c84166f5f54cd982e22a2044b6de15",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "4d27c91dbc0c4920934a000c521b3e08",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.TriangleNormals",
+      "Id": "6d6ba5f161444c008c9b492bbd34896d",
+      "Inputs": [
+        {
+          "Id": "925f6b8e3e42480f8440cae7aad08349",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "212361e2db3a4242ab3ef02416d295a6",
+          "Name": "Vector[]",
+          "Description": "Vector[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the normals for each triangle face in a given mesh.\n\nMesh.TriangleNormals ( ): Vector[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.TriangleCentroids",
+      "Id": "4634a02a1ede4b108e939aa5b6bd7222",
+      "Inputs": [
+        {
+          "Id": "e51cfd8c46844dbbb413f316e79c7ed1",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "193c09a7301142bc9534d67d6bd54307",
+          "Name": "Point[]",
+          "Description": "Point[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns Triangle Centroids\n\nMesh.TriangleCentroids ( ): Point[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "eb26d25617b44087bfbe9b490bd1fe5a",
+      "End": "925f6b8e3e42480f8440cae7aad08349",
+      "Id": "c8b4275dfb4045bba5f3560890c4070c"
+    },
+    {
+      "Start": "eb26d25617b44087bfbe9b490bd1fe5a",
+      "End": "e51cfd8c46844dbbb413f316e79c7ed1",
+      "Id": "392ca8ceacf6484bba7708c8935ac1a2"
+    },
+    {
+      "Start": "cde002b21c524c819bcb95d03de946b8",
+      "End": "fcd4b6e34b2944c88434764e3dae9530",
+      "Id": "8cae712852b548d3b3307eec17ab4f39"
+    },
+    {
+      "Start": "4d27c91dbc0c4920934a000c521b3e08",
+      "End": "0f9d6c6ff4284774b46cb83f0c64c0c1",
+      "Id": "d023f9da126b4a86958f1e84500d7ab4"
+    },
+    {
+      "Start": "212361e2db3a4242ab3ef02416d295a6",
+      "End": "d15e4cde268d40ad92d737d64021586a",
+      "Id": "b086dbee0cfa4e31bebf16a6f2048db0"
+    },
+    {
+      "Start": "193c09a7301142bc9534d67d6bd54307",
+      "End": "4d90de03337b4ff1a06f0bfaf970b6b4",
+      "Id": "f1d0182cbc89434faabdb8ebe4547d12"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "MeshToolkit",
+      "Version": "3.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "fb6ba12e262a4c6099d1a8ca9c84d04a",
+        "6d6ba5f161444c008c9b492bbd34896d",
+        "4634a02a1ede4b108e939aa5b6bd7222"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.6.1.8786",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 3.7476426124605009,
+      "EyeY": 72.015691213771021,
+      "EyeZ": 72.561869618513839,
+      "LookX": -1.3828917188403604,
+      "LookY": -52.809704365944775,
+      "LookZ": -97.744168126454383,
+      "UpX": -0.0039008816252103541,
+      "UpY": 0.96126050597105139,
+      "UpZ": -0.27561418906467433
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.ImportFile",
+        "Id": "fb6ba12e262a4c6099d1a8ca9c84d04a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 87.916387042395485,
+        "Y": -769.80177271409343
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "473c4e96f4dd489d9126bc983f9b90d5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -187.98606872055586,
+        "Y": -771.19602392398679
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Line.ByStartPointDirectionLength",
+        "Id": "02bab8b419f34a68b5be7b913d6f2d42",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 697.96142424083621,
+        "Y": -762.86211382970339
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "46c84166f5f54cd982e22a2044b6de15",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 532.17826645616128,
+        "Y": -614.29485272554916
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.TriangleNormals",
+        "Id": "6d6ba5f161444c008c9b492bbd34896d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 424.42867093664518,
+        "Y": -715.75624747707582
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.TriangleCentroids",
+        "Id": "4634a02a1ede4b108e939aa5b6bd7222",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 431.81841457028645,
+        "Y": -826.15348933194593
+      }
+    ],
+    "Annotations": [],
+    "X": 64.230562991631984,
+    "Y": 772.824894512317,
+    "Zoom": 0.70859268333617664
+  }
+}

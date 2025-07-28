@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Models;
 using Dynamo.ViewModels;
 
 namespace Dynamo.UI.Controls
@@ -15,8 +16,10 @@ namespace Dynamo.UI.Controls
         public InPortContextMenu()
         {
             InitializeComponent();
-
-            if (Application.Current != null) Application.Current.Deactivated += CurrentApplicationDeactivated;
+            if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
+            {
+                Application.Current.Deactivated += CurrentApplicationDeactivated;
+            }
             Unloaded += InPortContextMenuControl_Unloaded;
         }
 
@@ -27,7 +30,7 @@ namespace Dynamo.UI.Controls
         /// <param name="e"></param>
         private void InPortContextMenuControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            if (Application.Current != null)
+            if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
                 Application.Current.Deactivated -= CurrentApplicationDeactivated;
             }

@@ -1,3 +1,7 @@
 # override specific package dlls#
 ###################
-!*.dll
+
+# For TuneUp allow dlls, but not Test dlls
+!TuneUp/bin
+TuneUp/bin/**/*Test*.dll
+

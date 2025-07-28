@@ -1,0 +1,173 @@
+<?xml version="1.0"?><doc>
+  <assembly>
+    <name>BuiltIn</name>
+  </assembly>
+  <members>
+    <member name="List.Rank">
+      <summary>リストの最も深い深さを返します</summary>
+      <param name="list">ランクのクエリーを実行するリスト</param>
+      <returns name="int">リストの最も深い深さ</returns>
+      <search>rank,depth,nesting,ranks</search>
+    </member>
+    <member name="List.RemoveIfNot">
+      <summary>指定されたタイプ以外のメンバをリストから削除します。</summary>
+      <param name="list">項目を削除するリスト</param>
+      <param name="type">要素のタイプ</param>
+      <returns name="list">指定されたタイプ以外のすべてを削除したリスト</returns>
+      <search>remove,not,ofType,filtertype</search>
+    </member>
+    <member name="List.Equals">
+      <summary>2 つのオブジェクト インスタンスが等しいかどうかを決定します。</summary>
+      <param name="object">最初のオブジェクト</param>
+      <param name="otherObject">もう一方のオブジェクト</param>
+      <returns name="bool">オブジェクト インスタンスが等しい場合は true を返し、異なる場合は false を返します</returns>
+      <search>equals</search>
+    </member>
+    <member name="List.SortByFunction">
+      <summary>関数を使用して、リストの項目をソートする方法を決定します。</summary>
+      <param name="list">値のリスト</param>
+      <param name="sortFunction">リストの並べ替えに使用される関数</param>
+      <returns name="sortedList">タイプ: var[]..[]</returns>
+      <search>sort,order</search>
+    </member>
+    <member name="ToString">
+      <param name="object">オブジェクト</param>
+      <search>string</search>
+    </member>
+    <member name="__ToStringFromObject">
+      <param name="object">オブジェクト</param>
+      <search>string,from,object</search>
+    </member>
+    <member name="__ToStringFromArray">
+      <param name="list">リスト</param>
+      <search>string,from,array</search>
+    </member>
+    <member name="__Apply">
+      <param name="functionObject"/>
+      <param name="param"/>
+      <search>apply</search>
+    </member>
+    <member name="__ApplyList">
+      <param name="functionObject"/>
+      <param name="param"/>
+      <search>apply,list</search>
+    </member>
+    <member name="__GetOutput">
+      <param name="outputs"/>
+      <param name="key"/>
+      <search>output</search>
+    </member>
+    <member name="__Compose">
+      <param name="funcs"/>
+      <search>compose,functionchain</search>
+    </member>
+    <member name="__ComposeBuffered">
+      <param name="funcs"/>
+      <param name="amt"/>
+      <param name="arg"/>
+      <search>compose,buffered</search>
+    </member>
+    <member name="List.MinimumItemByKey">
+      <summary>キー プロジェクタとして指定された関数の最小値を生成する項目をリストから返します。</summary>
+      <param name="list">値のリスト</param>
+      <param name="keyFunction">リスト項目に適用する関数</param>
+      <returns name="minimumItem">keyFunction を使用しているリスト内の最小項目(タイプ: var[]..[])</returns>
+      <search>min,item,key</search>
+    </member>
+    <member name="List.MaximumItemByKey">
+      <summary>キー プロジェクタとして指定された関数の最大値を生成する項目をリストから返します。</summary>
+      <param name="list">値のリスト</param>
+      <param name="keyFunction">リスト項目に適用する関数</param>
+      <returns name="maximumItem">keyFunction を使用しているリスト内の最大項目(タイプ: var[]..[])</returns>
+      <search>max,item,key</search>
+    </member>
+    <member name="__Replace">
+      <param name="list">値のリスト</param>
+      <param name="with"/>
+      <param name="predicate"/>
+      <search>replace</search>
+    </member>
+    <member name="__Filter">
+      <param name="list">値のリスト</param>
+      <param name="predicate"/>
+      <search>filter</search>
+    </member>
+    <member name="__Combine">
+      <param name="func">関数</param>
+      <param name="lists"/>
+      <search>combine</search>
+    </member>
+    <member name="__Map">
+      <param name="func">関数</param>
+      <param name="arg"/>
+      <search>map</search>
+    </member>
+    <member name="__LaceShortest">
+      <param name="func">関数</param>
+      <param name="lists"/>
+      <search>lace,shortest</search>
+    </member>
+    <member name="__LaceLongest">
+      <param name="func">関数</param>
+      <param name="lists"/>
+      <search>lace,longest</search>
+    </member>
+    <member name="__ApplyNested">
+      <param name="fs">関数</param>
+      <param name="xs"/>
+      <param name="amt"/>
+      <search>apply,nested</search>
+    </member>
+    <member name="__CartesianProduct">
+      <param name="func">関数</param>
+      <param name="lists"/>
+      <search>cartesian,product</search>
+    </member>
+    <member name="__Scan">
+      <param name="accumulator"/>
+      <param name="seed"/>
+      <param name="lists"/>
+      <search>scan</search>
+    </member>
+    <member name="__Reduce">
+      <param name="accumulator"/>
+      <param name="seed"/>
+      <param name="lists"/>
+      <search>reduce</search>
+    </member>
+    <member name="List.GroupByFunction">
+      <summary>リストの項目をグループ化する方法を決定する関数を使用します。</summary>
+      <param name="list">値のリスト</param>
+      <param name="groupFunction">リストをグループ化する関数</param>
+      <returns name="groupedList">任意のランク/レベルのリスト(タイプ: var[]..[])</returns>
+      <search>group,function</search>
+    </member>
+    <member name="List.TrueForAll">
+      <summary>リスト内のすべての項目が指定されたクエリー関数で true と評価された場合に true を返します</summary>
+      <param name="list">クエリー関数で項目を評価するリスト</param>
+      <param name="queryFunction">リストを評価する関数</param>
+      <returns name="bool">リスト内のすべての項目が指定されたクエリー関数で true と評価された場合に true を返します</returns>
+      <search>true,all</search>
+    </member>
+    <member name="List.TrueForAny">
+      <summary>リスト内の 1 つまたは複数の項目が指定されたクエリー関数で true と評価された場合に true を返します</summary>
+      <param name="list">クエリー関数で項目を評価するリスト</param>
+      <param name="queryFunction">リストを評価する関数</param>
+      <returns name="bool">リスト内のいずれかの項目がクエリー関数で true と評価された場合に true を返します</returns>
+      <search>true,any</search>
+    </member>
+    <member name="__ForEach">
+      <param name="functionObject"/>
+      <param name="lists"/>
+      <search>foreach</search>
+    </member>
+    <member name="LoopWhile">
+      <summary>初期値、条件、ループ本体を指定して、while ループ ノードを作成します。</summary>
+      <param name="initialValue">ループの初期値</param>
+      <param name="continueWhile">while loop condition</param>
+      <param name="loopBody">while loop body</param>
+      <returns name="result">ループの結果(タイプ: var[]..[])</returns>
+      <search>loop,while,repeat</search>
+    </member>
+  </members>
+</doc>

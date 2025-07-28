@@ -23,7 +23,7 @@ namespace Dynamo.Tests
                 base.GetLibrariesToPreload(libraries);
             }
 
-            [Test]
+            [Test, Category("ExcelTestInterop")]
             public void TestExcel()
             {
                 // (1..5) + 1;

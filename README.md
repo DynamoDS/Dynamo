@@ -1,12 +1,10 @@
 # Dynamo
 
-[![Dynamo-VS2022Build](https://github.com/DynamoDS/Dynamo/actions/workflows/dynamoMSbuild.yml/badge.svg)](https://github.com/DynamoDS/Dynamo/actions/workflows/dynamoMSbuild.yml)
-[![DynamoAllNet6.0-Build](https://github.com/DynamoDS/Dynamo/actions/workflows/dynamoAllNet6.0_build.yml/badge.svg)](https://github.com/DynamoDS/Dynamo/actions/workflows/dynamoAllNet6.0_build.yml)
-[![Dynamo-net6.0-Build](https://github.com/DynamoDS/Dynamo/actions/workflows/dynamoNet6.0_build.yml/badge.svg)](https://github.com/DynamoDS/Dynamo/actions/workflows/dynamoNet6.0_build.yml)
-[![Dynamo-net6.0-linux-Build](https://github.com/DynamoDS/Dynamo/actions/workflows/dynamoNet6.0_linux_build.yml/badge.svg)](https://github.com/DynamoDS/Dynamo/actions/workflows/dynamoNet6.0_linux_build.yml)
+[![Build DynamoAll.sln](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_all.yml/badge.svg)](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_all.yml)
+[![Build DynamoCore.sln](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_core.yml/badge.svg)](https://github.com/DynamoDS/Dynamo/actions/workflows/build_dynamo_core.yml)
 
+[![DynamoCoreRuntime](https://img.shields.io/github/v/release/DynamoDS/Dynamo?logo=github&label=DynamoCoreRuntime)](https://github.com/DynamoDS/Dynamo/releases/latest)
 [![Nuget](https://img.shields.io/nuget/v/DynamoVisualProgramming.Core?logo=nuget)](https://www.nuget.org/packages/DynamoVisualProgramming.Core)
-[![DynamoVisualProgramming.Core on fuget.org](https://www.fuget.org/packages/DynamoVisualProgramming.Core/badge.svg)](https://www.fuget.org/packages/DynamoVisualProgramming.Core)
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/DynamoDS/Dynamo/master/doc/distrib/Images/dynamo_logo_light.png">
@@ -38,9 +36,8 @@ You can learn more about developing libraries for Dynamo on the [Dynamo wiki](ht
 You will need the following to build the latest Dynamo on Windows:
 
 - [Microsoft Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) (any edition)
-- [Microsoft .NET Framework 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) (included with Visual Studio 2022)
+- [Microsoft .NET Framework 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) (included with Visual Studio 2022)
 - [Node.js LTS](https://nodejs.org/en/download/) and npm
-- [NUnit Test Adapter 2](https://marketplace.visualstudio.com/items?itemName=NUnitDevelopers.NUnitTestAdapter) (For runnning Dynamo tests within Visual Studio)
 
 If you are working on legacy branches, you may need to install legacy .NET Framework versions through Visual Studio `Tools > Get Tools and Features...` or downloading from [the archive here](https://www.microsoft.com/net/download/archives).
 

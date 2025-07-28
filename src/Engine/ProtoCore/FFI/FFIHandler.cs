@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.AST.AssociativeAST;
@@ -10,8 +10,6 @@ namespace ProtoFFI
     {
         public bool IsDNI { get; set; }
 
-        [IsObsolete("Remove in 3.0. Use Execute(ProtoCore.Runtime.Context c, ProtoCore.DSASM.Interpreter dsi, List<StackValue> stack) instead")]
-        public abstract object Execute(ProtoCore.Runtime.Context c, Interpreter dsi);
         public abstract Object Execute(ProtoCore.Runtime.Context c, ProtoCore.DSASM.Interpreter dsi, List<StackValue> stack);
         public static T[] GetUnderlyingArray<T>(List<T> list)
         {

@@ -6,25 +6,17 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
 using Dynamo.Configuration;
-using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
-using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Controls;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views;
-using DynamoCoreWpfTests.Utility;
-using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using SharpDX.DXGI;
 
 
 namespace DynamoCoreWpfTests
@@ -40,26 +32,11 @@ namespace DynamoCoreWpfTests
             libraries.Add("FFITarget.dll");
         }
 
-        public override void Open(string path)
-        {
-            base.Open(path);
-
-            DispatcherUtil.DoEvents();
-        }
-
-        public override void Run()
-        {
-            base.Run();
-
-            DispatcherUtil.DoEvents();
-        }
-
         [Test]
         public void FooterNotificationControlTest()
         {
             // Arrange
             Open(@"UI\ZoomNodeColorStates.dyn");
-
             var workspace = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
             Debug.Assert(workspace != null, nameof(workspace) + " != null");
             workspace.Run();
@@ -116,7 +93,6 @@ namespace DynamoCoreWpfTests
             // Open workspace with test mode as false, to verify trust warning.
             DynamoModel.IsTestMode = false;
             Open(@"core\CustomNodes\TestAdd.dyn");
-
             Assert.IsTrue(ViewModel.FileTrustViewModel.ShowWarningPopup);
 
             // Close workspace
@@ -129,17 +105,47 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void TestHomeWorkspaceClosedBeforeCustomNode()
+        {
+            Open(@"core\CustomNodes\TestAdd.dyn");
+
+            Open(@"core\CustomNodes\add.dyf");
+
+            ViewModel.UIDispatcher.Invoke(new Action(() =>
+            {
+                DynamoModel.SwitchTabCommand switchCommand =
+                    new DynamoModel.SwitchTabCommand(0);
+
+                ViewModel.ExecuteCommand(switchCommand);
+            }));
+            Assert.AreEqual(ViewModel.Model.Workspaces.Count(), 2);
+
+            DynamoModel.IsTestMode = false;
+            ViewModel.CloseHomeWorkspaceCommand.Execute(null);
+            DynamoModel.IsTestMode = true;  
+
+            //the workspace count is still 2, since the homeworkspace was replaced by default workspace,
+            //and second is custom workspace that is still open.
+            Assert.AreEqual(ViewModel.Model.Workspaces.Count(), 2);
+
+            //assert that save button is still enabled
+            Assert.IsTrue(View.saveButton.IsEnabled);
+        }
+
+        [Test]
         public void ElementBinding_SaveAs()
         {
             var prebindingPathInTestDir = @"core\callsite\trace_test-prebinding.dyn";
             var prebindingPath = Path.Combine(GetTestDirectory(ExecutingDirectory), prebindingPathInTestDir);
 
             var pathInTestsDir = @"core\callsite\trace_test.dyn";
-            var filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), pathInTestsDir);
+            var filePath = Path.Combine(TempFolder, pathInTestsDir);
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
 
             // Always start with a fresh workspace with no binding data for this test.
-            File.Copy(prebindingPath, filePath);
-            OpenAndRun(pathInTestsDir);
+            File.Copy(prebindingPath, filePath, true);
+            ViewModel.OpenCommand.Execute(filePath);
+            Run();
 
             // Assert that the node doesn't have trace data the first time it's run.
             var hasTraceData = Model.CurrentWorkspace.Nodes.FirstOrDefault(x =>
@@ -154,18 +160,19 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, (obj["Bindings"] as IEnumerable<object>).Count());
 
             var saveAsPathInTestDir = @"core\callsite\trace_test2.dyn";
-            var saveAsPath = Path.Combine(GetTestDirectory(ExecutingDirectory), saveAsPathInTestDir);
+            var saveAsPath = Path.Combine(TempFolder, saveAsPathInTestDir);
+            Directory.CreateDirectory(Path.GetDirectoryName(saveAsPath));
 
             // SaveAs current workspace, close workspace.
             ViewModel.SaveAsCommand.Execute(saveAsPath);
             ViewModel.CloseHomeWorkspaceCommand.Execute(null);
 
-            Open(saveAsPathInTestDir);
+            ViewModel.OpenCommand.Execute(saveAsPath);
 
             // Assert saved as file doesn't have binding data after open.
-            DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex);
+            DynamoUtilities.PathHelper.isValidJson(saveAsPath, out fileContents, out ex);
             obj = DSCore.Data.ParseJSON(fileContents) as Dictionary<string, object>;
-            Assert.AreEqual(1, (obj["Bindings"] as IEnumerable<object>).Count());
+            Assert.AreEqual(0, (obj["Bindings"] as IEnumerable<object>).Count());
 
             File.Delete(filePath);
             File.Delete(saveAsPath);
@@ -176,7 +183,6 @@ namespace DynamoCoreWpfTests
         {
             var preferencesWindow = new PreferencesView(View);
             preferencesWindow.Show();
-            DispatcherUtil.DoEvents();
             string selectedLanguage = (string)((ComboBox)preferencesWindow.FindName("LanguageCmb")).SelectedItem;
             var english = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == "en-US").Key;
             var spanish = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == "es-ES").Key;

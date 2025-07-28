@@ -1,0 +1,283 @@
+{
+  "Uuid": "67aedf65-4371-4e27-b3da-35550fbad3bc",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.Geometry.ToSolidDef",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "1a750e9b4b42413caab183b592dc14ed",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "c720629f0e054b40b4063c6fc81f9110",
+          "Name": "width",
+          "Description": "Width of cuboid\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8cf8af8b6a6d44e5b5425a6ee7ddffef",
+          "Name": "length",
+          "Description": "Length of cuboid\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b85f01bd83864c3183803c32d0389dee",
+          "Name": "height",
+          "Description": "Height of cuboid\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "894cea3b2d3443ccbe66c1bdaa08ce9a",
+          "Name": "Cuboid",
+          "Description": "Cuboid created by lengths",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Cuboid.ByLengths@double,double,double",
+      "Replication": "Auto",
+      "Description": "Create a Cuboid centered at WCS origin, with width, length, and height.\n\nCuboid.ByLengths (width: double = 1, length: double = 1, height: double = 1): Cuboid"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "c4065889e9654fe0b53159b6a2125a2d",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "0f07298f01894c948a2766ba2ac01372",
+          "Name": "geometry",
+          "Description": "Autodesk.DesignScript.Geometry.Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "94108d184b8d4aeb8f7c7cf95fcf079a",
+          "Name": "string",
+          "Description": "Json formatted string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.ToSolidDef",
+      "Replication": "Auto",
+      "Description": "Convert geometry to Solid Def json\n\nGeometry.ToSolidDef ( ): string"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 420.0,
+      "WatchHeight": 38.0,
+      "Id": "6c18b97d79a04d1d84bc48653d8be7ba",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "8ad5161d1305498d9b7043bb0af3d397",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8119e666b064433698ca51db80bda2d5",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "15afb3e2f2e34babbf95ef37391d0a4f",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "13ac716723164aeaa824a5efae4de17e",
+          "Name": "values",
+          "Description": "A List of values\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cf92ca2b8edd490ab78426f05b09dabe",
+          "Name": "json",
+          "Description": "A JSON string where primitive types (e.g. double, int, boolean), Lists, and Dictionary's will be turned into the associated JSON type.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.Data.StringifyJSON@var[]..[]",
+      "Replication": "Auto",
+      "Description": "Stringify converts an arbitrary value or a list of arbitrary values to JSON. Replication can be used to apply the operation over a list, producing a list of JSON strings.\n\nData.StringifyJSON (values: var[]..[]): string"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "894cea3b2d3443ccbe66c1bdaa08ce9a",
+      "End": "0f07298f01894c948a2766ba2ac01372",
+      "Id": "7396eb77b7134568b2ae8ec173213146",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "94108d184b8d4aeb8f7c7cf95fcf079a",
+      "End": "13ac716723164aeaa824a5efae4de17e",
+      "Id": "7f7cfdf08082482894674ba2f3caecc8",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "cf92ca2b8edd490ab78426f05b09dabe",
+      "End": "8ad5161d1305498d9b7043bb0af3d397",
+      "Id": "ca64e71e4d1e43ffb7343e97cb24119a",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 100.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.0.5874",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "1a750e9b4b42413caab183b592dc14ed",
+        "Name": "Cuboid.ByLengths",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 106.06381316072657,
+        "Y": 518.34421969627851
+      },
+      {
+        "Id": "c4065889e9654fe0b53159b6a2125a2d",
+        "Name": "Geometry.ToSolidDef",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 414.56381316072657,
+        "Y": 518.34421969627851
+      },
+      {
+        "Id": "6c18b97d79a04d1d84bc48653d8be7ba",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1062.0638131607266,
+        "Y": 518.34421969627851
+      },
+      {
+        "Id": "15afb3e2f2e34babbf95ef37391d0a4f",
+        "Name": "Data.StringifyJSON",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 744.06381316072657,
+        "Y": 518.34421969627851
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "3587bdc2882740e1abf260c95cd66fcd",
+        "Title": "Right click on Watch node and \"Copy Contents\" to use Solid Def string representation in another graph",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 1161.0638131607266,
+        "Top": 453.34421969627851,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "6c18b97d79a04d1d84bc48653d8be7ba"
+      }
+    ],
+    "X": 374.47211842252648,
+    "Y": 93.511323764049166,
+    "Zoom": 0.41299898049384776
+  }
+}

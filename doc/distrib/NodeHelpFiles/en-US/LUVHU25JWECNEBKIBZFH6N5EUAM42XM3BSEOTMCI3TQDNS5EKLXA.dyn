@@ -1,0 +1,492 @@
+{
+  "Uuid": "e5b0fa4e-6552-44b2-8855-af1d80cb6bb0",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.Curve.SweepAsSolid",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Autodesk.DesignScript.Geometry.Vector": {
+        "Key": "Autodesk.DesignScript.Geometry.Vector",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "32f3c5e12fc74cd4abcd8f04bffbc0cc",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "00b6f749726c4c7e89ab1bfa07e23c08",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "0..180..36;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "1e50b068eb85475aab075d6babde972b",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "9621b44fe0744c3da3e5f3f0ac413db6",
+          "Name": "x",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7c5bb15ddf884979986d7a2603d78ce0",
+          "Name": "y",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a43d9e8b6275407a9f3f35c5f64c4e01",
+          "Name": "z",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "acbc90dbc1ac4ebd9f932d3a3658834d",
+          "Name": "Point",
+          "Description": "Point created by coordinates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Replication": "Auto",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "e85cbb0b89fe46b4baaa8e209ef9117b",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1bea4242775d461e8e3d39f10e944f46",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "0..5..1;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "48cde1c1e42442c393a4f550eb1d4dd4",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "4330f968ec064f83a0bd1f5a41451d6a",
+          "Name": "angle",
+          "Description": "Angle in degrees to take the cosine of.\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "948c8913646242de97d5ce72d0d96f7d",
+          "Name": "double",
+          "Description": "Cosine of the angle",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.Math.Cos@double",
+      "Replication": "Auto",
+      "Description": "Finds the cosine of an angle.\n\nMath.Cos (angle: double): double"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "7522689d9a5b4e7286df88e8c6ab9a37",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "c4b9cbe7a0b3426ca0c823cbc680854d",
+          "Name": "points",
+          "Description": "Points for nurbs curve\n\nPoint[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d6e6c83cc5944577a1473d67fe28728b",
+          "Name": "NurbsCurve",
+          "Description": "Nurbscurve created from points",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[]",
+      "Replication": "Auto",
+      "Description": "Create a BSplineCurve by interpolating between points.\n\nNurbsCurve.ByPoints (points: Point[]): NurbsCurve"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "34a9a091613d468497496d586ef4f79d",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [
+        {
+          "Id": "1021431fe2d84726a5ff81ee8b2a4e8d",
+          "Name": "x",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "824ad923cd524cb3ba8ffbeea0195c6f",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "x-2;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "41a65c4200024a6dad503208ac3a2f17",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "2723f78c39d740baa99518c17d2266ce",
+          "Name": "width",
+          "Description": "Width of rectangle\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2fa80a56b4204610975187293f197725",
+          "Name": "length",
+          "Description": "Length of rectangle\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "19e635b157fb49c488c1d24a359b9962",
+          "Name": "Rectangle",
+          "Description": "Rectangle created by width and length",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength@double,double",
+      "Replication": "Auto",
+      "Description": "Create a Rectangle centered at the WCS origin in the WCS XY Plane, with specified width (X Axis length), and length (Y Axis length).\n\nRectangle.ByWidthLength (width: double = 1, length: double = 1): Rectangle"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "0393c74829c446338bebdc078fdaa202",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "808ca571522742dd88ecd49cfd5fa972",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "2;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "0f3be53c354e49a09a08736f02399916",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "9499b990ee154eb0a39ab8f6f93020d4",
+          "Name": "curve",
+          "Description": "Autodesk.DesignScript.Geometry.Curve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "156bdd34ebd248518c27491213de3235",
+          "Name": "path",
+          "Description": "The path that represent the sweep path\n\nCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "efe852ccba474864a8e99b37b4fd7573",
+          "Name": "cutEndOff",
+          "Description": "Cut the end of the sweep and make it normal to the path\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7e70a2d93a514386bc7f4b16b379e18e",
+          "Name": "Solid",
+          "Description": "A solid that sweeps this closed Curve along the path Curve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.SweepAsSolid@Autodesk.DesignScript.Geometry.Curve,bool",
+      "Replication": "Auto",
+      "Description": "Sweeps this closed Curve along the path Curve, creating a Solid\n\nCurve.SweepAsSolid (path: Curve, cutEndOff: bool = false): Solid"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "00b6f749726c4c7e89ab1bfa07e23c08",
+      "End": "4330f968ec064f83a0bd1f5a41451d6a",
+      "Id": "7db6dc6aa50b4810a8cd1f0e50d48af0",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "acbc90dbc1ac4ebd9f932d3a3658834d",
+      "End": "c4b9cbe7a0b3426ca0c823cbc680854d",
+      "Id": "05fa3494401f4ef18f31f4b31d5123a7",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "1bea4242775d461e8e3d39f10e944f46",
+      "End": "a43d9e8b6275407a9f3f35c5f64c4e01",
+      "Id": "bb92390c41994ac683f02ead9412a5b4",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "948c8913646242de97d5ce72d0d96f7d",
+      "End": "1021431fe2d84726a5ff81ee8b2a4e8d",
+      "Id": "dfbbd4056cf0476b9f832d6b25dfc566",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d6e6c83cc5944577a1473d67fe28728b",
+      "End": "156bdd34ebd248518c27491213de3235",
+      "Id": "19574850cd144a309d21de1f4ce465a6",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "824ad923cd524cb3ba8ffbeea0195c6f",
+      "End": "9621b44fe0744c3da3e5f3f0ac413db6",
+      "Id": "2a4c95cbabbb47a58d0c32f5f3580e78",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "19e635b157fb49c488c1d24a359b9962",
+      "End": "9499b990ee154eb0a39ab8f6f93020d4",
+      "Id": "e0d3508a78bb40ac9ea1141697ff20e4",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "808ca571522742dd88ecd49cfd5fa972",
+      "End": "2723f78c39d740baa99518c17d2266ce",
+      "Id": "9fc5d35b6f8f4ca7a61a9085db8b3066",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.0.5742",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -9.7833023071289063,
+      "EyeY": 6.161107063293457,
+      "EyeZ": 10.048727989196777,
+      "LookX": 6.2058191299438477,
+      "LookY": -0.82160615921020508,
+      "LookZ": -12.452702522277832,
+      "UpX": -0.06977478414773941,
+      "UpY": 0.98768836259841919,
+      "UpZ": 0.14001153409481049
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "32f3c5e12fc74cd4abcd8f04bffbc0cc",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -1023.7198597657745,
+        "Y": 186.55819007606192
+      },
+      {
+        "Id": "1e50b068eb85475aab075d6babde972b",
+        "Name": "Point.ByCoordinates",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -195.71985976577446,
+        "Y": 226.90319007606195
+      },
+      {
+        "Id": "e85cbb0b89fe46b4baaa8e209ef9117b",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -449.71985976577446,
+        "Y": 334.73069007606193
+      },
+      {
+        "Id": "48cde1c1e42442c393a4f550eb1d4dd4",
+        "Name": "Math.Cos",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -752.71985976577446,
+        "Y": 186.73069007606193
+      },
+      {
+        "Id": "7522689d9a5b4e7286df88e8c6ab9a37",
+        "Name": "NurbsCurve.ByPoints",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 129.28014023422554,
+        "Y": 226.90319007606195
+      },
+      {
+        "Id": "34a9a091613d468497496d586ef4f79d",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -449.71985976577446,
+        "Y": 186.73069007606193
+      },
+      {
+        "Id": "41a65c4200024a6dad503208ac3a2f17",
+        "Name": "Rectangle.ByWidthLength",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 129.28014023422554,
+        "Y": 48.903190076061946
+      },
+      {
+        "Id": "0393c74829c446338bebdc078fdaa202",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -195.71985976577446,
+        "Y": 48.730690076061933
+      },
+      {
+        "Id": "0f3be53c354e49a09a08736f02399916",
+        "Name": "Curve.SweepAsSolid",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 476.34475235663513,
+        "Y": 113.66016328142138
+      }
+    ],
+    "Annotations": [],
+    "X": 715.77047668236651,
+    "Y": 70.574999695881047,
+    "Zoom": 0.65243989526115775
+  }
+}

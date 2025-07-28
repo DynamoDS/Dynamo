@@ -10,6 +10,7 @@ using Dynamo.Logging;
 using Dynamo.ViewModels;
 using SharpDX.DXGI;
 using Dynamo.Utilities;
+using System.Windows;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -30,7 +31,7 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         /// <param name="e"></param>
         /// <returns></returns>
-        internal static string FromAnnotationEventArgs(OpenNodeAnnotationEventArgs e, string breadCrumbs, string mkDown)
+        internal static string FromAnnotationEventArgs(OpenNodeAnnotationEventArgs e, string breadCrumbs, string mkDown, string locale = "")
         {
             if (e is null)
                 throw new ArgumentNullException(nameof(e));
@@ -38,7 +39,7 @@ namespace Dynamo.DocumentationBrowser
             StringBuilder sb = new StringBuilder();
             
             sb.AppendLine(CreateHeader(e, breadCrumbs));
-            sb.AppendLine(CreateBody(e, mkDown));
+            sb.AppendLine(CreateBody(e, mkDown, locale));
 
             return sb.ToString();
         }
@@ -87,14 +88,14 @@ namespace Dynamo.DocumentationBrowser
             return sb.ToString();
         }
 
-        private static string CreateBody(OpenNodeAnnotationEventArgs e, string mkDown)
+        private static string CreateBody(OpenNodeAnnotationEventArgs e, string mkDown, string locale = "")
         {
             StringBuilder sb = new StringBuilder();
 
             sb.AppendLine(CreateInfo(e, mkDown));
             if (e.NodeInfos.Any())
             {
-                sb.AppendLine(CreateHelp(e));
+                sb.AppendLine(CreateHelp(e, locale));
             }
             sb.AppendLine(CreateInputs(e));
 
@@ -161,7 +162,7 @@ namespace Dynamo.DocumentationBrowser
             return sb.ToString();
         }
 
-        private static string CreateHelp(OpenNodeAnnotationEventArgs e)
+        private static string CreateHelp(OpenNodeAnnotationEventArgs e, string locale = "")
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("<details open>");
@@ -171,7 +172,7 @@ namespace Dynamo.DocumentationBrowser
                 try
                 {
                     sb.AppendLine("<br>");
-                    sb.AppendLine($"<strong>{"Message"}</strong>");
+                    sb.AppendLine($"<strong>{Resources.MessageHeading}</strong>");
 
                     var message = e.NodeInfos.ElementAt(i).Message;
 
@@ -182,7 +183,7 @@ namespace Dynamo.DocumentationBrowser
                         var help = e.NodeInfos.ElementAt(i).Message.Split(new string[] {". "}, StringSplitOptions.None);
                         var html = help[1].Split(new string[] {"href="}, StringSplitOptions.None)[1];
                         var helpHtml =
-                            DocumentationBrowserUtils.GetContentFromEmbeddedResource($"{RESOURCE_PREFIX + html}");
+                            DocumentationBrowserUtils.GetContentFromEmbeddedResource($"{RESOURCE_PREFIX + html}", locale);
 
                         sb.AppendLine(helpHtml);
                     }
@@ -313,9 +314,10 @@ namespace Dynamo.DocumentationBrowser
              var stringArr = element.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
              foreach (var line in stringArr)
              {
-                 if (line.ToLowerInvariant().Contains("default value"))
+                 if (line.ToLowerInvariant().Contains(Resources.InputDefaultValue.ToLower()))
                  {
-                     return line.Remove(0, 16);
+                    var index = line.IndexOf(":");
+                    return line.Remove(0, index + 1);
                  }
              }
              return string.Empty;

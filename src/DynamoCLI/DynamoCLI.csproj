@@ -5,6 +5,7 @@
   <PropertyGroup>
     <ProjectGuid>{5F9AE581-6781-4A4C-A262-1B06CD27208B}</ProjectGuid>
     <OutputType>Exe</OutputType>
+	<RollForward>Major</RollForward>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DynamoCLI</RootNamespace>
     <AssemblyName>DynamoCLI</AssemblyName>

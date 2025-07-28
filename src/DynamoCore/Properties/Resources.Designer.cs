@@ -89,7 +89,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to All recommendations are below the specified confidence level. You can try them or adjust the confidence settings in Preferences..
+        ///   Looks up a localized string similar to No confident suggestions available. The model is continuously improving - check back soon..
         /// </summary>
         public static string AutocompleteLowConfidenceMessage {
             get {
@@ -494,6 +494,15 @@ namespace Dynamo.Properties {
         public static string DllLoadException {
             get {
                 return ResourceManager.GetString("DllLoadException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This node is currently experimental. Its behavior, name, and signature are subject to change..
+        /// </summary>
+        public static string DocsExperimentalPrefixMessage {
+            get {
+                return ResourceManager.GetString("DocsExperimentalPrefixMessage", resourceCulture);
             }
         }
         
@@ -993,6 +1002,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to default input name, rename me!.
+        /// </summary>
+        public static string InputNodeRenameHint {
+            get {
+                return ResourceManager.GetString("InputNodeRenameHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to variable;argument;parameter.
         /// </summary>
         public static string InputNodeSearchTags {
@@ -1011,7 +1029,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Insert Dynamo Definition....
+        ///   Looks up a localized string similar to Insert Dynamo Graph....
         /// </summary>
         public static string InsertDialogBoxText {
             get {
@@ -1114,6 +1132,15 @@ namespace Dynamo.Properties {
         public static string InvalidStartOrEndOfRange {
             get {
                 return ResourceManager.GetString("InvalidStartOrEndOfRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This workspace contains element binding data in a legacy format that is no longer supported in Dynamo 3.0 and higher versions. Element binding data will be saved in the new format the next time you run and save this workspace..
+        /// </summary>
+        public static string LegacyTraceDataWarning {
+            get {
+                return ResourceManager.GetString("LegacyTraceDataWarning", resourceCulture);
             }
         }
         
@@ -1508,6 +1535,24 @@ namespace Dynamo.Properties {
         public static string PackageManagerPackageAlreadyExists {
             get {
                 return ResourceManager.GetString("PackageManagerPackageAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} files and {1} folders will be created..
+        /// </summary>
+        public static string PackageManagerPackagePreviewCounter {
+            get {
+                return ResourceManager.GetString("PackageManagerPackagePreviewCounter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} files and {1} folders loaded..
+        /// </summary>
+        public static string PackageManagerPackageSelectCounter {
+            get {
+                return ResourceManager.GetString("PackageManagerPackageSelectCounter", resourceCulture);
             }
         }
         
@@ -2020,6 +2065,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Click on the sparkle icon next to the port to activate Node Autocomplete..
+        /// </summary>
+        public static string ToastFileNodeAutoCompleteDoubleClick {
+            get {
+                return ResourceManager.GetString("ToastFileNodeAutoCompleteDoubleClick", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Statement Output.
         /// </summary>
         public static string ToolTipForTempVar {
@@ -2124,6 +2178,15 @@ namespace Dynamo.Properties {
         public static string UnhandledExceptionTitle {
             get {
                 return ResourceManager.GetString("UnhandledExceptionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An unknown error occurred while processing the file..
+        /// </summary>
+        public static string UnknownErrorProcessingFile {
+            get {
+                return ResourceManager.GetString("UnknownErrorProcessingFile", resourceCulture);
             }
         }
         

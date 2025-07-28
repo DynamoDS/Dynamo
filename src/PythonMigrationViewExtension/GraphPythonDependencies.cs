@@ -1,4 +1,4 @@
-﻿using Dynamo.Configuration;
+using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
@@ -16,7 +16,9 @@ namespace Dynamo.PythonMigration
     public class GraphPythonDependencies
     {
         internal static readonly string PythonPackage = "DynamoIronPython2.7";
-        internal static readonly Version PythonPackageVersion = PreferenceSettings.ironPythonResolveTargetVersion;
+        // Current Dynamo inbuilt python package is CPython3. Change this when it is updated.
+        internal static readonly string InBuiltPythonPackage = PythonEngineManager.CPython3EngineName;
+        internal readonly Version PythonPackageVersion;
         private IWorkspaceModel workspace;
         private readonly ICustomNodeManager customNodeManager;
 
@@ -33,10 +35,11 @@ namespace Dynamo.PythonMigration
             DirectDependency
         }
 
-        internal GraphPythonDependencies(IWorkspaceModel workspaceModel, ICustomNodeManager customNodeManager)
+        internal GraphPythonDependencies(IWorkspaceModel workspaceModel, ICustomNodeManager customNodeManager, Version ironPythonTargetVersion)
         {
-            this.workspace = workspaceModel;
+            workspace = workspaceModel;
             this.customNodeManager = customNodeManager;
+            PythonPackageVersion = ironPythonTargetVersion;
         }
 
         internal void UpdateWorkspace(IWorkspaceModel workspaceModel)
@@ -93,6 +96,20 @@ namespace Dynamo.PythonMigration
                 : PackageDependencyState.Missing;
 
             return new[] { packageDependencyInfo };
+        }
+
+        // Returns a dictionary of node and python engine mapping for the workspace python nodes.
+        internal Dictionary<Guid, String> GetPythonEngineMapping()
+        {
+            var pythonNodeMapping = new Dictionary<Guid, String>();
+
+            foreach (var node in workspace.Nodes.OfType<PythonNode>())
+            {
+                var enginePackage = node.EngineName.Equals(InBuiltPythonPackage) ? "InBuilt" : "FromPackage";
+                pythonNodeMapping.Add(node.GUID, enginePackage);
+            }
+
+            return pythonNodeMapping;
         }
 
         /// <summary>

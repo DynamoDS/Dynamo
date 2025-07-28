@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Environments;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Validators;
 
@@ -75,7 +76,7 @@ namespace DynamoPerformanceTests
         /// <summary>
         /// Base config class for regular benchmark job
         /// </summary>
-        public class DynamoBenchmarkConfig : ManualConfig
+        public class DynamoBenchmarkConfigBase : ManualConfig
         {
             /// <summary>
             /// Minimum count of warmup iterations that should be performed
@@ -102,15 +103,33 @@ namespace DynamoPerformanceTests
             /// </summary>
             protected int DynamoMaxIterationCount = 9;
 
-            public DynamoBenchmarkConfig()
+            /// <summary>
+            /// Default Job Definition.
+            /// </summary>
+            protected Job JobDefault = Job.Default
+                .WithPlatform(BenchmarkDotNet.Environments.Platform.X64)
+                .WithRuntime(CoreRuntime.CreateForNewVersion("net8.0-windows7.0", "NET 8.0"));
+
+            public DynamoBenchmarkConfigBase()
             {
-                Add(DefaultConfig.Instance.GetLoggers().ToArray()); // manual config has no loggers by default
-                Add(DefaultConfig.Instance.GetExporters().ToArray()); // manual config has no exporters by default
+                AddLogger(DefaultConfig.Instance.GetLoggers().ToArray());
+                AddExporter(DefaultConfig.Instance.GetExporters().ToArray()); // manual config has no exporters by default
 
                 var defaultColumns = DefaultConfig.Instance.GetColumnProviders().ToList();
                 defaultColumns.RemoveAt(3); // Remove DynamoFilePath column
-                Add(defaultColumns.ToArray());
-                Add(new GraphNameColumn()); // Add Graph Name column
+                AddColumnProvider(defaultColumns.ToArray());
+                AddColumn(new GraphNameColumn()); // Add Graph Name column
+            }
+        }
+
+        /// <summary>
+        /// config class for regular benchmark job
+        /// </summary>
+        public class DynamoBenchmarkConfig : DynamoBenchmarkConfigBase
+        {
+            public DynamoBenchmarkConfig() : base()
+            {
+                AddJob(JobDefault);
             }
         }
 
@@ -118,11 +137,12 @@ namespace DynamoPerformanceTests
         /// Config class that when initialized and used to run the benchmarks
         /// allows for testing of debug versions of DynamoCore targets.
         /// </summary>
-        public class BenchmarkDebugConfig : DynamoBenchmarkConfig
+        public class BenchmarkDebugConfig : DynamoBenchmarkConfigBase
         {
             public BenchmarkDebugConfig() : base()
             {
-                Add(JitOptimizationsValidator.DontFailOnError);
+                AddValidator(JitOptimizationsValidator.DontFailOnError);
+                AddJob(JobDefault);
             }
         }
 
@@ -130,11 +150,11 @@ namespace DynamoPerformanceTests
         /// A faster version of Config class than default used to pass command line arguments from the 
         /// benchmark runner to all benchmarks defined in the test framework class.
         /// </summary>
-        public class FastBenchmarkReleaseConfig : DynamoBenchmarkConfig
+        public class FastBenchmarkReleaseConfig : DynamoBenchmarkConfigBase
         {
             public FastBenchmarkReleaseConfig() : base()
             {
-                Add(Job.Default
+                AddJob(JobDefault
                     .WithMinWarmupCount(DynamoMinWarmupCount)
                     .WithMaxWarmupCount(DynamoMaxWarmuoCount)
                     .WithLaunchCount(DynamoLaunchCount)

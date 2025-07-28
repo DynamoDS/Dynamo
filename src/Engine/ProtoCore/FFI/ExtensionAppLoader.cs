@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.IO;
 using System.Reflection;
 using Autodesk.DesignScript.Interfaces;
+using Dynamo.Logging;
 
 namespace ProtoFFI
 {
@@ -167,35 +168,10 @@ namespace ProtoFFI
             }
 
             if (null != extensionApp)
-                extensionApp.StartUp(new ExtensionStartupParams() { DisableADP = Dynamo.Logging.Analytics.DisableAnalytics });
-        }
-
-        /// <summary>
-        /// For nunit-setup
-        /// </summary>
-        internal void ForceStartUpAllApps()
-        {
-            IDictionaryEnumerator i = mExtensionApps.GetEnumerator();
-            while (i.MoveNext())
             {
-                IExtensionApplication app = i.Value as IExtensionApplication;
-                if (null != app)
-                    app.StartUp(new ExtensionStartupParams() { DisableADP = Dynamo.Logging.Analytics.DisableAnalytics });
+                extensionApp.StartUp(new ExtensionStartupParams { DisableADP = Analytics.DisableAnalytics });
             }
         }
-
-        /// <summary>
-        /// For nunit-teardown
-        /// </summary>
-        internal void ForceShutDownAllApps()
-        {
-            IDictionaryEnumerator i = mExtensionApps.GetEnumerator();
-            while (i.MoveNext())
-            {
-                IExtensionApplication app = i.Value as IExtensionApplication;
-                if (null != app)
-                    app.ShutDown();
-            }
-        }
+        
     }
 }

@@ -115,6 +115,15 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Selected color.
+        /// </summary>
+        public static string ColorPalettePortDataResultToolTip {
+            get {
+                return ResourceManager.GetString("ColorPalettePortDataResultToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to color.
         /// </summary>
         public static string ColorPaletteSearchTags {
@@ -259,6 +268,182 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to values.
+        /// </summary>
+        public static string CurveMapperCountInputPortName {
+            get {
+                return ResourceManager.GetString("CurveMapperCountInputPortName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of values to map or List of values to map.
+        ///
+        ///Default value (int): {0}.
+        /// </summary>
+        public static string CurveMapperCountInputPortToolTip {
+            get {
+                return ResourceManager.GetString("CurveMapperCountInputPortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redistributes a series of input values within the given range and maps them along a specified curve. If a single count is provided, it generates a series of values distributed along the x direction within the given range and then maps these values to the curve..
+        /// </summary>
+        public static string CurveMapperDescription {
+            get {
+                return ResourceManager.GetString("CurveMapperDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When mapping numbers along the curve, some Y values fall outside the specified Y-value domain range..
+        /// </summary>
+        public static string CurveMapperInfoMessage {
+            get {
+                return ResourceManager.GetString("CurveMapperInfoMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to graph;curve;mapper;math.
+        /// </summary>
+        public static string CurveMapperSearchTags {
+            get {
+                return ResourceManager.GetString("CurveMapperSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The provided original values cannot be redistributed using the curve equation..
+        /// </summary>
+        public static string CurveMapperWarningMessage {
+            get {
+                return ResourceManager.GetString("CurveMapperWarningMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to x-MaxLimit.
+        /// </summary>
+        public static string CurveMapperXMaxLimitInputPortName {
+            get {
+                return ResourceManager.GetString("CurveMapperXMaxLimitInputPortName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum value for the X-axis domain.
+        ///
+        ///Default value (double): {0}.
+        /// </summary>
+        public static string CurveMapperXMaxLimitInputPortToolTip {
+            get {
+                return ResourceManager.GetString("CurveMapperXMaxLimitInputPortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to x-MinLimit.
+        /// </summary>
+        public static string CurveMapperXMinLimitInputPortName {
+            get {
+                return ResourceManager.GetString("CurveMapperXMinLimitInputPortName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minimum value for the X-axis domain.
+        ///
+        ///Default value (double): {0}.
+        /// </summary>
+        public static string CurveMapperXMinLimitInputPortToolTip {
+            get {
+                return ResourceManager.GetString("CurveMapperXMinLimitInputPortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to x-Values.
+        /// </summary>
+        public static string CurveMapperXValuesOutputPortName {
+            get {
+                return ResourceManager.GetString("CurveMapperXValuesOutputPortName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to X values derived from the curve.
+        ///
+        ///double[].
+        /// </summary>
+        public static string CurveMapperXValuesOutputPortToolTip {
+            get {
+                return ResourceManager.GetString("CurveMapperXValuesOutputPortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to y-MaxLimit.
+        /// </summary>
+        public static string CurveMapperYMaxLimitInputPortName {
+            get {
+                return ResourceManager.GetString("CurveMapperYMaxLimitInputPortName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum value for the Y-axis domain.
+        ///
+        ///Default value (double): {0}.
+        /// </summary>
+        public static string CurveMapperYMaxLimitInputPortToolTip {
+            get {
+                return ResourceManager.GetString("CurveMapperYMaxLimitInputPortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to y-MinLimit.
+        /// </summary>
+        public static string CurveMapperYMinLimitInputPortName {
+            get {
+                return ResourceManager.GetString("CurveMapperYMinLimitInputPortName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minimum value for the Y-axis domain.
+        ///
+        ///Default value (double): {0}.
+        /// </summary>
+        public static string CurveMapperYMinLimitInputPortToolTip {
+            get {
+                return ResourceManager.GetString("CurveMapperYMinLimitInputPortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to y-Values.
+        /// </summary>
+        public static string CurveMapperYValuesOutputPortName {
+            get {
+                return ResourceManager.GetString("CurveMapperYValuesOutputPortName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Y values derived from the curve.
+        ///
+        ///double[].
+        /// </summary>
+        public static string CurveMapperYValuesOutputPortToolTip {
+            get {
+                return ResourceManager.GetString("CurveMapperYValuesOutputPortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A dropdown menu with customizable values..
         /// </summary>
         public static string CustomSelectionNodeDescription {
@@ -291,6 +476,42 @@ namespace CoreNodeModels.Properties {
         public static string DateTimeDescription {
             get {
                 return ResourceManager.GetString("DateTimeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validates the data type of an input and returns it.
+        /// </summary>
+        public static string DefineDataDescription {
+            get {
+                return ResourceManager.GetString("DefineDataDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Types.
+        /// </summary>
+        public static string DefineDataDisplayValueMessage {
+            get {
+                return ResourceManager.GetString("DefineDataDisplayValueMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input data to be validated. Refer to drop-down for list of allowed types.
+        /// </summary>
+        public static string DefineDataInputTooltip {
+            get {
+                return ResourceManager.GetString("DefineDataInputTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validated data.
+        /// </summary>
+        public static string DefineDataOutputTooltip {
+            get {
+                return ResourceManager.GetString("DefineDataOutputTooltip", resourceCulture);
             }
         }
         
@@ -620,6 +841,16 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Format specifier for numeric values, see extended node help for more info.
+        ///default value: G.
+        /// </summary>
+        public static string FromObjectPortDataFormatToolTip {
+            get {
+                return ResourceManager.GetString("FromObjectPortDataFormatToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Object to be serialized.
         /// </summary>
         public static string FromObjectPortDataObjToolTip {
@@ -661,6 +892,44 @@ namespace CoreNodeModels.Properties {
         public static string FunctionComposeDescription {
             get {
                 return ResourceManager.GetString("FunctionComposeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Block data passing through this node to downstream nodes. Node returns the input data only if the node value is set to Open.
+        ///
+        ///In Generative Design workflows, this node should be used to control and block the behavior of nodes that will place elements in Revit.
+        /// </summary>
+        public static string GateDescription {
+            get {
+                return ResourceManager.GetString("GateDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data to pass to a downstream node with gated controls..
+        /// </summary>
+        public static string GateInPortToolTip {
+            get {
+                return ResourceManager.GetString("GateInPortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data.
+        /// </summary>
+        public static string GateOutPortToolTip {
+            get {
+                return ResourceManager.GetString("GateOutPortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to gate;stop;data.
+        /// </summary>
+        public static string GateSearchTags {
+            get {
+                return ResourceManager.GetString("GateSearchTags", resourceCulture);
             }
         }
         
@@ -1079,6 +1348,33 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Store data passing through this node to the Dynamo file. Return the stored data if the input is null..
+        /// </summary>
+        public static string RememberDescription {
+            get {
+                return ResourceManager.GetString("RememberDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data to sample and store in the file..
+        /// </summary>
+        public static string RememberInputToolTip {
+            get {
+                return ResourceManager.GetString("RememberInputToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data.
+        /// </summary>
+        public static string RememberOuputToolTip {
+            get {
+                return ResourceManager.GetString("RememberOuputToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Replaces an item with the given substitute if the original item satisfies the given condition.
         /// </summary>
         public static string ReplaceByConditionDescription {
@@ -1295,7 +1591,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Convert an array to a string representation..
+        ///   Looks up a localized string similar to Converts an array to a string representation.
         /// </summary>
         public static string StringfromArrayDescription {
             get {
@@ -1304,7 +1600,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Convert an object to a string representation..
+        ///   Looks up a localized string similar to Converts an object to a string representation.
         /// </summary>
         public static string StringfromObjectDescription {
             get {
@@ -1367,7 +1663,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Visualize the output of node..
+        ///   Looks up a localized string similar to Visualizes a node&apos;s output.
         /// </summary>
         public static string WatchDescription {
             get {
@@ -1394,7 +1690,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Visualize the node&apos;s output.
+        ///   Looks up a localized string similar to Visualizes a node&apos;s output.
         /// </summary>
         public static string WatchNodeDescription {
             get {
@@ -1439,7 +1735,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make a web request given a url..
+        ///   Looks up a localized string similar to Returns the contents of a webpage from the given URL as a string.
         /// </summary>
         public static string WebRequestDescription {
             get {

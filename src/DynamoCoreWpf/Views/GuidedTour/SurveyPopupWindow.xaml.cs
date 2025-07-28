@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Controls.Primitives;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.ViewModels.GuidedTour;
@@ -64,7 +64,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
         {
             IsOpen = false;
             surveyViewModel.Step.OnStepClosed(surveyViewModel.Step.Name, surveyViewModel.Step.StepType);
-            Logging.Analytics.TrackEvent(Logging.Actions.Rate, Logging.Categories.Command, surveyViewModel.Step.RatingTextTitle, SurveyRatingControl.Value);
+            Logging.Analytics.TrackEvent(Logging.Actions.Rate, Logging.Categories.Command, surveyViewModel.Step.GuideName, SurveyRatingControl.Value);
         }
 
         private void GetStartedButton_Click(object sender, System.Windows.RoutedEventArgs e)

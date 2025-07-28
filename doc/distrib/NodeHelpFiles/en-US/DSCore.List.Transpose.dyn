@@ -1,0 +1,225 @@
+{
+  "Uuid": "9a4b8b9d-fc59-4ad0-9008-dc433c4db30d",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DSCore.List.Transpose",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      },
+      "List": {
+        "Key": "List",
+        "Value": "BuiltIn.ds"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "bab0148fd1814679b11e61128ffc9555",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0bb8bd66062d44eb8196f0a9eecec568",
+          "Name": "",
+          "Description": "numbers",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c86177803a7044cfa0f9dc43fd0c6e3b",
+          "Name": "",
+          "Description": "letters",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "numbers = 0..5;\nletters = \"A\"..\"E\";"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "Id": "145d73c421f845eea6d6ed2df31adde3",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "d98b8c70befa42b99adaf0251ffa293e",
+          "Name": "item0",
+          "Description": "Item Index #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "baa51850e00a4c27b6807960d5dfa50e",
+          "Name": "item1",
+          "Description": "Item Index #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8792f2f61b744c218d2c0bb02e5120ef",
+          "Name": "list",
+          "Description": "A list (type: var[]..[])",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Makes a new list from the given inputs"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "60a2d2accad5499a8e3498c3da66b0a5",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "0d2bdcc8f6804a3187a7f1be7b872261",
+          "Name": "lists",
+          "Description": "List of lists to be transposed\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3336d31c4b054798beef5598bca4eca6",
+          "Name": "lists",
+          "Description": "List of transposed lists",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.List.Transpose@var[]..[]",
+      "Replication": "Auto",
+      "Description": "Swaps rows and columns in a list of lists. If there are some rows that are shorter than others, null values are inserted as place holders in the resultant array such that it is always rectangular.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "0bb8bd66062d44eb8196f0a9eecec568",
+      "End": "d98b8c70befa42b99adaf0251ffa293e",
+      "Id": "5127f66ebf6c4afc96bc9d71d021c4e8",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c86177803a7044cfa0f9dc43fd0c6e3b",
+      "End": "baa51850e00a4c27b6807960d5dfa50e",
+      "Id": "92859cf3dab543119cf813574b4a84ef",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8792f2f61b744c218d2c0bb02e5120ef",
+      "End": "0d2bdcc8f6804a3187a7f1be7b872261",
+      "Id": "0b2d3c618c1144feb80106a745d06c56",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.18",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "1.2",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.0.5742",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "bab0148fd1814679b11e61128ffc9555",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 498.98320627399471,
+        "Y": -171.195329492495
+      },
+      {
+        "Id": "145d73c421f845eea6d6ed2df31adde3",
+        "Name": "List Create",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 831.48320627399471,
+        "Y": -179.850329492495
+      },
+      {
+        "Id": "60a2d2accad5499a8e3498c3da66b0a5",
+        "Name": "List.Transpose",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1091.4832062739947,
+        "Y": -179.850329492495
+      }
+    ],
+    "Annotations": [],
+    "X": -555.43366080785813,
+    "Y": 503.98365094900248,
+    "Zoom": 1.1643898080562645
+  }
+}

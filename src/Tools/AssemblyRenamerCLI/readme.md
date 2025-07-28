@@ -15,7 +15,7 @@ This tool's exe is not copied into Dynamo's main bin folder, it will be built lo
 ### note - whitepace included for easy reading - remove new lines in actual use.
 ```
  .\AssemblyRenamerCLI.exe -i ..\..\originalBinaries\Microsoft.Xaml.Behaviors.dll 
- -o C:\Users\kirschm\Documents\Dynamo\extern\Microsoft.Xaml.Behaviors 
+ -o C:\Users\[username]\Documents\Dynamo\extern\Microsoft.Xaml.Behaviors 
  -t Microsoft 
  -r Dynamo.Microsoft
 ```

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -139,5 +139,55 @@ namespace TestUINodes
         {
             return id.Length;
         }
+    }
+
+    [NodeName("Test Dropdown Node")]
+    [NodeCategory("TestUINodes")]
+    [NodeDescription("test dropdown node")]
+    [OutPortTypes("string")]
+    [IsDesignScriptCompatible]
+    [IsVisibleInDynamoLibrary(false)]
+    public class TestDropdown : DSDropDownBase
+    {
+        public TestDropdown() : base("TestDropdown") { }
+
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            AssociativeNode node;
+            if (SelectedIndex < 0 || SelectedIndex >= Items.Count)
+            {
+                node = AstFactory.BuildNullNode();
+                return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
+            }
+            else
+            {
+                // get the selected items name
+                var stringNode = AstFactory.BuildStringNode((string)Items[SelectedIndex].Name);
+
+                // assign the selected name to an actual enumeration value
+                var assign = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), stringNode);
+
+                // return the enumeration value
+                return new List<AssociativeNode> { assign };
+            }
+        }
+
+        protected override SelectionState PopulateItemsCore(string currentSelection)
+        {
+            Items.Clear();
+
+            var symbols = new[] { "one", "two", "three" };
+            
+
+            foreach (var symbol in symbols)
+            {
+
+                Items.Add(new DynamoDropDownItem(symbol, symbol));
+            }
+
+            return SelectionState.Restore;
+        }
+
     }
 }

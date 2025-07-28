@@ -2,8 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Input;
 using Dynamo.Logging;
+using Dynamo.UI.Commands;
 using Dynamo.Wpf.ViewModels.Core;
 
 namespace Dynamo.ViewModels
@@ -64,7 +67,7 @@ namespace Dynamo.ViewModels
         // In order to stay above these, we need a high ZIndex value. 
         private double zIndex;
         private Style infoBubbleStyle;
-        
+                
         [Obsolete]
         public Direction connectingDirection;
         
@@ -504,6 +507,39 @@ namespace Dynamo.ViewModels
             NodeMessages.CollectionChanged += NodeInformation_CollectionChanged;
 
             RefreshNodeInformationalStateDisplay();
+        }
+        
+        /// <summary>
+        /// Copies the text of an info bubble message to the clipboard
+        /// </summary>
+        /// <param name="parameter">The InfoBubbleDataPacket to copy</param>
+        private void CopyTextToClipboard(object parameter)
+        {
+            if (parameter is InfoBubbleDataPacket infoBubbleDataPacket)
+            {
+                try
+                {
+                    System.Windows.Clipboard.SetText(infoBubbleDataPacket.Text);
+                    Analytics.TrackEvent(Actions.Copy, Categories.NodeOperations, 
+                        infoBubbleDataPacket.Style.ToString(), 1);
+                }
+                catch (Exception ex)
+                {
+                    DynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.CopyToClipboardFailedMessage);
+                    DynamoViewModel.Model.Logger.Log(ex.Message);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Determines if a message can be copied to clipboard
+        /// </summary>
+        /// <param name="parameter">The InfoBubbleDataPacket to check</param>
+        /// <returns>True if the message can be copied</returns>
+        private bool CanCopyTextToClipboard(object parameter)
+        {
+            return parameter is InfoBubbleDataPacket infoBubbleDataPacket && 
+                   !string.IsNullOrEmpty(infoBubbleDataPacket.Text);
         }
 
         #endregion
@@ -1038,6 +1074,7 @@ namespace Dynamo.ViewModels
     public struct InfoBubbleDataPacket : IEquatable<InfoBubbleDataPacket>
     {
         private const string externalLinkIdentifier = "href=";
+        private static readonly Regex externalLinkMatcher = new($@"({Regex.Escape(externalLinkIdentifier)}[^ \r\n]*?)([ \r\n]|$)", RegexOptions.Compiled);
         public InfoBubbleViewModel.Style Style;
         public Point TopLeft;
         public Point BotRight;
@@ -1086,9 +1123,8 @@ namespace Dynamo.ViewModels
             // if there is no link, we do nothing
             if (!text.Contains(externalLinkIdentifier)) return text;
 
-            // return the text without the link or identifier
-            string[] split = text.Split(new string[] { externalLinkIdentifier }, StringSplitOptions.None);
-            return split[0];
+            // remove all links from the text (marked as starting with externalLinkIdentifier)
+            return externalLinkMatcher.Replace(text, "$2").Trim();
         }
 
         private static Uri ParseLinkFromText(string text)

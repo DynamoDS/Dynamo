@@ -350,12 +350,6 @@ namespace ProtoFFI
             object ret = mFunction.Execute(parameters.ToArray());
             return ConvertReturnValue(ret, context, dsi);
         }
-
-        [IsObsolete("Remove in 3.0. Use Execute(ProtoCore.Runtime.Context c, ProtoCore.DSASM.Interpreter dsi, List<StackValue> stack) instead")]
-        public override object Execute(ProtoCore.Runtime.Context context, Interpreter dsi)
-        {
-            return Execute(context, dsi, null);
-        }
     }
 
     public class PInvokeModuleHelper : ModuleHelper

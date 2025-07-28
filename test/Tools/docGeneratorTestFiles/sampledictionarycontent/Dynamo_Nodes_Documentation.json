@@ -4342,5 +4342,29 @@
     "dynFile": ["TrimWhitespace"],
     "folderPath": "String/Modify/Action",
     "inDepth": "TrimWhitespace will remove all the whitespace of an input string. In the example below, we start with the string '     Hello World     ', which has several leading and trailing spaces. By using TrigWhitespace, we can remove the spaces at the beginning and end of the string, as well as the space between 'Hello' and 'World'."
+}, {
+    "Name": "Remember",
+    "imageFile": ["Remember"],
+    "dynFile": ["Remember"],
+    "folderPath": "ImportExport/Data/Action",
+    "inDepth": "Store data passing through this node to the Dynamo file. Return the stored data if the input is null."
+}, {
+    "Name": "Gate",
+    "imageFile": ["Gate"],
+    "dynFile": ["Gate"],
+    "folderPath": "Script/Control Flow/Action",
+    "inDepth": "Block data passing through this node to downstream nodes. Node returns the input data only if the node value is set to Open.\n\nIn Generative Design workflows, this node should be used to control and block the behavior of nodes that will place elements in Revit"
+}, {
+     "Name": "DefineData",
+     "imageFile": ["DefineData"],
+     "dynFile": ["DefineData"],
+     "folderPath": "Input/Object/Action",
+     "inDepth": "Validates and returns data from a currently or previously connected node."
+}, {
+     "Name": "Curve Mapper",
+     "imageFile": ["Curve Mapper"],
+     "dynFile": ["Curve Mapper"],
+     "folderPath": "Math/Graph/Action",
+     "inDepth": "Define the limits for both x and y coordinates by setting the minimum and maximum values. These limits set the boundaries within which the points will be redistributed. Next, select a mathematical curve from the provided options, which includes Linear, Sine, Cosine, Perlin Noise, Bezier, Gaussian, Parabolic, Square Root, and Power curves. Use the interactive control points to adjust the shape of the selected curve, tailoring it to your specific needs. You can lock the curve shape using the lock button, which prevents further modifications to the curve. Additionally, you can reset the shape to its default state by using the reset button inside the node. Specify the number of points to be redistributed by setting the Count input. The node calculates new x-coordinates for the specified number of points based on the selected curve and defined limits. The points are redistributed in a way that their x-coordinates follow the shape of the curve along the y-axis. For example, to redistribute 80 points along a sine curve, set Min X to 0, Max X to 20, Min Y to 0, and Max Y to 10. After selecting the sine curve and adjusting its shape as needed, the ‘Curve Mapper’ node outputs 80 points with x-coordinates that follow the sine curve pattern along the y-axis from 0 to 10."
 }
 ]

@@ -10,50 +10,9 @@
   "Outputs": [],
   "Nodes": [
     {
-      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
-      "FunctionSignature": "9c65f412-0637-4601-ba90-9de2f539224f",
-      "FunctionType": "Graph",
-      "NodeType": "FunctionNode",
-      "Id": "a3cceaa601de4485beb72eea39a46f65",
-      "Inputs": [
-        {
-          "Id": "a83f8affbd294adab130d8f0af11f68d",
-          "Name": "someInput",
-          "Description": "var[]..[]",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "d959a76782cb472bbe5dae220136d396",
-          "Name": "out2",
-          "Description": "return value",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "28031b992d1f4923959eb2b0562a545d",
-          "Name": "out1",
-          "Description": "return value",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "testing nested element binding"
-    },
-    {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "FFITarget.WrapperObject.ID",
       "Id": "da39dbe5f59649b18c2fb6ca54acba7b",
+      "NodeType": "FunctionNode",
       "Inputs": [
         {
           "Id": "57657d3625f54b7c8fc3b6e5612618a7",
@@ -76,14 +35,14 @@
           "KeepListStructure": false
         }
       ],
+      "FunctionSignature": "FFITarget.WrapperObject.ID",
       "Replication": "Auto",
       "Description": "WrapperObject.ID: int"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "FFITarget.WrapperObject.ID",
       "Id": "2366239164a9441a8c4dcd981d9cf542",
+      "NodeType": "FunctionNode",
       "Inputs": [
         {
           "Id": "7957f66d0e56481e9c7673de24179110",
@@ -106,14 +65,14 @@
           "KeepListStructure": false
         }
       ],
+      "FunctionSignature": "FFITarget.WrapperObject.ID",
       "Replication": "Auto",
       "Description": "WrapperObject.ID: int"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "NodeType": "CodeBlockNode",
-      "Code": "100;",
       "Id": "247d1b8751c64f8b8ac88e37cad98dff",
+      "NodeType": "CodeBlockNode",
       "Inputs": [],
       "Outputs": [
         {
@@ -127,13 +86,13 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly"
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "100;"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "FFITarget.WrapperObject.ID",
       "Id": "342f96575f8942c890867d88495fb0db",
+      "NodeType": "FunctionNode",
       "Inputs": [
         {
           "Id": "7178d1186aee4a20b03be1e20ad0da64",
@@ -156,14 +115,14 @@
           "KeepListStructure": false
         }
       ],
+      "FunctionSignature": "FFITarget.WrapperObject.ID",
       "Replication": "Auto",
       "Description": "WrapperObject.ID: int"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "FFITarget.WrapperObject.WrapperObject@int",
       "Id": "e464dfe1dfcf43698eb5e8efc11d1aae",
+      "NodeType": "FunctionNode",
       "Inputs": [
         {
           "Id": "165c688d1cdf43eb863f95e12721700c",
@@ -186,54 +145,14 @@
           "KeepListStructure": false
         }
       ],
+      "FunctionSignature": "FFITarget.WrapperObject.WrapperObject@int",
       "Replication": "Auto",
       "Description": "WrapperObject.WrapperObject (x: int): WrapperObject"
     },
     {
-      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
-      "FunctionSignature": "9c65f412-0637-4601-ba90-9de2f539224f",
-      "FunctionType": "Graph",
-      "NodeType": "FunctionNode",
-      "Id": "7d799d548e0344aab8debfb468b50166",
-      "Inputs": [
-        {
-          "Id": "0a321e2157fe45268bcf46eed08e8cd3",
-          "Name": "someInput",
-          "Description": "var[]..[]",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "2aa9090e1843495295c4ce3cddd9459c",
-          "Name": "out2",
-          "Description": "return value",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "af8d68ecd22b45a1afe7c12190cf3300",
-          "Name": "out1",
-          "Description": "return value",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "testing nested element binding"
-    },
-    {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "FFITarget.WrapperObject.ID",
       "Id": "08448232ee094aad8280e9a99ed44f46",
+      "NodeType": "FunctionNode",
       "Inputs": [
         {
           "Id": "8adfa0547e0d4784b59d352c45a9b4b9",
@@ -256,14 +175,14 @@
           "KeepListStructure": false
         }
       ],
+      "FunctionSignature": "FFITarget.WrapperObject.ID",
       "Replication": "Auto",
       "Description": "WrapperObject.ID: int"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "FFITarget.WrapperObject.ID",
       "Id": "8cfce012280342f3bd688520d68a7f66",
+      "NodeType": "FunctionNode",
       "Inputs": [
         {
           "Id": "d5cfa698e209433a8c4efd66b711d98c",
@@ -286,74 +205,202 @@
           "KeepListStructure": false
         }
       ],
+      "FunctionSignature": "FFITarget.WrapperObject.ID",
       "Replication": "Auto",
       "Description": "WrapperObject.ID: int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "9c65f412-0637-4601-ba90-9de2f539224f",
+      "FunctionType": "Graph",
+      "Id": "a30bd8fce103453f8796e215acb19c2c",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "5ea4920f059c44978c725b39ec63ae88",
+          "Name": "someInput",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "71310b84e6d940f09aebca55ef79cbac",
+          "Name": "out2",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b2ea1dbd522446a2ad9f46ac069bba56",
+          "Name": "out1",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "testing nested element binding"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "9c65f412-0637-4601-ba90-9de2f539224f",
+      "FunctionType": "Graph",
+      "Id": "949afd28057040b09d91f18eb64697d8",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "c234a20782ef4f798a96296a1001ba77",
+          "Name": "someInput",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "eca206c78bed4822b006bbf206b3fd9c",
+          "Name": "out2",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "85829d3e133b4d6b84d2c4bbf68b3d67",
+          "Name": "out1",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "testing nested element binding"
     }
   ],
   "Connectors": [
     {
-      "Start": "d959a76782cb472bbe5dae220136d396",
-      "End": "57657d3625f54b7c8fc3b6e5612618a7",
-      "Id": "3490d7fe3a8143f8b0da79608cec2db7"
-    },
-    {
-      "Start": "28031b992d1f4923959eb2b0562a545d",
-      "End": "7957f66d0e56481e9c7673de24179110",
-      "Id": "fead1997c72544b79c6085f0047faf4c"
-    },
-    {
       "Start": "12a69844634441d08df8ff2d1b3b0c42",
       "End": "165c688d1cdf43eb863f95e12721700c",
-      "Id": "5ca50e2c395e4304b14c86c45480de32"
+      "Id": "5ca50e2c395e4304b14c86c45480de32",
+      "IsHidden": "False"
     },
     {
       "Start": "b06f4f43fa7749b5856af632006d7806",
-      "End": "a83f8affbd294adab130d8f0af11f68d",
-      "Id": "79b1c4ec60014662896beb5cd6f9e219"
+      "End": "5ea4920f059c44978c725b39ec63ae88",
+      "Id": "e7a072544b8f4ccab4310d1b0f113a6e",
+      "IsHidden": "False"
     },
     {
       "Start": "b06f4f43fa7749b5856af632006d7806",
-      "End": "0a321e2157fe45268bcf46eed08e8cd3",
-      "Id": "eeeff16f2f3f4eb583e82b66ef370777"
+      "End": "c234a20782ef4f798a96296a1001ba77",
+      "Id": "505d9248c00e4ccdbea2e58af50c682d",
+      "IsHidden": "False"
     },
     {
       "Start": "94b68073cf42449abbd5ecb25fb6fcbc",
       "End": "7178d1186aee4a20b03be1e20ad0da64",
-      "Id": "fe46ec09fbe24401934b70dec0521e7a"
+      "Id": "fe46ec09fbe24401934b70dec0521e7a",
+      "IsHidden": "False"
     },
     {
-      "Start": "2aa9090e1843495295c4ce3cddd9459c",
+      "Start": "71310b84e6d940f09aebca55ef79cbac",
+      "End": "57657d3625f54b7c8fc3b6e5612618a7",
+      "Id": "19a407fada9446bfb059e142506b7102",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "b2ea1dbd522446a2ad9f46ac069bba56",
+      "End": "7957f66d0e56481e9c7673de24179110",
+      "Id": "22c59f7fd76d4033a7ddfce28a56de3c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "eca206c78bed4822b006bbf206b3fd9c",
       "End": "d5cfa698e209433a8c4efd66b711d98c",
-      "Id": "bf0d54c88f41487e984f4ec706685b2c"
+      "Id": "f0a48535e6b247bba7ce1132ac4e874b",
+      "IsHidden": "False"
     },
     {
-      "Start": "af8d68ecd22b45a1afe7c12190cf3300",
+      "Start": "85829d3e133b4d6b84d2c4bbf68b3d67",
       "End": "8adfa0547e0d4784b59d352c45a9b4b9",
-      "Id": "b2e0d33b549f4ad2a8f432ae785116c0"
+      "Id": "d58b3311fb814f00ad0c62252f70bf6c",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [
     "9c65f412-0637-4601-ba90-9de2f539224f"
   ],
-  "Bindings": [
+  "NodeLibraryDependencies": [
     {
-      "NodeId": "a3cceaa6-01de-4485-beb7-2eea39a46f65",
-      "Binding": {
-        "__func_9c65f41206374601ba909de2f539224f_InClassDecl-1_InFunctionScope-1_Instance0_a3cceaa6-01de-4485-beb7-2eea39a46f65;WrapperObject_InClassDecl-1_InFunctionScope1000_Instance0_54062f33-ce19-49a3-a373-5d4a253e26a5": "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+CjxTT0FQLUVOVjpCb2R5Pgo8YTE6Q2FsbFNpdGVfeDAwMkJfVHJhY2VTZXJpYWxpc2VySGVscGVyIGlkPSJyZWYtMSIgeG1sbnM6YTE9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vY2xyL25zYXNzZW0vUHJvdG9Db3JlL1Byb3RvQ29yZSUyQyUyMFZlcnNpb24lM0QyLjIuMC40NTY1JTJDJTIwQ3VsdHVyZSUzRG5ldXRyYWwlMkMlMjBQdWJsaWNLZXlUb2tlbiUzRG51bGwiPgo8TnVtYmVyT2ZFbGVtZW50cz4xPC9OdW1iZXJPZkVsZW1lbnRzPgo8QmFzZS0wX0hhc0RhdGE+dHJ1ZTwvQmFzZS0wX0hhc0RhdGE+CjxCYXNlLTBfRGF0YSBpZD0icmVmLTMiPlBGTlBRVkF0UlU1V09rVnVkbVZzYjNCbElIaHRiRzV6T25oemFUMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TVM5WVRVeFRZMmhsYldFdGFXNXpkR0Z1WTJVaUlIaHRiRzV6T25oelpEMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TVM5WVRVeFRZMmhsYldFaUlIaHRiRzV6T2xOUFFWQXRSVTVEUFNKb2RIUndPaTh2YzJOb1pXMWhjeTU0Yld4emIyRndMbTl5Wnk5emIyRndMMlZ1WTI5a2FXNW5MeUlnZUcxc2JuTTZVMDlCVUMxRlRsWTlJbWgwZEhBNkx5OXpZMmhsYldGekxuaHRiSE52WVhBdWIzSm5MM052WVhBdlpXNTJaV3h2Y0dVdklpQjRiV3h1Y3pwamJISTlJbWgwZEhBNkx5OXpZMmhsYldGekxtMXBZM0p2YzI5bWRDNWpiMjB2YzI5aGNDOWxibU52WkdsdVp5OWpiSEl2TVM0d0lpQlRUMEZRTFVWT1ZqcGxibU52WkdsdVoxTjBlV3hsUFNKb2RIUndPaTh2YzJOb1pXMWhjeTU0Yld4emIyRndMbTl5Wnk5emIyRndMMlZ1WTI5a2FXNW5MeUkrQ2p4VFQwRlFMVVZPVmpwQ2IyUjVQZ284WVRFNlNVUkliMnhrWlhJZ2FXUTlJbkpsWmkweElpQjRiV3h1Y3pwaE1UMGlhSFIwY0RvdkwzTmphR1Z0WVhNdWJXbGpjbTl6YjJaMExtTnZiUzlqYkhJdmJuTmhjM05sYlM5R1JrbFVZWEpuWlhRdlJrWkpWR0Z5WjJWMEpUSkRKVEl3Vm1WeWMybHZiaVV6UkRJdU1pNHdMalExTVRZbE1rTWxNakJEZFd4MGRYSmxKVE5FYm1WMWRISmhiQ1V5UXlVeU1GQjFZbXhwWTB0bGVWUnZhMlZ1SlRORWJuVnNiQ0krQ2p4cGJuUkpSRDR4TVRFeE1URThMMmx1ZEVsRVBnbzhMMkV4T2tsRVNHOXNaR1Z5UGdvOEwxTlBRVkF0UlU1V09rSnZaSGsrQ2p3dlUwOUJVQzFGVGxZNlJXNTJaV3h2Y0dVKzwvQmFzZS0wX0RhdGE+CjxCYXNlLTBfSGFzTmVzdGVkRGF0YT5mYWxzZTwvQmFzZS0wX0hhc05lc3RlZERhdGE+CjwvYTE6Q2FsbFNpdGVfeDAwMkJfVHJhY2VTZXJpYWxpc2VySGVscGVyPgo8L1NPQVAtRU5WOkJvZHk+CjwvU09BUC1FTlY6RW52ZWxvcGU+Cg==",
-        "__func_9c65f41206374601ba909de2f539224f_InClassDecl-1_InFunctionScope-1_Instance0_a3cceaa6-01de-4485-beb7-2eea39a46f65;WrapperObject_InClassDecl-1_InFunctionScope1000_Instance0_3f04f5f4-f54d-4071-af6f-7d5db4e7706e": "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+CjxTT0FQLUVOVjpCb2R5Pgo8YTE6Q2FsbFNpdGVfeDAwMkJfVHJhY2VTZXJpYWxpc2VySGVscGVyIGlkPSJyZWYtMSIgeG1sbnM6YTE9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vY2xyL25zYXNzZW0vUHJvdG9Db3JlL1Byb3RvQ29yZSUyQyUyMFZlcnNpb24lM0QyLjIuMC40NTY1JTJDJTIwQ3VsdHVyZSUzRG5ldXRyYWwlMkMlMjBQdWJsaWNLZXlUb2tlbiUzRG51bGwiPgo8TnVtYmVyT2ZFbGVtZW50cz4xPC9OdW1iZXJPZkVsZW1lbnRzPgo8QmFzZS0wX0hhc0RhdGE+dHJ1ZTwvQmFzZS0wX0hhc0RhdGE+CjxCYXNlLTBfRGF0YSBpZD0icmVmLTMiPlBGTlBRVkF0UlU1V09rVnVkbVZzYjNCbElIaHRiRzV6T25oemFUMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TVM5WVRVeFRZMmhsYldFdGFXNXpkR0Z1WTJVaUlIaHRiRzV6T25oelpEMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TVM5WVRVeFRZMmhsYldFaUlIaHRiRzV6T2xOUFFWQXRSVTVEUFNKb2RIUndPaTh2YzJOb1pXMWhjeTU0Yld4emIyRndMbTl5Wnk5emIyRndMMlZ1WTI5a2FXNW5MeUlnZUcxc2JuTTZVMDlCVUMxRlRsWTlJbWgwZEhBNkx5OXpZMmhsYldGekxuaHRiSE52WVhBdWIzSm5MM052WVhBdlpXNTJaV3h2Y0dVdklpQjRiV3h1Y3pwamJISTlJbWgwZEhBNkx5OXpZMmhsYldGekxtMXBZM0p2YzI5bWRDNWpiMjB2YzI5aGNDOWxibU52WkdsdVp5OWpiSEl2TVM0d0lpQlRUMEZRTFVWT1ZqcGxibU52WkdsdVoxTjBlV3hsUFNKb2RIUndPaTh2YzJOb1pXMWhjeTU0Yld4emIyRndMbTl5Wnk5emIyRndMMlZ1WTI5a2FXNW5MeUkrQ2p4VFQwRlFMVVZPVmpwQ2IyUjVQZ284WVRFNlNVUkliMnhrWlhJZ2FXUTlJbkpsWmkweElpQjRiV3h1Y3pwaE1UMGlhSFIwY0RvdkwzTmphR1Z0WVhNdWJXbGpjbTl6YjJaMExtTnZiUzlqYkhJdmJuTmhjM05sYlM5R1JrbFVZWEpuWlhRdlJrWkpWR0Z5WjJWMEpUSkRKVEl3Vm1WeWMybHZiaVV6UkRJdU1pNHdMalExTVRZbE1rTWxNakJEZFd4MGRYSmxKVE5FYm1WMWRISmhiQ1V5UXlVeU1GQjFZbXhwWTB0bGVWUnZhMlZ1SlRORWJuVnNiQ0krQ2p4cGJuUkpSRDR5TWpJeU1qSThMMmx1ZEVsRVBnbzhMMkV4T2tsRVNHOXNaR1Z5UGdvOEwxTlBRVkF0UlU1V09rSnZaSGsrQ2p3dlUwOUJVQzFGVGxZNlJXNTJaV3h2Y0dVKzwvQmFzZS0wX0RhdGE+CjxCYXNlLTBfSGFzTmVzdGVkRGF0YT5mYWxzZTwvQmFzZS0wX0hhc05lc3RlZERhdGE+CjwvYTE6Q2FsbFNpdGVfeDAwMkJfVHJhY2VTZXJpYWxpc2VySGVscGVyPgo8L1NPQVAtRU5WOkJvZHk+CjwvU09BUC1FTlY6RW52ZWxvcGU+Cg=="
-      }
+      "Name": "FFITarget.dll",
+      "ReferenceType": "ZeroTouch",
+      "Nodes": [
+        "da39dbe5f59649b18c2fb6ca54acba7b",
+        "2366239164a9441a8c4dcd981d9cf542",
+        "342f96575f8942c890867d88495fb0db",
+        "e464dfe1dfcf43698eb5e8efc11d1aae",
+        "08448232ee094aad8280e9a99ed44f46",
+        "8cfce012280342f3bd688520d68a7f66"
+      ]
     },
+    {
+      "Name": "element_binding_nested.dyf",
+      "ReferenceType": "DYFFile",
+      "Nodes": [
+        "a30bd8fce103453f8796e215acb19c2c",
+        "949afd28057040b09d91f18eb64697d8"
+      ]
+    }
+  ],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.0",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [
     {
       "NodeId": "e464dfe1-dfcf-4369-8eb5-e8efc11d1aae",
       "Binding": {
-        "WrapperObject_InClassDecl-1_InFunctionScope-1_Instance0_e464dfe1-dfcf-4369-8eb5-e8efc11d1aae": "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+DQo8U09BUC1FTlY6Qm9keT4NCjxhMTpDYWxsU2l0ZV94MDAyQl9UcmFjZVNlcmlhbGlzZXJIZWxwZXIgaWQ9InJlZi0xIiB4bWxuczphMT0iaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS9jbHIvbnNhc3NlbS9Qcm90b0NvcmUvUHJvdG9Db3JlJTJDJTIwVmVyc2lvbiUzRDIuMi4wLjQ1NjUlMkMlMjBDdWx0dXJlJTNEbmV1dHJhbCUyQyUyMFB1YmxpY0tleVRva2VuJTNEbnVsbCI+DQo8TnVtYmVyT2ZFbGVtZW50cz4xPC9OdW1iZXJPZkVsZW1lbnRzPg0KPEJhc2UtMF9IYXNEYXRhPnRydWU8L0Jhc2UtMF9IYXNEYXRhPg0KPEJhc2UtMF9EYXRhIGlkPSJyZWYtMyI+UEZOUFFWQXRSVTVXT2tWdWRtVnNiM0JsSUhodGJHNXpPbmh6YVQwaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNUzlZVFV4VFkyaGxiV0V0YVc1emRHRnVZMlVpSUhodGJHNXpPbmh6WkQwaWFIUjBjRG92TDNkM2R5NTNNeTV2Y21jdk1qQXdNUzlZVFV4VFkyaGxiV0VpSUhodGJHNXpPbE5QUVZBdFJVNURQU0pvZEhSd09pOHZjMk5vWlcxaGN5NTRiV3h6YjJGd0xtOXlaeTl6YjJGd0wyVnVZMjlrYVc1bkx5SWdlRzFzYm5NNlUwOUJVQzFGVGxZOUltaDBkSEE2THk5elkyaGxiV0Z6TG5odGJITnZZWEF1YjNKbkwzTnZZWEF2Wlc1MlpXeHZjR1V2SWlCNGJXeHVjenBqYkhJOUltaDBkSEE2THk5elkyaGxiV0Z6TG0xcFkzSnZjMjltZEM1amIyMHZjMjloY0M5bGJtTnZaR2x1Wnk5amJISXZNUzR3SWlCVFQwRlFMVVZPVmpwbGJtTnZaR2x1WjFOMGVXeGxQU0pvZEhSd09pOHZjMk5vWlcxaGN5NTRiV3h6YjJGd0xtOXlaeTl6YjJGd0wyVnVZMjlrYVc1bkx5SStEUW84VTA5QlVDMUZUbFk2UW05a2VUNE5DanhoTVRwSlJFaHZiR1JsY2lCcFpEMGljbVZtTFRFaUlIaHRiRzV6T21FeFBTSm9kSFJ3T2k4dmMyTm9aVzFoY3k1dGFXTnliM052Wm5RdVkyOXRMMk5zY2k5dWMyRnpjMlZ0TDBaR1NWUmhjbWRsZEM5R1JrbFVZWEpuWlhRbE1rTWxNakJXWlhKemFXOXVKVE5FTWk0eUxqQXVORFV4TmlVeVF5VXlNRU4xYkhSMWNtVWxNMFJ1WlhWMGNtRnNKVEpESlRJd1VIVmliR2xqUzJWNVZHOXJaVzRsTTBSdWRXeHNJajROQ2p4cGJuUkpSRDR6UEM5cGJuUkpSRDROQ2p3dllURTZTVVJJYjJ4a1pYSStEUW84TDFOUFFWQXRSVTVXT2tKdlpIaytEUW84TDFOUFFWQXRSVTVXT2tWdWRtVnNiM0JsUGcwSzwvQmFzZS0wX0RhdGE+DQo8QmFzZS0wX0hhc05lc3RlZERhdGE+ZmFsc2U8L0Jhc2UtMF9IYXNOZXN0ZWREYXRhPg0KPC9hMTpDYWxsU2l0ZV94MDAyQl9UcmFjZVNlcmlhbGlzZXJIZWxwZXI+DQo8L1NPQVAtRU5WOkJvZHk+DQo8L1NPQVAtRU5WOkVudmVsb3BlPg0K"
+        "WrapperObject_InClassDecl-1_InFunctionScope-1_Instance0_e464dfe1-dfcf-4369-8eb5-e8efc11d1aae": "H4sIAAAAAAAACouuVkpJLElUslKqjlHydIlRsjKsVaqNBQAtUt3xFwAAAA=="
       }
     },
     {
-      "NodeId": "7d799d54-8e03-44aa-b8de-bfb468b50166",
+      "NodeId": "a30bd8fc-e103-453f-8796-e215acb19c2c",
       "Binding": {
-        "__func_9c65f41206374601ba909de2f539224f_InClassDecl-1_InFunctionScope-1_Instance0_7d799d54-8e03-44aa-b8de-bfb468b50166;WrapperObject_InClassDecl-1_InFunctionScope1000_Instance0_54062f33-ce19-49a3-a373-5d4a253e26a5": "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+CjxTT0FQLUVOVjpCb2R5Pgo8YTE6Q2FsbFNpdGVfeDAwMkJfVHJhY2VTZXJpYWxpc2VySGVscGVyIGlkPSJyZWYtMSIgeG1sbnM6YTE9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vY2xyL25zYXNzZW0vUHJvdG9Db3JlL1Byb3RvQ29yZSUyQyUyMFZlcnNpb24lM0QyLjIuMC40NTY1JTJDJTIwQ3VsdHVyZSUzRG5ldXRyYWwlMkMlMjBQdWJsaWNLZXlUb2tlbiUzRG51bGwiPgo8TnVtYmVyT2ZFbGVtZW50cz4xPC9OdW1iZXJPZkVsZW1lbnRzPgo8QmFzZS0wX0hhc0RhdGE+dHJ1ZTwvQmFzZS0wX0hhc0RhdGE+CjxCYXNlLTBfRGF0YSBpZD0icmVmLTMiPlBGTlBRVkF0UlU1V09rVnVkbVZzYjNCbElIaHRiRzV6T25oemFUMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TVM5WVRVeFRZMmhsYldFdGFXNXpkR0Z1WTJVaUlIaHRiRzV6T25oelpEMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TVM5WVRVeFRZMmhsYldFaUlIaHRiRzV6T2xOUFFWQXRSVTVEUFNKb2RIUndPaTh2YzJOb1pXMWhjeTU0Yld4emIyRndMbTl5Wnk5emIyRndMMlZ1WTI5a2FXNW5MeUlnZUcxc2JuTTZVMDlCVUMxRlRsWTlJbWgwZEhBNkx5OXpZMmhsYldGekxuaHRiSE52WVhBdWIzSm5MM052WVhBdlpXNTJaV3h2Y0dVdklpQjRiV3h1Y3pwamJISTlJbWgwZEhBNkx5OXpZMmhsYldGekxtMXBZM0p2YzI5bWRDNWpiMjB2YzI5aGNDOWxibU52WkdsdVp5OWpiSEl2TVM0d0lpQlRUMEZRTFVWT1ZqcGxibU52WkdsdVoxTjBlV3hsUFNKb2RIUndPaTh2YzJOb1pXMWhjeTU0Yld4emIyRndMbTl5Wnk5emIyRndMMlZ1WTI5a2FXNW5MeUkrQ2p4VFQwRlFMVVZPVmpwQ2IyUjVQZ284WVRFNlNVUkliMnhrWlhJZ2FXUTlJbkpsWmkweElpQjRiV3h1Y3pwaE1UMGlhSFIwY0RvdkwzTmphR1Z0WVhNdWJXbGpjbTl6YjJaMExtTnZiUzlqYkhJdmJuTmhjM05sYlM5R1JrbFVZWEpuWlhRdlJrWkpWR0Z5WjJWMEpUSkRKVEl3Vm1WeWMybHZiaVV6UkRJdU1pNHdMalExTVRZbE1rTWxNakJEZFd4MGRYSmxKVE5FYm1WMWRISmhiQ1V5UXlVeU1GQjFZbXhwWTB0bGVWUnZhMlZ1SlRORWJuVnNiQ0krQ2p4cGJuUkpSRDR6TXpNek16TThMMmx1ZEVsRVBnbzhMMkV4T2tsRVNHOXNaR1Z5UGdvOEwxTlBRVkF0UlU1V09rSnZaSGsrQ2p3dlUwOUJVQzFGVGxZNlJXNTJaV3h2Y0dVKzwvQmFzZS0wX0RhdGE+CjxCYXNlLTBfSGFzTmVzdGVkRGF0YT5mYWxzZTwvQmFzZS0wX0hhc05lc3RlZERhdGE+CjwvYTE6Q2FsbFNpdGVfeDAwMkJfVHJhY2VTZXJpYWxpc2VySGVscGVyPgo8L1NPQVAtRU5WOkJvZHk+CjwvU09BUC1FTlY6RW52ZWxvcGU+Cg==",
-        "__func_9c65f41206374601ba909de2f539224f_InClassDecl-1_InFunctionScope-1_Instance0_7d799d54-8e03-44aa-b8de-bfb468b50166;WrapperObject_InClassDecl-1_InFunctionScope1000_Instance0_3f04f5f4-f54d-4071-af6f-7d5db4e7706e": "PFNPQVAtRU5WOkVudmVsb3BlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzZD0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhtbG5zOlNPQVAtRU5DPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyIgeG1sbnM6U09BUC1FTlY9Imh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3NvYXAvZW52ZWxvcGUvIiB4bWxuczpjbHI9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vc29hcC9lbmNvZGluZy9jbHIvMS4wIiBTT0FQLUVOVjplbmNvZGluZ1N0eWxlPSJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy9zb2FwL2VuY29kaW5nLyI+CjxTT0FQLUVOVjpCb2R5Pgo8YTE6Q2FsbFNpdGVfeDAwMkJfVHJhY2VTZXJpYWxpc2VySGVscGVyIGlkPSJyZWYtMSIgeG1sbnM6YTE9Imh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vY2xyL25zYXNzZW0vUHJvdG9Db3JlL1Byb3RvQ29yZSUyQyUyMFZlcnNpb24lM0QyLjIuMC40NTY1JTJDJTIwQ3VsdHVyZSUzRG5ldXRyYWwlMkMlMjBQdWJsaWNLZXlUb2tlbiUzRG51bGwiPgo8TnVtYmVyT2ZFbGVtZW50cz4xPC9OdW1iZXJPZkVsZW1lbnRzPgo8QmFzZS0wX0hhc0RhdGE+dHJ1ZTwvQmFzZS0wX0hhc0RhdGE+CjxCYXNlLTBfRGF0YSBpZD0icmVmLTMiPlBGTlBRVkF0UlU1V09rVnVkbVZzYjNCbElIaHRiRzV6T25oemFUMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TVM5WVRVeFRZMmhsYldFdGFXNXpkR0Z1WTJVaUlIaHRiRzV6T25oelpEMGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TVM5WVRVeFRZMmhsYldFaUlIaHRiRzV6T2xOUFFWQXRSVTVEUFNKb2RIUndPaTh2YzJOb1pXMWhjeTU0Yld4emIyRndMbTl5Wnk5emIyRndMMlZ1WTI5a2FXNW5MeUlnZUcxc2JuTTZVMDlCVUMxRlRsWTlJbWgwZEhBNkx5OXpZMmhsYldGekxuaHRiSE52WVhBdWIzSm5MM052WVhBdlpXNTJaV3h2Y0dVdklpQjRiV3h1Y3pwamJISTlJbWgwZEhBNkx5OXpZMmhsYldGekxtMXBZM0p2YzI5bWRDNWpiMjB2YzI5aGNDOWxibU52WkdsdVp5OWpiSEl2TVM0d0lpQlRUMEZRTFVWT1ZqcGxibU52WkdsdVoxTjBlV3hsUFNKb2RIUndPaTh2YzJOb1pXMWhjeTU0Yld4emIyRndMbTl5Wnk5emIyRndMMlZ1WTI5a2FXNW5MeUkrQ2p4VFQwRlFMVVZPVmpwQ2IyUjVQZ284WVRFNlNVUkliMnhrWlhJZ2FXUTlJbkpsWmkweElpQjRiV3h1Y3pwaE1UMGlhSFIwY0RvdkwzTmphR1Z0WVhNdWJXbGpjbTl6YjJaMExtTnZiUzlqYkhJdmJuTmhjM05sYlM5R1JrbFVZWEpuWlhRdlJrWkpWR0Z5WjJWMEpUSkRKVEl3Vm1WeWMybHZiaVV6UkRJdU1pNHdMalExTVRZbE1rTWxNakJEZFd4MGRYSmxKVE5FYm1WMWRISmhiQ1V5UXlVeU1GQjFZbXhwWTB0bGVWUnZhMlZ1SlRORWJuVnNiQ0krQ2p4cGJuUkpSRDQwTkRRME5EUThMMmx1ZEVsRVBnbzhMMkV4T2tsRVNHOXNaR1Z5UGdvOEwxTlBRVkF0UlU1V09rSnZaSGsrQ2p3dlUwOUJVQzFGVGxZNlJXNTJaV3h2Y0dVKzwvQmFzZS0wX0RhdGE+CjxCYXNlLTBfSGFzTmVzdGVkRGF0YT5mYWxzZTwvQmFzZS0wX0hhc05lc3RlZERhdGE+CjwvYTE6Q2FsbFNpdGVfeDAwMkJfVHJhY2VTZXJpYWxpc2VySGVscGVyPgo8L1NPQVAtRU5WOkJvZHk+CjwvU09BUC1FTlY6RW52ZWxvcGU+Cg=="
+        "__func_9c65f41206374601ba909de2f539224f_InClassDecl-1_InFunctionScope-1_Instance0_a30bd8fc-e103-453f-8796-e215acb19c2c;WrapperObject_InClassDecl-1_InFunctionScope1080_Instance0_54062f33-ce19-49a3-a373-5d4a253e26a5": "H4sIAAAAAAAACouuVkpJLElUslKqjlHydIlRsjKrVaqNBQA9jv1DFwAAAA==",
+        "__func_9c65f41206374601ba909de2f539224f_InClassDecl-1_InFunctionScope-1_Instance0_a30bd8fc-e103-453f-8796-e215acb19c2c;WrapperObject_InClassDecl-1_InFunctionScope1080_Instance0_3f04f5f4-f54d-4071-af6f-7d5db4e7706e": "H4sIAAAAAAAACouuVkpJLElUslKqjlHydIlRsjKvVaqNBQCNp51+FwAAAA=="
+      }
+    },
+    {
+      "NodeId": "949afd28-0570-40b0-9d91-f18eb64697d8",
+      "Binding": {
+        "__func_9c65f41206374601ba909de2f539224f_InClassDecl-1_InFunctionScope-1_Instance0_949afd28-0570-40b0-9d91-f18eb64697d8;WrapperObject_InClassDecl-1_InFunctionScope1080_Instance0_54062f33-ce19-49a3-a373-5d4a253e26a5": "H4sIAAAAAAAACouuVkpJLElUslKqjlHydIlRsjI0qFWqjQUAwI2fQxgAAAA=",
+        "__func_9c65f41206374601ba909de2f539224f_InClassDecl-1_InFunctionScope-1_Instance0_949afd28-0570-40b0-9d91-f18eb64697d8;WrapperObject_InClassDecl-1_InFunctionScope1080_Instance0_3f04f5f4-f54d-4071-af6f-7d5db4e7706e": "H4sIAAAAAAAACouuVkpJLElUslKqjlHydIlRsjI0rFWqjQUAcKT/fhgAAAA="
       }
     }
   ],
@@ -362,12 +409,12 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.2.0.4565",
+      "Version": "3.0.0.5795",
       "RunType": "Manual",
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "Background Preview",
+      "Name": "_Background Preview",
       "EyeX": -17.0,
       "EyeY": 24.0,
       "EyeZ": 50.0,
@@ -378,101 +425,102 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
-        "ShowGeometry": true,
-        "Name": "element_binding_nested",
-        "Id": "a3cceaa601de4485beb72eea39a46f65",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 400.5,
-        "Y": 419.25
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "WrapperObject.ID_111111",
         "Id": "da39dbe5f59649b18c2fb6ca54acba7b",
+        "Name": "WrapperObject.ID_6",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
+        "ShowGeometry": true,
         "X": 825.5,
-        "Y": 286.25
+        "Y": 214.43991097922856
       },
       {
-        "ShowGeometry": true,
-        "Name": "WrapperObject.ID_222222",
         "Id": "2366239164a9441a8c4dcd981d9cf542",
+        "Name": "WrapperObject.ID_7",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 817.5,
-        "Y": 437.25
+        "ShowGeometry": true,
+        "X": 853.167723723682,
+        "Y": 400.3953326561401
       },
       {
-        "ShowGeometry": true,
-        "Name": "Code Block",
         "Id": "247d1b8751c64f8b8ac88e37cad98dff",
+        "Name": "Code Block",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
+        "ShowGeometry": true,
         "X": -189.0,
         "Y": 287.0
       },
       {
-        "ShowGeometry": true,
-        "Name": "WrapperObject.ID",
         "Id": "342f96575f8942c890867d88495fb0db",
+        "Name": "WrapperObject.ID",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": -59.5,
-        "Y": 490.25
+        "ShowGeometry": true,
+        "X": -74.93026706231456,
+        "Y": 620.2203264094954
       },
       {
-        "ShowGeometry": true,
-        "Name": "WrapperObject.WrapperObject",
         "Id": "e464dfe1dfcf43698eb5e8efc11d1aae",
+        "Name": "WrapperObject.WrapperObject",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
+        "ShowGeometry": true,
         "X": -56.5,
         "Y": 393.25
       },
       {
-        "ShowGeometry": true,
-        "Name": "element_binding_nested",
-        "Id": "7d799d548e0344aab8debfb468b50166",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 400.5,
-        "Y": 558.25
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "WrapperObject.ID_444444",
         "Id": "08448232ee094aad8280e9a99ed44f46",
+        "Name": "WrapperObject.ID_11",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 837.5,
-        "Y": 744.25
+        "ShowGeometry": true,
+        "X": 848.1824925816022,
+        "Y": 828.5229970326409
       },
       {
-        "ShowGeometry": true,
-        "Name": "WrapperObject.ID_333333",
         "Id": "8cfce012280342f3bd688520d68a7f66",
+        "Name": "WrapperObject.ID_10",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
+        "ShowGeometry": true,
         "X": 835.5,
         "Y": 624.25
+      },
+      {
+        "Id": "a30bd8fce103453f8796e215acb19c2c",
+        "Name": "element_binding_nested",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 417.0741839762611,
+        "Y": 542.3041543026707
+      },
+      {
+        "Id": "949afd28057040b09d91f18eb64697d8",
+        "Name": "element_binding_nested",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 441.5403757212908,
+        "Y": 761.4360508727391
       }
     ],
     "Annotations": [],
-    "X": -435.0,
-    "Y": -220.0,
-    "Zoom": 1.0
+    "X": 351.35540214191775,
+    "Y": -239.63010853515328,
+    "Zoom": 0.7658293928515519
   }
 }

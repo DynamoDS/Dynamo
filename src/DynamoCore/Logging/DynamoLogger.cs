@@ -34,7 +34,6 @@ namespace Dynamo.Logging
         /// The message to be logged.
         /// </summary>
         public string Message { get; set; }
-    
         /// <summary>
         /// The log level at which to log the message.
         /// </summary>
@@ -123,7 +122,7 @@ namespace Dynamo.Logging
         /// <summary>
         /// Returns full path to log file
         /// </summary>
-        public string LogPath 
+        public string LogPath
         {
             get { return _logPath; }
         }
@@ -152,68 +151,6 @@ namespace Dynamo.Logging
         public IEnumerable<NotificationMessage> StartupNotifications
         {
             get { return notifications; }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="DynamoLogger"/> class
-        /// with specified debug settings and directory where to write logs
-        /// </summary>
-        /// <param name="debugSettings">Debug settings</param>
-        /// <param name="logDirectory">Directory path where log file will be written</param>
-        [Obsolete("This will be removed in 3.0, please use DynamoLogger(debugSettings, logDirectory, isTestMode, isCLIMode, isServiceMode) instead.")]
-        public DynamoLogger(DebugSettings debugSettings, string logDirectory) : this(debugSettings, logDirectory, false)
-        {
-            
-        }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="DynamoLogger"/> class
-        /// with specified debug settings and directory where to write logs
-        /// </summary>
-        /// <param name="debugSettings">Debug settings</param>
-        /// <param name="logDirectory">Directory path where log file will be written</param>
-        /// <param name="isTestMode">Test mode is true or false.</param>
-        [Obsolete("This will be removed in 3.0, please use DynamoLogger(debugSettings, logDirectory, isTestMode, isCLIMode, isServiceMode) instead.")]
-        public DynamoLogger(DebugSettings debugSettings, string logDirectory, Boolean isTestMode)
-        {
-            lock (guardMutex)
-            {
-                this.debugSettings = debugSettings;
-                _isDisposed = false;
-
-                WarningLevel = WarningLevel.Mild;
-                Warning = "";
-
-                notifications = new List<NotificationMessage>();
-
-                testMode = isTestMode;
-
-                if (!testMode)
-                {
-                    StartLoggingToConsoleAndFile(logDirectory);
-                }
-
-                XmlDocumentationExtensions.LogToConsole += Log;
-            }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of <see cref="DynamoLogger"/> class
-        /// with specified debug settings and directory where to write logs
-        /// </summary>
-        /// <param name="debugSettings">Debug settings</param>
-        /// <param name="logDirectory">Directory path where log file will be written</param>
-        /// <param name="isTestMode">Test mode is true or false.</param>
-        /// <param name="isCLIMode">We want to allow logging when CLI mode is true even if we are in test mode.</param>
-        [Obsolete("This will be removed in 3.0, please use DynamoLogger(debugSettings, logDirectory, isTestMode, isCLIMode, isServiceMode) instead.")]
-        public DynamoLogger(DebugSettings debugSettings, string logDirectory, Boolean isTestMode, Boolean isCLIMode)
-            :this(debugSettings, logDirectory, isTestMode)
-        {
-            cliMode = isCLIMode;
-            if (cliMode)
-            {
-                StartLoggingToConsoleAndFile(logDirectory);
-            }
         }
 
         /// <summary>
@@ -267,25 +204,15 @@ namespace Dynamo.Logging
         /// <param name="message"></param>
         /// <param name="level"></param>
         /// <param name="reportModification"></param>
-        private void Log(string message, LogLevel level, bool reportModification)
+        protected virtual void Log(string message, LogLevel level, bool reportModification)
         {
             lock (this.guardMutex)
             {
-                //Don't overwhelm the logging system
-                if (debugSettings.VerboseLogging)
-                    Analytics.LogPiiInfo("LogMessage-" + level.ToString(), message);
-
-                // In test mode, write the logs only to std out. 
-                if (testMode && !cliMode)
+                // In test mode or service mode, write the logs only to std out.
+                if ((testMode && !cliMode) || serviceMode)
                 {
                     Console.WriteLine(string.Format("{0} : {1}", DateTime.UtcNow.ToString("u"), message));
                     return;
-                }
-
-                if (serviceMode && (level == LogLevel.Console || level == LogLevel.File))
-                {
-                    Console.WriteLine("LogLevel switched to ConsoleOnly in service mode");
-                    level = LogLevel.ConsoleOnly;
                 }
 
                 switch (level)
@@ -484,7 +411,7 @@ namespace Dynamo.Logging
         /// <summary>
         /// Begin logging.
         /// </summary>
-        private void StartLoggingToConsoleAndFile(string logDirectory)
+        protected virtual void StartLoggingToConsoleAndFile(string logDirectory)
         {
             lock (this.guardMutex)
             {
@@ -543,7 +470,7 @@ namespace Dynamo.Logging
         /// <summary>
         /// Disposes the logger and finishes logging.
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
         {
             Dispose(_isDisposed);
 

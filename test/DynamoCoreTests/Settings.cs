@@ -38,32 +38,7 @@ namespace Dynamo.Tests
             IEnumerable<bool> comparisonResult = settings.CustomPackageFolders.Zip(expectedPackageFolders, string.Equals);
             Assert.IsFalse(comparisonResult.Any(isEqual => !isEqual));
         }
-
-        [Test]
-        public void AnalyticsReportingApprovedSetting()
-        {
-            var settings = new PreferenceSettings();
-            Assert.IsFalse(settings.IsAnalyticsReportingApproved);
-
-            // Check when deserializing preference setting with first run flag
-            var settingFilePath = Path.Combine(SettingDirectory, "DynamoSettings-firstrun.xml");
-            var settingsFromXML = PreferenceSettings.Load(settingFilePath);
-            Assert.IsTrue(settingsFromXML.IsFirstRun);
-            Assert.IsFalse(settingsFromXML.IsAnalyticsReportingApproved);
-        }
-
-        [Test]
-        public void UsageReportingApprovedSetting()
-        {
-            var settings = new PreferenceSettings();
-            Assert.IsFalse(settings.IsUsageReportingApproved);
-
-            // Check when deserializing preference setting with first run flag
-            var settingFilePath = Path.Combine(SettingDirectory, "DynamoSettings-firstrun.xml");
-            var settingsFromXML = PreferenceSettings.Load(settingFilePath);
-            Assert.IsTrue(settingsFromXML.IsFirstRun);
-            Assert.IsFalse(settingsFromXML.IsUsageReportingApproved);
-        }
+        
 
         [Test]
         public void LoadInvalidPythonTemplateFromSetting()

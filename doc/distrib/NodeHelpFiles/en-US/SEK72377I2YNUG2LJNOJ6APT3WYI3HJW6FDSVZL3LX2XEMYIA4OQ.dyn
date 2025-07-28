@@ -1,0 +1,194 @@
+{
+  "Uuid": "3ffc38b2-bfa5-4175-afcd-fc86c4081e59",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ImportFromTSM(filePath, inSmoothMode)",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "Id": "d4b6fac4fe8148e8ae02c58e1bdea91d",
+      "NodeType": "BooleanInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d970da9ee0f4422a9b1903fd5e9159eb",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enables selection between True and False",
+      "InputValue": true
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "Id": "3b889bd3663b4089a7f91da4b299e1a6",
+      "NodeType": "ExtensionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b431e813900044288eb780f9304df447",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system and returns its file path",
+      "HintPath": "C:\\Users\\Daria\\source\\repos\\Dynamo\\bin\\AnyCPU\\Debug\\en-US\\fallback_docs\\SKULL.tsm",
+      "InputValue": "C:\\Users\\Daria\\source\\repos\\Dynamo\\bin\\AnyCPU\\Debug\\en-US\\fallback_docs\\SKULL.tsm"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "31e1c2ac489c4655822617c104e6546f",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "59cb256cd84540418e1526427b24866c",
+          "Name": "filePath",
+          "Description": "Path to file to load from\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e3cd87d70ca94260b392cae7b2247fe8",
+          "Name": "inSmoothMode",
+          "Description": "Show T-Spline Surface in box or smooth visualization\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b9fc947826fc496994081c6d3fb4b1c0",
+          "Name": "TSplineSurface[]..[]",
+          "Description": "Newly loaded T-Spline surface in list",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ImportFromTSM@string,bool",
+      "Replication": "Auto",
+      "Description": "Load a T-Spline Surface from given T-Spline Mesh file\n\nTSplineSurface.ImportFromTSM (filePath: string, inSmoothMode: bool = false): TSplineSurface[]..[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "d970da9ee0f4422a9b1903fd5e9159eb",
+      "End": "e3cd87d70ca94260b392cae7b2247fe8",
+      "Id": "8a1fe2fd602d4825a80ac03104d43378",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "b431e813900044288eb780f9304df447",
+      "End": "59cb256cd84540418e1526427b24866c",
+      "Id": "d416ba02e3b9424e865542a92ff1fbb5",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "SKULL.tsm",
+      "ReferenceType": "External",
+      "Nodes": [
+        "3b889bd3663b4089a7f91da4b299e1a6"
+      ]
+    }
+  ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.3.6543",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -72.780876159667969,
+      "EyeY": 8.028559684753418,
+      "EyeZ": 72.237960815429688,
+      "LookX": 67.780876159667969,
+      "LookY": 2.971440315246582,
+      "LookZ": -80.237960815429688,
+      "UpX": -0.15611685812473297,
+      "UpY": 0.97029542922973633,
+      "UpZ": 0.18480877578258514
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "d4b6fac4fe8148e8ae02c58e1bdea91d",
+        "Name": "Boolean",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 224.84258786149542,
+        "Y": 187.32230118669275
+      },
+      {
+        "Id": "3b889bd3663b4089a7f91da4b299e1a6",
+        "Name": "File Path",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -130.90217740471519,
+        "Y": 55.82058494132454
+      },
+      {
+        "Id": "31e1c2ac489c4655822617c104e6546f",
+        "Name": "TSplineSurface.ImportFromTSM",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 512.8652293961386,
+        "Y": 55.978183884317986
+      }
+    ],
+    "Annotations": [],
+    "X": 218.25991843158,
+    "Y": 61.056281037064,
+    "Zoom": 0.91006380393143915
+  }
+}

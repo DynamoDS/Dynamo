@@ -17,7 +17,7 @@ namespace PythonNodeModelsWpf
     {
         #region Fields
 
-        const int indent_space_count = 4;
+        const int IndentSpaceCount = 4;
 
         TextEditor textEditor;
 
@@ -55,7 +55,7 @@ namespace PythonNodeModelsWpf
             // We should indent
             else if (prevLine.EndsWith(":") && !previousIsComment)
             {
-                var ind = new string(' ', prev + indent_space_count);
+                var ind = new string(' ', prev + IndentSpaceCount);
                 document.Insert(line.Offset, ind);
             }
             else
@@ -66,17 +66,40 @@ namespace PythonNodeModelsWpf
             }
         }
 
-        // Calculates the amount of white space leading in a string 
+        /// <summary>
+        /// Calculates the total width of leading whitespace in a string, where each space (' ') counts as 1
+        /// and each tab ('\t') counts as 4. Ensures consistent behavior for indentation and folding strategy
+        /// when transitioning from legacy code with tab indentations to modern conventions using spaces.
+        /// </summary>
         private int CalcSpace(string str)
         {
+            int count = 0;
             for (int i = 0; i < str.Length; ++i)
             {
-                if (!char.IsWhiteSpace(str[i]))
-                    return i;
-                if (i == str.Length - 1)
-                    return str.Length;
+                if (str[i] == ' ')
+                {
+                    count += 1;
+                }
+                else if (str[i] == '\t')
+                {
+                    count += 4;
+                }
+                else if (!char.IsWhiteSpace(str[i]))
+                {
+                    return count;
+                }
             }
-            return 0;
+            return count;
+        }
+
+        /// <summary>
+        /// Converts tabs to spaces in a legacy python code.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static string ConvertTabsToSpaces(string text)
+        {
+            return text.Replace("\t", new string(' ', IndentSpaceCount));
         }
     }
 }

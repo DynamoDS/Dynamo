@@ -2363,6 +2363,7 @@ namespace ProtoCore
 
         // used to manully emit "return = null" instruction if a function or language block does not have a return statement
         // there is update code involved in associativen code gen, so it is not implemented here
+        protected abstract void EmitReturnNull(Guid? guid);
         protected abstract void EmitReturnNull();
 
         protected abstract void DfsTraverse(Node node, ref ProtoCore.Type inferedType, bool isBooleanOp = false, ProtoCore.AssociativeGraph.GraphNode graphNode = null, 

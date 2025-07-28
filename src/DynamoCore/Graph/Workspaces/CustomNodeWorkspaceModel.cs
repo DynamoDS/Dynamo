@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Xml;
 using Dynamo.Engine;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
@@ -314,24 +313,6 @@ namespace Dynamo.Graph.Workspaces
             }
 
             base.Save(newPath, isBackup, engine);
-        }
-
-        [Obsolete("Method will be deprecated in Dynamo 3.0.")]
-        protected override bool PopulateXmlDocument(XmlDocument document)
-        {
-            if (!base.PopulateXmlDocument(document))
-                return false;
-
-            var root = document.DocumentElement;
-            if (root == null)
-                return false;
-            
-            var guid = CustomNodeDefinition != null ? CustomNodeDefinition.FunctionId : Guid.NewGuid();
-            root.SetAttribute("ID", guid.ToString());
-            root.SetAttribute("Description", Description);
-            root.SetAttribute("Category", Category);
-            
-            return true;
         }
     }
 }

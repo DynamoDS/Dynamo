@@ -1,4 +1,4 @@
-﻿using DynamoServices;
+using DynamoServices;
 using NUnit.Framework;
 using ProtoScript.Runners;
 using ProtoTestFx.TD;
@@ -24,6 +24,7 @@ namespace IntegrationTests
             {
                 testFx = new TestFrameWork();
                 astLiveRunner = new ProtoScript.Runners.LiveRunner();
+                astLiveRunner.Core.IsParsingInTestMode = true;
                 FFITarget.IncrementerTracedClass.ResetForNextTest();
 
             }

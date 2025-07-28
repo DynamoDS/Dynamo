@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
+using Dynamo.Session;
 using Greg;
 using Greg.Responses;
 
@@ -20,7 +23,7 @@ namespace Dynamo.PackageManager
         //TODO should we add a new handler specifically for packages? this is the package manager afterall so maybe not.
         private event Func<string, PackageInfo, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectoryHandler;
         private Action<IEnumerable<Assembly>> LoadPackagesHandler;
-       
+
         public event Func<string, IExtension> RequestLoadExtension;
         public event Action<IExtension> RequestAddExtension;
         public event Action<ILogMessage> MessageLogged;
@@ -42,16 +45,17 @@ namespace Dynamo.PackageManager
         /// </summary>
         private Dictionary<string, List<PackageInfo>> NodePackageDictionary;
 
+        private bool noNetworkMode;
+
         public string Name { get { return "DynamoPackageManager"; } }
 
         public string UniqueId
         {
             get { return "FCABC211-D56B-4109-AF18-F434DFE48139"; }
         }
-        internal HostAnalyticsInfo HostInfo { get; private set; }
 
         // Current host, empty if sandbox, null when running tests
-        internal virtual string Host => HostInfo.HostName;
+        internal virtual string Host => DynamoModel.HostAnalyticsInfo.HostProductName;
 
         /// <summary>
         ///     Manages loading of packages (property meant solely for tests)
@@ -118,7 +122,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public void Startup(StartupParams startupParams)
         {
-            string url = DynamoUtilities.PathHelper.getServiceBackendAddress(this, "packageManagerAddress");
+            string url = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, "packageManagerAddress");
 
             OnMessageLogged(LogMessage.Info("Dynamo will use the package manager server at : " + url));
 
@@ -144,6 +148,14 @@ namespace Dynamo.PackageManager
             PackageLoader.PackagesLoaded += LoadPackagesHandler;
             PackageLoader.RequestLoadNodeLibrary += RequestLoadNodeLibraryHandler;
             PackageLoader.RequestLoadCustomNodeDirectory += RequestLoadCustomNodeDirectoryHandler;
+
+            if (PythonServices.PythonEngineManager.Instance.AvailableEngines.Count == 0)
+            {
+                PythonServices.PythonEngineManager.Instance.LoadDefaultPythonEngine(AppDomain.CurrentDomain.GetAssemblies().
+                                                                                    FirstOrDefault(a => a != null && a.GetName().Name == PythonServices.PythonEngineManager.CPythonAssemblyName));
+            }
+
+            PythonServices.PythonEngineManager.Instance.AvailableEngines.CollectionChanged += PythonEngineAdded;
                 
             var dirBuilder = new PackageDirectoryBuilder(
                 new MutatingFileSystem(),
@@ -154,11 +166,64 @@ namespace Dynamo.PackageManager
 
             var packageUploadDirectory = startupParams.PathManager.DefaultPackagesDirectory;
 
-            PackageManagerClient = new PackageManagerClient(
-                new GregClient(startupParams.AuthProvider, url),
-                uploadBuilder, packageUploadDirectory);
+            noNetworkMode = startupParams.NoNetworkMode;
+
+            var client = noNetworkMode ? new GregClient(startupParams.AuthProvider, url,
+                new HttpClient(new NoNetworkModeHandler())) : new GregClient(startupParams.AuthProvider, url);
+            PackageManagerClient = new PackageManagerClient(client, uploadBuilder, packageUploadDirectory, noNetworkMode);
+
+
+            //we don't ask dpm for the compatibility map in offline mode.
+            if (!noNetworkMode)
+            {
+                // Load the compatibility map
+                PackageManagerClient.LoadCompatibilityMap();
+            }
 
             LoadPackages(startupParams.Preferences, startupParams.PathManager);
+        }
+
+        /// <summary>
+        /// When a new engine is added from a package, add its dependency to the respective package in the dictionary.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        internal void PythonEngineAdded(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                try
+                {
+                    var assem = e.NewItems[0]?.GetType().Assembly;
+                    if (assem == null) return;
+
+                    var assemLoc = assem.Location;
+                    foreach (var pkg in PackageLoader.LocalPackages)
+                    {
+                        if (assemLoc.StartsWith(pkg.RootDirectory))
+                        {
+                            if (NodePackageDictionary.ContainsKey(assem.FullName))
+                            {
+                                var assemName = AssemblyName.GetAssemblyName(assem.Location);
+                                OnMessageLogged(LogMessage.Info(
+                                    string.Format("{0} contains the python engine library {1}, which has already been loaded " +
+                                    "by another package. This may cause inconsistent results when determining which " +
+                                    "python engine the nodes are dependent on.", pkg.Name, assemName.Name)
+                                    ));
+                            }
+                            else
+                            {
+                                NodePackageDictionary[assem.FullName] = new List<PackageInfo>();
+                            }
+                            NodePackageDictionary[assem.FullName].Add(new PackageInfo(pkg.Name, new Version(pkg.VersionName)));
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    OnMessageLogged(LogMessage.Info("Error occurred while recording python engine and package mapping. " + ex.Message));
+                }
+            }
         }
 
         private PackageInfo handleCustomNodeOwnerQuery(Guid customNodeFunctionID)
@@ -174,11 +239,12 @@ namespace Dynamo.PackageManager
             (sp.CurrentWorkspaceModel as WorkspaceModel).CollectingCustomNodePackageDependencies += GetCustomNodePackageFromID;
             (sp.CurrentWorkspaceModel as WorkspaceModel).CollectingNodePackageDependencies += GetNodePackageFromAssemblyName;
             currentWorkspace = (sp.CurrentWorkspaceModel as WorkspaceModel);
-            HostInfo = ReadyParams.HostInfo;
         }
 
         public void Shutdown()
         {
+            PythonServices.PythonEngineManager.Instance.AvailableEngines.Clear();
+            PythonServices.PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= PythonEngineAdded;
             //this.Dispose();
         }
 
@@ -222,10 +288,11 @@ namespace Dynamo.PackageManager
         
         private PackageInfo GetNodePackageFromAssemblyName(AssemblyName assemblyName)
         {
-            if (NodePackageDictionary != null && NodePackageDictionary.ContainsKey(assemblyName.FullName))
+            if (NodePackageDictionary?.TryGetValue(assemblyName.FullName, out var packages) == true)
             {
-                return NodePackageDictionary[assemblyName.FullName].Last();
+                return packages.Last();
             }
+
             return null;
         }
 
@@ -339,10 +406,9 @@ namespace Dynamo.PackageManager
             var containsPackagesThatTargetOtherHosts = false;
             //fallback list of hosts as of 9/8/23
             IEnumerable<string> knownHosts =  new List<string> { "Revit", "Civil 3D", "Alias", "Advance Steel", "FormIt" };
-            //if analytics is disabled, treat this as network black out
-            //and don't ask dpm for known hosts.
-            //TODO we currently use this like a no network comms flags - work on introducing a new flag or renaming this flag.
-            if (!Dynamo.Logging.Analytics.DisableAnalytics)
+
+            //we don't ask dpm for known hosts in offline mode.
+            if (!noNetworkMode)
             {
                 // Known hosts
                 knownHosts = PackageManagerClient.GetKnownHosts();
