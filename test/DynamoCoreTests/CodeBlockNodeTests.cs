@@ -1544,6 +1544,24 @@ var06 = g;
             }
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void TestOutportNameForRangeAndSequence()
+        {
+            var code =
+                @"0..10..#5;
+            0..10..1;
+            0..#4..1;
+            0..4..~2;";
+            var cbn = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(cbn, code);
+
+            Assert.AreEqual("range", cbn.OutPorts[0].Name);
+            Assert.AreEqual("range", cbn.OutPorts[1].Name);
+            Assert.AreEqual("sequence", cbn.OutPorts[2].Name);
+            Assert.AreEqual("range", cbn.OutPorts[3].Name);
+        }
+
         #region CodeBlockUtils Specific Tests
         [Test]
         [Category("UnitTests")]
