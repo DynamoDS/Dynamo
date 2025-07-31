@@ -849,16 +849,16 @@ Ten pakiet prawdopodobnie zawiera zablokowany zespół. Po odblokowaniu zespołu
     <value>Wczytywanie biblioteki węzłów...</value>
   </data>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
-    <value>Brak zaleceń</value>
+    <value>Brak dostępnych sugestii</value>
   </data>
   <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
     <value>Niska pewność</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>Nie ma jeszcze żadnych zaleceń. Możesz spróbować przełączyć na autouzupełnianie zgodnego typu węzła.</value>
+    <value>Ten model jest stale ulepszany — zajrzyj tu wkrótce</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
-    <value>Wszystkie zalecenia wypadają poniżej określonego poziomu pewności. Możesz je wypróbować lub dostosować ustawienia pewności w preferencjach.</value>
+    <value>Brak solidnych sugestii. Model jest stale udoskonalany — sprawdź ponownie wkrótce.</value>
   </data>
   <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
     <value>Pokaż zalecenia wypadające poniżej poziomu pewności.</value>
@@ -895,5 +895,11 @@ Ten pakiet prawdopodobnie zawiera zablokowany zespół. Po odblokowaniu zespołu
   </data>
   <data name="DocsExperimentalPrefixMessage" xml:space="preserve">
     <value>Ten węzeł jest obecnie eksperymentalny. Jego zachowanie, nazwa i podpis mogą ulec zmianie.</value>
+  </data>
+  <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
+    <value>Kliknij ikonę błysku obok portu, aby aktywować autouzupełnianie węzłów.</value>
+  </data>
+  <data name="UnknownErrorProcessingFile" xml:space="preserve">
+    <value>Podczas przetwarzania pliku wystąpił nieznany błąd.</value>
   </data>
 </root>

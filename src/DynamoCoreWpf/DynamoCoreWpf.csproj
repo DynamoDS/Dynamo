@@ -171,6 +171,8 @@
     <None Remove="UI\Images\close_16px.png" />
     <None Remove="UI\Images\caret_drop_down.png" />
     <None Remove="UI\Images\error_48px.png" />
+    <None Remove="UI\Images\copy_16px_default.png" />
+    <None Remove="UI\Images\copy_16px_hover.png" />
     <None Remove="UI\Images\file-generic-16px.png" />
     <None Remove="UI\Images\finished_checkmark_30px.png" />
     <None Remove="UI\Images\folder-generic-16px.png" />
@@ -463,7 +465,7 @@
       <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.4945" />
+      <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.6.0.1954" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
     <PackageReference Include="Greg" Version="3.0.2.8780" />
@@ -1323,6 +1325,8 @@
     <Resource Include="UI\Images\closetab_normal.png" />
     <Resource Include="UI\Images\dynamonotext.png" />
     <Resource Include="UI\Images\error_48px.png" />
+    <Resource Include="UI\Images\copy_16px_default.png" />
+    <Resource Include="UI\Images\copy_16px_hover.png" />
     <Resource Include="UI\Images\file-generic-16px.png" />
     <Resource Include="UI\Images\finished_checkmark_30px.png" />
     <Resource Include="UI\Images\folder-generic-16px.png" />

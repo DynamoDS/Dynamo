@@ -401,6 +401,12 @@ Pas d'inquiétude, vous aurez la possibilité d'enregistrer votre travail.</valu
   <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
     <value>Avertissement sur le téléchargement</value>
   </data>
+  <data name="CopyToClipboardTooltip" xml:space="preserve">
+    <value>Copier dans le Presse-papiers</value>
+  </data>
+  <data name="CopyToClipboardFailedMessage" xml:space="preserve">
+    <value>La copie dans le presse-papiers a échoué</value>
+  </data>
   <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
     <value>Une mise à jour de Dynamo est disponible. Cliquez pour procéder à l'installation.</value>
   </data>
@@ -2656,7 +2662,7 @@ Ce package sera déchargé après le prochain redémarrage de Dynamo.</value>
     <value>Ajouter un dossier</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
-    <value>Chemin vers les fichiers Markdown (facultatif)</value>
+    <value>Chemin d'accès au fichier Markdown (facultatif)</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectoryToolTip" xml:space="preserve">
     <value>Un emplacement facultatif qui permet de documenter votre package au format markdown.</value>
@@ -2877,7 +2883,7 @@ Pour installer la dernière version d'un package, cliquez sur Installer. \n
 %./UI/Images/alert.png% Le package d'exemple Autodesk est déjà installé sur votre ordinateur.</value>
   </data>
   <data name="PackagesGuideDependenciesText" xml:space="preserve">
-    <value>\nSi vous avez besoin d'autres logiciels ou outils pour utiliser ce package, ces derniers sont répertoriés sous Exigences de version et de package.</value>
+    <value>\nSi vous avez besoin d'autres logiciels ou outils pour utiliser ce package, ces derniers sont répertoriés sous Versions et conditions applicables aux packages.</value>
   </data>
   <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
     <value>Dépendances du package</value>
@@ -3229,7 +3235,7 @@ Vous pouvez gérer ce paramètre dans Préférences -&gt; Sécurité.</value>
     <value>Le niveau de confiance apparaît en regard de chaque noeud recommandé et représente la probabilité estimée que le noeud soit un bon choix. Lorsque cette option est activée, ce paramètre masque les noeuds recommandés qui ne répondent pas au niveau de confiance spécifié. Vous pouvez cliquer sur l'en-tête Qualité faible pour afficher les noeuds.</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Number of results for Recommended Nodes</value>
+    <value>Nombre de résultats pour les noeuds recommandés.</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>Importer</value>
@@ -3787,6 +3793,18 @@ Pour transformer ce fichier en nouveau gabarit, enregistrez-le dans un autre dos
   </data>
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
     <value>Ce groupe est bloqué. Cliquez pour le débloquer.</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
+    <value>Activer la barre d'outils flottante</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
+    <value>Activez une barre d'outils flottante contenant les suggestions de noeuds afin de simplifier le flux de travail. Désactivez-la pour revenir à la boîte de dialogue contextuelle classique.</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
+    <value>Données de l'icône du noeud _Dump</value>
+  </data>
+  <data name="NodeIconDataIsDumped" xml:space="preserve">
+    <value>Les données de l'icône du noeud sont vidées vers \"{0}\".</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

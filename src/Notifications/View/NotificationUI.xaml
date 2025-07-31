@@ -1,79 +1,82 @@
-<Popup x:Class="Dynamo.Notifications.View.NotificationUI"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-       xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
-       xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
-       xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf" 
-       xmlns:fa="http://schemas.fontawesome.io/icons/" 
-       xmlns:wv2="clr-namespace:Dynamo.Wpf.Utilities;assembly=DynamoCoreWpf"
-       mc:Ignorable="d" 
-       AllowsTransparency="True"
-       StaysOpen="False"
-       Opacity="0.5"
-       Width="340"
-       Height="598">
+<Popup
+    x:Class="Dynamo.Notifications.View.NotificationUI"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:fa="http://schemas.fontawesome.io/icons/"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
+    xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+    xmlns:wv2="clr-namespace:Dynamo.Wpf.Utilities;assembly=DynamoCoreWpf"
+    Width="340"
+    Height="598"
+    AllowsTransparency="True"
+    Opacity="0.5"
+    Opened="NotificationUI_Opened"
+    StaysOpen="False"
+    mc:Ignorable="d">
     <Popup.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-            <controls:PointsToPathConverter x:Key="PointsToPathConverter"/>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <controls:PointsToPathConverter x:Key="PointsToPathConverter" />
         </ResourceDictionary>
     </Popup.Resources>
-    <Canvas Background="Transparent"
-            Name="RootLayout" >
-        <Path x:Name="PopupPathRectangle" 
-              Style="{StaticResource PoupPathRectangleStyle}">
+    <Canvas Name="RootLayout" Background="Transparent">
+        <Path x:Name="PopupPathRectangle" Style="{StaticResource PoupPathRectangleStyle}">
             <Path.Data>
-                <RectangleGeometry x:Name="BackgroundRectangle">
-                </RectangleGeometry>
+                <RectangleGeometry x:Name="BackgroundRectangle" />
             </Path.Data>
-            <!--This effect will show a 4px shadow of 20% of tranparency with a angle of 135 grades-->
+            <!--  This effect will show a 4px shadow of 20% of tranparency with a angle of 135 grades  -->
             <Path.Effect>
-                <DropShadowEffect Opacity="0.2" 
-                                  Color="Black"
-                                  ShadowDepth="4"
-                                  BlurRadius="4"
-                                  Direction="135"/>
+                <DropShadowEffect
+                    BlurRadius="4"
+                    Direction="135"
+                    Opacity="0.2"
+                    ShadowDepth="4"
+                    Color="Black" />
             </Path.Effect>
         </Path>
 
-        <Path x:Name="PopupPathRectangleShadow"   
-              Style="{StaticResource PoupPathRectangleStyle}">
+        <Path x:Name="PopupPathRectangleShadow" Style="{StaticResource PoupPathRectangleStyle}">
             <Path.Data>
-                <RectangleGeometry Rect="{Binding ElementName=BackgroundRectangle, Path=Rect}">
-                </RectangleGeometry>
+                <RectangleGeometry Rect="{Binding ElementName=BackgroundRectangle, Path=Rect}" />
             </Path.Data>
-            <!--This effect will show a 4px shadow of 20% of tranparency with a angle of 315 grades-->
+            <!--  This effect will show a 4px shadow of 20% of tranparency with a angle of 315 grades  -->
             <Path.Effect>
-                <DropShadowEffect Opacity="0.2" 
-                                  Color="Black"
-                                  ShadowDepth="4"
-                                  BlurRadius="4"
-                                  Direction="315"/>
+                <DropShadowEffect
+                    BlurRadius="4"
+                    Direction="315"
+                    Opacity="0.2"
+                    ShadowDepth="4"
+                    Color="Black" />
             </Path.Effect>
         </Path>
 
-        <!--This Path will draw on the Canvas the pointer (a triangle)-->
-        <Path  x:Name="TooltipPointer"
-               Data="{Binding Path=TooltipPointerPoints, Converter={StaticResource PointsToPathConverter}}"
-               Style="{StaticResource PoupPathPointerStyle}">
+        <!--  This Path will draw on the Canvas the pointer (a triangle)  -->
+        <Path
+            x:Name="TooltipPointer"
+            Data="{Binding Path=TooltipPointerPoints, Converter={StaticResource PointsToPathConverter}}"
+            Style="{StaticResource PoupPathPointerStyle}">
             <Path.Effect>
-                <DropShadowEffect Opacity="0.2" 
-                                  Color="Black"
-                                  ShadowDepth="4"
-                                  BlurRadius="4"
-                                  Direction="{Binding Path=ShadowTooltipDirection}"/>
+                <DropShadowEffect
+                    BlurRadius="4"
+                    Direction="{Binding Path=ShadowTooltipDirection}"
+                    Opacity="0.2"
+                    ShadowDepth="4"
+                    Color="Black" />
             </Path.Effect>
         </Path>
 
-        <Grid  x:Name="mainPopupGrid" Background="White"                
-               Width="{Binding PopupRectangleWidth}">
-            <wv2:DynamoWebView2 Name="webView" ></wv2:DynamoWebView2>
+        <Grid
+            x:Name="mainPopupGrid"
+            Width="{Binding PopupRectangleWidth}"
+            Background="White">
+            <wv2:DynamoWebView2 Name="webView" />
         </Grid>
     </Canvas>
 </Popup>

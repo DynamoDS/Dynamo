@@ -143,11 +143,6 @@ namespace Dynamo.Graph.Workspaces
         public string PinnedNode;
         public double WidthAdjustment;
         public double HeightAdjustment;
-        public double WidthAdjustmentCollapsed;
-        public double HeightAdjustmentCollapsed;
-        public double WidthAdjustmentExpanded;
-        public double HeightAdjustmentExpanded;
-        public bool IsResizedWhileCollapsed;
 
         // TODO, Determine if these are required
         public double Left;
@@ -1630,12 +1625,12 @@ namespace Dynamo.Graph.Workspaces
 
             AddNode(node);
 
-            HasUnsavedChanges = true;
-
-            if (node is CodeBlockNodeModel cbn
-                && string.IsNullOrEmpty(cbn.Code)) return;
-
-            RequestRun();
+            if (!node.IsTransient)
+            {
+                HasUnsavedChanges = true;
+                if (node is CodeBlockNodeModel cbn && string.IsNullOrEmpty(cbn.Code)) return;
+                RequestRun();
+            }
         }
 
         protected virtual void RegisterNode(NodeModel node)
@@ -1667,6 +1662,11 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         protected virtual void NodeModified(NodeModel node)
         {
+            if (node.IsTransient)
+            {
+                return;
+            }
+
             HasUnsavedChanges = true;
         }
 
@@ -1686,7 +1686,10 @@ namespace Dynamo.Graph.Workspaces
             OnNodeRemoved(model);
             // Force this change to address the edge case that user deleting the right edge
             // node and do not see unsaved changes, e.g. the watch node at end of the graph
-            HasUnsavedChanges = true;
+            if (!model.IsTransient)
+            {
+                HasUnsavedChanges = true;
+            }
 
             if (dispose)
             {
@@ -2712,11 +2715,6 @@ namespace Dynamo.Graph.Workspaces
             annotationModel.GUID = annotationGuidValue;
             annotationModel.HeightAdjustment = annotationViewInfo.HeightAdjustment;
             annotationModel.WidthAdjustment = annotationViewInfo.WidthAdjustment;
-            annotationModel.HeightAdjustmentCollapsed = annotationViewInfo.HeightAdjustmentCollapsed;
-            annotationModel.WidthAdjustmentCollapsed = annotationViewInfo.WidthAdjustmentCollapsed;
-            annotationModel.HeightAdjustmentExpanded = annotationViewInfo.HeightAdjustmentExpanded;
-            annotationModel.WidthAdjustmentExpanded = annotationViewInfo.WidthAdjustmentExpanded;
-            annotationModel.IsResizedWhileCollapsed = annotationViewInfo.IsResizedWhileCollapsed;
             annotationModel.UpdateGroupFrozenStatus();
 
             annotationModel.ModelBaseRequested += annotationModel_GetModelBase;

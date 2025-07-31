@@ -124,7 +124,7 @@
     <value>Impossible de mettre à jour l'assembly</value>
   </data>
   <data name="DownloadPackageDisabled" xml:space="preserve">
-    <value>Package download is disabled in no-network mode.</value>
+    <value>Le téléchargement du package est désactivé en mode sans réseau.</value>
   </data>
   <data name="InvalidPackageFolderWarning" xml:space="preserve">
     <value>Le dossier '{0}' n'existe pas</value>

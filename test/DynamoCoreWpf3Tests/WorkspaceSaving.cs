@@ -753,6 +753,32 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void WorkspaceSaveAfterSaveAsNewFile()
+        {
+            // Open new workspace
+            string filePath = Path.Combine(TestDirectory, (@"UI\BasicAddition.dyn"));
+            ViewModel.OpenCommand.Execute(filePath);
+
+            var dynamoModel = ViewModel.Model;
+            Assert.IsNotNull(dynamoModel.CurrentWorkspace);
+            var oldWorkspaceNodes = dynamoModel.CurrentWorkspace.Nodes.Select(x => x.GUID).ToList();
+
+            // Save-As current workspace to a new file. The node GUIDs should be uniquely generated for the new workspace.
+            var newPath = Path.Combine(TestDirectory, (@"UI\BasicAdditionDuplicate.dyn"));
+            ViewModel.CurrentSpaceViewModel.Save(newPath, false, dynamoModel.EngineController, SaveContext.SaveAs);
+            Assert.IsTrue(File.Exists(newPath));
+
+            // Save the workspace again.
+            ViewModel.CurrentSpaceViewModel.Save(newPath, false, dynamoModel.EngineController, SaveContext.Save);
+            var newWorkspaceNodes = dynamoModel.CurrentWorkspace.Nodes.Select(x => x.GUID).ToList();
+
+            // The new workspace should have different GUIDs compared to the old workspace.
+            bool hasMatch = oldWorkspaceNodes.Any(x => newWorkspaceNodes.Any(y => y == x));
+            Assert.IsFalse(hasMatch);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void CustomNodeSaveDoesNotChangeName()
         {
 
@@ -1384,7 +1410,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("Failure")]
-        public void CusotmNodeSaveAsUpdateItsName()
+        public void CustomNodeSaveAsUpdateItsName()
         {
             //
             var dynamoModel = ViewModel.Model;

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using Dynamo.Configuration;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
@@ -108,17 +109,46 @@ namespace DynamoCoreWpfTests
             preferencesWindow.CloseButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             DispatcherUtil.DoEvents();
 
-            var groupStylesMenuItem = annotationView.AnnotationContextMenu
-              .Items
-              .OfType<MenuItem>()
-              .First(x => x.Header.ToString() == "Group Style");
+            //// Get the GroupContextMenuPopup that was created in code-behind
+            //var groupContextPopup = annotationView.GroupContextMenuPopup;
 
-            groupStylesMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.SubmenuOpenedEvent));
+            // Open context menu
+            annotationView.GroupContextMenuPopup.IsOpen = true;
             DispatcherUtil.DoEvents();
 
-            //Check that the GroupStyles in the AnnotationView match the ones in the PreferencesView
-            Assert.AreEqual(annotationViewModel.GroupStyleList.OfType<GroupStyleItem>().Count(), currentGroupStylesCounter);
+            var stylesSubmenu = annotationView.GroupStyleSelectorGrid as Grid;
+            Assert.IsNotNull(stylesSubmenu, "Styles sub-menu border not found.");
 
+            var border = stylesSubmenu.Children.OfType<Border>().FirstOrDefault();
+            var popup = stylesSubmenu.Children.OfType<Popup>().FirstOrDefault();
+
+            Assert.IsNotNull(border, "Sub-menu border not found.");
+            Assert.IsNotNull(popup, "Sub-menu popup not found.");
+
+            // Trigger MouseEnter to populate the popup content
+            border.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0)
+            {
+                RoutedEvent = Mouse.MouseEnterEvent
+            });
+            DispatcherUtil.DoEvents();
+
+            Assert.IsTrue(popup.IsOpen, "Popup did not open after MouseEnter.");
+            Assert.IsInstanceOf<Border>(popup.Child, "Popup content is not a Border.");
+
+            var wrapper = popup.Child as Border;
+            var stackPanel = wrapper.Child as StackPanel;
+
+            Assert.IsNotNull(stackPanel, "Could not find StackPanel inside popup.");            
+
+            // Count group style options
+            var innerStackCount = stackPanel.Children
+                .OfType<Border>()
+                .Select(b => b.Child)
+                .OfType<StackPanel>()
+                .Count();
+
+            //Check that the GroupStyles in the AnnotationView match the ones in the PreferencesView
+            Assert.AreEqual(innerStackCount, currentGroupStylesCounter);
         }
 
         [Test]

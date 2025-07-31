@@ -43,6 +43,7 @@ namespace Dynamo.Graph.Nodes
         private List<string> inputPortNames = new List<string>();
         private string previewVariable;
         private readonly LibraryServices libraryServices;
+        private Dictionary<string, (string Label, string Tooltip)> outportMetadata = new();
 
         private bool shouldFocus = true;
         internal ParseParam ParseParam { get; private set; }
@@ -783,6 +784,8 @@ namespace Dynamo.Graph.Nodes
             ParseParam = new ParseParam(GUID, code, resolver);
 
             codeStatements.Clear();
+            outportMetadata.Clear();
+
             try
             {
                 var priorNames = libraryServices.GetPriorNames();
@@ -797,7 +800,23 @@ namespace Dynamo.Graph.Nodes
                         {
                             // Create a statement variable from the generated nodes
                             codeStatements.Add(Statement.CreateInstance(parsedNode));
-                        }                        
+
+                            if (parsedNode is BinaryExpressionNode binExp)
+                            {
+                                var right = binExp.RightNode;
+                                var left = binExp.LeftNode;
+
+                                var portLabel = IsTempIdentifier(left.Name)
+                                    ? CodeBlockUtils.InferStaticTypeFromNode(right)
+                                    : left.Name;
+
+                                var portTooltip = IsTempIdentifier(left.Name)
+                                    ? CodeBlockUtils.GetTooltipForNode(right)
+                                    : CodeBlockUtils.GetTooltipForNode(parsedNode);
+
+                                outportMetadata[left.Name] = (portLabel, portTooltip);
+                            }
+                        }
                     }
                     else
                     {
@@ -1007,18 +1026,38 @@ namespace Dynamo.Graph.Nodes
             // Clear out all the output port models
             OutPorts.RemoveAll((p) => true);
 
+            int maxLabelLength = Configurations.CBNMaxPortNameLength;
+            int maxTooltipLength = Configurations.CBNMaxTooltipLength;
+
             foreach (var def in allDefs)
             {
-                var tooltip = IsTempIdentifier(def.Key) ? string.Format(Resources.CodeBlockTempIdentifierOutputLabel, def.Value) : def.Key;
+                // Try to retrieve the output metadata (label and tooltip) for this output variable.
+                // If not found, fallback to empty strings to avoid null issues.
+                if (!outportMetadata.TryGetValue(def.Key, out var metadata))
+                {
+                    metadata = (string.Empty, string.Empty);
+                }
 
-                OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
+                var label = metadata.Label;
+                if (label.Length > maxLabelLength)
+                    label = label.Remove(maxLabelLength - 3) + "...";
+
+                var tooltip = metadata.Tooltip;
+                if (tooltip.Length > maxTooltipLength)
+                    tooltip = tooltip.Remove(maxTooltipLength - 3) + "...";
+
+                var currentLineIndexKey = IsTempIdentifier(def.Key) ? $"Line {def.Key}" : def.Key;
+
+                OutPorts.Add(new PortModel(PortType.Output, this, new PortData(label, tooltip)
                 {
                     LineIndex = def.Value - 1, // Logical line index.
                     Height = Configurations.CodeBlockOutputPortHeightInPixels,
-                }));
+                })
+                {
+                    LineIndexKey = currentLineIndexKey,
+                });
             }
         }
-
 
         /// <summary>
         ///     Deletes all the connections and saves their data (the start and end port)
@@ -1058,19 +1097,22 @@ namespace Dynamo.Graph.Nodes
             for (int i = 0; i < OutPorts.Count; i++)
             {
                 PortModel portModel = OutPorts[i];
-                string portName = portModel.ToolTip;
+
+                // Use LineIndexKey for stable identification; fall back to ToolTip if it's null (e.g. in error cases).
+                string key = portModel.LineIndexKey ?? portModel.ToolTip;
+
                 if (portModel.Connectors.Count != 0)
                 {
-                    outportConnections.Add(portName, new List<ConnectorModel>());
+                    outportConnections.Add(key, new List<ConnectorModel>());
                     foreach (ConnectorModel connector in portModel.Connectors)
                     {
-                        (outportConnections[portName] as List<ConnectorModel>).Add(connector);
+                        (outportConnections[key] as List<ConnectorModel>).Add(connector);
                         outportPins.Add(connector.GUID, new List<ConnectorPinModel>());
                         (outportPins[connector.GUID] as List<ConnectorPinModel>).AddRange(connector.ConnectorPinModels);
                     }
                 }
                 else
-                    outportConnections.Add(portName, null);
+                    outportConnections.Add(key, null);
             }
 
             //Delete the connectors
@@ -1127,10 +1169,10 @@ namespace Dynamo.Graph.Nodes
             /*The matching is done in three parts:
              *Step 1:
              *   First, it tries to match the connectors wrt to the defined 
-             *   variable name. Hence it first checks to see if any of the old 
-             *   variable names are present. If so, if there were any connectors 
-             *   presnt then it makes the new connectors. As it iterates through 
-             *   the new ports, it also finds the ports that didnt exist before
+             *   variable line index key. Hence it first checks to see if any of the old 
+             *   variable line index keys are present. If so, if there were any connectors 
+             *   present then it makes the new connectors. As it iterates through 
+             *   the new ports, it also finds the ports that didn't exist before
              */
             List<int> undefinedIndices = new List<int>();
             for (int i = 0; i < OutPorts.Count; i++)
@@ -1145,20 +1187,21 @@ namespace Dynamo.Graph.Nodes
                     continue;
                 }
 
-                // Attempting to match the connector by name failed, 
+                // Attempting to match the connector by line index key failed, 
                 // store the index to match in step 2 next
-                string varName = OutPorts[i].ToolTip;
-                if (!outportConnections.Contains(varName))
+                string key = OutPorts[i].LineIndexKey;
+
+                if (!outportConnections.Contains(key))
                 {
                     undefinedIndices.Add(i);
                     continue;
                 }
 
-                // Attempting to match the connector by name succeeded, 
+                // Attempting to match the connector by line index key succeeded, 
                 // create the connector using the matched port index
-                if (outportConnections[varName] != null)
+                if (outportConnections[key] != null)
                 {
-                    foreach (var oldConnector in (outportConnections[varName] as List<ConnectorModel>))
+                    foreach (var oldConnector in (outportConnections[key] as List<ConnectorModel>))
                     {
                         var endPortModel = oldConnector.End;
                         NodeModel endNode = endPortModel.Owner;
@@ -1172,7 +1215,7 @@ namespace Dynamo.Graph.Nodes
                         }
                     }
 
-                    outportConnections[varName] = null;
+                    outportConnections[key] = null;
                 }
             }
 
@@ -1205,7 +1248,7 @@ namespace Dynamo.Graph.Nodes
 
             /*
              *Step 3:
-             *   The final step. Now that the priorties are finished, the 
+             *   The final step. Now that the priorities are finished, the 
              *   function tries to reuse any existing connections by attaching 
              *   them to any ports that have not already been given connections
              */
@@ -1269,7 +1312,7 @@ namespace Dynamo.Graph.Nodes
             return string.Format("{0}_{1}", identifierName, AstIdentifierGuid);
         }
 
-        
+
 
         private class IdentifierInPlaceMapper : AstReplacer
         {
@@ -1496,7 +1539,7 @@ namespace Dynamo.Graph.Nodes
                 //Or node not completely implemented YET
             }
         }
-        
+
         /// <summary>
         /// Returns the names of the variables that have been declared in the statement
         /// </summary>
@@ -1708,7 +1751,7 @@ namespace Dynamo.Graph.Nodes
             Row = identNode.line;
             StartColumn = identNode.col;
         }
-        
+
         /// <summary>
         /// Moves column index back only if variable is not an expression.
         /// </summary>

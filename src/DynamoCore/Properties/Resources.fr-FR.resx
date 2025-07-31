@@ -849,16 +849,16 @@ Ce package contient probablement un ensemble qui est bloqué. Vous devrez charge
     <value>Chargement de la bibliothèque de noeuds…</value>
   </data>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
-    <value>Aucune recommandation</value>
+    <value>Aucune suggestion disponible</value>
   </data>
   <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
     <value>Confiance faible</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>Il n'y a pas encore de recommandation. Vous pouvez essayer de passer à la saisie automatique de type de noeud.</value>
+    <value>Le modèle est amélioré en permanence. Réessayez ultérieurement</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
-    <value>Toutes les recommandations sont inférieures au niveau de confiance. Vous pouvez les essayer ou ajuster les paramètres de confiance dans Préférences.</value>
+    <value>Aucune suggestion de confiance n'est disponible. Le modèle est constamment amélioré, revenez voir ultérieurement.</value>
   </data>
   <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
     <value>Afficher les recommandations inférieures au niveau de confiance.</value>
@@ -895,5 +895,11 @@ Ce package contient probablement un ensemble qui est bloqué. Vous devrez charge
   </data>
   <data name="DocsExperimentalPrefixMessage" xml:space="preserve">
     <value>Ce noeud est actuellement expérimental. Son comportement, son nom et sa signature sont susceptibles d'être modifiés.</value>
+  </data>
+  <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
+    <value>Cliquez sur l'icône scintillante à côté du port pour activer la saisie automatique du noeud.</value>
+  </data>
+  <data name="UnknownErrorProcessingFile" xml:space="preserve">
+    <value>Une erreur inconnue s'est produite lors du traitement du fichier.</value>
   </data>
 </root>

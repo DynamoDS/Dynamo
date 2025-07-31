@@ -23,7 +23,7 @@ namespace Dynamo.PackageManager
         //TODO should we add a new handler specifically for packages? this is the package manager afterall so maybe not.
         private event Func<string, PackageInfo, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectoryHandler;
         private Action<IEnumerable<Assembly>> LoadPackagesHandler;
-       
+
         public event Func<string, IExtension> RequestLoadExtension;
         public event Action<IExtension> RequestAddExtension;
         public event Action<ILogMessage> MessageLogged;
@@ -148,6 +148,13 @@ namespace Dynamo.PackageManager
             PackageLoader.PackagesLoaded += LoadPackagesHandler;
             PackageLoader.RequestLoadNodeLibrary += RequestLoadNodeLibraryHandler;
             PackageLoader.RequestLoadCustomNodeDirectory += RequestLoadCustomNodeDirectoryHandler;
+
+            if (PythonServices.PythonEngineManager.Instance.AvailableEngines.Count == 0)
+            {
+                PythonServices.PythonEngineManager.Instance.LoadDefaultPythonEngine(AppDomain.CurrentDomain.GetAssemblies().
+                                                                                    FirstOrDefault(a => a != null && a.GetName().Name == PythonServices.PythonEngineManager.CPythonAssemblyName));
+            }
+
             PythonServices.PythonEngineManager.Instance.AvailableEngines.CollectionChanged += PythonEngineAdded;
                 
             var dirBuilder = new PackageDirectoryBuilder(
@@ -236,6 +243,7 @@ namespace Dynamo.PackageManager
 
         public void Shutdown()
         {
+            PythonServices.PythonEngineManager.Instance.AvailableEngines.Clear();
             PythonServices.PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= PythonEngineAdded;
             //this.Dispose();
         }

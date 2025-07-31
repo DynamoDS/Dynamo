@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
@@ -30,12 +31,11 @@ namespace Dynamo.ViewModels
         private const double autocompletePopupSpacing = 2.5;
         private const double proxyPortContextMenuOffset = 20;
         protected static readonly SolidColorBrush PortBackgroundColorPreviewOff = new SolidColorBrush(Color.FromRgb(102, 102, 102));
-        internal static readonly SolidColorBrush PortBackgroundColorDefault = new SolidColorBrush(Color.FromRgb(60, 60, 60));
-        internal static readonly SolidColorBrush PortBorderBrushColorDefault = new SolidColorBrush(Color.FromRgb(161, 161, 161));
+        public static readonly SolidColorBrush PortBackgroundColorDefault = new SolidColorBrush(Color.FromRgb(60, 60, 60));
+        public static readonly SolidColorBrush PortBorderBrushColorDefault = new SolidColorBrush(Color.FromRgb(161, 161, 161));
         private SolidColorBrush portBorderBrushColor = PortBorderBrushColorDefault;
         private SolidColorBrush portBackgroundColor = PortBackgroundColorDefault;
         private Visibility highlight = Visibility.Collapsed;
-        private bool nodeAutoCompleteMarkerEnabled = false;
 
         /// <summary>
         /// Port model.
@@ -225,12 +225,7 @@ namespace Dynamo.ViewModels
                     return false;
                 }
 
-                return CanHaveAutoCompleteMarker() && nodeAutoCompleteMarkerEnabled;
-            }
-            set
-            {
-                nodeAutoCompleteMarkerEnabled = value;
-                RaisePropertyChanged(nameof(NodeAutoCompleteMarkerEnabled));
+                return CanHaveAutoCompleteMarker();
             }
         }
 
@@ -279,9 +274,6 @@ namespace Dynamo.ViewModels
             this.node.PropertyChanged += NodePropertyChanged;
             this.node.WorkspaceViewModel.PropertyChanged += WorkspacePropertyChanged;
             this.node.WorkspaceViewModel.DynamoViewModel.PreferencesViewModel.PropertyChanged += PreferencesViewModelPropertyChanged;
-
-            //turn on the autocomplete marker if enabled
-            NodeAutoCompleteMarkerEnabled = NodeViewModel.DynamoViewModel.EnableNodeAutoComplete;
 
             RefreshPortColors();
         }
@@ -530,7 +522,43 @@ namespace Dynamo.ViewModels
         {
             DynamoViewModel dynamoViewModel = this.node.DynamoViewModel;
             WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
+
             workspaceViewModel.HandlePortClicked(this);
+
+            //handle double click
+            if (parameter is MouseButtonEventArgs evArgs)
+            {
+                evArgs.Handled = true;
+                if (evArgs.ClickCount >=2)
+                {
+                    HandleDoubleClick();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Node AutoComplete used to be a double click. It isn't anymore, so we alert users to use the sparkle instead.
+        /// </summary>
+        private void HandleDoubleClick()
+        {
+            DynamoViewModel dynamoViewModel = this.node.DynamoViewModel;
+            WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
+
+            workspaceViewModel.CancelActiveState();
+            dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.ToastFileNodeAutoCompleteDoubleClick, true);
+
+            var timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(4)
+            };
+
+            timer.Tick += (s, e) =>
+            {
+                timer.Stop();
+                dynamoViewModel.MainGuideManager.CloseRealTimeInfoWindow();
+            };
+
+            timer.Start();
         }
 
         protected bool CanConnect(object parameter)

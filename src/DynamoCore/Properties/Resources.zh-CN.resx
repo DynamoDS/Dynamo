@@ -849,16 +849,16 @@
     <value>正在加载节点库…</value>
   </data>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
-    <value>无建议</value>
+    <value>无可用建议</value>
   </data>
   <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
     <value>置信度低</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>还没有建议。可以尝试切换到节点类型匹配自动完成。</value>
+    <value>该模型正在持续优化 - 请稍后查看</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
-    <value>所有建议都低于指定的置信度级别。您可以尝试它们或在“首选项”中调整置信度设置。</value>
+    <value>没有可靠的建议。该模型正在不断改进 - 请稍后查看。</value>
   </data>
   <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
     <value>显示低于置信度级别的建议。</value>
@@ -895,5 +895,11 @@
   </data>
   <data name="DocsExperimentalPrefixMessage" xml:space="preserve">
     <value>此节点当前是实验节点。其行为、名称和签名可能会更改。</value>
+  </data>
+  <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
+    <value>单击端口旁边的闪光图标以激活“节点自动完成”。</value>
+  </data>
+  <data name="UnknownErrorProcessingFile" xml:space="preserve">
+    <value>处理文件时出现未知错误。</value>
   </data>
 </root>

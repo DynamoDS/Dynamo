@@ -988,6 +988,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy to clipboard failed.
+        /// </summary>
+        public static string CopyToClipboardFailedMessage {
+            get {
+                return ResourceManager.GetString("CopyToClipboardFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy to clipboard.
+        /// </summary>
+        public static string CopyToClipboardTooltip {
+            get {
+                return ResourceManager.GetString("CopyToClipboardTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy.
         /// </summary>
         public static string CrashPromptDialogCopyButton {
@@ -1492,6 +1510,15 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewDebugMenuDumpNodeHelpData {
             get {
                 return ResourceManager.GetString("DynamoViewDebugMenuDumpNodeHelpData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Dump Node Icon Data.
+        /// </summary>
+        public static string DynamoViewDebugMenuDumpNodeIcons {
+            get {
+                return ResourceManager.GetString("DynamoViewDebugMenuDumpNodeIcons", resourceCulture);
             }
         }
         
@@ -5237,6 +5264,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Node Icon Data is dumped to \&quot;{0}\&quot;..
+        /// </summary>
+        public static string NodeIconDataIsDumped {
+            get {
+                return ResourceManager.GetString("NodeIconDataIsDumped", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to create node: .
         /// </summary>
         public static string NodeInCanvasSearchCreationError {
@@ -8028,7 +8064,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable New UI.
+        ///   Looks up a localized string similar to Enable Floating Toolbar.
         /// </summary>
         public static string PreferencesViewEnableNodeAutoCompleteNewUI {
             get {
@@ -8037,7 +8073,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable the new floating menu for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog..
+        ///   Looks up a localized string similar to Enable a floating toolbar for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog..
         /// </summary>
         public static string PreferencesViewEnableNodeAutoCompleteNewUITooltipText {
             get {

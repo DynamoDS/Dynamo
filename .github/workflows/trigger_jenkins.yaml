@@ -1,0 +1,19 @@
+name: Trigger Jenkins CI
+on:
+  - push
+  - pull_request
+jobs:
+# This workflow contains a single job called "trigger_jenkins"
+  trigger_jenkins:
+    # The type of runner that the job will run on
+    #runs-on: jenkins-trigger
+    runs-on: self-hosted
+    env:
+      REPO_NAME: ${{ github.event.repository.name }}
+      ORG_NAME: ${{ github.event.organization.login }}
+      JENKINS_ROOT: ${{ secrets.JENKINS_CONTROLLER_URL }}job/${{ secrets.JENKINS_TRIGGER_ROOT_FOLDER }}/job/${{ secrets.JENKINS_TRIGGER_ORG_FOLDER }}/job/
+    steps:
+    - name: trigger single Job
+      run: >
+        curl -X POST -u "${{ secrets.JENKINS_TRIGGER_USER }}:${{ secrets.JENKINS_TRIGGER_TOKEN }}"
+        ${{ env.JENKINS_ROOT}}/${{ env.ORG_NAME }}/job/${{ env.REPO_NAME }}/build\?delay=\0

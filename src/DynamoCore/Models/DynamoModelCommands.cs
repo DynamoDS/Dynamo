@@ -24,6 +24,8 @@ namespace Dynamo.Models
         internal event RecordableCommandHandler CommandStarting;
         internal event RecordableCommandHandler CommandCompleted;
 
+        static internal event Action RequestHideNodeAutoCompleteBar;
+
         /// <summary>
         /// Executes specified command
         /// </summary>
@@ -38,7 +40,7 @@ namespace Dynamo.Models
             if (CommandCompleted != null)
                 CommandCompleted(command);
         }
-        
+
         private PortModel[] activeStartPorts;
         private PortModel firstStartPort;
 
@@ -88,6 +90,8 @@ namespace Dynamo.Models
 
         private void CreateNodeImpl(CreateNodeCommand command)
         {
+            RequestHideNodeAutoCompleteBar?.Invoke();
+
             var node = GetNodeFromCommand(command);
             if (node == null)
             {
@@ -324,6 +328,8 @@ namespace Dynamo.Models
 
         private void MakeConnectionImpl(MakeConnectionCommand command)
         {
+            RequestHideNodeAutoCompleteBar?.Invoke();
+
             Guid nodeId = command.ModelGuid;
 
             switch (command.ConnectionMode)
@@ -458,10 +464,6 @@ namespace Dynamo.Models
                 activeStartPorts[i] = connector.End;
             }
             CurrentWorkspace.SaveAndDeleteModels(selectedConnectors.ToList<ModelBase>());
-            for (int i = 0; i < numOfConnectors; i++) //delete the connectors
-            {
-                selectedConnectors[i].Delete();
-            }
             return;
         }
 
@@ -577,6 +579,8 @@ namespace Dynamo.Models
 
         private void DeleteModelImpl(DeleteModelCommand command)
         {
+            RequestHideNodeAutoCompleteBar?.Invoke();
+
             var modelsToDelete = new List<ModelBase>();
             if (command.ModelGuid == Guid.Empty)
             {

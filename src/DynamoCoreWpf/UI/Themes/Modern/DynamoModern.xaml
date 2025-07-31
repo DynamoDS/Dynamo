@@ -487,14 +487,7 @@
                                         BorderBrush="{DynamicResource MidLightBlueBrush}"
                                         BorderThickness="0,6,0,0" />
                                 <ScrollViewer Margin="0,6,0,6" SnapsToDevicePixels="True">
-                                    <StackPanel KeyboardNavigation.DirectionalNavigation="Contained">
-                                        <ContentControl x:Name="SearchSlot"
-                                            Content="{TemplateBinding Tag}"
-                                            Visibility="{Binding Content, RelativeSource={RelativeSource Self}, Converter={StaticResource NullToVisibiltyConverter}}"
-                                        />
-
-                                        <StackPanel IsItemsHost="True" />
-                                    </StackPanel>
+                                    <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
                                 </ScrollViewer>
                             </Grid>
                         </Popup>
@@ -521,7 +514,6 @@
         </Setter>
         <Style.Triggers />
     </Style>
-
 
     <!--  NodeView c ustomization styles  -->
     <ControlTemplate x:Key="NodeViewComboBoxToggleButton" TargetType="ToggleButton">
@@ -4938,6 +4930,7 @@
                         </BulletDecorator.Bullet>
                         <!--  Text element next to each radio button  -->
                         <TextBlock Margin="3,1,0,0"
+                                   Name="LabelTextBlock"
                                    FontFamily="Calibri"
                                    FontSize="12"
                                    FontWeight="Regular"
@@ -4958,6 +4951,16 @@
                             <Setter TargetName="MainEllipse" Property="Fill" Value="{StaticResource PreferencesWindowBackgroundColor}" />
                             <Setter TargetName="MainEllipse" Property="Stroke" Value="{StaticResource PreferencesWindowFontColor}" />
                         </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="LabelTextBlock" Property="Foreground" Value="{StaticResource TabItemUnSelected}"/>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsEnabled" Value="False"/>
+                                <Condition Property="IsChecked" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="MainEllipse" Property="Fill" Value="{StaticResource TabItemUnSelected}"/>
+                        </MultiTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

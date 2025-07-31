@@ -950,7 +950,7 @@ namespace Dynamo.ViewModels
                     // also identify packages that have a dynamo engine version less than 3.x as a special case,
                     // as Dynamo 3.x uses .net8 and older versions used .net framework - these packages may not be compatible.
                     // This check will return empty if the current major version is not 3.
-                    var preDYN3Deps = newPackageHeaders.Where(dep => dynamoVersion.Major == 3 && Version.Parse(dep.engine_version).Major < dynamoVersion.Major);
+                    var preDYN4Deps = newPackageHeaders.Where(dep => dynamoVersion.Major == 4 && Version.Parse(dep.engine_version).Major < dynamoVersion.Major);
 
                     // If any of the required packages use a newer version of Dynamo, show a dialog to the user
                     // allowing them to cancel the package download
@@ -971,7 +971,7 @@ namespace Dynamo.ViewModels
 
                     //if any of the required packages use a pre 3.x version of Dynamo, show a dialog to the user
                     //allowing them to cancel the package download
-                    if (preDYN3Deps.Any())
+                    if (preDYN4Deps.Any())
                     {
                         var res = MessageBoxService.Show(ViewModelOwner,
                         $"{string.Format(Resources.MessagePackageOlderDynamo, DynamoViewModel.BrandingResourceProvider.ProductName)} {Resources.MessagePackOlderDynamoLink}",

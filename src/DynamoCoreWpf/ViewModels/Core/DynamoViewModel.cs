@@ -2345,6 +2345,7 @@ namespace Dynamo.ViewModels
         {
             try
             {
+                filePath = Model.CurrentWorkspace.FileName;
                 string fileContentsInUse = String.IsNullOrEmpty(filePath) ? fileContents : File.ReadAllText(filePath);
                 if (string.IsNullOrEmpty(fileContentsInUse))
                 {
@@ -4302,6 +4303,45 @@ namespace Dynamo.ViewModels
             File.WriteAllText(fullFileName, stat.ToString());
         }
 
+        internal void DumpNodeIconData(object parameter)
+        {
+            //set to manual run mode to prevent execution of the nodes as wel place them
+            this.HomeSpace.RunSettings.RunType = RunType.Manual;
+
+            string nodesWithoutIconsFileName = String.Format("NodesWithoutIcons_{0}.csv", DateTime.Now.ToString("yyyyMMddHmmss"));
+            string nodesWithoutIconsFullFileName = Path.Combine(Model.PathManager.LogDirectory, nodesWithoutIconsFileName);
+
+            //creating a copy to avoid collection changed exceptions
+            var entriesCopy = Model.SearchModel.Entries.Where(n => n.IsVisibleInSearch).ToList();
+
+            StreamWriter sw = File.CreateText(nodesWithoutIconsFullFileName);
+
+            sw.WriteLine("NODE ASSEMBLY,NODE NAME");
+
+            foreach (var nse in entriesCopy)
+            {
+                var newNode = nse.CreateNode();
+                this.CurrentSpace.AddAndRegisterNode(newNode);
+                var placedNode = this.CurrentSpaceViewModel.Nodes.Last();
+                var imageSource = placedNode.ImageSource;
+
+                //if image source is null, then no icon is found
+                if (imageSource is null)
+                {
+                    sw.WriteLine($"{nse.Assembly},{nse.Name}");
+                }
+                else
+                {
+                    this.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(placedNode.Id));
+                }
+            }
+
+            sw.Close();
+
+            //alert user to new file location
+            MainGuideManager.CreateRealTimeInfoWindow(string.Format(Resources.NodeIconDataIsDumped, nodesWithoutIconsFullFileName), true);
+        }
+
         private FileInfo GetMatchingDocFromDirectory(string nodeName, string hash, List<string> suffix, DirectoryInfo dir)
         {
             FileInfo matchingFile = null;
@@ -4322,6 +4362,10 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanDumpNodeHelpData(object obj)
+        {
+            return true;
+        }
+        internal bool CanDumpNodeIconData(object obj)
         {
             return true;
         }

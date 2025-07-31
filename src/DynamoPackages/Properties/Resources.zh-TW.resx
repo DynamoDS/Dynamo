@@ -124,7 +124,7 @@
     <value>無法更新組合</value>
   </data>
   <data name="DownloadPackageDisabled" xml:space="preserve">
-    <value>Package download is disabled in no-network mode.</value>
+    <value>套件下載在沒有網路的模式下停用。</value>
   </data>
   <data name="InvalidPackageFolderWarning" xml:space="preserve">
     <value>「{0}」資料夾不存在</value>

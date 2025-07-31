@@ -40,7 +40,7 @@
   <NumberFormat>f4</NumberFormat>
   <MaxNumRecentFiles>12</MaxNumRecentFiles>
   <RecentFiles>
-    <string>C:\Users\user\Documents\dynamofile.dyn</string>
+    <string>..\..\..\test\settings\RecentFilesTest.dyn</string>
   </RecentFiles>
   <BackupLocation>C:\Users\user\AppData\Roaming\Dynamo\Dynamo Core\backup</BackupLocation>
   <BackupFiles>

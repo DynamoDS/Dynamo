@@ -22,6 +22,9 @@ namespace Dynamo.ViewModels
 {
     public class AnnotationViewModel : ViewModelBase
     {
+        public delegate void SnapInputEventHandler(PortViewModel portViewModel);
+        public event SnapInputEventHandler SnapInputEvent;
+
         private AnnotationModel annotationModel;
         private IEnumerable<PortModel> originalInPorts;
         private IEnumerable<PortModel> originalOutPorts;
@@ -481,7 +484,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool CanAddGroupToGroup(object obj)
+        internal bool CanAddGroupToGroup(object obj)
         {
             // First make sure this group is selected
             // and that it does not already belong to
@@ -592,7 +595,7 @@ namespace Dynamo.ViewModels
             return result;
         }
 
-        private bool CanUngroupGroup(object parameters)
+        internal bool CanUngroupGroup(object parameters)
         {
             return BelongsToGroup();
         }
@@ -702,15 +705,9 @@ namespace Dynamo.ViewModels
             // owner
             newPortViewModels = CreateProxyInPorts(originalInPorts);
 
-            // Set the minimum required vertical space to fit the input ports when collapsed
-            if (newPortViewModels == null)
-            {
-                annotationModel.MinCollapsedPortAreaHeight = 0;
-                return;
-            }
-
-            annotationModel.MinCollapsedPortAreaHeight = newPortViewModels.Sum(p => p.Height);
+            if (newPortViewModels == null) return;
             InPorts.AddRange(newPortViewModels);
+            return;
         }
 
         /// <summary>
@@ -723,7 +720,7 @@ namespace Dynamo.ViewModels
             List<PortViewModel> newPortViewModels;
 
             // we need to store the original ports here
-            // as we need these later for when we
+            // as we need thoese later for when we
             // need to collapse the groups content
             if (this.AnnotationModel.HasNestedGroups)
             {
@@ -741,19 +738,13 @@ namespace Dynamo.ViewModels
 
             // Create proxies of the ports so we can
             // visually add them to the group but they
-            // should still reference their NodeModel owner
+            // should still reference their NodeModel
+            // owner
             newPortViewModels = CreateProxyOutPorts(originalOutPorts);
 
-            // If no view models were created, we leave the existing height as is
-            if (newPortViewModels == null)
-                return;
-
-            // Update the collapsed port area height to be the greater of the existing value
-            // and the height needed to render all output ports
-            var outportsHeight = newPortViewModels.Sum(p => p.Height);
-            annotationModel.MinCollapsedPortAreaHeight = Math.Max(annotationModel.MinCollapsedPortAreaHeight, outportsHeight);
-
+            if (newPortViewModels == null) return;
             OutPorts.AddRange(newPortViewModels);
+            return;
         }
 
         internal IEnumerable<PortModel> GetGroupInPorts(IEnumerable<NodeModel> ownerNodes = null)
@@ -821,7 +812,7 @@ namespace Dynamo.ViewModels
                     if (portModel.Owner is CodeBlockNodeModel)
                     {
                         // Special case because code block outputs are smaller than regular outputs.
-                        return new Point2D(Left + Width, y - 8);
+                        return new Point2D(Left + Width, y - 7);
                     }
                     return new Point2D(Left + Width, y);
             }
@@ -847,6 +838,8 @@ namespace Dynamo.ViewModels
                     // calculate new position for the proxy outports
                     groupPort.Center = CalculatePortPosition(groupPort, verticalPosition);
                     verticalPosition += originalPort.Height;
+
+                    AttachProxyPortEventHandlers(portViewModel);
                 }
             }
             return newPortViewModels;
@@ -871,11 +864,68 @@ namespace Dynamo.ViewModels
                     // calculate new position for the proxy outports
                     group.Center = CalculatePortPosition(group, verticalPosition);
                     verticalPosition += originalPort.Height;
+
+                    AttachProxyPortEventHandlers(portViewModel);
                 }
             }
 
             return newPortViewModels;
         }
+
+        #region Proxy Port Snapping Events
+
+        private void AttachProxyPortEventHandlers(PortViewModel portViewModel)
+        {
+            portViewModel.MouseEnter += ProxyPort_MouseEnter;
+            portViewModel.MouseLeave += ProxyPort_MouseLeave;
+            portViewModel.MouseLeftButtonDown += ProxyPort_MouseLeftButtonDown;
+        }
+
+        private void DetachProxyPortEventHandlers()
+        {
+            foreach (var portViewModel in InPorts)
+            {
+                portViewModel.MouseEnter -= ProxyPort_MouseEnter;
+                portViewModel.MouseLeave -= ProxyPort_MouseLeave;
+                portViewModel.MouseLeftButtonDown -= ProxyPort_MouseLeftButtonDown;
+            }
+
+            foreach (var portViewModel in OutPorts)
+            {
+                portViewModel.MouseEnter -= ProxyPort_MouseEnter;
+                portViewModel.MouseLeave -= ProxyPort_MouseLeave;
+                portViewModel.MouseLeftButtonDown -= ProxyPort_MouseLeftButtonDown;
+            }
+        }
+
+        private void ProxyPort_MouseEnter(object sender, EventArgs e)
+        {
+            if (sender is PortViewModel portViewModel)
+            {
+                portViewModel.EventType = PortEventType.MouseEnter;
+                SnapInputEvent?.Invoke(portViewModel);
+            }
+        }
+
+        private void ProxyPort_MouseLeave(object sender, EventArgs e)
+        {
+            if (sender is PortViewModel portViewModel)
+            {
+                portViewModel.EventType = PortEventType.MouseLeave;
+                SnapInputEvent?.Invoke(portViewModel);
+            }
+        }
+
+        private void ProxyPort_MouseLeftButtonDown(object sender, EventArgs e)
+        {
+            if (sender is PortViewModel portViewModel)
+            {
+                portViewModel.EventType = PortEventType.MouseLeftButtonDown;
+                SnapInputEvent?.Invoke(portViewModel);
+            }
+        }
+
+        #endregion
 
         internal void UpdateProxyPortsPosition()
         {
@@ -988,11 +1038,8 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void RedrawConnectors(bool isCollapsedCheck = false)
+        private void RedrawConnectors()
         {
-            if (isCollapsedCheck && IsExpanded && !annotationModel.IsResizedWhileCollapsed)
-                return;
-
             var allNodes = this.Nodes
                 .OfType<AnnotationModel>()
                 .SelectMany(x => x.Nodes.OfType<NodeModel>())
@@ -1077,13 +1124,13 @@ namespace Dynamo.ViewModels
         {
             if (InPorts.Any() || OutPorts.Any())
             {
+                DetachProxyPortEventHandlers();
                 InPorts.Clear();
                 OutPorts.Clear();
             }
 
             if (annotationModel.IsExpanded)
             {
-                ToggleSizeAdjustmentsForCollapse(false);
                 this.ShowGroupContents();
             }
             else
@@ -1091,9 +1138,6 @@ namespace Dynamo.ViewModels
                 this.SetGroupInputPorts();
                 this.SetGroupOutPorts();
                 this.CollapseGroupContents(true);
-                ToggleSizeAdjustmentsForCollapse(true);
-
-                RaisePropertyChanged(nameof(Height));
                 RaisePropertyChanged(nameof(NodeContentCount));
             }
             WorkspaceViewModel.HasUnsavedChanges = true;
@@ -1101,35 +1145,6 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged(nameof(IsExpanded));
             RedrawConnectors();
             ReportNodesPosition();
-        }
-
-        /// <summary>
-        /// Switches the width and height adjustment values when toggling
-        /// between collapsed and expanded group states.
-        /// </summary>
-        private void ToggleSizeAdjustmentsForCollapse(bool isCollapsing)
-        {
-            if (isCollapsing)
-            {
-                annotationModel.WidthAdjustmentExpanded = annotationModel.WidthAdjustment;
-                annotationModel.HeightAdjustmentExpanded = annotationModel.HeightAdjustment;
-
-                // Reset to collapsed value so first resize ignores expanded height adjustment
-                annotationModel.HeightAdjustment = annotationModel.HeightAdjustmentCollapsed;
-
-                if (annotationModel.IsResizedWhileCollapsed)
-                {
-                    annotationModel.WidthAdjustment = annotationModel.WidthAdjustmentCollapsed;
-                }
-            }
-            else
-            {
-                annotationModel.WidthAdjustmentCollapsed = annotationModel.WidthAdjustment;
-                annotationModel.HeightAdjustmentCollapsed = annotationModel.HeightAdjustment;
-
-                annotationModel.WidthAdjustment = annotationModel.WidthAdjustmentExpanded;
-                annotationModel.HeightAdjustment = annotationModel.HeightAdjustmentExpanded;
-            }
         }
 
         private void UpdateFontSize(object parameter)
@@ -1247,7 +1262,6 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("Width");
                     RaisePropertyChanged(nameof(ModelAreaRect));
                     UpdateAllGroupedGroups();
-                    RedrawConnectors(false);
                     break;
                 case "Height":
                     RaisePropertyChanged("Height");

@@ -51,7 +51,7 @@ namespace Dynamo.UI.Controls
                 Analytics.TrackEvent(Actions.Open, Categories.NodeAutoCompleteOperations);
                 if (_controlInstance?.ViewModel?.PortViewModel != null)
                 {
-                    _controlInstance.ViewModel.PortViewModel.Highlight = Visibility.Collapsed;
+                    _controlInstance.ViewModel.PortViewModel.Highlight = Visibility.Visible;
                     _controlInstance.ViewModel.PortViewModel?.SetupNodeAutoCompleteWindowPlacement(_controlInstance);
                 }
                                 
@@ -145,10 +145,13 @@ namespace Dynamo.UI.Controls
         //Hide the window and unsubscribe from model events.
         //Note that the window is not destroyed, it is just hidden so that it can be reused.
         internal void OnHideNodeAutoCompleteSearch()
-        {            
-            ViewModel.ParentNodeRemoved -= OnParentNodeRemoved;
-            ViewModel.OnNodeAutoCompleteWindowClosed();
-            Hide();
+        {
+            if (IsVisible) //when window is already hidden it means unsubscribe was already performed
+            {
+                ViewModel.ParentNodeRemoved -= OnParentNodeRemoved;
+                ViewModel.OnNodeAutoCompleteWindowClosed();
+                Hide();
+            }
         }
 
         internal void OnShowNodeAutoCompleteSearch()

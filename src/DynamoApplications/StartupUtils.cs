@@ -285,7 +285,8 @@ namespace Dynamo.Applications
         /// <param name="asmPath">Path to directory containing geometry library binaries</param>
         /// <param name="info">Host analytics info specifying Dynamo launching host related information.</param>
         /// <returns></returns>
-        public static DynamoModel MakeModel(bool CLImode, string CLIlocale, bool noNetworkMode, string asmPath = "", HostAnalyticsInfo info = new HostAnalyticsInfo())
+        public static DynamoModel MakeModel(bool CLImode, string CLIlocale, bool noNetworkMode, string asmPath = "",
+            HostAnalyticsInfo info = new HostAnalyticsInfo())
         {
             var model = PrepareModel(
                 cliLocale: CLIlocale,
@@ -386,7 +387,7 @@ namespace Dynamo.Applications
                 IsServiceMode = isServiceMode,
                 Preferences = PreferenceSettings.Instance,
                 NoNetworkMode = noNetworkMode,
-                CLILocale = cliLocale,
+                CLILocale = cliLocale
                 //Breaks all Lucene calls. TI enable this would require a lot of refactoring around Lucene usage in Dynamo.
                 //IsHeadless = CLImode
             };

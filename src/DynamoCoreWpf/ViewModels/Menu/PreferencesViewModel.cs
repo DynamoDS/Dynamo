@@ -1139,8 +1139,13 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                preferenceSettings.EnableNewNodeAutoCompleteUI = value;
-                RaisePropertyChanged(nameof(NodeAutocompleteNewUIIsChecked));
+                if (preferenceSettings.EnableNewNodeAutoCompleteUI != value)
+                {
+                    var logDescription = value ? "OldToNewExperience" : "NewToOldExperience";
+                    Analytics.TrackEvent(Actions.Switch, Categories.NodeAutoCompleteOperations, logDescription);
+                    preferenceSettings.EnableNewNodeAutoCompleteUI = value;
+                    RaisePropertyChanged(nameof(NodeAutocompleteNewUIIsChecked));
+                }
             }
         }
 
