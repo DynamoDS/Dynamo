@@ -470,7 +470,7 @@ namespace Dynamo.Nodes
             if (ViewModel != null && (e.HeightChanged || e.WidthChanged) && !_isUpdatingLayout)
             {
                 _isUpdatingLayout = true;
-                // Use Dispatcher.BeginInvoke to batch layout updates
+                // Use Dispatcher.BeginInvoke to schedule layout updates on the UI thread
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
                     try
