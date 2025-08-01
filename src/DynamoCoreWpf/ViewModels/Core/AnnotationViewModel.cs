@@ -1468,6 +1468,7 @@ namespace Dynamo.ViewModels
                 this.SetGroupInputPorts();
                 this.SetGroupOutPorts();
                 this.CollapseGroupContents(true);
+                UpdateProxyPortsPosition();
                 RaisePropertyChanged(nameof(NodeContentCount));
             }
             WorkspaceViewModel.HasUnsavedChanges = true;
