@@ -1437,6 +1437,30 @@ namespace Dynamo.Controls
             LoadHomePage();
 
             loaded = true;
+
+            // Once everything is loaded, inject the GraphMetadata menu item
+            var metadataProvider = viewExtensionManager.ViewExtensions
+                .OfType<IGraphMetadataProvider>()
+                .FirstOrDefault();
+
+            if (metadataProvider != null)
+            {
+                var menuItem = metadataProvider.GetGraphMetadataMenuItem(this.dynamoViewModel);
+
+                if (menuItem != null)
+                {
+                    menuItem.Header = "Show Graph Properties!"; // ADD RESOURCE
+                    var fileMenu = this.FindName("fileMenu") as MenuItem;
+
+                    if (fileMenu != null)
+                    {
+                        fileMenu.Items.Insert(10, menuItem);
+
+                        var separator = new Separator();
+                        fileMenu.Items.Insert(11, separator);
+                    }
+                }
+            }
         }
 
         // Add the HomePage to the DynamoView once its loaded
