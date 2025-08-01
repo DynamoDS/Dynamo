@@ -34,7 +34,7 @@ namespace Dynamo.ViewModels
         // vertical offset accounts for the port margins
         private const int verticalOffset = 17;
         private const int portVerticalMidPoint = 17;
-        private const int portToggleOffset = 32;
+        private const int portToggleOffset = 30;
         private ObservableCollection<Dynamo.Configuration.StyleItem> groupStyleList;
         private IEnumerable<Configuration.StyleItem> preferencesStyleItemsList;
         private PreferenceSettings preferenceSettings;

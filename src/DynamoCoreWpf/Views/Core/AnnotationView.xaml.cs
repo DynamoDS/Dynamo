@@ -1630,7 +1630,6 @@ namespace Dynamo.Nodes
 
             grid.Children.Add(inputPortsGrid);
             grid.Children.Add(outputPortsGrid);
-
             grid.Children.Add(groupContent);
 
             return grid;
@@ -2820,14 +2819,15 @@ namespace Dynamo.Nodes
         {
             var grid = new Grid
             {
-                Name = "inputPortsGrid"
+                Name = "inputPortsGrid",
+                VerticalAlignment = VerticalAlignment.Top,
             };
             Grid.SetRow(grid, 0);
             Grid.SetColumn(grid, 0);
 
             // Define rows
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(34) });
+            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
             // Main Input Ports
@@ -2846,7 +2846,7 @@ namespace Dynamo.Nodes
             inputToggleControl = new ToggleButton
             {
                 Name = "inputToggleControl",
-                Margin = new Thickness(5, 0, -20, 0),
+                Margin = new Thickness(5, 0, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Content = Wpf.Properties.Resources.GroupOptionalInportsText
             };
@@ -2902,7 +2902,8 @@ namespace Dynamo.Nodes
         {
             var grid = new Grid
             {
-                Name = "outputPortsGrid"
+                Name = "outputPortsGrid",
+                VerticalAlignment = VerticalAlignment.Top
             };
             Grid.SetRow(grid, 0);
             Grid.SetColumn(grid, 2);
