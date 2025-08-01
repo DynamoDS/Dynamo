@@ -1772,7 +1772,7 @@ namespace Dynamo.Nodes
 
         #region Context Menu
 
-        private void CreateAndAttachAnnotationPopup()
+        internal void CreateAndAttachAnnotationPopup()
         {
             // If the context menu is already created, no need to recreate or re-subscribe
             if (GroupContextMenuPopup != null) return;
