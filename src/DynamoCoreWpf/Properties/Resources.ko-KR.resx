@@ -3799,34 +3799,16 @@
     <value>이 그룹은 동결되었습니다. 동결을 해제하려면 클릭하십시오.</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>Enable Floating Toolbar</value>
+    <value>부동 도구막대 활성화</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
-    <value>Enable a floating toolbar for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog.</value>
+    <value>더 효율적인 워크폴로우를 위해 노드 제안용 부동 도구막대를 활성화하십시오. 기존의 팝업 대화상자로 돌아가려면 비활성화하십시오.</value>
   </data>
   <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
     <value>_노드 아이콘 데이터 덤프</value>
   </data>
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>노드 아이콘 데이터가 \"{0}\"에 덤프됩니다.</value>
-  </data>
-  <data name="GroupOptionalInportsText" xml:space="preserve">
-    <value>선택 사항</value>
-  </data>
-  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
-    <value>미연결</value>
-  </data>
-  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
-    <value>Collapsed Group</value>
-  </data>
-  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
-    <value>Collapse to minimal size by default</value>
-  </data>
-  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
-    <value>Hide optional input ports by default</value>
-  </data>
-  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
-    <value>Hide unconnected output ports by default</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

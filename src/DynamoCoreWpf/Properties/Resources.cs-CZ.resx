@@ -2884,7 +2884,7 @@ Chcete-li nainstalovat nejnovější verzi balíčku, klikněte na možnost Inst
 %./UI/Images/alert.png% Vzorový balíček společnosti Autodesk je již v počítači nainstalován.</value>
   </data>
   <data name="PackagesGuideDependenciesText" xml:space="preserve">
-    <value>\nPokud k použití tohoto balíčku potřebujete jiný software nebo nástroje, jsou uvedeny v části Verze a požadavky balíčku.</value>
+    <value>\nPokud k použití tohoto balíčku potřebujete jiný software nebo nástroje, jsou uvedeny v části Verze a požadavky na balíček.</value>
   </data>
   <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
     <value>Závislosti balíčků</value>
@@ -3800,34 +3800,16 @@ Chcete-li vytvořit z tohoto souboru novou šablonu, uložte ho do jiné složky
     <value>Tato skupina je zmrazená. Kliknutím ji rozmrazíte.</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>Enable Floating Toolbar</value>
+    <value>Povolit plovoucí panel nástrojů</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
-    <value>Enable a floating toolbar for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog.</value>
+    <value>Povolte nový plovoucí panel nástrojů pro návrhy uzlů, který nabízí efektivnější pracovní postupu. Vypnutím se vrátíte do tradičního vyskakovacího dialogu.</value>
   </data>
   <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
     <value>_Vypsat data ikony uzlu</value>
   </data>
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>Data ikony uzlu jsou vypsána do \"{0}\".</value>
-  </data>
-  <data name="GroupOptionalInportsText" xml:space="preserve">
-    <value>Volitelné</value>
-  </data>
-  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
-    <value>Nepřipojený</value>
-  </data>
-  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
-    <value>Collapsed Group</value>
-  </data>
-  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
-    <value>Collapse to minimal size by default</value>
-  </data>
-  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
-    <value>Hide optional input ports by default</value>
-  </data>
-  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
-    <value>Hide unconnected output ports by default</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

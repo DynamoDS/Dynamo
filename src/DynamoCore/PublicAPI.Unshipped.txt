@@ -1683,7 +1683,6 @@ Dynamo.Linting.Rules.NodeLinterRule
 Dynamo.Linting.Rules.NodeLinterRule.NodeLinterRule() -> void
 Dynamo.Logging.DynamoLogger
 Dynamo.Logging.DynamoLogger.ClearStartupNotifications() -> void
-Dynamo.Logging.DynamoLogger.Dispose() -> void
 Dynamo.Logging.DynamoLogger.DynamoLogger(Dynamo.Configuration.DebugSettings debugSettings, string logDirectory, bool isTestMode, bool isCLIMode, bool isServiceMode) -> void
 Dynamo.Logging.DynamoLogger.Log(string message) -> void
 Dynamo.Logging.DynamoLogger.Log(string message, Dynamo.Logging.LogLevel level) -> void
@@ -1877,6 +1876,7 @@ Dynamo.Models.DynamoModel.DefaultStartConfiguration.IsHeadless.get -> bool
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.IsHeadless.set -> void
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.IsServiceMode.get -> bool
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.IsServiceMode.set -> void
+Dynamo.Models.DynamoModel.DefaultStartConfiguration.Logger.set -> void
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.NoNetworkMode.get -> bool
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.NoNetworkMode.set -> void
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.PathResolver.get -> Dynamo.Interfaces.IPathResolver
@@ -3048,6 +3048,7 @@ static Dynamo.Wpf.Interfaces.LayoutSpecification.FromJSONString(string jsonText)
 static readonly Dynamo.Configuration.Configurations.AutodeskAsString -> string
 static readonly Dynamo.Configuration.Configurations.BackupFolderName -> string
 static readonly Dynamo.Configuration.Configurations.CBNMaxPortNameLength -> int
+static readonly Dynamo.Configuration.Configurations.CBNMaxTooltipLength -> int
 static readonly Dynamo.Configuration.Configurations.CodeBlockOutputPortHeightInPixels -> double
 static readonly Dynamo.Configuration.Configurations.ConnectorBaseThickness -> double
 static readonly Dynamo.Configuration.Configurations.DoubleSliderTextBoxWidth -> double
@@ -3160,6 +3161,7 @@ virtual Dynamo.Graph.Workspaces.WorkspaceModel.RegisterNode(Dynamo.Graph.Nodes.N
 virtual Dynamo.Graph.Workspaces.WorkspaceModel.ResetWorkspaceCore() -> void
 virtual Dynamo.Graph.Workspaces.WorkspaceModel.Save(string filePath, bool isBackup = false, Dynamo.Engine.EngineController engine = null) -> void
 virtual Dynamo.Linting.Rules.LinterRule.CleanupRule(Dynamo.Graph.Workspaces.WorkspaceModel muribundWorkspaceModel) -> void
+virtual Dynamo.Logging.DynamoLogger.Dispose() -> void
 virtual Dynamo.Models.DynamoModel.InsertFileImpl(Dynamo.Models.DynamoModel.InsertFileCommand command) -> void
 virtual Dynamo.Models.DynamoModel.OnCleanup() -> void
 virtual Dynamo.Models.DynamoModel.OnDeletionComplete(object sender, System.EventArgs e) -> void
@@ -3192,5 +3194,4 @@ virtual Dynamo.Search.SearchElements.NodeSearchElement.GenerateInputParameters()
 virtual Dynamo.Search.SearchElements.NodeSearchElement.GenerateOutputParameters() -> System.Collections.Generic.IEnumerable<string>
 virtual Dynamo.Search.SearchElements.NodeSearchElement.OnItemProduced(Dynamo.Graph.Nodes.NodeModel obj) -> void
 virtual Dynamo.Search.SearchElements.SearchElementBase.CreationName.get -> string
-
-
+virtual Dynamo.Search.SearchElements.SearchElementBase.CreationName.get -> string

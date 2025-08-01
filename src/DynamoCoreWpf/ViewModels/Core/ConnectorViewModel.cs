@@ -375,13 +375,11 @@ namespace Dynamo.ViewModels
                 zIndex = value;
                 RaisePropertyChanged(nameof(ZIndex));
             }
-         
         }
 
         private int SetZIndex()
         {
-            if (isConnecting)
-                return (int)zIndex;
+            if (isConnecting) return 0;
 
             var firstNode = this.Nodevm;
             var lastNode = this.NodeEnd;

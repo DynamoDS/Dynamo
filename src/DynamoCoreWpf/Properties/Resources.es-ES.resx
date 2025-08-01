@@ -2664,16 +2664,16 @@ Este paquete se descargará después del siguiente reinicio de Dynamo.</value>
     <value>Añadir carpeta</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
-    <value>Ruta de archivos de anotaciones (opcional)</value>
+    <value>Ruta de archivos Markdown (opcional)</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectoryToolTip" xml:space="preserve">
-    <value>Una ubicación opcional para documentar el paquete en formato de anotación.</value>
+    <value>Una ubicación opcional para documentar el paquete en formato Markdown.</value>
   </data>
   <data name="PublishPackageViewResetMarkdownDirectoryButton" xml:space="preserve">
     <value>Restablecer</value>
   </data>
   <data name="PublishPackageViewResetMarkdownDirectoryButtonToolTip" xml:space="preserve">
-    <value>Borra el directorio de anotaciones de este paquete.</value>
+    <value>Borra el directorio de Markdown de este paquete.</value>
   </data>
   <data name="PublishPackageViewRemoveItemToolTip" xml:space="preserve">
     <value>Elimina este elemento de la lista de contenido del paquete.</value>
@@ -2682,7 +2682,7 @@ Este paquete se descargará después del siguiente reinicio de Dynamo.</value>
     <value>Dependencias de paquetes externos</value>
   </data>
   <data name="PreferencesViewMarkdownDirectoryTooltip" xml:space="preserve">
-    <value>La documentación de anotaciones se puede añadir al paquete para que el Navegador de documentación muestre la información generada por el autor en cada nodo.</value>
+    <value>La documentación de Markdown se puede añadir al paquete para que el Navegador de documentación muestre la información generada por el autor en cada nodo.</value>
   </data>
   <data name="PublishPackageViewPublisherURLWatermark" xml:space="preserve">
     <value>URL</value>
@@ -3801,34 +3801,16 @@ Para convertir este archivo en una nueva plantilla, guárdelo en una carpeta dif
     <value>Este grupo está inutilizado. Haga clic para reutilizarlo.</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>Enable Floating Toolbar</value>
+    <value>Activar barra de herramientas flotante</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
-    <value>Enable a floating toolbar for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog.</value>
+    <value>Active una barra de herramientas flotante de sugerencias de nodos a fin de optimizar el flujo de trabajo. Desactive esta opción para volver al cuadro de diálogo emergente tradicional.</value>
   </data>
   <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
     <value>_Volcar datos de iconos de nodos</value>
   </data>
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>Los datos de iconos de nodos se vuelcan en \"{0}\".</value>
-  </data>
-  <data name="GroupOptionalInportsText" xml:space="preserve">
-    <value>Opcional</value>
-  </data>
-  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
-    <value>No conectado</value>
-  </data>
-  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
-    <value>Collapsed Group</value>
-  </data>
-  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
-    <value>Collapse to minimal size by default</value>
-  </data>
-  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
-    <value>Hide optional input ports by default</value>
-  </data>
-  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
-    <value>Hide unconnected output ports by default</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
