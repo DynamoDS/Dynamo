@@ -281,6 +281,11 @@ namespace Dynamo.Configuration
         public static readonly int CBNMaxPortNameLength = 24;
 
         /// <summary>
+        ///     Maximal port tooltip text length of CodeBlock
+        /// </summary>
+        public static readonly int CBNMaxTooltipLength = 500;
+
+        /// <summary>
         ///     Highlighting File
         /// </summary>
         public static readonly string HighlightingFile =

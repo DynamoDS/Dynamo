@@ -3801,34 +3801,16 @@ Para transformar este arquivo em um novo modelo, salve-o em uma pasta diferente 
     <value>Esse grupo está congelado. Clique para descongelar.</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>Enable Floating Toolbar</value>
+    <value>Ativar barra de ferramentas flutuante</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
-    <value>Enable a floating toolbar for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog.</value>
+    <value>Ative uma barra de ferramentas flutuante para as sugestões de nós para obter um fluxo de trabalho mais simplificado. Desative para retornar à caixa de diálogo pop-up tradicional.</value>
   </data>
   <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
     <value>_Descarregar dados do ícone de nó</value>
   </data>
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>Os dados do ícone de nó são descarregados em \"{0}\".</value>
-  </data>
-  <data name="GroupOptionalInportsText" xml:space="preserve">
-    <value>Opcional</value>
-  </data>
-  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
-    <value>Não conectado</value>
-  </data>
-  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
-    <value>Collapsed Group</value>
-  </data>
-  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
-    <value>Collapse to minimal size by default</value>
-  </data>
-  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
-    <value>Hide optional input ports by default</value>
-  </data>
-  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
-    <value>Hide unconnected output ports by default</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

@@ -849,13 +849,13 @@ Este pacote provavelmente contém uma montagem bloqueada. Será necessário carr
     <value>Carregando a biblioteca de nós...</value>
   </data>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
-    <value>No suggestions available</value>
+    <value>Nenhuma sugestão disponível</value>
   </data>
   <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
     <value>Baixa confiança</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>The model is continuously improving - check back soon</value>
+    <value>O modelo está em constante aprimoramento – volte em breve</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
     <value>Não há sugestões confiáveis disponíveis. O modelo está sendo melhorado continuamente – verifique novamente em breve.</value>
@@ -900,6 +900,6 @@ Este pacote provavelmente contém uma montagem bloqueada. Será necessário carr
     <value>Clique no ícone de brilho ao lado da porta para ativar o preenchimento automático de nós.</value>
   </data>
   <data name="UnknownErrorProcessingFile" xml:space="preserve">
-    <value>An unknown error occurred while processing the file.</value>
+    <value>Ocorreu um erro desconhecido ao processar o arquivo.</value>
   </data>
 </root>

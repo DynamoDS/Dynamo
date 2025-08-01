@@ -332,6 +332,7 @@ namespace CoreNodeModelsWpf.Charts
             PortConnected -= ScatterPlotNodeModel_PortConnected;
             PortDisconnected -= ScatterPlotNodeModel_PortDisconnected;
             VMDataBridge.DataBridge.Instance.UnregisterCallback(GUID.ToString());
+            base.Dispose();
         }
 
         #endregion

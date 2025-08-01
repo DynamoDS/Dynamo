@@ -348,6 +348,11 @@ namespace Dynamo.Graph.Nodes
             return false;
         }
 
+        /// <summary>
+        /// Logical line key for this output port, used to persistently map connectors.
+        /// </summary>
+        internal string LineIndexKey { get; set; }
+
         [JsonConstructor]
         internal PortModel(string name, string toolTip)
         {

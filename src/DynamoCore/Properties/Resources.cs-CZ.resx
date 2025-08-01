@@ -847,13 +847,13 @@ Tento balíček pravděpodobně obsahuje sestavu, která je blokována. Po odblo
     <value>Načítání knihovny uzlů...</value>
   </data>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
-    <value>No suggestions available</value>
+    <value>Žádná doporučení nejsou k dispozici</value>
   </data>
   <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
     <value>Nízká spolehlivost</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>The model is continuously improving - check back soon</value>
+    <value>Model se neustále vylepšuje – zkuste to brzy znovu</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
     <value>Nejsou dostupná žádná spolehlivá doporučení. Model se neustále vylepšuje – zkuste to brzy znovu.</value>
@@ -898,6 +898,6 @@ Tento balíček pravděpodobně obsahuje sestavu, která je blokována. Po odblo
     <value>Kliknutím na ikonu jiskřivky vedle portu aktivujete automatické dokončování uzlů.</value>
   </data>
   <data name="UnknownErrorProcessingFile" xml:space="preserve">
-    <value>An unknown error occurred while processing the file.</value>
+    <value>Při zpracování souboru došlo k neznámé chybě.</value>
   </data>
 </root>

@@ -3801,34 +3801,16 @@ Dynamo を再起動してアンインストールを完了します。
     <value>このグループはフリーズされています。クリックすると、フリーズが解除されます。</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>Enable Floating Toolbar</value>
+    <value>フローティング ツールバーを有効にする</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
-    <value>Enable a floating toolbar for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog.</value>
+    <value>ノードを提案するフローティング ツールバーを有効にすることで、ワークフローをより効率化できます。オフにすると、従来のポップアップ ダイアログに戻ります。</value>
   </data>
   <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
     <value>ノード アイコン データをダンプ(_D)</value>
   </data>
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>ノード アイコン データは \"{0}\" にダンプされます。</value>
-  </data>
-  <data name="GroupOptionalInportsText" xml:space="preserve">
-    <value>オプション</value>
-  </data>
-  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
-    <value>指定</value>
-  </data>
-  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
-    <value>Collapsed Group</value>
-  </data>
-  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
-    <value>Collapse to minimal size by default</value>
-  </data>
-  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
-    <value>Hide optional input ports by default</value>
-  </data>
-  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
-    <value>Hide unconnected output ports by default</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

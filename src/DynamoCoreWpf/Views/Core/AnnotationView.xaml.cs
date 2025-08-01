@@ -732,9 +732,9 @@ namespace Dynamo.Nodes
 
         private void OnNodeColorRectangleClicked(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Rectangle rectangle)
+            if (sender is Label label)
             {
-                if (rectangle.Fill is SolidColorBrush brush)
+                if (label.Background is SolidColorBrush brush)
                 {
                     // Update the model background color
                     ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
@@ -2186,17 +2186,21 @@ namespace Dynamo.Nodes
             return border;
         }
 
-        private Rectangle CreateColorSwatch(string hexColor)
+        private Label CreateColorSwatch(string hexColor)
         {
-            var rect = new Rectangle
+            var name = "C" + hexColor.Replace("#", "");
+            var rect = new Label
             {
                 Width = 13,
                 Height = 13,
-                Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(hexColor)),
+                Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(hexColor)),
                 Margin = new Thickness(3),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Name = name,
             };
 
+            rect.SetValue(System.Windows.Automation.AutomationProperties.NameProperty, name);
+            
             return rect;
         }
 
@@ -2483,16 +2487,25 @@ namespace Dynamo.Nodes
             gridFactory.AppendChild(contentPresenterFactory);
 
             // Add Warning/Error Icon
-            gridFactory.AppendChild(CreateWarningErrorIcon());
+            var warningIcon = CreateWarningErrorIcon();
+            warningIcon.SetValue(Grid.ColumnProperty, 0);
+            warningIcon.SetValue(FrameworkElement.HorizontalAlignmentProperty, HorizontalAlignment.Right);
+            gridFactory.AppendChild(warningIcon);
 
             // Add Frozen Button Grid
-            gridFactory.AppendChild(CreateFrozenButtonGrid());
+            var frozenButtonGrid = CreateFrozenButtonGrid();
+            frozenButtonGrid.SetValue(Grid.ColumnProperty, 1);
+            gridFactory.AppendChild(frozenButtonGrid);
 
             // Add Expander Toggle Button
-            gridFactory.AppendChild(CreateExpanderToggleButton());
+            var expanderToggle = CreateExpanderToggleButton();
+            expanderToggle.SetValue(Grid.ColumnProperty, 2);
+            gridFactory.AppendChild(expanderToggle);
 
             // Add Context Menu Button
-            gridFactory.AppendChild(CreateContextMenuButton());
+            var contextMenuButton = CreateContextMenuButton();
+            contextMenuButton.SetValue(Grid.ColumnProperty, 3);
+            gridFactory.AppendChild(contextMenuButton);
 
             return gridFactory;
         }
@@ -2506,6 +2519,8 @@ namespace Dynamo.Nodes
             imageFactory.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Bottom);
             imageFactory.SetValue(FrameworkElement.HorizontalAlignmentProperty, HorizontalAlignment.Right);
             imageFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 0, 2.5, 2.5));
+            imageFactory.SetValue(System.Windows.Automation.AutomationProperties.NameProperty, "WarningErrorIcon");
+            imageFactory.SetValue(System.Windows.Automation.AutomationProperties.AutomationIdProperty, "WarningErrorIcon");
 
             var imageStyle = new Style(typeof(Image));
 
@@ -2532,28 +2547,35 @@ namespace Dynamo.Nodes
             return imageFactory;
         }
 
-        private FrameworkElementFactory CreateToolTip()
+        private ToolTip CreateToolTip()
         {
-            var toolTip = new FrameworkElementFactory(typeof(DynamoToolTip));
-            toolTip.SetValue(DynamoToolTip.AttachmentSideProperty, DynamoToolTip.Side.Top);
-            toolTip.SetValue(FrameworkElement.StyleProperty, _dynamoToolTipTopStyle);
-            toolTip.SetValue(FrameworkElement.MarginProperty, new Thickness(5, 0, 0, 0));
+            var groupText = new TextBlock()
+            {
+                Margin = new Thickness(0, 0, 0, 10),
+            };
+            groupText.SetBinding(TextBlock.TextProperty, new Binding("AnnotationText"));
 
-            var stackPanel = new FrameworkElementFactory(typeof(StackPanel));
-            stackPanel.SetValue(StackPanel.OrientationProperty, Orientation.Vertical);
-            stackPanel.SetValue(FrameworkElement.MaxWidthProperty, 320.0);
+            var groupDescription = new TextBlock()
+            {
+                TextWrapping = TextWrapping.WrapWithOverflow,
+            };
+            groupDescription.SetBinding(TextBlock.TextProperty, new Binding("AnnotationDescriptionText"));
 
-            var textBlock1 = new FrameworkElementFactory(typeof(TextBlock));
-            textBlock1.SetBinding(TextBlock.TextProperty, new Binding("AnnotationText"));
-            textBlock1.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 0, 0, 10));
+            var stackPanel = new StackPanel
+            {
+                Orientation = Orientation.Vertical,
+                MaxWidth = 320
+            };
+            stackPanel.Children.Add(groupText);
+            stackPanel.Children.Add(groupDescription);
 
-            var textBlock2 = new FrameworkElementFactory(typeof(TextBlock));
-            textBlock2.SetBinding(TextBlock.TextProperty, new Binding("AnnotationDescriptionText"));
-            textBlock2.SetValue(TextBlock.TextWrappingProperty, TextWrapping.WrapWithOverflow);
-
-            stackPanel.AppendChild(textBlock1);
-            stackPanel.AppendChild(textBlock2);
-            toolTip.AppendChild(stackPanel);
+            var toolTip = new DynamoToolTip
+            {
+                AttachmentSide = DynamoToolTip.Side.Top,
+                Style = _dynamoToolTipTopStyle,
+                Margin = new Thickness(5, 0, 0, 0),
+                Content = stackPanel
+            };
 
             return toolTip;
         }
@@ -2581,6 +2603,8 @@ namespace Dynamo.Nodes
 
             // Create frozen button
             var buttonFactory = new FrameworkElementFactory(typeof(Button));
+            buttonFactory.SetValue(System.Windows.Automation.AutomationProperties.NameProperty, "FrezzeButton");
+            buttonFactory.SetValue(System.Windows.Automation.AutomationProperties.AutomationIdProperty, "FrezzeButton");
             buttonFactory.SetValue(FrameworkElement.WidthProperty, 16.0);
             buttonFactory.SetValue(FrameworkElement.HeightProperty, 16.0);
             buttonFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 0, 3.5, 3));
@@ -2595,14 +2619,15 @@ namespace Dynamo.Nodes
             });
 
             // Create button tooltip
-            var toolTipFactory = new FrameworkElementFactory(typeof(ToolTip));
-            toolTipFactory.SetValue(FrameworkElement.StyleProperty, _createGenericToolTipLightStyle);
-
-            var textBlockFactory = new FrameworkElementFactory(typeof(TextBlock));
-            textBlockFactory.SetValue(TextBlock.TextProperty, Wpf.Properties.Resources.GroupFrozenButtonToolTip);
-
-            toolTipFactory.AppendChild(textBlockFactory);
-            buttonFactory.SetValue(ToolTipProperty, toolTipFactory);
+            var tooltip = new ToolTip
+            {
+                Style = _createGenericToolTipLightStyle,
+                Content = new TextBlock
+                {
+                    Text = Wpf.Properties.Resources.GroupFrozenButtonToolTip
+                }
+            };
+            buttonFactory.SetValue(Button.ToolTipProperty, tooltip);
 
             gridFactory.AppendChild(buttonFactory);
             return gridFactory;
@@ -2617,6 +2642,8 @@ namespace Dynamo.Nodes
             toggleButtonFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 0, 0, 2.5));
             toggleButtonFactory.SetValue(Control.TemplateProperty, expanderTemplate);
             toggleButtonFactory.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Bottom);
+            toggleButtonFactory.SetValue(System.Windows.Automation.AutomationProperties.NameProperty, "ExpanderToggle");
+            toggleButtonFactory.SetValue(System.Windows.Automation.AutomationProperties.AutomationIdProperty, "ExpanderToggle");
 
             toggleButtonFactory.SetBinding(ToggleButton.IsCheckedProperty, new Binding("IsExpanded")
             {
@@ -2639,7 +2666,8 @@ namespace Dynamo.Nodes
             buttonFactory.SetValue(FrameworkElement.HeightProperty, 16.0);
             buttonFactory.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Bottom);
             buttonFactory.AddHandler(Button.ClickEvent, new RoutedEventHandler(contextMenu_Click));
-
+            buttonFactory.SetValue(System.Windows.Automation.AutomationProperties.NameProperty, "ContextMenu");
+            buttonFactory.SetValue(System.Windows.Automation.AutomationProperties.AutomationIdProperty, "ContextMenu");
             // Create button style
             var buttonStyle = new Style(typeof(Button));
             buttonStyle.Setters.Add(new Setter(Button.OverridesDefaultStyleProperty, true));

@@ -849,13 +849,13 @@ Es probable que este paquete contenga un montaje bloqueado. Deberá cargar de nu
     <value>Cargando biblioteca de nodos...</value>
   </data>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
-    <value>No suggestions available</value>
+    <value>No hay ninguna sugerencia disponible</value>
   </data>
   <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
     <value>Confianza baja</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>The model is continuously improving - check back soon</value>
+    <value>El modelo está mejorando continuamente; vuelva a comprobarlo pronto.</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
     <value>No hay sugerencias fiables disponibles. El modelo está mejorando continuamente; vuelva a consultar pronto.</value>
@@ -900,6 +900,6 @@ Es probable que este paquete contenga un montaje bloqueado. Deberá cargar de nu
     <value>Haga clic en el icono de brillo situado junto al puerto para activar la función Autocompletar nodo.</value>
   </data>
   <data name="UnknownErrorProcessingFile" xml:space="preserve">
-    <value>An unknown error occurred while processing the file.</value>
+    <value>Se ha producido un error desconocido al procesar el archivo.</value>
   </data>
 </root>
