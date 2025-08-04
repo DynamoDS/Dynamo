@@ -131,6 +131,10 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             writer.WriteValue(anno.WidthAdjustment);
             writer.WritePropertyName(nameof(ExtraAnnotationViewInfo.HeightAdjustment));
             writer.WriteValue(anno.HeightAdjustment);
+            writer.WritePropertyName(nameof(ExtraAnnotationViewInfo.UserSetWidth));
+            writer.WriteValue(anno.UserSetWidth);
+            writer.WritePropertyName(nameof(ExtraAnnotationViewInfo.UserSetHeight));
+            writer.WriteValue(anno.UserSetHeight);
             writer.WritePropertyName("Nodes");
             writer.WriteStartArray();
             foreach (var m in anno.Nodes)

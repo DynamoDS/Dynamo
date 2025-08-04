@@ -251,6 +251,8 @@ namespace Dynamo.Nodes
                 mainGroupThumb.DragDelta -= AnnotationRectangleThumb_DragDelta;
                 mainGroupThumb.MouseEnter -= Thumb_MouseEnter;
                 mainGroupThumb.MouseLeave -= Thumb_MouseLeave;
+                mainGroupThumb.DragStarted -= Thumb_DragStarted;
+                mainGroupThumb.DragCompleted -= Thumb_DragCompleted;
             }
             UnregisterNamesFromScope();
         }
@@ -636,6 +638,28 @@ namespace Dynamo.Nodes
         private void Thumb_MouseLeave(object sender, MouseEventArgs e)
         {
             ViewModel.WorkspaceViewModel.CurrentCursor = CursorLibrary.GetCursor(CursorSet.Pointer);
+        }
+
+        /// <summary>
+        /// Triggered when the user starts resizing the group using the resize thumb.
+        /// Flag that manual resizing is in progress so user-set-size is not overridden by the model logic.
+        /// </summary>
+        private void Thumb_DragStarted(object sender, DragStartedEventArgs e)
+        {
+            ViewModel.AnnotationModel.IsThumbResizing = true;
+        }
+
+        /// <summary>
+        /// Triggered when the user completes resizing the group using the resize thumb.
+        /// Finalizes the manually set size so it's preserved, and disables resizing flag.
+        /// </summary>
+        private void Thumb_DragCompleted(object sender, DragCompletedEventArgs e)
+        {
+            var model = ViewModel.AnnotationModel;
+            model.UserSetWidth = model.Width;
+            model.UserSetHeight = model.ModelAreaHeight;
+
+            ViewModel.AnnotationModel.IsThumbResizing = false;
         }
 
         private void GroupDescriptionTextBlock_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -1527,6 +1551,8 @@ namespace Dynamo.Nodes
             thumb.Style = _groupResizeThumbStyle;
             thumb.MouseEnter += Thumb_MouseEnter;
             thumb.MouseLeave += Thumb_MouseLeave;
+            thumb.DragStarted += Thumb_DragStarted;
+            thumb.DragCompleted += Thumb_DragCompleted;
 
             return thumb;
         }

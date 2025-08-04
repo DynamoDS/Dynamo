@@ -207,8 +207,10 @@ namespace Dynamo.Tests
             var heightAdjustment = 100;
 
             // Act
+            annotationModel.IsThumbResizing = true;
             annotationModel.WidthAdjustment = widthAdjustment;
             annotationModel.HeightAdjustment = heightAdjustment;
+            annotationModel.IsThumbResizing = false;
 
             // Assert
             Assert.That(annotationModel.Width == initialWidth + widthAdjustment);
