@@ -1892,6 +1892,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Advanced Sharing.
+        /// </summary>
+        public static string DynamoViewFileMenuGraphPropertiesAdvanced {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuGraphPropertiesAdvanced", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _General.
+        /// </summary>
+        public static string DynamoViewFileMenuGraphPropertiesGeneral {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuGraphPropertiesGeneral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Import Library....
         /// </summary>
         public static string DynamoViewFileMenuImport {
@@ -1987,6 +2005,15 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewFileMenuSaveAs {
             get {
                 return ResourceManager.GetString("DynamoViewFileMenuSaveAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Graph _Properties.
+        /// </summary>
+        public static string DynamoViewFileMenuShowGraphProperties {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuShowGraphProperties", resourceCulture);
             }
         }
         

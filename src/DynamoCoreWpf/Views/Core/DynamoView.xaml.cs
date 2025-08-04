@@ -266,6 +266,7 @@ namespace Dynamo.Controls
             this.dynamoViewModel.Model.WorkspaceHidden += OnWorkspaceHidden;
             this.dynamoViewModel.RequestEnableShortcutBarItems += DynamoViewModel_RequestEnableShortcutBarItems;
             this.dynamoViewModel.RequestExportWorkSpaceAsImage += OnRequestExportWorkSpaceAsImage;
+            this.dynamoViewModel.ShowGraphPropertiesRequested += DynamoViewModel_ShowGraphPropertiesRequested;
 
             //add option to update python engine for all python nodes in the workspace.
             AddPythonEngineToMainMenu();
@@ -286,6 +287,18 @@ namespace Dynamo.Controls
             DefaultMinWidth = MinWidth;
             PinHomeButton();
         }
+
+        private void DynamoViewModel_ShowGraphPropertiesRequested(object sender, EventArgs e)
+        {
+            var provider = viewExtensionManager.ViewExtensions.OfType<IGraphMetadataProvider>().FirstOrDefault();
+            var menuItem = provider?.GetGraphMetadataMenuItem();
+
+            if (menuItem != null)
+            {
+                menuItem.IsChecked = true;
+            }
+        }
+
         private void OnRequestCloseHomeWorkSpace()
         {
             CalculateWindowMinWidth();
@@ -1436,42 +1449,7 @@ namespace Dynamo.Controls
             // Load the new HomePage
             LoadHomePage();
 
-            // Injects the Graph Metadata menu item
-            InjectGraphMetadataMenuItem();
-
             loaded = true;            
-        }
-
-        /// <summary>
-        /// Injects the Graph Metadata menu item into the File menu.
-        /// </summary>
-        private void InjectGraphMetadataMenuItem()
-        {
-            var metadataProvider = viewExtensionManager.ViewExtensions
-                .OfType<IGraphMetadataProvider>()
-                .FirstOrDefault();
-
-            if (metadataProvider != null)
-            {
-                var menuItem = metadataProvider.GetGraphMetadataMenuItem();
-
-                if (menuItem != null)
-                {
-                    var fileMenu = this.FindName("fileMenu") as MenuItem;
-                    var importLibraryItem = this.FindName("importLibrary") as MenuItem;
-
-                    if (fileMenu != null && importLibraryItem != null)
-                    {
-                        int insertIndex = fileMenu.Items.IndexOf(importLibraryItem);
-
-                        if (insertIndex != -1)
-                        {
-                            fileMenu.Items.Insert(insertIndex + 1, new Separator());
-                            fileMenu.Items.Insert(insertIndex + 2, menuItem);
-                        }
-                    }
-                }
-            }
         }
 
         // Add the HomePage to the DynamoView once its loaded
@@ -2132,6 +2110,7 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestEnableShortcutBarItems -= DynamoViewModel_RequestEnableShortcutBarItems;
             this.dynamoViewModel.RequestExportWorkSpaceAsImage -= OnRequestExportWorkSpaceAsImage;
             this.dynamoViewModel.RequestShorcutToolbarLoaded -= onRequestShorcutToolbarLoaded;
+            this.dynamoViewModel.ShowGraphPropertiesRequested -= DynamoViewModel_ShowGraphPropertiesRequested;
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= OnPythonEngineListUpdated;
 
             if (homePage != null)

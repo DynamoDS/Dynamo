@@ -29,7 +29,7 @@ namespace Dynamo.GraphMetadata
             graphMetadataView.DataContext = viewModel;
 
             // Add a button to Dynamo View menu to manually show the window
-            this.graphMetadataMenuItem = new MenuItem { Header = Resources.MenuItemText, IsCheckable = true };
+            this.graphMetadataMenuItem = new MenuItem { IsCheckable = true };
             this.graphMetadataMenuItem.Checked += MenuItemCheckHandler;
             this.graphMetadataMenuItem.Unchecked += MenuItemUnCheckedHandler;
         }
