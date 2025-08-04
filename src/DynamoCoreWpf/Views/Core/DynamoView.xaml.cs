@@ -1436,28 +1436,39 @@ namespace Dynamo.Controls
             // Load the new HomePage
             LoadHomePage();
 
-            loaded = true;
+            // Injects the Graph Metadata menu item
+            InjectGraphMetadataMenuItem();
 
-            // Once everything is loaded, inject the GraphMetadata menu item
+            loaded = true;            
+        }
+
+        /// <summary>
+        /// Injects the Graph Metadata menu item into the File menu.
+        /// </summary>
+        private void InjectGraphMetadataMenuItem()
+        {
             var metadataProvider = viewExtensionManager.ViewExtensions
                 .OfType<IGraphMetadataProvider>()
                 .FirstOrDefault();
 
             if (metadataProvider != null)
             {
-                var menuItem = metadataProvider.GetGraphMetadataMenuItem(this.dynamoViewModel);
+                var menuItem = metadataProvider.GetGraphMetadataMenuItem();
 
                 if (menuItem != null)
                 {
-                    menuItem.Header = "Show Graph Properties!"; // ADD RESOURCE
                     var fileMenu = this.FindName("fileMenu") as MenuItem;
+                    var importLibraryItem = this.FindName("importLibrary") as MenuItem;
 
-                    if (fileMenu != null)
+                    if (fileMenu != null && importLibraryItem != null)
                     {
-                        fileMenu.Items.Insert(10, menuItem);
+                        int insertIndex = fileMenu.Items.IndexOf(importLibraryItem);
 
-                        var separator = new Separator();
-                        fileMenu.Items.Insert(11, separator);
+                        if (insertIndex != -1)
+                        {
+                            fileMenu.Items.Insert(insertIndex + 1, new Separator());
+                            fileMenu.Items.Insert(insertIndex + 2, menuItem);
+                        }
                     }
                 }
             }

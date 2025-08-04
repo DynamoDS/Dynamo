@@ -7,11 +7,9 @@ using Dynamo.GraphMetadata.Properties;
 using Dynamo.Wpf.Extensions;
 using System.Windows;
 using Dynamo.Graph.Workspaces;
-using Dynamo.ViewModels;
 
 namespace Dynamo.GraphMetadata
 {
-
     public class GraphMetadataViewExtension : ViewExtensionBase, IExtensionStorageAccess, IGraphMetadataProvider
     {
         internal GraphMetadataViewModel viewModel;
@@ -34,10 +32,13 @@ namespace Dynamo.GraphMetadata
             this.graphMetadataMenuItem = new MenuItem { Header = Resources.MenuItemText, IsCheckable = true };
             this.graphMetadataMenuItem.Checked += MenuItemCheckHandler;
             this.graphMetadataMenuItem.Unchecked += MenuItemUnCheckedHandler;
-            // // // this.viewLoadedParamsReference.AddExtensionMenuItem(this.graphMetadataMenuItem);
         }
 
-        public MenuItem GetGraphMetadataMenuItem(DynamoViewModel dynamoViewModel) // CAN REMOVE : DynamoViewModel dynamoViewModel ?
+        /// <summary>
+        /// Returns the menu item that triggers the Graph Metadata extension UI.
+        /// This item can be added to any Dynamo menu.
+        /// </summary>
+        public MenuItem GetGraphMetadataMenuItem()
         {
             return this.graphMetadataMenuItem;
         }
