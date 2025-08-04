@@ -214,6 +214,7 @@ namespace Dynamo.UI.Controls
             DataContextChanged += OnDataContextChanged;
             Loaded += OnPortViewLoaded;
             Unloaded += OnPortViewUnloaded;
+            MainGrid.PreviewMouseRightButtonUp += OnMainGridPreviewMouseRightButtonUp;
         }
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -439,6 +440,7 @@ namespace Dynamo.UI.Controls
             PortBackgroundBorder.MouseLeave -= OnMouseLeaveBackground;
             NodeAutoCompleteHover.MouseEnter -= OnMouseEnterHover;
             NodeAutoCompleteHover.MouseLeave -= OnMouseLeaveHover;
+            MainGrid.PreviewMouseRightButtonUp -= OnMainGridPreviewMouseRightButtonUp;
 
             DataContextChanged -= OnDataContextChanged;
             Unloaded -= OnPortViewUnloaded;
@@ -447,6 +449,11 @@ namespace Dynamo.UI.Controls
         {
             viewModel.PropertyChanged += OnPropertyChanged;
             Loaded -= OnPortViewLoaded;
+        }
+
+        private void OnMainGridPreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
         }
     }
 }
