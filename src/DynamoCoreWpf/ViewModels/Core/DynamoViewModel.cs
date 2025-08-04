@@ -3026,7 +3026,7 @@ namespace Dynamo.ViewModels
         {
             var vm = this;
 
-            if (string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName))
+            if (string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName) || Model.CurrentWorkspace.IsTemplate)
             {
                 if (CanShowSaveDialogAndSaveResult(parameter))
                 {
