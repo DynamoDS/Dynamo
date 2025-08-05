@@ -800,13 +800,13 @@ namespace Dynamo.Graph.Annotations
                 // While dragging the resize thumb or editing text
                 ModelAreaHeight = region.Height;
                 Height = ModelAreaHeight + TextBlockHeight;
-
                 Width = Math.Max(region.Width, TextMaxWidth + ExtendSize);
             }
             else
             {
                 // HEIGHT logic
-                if (UserSetHeight <= 0) // user has not resized the group
+                // user has not resized the group
+                if (UserSetHeight <= 0) 
                 {
                     ModelAreaHeight = groupCalculatedHeight;
                     Height = ModelAreaHeight + TextBlockHeight;
@@ -818,7 +818,8 @@ namespace Dynamo.Graph.Annotations
                     Height = ModelAreaHeight + TextBlockHeight;
                     HeightAdjustment = 0;
                 }
-                else // groupCalculatedHeight < DesiredHeight
+                // all nodes are within the user set size
+                else
                 {
                     HeightAdjustment = Math.Max(0, UserSetHeight - groupCalculatedHeight);
                     ModelAreaHeight = UserSetHeight;
@@ -826,26 +827,24 @@ namespace Dynamo.Graph.Annotations
                 }
 
                 // WIDTH logic
-                if (UserSetWidth <= 0) // user has not resized the group
+                // user has not resized the group
+                if (UserSetWidth <= 0) 
                 {
                     Width = Math.Max(region.Width, TextMaxWidth + ExtendSize);
                 }
-                else if (groupCalculatedWidth >= UserSetWidth) // some nodes are outside the user set size 
+                // some nodes are outside the user set size 
+                else if (groupCalculatedWidth >= UserSetWidth) 
                 {
                     Width = Math.Max(groupCalculatedWidth, TextMaxWidth + ExtendSize);
                     WidthAdjustment = 0;
                 }
-                else // groupCalculatedWidth < DesiredWidth
+                // all nodes are within the user set size
+                else
                 {
                     WidthAdjustment = Math.Max(0, UserSetWidth - groupCalculatedWidth);
                     Width = UserSetWidth;
                 }
             }
-
-            //// Store layout size and apply dimensions
-            //ModelAreaHeight = region.Height;
-            //Height = ModelAreaHeight + TextBlockHeight;
-            //Width = Math.Max(region.Width, TextMaxWidth + ExtendSize);
 
             // Only store the first calculated initial height
             if (InitialHeight <= 0.0)
