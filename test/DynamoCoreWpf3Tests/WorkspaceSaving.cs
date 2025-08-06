@@ -566,7 +566,8 @@ namespace Dynamo.Tests
 
             // load as template
             ViewModel.Model.OpenTemplateFromPath(newPath);
-            Assert.AreEqual(string.Empty, ViewModel.Model.CurrentWorkspace.FileName);
+            Assert.IsTrue(!string.IsNullOrEmpty(ViewModel.Model.CurrentWorkspace.FileName));
+            Assert.IsTrue(ViewModel.Model.CurrentWorkspace.IsTemplate);
             Assert.AreEqual("dummy description", ViewModel.Model.CurrentWorkspace.Description);
         }
 
