@@ -119,51 +119,51 @@
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="DesignScript.Builtin.Dictionary.ByKeysValues.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DesignScript.Builtin.Dictionary.ByKeysValues.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DesignScriptBuiltin\LargeIcons\DesignScript.Builtin.Dictionary.ByKeysValues.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DesignScript.Builtin.Dictionary.ByKeysValues.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DesignScript.Builtin.Dictionary.ByKeysValues.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DesignScriptBuiltin\SmallIcons\DesignScript.Builtin.Dictionary.ByKeysValues.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DesignScript.Builtin.Dictionary.Components.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DesignScript.Builtin.Dictionary.Components.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DesignScriptBuiltin\LargeIcons\DesignScript.Builtin.Dictionary.Components.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DesignScript.Builtin.Dictionary.Components.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DesignScript.Builtin.Dictionary.Components.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DesignScriptBuiltin\SmallIcons\DesignScript.Builtin.Dictionary.Components.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DesignScript.Builtin.Dictionary.Count.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DesignScript.Builtin.Dictionary.Count.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DesignScriptBuiltin\LargeIcons\DesignScript.Builtin.Dictionary.Count.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DesignScript.Builtin.Dictionary.Count.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DesignScript.Builtin.Dictionary.Count.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DesignScriptBuiltin\SmallIcons\DesignScript.Builtin.Dictionary.Count.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DesignScript.Builtin.Dictionary.Keys.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DesignScript.Builtin.Dictionary.Keys.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DesignScriptBuiltin\LargeIcons\DesignScript.Builtin.Dictionary.Keys.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DesignScript.Builtin.Dictionary.Keys.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DesignScript.Builtin.Dictionary.Keys.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DesignScriptBuiltin\SmallIcons\DesignScript.Builtin.Dictionary.Keys.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DesignScript.Builtin.Dictionary.RemoveKeys.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DesignScript.Builtin.Dictionary.RemoveKeys.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DesignScriptBuiltin\LargeIcons\DesignScript.Builtin.Dictionary.RemoveKeys.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DesignScript.Builtin.Dictionary.RemoveKeys.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DesignScript.Builtin.Dictionary.RemoveKeys.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DesignScriptBuiltin\SmallIcons\DesignScript.Builtin.Dictionary.RemoveKeys.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DesignScript.Builtin.Dictionary.SetValueAtKeys.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DesignScript.Builtin.Dictionary.SetValueAtKeys.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DesignScriptBuiltin\LargeIcons\DesignScript.Builtin.Dictionary.SetValueAtKeys.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DesignScript.Builtin.Dictionary.SetValueAtKeys.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DesignScript.Builtin.Dictionary.SetValueAtKeys.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DesignScriptBuiltin\SmallIcons\DesignScript.Builtin.Dictionary.SetValueAtKeys.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DesignScript.Builtin.Dictionary.ValueAtKey.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DesignScript.Builtin.Dictionary.ValueAtKey.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DesignScriptBuiltin\LargeIcons\DesignScript.Builtin.Dictionary.ValueAtKey.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DesignScript.Builtin.Dictionary.ValueAtKey.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DesignScript.Builtin.Dictionary.ValueAtKey.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DesignScriptBuiltin\SmallIcons\DesignScript.Builtin.Dictionary.ValueAtKey.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DesignScript.Builtin.Dictionary.Values.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DesignScript.Builtin.Dictionary.Values.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DesignScriptBuiltin\LargeIcons\DesignScript.Builtin.Dictionary.Values.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DesignScript.Builtin.Dictionary.Values.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DesignScript.Builtin.Dictionary.Values.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DesignScriptBuiltin\SmallIcons\DesignScript.Builtin.Dictionary.Values.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>
