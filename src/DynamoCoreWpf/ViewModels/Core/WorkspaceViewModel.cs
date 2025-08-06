@@ -170,13 +170,19 @@ namespace Dynamo.ViewModels
             RequestHideAllPopup?.Invoke(param);
         }
 
-        internal event Action<ShowHideFlags> RequestNodeAutoCompleteSearch;
+        internal event Action RequestNodeAutoCompleteSearch;
+        internal event Action<PortViewModel> RequestNodeAutoCompleteBar;
         internal event Action<ShowHideFlags, PortViewModel> RequestPortContextMenu;
         internal static event Action<MLNodeClusterAutoCompletionResponse> RequestNodeAutoCompleteViewExtension;
 
-        internal void OnRequestNodeAutoCompleteSearch(ShowHideFlags flag, bool ClusterNodeAutocomplete = false)
+        internal void OnRequestNodeAutoCompleteSearch()
         {
-            RequestNodeAutoCompleteSearch?.Invoke(flag);
+            RequestNodeAutoCompleteSearch?.Invoke();
+        }
+
+        internal void OnRequestNodeAutocompleteBar(PortViewModel viewModel)
+        {
+            RequestNodeAutoCompleteBar?.Invoke(viewModel);
         }
 
         internal void OnRequestPortContextMenu(ShowHideFlags flag, PortViewModel viewModel)
@@ -479,6 +485,50 @@ namespace Dynamo.ViewModels
             }
         }
 
+       /// <summary>
+       /// When enabled, some child WPF framework elements will not animate opacity changes,
+       /// and will enable bitmap cache on zoomed out state.
+       /// Depends on the node count threshold set via feature flag.
+       /// Useful for improving performance during zoom.
+       /// TODO DYN-8193 a future optimization if found to be necessary is to modify the styles this flag controls
+       /// to set visibility instead of opacity, this will likely lead to many fewer elements in the visual tree to
+       /// layout and render.
+       /// </summary>
+        [JsonIgnore]
+        public bool NodeCountOptimizationEnabled
+        {
+            get => nodeCountOptimizationEnabled;
+            set
+            {
+                if (nodeCountOptimizationEnabled != value)
+                {
+                    nodeCountOptimizationEnabled = value;
+                    RaisePropertyChanged(nameof(NodeCountOptimizationEnabled));
+                }
+            }
+        }
+        private  bool nodeCountOptimizationEnabled = false;
+
+        private int zoomAnimationThresholdFeatureFlagVal = 0;
+
+        [JsonIgnore]
+        internal double MaxZoomScaleForBitmapCache
+        {
+            get => maxZoomScaleForBitmapCache;
+            set
+            {
+                if (maxZoomScaleForBitmapCache != value)
+                {
+                    maxZoomScaleForBitmapCache = value;
+                    RaisePropertyChanged(nameof(MaxZoomScaleForBitmapCache));
+                }
+            }
+        }
+        private double maxZoomScaleForBitmapCache = 0;
+
+
+
+
         [JsonIgnore]
         public bool CanZoomIn
         {
@@ -532,6 +582,14 @@ namespace Dynamo.ViewModels
                 return geoScalingViewModel;
             }
         }
+
+        /// <summary>
+        /// Ensures that a preview control is initialized only when it is
+        /// absolutely needed. It lives here so that it can be shared by
+        /// all node views for reduced overhead and better management.
+        /// </summary>
+        internal Wpf.Utilities.ActionDebouncer DelayNodePreviewControl
+            = new Wpf.Utilities.ActionDebouncer(null);
 
         #endregion
 
@@ -606,15 +664,44 @@ namespace Dynamo.ViewModels
             foreach (NoteModel note in Model.Notes) Model_NoteAdded(note);
             foreach (AnnotationModel annotation in Model.Annotations) Model_AnnotationAdded(annotation);
             foreach (ConnectorModel connector in Model.Connectors) Connectors_ConnectorAdded(connector);
-            
-            NodeAutoCompleteSearchViewModel = new NodeAutoCompleteSearchViewModel(DynamoViewModel)
-            {
-                Visible = true
-            };
 
             geoScalingViewModel = new GeometryScalingViewModel(this.DynamoViewModel);
             geoScalingViewModel.ScaleValue = Convert.ToInt32(Math.Log10(Model.ScaleFactor));
+
+            DynamoFeatureFlagsManager.FlagsRetrieved += OnFlagsRetrieved;
+            //if we've already retrieved flags, grab the value,
+            zoomAnimationThresholdFeatureFlagVal = (int)(DynamoModel.FeatureFlags?.CheckFeatureFlag<long>("zoom_opacity_animation_nodenum_threshold", 0) ?? 0);
+            SetNodeCountOptimizationEnabled(zoomAnimationThresholdFeatureFlagVal);
+
+            maxZoomScaleForBitmapCache = (double)(DynamoModel.FeatureFlags?.CheckFeatureFlag<double>("zoom_bitmap_cache_threshold", 0) ?? 0);
         }
+
+        private void OnFlagsRetrieved()
+        {
+            zoomAnimationThresholdFeatureFlagVal = (int)(DynamoModel.FeatureFlags?.CheckFeatureFlag<long>("zoom_opacity_animation_nodenum_threshold", 0) ?? 0);
+            SetNodeCountOptimizationEnabled(zoomAnimationThresholdFeatureFlagVal);
+            DynamoFeatureFlagsManager.FlagsRetrieved -= OnFlagsRetrieved;
+        }
+
+        private void SetNodeCountOptimizationEnabled(int featureFlagValue)
+        {
+            //threshold mode so we can tune the cutoff.
+            if (featureFlagValue>0)
+            {
+                NodeCountOptimizationEnabled = Nodes.Count > featureFlagValue;
+            }
+            //always enable animations (ie, disable the feature flag)
+            else if (featureFlagValue == 0)
+            {
+                NodeCountOptimizationEnabled = false;
+            }
+            //always disable animations
+            else if (featureFlagValue<0)
+            {
+                NodeCountOptimizationEnabled = true;
+            }
+        }
+
         /// <summary>
         /// This event is triggered from Workspace Model. Used in instrumentation
         /// </summary>
@@ -649,6 +736,8 @@ namespace Dynamo.ViewModels
             DynamoViewModel.CopyCommand.CanExecuteChanged -= CopyPasteChanged;
             DynamoViewModel.PasteCommand.CanExecuteChanged -= CopyPasteChanged;
 
+            DynamoFeatureFlagsManager.FlagsRetrieved -= OnFlagsRetrieved;
+
             var nodeViewModels = Nodes.ToList();
             nodeViewModels.ForEach(nodeViewModel => nodeViewModel.Dispose());
             nodeViewModels.ForEach(nodeViewModel => this.unsubscribeNodeEvents(nodeViewModel));
@@ -665,6 +754,9 @@ namespace Dynamo.ViewModels
             InCanvasSearchViewModel?.Dispose();
             NodeAutoCompleteSearchViewModel.LuceneUtility?.DisposeAll();
             NodeAutoCompleteSearchViewModel?.Dispose();
+
+            DelayNodePreviewControl?.Dispose();
+            DelayNodePreviewControl = null;
         }
 
         internal void ZoomInInternal()
@@ -764,6 +856,12 @@ namespace Dynamo.ViewModels
 
                     Model.FileName = filePath;
                     Model.OnSaved();
+
+                    if (Path.GetExtension(filePath).Equals(".dyn") && saveContext.Equals(SaveContext.SaveAs))
+                    {
+                        DynamoViewModel.Model.ClearCurrentWorkspace();
+                        DynamoViewModel.Model.OpenJsonFileFromPath(saveContent, filePath, false);
+                    }
                 }
 
                 // If a new CustomNodeWorkspaceModel is created, store that info in CustomNodeManager without creating an instance of the custom node.
@@ -845,6 +943,7 @@ namespace Dynamo.ViewModels
         {
             var viewModel = new AnnotationViewModel(this, annotation);
             Annotations.Add(viewModel);
+            viewModel.SnapInputEvent += nodeViewModel_SnapInputEvent;
         }
 
         private void Model_AnnotationRemoved(AnnotationModel annotation)
@@ -852,7 +951,6 @@ namespace Dynamo.ViewModels
             var matchingAnnotation = Annotations.First(x => x.AnnotationModel == annotation);
             Annotations.Remove(matchingAnnotation);
             matchingAnnotation.Dispose();
-           
         }
 
         private void Model_AnnotationsCleared()
@@ -886,6 +984,7 @@ namespace Dynamo.ViewModels
             nodeViewModel.NodeLogic.Modified -= OnNodeModified;
         }
 
+
         void Model_NodeRemoved(NodeModel node)
         {
             NodeViewModel nodeViewModel;
@@ -901,6 +1000,8 @@ namespace Dynamo.ViewModels
             nodeViewModel.Dispose();
 
             PostNodeChangeActions();
+
+            SetNodeCountOptimizationEnabled(zoomAnimationThresholdFeatureFlagVal);
         }
 
         void Model_NodeAdded(NodeModel node)
@@ -916,6 +1017,8 @@ namespace Dynamo.ViewModels
                 Errors.Add(nodeViewModel.ErrorBubble);
 
             PostNodeChangeActions();
+
+            SetNodeCountOptimizationEnabled(zoomAnimationThresholdFeatureFlagVal);
         }
 
         void PostNodeChangeActions()
@@ -1127,6 +1230,26 @@ namespace Dynamo.ViewModels
                 }
             }
             return IsInCollapsedGroup;
+        }
+
+        /// <summary>
+        /// Handles double-clicks on annotation groups by creating a CBN at the click position
+        /// and adding it to the group if the position intersects with the group's region.
+        /// </summary>
+        internal void HandleAnnotationDoubleClick(Point position, AnnotationModel annotation)
+        {
+            if (DynamoViewModel?.Model == null) return;
+
+            var model = DynamoViewModel.Model;
+
+            // Create and add code node block
+            var newNode = new CodeBlockNodeModel(model.LibraryServices);
+            var cmd = new DynamoModel.CreateNodeCommand(newNode, position.X, position.Y, false, true);
+            DynamoViewModel.ExecuteCommand(cmd);
+
+            var updated = annotation.Nodes.ToList();
+            updated.Add(newNode);
+            annotation.Nodes = updated;
         }
 
         private static bool IsInRegion(Rect2D region, ILocatable locatable, bool fullyEnclosed)
@@ -1873,4 +1996,5 @@ namespace Dynamo.ViewModels
             ViewModel = vm;
         }
     }
-}
+
+    }

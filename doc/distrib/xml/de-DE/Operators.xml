@@ -1,0 +1,104 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Operators</name>
+    </assembly>
+    <members>
+        <member name="%add">
+            <summary>Gibt die Addition von x plus y zurück</summary>
+            <param name="x">Ganzzahlwert, double-Wert oder string</param>
+            <param name="y">Ganzzahlwert, double-Wert oder string</param>
+            <returns name="var">Die Summe zweier Eingabezahlen oder die Verkettung von zwei Zeichenfolgen</returns>
+            <search>add, plus, addition, +</search>
+        </member>
+		<member name="%sub">
+            <summary>Gibt die Subtraktion von x minus y zurück</summary>
+            <param name="x">Ganzzahl oder double-Wert</param>
+            <param name="y">Ganzzahl oder double-Wert</param>
+            <returns name="number">Ergebnis der y-Eingabe subtrahiert von der x-Eingabe</returns>
+            <search>sub, subtract, difference, -</search>
+        </member>		
+		<member name="%mul">
+            <summary>Gibt die Multiplikation von x mal y zurück</summary>
+            <param name="x">Ganzzahl oder double-Wert</param>
+            <param name="y">Ganzzahl oder double-Wert</param>
+            <returns name="number">Das Produkt der beiden eingegebenen Zahlen</returns>
+            <search>mul, multiply, product, times, *, x</search>
+        </member>
+		<member name="%div">
+            <summary>Gibt die Division von x durch y zurück</summary>
+            <param name="x">Ganzzahl oder double-Wert</param>
+            <param name="y">Ganzzahl oder double-Wert</param>
+            <returns name="double">Ergebnis der Division</returns>
+            <search>div, divide, product</search>
+        </member>
+		<member name="%eq">
+            <summary>Vergleicht, ob x und y gleich sind</summary>
+            <param name="x">Basistypobjekt für den Vergleich (z. B. bool, int, double, string usw.)</param>
+            <param name="y">Basistypobjekt für den Vergleich (z. B. bool, int, double, string usw.)</param>
+            <returns name="bool">Ergebnis der Gleichheitsprüfung</returns>
+            <search>eq, equal, =</search>
+        </member>
+		<member name="%ge">
+            <summary>Vergleicht, ob x größer als oder gleich y ist</summary>
+            <param name="x">Ganzzahl oder double-Wert</param>
+            <param name="y">Ganzzahl oder double-Wert</param>
+            <returns name="bool">True, wenn x gleich oder größer als y ist, sonst False</returns>
+            <search>greater,equal</search>
+        </member>
+		<member name="%gt">
+            <summary>Vergleicht, ob x größer als y ist</summary>
+            <param name="x">Ganzzahl oder double-Wert</param>
+            <param name="y">Ganzzahl oder double-Wert</param>
+            <returns name="bool">True, wenn x größer als y ist, sonst False</returns>
+            <search>greater</search>
+        </member>
+		<member name="%mod">
+            <summary>Modulo: ermittelt den Rest von x/y</summary>
+            <param name="x">Ganzzahl oder double-Wert</param>
+            <param name="y">Ganzzahl oder double-Wert</param>
+            <returns name="number">Rest der x-Eingabe nach Division durch die y-Eingabe</returns>
+            <search>mod, modulo, remainder</search>
+        </member>
+		<member name="%le">
+            <summary>Vergleicht, ob x kleiner als oder gleich y ist</summary>
+            <param name="x">Ganzzahl oder double-Wert</param>
+            <param name="y">Ganzzahl oder double-Wert</param>
+            <returns name="bool">Ergebnis der Prüfung</returns>
+            <search>less,equal</search>
+        </member>
+		<member name="%lt">
+            <summary>Vergleicht, ob x kleiner als y ist</summary>
+            <param name="x">Ganzzahl oder double-Wert</param>
+            <param name="y">Ganzzahl oder double-Wert</param>
+            <returns name="bool">Ergebnis der Prüfung</returns>
+            <search>less</search>
+        </member>
+		<member name="%and">
+            <summary>Logischer UND-Operator</summary>
+            <param name="x">Eine boolsche Prüfung auf True</param>
+            <param name="y">Ein weiterer boolescher Wert für die Prüfung auf True</param>
+            <returns name="bool">Ergebnis der Prüfung</returns>
+            <search>and</search>
+        </member>
+		<member name="%or">
+            <summary>Logischer ODER-Operator</summary>
+            <param name="bool">Eine boolsche Prüfung auf True</param>
+            <param name="otherBool">Ein weiterer boolescher Wert für die Prüfung auf True</param>
+            <returns name="bool">True, wenn eine der Eingaben True ist</returns>
+            <search>or</search>
+        </member>
+		<member name="%nq">
+            <summary>Gibt True zurück, wenn die zwei Werte unterschiedlich sind</summary>
+            <param name="x">Ganzzahl oder double-Wert</param>
+            <param name="y">Ganzzahl oder double-Wert</param>
+            <returns name="bool">Ergebnis der Prüfung</returns>
+            <search>equal</search>
+        </member>
+		<member name="%Not">
+		            <summary>Negiert die Eingabe, gibt also false zurück, wenn die Eingabe true ist.</summary>
+            <param name="x">umzukehrender boolescher Wert.</param>
+            <returns name="bool">type var[]..[] (umgekehrter boolescher Wert)</returns>
+            <search>not</search>
+        </member>
+    </members>
+</doc>

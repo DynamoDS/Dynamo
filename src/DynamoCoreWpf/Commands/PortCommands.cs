@@ -6,7 +6,6 @@ namespace Dynamo.ViewModels
     {
         private DelegateCommand connectCommand;
         private DelegateCommand autoCompleteCommand;
-        private DelegateCommand nodeClusterAutoCompleteCommand;
         private DelegateCommand portMouseEnterCommand;
         private DelegateCommand portMouseLeaveCommand;
         private DelegateCommand portMouseLeftButtonCommand;
@@ -33,14 +32,13 @@ namespace Dynamo.ViewModels
             get
             {
                 if (autoCompleteCommand == null)
-                    autoCompleteCommand ??= new DelegateCommand(NodeViewModel.WorkspaceViewModel.DynamoViewModel.IsDNAClusterPlacementEnabled ? AutoCompleteCluster : AutoComplete, CanAutoComplete);
-
+                    autoCompleteCommand ??= new DelegateCommand(AutoComplete, CanAutoComplete);
                 return autoCompleteCommand;
             }
         }
 
         /// <summary>
-        /// Command to open an Port's Context Menu popup
+        /// Command to open a Port's Context Menu popup
         /// </summary>
         public DelegateCommand NodePortContextMenuCommand
         {
@@ -48,7 +46,7 @@ namespace Dynamo.ViewModels
             {
                 if (nodePortContextMenuCommand == null)
                 {
-                    nodePortContextMenuCommand = new DelegateCommand(NodePortContextMenu);
+                    nodePortContextMenuCommand = new DelegateCommand(NodePortContextMenu, CanShowContextMenu);
                 }
                 return nodePortContextMenuCommand;
             }

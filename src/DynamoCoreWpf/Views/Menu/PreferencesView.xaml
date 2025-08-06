@@ -14,6 +14,7 @@
         xmlns:fa="clr-namespace:FontAwesome5;assembly=FontAwesome5.Net" 
         xmlns:packagemanager="clr-namespace:Dynamo.Wpf.Views.PackageManager"
         xmlns:trustedpaths="clr-namespace:Dynamo.Wpf.Views"
+        xmlns:converters="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
         xmlns:wpfControls="clr-namespace:Dynamo.Wpf.Controls"
         d:DataContext="{d:DesignInstance Type=viewModels:PreferencesViewModel}"
         WindowStartupLocation="CenterOwner"
@@ -911,6 +912,7 @@
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
 
                                     <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="0">
@@ -940,35 +942,68 @@
                                             </Image>
                                         </Label>
                                     </StackPanel>
-
-                                    <StackPanel Orientation="Horizontal" Margin="0,-5,0,0" Grid.Row="1"
+                                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="1">
+                                            <ToggleButton Name="NodeAutocompleteNewUIToggle"
+                                                      Width="{StaticResource ToggleButtonWidth}"
+                                                      Height="{StaticResource ToggleButtonHeight}"
+                                                      VerticalAlignment="Center"
+                                                      IsEnabled="{Binding Path=NodeAutocompleteIsChecked}"
+                                                      IsChecked="{Binding Path=NodeAutocompleteNewUIIsChecked}"
+                                                      Style="{StaticResource EllipseToggleButton1}"/>
+                                            <Label Content="{x:Static p:Resources.PreferencesViewEnableNodeAutoCompleteNewUI}"
+                                               FontWeight="Normal"
+                                               Margin="10,0,0,0"
+                                               VerticalAlignment="Center"
+                                               Foreground="{StaticResource PreferencesWindowFontColor}">
+                                            </Label>
+                                            <Label Name="NodeAutocompleteNewUILabel" MouseLeftButtonDown="OnMoreInfoClicked">
+                                                <Image Name="NodeAutocompleteNewUIToolTip"
+                                                       Margin="5,3,0,0"
+                                                       Width="14"
+                                                       Height="14"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"
+                                                       Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/question-default-16px.png"
+                                                       ToolTipService.ShowDuration="30000">
+                                                    <Image.ToolTip>
+                                                        <ToolTip Content="{x:Static p:Resources.PreferencesViewEnableNodeAutoCompleteNewUITooltipText}" Style="{StaticResource GenericToolTipLight}"/>
+                                                    </Image.ToolTip>
+                                                </Image>
+                                            </Label>
+                                        </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,0" Grid.Row="2"
                                                 Visibility="{Binding HideAutocompleteMethodOptions, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
                                         <!-- This Grid contains controls for selecting the Node autocomplete method -->
-                                        <Grid Margin="60,0,0,0">
+                                        <Grid Margin="0,0,0,0">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="*" />
                                                 <RowDefinition Height="*" />
+                                                <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
                                             <Label Grid.Row="0" 
-                                                Margin="-8,15,10,3"                                               
+                                                Margin="-5,5,0,0"                                               
                                                 Content="{x:Static p:Resources.PreferencesNodeAutocompleteMethod}" 
                                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                            <Grid Grid.Row="1" >
+                                            <Grid Grid.Row="1" 
+                                                  Margin="0,5,0,5">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition x:Name="colObjectType" Width="Auto"/>
-                                                    <ColumnDefinition x:Name="colMachineLearning" Width="Auto"/>
-                                                    <ColumnDefinition x:Name="colMLbetaTag" Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <RadioButton Grid.Column="0"
+                                                    <RadioButton Grid.Column="0"
                                                      x:Name="ObjectTypeRadioButton"
                                                      MinWidth="90"
-                                                     Margin="-3,0,20,0"
                                                      Style="{StaticResource RunSettingsRadioButtons}"
                                                      IsChecked="{Binding Path=NodeAutocompleteMachineLearningIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=False}"
                                                      Content="{x:Static p:Resources.ObjectType}"
                                                      IsEnabled="{Binding Path=NodeAutocompleteIsChecked}"/>
-                                                <RadioButton Grid.Column="1"
+                                                </Grid>
+                                            <Grid Grid.Row="2"
+                                                  Margin="0,5,0,5">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition x:Name="colMachineLearning" Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <RadioButton Grid.Column="0"
                                                      x:Name="RecommendedNodesRadioButton"
                                                      MinWidth="90"
                                                      Style="{StaticResource RunSettingsRadioButtons}"
@@ -976,36 +1011,20 @@
                                                      Content="{x:Static p:Resources.RecommendedNodes}"
                                                      Click="RecommendedNodesRadioButton_Click"
                                                      IsEnabled="{Binding Path=NodeAutocompleteIsChecked}"/>
-                                                <!--Beta tag-->
-                                                <Label Grid.Column="2"
-                                                    Name="NodeRecommendationBetaTag"
-                                                    Content="{x:Static p:Resources.PreferencesViewBetaTag}"
-                                                    Background="{StaticResource SecondaryGray}"
-                                                    Foreground="{StaticResource PreferencesWindowFontColor}"
-                                                    Margin="10,-5,0,0"
-                                                    FontSize="10"
-                                                    FontWeight="SemiBold"
-                                                    Visibility="{Binding NodeAutocompleteMachineLearningIsBeta, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                <Label.Resources>
-                                                        <Style TargetType="Border">
-                                                            <Setter Property="CornerRadius" Value="10"></Setter>
-                                                        </Style>
-                                                    </Label.Resources>
-                                                </Label>
                                             </Grid>
-                                            <Grid Grid.Row="2">
+                                            <Grid Grid.Row="3">
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="*" />
                                                     <RowDefinition Height="*" />
                                                     <RowDefinition Height="*" />
                                                     <RowDefinition Height="*" />
                                                 </Grid.RowDefinitions>
-                                                <StackPanel Margin="-10,5,0,0" Orientation="Horizontal" Grid.Row="0">
+                                                <StackPanel Margin="-5,0,0,0" Orientation="Horizontal" Grid.Row="0">
                                                     <Label Content="{x:Static p:Resources.MLRecommendationNumberOfResults}"
                                                         VerticalAlignment="Center"
                                                         Foreground="{StaticResource PreferencesWindowFontColor}"
                                                         FontWeight="Normal"/>
-                                                    <TextBox Name="MLRecommendationResultsNumber"                                                        
+                                                        <TextBox Name="MLRecommendationResultsNumber"                                                        
                                                         HorizontalAlignment="Left"
                                                         Margin="2,0,0,0"
                                                         MinWidth="25"
@@ -1015,63 +1034,25 @@
                                                         Background="{StaticResource PreferencesWindowBackgroundColor}"
                                                         Foreground="{StaticResource PreferencesWindowFontColor}"
                                                         BorderThickness="0,0,0,2"
-                                                        PreviewTextInput="NumberValidationTextBox"
-                                                        IsEnabled="{Binding Path=NodeAutocompleteMachineLearningIsChecked}"/>
-                                                </StackPanel>
-                                                <StackPanel Margin="-60,10,0,0" Orientation="Horizontal" Grid.Row="1">
-                                                    <ToggleButton Name="MLRecommendationConfidenceThresholdToogle"
-                                                        Width="{StaticResource ToggleButtonWidth}"
-                                                        Height="{StaticResource ToggleButtonHeight}"
-                                                        VerticalAlignment="Center"
-                                                        IsChecked="{Binding Path=HideNodesBelowSpecificConfidenceLevelIsChecked}"
-                                                        Style="{StaticResource EllipseToggleButton1}"
-                                                        IsEnabled="{Binding Path=EnableHideNodesToggle}"/>
-                                                    <Label Content="{x:Static p:Resources.PreferredConfidenceLevel}" 
-                                                        Margin="10,0,0,0"
-                                                        VerticalAlignment="Center"
-                                                        Foreground="{StaticResource PreferencesWindowFontColor}"
-                                                        FontWeight="Regular"/>
-                                                    <Image Name="MLRecommendationConfidenceThresholdToolTip"
-                                                        Margin="5,3,0,0"
-                                                        Width="14"
-                                                        Height="14"
-                                                        HorizontalAlignment="Center"
-                                                        VerticalAlignment="Center"
-                                                        Style="{StaticResource QuestionIcon}"
-                                                        ToolTipService.ShowDuration="30000">
-                                                        <Image.ToolTip>
-                                                            <ToolTip Content="{x:Static p:Resources.PreferredConfidenceLevelInfo}" Style="{StaticResource GenericToolTipLight}"/>
-                                                        </Image.ToolTip>
-                                                    </Image>
-                                                </StackPanel>
-                                                <StackPanel Margin="-10,5,0,0" Orientation="Horizontal" Grid.Row="2">
-                                                    <Label Content="{x:Static p:Resources.PreferencesViewZoomScaling0Percent}"
-                                                        Name="lblConfidenceLevelLabelStart"
-                                                        VerticalAlignment="Center"
-                                                        Foreground="{StaticResource PreferencesWindowFontColor}"
-                                                        FontWeight="Regular"/>
-                                                    <Slider Width="300"
-                                                        Minimum="0"
-                                                        Maximum="100"
-                                                        Value="{Binding Path=MLRecommendationConfidenceLevel, Mode=TwoWay}"
-                                                        IsEnabled="{Binding Path=EnableConfidenceLevelSlider}"
-                                                        ValueChanged="sliderConfidenceLevel_ValueChanged">
-                                                    </Slider>
-                                                    <Label Content="{x:Static p:Resources.PreferencesViewZoomScaling100Percent}" 
-                                                        Margin="0,-5,0,0"
-                                                        VerticalAlignment="Center"
-                                                        Foreground="{StaticResource PreferencesWindowFontColor}"
-                                                        FontWeight="Regular"/>
-                                                </StackPanel>
-                                                <StackPanel Margin="-10,5,0,0" Orientation="Horizontal" Grid.Row="3">
-                                                    <Label
-                                                        Name="lblConfidenceLevel"
-                                                        Width="30"
-                                                        VerticalAlignment="Center"
-                                                        HorizontalContentAlignment="Center"
-                                                        Foreground="{StaticResource PreferencesWindowFontColor}"
-                                                        FontWeight="Regular"
-                                                        Content="{Binding Path=MLRecommendationConfidenceLevel, Mode=TwoWay}"/>
+                                                        PreviewTextInput="NumberValidationTextBox">
+                                                            <TextBox.Style>
+                                                                <Style TargetType="TextBox">
+                                                                    <!-- Default state -->
+                                                                    <Setter Property="IsEnabled" Value="False"/>
+
+                                                                    <!-- Enable only when both conditions are true -->
+                                                                    <Style.Triggers>
+                                                                        <MultiDataTrigger>
+                                                                            <MultiDataTrigger.Conditions>
+                                                                                <Condition Binding="{Binding NodeAutocompleteMachineLearningIsChecked}" Value="True"/>
+                                                                                <Condition Binding="{Binding NodeAutocompleteIsChecked}" Value="True"/>
+                                                                            </MultiDataTrigger.Conditions>
+                                                                            <Setter Property="IsEnabled" Value="True"/>
+                                                                        </MultiDataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </TextBox.Style>
+                                                        </TextBox>
                                                 </StackPanel>
                                             </Grid>
                                         </Grid>
@@ -1198,11 +1179,22 @@
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
+                                        <Label Grid.Row="0"
+                                               Content="{x:Static p:Resources.PreferencesViewGroupStylesHeader}"
+                                               Margin="-3,0,10,0"
+                                               FontWeight="Bold"
+                                               Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                         <Button x:Name="AddStyleButton"
                                                 Style="{StaticResource SolidButtonStyleSmaller}"      
                                                 HorizontalAlignment="Left"
-                                                Grid.Row="0"
+                                                Grid.Row="1"
                                                 MaxWidth="120"
                                                 MinWidth="100"
                                                 Margin="0,5,0,5"
@@ -1216,7 +1208,7 @@
                                                 MinWidth="335"
                                                 Margin="3,0,72,5"
                                                 Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}"
-                                                Grid.Row="1">
+                                                Grid.Row="2">
                                             <Grid>
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="*"></RowDefinition>
@@ -1290,7 +1282,7 @@
                                                  BorderBrush="Transparent"
                                                  BorderThickness="1"
                                                  Margin="0"
-                                                 Grid.Row="2"
+                                                 Grid.Row="3"
                                                  LostFocus="GroupStylesListBox_LostFocus"
                                                  ItemsSource="{Binding StyleItemsList}"
                                                  ItemTemplate="{StaticResource styleViewItemTemplate}"
@@ -1303,6 +1295,88 @@
                                                 </ItemsPanelTemplate>
                                             </ListBox.ItemsPanel>
                                         </ListBox>
+                                        <Grid Grid.Row="4" Margin="0,12,0,0">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <ToggleButton Width="{StaticResource ToggleButtonWidth}"
+                                                              Height="{StaticResource ToggleButtonHeight}"
+                                                              VerticalAlignment="Center"
+                                                              Margin="2,0,0,0"
+                                                              Grid.Column="0"
+                                                              IsEnabled="True"
+                                                              IsChecked="{Binding Path=ShowDefaultGroupDescription}"
+                                                              Style="{StaticResource EllipseToggleButton1}"/>
+                                                <Label Grid.Column="1"
+                                                       Content="{x:Static p:Resources.PreferencesViewShowDefaultGroupDescription}"
+                                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                            </Grid>
+                                        </Grid>
+                                        <!--Hide ports-->
+                                        <Label Grid.Row="5"
+                                               Content="{x:Static p:Resources.PreferencesViewCollapsedGroupHeader}"
+                                               Margin="-3,12,0,0"
+                                               FontWeight="Bold"
+                                               Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        <Grid Grid.Row="6" Margin="0,12,0,0">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <ToggleButton Width="{StaticResource ToggleButtonWidth}"
+                                                              Height="{StaticResource ToggleButtonHeight}"
+                                                              VerticalAlignment="Center"
+                                                              Margin="2,0,0,0"
+                                                              Grid.Column="0"
+                                                              IsEnabled="True"
+                                                              IsChecked="{Binding Path=OptionalInputsCollapsed}"
+                                                              Style="{StaticResource EllipseToggleButton1}"/>
+                                                <Label Grid.Column="1"
+                                                       Content="{x:Static p:Resources.PreferencesViewHideInportsDescription}"
+                                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                            </Grid>
+                                        </Grid>
+                                        <Grid Grid.Row="7" Margin="0,12,0,0">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <ToggleButton Width="{StaticResource ToggleButtonWidth}"
+                                                              Height="{StaticResource ToggleButtonHeight}"
+                                                              VerticalAlignment="Center"
+                                                              Margin="2,0,0,0"
+                                                              Grid.Column="0"
+                                                              IsEnabled="True"
+                                                              IsChecked="{Binding Path=UnconnectedOutputsCollapsed}"
+                                                              Style="{StaticResource EllipseToggleButton1}"/>
+                                                <Label Grid.Column="1"
+                                                       Content="{x:Static p:Resources.PreferencesViewHideOutportsDescription}"
+                                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                            </Grid>
+                                        </Grid>
+                                        <Grid Grid.Row="8" Margin="0,12,0,5">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <ToggleButton Width="{StaticResource ToggleButtonWidth}"
+                                                              Height="{StaticResource ToggleButtonHeight}"
+                                                              VerticalAlignment="Center"
+                                                              Margin="2,0,0,0"
+                                                              Grid.Column="0"
+                                                              IsEnabled="True"
+                                                              IsChecked="{Binding Path=CollapseToMinSize}"
+                                                              Style="{StaticResource EllipseToggleButton1}"/>
+                                                <Label Grid.Column="1"
+                                                       Content="{x:Static p:Resources.PreferencesViewCollapseToMinSizeDescription}"
+                                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                            </Grid>
+                                        </Grid>
                                     </Grid>
                                 </ScrollViewer>
                             </Expander>
@@ -1326,6 +1400,7 @@
                                         <Slider Width="100"
                                             Minimum="8"
                                             Maximum="512"
+                                            Style="{StaticResource SliderStyle}"
                                             Value="{Binding Path=TessellationDivisions, Mode=TwoWay}">
                                         </Slider>
                                         <TextBlock Text="{x:Static p:Resources.DynamoViewSettingMenuHighRenderPrecision}"
@@ -1922,7 +1997,19 @@
                                     <Hyperlink Click="OnInstalledPackagesHyperlinkClicked"
                                                 Foreground="{StaticResource TextBlockLinkForegroundColor}">
                                         <TextBlock Name="PackageManagerLink"
-                                                    Text="{x:Static p:Resources.InstalledPackagePartialHyperlinkMessage}" />
+                                                    Text="{x:Static p:Resources.InstalledPackagePartialHyperlinkMessage}"
+                                                    IsHitTestVisible="{Binding NoNetworkMode, Converter={StaticResource InverseBooleanConverter}}">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <!--<Setter Property="Foreground" Value="Black" />-->
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding NoNetworkMode}" Value="True">
+                                                            <Setter Property="Foreground" Value="Gray" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
                                     </Hyperlink>
                                     <Run>.</Run>        
                                 </TextBlock>

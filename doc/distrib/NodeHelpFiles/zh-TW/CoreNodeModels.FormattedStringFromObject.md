@@ -15,3 +15,7 @@ N : 數字 N2 1000 -> "1,000.00"
 此節點的預設值為 `G`，這會輸出一個精簡但可變的表現法。
 
 [請參閱 Microsoft 文件以取得更多詳細資訊。](https://learn.microsoft.com/zh-tw/dotnet/standard/base-types/standard-numeric-format-strings#standard-format-specifiers)
+___
+## 範例檔案
+
+![Formatted String from Object](./CoreNodeModels.FormattedStringFromObject_img.jpg)

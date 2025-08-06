@@ -130,7 +130,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         }
                         //The hyperlink name is the next word followed by the # char (empty spaces are allowed) and the URL value is the one followed after the = char
                         else
+                        {
                             hyperlinkName += word.Replace("#", "") + " ";
+                            continue;
+                        }   
                     }
                     else if (bBoldActive)
                     {

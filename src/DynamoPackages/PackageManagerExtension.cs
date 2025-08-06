@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
+using Dynamo.Session;
 using Greg;
 using Greg.Responses;
 
@@ -21,7 +23,7 @@ namespace Dynamo.PackageManager
         //TODO should we add a new handler specifically for packages? this is the package manager afterall so maybe not.
         private event Func<string, PackageInfo, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectoryHandler;
         private Action<IEnumerable<Assembly>> LoadPackagesHandler;
-       
+
         public event Func<string, IExtension> RequestLoadExtension;
         public event Action<IExtension> RequestAddExtension;
         public event Action<ILogMessage> MessageLogged;
@@ -146,6 +148,13 @@ namespace Dynamo.PackageManager
             PackageLoader.PackagesLoaded += LoadPackagesHandler;
             PackageLoader.RequestLoadNodeLibrary += RequestLoadNodeLibraryHandler;
             PackageLoader.RequestLoadCustomNodeDirectory += RequestLoadCustomNodeDirectoryHandler;
+
+            if (PythonServices.PythonEngineManager.Instance.AvailableEngines.Count == 0)
+            {
+                PythonServices.PythonEngineManager.Instance.LoadDefaultPythonEngine(AppDomain.CurrentDomain.GetAssemblies().
+                                                                                    FirstOrDefault(a => a != null && a.GetName().Name == PythonServices.PythonEngineManager.CPythonAssemblyName));
+            }
+
             PythonServices.PythonEngineManager.Instance.AvailableEngines.CollectionChanged += PythonEngineAdded;
                 
             var dirBuilder = new PackageDirectoryBuilder(
@@ -157,12 +166,21 @@ namespace Dynamo.PackageManager
 
             var packageUploadDirectory = startupParams.PathManager.DefaultPackagesDirectory;
 
-            PackageManagerClient = new PackageManagerClient(
-                new GregClient(startupParams.AuthProvider, url),
-                uploadBuilder, packageUploadDirectory);
+            noNetworkMode = startupParams.NoNetworkMode;
+
+            var client = noNetworkMode ? new GregClient(startupParams.AuthProvider, url,
+                new HttpClient(new NoNetworkModeHandler())) : new GregClient(startupParams.AuthProvider, url);
+            PackageManagerClient = new PackageManagerClient(client, uploadBuilder, packageUploadDirectory, noNetworkMode);
+
+
+            //we don't ask dpm for the compatibility map in offline mode.
+            if (!noNetworkMode)
+            {
+                // Load the compatibility map
+                PackageManagerClient.LoadCompatibilityMap();
+            }
 
             LoadPackages(startupParams.Preferences, startupParams.PathManager);
-            noNetworkMode = startupParams.NoNetworkMode;
         }
 
         /// <summary>
@@ -225,6 +243,7 @@ namespace Dynamo.PackageManager
 
         public void Shutdown()
         {
+            PythonServices.PythonEngineManager.Instance.AvailableEngines.Clear();
             PythonServices.PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= PythonEngineAdded;
             //this.Dispose();
         }
@@ -269,10 +288,11 @@ namespace Dynamo.PackageManager
         
         private PackageInfo GetNodePackageFromAssemblyName(AssemblyName assemblyName)
         {
-            if (NodePackageDictionary != null && NodePackageDictionary.ContainsKey(assemblyName.FullName))
+            if (NodePackageDictionary?.TryGetValue(assemblyName.FullName, out var packages) == true)
             {
-                return NodePackageDictionary[assemblyName.FullName].Last();
+                return packages.Last();
             }
+
             return null;
         }
 

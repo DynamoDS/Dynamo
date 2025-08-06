@@ -283,13 +283,16 @@ namespace Dynamo.Search.SearchElements
         internal string Description { get; set; }
 
         [DataMember(Name = "probability")]
-        internal string Probability { get; set; }
+        internal double Probability { get; set; }
 
         [DataMember(Name = "entryNodeIndex")]
         internal int EntryNodeIndex { get; set; }
 
         [DataMember(Name = "entryNodeInPort")]
         internal int EntryNodeInPort { get; set; }
+
+        [DataMember(Name = "entryNodeOutPort")]
+        internal int EntryNodeOutPort { get; set; }
 
         [DataMember(Name = "topology")]
         internal TopologyItem Topology { get; set; }

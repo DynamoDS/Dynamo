@@ -11,6 +11,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
@@ -66,6 +67,9 @@ namespace Dynamo.Views
         private Point inCanvasSearchPosition;
         private List<DependencyObject> hitResultsList = new List<DependencyObject>();
 
+        static internal event Action<Window, ViewModelBase> RequestShowNodeAutoCompleteBar;
+        private double currentRenderScale = -1;
+
         public WorkspaceViewModel ViewModel
         {
             get
@@ -73,6 +77,13 @@ namespace Dynamo.Views
                 return DataContext as WorkspaceViewModel;
             }
         }
+
+        /// <summary>
+        /// Gets the outer canvas used for overlay elements like context menus and tooltips.
+        /// This canvas is not affected by zoom or pan, so it can be used to place UI elements
+        /// at a fixed screen size regardless of workspace scaling.
+        /// </summary>
+        public Grid OuterCanvas => outerCanvas;
 
         internal bool IsSnappedToPort
         {
@@ -130,7 +141,8 @@ namespace Dynamo.Views
         {
             ViewModel.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
             ViewModel.RequestHideAllPopup -= HideAllPopUp;
-            ViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
+            ViewModel.RequestNodeAutoCompleteSearch -= ShowNodeAutoCompleteControl;
+            ViewModel.RequestNodeAutoCompleteBar -= ShowNodeAutoCompleteBar;
             ViewModel.RequestPortContextMenu -= ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged -= ViewModel_PropertyChanged;
 
@@ -149,6 +161,8 @@ namespace Dynamo.Views
             ViewModel.Model.CurrentOffsetChanged -= vm_CurrentOffsetChanged;
             DynamoSelection.Instance.Selection.CollectionChanged -= OnSelectionCollectionChanged;
             infiniteGridView.DetachFromZoomBorder(zoomBorder);
+
+            currentRenderScale = -1;
         }
 
         /// <summary>
@@ -159,7 +173,8 @@ namespace Dynamo.Views
         {
             ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
             ViewModel.RequestHideAllPopup += HideAllPopUp;
-            ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
+            ViewModel.RequestNodeAutoCompleteSearch += ShowNodeAutoCompleteControl;
+            ViewModel.RequestNodeAutoCompleteBar += ShowNodeAutoCompleteBar;
             ViewModel.RequestPortContextMenu += ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
@@ -180,9 +195,22 @@ namespace Dynamo.Views
             infiniteGridView.AttachToZoomBorder(zoomBorder);
         }
 
-        private void ShowHideNodeAutoCompleteControl(ShowHideFlags flag)
+        private void ShowNodeAutoCompleteControl()
+        {            
+            if (ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel == null) return;
+            // if the MLRecommendation is default but user not accepting TOU, display notification
+            if (ViewModel.NodeAutoCompleteSearchViewModel.IsDisplayingMLRecommendation && !ViewModel.NodeAutoCompleteSearchViewModel.IsMLAutocompleteTOUApproved)
+            {
+                ViewModel.DynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Wpf.Properties.Resources.NotificationToAgreeMLNodeautocompleteTOU, true);
+                return;
+            }
+
+            NodeAutoCompleteSearchControl.PrepareAndShowNodeAutoCompleteSearch(Window.GetWindow(this), ViewModel.NodeAutoCompleteSearchViewModel);
+        }
+
+        private void ShowNodeAutoCompleteBar(PortViewModel viewModel)
         {
-            ShowHidePopup(flag, NodeAutoCompleteSearchBar);
+            RequestShowNodeAutoCompleteBar?.Invoke(Window.GetWindow(this), viewModel);
         }
 
         private void ShowHidePortContextMenu(ShowHideFlags flag, PortViewModel portViewModel)
@@ -221,24 +249,7 @@ namespace Dynamo.Views
 
                     if (displayPopup)
                     {
-                        if (popup == NodeAutoCompleteSearchBar)
-                        {
-                            if (ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel == null) return;
-                            // if the MLRecommendation is default but user not accepting TOU, display notification
-                            if (ViewModel.NodeAutoCompleteSearchViewModel.IsDisplayingMLRecommendation && !ViewModel.NodeAutoCompleteSearchViewModel.IsMLAutocompleteTOUApproved)
-                            {
-                                ViewModel.DynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Wpf.Properties.Resources.NotificationToAgreeMLNodeautocompleteTOU, true);
-                                return;
-                            }
-                            // Force the Child visibility to change here because
-                            // 1. Popup isOpen change does not necessarily update the child control before it take effect
-                            // 2. Dynamo rely on child visibility change hander to setup Node AutoComplete control
-                            // 3. This should not be set to in canvas search control
-                            popup.Child.Visibility = Visibility.Collapsed;
-                            ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutocompleteWindowPlacement(popup);
-                        }
-
-                        else if (popup == PortContextMenu)
+                        if (popup == PortContextMenu)
                         {
                             popup.Child.Visibility = Visibility.Hidden;
                             if (!(PortContextMenu.DataContext is PortViewModel portViewModel)) return;
@@ -299,10 +310,9 @@ namespace Dynamo.Views
                 ShowHideGeoScalingPopup(ShowHideFlags.Hide);
             }
             // If triggered on node level, make sure node popups are also hidden
-            if(sender is NodeView && (PortContextMenu.IsOpen || NodeAutoCompleteSearchBar.IsOpen) )
+            if(sender is NodeView && PortContextMenu.IsOpen)
             {
                 ShowHidePopup(ShowHideFlags.Hide, PortContextMenu);
-                ShowHidePopup(ShowHideFlags.Hide, NodeAutoCompleteSearchBar);
             }
         }
 
@@ -640,9 +650,97 @@ namespace Dynamo.Views
 
         void vm_ZoomChanged(object sender, EventArgs e)
         {
-            zoomBorder.SetZoom((e as ZoomEventArgs).Zoom);
-            if (PortContextMenu.IsOpen) DestroyPortContextMenu();
+            var newZoomScale = (e as ZoomEventArgs).Zoom;
+            zoomBorder.SetZoom(newZoomScale);
+            if (PortContextMenu.IsOpen)
+            {
+                DestroyPortContextMenu();
+            }
+
+            CheckZoomScaleAndApplyNodeViewCache(newZoomScale);
         }
+
+        #region NodeView_BitmapCache
+        private void CheckZoomScaleAndApplyNodeViewCache(double newZoomScale)
+        {
+            //disable bitmap caching if max zoom scale set to 0, or feature flag was unable to fetch;
+            if (ViewModel.MaxZoomScaleForBitmapCache == 0) return;
+
+            if (!ViewModel.NodeCountOptimizationEnabled)
+            {
+                if (currentRenderScale > 0) // number of nodes reduced below max threshold
+                {
+                    Dispatcher.BeginInvoke(ClearNodeViewCache, DispatcherPriority.Normal);
+                }
+
+                return;
+            }
+
+            if (newZoomScale > ViewModel.MaxZoomScaleForBitmapCache)
+            {
+                if (currentRenderScale > 0)
+                {
+                    Dispatcher.BeginInvoke(ClearNodeViewCache, DispatcherPriority.Normal);
+                }
+                
+                return;
+            }
+
+            var newRenderScale = newZoomScale switch
+            {
+                <= 0.2 => 0.2,
+                <= 0.5 => 0.5,
+                _ => 1
+            };
+
+            if (Math.Abs(newRenderScale - currentRenderScale) <= 0.01)
+            {
+                return;
+            }
+
+            currentRenderScale = newRenderScale;
+            Dispatcher.BeginInvoke(UpdateNodeViewCacheScale, DispatcherPriority.Normal);
+        }
+
+        /// <summary>
+        /// Clear the node view bitmap cache
+        /// </summary>
+
+        private void ClearNodeViewCache()
+        {
+            var nodes = this.ChildrenOfType<NodeView>();
+            foreach (var node in nodes)
+            {
+                node.CacheMode = null;
+            }
+
+            currentRenderScale = -1;
+        }
+
+        /// <summary>
+        /// Update the node view bitmap cache scale
+        /// </summary>
+        private void UpdateNodeViewCacheScale()
+        {
+            var nodes = this.ChildrenOfType<NodeView>();
+            BitmapCache sharedCache = null;
+            foreach (var node in nodes)
+            {
+                if (node.CacheMode is BitmapCache cache)
+                {
+                    cache.RenderAtScale = currentRenderScale;
+                }
+                else
+                {
+                    if (sharedCache == null)
+                    {
+                        sharedCache = new BitmapCache(currentRenderScale);
+                    }
+                    node.CacheMode = sharedCache;
+                }
+            }
+        }
+        #endregion
 
         void vm_ZoomAtViewportCenter(object sender, EventArgs e)
         {
@@ -810,6 +908,11 @@ namespace Dynamo.Views
                 GeoScalingPopup.IsOpen = false;
             
             if(PortContextMenu.IsOpen) DestroyPortContextMenu();
+
+            if (!ViewModel.IsPanning && e.MiddleButton == MouseButtonState.Pressed)
+            {
+                ViewModel.RequestTogglePanMode();
+            }
         }
 
         /// <summary>
@@ -846,6 +949,11 @@ namespace Dynamo.Views
                 // (not node, note, not buttons from viewControlPanel such as zoom, pan and so on)
                 ContextMenuPopup.IsOpen = true;
             }
+
+            if (ViewModel.IsPanning && e.MiddleButton == MouseButtonState.Released)
+            {
+                ViewModel.RequestTogglePanMode();
+            }
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)
@@ -868,22 +976,6 @@ namespace Dynamo.Views
                 }
                 else
                     ViewModel.CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
-            }
-
-            if (ViewModel.IsInIdleState)
-            {
-                // Find the dependency object directly under the mouse 
-                // cursor, then see if it represents a port. If it does,
-                // then determine its type, we would like to show the 
-                // "ArcRemoving" cursor when the mouse is over an out port.
-                Point mouse = e.GetPosition((UIElement)sender);
-                var dependencyObject = ElementUnderMouseCursor(mouse);
-                PortViewModel pvm = PortFromHitTestResult(dependencyObject);
-
-                if (null != pvm && (pvm.PortType == PortType.Input))
-                    this.Cursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
-                else
-                    this.Cursor = null;
             }
 
             // If selection is going to be dragged and ctrl is pressed.
@@ -1038,35 +1130,6 @@ namespace Dynamo.Views
             workBench.owningWorkspace = this;
         }
 
-        private PortViewModel PortFromHitTestResult(DependencyObject depObject)
-        {
-            Grid grid = depObject as Grid;
-            if (null != grid)
-                return grid.DataContext as PortViewModel;
-
-            return null;
-        }
-
-        private DependencyObject ElementUnderMouseCursor(Point mouseCursor)
-        {
-            hitResultsList.Clear();
-            VisualTreeHelper.HitTest(this, null, DirectHitTestCallback,
-                new PointHitTestParameters(mouseCursor));
-
-            return ((hitResultsList.Count > 0) ? hitResultsList[0] : null);
-        }
-
-        private HitTestResultBehavior DirectHitTestCallback(HitTestResult result)
-        {
-            if (null != result && (null != result.VisualHit))
-            {
-                hitResultsList.Add(result.VisualHit);
-                return HitTestResultBehavior.Stop;
-            }
-
-            return HitTestResultBehavior.Continue;
-        }
-
         private void OnWorkspaceDrop(object sender, DragEventArgs e)
         {
 
@@ -1148,6 +1211,12 @@ namespace Dynamo.Views
             }
             ViewModel.InCanvasSearchViewModel.SearchText = string.Empty;
             AddPythonEngineOptions(PythonEngineMenu);
+            //Don't shrink. This prevents the popup menu from jumping when the height of the internal items is reduced.
+            ContextMenuStackView.MinHeight = 0;
+            this.Dispatcher.BeginInvoke(() =>
+            {
+                ContextMenuStackView.MinHeight = ContextMenuStackView.ActualHeight;
+            }, DispatcherPriority.Loaded);
         }
         private void OnContextMenuClosed(object sender, EventArgs e)
         {
@@ -1191,6 +1260,7 @@ namespace Dynamo.Views
         public void Dispose()
         {
             RemoveViewModelsubscriptions(ViewModel);
+            DataContextChanged -= OnWorkspaceViewDataContextChanged;
         }
     }
 }

@@ -526,6 +526,185 @@ namespace DSCore
         }
 
         /// <summary>
+        ///     Clusters list elements based on the adjacency of their indices and the similarity of their values
+        /// </summary>
+        /// <param name="list">List of items to group as sublists based on adjacency and similarity</param>
+        /// <param name="tolerance">Threshold value for grouping similar items</param>
+        /// <param name="considerAdjacency">Boolean value to control if the node should consider adjacency or not.</param>
+        /// <returns name="groupedValues">list of sublists with items grouped by similar values</returns>
+        /// <returns name="groupedIndices">list of sublists containing the original indices of grouped values</returns>
+        /// <search>list;group;similar;adjacent;adjacency;groupbyadjacency;groupadjacentitems;groupsimilaritems;cluster;tolerance</search>
+        [MultiReturn(new[] { "groupedValues", "groupedIndices" })]
+        [IsVisibleInDynamoLibrary(true)]
+        public static Dictionary<string, object> GroupBySimilarity(IList list, double tolerance = 0, bool considerAdjacency = true)
+        {
+            // Validate input
+            if (list == null)
+                throw new ArgumentException("Need at least one item in the list of items.", nameof(list));
+            if(list.Count == 0)
+                return new Dictionary<string, object>
+                {
+                    { "groupedValues", new List<object>() },
+                    { "groupedIndices", new List<object>() }
+                };
+            if (list.Count == 1)
+            {
+                var singleItemResult = new List<object>(new List<object> { list[0] });
+                return new Dictionary<string, object>
+                {
+                    { "groupedValues", singleItemResult },
+                    { "groupedIndices",  new List<object>(new List<object> { 0 })}
+                };
+            }
+
+            // Check if the list contains only numbers or only strings
+            Type firstElementType = list[0].GetType();
+
+            // Check if the list contains only numbers or only strings
+            bool isNumeric = firstElementType == typeof(int) || firstElementType == typeof(float) || firstElementType == typeof(double) || firstElementType == typeof(long);
+            bool isString = firstElementType == typeof(string);
+
+            if (isNumeric && list.Cast<object>().Any(item => !(item is int || item is float || item is double || item is long)))
+            {
+                throw new ArgumentException("The list must contain only numbers or only strings.", nameof(list));
+            }
+            else if (isString && list.Cast<object>().Any(item => !(item is string)))
+            {
+                throw new ArgumentException("The list must contain only numbers or only strings.", nameof(list));
+            }
+
+            //reset tolerance to 0 if it is negative
+            tolerance = tolerance < 0 ? 0 : tolerance;
+
+            var result = new List<object>();
+            var idxResult = new List<object>();
+            var currentGroup = new List<object> { list[0] };
+
+            if (considerAdjacency)
+            {
+                var start = 0;
+                for (int i = 1; i < list.Count; i++)
+                {
+                    if (AreItemsSimilar(list[i - 1], list[i], tolerance))
+                    {
+                        currentGroup.Add(list[i]);
+                    }
+                    else
+                    {
+                        result.Add(currentGroup);
+                        idxResult.Add(Enumerable.Range(start, currentGroup.Count).ToList());
+                        currentGroup = new List<object> { list[i] };
+                        start = i;
+                    }
+                }
+                result.Add(currentGroup);
+                idxResult.Add(Enumerable.Range(start, currentGroup.Count).ToList());
+            }
+            else
+            {
+                var groupedItems = new List<List<object>>();
+                var itemGroups = new List<object>();
+                var indexGroups = new List<List<object>>();
+
+                for (int i = 0; i < list.Count; i++)
+                {
+                    var item = list[i];
+                    bool added = false;
+                    for (int j = 0; j < itemGroups.Count; j++)
+                    {
+                        if (AreItemsSimilar(itemGroups[j], item, tolerance))
+                        {
+                            groupedItems[j].Add(item);
+                            indexGroups[j].Add(i);
+                            added = true;
+                            break;
+                        }
+                    }
+
+                    if (!added)
+                    {
+                        itemGroups.Add(item);
+                        groupedItems.Add(new List<object> { item });
+                        indexGroups.Add(new List<object> { i });
+                    }
+                }
+
+                foreach (var group in groupedItems)
+                {
+                    result.Add(group);
+                }
+
+                foreach (var group in indexGroups)
+                {
+                    idxResult.Add(group);
+                }
+            }
+
+            return new Dictionary<string, object>
+            {
+                { "groupedValues", result },
+                { "groupedIndices", idxResult }
+            };
+        }
+
+        private static bool AreItemsSimilar(object item1, object item2, double tolerance)
+        {
+            var MAX_TOLERANCE_FOR_STRINGS = 10;
+            if (item1 is string str1 && item2 is string str2)
+            {
+                tolerance = Math.Round(tolerance);
+                if (tolerance > MAX_TOLERANCE_FOR_STRINGS)
+                    throw new ArgumentException("Tolerance value for string comparison cannot be greater than " + MAX_TOLERANCE_FOR_STRINGS + ".", nameof(tolerance));
+                return LevenshteinDistance(str1, str2) <= tolerance;
+            }
+            else if (item1 is IComparable comp1 && item2 is IComparable comp2)
+            {
+                try
+                {
+                    return Math.Abs(Convert.ToDouble(comp1) - Convert.ToDouble(comp2)) <= tolerance;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return Object.Equals(item1, item2);
+            }
+        }
+        /// <summary>
+        /// Levenshtein Distance is the algorithm used to get the distance between 2 strings
+        /// | <see href="https://gist.github.com/Davidblkx/e12ab0bb2aff7fd8072632b396538560">Source</see>
+        /// </summary>
+        private static int LevenshteinDistance(string a, string b)
+        {
+            if (string.IsNullOrEmpty(a)) return b.Length;
+            if (string.IsNullOrEmpty(b)) return a.Length;
+
+            int lenA = a.Length;
+            int lenB = b.Length;
+            var costs = new int[lenB + 1];
+
+            for (int j = 0; j <= lenB; j++)
+                costs[j] = j;
+
+            for (int i = 1; i <= lenA; i++)
+            {
+                int prevCost = costs[0];
+                costs[0] = i;
+                for (int j = 1; j <= lenB; j++)
+                {
+                    int currentCost = costs[j];
+                    costs[j] = (int)Math.Min(Math.Min(costs[j - 1] + 1, costs[j] + 1), prevCost + (a[i - 1] == b[j - 1] ? 0 : 1));
+                    prevCost = currentCost;
+                }
+            }
+
+            return costs[lenB];
+        }
+
+        /// <summary>
         ///     Adds an item to the beginning of a list.
         /// </summary>
         /// <param name="item">Item to be added. Item could be an object or a list.</param>
@@ -663,6 +842,49 @@ namespace DSCore
             // copy the list, insert and return
             var newList = new ArrayList(list);
             newList[index] = item;
+            return newList;
+        }
+
+        /// <summary>
+        ///     Replaces items from the given list that are located at the specified indices.
+        /// </summary>
+        /// <param name="list">List to replace an item in.</param>
+        /// <param name="indices">Indices of the item(s) to be replaced.</param>
+        /// <param name="item">The item to insert.</param>
+        /// <returns name="list">A new list with the item(s) replaced.</returns>
+        /// <search>replace,switch</search>
+        [IsVisibleInDynamoLibrary(true)]
+        public static IList ReplaceItemAtIndices(IList list, IList<int> indices, [ArbitraryDimensionArrayImport] object item)
+        {
+            //Validate input
+            if (list == null || list.Count == 0)
+                throw new ArgumentException("Need at least one item in the list of items.", nameof(list));
+            if (indices == null || indices.Count == 0)
+                throw new ArgumentException("Need at least one index in the list of indices to be replaced.", nameof(indices));
+
+            // Use a HashSet for faster lookup and to avoid duplicate indices
+            HashSet<int> uniqueIndices = new HashSet<int>(indices);
+
+            // Copy list and replace items at specified indices
+            var newList = new ArrayList(list);
+            foreach (int index in uniqueIndices)
+            {
+                int idx = index;
+
+                if (idx < 0)
+                {
+                    idx = newList.Count + index;
+                }
+
+                if (idx >= 0 && idx < list.Count)
+                {
+                    newList[idx] = item;
+                }
+                else
+                {
+                    throw new IndexOutOfRangeException($"Index {idx} is out of range. (Parameter: '{nameof(indices)}')");
+                }
+            }
             return newList;
         }
 

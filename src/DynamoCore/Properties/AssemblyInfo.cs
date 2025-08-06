@@ -10,6 +10,8 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("DynamoCoreWpf")]
 [assembly: InternalsVisibleTo("DynamoCoreTests")]
 [assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
+[assembly: InternalsVisibleTo("DynamoCoreWpf2Tests")]
+[assembly: InternalsVisibleTo("DynamoCoreWpf3Tests")]
 [assembly: InternalsVisibleTo("DynamoRevitDS")]
 [assembly: InternalsVisibleTo("DynamoMSOfficeTests")]
 [assembly: InternalsVisibleTo("CoreNodeModels")]
@@ -56,6 +58,9 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("DocumentationBrowserViewExtension")]
 [assembly: InternalsVisibleTo("Notifications")]
 [assembly: InternalsVisibleTo("NodeAutoCompleteViewExtension")]
+// Internals are visible to the MCP View Extension and Extension, depending on final implementation.
+[assembly: InternalsVisibleTo("MCPExtension")]
+[assembly: InternalsVisibleTo("MCPViewExtension")]
 
 // Disable PublicAPIAnalyzer errors for this type as they're already added to the public API text file
 #pragma warning disable RS0016 

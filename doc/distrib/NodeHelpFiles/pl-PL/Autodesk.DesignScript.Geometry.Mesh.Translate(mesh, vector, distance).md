@@ -5,4 +5,4 @@ W poniższym przykładzie prosta siatka jest przekształcana w kierunku zdefinio
 
 ## Plik przykładowy
 
-![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh.vector.distance)_img.jpg)
+![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh,%20vector,%20distance)_img.jpg)

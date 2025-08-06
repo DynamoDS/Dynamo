@@ -1,7 +1,8 @@
 ## In profondità
-SurfaceCount restituirà il numero di superfici in una PolySurface come numero intero. Nell'esempio seguente, un esagono estruso restituisce un conteggio pari a 8. Il nodo utilizza una singola PolySurface come input, pertanto è necessario unire una raccolta di superfici prima di eseguire il conteggio.
+`PolySurface.SurfaceCount` restituisce il numero di superfici all'interno dell'oggetto PolySurface specificato.
+
+Nell'esempio seguente, viene creata una PolySurface da un cuboide e viene fornito il conteggio delle superfici con `PolySurface.SurfaceCount`.
 ___
 ## File di esempio
 
-
-
+![PolySurface.SurfaceCount](./Autodesk.DesignScript.Geometry.PolySurface.SurfaceCount_img.jpg)

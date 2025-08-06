@@ -1709,6 +1709,9 @@ namespace ProtoScript.Runners
                 // Get AST list that need to be executed
                 var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
 
+                //nodes which will be defined or redefined after compilation and execution
+                var pendingUIDsForDeletion = syncData.DeletedNodeIDs.ToHashSet();
+
                 // Prior to execution, apply state modifications to the VM given the delta AST's
                 bool anyForcedExecutedNodes = changeSetComputer.csData.ForceExecuteASTList.Any();
                 changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
@@ -1721,6 +1724,14 @@ namespace ProtoScript.Runners
                 var guids = runtimeCore.ExecutedAstGuids.ToList();
                 executedAstGuids[syncData.SessionID] = guids;
                 runtimeCore.RemoveExecutedAstGuids();
+
+                // There should be a CodeBlock in CodeBlockList by now
+                if (runnerCore.CodeBlockList.Any())
+                {
+                    var nodes = runnerCore.CodeBlockList[(int)Language.Associative].instrStream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidPC, Constants.kInvalidPC);
+                    //delete all nodes which were redefined. For those nodes that were defined for the first time, this will be a no-op
+                    nodes.RemoveAll(x=>!x.isActive || pendingUIDsForDeletion.Contains(x.guid));
+                }
             }
         }
 

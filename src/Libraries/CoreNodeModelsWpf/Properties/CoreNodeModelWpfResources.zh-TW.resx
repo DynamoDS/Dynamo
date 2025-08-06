@@ -321,4 +321,25 @@ Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
   <data name="GateOpen" xml:space="preserve">
     <value>開啟</value>
   </data>
+  <data name="CurveMapperControlPointCoordinatesLabel" xml:space="preserve">
+    <value>座標</value>
+  </data>
+  <data name="CurveMapperControlPointToolTip" xml:space="preserve">
+    <value>請拖曳以修改曲線。</value>
+  </data>
+  <data name="CurveMapperCurveTypesLabel" xml:space="preserve">
+    <value>曲線類型</value>
+  </data>
+  <data name="CurveMapperLockedResetToolTip" xml:space="preserve">
+    <value>曲線已鎖住，無法重設。請先解鎖曲線。</value>
+  </data>
+  <data name="CurveMapperLockToolTip" xml:space="preserve">
+    <value>按一下以鎖住曲線。</value>
+  </data>
+  <data name="CurveMapperResetToolTip" xml:space="preserve">
+    <value>重設曲線。</value>
+  </data>
+  <data name="CurveMapperUnlockToolTip" xml:space="preserve">
+    <value>無法修改曲線。按一下以解鎖。</value>
+  </data>
 </root>

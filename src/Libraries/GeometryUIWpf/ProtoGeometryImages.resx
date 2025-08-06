@@ -1579,17 +1579,17 @@
   <data name="Autodesk.DesignScript.Geometry.Mesh.ByGeometry.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Autodesk.DesignScript.Geometry.Mesh.ByGeometry.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Mesh.ByPointsFaceIndices.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.Mesh.ByPointsFaceIndices.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="Autodesk.DesignScript.Geometry.Mesh.ByPointsIndexGroups.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.Mesh.ByPointsIndexGroups.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Mesh.ByPointsFaceIndices.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.Mesh.ByPointsFaceIndices.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="Autodesk.DesignScript.Geometry.Mesh.ByPointsIndexGroups.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.Mesh.ByPointsIndexGroups.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Mesh.ByVerticesAndIndices.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.Mesh.ByVerticesAndIndices.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="Autodesk.DesignScript.Geometry.Mesh.ByPointsIndices.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.Mesh.ByPointsIndices.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Autodesk.DesignScript.Geometry.Mesh.ByVerticesAndIndices.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.Mesh.ByVerticesAndIndices.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="Autodesk.DesignScript.Geometry.Mesh.ByPointsIndices.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.Mesh.ByPointsIndices.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.Mesh.CloseCracks.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Autodesk.DesignScript.Geometry.Mesh.CloseCracks.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -2036,142 +2036,148 @@
     <value>Resources\Autodesk.DesignScript.Geometry.NurbsSurface.Weights.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.ByCrossSplitSquares.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.ByCrossSplitSquares.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.PanelSurface.ByCrossSplitSquares_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.ByCrossSplitSquares.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.ByCrossSplitSquares.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.PanelSurface.ByCrossSplitSquares_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.ByCustomOrthogonalLattice.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.ByCustomOrthogonalLattice.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.PanelSurface.ByCustomOrthogonalLattice_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.ByCustomOrthogonalLattice.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.ByCustomOrthogonalLattice.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.PanelSurface.ByCustomOrthogonalLattice_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.ByDiagonallySplitSquares.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.ByDiagonallySplitSquares.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.PanelSurface.ByDiagonallySplitSquares_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.ByDiagonallySplitSquares.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.ByDiagonallySplitSquares.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.PanelSurface.ByDiagonallySplitSquares_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.ByDiamonds.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.ByDiamonds.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.PanelSurface.ByDiamonds_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.ByDiamonds.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.ByDiamonds.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.PanelSurface.ByDiamonds_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.ByHexagons.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.ByHexagons.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.PanelSurface.ByHexagons_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.ByHexagons.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.ByHexagons.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.PanelSurface.ByHexagons_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.ByParallelograms.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.ByParallelograms.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.PanelSurface.ByParallelograms_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.ByParallelograms.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.ByParallelograms.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.PanelSurface.ByParallelograms_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.ByQuads.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.ByQuads.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.PanelSurface.ByQuads_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.ByQuads.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.ByQuads.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.PanelSurface.ByQuads_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.ByRhombiTriHexagonals.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.ByRhombiTriHexagonals.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.PanelSurface.ByRhombiTriHexagonals_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.ByRhombiTriHexagonals.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.ByRhombiTriHexagonals.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.PanelSurface.ByRhombiTriHexagonals_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.BySplitDiamonds.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.BySplitDiamonds.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.PanelSurface.BySplitDiamonds_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.BySplitDiamonds.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.BySplitDiamonds.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.PanelSurface.BySplitDiamonds_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.ByStaggeredQuads.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.ByStaggeredQuads.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.PanelSurface.ByStaggeredQuads_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.ByStaggeredQuads.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.ByStaggeredQuads.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.PanelSurface.ByStaggeredQuads_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.GetNumPanelVertices.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.GetNumPanelVertices.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.PanelSurface.GetNumPanelVertices_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.GetNumPanelVertices.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.GetNumPanelVertices.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.PanelSurface.GetNumPanelVertices_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.GetPanelPoints.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.GetPanelPoints.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.PanelSurface.GetPanelPoints_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.GetPanelPoints.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.GetPanelPoints.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.PanelSurface.GetPanelPoints_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.GetPanelPolygon.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.GetPanelPolygon.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.PanelSurface.GetPanelPolygon_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.GetPanelPolygon.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.GetPanelPolygon.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.PanelSurface.GetPanelPolygon_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.GetPanelVertices.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.GetPanelVertices.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.PanelSurface.GetPanelVertices_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.GetPanelVertices.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.GetPanelVertices.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.PanelSurface.GetPanelVertices_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.GetPoint.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.GetPoint.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.PanelSurface.GetPoint_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.GetPoint.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.GetPoint.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.PanelSurface.GetPoint_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.GetVertex.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.GetVertex.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.PanelSurface.GetVertex_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.GetVertex.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.GetVertex.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.PanelSurface.GetVertex_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.GetVertexIndex.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.GetVertexIndex.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.PanelSurface.GetVertexIndex_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.GetVertexIndex.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.GetVertexIndex.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.PanelSurface.GetVertexIndex_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.NumPanels.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.NumPanels.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.PanelSurface.NumPanels_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.NumPanels.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.NumPanels.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.PanelSurface.NumPanels_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.NumVertices.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.NumVertices.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.PanelSurface.NumVertices_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.NumVertices.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.NumVertices.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.PanelSurface.NumVertices_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.SetTransform.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.SetTransform.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.PanelSurface.SetTransform_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurface.SetTransform.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurface.SetTransform.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.PanelSurface.SetTransform_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Keep.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Keep.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Keep_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Keep.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Keep.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Keep_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Remove.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Remove.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Remove_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Remove.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Remove.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Remove_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.RemoveVertices.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.RemoveVertices.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.RemoveVertices_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.RemoveVertices.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.RemoveVertices.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.RemoveVertices_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Trim.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Trim_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Trim.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Trim_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.Plane.ByBestFitThroughPoints.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Autodesk.DesignScript.Geometry.Plane.ByBestFitThroughPoints.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

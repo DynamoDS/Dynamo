@@ -37,6 +37,18 @@ namespace Dynamo.Core
         }
 
         /// <summary>
+        /// Returns the status of IDSDK installation, will return false if IDSDK fails to initialize.
+        /// </summary>
+        /// <returns>LoginState Enum value</returns>
+        public bool IsIDSDKInitialized
+        {
+            get
+            {
+                return Initialize();
+            }
+        }
+
+        /// <summary>
         /// Returns the login status of the current session.
         /// </summary>
         /// <returns>Boolean Status Value</returns>
@@ -153,7 +165,7 @@ namespace Dynamo.Core
             }
             else
             {
-                if (Initialize())
+                if (IsIDSDKInitialized)
                 {
                     idsdk_status_code statusCode = Client.Login();
                     if (Client.IsSuccess(statusCode))
@@ -166,7 +178,7 @@ namespace Dynamo.Core
         }
         private bool IDSDK_IsLoggedIn()
         {
-            if (Initialize())
+            if (IsIDSDKInitialized)
             {
                 bool ret = Client.IsLoggedIn();
                 return ret;
@@ -228,38 +240,37 @@ namespace Dynamo.Core
         {
             try
             {
-                if (Client.IsInitialized()) return true;
-                idsdk_status_code bRet = Client.Init();
-
-                if (Client.IsSuccess(bRet))
+                if (Client.IsInitialized())
                 {
-                    if (Client.IsInitialized())
-                    {
-                        IntPtr hWnd = Process.GetCurrentProcess().MainWindowHandle;
-                        if (hWnd != null)
-                        {
-                            Client.SetHost(hWnd);
-                        }
+                    return true;
+                }
 
-                        bool ret = GetClientIDAndServer(out idsdk_server server, out string client_id);
-                        if (ret)
-                        {
-                            Client.LogoutCompleteEvent += AuthCompleteEventHandler;
-                            Client.LoginCompleteEvent += AuthCompleteEventHandler;
-                            ret = SetProductConfigs(Configurations.DynamoAsString, server, client_id);
-                            Client.SetServer(server);
-                            return ret;
-                        }
+                idsdk_status_code bRet = Client.Init();
+                if (Client.IsSuccess(bRet) && Client.IsInitialized())
+                {
+                    IntPtr hWnd = Process.GetCurrentProcess().MainWindowHandle;
+                    if (hWnd != null)
+                    {
+                        Client.SetHost(hWnd);
+                    }
+
+                    bool ret = GetClientIDAndServer(out idsdk_server server, out string client_id);
+                    if (ret)
+                    {
+                        Client.LogoutCompleteEvent += AuthCompleteEventHandler;
+                        Client.LoginCompleteEvent += AuthCompleteEventHandler;
+                        ret = SetProductConfigs(Configurations.DynamoAsString, server, client_id);
+                        Client.SetServer(server);
+                        return ret;
                     }
                 }
                 DynamoConsoleLogger.OnLogMessageToDynamoConsole("Auth Service (IDSDK) could not be initialized!");
-                return false;
             }
             catch (Exception)
             {
                 DynamoConsoleLogger.OnLogMessageToDynamoConsole("An error occurred while initializing Auth Service (IDSDK).");
-                return false;
             }
+            return false;
         }
         private bool Deinitialize()
         {

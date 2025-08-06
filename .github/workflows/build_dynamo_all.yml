@@ -16,6 +16,18 @@ jobs:
         with:
           path: Dynamo
           repository: DynamoDS/Dynamo
+      - name: Create global.json
+        run: |
+          $globalJson = @"
+          {
+            "projects": ["src", "test"],
+            "sdk": {
+              "version": "8.0.100",
+              "rollForward": "latestFeature"
+            }
+          }
+          "@
+          $globalJson | Out-File -FilePath ${{ github.workspace }}\Dynamo\global.json -Encoding utf8
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4
         with:

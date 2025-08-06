@@ -281,6 +281,11 @@ namespace Dynamo.Configuration
         public static readonly int CBNMaxPortNameLength = 24;
 
         /// <summary>
+        ///     Maximal port tooltip text length of CodeBlock
+        /// </summary>
+        public static readonly int CBNMaxTooltipLength = 500;
+
+        /// <summary>
         ///     Highlighting File
         /// </summary>
         public static readonly string HighlightingFile =
@@ -366,12 +371,6 @@ namespace Dynamo.Configuration
         internal static string HeaderCreate = Resources.HeaderCreate;
         internal static string HeaderAction = Resources.HeaderAction;
         internal static string HeaderQuery = Resources.HeaderQuery;
-
-        #endregion
-
-        #region InCanvasSearch
-
-        internal const double InCanvasSearchTextBoxHeight = 40.0;
 
         #endregion
 

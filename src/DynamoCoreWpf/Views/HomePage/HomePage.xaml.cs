@@ -156,7 +156,7 @@ namespace Dynamo.UI.Views
 
             dynWebView.CreationProperties = new CoreWebView2CreationProperties
             {
-                UserDataFolder = webBrowserUserDataFolder.FullName
+                UserDataFolder = DynamoModel.IsTestMode ? TestUtilities.UserDataFolderDuringTests(nameof(HomePage)) : webBrowserUserDataFolder.FullName
             };
 
             //ContentRendered ensures that the webview2 component is visible.

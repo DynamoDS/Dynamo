@@ -67,7 +67,10 @@ namespace Dynamo.Utilities
            //do nothing, we just want to empty the error stream.
         }
 
-
+        protected void OnLogMessage(string message)
+        {
+            MessageLogged?.Invoke(message);
+        }
 
         /// <summary>
         /// Kill the CLI tool - if running

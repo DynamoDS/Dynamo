@@ -147,6 +147,8 @@ namespace Dynamo.PythonServices
         /// </summary>
         internal static readonly string CPython3EngineName = "CPython3";
 
+        internal static readonly string PythonNodeNamespace = "PythonNodeModels.PythonNode";
+
         /// <summary>
         /// IronPython2 Engine name
         /// </summary>
@@ -190,7 +192,7 @@ namespace Dynamo.PythonServices
             AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler((object sender, AssemblyLoadEventArgs args) => LoadDefaultPythonEngine(args.LoadedAssembly));
         }
 
-        private void LoadDefaultPythonEngine(Assembly a)
+        internal void LoadDefaultPythonEngine(Assembly a)
         {
             if (a == null ||
                 a.GetName().Name != CPythonAssemblyName)

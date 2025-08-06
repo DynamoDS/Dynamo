@@ -15,3 +15,7 @@ N: numero N2 1000 -> "1.000,00"
 Il valore di default per questo nodo è `G`, che produrrà una rappresentazione compatta ma variabile.
 
 [Per informazioni più dettagliate, vedere la documentazione di Microsoft.](https://learn.microsoft.com/it-it/dotnet/standard/base-types/standard-numeric-format-strings#standard-format-specifiers)
+___
+## File di esempio
+
+![Formatted String from Object](./CoreNodeModels.FormattedStringFromObject_img.jpg)

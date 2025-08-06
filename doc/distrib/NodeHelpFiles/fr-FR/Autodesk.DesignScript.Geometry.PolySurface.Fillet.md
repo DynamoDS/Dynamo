@@ -1,7 +1,10 @@
 ## Description approfondie
-Fillet renvoie un nouveau solide avec des arêtes arrondies. L'entrée des arêtes indique les arêtes à raccorder, tandis que l'entrée de décalage détermine le rayon du raccord. Dans l'exemple ci-dessous, nous commençons avec un cube à l'aide des entrées par défaut. Pour obtenir les arêtes appropriées du cube, nous décomposons d'abord le cube afin d'obtenir les faces sous forme de liste de surfaces. Nous utilisons ensuite un nœud Face.Edges pour extraire les arêtes du cube. Nous extrayons la première arête de chaque face à l'aide de GetItemAtIndex. Un curseur numérique contrôle le rayon de chaque raccord.
+'PolySurface.Fillet' crée un raccord (arête arrondie) entre les arêtes de la PolySurface donnée.
+
+Ce noeud est particulièrement utile pour atténuer les arêtes prononcées d'un modèle de polysurface, ce qui permet d'améliorer les propriétés visuelles et physiques de la géométrie.
+
+Dans l'exemple ci-dessous, un parallélépipède est créé, converti en PolySurface, puis arrondi avec 'PolySurface.Fillet'.
 ___
 ## Exemple de fichier
 
-
-
+![PolySurface.Fillet](./Autodesk.DesignScript.Geometry.PolySurface.Fillet_img.jpg)

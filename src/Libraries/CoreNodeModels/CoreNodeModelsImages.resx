@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -130,6 +130,12 @@
   <data name="CoreNodeModels.CreateList.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\CoreNodeModels.CreateList.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="CoreNodeModels.CurveMapperNodeModel.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\CoreNodeModels.CurveMapperNodeModel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="CoreNodeModels.CurveMapperNodeModel.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\CoreNodeModels.CurveMapperNodeModel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="CoreNodeModels.DefineData.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\CoreNodeModels.DefineData.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -147,6 +153,18 @@
   </data>
   <data name="CoreNodeModels.Equals.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\CoreNodeModels.Equals.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="CoreNodeModels.FormattedStringFromArray.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Core.String.Formatted String From Array_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="CoreNodeModels.FormattedStringFromArray.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Core.String.Formatted String From Array_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="CoreNodeModels.FormattedStringFromObject.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Core.String.Formatted String From Object_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="CoreNodeModels.FormattedStringFromObject.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Core.String.Formatted String From Object_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Formula.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\CoreNodeModels.Formula.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

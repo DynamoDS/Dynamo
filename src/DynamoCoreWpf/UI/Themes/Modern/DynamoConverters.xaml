@@ -35,13 +35,15 @@
                                               ExecutionPreview="#F2930C"
                                               Hover="#808080"
                                               None="#444"
-                                              Selection="#6AC0E7" />
+                                              Selection="#6AC0E7"
+                                              Transient="#D5BCF7"/>
 
     <controls:ConnectionStateToBrushConverter x:Key="ConnectionStateToBrushConverter"
                                               ExecutionPreviewBrush="#F2930C"
                                               HoverBrush="#808080"
                                               NoneBrush="#444"
-                                              SelectionBrush="#6AC0E7" />
+                                              SelectionBrush="#6AC0E7"
+                                              TransientBrush="#D5BCF7"/>
 
     <controls:ConnectionStateToVisibilityCollapsedConverter x:Key="ConnectionStateToVisibilityCollapsedConverter" />
     <controls:AttachmentToPathConverter x:Key="AttachmentToPathConverter" />
@@ -120,6 +122,7 @@
     <controls:LibraryTreeItemsHostVisibilityConverter x:Key="LibraryTreeItemsHostVisibilityConverter" />
     <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
     <controls:NullValueToGridRow1Converter x:Key="NullValueToGridRow1Converter" />
+    <controls:NullToVisibiltyConverter x:Key="NullToVisibiltyConverter" />
     <controls:SearchHighlightMarginConverter x:Key="SearchHighlightMarginConverter" />
     <controls:ConfidenceScoreFormattingConverter x:Key="ConfidenceScoreFormattingConverter" />
     <controls:InOutParamTypeConverter x:Key="InOutParamTypeConverter" />
@@ -133,7 +136,6 @@
     <controls:ElementTypeToShortConverter x:Key="ElementTypeToShortConverter" />
     <controls:GroupTitleVisibilityConverter x:Key="GroupTitleVisibilityConverter" />
     <controls:LibraryViewModeToBoolConverter x:Key="LibraryViewModeToBoolConverter" />
-    <controls:WorkspaceContextMenuHeightConverter x:Key="WorkspaceContextMenuHeightConverter" />
     <controls:TreeViewLineConverter x:Key="TreeViewLineConverter" />
     <controls:TreeViewLineMarginConverter x:Key="TreeViewLineMarginConverter" />
     <controls:TreeViewHLineMarginConverter x:Key="TreeViewHLineMarginConverter" />
@@ -173,4 +175,5 @@
     <controls:PortTypeToStringConverter x:Key="PortTypeToStringConverter" />
     <controls:BooleanNegationConverter x:Key="BooleanNegationConverter" />
     <controls:LeftMarginConverter x:Key="LeftMarginConverter" />
+    <controls:LengthToVisibilityConverter x:Key="LengthToVisibilityConverter" />
 </ResourceDictionary>

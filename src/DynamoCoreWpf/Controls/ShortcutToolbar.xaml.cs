@@ -95,7 +95,26 @@ namespace Dynamo.UI.Controls
         {
             if (status == LoginState.LoggedOut)
             {
-                LoginButton.ToolTip = Wpf.Properties.Resources.SignInButtonContentToolTip;
+                var toolTip = new ToolTip
+                {
+                    Content = Wpf.Properties.Resources.SignInButtonContentToolTip
+                };
+
+                // Retrieve the style from resources
+                var style = (Style)TryFindResource("GenericToolTipLight");
+                if (style != null)
+                {
+                    toolTip.Style = style;
+                }
+                else
+                {
+                    // Optionally log a warning or handle the missing resource gracefully
+                    System.Diagnostics.Debug.WriteLine("Warning: 'GenericToolTipLight' resource not found.");
+                }
+
+                // Assign the styled tooltip to the Login Button
+                LoginButton.ToolTip = toolTip;
+
                 txtSignIn.Text = Wpf.Properties.Resources.SignInButtonText;
                 logoutOption.Visibility = Visibility.Collapsed;
                 loginMenu.Items.Remove(logoutOption);
@@ -126,6 +145,7 @@ namespace Dynamo.UI.Controls
 
         private void LoginButton_OnClick(object sender, RoutedEventArgs e)
         {
+            if(!DynamoViewModel.IsIDSDKInitialized()) return;
             if (authManager.LoginState == LoginState.LoggedIn)
             {
                 var button = (Button)sender;
@@ -149,6 +169,7 @@ namespace Dynamo.UI.Controls
 
         private void LogoutOption_Click(object sender, RoutedEventArgs e)
         {
+            if (!DynamoViewModel.IsIDSDKInitialized()) return;
             if (authManager.LoginState == LoginState.LoggedIn)
             {
                 var result = Wpf.Utilities.MessageBoxService.Show(Application.Current?.MainWindow, Wpf.Properties.Resources.SignOutConfirmationDialogText, Wpf.Properties.Resources.SignOutConfirmationDialogTitle,MessageBoxButton.OKCancel, new List<string>() { "Sign Out", "Cancel"}, MessageBoxImage.Information);

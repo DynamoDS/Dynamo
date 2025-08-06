@@ -1,15 +1,17 @@
 using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
+using DynamoUtilities;
 using Microsoft.Web.WebView2.Wpf;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -249,10 +251,13 @@ namespace Dynamo.Utilities
             return imageSource;
         }
 
-        internal static string LoadContentFromResources(string name, Assembly localAssembly = null, bool injectDPI = true, bool removeScriptTags = true)
+        internal static string LoadContentFromResources(string name, Assembly localAssembly = null, bool injectDPI = true, bool removeScriptTags = true, string locale = "")
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException(nameof(name));
+
+            if (locale == "Default")
+                locale = Thread.CurrentThread.CurrentCulture.Name;
 
             string result;
             // If an assembly was specified in the uri, the resource will be searched there.
@@ -287,6 +292,14 @@ namespace Dynamo.Utilities
 
             var matchingResource = availableResources
                 .FirstOrDefault(str => str.EndsWith(name));
+
+            if (!string.IsNullOrEmpty(locale))
+            {
+                var alternativeMatchingResource = availableResources
+                .FirstOrDefault(str => str.EndsWith(name) && str.Contains(locale.Replace('-', '_')));
+                //If AlternativeMatchingResource is null then use the embedded resource found by name (means that the resource using the specific locale was not found)
+                matchingResource = alternativeMatchingResource ?? matchingResource;
+            }
 
             if (string.IsNullOrEmpty(matchingResource))
             {
@@ -584,11 +597,11 @@ namespace Dynamo.Utilities
         /// <param name="fontStylePath">Path to the Font Style that will be used in some part of the HTML page</param>
         /// <param name="localAssembly">Local Assembly in which the resource will be loaded</param>
         /// <param name="userDataFolder">the folder that WebView2 will use for storing cache info</param>
-        internal static async void LoadWebBrowser(HtmlPage htmlPage, DynamoWebView2 webBrowserComponent, string resourcesPath, string fontStylePath, Assembly localAssembly, string userDataFolder = default(string))
+        internal static async void LoadWebBrowser(HtmlPage htmlPage, DynamoWebView2 webBrowserComponent, string resourcesPath, string fontStylePath, Assembly localAssembly, string userDataFolder = default(string), string locale = "")
         {
             try
             {
-                var bodyHtmlPage = ResourceUtilities.LoadContentFromResources(htmlPage.FileName, localAssembly, false, false);
+                var bodyHtmlPage = ResourceUtilities.LoadContentFromResources(htmlPage.FileName, localAssembly, false, false, locale);
 
                 bodyHtmlPage = LoadResouces(bodyHtmlPage, htmlPage.Resources, resourcesPath);
                 bodyHtmlPage = LoadResourceAndReplaceByKey(bodyHtmlPage, "#fontStyle", fontStylePath);
@@ -598,7 +611,7 @@ namespace Dynamo.Utilities
                     //This indicates in which location will be created the WebView2 cache folder
                     webBrowserComponent.CreationProperties = new CoreWebView2CreationProperties()
                     {
-                        UserDataFolder = userDataFolder
+                        UserDataFolder = DynamoModel.IsTestMode ? TestUtilities.UserDataFolderDuringTests(nameof(ResourceUtilities)) : userDataFolder
                     };
                 }
 

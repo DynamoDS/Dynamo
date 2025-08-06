@@ -24,7 +24,7 @@ namespace Dynamo.Wpf.ViewModels
         private bool isSelected;
 
         /// <summary>
-        /// The enabled flag sets whether the RunType is selectablable
+        /// The enabled flag sets whether the RunType is selectable
         /// in the view.
         /// </summary>
         public bool Enabled
@@ -307,10 +307,13 @@ namespace Dynamo.Wpf.ViewModels
         #region private and internal methods
 
         /// <summary>
-        /// Notifies all relevant Dynamo features (UI elements, commands) that the Graph exection has been enabled/disabled. 
+        /// Notifies all relevant Dynamo features (UI elements, commands) that the Graph execution has been enabled/disabled. 
         /// </summary>
         void NotifyOfGraphRunChanged()
         {
+            // Skip UI updates during periodic mode to prevent unnecessary toggling of UI elements
+            if (Model.RunType == RunType.Periodic) return;
+
             RaisePropertyChanged(nameof(RunButtonEnabled));
             RaisePropertyChanged(nameof(RunButtonToolTip));
 

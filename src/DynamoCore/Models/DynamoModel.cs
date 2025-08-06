@@ -172,7 +172,7 @@ namespace Dynamo.Models
 
         /// <summary>
         /// Flag to indicate that there is no UI on this process, and things
-        /// like the node index process, update manager and the analytics collection 
+        /// like the node index process, update manager and the analytics collection
         /// should be disabled.
         /// </summary>
         public static bool IsHeadless { get; set; }
@@ -237,7 +237,7 @@ namespace Dynamo.Models
         internal bool IsServiceMode { get; set; }
 
         /// <summary>
-        /// True if Dynamo starts up in offline mode.
+        /// True if Dynamo is used in offline mode.
         /// </summary>
         internal bool NoNetworkMode { get; }
 
@@ -280,6 +280,7 @@ namespace Dynamo.Models
         /// </summary>
         public readonly CustomNodeManager CustomNodeManager;
 
+        //TODO consider making this an interface.
         /// <summary>
         ///     The Dynamo Logger, receives and manages all log messages.
         /// </summary>
@@ -304,7 +305,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     Preference settings for this instance of Dynamo.
         /// </summary>
-        public PreferenceSettings PreferenceSettings { get; private set; } 
+        public PreferenceSettings PreferenceSettings { get; private set; }
 
         /// <summary>
         ///     Node Factory, used for creating and intantiating loaded Dynamo nodes.
@@ -349,7 +350,7 @@ namespace Dynamo.Models
             }
         }
         /// <summary>
-        /// Flag specifying the current state of whether or not to show 
+        /// Flag specifying the current state of whether or not to show
         /// tooltips in the graph. In addition to this toggle, tooltip is only
         /// available when connectors are set to 'bezier' mode.
         /// </summary>
@@ -454,21 +455,25 @@ namespace Dynamo.Models
 
             AnalyticsService.ShutDown();
 
+            LuceneSearch.LuceneUtilityNodeSearch = null;
+            LuceneSearch.LuceneUtilityNodeAutocomplete = null;
+            LuceneSearch.LuceneUtilityPackageManager = null;
+
             State = DynamoModelState.NotStarted;
             OnShutdownCompleted(); // Notify possible event handlers.
         }
 
         /// <summary>
-        /// Based on the DynamoModelState a dependent component can take certain 
+        /// Based on the DynamoModelState a dependent component can take certain
         /// decisions regarding its UI and functionality.
-        /// In order to be able to run a specified graph , DynamoModel needs to be 
-        /// at least in StartedUIless state. 
+        /// In order to be able to run a specified graph , DynamoModel needs to be
+        /// at least in StartedUIless state.
         /// </summary>
         public enum DynamoModelState { NotStarted, StartedUIless, StartedUI };
 
         /// <summary>
         /// The modelState tels us if the RevitDynamoModel was started and if has the
-        /// the Dynamo UI attached to it or not 
+        /// the Dynamo UI attached to it or not
         /// </summary>
         public DynamoModelState State { get; internal set; } = DynamoModelState.NotStarted;
 
@@ -551,9 +556,9 @@ namespace Dynamo.Models
             public string CERLocation { get; set; }
         }
 
-        // Remove this interface in Dynamo3.0 and merge it back into IStartConfiguration.
+        // Remove this interface in Dynamo4.0 and merge it back into IStartConfiguration.
         /// <summary>
-        /// Use this interface to set the CER (crash error reporting) tool path. 
+        /// Use this interface to set the CER (crash error reporting) tool path.
         /// </summary>
         public interface IStartConfigCrashReporter
         {
@@ -563,10 +568,23 @@ namespace Dynamo.Models
             CrashReporterStartupOptions CRStartConfig { get; set; }
         }
 
+        //TODO remove in dynamo 4.0
+        /// <summary>
+        /// Provides a mechanism to configure logging for DynamoModel.
+        /// Implement this interface to supply a logger instance for capturing logs during initialization and runtime.
+        /// </summary>
+        public interface IStartConfigurationLogger
+        {
+            /// <summary>
+            /// Specify the logger instance.
+            /// </summary>
+            DynamoLogger Logger { get; set; }
+        }
+
         /// <summary>
         /// Initialization settings for DynamoModel.
         /// </summary>
-        public struct DefaultStartConfiguration : IStartConfiguration
+        public struct DefaultStartConfiguration : IStartConfiguration, IStartConfigurationLogger
         {
             public string Context { get; set; }
             public string DynamoCorePath { get; set; }
@@ -595,6 +613,12 @@ namespace Dynamo.Models
             /// </summary>
             public bool CLIMode { get; set; }
             public string CLILocale { get; set; }
+            /// <summary>
+            /// Gets or sets the logger instance used for logging messages and events.
+            /// This property should be set to a valid <see cref="DynamoLogger"/> instance
+            /// to enable logging during the initialization and runtime of Dynamo.
+            /// </summary>
+            public DynamoLogger Logger { get; set; }
         }
 
         /// <summary>
@@ -624,7 +648,7 @@ namespace Dynamo.Models
         internal static readonly string BuiltInPackagesToken = @"%BuiltInPackages%";
         [Obsolete("Only used for migration to the new for this directory - BuiltInPackages - do not use for other purposes")]
         // Token representing the standard library directory
-        internal static readonly string StandardLibraryToken = @"%StandardLibrary%";        
+        internal static readonly string StandardLibraryToken = @"%StandardLibrary%";
 
         /// <summary>
         /// Default constructor for DynamoModel
@@ -648,6 +672,11 @@ namespace Dynamo.Models
             {
                 CERLocation = cerConfig.CRStartConfig.CERLocation;
             }
+            //if provided, override logger.
+            if (config is IStartConfigurationLogger loggerConfig && loggerConfig.Logger != null)
+            {
+                Logger = loggerConfig.Logger;
+            }
 
             ClipBoard = new ObservableCollection<ModelBase>();
 
@@ -664,7 +693,11 @@ namespace Dynamo.Models
             HostAnalyticsInfo = config.HostAnalyticsInfo;
 
             DebugSettings = new DebugSettings();
-            Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory, IsTestMode, CLIMode, IsServiceMode);
+            if (Logger == null)
+            {
+                // If logger is not provided, create a new one.
+                Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory, IsTestMode, CLIMode, IsServiceMode);
+            }
 
             if (!IsServiceMode)
             {
@@ -854,7 +887,6 @@ namespace Dynamo.Models
                     // A custom python template path already exists in the DynamoSettings.xml
                     Logger.Log(Resources.PythonTemplateUserFile + " : " + PreferenceSettings.PythonTemplateFilePath);
                 }
-            
             pathManager.Preferences = PreferenceSettings;
             PreferenceSettings.RequestUserDataFolder += pathManager.GetUserDataFolder;
 
@@ -862,7 +894,6 @@ namespace Dynamo.Models
             {
                 SearchModel = new NodeSearchModel(Logger);
                 SearchModel.ItemProduced += SearchModel_ItemProduced;
-                    
             }
 
             NodeFactory = new NodeFactory();
@@ -912,7 +943,7 @@ namespace Dynamo.Models
             LibraryServices.MessageLogged += LogMessage;
             LibraryServices.LibraryLoaded += LibraryLoaded;
 
-            CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices);
+            CustomNodeManager = new CustomNodeManager(NodeFactory, MigrationManager, LibraryServices, !IsServiceMode);
 
             LuceneSearch.LuceneUtilityNodeSearch = new LuceneSearchUtility(this, LuceneSearchUtility.DefaultNodeIndexStartConfig);
 
@@ -924,11 +955,7 @@ namespace Dynamo.Models
 
             AddHomeWorkspace();
 
-            if (!IsServiceMode)
-            {
-                AuthenticationManager = new AuthenticationManager(config.AuthProvider);
-            }
-
+            AuthenticationManager = new AuthenticationManager(config.AuthProvider);
             Logger.Log(string.Format("Dynamo -- Build {0}",
                                         Assembly.GetExecutingAssembly().GetName().Version));
 
@@ -987,6 +1014,11 @@ namespace Dynamo.Models
 
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
             LogWarningMessageEvents.LogInfoMessage += LogInfoMessage;
+
+#pragma warning disable AUTH_SERVICES
+            AuthServices.RequestAuthProvider += AuthServicesEvents_AuthProviderRequested;
+#pragma warning restore AUTH_SERVICES
+
             DynamoConsoleLogger.LogMessageToDynamoConsole += LogMessageWrapper;
             DynamoConsoleLogger.LogErrorToDynamoConsole += LogErrorMessageWrapper;
             if (!IsServiceMode)
@@ -1008,16 +1040,19 @@ namespace Dynamo.Models
             {
                     LuceneUtility.DisposeWriter();
             }
-            
 
             GraphChecksumDictionary = new Dictionary<string, List<string>>();
-                 
             // This event should only be raised at the end of this method.
             DynamoReady(new ReadyParams(this));
         }
 
+        private void AuthServicesEvents_AuthProviderRequested(RequestAuthProviderEventArgs args)
+        {
+            args.AuthProvider = AuthenticationManager.AuthProvider;
+        }
+
         /// <summary>
-        /// When feature flags received, handle them and make changes 
+        /// When feature flags received, handle them and make changes
         /// </summary>
         private void HandleFeatureFlags()
         {
@@ -1272,22 +1307,35 @@ namespace Dynamo.Models
             // This dictionary gets redistributed into a dictionary keyed by the workspace id.
 
             var workspaceOrphanMap = new Dictionary<Guid, List<string>>();
+            var nodeToWorkspaceMap = new Dictionary<Guid, WorkspaceModel>();
 
-            foreach (var ws in Workspaces.OfType<HomeWorkspaceModel>())
+            foreach (var maybeWs in Workspaces)
             {
+                foreach (var node in maybeWs.Nodes)
+                {
+                    nodeToWorkspaceMap[node.GUID] = maybeWs;
+                }
+
+                if (maybeWs is not HomeWorkspaceModel ws)
+                {
+                    continue;
+                }
+
                 // Get the orphaned serializables to this workspace
-                var wsOrphans = ws.GetOrphanedSerializablesAndClearHistoricalTraceData().ToList();
+                var wsOrphans = ws.GetOrphanedSerializablesAndClearHistoricalTraceData();
 
                 if (!wsOrphans.Any())
-                    continue;
-
-                if (!workspaceOrphanMap.ContainsKey(ws.Guid))
                 {
-                    workspaceOrphanMap.Add(ws.Guid, wsOrphans);
+                    continue;
+                }
+
+                if (workspaceOrphanMap.TryGetValue(ws.Guid, out var workspaceOrphans))
+                {
+                    workspaceOrphans.AddRange(wsOrphans);
                 }
                 else
                 {
-                    workspaceOrphanMap[ws.Guid].AddRange(wsOrphans);
+                    workspaceOrphanMap.Add(ws.Guid, wsOrphans);
                 }
             }
 
@@ -1299,23 +1347,20 @@ namespace Dynamo.Models
 
                 // TODO: MAGN-7314
                 // Find the owning workspace for a node.
-                var nodeSpace =
-                    Workspaces.FirstOrDefault(
-                        ws =>
-                            ws.Nodes.FirstOrDefault(n => n.GUID == nodeGuid)
-                                != null);
-
-                if (nodeSpace == null) continue;
+                if (!nodeToWorkspaceMap.TryGetValue(nodeGuid, out var nodeSpace))
+                {
+                    continue;
+                }
 
                 // Add the node's orphaned serializables to the workspace
                 // orphan map.
-                if (workspaceOrphanMap.ContainsKey(nodeSpace.Guid))
+                if (workspaceOrphanMap.TryGetValue(nodeSpace.Guid, out var workspaceOrphans))
                 {
-                    workspaceOrphanMap[nodeSpace.Guid].AddRange(kvp.Value);
+                    workspaceOrphans.AddRange(kvp.Value);
                 }
                 else
                 {
-                    workspaceOrphanMap.Add(nodeSpace.Guid, kvp.Value);
+                    workspaceOrphanMap.Add(nodeSpace.Guid, kvp.Value.ToList());
                 }
             }
 
@@ -1439,7 +1484,7 @@ namespace Dynamo.Models
             }
 
             // Lucene disposals (just if LuceneNET was initialized)
-            LuceneUtility.DisposeAll();
+            LuceneUtility?.DisposeAll();
 
 #if DEBUG
             CurrentWorkspace.NodeAdded -= CrashOnDemand.CurrentWorkspace_NodeAdded;
@@ -1447,6 +1492,11 @@ namespace Dynamo.Models
 
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
             LogWarningMessageEvents.LogInfoMessage -= LogInfoMessage;
+
+#pragma warning disable AUTH_SERVICES
+            AuthServices.RequestAuthProvider -= AuthServicesEvents_AuthProviderRequested;
+#pragma warning restore AUTH_SERVICES
+
             DynamoConsoleLogger.LogMessageToDynamoConsole -= LogMessageWrapper;
             DynamoConsoleLogger.LogErrorToDynamoConsole -= LogErrorMessageWrapper;
             foreach (var ws in _workspaces)
@@ -1487,28 +1537,9 @@ namespace Dynamo.Models
 
                 if (customNodeSearchRegistry.Contains(info.FunctionId)
                         || !info.IsVisibleInDynamoLibrary)
-                    return;
-
-               
-                var elements = SearchModel?.Entries.OfType<CustomNodeSearchElement>().
-                                Where(x =>
-                                {
-                                    // Search for common paths and get rid of empty paths.
-                                    // It can be empty just in case it's just created node.
-                                    return String.Compare(x.Path, info.Path, StringComparison.OrdinalIgnoreCase) == 0 &&
-                                        !String.IsNullOrEmpty(x.Path);
-                                }).ToList();
-
-                if (elements.Any())
                 {
-                    foreach (var element in elements)
-                    {
-                        element.SyncWithCustomNodeInfo(info);
-                        SearchModel.Update(element);
-                    }
                     return;
                 }
-                
 
                 customNodeSearchRegistry.Add(info.FunctionId);
                 var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
@@ -1516,13 +1547,9 @@ namespace Dynamo.Models
 
                 //Indexing node packages installed using PackageManagerSearch
                 var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
-                if (searchElement != null)
-                {
-                    LuceneUtility.AddNodeTypeToSearchIndex(searchElement, iDoc);
-                }
+                LuceneUtility.AddNodeTypeToSearchIndex(searchElement, iDoc);
 
-                Action<CustomNodeInfo> infoUpdatedHandler = null;
-                infoUpdatedHandler = newInfo =>
+                Action<CustomNodeInfo> infoUpdatedHandler = newInfo =>
                 {
                     if (info.FunctionId == newInfo.FunctionId)
                     {
@@ -1588,7 +1615,6 @@ namespace Dynamo.Models
 
             var cnbNode = new CodeBlockNodeSearchElement(cbnData, LibraryServices);
             SearchModel?.Add(cnbNode);
-            LuceneUtility.AddNodeTypeToSearchIndex(cnbNode, iDoc);
 
             var symbolSearchElement = new NodeModelSearchElement(symbolData)
             {
@@ -1607,10 +1633,8 @@ namespace Dynamo.Models
             };
 
             SearchModel?.Add(symbolSearchElement);
-            LuceneUtility.AddNodeTypeToSearchIndex(symbolSearchElement, iDoc);
-
             SearchModel?.Add(outputSearchElement);
-            LuceneUtility.AddNodeTypeToSearchIndex(outputSearchElement, iDoc);
+            LuceneUtility.AddNodeTypeToSearchIndex([cnbNode, symbolSearchElement, outputSearchElement], iDoc);
 
         }
 
@@ -1713,7 +1737,7 @@ namespace Dynamo.Models
             // don't import assembly if its marked node lib and contains any nodemodels and any nodecustomizations
             // as a consequence we won't import any ZT nodes from assemblies that contain customziations and are marked node libraries.
             // We'll only apply the customizations and import NodeModels which are present.
-            // I think this is consistent with the current behavior - IE today - if a nodeModel exists in an assembly, the rest of the assembly 
+            // I think this is consistent with the current behavior - IE today - if a nodeModel exists in an assembly, the rest of the assembly
             // is not imported as ZT - the same will be true if the assembly contains a NodeViewCustomization.
 
             bool hasNodeModelOrNodeViewTypes;
@@ -1751,6 +1775,7 @@ namespace Dynamo.Models
         private void LoadNodeModels(List<TypeLoadData> nodes, bool isPackageMember)
         {
             var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
+            List<NodeSearchElement> nodeSearchElements = [];
             foreach (var type in nodes)
             {
                 // Protect ourselves from exceptions thrown by malformed third party nodes.
@@ -1765,7 +1790,7 @@ namespace Dynamo.Models
                     // TODO: get search element some other way
                     if (ele != null)
                     {
-                        LuceneUtility.AddNodeTypeToSearchIndex(ele, iDoc);
+                        nodeSearchElements.Add(ele);
                     }
                 }
                 catch (Exception e)
@@ -1773,6 +1798,7 @@ namespace Dynamo.Models
                     Logger.Log(e);
                 }
             }
+            LuceneUtility.AddNodeTypeToSearchIndex(nodeSearchElements, iDoc);
         }
 
         private void InitializePreferences()
@@ -1801,10 +1827,10 @@ namespace Dynamo.Models
             var pathParts = PreferenceSettings.TemplateFilePath.Split("\\");
             var currentPathLocale = pathParts.Last();
 
-            //Check if the locale is found inside the supported locales 
+            //Check if the locale is found inside the supported locales
             if (supportedLocales.Contains(currentPathLocale))
             {
-                //If the CurrentUICulture is different than the locale in the TemplateFilePath then needs to be updated         
+                //If the CurrentUICulture is different than the locale in the TemplateFilePath then needs to be updated
                 if (CultureInfo.CurrentUICulture.Name != currentPathLocale)
                 {
                     PreferenceSettings.TemplateFilePath= PreferenceSettings.TemplateFilePath.Replace(currentPathLocale, CultureInfo.CurrentUICulture.Name);
@@ -2045,8 +2071,8 @@ namespace Dynamo.Models
         /// execution mode specified in the file and set manual mode</param>
         public void OpenFileFromPath(string filePath, bool forceManualExecutionMode = false)
         {
-            
-            Exception ex;            
+
+            Exception ex;
             string fileContents;
             if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
             {
@@ -2055,7 +2081,7 @@ namespace Dynamo.Models
             }
             else
             {
-                // These kind of exceptions indicate that file is not accessible 
+                // These kind of exceptions indicate that file is not accessible
                 if (ex is IOException || ex is UnauthorizedAccessException)
                 {
                     throw ex;
@@ -2072,8 +2098,8 @@ namespace Dynamo.Models
                 else
                 {
                     throw ex;
-                }                
-            }            
+                }
+            }
         }
 
         /// <summary>
@@ -2091,7 +2117,7 @@ namespace Dynamo.Models
             }
             else
             {
-                // These kind of exceptions indicate that file is not accessible 
+                // These kind of exceptions indicate that file is not accessible
                 if (ex is IOException || ex is UnauthorizedAccessException || ex is JsonReaderException)
                 {
                     throw ex;
@@ -2116,7 +2142,7 @@ namespace Dynamo.Models
             }
             else
             {
-                // These kind of exceptions indicate that file is not accessible 
+                // These kind of exceptions indicate that file is not accessible
                 if (ex is IOException || ex is UnauthorizedAccessException)
                 {
                     throw ex;
@@ -2172,7 +2198,7 @@ namespace Dynamo.Models
         /// execution mode specified in the file and set manual mode</param>
         /// <param name="isTemplate">Set this to true to indicate that the file is a template</param>
         /// <returns>True if workspace was opened successfully</returns>
-        private bool OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool isTemplate = false)
+        internal bool OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool isTemplate = false)
         {
             try
             {
@@ -2406,7 +2432,7 @@ namespace Dynamo.Models
             }
         }
 
-        private bool OpenJsonFile(
+        internal bool OpenJsonFile(
           string filePath,
           string fileContents,
           DynamoPreferencesData dynamoPreferences,
@@ -2443,7 +2469,6 @@ namespace Dynamo.Models
             workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : string.Empty;
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
             workspace.IsTemplate = isTemplate;
-            
             if (!IsTestMode && !IsHeadless)
             {
                 if (workspace.ContainsLegacyTraceData)
@@ -2483,7 +2508,7 @@ namespace Dynamo.Models
             return true;
         }
 
-        // Attempts to reload all the dummy nodes in the current workspace and replaces them with resolved version. 
+        // Attempts to reload all the dummy nodes in the current workspace and replaces them with resolved version.
         private void ReloadDummyNodes()
         {
             JObject dummyNodeJSON = null;
@@ -2496,7 +2521,7 @@ namespace Dynamo.Models
                 return;
             }
 
-            // Get the dummy nodes in the current workspace. 
+            // Get the dummy nodes in the current workspace.
             var dummyNodes = currentWorkspace.Nodes.OfType<DummyNode>();
 
             foreach (DummyNode dn in dummyNodes)
@@ -2513,13 +2538,13 @@ namespace Dynamo.Models
                                                                IsTestMode,
                                                                CustomNodeManager);
 
-                    // If the resolved node is also a dummy node, then skip it else replace the dummy node with the resolved version of the node. 
+                    // If the resolved node is also a dummy node, then skip it else replace the dummy node with the resolved version of the node.
                     if (!(resolvedNode is DummyNode))
                     {
                         currentWorkspace.RemoveAndDisposeNode(dn);
                         currentWorkspace.AddAndRegisterNode(resolvedNode, false);
 
-                        // Adding back the connectors for the resolved node. 
+                        // Adding back the connectors for the resolved node.
                         List<ConnectorModel> connectors = dn.AllConnectors.ToList();
                         foreach (var connectorModel in connectors)
                         {
@@ -2547,7 +2572,7 @@ namespace Dynamo.Models
             {
                 currentWorkspace.HasUnsavedChanges = false;
                 // Once all the dummy nodes are reloaded, the DummyNodesReloaded event is invoked and
-                // the Dependency table is regenerated in the WorkspaceDependencyView extension. 
+                // the Dependency table is regenerated in the WorkspaceDependencyView extension.
                 currentWorkspace.OnDummyNodesReloaded();
             }
         }
@@ -2719,7 +2744,7 @@ namespace Dynamo.Models
                     }
                 }
 
-                if (annotation.Nodes.Any() && !annotation.Nodes.Except(modelsToDelete).Any())
+                if (annotation.Nodes.Any() && !annotation.Nodes.Except(modelsToDelete).Any(n => n is not ConnectorPinModel))
                 {
                     //Annotation Model has to be serialized first - before the nodes.
                     //so, store the Annotation model as first object. This will serialize the
@@ -2765,12 +2790,19 @@ namespace Dynamo.Models
                             CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
                             if (list.Remove(model))
                             {
-                                if (model is ConnectorPinModel pinModel)
+                                if (!list.Any(n => n is not ConnectorPinModel))
                                 {
-                                    annotation.MarkPinAsRemoved(pinModel);
+                                    emptyGroup.Add(annotation);
                                 }
-                                annotation.Nodes = list;
-                                annotation.UpdateBoundaryFromSelection();                               
+                                else
+                                {
+                                    if (model is ConnectorPinModel pinModel)
+                                    {
+                                        annotation.MarkPinAsRemoved(pinModel);
+                                    }
+                                    annotation.Nodes = list;
+                                    annotation.UpdateBoundaryFromSelection();
+                                }
                             }
                         }
                         else
@@ -2859,6 +2891,9 @@ namespace Dynamo.Models
         public static void SetUICulture(string locale)
         {
             if (string.IsNullOrWhiteSpace(locale)) return;
+
+            //Validate that the provided locale against the supported locales
+            locale = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == locale).Value ?? Configurations.SupportedLocaleDic.FirstOrDefault().Value;
 
             // Setting the locale for Dynamo from loaded Preferences, with Default handled differently
             // between a non-in-process integration case (when HostAnalyticsInfo.HostName is unspecified)
@@ -2957,7 +2992,7 @@ namespace Dynamo.Models
         {
             OnWorkspaceRemoveStarted(workspace);
             if (_workspaces.Remove(workspace))
-            {   
+            {
                 if (workspace is HomeWorkspaceModel)
                 {
                     workspace.Dispose();
@@ -3317,6 +3352,10 @@ namespace Dynamo.Models
                 Background = model.Background,
                 FontSize = model.FontSize,
                 GroupStyleId = model.GroupStyleId,
+                IsOptionalInPortsCollapsed = model.IsOptionalInPortsCollapsed,
+                IsUnconnectedOutPortsCollapsed = model.IsUnconnectedOutPortsCollapsed,
+                HasToggledOptionalInPorts = model.HasToggledOptionalInPorts,
+                HasToggledUnconnectedOutPorts = model.HasToggledUnconnectedOutPorts,
             };
 
             modelLookup.Add(model.GUID, annotationModel);
@@ -3474,26 +3513,21 @@ namespace Dynamo.Models
         internal void AddZeroTouchNodesToSearch(IEnumerable<FunctionGroup> functionGroups)
         {
             var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
+            List<NodeSearchElement> nodes = new();
+
             foreach (var funcGroup in functionGroups)
-                AddZeroTouchNodeToSearch(funcGroup, iDoc);
-        }
-
-        private void AddZeroTouchNodeToSearch(FunctionGroup funcGroup, Document iDoc)
-        {
-            foreach (var functionDescriptor in funcGroup.Functions)
             {
-                AddZeroTouchNodeToSearch(functionDescriptor, iDoc);
+                foreach (var functionDescriptor in funcGroup.Functions)
+                {
+                    if (functionDescriptor.IsVisibleInLibrary)
+                    {
+                        var ele = new ZeroTouchSearchElement(functionDescriptor);
+                        SearchModel?.Add(ele);
+                        nodes.Add(ele);
+                    }
+                }
             }
-        }
-
-        private void AddZeroTouchNodeToSearch(FunctionDescriptor functionDescriptor, Document iDoc)
-        {
-            if (functionDescriptor.IsVisibleInLibrary)
-            {
-                var ele = new ZeroTouchSearchElement(functionDescriptor);
-                SearchModel?.Add(ele);
-                LuceneUtility.AddNodeTypeToSearchIndex(ele, iDoc);
-            }
+            LuceneUtility.AddNodeTypeToSearchIndex(nodes, iDoc);
         }
 
         /// <summary>
@@ -3526,7 +3560,7 @@ namespace Dynamo.Models
 
         private void CheckForXMLDummyNodes(WorkspaceModel workspace)
         {
-            //if the graph that is opened contains xml dummynodes log a notification 
+            //if the graph that is opened contains xml dummynodes log a notification
             if (workspace.containsXmlDummyNodes())
             {
                 this.Logger.LogNotification("DynamoViewModel",
@@ -3737,7 +3771,7 @@ namespace Dynamo.Models
             return result;
         }
 
-        private void RecordUndoModels(WorkspaceModel workspace, List<ModelBase> undoItems)
+        internal static void RecordUndoModels(WorkspaceModel workspace, List<ModelBase> undoItems)
         {
             var userActionDictionary = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
             //Add models that were newly created

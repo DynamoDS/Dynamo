@@ -1,0 +1,85 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>DesignScriptBuiltin</name>
+    </assembly>
+    <members>
+        <member name="M:DesignScript.Builtin.Dictionary.CustomKeyComparer.GetHashCode(System.String)">
+            <summary>Esse código foi copiado de String.GetHashCode() para .NET Framework 4.8, que usa um
+            algoritmo de hashing determinístico. Mais especificamente, essa é a função String.GetLegacyNonRandomizedHashCode()
+            que pode ser encontrada aqui: https://referencesource.microsoft.com/mscorlib/R/42c2b7ffc7c3111f.html</summary>
+            <param name="obj"/>
+            <returns/>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ByKeysValues(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>Cria um dicionário com as chaves e os valores fornecidos. O número de entradas é
+                o menor das chaves ou dos valores.</summary>
+            <param name="keys">Chaves do dicionário</param>
+            <param name="values">Valores do dicionário</param>
+            <returns name="dictionary">Dicionário resultante das chaves e valores</returns>
+            <search>map,{},table</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.Components">
+            <summary>Cria os componentes de um dicionário. O inverso de Dictionary.ByKeysValues.</summary>
+            <returns name="keys">Chaves do dicionário</returns>
+            <returns name="values">Valores do dicionário</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Keys">
+            <summary>Cria as chaves em um dicionário.</summary>
+            <returns name="keys">Chaves do dicionário</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Values">
+            <summary>Cria os valores em um dicionário.</summary>
+            <returns name="values">Valores do dicionário</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Count">
+            <summary>O número de pares de valores/chaves em um dicionário.</summary> 
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.SetValueAtKeys(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>Crie um novo dicionário com uma lista de chaves definidas para os novos valores, possivelmente substituindo pares de valores/chaves existentes. 
+                Estas duas listas devem ter o mesmo comprimento. Caso contrário, a menor das duas delimita o número de inserções.</summary>
+            <param name="keys">As chaves no dicionário a definir. Se a mesma chave já existir, o valor nessa chave será modificado.</param>
+            <param name="values">Os valores correspondentes a inserir.</param>
+            <returns name="dictionary">Novo dicionário com as entradas inseridas</returns>
+            <search>insert,add</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.RemoveKeys(System.Collections.Generic.IList{System.String})">
+            <summary>Crie um novo dicionário com as chaves fornecidas removidas.</summary>
+            <param name="keys">A chave no dicionário a remover</param>
+            <returns name="dictionary">Novo dicionário com as chaves removidas</returns>
+            <search>drop,delete</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ValueAtKey(System.String)">
+            <summary>Obter o valor em uma chave especificada</summary>
+            <param name="key">A chave no dicionário cujo valor deve ser obtido</param>
+            <returns name="value">Valor na chave especificada ou nulo se não estiver definido</returns>
+            <search>lookup,valueatkey,find</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ToString">
+            <summary>Retorna uma representação de sequência de caracteres amigável do dicionário.</summary>
+            <returns>Representação da sequência de caracteres do dicionário.</returns>
+        </member>
+        <member name="T:DesignScript.Builtin.BuiltinNullReferenceException">
+            <summary>Ocorreu uma exceção de referência nula com tipos embutidos de DS nulos:
+            listas, dicionários e sequências de caracteres.</summary>
+        </member>
+        <member name="T:Builtin.Properties.DesignScriptBuiltin">
+            <summary>Uma classe de recurso digitada com ênfase, para pesquisar sequências de caracteres etc.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.ResourceManager">
+            <summary>Retorna a instância do cache ResourceManager usada por esta classe.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.Culture">
+            <summary>Substitui a propriedade CurrentUICulture dos threads atuais para todas
+              as pesquisas de recurso que usam esta classe de recurso digitada com ênfase.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.IndexOutOfRangeExceptionMessage">
+            <summary>Procura uma sequência de caracteres localizada similar a Índice fora da faixa. Se for não negativo, deverá ser menor do que o tamanho da lista. href=kIndexOutOfRange.html.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.NullReferenceExceptionMessage">
+            <summary>Procura uma sequência de caracteres localizada similar a Não é possível indexar em uma lista, um dicionário ou uma sequência de caracteres nulos...</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.StringOverIndexingExceptionMessage">
+            <summary>Procura uma sequência de caracteres localizada similar a Índice fora da faixa. Se for não negativo, deverá ser menor do que o tamanho da sequência de caracteres. href=kIndexOutOfRange.html.</summary>
+        </member>
+    </members>
+</doc>

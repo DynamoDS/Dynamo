@@ -1,7 +1,8 @@
 <!--- Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BySphereBestFit --->
 <!--- RUAGD4YGKJ6XHPIKDL7GZX63CDAFMI6KUSR6XMXEBGJJOATEI5IA --->
-## BySphereBestFit - Documentazione
-Questo file di documentazione viene generato automaticamente da NodeDocumentationMarkdownGenerator, Version=2.14.0.3986, Culture=neutral, PublicKeyToken=null.
+## In profondità
+Nell'esempio seguente, viene creata una superficie primitiva della sfera T-Spline utilizzando il nodo `TSplineSurface.BySphereBestFit` da un elenco fornito di punti casuali. Gli input `radiusSpans` e `heightSpans` controllano il numero di facce lungo l'altezza e le campate radiali (o meridiani). L'input `symmetry` controlla se la forma ha una simmetria iniziale e, infine, `inSmoothMode` definisce se l'anteprima è in modalità uniforme o riquadro.
 
-Per ulteriori informazioni su come aggiungere documentazione ai nodi personalizzati, vedere https://github.com/DynamoDS/Dynamo/wiki/Create-and-Add-Custom-Documentation-to-Nodes.
+## File di esempio
 
+![Example](./RUAGD4YGKJ6XHPIKDL7GZX63CDAFMI6KUSR6XMXEBGJJOATEI5IA_img.jpg)

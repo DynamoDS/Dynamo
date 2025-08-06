@@ -24,6 +24,7 @@ using Dynamo.Linting;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Properties;
+using Dynamo.PythonServices;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -142,6 +143,10 @@ namespace Dynamo.Graph.Workspaces
         public string PinnedNode;
         public double WidthAdjustment;
         public double HeightAdjustment;
+        public bool IsOptionalInPortsCollapsed;
+        public bool IsUnconnectedOutPortsCollapsed;
+        public bool hasToggledOptionalInPorts;
+        public bool HasToggledUnconnectedOutPorts;
 
         // TODO, Determine if these are required
         public double Left;
@@ -170,7 +175,11 @@ namespace Dynamo.Graph.Workspaces
                 this.GroupStyleId == other.GroupStyleId &&
                 this.Background == other.Background &&
                 this.WidthAdjustment == other.WidthAdjustment &&
-                this.HeightAdjustment == other.HeightAdjustment;
+                this.HeightAdjustment == other.HeightAdjustment &&
+                this.IsOptionalInPortsCollapsed == other.IsOptionalInPortsCollapsed &&
+                this.IsUnconnectedOutPortsCollapsed == other.IsUnconnectedOutPortsCollapsed &&
+                this.hasToggledOptionalInPorts == other.hasToggledOptionalInPorts &&
+                this.HasToggledUnconnectedOutPorts == other.HasToggledUnconnectedOutPorts;
 
             //TODO try to get rid of these if possible
             //needs investigation if we are okay letting them get 
@@ -672,20 +681,19 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Event requesting subscribers to return additional package dependencies for
-        /// current workspace.
+        /// Event requesting subscribers to return Python engine mapping for the current workspace nodes.
         /// </summary>
-        internal event Func<IEnumerable<INodeLibraryDependencyInfo>> RequestPackageDependencies;
+        internal event Func<Dictionary<Guid, String>> RequestPythonEngineMapping;
 
         /// <summary>
-        /// Raised when the workspace needs to request for additional package dependencies
+        /// Raised when the workspace needs to request for Python engine mapping
         /// that can be returned from other subscribers such as view extensions.
-        /// E.g. The PythonMigrationViewExtension returns additional package dependencies required for Python engines.
+        /// E.g. The PythonMigrationViewExtension computes additional package dependencies required for Python nodes.
         /// </summary>
         /// <returns></returns>
-        internal IEnumerable<INodeLibraryDependencyInfo> OnRequestPackageDependencies()
+        internal Dictionary<Guid, String> OnRequestPythonEngineMapping()
         {
-            return RequestPackageDependencies?.Invoke();
+            return RequestPythonEngineMapping?.Invoke();
         }
 
         /// <summary>
@@ -800,9 +808,43 @@ namespace Dynamo.Graph.Workspaces
         {
             var packageDependencies = new Dictionary<PackageInfo, PackageDependencyInfo>();
 
+            bool computePythonNodeMapping = true;
+            var pythonNodeMapping = new Dictionary<Guid, String>();
+
             foreach (var node in Nodes)
             {
                 var collected = GetNodePackage(node);
+
+                // Handle python nodes explicitly and use the collected node package for those node types.
+                if (node.ToString().Equals(PythonEngineManager.PythonNodeNamespace))
+                {
+                    // Compute the node - python engine mapping for all python workspace nodes at once, when a python node is detected.
+                    if (computePythonNodeMapping)
+                    {
+                        pythonNodeMapping = OnRequestPythonEngineMapping();
+                        computePythonNodeMapping = false;
+                    }
+
+                    var pythonEnginePackage = (pythonNodeMapping != null && pythonNodeMapping.ContainsKey(node.GUID)) ? pythonNodeMapping[node.GUID] : string.Empty;
+
+                    // For inbuilt python engine,package dependency is not set.
+                    if (pythonEnginePackage.Equals("InBuilt"))
+                    {
+                        continue;
+                    }
+                    else if (collected != null)
+                    {
+                        if (!packageDependencies.ContainsKey(collected))
+                        {
+                            packageDependencies[collected] = new PackageDependencyInfo(collected);
+                        }
+                        packageDependencies[collected].AddDependent(node.GUID);
+                        packageDependencies[collected].State = PackageDependencyState.Loaded;
+
+                        nodePackageDictionary[node.GUID] = collected;
+                        continue;
+                    }
+                }
 
                 if (nodePackageDictionary.ContainsKey(node.GUID))
                 {
@@ -1487,12 +1529,16 @@ namespace Dynamo.Graph.Workspaces
             // have invalid inputs, so these executions are meaningless and may
             // cause invalid GC. See comments in MAGN-7229.
             foreach (NodeModel node in Nodes)
+            {
                 node.RaisesModificationEvents = false;
+                // Dispose here so that all nodes stop listening to disconnect events before
+                // the connectors are deleted. Otherwise remaining undisposed nodes will react
+                // to delete events when an input connector is deleted.
+                node.Dispose();
+            }
 
             foreach (NodeModel el in Nodes)
             {
-                el.Dispose();
-
                 foreach (PortModel p in el.InPorts)
                 {
                     for (int i = p.Connectors.Count - 1; i >= 0; i--)
@@ -1587,12 +1633,12 @@ namespace Dynamo.Graph.Workspaces
 
             AddNode(node);
 
-            HasUnsavedChanges = true;
-
-            if (node is CodeBlockNodeModel cbn
-                && string.IsNullOrEmpty(cbn.Code)) return;
-
-            RequestRun();
+            if (!node.IsTransient)
+            {
+                HasUnsavedChanges = true;
+                if (node is CodeBlockNodeModel cbn && string.IsNullOrEmpty(cbn.Code)) return;
+                RequestRun();
+            }
         }
 
         protected virtual void RegisterNode(NodeModel node)
@@ -1624,6 +1670,11 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         protected virtual void NodeModified(NodeModel node)
         {
+            if (node.IsTransient)
+            {
+                return;
+            }
+
             HasUnsavedChanges = true;
         }
 
@@ -1643,7 +1694,10 @@ namespace Dynamo.Graph.Workspaces
             OnNodeRemoved(model);
             // Force this change to address the edge case that user deleting the right edge
             // node and do not see unsaved changes, e.g. the watch node at end of the graph
-            HasUnsavedChanges = true;
+            if (!model.IsTransient)
+            {
+                HasUnsavedChanges = true;
+            }
 
             if (dispose)
             {
@@ -2669,6 +2723,12 @@ namespace Dynamo.Graph.Workspaces
             annotationModel.GUID = annotationGuidValue;
             annotationModel.HeightAdjustment = annotationViewInfo.HeightAdjustment;
             annotationModel.WidthAdjustment = annotationViewInfo.WidthAdjustment;
+            annotationModel.IsOptionalInPortsCollapsed = annotationViewInfo.IsOptionalInPortsCollapsed;
+            annotationModel.IsUnconnectedOutPortsCollapsed = annotationViewInfo.IsUnconnectedOutPortsCollapsed;
+            annotationModel.HasToggledOptionalInPorts = annotationViewInfo.hasToggledOptionalInPorts;
+            annotationModel.HasToggledUnconnectedOutPorts = annotationViewInfo.HasToggledUnconnectedOutPorts;
+
+            annotationModel.UpdateGroupFrozenStatus();
 
             annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
             annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;

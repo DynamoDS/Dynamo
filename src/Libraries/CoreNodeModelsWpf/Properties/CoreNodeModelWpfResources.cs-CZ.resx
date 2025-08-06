@@ -321,4 +321,25 @@ Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
   <data name="GateOpen" xml:space="preserve">
     <value>Otevřít</value>
   </data>
+  <data name="CurveMapperControlPointCoordinatesLabel" xml:space="preserve">
+    <value>Souřadnice</value>
+  </data>
+  <data name="CurveMapperControlPointToolTip" xml:space="preserve">
+    <value>Přetažením upravte křivku.</value>
+  </data>
+  <data name="CurveMapperCurveTypesLabel" xml:space="preserve">
+    <value>Typ křivky</value>
+  </data>
+  <data name="CurveMapperLockedResetToolTip" xml:space="preserve">
+    <value>Křivka byla uzamknuta a nelze ji obnovit. Nejprve křivku odemkněte.</value>
+  </data>
+  <data name="CurveMapperLockToolTip" xml:space="preserve">
+    <value>Kliknutím křivku uzamkněte.</value>
+  </data>
+  <data name="CurveMapperResetToolTip" xml:space="preserve">
+    <value>Obnovte křivku.</value>
+  </data>
+  <data name="CurveMapperUnlockToolTip" xml:space="preserve">
+    <value>Křivku nelze upravit. Kliknutím ji odemknete.</value>
+  </data>
 </root>

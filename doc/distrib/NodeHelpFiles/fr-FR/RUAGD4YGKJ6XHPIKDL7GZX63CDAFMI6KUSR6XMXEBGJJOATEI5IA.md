@@ -1,7 +1,8 @@
 <!--- Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BySphereBestFit --->
 <!--- RUAGD4YGKJ6XHPIKDL7GZX63CDAFMI6KUSR6XMXEBGJJOATEI5IA --->
-## BySphereBestFit - Documentation
-Ce fichier de documentation est généré automatiquement par NodeDocumentationMarkdownGenerator, Version=2.14.0.3986, Culture=neutral, PublicKeyToken=null.
+## Profondeur
+Dans l'exemple ci-dessous, une surface primitive de sphère T-Spline est créée à l'aide du noeud 'TSplineSurface.BySphereBestFit' à partir d'une liste fournie de points aléatoires. Les entrées 'radiusSpans' et 'heightSpans' contrôlent le nombre de faces le long de la hauteur et des portées radiales (ou méridiens). L'entrée 'symmetry' contrôle si la forme a une symétrie initiale et, enfin, 'inSmoothMode' définit si l'aperçu est en mode lissage ou en mode boîte.
 
-Pour en savoir plus sur l'ajout d'une documentation étendue à vos nœuds, consultez le lien suivant : https://github.com/DynamoDS/Dynamo/wiki/Create-and-Add-Custom-Documentation-to-Nodes
+## Exemple de fichier
 
+![Example](./RUAGD4YGKJ6XHPIKDL7GZX63CDAFMI6KUSR6XMXEBGJJOATEI5IA_img.jpg)

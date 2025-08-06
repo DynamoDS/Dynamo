@@ -250,6 +250,7 @@ namespace Dynamo.UI.Views
         /// </summary>
         private bool SignIn()
         {
+            if (!viewModel.IsIDSDKInitialized(true, this)) return false;
             authManager.Login();
             bool ret = authManager.IsLoggedIn();
             Analytics.TrackEvent(Actions.SignIn, Categories.SplashScreenOperations, ret.ToString());
@@ -347,7 +348,7 @@ namespace Dynamo.UI.Views
 
             webView.CreationProperties = new CoreWebView2CreationProperties
             {
-                UserDataFolder = webBrowserUserDataFolder.FullName
+                UserDataFolder = DynamoModel.IsTestMode ? TestUtilities.UserDataFolderDuringTests(nameof(SplashScreen)) : webBrowserUserDataFolder.FullName
             };
 
             //ContentRendered ensures that the webview2 component is visible.
@@ -406,11 +407,19 @@ namespace Dynamo.UI.Views
 
         internal async void SetLoadingDone()
         {
-            if (webView?.CoreWebView2 != null)
+            try
             {
-                await webView.CoreWebView2.ExecuteScriptAsync($"window.setLoadingDone()");
-                await webView.CoreWebView2.ExecuteScriptAsync($"window.setTotalLoadingTime(\"{Wpf.Properties.Resources.SplashScreenTotalLoadingTimeLabel} {totalLoadingTime}ms\")");
-                SetSignInEnable(enableSignInButton);
+                if (webView?.CoreWebView2 != null)
+                {
+                    await webView.CoreWebView2.ExecuteScriptAsync($"window.setLoadingDone()");
+                    await webView.CoreWebView2.ExecuteScriptAsync($"window.setTotalLoadingTime(\"{Wpf.Properties.Resources.SplashScreenTotalLoadingTimeLabel} {totalLoadingTime}ms\")");
+                    SetSignInEnable(enableSignInButton);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return;
             }
         }
 

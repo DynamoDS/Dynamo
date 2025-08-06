@@ -20,7 +20,7 @@ using Point = System.Windows.Point;
 
 namespace Dynamo.ViewModels
 {
-    public enum PreviewState { Selection, ExecutionPreview, Hover, None }
+    public enum PreviewState { Selection, ExecutionPreview, Hover, None, Transient  }
 
     public partial class ConnectorViewModel : ViewModelBase
     {
@@ -38,6 +38,7 @@ namespace Dynamo.ViewModels
         private bool isConnecting = false;
         private bool isCollapsed = false;
         private bool isHidden = false;
+        private bool isTransient = false;
         private bool isTemporarilyVisible = false;
         private string connectorDataToolTip;
         private bool canShowConnectorTooltip = true;
@@ -196,6 +197,22 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(IsHidden));
                 SetVisibilityOfPins(IsHidden);
                 SetPartialVisibilityOfPins(IsHidden);
+            }
+        }
+
+        internal bool IsTransient
+        {
+            get => isTransient;
+            set
+            {
+                if (isTransient == value)
+                {
+                    return;
+                }
+
+                isTransient = value;
+                RaisePropertyChanged(nameof(IsTransient));
+                RaisePropertyChanged(nameof(PreviewState));
             }
         }
 
@@ -358,13 +375,11 @@ namespace Dynamo.ViewModels
                 zIndex = value;
                 RaisePropertyChanged(nameof(ZIndex));
             }
-         
         }
 
         private int SetZIndex()
         {
-            if (isConnecting)
-                return (int)zIndex;
+            if (isConnecting) return 0;
 
             var firstNode = this.Nodevm;
             var lastNode = this.NodeEnd;
@@ -373,8 +388,7 @@ namespace Dynamo.ViewModels
 
             //reduce ZIndex if one of associated nodes is collapsed
             bool oneNodeInCollapsedGroup = OneConnectingNodeInCollapsedGroup(firstNode, lastNode);
-            bool bothNodesInCollapsedGroup = ConnectingNodesBothInCollapsedGroup(firstNode, lastNode);
-            if (oneNodeInCollapsedGroup && !bothNodesInCollapsedGroup)
+            if (oneNodeInCollapsedGroup)
             {
                 var lowestIndex = new int[] { this.Nodevm.ZIndex, this.NodeEnd.ZIndex }
                 .OrderBy(x => x)
@@ -393,11 +407,6 @@ namespace Dynamo.ViewModels
         {
             if (firstNode == null || lastNode == null) return false;
             return firstNode.IsNodeInCollapsedGroup || lastNode.IsNodeInCollapsedGroup;
-        }
-        private bool ConnectingNodesBothInCollapsedGroup(NodeViewModel firstNode, NodeViewModel lastNode)
-        {
-            if (firstNode == null || lastNode == null) return false;
-            return firstNode.IsNodeInCollapsedGroup && lastNode.IsNodeInCollapsedGroup;
         }
 
         /// <summary>
@@ -505,6 +514,11 @@ namespace Dynamo.ViewModels
                     return PreviewState.None;
                 }
 
+                if (IsTransient)
+                {
+                    return PreviewState.Transient;
+                }
+
                 if (Nodevm.ShowExecutionPreview || NodeEnd.ShowExecutionPreview)
                 {
                     return PreviewState.ExecutionPreview;
@@ -589,10 +603,11 @@ namespace Dynamo.ViewModels
         {
             bool isCollectionofFiveorMore = false;
 
-            //if model is null or enginecontroller is disposed, return
+            // if model is null or node in Transient state or enginecontroller is disposed, return
             if (model is null ||
                 model.Start is null ||
                 model.Start.Owner is null||
+                model.Start.Owner.IsTransient ||
                 workspaceViewModel.DynamoViewModel.EngineController.IsDisposed == true)
             { return; }
 
@@ -1203,43 +1218,52 @@ namespace Dynamo.ViewModels
         /// </summary>
         public override void Dispose()
         {
-            model.PropertyChanged -= HandleConnectorPropertyChanged;
-
-            model.Start.PropertyChanged -= StartPortModel_PropertyChanged;
-            model.End.PropertyChanged -= EndPortModel_PropertyChanged;
-
-            model.Start.Owner.PropertyChanged -= StartOwner_PropertyChanged;
-            model.End.Owner.PropertyChanged -= EndOwner_PropertyChanged;
-            model.ConnectorPinModels.CollectionChanged -= ConnectorPinModelCollectionChanged;
-
-            workspaceViewModel.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
-            workspaceViewModel.DynamoViewModel.Model.PreferenceSettings.PropertyChanged -= DynamoViewModel_PropertyChanged;
-            if (Nodevm != null)
+            if (model != null)
             {
-                Nodevm.PropertyChanged -= nodeViewModel_PropertyChanged;
+                model.PropertyChanged -= HandleConnectorPropertyChanged;
+
+                model.Start.PropertyChanged -= StartPortModel_PropertyChanged;
+                model.End.PropertyChanged -= EndPortModel_PropertyChanged;
+
+                model.Start.Owner.PropertyChanged -= StartOwner_PropertyChanged;
+                model.End.Owner.PropertyChanged -= EndOwner_PropertyChanged;
+                model.ConnectorPinModels.CollectionChanged -= ConnectorPinModelCollectionChanged;
+
+                // Nodevm and NodeEnd props are found via model
+                if (Nodevm != null)
+                {
+                    Nodevm.PropertyChanged -= nodeViewModel_PropertyChanged;
+                }
+                if (NodeEnd != null)
+                {
+                    NodeEnd.PropertyChanged -= nodeEndViewModel_PropertyChanged;
+                }
             }
-            if (NodeEnd != null)
-            {
-                NodeEnd.PropertyChanged -= nodeEndViewModel_PropertyChanged;
-            }
-            ConnectorPinViewCollection.CollectionChanged -= HandleCollectionChanged;
 
             workspaceViewModel.PropertyChanged -= WorkspaceViewModel_PropertyChanged;
 
-            foreach (var pin in ConnectorPinViewCollection.ToList())
+            workspaceViewModel.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
+            workspaceViewModel.DynamoViewModel.Model.PreferenceSettings.PropertyChanged -= DynamoViewModel_PropertyChanged;
+
+            if (ConnectorPinViewCollection != null)
             {
-                pin.RequestRedraw -= HandlerRedrawRequest;
-                pin.RequestSelect -= HandleRequestSelected;
+                ConnectorPinViewCollection.CollectionChanged -= HandleCollectionChanged;
+
+                foreach (var pin in ConnectorPinViewCollection.ToList())
+                {
+                    pin.RequestRedraw -= HandlerRedrawRequest;
+                    pin.RequestSelect -= HandleRequestSelected;
+                }
             }
 
             this.PropertyChanged -= ConnectorViewModelPropertyChanged;
             DiscardAllConnectorPinModels();
 
-            if(ConnectorContextMenuViewModel != null)
+            if (ConnectorContextMenuViewModel != null)
             {
                 ConnectorContextMenuViewModel.Dispose();
             }
-            if(ConnectorAnchorViewModel != null)
+            if (ConnectorAnchorViewModel != null)
             {
                 ConnectorAnchorViewModel.Dispose();
             }
@@ -1451,17 +1475,27 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void Redraw()
         {
-            if (this.ConnectorModel?.End != null && ConnectorPinViewCollection?.Count > 0)
+            try
             {
-                RedrawBezierManyPoints();
-            }
-            else if (this.ConnectorModel?.End != null)
-            {
-                this.Redraw(this.ConnectorModel.End.Center);
-            }
+                if (this.ConnectorModel != null && ConnectorPinViewCollection != null)
+                {
+                    if (this.ConnectorModel?.End != null && ConnectorPinViewCollection?.Count > 0)
+                    {
+                        RedrawBezierManyPoints();
+                    }
+                    else if (this.ConnectorModel?.End != null)
+                    {
+                        this.Redraw(this.ConnectorModel.End.Center);
+                    }
+                }
 
-            this.SetCollapsedByNodeViewModel();
-            RaisePropertyChanged(nameof(ZIndex));
+                this.SetCollapsedByNodeViewModel();
+                RaisePropertyChanged(nameof(ZIndex));
+            }
+            catch (Exception ex)
+            {
+                workspaceViewModel.DynamoViewModel.Model.Logger.Log("Error when redrawing the connector: " + ex.StackTrace);
+            }
         }
 
         /// <summary>
@@ -1472,9 +1506,13 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void SetCollapsedByNodeViewModel()
         {
-            if (this.Nodevm.IsCollapsed && this.NodeEnd.IsCollapsed)
+            // Check if the connector is between two proxy ports. 
+            // Connectors between proxy ports should not be collapsed.
+            bool bothEndsAreProxyPorts = ConnectorModel.Start.IsProxyPort && ConnectorModel.End.IsProxyPort;
+
+            if (Nodevm?.IsCollapsed == true && NodeEnd?.IsCollapsed == true && !bothEndsAreProxyPorts)
             {
-                this.IsCollapsed = true;
+                IsCollapsed = true;
             }
         }
 

@@ -15,3 +15,7 @@ N : číslo N2 1000 -> "1 000,00"
 Výchozí hodnota pro tento uzel je `G`, což vytvoří kompaktní, ale proměnnou reprezentaci.
 
 [Podrobnější informace naleznete v dokumentaci společnosti Microsoft.](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings#standard-format-specifiers)
+___
+## Vzorový soubor
+
+![Formatted String from Object](./CoreNodeModels.FormattedStringFromObject_img.jpg)

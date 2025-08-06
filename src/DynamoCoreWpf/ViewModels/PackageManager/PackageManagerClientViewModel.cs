@@ -284,6 +284,7 @@ namespace Dynamo.ViewModels
 
         private void ToggleLoginState()
         {
+            if(!this.DynamoViewModel.IsIDSDKInitialized()) return;
             if (AuthenticationManager.LoginState == LoginState.LoggedIn)
             {
                 AuthenticationManager.Logout();
@@ -301,6 +302,7 @@ namespace Dynamo.ViewModels
 
         public void PublishCurrentWorkspace(object m)
         {
+            if (!this.DynamoViewModel.IsIDSDKInitialized(true, ViewModelOwner)) return;
             var ws = (CustomNodeWorkspaceModel)DynamoViewModel.CurrentSpace;
 
             CustomNodeDefinition currentFunDef;
@@ -341,11 +343,12 @@ namespace Dynamo.ViewModels
 
         public bool CanPublishCurrentWorkspace(object m)
         {
-            return DynamoViewModel.Model.CurrentWorkspace is CustomNodeWorkspaceModel && AuthenticationManager.HasAuthProvider;
+            return DynamoViewModel.Model.CurrentWorkspace is CustomNodeWorkspaceModel && AuthenticationManager.HasAuthProvider && !Model.NoNetworkMode;
         }
 
         public void PublishNewPackage(object m)
         {
+            if (!this.DynamoViewModel.IsIDSDKInitialized(true, ViewModelOwner)) return;
             var termsOfUseCheck = new TermsOfUseHelper(new TermsOfUseHelperParams
             {
                 PackageManagerClient = Model,
@@ -360,11 +363,12 @@ namespace Dynamo.ViewModels
 
         public bool CanPublishNewPackage(object m)
         {
-            return AuthenticationManager.HasAuthProvider;
+            return AuthenticationManager.HasAuthProvider && !Model.NoNetworkMode;
         }
 
         public void PublishCustomNode(Function m)
         {
+            if (!this.DynamoViewModel.IsIDSDKInitialized(true, ViewModelOwner)) return;
             CustomNodeInfo currentFunInfo;
             if (DynamoViewModel.Model.CustomNodeManager.TryGetNodeInfo(
                 m.Definition.FunctionId,
@@ -389,11 +393,12 @@ namespace Dynamo.ViewModels
 
         public bool CanPublishCustomNode(Function m)
         {
-            return AuthenticationManager.HasAuthProvider && m != null;
+            return AuthenticationManager.HasAuthProvider && m != null && !Model.NoNetworkMode;
         }
 
         public void PublishSelectedNodes(object m)
         {
+            if (!this.DynamoViewModel.IsIDSDKInitialized(true, ViewModelOwner)) return;
             var nodeList = DynamoSelection.Instance.Selection
                                 .Where(x => x is Function)
                                 .Cast<Function>()
@@ -448,17 +453,19 @@ namespace Dynamo.ViewModels
         public bool CanPublishSelectedNodes(object m)
         {
             return DynamoSelection.Instance.Selection.Count > 0 &&
-                   DynamoSelection.Instance.Selection.All(x => x is Function) && AuthenticationManager.HasAuthProvider; ;
+                   DynamoSelection.Instance.Selection.All(x => x is Function) && AuthenticationManager.HasAuthProvider && !Model.NoNetworkMode;
         }
 
         private void ShowNodePublishInfo()
         {
+            if (!this.DynamoViewModel.IsIDSDKInitialized(true, ViewModelOwner)) return;
             var newPkgVm = new PublishPackageViewModel(DynamoViewModel);
             DynamoViewModel.OnRequestPackagePublishDialog(newPkgVm);
         }
 
         private void ShowNodePublishInfo(ICollection<Tuple<CustomNodeInfo, CustomNodeDefinition>> funcDefs)
         {
+            if (!this.DynamoViewModel.IsIDSDKInitialized(true, ViewModelOwner)) return;
             foreach (var f in funcDefs)
             {
                 var pkg = PackageManagerExtension.PackageLoader.GetOwnerPackage(f.Item1);
@@ -513,6 +520,7 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         public List<PackageManagerSearchElement> GetInfectedPackages()
         {
+            if (!this.DynamoViewModel.IsIDSDKInitialized(true, ViewModelOwner)) return null;
             InfectedPackageList = new List<PackageManagerSearchElement>();
             var latestPkgs = Model.GetUsersLatestPackages();
             if (latestPkgs != null && latestPkgs.maintains?.Count > 0)
@@ -537,6 +545,7 @@ namespace Dynamo.ViewModels
         public void DownloadAndInstallPackage(IPackageInfo packageInfo, string downloadPath = null)
         {
             // User needs to accept terms of use before any packages can be downloaded from package manager
+            if (!this.DynamoViewModel.IsIDSDKInitialized(true, ViewModelOwner)) return;
             var prefSettings = DynamoViewModel.Model.PreferenceSettings;
             var touAccepted = prefSettings.PackageDownloadTouAccepted;
             if (!touAccepted)
@@ -941,7 +950,7 @@ namespace Dynamo.ViewModels
                     // also identify packages that have a dynamo engine version less than 3.x as a special case,
                     // as Dynamo 3.x uses .net8 and older versions used .net framework - these packages may not be compatible.
                     // This check will return empty if the current major version is not 3.
-                    var preDYN3Deps = newPackageHeaders.Where(dep => dynamoVersion.Major == 3 && Version.Parse(dep.engine_version).Major < dynamoVersion.Major);
+                    var preDYN4Deps = newPackageHeaders.Where(dep => dynamoVersion.Major == 4 && Version.Parse(dep.engine_version).Major < dynamoVersion.Major);
 
                     // If any of the required packages use a newer version of Dynamo, show a dialog to the user
                     // allowing them to cancel the package download
@@ -962,7 +971,7 @@ namespace Dynamo.ViewModels
 
                     //if any of the required packages use a pre 3.x version of Dynamo, show a dialog to the user
                     //allowing them to cancel the package download
-                    if (preDYN3Deps.Any())
+                    if (preDYN4Deps.Any())
                     {
                         var res = MessageBoxService.Show(ViewModelOwner,
                         $"{string.Format(Resources.MessagePackageOlderDynamo, DynamoViewModel.BrandingResourceProvider.ProductName)} {Resources.MessagePackOlderDynamoLink}",

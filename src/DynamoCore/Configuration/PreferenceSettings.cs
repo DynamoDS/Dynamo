@@ -80,6 +80,9 @@ namespace Dynamo.Configuration
         private string backupLocation;
         private string templateFilePath;
         private bool isMLAutocompleteTOUApproved;
+        private bool optionalInputsCollapsed;
+        private bool unconnectedOutputsCollapsed;
+        private bool collapseToMinSize;
 
         #region Constants
         /// <summary>
@@ -88,9 +91,14 @@ namespace Dynamo.Configuration
         internal const int DefaultMaxNumRecentFiles = 10;
 
         /// <summary>
-        /// The default time interval between backup files. 1 minute.
+        /// The default time interval between backup files. 5 minutes.
         /// </summary>
-        internal const int DefaultBackupInterval = 60000;
+        internal const int DefaultBackupInterval = 300000;
+
+        /// <summary>
+        /// The old time interval between backup files. 1 minute.
+        /// </summary>
+        private const int OldDefaultBackupInterval = 60000;
 
         /// <summary>
         /// Indicates the default render precision, i.e. the maximum number of tessellation divisions
@@ -184,6 +192,53 @@ namespace Dynamo.Configuration
         /// Indicates if preview bubbles should be displayed on nodes.
         /// </summary>
         public bool ShowPreviewBubbles { get; set; }
+
+        /// <summary>
+        /// Indicates if groups should display the default description.
+        /// </summary>
+        public bool ShowDefaultGroupDescription { get; set; }
+
+        /// <summary>
+        /// Indicates if the optional input ports are collapsed by default.
+        /// </summary>
+        public bool OptionalInPortsCollapsed
+        {
+            get => optionalInputsCollapsed;
+            set
+            {
+                if (optionalInputsCollapsed == value) return;
+                optionalInputsCollapsed = value;
+                RaisePropertyChanged(nameof(OptionalInPortsCollapsed));
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the unconnected output ports are hidden by default.
+        /// </summary>
+        public bool UnconnectedOutPortsCollapsed
+        {
+            get => unconnectedOutputsCollapsed;
+            set
+            {
+                if (unconnectedOutputsCollapsed == value) return;
+                unconnectedOutputsCollapsed = value;
+                RaisePropertyChanged(nameof(UnconnectedOutPortsCollapsed));
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the groups should be collapsed to minimal size by default.
+        /// </summary>
+        public bool CollapseToMinSize
+        {
+            get => collapseToMinSize;
+            set
+            {
+                if (collapseToMinSize == value) return;
+                collapseToMinSize = value;
+                RaisePropertyChanged(nameof(CollapseToMinSize));
+            }
+        }
 
         /// <summary>
         /// Indicates if Host units should be used for graphic helpers for Dynamo Revit
@@ -659,6 +714,11 @@ namespace Dynamo.Configuration
         public bool EnableNodeAutoComplete { get; set; }
 
         /// <summary>
+        /// This allows the user to enable or disable the new node auto complete menu.
+        /// </summary>
+        public bool EnableNewNodeAutoCompleteUI { get; set; }
+
+        /// <summary>
         /// PolyCurve normal and direction behavior has been made predictable in Dynamo 3.0 and has therefore changed. 
         /// This defines whether legacy (pre-3.0) PolyCurve behavior is selected by default.
         /// This flag can be overridden by individual workspaces that have the EnableLegacyPolyCurveBehavior flag defined.
@@ -677,10 +737,22 @@ namespace Dynamo.Configuration
         /// </summary>
         public int MLRecommendationConfidenceLevel { get; set; }
 
+        private int mLRecommendationNumberOfResults;
         /// <summary>
         /// This defines the number of results of the  ML recommendation
         /// </summary>
-        public int MLRecommendationNumberOfResults { get; set; }
+        public int MLRecommendationNumberOfResults
+        {
+            get => mLRecommendationNumberOfResults;
+            set
+            {
+                if (mLRecommendationNumberOfResults != value)
+                {
+                    mLRecommendationNumberOfResults = value;
+                    AutocompletePreferencesChanged?.Invoke();
+                }
+            }
+        }
 
         /// <summary>
         /// If true, autocomplete method options are hidden from UI 
@@ -848,10 +920,27 @@ namespace Dynamo.Configuration
         /// </summary>
         public RunType DefaultRunType { get; set; }
 
+        private NodeAutocompleteSuggestion defaultNodeAutocompleteSuggestion;
         /// <summary>
         /// Defines the default method of the Node Autocomplete
         /// </summary>
-        public NodeAutocompleteSuggestion DefaultNodeAutocompleteSuggestion { get; set; }
+        public NodeAutocompleteSuggestion DefaultNodeAutocompleteSuggestion
+        {
+            get => defaultNodeAutocompleteSuggestion;
+            set
+            {
+                if(defaultNodeAutocompleteSuggestion != value)
+                {
+                    defaultNodeAutocompleteSuggestion = value;
+                    AutocompletePreferencesChanged?.Invoke();
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Event that is fired when autocomplete-specific preferences are changed
+        /// </summary>
+        internal event Action AutocompletePreferencesChanged;
 
         /// <summary>
         /// Show Run Preview flag.
@@ -956,6 +1045,10 @@ namespace Dynamo.Configuration
             NamespacesToExcludeFromLibrary = new List<string>();
             DefaultRunType = RunType.Automatic;
             DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
+            ShowDefaultGroupDescription = true;
+            OptionalInPortsCollapsed = true;
+            UnconnectedOutPortsCollapsed = true;
+            CollapseToMinSize = true;
 
             BackupInterval = DefaultBackupInterval;
             BackupFilesCount = 1;
@@ -973,6 +1066,7 @@ namespace Dynamo.Configuration
             IsIronPythonDialogDisabled = false;
             ShowTabsAndSpacesInScriptEditor = false;
             EnableNodeAutoComplete = true;
+            EnableNewNodeAutoCompleteUI = true;
             DefaultEnableLegacyPolyCurveBehavior = true;
             HideNodesBelowSpecificConfidenceLevel = false;
             MLRecommendationConfidenceLevel = 10;
@@ -1067,6 +1161,20 @@ namespace Dynamo.Configuration
                         {
                             namespaces[index] = "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.PanelSurface";
                         }
+                    }
+
+                    // If the backup interval is set to OldDefaultBackupInterval (60000ms - 1 minute), reset it to the new default value.
+                    var savedBackUpInterval = settings?.BackupInterval;
+                    if (savedBackUpInterval == OldDefaultBackupInterval)
+                    {
+                        settings.BackupInterval = DefaultBackupInterval;
+                    }
+
+                    //Do not add invalid paths for recent files list
+                    var recentFiles = settings?.RecentFiles;
+                    if (recentFiles != null)
+                    {
+                        settings.RecentFiles = recentFiles.Where(path => !string.IsNullOrEmpty(path) && DynamoUtilities.PathHelper.IsValidPath(path)).ToList();
                     }
 
                     fs.Close(); // Release file lock

@@ -1,0 +1,85 @@
+name: Cherrypick merged pull request
+on:
+  pull_request_target:
+    branches: [master]
+    types: [closed]
+  issue_comment:
+    types: [created]
+
+jobs:    
+  cherrypick:
+    name: Cherrypick pull request
+    runs-on: ubuntu-latest
+    # Only run when pull request is merged
+    # or when a comment starting with `/cherrypick` is created by someone other than the
+    # https://github.com/github-action bot user (user id: 41898282 - https://api.github.com/users/github-actions%5Bbot%5D).
+    if: >
+      (
+        github.event_name == 'pull_request_target' &&
+        github.event.pull_request.merged &&
+        github.event.pull_request.milestone != null
+      ) || (
+        github.event_name == 'issue_comment' &&
+        github.event.issue.pull_request &&
+        github.event.comment.user.id != 41898282 &&
+        startsWith(github.event.comment.body, '/cherrypick')
+      )
+    steps:
+      - name: Setup constants
+        id: check_constants
+        run: |
+          milestone=""
+          if [[ "${{ github.event_name }}" == "issue_comment" ]]; then
+            pr_url="${{ github.event.issue.pull_request.url }}"
+            pr_number=$(echo "$pr_url" | grep -oE '[0-9]+$')
+            echo "PR Number: $pr_number"
+            echo "User ID: ${{github.event.comment.user.id}}"
+            echo "Getting PR URL"
+            curl "https://api.github.com/repos/${{ github.repository }}/pulls/$pr_number" | jq '.milestone.title' | sed -e 's/"/ /g' | sed 's/ //g' > milestone.out
+            milestone=$(cat milestone.out)
+            echo "Milestone: $milestone"
+            echo "milestone=$milestone" >> "$GITHUB_OUTPUT"
+          fi
+          if [[ "${{ github.event_name }}" == "pull_request_target" ]]; then
+            milestone=${{github.event.pull_request.milestone.title}}
+            echo "Milestone: $milestone"
+            echo "milestone=$milestone" >> "$GITHUB_OUTPUT"
+          fi
+          if [[ $milestone -eq "" ]]; then
+            echo "Milestone not set. Exiting..."
+            exit 1
+          fi
+        shell: bash
+      - name: Check if RC branch exists for the milestone
+        id: check_branch
+        run: |
+          MILESTONE="${{ steps.check_constants.outputs.milestone }}"
+          if [[ $MILESTONE =~ ^[0-9]+\.[0-9]+$ ]]; then
+            BRANCH_NAME="RC${MILESTONE}.0_master"
+          else
+            BRANCH_NAME="RC${MILESTONE}_master"
+          fi
+          echo "Branch Name: $BRANCH_NAME"
+          echo "BRANCH_NAME=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
+          BRANCH_URL="https://api.github.com/repos/${{ github.repository }}/branches/$BRANCH_NAME"
+          echo "Branch URL: $BRANCH_URL" 
+          branch_response=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" $BRANCH_URL)
+          echo $branch_response
+          if [ $branch_response -eq 200 ]; then
+            echo "Branch exists"
+          else
+            echo "Branch does not exist"
+            exit 1
+          fi
+        shell: bash
+      - uses: actions/checkout@v4
+      - name: Start Cherrypick
+        uses: korthout/backport-action@v3
+        with:
+          branch_name: cherrypick-${pull_number}
+          copy_milestone: true
+          copy_requested_reviewers: true
+          target_branches: ${{ steps.check_branch.outputs.BRANCH_NAME }}
+          pull_title: "[Cherry-pick] ${pull_title}"
+          pull_description: "Cherry-pick of #${pull_number} to `${target_branch}` \n ${pull_description}"
+          add_labels: "auto-cherry-picked-for-${{ steps.check_constants.outputs.milestone }}"

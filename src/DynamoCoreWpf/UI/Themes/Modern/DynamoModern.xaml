@@ -7,7 +7,8 @@
                     xmlns:fa="clr-namespace:FontAwesome5;assembly=FontAwesome5.Net"
                     xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
                     xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
-                    xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf">
+                    xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+                    xmlns:conv="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf">
 
     <ResourceDictionary.MergedDictionaries>
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
@@ -514,7 +515,6 @@
         <Style.Triggers />
     </Style>
 
-
     <!--  NodeView c ustomization styles  -->
     <ControlTemplate x:Key="NodeViewComboBoxToggleButton" TargetType="ToggleButton">
         <Grid>
@@ -867,9 +867,13 @@
     </Style>
 
     <!--  Zoom fade text  -->
-    <Style x:Key="SZoomFadeText" TargetType="{x:Type TextBlock}">
+    <Style
+        x:Key="SZoomFadeBase_Animation"
+        TargetType="{x:Type FrameworkElement}">
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
+            <DataTrigger
+                Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}"
+                Value="true">
                 <DataTrigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard>
@@ -892,62 +896,36 @@
         </Style.Triggers>
     </Style>
 
-    <!--  Zoom fade label  -->
-    <Style x:Key="SZoomFadeLabel" TargetType="{x:Type Label}">
+    <Style
+        x:Key="SZoomFadeBase_Basic"
+        TargetType="{x:Type FrameworkElement}">
+        <Setter
+            Property="Opacity"
+            Value="0" />
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
-                <DataTrigger.EnterActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                             To="1.0"
-                                             Duration="0:0:0.2" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </DataTrigger.EnterActions>
-                <DataTrigger.ExitActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                             To="0.0"
-                                             Duration="0:0:0.2" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </DataTrigger.ExitActions>
+            <DataTrigger
+                Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}"
+                Value="true">
+                <Setter
+                    Property="Opacity"
+                    Value="1" />
             </DataTrigger>
         </Style.Triggers>
     </Style>
 
-    <!--  Zoom fade preview  -->
-    <Style x:Key="SZoomFadePreview" TargetType="{x:Type Border}">
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
-                <DataTrigger.EnterActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                             To="0.4"
-                                             Duration="0:0:0.5" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </DataTrigger.EnterActions>
-                <DataTrigger.ExitActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                             To="0.7"
-                                             Duration="0:0:0.5" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </DataTrigger.ExitActions>
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
+    <conv:BooleanToStyleConverter
+        x:Key="SZoomFadeControl"
+        TrueStyle="{StaticResource SZoomFadeBase_Basic}"
+        FalseStyle="{StaticResource SZoomFadeBase_Animation}" />
 
     <!--  Zoom fade-in preview  -->
-    <Style x:Key="SZoomFadeInPreview" TargetType="{x:Type Border}">
+    <Style
+        x:Key="SZoomFadeInPreview_Animation"
+        TargetType="{x:Type FrameworkElement}">
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
+            <DataTrigger
+                Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}"
+                Value="true">
                 <DataTrigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard>
@@ -970,10 +948,36 @@
         </Style.Triggers>
     </Style>
 
-    <!--  Zoom fade-in preview  -->
-    <Style x:Key="SZoomFadeOutPreview" TargetType="{x:Type Border}">
+    <Style
+        x:Key="SZoomFadeInPreview_Basic"
+        TargetType="{x:Type FrameworkElement}">
+        <Setter
+            Property="Opacity"
+            Value="0.5" />
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
+            <DataTrigger
+                Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}"
+                Value="true">
+                <Setter
+                    Property="Opacity"
+                    Value="0.0" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <conv:BooleanToStyleConverter
+        x:Key="SZoomFadeInPreview"
+        TrueStyle="{StaticResource SZoomFadeInPreview_Basic}"
+        FalseStyle="{StaticResource SZoomFadeInPreview_Animation}" />
+
+    <!--  Zoom fade-out preview  -->
+    <Style
+        x:Key="SZoomFadeOutPreview_Animation"
+        TargetType="{x:Type FrameworkElement}">
+        <Style.Triggers>
+            <DataTrigger
+                Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}"
+                Value="true">
                 <DataTrigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard>
@@ -996,36 +1000,36 @@
         </Style.Triggers>
     </Style>
 
-    <!--  Zoom fade-out framework element  -->
-    <Style x:Key="SZoomFadeOutFrameworkElement" TargetType="{x:Type FrameworkElement}">
+    <Style
+        x:Key="SZoomFadeOutPreview_Basic"
+        TargetType="{x:Type FrameworkElement}">
+        <Setter
+            Property="Opacity"
+            Value="0.0" />
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
-                <DataTrigger.EnterActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                             To="1.0"
-                                             Duration="0:0:0.2" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </DataTrigger.EnterActions>
-                <DataTrigger.ExitActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                             To="0.0"
-                                             Duration="0:0:0.2" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </DataTrigger.ExitActions>
+            <DataTrigger
+                Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}"
+                Value="true">
+                <Setter
+                    Property="Opacity"
+                    Value="0.5" />
             </DataTrigger>
         </Style.Triggers>
     </Style>
+
+    <conv:BooleanToStyleConverter
+        x:Key="SZoomFadeOutPreview"
+        TrueStyle="{StaticResource SZoomFadeOutPreview_Basic}"
+        FalseStyle="{StaticResource SZoomFadeOutPreview_Animation}" />
 
     <!--  Zoom fade-in framework element  -->
-    <Style x:Key="SZoomFadeInFrameworkElement" TargetType="{x:Type FrameworkElement}">
+    <Style
+        x:Key="SZoomFadeInControl_Animation"
+        TargetType="{x:Type FrameworkElement}">
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
+            <DataTrigger
+                Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}"
+                Value="true">
                 <DataTrigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard>
@@ -1047,6 +1051,28 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
+
+    <Style
+        x:Key="SZoomFadeInControl_Basic"
+        TargetType="{x:Type FrameworkElement}">
+        <Setter
+            Property="Opacity"
+            Value="1" />
+        <Style.Triggers>
+            <DataTrigger
+                Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}"
+                Value="true">
+                <Setter
+                    Property="Opacity"
+                    Value="0.0" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <conv:BooleanToStyleConverter
+        x:Key="SZoomFadeInControl"
+        TrueStyle="{StaticResource SZoomFadeInControl_Basic}"
+        FalseStyle="{StaticResource SZoomFadeInControl_Animation}" />
 
     <Style x:Key="TextButtonStyle" TargetType="Button">
         <Setter Property="HorizontalAlignment" Value="Right" />
@@ -1800,7 +1826,7 @@
                                        FontSize="{TemplateBinding FontSize}"
                                        FontWeight="Bold"
                                        Foreground="{TemplateBinding Foreground}"
-                                       Style="{StaticResource SZoomFadeText}"
+                                       Style="{Binding Path=DataContext.NodeCountOptimizationEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}"
                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
                         </Border>
                     </Grid>
@@ -1845,7 +1871,7 @@
                                        FontSize="28px"
                                        FontWeight="Bold"
                                        Foreground="#999999"
-                                       Style="{StaticResource SZoomFadeText}"
+                                       Style="{Binding Path=DataContext.NodeCountOptimizationEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}"
                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
                         </Border>
                     </Grid>
@@ -2764,6 +2790,9 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <conv:NodeModelToPortStyleConverter
+        x:Key="NodeModelToPortStyleConverter"
+        PortStyle="{StaticResource InOutPortControlStyle}" />
 
     <Style x:Key="{x:Type dynui:ImageCheckBox}" TargetType="{x:Type dynui:ImageCheckBox}">
         <Setter Property="SnapsToDevicePixels" Value="true" />
@@ -4088,6 +4117,103 @@
                             <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource GenericMouseOverBackgroundColorBrush}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="False">
+                            <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackground}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="checkBox" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="ContentPresenter" Property="TextBlock.FontFamily" Value="{StaticResource ArtifaktElementBold}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  This context menu style is similar to the ContextMenuItemStyle and the only difference is the background at IsMouseOve = False  -->
+    <Style x:Key="DarkContextMenuItemStyle" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource ContextMenuItemStyle}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type MenuItem}">
+                    <DockPanel x:Name="dockPanel"
+                           HorizontalAlignment="Stretch"
+                           Background="Transparent"
+                           SnapsToDevicePixels="true">
+                        <Label x:Name="checkBox"
+                           Margin="0,0,-20,0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           HorizontalContentAlignment="Center"
+                           VerticalContentAlignment="Center"
+                           Content="✓"
+                           DockPanel.Dock="Left"
+                           FontSize="9px"
+                           Foreground="{StaticResource PreferencesWindowButtonColor}"
+                           Visibility="Collapsed" />
+                        <ContentPresenter x:Name="ContentPresenter"
+                                      Margin="{TemplateBinding Padding}"
+                                      VerticalAlignment="Center"
+                                      ContentSource="Header"
+                                      DockPanel.Dock="Left"
+                                      RecognizesAccessKey="True"
+                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                      TextBlock.Foreground="{StaticResource NodeContextMenuForeground}" />
+                        <Label x:Name="subMenuArrow"
+                           Margin="0,0,15,7"
+                           Padding="0"
+                           VerticalAlignment="Center"
+                           Content="&gt;"
+                           DockPanel.Dock="Right"
+                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                           FontSize="13px"
+                           Foreground="{StaticResource Blue300Brush}">
+                            <Label.RenderTransform>
+                                <ScaleTransform ScaleX="1" ScaleY="1.5" />
+                            </Label.RenderTransform>
+                            <Label.Style>
+                                <Style TargetType="{x:Type Label}">
+                                    <Setter Property="Visibility" Value="Hidden" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type MenuItem}}, Path=HasItems}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
+                        <Popup x:Name="PART_Popup"
+                           AllowsTransparency="true"
+                           Focusable="false"
+                           HorizontalOffset="0"
+                           IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                           Placement="Right"
+                           VerticalOffset="-2">
+                            <Border Background="{TemplateBinding Background}"
+                                BorderBrush="Transparent"
+                                BorderThickness="0">
+                                <ScrollViewer x:Name="SubMenuScrollViewer"
+                                          CanContentScroll="true"
+                                          Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer,
+                                                                                        TypeInTargetAssembly={x:Type FrameworkElement}}}">
+                                    <Grid RenderOptions.ClearTypeHint="Enabled">
+                                        <ItemsPresenter x:Name="ItemsPresenter"
+                                                    Grid.IsSharedSizeScope="true"
+                                                    KeyboardNavigation.DirectionalNavigation="Cycle"
+                                                    KeyboardNavigation.TabNavigation="Cycle"
+                                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                    </Grid>
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </DockPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="ContentPresenter" Property="TextBlock.Opacity" Value="0.5" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="White" />
+                            <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource GenericMouseOverBackgroundColorBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="False">
                             <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource GenericBorderBackgroundColorBrush}" />
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
@@ -4244,6 +4370,17 @@
             <Style x:Key="{x:Type MenuItem}"
                    BasedOn="{StaticResource ContextMenuItemStyle}"
                    TargetType="MenuItem" />
+        </Style.Resources>
+    </Style>
+
+    <Style x:Key="DarkContextMenuStyle" TargetType="{x:Type ContextMenu}" BasedOn="{StaticResource ContextMenuStyle}">
+        <Style.Resources>
+            <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}"
+               BasedOn="{StaticResource ContextMenuSeparatorStyle}"
+               TargetType="Separator" />
+            <Style x:Key="{x:Type MenuItem}"
+               BasedOn="{StaticResource DarkContextMenuItemStyle}"
+               TargetType="MenuItem" />
         </Style.Resources>
     </Style>
 
@@ -4411,7 +4548,7 @@
                                     VerticalAlignment="Stretch"
                                     Orientation="Horizontal">
                             <Grid Name="TabPanel"
-                                  Width="165"
+                                  Width="180"
                                   Height="30"
                                   Margin="5">
                                 <Grid.ColumnDefinitions>
@@ -4793,6 +4930,7 @@
                         </BulletDecorator.Bullet>
                         <!--  Text element next to each radio button  -->
                         <TextBlock Margin="3,1,0,0"
+                                   Name="LabelTextBlock"
                                    FontFamily="Calibri"
                                    FontSize="12"
                                    FontWeight="Regular"
@@ -4813,6 +4951,16 @@
                             <Setter TargetName="MainEllipse" Property="Fill" Value="{StaticResource PreferencesWindowBackgroundColor}" />
                             <Setter TargetName="MainEllipse" Property="Stroke" Value="{StaticResource PreferencesWindowFontColor}" />
                         </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="LabelTextBlock" Property="Foreground" Value="{StaticResource TabItemUnSelected}"/>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsEnabled" Value="False"/>
+                                <Condition Property="IsChecked" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="MainEllipse" Property="Fill" Value="{StaticResource TabItemUnSelected}"/>
+                        </MultiTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

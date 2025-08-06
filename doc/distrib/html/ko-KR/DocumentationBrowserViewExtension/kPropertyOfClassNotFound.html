@@ -1,0 +1,38 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>특성을 찾을 수 없음</h2>
+<p>이 오류 메시지는 사용 중인 노드에서 객체에 없는 특성에 액세스하려고 함을 나타냅니다. </p>
+
+<p>특성은 객체에 저장된 값입니다. 예를 들어, Dynamo에서 점 객체에는 지정된 해당 점의 좌표 값을 나타내는 X, Y 및 Z 특성이 있습니다. 선 객체에는 지정된 선의 길이를 나타내는 Length와 같은 여러 가지 특성이 있습니다. 선 객체에는 점 객체에 있는 <code>X</code>, <code>Y</code> 및 <code>Z</code> 특성이 없으며 점 객체에는 선 객체에 있는 Length 특성이 없습니다.</p>
+
+<p>따라서 이 오류는 객체에 없는 특정 특성에 액세스하려고 할 때 발생합니다. 예를 들어, 점 객체의 Length 특성에 액세스하려고 하면 점 객체에 Length 특성이 없으므로 <code>“No property called Length on Point could be found”</code>가 표시됩니다.  </p>
+
+<h4>수정 방법</h4>
+<p>노드에 대한 입력으로 사용 중인 객체에 액세스하려는 특성이 있는지 확인합니다.</p>
+
+<h4>추가 정보</h4>
+<p>자세한 내용을 보려면 <a href="https://forum.dynamobim.com/search?q=no%20property%20called%20could%20be%20found"><span>&quot;<strong>no property called could be found</strong>&quot;에 대해 논의하는 Dynamobim 포럼의 게시물</span></a>을 확인하십시오.</p>
+
+</body>

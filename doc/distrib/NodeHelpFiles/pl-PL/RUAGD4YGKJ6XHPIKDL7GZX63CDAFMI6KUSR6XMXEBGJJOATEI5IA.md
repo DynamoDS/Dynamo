@@ -1,7 +1,8 @@
 <!--- Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BySphereBestFit --->
 <!--- RUAGD4YGKJ6XHPIKDL7GZX63CDAFMI6KUSR6XMXEBGJJOATEI5IA --->
-## BySphereBestFit — dokumentacja
-Ten plik dokumentacji jest generowany automatycznie przez program NodeDocumentationMarkdownGenerator z parametrami Version=2.14.0.3986, Culture=neutral, PublicKeyToken=null.
+## Informacje szczegółowe
+W poniższym przykładzie zostaje utworzona powierzchnia prymitywu sferowego T-splajn za pomocą węzła `TSplineSurface.BySphereBestFit` na podstawie podanej listy punktów losowych. Pozycje danych wejściowych `radiusSpans` i `heightSpans` sterują liczbą powierzchni wzdłuż rozpiętości wysokościowych i promieniowych (południków). Pozycja danych wejściowych `symmetry` określa, czy kształt ma symetrię początkową, a pozycja `inSmoothMode` określa, czy podgląd jest w trybie gładkim, czy w trybie ramki.
 
-Aby uzyskać więcej informacji na temat dodawania dokumentacji do węzłów, zobacz https://github.com/DynamoDS/Dynamo/wiki/Create-and-Add-Custom-Documentation-to-Nodes
+## Plik przykładowy
 
+![Example](./RUAGD4YGKJ6XHPIKDL7GZX63CDAFMI6KUSR6XMXEBGJJOATEI5IA_img.jpg)

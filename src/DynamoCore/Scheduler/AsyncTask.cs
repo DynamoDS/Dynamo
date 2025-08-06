@@ -1,4 +1,5 @@
-﻿using System;
+using Dynamo.Logging;
+using System;
 using System.Collections.Generic;
 
 namespace Dynamo.Scheduler
@@ -195,6 +196,9 @@ namespace Dynamo.Scheduler
             finally
             {
                 ExecutionEndTime = scheduler.NextTimeStamp;
+
+                var elapsedTime = new TimeSpan(ExecutionEndTime.TickCount - ExecutionStartTime.TickCount);
+                Analytics.TrackTimedEvent(Categories.Performance, Actions.UpdateGraphAsyncTask.ToString(), elapsedTime, "Dynamo graph execution time");
             }
 
             return Exception == null; // Exception thrown == execution failed.

@@ -1,7 +1,8 @@
 <!--- Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.InnerVertices --->
 <!--- UZ7LZDBGWQPVR7727ZYQZDLUW55DWAGDHV5P5O7EVZL4HMD3B7TQ --->
-## InnerVertices – dokumentace
-Tento soubor dokumentace je automaticky generován funkcí NodeDocumentationMarkdownGenerator, Version=2.14.0.3986, Culture=neutral, PublicKeyToken=null.
+## Podrobnosti
+Uzel `TSplineTopology.InnerVertices` vrací vrcholy v rámci dané topologie. V příkladu níže je vytvořen povrch TSpline a potom jsou vnitřní vrcholy vráceny v uzlu `TSplineTopology.InnerVertices`.
 
-Další informace o přidávání dokumentace k uzlům naleznete na stránce https://github.com/DynamoDS/Dynamo/wiki/Create-and-Add-Custom-Documentation-to-Nodes
+## Vzorový soubor
 
+![Example](./UZ7LZDBGWQPVR7727ZYQZDLUW55DWAGDHV5P5O7EVZL4HMD3B7TQ_img.jpg)

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 using CoreNodeModels;
+using Dynamo.Configuration;
 using Dynamo.Engine.CodeCompletion;
 using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
@@ -1520,6 +1521,29 @@ var06 = g;
             AssertPreviewValue(cbn8.AstIdentifierGuid, new object[] { new[] { 0, 2, 4, 6, 8 }, 2.2 });
         }
 
+
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestTooltipAndLabelMaxLength()
+        {
+            var longString = new string('x', 1000);
+            var identifier = "very_long_string_identifier";
+            var code = $"\"{identifier}\" = \"{longString}\";";
+
+            Assert.Greater(longString.Length, Configurations.CBNMaxTooltipLength);
+            Assert.Greater(identifier.Length, Configurations.CBNMaxPortNameLength);
+
+            var cbn = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(cbn, code);
+
+            foreach (var port in cbn.OutPorts)
+            {
+                Assert.LessOrEqual(port.ToolTip.Length, Configurations.CBNMaxTooltipLength);
+                Assert.LessOrEqual(port.Name.Length, Configurations.CBNMaxPortNameLength);
+            }
+        }
+
         #region CodeBlockUtils Specific Tests
         [Test]
         [Category("UnitTests")]
@@ -2113,10 +2137,14 @@ var06 = g;
             string openPath = Path.Combine(TestDirectory, @"core\cbn\OutputPortLabels.dyn");
             RunModel(openPath);
 
+            var intLineContent = "1";
+            var imperativeBlockContent = "[Imperative]\n{\nreturn = 5;\n\n}";
+            var stringLiteralContent = "\"foo\""; ;
+
             var cbn = GetModel().Workspaces.First().Nodes.First() as CodeBlockNodeModel;
-            Assert.AreEqual(string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 1), cbn.OutPorts.First().ToolTip); 
-            Assert.AreEqual(string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 2), cbn.OutPorts.ElementAt(1).ToolTip); 
-            Assert.AreEqual(string.Format(Resources.CodeBlockTempIdentifierOutputLabel, 4), cbn.OutPorts.ElementAt(2).ToolTip); 
+            Assert.AreEqual(intLineContent, cbn.OutPorts[0].ToolTip);
+            Assert.AreEqual(imperativeBlockContent, cbn.OutPorts[1].ToolTip);
+            Assert.AreEqual(stringLiteralContent, cbn.OutPorts[2].ToolTip);
         }
     }
 

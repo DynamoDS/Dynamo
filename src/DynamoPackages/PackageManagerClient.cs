@@ -2,7 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Dynamo.Graph.Workspaces;
 using Greg;
@@ -49,16 +52,18 @@ namespace Dynamo.PackageManager
             get { return this.client.BaseUrl; }
         }
 
+        internal readonly bool NoNetworkMode;
+
         #endregion
 
-        internal PackageManagerClient(IGregClient client, IPackageUploadBuilder builder, string packageUploadDirectory)
+        internal PackageManagerClient(IGregClient client, IPackageUploadBuilder builder, string packageUploadDirectory,
+            bool noNetworkMode = false)
         {
             this.packageUploadDirectory = packageUploadDirectory;
             this.uploadBuilder = builder;
             this.client = client;
             this.packageMaintainers = new Dictionary<string, bool>();
-
-            this.LoadCompatibilityMap();  // Load the compatibility map
+            this.NoNetworkMode = noNetworkMode;
         }
 
         internal bool Upvote(string packageId)
@@ -152,7 +157,7 @@ namespace Dynamo.PackageManager
             {
                 var nv = new GetMaintainers("dynamo", packageInfo.Name);
                 var pkgResponse = this.client.ExecuteAndDeserializeWithContent<PackageHeader>(nv);
-                return pkgResponse.content;
+                return pkgResponse?.content;
             }, null);
 
             return header;
@@ -342,13 +347,13 @@ namespace Dynamo.PackageManager
         internal bool DoesCurrentUserOwnPackage(Package package,string username) 
         {
             bool value;
-            if (this.packageMaintainers.Count > 0 && this.packageMaintainers.TryGetValue(package.Name, out value)) {
+            if (packageMaintainers.Count > 0 && packageMaintainers.TryGetValue(package.Name, out value)) {
                 return value;
             }
             var pkg = new PackageInfo(package.Name, new Version(package.VersionName));
             var mnt = GetPackageMaintainers(pkg);
             value = (mnt != null) && (mnt.maintainers.Any(maintainer => maintainer.username.Equals(username)));
-            this.packageMaintainers[package.Name] = value;
+            packageMaintainers[package.Name] = value;
             return value;
         }
 
@@ -367,15 +372,29 @@ namespace Dynamo.PackageManager
             return compatibilityMap;
         }
 
+        // Store the full compatibility map
+        private static List<JObject> compatibilityMapList;
+        /// <summary>
+        /// A static access to the full Compatibility Matrix list (including Dynamo)
+        /// Used to extract hosts information
+        /// </summary>
+        /// <returns></returns>
+        internal static List<JObject> CompatibilityMapList()
+        {
+            return compatibilityMapList;
+        }
+
         /// <summary>
         /// Method to load the map once, making it accessible to all elements
         /// </summary>
-        private void LoadCompatibilityMap()
+        internal void LoadCompatibilityMap()
         {
             if (compatibilityMap == null)  // Load only if not already loaded
             {
                 compatibilityMap = new Dictionary<string, Dictionary<string, string>>();
-                var compatibilityMapList = this.CompatibilityMap();
+
+                var compatibilityMapList = CompatibilityMap();
+                PackageManagerClient.compatibilityMapList = compatibilityMapList;    // Loads the full CompatibilityMap as a side-effect
 
                 foreach (var host in compatibilityMapList)
                 {

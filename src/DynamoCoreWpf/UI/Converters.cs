@@ -5,6 +5,8 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -34,6 +36,33 @@ using Thickness = System.Windows.Thickness;
 
 namespace Dynamo.Controls
 {
+    /// <summary>
+    /// selects from one of two styles based on a boolean value.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("ApiDesign",
+        "RS0016:Add public types and members to the declared API",
+        Justification = "Converters are not part of the API")]
+    public class BooleanToStyleConverter : IValueConverter
+    {
+        public Style TrueStyle { get; set; }
+        public Style FalseStyle { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter,CultureInfo culture)
+        {
+            if (value is bool v && v)
+            {
+                return TrueStyle;
+            }
+
+            return FalseStyle;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
     public class ToolTipFirstLineOnly : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -45,7 +74,7 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
     }
 
@@ -60,7 +89,7 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
     }
 
@@ -771,6 +800,7 @@ namespace Dynamo.Controls
         public SolidColorBrush ExecutionPreviewBrush { get; set; }
         public SolidColorBrush NoneBrush { get; set; }
         public SolidColorBrush SelectionBrush { get; set; }
+        public SolidColorBrush TransientBrush { get; set; }
 
         public SolidColorBrush HoverBrush { get; set; }
 
@@ -779,6 +809,8 @@ namespace Dynamo.Controls
             var state = (PreviewState)value;
             switch (state)
             {
+                case PreviewState.Transient:
+                    return TransientBrush;
                 case PreviewState.ExecutionPreview:
                     return ExecutionPreviewBrush;
                 case PreviewState.None:
@@ -804,12 +836,15 @@ namespace Dynamo.Controls
         public Color None { get; set; }
         public Color Selection { get; set; }
         public Color Hover { get; set; }
+        public Color Transient { get; set; }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var state = (PreviewState)value;
             switch (state)
             {
+                case PreviewState.Transient:
+                    return Transient;
                 case PreviewState.ExecutionPreview:
                     return ExecutionPreview;
                 case PreviewState.None:
@@ -1455,6 +1490,26 @@ namespace Dynamo.Controls
         }
     }
 
+    public class ConditionalPackageTextConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values.Length == 2 && values[0] is bool isCustomFunction && values[1] is string packageName)
+            {
+                if (isCustomFunction && !string.IsNullOrEmpty(packageName))
+                {
+                    return "\x0a" + Dynamo.Wpf.Properties.Resources.NodeTooltipPackage + packageName;
+                }
+            }
+            return string.Empty;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     /// <summary>
     /// Evaluates if the value is null and converts it to Visible or Collapsed state
     /// </summary>
@@ -1733,6 +1788,30 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Used to set the port style of a Code Block node.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("ApiDesign",
+        "RS0016:Add public types and members to the declared API",
+        Justification = "Converters are not part of the API")]
+    public class NodeModelToPortStyleConverter : IValueConverter
+    {
+        public Style PortStyle { get; set; }
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is CodeBlockNodeModel)
+            {
+                return PortStyle;
+            }
+            return DependencyProperty.UnsetValue;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
     public class LacingToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1876,6 +1955,26 @@ namespace Dynamo.Controls
                 return Visibility.Collapsed;
 
             return Visibility.Visible;    
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
+    /// Hides (collapses) if the zoom level is smaller than or equal to the designated value
+    /// </summary>
+    public class ZoomToInverseVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            double number = (double)System.Convert.ChangeType(value, typeof(double));
+
+            if (number <= Configurations.ZoomThreshold)
+                return Visibility.Collapsed;
+            return Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -2815,6 +2914,14 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var text = value == null ? String.Empty : value.ToString();
+
+            bool showDefault = Dynamo.Configuration.PreferenceSettings.Instance.ShowDefaultGroupDescription;
+
+            if (!showDefault && text == Resources.GroupDefaultText)
+            {
+                return string.Empty;
+            }
+
             return text;
         }
 
@@ -2973,25 +3080,6 @@ namespace Dynamo.Controls
         {
             var mode = (SearchViewModel.ViewMode)value;
             return mode == SearchViewModel.ViewMode.LibraryView;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    /// <summary>
-    /// Converter is used in WorkspaceView. It makes context menu longer.
-    /// Since context menu includes now inCanvasSearch, it should be align according its' new height.
-    /// </summary>
-    public class WorkspaceContextMenuHeightConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            double actualContextMenuHeight = (double)value;
-
-            return actualContextMenuHeight + Configurations.InCanvasSearchTextBoxHeight;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -3829,20 +3917,36 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
-    /// Returns a dark or light color depending on the contrast ration of the color with the background color
-    /// Contrast ration should be larger than 4.5:1
+    /// Returns a dark or light color depending on the contrast ratio of the color with the background color
+    /// Contrast ratio should be larger than 4.5:1
     /// Contrast calculation algorithm from https://stackoverflow.com/questions/70187918/adapt-given-color-pairs-to-adhere-to-w3c-accessibility-standard-for-epubs/70192373#70192373
+    ///
+    /// Expected values for controlType:
+    /// - "groupPortToggle" : applies alternate dark color for optional/unconnected port toggle controls
+    /// - null : applies default dark color for annotation text and description
     /// </summary>
     public class TextForegroundSaturationColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            var controlType = parameter as string;
+
+            // Text and description colors
             var lightColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WhiteColor"];
             var darkColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["DarkerGrey"];
+            // Port toggle colors
+            var lightColorToggle = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["Blue350"];
+            var darkColorToggle = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["Blue450"];
 
             var backgroundColor = (System.Windows.Media.Color)value;
-
             var contrastRatio = GetContrastRatio(darkColor, backgroundColor);
+
+            // Custom scheme override
+            if (controlType == "groupPortToggle")
+            {
+                lightColor = lightColorToggle;
+                darkColor = darkColorToggle;
+            }
 
             return contrastRatio < 4.5 ? new SolidColorBrush(lightColor) : new SolidColorBrush(darkColor);
         }
@@ -3991,7 +4095,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is string errorMessage && errorMessage.Equals(Resources.PackageManagerReadyToPublish))
+            if (value is string errorMessage && errorMessage.Equals(Resources.PackageManagerNoValidationErrors))
             {
                 return Visibility.Visible;
             }
@@ -4121,6 +4225,148 @@ namespace Dynamo.Controls
             B = B < 0.03928 ? B / 12.92 : Math.Pow((B + 0.055) / 1.055, 2.4);
 
             return 0.2126 * R + 0.7152 * G + 0.0722 * B;
+        }
+    }
+
+    /// <summary>
+    /// Converts double values to compact strings with optional scientific notation and superscripts.
+    /// </summary>
+    public class NumberFormatterConverter : IValueConverter
+    {
+        private static readonly string SuperscriptDigits = "⁰¹²³⁴⁵⁶⁷⁸⁹";
+        private static readonly char SuperscriptMinus = '⁻';
+        private const int MaxLength = 8;
+
+        /// <summary>
+        /// Formats a numeric value into a short string (max 8 characters) with rounding and superscripts if needed.
+        /// </summary>
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is not double d)
+                return value?.ToString() ?? "";
+
+            double abs = Math.Abs(d);
+
+            // Scientific Notation for Very Large or Small Numbers
+            if ((abs >= 1_000_000 || (abs < 0.0001 && d != 0)))
+                return FormatScientific(d);
+
+            // Whole Numbers
+            if (d % 1 == 0)
+            {
+                string whole = d.ToString("F0", CultureInfo.InvariantCulture);
+                return whole.Length <= MaxLength ? whole : $"~{whole.Substring(0, MaxLength - 1)}";
+            }
+
+            // Decimals with Dynamic Precision
+            string formatted = FormatDecimalWithPrecision(d, abs);
+            if (formatted.Length <= MaxLength)
+                return formatted;
+
+            // Fallback: Truncate General Format
+            string fallback = d.ToString("G", CultureInfo.InvariantCulture);
+            return fallback.Length <= MaxLength
+                ? fallback
+                : $"~{fallback.Substring(0, MaxLength - 1)}";
+        }
+
+        private string FormatScientific(double d)
+        {
+            string sci = d.ToString("0.#####E+0", CultureInfo.InvariantCulture);
+            var match = Regex.Match(sci, @"([\d\.]+)E([+-]?\d+)");
+            if (!match.Success)
+                return d.ToString("E2", CultureInfo.InvariantCulture);
+
+            string basePart = match.Groups[1].Value;
+            string exponent = match.Groups[2].Value;
+            string superExp = ToSuperscript(exponent);
+            string formatted = $"{basePart}×10{superExp}";
+
+            if (d < 0)
+                formatted = string.Concat("-", formatted);
+
+            if (formatted.Length <= MaxLength)
+                return formatted;
+
+            while (formatted.Length > MaxLength && basePart.Length > 1)
+            {
+                basePart = basePart[..^1];
+                formatted = $"{basePart}×10{superExp}";
+            }
+
+            return $"~{formatted}";
+        }
+
+        private string FormatDecimalWithPrecision(double d, double abs)
+        {
+            string wholePart = Math.Floor(abs).ToString(CultureInfo.InvariantCulture);
+            int allowedDecimals = MaxLength - wholePart.Length - 1;
+
+            if (allowedDecimals < 1)
+                return d.ToString("F0", CultureInfo.InvariantCulture);
+
+            string full = d.ToString("G", CultureInfo.InvariantCulture);
+
+            string formatted = d.ToString($"F{allowedDecimals}", CultureInfo.InvariantCulture)
+                                .TrimEnd('0').TrimEnd('.');
+
+            bool wasTrimmed = formatted.Length < full.Length;
+
+            if (formatted.Length <= MaxLength)
+                return wasTrimmed ? $"~{formatted}" : formatted;
+
+            return formatted;
+        }
+
+        private string ToSuperscript(string digits)
+        {
+            var sb = new StringBuilder();
+            foreach (char c in digits)
+            {
+                if (c == '-') sb.Append(SuperscriptMinus);
+                else if (c == '+') continue;
+                else if (char.IsDigit(c)) sb.Append(SuperscriptDigits[c - '0']);
+                else sb.Append(c);
+            }
+            return sb.ToString();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return Binding.DoNothing;
+        }
+    }
+
+    public class LengthToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is int length)
+                return length > 0 ? Visibility.Collapsed : Visibility.Visible;
+
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converts a boolean value to an angle for rotating an arrow icon.
+    /// Returns 0° when true (expanded), and 180° when false (collapsed).
+    /// </summary>
+    public class BooleanToAngleConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return (value is bool isChecked && isChecked) ? 0.0 : 180.0;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return Binding.DoNothing;
         }
     }
 }
