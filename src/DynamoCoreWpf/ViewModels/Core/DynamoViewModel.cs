@@ -1948,7 +1948,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="workspace"></param>
         /// <returns>A customized file-save dialog</returns>
-        internal CustomSaveFileDialog GetSaveDialog(WorkspaceModel workspace)
+        public CustomSaveFileDialog GetSaveDialog(WorkspaceModel workspace)
         {
             CustomSaveFileDialog fileDialog = new CustomSaveFileDialog
             {

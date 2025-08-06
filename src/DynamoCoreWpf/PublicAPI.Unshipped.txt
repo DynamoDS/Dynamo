@@ -3575,6 +3575,19 @@ Dynamo.Wpf.SymbolViewCustomization
 Dynamo.Wpf.SymbolViewCustomization.CustomizeView(Dynamo.Graph.Nodes.CustomNodes.Symbol symbol, Dynamo.Controls.NodeView nodeView) -> void
 Dynamo.Wpf.SymbolViewCustomization.Dispose() -> void
 Dynamo.Wpf.SymbolViewCustomization.SymbolViewCustomization() -> void
+Dynamo.Wpf.UI.CustomSaveFileDialog
+Dynamo.Wpf.UI.CustomSaveFileDialog.AddExtension.get -> bool
+Dynamo.Wpf.UI.CustomSaveFileDialog.AddExtension.set -> void
+Dynamo.Wpf.UI.CustomSaveFileDialog.CustomSaveFileDialog() -> void
+Dynamo.Wpf.UI.CustomSaveFileDialog.DefaultExt.get -> string
+Dynamo.Wpf.UI.CustomSaveFileDialog.DefaultExt.set -> void
+Dynamo.Wpf.UI.CustomSaveFileDialog.FileName.get -> string
+Dynamo.Wpf.UI.CustomSaveFileDialog.FileName.set -> void
+Dynamo.Wpf.UI.CustomSaveFileDialog.Filter.get -> string
+Dynamo.Wpf.UI.CustomSaveFileDialog.Filter.set -> void
+Dynamo.Wpf.UI.CustomSaveFileDialog.InitialDirectory.get -> string
+Dynamo.Wpf.UI.CustomSaveFileDialog.InitialDirectory.set -> void
+Dynamo.Wpf.UI.CustomSaveFileDialog.ShowDialog() -> bool?
 Dynamo.Wpf.UI.GuidedTour.AutomaticHandlers
 Dynamo.Wpf.UI.GuidedTour.AutomaticHandlers.AutomaticHandlers() -> void
 Dynamo.Wpf.UI.GuidedTour.AutomaticHandlers.ExecuteMethod.get -> string

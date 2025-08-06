@@ -18,7 +18,7 @@ namespace Dynamo.Wpf.UI
     /// <summary>
     /// Concrete implementation of IFileSaver that wraps the SaveFileDialog and can be used in Unit Tests.
     /// </summary>
-    internal class CustomSaveFileDialog : IFileSaver
+    public class CustomSaveFileDialog : IFileSaver
     {
         private readonly SaveFileDialog _dialog = new SaveFileDialog();
 
