@@ -119,114 +119,114 @@
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="Analysis.DataTypes.PointAnalysisData.ByPoints.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.PointAnalysisData.ByPoints.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\LargeIcons\Analysis.DataTypes.PointAnalysisData.ByPoints.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.PointAnalysisData.ByPoints.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.PointAnalysisData.ByPoints.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\SmallIcons\Analysis.DataTypes.PointAnalysisData.ByPoints.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.PointAnalysisData.ByPointsAndResults.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.PointAnalysisData.ByPointsAndResults.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\LargeIcons\Analysis.DataTypes.PointAnalysisData.ByPointsAndResults.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.PointAnalysisData.ByPointsAndResults.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.PointAnalysisData.ByPointsAndResults.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\SmallIcons\Analysis.DataTypes.PointAnalysisData.ByPointsAndResults.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.PointAnalysisData.CalculationLocations.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.PointAnalysisData.CalculationLocations.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\LargeIcons\Analysis.DataTypes.PointAnalysisData.CalculationLocations.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.PointAnalysisData.CalculationLocations.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.PointAnalysisData.CalculationLocations.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\SmallIcons\Analysis.DataTypes.PointAnalysisData.CalculationLocations.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.PointAnalysisData.GetResultByKey.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.PointAnalysisData.GetResultByKey.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\LargeIcons\Analysis.DataTypes.PointAnalysisData.GetResultByKey.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.PointAnalysisData.GetResultByKey.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.PointAnalysisData.GetResultByKey.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\SmallIcons\Analysis.DataTypes.PointAnalysisData.GetResultByKey.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.PointAnalysisData.Results.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.PointAnalysisData.Results.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\LargeIcons\Analysis.DataTypes.PointAnalysisData.Results.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.PointAnalysisData.Results.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.PointAnalysisData.Results.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\SmallIcons\Analysis.DataTypes.PointAnalysisData.Results.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.SurfaceAnalysisData.BySurfaceAndPoints.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.SurfaceAnalysisData.BySurfaceAndPoints.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\LargeIcons\Analysis.DataTypes.SurfaceAnalysisData.BySurfaceAndPoints.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.SurfaceAnalysisData.BySurfaceAndPoints.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.SurfaceAnalysisData.BySurfaceAndPoints.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\SmallIcons\Analysis.DataTypes.SurfaceAnalysisData.BySurfaceAndPoints.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.SurfaceAnalysisData.BySurfacePointsAndResults.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.SurfaceAnalysisData.BySurfacePointsAndResults.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\LargeIcons\Analysis.DataTypes.SurfaceAnalysisData.BySurfacePointsAndResults.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.SurfaceAnalysisData.BySurfacePointsAndResults.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.SurfaceAnalysisData.BySurfacePointsAndResults.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\SmallIcons\Analysis.DataTypes.SurfaceAnalysisData.BySurfacePointsAndResults.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.SurfaceAnalysisData.CalculationLocations.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.SurfaceAnalysisData.CalculationLocations.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\LargeIcons\Analysis.DataTypes.SurfaceAnalysisData.CalculationLocations.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.SurfaceAnalysisData.CalculationLocations.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.SurfaceAnalysisData.CalculationLocations.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\SmallIcons\Analysis.DataTypes.SurfaceAnalysisData.CalculationLocations.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.SurfaceAnalysisData.GetResultByKey.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.SurfaceAnalysisData.GetResultByKey.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\LargeIcons\Analysis.DataTypes.SurfaceAnalysisData.GetResultByKey.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.SurfaceAnalysisData.GetResultByKey.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.SurfaceAnalysisData.GetResultByKey.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\SmallIcons\Analysis.DataTypes.SurfaceAnalysisData.GetResultByKey.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.SurfaceAnalysisData.Results.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.SurfaceAnalysisData.Results.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\LargeIcons\Analysis.DataTypes.SurfaceAnalysisData.Results.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.SurfaceAnalysisData.Results.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.SurfaceAnalysisData.Results.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\SmallIcons\Analysis.DataTypes.SurfaceAnalysisData.Results.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.SurfaceAnalysisData.Surface.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.SurfaceAnalysisData.Surface.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\LargeIcons\Analysis.DataTypes.SurfaceAnalysisData.Surface.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.SurfaceAnalysisData.Surface.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.SurfaceAnalysisData.Surface.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\SmallIcons\Analysis.DataTypes.SurfaceAnalysisData.Surface.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.VectorAnalysisData.ByPoints.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.VectorAnalysisData.ByPoints.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\LargeIcons\Analysis.DataTypes.VectorAnalysisData.ByPoints.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.VectorAnalysisData.ByPoints.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.VectorAnalysisData.ByPoints.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\SmallIcons\Analysis.DataTypes.VectorAnalysisData.ByPoints.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.VectorAnalysisData.ByPointsAndResults.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.VectorAnalysisData.ByPointsAndResults.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\LargeIcons\Analysis.DataTypes.VectorAnalysisData.ByPointsAndResults.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.VectorAnalysisData.ByPointsAndResults.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.VectorAnalysisData.ByPointsAndResults.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\SmallIcons\Analysis.DataTypes.VectorAnalysisData.ByPointsAndResults.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.VectorAnalysisData.CalculationLocations.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.VectorAnalysisData.CalculationLocations.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\LargeIcons\Analysis.DataTypes.VectorAnalysisData.CalculationLocations.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.VectorAnalysisData.CalculationLocations.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.VectorAnalysisData.CalculationLocations.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\SmallIcons\Analysis.DataTypes.VectorAnalysisData.CalculationLocations.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.VectorAnalysisData.GetResultByKey.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.VectorAnalysisData.GetResultByKey.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\LargeIcons\Analysis.DataTypes.VectorAnalysisData.GetResultByKey.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.VectorAnalysisData.GetResultByKey.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.VectorAnalysisData.GetResultByKey.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\SmallIcons\Analysis.DataTypes.VectorAnalysisData.GetResultByKey.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.VectorAnalysisData.Results.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.VectorAnalysisData.Results.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\LargeIcons\Analysis.DataTypes.VectorAnalysisData.Results.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.DataTypes.VectorAnalysisData.Results.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.DataTypes.VectorAnalysisData.Results.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\SmallIcons\Analysis.DataTypes.VectorAnalysisData.Results.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.Label.ByPointAndString.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.Label.ByPointAndString.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\LargeIcons\Analysis.Label.ByPointAndString.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Analysis.Label.ByPointAndString.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Analysis.Label.ByPointAndString.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\SmallIcons\Analysis.Label.ByPointAndString.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="PointAnalysisData.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\PointAnalysisData.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\SmallIcons\PointAnalysisData.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="SurfaceAnalysisData.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\SurfaceAnalysisData.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\SmallIcons\SurfaceAnalysisData.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="VectorAnalysisData.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\VectorAnalysisData.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Analysis\SmallIcons\VectorAnalysisData.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

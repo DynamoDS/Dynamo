@@ -119,294 +119,294 @@
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="CoreNodeModels.ColorRange.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.ColorRange.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.ColorRange.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.ColorRange.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.ColorRange.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.ColorRange.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.CreateList.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.CreateList.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.CreateList.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.CreateList.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.CreateList.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.CreateList.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.CurveMapperNodeModel.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.CurveMapperNodeModel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.CurveMapperNodeModel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.CurveMapperNodeModel.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.CurveMapperNodeModel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.CurveMapperNodeModel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.DefineData.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.DefineData.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.DefineData.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.DefineData.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.DefineData.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.DefineData.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.DynamoConvert.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.DynamoConvert.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.DynamoConvert.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.DynamoConvert.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.DynamoConvert.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.DynamoConvert.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Equals.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Equals.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.Equals.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Equals.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Equals.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.Equals.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.FormattedStringFromArray.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Core.String.Formatted String From Array_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\Core.String.Formatted String From Array_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.FormattedStringFromArray.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Core.String.Formatted String From Array_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\Core.String.Formatted String From Array_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.FormattedStringFromObject.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Core.String.Formatted String From Object_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\Core.String.Formatted String From Object_Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.FormattedStringFromObject.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Core.String.Formatted String From Object_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\Core.String.Formatted String From Object_Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Formula.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Formula.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.Formula.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Formula.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Formula.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.Formula.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.FromArray.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.FromArray.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.FromArray.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.FromArray.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.FromArray.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.FromArray.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.FromObject.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.FromObject.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.FromObject.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.FromObject.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.FromObject.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.FromObject.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.HigherOrder.ApplyFunction.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.HigherOrder.ApplyFunction.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.HigherOrder.ApplyFunction.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.HigherOrder.ApplyFunction.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.HigherOrder.ApplyFunction.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.HigherOrder.ApplyFunction.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.HigherOrder.CartesianProduct.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.HigherOrder.CartesianProduct.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.HigherOrder.CartesianProduct.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.HigherOrder.CartesianProduct.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.HigherOrder.CartesianProduct.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.HigherOrder.CartesianProduct.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.HigherOrder.Combine.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.HigherOrder.Combine.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.HigherOrder.Combine.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.HigherOrder.Combine.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.HigherOrder.Combine.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.HigherOrder.Combine.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.HigherOrder.ComposeFunctions.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.HigherOrder.ComposeFunctions.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.HigherOrder.ComposeFunctions.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.HigherOrder.ComposeFunctions.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.HigherOrder.ComposeFunctions.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.HigherOrder.ComposeFunctions.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.HigherOrder.Filter.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.HigherOrder.Filter.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.HigherOrder.Filter.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.HigherOrder.Filter.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.HigherOrder.Filter.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.HigherOrder.Filter.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.HigherOrder.LaceLongest.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.HigherOrder.LaceLongest.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.HigherOrder.LaceLongest.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.HigherOrder.LaceLongest.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.HigherOrder.LaceLongest.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.HigherOrder.LaceLongest.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.HigherOrder.LaceShortest.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.HigherOrder.LaceShortest.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.HigherOrder.LaceShortest.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.HigherOrder.LaceShortest.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.HigherOrder.LaceShortest.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.HigherOrder.LaceShortest.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.HigherOrder.Map.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.HigherOrder.Map.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.HigherOrder.Map.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.HigherOrder.Map.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.HigherOrder.Map.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.HigherOrder.Map.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.HigherOrder.Reduce.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.HigherOrder.Reduce.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.HigherOrder.Reduce.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.HigherOrder.Reduce.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.HigherOrder.Reduce.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.HigherOrder.Reduce.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.HigherOrder.Replace.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.HigherOrder.Replace.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.HigherOrder.Replace.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.HigherOrder.Replace.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.HigherOrder.Replace.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.HigherOrder.Replace.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.HigherOrder.ScanList.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.HigherOrder.ScanList.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.HigherOrder.ScanList.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.HigherOrder.ScanList.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.HigherOrder.ScanList.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.HigherOrder.ScanList.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Input.BoolSelector.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Input.BoolSelector.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.Input.BoolSelector.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Input.BoolSelector.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Input.BoolSelector.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.Input.BoolSelector.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Input.ColorPalette.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Input.ColorPalette.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.Input.ColorPalette.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Input.ColorPalette.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Input.ColorPalette.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.Input.ColorPalette.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Input.CustomSelection.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Input.CustomSelection.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.Input.CustomSelection.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Input.CustomSelection.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Input.CustomSelection.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.Input.CustomSelection.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Input.DateTime.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Input.DateTime.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.Input.DateTime.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Input.DateTime.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Input.DateTime.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.Input.DateTime.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Input.Directory.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Input.Directory.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.Input.Directory.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Input.Directory.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Input.Directory.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.Input.Directory.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Input.DirectoryObject.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Input.DirectoryObject.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.Input.DirectoryObject.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Input.DirectoryObject.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Input.DirectoryObject.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.Input.DirectoryObject.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Input.DoubleInput.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Input.DoubleInput.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.Input.DoubleInput.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Input.DoubleInput.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Input.DoubleInput.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.Input.DoubleInput.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Input.DoubleSlider.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Input.DoubleSlider.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.Input.DoubleSlider.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Input.DoubleSlider.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Input.DoubleSlider.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.Input.DoubleSlider.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Input.Filename.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Input.Filename.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.Input.Filename.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Input.Filename.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Input.Filename.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.Input.Filename.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Input.FileObject.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Input.FileObject.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.Input.FileObject.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Input.FileObject.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Input.FileObject.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.Input.FileObject.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Input.IntegerSlider64Bit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Input.IntegerSlider64Bit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.Input.IntegerSlider64Bit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Input.IntegerSlider64Bit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Input.IntegerSlider64Bit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.Input.IntegerSlider64Bit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Input.StringInput.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Input.StringInput.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.Input.StringInput.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Input.StringInput.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Input.StringInput.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.Input.StringInput.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Logic.And.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Logic.And.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.Logic.And.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Logic.And.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Logic.And.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.Logic.And.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Logic.Gate.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Logic.Gate.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.Logic.Gate.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Logic.Gate.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Logic.Gate.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.Logic.Gate.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Logic.Or.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Logic.Or.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.Logic.Or.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Logic.Or.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Logic.Or.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.Logic.Or.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Logic.RefactoredIf.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Logic.RefactoredIf.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.Logic.RefactoredIf.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Logic.RefactoredIf.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Logic.RefactoredIf.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.Logic.RefactoredIf.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Logic.ScopedIf.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Logic.ScopedIf.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.Logic.ScopedIf.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Logic.ScopedIf.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Logic.ScopedIf.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.Logic.ScopedIf.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Range.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Range.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.Range.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Range.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Range.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.Range.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Remember.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Remember.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.Remember.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Remember.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Remember.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.Remember.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Sequence.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Sequence.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.Sequence.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Sequence.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Sequence.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.Sequence.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Watch.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Watch.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.Watch.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.Watch.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.Watch.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.Watch.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.WatchImageCore.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.WatchImageCore.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.WatchImageCore.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.WatchImageCore.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.WatchImageCore.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.WatchImageCore.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.WebRequest.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.WebRequest.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\LargeIcons\CoreNodeModels.WebRequest.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModels.WebRequest.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModels.WebRequest.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.WebRequest.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Evaluate.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Evaluate.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\Evaluate.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Input.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Input.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\Input.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Logic.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Logic.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\Logic.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Scripting.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Scripting.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\Scripting.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Strings.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Strings.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\Strings.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Units.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Units.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\Units.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="View.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\View.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModels\SmallIcons\View.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>
