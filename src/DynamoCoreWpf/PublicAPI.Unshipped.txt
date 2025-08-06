@@ -2063,7 +2063,7 @@ Dynamo.ViewModels.DynamoViewModel.FitViewCommand.get -> Dynamo.UI.Commands.Deleg
 Dynamo.ViewModels.DynamoViewModel.FitViewCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.ForceRunExpressionCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.ForceRunExpressionCommand.set -> void
-Dynamo.ViewModels.DynamoViewModel.GetSaveDialog(Dynamo.Graph.Workspaces.WorkspaceModel workspace) -> System.Windows.Forms.FileDialog
+Dynamo.ViewModels.DynamoViewModel.GetSaveDialog(Dynamo.Graph.Workspaces.WorkspaceModel workspace) -> Dynamo.Wpf.UI.CustomSaveFileDialog
 Dynamo.ViewModels.DynamoViewModel.GettingStartedGuideCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.GettingStartedGuideCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.GoHome(object _) -> void
