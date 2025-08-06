@@ -1948,9 +1948,9 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="workspace"></param>
         /// <returns>A customized file-save dialog</returns>
-        public FileDialog GetSaveDialog(WorkspaceModel workspace)
+        internal CustomSaveFileDialog GetSaveDialog(WorkspaceModel workspace)
         {
-            FileDialog fileDialog = new SaveFileDialog
+            CustomSaveFileDialog fileDialog = new CustomSaveFileDialog
             {
                 AddExtension = true,
             };
@@ -2803,7 +2803,7 @@ namespace Dynamo.ViewModels
                 // Since the workspace file directory is null, we set the initial directory
                 // for the file to be MyDocument folder in the local computer.
                 fd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                if (fd.ShowDialog() == DialogResult.OK)
+                if (fd.ShowDialog() == true)
                 {
                     SaveAs(workspace.Guid, fd.FileName);
                     return true;
@@ -3058,7 +3058,18 @@ namespace Dynamo.ViewModels
 
             try
             {
-                FileDialog _fileDialog = vm.GetSaveDialog(vm.Model.CurrentWorkspace);
+                //This get the real SaveFileDialog (instead of the mocked one assigned below)
+                IFileSaver _fileDialog = vm.GetSaveDialog(vm.Model.CurrentWorkspace);
+
+                //This section will be only executed when the IFileSaver was mocked and passed as a parameter (method dependency injection)
+                if (parameter != null)
+                {
+                    var saveDialog = parameter as IFileSaver;
+                    if(saveDialog != null)
+                    {
+                        _fileDialog = saveDialog;
+                    }
+                }
 
                 // If the current workspace is a template use the last saved location.
                 if (vm.Model.CurrentWorkspace.IsTemplate)
@@ -3083,7 +3094,7 @@ namespace Dynamo.ViewModels
                     _fileDialog.InitialDirectory = pathManager.DefaultUserDefinitions;
                 }
 
-                if (_fileDialog.ShowDialog() == DialogResult.OK)
+                if (_fileDialog.ShowDialog() == true)
                 {
                     SaveAs(_fileDialog.FileName);
                     if(FileTrustViewModel != null)
