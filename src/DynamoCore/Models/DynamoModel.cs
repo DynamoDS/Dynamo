@@ -1193,7 +1193,7 @@ namespace Dynamo.Models
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log(String.Format(Properties.Resources.FailedToHandleReadyEvent + "{0} Error: {1}", ext.Name, ex.Message));
+                    Logger.Log($"{Properties.Resources.FailedToHandleReadyEvent} Source: {ext.Name} Error: {ex.Message}");
                 }
             }
         }
