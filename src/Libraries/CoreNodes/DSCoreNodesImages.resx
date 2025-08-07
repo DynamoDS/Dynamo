@@ -500,10 +500,10 @@
     <value>..\..\Resources\DSCoreNodes\SmallIcons\DSCore.IO.FileSystem.MoveFile.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DSCore.IO.FileSystem.ReadText.var.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\LargeIcons\DSCore.IO.FileSystem.ReadText.var.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DSCoreNodes\LargeIcons\DSCore.IO.FileSystem.ReadText.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DSCore.IO.FileSystem.ReadText.var.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\SmallIcons\DSCore.IO.FileSystem.ReadText.var.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DSCoreNodes\SmallIcons\DSCore.IO.FileSystem.ReadText.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DSCore.IO.FileSystem.WriteText.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\DSCoreNodes\LargeIcons\DSCore.IO.FileSystem.WriteText.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -518,16 +518,16 @@
     <value>..\..\Resources\DSCoreNodes\SmallIcons\DSCore.IO.Image.Dimensions.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DSCore.IO.Image.FromPixels.Color1-int-int.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\LargeIcons\DSCore.IO.Image.FromPixels.Color1-int-int.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DSCoreNodes\LargeIcons\DSCore.IO.Image.FromPixelsWidHei.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DSCore.IO.Image.FromPixels.Color1-int-int.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\SmallIcons\DSCore.IO.Image.FromPixels.Color1-int-int.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DSCoreNodes\SmallIcons\DSCore.IO.Image.FromPixelsWidHei.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DSCore.IO.Image.FromPixels.Color2.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\LargeIcons\DSCore.IO.Image.FromPixels.Color2.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DSCoreNodes\LargeIcons\DSCore.IO.Image.FromPixels.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DSCore.IO.Image.FromPixels.Color2.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\SmallIcons\DSCore.IO.Image.FromPixels.Color2.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DSCoreNodes\SmallIcons\DSCore.IO.Image.FromPixels.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DSCore.IO.Image.Pixels.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\DSCoreNodes\LargeIcons\DSCore.IO.Image.Pixels.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

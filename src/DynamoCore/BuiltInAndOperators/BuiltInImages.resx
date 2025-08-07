@@ -118,30 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Apply.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\BuiltIn\Apply.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Apply.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\BuiltIn\Apply.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="ApplyList.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\BuiltIn\ApplyList.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="ApplyList.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\BuiltIn\ApplyList.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Concat.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\BuiltIn\Concat.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Concat.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\BuiltIn\Concat.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Count.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\BuiltIn\Count.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Count.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\BuiltIn\Count.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="Dynamo.Graph.Nodes.DoubleInput.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\BuiltIn\Dynamo.Graph.Nodes.DoubleInput.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -154,20 +130,17 @@
   <data name="Dynamo.Graph.Nodes.StringInput.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\BuiltIn\Dynamo.Graph.Nodes.StringInput.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Ellipse.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\BuiltIn\Ellipse.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="Equals.var-var.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\BuiltIn\Equals.var-var.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\Resources\BuiltIn\List.Equals.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Equals.var-var.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\BuiltIn\Equals.var-var.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\Resources\BuiltIn\List.Equals.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Equals.varN-varN.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\BuiltIn\Equals.varN-varN.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\Resources\BuiltIn\List.Equals.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Equals.varN-varN.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\BuiltIn\Equals.varN-varN.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\Resources\BuiltIn\List.Equals.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="List.Equals.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\BuiltIn\List.Equals.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
