@@ -376,7 +376,7 @@ namespace Dynamo.Graph.Annotations
 
         private double userSetHeight;
         /// <summary>
-        /// Indicates the width the user manually set using the resize thumb.
+        /// Indicates the height the user manually set using the resize thumb.
         /// </summary>
         public double UserSetHeight
         {
