@@ -23,6 +23,8 @@ namespace Dynamo.Graph.Annotations
         private const double ExtendSize = 10.0;
         private const double ExtendYHeight = 5.0;
         private const double NoteYAdjustment = 8.0;
+        private bool isTextChanging;
+        internal bool IsThumbResizing;
 
         #region Properties
 
@@ -259,7 +261,10 @@ namespace Dynamo.Graph.Annotations
                 // a model and textbox. Otherwise there will be some overlap
                 Y = InitialTop - ExtendSize - textBlockHeight;
                 Height = InitialHeight + textBlockHeight - MinTextHeight;
+
+                isTextChanging = true;
                 UpdateBoundaryFromSelection();
+                isTextChanging = false;
             }
         }
 
@@ -342,7 +347,10 @@ namespace Dynamo.Graph.Annotations
             {
                 if (value == widthAdjustment) return;
                 widthAdjustment = value;
-                UpdateBoundaryFromSelection();
+
+                // update boundary only while manually resizing the group
+                if (IsThumbResizing)
+                    UpdateBoundaryFromSelection();
             }
         }
 
@@ -359,7 +367,40 @@ namespace Dynamo.Graph.Annotations
             {
                 if (value == heightAdjustment) return;
                 heightAdjustment = value;
-                UpdateBoundaryFromSelection();
+
+                // update boundary only while manually resizing the group
+                if (IsThumbResizing)
+                    UpdateBoundaryFromSelection();
+            }
+        }
+
+        private double userSetHeight;
+        /// <summary>
+        /// Indicates the height the user manually set using the resize thumb.
+        /// </summary>
+        public double UserSetHeight
+        {
+            get => userSetHeight;
+            set
+            {
+                if (value == userSetHeight) return;
+                userSetHeight = value;
+            }
+        }
+
+        private double userSetWidth;
+        /// <summary>
+        /// Indicates the height the user manually set using the resize thumb.
+        /// Indicates the width the user manually set using the resize thumb.
+        /// Not necessarily equal to the actual rendered width.
+        /// </summary>  
+        public double UserSetWidth
+        {
+            get => userSetWidth;
+            set
+            {
+                if (value == userSetWidth) return;
+                userSetWidth = value;
             }
         }
 
@@ -751,10 +792,60 @@ namespace Dynamo.Graph.Annotations
                 Height = yDistance + ExtendSize + ExtendYHeight + HeightAdjustment - TextBlockHeight
             };
 
-            // Store layout size and apply dimensions
-            ModelAreaHeight = region.Height;
-            Height = ModelAreaHeight + TextBlockHeight;
-            Width = Math.Max(region.Width, TextMaxWidth + ExtendSize);
+            // The actual space used by nodes (without adjustments)
+            double groupCalculatedWidth = xDistance + ExtendSize;
+            double groupCalculatedHeight = yDistance + ExtendSize + ExtendYHeight - TextBlockHeight;
+
+            if (IsThumbResizing || isTextChanging)
+            {
+                // While dragging the resize thumb or editing text
+                ModelAreaHeight = region.Height;
+                Height = ModelAreaHeight + TextBlockHeight;
+                Width = Math.Max(region.Width, TextMaxWidth + ExtendSize);
+            }
+            else
+            {
+                // HEIGHT logic
+                // user has not resized the group
+                if (UserSetHeight <= 0) 
+                {
+                    ModelAreaHeight = groupCalculatedHeight;
+                    Height = ModelAreaHeight + TextBlockHeight;
+                }
+                // some nodes are outside the user set size 
+                else if (groupCalculatedHeight >= UserSetHeight)
+                {
+                    ModelAreaHeight = groupCalculatedHeight;
+                    Height = ModelAreaHeight + TextBlockHeight;
+                    HeightAdjustment = 0;
+                }
+                // all nodes are within the user set size
+                else
+                {
+                    HeightAdjustment = Math.Max(0, UserSetHeight - groupCalculatedHeight);
+                    ModelAreaHeight = UserSetHeight;
+                    Height = UserSetHeight + TextBlockHeight;
+                }
+
+                // WIDTH logic
+                // user has not resized the group
+                if (UserSetWidth <= 0) 
+                {
+                    Width = Math.Max(region.Width, TextMaxWidth + ExtendSize);
+                }
+                // some nodes are outside the user set size 
+                else if (groupCalculatedWidth >= UserSetWidth) 
+                {
+                    Width = Math.Max(groupCalculatedWidth, TextMaxWidth + ExtendSize);
+                    WidthAdjustment = 0;
+                }
+                // all nodes are within the user set size
+                else
+                {
+                    WidthAdjustment = Math.Max(0, UserSetWidth - groupCalculatedWidth);
+                    Width = UserSetWidth;
+                }
+            }
 
             // Only store the first calculated initial height
             if (InitialHeight <= 0.0)

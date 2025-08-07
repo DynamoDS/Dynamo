@@ -3349,6 +3349,8 @@ namespace Dynamo.Models
                 AnnotationDescriptionText = model.AnnotationDescriptionText,
                 HeightAdjustment = model.HeightAdjustment,
                 WidthAdjustment = model.WidthAdjustment,
+                UserSetWidth = model.UserSetWidth,
+                UserSetHeight = model.UserSetHeight,
                 Background = model.Background,
                 FontSize = model.FontSize,
                 GroupStyleId = model.GroupStyleId,
