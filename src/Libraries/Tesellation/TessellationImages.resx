@@ -118,40 +118,28 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="ConvexHull.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\ConvexHull.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Delaunay.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Delaunay.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="Tessellation.ConvexHull.ByPoints.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Tessellation.ConvexHull.ByPoints.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Tesselation\LargeIcons\Tessellation.ConvexHull.ByPoints.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Tessellation.ConvexHull.ByPoints.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Tessellation.ConvexHull.ByPoints.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Tesselation\SmallIcons\\Tessellation.ConvexHull.ByPoints.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Tessellation.Delaunay.ByParametersOnSurface.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Tessellation.Delaunay.ByParametersOnSurface.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Tesselation\LargeIcons\Tessellation.Delaunay.ByParametersOnSurface.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Tessellation.Delaunay.ByParametersOnSurface.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Tessellation.Delaunay.ByParametersOnSurface.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Tesselation\SmallIcons\\Tessellation.Delaunay.ByParametersOnSurface.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Tessellation.Delaunay.ByPoints.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Tessellation.Delaunay.ByPoints.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Tesselation\LargeIcons\Tessellation.Delaunay.ByPoints.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Tessellation.Delaunay.ByPoints.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Tessellation.Delaunay.ByPoints.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Tessellation.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Tessellation.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Tesselation\SmallIcons\\Tessellation.Delaunay.ByPoints.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Tessellation.Voronoi.ByParametersOnSurface.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Tessellation.Voronoi.ByParametersOnSurface.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Tesselation\LargeIcons\Tessellation.Voronoi.ByParametersOnSurface.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Tessellation.Voronoi.ByParametersOnSurface.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Tessellation.Voronoi.ByParametersOnSurface.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Voronoi.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Voronoi.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\Tesselation\SmallIcons\\Tessellation.Voronoi.ByParametersOnSurface.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

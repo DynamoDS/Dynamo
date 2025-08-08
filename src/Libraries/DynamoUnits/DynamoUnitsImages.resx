@@ -118,319 +118,154 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="DynamoUnits.Area.FromDouble.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.Area.FromDouble.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.Area.FromDouble.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.Area.FromDouble.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.Area.FromSquareFeet.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.Area.FromSquareFeet.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.Area.FromSquareFeet.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.Area.FromSquareFeet.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.Length.FromDouble.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.Length.FromDouble.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.Length.FromDouble.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.Length.FromDouble.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.Length.FromFeet.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.Length.FromFeet.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.Length.FromFeet.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.Length.FromFeet.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="DynamoUnits.Location.ByLatitudeAndLongitude.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.Location.ByLatitudeAndLongitude.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Location.ByLatitudeAndLongitude.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DynamoUnits.Location.ByLatitudeAndLongitude.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.Location.ByLatitudeAndLongitude.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Location.ByLatitudeAndLongitude.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DynamoUnits.Location.Latitude.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.Location.Latitude.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Location.Latitude.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DynamoUnits.Location.Latitude.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.Location.Latitude.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.Location.Location.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.Location.Location.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Location.Latitude.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DynamoUnits.Location.Longitude.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.Location.Longitude.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Location.Longitude.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DynamoUnits.Location.Longitude.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.Location.Longitude.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Location.Longitude.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DynamoUnits.Location.Name.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.Location.Name.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Location.Name.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DynamoUnits.Location.Name.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.Location.Name.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Location.Name.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.-.double-SIUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.-.double-SIUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Quantity.ByTypeID.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Quantity.ByTypeID.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.-.double-SIUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.-.double-SIUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Quantity.ByTypeID.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Quantity.ByTypeID.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.-.SIUnit-double.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.-.SIUnit-double.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Quantity.Name.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Quantity.Name.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.-.SIUnit-double.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.-.SIUnit-double.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Quantity.Name.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Quantity.Name.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.-.SIUnit-SIUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.-.SIUnit-SIUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Quantity.TypeId.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Quantity.TypeId.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.-.SIUnit-SIUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.-.SIUnit-SIUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Quantity.TypeId.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Quantity.TypeId.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.add.double-SIUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.add.double-SIUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Quantity.Units.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Quantity.Units.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.add.double-SIUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.add.double-SIUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Quantity.Units.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Quantity.Units.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.Add.double.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.Add.double.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Symbol.ByTypeID.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Symbol.ByTypeID.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.Add.double.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.Add.double.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Symbol.ByTypeID.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Symbol.ByTypeID.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.add.SIUnit-double.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.add.SIUnit-double.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Symbol.Space.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Symbol.Space.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.add.SIUnit-double.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.add.SIUnit-double.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Symbol.Space.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Symbol.Space.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.add.SIUnit-SIUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.add.SIUnit-SIUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Symbol.StringifyDecimal.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Symbol.StringifyDecimal.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.add.SIUnit-SIUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.add.SIUnit-SIUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Symbol.StringifyDecimal.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Symbol.StringifyDecimal.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.Add.SIUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.Add.SIUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Symbol.StringifyFraction.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Symbol.StringifyFraction.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.Add.SIUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.Add.SIUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Symbol.StringifyFraction.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Symbol.StringifyFraction.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.Ceiling.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.Ceiling.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Symbol.SymbolsByUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Symbol.SymbolsByUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.Ceiling.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.Ceiling.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Symbol.SymbolsByUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Symbol.SymbolsByUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.ConvertToHostUnits.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.ConvertToHostUnits.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Symbol.Text.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Symbol.Text.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.ConvertToHostUnits.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.ConvertToHostUnits.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Symbol.Text.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Symbol.Text.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.div.SIUnit-double.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.div.SIUnit-double.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Symbol.TypeId.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Symbol.TypeId.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.div.SIUnit-double.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.div.SIUnit-double.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Symbol.TypeId.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Symbol.TypeId.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.div.SIUnit-SIUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.div.SIUnit-SIUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Symbol.Unit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Symbol.Unit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.div.SIUnit-SIUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.div.SIUnit-SIUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Symbol.Unit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Symbol.Unit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.Divide.double.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.Divide.double.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Unit.AreUnitsConvertible.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Unit.AreUnitsConvertible.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.Divide.double.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.Divide.double.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Unit.AreUnitsConvertible.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Unit.AreUnitsConvertible.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.Divide.SIUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.Divide.SIUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Unit.ByTypeID.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Unit.ByTypeID.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.Divide.SIUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.Divide.SIUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Unit.ByTypeID.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Unit.ByTypeID.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.Floor.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.Floor.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Unit.ConvertibleUnits.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Unit.ConvertibleUnits.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.Floor.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.Floor.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Unit.ConvertibleUnits.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Unit.ConvertibleUnits.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.ge.double-SIUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.ge.double-SIUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Unit.Name.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Unit.Name.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.ge.double-SIUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.ge.double-SIUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Unit.Name.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Unit.Name.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.ge.SIUnit-double.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.ge.SIUnit-double.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Unit.QuantitiesContainingUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Unit.QuantitiesContainingUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.ge.SIUnit-double.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.ge.SIUnit-double.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Unit.QuantitiesContainingUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Unit.QuantitiesContainingUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.ge.SIUnit-SIUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.ge.SIUnit-SIUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Unit.TypeId.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Unit.TypeId.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.ge.SIUnit-SIUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.ge.SIUnit-SIUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Unit.TypeId.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Unit.TypeId.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.gt.double-SIUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.gt.double-SIUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Utilities.ConvertByUnits.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Utilities.ConvertByUnits.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.gt.double-SIUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.gt.double-SIUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Utilities.ConvertByUnits.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Utilities.ConvertByUnits.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.gt.SIUnit-double.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.gt.SIUnit-double.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Utilities.ParseExpression.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Utilities.ParseExpression.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.gt.SIUnit-double.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.gt.SIUnit-double.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Utilities.ParseExpression.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Utilities.ParseExpression.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.gt.SIUnit-SIUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.gt.SIUnit-SIUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Utilities.ParseExpressionByUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\LargeIcons\DynamoUnits.Utilities.ParseExpressionByUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoUnits.SIUnit.gt.SIUnit-SIUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.gt.SIUnit-SIUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.le.double-SIUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.le.double-SIUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.le.double-SIUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.le.double-SIUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.le.SIUnit-double.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.le.SIUnit-double.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.le.SIUnit-double.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.le.SIUnit-double.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.le.SIUnit-SIUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.le.SIUnit-SIUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.le.SIUnit-SIUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.le.SIUnit-SIUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.lt.double-SIUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.lt.double-SIUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.lt.double-SIUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.lt.double-SIUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.lt.SIUnit-double.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.lt.SIUnit-double.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.lt.SIUnit-double.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.lt.SIUnit-double.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.lt.SIUnit-SIUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.lt.SIUnit-SIUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.lt.SIUnit-SIUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.lt.SIUnit-SIUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.mod.double-SIUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.mod.double-SIUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.mod.double-SIUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.mod.double-SIUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.mod.SIUnit-double.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.mod.SIUnit-double.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.mod.SIUnit-double.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.mod.SIUnit-double.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.mod.SIUnit-SIUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.mod.SIUnit-SIUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.mod.SIUnit-SIUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.mod.SIUnit-SIUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.Modulo.double.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.Modulo.double.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.Modulo.double.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.Modulo.double.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.Modulo.SIUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.Modulo.SIUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.Modulo.SIUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.Modulo.SIUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.mul.double-SIUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.mul.double-SIUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.mul.double-SIUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.mul.double-SIUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.mul.SIUnit-double.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.mul.SIUnit-double.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.mul.SIUnit-double.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.mul.SIUnit-double.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.mul.SIUnit-SIUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.mul.SIUnit-SIUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.mul.SIUnit-SIUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.mul.SIUnit-SIUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.Round.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.Round.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.Round.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.Round.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.SetValueFromString.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.SetValueFromString.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.SetValueFromString.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.SetValueFromString.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.Subtract.double.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.Subtract.double.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.Subtract.double.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.Subtract.double.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.Subtract.SIUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.Subtract.SIUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.Subtract.SIUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.Subtract.SIUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.ToSIUnit.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.ToSIUnit.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.ToSIUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.ToSIUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.Value.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.Value.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.SIUnit.Value.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.SIUnit.Value.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.Volume.FromCubicFeet.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.Volume.FromCubicFeet.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.Volume.FromCubicFeet.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.Volume.FromCubicFeet.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.Volume.FromDouble.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.Volume.FromDouble.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DynamoUnits.Volume.FromDouble.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DynamoUnits.Volume.FromDouble.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Location.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Location.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="SIUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\SIUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DynamoUnits.Utilities.ParseExpressionByUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\DynamoUnits\SmallIcons\DynamoUnits.Utilities.ParseExpressionByUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

@@ -118,70 +118,34 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Area.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Area.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Length.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Length.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="SIUnit.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\SIUnit.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="UnitsUI.AreaFromString.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\UnitsUI.AreaFromString.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="UnitsUI.AreaFromString.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\UnitsUI.AreaFromString.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="UnitsUI.DynamoUnitConvert.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\UnitsUI.DynamoUnitConvert.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\UnitsUI\LargeIcons\UnitsUI.DynamoUnitConvert.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="UnitsUI.DynamoUnitConvert.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\UnitsUI.DynamoUnitConvert.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="UnitsUI.LengthFromString.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\UnitsUI.LengthFromString.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="UnitsUI.LengthFromString.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\UnitsUI.LengthFromString.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\UnitsUI\SmallIcons\UnitsUI.DynamoUnitConvert.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="UnitsUI.Quantities.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\UnitsUI.Quantities.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\UnitsUI\LargeIcons\UnitsUI.Quantities.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="UnitsUI.Quantities.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\UnitsUI.Quantities.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\UnitsUI\SmallIcons\UnitsUI.Quantities.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="UnitsUI.Symbols.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\UnitsUI.Symbols.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\UnitsUI\LargeIcons\UnitsUI.Symbols.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="UnitsUI.Symbols.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\UnitsUI.Symbols.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\UnitsUI\SmallIcons\UnitsUI.Symbols.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="UnitsUI.UnitInput.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\UnitsUI.UnitInput.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\UnitsUI\LargeIcons\UnitsUI.UnitInput.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="UnitsUI.UnitInput.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\UnitsUI.UnitInput.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\UnitsUI\SmallIcons\UnitsUI.UnitInput.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="UnitsUI.Units.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\UnitsUI.Units.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\UnitsUI\LargeIcons\UnitsUI.Units.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="UnitsUI.Units.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\UnitsUI.Units.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="UnitsUI.UnitTypes.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\UnitsUI.UnitTypes.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="UnitsUI.UnitTypes.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\UnitsUI.UnitTypes.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="UnitsUI.VolumeFromString.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\UnitsUI.VolumeFromString.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="UnitsUI.VolumeFromString.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\UnitsUI.VolumeFromString.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Volume.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Volume.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\UnitsUI\SmallIcons\UnitsUI.Units.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

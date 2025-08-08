@@ -376,24 +376,6 @@
   <data name="DSCore.DayOfWeek.Wednesday.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\DSCoreNodes\SmallIcons\DSCore.DayOfWeek.Wednesday.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DSCore.Display.ByGeometryColor.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\Display\LargeIcons\Display.Display.ByGeometryColor.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DSCore.Display.ByGeometryColor.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\Display\SmallIcons\Display.Display.ByGeometryColor.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DSCore.Display.ByMeshColor.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\LargeIcons\Modifiers.GeometryColor.ByMeshColor.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DSCore.Display.ByMeshColor.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\SmallIcons\Modifiers.GeometryColor.ByMeshColor.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DSCore.Display.BySurfaceColor.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\Display\LargeIcons\Display.Display.BySurfaceColors.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DSCore.Display.BySurfaceColor.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\Display\SmallIcons\Display.Display.BySurfaceColors.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="DSCore.IO.FileSystem.AppendText.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\DSCoreNodes\LargeIcons\DSCore.IO.FileSystem.AppendText.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -862,7 +844,7 @@
   <data name="DSCore.List.ReplaceItemAtIndex.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\DSCoreNodes\SmallIcons\DSCore.List.ReplaceItemAtIndex.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-   <data name="DSCore.List.ReplaceItemAtIndices.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+  <data name="DSCore.List.ReplaceItemAtIndices.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\DSCoreNodes\LargeIcons\DSCore.List.ReplaceItemAtIndices.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DSCore.List.ReplaceItemAtIndices.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">

@@ -119,48 +119,48 @@
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="DSOffice.Data.ExportCSV.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DSOffice.Data.ExportCSV.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DSOffice\LargeIcons\DSOffice.Data.ExportCSV.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DSOffice.Data.ExportCSV.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DSOffice.Data.ExportCSV.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DSOffice\SmallIcons\DSOffice.Data.ExportCSV.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DSOffice.Data.ExportExcel.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DSOffice.Data.ExportExcel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DSOffice\LargeIcons\DSOffice.Data.ExportToExcel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DSOffice.Data.ExportExcel.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DSOffice.Data.ExportExcel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DSOffice\SmallIcons\DSOffice.Data.ExportToExcel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DSOffice.Data.ExportToExcel.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DSOffice.Data.ExportToExcel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DSOffice\LargeIcons\DSOffice.Data.ExportToExcel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DSOffice.Data.ExportToExcel.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DSOffice.Data.ExportToExcel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DSOffice\SmallIcons\DSOffice.Data.ExportToExcel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DSOffice.Data.ImportCSV.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DSOffice.Data.ImportCSV.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DSOffice\LargeIcons\DSOffice.Data.ImportCSV.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DSOffice.Data.ImportCSV.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DSOffice.Data.ImportCSV.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DSOffice\SmallIcons\DSOffice.Data.ImportCSV.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DSOffice.Data.ImportExcel.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DSOffice.Data.ImportExcel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DSOffice\LargeIcons\DSOffice.Data.ImportExcel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DSOffice.Data.ImportExcel.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DSOffice.Data.ImportExcel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DSOffice\SmallIcons\DSOffice.Data.ImportExcel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DSOffice.Data.OpenXMLExportExcel.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DSOffice.Data.OpenXMLExportExcel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DSOffice\LargeIcons\DSOffice.Data.OpenXMLExportExcel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DSOffice.Data.OpenXMLExportExcel.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DSOffice.Data.OpenXMLExportExcel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DSOffice\SmallIcons\DSOffice.Data.OpenXMLExportExcel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DSOffice.Data.OpenXMLImportExcel.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DSOffice.Data.OpenXMLImportExcel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DSOffice\LargeIcons\DSOffice.Data.OpenXMLImportExcel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DSOffice.Data.OpenXMLImportExcel.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DSOffice.Data.OpenXMLImportExcel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DSOffice\SmallIcons\DSOffice.Data.OpenXMLImportExcel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Excel.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Excel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\DSOffice\SmallIcons\Excel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>
