@@ -143,6 +143,8 @@ namespace Dynamo.Graph.Workspaces
         public string PinnedNode;
         public double WidthAdjustment;
         public double HeightAdjustment;
+        public double UserSetWidth;
+        public double UserSetHeight;
         public bool IsOptionalInPortsCollapsed;
         public bool IsUnconnectedOutPortsCollapsed;
         public bool hasToggledOptionalInPorts;
@@ -176,6 +178,8 @@ namespace Dynamo.Graph.Workspaces
                 this.Background == other.Background &&
                 this.WidthAdjustment == other.WidthAdjustment &&
                 this.HeightAdjustment == other.HeightAdjustment &&
+                this.UserSetWidth == other.UserSetWidth &&
+                this.UserSetHeight == other.UserSetHeight &&
                 this.IsOptionalInPortsCollapsed == other.IsOptionalInPortsCollapsed &&
                 this.IsUnconnectedOutPortsCollapsed == other.IsUnconnectedOutPortsCollapsed &&
                 this.hasToggledOptionalInPorts == other.hasToggledOptionalInPorts &&
@@ -2723,6 +2727,8 @@ namespace Dynamo.Graph.Workspaces
             annotationModel.GUID = annotationGuidValue;
             annotationModel.HeightAdjustment = annotationViewInfo.HeightAdjustment;
             annotationModel.WidthAdjustment = annotationViewInfo.WidthAdjustment;
+            annotationModel.UserSetWidth = annotationViewInfo.UserSetWidth;
+            annotationModel.UserSetHeight = annotationViewInfo.UserSetHeight;
             annotationModel.IsOptionalInPortsCollapsed = annotationViewInfo.IsOptionalInPortsCollapsed;
             annotationModel.IsUnconnectedOutPortsCollapsed = annotationViewInfo.IsUnconnectedOutPortsCollapsed;
             annotationModel.HasToggledOptionalInPorts = annotationViewInfo.hasToggledOptionalInPorts;
