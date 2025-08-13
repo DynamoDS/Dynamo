@@ -408,7 +408,7 @@ namespace Dynamo.Core
         /// <param name="pathManagerParams">Parameters to configure the new 
         /// instance of PathManager. See PathManagerParams for details of each 
         /// field.</param>
-        /// 
+        ///
         internal PathManager(PathManagerParams pathManagerParams)
         {
             var corePath = pathManagerParams.CorePath;
@@ -440,6 +440,13 @@ namespace Dynamo.Core
             viewExtensionsDirectories.Add(Path.Combine(dynamoCoreDir, ViewExtensionsDirectoryName));
 
             BuildHostDirectories(pathManagerParams.HostPath);
+
+            //In the case of Dynamo for Revit HostInfo.HostVersion will contain the DynamoRevit version so we will use this values for installing packages in the right location
+            if (HostInfo.HostVersion != null)
+            {
+                pathManagerParams.MajorFileVersion = HostInfo.HostVersion.Major;
+                pathManagerParams.MinorFileVersion = HostInfo.HostVersion.Minor;
+            }
 
             // If both major/minor versions are zero, get from assembly.
             majorFileVersion = pathManagerParams.MajorFileVersion;

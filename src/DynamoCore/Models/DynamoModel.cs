@@ -113,6 +113,14 @@ namespace Dynamo.Models
     }
 
     /// <summary>
+    /// Contains the HostVersion inside a static class so that it can be accessed in other parts of the code without creating an instance.
+    /// </summary>
+    public static class HostInfo
+    {
+        public static Version HostVersion;
+    }
+
+    /// <summary>
     /// This class creates an interface for Engine controller.
     /// </summary>
     public interface IEngineControllerManager
@@ -656,6 +664,8 @@ namespace Dynamo.Models
         /// <param name="config">Start configuration</param>
         protected DynamoModel(IStartConfiguration config)
         {
+            HostInfo.HostVersion = config.HostAnalyticsInfo.HostVersion;
+
             DynamoModel.IsCrashing = false;
 
             if (config is DefaultStartConfiguration defaultStartConfig)
