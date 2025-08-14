@@ -2132,7 +2132,7 @@ namespace Dynamo.Controls
         /// A common method to handle the node Options Button being clicked and
         /// the user right-clicking on the node body to open its ContextMenu.
         /// </summary>
-            private void DisplayNodeContextMenu(object sender, RoutedEventArgs e)
+        private void DisplayNodeContextMenu(object sender, RoutedEventArgs e)
         {
             if (ViewModel?.NodeModel?.IsTransient is true ||
                 ViewModel?.NodeModel?.HasTransientConnections() is true)
