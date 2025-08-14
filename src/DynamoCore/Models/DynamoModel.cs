@@ -117,6 +117,9 @@ namespace Dynamo.Models
     /// </summary>
     public static class HostInfo
     {
+        /// <summary>
+        /// This field will be used to contain the HostVersion which can be accessed from other places in the code.
+        /// </summary>
         public static Version HostVersion;
     }
 

@@ -441,7 +441,7 @@ namespace Dynamo.Core
 
             BuildHostDirectories(pathManagerParams.HostPath);
 
-            //In the case of Dynamo for Revit HostInfo.HostVersion will contain the DynamoRevit version so we will use this values for installing packages in the right location
+            //HostInfo.HostVersion contains the version (Major and Minor), we will use these values for installing Dynamo packages in the right location
             if (HostInfo.HostVersion != null)
             {
                 pathManagerParams.MajorFileVersion = HostInfo.HostVersion.Major;
