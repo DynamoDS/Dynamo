@@ -3812,6 +3812,24 @@ Dynamo を再起動してアンインストールを完了します。
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>ノード アイコン データは \"{0}\" にダンプされます。</value>
   </data>
+  <data name="GroupOptionalInportsText" xml:space="preserve">
+    <value>オプション</value>
+  </data>
+  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
+    <value>未接続</value>
+  </data>
+  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
+    <value>折りたたまれたグループ</value>
+  </data>
+  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
+    <value>既定で最小サイズに折りたたむ</value>
+  </data>
+  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
+    <value>既定でオプションの入力ポートを非表示</value>
+  </data>
+  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
+    <value>既定で未接続の出力ポートを非表示</value>
+  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\ViewModels\Watch3D\compiledShaders\psDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
