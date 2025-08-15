@@ -2162,6 +2162,7 @@ namespace Dynamo.Controls
             grid.ContextMenu = MainContextMenu;
             grid.ContextMenu.Visibility = Visibility.Visible;
             MainContextMenu.DataContext = viewModel;
+            MainContextMenu.PlacementTarget = grid;
             MainContextMenu.Closed += MainContextMenu_OnClosed;
             MainContextMenu.IsOpen = true;
             e.Handled = true;
