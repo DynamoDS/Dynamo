@@ -114,11 +114,6 @@ namespace Dynamo.Interfaces
         IEnumerable<string> DefinitionDirectories { get; }
 
         /// <summary>
-        /// The local directory that contains custom nodes created by all users.
-        /// </summary>
-        string CommonDefinitions { get; }
-
-        /// <summary>
         /// The local directory where log files are generated. This directory is 
         /// specific to the current user.
         /// </summary>
