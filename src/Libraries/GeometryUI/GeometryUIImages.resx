@@ -119,21 +119,21 @@
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="GeometryUI.ExportWithUnits.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\GeometryUI.ExportWithUnits.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\GeometryUI\LargeIcons\GeometryUI.ExportWithUnits.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="GeometryUI.ExportWithUnits.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\GeometryUI.ExportWithUnits.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\GeometryUI\SmallIcons\GeometryUI.ExportWithUnits.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="GeometryUI.ImportFromSATWithUnits.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\GeometryUI.ImportFromSATWithUnits.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\GeometryUI\LargeIcons\GeometryUI.ImportFromSATWithUnits.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="GeometryUI.ImportFromSATWithUnits.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\GeometryUI.ImportFromSATWithUnits.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\GeometryUI\SmallIcons\GeometryUI.ImportFromSATWithUnits.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="GeometryUI.PanelSurfaceBoundaryConditionDropDown.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\GeometryUI.PanelSurfaceBoundaryConditionDropDown.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\GeometryUI\LargeIcons\GeometryUI.PanelSurfaceBoundaryConditionDropDown.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="GeometryUI.PanelSurfaceBoundaryConditionDropDown.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\GeometryUI.PanelSurfaceBoundaryConditionDropDown.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\GeometryUI\SmallIcons\GeometryUI.PanelSurfaceBoundaryConditionDropDown.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>
