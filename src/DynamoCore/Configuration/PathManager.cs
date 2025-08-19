@@ -185,6 +185,13 @@ namespace Dynamo.Core
             get { return RootDirectories.Select(path => TransformPath(path, DefinitionsDirectoryName)); }
         }
 
+        [Obsolete("This property will be removed in a future version of Dynamo.", false)]
+        public string CommonDefinitions
+        {
+            get { return string.Empty; }
+        }
+
+
         public string LogDirectory
         {
             get { return logDirectory; }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Dynamo.Interfaces
@@ -112,6 +113,12 @@ namespace Dynamo.Interfaces
         /// on write access.
         /// </summary>
         IEnumerable<string> DefinitionDirectories { get; }
+
+        /// <summary>
+        /// The local directory that contains custom nodes created by all users.
+        /// </summary>
+        [Obsolete("This property will be removed in a future version of Dynamo.", false)]
+        string CommonDefinitions { get; }
 
         /// <summary>
         /// The local directory where log files are generated. This directory is 
