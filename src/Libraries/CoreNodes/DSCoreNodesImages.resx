@@ -118,18 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Color.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\SmallIcons\Color.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="CSV.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\SmallIcons\CSV.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Directory.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\SmallIcons\Directory.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Display.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\SmallIcons\Display.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="DSCore.Color.Add.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\DSCoreNodes\LargeIcons\DSCore.Color.Add.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -334,48 +322,6 @@
   <data name="DSCore.DateTime.Today.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\DSCoreNodes\SmallIcons\DSCore.DateTime.Today.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DSCore.DayOfWeek.Friday.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\LargeIcons\DSCore.DayOfWeek.Friday.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DSCore.DayOfWeek.Friday.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\SmallIcons\DSCore.DayOfWeek.Friday.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DSCore.DayOfWeek.Monday.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\LargeIcons\DSCore.DayOfWeek.Monday.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DSCore.DayOfWeek.Monday.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\SmallIcons\DSCore.DayOfWeek.Monday.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DSCore.DayOfWeek.Saturday.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\LargeIcons\DSCore.DayOfWeek.Saturday.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DSCore.DayOfWeek.Saturday.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\SmallIcons\DSCore.DayOfWeek.Saturday.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DSCore.DayOfWeek.Sunday.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\LargeIcons\DSCore.DayOfWeek.Sunday.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DSCore.DayOfWeek.Sunday.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\SmallIcons\DSCore.DayOfWeek.Sunday.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DSCore.DayOfWeek.Thursday.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\LargeIcons\DSCore.DayOfWeek.Thursday.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DSCore.DayOfWeek.Thursday.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\SmallIcons\DSCore.DayOfWeek.Thursday.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DSCore.DayOfWeek.Tuesday.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\LargeIcons\DSCore.DayOfWeek.Tuesday.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DSCore.DayOfWeek.Tuesday.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\SmallIcons\DSCore.DayOfWeek.Tuesday.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DSCore.DayOfWeek.Wednesday.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\LargeIcons\DSCore.DayOfWeek.Wednesday.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DSCore.DayOfWeek.Wednesday.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\SmallIcons\DSCore.DayOfWeek.Wednesday.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="DSCore.IO.FileSystem.AppendText.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\DSCoreNodes\LargeIcons\DSCore.IO.FileSystem.AppendText.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -439,12 +385,6 @@
   <data name="DSCore.IO.FileSystem.FileExtension.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\DSCoreNodes\SmallIcons\DSCore.IO.FileSystem.FileExtension.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DSCore.IO.FileSystem.FileFromPath.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\LargeIcons\DSCore.IO.FileSystem.FileFromPath.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DSCore.IO.FileSystem.FileFromPath.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\SmallIcons\DSCore.IO.FileSystem.FileFromPath.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="DSCore.IO.FileSystem.FileHasExtension.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\DSCoreNodes\LargeIcons\DSCore.IO.FileSystem.FileHasExtension.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -456,12 +396,6 @@
   </data>
   <data name="DSCore.IO.FileSystem.FileName.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\DSCoreNodes\SmallIcons\DSCore.IO.FileSystem.FileName.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DSCore.IO.FileSystem.FromPath.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\LargeIcons\DSCore.IO.FileSystem.FromPath.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="DSCore.IO.FileSystem.FromPath.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSCoreNodes\SmallIcons\DSCore.IO.FileSystem.FromPath.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DSCore.IO.FileSystem.GetDirectoryContents.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\DSCoreNodes\LargeIcons\DSCore.IO.FileSystem.GetDirectoryContents.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

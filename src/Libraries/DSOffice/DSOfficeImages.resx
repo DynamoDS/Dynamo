@@ -160,7 +160,4 @@
   <data name="DSOffice.Data.OpenXMLImportExcel.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\DSOffice\SmallIcons\DSOffice.Data.OpenXMLImportExcel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Excel.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\DSOffice\SmallIcons\Excel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
 </root>

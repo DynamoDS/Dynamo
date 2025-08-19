@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -387,26 +387,5 @@
   </data>
   <data name="CoreNodeModels.WebRequest.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\CoreNodeModels\SmallIcons\CoreNodeModels.WebRequest.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Evaluate.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\CoreNodeModels\SmallIcons\Evaluate.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Input.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\CoreNodeModels\SmallIcons\Input.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Logic.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\CoreNodeModels\SmallIcons\Logic.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Scripting.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\CoreNodeModels\SmallIcons\Scripting.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Strings.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\CoreNodeModels\SmallIcons\Strings.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="Units.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\CoreNodeModels\SmallIcons\Units.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="View.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\CoreNodeModels\SmallIcons\View.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

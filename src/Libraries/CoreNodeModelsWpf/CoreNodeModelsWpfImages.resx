@@ -119,39 +119,39 @@
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="CoreNodeModelsWpf.Charts.BarChartNodeModel.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModelsWpf.Charts.BarChartNodeModel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModelsWpf\LargeIcons\CoreNodeModelsWpf.Charts.BarChartNodeModel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModelsWpf.Charts.BarChartNodeModel.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModelsWpf.Charts.BarChartNodeModel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModelsWpf\SmallIcons\CoreNodeModelsWpf.Charts.BarChartNodeModel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModelsWpf.Charts.BasicLineChartNodeModel.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModelsWpf.Charts.BasicLineChartNodeModel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModelsWpf\LargeIcons\CoreNodeModelsWpf.Charts.BasicLineChartNodeModel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModelsWpf.Charts.BasicLineChartNodeModel.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModelsWpf.Charts.BasicLineChartNodeModel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModelsWpf\SmallIcons\CoreNodeModelsWpf.Charts.BasicLineChartNodeModel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModelsWpf.Charts.HeatSeriesNodeModel.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModelsWpf.Charts.HeatSeriesNodeModel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModelsWpf\LargeIcons\CoreNodeModelsWpf.Charts.HeatSeriesNodeModel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModelsWpf.Charts.HeatSeriesNodeModel.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModelsWpf.Charts.HeatSeriesNodeModel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModelsWpf\SmallIcons\CoreNodeModelsWpf.Charts.HeatSeriesNodeModel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModelsWpf.Charts.PieChartNodeModel.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModelsWpf.Charts.PieChartNodeModel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModelsWpf\LargeIcons\CoreNodeModelsWpf.Charts.PieChartNodeModel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModelsWpf.Charts.PieChartNodeModel.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModelsWpf.Charts.PieChartNodeModel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModelsWpf\SmallIcons\CoreNodeModelsWpf.Charts.PieChartNodeModel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModelsWpf.Charts.ScatterPlotNodeModel.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModelsWpf.Charts.ScatterPlotNodeModel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModelsWpf\LargeIcons\CoreNodeModelsWpf.Charts.ScatterPlotNodeModel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModelsWpf.Charts.ScatterPlotNodeModel.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModelsWpf.Charts.ScatterPlotNodeModel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModelsWpf\SmallIcons\CoreNodeModelsWpf.Charts.ScatterPlotNodeModel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModelsWpf.Charts.XYLineChartNodeModel.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModelsWpf.Charts.XYLineChartNodeModel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModelsWpf\LargeIcons\CoreNodeModelsWpf.Charts.XYLineChartNodeModel.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="CoreNodeModelsWpf.Charts.XYLineChartNodeModel.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\CoreNodeModelsWpf.Charts.XYLineChartNodeModel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\CoreNodeModelsWpf\SmallIcons\CoreNodeModelsWpf.Charts.XYLineChartNodeModel.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>
