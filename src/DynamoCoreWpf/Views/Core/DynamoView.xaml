@@ -1295,6 +1295,14 @@
                                                 </MultiDataTrigger>
                                                 <MultiDataTrigger>
                                                     <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type workspaces:HomeWorkspaceModel}" />
+                                                        <Condition Binding="{Binding Path=IsTemplate}" Value="True" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <!--  The value of the unsaved Workspace tab text field  -->
+                                                    <Setter Property="Text" Value="Workspace" />
+                                                </MultiDataTrigger> 
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
                                                         <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type workspaces:CustomNodeWorkspaceModel}" />
                                                         <Condition Binding="{Binding Path=FileName, Converter={StaticResource PathToSaveStateConverter}}" Value="Unsaved" />
                                                     </MultiDataTrigger.Conditions>
