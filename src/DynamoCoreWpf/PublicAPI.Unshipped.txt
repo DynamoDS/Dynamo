@@ -3184,6 +3184,7 @@ Dynamo.ViewModels.WorkspaceViewModel.DynamoPreferences.get -> Dynamo.Models.Dyna
 Dynamo.ViewModels.WorkspaceViewModel.DynamoViewModel.get -> Dynamo.ViewModels.DynamoViewModel
 Dynamo.ViewModels.WorkspaceViewModel.Errors.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.InfoBubbleViewModel>
 Dynamo.ViewModels.WorkspaceViewModel.FileName.get -> string
+Dynamo.ViewModels.WorkspaceViewModel.IsTemplate.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.FindByIdCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.WorkspaceViewModel.FindNodesFromElements.get -> System.Action
 Dynamo.ViewModels.WorkspaceViewModel.FindNodesFromElements.set -> void
