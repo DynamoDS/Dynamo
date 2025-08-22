@@ -349,6 +349,12 @@ namespace Dynamo.ViewModels
         }
 
         [JsonIgnore]
+        public bool IsTemplate
+        {
+            get { return Model.IsTemplate; }
+        }
+
+        [JsonIgnore]
         public bool CanEditName
         {
             get { return Model != DynamoViewModel.HomeSpace; }
