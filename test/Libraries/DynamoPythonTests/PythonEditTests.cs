@@ -517,7 +517,7 @@ namespace Dynamo.Tests
                 Assert.AreEqual(count, (GetModel().CurrentWorkspace as HomeWorkspaceModel).EvaluationCount);
 
                 // Python script returns list of paths contained in PathManager.PackageDirectories
-                AssertPreviewCount(guid, 3);
+                AssertPreviewCount(guid, 2);
             }
         }
 

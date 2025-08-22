@@ -100,11 +100,6 @@ namespace Dynamo.PackageManager
         {
             this.pathManager = pathManager;
             InitPackageLoader(pathManager.PackagesDirectories, PathManager.BuiltinPackagesDirectory);
-
-            if (!string.IsNullOrEmpty(pathManager.CommonDataDirectory))
-            {
-                packagesDirectoriesToVerifyCertificates.Add(pathManager.CommonDataDirectory);
-            }
         }
 
         private void InitPackageLoader(IEnumerable<string> packagesDirectories, string builtinPackagesDir)
