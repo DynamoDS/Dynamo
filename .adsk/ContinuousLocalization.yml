@@ -24,7 +24,7 @@ common:
     - name: DynamoCore
       main_owner: Soft
       content_owner: N/A
-      lang: [csy, deu, esp, fra, ita, jpn, kor, plk, ptb, rus, chs, cht]
+      lang: [csy, deu, esp, fra, ita, jpn, kor, plk, ptb, rus, chs, cht, eng]
       file_rules:
         - doc\distrib\NodeHelpFiles\en-US\*.md, doc\distrib\NodeHelpFiles\%langMsNet%\*.md
         - doc\distrib\Samples\en-US\**.dyn, doc\distrib\Samples\%langMsNet%\**.dyn
