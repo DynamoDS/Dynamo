@@ -25,7 +25,7 @@ namespace Dynamo.Wpf.Utilities
             Action finalizer)
         {
 
-            var dispatcher = dynamoViewModel.UIDispatcher ?? Dispatcher.CurrentDispatcher;
+            var dispatcher = dynamoViewModel?.UIDispatcher ?? Dispatcher.CurrentDispatcher;
 
 
             dispatcher.BeginInvoke(() => AutoLayoutNodes(wsModel,
