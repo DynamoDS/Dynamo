@@ -290,8 +290,8 @@ namespace Dynamo.Controls
 
         private void DynamoViewModel_ShowGraphPropertiesRequested(object sender, EventArgs e)
         {
-            var provider = viewExtensionManager.ViewExtensions.OfType<IGraphMetadataProvider>().FirstOrDefault();
-            var menuItem = provider?.GetGraphMetadataMenuItem();
+            var provider = viewExtensionManager.ViewExtensions.OfType<IExtensionMenuProvider>().FirstOrDefault();
+            var menuItem = provider?.GetFileMenuItem();
 
             if (menuItem != null)
             {

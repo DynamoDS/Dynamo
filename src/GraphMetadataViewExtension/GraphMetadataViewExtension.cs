@@ -10,7 +10,7 @@ using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.GraphMetadata
 {
-    public class GraphMetadataViewExtension : ViewExtensionBase, IExtensionStorageAccess, IGraphMetadataProvider
+    public class GraphMetadataViewExtension : ViewExtensionBase, IExtensionStorageAccess, IExtensionMenuProvider
     {
         internal GraphMetadataViewModel viewModel;
         private GraphMetadataView graphMetadataView;
@@ -38,7 +38,7 @@ namespace Dynamo.GraphMetadata
         /// Returns the menu item that triggers the Graph Metadata extension UI.
         /// This item can be added to any Dynamo menu.
         /// </summary>
-        public MenuItem GetGraphMetadataMenuItem()
+        public MenuItem GetFileMenuItem()
         {
             return this.graphMetadataMenuItem;
         }

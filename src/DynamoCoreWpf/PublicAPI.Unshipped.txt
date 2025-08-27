@@ -3301,6 +3301,8 @@ Dynamo.Wpf.Controls.RunSettingsControl.InitializeComponent() -> void
 Dynamo.Wpf.Controls.RunSettingsControl.RunSettingsControl() -> void
 Dynamo.Wpf.CoreNodeViewCustomizations
 Dynamo.Wpf.CoreNodeViewCustomizations.CoreNodeViewCustomizations() -> void
+Dynamo.Wpf.Extensions.IExtensionMenuProvider
+Dynamo.Wpf.Extensions.IExtensionMenuProvider.GetFileMenuItem() -> System.Windows.Controls.MenuItem
 Dynamo.Wpf.Extensions.IViewExtension
 Dynamo.Wpf.Extensions.IViewExtension.Loaded(Dynamo.Wpf.Extensions.ViewLoadedParams viewLoadedParams) -> void
 Dynamo.Wpf.Extensions.IViewExtension.Name.get -> string
