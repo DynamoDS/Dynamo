@@ -3810,6 +3810,24 @@ Führen Sie #Download und Installation=https://manage.autodesk.com/products/upda
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>Blocksymboldaten werden in \"{0}\" ausgegeben.</value>
   </data>
+  <data name="GroupOptionalInportsText" xml:space="preserve">
+    <value>Optional</value>
+  </data>
+  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
+    <value>Nicht verbunden</value>
+  </data>
+  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
+    <value>Reduzierte Gruppe</value>
+  </data>
+  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
+    <value>Vorgabemäßig auf Minimalgröße reduzieren</value>
+  </data>
+  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
+    <value>Optionale Eingabeanschlüsse vorgabemäßig ausblenden</value>
+  </data>
+  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
+    <value>Nicht verbundene Ausgabeanschlüsse vorgabemäßig ausblenden</value>
+  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\ViewModels\Watch3D\compiledShaders\psDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

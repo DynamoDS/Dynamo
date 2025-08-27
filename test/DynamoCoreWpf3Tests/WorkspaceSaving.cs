@@ -15,8 +15,10 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
+using Dynamo.Wpf.UI;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
+using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
@@ -566,8 +568,48 @@ namespace Dynamo.Tests
 
             // load as template
             ViewModel.Model.OpenTemplateFromPath(newPath);
-            Assert.AreEqual(string.Empty, ViewModel.Model.CurrentWorkspace.FileName);
+            Assert.IsTrue(!string.IsNullOrEmpty(ViewModel.Model.CurrentWorkspace.FileName));
+            Assert.IsTrue(ViewModel.Model.CurrentWorkspace.IsTemplate);
             Assert.AreEqual("dummy description", ViewModel.Model.CurrentWorkspace.Description);
+        }
+
+        /// <summary>
+        /// This test validates that when a template is opened as a new workspace, it does not save the template (replacing it with new changes)
+        /// The Business Rule says that we should not allow the user to modify templates and save them in the defined templates folder.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void CanOpenTemplateAsNewWorkspaceAndNotSave()
+        {
+            // get empty workspace
+            var dynamoModel = ViewModel.Model;
+            Assert.IsNotNull(dynamoModel.CurrentWorkspace);
+
+            // set description
+            dynamoModel.CurrentWorkspace.Description = "dummy description";
+
+            // save
+            var newPath = GetNewFileNameOnTempPath("dyn");
+            dynamoModel.CurrentWorkspace.Save(newPath);
+
+            // load as template
+            ViewModel.Model.OpenTemplateFromPath(newPath);
+            
+            Assert.IsTrue(!string.IsNullOrEmpty(ViewModel.Model.CurrentWorkspace.FileName));
+            Assert.IsTrue(ViewModel.Model.CurrentWorkspace.IsTemplate);
+            Assert.AreEqual("dummy description", ViewModel.Model.CurrentWorkspace.Description);
+
+            //Mocking IFileSaver os when calling SaveFileDialog.ShowDialog() don't show the dialog but we know that was called
+            var mockFileSaver = new Mock<IFileSaver>();
+            mockFileSaver.Setup(m => m.ShowDialog()).Returns(true);
+            mockFileSaver.SetupGet(m => m.FileName).Returns(ViewModel.Model.CurrentWorkspace.FileName); // Simulate user entering a filename
+
+            //Doing dependency dnjection to mock the file saver by Method Injection
+            ViewModel.ShowSaveDialogIfNeededAndSaveResult(mockFileSaver.Object);
+
+            // Assert
+            Assert.AreEqual(ViewModel.Model.CurrentWorkspace.FileName, mockFileSaver.Object.FileName);
+            mockFileSaver.Verify(m => m.ShowDialog(), Times.Once); // Verify ShowDialog was called once to this means that the template was not saved and require the user to provide a different name (Save As functionality)
         }
 
         [Test]

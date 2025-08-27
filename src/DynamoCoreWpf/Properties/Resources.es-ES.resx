@@ -3812,6 +3812,24 @@ Para convertir este archivo en una nueva plantilla, guárdelo en una carpeta dif
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>Los datos de iconos de nodos se vuelcan en \"{0}\".</value>
   </data>
+  <data name="GroupOptionalInportsText" xml:space="preserve">
+    <value>Opcional</value>
+  </data>
+  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
+    <value>No conectado</value>
+  </data>
+  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
+    <value>Grupo contraído</value>
+  </data>
+  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
+    <value>Contraer al tamaño mínimo por defecto</value>
+  </data>
+  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
+    <value>Ocultar puertos de entrada opcionales por defecto</value>
+  </data>
+  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
+    <value>Ocultar puertos de salida no conectados por defecto</value>
+  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\ViewModels\Watch3D\compiledShaders\psDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

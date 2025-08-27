@@ -3794,6 +3794,24 @@ Per trasformare questo file in un nuovo modello, salvarlo in un'altra cartella e
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>I dati sull'icona del nodo sono stati rimossi in \"{0}\".</value>
   </data>
+  <data name="GroupOptionalInportsText" xml:space="preserve">
+    <value>Facoltative</value>
+  </data>
+  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
+    <value>Non connesse</value>
+  </data>
+  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
+    <value>Gruppo compresso</value>
+  </data>
+  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
+    <value>Comprime alla grandezza minima per default</value>
+  </data>
+  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
+    <value>Nasconde le porte di input facoltative per default</value>
+  </data>
+  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
+    <value>Nasconde le porte di output non connesse per default</value>
+  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\ViewModels\Watch3D\compiledShaders\psDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

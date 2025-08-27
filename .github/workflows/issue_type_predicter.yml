@@ -27,7 +27,7 @@ jobs:
     steps:
       # Checkout Dynamo repo
       - name: Checkout Dynamo Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # Removes quotes before using the issue content as a script parameter
       - name: Remove Quotes
@@ -67,7 +67,7 @@ jobs:
       # Checkout the IssuesTypePredicter repo (https://github.com/DynamoDS/IssuesTypePredicter)
       - name: Checkout IssuesTypePredicter Repo
         if: env.analysis_response == 'Valid'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: DynamoDS/IssuesTypePredicter
           path: IssuesTypePredicter
