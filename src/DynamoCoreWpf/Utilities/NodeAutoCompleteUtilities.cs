@@ -35,7 +35,7 @@ namespace Dynamo.Wpf.Utilities
                     checkWorkspaceNodes,
                     portType,
                     finalizer), DispatcherPriority.ApplicationIdle);
-            }
+            
         }
 
         internal static Rect2D GetNodesBoundingBox(IEnumerable<NodeModel> nodes)
