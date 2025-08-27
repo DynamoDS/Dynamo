@@ -102,6 +102,9 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(annotationView.ViewModel.IsExpanded);
             Assert.That(groupContent.All(x => x.IsCollapsed == true));
 
+            // Manually create and open the group context menu (normally triggered by right-click)
+            annotationView.CreateAndAttachAnnotationPopup();
+
             // Act
             var popupContent = (annotationView.GroupContextMenuPopup.Child as Border)?.Child as Panel;
 

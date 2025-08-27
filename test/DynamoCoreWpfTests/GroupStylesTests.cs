@@ -109,8 +109,8 @@ namespace DynamoCoreWpfTests
             preferencesWindow.CloseButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             DispatcherUtil.DoEvents();
 
-            //// Get the GroupContextMenuPopup that was created in code-behind
-            //var groupContextPopup = annotationView.GroupContextMenuPopup;
+            // Manually create and open the group context menu (normally triggered by right-click)
+            annotationView.CreateAndAttachAnnotationPopup();
 
             // Open context menu
             annotationView.GroupContextMenuPopup.IsOpen = true;

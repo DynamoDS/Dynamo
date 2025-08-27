@@ -551,6 +551,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\CustomSaveFileDialog.cs" />
     <Compile Include="UI\GuidedTour\CustomRichTextBox.cs" />
     <Compile Include="UI\GuidedTour\CutOffArea.cs" />
     <Compile Include="UI\GuidedTour\ExitGuide.cs" />
