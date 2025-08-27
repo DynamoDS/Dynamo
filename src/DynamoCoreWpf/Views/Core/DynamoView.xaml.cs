@@ -1449,7 +1449,7 @@ namespace Dynamo.Controls
             // Load the new HomePage
             LoadHomePage();
 
-            loaded = true;            
+            loaded = true;
         }
 
         // Add the HomePage to the DynamoView once its loaded
