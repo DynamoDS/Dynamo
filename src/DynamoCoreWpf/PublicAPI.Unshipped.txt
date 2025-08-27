@@ -4760,6 +4760,8 @@ static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuExport.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuExport3DAsImage.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuExportAsImage.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuExportToSTL.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuGraphPropertiesAdvanced.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuGraphPropertiesGeneral.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuImport.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuInsert.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuNew.get -> string
@@ -4772,6 +4774,7 @@ static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuRecentFiles.get -> stri
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuSave.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuSaveAs.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewEditMenuUnpinAllPreviewBubbles.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuShowGraphProperties.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpDictionary.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenu.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenuDisplayStartPage.get -> string
