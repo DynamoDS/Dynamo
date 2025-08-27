@@ -27,14 +27,16 @@ namespace Dynamo.Wpf.Utilities
 
             var dispatcher = dynamoViewModel?.UIDispatcher ?? Dispatcher.CurrentDispatcher;
 
-
-            dispatcher.BeginInvoke(() => AutoLayoutNodes(wsModel,
-                    queryNode,
-                    misplacedNodes,
-                    skipInitialAutoLayout,
-                    checkWorkspaceNodes,
-                    portType,
-                    finalizer), DispatcherPriority.ApplicationIdle);
+            if (dispatcher != null)
+            {
+                dispatcher.BeginInvoke(() => AutoLayoutNodes(wsModel,
+                        queryNode,
+                        misplacedNodes,
+                        skipInitialAutoLayout,
+                        checkWorkspaceNodes,
+                        portType,
+                        finalizer), DispatcherPriority.ApplicationIdle);
+            }
             
         }
 
