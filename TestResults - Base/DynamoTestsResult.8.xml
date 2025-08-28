@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<testsuites time="5.740" tests="2" failures="0">
-  <testsuite id="0" name="DynamoCoreTests.dll" tests="1" failures="0" time="3.404">
-    <testcase classname="Dynamo.Tests.PeriodicEvaluationTests" name="StartPeriodicEvaluation_CompletesFewerRunsWhenRunTimeIsGreaterThanEvaluationTime" time="3.4036700" />
-  </testsuite>
-  <testsuite id="1" name="DynamoCoreWpf3Tests.dll" tests="1" failures="0" time="2.337">
-    <testcase classname="Dynamo.Tests.SearchSideEffects" name="LuceneSearchTSplineNodesOrderingValidation" time="2.3366820" />
-  </testsuite>
-</testsuites>
