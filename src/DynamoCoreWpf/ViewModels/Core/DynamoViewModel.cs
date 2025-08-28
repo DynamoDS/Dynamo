@@ -3332,6 +3332,7 @@ namespace Dynamo.ViewModels
             // Upon closing a workspace, validate if the workspace is valid to be sent to the ML datapipeline and then send it.
             if (!DynamoModel.IsTestMode && !HomeSpace.HasUnsavedChanges && (currentWorkspaceViewModel?.IsHomeSpace ?? true) && HomeSpace.HasRunWithoutCrash)
             {
+                // currently IsDNADataIngestionPipelineinBeta is set to true for debug builds and false for release builds. so we need to modify it here, when testing the pipeline in debug builds.
                 if (preferencesViewModel.IsMLAutocompleteTOUApproved && !IsDNADataIngestionPipelineinBeta && Model.CurrentWorkspace.IsValidForFDX && currentWorkspaceViewModel.Checksum != string.Empty)
                 {
                     if (HasDifferentialCheckSum())
