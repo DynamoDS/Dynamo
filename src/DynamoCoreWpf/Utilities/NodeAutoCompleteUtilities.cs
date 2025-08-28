@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Wpf.Utilities
 {
@@ -15,7 +16,7 @@ namespace Dynamo.Wpf.Utilities
     {
         // We want to perform an AutoLayout operation only after all nodes have updated their UI.
         // Therefore, we will queue the AutoLayout operation to execute during the next idle event.
-        internal static void PostAutoLayoutNodes(WorkspaceModel wsModel,
+        internal static void PostAutoLayoutNodes(DynamoViewModel dynamoViewModel, WorkspaceModel wsModel,
             NodeModel queryNode,
             IEnumerable<NodeModel> misplacedNodes,
             bool skipInitialAutoLayout,
@@ -23,16 +24,20 @@ namespace Dynamo.Wpf.Utilities
             PortType portType,
             Action finalizer)
         {
-            if (Application.Current?.Dispatcher != null)
+
+            var dispatcher = dynamoViewModel?.UIDispatcher ?? Dispatcher.CurrentDispatcher;
+
+            if (dispatcher != null)
             {
-                Application.Current.Dispatcher.BeginInvoke(() => AutoLayoutNodes(wsModel,
-                    queryNode,
-                    misplacedNodes,
-                    skipInitialAutoLayout,
-                    checkWorkspaceNodes,
-                    portType,
-                    finalizer), DispatcherPriority.ApplicationIdle);
+                dispatcher.BeginInvoke(() => AutoLayoutNodes(wsModel,
+                        queryNode,
+                        misplacedNodes,
+                        skipInitialAutoLayout,
+                        checkWorkspaceNodes,
+                        portType,
+                        finalizer), DispatcherPriority.ApplicationIdle);
             }
+            
         }
 
         internal static Rect2D GetNodesBoundingBox(IEnumerable<NodeModel> nodes)
