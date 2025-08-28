@@ -296,6 +296,11 @@ namespace DynamoMLDataPipeline
 
         public void SendWorkspaceLog(string filePath)
         {
+            if (!DynamoModel.PreferenceSettings.IsMLAutocompleteTOUApproved)
+            {
+                throw new InvalidOperationException("User has opted out of data collection, this function shouldn't be called.");
+            }
+
             // Depending on whether we are using Stage or Prod, a token needs to be retrieved 
             // using client and secret id from the app created in the respective environment.
             var token = GetAuthorizationToken();
