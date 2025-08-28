@@ -65,6 +65,7 @@ namespace Dynamo.Controls
         public const string BackgroundPreviewName = "BackgroundPreview";
         private const int SideBarCollapseThreshold = 20;
         private const int navigationInterval = 100;
+        private const string GraphMetadataExtensionId = "28992e1d-abb9-417f-8b1b-05e053bee670";
         // This is used to determine whether ESC key is being held down
         private bool IsEscKeyPressed = false;
         // internal for testing.
@@ -290,7 +291,11 @@ namespace Dynamo.Controls
 
         private void DynamoViewModel_ShowGraphPropertiesRequested(object sender, EventArgs e)
         {
-            var provider = viewExtensionManager.ViewExtensions.OfType<IExtensionMenuProvider>().FirstOrDefault();
+            // Identify the GraphMetadata extension by its UniqueId because we can't reference its type directly.
+            // This exposes the menu item without creating a dependency on the Extensions project.
+            var provider = viewExtensionManager.ViewExtensions
+                .OfType<IExtensionMenuProvider>()
+                .FirstOrDefault(ext => (ext as IViewExtension)?.UniqueId == GraphMetadataExtensionId);
             var menuItem = provider?.GetFileMenuItem();
 
             if (menuItem != null)
