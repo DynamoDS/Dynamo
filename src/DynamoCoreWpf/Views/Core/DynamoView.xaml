@@ -363,7 +363,7 @@
                             <MenuItem Name="general"
                                       Command="{Binding ShowGraphPropertiesCommand}"
                                       Header="{x:Static p:Resources.DynamoViewFileMenuGraphPropertiesGeneral}" />
-                            <!-- Host properies panel to be implemented in Dynamo C4D later -->
+                            <!-- Host properties panel to be implemented in Dynamo C4D later -->
                             <!--<MenuItem Name="advanced"
                                       Header="{x:Static p:Resources.DynamoViewFileMenuGraphPropertiesAdvanced}" />-->                            
                         </MenuItem>
