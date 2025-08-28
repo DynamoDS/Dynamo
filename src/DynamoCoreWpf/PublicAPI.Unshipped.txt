@@ -764,6 +764,7 @@ Dynamo.Controls.WorkspaceBackgroundColorConverter.WorkspaceBackgroundColorConver
 Dynamo.Controls.WorkspaceContextMenuHeightConverter
 Dynamo.Controls.WorkspaceContextMenuHeightConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.WorkspaceContextMenuHeightConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.WorkspaceContextMenuHeightConverter.WorkspaceContextMenuHeightConverter() -> void
 Dynamo.Controls.WorkspaceTypeConverter
 Dynamo.Controls.WorkspaceTypeConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.WorkspaceTypeConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
