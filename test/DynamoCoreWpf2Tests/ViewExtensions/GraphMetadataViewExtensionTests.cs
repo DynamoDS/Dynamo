@@ -1,14 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Dynamo.Graph.Workspaces;
 using Dynamo.GraphMetadata;
-using Dynamo.GraphMetadata.Controls;
 using Dynamo.Models;
+using Dynamo.Wpf.Extensions;
 using NUnit.Framework;
 
 namespace DynamoCoreWpfTests.ViewExtensions
@@ -217,6 +214,20 @@ namespace DynamoCoreWpfTests.ViewExtensions
             Assert.That(propertiesExt.viewModel.CustomProperties.Count == 4);
             Assert.That(propertiesExt.viewModel.CustomProperties[3].PropertyName == "Custom Property 5");
             Assert.That(propertiesExt.viewModel.CustomProperties[3].PropertyValue == "");
+        }
+
+        [Test]
+        public void GetFileMenuItemReturnsCheckableMenuItem()
+        {
+            var extensionManager = View.viewExtensionManager;
+            var provider = extensionManager.ViewExtensions
+                .OfType<IExtensionMenuProvider>()
+                .FirstOrDefault(ext => (ext as IViewExtension)?.UniqueId == "28992e1d-abb9-417f-8b1b-05e053bee670");
+
+            Assert.NotNull(provider, "Graph Metadata extension not found.");
+            var item = provider.GetFileMenuItem();
+            Assert.NotNull(item, "GetFileMenuItem() returned null.");
+            Assert.IsTrue(item.IsCheckable, "Graph Metadata menu item should be checkable.");
         }
     }
 }
