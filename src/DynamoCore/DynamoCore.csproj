@@ -132,6 +132,7 @@
 		<NodeHelpCsCZMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\cs-CZ\**\*.md" />
 		<NodeHelpDeDEMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\de-DE\**\*.md" />
 		<NodeHelpEnUSMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\en-US\**\*.md" />
+		<NodeHelpEnGBMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\en-GB\**\*.md" />
 		<NodeHelpEsESMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\es-ES\**\*.md" />
 		<NodeHelpFrFRMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\fr-FR\**\*.md" />
 		<NodeHelpItITMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\it-IT\**\*.md" />
@@ -160,6 +161,7 @@
     <Copy SourceFiles="@(NodeHelpCsCZMDFiles)" DestinationFolder="$(OutputPath)\cs-CZ\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpDeDEMDFiles)" DestinationFolder="$(OutputPath)\de-DE\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpEnUSMDFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpEnGBMDFiles)" DestinationFolder="$(OutputPath)\en-GB\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpEsESMDFiles)" DestinationFolder="$(OutputPath)\es-ES\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpFrFRMDFiles)" DestinationFolder="$(OutputPath)\fr-FR\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpItITMDFiles)" DestinationFolder="$(OutputPath)\it-IT\fallback_docs\" SkipUnchangedFiles="True" />
@@ -174,6 +176,7 @@
 	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\cs-CZ\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\de-DE\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\en-GB\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\es-ES\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\fr-FR\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\it-IT\fallback_docs\" SkipUnchangedFiles="True" />
@@ -187,6 +190,7 @@
 	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\cs-CZ\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\de-DE\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\en-GB\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\es-ES\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\fr-FR\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\it-IT\fallback_docs\" SkipUnchangedFiles="True" />
