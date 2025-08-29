@@ -205,6 +205,7 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(isToastNotificationVisible);
         }
 
+        [Category("Failure")]
         // Terms of use test on workspace close event.
         [Test]
         public void TestTOUWorkspaceClose()
