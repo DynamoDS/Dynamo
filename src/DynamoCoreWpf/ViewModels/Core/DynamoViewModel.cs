@@ -3346,7 +3346,7 @@ namespace Dynamo.ViewModels
             {
                 if (preferencesViewModel.IsMLAutocompleteTOUApproved)
                 {
-                    // Currently IsDNADataIngestionPipelineinBeta is set to true for debug builds and false for release builds. so we need to modify it here, when testing the pipeline in debug builds.
+                    // Currently EnableDNADataIngestionPipeline is set to false for debug builds and true for release builds. so we need to modify it here, when testing the pipeline in debug builds.
                     if (EnableDNADataIngestionPipeline && Model.CurrentWorkspace.IsValidForFDX && currentWorkspaceViewModel.Checksum != string.Empty)
                     {
                         if (HasDifferentialCheckSum())
