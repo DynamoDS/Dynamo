@@ -331,6 +331,7 @@
     <EmbeddedResource Include="Controls\Docs\zh-TW\NodeAutocompleteDocumentation.html" />
     <EmbeddedResource Include="Packages\SplashScreen\build\index.bundle.js" />
     <EmbeddedResource Include="Packages\SplashScreen\build\index.html" />
+    <EmbeddedResource Include="Properties\Resources.en-GB.resx" />
     <EmbeddedResource Include="ViewModels\PackageManager\Docs\cs-CZ\PublishPackageDocumentation.html" />
     <EmbeddedResource Include="ViewModels\PackageManager\Docs\de-DE\PublishPackageDocumentation.html" />
     <EmbeddedResource Include="ViewModels\PackageManager\Docs\en-GB\PublishPackageDocumentation.html" />
