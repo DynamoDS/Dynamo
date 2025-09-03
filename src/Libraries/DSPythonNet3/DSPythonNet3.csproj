@@ -1,0 +1,71 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <ImportGroup Label="PropertySheets">
+        <Import Project="$(SolutionDir)Config\CS_SDK.props" />
+    </ImportGroup>
+    <PropertyGroup>
+        <ProjectGuid>{C3A7A43A-CD4B-4DA2-99EA-D3455B1285C4}</ProjectGuid>
+        <OutputType>Library</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>DSPythonNet3</RootNamespace>
+        <AssemblyName>DSPythonNet3</AssemblyName>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
+    </PropertyGroup>
+
+    <!--Consider moving to PythonNet3 folder-->
+    <ItemGroup>
+        <Reference Include="Python.Included">
+            <HintPath>..\..\..\extern\Python\Python.Included.dll</HintPath>
+        </Reference>
+        <Reference Include="Python.Included.SciPy">
+            <HintPath>..\..\..\extern\Python\Python.Included.SciPy.dll</HintPath>
+        </Reference>
+        <Reference Include="Python.Runtime">
+            <HintPath>..\..\..\extern\Python\Python.Runtime.dll</HintPath>
+        </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">
+            <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
+            <Name>DynamoCore</Name>
+        </ProjectReference>
+        <ProjectReference Include="..\..\DynamoUtilities\DynamoUtilities.csproj">
+            <Project>{b5f435cb-0d8a-40b1-a4f7-5ecb3ce792a9}</Project>
+            <Name>DynamoUtilities</Name>
+            <Private>False</Private>
+        </ProjectReference>
+        <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj">
+            <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
+            <Name>DynamoServices</Name>
+            <Private>False</Private>
+        </ProjectReference>
+        <ProjectReference Include="..\DesignScriptBuiltin\DesignScriptBuiltin.csproj">
+            <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
+            <Name>DesignScriptBuiltin</Name>
+            <Private>False</Private>
+        </ProjectReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Properties\Resources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Resources.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="Properties\Resources.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Encoders\" />
+    </ItemGroup>
+
+</Project>
