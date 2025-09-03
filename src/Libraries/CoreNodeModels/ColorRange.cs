@@ -197,6 +197,7 @@ namespace CoreNodeModels
                             new Func<int, int, int, int, Color>(DSCore.Color.ByARGB),
                             new List<AssociativeNode>
                             {
+                                AstFactory.BuildIntNode(color.Alpha),
                                 AstFactory.BuildIntNode(color.Red),
                                 AstFactory.BuildIntNode(color.Green),
                                 AstFactory.BuildIntNode(color.Blue)
