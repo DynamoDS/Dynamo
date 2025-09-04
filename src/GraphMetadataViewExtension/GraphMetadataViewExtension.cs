@@ -10,7 +10,7 @@ using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.GraphMetadata
 {
-    public class GraphMetadataViewExtension : ViewExtensionBase, IExtensionStorageAccess
+    public class GraphMetadataViewExtension : ViewExtensionBase, IExtensionStorageAccess, IExtensionMenuProvider
     {
         internal GraphMetadataViewModel viewModel;
         private GraphMetadataView graphMetadataView;
@@ -29,10 +29,18 @@ namespace Dynamo.GraphMetadata
             graphMetadataView.DataContext = viewModel;
 
             // Add a button to Dynamo View menu to manually show the window
-            this.graphMetadataMenuItem = new MenuItem { Header = Resources.MenuItemText, IsCheckable = true };
+            this.graphMetadataMenuItem = new MenuItem { IsCheckable = true };
             this.graphMetadataMenuItem.Checked += MenuItemCheckHandler;
             this.graphMetadataMenuItem.Unchecked += MenuItemUnCheckedHandler;
-            this.viewLoadedParamsReference.AddExtensionMenuItem(this.graphMetadataMenuItem);
+        }
+
+        /// <summary>
+        /// Returns the menu item that triggers the Graph Metadata extension UI.
+        /// This item can be added to any Dynamo menu.
+        /// </summary>
+        public MenuItem GetFileMenuItem()
+        {
+            return this.graphMetadataMenuItem;
         }
 
         private void MenuItemUnCheckedHandler(object sender, RoutedEventArgs e)
