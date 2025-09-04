@@ -873,7 +873,7 @@ Il pacchetto non è stato caricato perché prima era stato caricato un altro pac
     <value>File di esempio aggiunto all'area di lavoro. Modalità di esecuzione modificata in Manuale.</value>
   </data>
   <data name="DynamoLanguages_noxlate" xml:space="preserve">
-    <value>Default,English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
+    <value>Default,English,English (UK),Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
   </data>
   <data name="FormulaDSConversionFailure" xml:space="preserve">
     <value>Impossibile convertire la formula in codice DesignScript. Modificare la formula manualmente per utilizzarla in un nodo CodeBlock.</value>
