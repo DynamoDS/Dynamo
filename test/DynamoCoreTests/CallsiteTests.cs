@@ -4,8 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization;
-using CoreNodeModels.Input;
 using DSCore;
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
@@ -132,7 +130,11 @@ namespace Dynamo.Tests
         [Test]
         public void Callsite_RunWithTraceDataFromUnresolvedNodes_DoesNotCrash()
         {
-            var ws = Open<HomeWorkspaceModel>(SampleDirectory, @"en-US\Revit", "Revit_GeometryCreation_Surfaces.dyn");
+            var filePath = Path.Combine(TestDirectory,
+                @"core\callsite\Revit_GeometryCreation_Surfaces.dyn");
+
+            OpenModel(filePath);
+            var ws = CurrentDynamoModel.CurrentWorkspace as HomeWorkspaceModel;
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(42, ws.Nodes.Count());
