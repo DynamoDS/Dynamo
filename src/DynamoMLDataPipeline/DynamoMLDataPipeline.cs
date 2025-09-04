@@ -61,6 +61,8 @@ namespace DynamoMLDataPipeline
         // Points to the Dynamo version.
         internal Version DynamoVersion { get; set; }
 
+        internal bool isWorkspaceSharedWithML { get; set; }
+
         // Id of the user sending the post request.
         private string GetUserId()
         {
