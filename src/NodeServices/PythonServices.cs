@@ -141,18 +141,18 @@ namespace Dynamo.PythonServices
         public ObservableCollection<PythonEngine> AvailableEngines;
 
         #region Constant strings
-        
-        /// <summary>
-        /// CPython Engine name
-        /// </summary>
-        internal static readonly string CPython3EngineName = "CPython3"; // TODO: Remove after PythonNet3 is setup?
-
-        /// <summary>
-        /// CPython Engine name
-        /// </summary>
-        internal static readonly string PythonNet3EngineName = "PythonNet3";
 
         internal static readonly string PythonNodeNamespace = "PythonNodeModels.PythonNode";
+
+        /// <summary>
+        /// CPython Engine name
+        /// </summary>
+        internal static readonly string CPython3EngineName = "CPython3";
+
+        /// <summary>
+        /// PythonNet3 Engine name
+        /// </summary>
+        internal static readonly string PythonNet3EngineName = "PythonNet3";
 
         /// <summary>
         /// IronPython2 Engine name
@@ -202,7 +202,7 @@ namespace Dynamo.PythonServices
             AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler((object sender, AssemblyLoadEventArgs args) => LoadDefaultPythonEngine(args.LoadedAssembly));
         }
 
-        internal void   LoadDefaultPythonEngine(Assembly a)
+        internal void LoadDefaultPythonEngine(Assembly a)
         {
             if (a == null ||
                 a.GetName().Name != PythonNet3AssemblyName)

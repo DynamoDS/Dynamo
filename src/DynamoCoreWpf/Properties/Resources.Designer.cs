@@ -9574,20 +9574,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reset CPython.
+        ///   Looks up a localized string similar to Reset PythonNet3.
         /// </summary>
-        public static string ResetCPythonButtonText {
+        public static string ResetPythonNet3ButtonText {
             get {
-                return ResourceManager.GetString("ResetCPythonButtonText", resourceCulture);
+                return ResourceManager.GetString("ResetPythonNet3ButtonText", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Resets CPython environment by reloading modules..
+        ///   Looks up a localized string similar to Resets PythonNet3 environment by reloading modules..
         /// </summary>
-        public static string ResetCPythonButtonToolTip {
+        public static string ResetPythonNet3ButtonToolTip {
             get {
-                return ResourceManager.GetString("ResetCPythonButtonToolTip", resourceCulture);
+                return ResourceManager.GetString("ResetPythonNet3ButtonToolTip", resourceCulture);
             }
         }
         

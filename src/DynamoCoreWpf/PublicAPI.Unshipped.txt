@@ -5602,8 +5602,8 @@ static Dynamo.Wpf.Properties.Resources.RenderingMemoryOutageSummary.get -> strin
 static Dynamo.Wpf.Properties.Resources.RerunButton.get -> string
 static Dynamo.Wpf.Properties.Resources.RerunButtonToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.ResetChangesWarningPopupMessage.get -> string
-static Dynamo.Wpf.Properties.Resources.ResetCPythonButtonText.get -> string
-static Dynamo.Wpf.Properties.Resources.ResetCPythonButtonToolTip.get -> string
+static Dynamo.Wpf.Properties.Resources.ResetPythonNet3ButtonText.get -> string
+static Dynamo.Wpf.Properties.Resources.ResetPythonNet3ButtonToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.ResourceManager.get -> System.Resources.ResourceManager
 static Dynamo.Wpf.Properties.Resources.RunBlockedMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.RunCompletedMessage.get -> string
