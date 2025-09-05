@@ -23,7 +23,7 @@ jobs:
           {
             "projects": ["src", "test"],
             "sdk": {
-              "version": "10.0.100",
+              "version": "10.0.100-preview.7.25380.108",
               "rollForward": "latestFeature"
             }
           }
@@ -75,7 +75,7 @@ jobs:
           {
             "projects": ["src", "test"],
             "sdk": {
-              "version": "10.0.100",
+              "version": "10.0.100-preview.7.25380.108",
               "rollForward": "latestFeature"
             }
           }
