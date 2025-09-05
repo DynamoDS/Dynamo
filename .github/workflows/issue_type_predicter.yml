@@ -74,9 +74,12 @@ jobs:
 
       # Setup dotnet
       - name: Setup dotnet
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: '8.0'
+          dotnet-version: | 
+            8.0.x
+            9.0.x
+            10.0.x
 
       # Build the solution IssuesTypePredicter.sln (this contains two VS2019 ML.NET projects)
       - name: Build Issues Type Predicter
