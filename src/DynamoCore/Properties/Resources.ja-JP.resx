@@ -876,7 +876,7 @@ value : bool = false</value>
     <value>サンプル ファイルがワークスペースに追加されました。実行モードが手動に変更されました。</value>
   </data>
   <data name="DynamoLanguages_noxlate" xml:space="preserve">
-    <value>Default,English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
+    <value>Default,English,English (UK),Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
   </data>
   <data name="FormulaDSConversionFailure" xml:space="preserve">
     <value>式を DesignScript コードに変換できませんでした。CodeBlock ノードで使用するには、手動で式を編集してください。</value>
