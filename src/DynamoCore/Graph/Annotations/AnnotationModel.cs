@@ -23,13 +23,8 @@ namespace Dynamo.Graph.Annotations
         private const double ExtendSize = 10.0;
         private const double ExtendYHeight = 5.0;
         private const double NoteYAdjustment = 8.0;
-
-        double lastExpandedWidth = 0;
-
-        /// <summary>
-        /// The default height of the group's content area when collapsed.
-        /// </summary>
-        public const double CollapsedContentHeight = 82;
+        private bool isTextChanging;
+        internal bool IsThumbResizing;
 
         #region Properties
 
@@ -70,7 +65,10 @@ namespace Dynamo.Graph.Annotations
         /// </summary>
         public override double Width
         {
-            get => width;
+            get
+            {
+                return width;
+            }
             set
             {
                 if (width == value) return;
@@ -87,46 +85,16 @@ namespace Dynamo.Graph.Annotations
         /// </summary>
         public override double Height
         {
-            get => height;
+            get
+            {
+                return height;
+            }
             set
             {
                 if (height == value) return;
 
                 height = value;
                 RaisePropertyChanged(nameof(Height));
-            }
-        }
-
-        private double minWidthOnCollapsed;
-        /// <summary>
-        /// Gets or sets the minimum width of the group when it is collapsed. 
-        /// This value equals the combined width of the group's proxy input and output ports.
-        /// </summary>
-        public double MinWidthOnCollapsed
-        {
-            get => minWidthOnCollapsed;
-            set
-            {
-                if (minWidthOnCollapsed == value) return;
-                minWidthOnCollapsed = value;
-            }
-        }
-
-        private double minCollapsedPortAreaHeight;
-        /// <summary>
-        /// Gets or sets the minimum height of the port area when the group is collapsed.
-        /// Used to calculate the total height of the collapsed group based on proxy ports
-        /// </summary>
-        public double MinCollapsedPortAreaHeight
-        {
-            get => minCollapsedPortAreaHeight;
-            set
-            {
-                if (minCollapsedPortAreaHeight != value)
-                {
-                    minCollapsedPortAreaHeight = value;
-                    RaisePropertyChanged(nameof(MinCollapsedPortAreaHeight));
-                }
             }
         }
 
@@ -137,7 +105,7 @@ namespace Dynamo.Graph.Annotations
         /// </summary>
         public double ModelAreaHeight
         {
-            get { return modelAreaHeight; }
+            get => modelAreaHeight;
             set
             {
                 modelAreaHeight = value;
@@ -156,7 +124,7 @@ namespace Dynamo.Graph.Annotations
             set
             {
                 text = value;
-                RaisePropertyChanged("Text");
+                RaisePropertyChanged(nameof(Text));
             }
         }
 
@@ -170,7 +138,7 @@ namespace Dynamo.Graph.Annotations
             set
             {
                 annotationText = value;               
-                RaisePropertyChanged("AnnotationText");
+                RaisePropertyChanged(nameof(AnnotationText));
             }
 
         }
@@ -199,7 +167,7 @@ namespace Dynamo.Graph.Annotations
             set
             {
                 background = value;
-                RaisePropertyChanged("Background");
+                RaisePropertyChanged(nameof(Background));
             }
         }
 
@@ -293,7 +261,10 @@ namespace Dynamo.Graph.Annotations
                 // a model and textbox. Otherwise there will be some overlap
                 Y = InitialTop - ExtendSize - textBlockHeight;
                 Height = InitialHeight + textBlockHeight - MinTextHeight;
+
+                isTextChanging = true;
                 UpdateBoundaryFromSelection();
+                isTextChanging = false;
             }
         }
 
@@ -371,40 +342,15 @@ namespace Dynamo.Graph.Annotations
         /// </summary>
         public double WidthAdjustment
         {
-            get => widthAdjustment;
+            get { return widthAdjustment; }
             set 
             {
                 if (value == widthAdjustment) return;
                 widthAdjustment = value;
-                UpdateBoundaryFromSelection();
-            }
-        }
 
-        private double widthAdjustmentCollapsed;
-        /// <summary>
-        /// Gets or sets the width adjustment applied when the group is collapsed
-        /// </summary>
-        public double WidthAdjustmentCollapsed
-        {
-            get => widthAdjustmentCollapsed;
-            set
-            {
-                if (value == widthAdjustmentCollapsed) return;
-                widthAdjustmentCollapsed = value;
-            }
-        }
-
-        private double widthAdjustmentExpanded;
-        /// <summary>
-        /// Gets or sets the width adjustment applied when the group is expanded
-        /// </summary>
-        public double WidthAdjustmentExpanded
-        {
-            get => widthAdjustmentExpanded;
-            set
-            {
-                if (value == widthAdjustmentExpanded) return;
-                widthAdjustmentExpanded = value;
+                // update boundary only while manually resizing the group
+                if (IsThumbResizing)
+                    UpdateBoundaryFromSelection();
             }
         }
 
@@ -416,40 +362,45 @@ namespace Dynamo.Graph.Annotations
         /// </summary>
         public double HeightAdjustment
         {
-            get => heightAdjustment;
+            get { return heightAdjustment; }
             set 
             {
                 if (value == heightAdjustment) return;
                 heightAdjustment = value;
-                UpdateBoundaryFromSelection();
+
+                // update boundary only while manually resizing the group
+                if (IsThumbResizing)
+                    UpdateBoundaryFromSelection();
             }
         }
 
-        private double heightAdjustmentCollapsed;
+        private double userSetHeight;
         /// <summary>
-        /// Gets or sets the height adjustment applied when the group is collapsed
+        /// Indicates the height the user manually set using the resize thumb.
         /// </summary>
-        public double HeightAdjustmentCollapsed
+        public double UserSetHeight
         {
-            get => heightAdjustmentCollapsed;
+            get => userSetHeight;
             set
             {
-                if (value == heightAdjustmentCollapsed) return;
-                heightAdjustmentCollapsed = value;
+                if (value == userSetHeight) return;
+                userSetHeight = value;
             }
         }
 
-        private double heightAdjustmentExpanded;
+        private double userSetWidth;
         /// <summary>
-        /// Gets or sets the height adjustment applied when the group is expanded
-        /// </summary>
-        public double HeightAdjustmentExpanded
+        /// Indicates the height the user manually set using the resize thumb.
+        /// Indicates the width the user manually set using the resize thumb.
+        /// Not necessarily equal to the actual rendered width.
+        /// </summary>  
+        public double UserSetWidth
         {
-            get => heightAdjustmentExpanded;
+            get => userSetWidth;
             set
             {
-                if (value == heightAdjustmentExpanded) return;
-                heightAdjustmentExpanded = value;
+                if (value == userSetWidth) return;
+                userSetWidth = value;
             }
         }
 
@@ -459,17 +410,11 @@ namespace Dynamo.Graph.Annotations
         /// </summary>
         public bool IsExpanded 
         {
-            get => isExpanded;
+            get { return isExpanded; }
             set
             {
                 isExpanded = value;
-
-                // When collapsing, we defer this until after the collapsed layout
-                // is computed in CollapsedAnnotationRectangle_IsVisibleChanged.
-                if (isExpanded)
-                {
-                    UpdateBoundaryFromSelection();
-                }
+                UpdateBoundaryFromSelection();
                 UpdateErrorAndWarningIconVisibility();
             }
         }
@@ -538,18 +483,109 @@ namespace Dynamo.Graph.Annotations
             }
         }
 
-        private bool isResizedWhileCollapsed;
+        private bool isOptionalInPortsCollapsed;
+        /// <summary>
+        /// Indicates whether optional input ports were manually expanded or collapsed when the graph was last saved.
+        /// Used only for serialization.
+        /// </summary>
+        public bool IsOptionalInPortsCollapsed
+        {
+            get => isOptionalInPortsCollapsed;
+            set
+            {
+                if (isOptionalInPortsCollapsed == value) return;
+                isOptionalInPortsCollapsed = value;
+            }
+        }
+
+        private bool isUnconnectedOutPortsCollapsed;
+        /// <summary>
+        /// Indicates whether unconnected output ports were manually expanded or collapsed when the graph was last saved.
+        /// Used only for serialization.
+        /// </summary>
+        public bool IsUnconnectedOutPortsCollapsed
+        {
+            get => isUnconnectedOutPortsCollapsed;
+            set
+            {
+                if (isUnconnectedOutPortsCollapsed == value) return;
+                isUnconnectedOutPortsCollapsed = value;
+            }
+
+        }
+
+        private bool hasToggledOptionalInPorts;
+        /// <summary>
+        /// Indicates whether the user manually toggled the visibility of optional input ports.
+        /// If true, this overrides the global preference setting.
+        /// </summary>
+        public bool HasToggledOptionalInPorts
+        {
+            get => hasToggledOptionalInPorts;
+            set
+            {
+                if (hasToggledOptionalInPorts == value) return;
+                hasToggledOptionalInPorts = value;
+            }
+        }
+
+        private bool hasToggledUnconnectedOutPorts;
+        /// <summary>
+        /// Indicates whether the user manually toggled the visibility of unconnected output ports.
+        /// If true, this overrides the global preference setting.
+        /// </summary>
+        public bool HasToggledUnconnectedOutPorts
+        {
+            get => hasToggledUnconnectedOutPorts;
+            set
+            {
+                if (hasToggledUnconnectedOutPorts == value) return;
+                hasToggledUnconnectedOutPorts = value;
+            }
+        }
+
+        private bool isCollapsedToMinSize;
         /// <summary>
         /// Gets or sets a value indicating whether the group was manually resized while collapsed
         /// </summary>
-        public bool IsResizedWhileCollapsed
+        public bool IsCollapsedToMinSize
         {
-            get => isResizedWhileCollapsed;
+            get => isCollapsedToMinSize;
             set
             {
-                if (isResizedWhileCollapsed == value) return;
-                isResizedWhileCollapsed = value;
-                RaisePropertyChanged(nameof(IsResizedWhileCollapsed));
+                if (isCollapsedToMinSize == value) return;
+                isCollapsedToMinSize = value;
+            }
+        }
+
+        private bool suppressBoundaryUpdate;
+        /// <summary>
+        /// A temporary flag used to suppress boundary updates while internal operations,
+        /// such as connector redrawing, are in progress.
+        /// Should be set to true only during those operations to avoid redundant or recursive updates.
+        /// </summary>
+        internal bool SuppressBoundaryUpdate
+        {
+            get => suppressBoundaryUpdate;
+            set
+            {
+                if (value == suppressBoundaryUpdate) return;
+                suppressBoundaryUpdate = value;
+            }
+        }
+
+        private double minWidthOnCollapsed;
+        /// <summary>
+        /// Gets or sets the minimum width of the group when it is collapsed. 
+        /// This value equals the combined width of the group's proxy input and output ports.
+        /// </summary>
+        public double MinWidthOnCollapsed
+        {
+            get => minWidthOnCollapsed;
+            set
+            {
+                if (minWidthOnCollapsed == value) return;
+                minWidthOnCollapsed = value;
             }
         }
 
@@ -620,6 +656,10 @@ namespace Dynamo.Graph.Annotations
 
         private void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            // Skip boundary updates caused by connector redraws if group is collapsed
+            if (!IsExpanded && SuppressBoundaryUpdate && e.PropertyName == nameof(Position))
+                return;
+
             switch (e.PropertyName)
             {
                 case nameof(Position):
@@ -684,75 +724,153 @@ namespace Dynamo.Graph.Annotations
 
         /// <summary>
         /// Updates the group boundary based on the nodes / notes selection.
-        /// </summary>      
+        /// </summary>
         internal void UpdateBoundaryFromSelection()
         {
             var selectedModelsList = nodes.ToList();
             if (!selectedModelsList.Any())
             {
+                // No models in the group — set dimensions to zero
                 Width = 0;
                 Height = 0;
                 return;
             }
 
+            // Sort models left to right for consistent calculations
             var groupModels = selectedModelsList.OrderBy(x => x.X).ToList();
 
-            //Shifting x by 10 and y to the height of textblock
-            var regionX = groupModels.Min(x => x.X) - ExtendSize;
-            //Increase the Y value by 10. This provides the extra space between
-            // a model and textbox. Otherwise there will be some overlap
-            var regionY = groupModels.Min(y => (y as NoteModel) == null ? (y.Y) : (y.Y - NoteYAdjustment)) -
-                ExtendSize - (TextBlockHeight == 0.0 ? MinTextHeight : TextBlockHeight);
+            // Determine left boundary (smallest X), shifted left by padding
+            double regionX = groupModels.Min(x => x.X) - ExtendSize;
 
-            //calculates the distance between the nodes
-            var xDistance = groupModels.Max(x => (x.X + x.Width)) - regionX;
+            // Determine top boundary, adjusted for note offset and text block height
+            double regionY = groupModels.Min(y => (y as NoteModel) == null ? y.Y : y.Y - NoteYAdjustment)
+                             - ExtendSize
+                             - (TextBlockHeight == 0.0 ? MinTextHeight : TextBlockHeight);
 
-            // InitialTop is to store the Y value without the Textblock height
-            this.InitialTop = groupModels.Min(y => (y as NoteModel) == null ? (y.Y) : (y.Y - NoteYAdjustment));
+            // Compute the horizontal span of all models
+            double xDistance = groupModels.Max(x => x.X + x.Width) - regionX;
 
+            // Save the actual top-most Y value (before subtracting text block height)
+            this.InitialTop = groupModels.Min(y => (y as NoteModel) == null ? y.Y : y.Y - NoteYAdjustment);
+
+            // Track whether position has changed
             bool positionChanged = regionX != X || regionY != Y;
-            this.X = regionX;
-            this.Y = regionY;
+            X = regionX;
+            Y = regionY;
 
+            // Use different logic for expanded vs. collapsed state
             if (IsExpanded)
             {
-                var yDistance = groupModels.Max(y => (y as NoteModel) == null ? (y.Y + y.Height) : (y.Y + y.Height - NoteYAdjustment)) - regionY;
-
-                var region = new Rect2D
-                {
-                    X = regionX,
-                    Y = regionY,
-                    Width = xDistance + ExtendSize + Math.Max(WidthAdjustment, 0),
-                    Height = yDistance + ExtendSize + ExtendYHeight + HeightAdjustment - TextBlockHeight
-                };
-
-                this.ModelAreaHeight = region.Height;
-                Height = this.ModelAreaHeight + TextBlockHeight;
-                Width = Math.Max(region.Width, TextMaxWidth + ExtendSize);
-
-                //Initial Height is to store the Actual height of the group.
-                //that is the height should be the initial height without the textblock height.
-                if (this.InitialHeight <= 0.0)
-                    this.InitialHeight = region.Height;
+                UpdateExpandedLayout(groupModels, regionX, regionY, xDistance);
             }
             else
             {
-                // Width is based on group content when collapsed
-                Width = Math.Max(
-                    (!IsResizedWhileCollapsed ? xDistance : MinWidthOnCollapsed) + ExtendSize + WidthAdjustment,
-                    TextMaxWidth + ExtendSize
-                );
-
-                ModelAreaHeight = MinCollapsedPortAreaHeight + CollapsedContentHeight + (IsResizedWhileCollapsed ? HeightAdjustment : 0);
-                Height = TextBlockHeight + ModelAreaHeight;
+                UpdateCollapsedLayout(xDistance);
             }
 
-            lastExpandedWidth = Width;
-
+            // Notify UI if position changed
             if (positionChanged)
-            {
                 RaisePropertyChanged(nameof(Position));
+        }
+
+        /// <summary>
+        /// Calculates and sets the group size and bounds when the group is expanded.
+        /// Includes full height of contained models and padding.
+        /// </summary>
+        private void UpdateExpandedLayout(List<ModelBase> groupModels, double regionX, double regionY, double xDistance)
+        {
+            // Compute total vertical height of models in group
+            double yDistance = groupModels.Max(y => (y as NoteModel) == null ? y.Y + y.Height : y.Y + y.Height - NoteYAdjustment)
+                               - regionY;
+
+            // Define the full rectangular area of the group (excluding text block)
+            var region = new Rect2D
+            {
+                X = regionX,
+                Y = regionY,
+                Width = xDistance + ExtendSize + Math.Max(WidthAdjustment, 0),
+                Height = yDistance + ExtendSize + ExtendYHeight + HeightAdjustment - TextBlockHeight
+            };
+
+            // The actual space used by nodes (without adjustments)
+            double groupCalculatedWidth = xDistance + ExtendSize;
+            double groupCalculatedHeight = yDistance + ExtendSize + ExtendYHeight - TextBlockHeight;
+
+            if (IsThumbResizing || isTextChanging)
+            {
+                // While dragging the resize thumb or editing text
+                ModelAreaHeight = region.Height;
+                Height = ModelAreaHeight + TextBlockHeight;
+                Width = Math.Max(region.Width, TextMaxWidth + ExtendSize);
             }
+            else
+            {
+                // HEIGHT logic
+                // user has not resized the group
+                if (UserSetHeight <= 0) 
+                {
+                    ModelAreaHeight = groupCalculatedHeight;
+                    Height = ModelAreaHeight + TextBlockHeight;
+                }
+                // some nodes are outside the user set size 
+                else if (groupCalculatedHeight >= UserSetHeight)
+                {
+                    ModelAreaHeight = groupCalculatedHeight;
+                    Height = ModelAreaHeight + TextBlockHeight;
+                    HeightAdjustment = 0;
+                }
+                // all nodes are within the user set size
+                else
+                {
+                    HeightAdjustment = Math.Max(0, UserSetHeight - groupCalculatedHeight);
+                    ModelAreaHeight = UserSetHeight;
+                    Height = UserSetHeight + TextBlockHeight;
+                }
+
+                // WIDTH logic
+                // user has not resized the group
+                if (UserSetWidth <= 0) 
+                {
+                    Width = Math.Max(region.Width, TextMaxWidth + ExtendSize);
+                }
+                // some nodes are outside the user set size 
+                else if (groupCalculatedWidth >= UserSetWidth) 
+                {
+                    Width = Math.Max(groupCalculatedWidth, TextMaxWidth + ExtendSize);
+                    WidthAdjustment = 0;
+                }
+                // all nodes are within the user set size
+                else
+                {
+                    WidthAdjustment = Math.Max(0, UserSetWidth - groupCalculatedWidth);
+                    Width = UserSetWidth;
+                }
+            }
+
+            // Only store the first calculated initial height
+            if (InitialHeight <= 0.0)
+                InitialHeight = region.Height;
+        }
+
+        /// <summary>
+        /// Calculates and sets the group size when collapsed.
+        /// Supports two modes: full-width collapse and minimum-size collapse.
+        /// </summary>
+        private void UpdateCollapsedLayout(double xDistance)
+        {
+            // Choose width based on collapse preference
+            if (!IsCollapsedToMinSize)
+            {
+                // Collapse vertically, keep full width
+                Width = Math.Max(xDistance + ExtendSize + WidthAdjustment, TextMaxWidth + ExtendSize);
+            }
+            else
+            {
+                // Fully minimize the group
+                Width = Math.Max(MinWidthOnCollapsed + ExtendSize, TextMaxWidth + ExtendSize);
+            }
+
+            Height = TextBlockHeight + ModelAreaHeight;
         }
 
         /// <summary>
@@ -846,9 +964,6 @@ namespace Dynamo.Graph.Annotations
                 case nameof(IsExpanded):
                     IsExpanded = Convert.ToBoolean(value);
                     break;
-                case nameof(IsResizedWhileCollapsed):
-                    IsResizedWhileCollapsed = Convert.ToBoolean(value);
-                    break;
             }
 
             return base.UpdateValueCore(updateValueParams);
@@ -873,6 +988,10 @@ namespace Dynamo.Graph.Annotations
             helper.SetAttribute("backgrouund", (this.Background == null ? "" : this.Background.ToString()));
             helper.SetAttribute(nameof(IsSelected), IsSelected);
             helper.SetAttribute(nameof(IsExpanded), this.IsExpanded);
+            helper.SetAttribute(nameof(IsOptionalInPortsCollapsed), this.IsOptionalInPortsCollapsed);
+            helper.SetAttribute(nameof(IsUnconnectedOutPortsCollapsed), this.IsUnconnectedOutPortsCollapsed);
+            helper.SetAttribute(nameof(HasToggledOptionalInPorts), this.HasToggledOptionalInPorts);
+            helper.SetAttribute(nameof(HasToggledUnconnectedOutPorts), this.HasToggledUnconnectedOutPorts);
 
             //Serialize Selected models
             XmlDocument xmlDoc = element.OwnerDocument;            
@@ -906,7 +1025,10 @@ namespace Dynamo.Graph.Annotations
             this.InitialHeight = helper.ReadDouble("InitialHeight", DoubleValue);
             this.IsSelected = helper.ReadBoolean(nameof(IsSelected), false);
             this.IsExpanded = helper.ReadBoolean(nameof(IsExpanded), true);
-            this.IsResizedWhileCollapsed = helper.ReadBoolean(nameof(IsResizedWhileCollapsed), false);
+            this.IsOptionalInPortsCollapsed = helper.ReadBoolean(nameof(IsOptionalInPortsCollapsed), true);
+            this.IsUnconnectedOutPortsCollapsed = helper.ReadBoolean(nameof(IsUnconnectedOutPortsCollapsed), true);
+            this.HasToggledOptionalInPorts = helper.ReadBoolean(nameof(HasToggledOptionalInPorts), false);
+            this.HasToggledUnconnectedOutPorts = helper.ReadBoolean(nameof(HasToggledUnconnectedOutPorts), false);
 
             if (IsSelected)
                 DynamoSelection.Instance.Selection.Add(this);
@@ -952,7 +1074,8 @@ namespace Dynamo.Graph.Annotations
             RaisePropertyChanged(nameof(AnnotationText));
             RaisePropertyChanged(nameof(Nodes));
             RaisePropertyChanged(nameof(IsExpanded));
-            RaisePropertyChanged(nameof(IsResizedWhileCollapsed));
+            RaisePropertyChanged(nameof(IsOptionalInPortsCollapsed));
+            RaisePropertyChanged(nameof(IsUnconnectedOutPortsCollapsed));
             this.ReportPosition();
         }
 
@@ -964,6 +1087,8 @@ namespace Dynamo.Graph.Annotations
         /// completely inside that group</param>
         internal void AddToTargetAnnotationModel(ModelBase model, bool checkOverlap = false)
         {
+            if (model is null) return;
+            if ((model as NodeModel)?.IsTransient == true) return;
             var list = this.Nodes.ToList();
             if (model.GUID == this.GUID) return;
             if (list.Where(x => x.GUID == model.GUID).Any()) return;

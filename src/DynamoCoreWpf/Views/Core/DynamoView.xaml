@@ -687,6 +687,9 @@
                             <MenuItem Command="{Binding DumpNodeHelpDataCommand}"
                                       Header="{x:Static p:Resources.DynamoViewDebugMenuDumpNodeHelpData}"
                                       IsEnabled="True" />
+                            <MenuItem Command="{Binding DumpNodeIconsCommand}"
+                                      Header="{x:Static p:Resources.DynamoViewDebugMenuDumpNodeIcons}"
+                                      IsEnabled="True" />
                         </MenuItem>
                         <MenuItem Name="DebugModes"
                                   Click="OnDebugModesClick"
@@ -1290,6 +1293,14 @@
                                                     </MultiDataTrigger.Conditions>
                                                     <Setter Property="Text" Value="{Binding Path=FileName, Converter={StaticResource PathToFileNameConverter}}" />
                                                 </MultiDataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type workspaces:HomeWorkspaceModel}" />
+                                                        <Condition Binding="{Binding Path=IsTemplate}" Value="True" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <!--  The value of the unsaved Workspace tab text field  -->
+                                                    <Setter Property="Text" Value="Workspace" />
+                                                </MultiDataTrigger> 
                                                 <MultiDataTrigger>
                                                     <MultiDataTrigger.Conditions>
                                                         <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type workspaces:CustomNodeWorkspaceModel}" />

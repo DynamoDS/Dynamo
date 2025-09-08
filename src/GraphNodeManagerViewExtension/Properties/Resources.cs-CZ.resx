@@ -139,7 +139,7 @@
     <value>Exportovat jako soubor CSV</value>
   </data>
   <data name="MenuItemExportAsJSON" xml:space="preserve">
-    <value>Exportovat jako soubor JSON</value>
+    <value>Exportovat jako JSON</value>
   </data>
   <data name="MenuItemText" xml:space="preserve">
     <value>Zobrazit _Správce uzlů grafu</value>

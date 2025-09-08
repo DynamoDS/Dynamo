@@ -988,6 +988,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy to clipboard failed.
+        /// </summary>
+        public static string CopyToClipboardFailedMessage {
+            get {
+                return ResourceManager.GetString("CopyToClipboardFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy to clipboard.
+        /// </summary>
+        public static string CopyToClipboardTooltip {
+            get {
+                return ResourceManager.GetString("CopyToClipboardTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy.
         /// </summary>
         public static string CrashPromptDialogCopyButton {
@@ -1492,6 +1510,15 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewDebugMenuDumpNodeHelpData {
             get {
                 return ResourceManager.GetString("DynamoViewDebugMenuDumpNodeHelpData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Dump Node Icon Data.
+        /// </summary>
+        public static string DynamoViewDebugMenuDumpNodeIcons {
+            get {
+                return ResourceManager.GetString("DynamoViewDebugMenuDumpNodeIcons", resourceCulture);
             }
         }
         
@@ -3732,6 +3759,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Optional.
+        /// </summary>
+        public static string GroupOptionalInportsText {
+            get {
+                return ResourceManager.GetString("GroupOptionalInportsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Group Style.
         /// </summary>
         public static string GroupStyleContextAnnotation {
@@ -3764,6 +3800,15 @@ namespace Dynamo.Wpf.Properties {
         public static string GroupStylesSaveButtonText {
             get {
                 return ResourceManager.GetString("GroupStylesSaveButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unconnected.
+        /// </summary>
+        public static string GroupUnconnectedOutportsText {
+            get {
+                return ResourceManager.GetString("GroupUnconnectedOutportsText", resourceCulture);
             }
         }
         
@@ -5233,6 +5278,15 @@ namespace Dynamo.Wpf.Properties {
         public static string NodeHelpWindowNodeType {
             get {
                 return ResourceManager.GetString("NodeHelpWindowNodeType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node Icon Data is dumped to \&quot;{0}\&quot;..
+        /// </summary>
+        public static string NodeIconDataIsDumped {
+            get {
+                return ResourceManager.GetString("NodeIconDataIsDumped", resourceCulture);
             }
         }
         
@@ -7970,6 +8024,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Collapsed Group.
+        /// </summary>
+        public static string PreferencesViewCollapsedGroupHeader {
+            get {
+                return ResourceManager.GetString("PreferencesViewCollapsedGroupHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Collapse to minimal size by default.
+        /// </summary>
+        public static string PreferencesViewCollapseToMinSizeDescription {
+            get {
+                return ResourceManager.GetString("PreferencesViewCollapseToMinSizeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default Python Engine.
         /// </summary>
         public static string PreferencesViewDefaultPythonEngine {
@@ -8024,6 +8096,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewEnableNodeAutoComplete {
             get {
                 return ResourceManager.GetString("PreferencesViewEnableNodeAutoComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable Floating Toolbar.
+        /// </summary>
+        public static string PreferencesViewEnableNodeAutoCompleteNewUI {
+            get {
+                return ResourceManager.GetString("PreferencesViewEnableNodeAutoCompleteNewUI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable a floating toolbar for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog..
+        /// </summary>
+        public static string PreferencesViewEnableNodeAutoCompleteNewUITooltipText {
+            get {
+                return ResourceManager.GetString("PreferencesViewEnableNodeAutoCompleteNewUITooltipText", resourceCulture);
             }
         }
         
@@ -8159,6 +8249,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewGroupStylesHeader {
             get {
                 return ResourceManager.GetString("PreferencesViewGroupStylesHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide optional input ports by default.
+        /// </summary>
+        public static string PreferencesViewHideInportsDescription {
+            get {
+                return ResourceManager.GetString("PreferencesViewHideInportsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide unconnected output ports by default.
+        /// </summary>
+        public static string PreferencesViewHideOutportsDescription {
+            get {
+                return ResourceManager.GetString("PreferencesViewHideOutportsDescription", resourceCulture);
             }
         }
         

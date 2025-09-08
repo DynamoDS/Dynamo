@@ -320,6 +320,7 @@ namespace CoreNodeModelsWpf.Charts
             PortConnected -= HeatSeriesNodeModel_PortConnected;
             PortDisconnected -= HeatSeriesNodeModel_PortDisconnected;
             VMDataBridge.DataBridge.Instance.UnregisterCallback(GUID.ToString());
+            base.Dispose();
         }
 
         #endregion

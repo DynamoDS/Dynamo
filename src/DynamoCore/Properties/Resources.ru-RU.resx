@@ -849,16 +849,16 @@
     <value>Загрузка библиотеки узлов...</value>
   </data>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
-    <value>Нет рекомендаций</value>
+    <value>Рекомендации отсутствуют</value>
   </data>
   <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
     <value>Низкая надежность</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>Рекомендации пока отсутствуют. Попробуйте использовать метод автозаполнения «Соответствие типа узла».</value>
+    <value>Модель непрерывно совершенствуется, проверьте результаты позже</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
-    <value>Все рекомендации находятся за пределами указанного уровня надежности. Можно использовать их или скорректировать настройки конфиденциальности в разделе «Настройки».</value>
+    <value>Нет доступных надежных подсказок. Модель регулярно совершенствуется, проверьте позже.</value>
   </data>
   <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
     <value>Показывать рекомендации за пределами уровня надежности.</value>
@@ -879,7 +879,7 @@
     <value>Файл примера добавлен в рабочее пространство. Режим выполнения изменен на «Вручную».</value>
   </data>
   <data name="DynamoLanguages_noxlate" xml:space="preserve">
-    <value>Default,English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
+    <value>Default,English,English (UK),Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
   </data>
   <data name="FormulaDSConversionFailure" xml:space="preserve">
     <value>Сбой при преобразовании формулы в код DesignScript. Отредактируйте формулу вручную, чтобы использовать ее в узле CodeBlock.</value>
@@ -895,5 +895,11 @@
   </data>
   <data name="DocsExperimentalPrefixMessage" xml:space="preserve">
     <value>Этот узел в настоящее время экспериментальный. Его поведение, имя и подпись могут быть изменены.</value>
+  </data>
+  <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
+    <value>Щелкните значок искры рядом с портом, чтобы активировать функцию автозаполнения узла.</value>
+  </data>
+  <data name="UnknownErrorProcessingFile" xml:space="preserve">
+    <value>При обработке файла произошла неизвестная ошибка.</value>
   </data>
 </root>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Xml;
+using Autodesk.DesignScript.Geometry;
 using Dynamo.Core;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
@@ -36,7 +37,7 @@ namespace Dynamo.Graph.Workspaces
         {
             get
             {
-                return (null != undoRecorder && undoRecorder.CanUndo) && !IsUndoRedoLocked;
+                return (null != undoRecorder && undoRecorder.CanUndo);
             }
         }
 
@@ -47,14 +48,8 @@ namespace Dynamo.Graph.Workspaces
         {
             get
             {
-                return (null != undoRecorder && undoRecorder.CanRedo) && !IsUndoRedoLocked;
+                return (null != undoRecorder && undoRecorder.CanRedo);
             }
-        }
-
-        internal bool IsUndoRedoLocked
-        {
-            get;
-            set;
         }
 
         internal void Undo()
@@ -288,12 +283,11 @@ namespace Dynamo.Graph.Workspaces
 
                         RemoveAndDisposeNode(node);
                     }
-                    else if (model is ConnectorModel connector)
+                    else if (model is ConnectorModel conn)
                     {
-                        undoRecorder.RecordDeletionForUndo(connector);
-                        if (connector.ConnectorPinModels.Count > 0)
+                        if (conn.ConnectorPinModels.Count > 0)
                         {
-                            foreach (var connectorPin in connector.ConnectorPinModels.ToList())
+                            foreach (var connectorPin in conn.ConnectorPinModels.ToList())
                             {
                                 undoRecorder.RecordDeletionForUndo(connectorPin);
                                 var matchingConnector = Connectors.FirstOrDefault(c => c.GUID == connectorPin.ConnectorId);
@@ -301,6 +295,8 @@ namespace Dynamo.Graph.Workspaces
                                 matchingConnector.ConnectorPinModels.Remove(connectorPin);
                             }
                         }
+                        undoRecorder.RecordDeletionForUndo(conn);
+                        conn.Delete();
                     }
                     else if (model is ConnectorPinModel connectorPinModel)
                     {
@@ -323,9 +319,17 @@ namespace Dynamo.Graph.Workspaces
         {
             if (null != models)
             {
-                // If an existing connector is grabbed (to be reconnected), save the 
+                // Add connector pins if any
+                var allPins = models
+                    .OfType<ConnectorModel>()
+                    .SelectMany(connector => connector.ConnectorPinModels)
+                    .Cast<ModelBase>()
+                    .ToList();
+                var fullSet = allPins.Concat(models).ToList();
+
+                // If an existing connector/pin set is grabbed (to be reconnected), save the 
                 // models for deletion later in one action group.
-                savedModels = models;
+                savedModels = fullSet;
 
                 // After saving the models, delete them from the workspace
                 // in one action group.
@@ -420,7 +424,7 @@ namespace Dynamo.Graph.Workspaces
 
                 RemoveAndDisposeNode(model as NodeModel);
             }
-            else if(model == null)
+            else if (model == null)
             {
                 return;
             }
@@ -451,7 +455,7 @@ namespace Dynamo.Graph.Workspaces
         public void ReloadModel(XmlElement modelData)
         {
             ModelBase model = GetModelForElement(modelData);
-            if(model != null)
+            if (model != null)
             {
                 model.Deserialize(modelData, SaveContext.Undo);
             }
@@ -589,7 +593,7 @@ namespace Dynamo.Graph.Workspaces
             ModelBase foundModel = GetModelInternal(modelGuid);
             if (null != foundModel)
                 return foundModel;
-            
+
             //if we could not find a matching model
             this.Log(string.Format("Please Report: Unhandled model type: {0}, could not find a matching model with given id", helper.ReadString("type", modelData.Name)), Logging.WarningLevel.Error);
             return null;
@@ -608,11 +612,11 @@ namespace Dynamo.Graph.Workspaces
                 ?? Annotations.FirstOrDefault(annotation => annotation.GUID == modelGuid) as ModelBase
                 ?? Presets.FirstOrDefault(preset => preset.GUID == modelGuid) as ModelBase);
 
-            if(foundModel is null)
+            if (foundModel is null)
             {
-                foreach(var connector in Connectors)
+                foreach (var connector in Connectors)
                 {
-                    foreach(var pin in connector.ConnectorPinModels)
+                    foreach (var pin in connector.ConnectorPinModels)
                     {
                         if (pin.GUID == modelGuid)
                             return pin as ModelBase;

@@ -231,6 +231,17 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Controls if the new DNA Flyout is enabled from preference settings.
+        /// </summary>
+        internal bool IsNewDNAUIEnabled
+        {
+            get
+            {
+                return model.PreferenceSettings.EnableNewNodeAutoCompleteUI;
+            }
+        }
+
+        /// <summary>
         /// Count of unresolved issues on the linter manager.
         /// This is used for binding in the NotificationsControl
         /// </summary>
@@ -1937,9 +1948,9 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="workspace"></param>
         /// <returns>A customized file-save dialog</returns>
-        public FileDialog GetSaveDialog(WorkspaceModel workspace)
+        public CustomSaveFileDialog GetSaveDialog(WorkspaceModel workspace)
         {
-            FileDialog fileDialog = new SaveFileDialog
+            CustomSaveFileDialog fileDialog = new CustomSaveFileDialog
             {
                 AddExtension = true,
             };
@@ -2334,6 +2345,7 @@ namespace Dynamo.ViewModels
         {
             try
             {
+                filePath = Model.CurrentWorkspace.FileName;
                 string fileContentsInUse = String.IsNullOrEmpty(filePath) ? fileContents : File.ReadAllText(filePath);
                 if (string.IsNullOrEmpty(fileContentsInUse))
                 {
@@ -2791,7 +2803,7 @@ namespace Dynamo.ViewModels
                 // Since the workspace file directory is null, we set the initial directory
                 // for the file to be MyDocument folder in the local computer.
                 fd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                if (fd.ShowDialog() == DialogResult.OK)
+                if (fd.ShowDialog() == true)
                 {
                     SaveAs(workspace.Guid, fd.FileName);
                     return true;
@@ -3014,7 +3026,7 @@ namespace Dynamo.ViewModels
         {
             var vm = this;
 
-            if (string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName))
+            if (string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName) || vm.Model.CurrentWorkspace.IsTemplate)
             {
                 if (CanShowSaveDialogAndSaveResult(parameter))
                 {
@@ -3046,7 +3058,18 @@ namespace Dynamo.ViewModels
 
             try
             {
-                FileDialog _fileDialog = vm.GetSaveDialog(vm.Model.CurrentWorkspace);
+                //This get the real SaveFileDialog (instead of the mocked one assigned below)
+                IFileSaver _fileDialog = vm.GetSaveDialog(vm.Model.CurrentWorkspace);
+
+                //This section will be only executed when the IFileSaver was mocked and passed as a parameter (method dependency injection)
+                if (parameter != null)
+                {
+                    var saveDialog = parameter as IFileSaver;
+                    if(saveDialog != null)
+                    {
+                        _fileDialog = saveDialog;
+                    }
+                }
 
                 // If the current workspace is a template use the last saved location.
                 if (vm.Model.CurrentWorkspace.IsTemplate)
@@ -3071,7 +3094,7 @@ namespace Dynamo.ViewModels
                     _fileDialog.InitialDirectory = pathManager.DefaultUserDefinitions;
                 }
 
-                if (_fileDialog.ShowDialog() == DialogResult.OK)
+                if (_fileDialog.ShowDialog() == true)
                 {
                     SaveAs(_fileDialog.FileName);
                     if(FileTrustViewModel != null)
@@ -4291,6 +4314,45 @@ namespace Dynamo.ViewModels
             File.WriteAllText(fullFileName, stat.ToString());
         }
 
+        internal void DumpNodeIconData(object parameter)
+        {
+            //set to manual run mode to prevent execution of the nodes as wel place them
+            this.HomeSpace.RunSettings.RunType = RunType.Manual;
+
+            string nodesWithoutIconsFileName = String.Format("NodesWithoutIcons_{0}.csv", DateTime.Now.ToString("yyyyMMddHmmss"));
+            string nodesWithoutIconsFullFileName = Path.Combine(Model.PathManager.LogDirectory, nodesWithoutIconsFileName);
+
+            //creating a copy to avoid collection changed exceptions
+            var entriesCopy = Model.SearchModel.Entries.Where(n => n.IsVisibleInSearch).ToList();
+
+            StreamWriter sw = File.CreateText(nodesWithoutIconsFullFileName);
+
+            sw.WriteLine("NODE ASSEMBLY,NODE NAME");
+
+            foreach (var nse in entriesCopy)
+            {
+                var newNode = nse.CreateNode();
+                this.CurrentSpace.AddAndRegisterNode(newNode);
+                var placedNode = this.CurrentSpaceViewModel.Nodes.Last();
+                var imageSource = placedNode.ImageSource;
+
+                //if image source is null, then no icon is found
+                if (imageSource is null)
+                {
+                    sw.WriteLine($"{nse.Assembly},{nse.Name}");
+                }
+                else
+                {
+                    this.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(placedNode.Id));
+                }
+            }
+
+            sw.Close();
+
+            //alert user to new file location
+            MainGuideManager.CreateRealTimeInfoWindow(string.Format(Resources.NodeIconDataIsDumped, nodesWithoutIconsFullFileName), true);
+        }
+
         private FileInfo GetMatchingDocFromDirectory(string nodeName, string hash, List<string> suffix, DirectoryInfo dir)
         {
             FileInfo matchingFile = null;
@@ -4311,6 +4373,10 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanDumpNodeHelpData(object obj)
+        {
+            return true;
+        }
+        internal bool CanDumpNodeIconData(object obj)
         {
             return true;
         }

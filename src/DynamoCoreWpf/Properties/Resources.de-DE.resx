@@ -401,6 +401,12 @@ Keine Sorge: Sie erhalten die Möglichkeit, Ihre Arbeit zu speichern.</value>
   <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
     <value>Download-Warnung</value>
   </data>
+  <data name="CopyToClipboardTooltip" xml:space="preserve">
+    <value>In Zwischenablage kopieren</value>
+  </data>
+  <data name="CopyToClipboardFailedMessage" xml:space="preserve">
+    <value>In Zwischenablage kopieren fehlgeschlagen</value>
+  </data>
   <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
     <value>Ein Update für Dynamo ist verfügbar. Klicken Sie, um es zu installieren.</value>
   </data>
@@ -738,7 +744,7 @@ Keine Sorge: Sie erhalten die Möglichkeit, Ihre Arbeit zu speichern.</value>
     <value>Arbeitsbereich als Bild exportieren</value>
   </data>
   <data name="DynamoViewToolbarNewButtonTooltip" xml:space="preserve">
-    <value>Neu [Strg + N]</value>
+    <value>Neu [Ctrl + N]</value>
   </data>
   <data name="DynamoViewToolbarOpenButtonTooltip" xml:space="preserve">
     <value>Öffnen [Strg + O]</value>
@@ -3229,7 +3235,7 @@ Sie können dies unter Voreinstellungen -&gt; Sicherheit verwalten.</value>
     <value>Die Zuverlässigkeit wird neben jedem empfohlenen Block angezeigt und stellt die geschätzte Wahrscheinlichkeit dar, die aussagt, ob der Block eine gute Wahl ist. Wenn diese Option aktiviert ist, werden empfohlene Blöcke, die nicht die angegebene Zuverlässigkeit erfüllen, ausgeblendet. Sie können auf die Kopfzeile Niedrige Zuverlässigkeit klicken, um die Blöcke anzuzeigen.</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Number of results for Recommended Nodes</value>
+    <value>Anzahl der Ergebnisse für empfohlene Blöcke</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>Importieren</value>
@@ -3244,7 +3250,7 @@ Sie können dies unter Voreinstellungen -&gt; Sicherheit verwalten.</value>
     <value>Einstellungsdateien ({0})|{0}</value>
   </data>
   <data name="ImportSettingsDialogTitle" xml:space="preserve">
-    <value>Einstellungen importieren</value>
+    <value>Einstell. importieren</value>
   </data>
   <data name="ImportSettingsSuccessMessage" xml:space="preserve">
     <value>Import erfolgreich</value>
@@ -3791,6 +3797,36 @@ Führen Sie #Download und Installation=https://manage.autodesk.com/products/upda
   </data>
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
     <value>Diese Gruppe ist eingefroren. Klicken Sie, um sie freizugeben.</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
+    <value>Verschiebbaren Werkzeugkasten aktivieren</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
+    <value>Aktivieren Sie einen verschiebbaren Werkzeugkasten für Blockvorschläge, um einen optimierten Arbeitsablauf zu ermöglichen. Deaktivieren Sie diese Option, um zum herkömmlichen Popup-Dialogfeld zurückzukehren.</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
+    <value>_Blocksymboldaten ausgeben</value>
+  </data>
+  <data name="NodeIconDataIsDumped" xml:space="preserve">
+    <value>Blocksymboldaten werden in \"{0}\" ausgegeben.</value>
+  </data>
+  <data name="GroupOptionalInportsText" xml:space="preserve">
+    <value>Optional</value>
+  </data>
+  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
+    <value>Nicht verbunden</value>
+  </data>
+  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
+    <value>Reduzierte Gruppe</value>
+  </data>
+  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
+    <value>Vorgabemäßig auf Minimalgröße reduzieren</value>
+  </data>
+  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
+    <value>Optionale Eingabeanschlüsse vorgabemäßig ausblenden</value>
+  </data>
+  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
+    <value>Nicht verbundene Ausgabeanschlüsse vorgabemäßig ausblenden</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

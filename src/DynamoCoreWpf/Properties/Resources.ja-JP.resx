@@ -401,6 +401,12 @@
   <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
     <value>ダウンロードの警告</value>
   </data>
+  <data name="CopyToClipboardTooltip" xml:space="preserve">
+    <value>クリップボードにコピー</value>
+  </data>
+  <data name="CopyToClipboardFailedMessage" xml:space="preserve">
+    <value>クリップボードへのコピーに失敗しました</value>
+  </data>
   <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
     <value>Dynamo 更新プログラムを利用できます。インストールするにはクリックします。</value>
   </data>
@@ -618,7 +624,7 @@
     <value>T スプライン ノードを有効にする</value>
   </data>
   <data name="PreferencesViewExperimentalLabel" xml:space="preserve">
-    <value>サンプル</value>
+    <value>実験</value>
   </data>
   <data name="DynamoViewSettingMenu" xml:space="preserve">
     <value>設定(_S)</value>
@@ -3231,7 +3237,7 @@ Dynamo を再起動してアンインストールを完了します。
     <value>信頼度レベルは、各推奨ノードの横に表示され、そのノードが適切な選択である推定確率を表します。この設定をオンにすると、指定した信頼度レベルを満たさない推奨ノードは非表示になります。それらのノードを表示するには、[低信頼度]ヘッダをクリックします。</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Number of results for Recommended Nodes</value>
+    <value>推奨ノードの結果数</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>読み込み</value>
@@ -3793,6 +3799,36 @@ Dynamo を再起動してアンインストールを完了します。
   </data>
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
     <value>このグループはフリーズされています。クリックすると、フリーズが解除されます。</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
+    <value>フローティング ツールバーを有効にする</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
+    <value>ノードを提案するフローティング ツールバーを有効にすることで、ワークフローをより効率化できます。オフにすると、従来のポップアップ ダイアログに戻ります。</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
+    <value>ノード アイコン データをダンプ(_D)</value>
+  </data>
+  <data name="NodeIconDataIsDumped" xml:space="preserve">
+    <value>ノード アイコン データは \"{0}\" にダンプされます。</value>
+  </data>
+  <data name="GroupOptionalInportsText" xml:space="preserve">
+    <value>オプション</value>
+  </data>
+  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
+    <value>未接続</value>
+  </data>
+  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
+    <value>折りたたまれたグループ</value>
+  </data>
+  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
+    <value>既定で最小サイズに折りたたむ</value>
+  </data>
+  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
+    <value>既定でオプションの入力ポートを非表示</value>
+  </data>
+  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
+    <value>既定で未接続の出力ポートを非表示</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

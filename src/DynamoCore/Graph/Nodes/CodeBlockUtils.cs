@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Dynamo.Configuration;
+using ProtoCore.AST.AssociativeAST;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -264,6 +265,64 @@ namespace Dynamo.Graph.Nodes
             }
 
             return locationMap.OrderBy(p => p.Value);
+        }
+
+        /// <summary>
+        /// Extracts cleaned individual code expressions as tooltip strings from a full code block.
+        /// </summary>
+        internal static string GetTooltipForNode(AssociativeNode node)
+        {
+            if (node == null)
+                return string.Empty;
+
+            var codeGen = new ProtoCore.CodeGenDS(new[] { node });
+
+            return codeGen.GenerateCode().TrimEnd('\n').Trim(';');
+        }
+
+        /// <summary>
+        /// Infers a human-readable static type label (e.g., [int], [string]) from an associative AST node.
+        /// </summary>
+        internal static string InferStaticTypeFromNode(AssociativeNode node)
+        {
+            if (node == null) return null;
+
+            switch (node)
+            {
+                case IntNode:
+                    return "integer";
+                case DoubleNode:
+                    return "double";
+                case BooleanNode:
+                    return "boolean";
+                case StringNode:
+                    return "string";
+                case NullNode:
+                    return "null";
+                case CharNode:
+                    return "character";
+                case ExprListNode:
+                case ArrayNode:
+                    return "list";
+                case RangeExprNode ren:
+                    if (ren.HasRangeAmountOperator)
+                        return "sequence";
+                    return "range";
+                case IdentifierNode idNode:
+                    return idNode.Value;
+                case IdentifierListNode:
+                    if (ProtoCore.Utils.CoreUtils.TryGetPropertyName(node.ToString(), out string _))
+                        return "property";
+                    return "function";
+                case FunctionCallNode:
+                    return "function";
+                case InlineConditionalNode:
+                    return "conditional";
+                case LanguageBlockNode:
+                    return "language block";
+                default:
+                    return "unknown";
+            }
         }
     }
 

@@ -16,6 +16,7 @@
   <ItemGroup>
     <None Remove="Docs\cs-CZ\LinterViewHelpDoc.html" />
     <None Remove="Docs\de-DE\LinterViewHelpDoc.html" />
+    <None Remove="Docs\en-GB\LinterViewHelpDoc.html" />
     <None Remove="Docs\en-US\LinterViewHelpDoc.html" />
     <None Remove="Docs\es-ES\LinterViewHelpDoc.html" />
     <None Remove="Docs\fr-FR\LinterViewHelpDoc.html" />
@@ -31,6 +32,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Docs\cs-CZ\LinterViewHelpDoc.html" />
     <EmbeddedResource Include="Docs\de-DE\LinterViewHelpDoc.html" />
+    <EmbeddedResource Include="Docs\en-GB\LinterViewHelpDoc.html" />
     <EmbeddedResource Include="Docs\en-US\LinterViewHelpDoc.html" />
     <EmbeddedResource Include="Docs\es-ES\LinterViewHelpDoc.html" />
     <EmbeddedResource Include="Docs\fr-FR\LinterViewHelpDoc.html" />

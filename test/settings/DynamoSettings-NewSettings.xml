@@ -8,6 +8,9 @@
   <GraphicScaleUnit>Feet</GraphicScaleUnit>
   <ShowPreviewBubbles>false</ShowPreviewBubbles>
   <ShowDefaultGroupDescription>false</ShowDefaultGroupDescription>
+  <OptionalInPortsCollapsed>false</OptionalInPortsCollapsed>
+  <UnconnectedOutPortsCollapsed>false</UnconnectedOutPortsCollapsed>
+  <CollapseToMinSize>false</CollapseToMinSize>
   <UseHostScaleUnits>false</UseHostScaleUnits>
   <ShowCodeBlockLineNumber>false</ShowCodeBlockLineNumber>
   <ShowConnector>false</ShowConnector>
@@ -40,7 +43,7 @@
   <NumberFormat>f4</NumberFormat>
   <MaxNumRecentFiles>12</MaxNumRecentFiles>
   <RecentFiles>
-    <string>C:\Users\user\Documents\dynamofile.dyn</string>
+    <string>..\..\..\test\settings\RecentFilesTest.dyn</string>
   </RecentFiles>
   <BackupLocation>C:\Users\user\AppData\Roaming\Dynamo\Dynamo Core\backup</BackupLocation>
   <BackupFiles>
@@ -74,6 +77,7 @@
   <IsIronPythonDialogDisabled>true</IsIronPythonDialogDisabled>
   <ShowTabsAndSpacesInScriptEditor>true</ShowTabsAndSpacesInScriptEditor>
   <EnableNodeAutoComplete>false</EnableNodeAutoComplete>
+  <EnableNewNodeAutoCompleteUI>false</EnableNewNodeAutoCompleteUI>
   <DefaultEnableLegacyPolyCurveBehavior>false</DefaultEnableLegacyPolyCurveBehavior>
   <HideNodesBelowSpecificConfidenceLevel>true</HideNodesBelowSpecificConfidenceLevel>
   <MLRecommendationConfidenceLevel>99</MLRecommendationConfidenceLevel>

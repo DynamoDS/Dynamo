@@ -401,6 +401,12 @@ Bez obaw, będziesz mieć możliwość zapisania pracy.</value>
   <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
     <value>Ostrzeżenie dotyczące pobierania</value>
   </data>
+  <data name="CopyToClipboardTooltip" xml:space="preserve">
+    <value>Kopiuj do schowka</value>
+  </data>
+  <data name="CopyToClipboardFailedMessage" xml:space="preserve">
+    <value>Nie można skopiować do schowka</value>
+  </data>
   <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
     <value>Dostępna jest aktualizacja dodatku Dynamo. Kliknij, aby zainstalować.</value>
   </data>
@@ -3231,7 +3237,7 @@ Można tym zarządzać w obszarze Preferencje -&gt; Zabezpieczenia.</value>
     <value>Poziom pewności jest wyświetlany obok każdego zalecanego węzła i oddaje szacowane prawdopodobieństwo, że węzeł jest dobrym wyborem. Po włączeniu to ustawienie ukrywa zalecane węzły, które nie spełniają określonego poziomu pewności. Można kliknąć nagłówek Niska pewność, aby wyświetlić te węzły.</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Number of results for Recommended Nodes</value>
+    <value>Liczba wyników dla rekomendowanych węzłów</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>Importuj</value>
@@ -3793,6 +3799,36 @@ Aby ustawić ten plik jako nowy szablon, zapisz go w innym folderze, a następni
   </data>
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
     <value>Ta grupa jest zablokowana. Kliknij, aby odblokować.</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
+    <value>Włącz przestawny pasek narzędzi</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
+    <value>Włącz przestawny pasek narzędzi dla sugestii dotyczących węzłów, aby usprawnić proces roboczy. Wyłącz tę opcję, aby powrócić do tradycyjnego wyskakującego okna dialogowego.</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
+    <value>_Zrzuć dane ikon węzłów</value>
+  </data>
+  <data name="NodeIconDataIsDumped" xml:space="preserve">
+    <value>Dane ikon węzłów są zrzucane do „{0}”.</value>
+  </data>
+  <data name="GroupOptionalInportsText" xml:space="preserve">
+    <value>Opcjonalne</value>
+  </data>
+  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
+    <value>Niepołączone</value>
+  </data>
+  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
+    <value>Zwinięta grupa</value>
+  </data>
+  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
+    <value>Domyślnie zwiń do minimalnego rozmiaru</value>
+  </data>
+  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
+    <value>Domyślnie ukryj opcjonalne porty wejściowe</value>
+  </data>
+  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
+    <value>Domyślnie ukryj niepołączone porty wyjściowe</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
