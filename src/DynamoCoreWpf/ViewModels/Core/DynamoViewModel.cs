@@ -209,18 +209,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls if the the ML data ingestion pipeline is beta from feature flag
-        /// </summary>
-        [Obsolete("This flag is not needed anymore and will be removed in a future version of Dynamo. Use EnableDNADataIngestionPipeline instead")]
-        internal bool IsDNADataIngestionPipelineinBeta
-        {
-            get
-            {
-                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsDNADataIngestionPipelineinBeta", true) ?? true;
-            }
-        }
-
-        /// <summary>
         /// Controls if the the ML data ingestion pipeline is enabled or not.
         /// </summary>
         internal bool EnableDNADataIngestionPipeline
