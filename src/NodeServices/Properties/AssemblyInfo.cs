@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("ProtoTest")]
 [assembly: InternalsVisibleTo("IntegrationTests")]
 [assembly: InternalsVisibleTo("DSIronPython")]
-[assembly: InternalsVisibleTo("DSCPython")]
+[assembly: InternalsVisibleTo("DSPythonNet3")]
 [assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
 [assembly: InternalsVisibleTo("PythonNodeModels")]
 [assembly: InternalsVisibleTo("DynamoCoreWpf")]

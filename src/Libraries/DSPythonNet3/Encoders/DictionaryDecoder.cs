@@ -14,7 +14,7 @@ namespace DSPythonNet3.Encoders
             typeof(IDictionary), typeof(Hashtable)
         };
 
-        public bool CanDecode(PyObject objectType, Type targetType)
+        public bool CanDecode(PyType objectType, Type targetType)
         {
             if (targetType.IsGenericType)
             {

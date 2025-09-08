@@ -19,7 +19,7 @@ namespace DynamoPythonTests
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            libraries.Add("DSCPython.dll");
+            libraries.Add("DSPythonNet3.dll");
             libraries.Add("DSCoreNodes.dll");
         }
 
@@ -126,10 +126,10 @@ Python Script: considering os.path
 Python Script: considering os";
             var pythonNode = new PythonNode();
             CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(pythonNode);
-            pythonNode.EngineName = PythonEngineManager.CPython3EngineName;
+            pythonNode.EngineName = PythonEngineManager.PythonNet3EngineName;
           
             RunCurrentModel();
-            CurrentDynamoModel.OnRequestPythonReset(PythonEngineManager.CPython3EngineName);
+            CurrentDynamoModel.OnRequestPythonReset(PythonEngineManager.PythonNet3EngineName);
             foreach(var line in expectedOutput.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
                 StringAssert.Contains(line, CurrentDynamoModel.Logger.LogText);

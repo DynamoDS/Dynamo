@@ -15,7 +15,7 @@ namespace DSPythonNet3.Encoders
             typeof(IEnumerable), typeof(IEnumerable<>)
         };
 
-        public bool CanDecode(PyObject objectType, Type targetType)
+        public bool CanDecode(PyType objectType, Type targetType)
         {
             if (targetType.IsGenericType)
             {
@@ -31,7 +31,7 @@ namespace DSPythonNet3.Encoders
 
         public bool TryDecode<T>(PyObject pyObj, out T value)
         {
-            if (!PyIter.IsIterable(pyObj))
+            if (!pyObj.IsIterable())
             {
                 value = default;
                 return false;

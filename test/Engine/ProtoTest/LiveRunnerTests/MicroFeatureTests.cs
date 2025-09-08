@@ -3535,7 +3535,7 @@ r = __Equals(x, [41, 42]);
         {
             List<string> codes = new List<string>() 
             {
-                @"import(""DSCPython.dll"");",
+                @"import(""DSPythonNet3.dll"");",
                 @"x = CPythonEvaluator.EvaluatePythonScript(""# Default imports
 
 #The inputs to this node will be stored as a list in the IN variable.

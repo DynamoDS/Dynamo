@@ -152,7 +152,7 @@ namespace Dynamo.PackageManager
             if (PythonServices.PythonEngineManager.Instance.AvailableEngines.Count == 0)
             {
                 PythonServices.PythonEngineManager.Instance.LoadDefaultPythonEngine(AppDomain.CurrentDomain.GetAssemblies().
-                                                                                    FirstOrDefault(a => a != null && a.GetName().Name == PythonServices.PythonEngineManager.CPythonAssemblyName));
+                                                                                    FirstOrDefault(a => a != null && a.GetName().Name == PythonServices.PythonEngineManager.PythonNet3AssemblyName));
             }
 
             PythonServices.PythonEngineManager.Instance.AvailableEngines.CollectionChanged += PythonEngineAdded;

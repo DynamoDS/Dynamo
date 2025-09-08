@@ -43,9 +43,9 @@
       <Name>ProtoCore</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Libraries\DSCPython\DSCPython.csproj">
+    <ProjectReference Include="..\..\..\src\Libraries\DSPythonNet3\DSPythonNet3.csproj">
       <Project>{f1541c2d-80a9-4fe7-8d9e-75a8b9ff3479}</Project>
-      <Name>DSCPython</Name>
+      <Name>DSPythonNet3</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\src\Libraries\PythonNodeModelsWpf\PythonNodeModelsWpf.csproj">

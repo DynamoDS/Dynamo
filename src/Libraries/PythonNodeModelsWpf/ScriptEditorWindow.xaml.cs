@@ -412,10 +412,10 @@ namespace PythonNodeModelsWpf
         {
             originalScript = e.OldCode;
             editText.Text = e.NewCode;
-            if (CachedEngine != PythonEngineManager.CPython3EngineName)
+            if (CachedEngine != PythonEngineManager.PythonNet3EngineName)
             {
-                CachedEngine = PythonEngineManager.CPython3EngineName;
-                EngineSelectorComboBox.SelectedItem = PythonEngineManager.CPython3EngineName;
+                CachedEngine = PythonEngineManager.PythonNet3EngineName;
+                EngineSelectorComboBox.SelectedItem = PythonEngineManager.PythonNet3EngineName;
             }
         }
 

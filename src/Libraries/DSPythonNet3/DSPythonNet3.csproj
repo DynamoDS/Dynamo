@@ -13,17 +13,23 @@
     <PropertyGroup>
         <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
     </PropertyGroup>
-
-    <!--Consider moving to PythonNet3 folder-->
+    
     <ItemGroup>
         <Reference Include="Python.Included">
             <HintPath>..\..\..\extern\Python\Python.Included.dll</HintPath>
+            <Private>true</Private>
+        </Reference>
+        <Reference Include="Python.Deployment">
+            <HintPath>..\..\..\extern\Python\Python.Deployment.dll</HintPath>
+            <Private>true</Private>
         </Reference>
         <Reference Include="Python.Included.SciPy">
             <HintPath>..\..\..\extern\Python\Python.Included.SciPy.dll</HintPath>
+            <Private>true</Private>
         </Reference>
         <Reference Include="Python.Runtime">
             <HintPath>..\..\..\extern\Python\Python.Runtime.dll</HintPath>
+            <Private>true</Private>
         </Reference>
     </ItemGroup>
 

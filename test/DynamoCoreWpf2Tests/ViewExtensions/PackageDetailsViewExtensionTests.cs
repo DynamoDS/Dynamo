@@ -123,7 +123,7 @@ namespace DynamoCoreWpfTests
             };
             PackageVersion packageVersionWithPython3Dependency = new PackageVersion
             {
-                host_dependencies = new List<string> { PythonEngineManager.CPython3EngineName },
+                host_dependencies = new List<string> { PythonEngineManager.PythonNet3EngineName },
                 full_dependency_ids = new List<Dependency>()
             };
             PackageVersion packageVersionWithHostDependency = new PackageVersion
@@ -181,7 +181,7 @@ namespace DynamoCoreWpfTests
                 packageDetailWithPython2Dependency.PythonVersion);
 
             Assert.AreEqual(Dynamo.Properties.Resources.NoneString, packageDetailWithPython3Dependency.Hosts);
-            Assert.AreEqual(PythonEngineManager.CPython3EngineName, packageDetailWithPython3Dependency.PythonVersion);
+            Assert.AreEqual(PythonEngineManager.PythonNet3EngineName, packageDetailWithPython3Dependency.PythonVersion);
 
             Assert.AreEqual(hostName1, packageDetailWithHostDependency.Hosts);
             Assert.AreEqual(Dynamo.Properties.Resources.NoneString, packageDetailWithHostDependency.PythonVersion);

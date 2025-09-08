@@ -22,7 +22,7 @@ namespace DynamoPythonTests
         }
 
         public IEnumerable<PythonEvaluatorDelegate> Evaluators = new List<PythonEvaluatorDelegate> {
-            DSCPython.CPythonEvaluator.EvaluatePythonScript
+            DSPythonNet3.PythonNet3Evaluator.EvaluatePythonScript
         };
 
         #region Python Modules

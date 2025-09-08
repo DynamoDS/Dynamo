@@ -24,7 +24,7 @@ namespace Dynamo.Tests
             libraries.Add("ProtoGeometry.dll");
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
-            libraries.Add("DSCPython.dll");
+            libraries.Add("DSPython3Net.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -128,7 +128,7 @@ namespace Dynamo.Tests
             var currentws = CurrentDynamoModel.CurrentWorkspace;
             var pyNode = currentws.Nodes.OfType<PythonNode>().FirstOrDefault();
             Assert.IsNotNull(pyNode);
-            Assert.AreEqual(pyNode.EngineName, PythonEngineManager.CPython3EngineName);
+            Assert.AreEqual(pyNode.EngineName, PythonEngineManager.PythonNet3EngineName);
             Assert.AreEqual(PythonEngineManager.Instance.AvailableEngines.Count, 2);
 
             currentws.ForceComputeWorkspaceReferences = true;

@@ -70,15 +70,11 @@ namespace DSPythonNet3
 
         public override string ToString()
         {
-            IntPtr gs = PythonEngine.AcquireLock();
+            var gs = Py.GIL();
             try
             {
-                using (Py.GIL())
-                {
-                    var scope = PyScopeManager.Global.Get(PythonNet3Evaluator.globalScopeName);
-                    var pyobj = scope.Get(PythonObjectID.ToString());
-                    return pyobj.ToString();
-                }
+                var pyobj = PythonNet3Evaluator.globalScope.Get(PythonObjectID.ToString());
+                return pyobj.ToString();
             }
             catch (Exception e)
             {
@@ -87,7 +83,7 @@ namespace DSPythonNet3
             }
             finally
             {
-                PythonEngine.ReleaseLock(gs);
+                gs.Dispose();
             }
         }
 
@@ -111,14 +107,11 @@ namespace DSPythonNet3
                 return;
             }
 
-            IntPtr gs = PythonEngine.AcquireLock();
+            var gs = Py.GIL();
             try
             {
-                using (Py.GIL())
-                {
-                    PyScopeManager.Global.Get(PythonNet3Evaluator.globalScopeName).Remove(PythonObjectID.ToString());
-                    HandleCountMap.Remove(this);
-                }
+                PythonNet3Evaluator.globalScope.Remove(PythonObjectID.ToString());
+                HandleCountMap.Remove(this);
             }
             catch (Exception e)
             {
@@ -126,7 +119,7 @@ namespace DSPythonNet3
             }
             finally
             {
-                PythonEngine.ReleaseLock(gs);
+                gs.Dispose();
             }
         }
     }
@@ -143,7 +136,7 @@ namespace DSPythonNet3
         private const string NodeName = "__dynamonodename__";
         internal static readonly string globalScopeName = "global";
 
-        private static PyScope globalScope;
+        internal static PyModule globalScope;
         private static DynamoLogger dynamoLogger;
         private static string path;
 
@@ -191,8 +184,7 @@ namespace DSPythonNet3
                 {
                     //the following is inspired by:
                     //https://github.com/ipython/ipython/blob/master/IPython/extensions/autoreload.py
-                    var global = PyScopeManager.Global.Get(PythonNet3Evaluator.globalScopeName);
-                    global?.Exec(@"import sys
+                    globalScope?.Exec(@"import sys
 import importlib
 import importlib.util
 import os
@@ -266,7 +258,7 @@ for modname,mod in sys.modules.copy().items():
                 PythonEngine.BeginAllowThreads();
 
                 using (Py.GIL())
-                using (PyScope scope = Py.CreateScope())
+                using (PyModule scope = Py.CreateScope())
                 {
                     scope.Exec("import sys" + Environment.NewLine + "path = str(sys.path)");
                     path = scope.Get<string>("path");
@@ -276,7 +268,7 @@ for modname,mod in sys.modules.copy().items():
             using (Py.GIL())
             {
                 globalScope ??= CreateGlobalScope();
-                using (PyScope scope = Py.CreateScope())
+                using (PyModule scope = Py.CreateScope())
                 {
                     if (path is not null)
                     {
@@ -344,7 +336,7 @@ for modname,mod in sys.modules.copy().items():
         {
             if (!isPythonInstalled)
             {
-                Python.Included.Installer.SetupPythonSync();
+                Python.Included.Installer.SetupPython();
                 isPythonInstalled = true;
             }
         }
@@ -352,7 +344,7 @@ for modname,mod in sys.modules.copy().items():
         /// <summary>
         /// Creates and initializes the global Python scope.
         /// </summary>
-        private static PyScope CreateGlobalScope()
+        private static PyModule CreateGlobalScope()
         {
             var scope = Py.CreateScope(globalScopeName);
             // Allows discoverability of modules by inspecting their attributes
@@ -371,7 +363,7 @@ clr.setPreload(True)
         /// <param name="scope">Python scope where execution will occur</param>
         /// <param name="bindingNames">List of binding names received for evaluation</param>
         /// <param name="bindingValues">List of binding values received for evaluation</param>
-        private static void ProcessAdditionalBindings(PyScope scope, IList bindingNames, IList bindingValues)
+        private static void ProcessAdditionalBindings(PyModule scope, IList bindingNames, IList bindingValues)
         {
             const string NodeNameInput = "Name";
             string nodeName;
@@ -422,16 +414,12 @@ sys.stdout = DynamoStdOut({0})
         /// </summary>
         private static void InitializeEncoders()
         {
-            var shared = new object[]
-            {
-                new DSPythonNet3.Encoders.BigIntegerEncoderDecoder(),
-                new DSPythonNet3.Encoders.ListEncoderDecoder()
-            };
-
+            var shared = new object[] { new ListEncoderDecoder() };
             var encoders = shared.Cast<IPyObjectEncoder>().ToArray();
+
             var decoders = shared.Cast<IPyObjectDecoder>().Concat(new IPyObjectDecoder[]
             {
-                new DSPythonNet3.Encoders.DictionaryDecoder()
+                new DictionaryDecoder()
             }).ToArray();
 
             Array.ForEach(encoders, e => PyObjectConversions.RegisterEncoder(e));
@@ -544,8 +532,7 @@ sys.stdout = DynamoStdOut({0})
                     inputMarshaler.RegisterMarshaler(
                        delegate (DynamoPythonNet3Handle handle)
                        {
-                           var scope = PyScopeManager.Global.Get(globalScopeName);
-                           return scope.Get(handle.PythonObjectID.ToString());
+                           return globalScope.Get(handle.PythonObjectID.ToString());
                        });
                 }
                 return inputMarshaler;
@@ -602,8 +589,9 @@ sys.stdout = DynamoStdOut({0})
                                     return dict;
                                 }
                             }
+
                             // Other iterables should become lists, except for strings
-                            if (PyIter.IsIterable(pyObj) && !PyString.IsStringType(pyObj))
+                            if (pyObj.IsIterable() && !PyString.IsStringType(pyObj))
                             {
                                 using (var pyList = PyList.AsList(pyObj))
                                 {
@@ -616,22 +604,22 @@ sys.stdout = DynamoStdOut({0})
                                 }
                             }
                             // Special case for big long values: decode them as BigInteger
-                            if (PyLong.IsLongType(pyObj))
+                            var unmarshalled = pyObj.AsManagedObject(typeof(object));
+                            if (unmarshalled is PyInt)
                             {
-                                using (var pyLong = PyLong.AsLong(pyObj))
+                                using (var pyLong = PyInt.AsInt(pyObj))
                                 {
                                     try
                                     {
                                         return pyLong.ToInt64();
                                     }
-                                    catch (PythonException exc) when (exc.Message.StartsWith("OverflowError"))
+                                    catch (PythonException exc) when (exc.Message.StartsWith("int too big"))
                                     {
                                         return pyLong.ToBigInteger();
                                     }
                                 }
                             }
                             // Default handling for other Python objects
-                            var unmarshalled = pyObj.AsManagedObject(typeof(object));
                             if (unmarshalled is PyObject)
                             {
                                 using (unmarshalled as PyObject)
@@ -662,7 +650,6 @@ sys.stdout = DynamoStdOut({0})
 
         private static DynamoPythonNet3Handle GetDynamoPythonNet3Handle(PyObject pyObj)
         {
-            var globalScope = PyScopeManager.Global.Get(globalScopeName);
             globalScope.Set(pyObj.Handle.ToString(), pyObj);
             return new DynamoPythonNet3Handle(pyObj.Handle);
         }
@@ -697,7 +684,7 @@ sys.stdout = DynamoStdOut({0})
         /// <param name="scope">The scope in which the code is executed</param>
         /// <param name="code">The code to be evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
-        private void OnEvaluationBegin(PyScope scope,
+        private void OnEvaluationBegin(PyModule scope,
                                               string code,
                                               IList bindingValues)
         {
@@ -719,7 +706,7 @@ sys.stdout = DynamoStdOut({0})
         /// <param name="code">The code to that was evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
         private void OnEvaluationEnd(bool isSuccessful,
-                                            PyScope scope,
+                                            PyModule scope,
                                             string code,
                                             IList bindingValues)
         {
@@ -732,7 +719,7 @@ sys.stdout = DynamoStdOut({0})
                 Analytics.TrackEvent(
                     Dynamo.Logging.Actions.End,
                     Dynamo.Logging.Categories.PythonOperations,
-                    "PythonNetEvaluation");
+                    "PythonNet3Evaluation");
             }
         }
 

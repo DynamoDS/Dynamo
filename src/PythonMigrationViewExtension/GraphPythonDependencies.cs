@@ -16,8 +16,8 @@ namespace Dynamo.PythonMigration
     public class GraphPythonDependencies
     {
         internal static readonly string PythonPackage = "DynamoIronPython2.7";
-        // Current Dynamo inbuilt python package is CPython3. Change this when it is updated.
-        internal static readonly string InBuiltPythonPackage = PythonEngineManager.CPython3EngineName;
+        // Current Dynamo inbuilt python package is PythonNet3. Change this when it is updated.
+        internal static readonly string InBuiltPythonPackage = PythonEngineManager.PythonNet3EngineName;
         internal readonly Version PythonPackageVersion;
         private IWorkspaceModel workspace;
         private readonly ICustomNodeManager customNodeManager;
@@ -73,15 +73,15 @@ namespace Dynamo.PythonMigration
         }
 
         /// <summary>
-        /// Determines if the current workspace has any dependencies on CPython engine.
+        /// Determines if the current workspace has any dependencies on PythonNet3 engine.
         /// </summary>
         /// <returns>True if dependencies are found, false otherwise.</returns>
-        internal bool CurrentWorkspaceHasCPythonDependencies()
+        internal bool CurrentWorkspaceHasPythonNet3Dependencies()
         {
             if (this.workspace == null)
                 throw new ArgumentNullException(nameof(this.workspace));
 
-            return this.workspace.Nodes.Any(IsCPythonNode);
+            return this.workspace.Nodes.Any(IsPythonNet3Node);
         }
 
         internal IEnumerable<INodeLibraryDependencyInfo> AddPythonPackageDependency()
@@ -179,12 +179,12 @@ namespace Dynamo.PythonMigration
             return pythonNode.EngineName == PythonEngineManager.IronPython2EngineName;
         }
 
-        internal static bool IsCPythonNode(NodeModel obj)
+        internal static bool IsPythonNet3Node(NodeModel obj)
         {
             if (!(obj is PythonNodeBase pythonNode))
                 return false;
 
-            return pythonNode.EngineName == PythonEngineManager.CPython3EngineName;
+            return pythonNode.EngineName == PythonEngineManager.PythonNet3EngineName;
         }
     }
 }
