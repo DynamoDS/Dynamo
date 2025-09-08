@@ -33,6 +33,6 @@ When reviewing a pull request, follow these steps:
     - If any aspect does not meet these standards, notify the contributor to update the documentation and code to comply.
 
 5. **Restrictions**
-    - Code change should contain no files larger than 50 MB
+  - Code change should contain no files larger than 50 MB
     - Code change should not introduce any new network connections unless explicitly stated and tested in no-network mode.
     - Data collection should not be introduced without proper user consent check and documentation.
