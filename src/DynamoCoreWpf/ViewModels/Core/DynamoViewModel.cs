@@ -11,7 +11,6 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Dynamo.Configuration;
@@ -2444,7 +2443,7 @@ namespace Dynamo.ViewModels
                 }
             }
 
-            if (_fileDialog.ShowDialog() == DialogResult.OK)
+            if (_fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 if (CanOpen(_fileDialog.FileName))
                 {
@@ -2539,7 +2538,7 @@ namespace Dynamo.ViewModels
                     _fileDialog.InitialDirectory = path;
             }
 
-            if (_fileDialog.ShowDialog() == DialogResult.OK)
+            if (_fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 if (CanOpen(_fileDialog.FileName))
                 {
@@ -3501,11 +3500,11 @@ namespace Dynamo.ViewModels
 
         public void ShowSaveImageDialogAndSave(object parameter)
         {
-            FileDialog _fileDialog = null;
+            System.Windows.Forms.FileDialog _fileDialog = null;
 
             if (_fileDialog == null)
             {
-                _fileDialog = new SaveFileDialog()
+                _fileDialog = new System.Windows.Forms.SaveFileDialog()
                 {
                     AddExtension = true,
                     DefaultExt = ".png",
@@ -3523,7 +3522,7 @@ namespace Dynamo.ViewModels
                 _fileDialog.FileName = snapshotName;
             }
 
-            if (_fileDialog.ShowDialog() != DialogResult.OK) return;
+            if (_fileDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
             if (!CanSaveImage(_fileDialog.FileName)) return;
 
             if (parameter == null)
@@ -3934,14 +3933,14 @@ namespace Dynamo.ViewModels
         {
             string[] fileFilter = {string.Format(Resources.FileDialogLibraryFiles, "*.dll; *.ds" ), string.Format(Resources.FileDialogAssemblyFiles, "*.dll"),
                                    string.Format(Resources.FileDialogDesignScriptFiles, "*.ds"), string.Format(Resources.FileDialogAllFiles,"*.*")};
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
             openFileDialog.Filter = String.Join("|", fileFilter);
             openFileDialog.Title = Resources.ImportLibraryDialogTitle;
             openFileDialog.Multiselect = true;
             openFileDialog.RestoreDirectory = true;
 
-            DialogResult result = openFileDialog.ShowDialog();
-            if (result == DialogResult.OK)
+            System.Windows.Forms.DialogResult result = openFileDialog.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
             {
                 try
                 {
@@ -4038,7 +4037,7 @@ namespace Dynamo.ViewModels
 
         private void ExportToSTL(object parameter)
         {
-            FileDialog _fileDialog = null ?? new SaveFileDialog()
+            System.Windows.Forms.FileDialog _fileDialog = null ?? new System.Windows.Forms.SaveFileDialog()
             {
                 AddExtension = true,
                 DefaultExt = ".stl",
@@ -4054,7 +4053,7 @@ namespace Dynamo.ViewModels
                 _fileDialog.InitialDirectory = fi.DirectoryName;
             }
 
-            if (_fileDialog.ShowDialog() == DialogResult.OK)
+            if (_fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 BackgroundPreviewViewModel.ExportToSTL(_fileDialog.FileName, HomeSpace.Name);
 
