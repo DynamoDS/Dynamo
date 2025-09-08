@@ -20,7 +20,6 @@ Check these if you believe they are true
 - [ ] Is documented according to the [standards](https://github.com/DynamoDS/Dynamo/wiki/Coding-Standards)
 - [ ] The level of testing this PR includes is appropriate
 - [ ] Changes to the API follow [Semantic Versioning](https://github.com/DynamoDS/Dynamo/wiki/Dynamo-Versions) and are documented in the [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document.
-- [ ] This PR introduces new feature code involve network connecting and is tested with no-network mode.
 
 ### Release Notes
 
