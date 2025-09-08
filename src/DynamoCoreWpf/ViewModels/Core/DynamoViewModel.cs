@@ -209,13 +209,13 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls if the the ML data ingestion pipeline is beta from feature flag
+        /// Controls if the the ML data ingestion pipeline is enabled or not.
         /// </summary>
-        internal bool IsDNADataIngestionPipelineinBeta
+        internal bool EnableDNADataIngestionPipeline
         {
             get
             {
-                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsDNADataIngestionPipelineinBeta", true) ?? true;
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("EnableDNADataIngestionPipeline", false) ?? false;
             }
         }
 
@@ -3332,25 +3332,31 @@ namespace Dynamo.ViewModels
             // Upon closing a workspace, validate if the workspace is valid to be sent to the ML datapipeline and then send it.
             if (!DynamoModel.IsTestMode && !HomeSpace.HasUnsavedChanges && (currentWorkspaceViewModel?.IsHomeSpace ?? true) && HomeSpace.HasRunWithoutCrash)
             {
-                if (!IsDNADataIngestionPipelineinBeta && Model.CurrentWorkspace.IsValidForFDX && currentWorkspaceViewModel.Checksum != string.Empty)
+                if (preferencesViewModel.IsMLAutocompleteTOUApproved)
                 {
-                    if (HasDifferentialCheckSum())
+                    // Currently EnableDNADataIngestionPipeline is set to false for debug builds and true for release builds. so we need to modify it here, when testing the pipeline in debug builds.
+                    if (EnableDNADataIngestionPipeline && Model.CurrentWorkspace.IsValidForFDX && currentWorkspaceViewModel.Checksum != string.Empty)
                     {
-                        Model.Logger.Log("This Workspace is being shared to train the Dynamo Machine Learning model.", LogLevel.File);
-                        var workspacePath = model.CurrentWorkspace.FileName;
-
-                        Task.Run(() =>
+                        if (HasDifferentialCheckSum())
                         {
-                            try
+                            Model.Logger.Log("This Workspace is being shared to train the Dynamo Machine Learning model.", LogLevel.File);
+                            MLDataPipelineExtension.DynamoMLDataPipeline.isWorkspaceSharedWithML = true;
+
+                            var workspacePath = model.CurrentWorkspace.FileName;
+
+                            Task.Run(() =>
                             {
-                                MLDataPipelineExtension.DynamoMLDataPipeline.SendWorkspaceLog(workspacePath);
-                            }
-                            catch (Exception ex)
-                            {
-                                Model.Logger.Log("Failed to share this workspace with ML pipeline.", LogLevel.File);
-                                Model.Logger.Log(ex.StackTrace, LogLevel.File);
-                            }
-                        });
+                                try
+                                {
+                                    MLDataPipelineExtension.DynamoMLDataPipeline.SendWorkspaceLog(workspacePath);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Model.Logger.Log("Failed to share this workspace with ML pipeline.", LogLevel.File);
+                                    Model.Logger.Log(ex.StackTrace, LogLevel.File);
+                                }
+                            });
+                        }
                     }
                 }
             }
