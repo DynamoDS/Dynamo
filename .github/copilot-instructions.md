@@ -27,10 +27,10 @@ When reviewing a pull request, follow these steps:
      - Documenting the change clearly in the changelog
 
 4. **Verify Coding Standards Documentation**
-   - For each new node or code change, verify that documentation and code style comply with the Dynamo Coding Standards, including:
-      - Presence of XML documentation comments for all public methods and properties.
-      - Proper code formatting and adherence to naming conventions.
-      - If any aspect does not meet these standards, notify the contributor to update the documentation and code to comply.
+  - For each new node or code change, verify that documentation and code style comply with the [Dynamo Coding Standards](https://github.com/DynamoDS/Dynamo/wiki/Coding-Standards), including:
+    - Presence of XML documentation comments for all public methods and properties.
+    - Proper code formatting and adherence to naming conventions.
+    - If any aspect does not meet these standards, notify the contributor to update the documentation and code to comply.
 
 5. **Restrictions**
     - Code change should contain no files larger than 50 MB
