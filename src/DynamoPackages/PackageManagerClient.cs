@@ -395,6 +395,7 @@ namespace Dynamo.PackageManager
 
                 var compatibilityMapList = CompatibilityMap();
                 PackageManagerClient.compatibilityMapList = compatibilityMapList;    // Loads the full CompatibilityMap as a side-effect
+                if (compatibilityMapList == null) return;
 
                 foreach (var host in compatibilityMapList)
                 {
