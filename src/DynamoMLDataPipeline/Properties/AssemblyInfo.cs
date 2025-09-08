@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 [assembly: Guid("f2fcfd49-84bc-4c0e-90c1-5a327d017c4e")]
 
 [assembly: InternalsVisibleTo("DynamoCoreWpf")]
+[assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
 // Version information for an assembly consists of the following four values:
 //
 //      Major Version
