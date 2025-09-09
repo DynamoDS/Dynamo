@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
@@ -9,6 +11,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
+using Dynamo.PythonServices;
 using Dynamo.Session;
 using Greg;
 using Greg.Responses;
@@ -149,10 +152,28 @@ namespace Dynamo.PackageManager
             PackageLoader.RequestLoadNodeLibrary += RequestLoadNodeLibraryHandler;
             PackageLoader.RequestLoadCustomNodeDirectory += RequestLoadCustomNodeDirectoryHandler;
 
+            // Ensure at least one Python engine is available before packages are scanned.
             if (PythonServices.PythonEngineManager.Instance.AvailableEngines.Count == 0)
             {
-                PythonServices.PythonEngineManager.Instance.LoadDefaultPythonEngine(AppDomain.CurrentDomain.GetAssemblies().
-                                                                                    FirstOrDefault(a => a != null && a.GetName().Name == PythonServices.PythonEngineManager.PythonNet3AssemblyName));
+                //PythonServices.PythonEngineManager.Instance.LoadDefaultPythonEngine(AppDomain.CurrentDomain.GetAssemblies().
+                //                                                                    FirstOrDefault(a => a != null && a.GetName().Name == PythonServices.PythonEngineManager.PythonNet3AssemblyName));
+
+                var bin = startupParams.PathManager.DynamoCoreDirectory;
+                var asmPath = Path.Combine( bin, PythonEngineManager.PythonNet3AssemblyName + ".dll");
+
+                if (File.Exists(asmPath))
+                {
+                    var asm = Assembly.LoadFrom(asmPath);
+                    PythonEngineManager.Instance.LoadDefaultPythonEngine(asm);
+                }
+                else
+                {
+                    var asm = AppDomain.CurrentDomain
+                        .GetAssemblies()
+                        .FirstOrDefault(a => a?.GetName().Name == PythonEngineManager.PythonNet3AssemblyName);
+                    if (asm != null)
+                        PythonEngineManager.Instance.LoadDefaultPythonEngine(asm);
+                }
             }
 
             PythonServices.PythonEngineManager.Instance.AvailableEngines.CollectionChanged += PythonEngineAdded;

@@ -15,15 +15,6 @@ namespace DSPythonNet3.Encoders
             typeof(IEnumerable), typeof(IEnumerable<>)
         };
 
-        public bool CanDecode(PyType objectType, Type targetType)
-        {
-            if (targetType.IsGenericType)
-            {
-                targetType = targetType.GetGenericTypeDefinition();
-            }
-            return decodableTypes.IndexOf(targetType) >= 0;
-        }
-
         public bool CanEncode(Type type)
         {
             return typeof(IList).IsAssignableFrom(type);
@@ -56,6 +47,15 @@ namespace DSPythonNet3.Encoders
             // This is a no-op to prevent Python.NET from encoding generic lists
             // https://github.com/pythonnet/pythonnet/pull/963#issuecomment-642938541
             return PyObject.FromManagedObject(value);
+        }
+
+        bool IPyObjectDecoder.CanDecode(PyType objectType, Type targetType)
+        {
+            if (targetType.IsGenericType)
+            {
+                targetType = targetType.GetGenericTypeDefinition();
+            }
+            return decodableTypes.IndexOf(targetType) >= 0;
         }
     }
 }

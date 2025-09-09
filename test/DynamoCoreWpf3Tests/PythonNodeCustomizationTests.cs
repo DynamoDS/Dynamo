@@ -133,11 +133,11 @@ namespace DynamoCoreWpfTests
             var ironPython2MenuItem = engineMenuItem.Items
                 .OfType<MenuItem>()
                 .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionTwo);
-            var cPython3MenuItem = engineMenuItem.Items
+            var pythonNet3MenuItem = engineMenuItem.Items
                 .OfType<MenuItem>()
                 .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree);
             Assert.AreEqual(false, ironPython2MenuItem.IsChecked);
-            Assert.AreEqual(true, cPython3MenuItem.IsChecked);
+            Assert.AreEqual(true, pythonNet3MenuItem.IsChecked);
             DispatcherUtil.DoEvents();
         }
 
@@ -511,15 +511,15 @@ namespace DynamoCoreWpfTests
 
             Assert.IsNotNull(engineMenuItem);
 
-            //Get the python engine menu option "CPython3"
-            var cPython3MenuItem = engineMenuItem.Items
+            //Get the python engine menu option"CPython3"
+            var pythonNet3MenuItem = engineMenuItem.Items
                 .OfType<MenuItem>()
-                .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree);
+                .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionNetThree);
 
-            Assert.IsNotNull(cPython3MenuItem);
+            Assert.IsNotNull(pythonNet3MenuItem);
 
             //Click the CPython3 option (previously was IronPython2)
-            cPython3MenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            pythonNet3MenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
 
             DispatcherUtil.DoEvents();
 

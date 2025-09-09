@@ -133,7 +133,7 @@
     <value>Python Engine Version</value>
   </data>
   <data name="PythonNodeContextMenuEngineVersionThree" xml:space="preserve">
-    <value>CPython3</value>
+    <value>PythonNet3</value>
   </data>
   <data name="PythonNodeContextMenuEngineVersionTwo" xml:space="preserve">
     <value>IronPython2</value>
@@ -217,5 +217,8 @@
   </data>
   <data name="PythonScriptUnsavedChangesPromptTitle" xml:space="preserve">
     <value>Are you sure you want to leave?</value>
+  </data>
+  <data name="PythonNodeContextMenuEngineVersionNetThree" xml:space="preserve">
+    <value>PythonNet3</value>
   </data>
 </root>

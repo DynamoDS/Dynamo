@@ -414,7 +414,11 @@ sys.stdout = DynamoStdOut({0})
         /// </summary>
         private static void InitializeEncoders()
         {
-            var shared = new object[] { new ListEncoderDecoder() };
+            var shared = new object[]
+            {
+                new BigIntegerEncoderDecoder(),
+                new ListEncoderDecoder()
+            };
             var encoders = shared.Cast<IPyObjectEncoder>().ToArray();
 
             var decoders = shared.Cast<IPyObjectDecoder>().Concat(new IPyObjectDecoder[]
@@ -433,19 +437,33 @@ sys.stdout = DynamoStdOut({0})
         /// <returns>Trace back message</returns>
         private static string GetTraceBack(Exception e)
         {
-            var pythonExc = e as PythonException;
-            if (!(e is PythonException))
+            if (e is not PythonException pythonExc || pythonExc.Traceback == null)
             {
                 return null;
             }
 
             // Return the value of the trace back field (private)
-            var field = typeof(PythonException).GetField("_tb", BindingFlags.NonPublic | BindingFlags.Instance);
+            var field = typeof(PythonException).GetMethod("TracebackToString", BindingFlags.NonPublic | BindingFlags.Static);
             if (field == null)
             {
                 throw new NotSupportedException(Properties.Resources.InternalErrorTraceBackInfo);
             }
-            return field.GetValue(pythonExc).ToString();
+
+            return (string?)field.Invoke(pythonExc, [pythonExc.Traceback]);
+
+            //var pythonExc = e as PythonException;
+            //if (!(e is PythonException))
+            //{
+            //    return null;
+            //}
+
+            //// Return the value of the trace back field (private)
+            //var field = typeof(PythonException).GetField("_tb", BindingFlags.NonPublic | BindingFlags.Instance);
+            //if (field == null)
+            //{
+            //    throw new NotSupportedException(Properties.Resources.InternalErrorTraceBackInfo);
+            //}
+            //return field.GetValue(pythonExc).ToString();
         }
 
         #region Marshalling

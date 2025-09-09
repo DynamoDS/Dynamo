@@ -44,7 +44,7 @@
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\src\Libraries\DSPythonNet3\DSPythonNet3.csproj">
-      <Project>{f1541c2d-80a9-4fe7-8d9e-75a8b9ff3479}</Project>
+      <Project>{C3A7A43A-CD4B-4DA2-99EA-D3455B1285C4}</Project>
       <Name>DSPythonNet3</Name>
       <Private>False</Private>
     </ProjectReference>

@@ -186,5 +186,13 @@ namespace Dynamo.PythonMigration
 
             return pythonNode.EngineName == PythonEngineManager.PythonNet3EngineName;
         }
+
+        internal static bool IsCPython3Node(NodeModel obj)
+        {
+            if (!(obj is PythonNodeBase pythonNode))
+                return false;
+
+            return pythonNode.EngineName == PythonEngineManager.CPython3EngineName;
+        }
     }
 }
