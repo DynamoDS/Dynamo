@@ -17,6 +17,7 @@ using Dynamo.Wpf.Controls;
 using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views;
 using NUnit.Framework;
+using DynamoMLDataPipeline;
 
 
 namespace DynamoCoreWpfTests
@@ -202,6 +203,33 @@ namespace DynamoCoreWpfTests
 
             bool isToastNotificationVisible = (bool)(ViewModel.MainGuideManager?.ExitTourPopupIsVisible);
             Assert.IsFalse(isToastNotificationVisible);
+        }
+
+        [Category("Failure")]
+        // Terms of use test on workspace close event.
+        [Test]
+        public void TestTOUWorkspaceClose()
+        {
+            // Open workspace with test mode as false, to verify trust warning.
+            DynamoModel.IsTestMode = false;
+            Open(@"core\watch\WatchDictionary.dyn");
+            ViewModel.PreferenceSettings.IsMLAutocompleteTOUApproved = false;
+
+            // Close workspace
+            Assert.IsTrue(ViewModel.CloseHomeWorkspaceCommand.CanExecute(null));
+            ViewModel.CloseHomeWorkspaceCommand.Execute(null);
+
+            Assert.IsFalse(ViewModel.MLDataPipelineExtension.DynamoMLDataPipeline.isWorkspaceSharedWithML);
+
+            //reopen
+            Open(@"core\watch\WatchDictionary.dyn");
+            ViewModel.PreferenceSettings.IsMLAutocompleteTOUApproved = true;
+
+            // Close workspace
+            Assert.IsTrue(ViewModel.CloseHomeWorkspaceCommand.CanExecute(null));
+            ViewModel.CloseHomeWorkspaceCommand.Execute(null);
+
+            Assert.IsTrue(ViewModel.MLDataPipelineExtension.DynamoMLDataPipeline.isWorkspaceSharedWithML);
         }
     }
 }
