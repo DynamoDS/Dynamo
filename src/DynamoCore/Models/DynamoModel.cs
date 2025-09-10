@@ -159,6 +159,9 @@ namespace Dynamo.Models
         /// </summary>
         internal Dictionary<string, List<string>> GraphChecksumDictionary { get; set; }
 
+        // Get ProgramData folder path (usually C:\ProgramData)
+        static readonly string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+
         #endregion
 
         #region static properties
@@ -1644,9 +1647,6 @@ namespace Dynamo.Models
         {
             if (!(preferences is IDisablePackageLoadingPreferences disablePrefs)) return false;
 
-            // Get ProgramData folder path (usually C:\ProgramData)
-            string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-
             var isACustomPackageDirectory = preferences.CustomPackageFolders.Where(x => packagesDirectory.StartsWith(x)).Any();
 
             return
@@ -1655,7 +1655,7 @@ namespace Dynamo.Models
             (disablePrefs.DisableBuiltinPackages && packagesDirectory == Core.PathManager.BuiltinPackagesDirectory)
             //or if custom package directories are disabled, and this is a custom package directory, don't scan.
             || (disablePrefs.DisableCustomPackageLocations && isACustomPackageDirectory)
-            || packagesDirectory.IndexOf(programDataPath, StringComparison.OrdinalIgnoreCase) >= 0;
+            || packagesDirectory.StartsWith(programDataPath, StringComparison.OrdinalIgnoreCase);
         }
 
         private void InitializeNodeLibrary()
