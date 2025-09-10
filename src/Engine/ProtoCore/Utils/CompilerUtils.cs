@@ -240,6 +240,23 @@ namespace ProtoCore.Utils
                 {
                     provider.GenerateCodeFromExpression(new CodePrimitiveExpression(input), writer, new CodeGeneratorOptions { IndentString = "\t" });
                     var literString = writer.ToString();
+
+                    // Handle .NET 10.0's concatenated string format
+                    if (literString.Contains(" +"))
+                    {
+                        // Remove the concatenation parts and join the strings
+                        literString = literString.Replace(" +", "")
+                                               .Replace("\r\n\t\"", "")
+                                               .Replace("\"", "");
+
+                        // Remove the outer parentheses
+                        if (literString.StartsWith("(") && literString.EndsWith(")"))
+                        {
+                            return literString.Substring(1, literString.Length - 2);
+                        }
+                        return literString;
+                    }
+
                     literString = literString.Replace(string.Format("\" +{0}\t\"", Environment.NewLine), "");
                     return literString.Substring(1, literString.Length - 2);
                 }
