@@ -1655,6 +1655,7 @@ namespace Dynamo.Models
             (disablePrefs.DisableBuiltinPackages && packagesDirectory == Core.PathManager.BuiltinPackagesDirectory)
             //or if custom package directories are disabled, and this is a custom package directory, don't scan.
             || (disablePrefs.DisableCustomPackageLocations && isACustomPackageDirectory)
+            //or if the package directory starts with the path "C:\ProgramData" then we disable the path due to security concerns (now packages will be loaded only from AppData).
             || packagesDirectory.StartsWith(programDataPath, StringComparison.OrdinalIgnoreCase);
         }
 
