@@ -1,13 +1,14 @@
+using Dynamo.Engine;
+using Dynamo.Interfaces;
+using Dynamo.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Windows.Media;
-using Dynamo.Engine;
-using Dynamo.Interfaces;
-using Dynamo.Utilities;
 
 namespace Dynamo.Wpf.Services
 {
@@ -80,8 +81,20 @@ namespace Dynamo.Wpf.Services
             ResourceManager rm = new ResourceManager(assemblyName + imagesSuffix, resourceAssembly);
 
             ImageSource bitmapSource = null;
+            Bitmap source = null;
 
-            var source = (Bitmap)rm.GetObject(iconKey);
+            try
+            {
+                using (var ms = new MemoryStream(rm.GetObject(iconKey) as byte[]))
+                {
+                    source = new Bitmap(ms);
+                }
+            }
+            catch(Exception e)
+            {
+                //log the error
+            }
+
             if (source == null)
             {
                 cachedIcons.Add(iconKey, null);
