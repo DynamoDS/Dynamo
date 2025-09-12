@@ -19,6 +19,7 @@ namespace Dynamo.Configuration
 {
     static class ExtensionMethods
     {
+        //Sorry for the spam
         /// <summary>
         /// Copy Properties from a PreferenceSettings instance to another iterating the Properties of the destination instance and populate them from their source counterparts, excluding the properties that are obsolete and only read.
         /// </summary>
