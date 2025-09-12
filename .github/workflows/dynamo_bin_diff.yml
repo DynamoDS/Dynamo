@@ -93,7 +93,7 @@ jobs:
       - name: Setup msbuild
         uses: microsoft/setup-msbuild@v2
       - name: Install dependencies for windows runtime
-        run: dotnet restore ${{ github.workspace }}\master\src\Dynamo.All.sln /p:Configuration=Release --runtime=win-x64 -p:DotNet=net10.0
+        run: dotnet restore ${{ github.workspace }}\master\src\Dynamo.All.sln /p:Configuration=Release --runtime=win-x64 /p:DotNet=net10.0
       - name: Build Dynamo with MSBuild
         run: msbuild ${{ github.workspace }}\master\src\Dynamo.All.sln /p:Configuration=Release
       - name: Look for DynamoCLI.exe
