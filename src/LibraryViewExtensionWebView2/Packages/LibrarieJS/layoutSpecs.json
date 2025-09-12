@@ -1342,8 +1342,11 @@
                         "path": "DSCoreNodes.DSCore.String.Join"
                     },
                     {
-                        "path": "Core.String"
+                        "path": "Core.String.Formatted String from Object"
                     },
+                    {
+                        "path": "Core.String.Formatted String from Array"
+                    }
                 ],
               "childElements": []
             }

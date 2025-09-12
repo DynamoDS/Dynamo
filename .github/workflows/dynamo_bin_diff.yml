@@ -32,7 +32,7 @@ jobs:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: | 
+          dotnet-version: |
             8.0.x
             9.0.x
             10.0.x
@@ -43,7 +43,7 @@ jobs:
       - name: Install dependencies for windows runtime
         run: dotnet restore ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln /p:Configuration=Release --runtime=win-x64 -p:DotNet=net10.0
       - name: Build Dynamo with MSBuild
-        run: msbuild ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln /p:Configuration=Release 
+        run: msbuild ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln /p:Configuration=Release
       - name: Look for DynamoCLI.exe
         run: |
           Write-Output "***Locating DynamoCLI.exe!***"
@@ -75,7 +75,7 @@ jobs:
           {
             "projects": ["src", "test"],
             "sdk": {
-              "version": "8.0.100",
+              "version": "10.0.100-preview.7.25380.108",
               "rollForward": "latestFeature"
             }
           }
@@ -84,7 +84,7 @@ jobs:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: | 
+          dotnet-version: |
             8.0.x
             9.0.x
             10.0.x
@@ -93,9 +93,9 @@ jobs:
       - name: Setup msbuild
         uses: microsoft/setup-msbuild@v2
       - name: Install dependencies for windows runtime
-        run: dotnet restore ${{ github.workspace }}\master\src\Dynamo.All.sln /p:Configuration=Release --runtime=win-x64 
+        run: dotnet restore ${{ github.workspace }}\master\src\Dynamo.All.sln /p:Configuration=Release --runtime=win-x64 /p:DotNet=net10.0
       - name: Build Dynamo with MSBuild
-        run: msbuild ${{ github.workspace }}\master\src\Dynamo.All.sln /p:Configuration=Release 
+        run: msbuild ${{ github.workspace }}\master\src\Dynamo.All.sln /p:Configuration=Release
       - name: Look for DynamoCLI.exe
         run: |
           Write-Output "***Locating DynamoCLI.exe!***"
