@@ -178,15 +178,6 @@ namespace Dynamo.GraphMetadata.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Graph _Properties.
-        /// </summary>
-        public static string MenuItemText {
-            get {
-                return ResourceManager.GetString("MenuItemText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to String is not a valid URI.
         /// </summary>
         public static string URIValidationRule_Fail_Message {
