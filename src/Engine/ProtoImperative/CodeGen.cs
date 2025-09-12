@@ -199,7 +199,6 @@ namespace ProtoImperative
             AuditReturnLocationFromFunction(ref line, ref col, ref endline, ref endcol);
 
             ++pc;
-            instr.debug = GetDebugObject(line, col, endline, endcol, pc);
             codeBlock.instrStream.instrList.Add(instr);
 
             // TODO: Figure out why using AppendInstruction fails for adding these instructions to ExpressionInterpreter
@@ -216,7 +215,6 @@ namespace ProtoImperative
             AuditReturnLocationFromCodeBlock(ref line, ref col, ref endline, ref endcol);
 
             ++pc;
-            instr.debug = GetDebugObject(line, col, endline, endcol, pc);
             codeBlock.instrStream.instrList.Add(instr);
 
             // TODO: Figure out why using AppendInstruction fails for adding these instructions to ExpressionInterpreter
@@ -233,7 +231,6 @@ namespace ProtoImperative
             AuditReturnLocationFromCodeBlock(ref line, ref col, ref endline, ref endcol);
 
             ++pc;
-            instr.debug = GetDebugObject(line, col, endline, endcol, pc);
             codeBlock.instrStream.instrList.Add(instr);
 
             // TODO: Figure out why using AppendInstruction fails for adding these instructions to ExpressionInterpreter
@@ -465,7 +462,6 @@ namespace ProtoImperative
                     // The function call
                     EmitInstrConsole(ProtoCore.DSASM.kw.callr, procNode.Name);
 
-                    DebugProperties.BreakpointOptions oldOptions = core.DebuggerProperties.breakOptions;
                     if(procNode.Name.StartsWith(Constants.kSetterPrefix))
                     {
                         EmitCall(procNode.ID, blockId, type, parentNode.line, parentNode.col, parentNode.endLine, parentNode.endCol);
@@ -474,8 +470,7 @@ namespace ProtoImperative
                     {
                         EmitCall(procNode.ID, blockId, type, bnode.line, bnode.col, bnode.endLine, bnode.endCol);
                     }
-                    else if (!procNode.Name.Equals(Constants.kFunctionRangeExpression) ||
-                        oldOptions.HasFlag(DebugProperties.BreakpointOptions.EmitCallrForTempBreakpoint))
+                    else if (!procNode.Name.Equals(Constants.kFunctionRangeExpression))
                     {
                         EmitCall(procNode.ID, blockId, type, node.line, node.col, node.endLine, node.endCol);
                     }
@@ -610,7 +605,6 @@ namespace ProtoImperative
 
         private int EmitExpressionInterpreter(ProtoCore.AST.Node codeBlockNode)
         {
-            core.watchStartPC = this.pc;
             ProtoCore.AST.ImperativeAST.CodeBlockNode codeblock = codeBlockNode as ProtoCore.AST.ImperativeAST.CodeBlockNode;
 
             ProtoCore.Type inferedType = new ProtoCore.Type();
@@ -622,20 +616,12 @@ namespace ProtoImperative
             }
             core.InferedType = inferedType;
 
-            this.pc = core.watchStartPC;
-
             return codeBlock.codeBlockId;
         }
 
 
         public override int Emit(ProtoCore.AST.Node codeBlockNode, ProtoCore.AssociativeGraph.GraphNode graphNode = null)
         {
-            core.watchStartPC = this.pc;
-            if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.Expression)
-            {
-                return EmitExpressionInterpreter(codeBlockNode);
-            }
-
             this.localCodeBlockNode = codeBlockNode;
             ProtoCore.AST.ImperativeAST.CodeBlockNode codeblock = codeBlockNode as ProtoCore.AST.ImperativeAST.CodeBlockNode;
             // Imperative language block would never be the top language block.
@@ -1394,11 +1380,6 @@ namespace ProtoImperative
 
                 DfsTraverse(b.LeftNode, ref inferedType, isBooleanOperation, graphNode, ProtoCore.CompilerDefinitions.SubCompilePass.None, parentNode);
 
-                if (inferedType.UID == (int)PrimitiveType.FunctionPointer && emitDebugInfo)
-                {
-                    buildStatus.LogSemanticError(Resources.FunctionPointerNotAllowedAtBinaryExpression, core.CurrentDSFileName, b.LeftNode.line, b.LeftNode.col);
-                }
-
                 leftType.UID = inferedType.UID;
                 leftType.rank = inferedType.rank;
             }
@@ -1514,11 +1495,6 @@ namespace ProtoImperative
 
             if (b.Optr != Operator.assign)
             {
-                if (inferedType.UID == (int)PrimitiveType.FunctionPointer && emitDebugInfo)
-                {
-                    var message = Resources.FunctionPointerNotAllowedAtBinaryExpression;
-                    buildStatus.LogSemanticError(message, core.CurrentDSFileName, b.RightNode.line, b.RightNode.col);
-                }
                 EmitBinaryOperation(leftType, rightType, b.Optr);
 
                 return;
@@ -1542,10 +1518,6 @@ namespace ProtoImperative
                         bool isAccessibleFp;
                         int realType;
                         var procNode = core.ClassTable.ClassNodes[globalClassIndex].GetMemberFunction(t.Name, null, globalClassIndex, out isAccessibleFp, out realType);
-                        if (procNode != null && procNode.ID != Constants.kInvalidIndex && emitDebugInfo)
-                        {
-                            buildStatus.LogSemanticError(String.Format(Resources.FunctionAsVaribleError, t.Name), core.CurrentDSFileName, t.line, t.col);
-                        }
                     }
 
                     bool isAccessible;
@@ -1874,10 +1846,6 @@ namespace ProtoImperative
                     x = x + val;
                 }
                 */
-                DebugProperties.BreakpointOptions oldOptions = core.DebuggerProperties.breakOptions;
-                DebugProperties.BreakpointOptions newOptions = oldOptions;
-                newOptions |= DebugProperties.BreakpointOptions.EmitCallrForTempBreakpoint;
-                core.DebuggerProperties.breakOptions = newOptions;
 
                 // TODO Jun: This compilation unit has many opportunities for optimization 
                 //      1. Compiling to while need not be necessary if 'expr' has exactly one element
@@ -1945,18 +1913,8 @@ namespace ProtoImperative
                 
                 NodeUtils.UpdateBinaryExpressionLocation(arrayexprAssignment);
 
-                switch (forNode.Expression.GetType().ToString())
-                {
-                    case "ProtoCore.AST.ImperativeAST.IdentifierNode":
-                    case "ProtoCore.AST.ImperativeAST.ExprListNode":
-                        newOptions |= DebugProperties.BreakpointOptions.EmitPopForTempBreakpoint;
-                        core.DebuggerProperties.breakOptions = newOptions;
-                        break;
-                }
-
                 type.UID = (int)ProtoCore.PrimitiveType.Void;
                 EmitBinaryExpressionNode(arrayexprAssignment, ref type, isBooleanOp, graphNode);
-                core.DebuggerProperties.breakOptions = oldOptions; // Restore breakpoint behaviors.
 
                 // %counter = 0;
                 var countIdent = GetForLoopCounter();
@@ -2109,14 +2067,7 @@ namespace ProtoImperative
             ifNode.IfBody = trueBody;
             ifNode.ElseBody = falseBody;
 
-            DebugProperties.BreakpointOptions oldOptions = core.DebuggerProperties.breakOptions;
-            DebugProperties.BreakpointOptions newOptions = oldOptions;
-            newOptions |= DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint;
-            core.DebuggerProperties.breakOptions = newOptions;
-
             EmitIfStmtNode(ifNode, ref inferedType, parentNode, true, graphNode);
-
-            core.DebuggerProperties.breakOptions = oldOptions;
         }
 
         private void EmitRangeExprNode(ImperativeNode node, ref ProtoCore.Type inferedType, ProtoCore.AssociativeGraph.GraphNode graphNode = null)
