@@ -1006,6 +1006,25 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Python Engine Change.
+        /// </summary>
+        public static string CPython3EngineNotificationMessageBoxHeader {
+            get {
+                return ResourceManager.GetString("CPython3EngineNotificationMessageBoxHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This graph includes CPython nodes, which are no longer supported in Dynamo 4.0. Saving will convert them to PythonNet3, the new default engine.
+        ///To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the Package Manager and manually migrate the nodes back to CPython..
+        /// </summary>
+        public static string CPython3EngineNotificationMessageBoxText {
+            get {
+                return ResourceManager.GetString("CPython3EngineNotificationMessageBoxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy.
         /// </summary>
         public static string CrashPromptDialogCopyButton {
@@ -4433,6 +4452,15 @@ namespace Dynamo.Wpf.Properties {
         public static string MessageAlreadyInstallDynamo {
             get {
                 return ResourceManager.GetString("MessageAlreadyInstallDynamo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Don&apos;t show this again.
+        /// </summary>
+        public static string MessageBoxDontShowAgainLabel {
+            get {
+                return ResourceManager.GetString("MessageBoxDontShowAgainLabel", resourceCulture);
             }
         }
         
@@ -8249,6 +8277,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewGroupStylesHeader {
             get {
                 return ResourceManager.GetString("PreferencesViewGroupStylesHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide CPython notifications.
+        /// </summary>
+        public static string PreferencesViewHideCPythonNotifications {
+            get {
+                return ResourceManager.GetString("PreferencesViewHideCPythonNotifications", resourceCulture);
             }
         }
         

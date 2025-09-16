@@ -221,4 +221,7 @@
   <data name="PythonNodeContextMenuEngineVersionNetThree" xml:space="preserve">
     <value>PythonNet3</value>
   </data>
+  <data name="PythonScriptEditorEngineAutoUpdatedBarText" xml:space="preserve">
+    <value>Python Engine Automatically Updated to PythonNet3</value>
+  </data>
 </root>

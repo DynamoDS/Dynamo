@@ -6,11 +6,9 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using Dynamo.Annotations;
-using Dynamo.Controls;
 using Dynamo.Events;
 using Dynamo.Logging;
 using Dynamo.Session;
-using Dynamo.Utilities;
 
 namespace Dynamo.UI.Prompts
 {
@@ -25,6 +23,7 @@ namespace Dynamo.UI.Prompts
         private string bodyText;
         private MessageBoxButton messageBoxButton;
         private MessageBoxImage messageBoxImage;
+        private bool extraCheckBoxChecked;
         #endregion
 
         #region Public Properties
@@ -362,6 +361,45 @@ namespace Dynamo.UI.Prompts
             SetOwnerWindow(owner, dynamoMessageBox);
             dynamoMessageBox.ConfigureButtons(button, buttonNames);
             dynamoMessageBox.ShowDialog();
+            return dynamoMessageBox.CustomDialogResult;
+        }
+
+        public static MessageBoxResult ShowWithCheckbox(
+            Window owner,
+            string messageBoxText,
+            string caption,
+            MessageBoxButton button,
+            IEnumerable<string> buttonNames,
+            MessageBoxImage icon,
+            string checkboxText,
+            out bool isChecked)
+        {
+            var dynamoMessageBox = new DynamoMessageBox
+            {
+                BodyText = messageBoxText,
+                TitleText = caption,
+                MessageBoxButton = button,
+                MessageBoxImage = icon,
+            };
+
+            SetOwnerWindow(owner, dynamoMessageBox);
+            dynamoMessageBox.ConfigureButtons(button, buttonNames);
+
+            if (string.IsNullOrWhiteSpace(checkboxText))
+            {
+                dynamoMessageBox.ExtraCheckPanel.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                dynamoMessageBox.ExtraCheckPanel.Visibility = Visibility.Visible;
+                dynamoMessageBox.ExtraCheckBoxLabel.Content = checkboxText;
+                dynamoMessageBox.ExtraCheckBox.IsChecked = false;
+            }
+
+            dynamoMessageBox.ShowDialog();
+
+            // Capture the checkbox state
+            isChecked = (dynamoMessageBox.ExtraCheckBox?.IsChecked) ?? false;
             return dynamoMessageBox.CustomDialogResult;
         }
 

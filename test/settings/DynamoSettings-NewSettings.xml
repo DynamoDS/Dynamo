@@ -76,6 +76,7 @@
   <OpenFileInManualExecutionMode>true</OpenFileInManualExecutionMode>
   <IsIronPythonDialogDisabled>true</IsIronPythonDialogDisabled>
   <ShowTabsAndSpacesInScriptEditor>true</ShowTabsAndSpacesInScriptEditor>
+  <HideCPython3Notifications>true</HideCPython3Notifications>
   <EnableNodeAutoComplete>false</EnableNodeAutoComplete>
   <EnableNewNodeAutoCompleteUI>false</EnableNewNodeAutoCompleteUI>
   <DefaultEnableLegacyPolyCurveBehavior>false</DefaultEnableLegacyPolyCurveBehavior>

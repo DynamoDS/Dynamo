@@ -4194,4 +4194,17 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
     <value>Hide unconnected output ports by default</value>
   </data>
+  <data name="PreferencesViewHideCPythonNotifications" xml:space="preserve">
+    <value>Hide CPython notifications</value>
+  </data>
+  <data name="MessageBoxDontShowAgainLabel" xml:space="preserve">
+    <value>Don't show this again</value>
+  </data>
+  <data name="CPython3EngineNotificationMessageBoxHeader" xml:space="preserve">
+    <value>Python Engine Change</value>
+  </data>
+  <data name="CPython3EngineNotificationMessageBoxText" xml:space="preserve">
+    <value>This graph includes CPython nodes, which are no longer supported in Dynamo 4.0. Saving will convert them to PythonNet3, the new default engine.
+To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the Package Manager and manually migrate the nodes back to CPython.</value>
+  </data>
 </root>

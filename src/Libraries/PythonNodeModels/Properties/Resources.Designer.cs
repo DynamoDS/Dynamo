@@ -187,6 +187,15 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Python Engine Automatically Updated to PythonNet3.
+        /// </summary>
+        public static string PythonScriptEditorEngineAutoUpdatedBarText {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorEngineAutoUpdatedBarText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select the Python version/engine to execute the script.
         /// </summary>
         public static string PythonScriptEditorEngineDropdownTooltip {

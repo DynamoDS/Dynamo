@@ -1,17 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Core;
-using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
-using Dynamo.PackageManager;
 using Dynamo.PythonMigration.Controls;
 using Dynamo.PythonMigration.MigrationAssistant;
 using Dynamo.PythonMigration.Properties;
+using Dynamo.PythonServices;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using PythonNodeModels;
@@ -22,6 +22,9 @@ namespace Dynamo.PythonMigration
     {
         private const string EXTENSION_NAME = "Python Migration";
         private const string EXTENSION_GUID = "1f8146d0-58b1-4b3c-82b7-34a3fab5ac5d";
+        private bool hasCPython3Engine;
+        private bool hasPythonNet3Engine;
+        private bool enginesSubscribed;
 
         internal ViewLoadedParams LoadedParams { get; set; }
         internal DynamoViewModel DynamoViewModel { get; set; }
@@ -77,43 +80,19 @@ namespace Dynamo.PythonMigration
             Dispatcher = Dispatcher.CurrentDispatcher;
 
             SubscribeToDynamoEvents();
+            InitEngineFlagAndSubscribe();
         }
-
-
-        private const string CPython3NoticeId = "CPython3_Migration_Notice";
 
         private void LogCPython3Notification()
         {
             if (NotificationTracker.ContainsKey(CurrentWorkspace.Guid))
                 return;
 
-            //DynamoViewModel.Model.Logger.LogNotification(
-            //    GetType().Name,
-            //    EXTENSION_NAME,
-            //    "CPython3 Notification Short Message here ...",
-            //    "CPython3 Notification Detailed Message here ...");
-
-            ShowPythonNet3Popup();
-        }
-
-        private void ShowPythonNet3Popup()
-        {
-            //var owner = LoadedParams.DynamoWindow;
-            //var vm = new Dynamo.Wpf.ViewModels.PythonNet3NotificationViewModel
-            //{
-            //    ShowPopup = true,
-            //    CPythonNodeCount = CurrentWorkspace?.Nodes.Count(n => GraphPythonDependencies.IsCPython3Node(n)) ?? 0
-            //};
-
-            //var popup = new Dynamo.Wpf.Views.PythonNet3Notification(owner)
-            //{
-            //    DataContext = vm,
-            //    Owner = owner
-            //};
-
-            //// For tests, prefer non-modal
-            //if (Dynamo.Models.DynamoModel.IsTestMode) popup.Show();
-            //else popup.ShowDialog();
+            DynamoViewModel.Model.Logger.LogNotification(
+                GetType().Name,
+                EXTENSION_NAME,
+                Resources.CPython3NotificationShortMessage,
+                Resources.CPython3NotificationDetailedMessage);
         }
 
         private void LogIronPythonNotification()
@@ -131,15 +110,6 @@ namespace Dynamo.PythonMigration
         internal void OpenPythonMigrationWarningDocumentation()
         {
             LoadedParams.ViewModelCommandExecutive.OpenDocumentationLinkCommand(Python3HelpLink);
-        }
-
-        private void EvaluateAndNotifyForWorkspace()
-        {
-            if (CurrentWorkspace == null) return;
-            
-            var hasCP3 = CurrentWorkspace.Nodes.Any(n => GraphPythonDependencies.IsCPython3Node(n));
-
-            if (hasCP3) LogCPython3Notification();
         }
 
         #region Events
@@ -192,9 +162,10 @@ namespace Dynamo.PythonMigration
                 }
             }
 
-            if (obj is PythonNodeBase)
+            if (obj is PythonNodeBase pyNode)
             {
-                SubscribeToPythonNodeEvents(obj as PythonNodeBase);
+                SubscribeToPythonNodeEvents(pyNode);
+                RecomputeCPython3NotificationForNode(pyNode);
             }
         }
 
@@ -215,7 +186,8 @@ namespace Dynamo.PythonMigration
 
             NotificationTracker.Remove(CurrentWorkspace.Guid);
             GraphPythonDependencies.CustomNodePythonDependencyMap.Clear();
-            EvaluateAndNotifyForWorkspace();
+
+            RecomputeCPython3NotificationForWorkspace();
 
             CurrentWorkspace.Nodes
                 .Where(x => x is PythonNodeBase)
@@ -275,8 +247,138 @@ namespace Dynamo.PythonMigration
             {
                 CurrentWorkspace.RequestPythonEngineMapping -= PythonDependencies.GetPythonEngineMapping;
             }
+
+            if (enginesSubscribed)
+            {
+                PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= AvailableEngines_CollectionChanged;
+                enginesSubscribed = false;
+            }
+
             UnSubscribeWorkspaceEvents();
         }
         #endregion
+
+        private void RecomputeCPython3NotificationForNode(PythonNodeBase pyNode)
+        {
+            // check if this sis CPython node and we don't have CPython3 engine installed
+            if (GraphPythonDependencies.IsCPython3Node(pyNode) && !hasCPython3Engine)
+            {
+                var preferenceSettings = DynamoViewModel?.Model?.PreferenceSettings;
+                if (preferenceSettings != null && !preferenceSettings.HideCPython3Notifications)
+                {
+                    // Flag that python engine upgrade notice should be shown when the user
+                    // saves or closes the workspace, then call the toas and upgrade the nodes
+                    DynamoViewModel.EnableCPythonNotifications = true;
+                    ShowPythonEngineUpgradeToast(1);
+                    UpgradeAllCPython3Nodes(new List<PythonNodeBase> { pyNode });
+                }
+            }
+        }
+
+        private void RecomputeCPython3NotificationForWorkspace()
+        {
+            if (CurrentWorkspace == null) return;
+
+            var preferenceSettings = DynamoViewModel?.Model?.PreferenceSettings;
+            if (preferenceSettings == null || hasCPython3Engine)
+            {
+                DynamoViewModel.EnableCPythonNotifications = false;
+                return;
+            }
+
+            var cPy3Nodes = CurrentWorkspace.Nodes
+                .OfType<PythonNodeBase>()
+                .Where(n => GraphPythonDependencies.IsCPython3Node(n))
+                .ToList();
+
+            if (cPy3Nodes.Count == 0)
+            {
+                DynamoViewModel.EnableCPythonNotifications = false;
+                return;
+            }
+
+            if (preferenceSettings.HideCPython3Notifications)
+            {
+                DynamoViewModel.EnableCPythonNotifications = false;
+                UpgradeAllCPython3Nodes(cPy3Nodes);
+                return;
+            }
+
+            // Flag that python engine upgrade notice should be shown when the user
+            // saves or closes the workspace, then call the toas and upgrade the nodes
+            DynamoViewModel.EnableCPythonNotifications = true;
+            ShowPythonEngineUpgradeToast(cPy3Nodes.Count);
+            UpgradeAllCPython3Nodes(cPy3Nodes);
+        }
+
+        /// <summary>
+        /// Shows a canvas toast informing the user that legacy CPython nodes were switched to PythonNet3
+        /// </summary>
+        private void ShowPythonEngineUpgradeToast(int nodesCount)
+        {
+            var resource = nodesCount == 1
+                ? Resources.CPythonUpgradeToastMessageSingular
+                : Resources.CPythonUpgradeToastMessagePlural;
+
+            var msg = string.Format(resource, nodesCount);
+
+            Dispatcher.BeginInvoke(
+                DispatcherPriority.Background,
+                new Action(() => DynamoViewModel.ShowPythonEngineUpgradeCanvasToast(msg, stayOpen: true)));
+        }
+
+        private void UpgradeAllCPython3Nodes(List<PythonNodeBase> cPythonNodes)
+        {
+            if (CurrentWorkspace == null) return;
+
+            var hasPyNet3 = PythonEngineManager.Instance.AvailableEngines
+                .Any(e => e.Name == PythonEngineManager.PythonNet3EngineName);
+            if (!hasPyNet3) return;
+
+            // Record for undo
+            using (CurrentWorkspace.UndoRecorder.BeginActionGroup())
+            {
+                foreach (var node in cPythonNodes)
+                {
+                    if (node is PythonNode pyNode)
+                    {
+                        pyNode.ShowAutoUpgradedBar = true;
+                    }
+
+                    CurrentWorkspace.UndoRecorder.RecordModificationForUndo(node);
+                    node.EngineName = PythonEngineManager.PythonNet3EngineName;
+                    node.OnNodeModified();
+                }
+            }
+        }
+
+        private void InitEngineFlagAndSubscribe()
+        {
+            RecomputeEngineFlags();
+
+            if (!enginesSubscribed)
+            {
+                PythonEngineManager.Instance.AvailableEngines.CollectionChanged += AvailableEngines_CollectionChanged;
+                enginesSubscribed = true;
+            }
+        }
+
+        private void AvailableEngines_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            RecomputeEngineFlags();
+            RecomputeCPython3NotificationForWorkspace();
+        }
+
+        /// <summary>
+        /// Checks if we have CPython3 and PythonNet3 engines installed
+        /// </summary>
+        private void RecomputeEngineFlags()
+        {
+            hasCPython3Engine = PythonEngineManager.Instance.AvailableEngines
+                .Any(e => e.Name == PythonEngineManager.CPython3EngineName);
+
+            hasPythonNet3Engine = PythonEngineManager.Instance.AvailableEngines
+                .Any(e => e.Name == PythonEngineManager.PythonNet3EngineName);
+        }
     }
 }

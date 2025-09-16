@@ -184,6 +184,22 @@ namespace PythonNodeModels
     [IsDesignScriptCompatible]
     public sealed class PythonNode : PythonNodeBase
     {
+        private bool isAutoUpgradedFromCPython3;
+        [JsonIgnore]
+        // SUMMARY
+        public bool ShowAutoUpgradedBar
+        {
+            get => isAutoUpgradedFromCPython3;
+            set
+            {
+                if (isAutoUpgradedFromCPython3 != value)
+                {
+                    isAutoUpgradedFromCPython3 = value;
+                    RaisePropertyChanged(nameof(ShowAutoUpgradedBar));
+                }
+            }
+        }
+
         /// <summary>
         /// The NodeType property provides a name which maps to the 
         /// server type for the node. This property should only be

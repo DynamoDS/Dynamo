@@ -100,6 +100,8 @@ namespace Dynamo.ViewModels
 
         internal Dictionary<string, NodeSearchElementViewModel> DefaultAutocompleteCandidates;
 
+        internal bool HasShownCPythonNotice { get; set; }
+
         /// <summary>
         /// Collection of Right SideBar tab items: view extensions and docked windows.
         /// </summary>
@@ -703,6 +705,11 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Enables or disables the CPython 3 notification dialog.
+        /// </summary>
+        public bool EnableCPythonNotifications { get; set; }
+
         #endregion
 
         public struct StartConfiguration
@@ -1110,6 +1117,15 @@ namespace Dynamo.ViewModels
             {
                 this.NodeViewReady(nodeView, new EventArgs());
             }
+        }
+
+        internal event EventHandler<CancelEventArgs> RequestPythonEngineChangeNotice;
+
+        internal bool RaiseRequestPythonEngineChangeNotice()
+        {
+            var args = new CancelEventArgs();
+            RequestPythonEngineChangeNotice?.Invoke(this, args);
+            return args.Cancel;
         }
 
         /// <summary>
@@ -2384,6 +2400,20 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Raised when a toast should be shown to inform about a CPython to PythonNet3 engine upgrade
+        /// </summary>
+        public event Action<string, bool> PythonEngineUpgradeToastRequested;
+
+        /// <summary>
+        /// Requests the UI to show a Python-engine-upgrade toast on the canvas.
+        /// This is UI-agnostic; the View decides when/where to render.
+        /// </summary>
+        public void ShowPythonEngineUpgradeCanvasToast(string message, bool stayOpen = true)
+        {
+            PythonEngineUpgradeToastRequested?.Invoke(message, stayOpen);
+        }
+
+        /// <summary>
         /// Present the open dialog and open the workspace that is selected.
         /// - If template is selected, opens the template folder
         /// - else, if current file is saved , opens the file dialog at the current file's directory
@@ -3032,6 +3062,18 @@ namespace Dynamo.ViewModels
         {
             var vm = this;
 
+            // First-time CPython notice when saving a *new, unsaved* Home workspace
+            if (vm.EnableCPythonNotifications
+                && !HasShownCPythonNotice
+                && vm.Model.CurrentWorkspace is HomeWorkspaceModel)
+            {
+                // Ask the DynamoView to show the UI
+                var cancel = RaiseRequestPythonEngineChangeNotice();
+                if (cancel) return;
+
+                // HasShownCPythonNotice = true; moved to DynamoView
+            } 
+
             if (string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName) || vm.Model.CurrentWorkspace.IsTemplate)
             {
                 if (CanShowSaveDialogAndSaveResult(parameter))
@@ -3402,6 +3444,8 @@ namespace Dynamo.ViewModels
                 Model.CurrentWorkspace = HomeSpace;
 
                 model.ClearCurrentWorkspace();
+
+                HasShownCPythonNotice = false;
 
                 var defaultWorkspace = Workspaces.FirstOrDefault();
                 //Every time that a new workspace is created we have to assign the Default Geometry Scaling value defined in Preferences
