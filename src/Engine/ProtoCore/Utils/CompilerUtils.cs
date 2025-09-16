@@ -1,6 +1,4 @@
 using System;
-using System.CodeDom;
-using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -232,35 +230,62 @@ namespace ProtoCore.Utils
             return core.BuildStatus;
         }
 
+        /// <summary>
+        /// Escapes a string for use in DesignScript string literals.
+        /// DesignScript only requires escaping of backslash and double quote characters.
+        /// All other characters (including Unicode, newlines, tabs, etc.) pass through unchanged.
+        /// Returns the escaped content without surrounding quotes.
+        /// Follows DS string literal guidelines as per https://dynamobim.org/wp-content/links/DesignScriptGuide.pdf
+        /// </summary>
+        /// <param name="input">The string to escape</param>
+        /// <returns>The escaped string suitable for DesignScript string literals</returns>
         internal static string ToLiteral(string input)
         {
-            using (var writer = new StringWriter())
+            if (input == null)
+                return string.Empty;
+
+            // Fast path: most strings won't contain \ or "
+            var needsEscape = false;
+            for (int i = 0; i < input.Length; i++)
             {
-                using (var provider = CodeDomProvider.CreateProvider("CSharp"))
+                if (input[i] == '\\' || input[i] == '\"')
                 {
-                    provider.GenerateCodeFromExpression(new CodePrimitiveExpression(input), writer, new CodeGeneratorOptions { IndentString = "\t" });
-                    var literString = writer.ToString();
-
-                    // Handle .NET 10.0's concatenated string format
-                    if (literString.Contains(" +"))
-                    {
-                        // Remove the concatenation parts and join the strings
-                        literString = literString.Replace(" +", "")
-                                               .Replace("\r\n\t\"", "")
-                                               .Replace("\"", "");
-
-                        // Remove the outer parentheses
-                        if (literString.StartsWith("(") && literString.EndsWith(")"))
-                        {
-                            return literString.Substring(1, literString.Length - 2);
-                        }
-                        return literString;
-                    }
-
-                    literString = literString.Replace(string.Format("\" +{0}\t\"", Environment.NewLine), "");
-                    return literString.Substring(1, literString.Length - 2);
+                    needsEscape = true;
+                    break;
                 }
             }
+            
+            if (!needsEscape)
+                return input;
+
+            // Slow path: escape the characters that need escaping
+            var sb = new System.Text.StringBuilder(input.Length + 8);
+
+            for (int i = 0; i < input.Length; i++)
+            {
+                char c = input[i];
+                switch (c)
+                {
+                    case '\\':
+                        sb.Append("\\\\");  // backslash
+                        break;
+                    case '\"':
+                        sb.Append("\\\"");  // quote
+                        break;
+                    case '\r':
+                        // Preserve CRLF as-is (don't normalize)
+                        sb.Append('\r');
+                        break;
+                    case '\n':
+                        sb.Append('\n');  // Preserve newlines
+                        break;
+                    default:
+                        sb.Append(c);  // Unicode and all other characters go through as-is
+                        break;
+                }
+            }
+            
+            return sb.ToString();
         }
 
         public static bool TryLoadAssemblyIntoCore(Core core, string assemblyPath)
