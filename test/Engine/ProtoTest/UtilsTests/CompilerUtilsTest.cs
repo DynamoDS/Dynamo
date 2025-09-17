@@ -408,12 +408,24 @@ namespace ProtoTest.UtilsTests
                 if (original.Contains("\""))
                 {
                     Assert.IsTrue(escaped.Contains("\\\""), $"Escaped string should contain \\\" for quotes: {escaped}");
-                    // Check that there are no unescaped quotes (quotes not preceded by backslash)
+                    // Check that there are no unescaped quotes (quotes not preceded by odd number of backslashes)
                     for (int i = 0; i < escaped.Length; i++)
                     {
-                        if (escaped[i] == '"' && (i == 0 || escaped[i-1] != '\\'))
+                        if (escaped[i] == '"')
                         {
-                            Assert.Fail($"Escaped string contains unescaped quote at position {i}: {escaped}");
+                            // Count consecutive backslashes immediately before the quote
+                            int backslashCount = 0;
+                            int j = i - 1;
+                            while (j >= 0 && escaped[j] == '\\')
+                            {
+                                backslashCount++;
+                                j--;
+                            }
+                            // If the number of backslashes is even, the quote is unescaped
+                            if (backslashCount % 2 == 0)
+                            {
+                                Assert.Fail($"Escaped string contains unescaped quote at position {i}: {escaped}");
+                            }
                         }
                     }
                 }
