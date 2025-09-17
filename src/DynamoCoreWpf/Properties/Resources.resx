@@ -4191,4 +4191,7 @@ To make this file into a new template, save it to a different folder, then move 
     <value>This graph includes CPython nodes, which are no longer supported in Dynamo 4.0. Saving will convert them to PythonNet3, the new default engine.
 To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the Package Manager and manually migrate the nodes back to CPython.</value>
   </data>
+  <data name="CPython3EngineUpgradeLearnMoreUri" xml:space="preserve">
+    <value>https://dynamobim.org/pythonnet3-a-new-dynamo-python-to-fix-everything/</value>
+  </data>
 </root>

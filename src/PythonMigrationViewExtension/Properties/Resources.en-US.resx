@@ -228,9 +228,9 @@ By clicking “Continue”, you are agreeing to implement the syntax changes to 
     <value>This graph currently contains nodes that are using the old CPython3 engine which has been deprecated. A new PythonNet3 has been implemented and is accessible inside the Python editor.</value>
   </data>
   <data name="CPythonUpgradeToastMessagePlural" xml:space="preserve">
-    <value>CPython nodes have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported.</value>
+    <value>{0} CPython nodes have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported.</value>
   </data>
   <data name="CPythonUpgradeToastMessageSingular" xml:space="preserve">
-    <value>CPython node has been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported.</value>
+    <value>1 CPython node has been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported.</value>
   </data>
 </root>

@@ -293,6 +293,8 @@ namespace Dynamo.Graph.Workspaces
         protected Guid guid;
         private HashSet<Guid> dependencies = new HashSet<Guid>();
         private int delayGraphExecutionCounter = 0;
+        private bool enableCPythonNotifications;
+        private bool hasShownCPythonNotification;
 
         // For workspace references view extension.
         private bool forceComputeWorkspaceReferences;
@@ -1382,6 +1384,31 @@ namespace Dynamo.Graph.Workspaces
             {
                 scaleFactor = value;
                 WorkspaceEvents.OnWorkspaceSettingsChanged(scaleFactor);
+            }
+        }
+
+        /// <summary>
+        /// Flag indicating whether the “Python Engine Change” notice should be shown
+        /// on save/close. Runtime-only (not serialized) and reset on workspace switch.
+        /// </summary>
+        [JsonIgnore]
+        public bool ShowCPythonNotifications
+        {
+            get => enableCPythonNotifications;
+            set
+            {
+                enableCPythonNotifications = value;
+            }
+        }
+
+        // FLags if the “Python Engine Change” notification has already been shown for this workspace.
+        [JsonIgnore]
+        public bool HasShownCPythonNotification
+        {
+            get => hasShownCPythonNotification;
+            set
+            {
+                hasShownCPythonNotification = value;
             }
         }
         #endregion

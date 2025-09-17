@@ -100,8 +100,6 @@ namespace Dynamo.ViewModels
 
         internal Dictionary<string, NodeSearchElementViewModel> DefaultAutocompleteCandidates;
 
-        internal bool HasShownCPythonNotice { get; set; }
-
         /// <summary>
         /// Collection of Right SideBar tab items: view extensions and docked windows.
         /// </summary>
@@ -704,11 +702,6 @@ namespace Dynamo.ViewModels
                 }
             }
         }
-
-        /// <summary>
-        /// Enables or disables the CPython 3 notification dialog.
-        /// </summary>
-        public bool EnableCPythonNotifications { get; set; }
 
         #endregion
 
@@ -3061,20 +3054,19 @@ namespace Dynamo.ViewModels
         public void ShowSaveDialogIfNeededAndSaveResult(object parameter)
         {
             var vm = this;
+            var currentWorkspace = vm.Model.CurrentWorkspace;
 
             // First-time CPython notice when saving a *new, unsaved* Home workspace
-            if (vm.EnableCPythonNotifications
-                && !HasShownCPythonNotice
-                && vm.Model.CurrentWorkspace is HomeWorkspaceModel)
+            if (currentWorkspace.ShowCPythonNotifications
+                && !currentWorkspace.HasShownCPythonNotification)
+                //&& currentWorkspace is HomeWorkspaceModel)              // WHAT VBOUT CUSTOM MORKSPACES?
             {
                 // Ask the DynamoView to show the UI
                 var cancel = RaiseRequestPythonEngineChangeNotice();
                 if (cancel) return;
-
-                // HasShownCPythonNotice = true; moved to DynamoView
             } 
 
-            if (string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName) || vm.Model.CurrentWorkspace.IsTemplate)
+            if (string.IsNullOrEmpty(currentWorkspace.FileName) || currentWorkspace.IsTemplate)
             {
                 if (CanShowSaveDialogAndSaveResult(parameter))
                 {
@@ -3445,7 +3437,7 @@ namespace Dynamo.ViewModels
 
                 model.ClearCurrentWorkspace();
 
-                HasShownCPythonNotice = false;
+                //HasShownCPythonNotice = false;      // this has been moved to the WorkspaceModel and is not serialized
 
                 var defaultWorkspace = Workspaces.FirstOrDefault();
                 //Every time that a new workspace is created we have to assign the Default Geometry Scaling value defined in Preferences

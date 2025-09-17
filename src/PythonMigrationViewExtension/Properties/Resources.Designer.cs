@@ -97,7 +97,7 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CPython nodes have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported..
+        ///   Looks up a localized string similar to {0} CPython nodes have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported..
         /// </summary>
         public static string CPythonUpgradeToastMessagePlural {
             get {
@@ -106,7 +106,7 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CPython node has been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported..
+        ///   Looks up a localized string similar to 1 CPython node has been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported..
         /// </summary>
         public static string CPythonUpgradeToastMessageSingular {
             get {

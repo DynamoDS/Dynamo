@@ -1353,15 +1353,21 @@ namespace Dynamo.Controls
             dynamoViewModel.MainGuideManager = new GuidesManager(_this, dynamoViewModel);
 
             // Subscribes to Python-engine-upgrade toast requests from the ViewModel and
-            // forwards them to GuidesManager on the UI thread so the toast appears in the
-            // top-right of the canvas (same host as other app toasts).
+            // forwards them to GuidesManager on the UI thread
             dynamoViewModel.PythonEngineUpgradeToastRequested += (msg, stayOpen) =>
             {
                 Dispatcher.BeginInvoke(
                     System.Windows.Threading.DispatcherPriority.ContextIdle,
                     new Action(() =>
                     {
-                        dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(msg, stayOpen);
+                        dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(
+                            msg,
+                            stayOpen,
+                            true,
+                            Res.CPython3EngineNotificationMessageBoxHeader,
+                            true,
+                            Res.LearnMore,
+                            new Uri(Res.CPython3EngineUpgradeLearnMoreUri));
                     }));
             };
 
@@ -1675,7 +1681,8 @@ namespace Dynamo.Controls
             }
 
             // Show the one-time Python Engine Change notification for the workspace
-            if (!(e.Workspace is CustomNodeWorkspaceModel) && !dynamoViewModel.HasShownCPythonNotice && dynamoViewModel.EnableCPythonNotifications)
+            var ws = dynamoViewModel.Model.CurrentWorkspace;
+            if (!ws.HasShownCPythonNotification && ws.ShowCPythonNotifications )
             {
                 var cancelFirstDialogBox = ShowPythonEngineChangeNoticeAndMarkIfProceed();
                 if (cancelFirstDialogBox)
@@ -1717,9 +1724,7 @@ namespace Dynamo.Controls
         private bool ShowPythonEngineChangeNoticeAndMarkIfProceed()
         {
             var ws = dynamoViewModel.Model.CurrentWorkspace;
-            if (!(ws is HomeWorkspaceModel) && !(string.IsNullOrEmpty(ws?.FileName)) && dynamoViewModel.HasShownCPythonNotice) return false;
-
-            var c = dynamoViewModel.Model.CurrentWorkspace;
+            if (!(ws is HomeWorkspaceModel) && !(string.IsNullOrEmpty(ws?.FileName)) && ws.HasShownCPythonNotification) return false;
 
             bool dontShowAgain;
 
@@ -1728,7 +1733,7 @@ namespace Dynamo.Controls
                 messageBoxText:Res.CPython3EngineNotificationMessageBoxText,
                 caption: Res.CPython3EngineNotificationMessageBoxHeader,
                 button: MessageBoxButton.YesNoCancel,
-                buttonNames: new[] { "OK", "Cancel", "Learn more" },
+                buttonNames: new[] { Res.GenericTaskDialogOptionOK, Res.GenericTaskDialogOptionCancel, Res.LearnMore },
                 icon: MessageBoxImage.Information,
                 checkboxText: Res.MessageBoxDontShowAgainLabel,
                 isChecked: out dontShowAgain);
@@ -1740,7 +1745,7 @@ namespace Dynamo.Controls
             if (result == MessageBoxResult.Yes)
             {
                 // Mark that the message box has been shown and proceed
-                dynamoViewModel.HasShownCPythonNotice = true;
+                ws.HasShownCPythonNotification = true;
                 return false;
             }
             // Second button (No) is "Cancel"
@@ -1753,8 +1758,7 @@ namespace Dynamo.Controls
             {
                 try
                 {
-                    // TODO: replace with correct link
-                    Process.Start(new ProcessStartInfo("https://help.autodesk.com/view/DYNAMO/ENU/") { UseShellExecute = true });
+                    Process.Start(new ProcessStartInfo(Res.CPython3EngineUpgradeLearnMoreUri) { UseShellExecute = true });
                 }
                 catch { }
                 return false; 

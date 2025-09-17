@@ -268,8 +268,8 @@ namespace Dynamo.PythonMigration
                 {
                     // Flag that python engine upgrade notice should be shown when the user
                     // saves or closes the workspace, then call the toas and upgrade the nodes
-                    DynamoViewModel.EnableCPythonNotifications = true;
-                    ShowPythonEngineUpgradeToast(1);
+                    CurrentWorkspace.ShowCPythonNotifications = true;
+                    ShowPythonEngineUpgradeToast();
                     UpgradeAllCPython3Nodes(new List<PythonNodeBase> { pyNode });
                 }
             }
@@ -282,7 +282,7 @@ namespace Dynamo.PythonMigration
             var preferenceSettings = DynamoViewModel?.Model?.PreferenceSettings;
             if (preferenceSettings == null || hasCPython3Engine)
             {
-                DynamoViewModel.EnableCPythonNotifications = false;
+                CurrentWorkspace.ShowCPythonNotifications = false;
                 return;
             }
 
@@ -293,20 +293,20 @@ namespace Dynamo.PythonMigration
 
             if (cPy3Nodes.Count == 0)
             {
-                DynamoViewModel.EnableCPythonNotifications = false;
+                CurrentWorkspace.ShowCPythonNotifications = false;
                 return;
             }
 
             if (preferenceSettings.HideCPython3Notifications)
             {
-                DynamoViewModel.EnableCPythonNotifications = false;
+                CurrentWorkspace.ShowCPythonNotifications = false;
                 UpgradeAllCPython3Nodes(cPy3Nodes);
                 return;
             }
 
             // Flag that python engine upgrade notice should be shown when the user
             // saves or closes the workspace, then call the toas and upgrade the nodes
-            DynamoViewModel.EnableCPythonNotifications = true;
+            CurrentWorkspace.ShowCPythonNotifications = true;
             ShowPythonEngineUpgradeToast(cPy3Nodes.Count);
             UpgradeAllCPython3Nodes(cPy3Nodes);
         }
@@ -314,13 +314,13 @@ namespace Dynamo.PythonMigration
         /// <summary>
         /// Shows a canvas toast informing the user that legacy CPython nodes were switched to PythonNet3
         /// </summary>
-        private void ShowPythonEngineUpgradeToast(int nodesCount)
+        private void ShowPythonEngineUpgradeToast(int nodesCount = 1)
         {
-            var resource = nodesCount == 1
-                ? Resources.CPythonUpgradeToastMessageSingular
-                : Resources.CPythonUpgradeToastMessagePlural;
+            if (nodesCount < 1) return;
 
-            var msg = string.Format(resource, nodesCount);
+            var msg = nodesCount == 1
+                ? Resources.CPythonUpgradeToastMessageSingular
+                : string.Format(Resources.CPythonUpgradeToastMessagePlural, nodesCount);
 
             Dispatcher.BeginInvoke(
                 DispatcherPriority.Background,

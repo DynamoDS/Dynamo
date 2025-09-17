@@ -4303,8 +4303,18 @@ Dynamo.Wpf.Views.GuidedTour.RatingControl.RatingControl() -> void
 Dynamo.Wpf.Views.GuidedTour.RatingControl.Value.get -> int
 Dynamo.Wpf.Views.GuidedTour.RatingControl.Value.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HeaderContent.get -> string
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HeaderContent.set -> void
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkText.get -> string
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkText.set -> void
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkUri.get -> System.Uri
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkUri.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.InitializeComponent() -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.RealTimeInfoWindow() -> void
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHeader.get -> bool
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHeader.set -> void
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHyperlink.get -> bool
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHyperlink.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.TextContent.get -> string
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.TextContent.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.UpdateLocation() -> void
@@ -4664,6 +4674,9 @@ static Dynamo.Wpf.Properties.Resources.ConverterMessageTransformOrigin.get -> st
 static Dynamo.Wpf.Properties.Resources.ConverterMessageZoom.get -> string
 static Dynamo.Wpf.Properties.Resources.CopyToClipboardTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.CopyToClipboardFailedMessage.get -> string
+static Dynamo.Wpf.Properties.Resources.CPython3EngineNotificationMessageBoxHeader.get -> string
+static Dynamo.Wpf.Properties.Resources.CPython3EngineNotificationMessageBoxText.get -> string
+static Dynamo.Wpf.Properties.Resources.CPython3EngineUpgradeLearnMoreUri.get -> string
 static Dynamo.Wpf.Properties.Resources.CrashPromptDialogCopyButton.get -> string
 static Dynamo.Wpf.Properties.Resources.CrashPromptDialogCrashMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.CrashPromptDialogDetailButton.get -> string

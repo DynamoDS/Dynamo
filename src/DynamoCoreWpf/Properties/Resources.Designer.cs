@@ -1025,6 +1025,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to https://dynamobim.org/pythonnet3-a-new-dynamo-python-to-fix-everything/.
+        /// </summary>
+        public static string CPython3EngineUpgradeLearnMoreUri {
+            get {
+                return ResourceManager.GetString("CPython3EngineUpgradeLearnMoreUri", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy.
         /// </summary>
         public static string CrashPromptDialogCopyButton {
