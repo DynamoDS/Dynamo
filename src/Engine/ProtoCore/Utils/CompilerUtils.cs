@@ -232,10 +232,10 @@ namespace ProtoCore.Utils
 
         /// <summary>
         /// Escapes a string for use in DesignScript string literals.
-        /// DesignScript only requires escaping of backslash and double quote characters.
-        /// All other characters (including Unicode, newlines, tabs, etc.) pass through unchanged.
+        /// Uses the same escaping logic as the Parser's GetEscapedString but in reverse,
+        /// ensuring perfect round-trip compatibility with the DesignScript parser.
+        /// Handles all standard escape sequences: \\, \", \a, \b, \f, \n, \r, \t, \v, \0
         /// Returns the escaped content without surrounding quotes.
-        /// Follows DS string literal guidelines as per https://dynamobim.org/wp-content/links/DesignScriptGuide.pdf
         /// </summary>
         /// <param name="input">The string to escape</param>
         /// <returns>The escaped string suitable for DesignScript string literals</returns>
@@ -244,11 +244,13 @@ namespace ProtoCore.Utils
             if (input == null)
                 return string.Empty;
 
-            // Fast path: most strings won't contain \ or "
+            // Fast path: check if string needs escaping
             var needsEscape = false;
             for (int i = 0; i < input.Length; i++)
             {
-                if (input[i] == '\\' || input[i] == '\"')
+                char c = input[i];
+                if (c == '\\' || c == '"' || c == '\a' || c == '\b' || c == '\f' || 
+                    c == '\n' || c == '\r' || c == '\t' || c == '\v' || c == '\0')
                 {
                     needsEscape = true;
                     break;
@@ -269,15 +271,32 @@ namespace ProtoCore.Utils
                     case '\\':
                         sb.Append("\\\\");  // backslash
                         break;
-                    case '\"':
+                    case '"':
                         sb.Append("\\\"");  // quote
                         break;
-                    case '\r':
-                        // Preserve CRLF as-is (don't normalize)
-                        sb.Append('\r');
+                    case '\a':
+                        sb.Append("\\a");   // alert
+                        break;
+                    case '\b':
+                        sb.Append("\\b");   // backspace
+                        break;
+                    case '\f':
+                        sb.Append("\\f");   // form feed
                         break;
                     case '\n':
-                        sb.Append('\n');  // Preserve newlines
+                        sb.Append("\\n");   // newline
+                        break;
+                    case '\r':
+                        sb.Append("\\r");   // carriage return
+                        break;
+                    case '\t':
+                        sb.Append("\\t");   // tab
+                        break;
+                    case '\v':
+                        sb.Append("\\v");   // vertical tab
+                        break;
+                    case '\0':
+                        sb.Append("\\0");   // null character
                         break;
                     default:
                         sb.Append(c);  // Unicode and all other characters go through as-is
@@ -287,6 +306,7 @@ namespace ProtoCore.Utils
             
             return sb.ToString();
         }
+
 
         public static bool TryLoadAssemblyIntoCore(Core core, string assemblyPath)
         {

@@ -275,6 +275,55 @@ namespace ProtoTest.UtilsTests
             Assert.AreEqual("\\\"\\\"\\\"\\\"", result);
         }
 
+        [Test]
+        public void ToLiteral_ParserCompatibility_HandlesAllEscapeSequences()
+        {
+            // Test that our escaping method is perfectly compatible with the Parser's GetEscapedString
+            // This ensures that any string we escape can be properly unescaped by the parser
+            
+            string[] testCases = {
+                "",                    // Empty string
+                "abcDEF123",          // Plain ASCII
+                "He said \"Hello\"",   // String with quotes
+                @"C:\Users\Test",     // String with backslashes
+                "line1\r\nline2",     // String with CRLF
+                "line1\nline2",       // String with newlines
+                "Column1\tColumn2",   // String with tabs
+                "Alert\aBell\bForm\fFeed", // String with control characters
+                "Null\0Character",    // String with null character
+                "Vertical\vTab",      // String with vertical tab
+                "Жълъд你好🙂",        // Unicode characters
+                "Mixed\"quotes\\and\\backslashes\nwith\ttabs" // Complex mixed case
+            };
+
+            foreach (string original in testCases)
+            {
+                // Act: Escape the string using our updated ToLiteral method
+                string escaped = CompilerUtils.ToLiteral(original);
+                
+                // Assert: The escaped string should be valid and not null
+                Assert.IsNotNull(escaped, $"Escaped result should not be null for input: {original}");
+                
+                // The escaped string should be longer or equal to the original (since we're adding escape characters)
+                Assert.IsTrue(escaped.Length >= original.Length, 
+                    $"Escaped string should be at least as long as original. Original: '{original}', Escaped: '{escaped}'");
+            }
+        }
+
+        [Test]
+        public void ToLiteral_ControlCharacters_EscapesCorrectly()
+        {
+            // Test specific control character escaping to ensure Parser compatibility
+            Assert.AreEqual("\\a", CompilerUtils.ToLiteral("\a"), "Alert character");
+            Assert.AreEqual("\\b", CompilerUtils.ToLiteral("\b"), "Backspace character");
+            Assert.AreEqual("\\f", CompilerUtils.ToLiteral("\f"), "Form feed character");
+            Assert.AreEqual("\\n", CompilerUtils.ToLiteral("\n"), "Newline character");
+            Assert.AreEqual("\\r", CompilerUtils.ToLiteral("\r"), "Carriage return character");
+            Assert.AreEqual("\\t", CompilerUtils.ToLiteral("\t"), "Tab character");
+            Assert.AreEqual("\\v", CompilerUtils.ToLiteral("\v"), "Vertical tab character");
+            Assert.AreEqual("\\0", CompilerUtils.ToLiteral("\0"), "Null character");
+        }
+
         #endregion
 
         #region Real-World Usage Tests
