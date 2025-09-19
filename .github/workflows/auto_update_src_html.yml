@@ -50,12 +50,11 @@ jobs:
 
           # Get list of changed files from previous step
           changed_files = os.environ.get("CHANGED_FILES", "")
-          if not changed_files:
+          if not changed_files.strip():
               print("No files provided in CHANGED_FILES")
-              changed_files = []
-
-          files = changed_files.split()  # split by space
-
+              files = []
+          else:
+              files = changed_files.split()  # split by space
           file_map = []
           langs_path = "doc/distrib/html" 
           lang_dirs = []
