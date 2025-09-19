@@ -72,7 +72,11 @@ jobs:
               filename = os.path.basename(f)
 
               # Get the language of the current file
-              lang_match = [p for p in lang_dirs if p in f][0]
+              matches = [p for p in lang_dirs if p in f]
+              if not matches:
+                  print(f"No language match found for {f}, skipping.")
+                  continue
+              lang_match = matches[0]
   
               # Only search inside src/
               search_pattern = os.path.join("src", "**", filename)
