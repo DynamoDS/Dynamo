@@ -1,4 +1,4 @@
-name: Run on doc/distrib/html changes
+name: Update HTML Documents
 
 on:
   pull_request:
@@ -30,7 +30,7 @@ jobs:
         id: changes
         run: |
           # Get changed HTML files under doc/distrib/html/
-          CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep '^doc/distrib/html/.*\.html$' || true)
+          CHANGED_FILES=$(git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.merge_commit_sha }}" | grep '^doc/distrib/html/.*\.html$' || true)
 
           echo "Changed HTML files:"
           echo "$CHANGED_FILES"
@@ -151,7 +151,7 @@ jobs:
           
           # Create new branch
           git checkout -b $BRANCH
-          git add .
+          git add src/**/*.html
           git commit -m "Automated changes"
           git push -u origin $BRANCH
 
