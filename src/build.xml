@@ -5,7 +5,7 @@
 <PropertyGroup>
     <Solution>Dynamo.All.sln</Solution>
     <Platform>Any CPU</Platform>
-    <DotNet>net8.0</DotNet>
+    <DotNet>net10.0</DotNet>
     <Configuration>Release</Configuration>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <NuGetPath>$(MSBuildProjectDirectory)\..\tools\Nuget\NuGet.exe</NuGetPath>
