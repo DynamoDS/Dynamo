@@ -294,7 +294,6 @@ namespace Dynamo.Graph.Workspaces
         private HashSet<Guid> dependencies = new HashSet<Guid>();
         private int delayGraphExecutionCounter = 0;
         private bool enableCPythonNotifications;
-        private bool hasShownCPythonNotification;
 
         // For workspace references view extension.
         private bool forceComputeWorkspaceReferences;
@@ -305,6 +304,11 @@ namespace Dynamo.Graph.Workspaces
         private Dictionary<Guid, DependencyInfo> localDefinitionsDictionary = new Dictionary<Guid, DependencyInfo>();
         private Dictionary<Guid, DependencyInfo> externalFilesDictionary = new Dictionary<Guid, DependencyInfo>();
         private readonly string customNodeExtension = ".dyf";
+
+        /// <summary>
+        /// Flag to indicate whether the CPython notification has been shown once.
+        /// </summary>
+        internal bool HasShownCPythonNotification;
 
         /// <summary>
         /// Whether or not to delay graph execution.
@@ -1395,22 +1399,12 @@ namespace Dynamo.Graph.Workspaces
         public bool ShowCPythonNotifications
         {
             get => enableCPythonNotifications;
-            set
+            internal set
             {
                 enableCPythonNotifications = value;
             }
         }
 
-        // FLags if the “Python Engine Change” notification has already been shown for this workspace.
-        [JsonIgnore]
-        public bool HasShownCPythonNotification
-        {
-            get => hasShownCPythonNotification;
-            set
-            {
-                hasShownCPythonNotification = value;
-            }
-        }
         #endregion
 
         #region constructors

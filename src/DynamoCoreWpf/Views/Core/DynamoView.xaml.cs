@@ -1756,12 +1756,8 @@ namespace Dynamo.Controls
             // Third button (Cancel) is "Learn more"
             else if (result == MessageBoxResult.Cancel)
             {
-                try
-                {
-                    Process.Start(new ProcessStartInfo(Res.CPython3EngineUpgradeLearnMoreUri) { UseShellExecute = true });
-                }
-                catch { }
-                return false; 
+                Process.Start(new ProcessStartInfo(Res.CPython3EngineUpgradeLearnMoreUri) { UseShellExecute = true });
+                return true; 
             }
             return false;
         }

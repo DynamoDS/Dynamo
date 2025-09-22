@@ -456,6 +456,40 @@
                         </Grid>
                     </Border>
                 </Grid>
+                <!-- Python Request To Update Bar -->
+                <Grid Name="PythonRequestToUpgradeBar"
+                      VerticalAlignment="Bottom"
+                      Grid.Row="4"
+                      Margin="0,-10,0,0"
+                      Height="40"
+                      Visibility="Visible">
+                    <Border BorderThickness="2"
+                            BorderBrush="#FAA21B"
+                            Background="#33FAA21B">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="40"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Background="#FAA21B">
+                                <Image Source="/PythonNodeModelsWpf;component/Resources/alert.png" Width="24" Height="24"/>
+                            </Border>
+                            <TextBlock x:Name="PythonRequestToUpgradeBannerText"
+                                       Grid.Column="1"
+                                       Margin="15,0,0,0"
+                                       VerticalAlignment="Center"
+                                       Foreground="White"
+                                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                                       FontSize="13"
+                                       Text="{x:Static p:Resources.PythonScriptEditorEngineRequestToUpdatedBarText}"
+                                       TextTrimming="CharacterEllipsis"/>
+                            <Button Grid.Column="2"
+                                    Style="{StaticResource CloseButtonStyle}"
+                                    Click="OnPythonRequestToUpgradedBarClose"/>
+                        </Grid>
+                    </Border>
+                </Grid>
             </Grid>
         </Border>
     </Grid>

@@ -184,14 +184,28 @@ namespace PythonNodeModelsWpf
 
             dynamoViewModel.PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             UpdatePythonUpgradeBar();
+            UpdatePythonRequestToUpgradeBar();
         }
 
         private void UpdatePythonUpgradeBar()
         {
             var hide = dynamoViewModel.PreferenceSettings.HideCPython3Notifications == true;
-            var showForThisNode = NodeModel != null && NodeModel.ShowAutoUpgradedBar && !hide;
+            var showForThisNode = NodeModel.ShowAutoUpgradedBar && !hide;
 
             PythonUpgradeBar.Visibility = showForThisNode ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void UpdatePythonRequestToUpgradeBar()
+        {
+            var hide = dynamoViewModel.PreferenceSettings.HideCPython3Notifications == true;
+
+            bool nodeIsCPython = NodeModel.EngineName == PythonEngineManager.CPython3EngineName;
+            bool hasCPythonEngineInstalled = PythonEngineManager.Instance.AvailableEngines
+                .Any(x => x.Name == PythonEngineManager.CPython3EngineName);
+
+            var showForThisNode = !NodeModel.ShowAutoUpgradedBar && !hide && nodeIsCPython && hasCPythonEngineInstalled;
+
+            PythonRequestToUpgradeBar.Visibility = showForThisNode ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void PreferenceSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -199,9 +213,9 @@ namespace PythonNodeModelsWpf
             if (e.PropertyName == nameof(PreferenceSettings.HideCPython3Notifications))
             {
                 UpdatePythonUpgradeBar();
+                UpdatePythonRequestToUpgradeBar();
             }
         }
-
 
         /// <summary>
         /// Docks this window in the right side bar panel.
@@ -599,6 +613,11 @@ namespace PythonNodeModelsWpf
         {
             PythonUpgradeBar.Visibility = Visibility.Collapsed;
             NodeModel.ShowAutoUpgradedBar = false;
+        }
+
+        private void OnPythonRequestToUpgradedBarClose(object sender, RoutedEventArgs e)
+        {
+            PythonRequestToUpgradeBar.Visibility = Visibility.Collapsed;
         }
 
         #endregion

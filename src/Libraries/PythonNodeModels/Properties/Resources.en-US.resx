@@ -223,4 +223,7 @@
   <data name="PythonScriptEditorEngineAutoUpdatedBarText" xml:space="preserve">
     <value>Python Engine Automatically Updated to PythonNet3</value>
   </data>
+  <data name="PythonScriptEditorEngineRequestToUpdatedBarText" xml:space="preserve">
+    <value>Please update Python Engine to PythonNet3</value>
+  </data>
 </root>

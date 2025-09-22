@@ -184,17 +184,19 @@ namespace PythonNodeModels
     [IsDesignScriptCompatible]
     public sealed class PythonNode : PythonNodeBase
     {
-        private bool isAutoUpgradedFromCPython3;
+        private bool showAutoUpgradedBar;
+        /// <summary>
+        /// This property is true if the node was auto-upgraded from CPython3 to PythonNet3.
+        /// </summary>
         [JsonIgnore]
-        // SUMMARY
         public bool ShowAutoUpgradedBar
         {
-            get => isAutoUpgradedFromCPython3;
-            set
+            get => showAutoUpgradedBar;
+            internal set
             {
-                if (isAutoUpgradedFromCPython3 != value)
+                if (showAutoUpgradedBar != value)
                 {
-                    isAutoUpgradedFromCPython3 = value;
+                    showAutoUpgradedBar = value;
                     RaisePropertyChanged(nameof(ShowAutoUpgradedBar));
                 }
             }

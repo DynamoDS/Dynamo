@@ -205,6 +205,15 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please update Python Engine to PythonNet3.
+        /// </summary>
+        public static string PythonScriptEditorEngineRequestToUpdatedBarText {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorEngineRequestToUpdatedBarText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Load the Python Standard and DesignScript Libraries.
         /// </summary>
         public static string PythonScriptEditorImports {
