@@ -159,6 +159,9 @@ namespace Dynamo.Models
         /// </summary>
         internal Dictionary<string, List<string>> GraphChecksumDictionary { get; set; }
 
+        // Get ProgramData folder path (usually C:\ProgramData)
+        static readonly string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+
         #endregion
 
         #region static properties
@@ -838,9 +841,6 @@ namespace Dynamo.Models
             var userDataFolder = pathManager.GetUserDataFolder(); // Get the default user data path
             AddPackagePath(userDataFolder);
 
-            // Make sure that the global package folder is added in the list
-            var userCommonPackageFolder = pathManager.CommonPackageDirectory;
-            AddPackagePath(userCommonPackageFolder);
 
                 // Load Python Template
                 // The loading pattern is conducted in the following order
@@ -1654,7 +1654,9 @@ namespace Dynamo.Models
             //and loading from there is disabled, don't scan the directory.
             (disablePrefs.DisableBuiltinPackages && packagesDirectory == Core.PathManager.BuiltinPackagesDirectory)
             //or if custom package directories are disabled, and this is a custom package directory, don't scan.
-            || (disablePrefs.DisableCustomPackageLocations && isACustomPackageDirectory);
+            || (disablePrefs.DisableCustomPackageLocations && isACustomPackageDirectory)
+            //or if the package directory starts with the path "C:\ProgramData" then disable the path due to security concerns (now packages will be loaded only from AppData).
+            || packagesDirectory.StartsWith(programDataPath, StringComparison.OrdinalIgnoreCase);
         }
 
         private void InitializeNodeLibrary()
@@ -1725,8 +1727,6 @@ namespace Dynamo.Models
                 // Otherwise it is a custom node
                 CustomNodeManager.AddUninitializedCustomNodesInPath(path, IsTestMode);
             }
-
-            CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
         }
 
         /// <summary>

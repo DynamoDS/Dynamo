@@ -1304,7 +1304,7 @@ Para evitar esse comportamento, desinstale os pacotes carregados que entram em c
     <value>Editar...</value>
   </data>
   <data name="NullString" xml:space="preserve">
-    <value>nulo</value>
+    <value>null</value>
   </data>
   <data name="OKButton" xml:space="preserve">
     <value>OK</value>
@@ -2885,7 +2885,7 @@ Para instalar a versão mais recente de um pacote, clique em Instalar. \n
 %./UI/Images/alert.png% O pacote Autodesk de amostra já está instalado no computador.</value>
   </data>
   <data name="PackagesGuideDependenciesText" xml:space="preserve">
-    <value>\nSe você precisar de outros softwares ou ferramentas para usar esse pacote, eles serão listados em Requisitos de versões e pacote.</value>
+    <value>\nSe você precisar de outros softwares ou ferramentas para usar esse pacote, eles serão listados em Versões e requisitos de pacote.</value>
   </data>
   <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
     <value>Dependências do pacote</value>

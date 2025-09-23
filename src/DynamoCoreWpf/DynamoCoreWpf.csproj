@@ -59,7 +59,7 @@
 
     <Target Name="NpmRunBuildHomePage" BeforeTargets="BeforeBuild">
         <PropertyGroup>
-            <PackageVersion>1.0.24</PackageVersion>
+            <PackageVersion>1.0.25</PackageVersion>
             <PackageName>DynamoHome</PackageName>
         </PropertyGroup>
         <Exec Command="$(PowerShellCommand) -ExecutionPolicy Bypass -File &quot;$(SolutionDir)pkgexist.ps1&quot; &quot;$(PackageName)&quot; &quot;$(PackageVersion)&quot;" ConsoleToMSBuild="true">
@@ -94,7 +94,7 @@
 
     <Target Name="NpmRunBuildPMWizard" BeforeTargets="BeforeBuild">
         <PropertyGroup>
-            <PackageVersion>0.0.20</PackageVersion>
+            <PackageVersion>0.0.22</PackageVersion>
             <PackageName>PackageManagerWizard</PackageName>
         </PropertyGroup>
         <Exec Command="$(PowerShellCommand) -ExecutionPolicy Bypass -File &quot;$(SolutionDir)pkgexist.ps1&quot; &quot;$(PackageName)&quot; &quot;$(PackageVersion)&quot;" ConsoleToMSBuild="true">
@@ -128,6 +128,8 @@
     </Target>
 
     <ItemGroup>
+    <None Remove="Controls\Docs\en-GB\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\en-GB\NodeAutocompleteDocumentation.html" />
     <None Remove="Controls\OutPorts.xaml" />
     <None Remove="Controls\InPorts.xaml" />
     <None Remove="Packages\PackageManagerWizard\dist\index.html" />
@@ -192,6 +194,7 @@
     <None Remove="UI\Prompts\PortPropertiesEditPrompt.xaml" />
     <None Remove="ViewModels\PackageManager\Docs\cs-CZ\PublishPackageDocumentation.html" />
     <None Remove="ViewModels\PackageManager\Docs\de-DE\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\en-GB\PublishPackageDocumentation.html" />
     <None Remove="ViewModels\PackageManager\Docs\en-US\PublishPackageDocumentation.html" />
     <None Remove="ViewModels\PackageManager\Docs\es-ES\PublishPackageDocumentation.html" />
     <None Remove="ViewModels\PackageManager\Docs\fr-FR\PublishPackageDocumentation.html" />
@@ -218,6 +221,11 @@
     <None Remove="Views\GuidedTour\HtmlPages\de-DE\learnPackages.html" />
     <None Remove="Views\GuidedTour\HtmlPages\de-DE\nodePackage.html" />
     <None Remove="Views\GuidedTour\HtmlPages\de-DE\searchPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\en-GB\connectTheNodes.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\en-GB\installedPackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\en-GB\learnPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\en-GB\nodePackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\en-GB\searchPackages.html" />
     <None Remove="Views\GuidedTour\HtmlPages\en-US\connectTheNodes.html" />
     <None Remove="Views\GuidedTour\HtmlPages\en-US\installedPackage.html" />
     <None Remove="Views\GuidedTour\HtmlPages\en-US\learnPackages.html" />
@@ -297,6 +305,8 @@
     <EmbeddedResource Include="Controls\Docs\cs-CZ\NodeAutocompleteDocumentation.html" />
     <EmbeddedResource Include="Controls\Docs\de-DE\FileTrustWarningDocumentation.html" />
     <EmbeddedResource Include="Controls\Docs\de-DE\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\en-GB\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\en-GB\NodeAutocompleteDocumentation.html" />
     <EmbeddedResource Include="Controls\Docs\en-US\FileTrustWarningDocumentation.html" />
     <EmbeddedResource Include="Controls\Docs\en-US\NodeAutocompleteDocumentation.html" />
     <EmbeddedResource Include="Controls\Docs\es-ES\FileTrustWarningDocumentation.html" />
@@ -321,8 +331,10 @@
     <EmbeddedResource Include="Controls\Docs\zh-TW\NodeAutocompleteDocumentation.html" />
     <EmbeddedResource Include="Packages\SplashScreen\build\index.bundle.js" />
     <EmbeddedResource Include="Packages\SplashScreen\build\index.html" />
+    <EmbeddedResource Include="Properties\Resources.en-GB.resx" />
     <EmbeddedResource Include="ViewModels\PackageManager\Docs\cs-CZ\PublishPackageDocumentation.html" />
     <EmbeddedResource Include="ViewModels\PackageManager\Docs\de-DE\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\en-GB\PublishPackageDocumentation.html" />
     <EmbeddedResource Include="ViewModels\PackageManager\Docs\en-US\PublishPackageDocumentation.html" />
     <EmbeddedResource Include="ViewModels\PackageManager\Docs\es-ES\PublishPackageDocumentation.html" />
     <EmbeddedResource Include="ViewModels\PackageManager\Docs\fr-FR\PublishPackageDocumentation.html" />
@@ -344,6 +356,11 @@
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\de-DE\learnPackages.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\de-DE\nodePackage.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\de-DE\searchPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\en-GB\connectTheNodes.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\en-GB\installedPackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\en-GB\learnPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\en-GB\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\en-GB\searchPackages.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\en-US\connectTheNodes.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\en-US\installedPackage.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\en-US\learnPackages.html" />
@@ -2193,6 +2210,7 @@
   <Target Name="CopyGuidedTourHTMLFiles" AfterTargets="AfterBuildOps">
     <ItemGroup>
 		<HTMLEnUSFiles Include="$(SolutionDir)..\doc\distrib\html\en-US\GuidedTour\**\*.html" />
+		<HTMLEnGBFiles Include="$(SolutionDir)..\doc\distrib\html\en-GB\GuidedTour\**\*.html" />
 		<HTMLCsCZFiles Include="$(SolutionDir)..\doc\distrib\html\cs-CZ\GuidedTour\**\*.html" />
 		<HTMLDeDEFiles Include="$(SolutionDir)..\doc\distrib\html\de-DE\GuidedTour\**\*.html" />
 		<HTMLEsESFiles Include="$(SolutionDir)..\doc\distrib\html\es-ES\GuidedTour\**\*.html" />
@@ -2207,6 +2225,7 @@
 		<HTMLZhTWFiles Include="$(SolutionDir)..\doc\distrib\html\zh-TW\GuidedTour\**\*.html" />
     </ItemGroup>
     <Copy SourceFiles="@(HTMLEnUSFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\en-US" />
+	<Copy SourceFiles="@(HTMLEnGBFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\en-GB" />
 	<Copy SourceFiles="@(HTMLCsCZFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\cs-CZ" />
 	<Copy SourceFiles="@(HTMLDeDEFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\de-DE" />
 	<Copy SourceFiles="@(HTMLEsESFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\es-ES" />
@@ -2228,6 +2247,7 @@
   </Target>
   <Target Name="CopyDocXMLAllLanguages" AfterTargets="CopyDocXML">
 	 <ItemGroup>
+		<DocXMLEnGBFiles Include="$(SolutionDir)..\doc\distrib\xml\en-GB\**\*.xml" />
 		<DocXMLCsCZFiles Include="$(SolutionDir)..\doc\distrib\xml\cs-CZ\**\*.xml" />
 		<DocXMLDeDEFiles Include="$(SolutionDir)..\doc\distrib\xml\de-DE\**\*.xml" />
 		<DocXMLEsESFiles Include="$(SolutionDir)..\doc\distrib\xml\es-ES\**\*.xml" />
@@ -2241,6 +2261,7 @@
 		<DocXMLZhCNFiles Include="$(SolutionDir)..\doc\distrib\xml\zh-CN\**\*.xml" />
 		<DocXMLZhTWFiles Include="$(SolutionDir)..\doc\distrib\xml\zh-TW\**\*.xml" />
 	</ItemGroup>
+	<Copy SourceFiles="@(DocXMLEnGBFiles)" DestinationFolder="$(OutputPath)\en-GB\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(DocXMLCsCZFiles)" DestinationFolder="$(OutputPath)\cs-CZ\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(DocXMLDeDEFiles)" DestinationFolder="$(OutputPath)\de-DE\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(DocXMLEsESFiles)" DestinationFolder="$(OutputPath)\es-ES\" SkipUnchangedFiles="True" />
@@ -2257,6 +2278,7 @@
   <Target Name="CopyControlHTMLFiles" AfterTargets="CopyDocXMLAllLanguages">
     <ItemGroup>
 		<HTMLControlsEnUSFiles Include="$(SolutionDir)..\doc\distrib\html\en-US\Controls\**\*.html" />
+		<HTMLControlsEnGBFiles Include="$(SolutionDir)..\doc\distrib\html\en-GB\Controls\**\*.html" />
 		<HTMLControlsCsCZFiles Include="$(SolutionDir)..\doc\distrib\html\cs-CZ\Controls\**\*.html" />
 		<HTMLControlsDeDEFiles Include="$(SolutionDir)..\doc\distrib\html\de-DE\Controls\**\*.html" />
 		<HTMLControlsEsESFiles Include="$(SolutionDir)..\doc\distrib\html\es-ES\Controls\**\*.html" />
@@ -2271,6 +2293,7 @@
 		<HTMLControlsZhTWFiles Include="$(SolutionDir)..\doc\distrib\html\zh-TW\Controls\**\*.html" />
     </ItemGroup>
     <Copy SourceFiles="@(HTMLControlsEnUSFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\en-US" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLControlsEnGBFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\en-GB" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(HTMLControlsCsCZFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\cs-CZ" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(HTMLControlsDeDEFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\de-DE" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(HTMLControlsEsESFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\es-ES" SkipUnchangedFiles="True" />
@@ -2287,6 +2310,7 @@
   <Target Name="CopyDocumentationBrowserHTMLFiles" AfterTargets="CopyGuidedTourHTMLFiles">
     <ItemGroup>
 		<HTMLDocBrowEnUSFiles Include="$(SolutionDir)..\doc\distrib\html\en-US\DocumentationBrowserViewExtension\**\*.html" />
+		<HTMLDocBrowEnGBFiles Include="$(SolutionDir)..\doc\distrib\html\en-GB\DocumentationBrowserViewExtension\**\*.html" />
 		<HTMLDocBrowCsCZFiles Include="$(SolutionDir)..\doc\distrib\html\cs-CZ\DocumentationBrowserViewExtension\**\*.html" />
 		<HTMLDocBrowDeDEFiles Include="$(SolutionDir)..\doc\distrib\html\de-DE\DocumentationBrowserViewExtension\**\*.html" />
 		<HTMLDocBrowEsESFiles Include="$(SolutionDir)..\doc\distrib\html\es-ES\DocumentationBrowserViewExtension\**\*.html" />
@@ -2301,6 +2325,7 @@
 		<HTMLDocBrowZhTWFiles Include="$(SolutionDir)..\doc\distrib\html\zh-TW\DocumentationBrowserViewExtension\**\*.html" />
     </ItemGroup>
     <Copy SourceFiles="@(HTMLDocBrowEnUSFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\en-US" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLDocBrowEnGBFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\en-GB" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(HTMLDocBrowCsCZFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\cs-CZ" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(HTMLDocBrowDeDEFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\de-DE" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(HTMLDocBrowEsESFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\es-ES" SkipUnchangedFiles="True" />
@@ -2317,6 +2342,7 @@
   <Target Name="CopyPackageManagerHTMLFiles" AfterTargets="CopyDocumentationBrowserHTMLFiles">
     <ItemGroup>
 		<HTMLPackageManagerEnUSFiles Include="$(SolutionDir)..\doc\distrib\html\en-US\PackageManager\**\*.html" />
+		<HTMLPackageManagerEnGBFiles Include="$(SolutionDir)..\doc\distrib\html\en-GB\PackageManager\**\*.html" />
 		<HTMLPackageManagerCsCZFiles Include="$(SolutionDir)..\doc\distrib\html\cs-CZ\PackageManager\**\*.html" />
 		<HTMLPackageManagerDeDEFiles Include="$(SolutionDir)..\doc\distrib\html\de-DE\PackageManager\**\*.html" />
 		<HTMLPackageManagerEsESFiles Include="$(SolutionDir)..\doc\distrib\html\es-ES\PackageManager\**\*.html" />
@@ -2331,6 +2357,7 @@
 		<HTMLPackageManagerZhTWFiles Include="$(SolutionDir)..\doc\distrib\html\zh-TW\PackageManager\**\*.html" />
     </ItemGroup>
     <Copy SourceFiles="@(HTMLPackageManagerEnUSFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\en-US" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerEnGBFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\en-GB" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(HTMLPackageManagerCsCZFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\cs-CZ" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(HTMLPackageManagerDeDEFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\de-DE" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(HTMLPackageManagerEsESFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\es-ES" SkipUnchangedFiles="True" />
@@ -2347,6 +2374,7 @@
   <Target Name="CopyLintingViewExtensionHTMLFiles" AfterTargets="CopyPackageManagerHTMLFiles">
     <ItemGroup>
 		<HTMLLintingViewExtensionEnUSFiles Include="$(SolutionDir)..\doc\distrib\html\en-US\LinterViewExtension\**\*.html" />
+		<HTMLLintingViewExtensionEnGBFiles Include="$(SolutionDir)..\doc\distrib\html\en-GB\LinterViewExtension\**\*.html" />
 		<HTMLLintingViewExtensionCsCZFiles Include="$(SolutionDir)..\doc\distrib\html\cs-CZ\LinterViewExtension\**\*.html" />
 		<HTMLLintingViewExtensionDeDEFiles Include="$(SolutionDir)..\doc\distrib\html\de-DE\LinterViewExtension\**\*.html" />
 		<HTMLLintingViewExtensionEsESFiles Include="$(SolutionDir)..\doc\distrib\html\es-ES\LinterViewExtension\**\*.html" />
@@ -2361,6 +2389,7 @@
 		<HTMLLintingViewExtensionZhTWFiles Include="$(SolutionDir)..\doc\distrib\html\zh-TW\LinterViewExtension\**\*.html" />
     </ItemGroup>
     <Copy SourceFiles="@(HTMLLintingViewExtensionEnUSFiles)" DestinationFolder="$(SolutionDir)\LintingViewExtension\Docs\en-US" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLLintingViewExtensionEnGBFiles)" DestinationFolder="$(SolutionDir)\LintingViewExtension\Docs\en-GB" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(HTMLLintingViewExtensionCsCZFiles)" DestinationFolder="$(SolutionDir)\LintingViewExtension\Docs\cs-CZ" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(HTMLLintingViewExtensionDeDEFiles)" DestinationFolder="$(SolutionDir)\LintingViewExtension\Docs\de-DE" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(HTMLLintingViewExtensionEsESFiles)" DestinationFolder="$(SolutionDir)\LintingViewExtension\Docs\es-ES" SkipUnchangedFiles="True" />
@@ -2378,6 +2407,7 @@
   <Target Name="CopyPythonNodeModelsHTMLFiles" AfterTargets="CopyLintingViewExtensionHTMLFiles">
     <ItemGroup>
 		<HTMLPythonNodeModelsEnUSFiles Include="$(SolutionDir)..\doc\distrib\html\en-US\PythonNodeModels\**\*.html" />
+		<HTMLPythonNodeModelsEnGBFiles Include="$(SolutionDir)..\doc\distrib\html\en-GB\PythonNodeModels\**\*.html" />
 		<HTMLPythonNodeModelsCsCZFiles Include="$(SolutionDir)..\doc\distrib\html\cs-CZ\PythonNodeModels\**\*.html" />
 		<HTMLPythonNodeModelsDeDEFiles Include="$(SolutionDir)..\doc\distrib\html\de-DE\PythonNodeModels\**\*.html" />
 		<HTMLPythonNodeModelsEsESFiles Include="$(SolutionDir)..\doc\distrib\html\es-ES\PythonNodeModels\**\*.html" />
@@ -2392,6 +2422,7 @@
 		<HTMLPythonNodeModelsZhTWFiles Include="$(SolutionDir)..\doc\distrib\html\zh-TW\PythonNodeModels\**\*.html" />
     </ItemGroup>
     <Copy SourceFiles="@(HTMLPythonNodeModelsEnUSFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\en-US" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPythonNodeModelsEnGBFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\en-GB" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(HTMLPythonNodeModelsCsCZFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\cs-CZ" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(HTMLPythonNodeModelsDeDEFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\de-DE" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(HTMLPythonNodeModelsEsESFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\es-ES" SkipUnchangedFiles="True" />
@@ -2413,6 +2444,7 @@
     </Target>
     <Target Name="CopyDocXMLAllLanguages" AfterTargets="CopyDocXML">
 	  <ItemGroup>
+	    <DocXMLEnGBFiles Include="$(SolutionDir)..\doc\distrib\xml\en-GB\**\*.xml" />
 	    <DocXMLCsCZFiles Include="$(SolutionDir)..\doc\distrib\xml\cs-CZ\**\*.xml" />
 	    <DocXMLDeDEFiles Include="$(SolutionDir)..\doc\distrib\xml\de-DE\**\*.xml" />
 	    <DocXMLEsESFiles Include="$(SolutionDir)..\doc\distrib\xml\es-ES\**\*.xml" />
@@ -2426,6 +2458,7 @@
 		<DocXMLZhCNFiles Include="$(SolutionDir)..\doc\distrib\xml\zh-CN\**\*.xml" />
 		<DocXMLZhTWFiles Include="$(SolutionDir)..\doc\distrib\xml\zh-TW\**\*.xml" />
 	  </ItemGroup>
+	  <Copy SourceFiles="@(DocXMLEnGBFiles)" DestinationFolder="$(OutputPath)\en-GB\" SkipUnchangedFiles="True" />
 	  <Copy SourceFiles="@(DocXMLCsCZFiles)" DestinationFolder="$(OutputPath)\cs-CZ\" SkipUnchangedFiles="True" />
 	  <Copy SourceFiles="@(DocXMLDeDEFiles)" DestinationFolder="$(OutputPath)\de-DE\" SkipUnchangedFiles="True" />
 	  <Copy SourceFiles="@(DocXMLEsESFiles)" DestinationFolder="$(OutputPath)\es-ES\" SkipUnchangedFiles="True" />

@@ -879,7 +879,7 @@ value : bool = false</value>
     <value>範例檔已加入工作區。執行模式已變更為「手動」。</value>
   </data>
   <data name="DynamoLanguages_noxlate" xml:space="preserve">
-    <value>Default,English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
+    <value>Default,English,English (UK),Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
   </data>
   <data name="FormulaDSConversionFailure" xml:space="preserve">
     <value>公式無法轉換為 DesignScript 程式碼。請手動編輯公式以在 CodeBlock 節點中使用。</value>

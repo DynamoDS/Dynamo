@@ -79,8 +79,6 @@ namespace Dynamo.Core
         private string userDataDir;
         private string commonDataDir;
 
-        private string commonDefinitions;
-        private string commonPackages;
         private string logDirectory;
         private string samplesDirectory;
         private string templatesDirectory;
@@ -148,15 +146,6 @@ namespace Dynamo.Core
             }
         }
 
-        //Todo in Dynamo 3.0, Add this to the IPathManager interface
-        /// <summary>
-        /// The local directory that contains package directory created by all users.
-        /// </summary>
-        internal string CommonPackageDirectory
-        {
-            get { return commonPackages; }
-        }
-
         #region IPathManager Interface Implementation
 
         public string DynamoCoreDirectory
@@ -196,10 +185,12 @@ namespace Dynamo.Core
             get { return RootDirectories.Select(path => TransformPath(path, DefinitionsDirectoryName)); }
         }
 
+        [Obsolete("This property will be removed in a future version of Dynamo.", false)]
         public string CommonDefinitions
         {
-            get { return commonDefinitions; }
+            get { return string.Empty; }
         }
+
 
         public string LogDirectory
         {
@@ -485,8 +476,6 @@ namespace Dynamo.Core
 
             // Common data folders for all users.
             exceptions.Add(PathHelper.CreateFolderIfNotExist(commonDataDir));
-            exceptions.Add(PathHelper.CreateFolderIfNotExist(commonDefinitions));
-            exceptions.Add(PathHelper.CreateFolderIfNotExist(commonPackages));
 
             exceptions.RemoveAll(x => x == null); // Remove all null entries.
         }
@@ -605,8 +594,6 @@ namespace Dynamo.Core
             // Common directories.
             commonDataDir = GetCommonDataFolder();
 
-            commonDefinitions = Path.Combine(commonDataDir, DefinitionsDirectoryName);
-            commonPackages = Path.Combine(commonDataDir, PackagesDirectoryName);
             samplesDirectory = GetSamplesFolder(commonDataDir);
             defaultTemplatesDirectory = GetTemplateFolder(commonDataDir);
 

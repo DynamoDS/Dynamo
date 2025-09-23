@@ -1304,7 +1304,7 @@
     <value>Редактировать...</value>
   </data>
   <data name="NullString" xml:space="preserve">
-    <value>ноль</value>
+    <value>null</value>
   </data>
   <data name="OKButton" xml:space="preserve">
     <value>OK</value>

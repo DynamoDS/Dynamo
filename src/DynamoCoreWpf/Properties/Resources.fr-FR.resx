@@ -298,7 +298,7 @@
     <value>Créer un noeud personnalisé</value>
   </data>
   <data name="ContextMenuNodeToCode" xml:space="preserve">
-    <value>Node to _Code</value>
+    <value>Noeud en _code</value>
   </data>
   <data name="ContextMenuPan" xml:space="preserve">
     <value>Pa_n</value>
@@ -1304,7 +1304,7 @@ Pour éviter tout comportement inattendu, désinstallez les packages chargés à
     <value>Modifier...</value>
   </data>
   <data name="NullString" xml:space="preserve">
-    <value>nul</value>
+    <value>null</value>
   </data>
   <data name="OKButton" xml:space="preserve">
     <value>OK</value>
@@ -2860,7 +2860,7 @@ Ce package sera déchargé après le prochain redémarrage de Dynamo.</value>
     <value>Espace de travail</value>
   </data>
   <data name="PackagesGuideExitAcceptTerms" xml:space="preserve">
-    <value>Pour poursuivre le guide et installer le package d'exemple, vous devez accepter les Conditions d'utilisation. \n\n **Cliquez sur Continuer.** Puis, dans les conditions, **cliquez sur J'accepte.** \n\n\n\n</value>
+    <value>Pour poursuivre le guide et installer le package d'exemple, vous devez accepter les Conditions d'utilisation. \n\n **Cliquez sur Continuer.** Puis, dans les conditions, **cliquez sur J'accepte.** \n\n</value>
   </data>
   <data name="PackagesGuideExitTitle" xml:space="preserve">
     <value>Voulez-vous quitter le guide?</value>
@@ -3792,7 +3792,7 @@ Pour transformer ce fichier en nouveau gabarit, enregistrez-le dans un autre dos
     <value>Retour à la sélection de fichiers</value>
   </data>
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
-    <value>Ce groupe est bloqué. Cliquez pour le débloquer.</value>
+    <value>Ce groupe est gelé. Cliquez pour le dégeler.</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
     <value>Activer la barre d'outils flottante</value>
