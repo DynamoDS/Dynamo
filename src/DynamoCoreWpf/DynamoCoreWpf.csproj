@@ -699,7 +699,6 @@
     <Compile Include="ViewModels\Core\OutPortViewModel.cs" />
     <Compile Include="ViewModels\Core\SerializationExtensions.cs" />
     <Compile Include="ViewModels\Core\ShortcutToolbarViewModel.cs" />
-    <Compile Include="ViewModels\CPython3NotificationViewModel.cs" />
     <Compile Include="ViewModels\FileTrust\FileTrustWarningViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\ExitGuideWindowViewModel.cs" />
     <Compile Include="ViewModels\GuidedTour\PopupWindowViewModel.cs" />
@@ -744,7 +743,6 @@
       <DependentUpon>ConnectorContextMenuView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Core\CustomColorPicker.xaml.cs" />
-    <Compile Include="Views\CPython3Notification.xaml.cs" />
     <Compile Include="Views\Debug\UpdateNodeIconsWindow.xaml.cs">
       <DependentUpon>UpdateNodeIconsWindow.xaml</DependentUpon>
     </Compile>
@@ -2148,9 +2146,6 @@
     <Resource Include="UI\Images\not-authenticated.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="Views\CPython3Notification.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
     <None Update="Views\HomePage\HomePage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>

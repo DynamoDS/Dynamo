@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Core;
-using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.PackageManager;
@@ -79,43 +78,6 @@ namespace Dynamo.PythonMigration
             SubscribeToDynamoEvents();
         }
 
-
-        private const string CPython3NoticeId = "CPython3_Migration_Notice";
-
-        private void LogCPython3Notification()
-        {
-            if (NotificationTracker.ContainsKey(CurrentWorkspace.Guid))
-                return;
-
-            //DynamoViewModel.Model.Logger.LogNotification(
-            //    GetType().Name,
-            //    EXTENSION_NAME,
-            //    "CPython3 Notification Short Message here ...",
-            //    "CPython3 Notification Detailed Message here ...");
-
-            ShowPythonNet3Popup();
-        }
-
-        private void ShowPythonNet3Popup()
-        {
-            //var owner = LoadedParams.DynamoWindow;
-            //var vm = new Dynamo.Wpf.ViewModels.PythonNet3NotificationViewModel
-            //{
-            //    ShowPopup = true,
-            //    CPythonNodeCount = CurrentWorkspace?.Nodes.Count(n => GraphPythonDependencies.IsCPython3Node(n)) ?? 0
-            //};
-
-            //var popup = new Dynamo.Wpf.Views.PythonNet3Notification(owner)
-            //{
-            //    DataContext = vm,
-            //    Owner = owner
-            //};
-
-            //// For tests, prefer non-modal
-            //if (Dynamo.Models.DynamoModel.IsTestMode) popup.Show();
-            //else popup.ShowDialog();
-        }
-
         private void LogIronPythonNotification()
         {
             if (NotificationTracker.ContainsKey(CurrentWorkspace.Guid))
@@ -131,15 +93,6 @@ namespace Dynamo.PythonMigration
         internal void OpenPythonMigrationWarningDocumentation()
         {
             LoadedParams.ViewModelCommandExecutive.OpenDocumentationLinkCommand(Python3HelpLink);
-        }
-
-        private void EvaluateAndNotifyForWorkspace()
-        {
-            if (CurrentWorkspace == null) return;
-            
-            var hasCP3 = CurrentWorkspace.Nodes.Any(n => GraphPythonDependencies.IsCPython3Node(n));
-
-            if (hasCP3) LogCPython3Notification();
         }
 
         #region Events
@@ -182,11 +135,8 @@ namespace Dynamo.PythonMigration
         {
             if (!NotificationTracker.ContainsKey(CurrentWorkspace.Guid))
             {
-                if (GraphPythonDependencies.IsCPython3Node(obj))
-                {
-                    LogCPython3Notification();
-                }
-                if (GraphPythonDependencies.IsIronPythonNode(obj))
+                if (!NotificationTracker.ContainsKey(CurrentWorkspace.Guid)
+                && GraphPythonDependencies.IsIronPythonNode(obj))
                 {
                     LogIronPythonNotification();
                 }
@@ -215,7 +165,6 @@ namespace Dynamo.PythonMigration
 
             NotificationTracker.Remove(CurrentWorkspace.Guid);
             GraphPythonDependencies.CustomNodePythonDependencyMap.Clear();
-            EvaluateAndNotifyForWorkspace();
 
             CurrentWorkspace.Nodes
                 .Where(x => x is PythonNodeBase)

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -155,9 +154,6 @@ namespace Dynamo.PackageManager
             // Ensure at least one Python engine is available before packages are scanned.
             if (PythonServices.PythonEngineManager.Instance.AvailableEngines.Count == 0)
             {
-                //PythonServices.PythonEngineManager.Instance.LoadDefaultPythonEngine(AppDomain.CurrentDomain.GetAssemblies().
-                //                                                                    FirstOrDefault(a => a != null && a.GetName().Name == PythonServices.PythonEngineManager.PythonNet3AssemblyName));
-
                 var bin = startupParams.PathManager.DynamoCoreDirectory;
                 var asmPath = Path.Combine( bin, PythonEngineManager.PythonNet3AssemblyName + ".dll");
 

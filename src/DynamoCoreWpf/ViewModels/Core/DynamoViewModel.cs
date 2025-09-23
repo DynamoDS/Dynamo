@@ -266,11 +266,6 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal FileTrustWarningViewModel FileTrustViewModel { get; set; }
 
-        /// <summary>
-        /// This property is the ViewModel that will be passed to the CPython Notification popup when is created.
-        /// </summary>
-        internal CPython3NotificationViewModel CPython3NotificationViewModel { get; set; }
-
         private WorkspaceViewModel currentWorkspaceViewModel;
         private string filePath;
         private string fileContents;
@@ -889,7 +884,6 @@ namespace Dynamo.ViewModels
             }
 
             FileTrustViewModel = new FileTrustWarningViewModel();
-            CPython3NotificationViewModel = new CPython3NotificationViewModel();
             MLDataPipelineExtension = model.ExtensionManager.Extensions.OfType<DynamoMLDataPipelineExtension>().FirstOrDefault();
             IsIDSDKInitialized();
         }

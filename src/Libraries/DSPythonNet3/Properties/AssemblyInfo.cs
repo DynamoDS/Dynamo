@@ -10,5 +10,5 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("D6CEC4EA-2C5C-4866-A480-AEA295201E39")]
-[assembly: InternalsVisibleTo("PythonMigrationViewExtension")]  // TODO: Review
-[assembly: InternalsVisibleTo("DynamoPythonTests")]             // TODO: Review
+[assembly: InternalsVisibleTo("PythonMigrationViewExtension")]
+[assembly: InternalsVisibleTo("DynamoPythonTests")]

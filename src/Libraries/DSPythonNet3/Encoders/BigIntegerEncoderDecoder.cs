@@ -34,18 +34,6 @@ namespace DSPythonNet3.Encoders
                 value = (T)(object)bi;
                 return true;
             }
-
-            //if (!PyLong.IsLongType(pyObj))
-            //    {
-            //        value = default;
-            //        return false;
-            //    }
-
-            //using (var pyLong = PyLong.AsLong(pyObj))
-            //{
-            //    value = (T)(object)pyLong.ToBigInteger();
-            //    return true;
-            //}
         }
 
         public PyObject TryEncode(object value)
@@ -59,8 +47,6 @@ namespace DSPythonNet3.Encoders
                     return builtins.InvokeMethod("int", pyStr);
                 }
             }
-
-            //return new PyLong(value.ToString());
         }
     }
 }

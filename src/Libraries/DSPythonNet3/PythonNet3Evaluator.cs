@@ -450,20 +450,6 @@ sys.stdout = DynamoStdOut({0})
             }
 
             return (string?)field.Invoke(pythonExc, [pythonExc.Traceback]);
-
-            //var pythonExc = e as PythonException;
-            //if (!(e is PythonException))
-            //{
-            //    return null;
-            //}
-
-            //// Return the value of the trace back field (private)
-            //var field = typeof(PythonException).GetField("_tb", BindingFlags.NonPublic | BindingFlags.Instance);
-            //if (field == null)
-            //{
-            //    throw new NotSupportedException(Properties.Resources.InternalErrorTraceBackInfo);
-            //}
-            //return field.GetValue(pythonExc).ToString();
         }
 
         #region Marshalling
