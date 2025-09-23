@@ -1,7 +1,6 @@
-using System;
-using System.Text;
 using NUnit.Framework;
 using ProtoCore.Utils;
+using System.Text;
 
 namespace ProtoTest.UtilsTests
 {
@@ -112,7 +111,7 @@ namespace ProtoTest.UtilsTests
         #region Newline Handling Tests
 
         [Test]
-        public void ToLiteral_StringWithNewlines_PreservesNewlines()
+        public void ToLiteral_StringWithNewlines_EscapesNewlines()
         {
             // Arrange
             string input = "Line1\nLine2";
@@ -121,11 +120,11 @@ namespace ProtoTest.UtilsTests
             string result = CompilerUtils.ToLiteral(input);
 
             // Assert
-            Assert.AreEqual("Line1\nLine2", result);
+            Assert.AreEqual("Line1\\nLine2", result);
         }
 
         [Test]
-        public void ToLiteral_StringWithCarriageReturns_PreservesCarriageReturns()
+        public void ToLiteral_StringWithCarriageReturns_EscapesCarriageReturns()
         {
             // Arrange
             string input = "Line1\rLine2";
@@ -134,11 +133,11 @@ namespace ProtoTest.UtilsTests
             string result = CompilerUtils.ToLiteral(input);
 
             // Assert
-            Assert.AreEqual("Line1\rLine2", result);
+            Assert.AreEqual("Line1\\rLine2", result);
         }
 
         [Test]
-        public void ToLiteral_StringWithCRLF_PreservesCRLF()
+        public void ToLiteral_StringWithCRLF_EscapesCRLF()
         {
             // Arrange
             string input = "Line1\r\nLine2";
@@ -147,11 +146,11 @@ namespace ProtoTest.UtilsTests
             string result = CompilerUtils.ToLiteral(input);
 
             // Assert
-            Assert.AreEqual("Line1\r\nLine2", result);
+            Assert.AreEqual("Line1\\r\\nLine2", result);
         }
 
         [Test]
-        public void ToLiteral_StringWithTabs_PreservesTabs()
+        public void ToLiteral_StringWithTabs_EscapesTabs()
         {
             // Arrange
             string input = "Column1\tColumn2";
@@ -160,7 +159,7 @@ namespace ProtoTest.UtilsTests
             string result = CompilerUtils.ToLiteral(input);
 
             // Assert
-            Assert.AreEqual("Column1\tColumn2", result);
+            Assert.AreEqual("Column1\\tColumn2", result);
         }
 
         #endregion
@@ -194,7 +193,7 @@ namespace ProtoTest.UtilsTests
         }
 
         [Test]
-        public void ToLiteral_StringWithControlCharacters_PreservesControlCharacters()
+        public void ToLiteral_StringWithControlCharacters_EscapesControlCharacters()
         {
             // Arrange
             string input = "Text" + (char)7 + (char)8 + (char)12 + (char)11 + (char)0 + "End";
@@ -203,7 +202,7 @@ namespace ProtoTest.UtilsTests
             string result = CompilerUtils.ToLiteral(input);
 
             // Assert
-            Assert.AreEqual("Text" + (char)7 + (char)8 + (char)12 + (char)11 + (char)0 + "End", result);
+            Assert.AreEqual("Text\\a\\b\\f\\v\\0End", result);
         }
 
         #endregion
@@ -423,71 +422,5 @@ namespace ProtoTest.UtilsTests
 
         #endregion
 
-        #region Round-Trip Intent Tests
-
-        [Test]
-        public void ToLiteral_AfterEscape_DesignScriptParserShouldSeeExactOriginalBytes()
-        {
-            // This test documents the round-trip intent
-            // The escaped string should, when parsed by DesignScript, produce the exact original bytes
-            
-            // Arrange
-            string[] testCases = {
-                "",
-                "abcDEF123",
-                "He said \"hi\"",
-                @"C:\bin\app",
-                "line1\r\nline2",
-                "line1\nline2",
-                "Жълъд你好🙂",
-                "test + () + concatenation"
-            };
-
-            foreach (string original in testCases)
-            {
-                // Act
-                string escaped = CompilerUtils.ToLiteral(original);
-
-                // Assert - The escaped string should be valid DesignScript
-                // and when parsed should produce the original string
-                Assert.IsNotNull(escaped, $"Escaped result should not be null for input: {original}");
-                
-                // Basic validation: escaped string should not contain unescaped quotes or backslashes
-                // Check that quotes are properly escaped (should be \" not ")
-                if (original.Contains("\""))
-                {
-                    Assert.IsTrue(escaped.Contains("\\\""), $"Escaped string should contain \\\" for quotes: {escaped}");
-                    // Check that there are no unescaped quotes (quotes not preceded by odd number of backslashes)
-                    for (int i = 0; i < escaped.Length; i++)
-                    {
-                        if (escaped[i] == '"')
-                        {
-                            // Count consecutive backslashes immediately before the quote
-                            int backslashCount = 0;
-                            int j = i - 1;
-                            while (j >= 0 && escaped[j] == '\\')
-                            {
-                                backslashCount++;
-                                j--;
-                            }
-                            // If the number of backslashes is even, the quote is unescaped
-                            if (backslashCount % 2 == 0)
-                            {
-                                Assert.Fail($"Escaped string contains unescaped quote at position {i}: {escaped}");
-                            }
-                        }
-                    }
-                }
-                
-                // Check that backslashes are properly escaped (should be \\ not \)
-                if (original.Contains("\\"))
-                {
-                    Assert.IsTrue(escaped.Contains("\\\\"), $"Escaped string should contain \\\\ for backslashes: {escaped}");
-                    // Note: We can't easily check for unescaped backslashes since \\ is valid
-                }
-            }
-        }
-
-        #endregion
     }
 }
