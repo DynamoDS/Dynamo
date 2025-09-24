@@ -194,16 +194,18 @@ clr.AddReference('FFITarget')
 clr.AddReference('DSCoreNodes')
 from DSCore import List
 from FFITarget import DummyCollection
+from System import Int32
 
-d = {'one': 1, 'two': 2, 'three': 3}
+# Cast initial values to System.Int32 so Dictionary<string,int> accepts them
+d = {'one': Int32(1), 'two': Int32(2), 'three': Int32(3)}
 
 # Python dict => .NET IDictionary
 untypedDictionary = DummyCollection.AcceptIDictionary(d)
-untypedDictionary['four'] = 4
+untypedDictionary['four'] = Int32(4)
 
 # Python dict => .NET IDictionary<> - Does not work in IronPython
 typedDictionary = DummyCollection.AcceptDictionary(d)
-typedDictionary['four'] = 4
+typedDictionary['four'] = Int32(4)
 
 # Python dict => .NET IEnumerable - Returns keys in both engines
 sortedKeys = List.Sort(d)
