@@ -77,8 +77,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyInfoGenerator", "As
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Analysis", "Libraries\Analysis\Analysis.csproj", "{76686ED6-E759-4772-81C2-768740BE13FA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DSCPython", "Libraries\DSCPython\DSCPython.csproj", "{F1541C2D-80A9-4FE7-8D9E-75A8B9FF3479}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeometryColor", "Libraries\GeometryColor\GeometryColor.csproj", "{A50C198C-DA6E-4081-BC53-0F44D287F207}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeometryUI", "Libraries\GeometryUI\GeometryUI.csproj", "{E674F1A1-BE83-475A-9CC9-F55CADBEC448}"
