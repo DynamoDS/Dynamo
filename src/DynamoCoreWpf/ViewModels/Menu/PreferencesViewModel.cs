@@ -1343,23 +1343,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the IsChecked property in the "Enable Paneling nodes" toggle button
-        /// </summary>
-        public bool EnablePanelingIsChecked
-        {
-            get
-            {
-                return !preferenceSettings.NamespacesToExcludeFromLibrary.Contains(
-                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.PanelSurface");
-            }
-            set
-            {
-                HideUnhideNamespace(!value, "ProtoGeometry.dll", "Autodesk.DesignScript.Geometry.PanelSurface");
-                RaisePropertyChanged(nameof(EnablePanelingIsChecked));
-            }
-        }
-
-        /// <summary>
         /// This method updates the node search library to either hide or unhide nodes that belong
         /// to a specified assembly name and namespace. These nodes will be hidden from the node
         /// library sidebar and from the node search.
@@ -1919,9 +1902,6 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(EnableTSplineIsChecked):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewEnableTSplineNodes), System.Globalization.CultureInfo.InvariantCulture);
-                    goto default;
-                case nameof(EnablePanelingIsChecked):
-                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewEnablePanelingNodes), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(ShowPreviewBubbles):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowPreviewBubbles), System.Globalization.CultureInfo.InvariantCulture);
