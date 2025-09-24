@@ -2861,7 +2861,7 @@ Tento balíček bude uvolněn po dalším restartování aplikace Dynamo.</value
     <value>Pracovní prostor</value>
   </data>
   <data name="PackagesGuideExitAcceptTerms" xml:space="preserve">
-    <value>Chcete-li pokračovat v příručce a nainstalovat vzorový balíček, je nutné přijmout Podmínky služby. \n\n **Klikněte na tlačítko Pokračovat.** Poté v podmínkách klikněte na tlačítko Přijímám.** \n\n\n\n</value>
+    <value>Chcete-li pokračovat v příručce a nainstalovat vzorový balíček, je nutné přijmout Podmínky služby. \n\n **Klikněte na tlačítko Pokračovat.** Poté v podmínkách **klikněte na tlačítko Přijímám.** \n\n\n\n</value>
   </data>
   <data name="PackagesGuideExitTitle" xml:space="preserve">
     <value>Chcete ukončit příručku?</value>

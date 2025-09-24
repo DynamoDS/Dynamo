@@ -22,16 +22,19 @@ jobs:
           {
             "projects": ["src", "test"],
             "sdk": {
-              "version": "8.0.100",
+              "version": "10.0.100-preview.7.25380.108",
               "rollForward": "latestFeature"
             }
           }
           "@
           $globalJson | Out-File -FilePath ${{ github.workspace }}\Dynamo\global.json -Encoding utf8
       - name: Setup dotnet
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: |
+            8.0.x
+            9.0.x
+            10.0.x
       - name: Disable problem matcher
         run: Write-Output "::remove-matcher owner=csc::"
       - name: Setup msbuild

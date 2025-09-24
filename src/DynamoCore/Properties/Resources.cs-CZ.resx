@@ -877,7 +877,7 @@ Tento balíček pravděpodobně obsahuje sestavu, která je blokována. Po odblo
     <value>Do pracovního prostoru byl přidán vzorový soubor. Režim spuštění byl změněn na Ruční.</value>
   </data>
   <data name="DynamoLanguages_noxlate" xml:space="preserve">
-    <value>Default,English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
+    <value>Default,English,English (UK),Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
   </data>
   <data name="FormulaDSConversionFailure" xml:space="preserve">
     <value>Převod vzorce na kód DesignScript se nezdařil. Upravte vzorec ručně, aby jej bylo možné použít v uzlu CodeBlock.</value>

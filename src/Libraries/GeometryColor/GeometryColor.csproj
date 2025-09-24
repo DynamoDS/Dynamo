@@ -69,7 +69,7 @@
   </ItemGroup>
   <Target Name="GenerateFiles" AfterTargets="ResolveSateliteResDeps" Condition=" $(RuntimeIdentifier.Contains('win')) ">
     <!-- Generate customization dll -->
-    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)Resources\GeometryColor.resx" OutputResources="$(ProjectDir)Resources\GeometryColorImages.resources" />
-    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)Resources\GeometryColorImages.resources" OutputAssembly="$(OutDir)GeometryColor.customization.dll" Version="%(AssemblyInfo.Version)" />
+    <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)GeometryColorImages.resx" OutputResources="$(ProjectDir)GeometryColorImages.resources" />
+    <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)GeometryColorImages.resources" OutputAssembly="$(OutDir)GeometryColor.customization.dll" Version="%(AssemblyInfo.Version)" />
   </Target>
 </Project>

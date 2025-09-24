@@ -879,7 +879,7 @@
     <value>示例文件已添加到工作空间。运行模式已更改为“手动”。</value>
   </data>
   <data name="DynamoLanguages_noxlate" xml:space="preserve">
-    <value>Default,English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
+    <value>Default,English,English (UK),Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
   </data>
   <data name="FormulaDSConversionFailure" xml:space="preserve">
     <value>公式无法转换为 DesignScript 代码。请手动编辑公式以在 CodeBlock 节点中使用它。</value>

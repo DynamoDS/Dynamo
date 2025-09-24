@@ -879,7 +879,7 @@ value: bool = false</value>
     <value>예시 파일이 작업공간에 추가되었습니다. 실행 모드가 수동으로 변경되었습니다.</value>
   </data>
   <data name="DynamoLanguages_noxlate" xml:space="preserve">
-    <value>Default,English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
+    <value>Default,English,English (UK),Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
   </data>
   <data name="FormulaDSConversionFailure" xml:space="preserve">
     <value>수식을 DesignScript 코드로 변환하지 못했습니다. CodeBlock 노드에서 사용하려면 수식을 수동으로 편집하십시오.</value>
