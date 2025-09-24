@@ -413,7 +413,7 @@ namespace Dynamo.Tests
                 }
                 else if (pythonEngine == PythonEngineManager.PythonNet3EngineName)
                 {
-                    Assert.AreEqual("3.9.12", nodeValue);
+                    Assert.AreEqual("3.11.0", nodeValue);
                 }
             }
         }
@@ -489,11 +489,11 @@ namespace Dynamo.Tests
 
             UpdatePythonEngineAndRun(pynode1, PythonEngineManager.PythonNet3EngineName);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            AssertPreviewValue(pynode1.GUID.ToString("N"), "3.9.12");
+            AssertPreviewValue(pynode1.GUID.ToString("N"), "3.11.0");
 
             UpdatePythonEngineAndRun(pynode2, PythonEngineManager.PythonNet3EngineName);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            AssertPreviewValue(pynode2.GUID.ToString("N"), new List<string> { "3.9.12", "3.9.12" });
+            AssertPreviewValue(pynode2.GUID.ToString("N"), new List<string> { "3.11.0", "3.11.0" });
         }
 
         [Test]

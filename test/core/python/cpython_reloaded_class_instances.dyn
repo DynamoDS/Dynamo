@@ -13,7 +13,7 @@
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
       "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nsys.path.append(r'..\\..\\..\\test\\core\\python\\module_reload')\r\nimport reloaded_class\r\n\r\n\r\nOUT = reloaded_class.reloaded_class()",
-      "Engine": "CPython3",
+      "Engine": "PythonNet3",
       "VariableInputPorts": true,
       "Id": "2687166778f948d69a8f601a58eab05a",
       "Inputs": [
@@ -45,7 +45,7 @@
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
       "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nsys.path.append(r'..\\..\\..\\test\\core\\python\\module_reload')\r\nimport reloaded_class\r\n\r\n\r\nOUT = [IN[0].get_data(),reloaded_class.reloaded_class().get_data()]",
-      "Engine": "CPython3",
+      "Engine": "PythonNet3",
       "VariableInputPorts": true,
       "Id": "27af4862d5e7446babea7ff42f5bc80c",
       "Inputs": [
