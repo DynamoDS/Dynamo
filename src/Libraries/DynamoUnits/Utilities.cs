@@ -420,6 +420,7 @@ namespace DynamoUnits
             {
                 // e.g. majorVersions = ["2028", "2027", "2026"] (sorted newest first)
                 var majorVersions = AscSdkWrapper.GetMajorVersions();
+                var bundledVersion = new Version(1, 0, 4); // Current bundled schema version
 
                 foreach (var majorVersion in majorVersions)
                 {
@@ -429,9 +430,16 @@ namespace DynamoUnits
                     if (ascWrapper.GetInstalledPath(ref installPath) == AscSdkWrapper.ASC_STATUS.SUCCESS)
                     {
                         // e.g. installPath = "C:\Program Files\Common Files\Autodesk Shared\Components\2026\1.8.0"
-                        // Trust the registry - this is the latest version the installer put there
-                        var schemaPath = Path.Combine(installPath, "coreschemas", "unit");
-                        candidateDirectories.Add(schemaPath);
+                        var versionString = Path.GetFileName(installPath); // e.g. "1.8.0" or "2.0.0"
+                        if (Version.TryParse(versionString, out var ascVersion))
+                        {
+                            if (ascVersion > bundledVersion) // Only use if newer than the bundled version
+                            {
+                                // Trust the registry - this is the latest version the installer put there
+                                var schemaPath = Path.Combine(installPath, "coreschemas", "unit");
+                                candidateDirectories.Add(schemaPath);
+                            }
+                        }
                     }
                 }
             }
