@@ -136,7 +136,7 @@ jobs:
       - name: Commit changes
         id: commit
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.DYNAMO_ACTIONS_TOKEN }}
         if: steps.git-check.outputs.changed == 'true'
         run: |
           set -e
@@ -146,8 +146,8 @@ jobs:
           echo "branch=$BRANCH" >> $GITHUB_OUTPUT
 
           # Configure Git
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "dynamo-ci-user"
+          git config user.email "dynamo@autodesk.com"
           
           # Create new branch
           git checkout -b $BRANCH
@@ -158,7 +158,7 @@ jobs:
       # Create PR using GitHub CLI
       - name: Create Pull Request
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.DYNAMO_ACTIONS_TOKEN }}
         if: steps.git-check.outputs.changed == 'true'
         run: |
           # Get the branch name from previous step
