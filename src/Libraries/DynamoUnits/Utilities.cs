@@ -45,8 +45,9 @@ namespace DynamoUnits
                 candidateDirectories.Add(configPath);
             }
 
-            // Add random path for testing purposes
-            candidateDirectories.Add(@"C:\temp\test-schemas");
+            candidateDirectories.Add(@"C:\Program Files\Common Files\Autodesk Shared\Components\2027\2.0.0\DGNFonts");
+
+            candidateDirectories.Add(@"C:\Program Files\Common Files\Autodesk Shared\Components\2027\2.0.0\coreschemas\unit");
 
             // Add bundled schema directory as final candidate
             candidateDirectories.Add(BundledSchemaDirectory);
@@ -407,16 +408,48 @@ namespace DynamoUnits
         {
             try
             {
-                var engine = new ForgeUnits.UnitsEngine();
-                ForgeUnits.SchemaUtility.addDefinitionsFromFolder(schemaDirectory, engine);
-                engine.resolveSchemas();
-                return engine;
+                // Validate that the directory exists and contains required subdirectories
+                if (IsValidSchemaDirectory(schemaDirectory))
+                {
+                    var engine = new ForgeUnits.UnitsEngine();
+                    ForgeUnits.SchemaUtility.addDefinitionsFromFolder(schemaDirectory, engine);
+                    engine.resolveSchemas();
+                    return engine;
+                }
+
+                return null; // Invalid schema directory
             }
             catch
             {
                 //There was an issue initializing the schemas at the specified path.
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Validates that a directory contains the required schema subdirectories.
+        /// </summary>
+        /// <param name="schemaDirectory">Directory to validate</param>
+        /// <returns>True if the directory contains all required subdirectories</returns>
+        private static bool IsValidSchemaDirectory(string schemaDirectory)
+        {
+            if (string.IsNullOrEmpty(schemaDirectory) || !Directory.Exists(schemaDirectory))
+            {
+                return false;
+            }
+
+            var requiredSubdirectories = new[] { "dimension", "quantity", "symbol", "unit" };
+            
+            foreach (var subdirectory in requiredSubdirectories)
+            {
+                var subdirectoryPath = Path.Combine(schemaDirectory, subdirectory);
+                if (!Directory.Exists(subdirectoryPath))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
