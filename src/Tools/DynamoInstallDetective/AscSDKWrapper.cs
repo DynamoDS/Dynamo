@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using Microsoft.Win32;
 
 namespace DynamoInstallDetective
@@ -186,17 +187,22 @@ namespace DynamoInstallDetective
         /// <summary>
         /// Get the major version of all ASC packages installed on the local machine
         /// </summary>
-        /// <returns>An array of major versions, for example ["2026, "2027", "2028"]</returns>
+        /// <returns>An array of sorted major versions, for example ["2028", "2027", "2026"]</returns>
         public static string[] GetMajorVersions()
         {
             string[] majorVersions = [];
             var baseKey = Registry.LocalMachine;
             var subkey = baseKey.OpenSubKey(@"SOFTWARE\Autodesk\SharedComponents");
+
             if(subkey != null)
             {
-                majorVersions = subkey.GetSubKeyNames();
+                majorVersions = subkey.GetSubKeyNames()
+                    .OrderByDescending(version => version) // Newer versions first
+                    .ToArray();
+
                 subkey.Close();
             }
+
             return majorVersions;
         }
     }
