@@ -32,28 +32,22 @@ namespace DynamoUnits
         /// </summary>
         internal static void Initialize()
         {
-            var assemblyFilePath = Assembly.GetExecutingAssembly().Location;
-
-            var config = ConfigurationManager.OpenExeConfiguration(assemblyFilePath);
-            var key = config.AppSettings.Settings["schemaPath"];
-            string configPath = null;
-            if (key != null)
-            {
-                configPath = key.Value;
-            }
-
             // Build candidate schema directories list
             candidateDirectories.Clear();
-            
+
+            var assemblyFilePath = Assembly.GetExecutingAssembly().Location;
+            var config = ConfigurationManager.OpenExeConfiguration(assemblyFilePath);
+
             // Add config path if it's valid
+            var configPath = config.AppSettings.Settings["schemaPath"]?.Value;
             if (!string.IsNullOrEmpty(configPath) && Directory.Exists(configPath))
             {
                 candidateDirectories.Add(configPath);
             }
-            
+
             // Add random path for testing purposes
             candidateDirectories.Add(@"C:\temp\test-schemas");
-            
+
             // Add bundled schema directory as final candidate
             candidateDirectories.Add(BundledSchemaDirectory);
 
