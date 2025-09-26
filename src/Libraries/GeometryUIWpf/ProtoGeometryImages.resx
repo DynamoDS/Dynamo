@@ -407,16 +407,16 @@
     <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin.Point.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors.Point-Vector-Vector-Vector.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors.3.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors.Point-Vector-Vector-Vector.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors.Point-Vector-Vector-Vector.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors.3.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors.Point-Vector-Vector-Vector.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors.Point-Vector-Vector.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors.2.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors.Point-Vector-Vector.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors.Point-Vector-Vector.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors.2.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.CoordinateSystem.ByOriginVectors.Point-Vector-Vector.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.CoordinateSystem.ByPlane.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.CoordinateSystem.ByPlane.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -551,10 +551,10 @@
     <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.CoordinateSystem.ScaleFactor.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.CoordinateSystem.Transform.CoordinateSystem-CoordinateSystem.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.CoordinateSystem.Transform.CoordinateSystem2.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.CoordinateSystem.Transform.CoordinateSystem-CoordinateSystem.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.CoordinateSystem.Transform.CoordinateSystem-CoordinateSystem.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.CoordinateSystem.Transform.CoordinateSystem2.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.CoordinateSystem.Transform.CoordinateSystem-CoordinateSystem.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.CoordinateSystem.Transform.CoordinateSystem.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.CoordinateSystem.Transform.CoordinateSystem.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -3257,10 +3257,10 @@
     <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildFromLines.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes.Curve1-double-double-int1-bool-bool-double1-double1-double1-double1-double1-double1-bool.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes.Curve1-double-double-int1-bool-bool-double1-double1-double1-double1-double1-double1-bool.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes.Curve1-double-double-int1-bool-bool-double1-double1-double1-double1-double1-double1-bool.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes.Curve1-double-double-int1-bool-bool-double1-double1-double1-double1-double1-double1-bool.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxCorners.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxCorners.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -3269,22 +3269,22 @@
     <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxCorners.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths.CoordinateSystem-double-double-double-int-int-int-TSplineInitialSymmetry-bool.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths.CoordinateSystem-double-double-double-int-int-int-TSplineInitialSymmetry-bool.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths.CoordinateSystem-double-double-double-int-int-int-TSplineInitialSymmetry-bool.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths.CoordinateSystem-double-double-double-int-int-int-TSplineInitialSymmetry-bool.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths.double-double-double-int-int-int-TSplineInitialSymmetry-bool.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths.double-double-double-int-int-int-TSplineInitialSymmetry-bool.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths.double-double-double-int-int-int-TSplineInitialSymmetry-bool.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths.double-double-double-int-int-int-TSplineInitialSymmetry-bool.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths.Point-double-double-double-int-int-int-TSplineInitialSymmetry-bool.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths.Point-double-double-double-int-int-int-TSplineInitialSymmetry-bool.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths.Point-double-double-double-int-int-int-TSplineInitialSymmetry-bool.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByBoxLengths.Point-double-double-double-int-int-int-TSplineInitialSymmetry-bool.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByCombinedTSplineSurfaces.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByCombinedTSplineSurfaces.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -3455,16 +3455,16 @@
     <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreaseVertices.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch.TSplineEdge1-Curve1-int-bool-bool-int-double-bool-double-double-bool.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch.TSplineEdge1-Curve1-int-bool-bool-int-double-bool-double-double-bool.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch.TSplineEdge1-Curve1-int-bool-bool-int-double-bool-double-double-bool.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch.TSplineEdge1-Curve1-int-bool-bool-int-double-bool-double-double-bool.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch.TSplineEdge1-Edge1-int-bool-bool-int-double-bool-double-double-bool.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch.TSplineEdge1-Edge1-int-bool-bool-int-double-bool-double-double-bool.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch.TSplineEdge1-Edge1-int-bool-bool-int-double-bool-double-double-bool.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch.TSplineEdge1-Edge1-int-bool-bool-int-double-bool-double-double-bool.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.DeleteEdges.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.DeleteEdges.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -3545,16 +3545,16 @@
     <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.FillHole.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.FlattenVertices.TSplineVertex1-Plane.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.FlattenVertices.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.FlattenVertices.TSplineVertex1-Plane.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.FlattenVertices.TSplineVertex1-Plane.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.FlattenVertices.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.FlattenVertices.TSplineVertex1-Plane.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.FlattenVertices.TSplineVertex1.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.FlattenVertices.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.FlattenVertices.TSplineVertex1.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.FlattenVertices.TSplineVertex1.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.FlattenVertices.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.FlattenVertices.TSplineVertex1.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.FlipNormals.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.FlipNormals.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -3743,16 +3743,16 @@
     <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.WeldCoincidentVertices.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.WeldVertices.TSplineVertex1-Point-bool.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.WeldVertices.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.WeldVertices.TSplineVertex1-Point-bool.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.WeldVertices.TSplineVertex1-Point-bool.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.WeldVertices.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.WeldVertices.TSplineVertex1-Point-bool.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.WeldVertices.TSplineVertex1-TSplineVertex1-bool.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.WeldVertices.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.WeldVertices.TSplineVertex1-TSplineVertex1-bool.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.WeldVertices.TSplineVertex1-TSplineVertex1-bool.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.WeldVertices.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.WeldVertices.TSplineVertex1-TSplineVertex1-bool.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.BorderEdges.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.BorderEdges.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
