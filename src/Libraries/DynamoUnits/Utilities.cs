@@ -14,13 +14,13 @@ namespace DynamoUnits
     public static class Utilities
     {
         private static ForgeUnits.UnitsEngine unitsEngine;
+        private static List<string> candidateDirectories = new List<string>();
 
         /// <summary>
         /// Path to the directory used load the schema definitions.
         /// </summary>
         [SupressImportIntoVM]
         public static string SchemaDirectory { get; private set; } = string.Empty;
-
 
         static Utilities()
         {
@@ -43,7 +43,7 @@ namespace DynamoUnits
             }
 
             // Build candidate schema directories list
-            var candidateDirectories = new List<string>();
+            candidateDirectories.Clear();
             
             // Add config path if it's valid
             if (!string.IsNullOrEmpty(configPath) && Directory.Exists(configPath))
@@ -147,8 +147,8 @@ namespace DynamoUnits
             {
                 if (unitsEngine == null)
                 {
-                    throw new Exception("There was an issue loading Unit Schemas from the specified path: " 
-                                        + SchemaDirectory);
+                    var attemptedPaths = string.Join(", ", candidateDirectories);
+                    throw new Exception($"There was an issue loading Unit Schemas. Attempted paths: {attemptedPaths}");
                 }
 
                 return unitsEngine;
