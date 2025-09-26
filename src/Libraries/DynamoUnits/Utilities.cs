@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using ForgeUnits = Autodesk.ForgeUnits;
 
@@ -419,9 +418,8 @@ namespace DynamoUnits
         {
             try
             {
-                // e.g. majorVersions = sorted to ["2028", "2027", "2026"]
-                var majorVersions = AscSdkWrapper.GetMajorVersions()
-                    .OrderByDescending(version => version); // Newer versions first
+                // e.g. majorVersions = ["2028", "2027", "2026"] (sorted newest first)
+                var majorVersions = AscSdkWrapper.GetMajorVersions();
 
                 foreach (var majorVersion in majorVersions)
                 {
