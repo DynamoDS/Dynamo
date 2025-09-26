@@ -413,8 +413,9 @@ namespace DynamoUnits
         {
             try
             {
-                // e.g. majorVersions = ["2026", "2027", "2028"]
-                var majorVersions = AscSdkWrapper.GetMajorVersions();
+                // e.g. majorVersions = sorted to ["2028", "2027", "2026"]
+                var majorVersions = AscSdkWrapper.GetMajorVersions()
+                    .OrderByDescending(version => version); // Newer versions first
 
                 foreach (var majorVersion in majorVersions)
                 {
@@ -424,22 +425,9 @@ namespace DynamoUnits
                     if (ascWrapper.GetInstalledPath(ref installPath) == AscSdkWrapper.ASC_STATUS.SUCCESS)
                     {
                         // e.g. installPath = "C:\Program Files\Common Files\Autodesk Shared\Components\2026\1.8.0"
-                        // e.g. baseVersionPath = "C:\Program Files\Common Files\Autodesk Shared\Components\2026"
-                        var baseVersionPath = Directory.GetParent(installPath)?.FullName;
-                        if (!string.IsNullOrEmpty(baseVersionPath) && Directory.Exists(baseVersionPath))
-                        {
-                            // e.g. versionDirectories = ["...\2026\2.0.0", "...\2026\1.8.0"]
-                            var versionDirectories = Directory.GetDirectories(baseVersionPath)
-                                .Where(dir => Directory.Exists(Path.Combine(dir, "coreschemas", "unit")))
-                                .OrderByDescending(dir => dir); // Latest version first
-
-                            foreach (var versionDir in versionDirectories)
-                            {
-                                // e.g. schemaPath = "...\Components\2026\1.8.0\coreschemas\unit"
-                                var schemaPath = Path.Combine(versionDir, "coreschemas", "unit");
-                                candidateDirectories.Add(schemaPath);
-                            }
-                        }
+                        // Trust the registry - this is the latest version the installer put there
+                        var schemaPath = Path.Combine(installPath, "coreschemas", "unit");
+                        candidateDirectories.Add(schemaPath);
                     }
                 }
             }
