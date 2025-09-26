@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using System.Linq;
-using DSCPython;
+using DSPythonNet3;
 using System.IO;
 using Dynamo;
 using Dynamo.PythonServices;
@@ -16,7 +16,7 @@ using Dynamo.PythonServices.EventHandlers;
         public delegate object PythonEvaluatorDelegate(string code, IList bindingNames, IList bindingValues);
 
         public IEnumerable<PythonEvaluatorDelegate> Evaluators = new List<PythonEvaluatorDelegate> {
-            DSCPython.CPythonEvaluator.EvaluatePythonScript
+            DSPythonNet3.PythonNet3Evaluator.EvaluatePythonScript
         };
 
         [Test]
@@ -59,10 +59,10 @@ using Dynamo.PythonServices.EventHandlers;
             const string script = "OUT = ['', ' ', '  ']";
 
             // Using the CPython Evaluator
-            var marshaler = CPythonEvaluator.OutputMarshaler;
+            var marshaler = PythonNet3Evaluator.OutputMarshaler;
             marshaler.RegisterMarshaler((string s) => s.Length);
 
-            var output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
+            var output = DSPythonNet3.PythonNet3Evaluator.EvaluatePythonScript(
                 script,
                 new ArrayList(),
                 new ArrayList());
@@ -80,10 +80,10 @@ using Dynamo.PythonServices.EventHandlers;
         {
             const string script = "OUT = sum(IN)";
 
-            var marshaler = DSCPython.CPythonEvaluator.InputMarshaler;
+            var marshaler = DSPythonNet3.PythonNet3Evaluator.InputMarshaler;
             marshaler.RegisterMarshaler((string s) => s.Length);
 
-            var output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
+            var output = DSPythonNet3.PythonNet3Evaluator.EvaluatePythonScript(
                 script,
                 new ArrayList { "IN" },
                 new ArrayList { new ArrayList { " ", "  " } });
@@ -123,7 +123,7 @@ using Dynamo.PythonServices.EventHandlers;
 ";
             try
             {
-                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
+                DSPythonNet3.PythonNet3Evaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
                 Assert.Fail("An exception was expected");
             }
             catch (Exception exc)
@@ -139,7 +139,7 @@ print 'hello'
 ";
             try
             {
-                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
+                DSPythonNet3.PythonNet3Evaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
                 Assert.Fail("An exception was expected");
             }
             catch (Exception exc)
@@ -167,12 +167,12 @@ print 'hello'
                 }
             };
 
-            CPythonEvaluator.Instance.EvaluationFinished += handler;
+            PythonNet3Evaluator.Instance.EvaluationFinished += handler;
 
             var code = @"1";
             try
             {
-                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
+                DSPythonNet3.PythonNet3Evaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
             }
             finally
             {
@@ -182,7 +182,7 @@ print 'hello'
             code = @"1/a";
             try
             {
-                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
+                DSPythonNet3.PythonNet3Evaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
             }
             catch
             {
@@ -190,7 +190,7 @@ print 'hello'
             }
             finally
             {
-                CPythonEvaluator.Instance.EvaluationFinished -= handler;
+                PythonNet3Evaluator.Instance.EvaluationFinished -= handler;
                 Assert.AreEqual(2, count);
             }
         }
@@ -213,7 +213,7 @@ OUT = wr
             var empty = new ArrayList();
             Assert.DoesNotThrow(() =>
             {
-                Assert.IsTrue(DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty).ToString().Contains("weakref at"));
+                Assert.IsTrue(DSPythonNet3.PythonNet3Evaluator.EvaluatePythonScript(code, empty, empty).ToString().Contains("weakref at"));
 
             });
         }
@@ -233,7 +233,7 @@ OUT = o
             var empty = new ArrayList();
             Assert.DoesNotThrow(() =>
             {
-                Assert.AreEqual("I am a myobj", DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty).ToString());
+                Assert.AreEqual("I am a myobj", DSPythonNet3.PythonNet3Evaluator.EvaluatePythonScript(code, empty, empty).ToString());
 
             });
         }
@@ -271,12 +271,12 @@ o = notiterable()
 OUT = o
 ";
             var empty = new ArrayList();
-            var result1 = DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty);
-            var result2 = DSCPython.CPythonEvaluator.EvaluatePythonScript(code2, empty, empty);
+            var result1 = DSPythonNet3.PythonNet3Evaluator.EvaluatePythonScript(code, empty, empty);
+            var result2 = DSPythonNet3.PythonNet3Evaluator.EvaluatePythonScript(code2, empty, empty);
             Assert.IsInstanceOf(typeof(IList), result1);
             Assert.IsTrue(new List<object>() { 0L, 1L, 2L, 3L }
                 .SequenceEqual((IEnumerable<Object>)result1));
-            Assert.IsInstanceOf(typeof(DSCPython.DynamoCPythonHandle), result2);
+            Assert.IsInstanceOf(typeof(DSPythonNet3.DynamoPythonNet3Handle), result2);
 
         }
 
@@ -325,7 +325,7 @@ sys.path.append(r'{Path.GetDirectoryName(tempPath)}')
 import {modName}
 OUT = {modName}.value";
 
-                var output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
+                var output = DSPythonNet3.PythonNet3Evaluator.EvaluatePythonScript(
                    script,
                    new ArrayList { "IN" },
                    new ArrayList { new ArrayList { " ", "  " } });
@@ -336,9 +336,9 @@ OUT = {modName}.value";
                 File.AppendAllLines(tempPath, new string[] { "value ='bye'" });
 
                 //mock raise event
-                CPythonEvaluator.RequestPythonResetHandler(PythonEngineManager.CPython3EngineName);
+                PythonNet3Evaluator.RequestPythonResetHandler(PythonEngineManager.PythonNet3EngineName);
 
-                output = CPythonEvaluator.EvaluatePythonScript(
+                output = PythonNet3Evaluator.EvaluatePythonScript(
                  script,
                  new ArrayList { "IN" },
                  new ArrayList { new ArrayList { " ", "  " } });

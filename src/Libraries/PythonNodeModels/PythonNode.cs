@@ -96,8 +96,8 @@ namespace PythonNodeModels
             }
             else
             {
-                // Use CPython as default
-                engine = PythonEngineManager.CPython3EngineName;
+                // Use PythonNet3 as default
+                engine = PythonEngineManager.PythonNet3EngineName;
             }
         }
 
@@ -184,6 +184,24 @@ namespace PythonNodeModels
     [IsDesignScriptCompatible]
     public sealed class PythonNode : PythonNodeBase
     {
+        private bool showAutoUpgradedBar;
+        /// <summary>
+        /// This property is true if the node was auto-upgraded from CPython3 to PythonNet3.
+        /// </summary>
+        [JsonIgnore]
+        public bool ShowAutoUpgradedBar
+        {
+            get => showAutoUpgradedBar;
+            internal set
+            {
+                if (showAutoUpgradedBar != value)
+                {
+                    showAutoUpgradedBar = value;
+                    RaisePropertyChanged(nameof(ShowAutoUpgradedBar));
+                }
+            }
+        }
+
         /// <summary>
         /// The NodeType property provides a name which maps to the 
         /// server type for the node. This property should only be
@@ -284,7 +302,7 @@ namespace PythonNodeModels
         [Obsolete("This method is part of the temporary IronPython to CPython3 migration feature and will be removed in future versions of Dynamo.")]
         /// <summary>
         /// Updates the Script property of the node and raise the migration event notifications.
-        /// NOTE: This is a temporary method used during the Python 2 to Python 3 transistion period,
+        /// NOTE: This is a temporary method used during the Python 2 to Python 3 transition period,
         /// it will be removed when the transistion period is over.
         /// </summary>
         /// <param name="newCode">The new migrated code</param>

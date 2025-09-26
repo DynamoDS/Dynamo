@@ -709,6 +709,11 @@ namespace Dynamo.Configuration
         public bool ShowTabsAndSpacesInScriptEditor { get; set; }
 
         /// <summary>
+        /// This defines if user wants to see the CPython3 update prompt.
+        /// </summary>
+        public bool HideCPython3Notifications { get; set; } = false;
+
+        /// <summary>
         /// This defines if user wants to see the enabled node Auto Complete feature for port interaction.
         /// </summary>
         public bool EnableNodeAutoComplete { get; set; }

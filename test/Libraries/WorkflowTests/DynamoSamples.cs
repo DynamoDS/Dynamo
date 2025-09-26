@@ -19,7 +19,7 @@ namespace Dynamo.Tests
             libraries.Add("ProtoGeometry.dll"); // Required for Surface.
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");   // Required for built-in nodes.
-            libraries.Add("DSCPython.dll");  // Required for Python tests.
+            libraries.Add("DSPythonNet3.dll");  // Required for Python tests.
             libraries.Add("FunctionObject.ds"); // Required for partially applied nodes.
             libraries.Add("DSOffice.dll"); // Required for Excel testing.
             base.GetLibrariesToPreload(libraries);

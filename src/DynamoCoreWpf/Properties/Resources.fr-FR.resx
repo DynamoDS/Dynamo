@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2273,11 +2273,11 @@ Voulez-vous désinstaller {1}? Redémarrez {2} pour terminer la désinstallation
   <data name="AddStyleButton" xml:space="preserve">
     <value>Aj. style</value>
   </data>
-  <data name="ResetCPythonButtonText" xml:space="preserve">
-    <value>Réinitialiser CPython</value>
+  <data name="ResetPythonNet3ButtonText" xml:space="preserve">
+    <value>Réinitialiser PythonNet3</value>
   </data>
-  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
-    <value>Réinitialise l'environnement CPython en rechargeant les modules.</value>
+  <data name="ResetPythonNet3ButtonToolTip" xml:space="preserve">
+    <value>Réinitialise l'environnement PythonNet3 en rechargeant les modules.</value>
   </data>
   <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
     <value>Annuler et afficher les problèmes</value>

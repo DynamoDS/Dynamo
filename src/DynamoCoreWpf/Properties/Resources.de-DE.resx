@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -2274,11 +2274,11 @@ Möchten Sie {1} deinstallieren? Starten Sie {2} neu, um die Deinstallation abzu
   <data name="AddStyleButton" xml:space="preserve">
     <value>Neuer Stil</value>
   </data>
-  <data name="ResetCPythonButtonText" xml:space="preserve">
-    <value>CPython zurücksetzen</value>
+  <data name="ResetPythonNet3ButtonText" xml:space="preserve">
+    <value>PythonNet3 zurücksetzen</value>
   </data>
-  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
-    <value>Setzt die CPython-Umgebung durch erneutes Laden von Modulen zurück.</value>
+  <data name="ResetPythonNet3ButtonToolTip" xml:space="preserve">
+    <value>Setzt die PythonNet3-Umgebung durch erneutes Laden von Modulen zurück.</value>
   </data>
   <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
     <value>Abbrechen und Probleme anzeigen</value>
