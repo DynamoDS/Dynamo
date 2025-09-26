@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using Dynamo.Utilities;
 
 namespace Dynamo.Tests
 {
@@ -17,6 +18,9 @@ namespace Dynamo.Tests
     {
         // Windows path length limitations
         private const int WINDOWS_MAX_PATH_LENGTH = 260; // Traditional limit
+        
+        // Rename operation logging (similar to NodeDocumentationMarkdownGenerator pattern)
+        private static List<string> RenameLog { get; set; } = new List<string>();
         
         // Estimated server prefix length to account for various CI systems
         // Based on: C:\Jenkins\workspace\Dynamo\DynamoSelfServe\pullRequestValidation\Dynamo\src
@@ -276,6 +280,147 @@ namespace Dynamo.Tests
                 
             // Must have letters and all letters must be lowercase
             return part.Any(char.IsLetter) && part.All(c => !char.IsLetter(c) || char.IsLower(c));
+        }
+
+        /// <summary>
+        /// ONE-TIME TEST: Renames problematic resource files to hash-based names and updates .resx references
+        /// THIS METHOD SHOULD BE IGNORED AFTER RUNNING TO PREVENT ACCIDENTAL EXECUTION
+        /// </summary>
+        [Test]
+        [Ignore("ONE-TIME USE ONLY - Comment out to run, then uncomment again")]
+        public void RenameProblematicResourceFiles()
+        {
+            // Start new operation in log (append, don't clear)
+            if (RenameLog.Any())
+            {
+                RenameLog.Add(""); // Empty line separator
+            }
+            RenameLog.Add($"Resource Rename Operation {DateTime.Now}");
+            
+            // Get all problematic paths
+            var srcPath = Path.Combine(GetTestDirectory(), "..", "src");
+            var problematicPaths = new List<ResourcePathAnalysis>();
+            var resxFiles = Directory.GetFiles(srcPath, "*.resx", SearchOption.AllDirectories);
+            
+            foreach (var resxFile in resxFiles)
+            {
+                var results = AnalyzeResxFile(resxFile);
+                problematicPaths.AddRange(results.Where(r => r.ExceedsWindowsLimit));
+            }
+            
+            if (!problematicPaths.Any())
+            {
+                Assert.Inconclusive("No problematic paths found to rename.");
+                return;
+            }
+
+            RenameLog.Add($"Found {problematicPaths.Count} problematic resource paths to rename");
+            
+            // Group by .resx file to process each file once
+            var groupedByResx = problematicPaths.GroupBy(p => p.ResxFile);
+            
+            foreach (var resxGroup in groupedByResx)
+            {
+                RenameResourceFilesForResx(resxGroup.Key, resxGroup.ToList());
+            }
+            
+            RenameLog.Add("Renaming operation completed successfully");
+            
+            // Write log file(s) - one per .resx file processed
+            WriteRenameLogFiles(groupedByResx.Select(g => g.Key));
+        }
+        
+        /// <summary>
+        /// Renames problematic resource files for a specific .resx file and updates the .resx references
+        /// </summary>
+        private void RenameResourceFilesForResx(string resxFile, List<ResourcePathAnalysis> problematicResources)
+        {
+            var resxDirectory = Path.GetDirectoryName(resxFile);
+            var renamedFiles = new Dictionary<string, string>(); // oldName -> newName
+            
+            RenameLog.Add($"Processing {Path.GetFileName(resxFile)}");
+            
+            // Step 1: Rename physical files
+            foreach (var resource in problematicResources)
+            {
+                if (resource.FileExists)
+                {
+                    var oldFileName = Path.GetFileName(resource.RelativePath);
+                    var baseName = Path.GetFileNameWithoutExtension(oldFileName);
+                    var extension = Path.GetExtension(oldFileName);
+                    
+                    // Generate hash name using same method as existing RenameCommand
+                    var hashName = Dynamo.Utilities.Hash.GetHashFilenameFromString(baseName);
+                    var newFileName = hashName + extension;
+                    
+                    var oldFilePath = Path.GetFullPath(Path.Combine(resxDirectory, resource.RelativePath));
+                    var newFilePath = Path.Combine(Path.GetDirectoryName(oldFilePath), newFileName);
+                    
+                    if (File.Exists(oldFilePath))
+                    {
+                        File.Move(oldFilePath, newFilePath);
+                        renamedFiles[oldFileName] = newFileName;
+                        RenameLog.Add($"renamed {baseName}: {hashName}");
+                    }
+                    else
+                    {
+                        RenameLog.Add($"WARNING: File not found: {oldFilePath}");
+                    }
+                }
+            }
+            
+            // Step 2: Update .resx file references
+            if (renamedFiles.Any())
+            {
+                UpdateResxFileReferences(resxFile, renamedFiles);
+                RenameLog.Add($"Updated {renamedFiles.Count} references in {Path.GetFileName(resxFile)}");
+            }
+        }
+        
+        /// <summary>
+        /// Updates .resx file to reference the new hash-named files
+        /// </summary>
+        private void UpdateResxFileReferences(string resxFile, Dictionary<string, string> renamedFiles)
+        {
+            var content = File.ReadAllText(resxFile);
+            var originalContent = content;
+            
+            foreach (var rename in renamedFiles)
+            {
+                var oldFileName = rename.Key;
+                var newFileName = rename.Value;
+                
+                // Replace the file reference in the .resx content
+                content = content.Replace(oldFileName, newFileName);
+            }
+            
+            // Only write if changes were made
+            if (content != originalContent)
+            {
+                File.WriteAllText(resxFile, content);
+            }
+        }
+        
+        /// <summary>
+        /// Writes rename log files following the NodeDocumentationMarkdownGenerator pattern
+        /// </summary>
+        private void WriteRenameLogFiles(IEnumerable<string> processedResxFiles)
+        {
+            foreach (var resxFile in processedResxFiles)
+            {
+                var resxDirectory = Path.GetDirectoryName(resxFile);
+                var logPath = Path.Combine(resxDirectory, "resource_rename_log.txt");
+                var logString = string.Join(Environment.NewLine, RenameLog);
+                
+                if (File.Exists(logPath))
+                {
+                    File.AppendAllText(logPath, Environment.NewLine + logString);
+                }
+                else
+                {
+                    File.WriteAllText(logPath, logString);
+                }
+            }
         }
 
         /// <summary>
