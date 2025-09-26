@@ -9,3 +9,4 @@ using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("DynamoUtilitiesTests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
+[assembly: InternalsVisibleTo("DynamoUnits")]
