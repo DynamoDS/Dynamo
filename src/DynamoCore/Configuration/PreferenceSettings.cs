@@ -1304,10 +1304,6 @@ namespace Dynamo.Configuration
         /// </summary>
         internal void UpdateNamespacesToExcludeFromLibrary()
         {
-            // Include the TSpline namespace from the library OOTB.
-            NamespacesToExcludeFromLibrary.Remove(
-                "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline"
-            );
             return;
         }
 
