@@ -142,6 +142,7 @@ namespace Dynamo.Tests
 
         /// <summary>
         /// Generates a detailed report of path length issues
+        /// Anything downstream of this method is just for reporting purposes
         /// </summary>
         private string GeneratePathLengthReport(List<ResourcePathAnalysis> allResults, List<ResourcePathAnalysis> problematicPaths, int totalResxFiles, List<string> processedResxFiles)
         {
@@ -204,24 +205,77 @@ namespace Dynamo.Tests
         }
 
         /// <summary>
-        /// Extracts method name from a resource name
+        /// Extracts method name from a resource name 
         /// </summary>
         private string ExtractMethodName(string resourceName)
         {
             if (string.IsNullOrEmpty(resourceName))
                 return "Unknown";
                 
-            var parts = resourceName.Split('.');
-            if (parts.Length >= 5)
+            // Remove size suffix (.Large or .Small) first
+            var nameWithoutSize = resourceName;
+            if (nameWithoutSize.EndsWith(".Large") || nameWithoutSize.EndsWith(".Small"))
             {
-                // For resources like "Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes.Curve1-double-..."
-                // Extract the method part (BuildPipes)
-                var methodPart = parts[5]; // Index 5 would be "BuildPipes" in the example
-                var hyphenIndex = methodPart.IndexOf('-');
-                return hyphenIndex > 0 ? methodPart.Substring(0, hyphenIndex) : methodPart;
+                var lastDotIndex = nameWithoutSize.LastIndexOf('.');
+                nameWithoutSize = nameWithoutSize.Substring(0, lastDotIndex);
             }
             
-            return resourceName;
+            // Split by dots to get the parts
+            var parts = nameWithoutSize.Split('.');
+            
+            if (parts.Length < 2)
+                return nameWithoutSize;
+            
+            // Get the last part to check if it contains parameter specifications
+            var lastPart = parts[parts.Length - 1];
+            
+            // Check if the last part looks like parameter specifications:
+            // - Contains hyphens (e.g., "double-double-double")
+            // - Is a common parameter type name (e.g., "double", "int", "Point", "Vector", etc.)
+            // - Single parameter - is all lowercase (primitive types like "double", "int", "bool", "string")
+            var hasParameterSpecs = lastPart.Contains("-") || 
+                                   IsCommonParameterType(lastPart) ||
+                                   IsAllLowercase(lastPart);
+            
+            if (hasParameterSpecs)
+            {
+                // Parameter specifications present, method name is second-to-last part
+                return parts.Length >= 2 ? parts[parts.Length - 2] : parts[0];
+            }
+            else
+            {
+                // No parameter specifications, method name is the last part
+                return lastPart;
+            }
+        }
+        
+        /// <summary>
+        /// Checks if a string looks like a common parameter type
+        /// </summary>
+        private bool IsCommonParameterType(string part)
+        {
+            if (string.IsNullOrEmpty(part))
+                return false;
+                
+            // Common parameter type names in Dynamo
+            var commonTypes = new[] { "double", "int", "bool", "string", "Point", "Vector", 
+                                    "Curve", "Surface", "Solid", "Geometry", "Line", "Circle",
+                                    "Plane", "CoordinateSystem" };
+            
+            return commonTypes.Any(type => part.Equals(type, StringComparison.OrdinalIgnoreCase) ||
+                                          part.StartsWith(type, StringComparison.OrdinalIgnoreCase));
+        }
+        
+        /// <summary>
+        /// Checks if a string is all lowercase (likely a primitive parameter type)
+        /// </summary>
+        private bool IsAllLowercase(string part)
+        {
+            if (string.IsNullOrEmpty(part))
+                return false;
+                
+            // Must have letters and all letters must be lowercase
+            return part.Any(char.IsLetter) && part.All(c => !char.IsLetter(c) || char.IsLower(c));
         }
 
         /// <summary>
