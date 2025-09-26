@@ -5440,6 +5440,7 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoCompleteTool
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNotificationCenter.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnablePanelingNodes.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnablePersistExtensions.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableTSplineNodes.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewExperimentalLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewExtensions.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewFeaturesTab.get -> string
