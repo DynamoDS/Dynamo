@@ -56,11 +56,17 @@ namespace DynamoUnits
             // Try each candidate directory until we find one that works
             foreach (var directory in candidateDirectories)
             {
+                // Always update SchemaDirectory to the current attempt for clearer error
+                // reporting. If loading succeeds, SchemaDirectory reflects the working
+                // path. Otherwise, it shows the last path tried, which will be displayed
+                // in any thrown exception. If all paths fail, the exception message will
+                // show the default bundled schema directory, which should never fail.
+                SchemaDirectory = directory;
+
                 unitsEngine = TryLoadSchemaFromDirectory(directory);
                 if (unitsEngine != null)
                 {
-                    SchemaDirectory = directory;
-                    break;
+                    break; // Found the schema directory, so stop trying.
                 }
             }
         }
