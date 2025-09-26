@@ -19,7 +19,7 @@ namespace DynamoUnits
         /// Path to the directory used load the schema definitions.
         /// </summary>
         [SupressImportIntoVM]
-        public static string SchemaDirectory { get; private set; } = Path.Combine(AssemblyDirectory, "unit");
+        public static string SchemaDirectory { get; private set; } = string.Empty;
 
 
         static Utilities()
@@ -36,47 +36,46 @@ namespace DynamoUnits
 
             var config = ConfigurationManager.OpenExeConfiguration(assemblyFilePath);
             var key = config.AppSettings.Settings["schemaPath"];
-            string path = null;
+            string configPath = null;
             if (key != null)
             {
-                path = key.Value;
+                configPath = key.Value;
             }
 
-            if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
+            // Build candidate schema directories list
+            var candidateDirectories = new List<string>();
+            
+            // Add config path if it's valid
+            if (!string.IsNullOrEmpty(configPath) && Directory.Exists(configPath))
             {
-                SchemaDirectory = path;
+                candidateDirectories.Add(configPath);
             }
+            
+            // Add random path for testing purposes
+            candidateDirectories.Add(@"C:\temp\test-schemas");
+            
+            // Add bundled schema directory as final candidate
+            candidateDirectories.Add(BundledSchemaDirectory);
 
-            try
+            // Try each candidate directory until we find one that works
+            foreach (var directory in candidateDirectories)
             {
-                unitsEngine = new ForgeUnits.UnitsEngine();
-                ForgeUnits.SchemaUtility.addDefinitionsFromFolder(SchemaDirectory, unitsEngine);
-                unitsEngine.resolveSchemas();
-            }
-            catch
-            {
-                unitsEngine = null;
-                //There was an issue initializing the schemas at the specified path.
+                unitsEngine = TryLoadSchemaFromDirectory(directory);
+                if (unitsEngine != null)
+                {
+                    SchemaDirectory = directory;
+                    break;
+                }
             }
         }
-            
+
         /// <summary>
         /// only use this method during tests - allows setting a different schema location without
         /// worrying about distributing a test configuration file.
         /// </summary>
         internal static void SetTestEngine(string testSchemaDir)
         {
-            try
-            {
-                unitsEngine = new ForgeUnits.UnitsEngine();
-                ForgeUnits.SchemaUtility.addDefinitionsFromFolder(testSchemaDir, unitsEngine);
-                unitsEngine.resolveSchemas();
-            }
-            catch
-            {
-                unitsEngine = null;
-                //There was an issue initializing the schemas at the specified path.
-            }
+            unitsEngine = TryLoadSchemaFromDirectory(testSchemaDir);
         }
 
         /// <summary>
@@ -156,12 +155,12 @@ namespace DynamoUnits
             }
         }
 
-        private static string AssemblyDirectory
+        private static string BundledSchemaDirectory
         {
             get
             {
                 string path = Assembly.GetExecutingAssembly().Location;
-                return Path.GetDirectoryName(path);
+                return Path.Combine(Path.GetDirectoryName(path), "unit");
             }
         }
 
@@ -403,6 +402,27 @@ namespace DynamoUnits
             version = null;
 
             return false;
+        }
+
+        /// <summary>
+        /// Attempts to load schema from the specified directory and create a UnitsEngine.
+        /// </summary>
+        /// <param name="schemaDirectory">Directory containing the schema definitions</param>
+        /// <returns>A ForgeUnits.UnitsEngine instance, or null if loading failed</returns>
+        private static ForgeUnits.UnitsEngine TryLoadSchemaFromDirectory(string schemaDirectory)
+        {
+            try
+            {
+                var engine = new ForgeUnits.UnitsEngine();
+                ForgeUnits.SchemaUtility.addDefinitionsFromFolder(schemaDirectory, engine);
+                engine.resolveSchemas();
+                return engine;
+            }
+            catch
+            {
+                //There was an issue initializing the schemas at the specified path.
+                return null;
+            }
         }
     }
 }
