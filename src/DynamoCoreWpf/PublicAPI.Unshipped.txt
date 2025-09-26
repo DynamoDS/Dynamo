@@ -2865,6 +2865,7 @@ Dynamo.ViewModels.PreferencesViewModel.importSettingsContent(string content) -> 
 Dynamo.ViewModels.PreferencesViewModel.IsDynamoRevit.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.IsEnabledAddStyleButton.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.IsEnabledAddStyleButton.set -> void
+Dynamo.ViewModels.PreferencesViewModel.IsExperimentalExpanderVisible -> bool
 Dynamo.ViewModels.PreferencesViewModel.IsolateSelectedGeometry.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.IsolateSelectedGeometry.set -> void
 Dynamo.ViewModels.PreferencesViewModel.IsSaveButtonEnabled.get -> bool
