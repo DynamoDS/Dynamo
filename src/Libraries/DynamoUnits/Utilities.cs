@@ -1,9 +1,11 @@
+using Autodesk.DesignScript.Runtime;
+using DynamoInstallDetective;
 using System;
 using System.Collections.Generic;
-using Autodesk.DesignScript.Runtime;
-using System.Reflection;
-using System.IO;
 using System.Configuration;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using ForgeUnits = Autodesk.ForgeUnits;
 
 namespace DynamoUnits
@@ -45,9 +47,8 @@ namespace DynamoUnits
                 candidateDirectories.Add(configPath);
             }
 
-            candidateDirectories.Add(@"C:\Program Files\Common Files\Autodesk Shared\Components\2027\2.0.0\DGNFonts");
-
-            candidateDirectories.Add(@"C:\Program Files\Common Files\Autodesk Shared\Components\2027\2.0.0\coreschemas\unit");
+            // Add ASC schema paths from installed components
+            AddAscSchemaPaths(candidateDirectories);
 
             // Add bundled schema directory as final candidate
             candidateDirectories.Add(BundledSchemaDirectory);
@@ -397,6 +398,55 @@ namespace DynamoUnits
             version = null;
 
             return false;
+        }
+
+        /// <summary>
+        /// Adds ASC (Autodesk Shared Components) schema paths to the candidate directories list.
+        /// 
+        /// We use 'AscSdkWrapper' directly here because 'InstalledAscLookUp' is overkill -- it's got
+        /// extra logic we don't need. 'AscSdkWrapper' gives us just the version/path info for ASC
+        /// installs, which is all we care about for schema discovery. This also decouples us from
+        /// changes in 'InstalledAscLookUp' that could break or complicate schema path resolution.
+        /// </summary>
+        /// <param name="candidateDirectories">List to add discovered ASC schema paths to</param>
+        private static void AddAscSchemaPaths(List<string> candidateDirectories)
+        {
+            try
+            {
+                // e.g. majorVersions = ["2026", "2027", "2028"]
+                var majorVersions = AscSdkWrapper.GetMajorVersions();
+
+                foreach (var majorVersion in majorVersions)
+                {
+                    var ascWrapper = new AscSdkWrapper(majorVersion);
+                    string installPath = string.Empty;
+
+                    if (ascWrapper.GetInstalledPath(ref installPath) == AscSdkWrapper.ASC_STATUS.SUCCESS)
+                    {
+                        // e.g. installPath = "C:\Program Files\Common Files\Autodesk Shared\Components\2026\1.8.0"
+                        // e.g. baseVersionPath = "C:\Program Files\Common Files\Autodesk Shared\Components\2026"
+                        var baseVersionPath = Directory.GetParent(installPath)?.FullName;
+                        if (!string.IsNullOrEmpty(baseVersionPath) && Directory.Exists(baseVersionPath))
+                        {
+                            // e.g. versionDirectories = ["...\2026\2.0.0", "...\2026\1.8.0"]
+                            var versionDirectories = Directory.GetDirectories(baseVersionPath)
+                                .Where(dir => Directory.Exists(Path.Combine(dir, "coreschemas", "unit")))
+                                .OrderByDescending(dir => dir); // Latest version first
+
+                            foreach (var versionDir in versionDirectories)
+                            {
+                                // e.g. schemaPath = "...\Components\2026\1.8.0\coreschemas\unit"
+                                var schemaPath = Path.Combine(versionDir, "coreschemas", "unit");
+                                candidateDirectories.Add(schemaPath);
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // Ignore errors when discovering ASC paths - this is optional discovery
+            }
         }
 
         /// <summary>
