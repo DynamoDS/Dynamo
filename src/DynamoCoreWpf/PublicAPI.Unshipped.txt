@@ -4297,8 +4297,18 @@ Dynamo.Wpf.Views.GuidedTour.RatingControl.RatingControl() -> void
 Dynamo.Wpf.Views.GuidedTour.RatingControl.Value.get -> int
 Dynamo.Wpf.Views.GuidedTour.RatingControl.Value.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HeaderContent.get -> string
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HeaderContent.set -> void
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkText.get -> string
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkText.set -> void
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkUri.get -> System.Uri
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkUri.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.InitializeComponent() -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.RealTimeInfoWindow() -> void
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHeader.get -> bool
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHeader.set -> void
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHyperlink.get -> bool
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHyperlink.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.TextContent.get -> string
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.TextContent.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.UpdateLocation() -> void
@@ -4512,6 +4522,7 @@ static Dynamo.UI.Prompts.DynamoMessageBox.Show(string messageBoxText, string cap
 static Dynamo.UI.Prompts.DynamoMessageBox.Show(System.Windows.Window owner, string messageBoxText, string caption, bool showRichTextBox, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage icon) -> System.Windows.MessageBoxResult
 static Dynamo.UI.Prompts.DynamoMessageBox.Show(System.Windows.Window owner, string messageBoxText, string caption, System.Collections.Generic.Dictionary<Dynamo.UI.Prompts.DynamoMessageBox.DialogFlags, bool> flags, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage icon) -> System.Windows.MessageBoxResult
 static Dynamo.UI.Prompts.DynamoMessageBox.Show(System.Windows.Window owner, string messageBoxText, string caption, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage icon) -> System.Windows.MessageBoxResult
+static Dynamo.UI.Prompts.DynamoMessageBox.ShowWithCheckbox(System.Windows.Window owner, string messageBoxText, string caption, System.Windows.MessageBoxButton button, System.Collections.Generic.IEnumerable<string> buttonNames, System.Windows.MessageBoxImage icon, string checkboxText, out bool isChecked) -> System.Windows.MessageBoxResult
 static Dynamo.UI.SharedDictionaryManager.ConnectorsDictionary.get -> System.Windows.ResourceDictionary
 static Dynamo.UI.SharedDictionaryManager.ConnectorsDictionaryUri.get -> System.Uri
 static Dynamo.UI.SharedDictionaryManager.DataTemplatesDictionary.get -> System.Windows.ResourceDictionary
