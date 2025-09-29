@@ -1732,8 +1732,8 @@ namespace Dynamo.Controls
                 owner: this,
                 messageBoxText: Res.CPython3EngineNotificationMessageBoxText,
                 caption: Res.CPython3EngineNotificationMessageBoxHeader,
-                button: MessageBoxButton.YesNoCancel,
-                buttonNames: new[] { Res.GenericTaskDialogOptionOK, Res.GenericTaskDialogOptionCancel, Res.LearnMore },
+                button: MessageBoxButton.YesNo,
+                buttonNames: new[] { Res.GenericTaskDialogOptionOK, Res.LearnMore },
                 icon: MessageBoxImage.Information,
                 checkboxText: Res.MessageBoxDontShowAgainLabel,
                 isChecked: out dontShowAgain);
@@ -1744,17 +1744,11 @@ namespace Dynamo.Controls
             // First button (Yes) is "OK"
             if (result == MessageBoxResult.Yes)
             {
-                // Mark that the message box has been shown and proceed
                 ws.HasShownCPythonNotification = true;
                 return false;
             }
-            // Second button (No) is "Cancel"
+            // Second button (No) is "Learn more"
             else if (result == MessageBoxResult.No)
-            {
-                return true;
-            }
-            // Third button (Cancel) is "Learn more"
-            else if (result == MessageBoxResult.Cancel)
             {
                 Process.Start(new ProcessStartInfo(Res.CPython3EngineUpgradeLearnMoreUri) { UseShellExecute = true });
                 return true;
