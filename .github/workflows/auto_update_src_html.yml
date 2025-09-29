@@ -144,6 +144,7 @@ jobs:
           # Configure Git
           git config user.name "dynamo-ci-user"
           git config user.email "dynamo@autodesk.com"
+          git remote set-url origin https://x-access-token:${{ secrets.DYNAMO_ACTIONS_TOKEN }}@github.com/${{ github.repository }}
 
           # Create new branch
           git checkout -b $BRANCH
@@ -153,7 +154,7 @@ jobs:
           git commit -m "Update HTML Documentation"
 
           # Push changes to the new branch
-          git push https://x-access-token:${{ secrets.DYNAMO_ACTIONS_TOKEN }}@github.com/${{ github.repository }} HEAD:$BRANCH
+          git push origin HEAD:$BRANCH
 
       # Create PR using GitHub CLI
       - name: Create Pull Request
