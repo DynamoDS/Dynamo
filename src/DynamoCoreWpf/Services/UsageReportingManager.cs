@@ -100,6 +100,7 @@ namespace Dynamo.Services
                 throw new InvalidOperationException(
                     "DynamoView must be supplied for this command");
             }
+                    MessageBoxImage.Information);
             ShowUsageReportingPrompt(ownerWindow);
         }
 
