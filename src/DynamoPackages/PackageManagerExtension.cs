@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
+using Dynamo.Configuration;
 using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -32,6 +33,7 @@ namespace Dynamo.PackageManager
 
         private ReadyParams ReadyParams;
         private Core.CustomNodeManager customNodeManager;
+        private PreferenceSettings prefSettings;
 
         /// <summary>
         /// Dictionary mapping a custom node functionID to the package that contains it.
@@ -122,6 +124,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public void Startup(StartupParams startupParams)
         {
+            prefSettings = startupParams.Preferences as PreferenceSettings;
             string url = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, "packageManagerAddress");
 
             OnMessageLogged(LogMessage.Info("Dynamo will use the package manager server at : " + url));
@@ -148,12 +151,6 @@ namespace Dynamo.PackageManager
             PackageLoader.PackagesLoaded += LoadPackagesHandler;
             PackageLoader.RequestLoadNodeLibrary += RequestLoadNodeLibraryHandler;
             PackageLoader.RequestLoadCustomNodeDirectory += RequestLoadCustomNodeDirectoryHandler;
-
-            if (PythonServices.PythonEngineManager.Instance.AvailableEngines.Count == 0)
-            {
-                PythonServices.PythonEngineManager.Instance.LoadDefaultPythonEngine(AppDomain.CurrentDomain.GetAssemblies().
-                                                                                    FirstOrDefault(a => a != null && a.GetName().Name == PythonServices.PythonEngineManager.CPythonAssemblyName));
-            }
 
             PythonServices.PythonEngineManager.Instance.AvailableEngines.CollectionChanged += PythonEngineAdded;
                 
@@ -216,6 +213,19 @@ namespace Dynamo.PackageManager
                                 NodePackageDictionary[assem.FullName] = new List<PackageInfo>();
                             }
                             NodePackageDictionary[assem.FullName].Add(new PackageInfo(pkg.Name, new Version(pkg.VersionName)));
+                        }
+                    }
+
+                    // Set PythonNet3 as the default engine if it is isntalled and no other valid engine is set as default
+                    var eng = e.NewItems[0] as PythonServices.PythonEngine;
+                    if (eng != null && eng.Name == PythonServices.PythonEngineManager.PythonNet3EngineName && prefSettings != null)
+                    {
+                        var currentDefault = prefSettings.DefaultPythonEngine;
+                        var currentIsValid = PythonServices.PythonEngineManager.Instance.AvailableEngines.Any(x => x.Name == currentDefault);
+                        if (!currentIsValid)
+                        {
+                            prefSettings.DefaultPythonEngine = eng.Name;
+                            OnMessageLogged(LogMessage.Info($"Setting default python engine to {eng.Name}"));
                         }
                     }
                 }

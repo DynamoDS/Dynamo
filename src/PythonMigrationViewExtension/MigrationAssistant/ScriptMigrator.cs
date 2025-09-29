@@ -18,7 +18,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         /// <returns></returns>
         internal static string MigrateCode(string code)
         {
-            DSCPython.CPythonEvaluator.InstallPython();
+            //DSCPython.CPythonEvaluator.InstallPython();
 
             if (!PythonEngine.IsInitialized)
             {

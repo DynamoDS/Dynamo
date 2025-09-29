@@ -97,7 +97,7 @@ namespace PythonNodeModels
             else
             {
                 // Use CPython as default
-                engine = PythonEngineManager.CPython3EngineName;
+                engine = PythonEngineManager.PythonNet3EngineName;
             }
         }
 

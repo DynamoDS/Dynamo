@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DSPythonNet3Extension</name>
+    </assembly>
+    <members>
+        <member name="M:DSPythonNet3Extension.DSPythonNet3Extension.Ready(Dynamo.Extensions.ReadyParams)">
+            <summary>
+            Action to be invoked when the Dynamo has started up and is ready
+            for user interaction.   
+            </summary>
+            <param name="rp"></param>
+        </member>
+    </members>
+</doc>
