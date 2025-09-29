@@ -145,12 +145,7 @@ namespace Dynamo.PythonServices
         /// <summary>
         /// CPython Engine name
         /// </summary>
-        internal static readonly string CPython3EngineName = "CPython3"; // TODO: Remove after PythonNet3 is setup?
-
-        /// <summary>
-        /// CPython Engine name
-        /// </summary>
-        internal static readonly string PythonNet3EngineName = "PythonNet3";
+        internal static readonly string CPython3EngineName = "CPython3";
 
         internal static readonly string PythonNodeNamespace = "PythonNodeModels.PythonNode";
 
@@ -166,16 +161,11 @@ namespace Dynamo.PythonServices
         internal static string CPythonEvaluatorClass = "CPythonEvaluator";
         internal static string CPythonEvaluationMethod = "EvaluatePythonScript";
 
-        internal static string PythonNet3EvaluatorClass = "PythonNet3Evaluator";
-        internal static string PythonNet3EvaluationMethod = "EvaluatePythonScript";
-
         internal static string IronPythonAssemblyName = "DSIronPython";
         internal static string CPythonAssemblyName = "DSCPython";
-        internal static string PythonNet3AssemblyName = "DSPythonNet3";
 
         internal static string IronPythonTypeName = IronPythonAssemblyName + "." + IronPythonEvaluatorClass;
         internal static string CPythonTypeName = CPythonAssemblyName + "." + CPythonEvaluatorClass;
-        internal static string PythonNet3TypeName = PythonNet3AssemblyName + "." + PythonNet3EvaluatorClass;
 
         internal static string PythonInputMarshalerProperty = "InputMarshaler";
         internal static string PythonOutputMarshalerProperty = "OutputMarshaler";
@@ -197,15 +187,15 @@ namespace Dynamo.PythonServices
             // We check only for the default python engine because it is the only one loaded by static references.
             // Other engines can only be loaded through package manager
             LoadDefaultPythonEngine(AppDomain.CurrentDomain.GetAssemblies().
-               FirstOrDefault(a => a != null && a.GetName().Name == PythonNet3AssemblyName));
+               FirstOrDefault(a => a != null && a.GetName().Name == CPythonAssemblyName));
 
             AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler((object sender, AssemblyLoadEventArgs args) => LoadDefaultPythonEngine(args.LoadedAssembly));
         }
 
-        internal void   LoadDefaultPythonEngine(Assembly a)
+        internal void LoadDefaultPythonEngine(Assembly a)
         {
             if (a == null ||
-                a.GetName().Name != PythonNet3AssemblyName)
+                a.GetName().Name != CPythonAssemblyName)
             {
                 return;
             }
@@ -216,7 +206,7 @@ namespace Dynamo.PythonServices
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine($"Failed to load {PythonNet3AssemblyName} with error: {e.Message}");
+                System.Diagnostics.Debug.WriteLine($"Failed to load {CPythonAssemblyName} with error: {e.Message}");
             }
         }
 
@@ -315,7 +305,7 @@ namespace Dynamo.PythonServices
 
     /// <summary>
     /// Concrete type that gets returned and converted to an Avalonedit type implementing
-    /// ICompletionData when used from WPF ScriptEditorControl.
+    /// ICompletionData when used from WPF ScriptEditorContorl.
     /// </summary>
     internal class PythonCodeCompletionDataCore : IExternalCodeCompletionData
     {
@@ -441,7 +431,7 @@ namespace Dynamo.PythonServices
 
         #region IExternalCodeCompletionProviderCore implementation
         /// <summary>
-        /// Keeps track of failed statements to avoid polluting the log
+        /// Keeps track of failed statements to avoid poluting the log
         /// </summary>
         protected Dictionary<string, int> BadStatements { get; set; }
 

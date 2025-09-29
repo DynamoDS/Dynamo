@@ -46,8 +46,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("DynamoPlayer.Workflows")]
 [assembly: InternalsVisibleTo("DynamoPlayer")]
 [assembly: InternalsVisibleTo("DynamoConnector")]
-[assembly: InternalsVisibleTo("DSCPython")]     // TODO: Remove after PythonNet3 is set up
-[assembly: InternalsVisibleTo("DSPythonNet3")]
+[assembly: InternalsVisibleTo("DSCPython")]
 [assembly: InternalsVisibleTo("DynamoPythonTests")]
 [assembly: InternalsVisibleTo("GraphMetadataViewExtension")]
 [assembly: InternalsVisibleTo("SystemTestServices")]
