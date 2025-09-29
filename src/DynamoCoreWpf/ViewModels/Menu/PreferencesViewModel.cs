@@ -1928,7 +1928,7 @@ namespace Dynamo.ViewModels
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowWhitespaceInPythonEditor), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(HideCPythonNotificationIsChecked):
-                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewHideCPythonNotifications), System.Globalization.CultureInfo.InvariantCulture);
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewHidePythonEngineChangeNotifications), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(NodeAutocompleteIsChecked):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewEnableNodeAutoComplete), System.Globalization.CultureInfo.InvariantCulture);

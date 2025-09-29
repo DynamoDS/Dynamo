@@ -1016,7 +1016,7 @@ namespace Dynamo.Wpf.Properties {
 
         /// <summary>
         ///   Looks up a localized string similar to This graph includes CPython nodes, which are no longer supported in Dynamo 4.0. Saving will convert them to PythonNet3, the new default engine.
-        ///To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the Package Manager and manually migrate the nodes back to CPython..
+        ///To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the Package Manager..
         /// </summary>
         public static string CPython3EngineNotificationMessageBoxText {
             get {
@@ -8288,15 +8288,6 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("PreferencesViewGroupStylesHeader", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Hide CPython notifications.
-        /// </summary>
-        public static string PreferencesViewHideCPythonNotifications {
-            get {
-                return ResourceManager.GetString("PreferencesViewHideCPythonNotifications", resourceCulture);
-            }
-        }
         
         /// <summary>
         ///   Looks up a localized string similar to Hide optional input ports by default.
@@ -8313,6 +8304,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewHideOutportsDescription {
             get {
                 return ResourceManager.GetString("PreferencesViewHideOutportsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide Python Engine change notifications.
+        /// </summary>
+        public static string PreferencesViewHidePythonEngineChangeNotifications {
+            get {
+                return ResourceManager.GetString("PreferencesViewHidePythonEngineChangeNotifications", resourceCulture);
+            }
+        }
+
+         /// <summary>
+        ///   Looks up a localized string similar to CPython is no longer supported in Dynamo 4.0 or above and will be converted to the new default engine PythonNet3. Disable the toggle to hide all notifications about engine changes..
+        /// </summary>
+        public static string PreferencesViewHidePythonEngineChangeNotificationsTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesViewHidePythonEngineChangeNotificationsTooltip", resourceCulture);
             }
         }
         
@@ -9622,7 +9631,7 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Reset PythonNet3.
         /// </summary>
-        public static string ResetPythonNet3ButtonText  {
+        public static string ResetPythonNet3ButtonText {
             get {
                 return ResourceManager.GetString("ResetPythonNet3ButtonText", resourceCulture);
             }
@@ -9631,9 +9640,9 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Resets PythonNet3 environment by reloading modules..
         /// </summary>
-        public static string ResetPythonNet3ButtonToolTip  {
+        public static string ResetPythonNet3ButtonToolTip {
             get {
-                return ResourceManager.GetString("ResetPythonNet3ButtonToolTip ", resourceCulture);
+                return ResourceManager.GetString("ResetPythonNet3ButtonToolTip", resourceCulture);
             }
         }
         
