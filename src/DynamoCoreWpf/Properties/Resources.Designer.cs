@@ -9624,7 +9624,7 @@ namespace Dynamo.Wpf.Properties {
         /// </summary>
         public static string ResetPythonNet3ButtonText  {
             get {
-                return ResourceManager.GetString("ResetPythonNet3ButtonText ", resourceCulture);
+                return ResourceManager.GetString("ResetPythonNet3ButtonText", resourceCulture);
             }
         }
         
