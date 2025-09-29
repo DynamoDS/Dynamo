@@ -83,8 +83,7 @@ namespace Dynamo.Services
                 && !dynamoViewModel.HideReportOptions
                 && !Analytics.DisableAnalytics
                 && !DynamoModel.IsTestMode
-                && !dynamoViewModel.Model.NoNetworkMode
-                )
+                && !dynamoViewModel.Model.NoNetworkMode)
             {
                 //Prompt user for detailed reporting
                 ShowUsageReportingPrompt(ownerWindow);
