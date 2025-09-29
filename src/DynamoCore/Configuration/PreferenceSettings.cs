@@ -1291,7 +1291,7 @@ namespace Dynamo.Configuration
         {
             if (!NamespacesToExcludeFromLibrarySpecified)
             {
-                if (InitialExperimentalLib_Namespaces.ToList().Any())
+                if (InitialExperimentalLib_Namespaces.Any())
                 {
                     NamespacesToExcludeFromLibrary = InitialExperimentalLib_Namespaces.ToList();
                     NamespacesToExcludeFromLibrarySpecified = true;
