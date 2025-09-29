@@ -879,7 +879,7 @@ Este pacote provavelmente contém uma montagem bloqueada. Será necessário carr
     <value>Arquivo de exemplo adicionado ao espaço de trabalho. Modo de execução alterado para Manual.</value>
   </data>
   <data name="DynamoLanguages_noxlate" xml:space="preserve">
-    <value>Default,English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
+    <value>Default,English,English (UK),Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
   </data>
   <data name="FormulaDSConversionFailure" xml:space="preserve">
     <value>A conversão da fórmula falhou no código DesignScript. Edite a fórmula manualmente para usá-la em um nó CodeBlock.</value>

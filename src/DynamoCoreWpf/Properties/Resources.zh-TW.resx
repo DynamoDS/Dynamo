@@ -1304,7 +1304,7 @@
     <value>編輯...</value>
   </data>
   <data name="NullString" xml:space="preserve">
-    <value>空</value>
+    <value>null</value>
   </data>
   <data name="OKButton" xml:space="preserve">
     <value>確定</value>
@@ -3757,8 +3757,8 @@
     <value>尚未驗證此版本與您設定的相容性。它不一定會如預期般運作。</value>
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
-    <value>您的系統似乎未設定 Autodesk Identity Manager。若要確保完整存取所有功能，請使用 Autodesk Identity Manager 登入您的 Autodesk 帳戶。
-請在此網址或透過 Autodesk Access #下載並安裝=https://manage.autodesk.com/products/updates，然後登入。</value>
+    <value>您的系統似乎未設定 Autodesk Identity Manager。為了確保完整存取所有功能，請使用 Autodesk Identity Manager 登入您的 Autodesk 帳戶。
+請透過 Autodesk Access 或此處: #下載並安裝=https://manage.autodesk.com/products/updates Autodesk Identity Manager，然後登入。</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>下載 Autodesk Identity Manager</value>
