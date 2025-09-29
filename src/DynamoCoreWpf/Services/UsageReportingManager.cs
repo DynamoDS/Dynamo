@@ -100,7 +100,19 @@ namespace Dynamo.Services
                 throw new InvalidOperationException(
                     "DynamoView must be supplied for this command");
             }
+
+            // Skip analytics prompt in no-network mode
+            if (dynamoViewModel?.Model?.NoNetworkMode == true)
+            {
+                Dynamo.Wpf.Utilities.MessageBoxService.Show(
+                    ownerWindow,
+                    "Data collection settings are not available in no-network mode.",
+                    "No Network Mode",
+                    MessageBoxButton.OK,
                     MessageBoxImage.Information);
+                return;
+            }
+
             ShowUsageReportingPrompt(ownerWindow);
         }
 
