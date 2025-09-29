@@ -106,7 +106,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CPython3.
+        ///   Looks up a localized string similar to PythonNet3.
         /// </summary>
         public static string PythonNodeContextMenuEngineVersionThree {
             get {
@@ -176,6 +176,15 @@ namespace PythonNodeModels.Properties {
                 return ResourceManager.GetString("PythonScriptEditorConvertTabsToSpacesButtonTooltip", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Python Engine Automatically Updated to PythonNet3.
+        /// </summary>
+        public static string PythonScriptEditorEngineAutoUpdatedBarText {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorEngineAutoUpdatedBarText", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Select the Python version/engine to execute the script.
@@ -183,6 +192,15 @@ namespace PythonNodeModels.Properties {
         public static string PythonScriptEditorEngineDropdownTooltip {
             get {
                 return ResourceManager.GetString("PythonScriptEditorEngineDropdownTooltip", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Please update Python Engine to PythonNet3.
+        /// </summary>
+        public static string PythonScriptEditorEngineRequestToUpdatedBarText {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorEngineRequestToUpdatedBarText", resourceCulture);
             }
         }
         

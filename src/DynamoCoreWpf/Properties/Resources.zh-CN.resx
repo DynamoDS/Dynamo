@@ -2273,11 +2273,11 @@
   <data name="AddStyleButton" xml:space="preserve">
     <value>添加样式</value>
   </data>
-  <data name="ResetCPythonButtonText" xml:space="preserve">
-    <value>重置 CPython</value>
+  <data name="ResetPythonNet3ButtonText" xml:space="preserve">
+    <value>重置 PythonNet3</value>
   </data>
-  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
-    <value>通过重新加载模块重置 CPython 环境。</value>
+  <data name="ResetPythonNet3ButtonToolTip" xml:space="preserve">
+    <value>通过重新加载模块重置 PythonNet3 环境。</value>
   </data>
   <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
     <value>取消并显示问题</value>

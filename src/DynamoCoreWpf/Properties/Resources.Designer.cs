@@ -1004,6 +1004,34 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("CopyToClipboardTooltip", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Python Engine Change.
+        /// </summary>
+        public static string CPython3EngineNotificationMessageBoxHeader {
+            get {
+                return ResourceManager.GetString("CPython3EngineNotificationMessageBoxHeader", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This graph includes CPython nodes, which are no longer supported in Dynamo 4.0. Saving will convert them to PythonNet3, the new default engine.
+        ///To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the Package Manager and manually migrate the nodes back to CPython..
+        /// </summary>
+        public static string CPython3EngineNotificationMessageBoxText {
+            get {
+                return ResourceManager.GetString("CPython3EngineNotificationMessageBoxText", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to https://dynamobim.org/pythonnet3-a-new-dynamo-python-to-fix-everything/.
+        /// </summary>
+        public static string CPython3EngineUpgradeLearnMoreUri {
+            get {
+                return ResourceManager.GetString("CPython3EngineUpgradeLearnMoreUri", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Copy.
@@ -4433,6 +4461,15 @@ namespace Dynamo.Wpf.Properties {
         public static string MessageAlreadyInstallDynamo {
             get {
                 return ResourceManager.GetString("MessageAlreadyInstallDynamo", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Don&apos;t show this again.
+        /// </summary>
+        public static string MessageBoxDontShowAgainLabel {
+            get {
+                return ResourceManager.GetString("MessageBoxDontShowAgainLabel", resourceCulture);
             }
         }
         
@@ -8251,6 +8288,15 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("PreferencesViewGroupStylesHeader", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Hide CPython notifications.
+        /// </summary>
+        public static string PreferencesViewHideCPythonNotifications {
+            get {
+                return ResourceManager.GetString("PreferencesViewHideCPythonNotifications", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Hide optional input ports by default.
@@ -9574,20 +9620,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reset CPython.
+        ///   Looks up a localized string similar to Reset PythonNet3.
         /// </summary>
-        public static string ResetCPythonButtonText {
+        public static string ResetPythonNet3ButtonText  {
             get {
-                return ResourceManager.GetString("ResetCPythonButtonText", resourceCulture);
+                return ResourceManager.GetString("ResetPythonNet3ButtonText ", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Resets CPython environment by reloading modules..
+        ///   Looks up a localized string similar to Resets PythonNet3 environment by reloading modules..
         /// </summary>
-        public static string ResetCPythonButtonToolTip {
+        public static string ResetPythonNet3ButtonToolTip  {
             get {
-                return ResourceManager.GetString("ResetCPythonButtonToolTip", resourceCulture);
+                return ResourceManager.GetString("ResetPythonNet3ButtonToolTip ", resourceCulture);
             }
         }
         

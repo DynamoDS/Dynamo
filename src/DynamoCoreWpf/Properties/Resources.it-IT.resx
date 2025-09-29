@@ -2266,11 +2266,11 @@ Disinstallare {1}? Riavviare {2} per completare la disinstallazione e provare a 
   <data name="AddStyleButton" xml:space="preserve">
     <value>Agg. stile</value>
   </data>
-  <data name="ResetCPythonButtonText" xml:space="preserve">
-    <value>Reimposta CPython</value>
+  <data name="ResetPythonNet3ButtonText" xml:space="preserve">
+    <value>Reimposta PythonNet3</value>
   </data>
-  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
-    <value>Reimposta l'ambiente CPython ricaricando i moduli.</value>
+  <data name="ResetPythonNet3ButtonToolTip" xml:space="preserve">
+    <value>Reimposta l'ambiente PythonNet3 ricaricando i moduli.</value>
   </data>
   <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
     <value>Annulla e mostra problemi</value>

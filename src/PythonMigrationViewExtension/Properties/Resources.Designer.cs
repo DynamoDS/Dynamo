@@ -77,6 +77,42 @@ namespace Dynamo.PythonMigration.Properties {
                 return ResourceManager.GetString("AcceptButtonTooltip", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This graph currently contains python nodes that are using the old CPython Engine which has been deprecated. Consider updating these nodes to use the new PythonNet3 Engine..
+        /// </summary>
+        public static string CPython3NotificationDetailedMessage {
+            get {
+                return ResourceManager.GetString("CPython3NotificationDetailedMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This graph currently contains nodes that are using the old CPython3 engine which has been deprecated. A new PythonNet3 has been implemented and is accessible inside the Python editor..
+        /// </summary>
+        public static string CPython3NotificationShortMessage {
+            get {
+                return ResourceManager.GetString("CPython3NotificationShortMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} CPython nodes have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported..
+        /// </summary>
+        public static string CPythonUpgradeToastMessagePlural {
+            get {
+                return ResourceManager.GetString("CPythonUpgradeToastMessagePlural", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to 1 CPython node has been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported..
+        /// </summary>
+        public static string CPythonUpgradeToastMessageSingular {
+            get {
+                return ResourceManager.GetString("CPythonUpgradeToastMessageSingular", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Custom Nodes that have an IronPython2 dependency.

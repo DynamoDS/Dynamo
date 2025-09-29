@@ -2274,11 +2274,11 @@ Dynamo を再起動してアンインストールを完了します。
   <data name="AddStyleButton" xml:space="preserve">
     <value>スタイルを追加</value>
   </data>
-  <data name="ResetCPythonButtonText" xml:space="preserve">
-    <value>CPython をリセット</value>
+  <data name="ResetPythonNet3ButtonText" xml:space="preserve">
+    <value>PythonNet3 をリセット</value>
   </data>
-  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
-    <value>モジュールを再ロードして CPython 環境をリセットします。</value>
+  <data name="ResetPythonNet3ButtonToolTip" xml:space="preserve">
+    <value>モジュールを再ロードして PythonNet3 環境をリセットします。</value>
   </data>
   <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
     <value>キャンセルして問題を表示</value>

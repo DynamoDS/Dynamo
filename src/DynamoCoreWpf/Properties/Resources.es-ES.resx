@@ -2274,11 +2274,11 @@ Puede intentar desactivar la carga de paquetes desde las rutas de paquetes integ
   <data name="AddStyleButton" xml:space="preserve">
     <value>Añadir estilo</value>
   </data>
-  <data name="ResetCPythonButtonText" xml:space="preserve">
-    <value>Restablecer CPython</value>
+  <data name="ResetPythonNet3ButtonText" xml:space="preserve">
+    <value>Restablecer PythonNet3</value>
   </data>
-  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
-    <value>Restablece el entorno de CPython mediante la recarga de los módulos.</value>
+  <data name="ResetPythonNet3ButtonToolTip" xml:space="preserve">
+    <value>Restablece el entorno de PythonNet3 mediante la recarga de los módulos.</value>
   </data>
   <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
     <value>Cancelar y mostrar incidencias</value>

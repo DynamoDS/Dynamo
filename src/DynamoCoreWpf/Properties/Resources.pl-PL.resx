@@ -2274,11 +2274,11 @@ Czy chcesz odinstalować {1}? Uruchom ponownie {2}, aby zakończyć dezinstalacj
   <data name="AddStyleButton" xml:space="preserve">
     <value>Dodaj styl</value>
   </data>
-  <data name="ResetCPythonButtonText" xml:space="preserve">
-    <value>Resetuj środowisko CPython</value>
+  <data name="ResetPythonNet3ButtonText" xml:space="preserve">
+    <value>Resetuj środowisko PythonNet3</value>
   </data>
-  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
-    <value>Resetuje środowisko CPython przez ponowne wczytanie modułów.</value>
+  <data name="ResetPythonNet3ButtonToolTip" xml:space="preserve">
+    <value>Resetuje środowisko PythonNet3 przez ponowne wczytanie modułów.</value>
   </data>
   <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
     <value>Anuluj i pokaż problemy</value>

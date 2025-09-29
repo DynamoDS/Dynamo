@@ -2272,11 +2272,11 @@
   <data name="AddStyleButton" xml:space="preserve">
     <value>스타일 추가</value>
   </data>
-  <data name="ResetCPythonButtonText" xml:space="preserve">
-    <value>CPython 재설정</value>
+  <data name="ResetPythonNet3ButtonText" xml:space="preserve">
+    <value>PythonNet3 재설정</value>
   </data>
-  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
-    <value>모듈을 다시 로드하여 CPython 환경을 재설정합니다.</value>
+  <data name="ResetPythonNet3ButtonToolTip" xml:space="preserve">
+    <value>모듈을 다시 로드하여 PythonNet3 환경을 재설정합니다.</value>
   </data>
   <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
     <value>취소 및 문제 표시</value>

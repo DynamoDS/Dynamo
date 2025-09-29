@@ -867,9 +867,9 @@
                                                 Grid.Row="0"
                                                 Margin="0,10,0,0"
                                                 Click="ReloadCPython_Click"
-                                                Content="{x:Static p:Resources.ResetCPythonButtonText}">
+                                                Content="{x:Static p:Resources.ResetPythonNet3ButtonText}">
                                         <Button.ToolTip>
-                                            <ToolTip Content="{x:Static p:Resources.ResetCPythonButtonToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                                            <ToolTip Content="{x:Static p:Resources.ResetPythonNet3ButtonToolTip}" Style="{StaticResource GenericToolTipLight}"/>
                                         </Button.ToolTip>
                                     </Button>
                                     
