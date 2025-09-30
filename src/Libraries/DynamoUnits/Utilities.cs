@@ -1,10 +1,10 @@
 using Autodesk.DesignScript.Runtime;
-using DynamoInstallDetective;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using ForgeUnits = Autodesk.ForgeUnits;
 
 namespace DynamoUnits
@@ -416,20 +416,53 @@ namespace DynamoUnits
         /// <param name="candidateDirectories">List to add discovered ASC schema paths to</param>
         private static void AddAscSchemaPaths(List<string> candidateDirectories)
         {
+            // Currently ASC discovery is only available on Windows. When cross-platform ASC
+            // support becomes available, we can extend this to work on other platforms.
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return;
+            }
+
             try
             {
-                // e.g. majorVersions = ["2028", "2027", "2026"] (sorted newest first)
-                var majorVersions = AscSdkWrapper.GetMajorVersions();
+                // Use reflection to dynamically load DynamoInstallDetective at runtime.
+                // This avoids the need for a direct project reference and InternalsVisibleTo,
+                // maintaining cross-platform compatibility for the DynamoUnits library.
+                var dynamoInstallDetectiveAssembly = Assembly.LoadFrom(
+                    Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), 
+                    "DynamoInstallDetective.dll"));
+
+                var ascWrapperType = dynamoInstallDetectiveAssembly.GetType("DynamoInstallDetective.AscSdkWrapper");
+                if (ascWrapperType == null)
+                {
+                    return; // AscSdkWrapper type not found
+                }
+
+                // Get major versions using reflection: AscSdkWrapper.GetMajorVersions()
+                var getMajorVersionsMethod = ascWrapperType.GetMethod("GetMajorVersions", 
+                    BindingFlags.Public | BindingFlags.Static);
+                var majorVersions = (string[])getMajorVersionsMethod?.Invoke(null, null);
+
+                if (majorVersions == null) return;
+
+                // Get the ASC_STATUS enum for comparison
+                var ascStatusType = ascWrapperType.GetNestedType("ASC_STATUS");
+                var successValue = Enum.Parse(ascStatusType, "SUCCESS");
 
                 foreach (var majorVersion in majorVersions)
                 {
-                    var ascWrapper = new AscSdkWrapper(majorVersion);
-                    string installPath = string.Empty;
+                    // Create AscSdkWrapper instance: new AscSdkWrapper(majorVersion)
+                    var ascWrapper = Activator.CreateInstance(ascWrapperType, majorVersion);
 
-                    // e.g. installPath = "C:\Program Files\Common Files\Autodesk Shared\Components\2026\1.8.0"
-                    if (ascWrapper.GetInstalledPath(ref installPath) == AscSdkWrapper.ASC_STATUS.SUCCESS)
+                    // Call GetInstalledPath using reflection
+                    var getInstalledPathMethod = ascWrapperType.GetMethod("GetInstalledPath");
+                    var parameters = new object[] { string.Empty };
+                    var result = getInstalledPathMethod?.Invoke(ascWrapper, parameters);
+
+                    // Check if result equals ASC_STATUS.SUCCESS
+                    if (result != null && result.Equals(successValue))
                     {
-                        // Trust the registry - this is the latest version the installer put there
+                        var installPath = (string)parameters[0];
                         var schemaPath = Path.Combine(installPath, "coreschemas", "unit");
                         candidateDirectories.Add(schemaPath);
                     }
@@ -437,7 +470,9 @@ namespace DynamoUnits
             }
             catch
             {
-                // Ignore errors when discovering ASC paths - this is optional discovery
+                // Ignore errors when discovering ASC paths - this is optional discovery.
+                // DynamoInstallDetective.dll might not be available on some deployments,
+                // or ASC might not be installed on the system.
             }
         }
 

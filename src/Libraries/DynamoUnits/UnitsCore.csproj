@@ -29,7 +29,6 @@
     <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj">
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\Tools\DynamoInstallDetective\DynamoInstallDetective.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.en-US.Designer.cs">
