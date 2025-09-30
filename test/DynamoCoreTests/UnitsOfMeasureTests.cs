@@ -766,6 +766,7 @@ namespace Dynamo.Tests
         [Test, Category("UnitTests")]
         public void CanCreateForgeUnitType_FromLoadedTypeString()
         {
+            // Exact version exists: use the version as-specified
             var unitType = Unit.ByTypeID($"{milimeters}-1.0.1");
             Assert.NotNull(unitType);
             Assert.AreEqual("Millimeters", unitType.Name);
@@ -774,18 +775,20 @@ namespace Dynamo.Tests
         [Test, Category("UnitTests")]
         public void CanCreateForgeUnitType_FromFutureTypeString()
         {
-            var unitType = Unit.ByTypeID($"{milimeters}-1.0.2");
+            // Unknown future version: use the latest known version
+            var unitType = Unit.ByTypeID($"{milimeters}-99.9.9");
             Assert.NotNull(unitType);
             Assert.AreEqual("Millimeters", unitType.Name);
-            Assert.AreEqual($"{milimeters}-1.0.1", unitType.TypeId);
+            Assert.AreEqual($"{milimeters}-2.0.0", unitType.TypeId);
         }
         [Test, Category("UnitTests")]
         public void CanCreateForgeUnitType_FromPastTypeString()
         {
-            var unitType = Unit.ByTypeID($"{milimeters}-1.0.0");
+            // Unknown past version: use the latest known version
+            var unitType = Unit.ByTypeID($"{milimeters}-0.0.1");
             Assert.NotNull(unitType);
             Assert.AreEqual("Millimeters", unitType.Name);
-            Assert.AreEqual($"{milimeters}-1.0.1", unitType.TypeId);
+            Assert.AreEqual($"{milimeters}-2.0.0", unitType.TypeId);
         }
         [Test, Category("UnitTests")]
         public void ForgeUnitEquality()
