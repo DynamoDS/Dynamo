@@ -68,7 +68,11 @@ $excludedFiles = @(
     "TuneUp.dll",
     "TuneUp.resources.dll",
     "Units.dll",
-    "Webview2Loader.dll"
+    "Webview2Loader.dll",
+    "DSPythonNet3.dll",
+    "DSPythonNet3.resources.dll",
+    "DSPythonNet3Extension.dll",
+    "DSPythonNet3Wheels.dll",
 )
 $noVersion = @()
 $wrongVersion = @()
