@@ -423,11 +423,12 @@
                             Style="{StaticResource UnSaveButtonStyle}" Content="Close" Click="CloseWarningBarButton_OnClick"></Button>
                     </StackPanel>
                 </Grid>
+
                 <!-- Python Update Bar -->
                 <Grid Name="PythonUpgradeBar"
                       VerticalAlignment="Bottom"
                       Grid.Row="2"
-                      Margin="0,5,0,3"
+                      Margin="0,5,0,5"
                       Height="40"
                       Visibility="Visible">
                     <Border BorderThickness="2"
@@ -456,7 +457,7 @@
                                     Click="OnPythonAutoUpgradedBarClose"/>
                         </Grid>
                     </Border>
-                </Grid>
+                </Grid>               
             </Grid>
         </Border>
     </Grid>
