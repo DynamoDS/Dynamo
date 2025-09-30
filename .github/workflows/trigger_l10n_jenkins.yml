@@ -1,0 +1,20 @@
+name: Trigger L10N Jenkins Job
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  trigger_jenkins:
+    name: Trigger Jenkins Job
+    runs-on: self-hosted
+    steps:
+    - name: Trigger Job
+      run: |
+        AUTH="${{ secrets.L10N_JENKINS_TRIGGER_USER }}:${{ secrets.L10N_JENKINS_TRIGGER_TOKEN }}"
+        JENKINS_URL="${{ secrets.L10N_JENKINS_CONTROLLER_URL }}/job/${{ secrets.L10N_JENKINS_TRIGGER_ROOT_FOLDER }}/job/${{ secrets.L10N_JENKINS_TRIGGER_ORG_FOLDER }}/job/${{ github.event.organization.login }}/job/${{ github.event.repository.name }}/job/${{ secrets.L10N_JENKINS_BRANCH }}/buildWithParameters?delay=0"
+        curl -f -sS -X POST -u "$AUTH" "$JENKINS_URL"
