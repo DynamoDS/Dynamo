@@ -72,7 +72,7 @@ $excludedFiles = @(
     "DSPythonNet3.dll",
     "DSPythonNet3.resources.dll",
     "DSPythonNet3Extension.dll",
-    "DSPythonNet3Wheels.dll",
+    "DSPythonNet3Wheels.dll"
 )
 $noVersion = @()
 $wrongVersion = @()
