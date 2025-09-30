@@ -642,31 +642,14 @@
                                       Focusable="false"
                                       IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                       Template="{StaticResource ComboBoxToggleButtonUpdated}" />
-                        <StackPanel x:Name="ContentWithInfo"
-                                    Orientation="Horizontal"
-                                    Margin="9,3,23,3"
-                                    VerticalAlignment="Center"
-                                    IsHitTestVisible="True">
-                            <ContentPresenter Name="ContentSite"
-                                              Margin="0,0,6,0"
-                                              HorizontalAlignment="Left"
-                                              VerticalAlignment="Center"
-                                              Content="{TemplateBinding SelectionBoxItem}"
-                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                                              ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                                              IsHitTestVisible="False"/>
-                            <Border VerticalAlignment="Center"
-                                    Width="16"
-                                    Height="16">
-                                <Border.ToolTip>
-                                    <ToolTip Content="SOME TOOLTIP HERE..." Style="{StaticResource GenericToolTipLight}"/>
-                                </Border.ToolTip>
-                                <!-- add visibility binding and tooltip to the border above-->
-                                <Image Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/info.png"
-                                       Width="16"
-                                       Height="16"/>
-                            </Border>                            
-                        </StackPanel>                        
+                        <ContentPresenter Name="ContentSite"
+                                          Margin="9,3,23,3"
+                                          HorizontalAlignment="Left"
+                                          VerticalAlignment="Center"
+                                          Content="{TemplateBinding SelectionBoxItem}"
+                                          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                          ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                          IsHitTestVisible="False" />
                         <TextBox x:Name="PART_EditableTextBox"
                                  Margin="3,3,23,3"
                                  Padding="10"
