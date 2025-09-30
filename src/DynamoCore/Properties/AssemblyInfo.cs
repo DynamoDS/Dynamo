@@ -61,6 +61,7 @@ using System.Runtime.CompilerServices;
 // Internals are visible to the MCP View Extension and Extension, depending on final implementation.
 [assembly: InternalsVisibleTo("MCPExtension")]
 [assembly: InternalsVisibleTo("MCPViewExtension")]
+[assembly: InternalsVisibleTo("MCPServer")]
 
 // Disable PublicAPIAnalyzer errors for this type as they're already added to the public API text file
 #pragma warning disable RS0016 
