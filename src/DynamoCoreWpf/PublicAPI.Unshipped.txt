@@ -2158,6 +2158,7 @@ Dynamo.ViewModels.DynamoViewModel.PublishNewPackageCommand.get -> Dynamo.UI.Comm
 Dynamo.ViewModels.DynamoViewModel.PublishNewPackageCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.PublishSelectedNodesCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.PublishSelectedNodesCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.PythonEngineUpgradeToastRequested -> System.Action<string, bool>
 Dynamo.ViewModels.DynamoViewModel.RecentFiles.get -> System.Collections.ObjectModel.ObservableCollection<string>
 Dynamo.ViewModels.DynamoViewModel.RecentFiles.set -> void
 Dynamo.ViewModels.DynamoViewModel.RedoCommand.get -> Dynamo.UI.Commands.DelegateCommand
@@ -2196,6 +2197,7 @@ Dynamo.ViewModels.DynamoViewModel.ScaleFactorLog.set -> void
 Dynamo.ViewModels.DynamoViewModel.SelectAll(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.SelectAllCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.SelectAllCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.ShowPythonEngineUpgradeCanvasToast(string message, bool stayOpen = true) -> void
 Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubbles(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubblesCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubblesCommand.set -> void
@@ -2861,6 +2863,8 @@ Dynamo.ViewModels.PreferencesViewModel.Filters.get -> System.Collections.ObjectM
 Dynamo.ViewModels.PreferencesViewModel.GroupStyleFontSizeList.get -> System.Collections.ObjectModel.ObservableCollection<int>
 Dynamo.ViewModels.PreferencesViewModel.GroupStyleFontSizeList.set -> void
 Dynamo.ViewModels.PreferencesViewModel.HideAutocompleteMethodOptions.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.HideCPythonNotificationIsChecked.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.HideCPythonNotificationIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.HideNodesBelowSpecificConfidenceLevelIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.HideNodesBelowSpecificConfidenceLevelIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.HostGenericScaleUnits.get -> string
@@ -4668,6 +4672,9 @@ static Dynamo.Wpf.Properties.Resources.ConverterMessageTransformOrigin.get -> st
 static Dynamo.Wpf.Properties.Resources.ConverterMessageZoom.get -> string
 static Dynamo.Wpf.Properties.Resources.CopyToClipboardTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.CopyToClipboardFailedMessage.get -> string
+static Dynamo.Wpf.Properties.Resources.CPython3EngineNotificationMessageBoxHeader.get -> string
+static Dynamo.Wpf.Properties.Resources.CPython3EngineNotificationMessageBoxText.get -> string
+static Dynamo.Wpf.Properties.Resources.CPython3EngineUpgradeLearnMoreUri.get -> string
 static Dynamo.Wpf.Properties.Resources.CrashPromptDialogCopyButton.get -> string
 static Dynamo.Wpf.Properties.Resources.CrashPromptDialogCrashMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.CrashPromptDialogDetailButton.get -> string
@@ -5050,6 +5057,7 @@ static Dynamo.Wpf.Properties.Resources.LogoutMenuItemText.get -> string
 static Dynamo.Wpf.Properties.Resources.MajorVersionNonNegative.get -> string
 static Dynamo.Wpf.Properties.Resources.Manual.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageAlreadyInstallDynamo.get -> string
+static Dynamo.Wpf.Properties.Resources.MessageBoxDontShowAgainLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageConfirmToDeletePackage.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageConfirmToInstallPackage.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageConfirmToInstallPackageToFolder.get -> string
@@ -5468,6 +5476,8 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralTab.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGroupStylesHeader.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewHideInportsDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewHideOutportsDescription.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewHidePythonEngineChangeNotifications.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewHidePythonEngineChangeNotificationsTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewIncludeTimestampExportPathTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewLanguageLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewLanguageSwitchHelp.get -> string
