@@ -950,6 +950,7 @@ namespace Dynamo.Views
                 ContextMenuPopup.IsOpen = true;
             }
 
+            // Only toggle pan mode if we were not connecting a port and were panning using middle mouse button.
             if (!ViewModel.IsConnecting && ViewModel.IsPanning && e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Released)
             {
                 ViewModel.RequestTogglePanMode();
