@@ -44,54 +44,6 @@ namespace DynamoShapeManager
                 return defaultProducts;
             }
         }
-            //
-
-        #region ASM DLLs per version (to be kept in sync with LibG)
-        private static readonly ISet<string> ASM230DllNames = new HashSet<string>()
-        {
-            "TBB12.DLL",
-            "TBBMALLOC.DLL",
-            "TSPLINES12.DLL",
-            "ASMAHL230A.DLL",
-            "ASMBASE230A.DLL",
-            "ASMBLND230A.DLL",
-            "ASMBOOL230A.DLL",
-            "ASMCOVR230A.DLL",
-            "ASMCSTR230A.DLL",
-            "ASMCT230A.DLL",
-            "ASMDATAX230A.DLL",
-            "ASMDEFM230A.DLL",
-            "ASMEULR230A.DLL",
-            "ASMFCT230A.DLL",
-            "ASMFREC230A.DLL",
-            "ASMGA230A.DLL",
-            "ASMHEAL230A.DLL",
-            "ASMIMPORT230A.DLL",
-            "ASMINTR230A.DLL",
-            "ASMKERN230A.DLL",
-            "ASMLAW230A.DLL",
-            "ASMLOP230A.DLL",
-            "ASMLOPT230A.DLL",
-            "ASMNPCH230A.DLL",
-            "ASMOFST230A.DLL",
-            "ASMOPER230A.DLL",
-            "ASMPID230A.DLL",
-            "ASMRBASE230A.DLL",
-            "ASMRBI230A.DLL",
-            "ASMREM230A.DLL",
-            "ASMSASM230A.DLL",
-            "ASMSBAP230A.DLL",
-            "ASMSBOOL230A.DLL",
-            "ASMSHL230A.DLL",
-            "ASMSKIN230A.DLL",
-            "ASMSWP230A.DLL",
-            "ASMTOPT230A.DLL",
-            "ASMTWK230A.DLL",
-            "ASMUFLD230A.DLL",
-            "ASMWELD230A.DLL",
-            "MMSDK.DLL",
-        };
-        #endregion
 
         #region public properties
         public static readonly string GeometryFactoryAssembly = "LibG.ProtoInterface.dll";
@@ -452,9 +404,9 @@ namespace DynamoShapeManager
             var fileNames = filePaths.Select(path => Path.GetFileName(path).ToUpper());
             switch (majorVersion)
             {
-                case 230:
-                    return !ASM230DllNames.Except(fileNames).Any();
                 case 231:
+                    return true;
+                case 232:
                     return true;
                 default:
                     // We don't know this version so it's safest to assume it's not complete.
