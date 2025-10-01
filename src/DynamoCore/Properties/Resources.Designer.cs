@@ -116,7 +116,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There are no recommendations yet. You can try switching to node type match autocomplete..
+        ///   Looks up a localized string similar to The model is continuously improving - check back soon.
         /// </summary>
         public static string AutocompleteNoRecommendationsMessage {
             get {
@@ -125,7 +125,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No recommendations.
+        ///   Looks up a localized string similar to No suggestions available.
         /// </summary>
         public static string AutocompleteNoRecommendationsTitle {
             get {

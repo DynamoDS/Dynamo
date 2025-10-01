@@ -909,7 +909,7 @@ namespace Dynamo.Views
             
             if(PortContextMenu.IsOpen) DestroyPortContextMenu();
 
-            if (!ViewModel.IsPanning && e.MiddleButton == MouseButtonState.Pressed)
+            if (!ViewModel.IsConnecting && !ViewModel.IsPanning && e.MiddleButton == MouseButtonState.Pressed)
             {
                 ViewModel.RequestTogglePanMode();
             }
@@ -950,7 +950,7 @@ namespace Dynamo.Views
                 ContextMenuPopup.IsOpen = true;
             }
 
-            if (ViewModel.IsPanning && e.MiddleButton == MouseButtonState.Released)
+            if (!ViewModel.IsConnecting && ViewModel.IsPanning && e.MiddleButton == MouseButtonState.Released)
             {
                 ViewModel.RequestTogglePanMode();
             }

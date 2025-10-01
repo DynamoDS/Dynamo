@@ -79,6 +79,7 @@ namespace Dynamo.UI.Controls
         {
             IsSaveButtonEnabled = false;
             IsExportMenuEnabled = false;
+            IsLoginMenuEnabled = !DynamoViewModel.Model.NoNetworkMode;
             DynamoViewModel.OnRequestShorcutToolbarLoaded(RightMenu.ActualWidth);
         }
 

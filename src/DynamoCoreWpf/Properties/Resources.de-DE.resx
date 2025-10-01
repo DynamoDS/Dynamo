@@ -747,16 +747,16 @@ Keine Sorge: Sie erhalten die Möglichkeit, Ihre Arbeit zu speichern.</value>
     <value>Neu [Ctrl + N]</value>
   </data>
   <data name="DynamoViewToolbarOpenButtonTooltip" xml:space="preserve">
-    <value>Öffnen [Strg + O]</value>
+    <value>Öffnen [Ctrl + O]</value>
   </data>
   <data name="DynamoViewToolbarRedoButtonTooltip" xml:space="preserve">
-    <value>Wiederholen  [Strg + Y]</value>
+    <value>Wiederholen  [Ctrl + Y]</value>
   </data>
   <data name="DynamoViewToolbarSaveButtonTooltip" xml:space="preserve">
-    <value>Speichern [Strg + S]</value>
+    <value>Speichern [Ctrl + S]</value>
   </data>
   <data name="DynamoViewToolbarUndoButtonTooltip" xml:space="preserve">
-    <value>Rückgängig [Strg + Z]</value>
+    <value>Rückgängig [Ctrl + Z]</value>
   </data>
   <data name="DynamoViewViewMenu" xml:space="preserve">
     <value>_Ansicht</value>
@@ -1304,7 +1304,7 @@ Deinstallieren Sie die geladenen Pakete, die Konflikte verursachen, starten Sie 
     <value>Bearbeiten...</value>
   </data>
   <data name="NullString" xml:space="preserve">
-    <value>Null</value>
+    <value>null</value>
   </data>
   <data name="OKButton" xml:space="preserve">
     <value>OK</value>
@@ -2794,7 +2794,7 @@ Dieses Paket wird nach dem nächsten Neustart von Dynamo entfernt.</value>
     <value>Draht ausblenden</value>
   </data>
   <data name="PackagesGuideFindPackageText" xml:space="preserve">
-    <value>Pakete stellen zusätzliche Funktionen bereit, die Sie in Dynamo verwenden können. \n\nKlicken Sie auf **Pakete &gt; Package Manager...**, \num Pakete zu suchen oder die verfügbaren anzuzeigen.</value>
+    <value>Pakete stellen zusätzliche Funktionen bereit, die Sie in Dynamo verwenden können. \n\nKlicken Sie auf **Pakete &gt; Package Manager...** , \num Pakete zu suchen oder die verfügbaren anzuzeigen.</value>
   </data>
   <data name="PackagesGuideFindPackageTitle" xml:space="preserve">
     <value>Paket suchen</value>
@@ -2806,7 +2806,7 @@ Dieses Paket wird nach dem nächsten Neustart von Dynamo entfernt.</value>
     <value>Suchen, filtern und sortieren</value>
   </data>
   <data name="PackagesGuideTermsOfServiceText" xml:space="preserve">
-    <value>\nPakete können von Drittanbietern stammen. Beachten Sie, dass Pakete Sicherheitsrisiken darstellen können. #Weitere Informationen=https://dynamobim.org/issues/extend-dynamo-with-packages \n\n**Klicken Sie in den Nutzungsbedingungen auf Akzeptieren**, um sie anzunehmen, und fahren Sie mit dieser Anleitung fort.</value>
+    <value>\nPakete können von Drittanbietern stammen. Beachten Sie, dass Pakete Sicherheitsrisiken darstellen können. #Weitere Informationen=https://dynamobim.org/issues/extend-dynamo-with-packages \n\n**Klicken Sie in den Nutzungsbedingungen auf Akzeptieren** , um sie anzunehmen, und fahren Sie mit dieser Anleitung fort.</value>
   </data>
   <data name="PackagesGuideTermsOfServiceTitle" xml:space="preserve">
     <value>Nutzungsbedingungen akzeptieren</value>
@@ -2898,7 +2898,7 @@ Um die neueste Version eines Pakets zu installieren, klicken Sie auf Installiere
     <value>Dieses Paket enthält benutzerdefinierte Blöcke, die verwendet werden. Diese benutzerdefinierten Blöcke müssen gelöscht oder das Diagramm muss geschlossen werden, bevor das Paket gelöscht werden kann.</value>
   </data>
   <data name="PackagesGuideNavigatePackagesText" xml:space="preserve">
-    <value>\nWenn Sie ein Paket installieren, wird es in der Bibliothek unter Add-Ons angezeigt. \n\n**Klicken Sie, um das Paket zu erweitern**, damit Sie die zugehörigen Blöcke (Funktionen) sehen können.</value>
+    <value>\nWenn Sie ein Paket installieren, wird es in der Bibliothek unter Add-Ons angezeigt. \n\n**Klicken Sie, um das Paket zu erweitern** , damit Sie die zugehörigen Blöcke (Funktionen) sehen können.</value>
   </data>
   <data name="PackagesGuideNavigatePackagesTitle" xml:space="preserve">
     <value>Zu Paketen navigieren</value>

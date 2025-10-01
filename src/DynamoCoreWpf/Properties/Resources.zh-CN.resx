@@ -1304,7 +1304,7 @@
     <value>编辑...</value>
   </data>
   <data name="NullString" xml:space="preserve">
-    <value>空</value>
+    <value>null</value>
   </data>
   <data name="OKButton" xml:space="preserve">
     <value>确定</value>
@@ -2861,7 +2861,7 @@
     <value>工作空间</value>
   </data>
   <data name="PackagesGuideExitAcceptTerms" xml:space="preserve">
-    <value>要继续使用本手册并安装样例软件包，必须接受“服务条款”。\n\n **单击“继续”。** 然后，在条款中， **单击“我接受”。** \n\n\n\</value>
+    <value>要继续使用本手册并安装样例软件包，必须接受“服务条款”。\n\n **单击“继续”。** 然后，在条款中， **单击“我接受”。** \n\n\n\n</value>
   </data>
   <data name="PackagesGuideExitTitle" xml:space="preserve">
     <value>是否要退出本指南？</value>
@@ -3757,7 +3757,7 @@
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>您的系统上似乎未设置 Autodesk Identity Manager。要确保完全访问所有功能，请使用 Autodesk Identity Manager 登录您的 Autodesk 帐户。
-请在此处或通过 Autodesk Access #下载并安装=https://manage.autodesk.com/products/updates，然后登录。</value>
+请在此处或通过 Autodesk Access #下载并安装=https://manage.autodesk.com/products/updates 然后登录。</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>下载 Autodesk Identity Manager</value>
