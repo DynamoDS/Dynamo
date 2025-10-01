@@ -19,7 +19,6 @@ namespace Dynamo.Tests
             libraries.Add("ProtoGeometry.dll"); // Required for Surface.
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");   // Required for built-in nodes.
-            libraries.Add("DSCPython.dll");  // Required for Python tests.
             libraries.Add("FunctionObject.ds"); // Required for partially applied nodes.
             libraries.Add("DSOffice.dll"); // Required for Excel testing.
             base.GetLibrariesToPreload(libraries);
@@ -353,7 +352,7 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void Core_Math_04()
         {
-            OpenSampleModel(@"en-US\Core\Core_Math.dyn");
+            OpenSampleModelAndMigratePythonEngine(@"en-US\Core\Core_Math.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(151, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
@@ -410,7 +409,7 @@ namespace Dynamo.Tests
         [Test, Category("SmokeTests")]
         public void Core_Python()
         {
-            OpenSampleModel(@"en-US\Core\Core_Python.dyn");
+            OpenSampleModelAndMigratePythonEngine(@"en-US\Core\Core_Python.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(15, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());

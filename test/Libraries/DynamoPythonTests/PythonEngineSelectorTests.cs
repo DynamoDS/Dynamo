@@ -19,7 +19,6 @@ namespace DynamoPythonTests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             // Add multiple libraries to better simulate typical Dynamo application usage.
-            libraries.Add("DSCPython.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -29,7 +28,7 @@ namespace DynamoPythonTests
         [Test]
         public void TestEngineSelectorInitialization()
         {
-            Assert.AreEqual(true, PythonEngineManager.Instance.AvailableEngines.Any(x => x.Name == PythonEngineManager.CPython3EngineName));
+            Assert.AreEqual(true, PythonEngineManager.Instance.AvailableEngines.Any(x => x.Name == PythonEngineManager.PythonNet3EngineName));
             Assert.AreEqual(false, PythonEngineManager.Instance.AvailableEngines.Any(x => x.Name == PythonEngineManager.IronPython2EngineName));
         }
 
@@ -67,36 +66,40 @@ namespace DynamoPythonTests
         }
 
         [Test]
-        public void CPytonEngineManagerAPITest()
+        public void PytonNet3EngineManagerAPITest()
         {
-            var cPython3Eng = PythonEngineManager.Instance.AvailableEngines.FirstOrDefault(x => x.Name == PythonEngineManager.CPython3EngineName);
+            var pythonNet3Eng = PythonEngineManager.Instance.AvailableEngines.FirstOrDefault(x => x.Name == PythonEngineManager.PythonNet3EngineName);
 
-            Assert.IsNotNull(cPython3Eng);
+            Assert.IsNotNull(pythonNet3Eng);
 
             EvaluationStartedEventHandler start1 = ((code, bindings, scopeSet) => { scopeSet("IN", new ArrayList { " ", "  " }); });
-            cPython3Eng.EvaluationStarted += start1;
+            pythonNet3Eng.EvaluationStarted += start1;
 
             int counter = 0;
             EvaluationFinishedEventHandler end = ((state, code, bindings, scopeGet) => { counter++; });
-            cPython3Eng.EvaluationFinished += end;
+            pythonNet3Eng.EvaluationFinished += end;
 
-            var inputM = cPython3Eng.InputDataMarshaler as DataMarshaler;
+            var inputM = pythonNet3Eng.InputDataMarshaler as DataMarshaler;
             inputM.RegisterMarshaler((string s) => s.Length);
 
-            var output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
-                "OUT = sum(IN)", new ArrayList(), new ArrayList());
+            var output = DSCore.PythonEvaluator.Evaluate(
+                PythonEngineManager.PythonNet3EngineName,
+                "OUT = sum(IN)",
+                new ArrayList(),
+                new ArrayList());
 
             inputM.UnregisterMarshalerOfType<string>();
 
             Assert.AreEqual(3, output);
 
-            var outputM = cPython3Eng.OutputDataMarshaler as DataMarshaler;
+            var outputM = pythonNet3Eng.OutputDataMarshaler as DataMarshaler;
             outputM.RegisterMarshaler((string s) => s.Length);
 
             EvaluationStartedEventHandler start2 = ((code, bindings, scopeSet) => { scopeSet("TEST", new ArrayList { "", " ", "  " }); });
-            cPython3Eng.EvaluationStarted += start2;
+            pythonNet3Eng.EvaluationStarted += start2;
 
-            output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
+            output = DSCore.PythonEvaluator.Evaluate(
+                PythonEngineManager.PythonNet3EngineName,
                 "OUT = TEST",
                 new ArrayList(),
                 new ArrayList());
@@ -106,9 +109,9 @@ namespace DynamoPythonTests
             Assert.AreEqual(new[] { 0, 1, 2 }, output);
             Assert.AreEqual(2, counter);
 
-            cPython3Eng.EvaluationStarted -= start1;
-            cPython3Eng.EvaluationStarted -= start2;
-            cPython3Eng.EvaluationFinished -= end;
+            pythonNet3Eng.EvaluationStarted -= start1;
+            pythonNet3Eng.EvaluationStarted -= start2;
+            pythonNet3Eng.EvaluationFinished -= end;
         }
     }
 }

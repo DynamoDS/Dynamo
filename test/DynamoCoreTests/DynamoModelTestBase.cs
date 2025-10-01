@@ -9,13 +9,13 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.PackageManager;
+using Dynamo.PythonServices;
 using Dynamo.Scheduler;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Tests;
 using Dynamo.Utilities;
 using DynamoShapeManager;
-
 using NUnit.Framework;
 using TestServices;
 
@@ -158,6 +158,26 @@ namespace Dynamo
         {
             string openPath = Path.Combine(SampleDirectory, relativeFilePath);
             CurrentDynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(openPath));
+        }
+
+        protected void OpenSampleModelAndMigratePythonEngine(string relativeFilePath)
+        {
+            // In tests, the View layer (and thus PythonMigrationViewExtension) doesn't run,
+            // so we must set the engine on Python nodes explicitly.
+            // TODO: Move CPython→PythonNet3 upgrade from PythonMigrationViewExtension to
+            // a model-level extension, so headless tests don't need to force engines here.
+            string openPath = Path.Combine(SampleDirectory, relativeFilePath);
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.OpenFileCommand(openPath, true));
+
+            // Force a Python engine then runs.For old graphs where the engine isn't stored/selectable.
+            var pyNodes = CurrentDynamoModel.CurrentWorkspace
+                .Nodes.OfType<PythonNodeModels.PythonNode>().ToList();
+            foreach (var n in pyNodes)
+            {
+                n.EngineName = PythonEngineManager.PythonNet3EngineName;
+                n.OnNodeModified();
+            }
+            RunCurrentModel();
         }
 
         protected void RunModel(string relativeDynFilePath)

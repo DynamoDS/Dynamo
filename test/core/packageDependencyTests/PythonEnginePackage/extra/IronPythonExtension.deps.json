@@ -1,0 +1,181 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "IronPythonExtension/1.0.0": {
+        "dependencies": {
+          "DynamoVisualProgramming.Core": "3.0.2.7476"
+        },
+        "runtime": {
+          "IronPythonExtension.dll": {}
+        }
+      },
+      "DynamoVisualProgramming.Core/3.0.2.7476": {
+        "dependencies": {
+          "DynamoVisualProgramming.ZeroTouchLibrary": "3.0.2.7476",
+          "NUnit": "3.13.3",
+          "Newtonsoft.Json": "13.0.1",
+          "System.Collections.Immutable": "5.0.0"
+        },
+        "runtime": {
+          "lib/net8.0/DSCPython.dll": {
+            "assemblyVersion": "3.0.2.7476",
+            "fileVersion": "3.0.2.7476"
+          },
+          "lib/net8.0/DesignScriptBuiltin.dll": {
+            "assemblyVersion": "3.0.2.7476",
+            "fileVersion": "3.0.2.7476"
+          },
+          "lib/net8.0/DynamoApplications.dll": {
+            "assemblyVersion": "3.0.2.7476",
+            "fileVersion": "3.0.2.7476"
+          },
+          "lib/net8.0/DynamoCore.dll": {
+            "assemblyVersion": "3.0.2.7476",
+            "fileVersion": "3.0.2.7476"
+          },
+          "lib/net8.0/DynamoInstallDetective.dll": {
+            "assemblyVersion": "3.0.2.7476",
+            "fileVersion": "3.0.2.7476"
+          },
+          "lib/net8.0/DynamoPackages.dll": {
+            "assemblyVersion": "3.0.2.7476",
+            "fileVersion": "3.0.2.7476"
+          },
+          "lib/net8.0/DynamoShapeManager.dll": {
+            "assemblyVersion": "3.0.2.7476",
+            "fileVersion": "3.0.2.7476"
+          },
+          "lib/net8.0/DynamoUtilities.dll": {
+            "assemblyVersion": "3.0.2.7476",
+            "fileVersion": "3.0.2.7476"
+          },
+          "lib/net8.0/ProtoCore.dll": {
+            "assemblyVersion": "3.0.2.7476",
+            "fileVersion": "3.0.2.7476"
+          },
+          "lib/net8.0/VMDataBridge.dll": {
+            "assemblyVersion": "3.0.2.7476",
+            "fileVersion": "3.0.2.7476"
+          }
+        }
+      },
+      "DynamoVisualProgramming.DynamoServices/3.0.2.7476": {
+        "runtime": {
+          "lib/netstandard2.0/DynamoServices.dll": {
+            "assemblyVersion": "3.0.2.7476",
+            "fileVersion": "3.0.2.7476"
+          }
+        }
+      },
+      "DynamoVisualProgramming.ZeroTouchLibrary/3.0.2.7476": {
+        "dependencies": {
+          "DynamoVisualProgramming.DynamoServices": "3.0.2.7476"
+        },
+        "runtime": {
+          "lib/net8.0/DynamoUnits.dll": {
+            "assemblyVersion": "3.0.2.7476",
+            "fileVersion": "3.0.2.7476"
+          },
+          "lib/net8.0/ProtoGeometry.dll": {
+            "assemblyVersion": "3.0.0.3331",
+            "fileVersion": "3.0.0.3331"
+          }
+        }
+      },
+      "Microsoft.NETCore.Platforms/1.1.0": {},
+      "NETStandard.Library/2.0.0": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.1.0"
+        }
+      },
+      "Newtonsoft.Json/13.0.1": {
+        "runtime": {
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {
+            "assemblyVersion": "13.0.0.0",
+            "fileVersion": "13.0.1.25517"
+          }
+        }
+      },
+      "NUnit/3.13.3": {
+        "dependencies": {
+          "NETStandard.Library": "2.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/nunit.framework.dll": {
+            "assemblyVersion": "3.13.3.0",
+            "fileVersion": "3.13.3.0"
+          }
+        }
+      },
+      "System.Collections.Immutable/5.0.0": {}
+    }
+  },
+  "libraries": {
+    "IronPythonExtension/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "DynamoVisualProgramming.Core/3.0.2.7476": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-MgWFzZ6VrinBn31exG+MFMNOXs9ijzE4lxRNqqnKuRa75orNccGIlYKPnkm+JxEX4rso7LRRntHMZ6e0Cr0bWQ==",
+      "path": "dynamovisualprogramming.core/3.0.2.7476",
+      "hashPath": "dynamovisualprogramming.core.3.0.2.7476.nupkg.sha512"
+    },
+    "DynamoVisualProgramming.DynamoServices/3.0.2.7476": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-I8pPjJAYdfO+cNktY36BvGInK43fz7oGrF8W8opB8GihkXQeC7/fhP7FQgTVtPZfT+C6O1g6DD1tRu+i1GfJEg==",
+      "path": "dynamovisualprogramming.dynamoservices/3.0.2.7476",
+      "hashPath": "dynamovisualprogramming.dynamoservices.3.0.2.7476.nupkg.sha512"
+    },
+    "DynamoVisualProgramming.ZeroTouchLibrary/3.0.2.7476": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-sjJtnxjCBOvoGNGMErpwtjkxLVRBo5OAaxCIq4Nju3gdceAGeBykaBlZ8tVLUuiIr/FdAoKxFAGj+ZXSs6SPmw==",
+      "path": "dynamovisualprogramming.zerotouchlibrary/3.0.2.7476",
+      "hashPath": "dynamovisualprogramming.zerotouchlibrary.3.0.2.7476.nupkg.sha512"
+    },
+    "Microsoft.NETCore.Platforms/1.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kz0PEW2lhqygehI/d6XsPCQzD7ff7gUJaVGPVETX611eadGsA3A877GdSlU0LRVMCTH/+P3o2iDTak+S08V2+A==",
+      "path": "microsoft.netcore.platforms/1.1.0",
+      "hashPath": "microsoft.netcore.platforms.1.1.0.nupkg.sha512"
+    },
+    "NETStandard.Library/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-7jnbRU+L08FXKMxqUflxEXtVymWvNOrS8yHgu9s6EM8Anr6T/wIX4nZ08j/u3Asz+tCufp3YVwFSEvFTPYmBPA==",
+      "path": "netstandard.library/2.0.0",
+      "hashPath": "netstandard.library.2.0.0.nupkg.sha512"
+    },
+    "Newtonsoft.Json/13.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ppPFpBcvxdsfUonNcvITKqLl3bqxWbDCZIzDWHzjpdAHRFfZe0Dw9HmA0+za13IdyrgJwpkDTDA9fHaxOrt20A==",
+      "path": "newtonsoft.json/13.0.1",
+      "hashPath": "newtonsoft.json.13.0.1.nupkg.sha512"
+    },
+    "NUnit/3.13.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-KNPDpls6EfHwC3+nnA67fh5wpxeLb3VLFAfLxrug6JMYDLHH6InaQIWR7Sc3y75d/9IKzMksH/gi08W7XWbmnQ==",
+      "path": "nunit/3.13.3",
+      "hashPath": "nunit.3.13.3.nupkg.sha512"
+    },
+    "System.Collections.Immutable/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-FXkLXiK0sVVewcso0imKQoOxjoPAj42R8HtjjbSjVPAzwDfzoyoznWxgA3c38LDbN9SJux1xXoXYAhz98j7r2g==",
+      "path": "system.collections.immutable/5.0.0",
+      "hashPath": "system.collections.immutable.5.0.0.nupkg.sha512"
+    }
+  }
+}

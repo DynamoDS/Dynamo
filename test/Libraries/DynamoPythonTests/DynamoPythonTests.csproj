@@ -22,6 +22,11 @@
     <PackageReference Include="DynamicLanguageRuntime" Version="1.2.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+    <Reference Include="DSPythonNet3">
+        <HintPath>..\..\..\bin\AnyCPU\$(Configuration)\Built-In Packages\packages\PythonNet3Engine\extra\DSPythonNet3.dll</HintPath>
+        <Private>false</Private>
+        <SpecificVersion>false</SpecificVersion>
+    </Reference>
     <Reference Include="Python.Runtime">
       <HintPath>..\..\..\extern\Python\Python.Runtime.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
