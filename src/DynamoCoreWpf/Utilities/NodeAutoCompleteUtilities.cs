@@ -50,7 +50,9 @@ namespace Dynamo.Wpf.Utilities
             double minY = nodes.Min(node => node.Rect.TopLeft.Y);
             double maxY = nodes.Max(node => node.Rect.BottomRight.Y);
 
-            return new Rect2D(minX, minY, maxX - minX, maxY - minY);
+            // Add buffer to ensure nearby nodes are considered for autolayout
+            const double buffer = 10.0;
+            return new Rect2D(minX - buffer, minY - buffer, (maxX - minX) + 2 * buffer, (maxY - minY) + 2 * buffer);
         }
 
         // Determines whether an AutoLayout operation is needed for a query node and other relevant nodes around it.
@@ -60,7 +62,7 @@ namespace Dynamo.Wpf.Utilities
         internal static bool AutoLayoutNeeded(WorkspaceModel wsModel, NodeModel originalNode, IEnumerable<NodeModel> nodesToConsider, out List<NodeModel> intersectedNodes)
         {
             //Collect all connected input or output nodes from the original node.
-            
+
             var nodesGuidsToConsider = nodesToConsider.Select(n => n.GUID).ToHashSet();
             nodesGuidsToConsider.Append(originalNode.GUID);
 
