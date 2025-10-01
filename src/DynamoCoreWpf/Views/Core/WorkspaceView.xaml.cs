@@ -950,7 +950,7 @@ namespace Dynamo.Views
                 ContextMenuPopup.IsOpen = true;
             }
 
-            if (!ViewModel.IsConnecting && ViewModel.IsPanning && e.MiddleButton == MouseButtonState.Released)
+            if (!ViewModel.IsConnecting && ViewModel.IsPanning && e.ChangedButton == MouseButton.Middle && e.ButtonState == MouseButtonState.Released)
             {
                 ViewModel.RequestTogglePanMode();
             }
