@@ -1598,8 +1598,13 @@ namespace Dynamo.ViewModels
             //By Default the warning state of the Visual Settings tab (Group Styles section) will be disabled
             isWarningEnabled = false;
 
-            // Initialize group styles with default and non-default GroupStyleItems
-            StyleItemsList = GroupStyleItem.DefaultGroupStyleItems.AddRange(preferenceSettings.GroupStyleItemsList.Where(style => style.IsDefault != true)).ToObservableCollection();
+            // Initialize group styles with default and custom GroupStyleItems.
+            var customStyles = preferenceSettings.GroupStyleItemsList.Where(style => style.IsDefault != true).ToList();
+            preferenceSettings.GroupStyleItemsList.Clear();
+            preferenceSettings.GroupStyleItemsList.AddRange(GroupStyleItem.DefaultGroupStyleItems);
+            preferenceSettings.GroupStyleItemsList.AddRange(customStyles);
+
+            StyleItemsList = preferenceSettings.GroupStyleItemsList.ToObservableCollection();
 
             //When pressing the "Add Style" button some controls will be shown with some values by default so later they can be populated by the user
             AddStyleControl = new StyleItem() { Name = string.Empty, HexColorString = GetRandomHexStringColor() };
