@@ -357,6 +357,7 @@ namespace DSCore.IO
 #if NET6_0_OR_GREATER
         [SupportedOSPlatform("windows")]
 #endif
+        [IsVisibleInDynamoLibrary(false)]
         [NodeObsolete("ReadImageObsolete", typeof(Properties.Resources))]
         public static Color[] ReadImage(string path, int xSamples, int ySamples)
         {
@@ -368,12 +369,14 @@ namespace DSCore.IO
 #if NET6_0_OR_GREATER
         [SupportedOSPlatform("windows")]
 #endif
+        [IsVisibleInDynamoLibrary(false)]
         [NodeObsolete("LoadImageFromPathObsolete", typeof(Properties.Resources))]
         public static Bitmap LoadImageFromPath(string path)
         {
             return Image.ReadFromFile(FileFromPath(path));
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         [NodeObsolete("ReadTextObsolete", typeof(Properties.Resources))]
         public static string ReadText(string path)
         {
@@ -383,6 +386,7 @@ namespace DSCore.IO
 #if NET6_0_OR_GREATER
         [SupportedOSPlatform("windows")]
 #endif
+        [IsVisibleInDynamoLibrary(false)]
         [NodeObsolete("WriteImageObsolete", typeof(Properties.Resources))]
         public static bool WriteImage(string filePath, string fileName, Bitmap image)
         {
@@ -391,6 +395,7 @@ namespace DSCore.IO
             return true;
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         [NodeObsolete("ExportToCSVObsolete", typeof(Properties.Resources))]
         public static bool ExportToCSV(string filePath, object[][] data)
         {

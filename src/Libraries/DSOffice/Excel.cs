@@ -164,6 +164,7 @@ namespace DSOffice
             return data;
         }
 
+        [IsVisibleInDynamoLibrary(false)]
         [NodeObsolete("ReadObsolete", typeof(Properties.Resources))]
         public static object[][] Read(string filePath, string sheetName)
         {
@@ -212,6 +213,7 @@ namespace DSOffice
         /// <param name="showExcel">Toggle to show excel's main window</param>
         /// <returns name="data">Rows of data from the Excel worksheet</returns>
         /// <search>office,excel,spreadsheet,ifequalreturnindex</search>
+        [IsVisibleInDynamoLibrary(false)]
         [NodeObsolete("ExcelInteropObsoleteNode", typeof(Properties.Resources))]
         public static object[][] ImportExcel(FileInfo file, string sheetName, bool readAsStrings = false, bool showExcel = true)
         {
@@ -235,6 +237,7 @@ namespace DSOffice
         /// <param name="overWrite">True to overwrite file, false not to overwrite</param>
         /// <returns name="data">Data written to the spreadsheet</returns>
         /// <search>office,excel,spreadsheet</search>
+        [IsVisibleInDynamoLibrary(false)]
         [NodeObsolete("ExcelInteropObsoleteNode", typeof(Properties.Resources))]
         public static object[][] ExportExcel(string filePath, string sheetName, int startRow, int startColumn, object[][] data, bool overWrite = false)
         {
@@ -259,6 +262,7 @@ namespace DSOffice
         /// <param name="writeAsString">Toggle to switch between writing Excel file as strings</param>
         /// <returns name="data">Rows of data from the Excel worksheet</returns>
         /// <search>office,excel,spreadsheet</search>
+        [IsVisibleInDynamoLibrary(false)]
         [NodeObsolete("ExcelInteropObsoleteNode", typeof(Properties.Resources))]
         public static object[][] ExportToExcel(string filePath, string sheetName, int startRow, int startColumn, object[][] data, bool overWrite = false, bool writeAsString = false)
         {

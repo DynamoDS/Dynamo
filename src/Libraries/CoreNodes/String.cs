@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Dynamo.Graph.Nodes;
+using Autodesk.DesignScript.Runtime;
 
 namespace DSCore
 {
@@ -15,6 +16,7 @@ namespace DSCore
     {
         // It has been moved to String.FromObject UI node, which is compiled 
         // to built-in function __ToStringFromObject().
+        [IsVisibleInDynamoLibrary(false)]
         [NodeObsolete("FromObjectObsolete", typeof(Properties.Resources))]
         public static string FromObject(object obj)
         {
