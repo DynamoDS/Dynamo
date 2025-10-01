@@ -9979,6 +9979,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Sign in to access online services that integrate with your desktop software..
+        /// </summary>
+        public static string SignInOfflineButtonContentToolTip {
+            get {
+                return ResourceManager.GetString("SignInOfflineButtonContentToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Sign In.
         /// </summary>
         public static string SignInButtonText {

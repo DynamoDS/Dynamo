@@ -147,6 +147,9 @@
   <data name="SignInButtonContentToolTip" xml:space="preserve">
     <value>サインインして、デスクトップソフトウェアに統合されるオンラインサービスにアクセスします。</value>
   </data>
+  <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
+    <value>Enable Network Mode to be able to sign in.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>

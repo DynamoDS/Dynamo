@@ -377,6 +377,11 @@ namespace Dynamo.Controls
                     shortcutBar.IsLoginMenuEnabled = true;
                     shortcutBar.IsNotificationCenterEnabled = true;
                 }
+
+                if (dynamoViewModel.Model.NoNetworkMode)
+                {
+                    shortcutBar.IsLoginMenuEnabled = false;
+                }
             }
         }
 
