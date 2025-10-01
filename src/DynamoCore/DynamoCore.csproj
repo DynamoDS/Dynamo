@@ -30,7 +30,7 @@
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup Label="Common dependencies">
-    <PackageReference Include="Autodesk.IDSDK" Version="1.2.4" />
+    <PackageReference Include="Autodesk.IDSDK" Version="1.2.5" />
     <PackageReference Include="Greg" Version="3.0.2.8780" />
     <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.8595" GeneratePathProperty="true" ExcludeAssets="all"/>
     <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.6.0.1954" Condition=" '$(Configuration)' == 'Release' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
