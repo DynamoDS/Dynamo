@@ -825,6 +825,7 @@ namespace Dynamo.Controls
                 Margin = new Thickness(-8),
                 Fill = darkBlue200,
                 IsHitTestVisible = false,
+                Opacity = 0.5,
             };
             Grid.SetRow(nodeColorOverlayZoomIn, 1);
             Grid.SetRowSpan(nodeColorOverlayZoomIn, 4);
@@ -872,6 +873,7 @@ namespace Dynamo.Controls
                 Name = "nodeColorOverlayZoomOut",
                 Margin = new Thickness(-8),
                 IsHitTestVisible = false,
+                Opacity = 0.5
             };
             Grid.SetRow(nodeColorOverlayZoomOut, 1);
             Grid.SetRowSpan(nodeColorOverlayZoomOut, 4);
@@ -884,6 +886,14 @@ namespace Dynamo.Controls
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
             nodeColorOverlayZoomOut.SetBinding(Rectangle.StyleProperty, sZoomFadeInPreviewStyleBinding);
+
+
+            // Visibility binding
+            nodeColorOverlayZoomOut.SetBinding(UIElement.VisibilityProperty, new Binding("DataContext.Zoom")
+            {
+                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
+                Converter = zoomToVisibilityCollapsedConverter
+            });
 
             // Create the main Grid
             zoomGlyphsGrid = new Grid
@@ -1877,7 +1887,7 @@ namespace Dynamo.Controls
         private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
         {
             ViewModel.ZIndex = oldZIndex;
-            viewModel.WorkspaceViewModel.DelayNodePreviewControl.Cancel();
+            viewModel.WorkspaceViewModel.DelayNodePreviewControl?.Cancel();
 
             // The preview hasn't been instantiated yet, we should stop here 
             if (previewControl == null) return;
@@ -2128,6 +2138,10 @@ namespace Dynamo.Controls
                 ViewModel?.NodeModel?.HasTransientConnections() is true)
             {
                 e.Handled = true;
+                if (grid.ContextMenu != null)
+                {
+                    grid.ContextMenu.Visibility = Visibility.Collapsed;
+                }
                 return;
             }
 
@@ -2146,7 +2160,9 @@ namespace Dynamo.Controls
 
             MainContextMenu = nodeContextMenu;
             grid.ContextMenu = MainContextMenu;
+            grid.ContextMenu.Visibility = Visibility.Visible;
             MainContextMenu.DataContext = viewModel;
+            MainContextMenu.PlacementTarget = grid;
             MainContextMenu.Closed += MainContextMenu_OnClosed;
             MainContextMenu.IsOpen = true;
             e.Handled = true;

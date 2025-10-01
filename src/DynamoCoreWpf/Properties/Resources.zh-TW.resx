@@ -1304,7 +1304,7 @@
     <value>編輯...</value>
   </data>
   <data name="NullString" xml:space="preserve">
-    <value>空</value>
+    <value>null</value>
   </data>
   <data name="OKButton" xml:space="preserve">
     <value>確定</value>
@@ -3757,8 +3757,8 @@
     <value>尚未驗證此版本與您設定的相容性。它不一定會如預期般運作。</value>
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
-    <value>您的系統似乎未設定 Autodesk Identity Manager。若要確保完整存取所有功能，請使用 Autodesk Identity Manager 登入您的 Autodesk 帳戶。
-請在此網址或透過 Autodesk Access #下載並安裝=https://manage.autodesk.com/products/updates，然後登入。</value>
+    <value>您的系統似乎未設定 Autodesk Identity Manager。為了確保完整存取所有功能，請使用 Autodesk Identity Manager 登入您的 Autodesk 帳戶。
+請透過 Autodesk Access 或此處: #下載並安裝=https://manage.autodesk.com/products/updates Autodesk Identity Manager，然後登入。</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>下載 Autodesk Identity Manager</value>
@@ -3800,16 +3800,34 @@
     <value>此群組已凍結。按一下可解凍。</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>啟用新的 UI</value>
+    <value>啟用浮動工具列</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
-    <value>對節點建議啟用新的浮動式功能表，使用更簡化的工作流程。關閉可回到傳統的快顯對話方塊。</value>
+    <value>對節點建議啟用浮動工具列，使用更簡化的工作流程。關閉可回到傳統的快顯對話方塊。</value>
   </data>
   <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
     <value>傾印節點圖示資料(_D)</value>
   </data>
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>節點圖示資料已傾印至「{0}」。</value>
+  </data>
+  <data name="GroupOptionalInportsText" xml:space="preserve">
+    <value>選擇性</value>
+  </data>
+  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
+    <value>未連接</value>
+  </data>
+  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
+    <value>收闔的群組</value>
+  </data>
+  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
+    <value>預設收闔為最小大小</value>
+  </data>
+  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
+    <value>預設隱藏選擇性的輸入埠</value>
+  </data>
+  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
+    <value>預設隱藏未連線的輸出埠</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

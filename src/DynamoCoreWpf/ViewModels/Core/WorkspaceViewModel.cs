@@ -349,6 +349,12 @@ namespace Dynamo.ViewModels
         }
 
         [JsonIgnore]
+        public bool IsTemplate
+        {
+            get { return Model.IsTemplate; }
+        }
+
+        [JsonIgnore]
         public bool CanEditName
         {
             get { return Model != DynamoViewModel.HomeSpace; }
@@ -856,6 +862,12 @@ namespace Dynamo.ViewModels
 
                     Model.FileName = filePath;
                     Model.OnSaved();
+
+                    if (Path.GetExtension(filePath).Equals(".dyn") && saveContext.Equals(SaveContext.SaveAs))
+                    {
+                        DynamoViewModel.Model.ClearCurrentWorkspace();
+                        DynamoViewModel.Model.OpenJsonFileFromPath(saveContent, filePath, false);
+                    }
                 }
 
                 // If a new CustomNodeWorkspaceModel is created, store that info in CustomNodeManager without creating an instance of the custom node.
@@ -937,6 +949,7 @@ namespace Dynamo.ViewModels
         {
             var viewModel = new AnnotationViewModel(this, annotation);
             Annotations.Add(viewModel);
+            viewModel.SnapInputEvent += nodeViewModel_SnapInputEvent;
         }
 
         private void Model_AnnotationRemoved(AnnotationModel annotation)

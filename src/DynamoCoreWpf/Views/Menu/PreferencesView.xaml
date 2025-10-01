@@ -963,7 +963,7 @@
                                                        Height="14"
                                                        HorizontalAlignment="Center"
                                                        VerticalAlignment="Center"
-                                                       Style="{StaticResource QuestionIconClickable}"
+                                                       Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/question-default-16px.png"
                                                        ToolTipService.ShowDuration="30000">
                                                     <Image.ToolTip>
                                                         <ToolTip Content="{x:Static p:Resources.PreferencesViewEnableNodeAutoCompleteNewUITooltipText}" Style="{StaticResource GenericToolTipLight}"/>

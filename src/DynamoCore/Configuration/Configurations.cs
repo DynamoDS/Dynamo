@@ -281,6 +281,11 @@ namespace Dynamo.Configuration
         public static readonly int CBNMaxPortNameLength = 24;
 
         /// <summary>
+        ///     Maximal port tooltip text length of CodeBlock
+        /// </summary>
+        public static readonly int CBNMaxTooltipLength = 500;
+
+        /// <summary>
         ///     Highlighting File
         /// </summary>
         public static readonly string HighlightingFile =
@@ -369,12 +374,6 @@ namespace Dynamo.Configuration
 
         #endregion
 
-        #region InCanvasSearch
-
-        internal const double InCanvasSearchTextBoxHeight = 40.0;
-
-        #endregion
-
         #region Backup
 
         /// <summary>
@@ -389,7 +388,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Supported locales as a list
         /// </summary>
-        internal static readonly List<string> SupportedLocaleList = new List<string>() { "Default", "en-US", "cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "ja-JP", "ko-KR", "pl-PL", "pt-BR", "ru-RU", "zh-CN", "zh-TW" };
+        internal static readonly List<string> SupportedLocaleList = new List<string>() { "Default", "en-US", "en-GB", "cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "ja-JP", "ko-KR", "pl-PL", "pt-BR", "ru-RU", "zh-CN", "zh-TW" };
 
         /// <summary>
         /// Supported languages and locales as a dictionary in the current thread locale

@@ -5489,7 +5489,7 @@
       },
       {
         "Id": "68e41793387f43a4b617b1f9da07e298",
-        "Title": "Bloky kódu je možné použít k volání libovolného jiného uzlu v knihovně. Uzly v knihovně mají obvykle tři typy:\r\n\r\n    Vytvořit:\tněco vytvořit\r\n    Akce:\t\tprovést akci na něčem\r\n    Query:\t\tzískat vlastnost něčeho\r\n\t\tco již existuje\r\n\r\nS metodami nebo uzly těchto tří typů se při spuštění v bloku kódu zachází různě.",
+        "Title": "Bloky kódu je možné použít k volání libovolného jiného uzlu v knihovně. Uzly v knihovně mají obvykle tři typy:\r\n\r\n    Vytvořit:\tněco vytvořit\r\n    Akce:\t\tprovést akci na něčem\r\n    Dotaz:\t\tzískat vlastnost něčeho\r\n\t\tco již existuje\r\n\r\nS metodami nebo uzly těchto tří typů se při spuštění v bloku kódu zachází různě.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

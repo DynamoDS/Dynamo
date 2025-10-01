@@ -849,13 +849,13 @@ Ce package contient probablement un ensemble qui est bloqué. Vous devrez charge
     <value>Chargement de la bibliothèque de noeuds…</value>
   </data>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
-    <value>Aucune recommandation</value>
+    <value>Aucune suggestion disponible</value>
   </data>
   <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
     <value>Confiance faible</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>Il n'y a pas encore de recommandation. Vous pouvez essayer de passer à la saisie automatique de type de noeud.</value>
+    <value>Le modèle est amélioré en permanence. Réessayez ultérieurement</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
     <value>Aucune suggestion de confiance n'est disponible. Le modèle est constamment amélioré, revenez voir ultérieurement.</value>
@@ -879,7 +879,7 @@ Ce package contient probablement un ensemble qui est bloqué. Vous devrez charge
     <value>Fichier d'exemple ajouté à l'espace de travail. Le mode d'exécution est passé à Manuel.</value>
   </data>
   <data name="DynamoLanguages_noxlate" xml:space="preserve">
-    <value>Default,English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
+    <value>Default,English,English (UK),Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
   </data>
   <data name="FormulaDSConversionFailure" xml:space="preserve">
     <value>La formule n'a pas pu être convertie en code DesignScript. Modifiez manuellement la formule pour l'utiliser dans un noeud CodeBlock.</value>
@@ -898,5 +898,8 @@ Ce package contient probablement un ensemble qui est bloqué. Vous devrez charge
   </data>
   <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
     <value>Cliquez sur l'icône scintillante à côté du port pour activer la saisie automatique du noeud.</value>
+  </data>
+  <data name="UnknownErrorProcessingFile" xml:space="preserve">
+    <value>Une erreur inconnue s'est produite lors du traitement du fichier.</value>
   </data>
 </root>

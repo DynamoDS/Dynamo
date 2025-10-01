@@ -25,7 +25,6 @@ namespace Dynamo.NodeAutoComplete
         private const String extensionName = "Node Auto Complete";
         private ViewLoadedParams viewLoadedParamsReference;
         private NodeAutoCompletePanelViewModel nodeAutoCompleteViewModel;
-        private NodeAutoCompleteBarView nodeAutoCompleteBarView;
 
         internal MenuItem nodeAutocompleteMenuItem;
 
@@ -81,7 +80,7 @@ namespace Dynamo.NodeAutoComplete
 
         public override void Shutdown()
         {
-            WorkspaceView.RequesNodeAutoCompleteBar -= OnNodeAutoCompleteBarRequested;
+            WorkspaceView.RequestShowNodeAutoCompleteBar -= OnShowNodeAutoCompleteBarRequested;
         }
 
         public override void Startup(ViewStartupParams viewStartupParams)
@@ -148,7 +147,7 @@ namespace Dynamo.NodeAutoComplete
 #endif
             }
 
-            WorkspaceView.RequesNodeAutoCompleteBar += OnNodeAutoCompleteBarRequested;
+            WorkspaceView.RequestShowNodeAutoCompleteBar += OnShowNodeAutoCompleteBarRequested;
 
         }
 
@@ -168,8 +167,9 @@ namespace Dynamo.NodeAutoComplete
         }
 
         private static NodeAutoCompleteBarViewModel nodeAutoCompleteBarViewModel;
+        private static Guid lastWorkspaceId;
 
-        private void OnNodeAutoCompleteBarRequested(Window parentWindow, ViewModelBase viewModelBase)
+        private void OnShowNodeAutoCompleteBarRequested(Window parentWindow, ViewModelBase viewModelBase)
         {
             PortViewModel portViewModel = viewModelBase as PortViewModel;
             if (parentWindow is null || portViewModel is null)
@@ -177,35 +177,15 @@ namespace Dynamo.NodeAutoComplete
                 return;
             }
 
-            if (nodeAutoCompleteBarViewModel is null)
+            DynamoViewModel dynamoViewModel = portViewModel?.NodeViewModel?.WorkspaceViewModel?.DynamoViewModel;
+            if (nodeAutoCompleteBarViewModel is null || lastWorkspaceId != dynamoViewModel.CurrentSpace.Guid)
             {
-                DynamoViewModel dynamoViewModel = portViewModel?.NodeViewModel?.WorkspaceViewModel?.DynamoViewModel;
                 nodeAutoCompleteBarViewModel = new NodeAutoCompleteBarViewModel(dynamoViewModel);
             }
 
-            if (nodeAutoCompleteBarViewModel.PortViewModel != null)
-            {
-                nodeAutoCompleteBarViewModel.PortViewModel.Highlight = Visibility.Collapsed;
-            }
+            lastWorkspaceId = dynamoViewModel.CurrentSpace.Guid;
 
-            nodeAutoCompleteBarViewModel.PortViewModel = portViewModel;
-            portViewModel.Highlight = Visibility.Visible;
-
-            if (nodeAutoCompleteBarViewModel.IsOpen)
-            {
-                if (nodeAutoCompleteBarView == null)
-                {
-                    nodeAutoCompleteBarView = new NodeAutoCompleteBarView(parentWindow, nodeAutoCompleteBarViewModel);
-                    nodeAutoCompleteBarView.Show();
-                }
-                nodeAutoCompleteBarView.ReloadDataContext(nodeAutoCompleteBarViewModel);
-                portViewModel.SetupNodeAutoCompleteClusterWindowPlacement(nodeAutoCompleteBarView);
-                return;
-            }
-
-            nodeAutoCompleteBarView = new NodeAutoCompleteBarView(parentWindow, nodeAutoCompleteBarViewModel);
-            nodeAutoCompleteBarView.Show();
-            portViewModel.SetupNodeAutoCompleteClusterWindowPlacement(nodeAutoCompleteBarView);
+            NodeAutoCompleteBarView.PrepareAndShowNodeAutoCompleteBar(parentWindow, nodeAutoCompleteBarViewModel, portViewModel);
         }
     }
 }

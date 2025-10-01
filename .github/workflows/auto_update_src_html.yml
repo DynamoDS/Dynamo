@@ -1,0 +1,169 @@
+name: Update HTML Documentation
+
+on:
+  pull_request_target:
+    types:
+      - closed
+    branches:
+      - master   # target branch of the PR
+    paths:
+      - "doc/distrib/html/*/**"   # matches any subfolder changes inside doc/distrib/html/
+
+permissions:
+  contents: write          # Allows reading/writing repository files
+  pull-requests: write     # Allows creating/updating pull requests
+
+jobs:
+  update_html_docs:
+    name: Update HTML Documentation
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    env:
+      MAIN_BRANCH: master   # Target branch for operations
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # fetches all commits
+
+      - name: Detect changed HTML files in doc/distrib/html
+        id: detect_changes
+        run: |
+          # Get changed HTML files under doc/distrib/html/
+          CHANGED_FILES=$(git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.merge_commit_sha }}" | grep '^doc/distrib/html/.*\.html$' || true)
+
+          echo "Changed HTML files:"
+          echo "$CHANGED_FILES"
+
+          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      # Map files in src/ to full paths
+      - name: Map changed files to full paths in src/
+        id: map_files
+        env:
+          CHANGED_FILES: ${{ steps.detect_changes.outputs.changed_files }}
+        shell: python
+        run: |
+          import os
+          import subprocess
+          import json
+          import glob
+
+          # Get list of changed files from previous step
+          changed_files = os.environ.get("CHANGED_FILES", "")
+          if not changed_files.strip():
+              print("No files provided in CHANGED_FILES")
+              files = []
+          else:
+              files = changed_files.split()  # split by space
+          file_map = []
+          langs_path = "doc/distrib/html"
+          lang_dirs = []
+
+          #Creates a list containing all the languages supported
+          for item in os.listdir(langs_path):
+              item_path = os.path.join(langs_path, item)
+              if os.path.isdir(item_path):
+                  lang_dirs.append(item)
+
+          print("Languages:", lang_dirs)
+
+          for f in files:
+              # Get the filename with extension (without full path)
+              filename = os.path.basename(f)
+
+              # Get the language of the current file
+              matches = [p for p in lang_dirs if p in f]
+              if not matches:
+                  print(f"No language match found for {f}, skipping.")
+                  continue
+              lang_match = matches[0]
+
+              # Only search inside src/
+              search_pattern = os.path.join("src", "**", filename)
+              paths = glob.glob(search_pattern, recursive=True)
+
+              # Filter for paths containing the specific language in file
+              lang_paths = [p for p in paths if lang_match in p]
+
+              if lang_paths:
+                  file_map.append((f, lang_paths[0]))
+              else:
+                  print(f"⚠️ File {filename} not found in src/ with " + lang_match + " in the path!")
+
+          print("File map:", file_map)
+
+          # Save dictionary as JSON in GitHub Actions output
+          with open(os.environ['GITHUB_OUTPUT'], "a") as gh_out:
+              gh_out.write(f"file_map={json.dumps(file_map)}\n")
+
+      - name: Overwrite files based on changed_files and file_map
+        env:
+          FILE_MAP: ${{ steps.map_files.outputs.file_map }}                 # JSON dictionary
+          CHANGED_FILES: ${{ steps.detect_changes.outputs.changed_files }}  # newline separated list
+        shell: python
+        run: |
+          import os
+          import json
+          import shutil
+
+          # Get dictionary from previous step output
+          file_map_json = os.environ.get("FILE_MAP", "{}")
+          file_map = json.loads(file_map_json)
+
+          # Iterate over changed files
+          for f in file_map:
+              src_path = f[0]
+              dest_path = f[1]
+              # Copy the file to destination
+              shutil.copy2(src_path, dest_path)
+              print(f"Copied {src_path} -> {dest_path}")
+
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      # Commit and push changes
+      - name: Commit changes
+        id: commit_changes
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          set -e
+
+          # Generate unique branch name using timestamp
+          BRANCH="documentation-update-$(date +%s)"
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+
+          # Configure Git
+          git config user.name "dynamo-ci-user"
+          git config user.email "dynamo@autodesk.com"
+          git remote set-url origin https://x-access-token:${{ secrets.DYNAMO_ACTIONS_TOKEN }}@github.com/${{ github.repository }}
+
+          # Create new branch
+          git checkout -b $BRANCH
+
+          # Stage and commit changes
+          git add src/**/*.html
+          git commit -m "Update HTML Documentation"
+
+          # Push changes to the new branch
+          git push origin HEAD:$BRANCH
+
+      # Create PR using GitHub CLI
+      - name: Create Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.DYNAMO_ACTIONS_TOKEN }}
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          gh pr create --title "DYN-9484 - Update HTML Documentation" \
+            --body "This PR contains automated changes generated due to changes in doc/distrib/html subfolders, @DynamoDS/eidos, please review and merge this PR" \
+            --base $MAIN_BRANCH \
+            --assignee DynamoDS/eidos \
+            --head ${{ steps.commit_changes.outputs.branch }}

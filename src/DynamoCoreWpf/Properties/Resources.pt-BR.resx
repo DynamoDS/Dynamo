@@ -1304,7 +1304,7 @@ Para evitar esse comportamento, desinstale os pacotes carregados que entram em c
     <value>Editar...</value>
   </data>
   <data name="NullString" xml:space="preserve">
-    <value>nulo</value>
+    <value>null</value>
   </data>
   <data name="OKButton" xml:space="preserve">
     <value>OK</value>
@@ -2885,7 +2885,7 @@ Para instalar a versão mais recente de um pacote, clique em Instalar. \n
 %./UI/Images/alert.png% O pacote Autodesk de amostra já está instalado no computador.</value>
   </data>
   <data name="PackagesGuideDependenciesText" xml:space="preserve">
-    <value>\nSe você precisar de outros softwares ou ferramentas para usar esse pacote, eles serão listados em Requisitos de versões e pacote.</value>
+    <value>\nSe você precisar de outros softwares ou ferramentas para usar esse pacote, eles serão listados em Versões e requisitos de pacote.</value>
   </data>
   <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
     <value>Dependências do pacote</value>
@@ -3801,16 +3801,34 @@ Para transformar este arquivo em um novo modelo, salve-o em uma pasta diferente 
     <value>Esse grupo está congelado. Clique para descongelar.</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>Ativar nova interface do usuário</value>
+    <value>Ativar barra de ferramentas flutuante</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
-    <value>Ative o novo menu flutuante para obter sugestões de nós para um fluxo de trabalho mais simplificado. Desative para retornar à caixa de diálogo pop-up tradicional.</value>
+    <value>Ative uma barra de ferramentas flutuante para as sugestões de nós para obter um fluxo de trabalho mais simplificado. Desative para retornar à caixa de diálogo pop-up tradicional.</value>
   </data>
   <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
     <value>_Descarregar dados do ícone de nó</value>
   </data>
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>Os dados do ícone de nó são descarregados em \"{0}\".</value>
+  </data>
+  <data name="GroupOptionalInportsText" xml:space="preserve">
+    <value>Opcional</value>
+  </data>
+  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
+    <value>Não conectado</value>
+  </data>
+  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
+    <value>Grupo recolhido</value>
+  </data>
+  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
+    <value>Retrair para tamanho mínimo por padrão</value>
+  </data>
+  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
+    <value>Ocultar portas de entrada opcionais por padrão</value>
+  </data>
+  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
+    <value>Ocultar portas de saída não conectadas por padrão</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

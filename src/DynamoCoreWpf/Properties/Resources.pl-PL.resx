@@ -3801,16 +3801,34 @@ Aby ustawić ten plik jako nowy szablon, zapisz go w innym folderze, a następni
     <value>Ta grupa jest zablokowana. Kliknij, aby odblokować.</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>Włącz nowy interfejs użytkownika</value>
+    <value>Włącz przestawny pasek narzędzi</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
-    <value>Włącz nowe menu przestawne dla sugestii dotyczących węzłów, aby usprawnić proces roboczy. Wyłącz tę opcję, aby powrócić do tradycyjnego wyskakującego okna dialogowego.</value>
+    <value>Włącz przestawny pasek narzędzi dla sugestii dotyczących węzłów, aby usprawnić proces roboczy. Wyłącz tę opcję, aby powrócić do tradycyjnego wyskakującego okna dialogowego.</value>
   </data>
   <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
     <value>_Zrzuć dane ikon węzłów</value>
   </data>
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>Dane ikon węzłów są zrzucane do „{0}”.</value>
+  </data>
+  <data name="GroupOptionalInportsText" xml:space="preserve">
+    <value>Opcjonalne</value>
+  </data>
+  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
+    <value>Niepołączone</value>
+  </data>
+  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
+    <value>Zwinięta grupa</value>
+  </data>
+  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
+    <value>Domyślnie zwiń do minimalnego rozmiaru</value>
+  </data>
+  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
+    <value>Domyślnie ukryj opcjonalne porty wejściowe</value>
+  </data>
+  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
+    <value>Domyślnie ukryj niepołączone porty wyjściowe</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

@@ -102,6 +102,9 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(annotationView.ViewModel.IsExpanded);
             Assert.That(groupContent.All(x => x.IsCollapsed == true));
 
+            // Manually create and open the group context menu (normally triggered by right-click)
+            annotationView.CreateAndAttachAnnotationPopup();
+
             // Act
             var popupContent = (annotationView.GroupContextMenuPopup.Child as Border)?.Child as Panel;
 
@@ -153,6 +156,35 @@ namespace DynamoCoreWpfTests
             // Assert
             var finalNodeCount = group1.Nodes.Count();
             Assert.AreEqual(3, finalNodeCount, $"Expected the group to contain 3 nodes after adding the connector pin, but found {finalNodeCount}.");
+        }
+
+        [Test]
+        public void DoubleClickOnGroupAddsCodeBlockNode()
+        {
+            // Arrange
+            Open(@"core\annotationViewModelTests\groupsTestFile.dyn");
+
+            var groupGuid = new Guid("8324afb7-2d77-4a75-aa5e-f10e59964c2b");
+
+            // Act
+            var ws = this.Model.CurrentWorkspace;
+            var group1 = ws.Annotations.FirstOrDefault(annotation => annotation.GUID == groupGuid);
+
+            // Verify the initial node count in the group
+            var initialNodeCount = group1.Nodes.Count();
+            Assert.AreEqual(2, initialNodeCount, "Expected group to have 2 nodes initially");
+
+            var workspaceView = View.WorkspaceTabs.ChildrenOfType<WorkspaceView>().First();
+            var workspaceViewModel = workspaceView.ViewModel;
+
+            // This is the click position within the group's model area.
+            var clickPosition = new Point(group1.X + 1, group1.Y + group1.TextBlockHeight + 1);
+
+            // Act: Simulate double-click
+            workspaceViewModel.HandleAnnotationDoubleClick(clickPosition, group1);
+
+            // Assert
+            Assert.AreEqual(3, group1.Nodes.Count(), "Expected group to have 3 nodes after double click.");
         }
     }
 }

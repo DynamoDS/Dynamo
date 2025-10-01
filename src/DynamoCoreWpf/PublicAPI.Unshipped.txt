@@ -765,10 +765,6 @@ Dynamo.Controls.WorkspaceBackgroundColorConverter.CustomBackgroundColor.set -> v
 Dynamo.Controls.WorkspaceBackgroundColorConverter.HomeBackgroundColor.get -> System.Windows.Media.Color
 Dynamo.Controls.WorkspaceBackgroundColorConverter.HomeBackgroundColor.set -> void
 Dynamo.Controls.WorkspaceBackgroundColorConverter.WorkspaceBackgroundColorConverter() -> void
-Dynamo.Controls.WorkspaceContextMenuHeightConverter
-Dynamo.Controls.WorkspaceContextMenuHeightConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
-Dynamo.Controls.WorkspaceContextMenuHeightConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
-Dynamo.Controls.WorkspaceContextMenuHeightConverter.WorkspaceContextMenuHeightConverter() -> void
 Dynamo.Controls.WorkspaceTypeConverter
 Dynamo.Controls.WorkspaceTypeConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.WorkspaceTypeConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -792,6 +788,10 @@ Dynamo.Controls.ZoomToBooleanConverter
 Dynamo.Controls.ZoomToBooleanConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.ZoomToBooleanConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.ZoomToBooleanConverter.ZoomToBooleanConverter() -> void
+Dynamo.Controls.ZoomToInverseVisibilityCollapsedConverter
+Dynamo.Controls.ZoomToInverseVisibilityCollapsedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ZoomToInverseVisibilityCollapsedConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ZoomToInverseVisibilityCollapsedConverter.ZoomToInverseVisibilityCollapsedConverter() -> void
 Dynamo.Controls.ZoomToOpacityConverter
 Dynamo.Controls.ZoomToOpacityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.ZoomToOpacityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -1803,6 +1803,8 @@ Dynamo.ViewModels.AnnotationViewModel.OptionalInPorts.get -> System.Collections.
 Dynamo.ViewModels.AnnotationViewModel.OutPorts.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.PortViewModel>
 Dynamo.ViewModels.AnnotationViewModel.PreviewState.get -> Dynamo.ViewModels.PreviewState
 Dynamo.ViewModels.AnnotationViewModel.RemoveGroupFromGroupCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.AnnotationViewModel.SnapInputEvent -> Dynamo.ViewModels.AnnotationViewModel.SnapInputEventHandler
+Dynamo.ViewModels.AnnotationViewModel.SnapInputEventHandler
 Dynamo.ViewModels.AnnotationViewModel.ToggleIsFrozenGroupCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.AnnotationViewModel.ToggleIsVisibleGroupCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.AnnotationViewModel.Top.get -> double
@@ -2065,7 +2067,7 @@ Dynamo.ViewModels.DynamoViewModel.FitViewCommand.get -> Dynamo.UI.Commands.Deleg
 Dynamo.ViewModels.DynamoViewModel.FitViewCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.ForceRunExpressionCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.ForceRunExpressionCommand.set -> void
-Dynamo.ViewModels.DynamoViewModel.GetSaveDialog(Dynamo.Graph.Workspaces.WorkspaceModel workspace) -> System.Windows.Forms.FileDialog
+Dynamo.ViewModels.DynamoViewModel.GetSaveDialog(Dynamo.Graph.Workspaces.WorkspaceModel workspace) -> Dynamo.Wpf.UI.CustomSaveFileDialog
 Dynamo.ViewModels.DynamoViewModel.GettingStartedGuideCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.GettingStartedGuideCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.GoHome(object _) -> void
@@ -3186,6 +3188,7 @@ Dynamo.ViewModels.WorkspaceViewModel.DynamoPreferences.get -> Dynamo.Models.Dyna
 Dynamo.ViewModels.WorkspaceViewModel.DynamoViewModel.get -> Dynamo.ViewModels.DynamoViewModel
 Dynamo.ViewModels.WorkspaceViewModel.Errors.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.InfoBubbleViewModel>
 Dynamo.ViewModels.WorkspaceViewModel.FileName.get -> string
+Dynamo.ViewModels.WorkspaceViewModel.IsTemplate.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.FindByIdCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.WorkspaceViewModel.FindNodesFromElements.get -> System.Action
 Dynamo.ViewModels.WorkspaceViewModel.FindNodesFromElements.set -> void
@@ -3577,6 +3580,19 @@ Dynamo.Wpf.SymbolViewCustomization
 Dynamo.Wpf.SymbolViewCustomization.CustomizeView(Dynamo.Graph.Nodes.CustomNodes.Symbol symbol, Dynamo.Controls.NodeView nodeView) -> void
 Dynamo.Wpf.SymbolViewCustomization.Dispose() -> void
 Dynamo.Wpf.SymbolViewCustomization.SymbolViewCustomization() -> void
+Dynamo.Wpf.UI.CustomSaveFileDialog
+Dynamo.Wpf.UI.CustomSaveFileDialog.AddExtension.get -> bool
+Dynamo.Wpf.UI.CustomSaveFileDialog.AddExtension.set -> void
+Dynamo.Wpf.UI.CustomSaveFileDialog.CustomSaveFileDialog() -> void
+Dynamo.Wpf.UI.CustomSaveFileDialog.DefaultExt.get -> string
+Dynamo.Wpf.UI.CustomSaveFileDialog.DefaultExt.set -> void
+Dynamo.Wpf.UI.CustomSaveFileDialog.FileName.get -> string
+Dynamo.Wpf.UI.CustomSaveFileDialog.FileName.set -> void
+Dynamo.Wpf.UI.CustomSaveFileDialog.Filter.get -> string
+Dynamo.Wpf.UI.CustomSaveFileDialog.Filter.set -> void
+Dynamo.Wpf.UI.CustomSaveFileDialog.InitialDirectory.get -> string
+Dynamo.Wpf.UI.CustomSaveFileDialog.InitialDirectory.set -> void
+Dynamo.Wpf.UI.CustomSaveFileDialog.ShowDialog() -> bool?
 Dynamo.Wpf.UI.GuidedTour.AutomaticHandlers
 Dynamo.Wpf.UI.GuidedTour.AutomaticHandlers.AutomaticHandlers() -> void
 Dynamo.Wpf.UI.GuidedTour.AutomaticHandlers.ExecuteMethod.get -> string
@@ -4553,8 +4569,6 @@ static Dynamo.Wpf.Properties.Resources.AddFileToPackageDialogTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.AddStyleButton.get -> string
 static Dynamo.Wpf.Properties.Resources.AddToLibraryButton.get -> string
 static Dynamo.Wpf.Properties.Resources.AgreeToMLAutocompleteTOUText.get -> string
-static Dynamo.Wpf.Properties.Resources.AutocompleteNoSuggestions.get -> string
-static Dynamo.Wpf.Properties.Resources.AutocompletePlaceholder.get -> string
 static Dynamo.Wpf.Properties.Resources.Autodesk360SignInButtonTitleToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.AutodeskSignIn.get -> string
 static Dynamo.Wpf.Properties.Resources.Automatic.get -> string
@@ -5642,6 +5656,7 @@ static Dynamo.Wpf.Properties.Resources.SideBarPanelViewTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.SignInButtonContentToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.SignInButtonText.get -> string
 static Dynamo.Wpf.Properties.Resources.SigningInButtonText.get -> string
+static Dynamo.Wpf.Properties.Resources.SignInOfflineButtonContentToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.SignOutConfirmationDialogText.get -> string
 static Dynamo.Wpf.Properties.Resources.SignOutConfirmationDialogTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.SolutionToFolderNotWritatbleError.get -> string

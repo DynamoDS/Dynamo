@@ -849,13 +849,13 @@
     <value>正在加载节点库…</value>
   </data>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
-    <value>无建议</value>
+    <value>无可用建议</value>
   </data>
   <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
     <value>置信度低</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>还没有建议。可以尝试切换到节点类型匹配自动完成。</value>
+    <value>该模型正在持续优化 - 请稍后查看</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
     <value>没有可靠的建议。该模型正在不断改进 - 请稍后查看。</value>
@@ -879,7 +879,7 @@
     <value>示例文件已添加到工作空间。运行模式已更改为“手动”。</value>
   </data>
   <data name="DynamoLanguages_noxlate" xml:space="preserve">
-    <value>Default,English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
+    <value>Default,English,English (UK),Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
   </data>
   <data name="FormulaDSConversionFailure" xml:space="preserve">
     <value>公式无法转换为 DesignScript 代码。请手动编辑公式以在 CodeBlock 节点中使用它。</value>
@@ -898,5 +898,8 @@
   </data>
   <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
     <value>单击端口旁边的闪光图标以激活“节点自动完成”。</value>
+  </data>
+  <data name="UnknownErrorProcessingFile" xml:space="preserve">
+    <value>处理文件时出现未知错误。</value>
   </data>
 </root>

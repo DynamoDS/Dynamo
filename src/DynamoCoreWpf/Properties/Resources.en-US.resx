@@ -151,6 +151,9 @@
   <data name="SignInButtonContentToolTip" xml:space="preserve">
     <value>Sign in to access online services that integrate with your desktop software.</value>
   </data>
+  <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
+    <value>Enable Network Mode to be able to sign in.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -4182,12 +4185,6 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>Node Icon Data is dumped to \"{0}\".</value>
     <comment>Debug menu | Dump all node icons</comment>
-  </data>
-  <data name="AutocompletePlaceholder" xml:space="preserve">
-    <value>The model is continuously improving - check back soon</value>
-  </data>
-  <data name="AutocompleteNoSuggestions" xml:space="preserve">
-    <value>No suggestions available</value>
   </data>
   <data name="GroupOptionalInportsText" xml:space="preserve">
     <value>Optional</value>

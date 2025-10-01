@@ -28,6 +28,7 @@ using DynCmd = Dynamo.Models.DynamoModel;
 using EventTrigger = System.Windows.EventTrigger;
 using TextBox = System.Windows.Controls.TextBox;
 using Thickness = System.Windows.Thickness;
+using ModifierKeys = System.Windows.Input.ModifierKeys;
 
 namespace Dynamo.Nodes
 {
@@ -59,6 +60,7 @@ namespace Dynamo.Nodes
         private Grid outputPortsGrid;
         private Grid groupContent;
         private Border nodeCountBorder;
+        private InCanvasSearchControl searchBar;
         
         private Thumb mainGroupThumb;
         private StackPanel groupPopupPanel;
@@ -158,6 +160,7 @@ namespace Dynamo.Nodes
             Loaded += AnnotationView_Loaded;
             DataContextChanged += AnnotationView_DataContextChanged;
             this.groupTextBlock.SizeChanged += GroupTextBlock_SizeChanged;
+            PreviewMouseDoubleClick += OnAnnotationDoubleClick;
 
             // Because the size of the collapsedAnnotationRectangle doesn't necessarily change 
             // when going from Visible to collapse (and other way around), we need to also listen
@@ -217,6 +220,7 @@ namespace Dynamo.Nodes
         {
             Loaded -= AnnotationView_Loaded;
             DataContextChanged -= AnnotationView_DataContextChanged;
+            PreviewMouseDoubleClick -= OnAnnotationDoubleClick;
             ViewModel.WorkspaceViewModel.InCanvasSearchViewModel.PropertyChanged -= OnSearchViewModelPropertyChanged;
             ViewModel.WorkspaceViewModel.Nodes.CollectionChanged -= OnWorkspaceNodesChanged;
             if (_groupContextMenuClosedHandler != null)
@@ -247,6 +251,8 @@ namespace Dynamo.Nodes
                 mainGroupThumb.DragDelta -= AnnotationRectangleThumb_DragDelta;
                 mainGroupThumb.MouseEnter -= Thumb_MouseEnter;
                 mainGroupThumb.MouseLeave -= Thumb_MouseLeave;
+                mainGroupThumb.DragStarted -= Thumb_DragStarted;
+                mainGroupThumb.DragCompleted -= Thumb_DragCompleted;
             }
             UnregisterNamesFromScope();
         }
@@ -306,20 +312,32 @@ namespace Dynamo.Nodes
                 }
                 ViewModel.UpdateProxyPortsPosition();
 
-                // Create and attach the popup menu for group annotations
-                CreateAndAttachAnnotationPopup();
-
-                // Subscribe to search box activity to close the other popup items when typing
-                var searchVM = ViewModel.WorkspaceViewModel.InCanvasSearchViewModel;
-                searchVM.PropertyChanged += OnSearchViewModelPropertyChanged;
-
                 // Add new nodes to group when search is triggered from group
                 ViewModel.WorkspaceViewModel.Nodes.CollectionChanged += OnWorkspaceNodesChanged;
-
-                // Reset group context flag when popup closes
-                _groupContextMenuClosedHandler = (s, e) => isSearchFromGroupContext = false;
-                GroupContextMenuPopup.Closed += _groupContextMenuClosedHandler;
             }
+        }
+
+        private void OnAnnotationDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.Shift || Keyboard.Modifiers == ModifierKeys.Control)
+                return;
+
+            var workspace = WpfUtilities.FindParent<WorkspaceView>(this);
+            if (workspace == null)
+                return;
+
+            var clickPosition = e.GetPosition(workspace.WorkspaceElements);
+            var annotationModel = ViewModel.AnnotationModel;
+
+            // Define the area below the text block where nodes reside
+            var annoRectArea = new Rect(annotationModel.X, annotationModel.Y + annotationModel.TextBlockHeight, annotationModel.Width, annotationModel.ModelAreaHeight);
+
+            // Only create CBN if click is in model area (not in the title/text area)
+            if (!annoRectArea.Contains(clickPosition))
+                return;
+
+            workspace.ViewModel?.HandleAnnotationDoubleClick(clickPosition, annotationModel);
+            e.Handled = true;
         }
 
         /// <summary>
@@ -407,11 +425,8 @@ namespace Dynamo.Nodes
         /// </summary>
         private void AnnotationView_OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (!GroupContextMenuPopup.IsOpen)
-            {
-                OpenContextMenuAtMouse();
-                e.Handled = true;
-            }
+            OpenContextMenuAtMouse();
+            e.Handled = true;
         }
 
         /// <summary>
@@ -457,7 +472,7 @@ namespace Dynamo.Nodes
             if (ViewModel != null && (e.HeightChanged || e.WidthChanged) && !_isUpdatingLayout)
             {
                 _isUpdatingLayout = true;
-                // Use Dispatcher.BeginInvoke to batch layout updates
+                // Use Dispatcher.BeginInvoke to schedule layout updates on the UI thread
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
                     try
@@ -625,6 +640,28 @@ namespace Dynamo.Nodes
             ViewModel.WorkspaceViewModel.CurrentCursor = CursorLibrary.GetCursor(CursorSet.Pointer);
         }
 
+        /// <summary>
+        /// Triggered when the user starts resizing the group using the resize thumb.
+        /// Flag that manual resizing is in progress so user-set-size is not overridden by the model logic.
+        /// </summary>
+        private void Thumb_DragStarted(object sender, DragStartedEventArgs e)
+        {
+            ViewModel.AnnotationModel.IsThumbResizing = true;
+        }
+
+        /// <summary>
+        /// Triggered when the user completes resizing the group using the resize thumb.
+        /// Finalizes the manually set size so it's preserved, and disables resizing flag.
+        /// </summary>
+        private void Thumb_DragCompleted(object sender, DragCompletedEventArgs e)
+        {
+            var model = ViewModel.AnnotationModel;
+            model.UserSetWidth = model.Width;
+            model.UserSetHeight = model.ModelAreaHeight;
+
+            ViewModel.AnnotationModel.IsThumbResizing = false;
+        }
+
         private void GroupDescriptionTextBlock_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             SetTextHeight();
@@ -639,6 +676,9 @@ namespace Dynamo.Nodes
 
         private void OpenContextMenuAtMouse()
         {
+            // Create and attach the popup menu for group annotations
+            CreateAndAttachAnnotationPopup();
+
             var workspaceView = WpfUtilities.FindParent<WorkspaceView>(this);
             if (workspaceView == null) return;
 
@@ -716,9 +756,9 @@ namespace Dynamo.Nodes
 
         private void OnNodeColorRectangleClicked(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Rectangle rectangle)
+            if (sender is Label label)
             {
-                if (rectangle.Fill is SolidColorBrush brush)
+                if (label.Background is SolidColorBrush brush)
                 {
                     // Update the model background color
                     ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
@@ -740,6 +780,8 @@ namespace Dynamo.Nodes
         {
             if (e.Key == Key.O && Keyboard.Modifiers == System.Windows.Input.ModifierKeys.None)
             {
+                if (searchBar != null && searchBar.IsKeyboardFocusWithin) return;
+
                 OnUngroupAnnotation(this, new RoutedEventArgs());
                 e.Handled = true;
                 GroupContextMenuPopup.IsOpen = false;
@@ -1509,6 +1551,8 @@ namespace Dynamo.Nodes
             thumb.Style = _groupResizeThumbStyle;
             thumb.MouseEnter += Thumb_MouseEnter;
             thumb.MouseLeave += Thumb_MouseLeave;
+            thumb.DragStarted += Thumb_DragStarted;
+            thumb.DragCompleted += Thumb_DragCompleted;
 
             return thumb;
         }
@@ -1612,7 +1656,6 @@ namespace Dynamo.Nodes
 
             grid.Children.Add(inputPortsGrid);
             grid.Children.Add(outputPortsGrid);
-
             grid.Children.Add(groupContent);
 
             return grid;
@@ -1755,8 +1798,11 @@ namespace Dynamo.Nodes
 
         #region Context Menu
 
-        private void CreateAndAttachAnnotationPopup()
+        internal void CreateAndAttachAnnotationPopup()
         {
+            // If the context menu is already created, no need to recreate or re-subscribe
+            if (GroupContextMenuPopup != null) return;
+
             GroupContextMenuPopup = new Popup
             {
                 Name = "AnnotationContextPopup",
@@ -1774,6 +1820,12 @@ namespace Dynamo.Nodes
             };
 
             GroupContextMenuPopup.Child = border;
+
+            // Subscribe to search box activity to close the other popup items when typing
+            var searchVM = ViewModel.WorkspaceViewModel.InCanvasSearchViewModel;
+            searchVM.PropertyChanged += OnSearchViewModelPropertyChanged;
+            _groupContextMenuClosedHandler = (s, e) => isSearchFromGroupContext = false;
+            GroupContextMenuPopup.Closed += _groupContextMenuClosedHandler;
         }
 
         private StackPanel CreatePopupPanel()
@@ -1854,7 +1906,7 @@ namespace Dynamo.Nodes
 
         private UIElement CreateSearchBox()
         {
-            var searchBar = new InCanvasSearchControl
+            searchBar = new InCanvasSearchControl
             {
                 DataContext = ViewModel.WorkspaceViewModel.InCanvasSearchViewModel,
                 Width = 230
@@ -2160,17 +2212,21 @@ namespace Dynamo.Nodes
             return border;
         }
 
-        private Rectangle CreateColorSwatch(string hexColor)
+        private Label CreateColorSwatch(string hexColor)
         {
-            var rect = new Rectangle
+            var name = "C" + hexColor.Replace("#", "");
+            var rect = new Label
             {
                 Width = 13,
                 Height = 13,
-                Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(hexColor)),
+                Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(hexColor)),
                 Margin = new Thickness(3),
-                Cursor = Cursors.Hand
+                Cursor = Cursors.Hand,
+                Name = name,
             };
 
+            rect.SetValue(System.Windows.Automation.AutomationProperties.NameProperty, name);
+            
             return rect;
         }
 
@@ -2449,7 +2505,7 @@ namespace Dynamo.Nodes
 
             // Add ContentPresenter
             var contentPresenterFactory = new FrameworkElementFactory(typeof(ContentPresenter));
-            contentPresenterFactory.SetValue(Grid.ColumnSpanProperty, 3);
+            contentPresenterFactory.SetValue(Grid.ColumnSpanProperty, 4);
             contentPresenterFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(4));
             contentPresenterFactory.SetValue(ContentPresenter.ContentSourceProperty, "Header");
             contentPresenterFactory.SetValue(ContentPresenter.RecognizesAccessKeyProperty, true);
@@ -2457,16 +2513,25 @@ namespace Dynamo.Nodes
             gridFactory.AppendChild(contentPresenterFactory);
 
             // Add Warning/Error Icon
-            gridFactory.AppendChild(CreateWarningErrorIcon());
+            var warningIcon = CreateWarningErrorIcon();
+            warningIcon.SetValue(Grid.ColumnProperty, 0);
+            warningIcon.SetValue(FrameworkElement.HorizontalAlignmentProperty, HorizontalAlignment.Right);
+            gridFactory.AppendChild(warningIcon);
 
             // Add Frozen Button Grid
-            gridFactory.AppendChild(CreateFrozenButtonGrid());
+            var frozenButtonGrid = CreateFrozenButtonGrid();
+            frozenButtonGrid.SetValue(Grid.ColumnProperty, 1);
+            gridFactory.AppendChild(frozenButtonGrid);
 
             // Add Expander Toggle Button
-            gridFactory.AppendChild(CreateExpanderToggleButton());
+            var expanderToggle = CreateExpanderToggleButton();
+            expanderToggle.SetValue(Grid.ColumnProperty, 2);
+            gridFactory.AppendChild(expanderToggle);
 
             // Add Context Menu Button
-            gridFactory.AppendChild(CreateContextMenuButton());
+            var contextMenuButton = CreateContextMenuButton();
+            contextMenuButton.SetValue(Grid.ColumnProperty, 3);
+            gridFactory.AppendChild(contextMenuButton);
 
             return gridFactory;
         }
@@ -2480,6 +2545,8 @@ namespace Dynamo.Nodes
             imageFactory.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Bottom);
             imageFactory.SetValue(FrameworkElement.HorizontalAlignmentProperty, HorizontalAlignment.Right);
             imageFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 0, 2.5, 2.5));
+            imageFactory.SetValue(System.Windows.Automation.AutomationProperties.NameProperty, "WarningErrorIcon");
+            imageFactory.SetValue(System.Windows.Automation.AutomationProperties.AutomationIdProperty, "WarningErrorIcon");
 
             var imageStyle = new Style(typeof(Image));
 
@@ -2506,28 +2573,35 @@ namespace Dynamo.Nodes
             return imageFactory;
         }
 
-        private FrameworkElementFactory CreateToolTip()
+        private ToolTip CreateToolTip()
         {
-            var toolTip = new FrameworkElementFactory(typeof(DynamoToolTip));
-            toolTip.SetValue(DynamoToolTip.AttachmentSideProperty, DynamoToolTip.Side.Top);
-            toolTip.SetValue(FrameworkElement.StyleProperty, _dynamoToolTipTopStyle);
-            toolTip.SetValue(FrameworkElement.MarginProperty, new Thickness(5, 0, 0, 0));
+            var groupText = new TextBlock()
+            {
+                Margin = new Thickness(0, 0, 0, 10),
+            };
+            groupText.SetBinding(TextBlock.TextProperty, new Binding("AnnotationText"));
 
-            var stackPanel = new FrameworkElementFactory(typeof(StackPanel));
-            stackPanel.SetValue(StackPanel.OrientationProperty, Orientation.Vertical);
-            stackPanel.SetValue(FrameworkElement.MaxWidthProperty, 320.0);
+            var groupDescription = new TextBlock()
+            {
+                TextWrapping = TextWrapping.WrapWithOverflow,
+            };
+            groupDescription.SetBinding(TextBlock.TextProperty, new Binding("AnnotationDescriptionText"));
 
-            var textBlock1 = new FrameworkElementFactory(typeof(TextBlock));
-            textBlock1.SetBinding(TextBlock.TextProperty, new Binding("AnnotationText"));
-            textBlock1.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 0, 0, 10));
+            var stackPanel = new StackPanel
+            {
+                Orientation = Orientation.Vertical,
+                MaxWidth = 320
+            };
+            stackPanel.Children.Add(groupText);
+            stackPanel.Children.Add(groupDescription);
 
-            var textBlock2 = new FrameworkElementFactory(typeof(TextBlock));
-            textBlock2.SetBinding(TextBlock.TextProperty, new Binding("AnnotationDescriptionText"));
-            textBlock2.SetValue(TextBlock.TextWrappingProperty, TextWrapping.WrapWithOverflow);
-
-            stackPanel.AppendChild(textBlock1);
-            stackPanel.AppendChild(textBlock2);
-            toolTip.AppendChild(stackPanel);
+            var toolTip = new DynamoToolTip
+            {
+                AttachmentSide = DynamoToolTip.Side.Top,
+                Style = _dynamoToolTipTopStyle,
+                Margin = new Thickness(5, 0, 0, 0),
+                Content = stackPanel
+            };
 
             return toolTip;
         }
@@ -2555,6 +2629,8 @@ namespace Dynamo.Nodes
 
             // Create frozen button
             var buttonFactory = new FrameworkElementFactory(typeof(Button));
+            buttonFactory.SetValue(System.Windows.Automation.AutomationProperties.NameProperty, "FrezzeButton");
+            buttonFactory.SetValue(System.Windows.Automation.AutomationProperties.AutomationIdProperty, "FrezzeButton");
             buttonFactory.SetValue(FrameworkElement.WidthProperty, 16.0);
             buttonFactory.SetValue(FrameworkElement.HeightProperty, 16.0);
             buttonFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 0, 3.5, 3));
@@ -2569,14 +2645,15 @@ namespace Dynamo.Nodes
             });
 
             // Create button tooltip
-            var toolTipFactory = new FrameworkElementFactory(typeof(ToolTip));
-            toolTipFactory.SetValue(FrameworkElement.StyleProperty, _createGenericToolTipLightStyle);
-
-            var textBlockFactory = new FrameworkElementFactory(typeof(TextBlock));
-            textBlockFactory.SetValue(TextBlock.TextProperty, Wpf.Properties.Resources.GroupFrozenButtonToolTip);
-
-            toolTipFactory.AppendChild(textBlockFactory);
-            buttonFactory.SetValue(ToolTipProperty, toolTipFactory);
+            var tooltip = new ToolTip
+            {
+                Style = _createGenericToolTipLightStyle,
+                Content = new TextBlock
+                {
+                    Text = Wpf.Properties.Resources.GroupFrozenButtonToolTip
+                }
+            };
+            buttonFactory.SetValue(Button.ToolTipProperty, tooltip);
 
             gridFactory.AppendChild(buttonFactory);
             return gridFactory;
@@ -2591,6 +2668,8 @@ namespace Dynamo.Nodes
             toggleButtonFactory.SetValue(FrameworkElement.MarginProperty, new Thickness(0, 0, 0, 2.5));
             toggleButtonFactory.SetValue(Control.TemplateProperty, expanderTemplate);
             toggleButtonFactory.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Bottom);
+            toggleButtonFactory.SetValue(System.Windows.Automation.AutomationProperties.NameProperty, "ExpanderToggle");
+            toggleButtonFactory.SetValue(System.Windows.Automation.AutomationProperties.AutomationIdProperty, "ExpanderToggle");
 
             toggleButtonFactory.SetBinding(ToggleButton.IsCheckedProperty, new Binding("IsExpanded")
             {
@@ -2613,7 +2692,8 @@ namespace Dynamo.Nodes
             buttonFactory.SetValue(FrameworkElement.HeightProperty, 16.0);
             buttonFactory.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Bottom);
             buttonFactory.AddHandler(Button.ClickEvent, new RoutedEventHandler(contextMenu_Click));
-
+            buttonFactory.SetValue(System.Windows.Automation.AutomationProperties.NameProperty, "ContextMenu");
+            buttonFactory.SetValue(System.Windows.Automation.AutomationProperties.AutomationIdProperty, "ContextMenu");
             // Create button style
             var buttonStyle = new Style(typeof(Button));
             buttonStyle.Setters.Add(new Setter(Button.OverridesDefaultStyleProperty, true));
@@ -2793,14 +2873,15 @@ namespace Dynamo.Nodes
         {
             var grid = new Grid
             {
-                Name = "inputPortsGrid"
+                Name = "inputPortsGrid",
+                VerticalAlignment = VerticalAlignment.Top,
             };
             Grid.SetRow(grid, 0);
             Grid.SetColumn(grid, 0);
 
             // Define rows
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(34) });
+            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
             // Main Input Ports
@@ -2819,7 +2900,7 @@ namespace Dynamo.Nodes
             inputToggleControl = new ToggleButton
             {
                 Name = "inputToggleControl",
-                Margin = new Thickness(5, 0, -20, 0),
+                Margin = new Thickness(5, 0, 0, 0),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Content = Wpf.Properties.Resources.GroupOptionalInportsText
             };
@@ -2875,7 +2956,8 @@ namespace Dynamo.Nodes
         {
             var grid = new Grid
             {
-                Name = "outputPortsGrid"
+                Name = "outputPortsGrid",
+                VerticalAlignment = VerticalAlignment.Top
             };
             Grid.SetRow(grid, 0);
             Grid.SetColumn(grid, 2);
