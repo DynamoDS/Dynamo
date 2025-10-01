@@ -793,7 +793,7 @@ namespace Dynamo.ViewModels
             this.model.CommandCompleted += OnModelCommandCompleted;
             this.model.RequestsCrashPrompt += CrashReportTool.ShowCrashWindow;
 
-            this.HideReportOptions = startConfiguration.HideReportOptions;
+            this.HideReportOptions = startConfiguration.HideReportOptions || model.NoNetworkMode;
             UsageReportingManager.Instance.InitializeCore(this);
             this.WatchHandler = startConfiguration.WatchHandler;
             var pmExtension = model.GetPackageManagerExtension();

@@ -5650,6 +5650,7 @@ static Dynamo.Wpf.Properties.Resources.SideBarPanelViewTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.SignInButtonContentToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.SignInButtonText.get -> string
 static Dynamo.Wpf.Properties.Resources.SigningInButtonText.get -> string
+static Dynamo.Wpf.Properties.Resources.SignInOfflineButtonContentToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.SignOutConfirmationDialogText.get -> string
 static Dynamo.Wpf.Properties.Resources.SignOutConfirmationDialogTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.SolutionToFolderNotWritatbleError.get -> string
