@@ -9,7 +9,6 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Lucene.Net.QueryParsers.Flexible.Core.Nodes;
 
 namespace Dynamo.Wpf.Utilities
 {
@@ -83,7 +82,6 @@ namespace Dynamo.Wpf.Utilities
                     connectedNodesBBox.Contains(node.Rect))
                 {
                     intersectedNodes.Add(node);
-
                     if (!realIntersection)
                     {
                         foreach (var connectedNode in nodesToConsider)
