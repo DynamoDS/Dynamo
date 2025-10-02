@@ -1,14 +1,15 @@
-using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Search.SearchElements;
-using Dynamo.Selection;
-using Dynamo.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Search.SearchElements;
+using Dynamo.Selection;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Lucene.Net.QueryParsers.Flexible.Core.Nodes;
 
 namespace Dynamo.Wpf.Utilities
 {
@@ -82,6 +83,7 @@ namespace Dynamo.Wpf.Utilities
                     connectedNodesBBox.Contains(node.Rect))
                 {
                     intersectedNodes.Add(node);
+
                     if (!realIntersection)
                     {
                         foreach (var connectedNode in nodesToConsider)
@@ -131,6 +133,13 @@ namespace Dynamo.Wpf.Utilities
             // disruption to the user's workspace.
             if (checkWorkspaceNodes)
             {
+                // Layout connected nodes based on connection direction
+                // This prevents cascading overlaps when multiple nodes are added in sequence
+                var connectedNodes = portType == PortType.Input
+                    ? queryNode.AllUpstreamNodes(new List<NodeModel>()).ToHashSet()
+                    : queryNode.AllDownstreamNodes(new List<NodeModel>()).ToHashSet();
+                wsModel.DoGraphAutoLayoutAutocomplete(queryNode.GUID, newNodes, connectedNodes, portType);
+
                 bool redoAutoLayout = AutoLayoutNeeded(wsModel, queryNode, newNodes, out List<NodeModel> intersectedNodes);
                 if (redoAutoLayout)
                 {
