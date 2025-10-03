@@ -1600,9 +1600,9 @@ namespace Dynamo.ViewModels
 
             // Initialize group styles with default and custom GroupStyleItems.
             var customStyles = preferenceSettings.GroupStyleItemsList.Where(style => style.IsDefault != true).ToList();
-            preferenceSettings.GroupStyleItemsList.Clear();
-            preferenceSettings.GroupStyleItemsList.AddRange(GroupStyleItem.DefaultGroupStyleItems);
-            preferenceSettings.GroupStyleItemsList.AddRange(customStyles);
+            var newGroupStylesList = new List<GroupStyleItem>(GroupStyleItem.DefaultGroupStyleItems);
+            newGroupStylesList.AddRange(customStyles);
+            preferenceSettings.GroupStyleItemsList = newGroupStylesList;
 
             StyleItemsList = preferenceSettings.GroupStyleItemsList.ToObservableCollection();
 
