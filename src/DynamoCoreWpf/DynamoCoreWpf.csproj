@@ -94,6 +94,7 @@
 
     <Target Name="NpmRunBuildPMWizard" BeforeTargets="BeforeBuild">
         <PropertyGroup>
+            <PackageVersion>0.0.21</PackageVersion>
             <PackageVersion>0.0.22</PackageVersion>
             <PackageName>PackageManagerWizard</PackageName>
         </PropertyGroup>
