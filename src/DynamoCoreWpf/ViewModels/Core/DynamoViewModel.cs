@@ -265,6 +265,11 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal FileTrustWarningViewModel FileTrustViewModel { get; set; }
 
+        /// <summary>
+        /// This property is the ViewModel that will be passed to the CPython Notification popup when is created.
+        /// </summary>
+        internal CPython3NotificationViewModel CPython3NotificationViewModel { get; set; }
+
         private WorkspaceViewModel currentWorkspaceViewModel;
         private string filePath;
         private string fileContents;
@@ -883,6 +888,7 @@ namespace Dynamo.ViewModels
             }
 
             FileTrustViewModel = new FileTrustWarningViewModel();
+            CPython3NotificationViewModel = new CPython3NotificationViewModel();
             MLDataPipelineExtension = model.ExtensionManager.Extensions.OfType<DynamoMLDataPipelineExtension>().FirstOrDefault();
             IsIDSDKInitialized();
         }
@@ -1103,6 +1109,15 @@ namespace Dynamo.ViewModels
             {
                 this.NodeViewReady(nodeView, new EventArgs());
             }
+        }
+
+        internal event EventHandler<CancelEventArgs> RequestPythonEngineChangeNotice;
+
+        internal bool RaiseRequestPythonEngineChangeNotice()
+        {
+            var args = new CancelEventArgs();
+            RequestPythonEngineChangeNotice?.Invoke(this, args);
+            return args.Cancel;
         }
 
         /// <summary>
@@ -2377,6 +2392,20 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Raised when a toast should be shown to inform about a CPython to PythonNet3 engine upgrade
+        /// </summary>
+        public event Action<string, bool> PythonEngineUpgradeToastRequested;
+
+        /// <summary>
+        /// Requests the UI to show a Python-engine-upgrade toast on the canvas.
+        /// This is UI-agnostic; the View decides when/where to render.
+        /// </summary>
+        public void ShowPythonEngineUpgradeCanvasToast(string message, bool stayOpen = true)
+        {
+            PythonEngineUpgradeToastRequested?.Invoke(message, stayOpen);
+        }
+
+        /// <summary>
         /// Present the open dialog and open the workspace that is selected.
         /// - If template is selected, opens the template folder
         /// - else, if current file is saved , opens the file dialog at the current file's directory
@@ -3024,8 +3053,19 @@ namespace Dynamo.ViewModels
         public void ShowSaveDialogIfNeededAndSaveResult(object parameter)
         {
             var vm = this;
+            var currentWorkspace = vm.Model.CurrentWorkspace;
 
-            if (string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName) || vm.Model.CurrentWorkspace.IsTemplate)
+            // First-time CPython notice when saving a *new, unsaved* Home workspace
+            if (currentWorkspace.ShowCPythonNotifications
+                && !currentWorkspace.HasShownCPythonNotification)
+                //&& currentWorkspace is HomeWorkspaceModel)              // WHAT VBOUT CUSTOM MORKSPACES?
+            {
+                // Ask the DynamoView to show the UI
+                var cancel = RaiseRequestPythonEngineChangeNotice();
+                if (cancel) return;
+            } 
+
+            if (string.IsNullOrEmpty(currentWorkspace.FileName) || currentWorkspace.IsTemplate)
             {
                 if (CanShowSaveDialogAndSaveResult(parameter))
                 {
@@ -3401,6 +3441,8 @@ namespace Dynamo.ViewModels
                 Model.CurrentWorkspace = HomeSpace;
 
                 model.ClearCurrentWorkspace();
+
+                //HasShownCPythonNotice = false;      // this has been moved to the WorkspaceModel and is not serialized
 
                 var defaultWorkspace = Workspaces.FirstOrDefault();
                 //Every time that a new workspace is created we have to assign the Default Geometry Scaling value defined in Preferences

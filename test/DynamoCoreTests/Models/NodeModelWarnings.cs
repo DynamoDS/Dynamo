@@ -19,7 +19,7 @@ namespace Dynamo.Tests.Models
             libraries.Add("VMDataBridge.dll");
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
-            libraries.Add("DSCPython.dll");
+            libraries.Add("DSPython3Net.dll");
             base.GetLibrariesToPreload(libraries);
         }
 

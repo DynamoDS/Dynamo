@@ -26,7 +26,7 @@ namespace DynamoCoreWpfTests
             libraries.Add("FunctionObject.ds");            
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("BuiltIn.ds");
-            libraries.Add("DSCPython.dll");
+            libraries.Add("DSPython3Net.dll");
             libraries.Add("FFITarget.dll");
         }
 

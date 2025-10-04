@@ -436,7 +436,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private Step CreateStep(Step jsonStepInfo, HostControlInfo hostControlInfo, int totalTooltips)
         {
             Step newStep = null;
-            //This section will retrive the strings from the Resources.resx file
+            //This section will retrieve the strings from the Resources.resx file
             var formattedText = Res.ResourceManager.GetString(jsonStepInfo.StepContent.FormattedText);
             var title = Res.ResourceManager.GetString(jsonStepInfo.StepContent.Title);
 
@@ -544,7 +544,14 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="content">The target content to display.</param>
         /// <param name="stayOpen">boolean indicates if the popup will stay open until user dismiss it.</param>
         /// TODO: Make this API out of guide manager to a more generic place
-        internal void CreateRealTimeInfoWindow(string content, bool stayOpen = false)
+        internal void CreateRealTimeInfoWindow(
+            string content,
+            bool stayOpen = false,
+            bool showHeader = false,
+            string headerText = "",
+            bool showHyperlink = false,
+            string hyperlinkText = "",
+            Uri hyperlinkUri = null)
         {
             //Search a UIElement with the Name "statusBarPanel" inside the Dynamo VisualTree
             UIElement hostUIElement = GuideUtilities.FindChild(mainRootElement, "statusBarPanel");
@@ -559,7 +566,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 HorizontalOffset = ExitTourHorizontalOffset,
                 Placement = PlacementMode.Left,
                 TextContent = content,
-                StaysOpen = stayOpen
+                StaysOpen = stayOpen,
+                ShowHeader = showHeader,
+                HeaderContent = headerText,
+                ShowHyperlink = showHyperlink,
+                HyperlinkText = hyperlinkText,
+                HyperlinkUri = hyperlinkUri
             };
 
             if (hostUIElement != null)

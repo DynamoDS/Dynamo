@@ -33,7 +33,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
                 "DesignScriptBuiltin.dll",
                 "DSCoreNodes.dll",
                 "DSOffice.dll",
-                "DSCPython.dll",
+                "DSPythonNet3.dll",
                 "FunctionObject.ds",
                 "BuiltIn.ds",
                 "DynamoConversions.dll",
