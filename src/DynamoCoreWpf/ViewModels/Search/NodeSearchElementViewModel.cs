@@ -318,7 +318,7 @@ namespace Dynamo.Wpf.ViewModels
 
             Action ensureUndoGroup = () => undoRecorderGroup?.Dispose();
 
-            NodeAutoCompleteUtilities.PostAutoLayoutNodes(dynamoViewModel.CurrentSpace, initialNode, misplacedNodes, false, true, portModel.PortType, ensureUndoGroup);
+            NodeAutoCompleteUtilities.PostAutoLayoutNodes(dynamoViewModel, dynamoViewModel.CurrentSpace, initialNode, misplacedNodes, false, true, portModel.PortType, ensureUndoGroup);
         }
 
         protected virtual bool CanCreateAndConnectToPort(object parameter)

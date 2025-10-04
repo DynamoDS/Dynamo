@@ -322,7 +322,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 connector.IsTransient = false;
             }
 
-            NodeAutoCompleteUtilities.PostAutoLayoutNodes(node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, PortViewModel.PortType, null);
+            NodeAutoCompleteUtilities.PostAutoLayoutNodes(dynamoViewModel, node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, PortViewModel.PortType, null);
 
             if (PortViewModel.PortType == PortType.Input)
             {
@@ -983,7 +983,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
 
             // Perform auto-layout for the newly added nodes
-            NodeAutoCompleteUtilities.PostAutoLayoutNodes(
+            NodeAutoCompleteUtilities.PostAutoLayoutNodes(dynamoViewModel,
                 workspaceViewModel.DynamoViewModel.CurrentSpace,
                 PortViewModel.NodeViewModel.NodeModel,
                 createdNodes.Values,
