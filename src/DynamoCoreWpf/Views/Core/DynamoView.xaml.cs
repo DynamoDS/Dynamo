@@ -2027,6 +2027,20 @@ namespace Dynamo.Controls
             {
                 PerformShutdownSequenceOnViewModel();
             }
+            
+            // Force application shutdown when dynamo window is closed, to prevent process hanging
+            if (!DynamoModel.IsTestMode && Application.Current != null)
+            {
+                try
+                {
+                    Application.Current.Shutdown();
+                }
+                catch (Exception ex)
+                {
+                    Log($"Error during Application.Shutdown: {ex.Message}. Forcing process exit.");
+                    Environment.Exit(0);
+                }
+            }
 
             dynamoViewModel.Model.RequestLayoutUpdate -= vm_RequestLayoutUpdate;
             dynamoViewModel.RequestViewOperation -= DynamoViewModelRequestViewOperation;
