@@ -1,0 +1,317 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "DSPythonNet3/1.4.0": {
+        "dependencies": {
+          "DSPythonNet3Wheels": "1.4.0",
+          "DynamoVisualProgramming.Core": "3.4.0-beta6616",
+          "DynamoVisualProgramming.DynamoServices": "3.4.0-beta6616",
+          "Python.Included": "3.11.6",
+          "pythonnet": "3.1.0-preview-ADSK-1738082306"
+        },
+        "runtime": {
+          "DSPythonNet3.dll": {}
+        },
+        "resources": {
+          "en-US/DSPythonNet3.resources.dll": {
+            "locale": "en-US"
+          }
+        }
+      },
+      "DynamoVisualProgramming.Core/3.4.0-beta6616": {
+        "dependencies": {
+          "DynamoVisualProgramming.ZeroTouchLibrary": "3.4.0-beta6616",
+          "Newtonsoft.Json": "13.0.1"
+        }
+      },
+      "DynamoVisualProgramming.DynamoServices/3.4.0-beta6616": {
+        "dependencies": {
+          "System.Reflection.MetadataLoadContext": "8.0.0"
+        }
+      },
+      "DynamoVisualProgramming.ZeroTouchLibrary/3.4.0-beta6616": {
+        "dependencies": {
+          "DynamoVisualProgramming.DynamoServices": "3.4.0-beta6616"
+        }
+      },
+      "Microsoft.CSharp/4.7.0": {},
+      "Microsoft.NETCore.Platforms/1.1.0": {},
+      "Microsoft.NETCore.Targets/1.1.0": {},
+      "Newtonsoft.Json/13.0.1": {},
+      "Python.Deployment/2.0.5": {
+        "runtime": {
+          "lib/netstandard2.0/Python.Deployment.dll": {
+            "assemblyVersion": "1.5.0.0",
+            "fileVersion": "1.5.0.0"
+          }
+        }
+      },
+      "Python.Included/3.11.6": {
+        "dependencies": {
+          "Python.Deployment": "2.0.5",
+          "pythonnet": "3.1.0-preview-ADSK-1738082306"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Python.Included.dll": {
+            "assemblyVersion": "3.10.0.0",
+            "fileVersion": "3.10.0.0"
+          }
+        }
+      },
+      "pythonnet/3.1.0-preview-ADSK-1738082306": {
+        "dependencies": {
+          "Microsoft.CSharp": "4.7.0",
+          "System.Reflection.Emit": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Python.Runtime.dll": {
+            "assemblyVersion": "3.1.0.0",
+            "fileVersion": "3.1.0.0"
+          }
+        }
+      },
+      "System.Collections.Immutable/8.0.0": {},
+      "System.IO/4.3.0": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "Microsoft.NETCore.Targets": "1.1.0",
+          "System.Runtime": "4.3.0",
+          "System.Text.Encoding": "4.3.0",
+          "System.Threading.Tasks": "4.3.0"
+        }
+      },
+      "System.Reflection/4.3.0": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "Microsoft.NETCore.Targets": "1.1.0",
+          "System.IO": "4.3.0",
+          "System.Reflection.Primitives": "4.3.0",
+          "System.Runtime": "4.3.0"
+        }
+      },
+      "System.Reflection.Emit/4.3.0": {
+        "dependencies": {
+          "System.IO": "4.3.0",
+          "System.Reflection": "4.3.0",
+          "System.Reflection.Emit.ILGeneration": "4.3.0",
+          "System.Reflection.Primitives": "4.3.0",
+          "System.Runtime": "4.3.0"
+        }
+      },
+      "System.Reflection.Emit.ILGeneration/4.3.0": {
+        "dependencies": {
+          "System.Reflection": "4.3.0",
+          "System.Reflection.Primitives": "4.3.0",
+          "System.Runtime": "4.3.0"
+        }
+      },
+      "System.Reflection.Metadata/8.0.0": {
+        "dependencies": {
+          "System.Collections.Immutable": "8.0.0"
+        }
+      },
+      "System.Reflection.MetadataLoadContext/8.0.0": {
+        "dependencies": {
+          "System.Collections.Immutable": "8.0.0",
+          "System.Reflection.Metadata": "8.0.0"
+        }
+      },
+      "System.Reflection.Primitives/4.3.0": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "Microsoft.NETCore.Targets": "1.1.0",
+          "System.Runtime": "4.3.0"
+        }
+      },
+      "System.Runtime/4.3.0": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "Microsoft.NETCore.Targets": "1.1.0"
+        }
+      },
+      "System.Text.Encoding/4.3.0": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "Microsoft.NETCore.Targets": "1.1.0",
+          "System.Runtime": "4.3.0"
+        }
+      },
+      "System.Threading.Tasks/4.3.0": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "Microsoft.NETCore.Targets": "1.1.0",
+          "System.Runtime": "4.3.0"
+        }
+      },
+      "DSPythonNet3Wheels/1.4.0": {
+        "runtime": {
+          "DSPythonNet3Wheels.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "DSPythonNet3/1.4.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "DynamoVisualProgramming.Core/3.4.0-beta6616": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-2v/ApAQvzv9BZ5qUpbqLVL+SwyN2FqlnBkswGDVhRbdfCEeFZwlxC9lyvi80HHEM4mT+BWxNULmQlTL0pGHjLg==",
+      "path": "dynamovisualprogramming.core/3.4.0-beta6616",
+      "hashPath": "dynamovisualprogramming.core.3.4.0-beta6616.nupkg.sha512"
+    },
+    "DynamoVisualProgramming.DynamoServices/3.4.0-beta6616": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-69NoPa2uTxumfhmI+3FFBqzBs7lf7H8QXBJziCJmFyoRIvgZL82ddx6/Bn1yol6pL6uAnxBKp8iXQ5Gahhl+Fg==",
+      "path": "dynamovisualprogramming.dynamoservices/3.4.0-beta6616",
+      "hashPath": "dynamovisualprogramming.dynamoservices.3.4.0-beta6616.nupkg.sha512"
+    },
+    "DynamoVisualProgramming.ZeroTouchLibrary/3.4.0-beta6616": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-J7rKvyxJqZkIwO8N8KBT4fgSbD80vGZpDxjXJAlsWTuLtq8izo24yI3pLQIL1aBjRgn5QKgSZ9fiL34LW92LXQ==",
+      "path": "dynamovisualprogramming.zerotouchlibrary/3.4.0-beta6616",
+      "hashPath": "dynamovisualprogramming.zerotouchlibrary.3.4.0-beta6616.nupkg.sha512"
+    },
+    "Microsoft.CSharp/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pTj+D3uJWyN3My70i2Hqo+OXixq3Os2D1nJ2x92FFo6sk8fYS1m1WLNTs0Dc1uPaViH0YvEEwvzddQ7y4rhXmA==",
+      "path": "microsoft.csharp/4.7.0",
+      "hashPath": "microsoft.csharp.4.7.0.nupkg.sha512"
+    },
+    "Microsoft.NETCore.Platforms/1.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kz0PEW2lhqygehI/d6XsPCQzD7ff7gUJaVGPVETX611eadGsA3A877GdSlU0LRVMCTH/+P3o2iDTak+S08V2+A==",
+      "path": "microsoft.netcore.platforms/1.1.0",
+      "hashPath": "microsoft.netcore.platforms.1.1.0.nupkg.sha512"
+    },
+    "Microsoft.NETCore.Targets/1.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-aOZA3BWfz9RXjpzt0sRJJMjAscAUm3Hoa4UWAfceV9UTYxgwZ1lZt5nO2myFf+/jetYQo4uTP7zS8sJY67BBxg==",
+      "path": "microsoft.netcore.targets/1.1.0",
+      "hashPath": "microsoft.netcore.targets.1.1.0.nupkg.sha512"
+    },
+    "Newtonsoft.Json/13.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ppPFpBcvxdsfUonNcvITKqLl3bqxWbDCZIzDWHzjpdAHRFfZe0Dw9HmA0+za13IdyrgJwpkDTDA9fHaxOrt20A==",
+      "path": "newtonsoft.json/13.0.1",
+      "hashPath": "newtonsoft.json.13.0.1.nupkg.sha512"
+    },
+    "Python.Deployment/2.0.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-U+hZ6L5tgPjX9bA/+K2rVQ94MNWGld+HIH78ULZ5ogfwVNvesaIEXhvKPLA6O6YuQF406Uw3WBLTCRlCpMC2QQ==",
+      "path": "python.deployment/2.0.5",
+      "hashPath": "python.deployment.2.0.5.nupkg.sha512"
+    },
+    "Python.Included/3.11.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-aNkCKmk7Rb/nZP9jqvwyI9pL5GWhAYAVLcjC0LzrQjlQJYiFXmUoUOb+vQ/sPrQq+2ynlkfbsnekD5K5tvueKg==",
+      "path": "python.included/3.11.6",
+      "hashPath": "python.included.3.11.6.nupkg.sha512"
+    },
+    "pythonnet/3.1.0-preview-ADSK-1738082306": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-p8jqwIzQAOALNCV2RrWc1jqaVgFCnocOw/0dHpA5wNozqD5BuXKkkowMseAsiJGsdsDQT/ttrYIY103kpLM+PQ==",
+      "path": "pythonnet/3.1.0-preview-adsk-1738082306",
+      "hashPath": "pythonnet.3.1.0-preview-adsk-1738082306.nupkg.sha512"
+    },
+    "System.Collections.Immutable/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-AurL6Y5BA1WotzlEvVaIDpqzpIPvYnnldxru8oXJU2yFxFUy3+pNXjXd1ymO+RA0rq0+590Q8gaz2l3Sr7fmqg==",
+      "path": "system.collections.immutable/8.0.0",
+      "hashPath": "system.collections.immutable.8.0.0.nupkg.sha512"
+    },
+    "System.IO/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-3qjaHvxQPDpSOYICjUoTsmoq5u6QJAFRUITgeT/4gqkF1bajbSmb1kwSxEA8AHlofqgcKJcM8udgieRNhaJ5Cg==",
+      "path": "system.io/4.3.0",
+      "hashPath": "system.io.4.3.0.nupkg.sha512"
+    },
+    "System.Reflection/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-KMiAFoW7MfJGa9nDFNcfu+FpEdiHpWgTcS2HdMpDvt9saK3y/G4GwprPyzqjFH9NTaGPQeWNHU+iDlDILj96aQ==",
+      "path": "system.reflection/4.3.0",
+      "hashPath": "system.reflection.4.3.0.nupkg.sha512"
+    },
+    "System.Reflection.Emit/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-228FG0jLcIwTVJyz8CLFKueVqQK36ANazUManGaJHkO0icjiIypKW7YLWLIWahyIkdh5M7mV2dJepllLyA1SKg==",
+      "path": "system.reflection.emit/4.3.0",
+      "hashPath": "system.reflection.emit.4.3.0.nupkg.sha512"
+    },
+    "System.Reflection.Emit.ILGeneration/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-59tBslAk9733NXLrUJrwNZEzbMAcu8k344OYo+wfSVygcgZ9lgBdGIzH/nrg3LYhXceynyvTc8t5/GD4Ri0/ng==",
+      "path": "system.reflection.emit.ilgeneration/4.3.0",
+      "hashPath": "system.reflection.emit.ilgeneration.4.3.0.nupkg.sha512"
+    },
+    "System.Reflection.Metadata/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ptvgrFh7PvWI8bcVqG5rsA/weWM09EnthFHR5SCnS6IN+P4mj6rE1lBDC4U8HL9/57htKAqy4KQ3bBj84cfYyQ==",
+      "path": "system.reflection.metadata/8.0.0",
+      "hashPath": "system.reflection.metadata.8.0.0.nupkg.sha512"
+    },
+    "System.Reflection.MetadataLoadContext/8.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-SZxrQ4sQYnIcdwiO3G/lHZopbPYQ2lW0ioT4JezgccWUrKaKbHLJbAGZaDfkYjWcta1pWssAo3MOXLsR0ie4tQ==",
+      "path": "system.reflection.metadataloadcontext/8.0.0",
+      "hashPath": "system.reflection.metadataloadcontext.8.0.0.nupkg.sha512"
+    },
+    "System.Reflection.Primitives/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-5RXItQz5As4xN2/YUDxdpsEkMhvw3e6aNveFXUn4Hl/udNTCNhnKp8lT9fnc3MhvGKh1baak5CovpuQUXHAlIA==",
+      "path": "system.reflection.primitives/4.3.0",
+      "hashPath": "system.reflection.primitives.4.3.0.nupkg.sha512"
+    },
+    "System.Runtime/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-JufQi0vPQ0xGnAczR13AUFglDyVYt4Kqnz1AZaiKZ5+GICq0/1MH/mO/eAJHt/mHW1zjKBJd7kV26SrxddAhiw==",
+      "path": "system.runtime/4.3.0",
+      "hashPath": "system.runtime.4.3.0.nupkg.sha512"
+    },
+    "System.Text.Encoding/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-BiIg+KWaSDOITze6jGQynxg64naAPtqGHBwDrLaCtixsa5bKiR8dpPOHA7ge3C0JJQizJE+sfkz1wV+BAKAYZw==",
+      "path": "system.text.encoding/4.3.0",
+      "hashPath": "system.text.encoding.4.3.0.nupkg.sha512"
+    },
+    "System.Threading.Tasks/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-LbSxKEdOUhVe8BezB/9uOGGppt+nZf6e1VFyw6v3DN6lqitm0OSn2uXMOdtP0M3W4iMcqcivm2J6UgqiwwnXiA==",
+      "path": "system.threading.tasks/4.3.0",
+      "hashPath": "system.threading.tasks.4.3.0.nupkg.sha512"
+    },
+    "DSPythonNet3Wheels/1.4.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

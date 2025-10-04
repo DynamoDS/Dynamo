@@ -69,16 +69,40 @@
                       StrokeThickness="2"/>
             </Canvas>
             <!--This Text block will contain the text that is shown to the user in the RealTimeInfoWindow-->
-            <TextBlock SizeChanged="TextBlock_SizeChanged"
-                       Margin="0,5,0,5"
-                       Text="{Binding TextContent}"
-                       FontFamily="Artifakt Element"
-                       FontSize="12"
-                       TextWrapping="WrapWithOverflow"
-                       VerticalAlignment="Center"
-                       MaxWidth="200"
-                       Foreground="White"
-                       Grid.Column="2"/>
+            <StackPanel Grid.Column="2"
+                        Orientation="Vertical"
+                        Margin="0,5,0,5"
+                        VerticalAlignment="Center">
+                <TextBlock Text="{Binding HeaderContent}"
+                           FontFamily="Artifakt Element"
+                           FontSize="12"
+                           FontWeight="Bold"
+                           TextWrapping="WrapWithOverflow"
+                           MaxWidth="200"
+                           Foreground="White"
+                           Visibility="{Binding ShowHeader, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Collapse}"/>
+                <TextBlock SizeChanged="TextBlock_SizeChanged"
+                           Text="{Binding TextContent}"
+                           FontFamily="Artifakt Element"
+                           FontSize="12"
+                           TextWrapping="WrapWithOverflow"
+                           VerticalAlignment="Center"
+                           MaxWidth="200"
+                           Foreground="White"/>
+                <TextBlock FontFamily="Artifakt Element"
+                           FontSize="12"
+                           TextWrapping="WrapWithOverflow"
+                           VerticalAlignment="Center"
+                           MaxWidth="200"
+                           Visibility="{Binding ShowHyperlink, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Collapse}" >
+                    <Hyperlink NavigateUri="{Binding HyperlinkUri}"
+                               RequestNavigate="Hyperlink_RequestNavigate"
+                               Foreground="{StaticResource TextBlockLinkForegroundColor}"
+                               TextDecorations="None" >
+                        <Run Text="{Binding HyperlinkText}"/>
+                    </Hyperlink>
+                </TextBlock>
+            </StackPanel>
             <Button Name="CloseButton"
                     Margin="0,10,0,0"
                     Height="25"  

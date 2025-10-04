@@ -133,7 +133,7 @@
     <value>Versão do mecanismo Python</value>
   </data>
   <data name="PythonNodeContextMenuEngineVersionThree" xml:space="preserve">
-    <value>CPython3</value>
+    <value>PythonNet3</value>
   </data>
   <data name="PythonNodeContextMenuEngineVersionTwo" xml:space="preserve">
     <value>IronPython2</value>

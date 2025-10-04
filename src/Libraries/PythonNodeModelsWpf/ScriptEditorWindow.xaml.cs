@@ -1,12 +1,14 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -179,6 +181,25 @@ namespace PythonNodeModelsWpf
             InstallFoldingManager();
 
             dynamoViewModel.PreferencesWindowChanged += DynamoViewModel_PreferencesWindowChanged;
+
+            dynamoViewModel.PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+            UpdatePythonUpgradeBar();
+        }
+
+        private void UpdatePythonUpgradeBar()
+        {
+            var hide = dynamoViewModel.PreferenceSettings.HideCPython3Notifications == true;
+            var showForThisNode = NodeModel.ShowAutoUpgradedBar && !hide;
+
+            PythonUpgradeBar.Visibility = showForThisNode ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void PreferenceSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(PreferenceSettings.HideCPython3Notifications))
+            {
+                UpdatePythonUpgradeBar();
+            }
         }
 
         /// <summary>
@@ -412,10 +433,10 @@ namespace PythonNodeModelsWpf
         {
             originalScript = e.OldCode;
             editText.Text = e.NewCode;
-            if (CachedEngine != PythonEngineManager.CPython3EngineName)
+            if (CachedEngine != PythonEngineManager.PythonNet3EngineName)
             {
-                CachedEngine = PythonEngineManager.CPython3EngineName;
-                EngineSelectorComboBox.SelectedItem = PythonEngineManager.CPython3EngineName;
+                CachedEngine = PythonEngineManager.PythonNet3EngineName;
+                EngineSelectorComboBox.SelectedItem = PythonEngineManager.PythonNet3EngineName;
             }
         }
 
@@ -533,6 +554,7 @@ namespace PythonNodeModelsWpf
                 NodeModel.UserScriptWarned -= WarnUserScript;
                 this.Closed -= OnScriptEditorWindowClosed;
                 PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= UpdateAvailableEngines;
+                dynamoViewModel.PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
 
                 Analytics.TrackEvent(
                     Dynamo.Logging.Actions.Close,
@@ -572,7 +594,11 @@ namespace PythonNodeModelsWpf
             e.Handled = true;
         }
 
-        
+        private void OnPythonAutoUpgradedBarClose(object sender, RoutedEventArgs e)
+        {
+            PythonUpgradeBar.Visibility = Visibility.Collapsed;
+            NodeModel.ShowAutoUpgradedBar = false;
+        }
 
         #endregion
 
