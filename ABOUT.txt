@@ -519,8 +519,36 @@ DirectX
 https://github.com/DynamoDS/Dynamo/tree/master/tools/install/Extra/DirectX/License Agreements/DirectX SDK EULA.txt
 https://github.com/DynamoDS/Dynamo/tree/master/tools/install/Extra/DirectX/License Agreements/directx redist.txt
 
-ImageMagick
+ImageMagick / Magick.NET-Q8-AnyCPU v14.8.2:
+Copyright 1999-2025 ImageMagick Studio LLC
+
+Licensed under the ImageMagick License (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy 
+of the License at
+
 https://imagemagick.org/script/license.php
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+License for the specific language governing permissions and limitations
+under the License.
+
+Magick.NET.Core v14.8.2:
+Copyright 2013 dlemstra
+https://github.com/dlemstra/Magick.NET/blob/main/License.txt
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 LiveChartsCore v.2.0.0-rc3.3:
 LiveChartsCore.SkiaSharpView v.2.0.0- rc3.3:
@@ -545,26 +573,6 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-Magick.NET.Core v7.0.1:
-Copyright [2013] [dlemstra]
-https://github.com/dlemstra/Magick.NET/blob/main/License.txt
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-Magick.NET-Q8-AnyCPU v7.24.1:
-https://imagemagick.org/script/license.php
-Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization dedicated to making software imaging solutions freely available.
 
 Open XML SDK
 https://github.com/OfficeDev/Open-XML-SDK
