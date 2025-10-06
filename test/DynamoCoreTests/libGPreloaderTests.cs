@@ -461,16 +461,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void ASM230InstallationsAreValidated()
-        {
-            var incomplete230List = LoadListFromCsv("incomplete230List.csv");
-            Assert.IsFalse(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete230List, 230));
-            // Add missing DLLs. Now the the installation should be valid.
-            incomplete230List.Add("tsplines12.dll");
-            Assert.IsTrue(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete230List, 230));
-        }
-
-        [Test]
         public void UnknownASMVersionInstallationsAreDiscarded()
         {
             Assert.IsFalse(DynamoShapeManager.Utilities.IsASMInstallationComplete(new List<string>(), 0));
