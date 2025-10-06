@@ -26,6 +26,7 @@
         <HintPath>..\..\..\bin\AnyCPU\$(Configuration)\Built-In Packages\packages\PythonNet3Engine\extra\DSPythonNet3.dll</HintPath>
         <Private>false</Private>
         <SpecificVersion>false</SpecificVersion>
+      <HintPath>..\..\..\extern\PythonNet3Engine\extra\DSPythonNet3.dll</HintPath>
     </Reference>
     <Reference Include="Python.Runtime">
       <HintPath>..\..\..\extern\Python\Python.Runtime.dll</HintPath>
