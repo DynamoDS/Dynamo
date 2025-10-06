@@ -122,7 +122,6 @@ namespace Dynamo.Configuration
 
         internal static readonly IEnumerable<string> InitialExperimentalLib_Namespaces =
         [
-            "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.PanelSurface"
             ];
         #endregion
 
@@ -1155,13 +1154,7 @@ namespace Dynamo.Configuration
                 {
                     settings = serializer.Deserialize(fs) as PreferenceSettings;
                     var namespaces = settings?.NamespacesToExcludeFromLibrary;
-                    for (var index = 0; index < namespaces?.Count; index++)
-                    {
-                        if (namespaces[index] == "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.Panel")
-                        {
-                            namespaces[index] = "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.PanelSurface";
-                        }
-                    }
+
 
                     // If the backup interval is set to OldDefaultBackupInterval (60000ms - 1 minute), reset it to the new default value.
                     var savedBackUpInterval = settings?.BackupInterval;
@@ -1298,8 +1291,11 @@ namespace Dynamo.Configuration
         {
             if (!NamespacesToExcludeFromLibrarySpecified)
             {
-                NamespacesToExcludeFromLibrary = InitialExperimentalLib_Namespaces.ToList();
-                NamespacesToExcludeFromLibrarySpecified = true;
+                if (InitialExperimentalLib_Namespaces.Any())
+                {
+                    NamespacesToExcludeFromLibrary = InitialExperimentalLib_Namespaces.ToList();
+                    NamespacesToExcludeFromLibrarySpecified = true;
+                }
             }
         }
 
@@ -1308,10 +1304,6 @@ namespace Dynamo.Configuration
         /// </summary>
         internal void UpdateNamespacesToExcludeFromLibrary()
         {
-            // Include the TSpline namespace from the library OOTB.
-            NamespacesToExcludeFromLibrary.Remove(
-                "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline"
-            );
             return;
         }
 
