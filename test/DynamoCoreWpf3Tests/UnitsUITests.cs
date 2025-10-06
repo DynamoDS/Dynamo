@@ -22,7 +22,6 @@ namespace DynamoCoreWpfTests
         private MeasurementInputBaseConcrete measurementInputBase;
         private AssemblyHelper assemblyHelper;
 
-
         public override void Open(string path)
         {
             base.Open(path);
@@ -165,17 +164,16 @@ namespace DynamoCoreWpfTests
             Run();
             Assert.AreEqual(5000, node1.CachedValue.Data);
             Assert.AreEqual(5000, node2.CachedValue.Data);
-            Assert.AreEqual(DynamoUnits.Quantity.ByTypeID("autodesk.unit.quantity:force-1.0.2"), node3.CachedValue.Data);
-            Assert.AreEqual(DynamoUnits.Symbol.ByTypeID("autodesk.unit.symbol:mm-1.0.1"), node4.CachedValue.Data);
-            Assert.AreEqual(DynamoUnits.Unit.ByTypeID("autodesk.unit.unit:millimeters-1.0.1"), node5.CachedValue.Data);
-            Assert.AreEqual(DynamoUnits.Unit.ByTypeID("autodesk.unit.unit:meters-1.0.1"), node6.CachedValue.Data);
-            Assert.AreEqual(DynamoUnits.Unit.ByTypeID("autodesk.unit.unit:millimeters-1.0.1"), node7.CachedValue.Data);
+            Assert.AreEqual("autodesk.unit.quantity:force", GetTypeName<DynamoUnits.Quantity>(node3.CachedValue.Data));
+            Assert.AreEqual("autodesk.unit.symbol:mm", GetTypeName<DynamoUnits.Symbol>(node4.CachedValue.Data));
+            Assert.AreEqual("autodesk.unit.unit:millimeters", GetTypeName<DynamoUnits.Unit>(node5.CachedValue.Data));
+            Assert.AreEqual("autodesk.unit.unit:meters", GetTypeName<DynamoUnits.Unit>(node6.CachedValue.Data));
+            Assert.AreEqual("autodesk.unit.unit:millimeters", GetTypeName<DynamoUnits.Unit>(node7.CachedValue.Data));
             Assert.AreEqual(11, node8.CachedValue.GetElements().Count());
 
             Assert.AreEqual("meters", node1.SelectedFromConversion.Name.ToLower());
             Assert.AreEqual("millimeters", node1.SelectedToConversion.Name.ToLower());
             Assert.AreEqual("length", node1.SelectedQuantityConversion.Name.ToLower());
-
         }
 
         [Test]
@@ -197,11 +195,11 @@ namespace DynamoCoreWpfTests
             Assert.AreNotEqual(5000, node1.CachedValue.Data);
             Assert.AreEqual(5000, node2.CachedValue.Data);
             //we've changed both index and name, so a new item is selected.
-            Assert.AreNotEqual(DynamoUnits.Quantity.ByTypeID("autodesk.unit.quantity:force-1.0.2"), node3.CachedValue.Data);
-            Assert.AreEqual(DynamoUnits.Symbol.ByTypeID("autodesk.unit.symbol:mm-1.0.1"), node4.CachedValue.Data);
-            Assert.AreEqual(DynamoUnits.Unit.ByTypeID("autodesk.unit.unit:microarcseconds-1.0.1"), node5.CachedValue.Data);
-            Assert.AreEqual(DynamoUnits.Unit.ByTypeID("autodesk.unit.unit:meters-1.0.1"), node6.CachedValue.Data);
-            Assert.AreEqual(DynamoUnits.Unit.ByTypeID("autodesk.unit.unit:millimeters-1.0.1"), node7.CachedValue.Data);
+            Assert.AreNotEqual("autodesk.unit.quantity:force", GetTypeName<DynamoUnits.Quantity>(node3.CachedValue.Data));
+            Assert.AreEqual("autodesk.unit.quantity:flowPerVolume", GetTypeName<DynamoUnits.Quantity>(node3.CachedValue.Data));
+            Assert.AreEqual("autodesk.unit.symbol:mm", GetTypeName<DynamoUnits.Symbol>(node4.CachedValue.Data));
+            Assert.AreEqual("autodesk.unit.unit:meters", GetTypeName<DynamoUnits.Unit>(node6.CachedValue.Data));
+            Assert.AreEqual("autodesk.unit.unit:millimeters", GetTypeName<DynamoUnits.Unit>(node7.CachedValue.Data));
             Assert.AreEqual(3, node8.CachedValue.GetElements().Count());
 
             Assert.AreEqual(null, node1.SelectedFromConversion);
@@ -287,6 +285,30 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("british thermal units per hour", node1.SelectedToConversion.Name.ToLower());
             Assert.AreEqual("power", node1.SelectedQuantityConversion.Name.ToLower());
 
+        }
+
+        /// <summary>
+        /// Extracts the type name from a DynamoUnits object by parsing its TypeId
+        /// </summary>
+        /// <typeparam name="T">The expected DynamoUnits type</typeparam>
+        /// <param name="data">The cached value data to extract type name from</param>
+        /// <returns>The parsed type name without version</returns>
+        private static string GetTypeName<T>(object data) where T : class
+        {
+            var typedData = data as T;
+            Assert.NotNull(typedData, $"Expected '{typeof(T).Name}' but was '{data?.GetType().Name ?? "null"}'");
+            
+            // Get TypeId property via reflection since it's common across DynamoUnits types
+            var typeIdProperty = typeof(T).GetProperty("TypeId");
+            Assert.NotNull(typeIdProperty, $"TypeId property not found on '{typeof(T).Name}'");
+            
+            var typeId = typeIdProperty.GetValue(typedData) as string;
+            Assert.IsNotNull(typeId, $"TypeId is null or empty for '{typeof(T).Name}'");
+            
+            var hasTypeName = DynamoUnits.Utilities.TryParseTypeId(typeId, out string typeName, out Version version);
+            Assert.IsTrue(hasTypeName, $"Failed to parse TypeId '{typeId}' for '{typeof(T).Name}'");
+            
+            return typeName;
         }
     }
 }

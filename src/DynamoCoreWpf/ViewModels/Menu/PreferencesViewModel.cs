@@ -1254,13 +1254,14 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls if the TSpline nodes experiment toggle is visible from feature flag
-        /// TODO: remove this public property in Dynamo 4.0 and archive the feature flag
+        /// Controls whether the Experimental expander is visible in the Features tab
         /// </summary>
-        public bool IsTSplineNodesExperimentToggleVisible
+        public bool IsExperimentalExpanderVisible
         {
             get
             {
+                // Hide for now since panel nodes are OOTB and no other experimental features
+                // Keep infrastructure for future experimental features
                 return false;
             }
         }
@@ -1338,39 +1339,6 @@ namespace Dynamo.ViewModels
 
         #endregion        
 
-        /// <summary>
-        /// Controls the IsChecked property in the "Enable T-spline nodes" toggle button
-        /// </summary>
-        public bool EnableTSplineIsChecked
-        {
-            get
-            {
-                return !preferenceSettings.NamespacesToExcludeFromLibrary.Contains(
-                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline");
-            }
-            set
-            {
-                HideUnhideNamespace(!value, "ProtoGeometry.dll", "Autodesk.DesignScript.Geometry.TSpline");
-                RaisePropertyChanged(nameof(EnableTSplineIsChecked));
-            }
-        }
-
-        /// <summary>
-        /// Controls the IsChecked property in the "Enable Paneling nodes" toggle button
-        /// </summary>
-        public bool EnablePanelingIsChecked
-        {
-            get
-            {
-                return !preferenceSettings.NamespacesToExcludeFromLibrary.Contains(
-                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.PanelSurface");
-            }
-            set
-            {
-                HideUnhideNamespace(!value, "ProtoGeometry.dll", "Autodesk.DesignScript.Geometry.PanelSurface");
-                RaisePropertyChanged(nameof(EnablePanelingIsChecked));
-            }
-        }
 
         /// <summary>
         /// This method updates the node search library to either hide or unhide nodes that belong
@@ -1932,12 +1900,6 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(NodeAutocompleteIsChecked):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewEnableNodeAutoComplete), System.Globalization.CultureInfo.InvariantCulture);
-                    goto default;
-                case nameof(EnableTSplineIsChecked):
-                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewEnableTSplineNodes), System.Globalization.CultureInfo.InvariantCulture);
-                    goto default;
-                case nameof(EnablePanelingIsChecked):
-                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewEnablePanelingNodes), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(ShowPreviewBubbles):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowPreviewBubbles), System.Globalization.CultureInfo.InvariantCulture);
