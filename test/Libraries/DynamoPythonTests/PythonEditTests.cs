@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
-//using DSCPython;
 using DSPythonNet3;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
@@ -87,43 +86,6 @@ namespace Dynamo.Tests
             }
             return count;
         }
-
-        [Test]
-        public void CanConstruct_InternalClass_AndSee_InternalMembers()
-        {
-            // Arrange: create a fake (but valid) pointer value
-            var fakePtr = new IntPtr(123);
-
-            // Act: construct the internal class (ctor is public; class is internal)
-            var handle = new DynamoCPythonHandle(fakePtr);
-
-            // Assert: we can access internal property + static map
-            Assert.AreEqual(fakePtr, handle.PythonObjectID, "Should see internal property PythonObjectID.");
-
-            // CHANGED: assert the count via TryGetValue to ensure increment actually happened
-            int count;
-            var found = DynamoCPythonHandle.HandleCountMap.TryGetValue(handle, out count); // CHANGED
-            Assert.IsTrue(found, "HandleCountMap should contain our handle.");             // CHANGED
-            Assert.GreaterOrEqual(count, 1, "HandleCountMap count should be >= 1.");      // CHANGED
-
-            // Clean up test state so we don't leak into other tests:
-            // Don't call handle.Dispose() here – it may touch Python/globalScope.
-            DynamoCPythonHandle.HandleCountMap.Remove(handle);
-        }
-
-        [Test]
-        public void PythonNet3Engine_IsDiscoverable()
-        {
-            var names = PythonEngineManager.Instance.AvailableEngines.Select(e => e.Name).ToList();
-            Assert.IsTrue(names.Any(n => n.Equals(PythonEngineManager.PythonNet3EngineName)),
-                "PythonNet3 engine was not discovered.");
-        }
-
-
-
-
-
-
 
         [Test]
         public void PythonScriptEdit_WorkspaceChangesReflected()
@@ -449,9 +411,9 @@ namespace Dynamo.Tests
                 {
                     Assert.AreEqual("2.7.9", nodeValue);
                 }
-                else if (pythonEngine == PythonEngineManager.CPython3EngineName)
+                else if (pythonEngine == PythonEngineManager.PythonNet3EngineName)
                 {
-                    Assert.AreEqual("3.9.12", nodeValue);
+                    Assert.AreEqual("3.11.0", nodeValue);
                 }
             }
         }
@@ -560,7 +522,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CPythonClassCanBeUsedInDownStreamNode()
+        public void PythonNet3ClassCanBeUsedInDownStreamNode()
         {
             // open test graph
             var examplePath = Path.Combine(TestDirectory, @"core\python", "cpythoncustomclass.dyn");
@@ -575,7 +537,7 @@ namespace Dynamo.Tests
 
         }
         [Test]
-        public void CPythonClassCanBeModifiedInDownStreamNode()
+        public void PythonNet3ClassCanBeModifiedInDownStreamNode()
         {
             // open test graph
             var examplePath = Path.Combine(TestDirectory, @"core\python", "cpythoncustomclass_modified.dyn");
@@ -589,7 +551,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void TwoCPythonHandlesReturnedFromSameNodeHaveSameHandleID()
+        public void TwoPythonNet3HandlesReturnedFromSameNodeHaveSameHandleID()
         {
             // open test graph
             var examplePath = Path.Combine(TestDirectory, @"core\python", "cpythoncustomclass_returnManyInstances.dyn");
@@ -604,7 +566,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void TwoCPythonHandlesReturnedFromDifferentNodesHaveSameHandleID()
+        public void TwoPythonNet3HandlesReturnedFromDifferentNodesHaveSameHandleID()
         {
             // open test graph
             var examplePath = Path.Combine(TestDirectory, @"core\python", "cpythoncustomclass_returnManyInstancesFromManyNodes.dyn");
@@ -623,49 +585,25 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CPythonClassCanBeReturnedAndSafelyDisposedInDownStreamNode()
+        public void PythonNet3ClassCanBeReturnedAndSafelyDisposedInDownStreamNode()
         {
             // open test graph
             var examplePath = Path.Combine(TestDirectory, @"core\python", "cpythoncustomclass_modified.dyn");
             ViewModel.OpenCommand.Execute(examplePath);
 
-            var pyNodes = ViewModel.Model.CurrentWorkspace.Nodes.OfType<PythonNode>().ToList();                       // CHANGED
-            foreach (var n in pyNodes)                                                                                 // CHANGED
-            {                                                                                                          // CHANGED
-                n.EngineName = PythonEngineManager.PythonNet3EngineName;                                               // CHANGED
-                n.OnNodeModified();                                                                                    // CHANGED
-            }
-
             var classdef = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "classdef");
             var downstream1 = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "downstream1");
-            var downstream2 = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "downstream2");
-
-           
+            var downstream2 = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "downstream2");           
 
             ViewModel.HomeSpace.Run();
-
-
-            // 🔸 NEW: inspect what type is actually flowing out of downstream1
-            var v1 = GetPreviewValue(downstream1.GUID.ToString());   // <-- value coming out of downstream1
-            Debug.WriteLine($"downstream1 preview type: {v1?.GetType().FullName}");
-            Assert.NotNull(v1, "downstream1 produced null.");
-
-            // 🔸 NEW: if the value is NOT a DSPythonNet3 handle, HandleCountMap will be empty (0)
-            var totalHandleCount = DSPythonNet3.DynamoCPythonHandle.HandleCountMap.Values.Sum();
-            Debug.WriteLine($"HandleCountMap total = {totalHandleCount}");
-
-
             AssertPreviewValue(downstream2.GUID.ToString(), "joe");
-
             Assert.AreEqual(2, DynamoCPythonHandle.HandleCountMap.First(x => x.ToString().Contains("myClass")).Value);
-
 
             ViewModel.Model.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().First().UpdateValue(new UpdateValueParams("Code", "\"foo\";"));
 
             ViewModel.HomeSpace.Run();
             AssertPreviewValue(downstream2.GUID.ToString(), "foo");
-            //Assert.AreEqual(2, DynamoCPythonHandle.HandleCountMap.First(x => x.ToString().Contains("myClass")).Value);
-            //Assert.AreEqual(1, GetPythonNet3HandleCountFor("myClass"));
+            Assert.AreEqual(2, DynamoCPythonHandle.HandleCountMap.First(x => x.ToString().Contains("myClass")).Value);
 
             ViewModel.Model.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().First().UpdateValue(new UpdateValueParams("Code", "\"bar\";"));
 
@@ -675,18 +613,16 @@ namespace Dynamo.Tests
             var deleteCmd = new DynamoModel.DeleteModelCommand(downstream1.GUID);
             ViewModel.Model.ExecuteCommand(deleteCmd);
 
-            //Assert.AreEqual(1, DynamoCPythonHandle.HandleCountMap.First(x => x.ToString().Contains("myClass")).Value);
-            //Assert.AreEqual(1, GetPythonNet3HandleCountFor("myClass"));
+            Assert.AreEqual(1, DynamoCPythonHandle.HandleCountMap.First(x => x.ToString().Contains("myClass")).Value);
 
             var deleteCmd2 = new DynamoModel.DeleteModelCommand(classdef.GUID);
             ViewModel.Model.ExecuteCommand(deleteCmd2);
 
-            //Assert.IsEmpty(DynamoCPythonHandle.HandleCountMap.Where(x => x.ToString().Contains("myClass")));
-            //Assert.AreEqual(0, GetPythonNet3HandleCountFor("myClass"));
+            Assert.IsEmpty(DynamoCPythonHandle.HandleCountMap.Where(x => x.ToString().Contains("myClass")));
         }
 
         [Test]
-        public void VerifySysPathValueForCPythonEngine()
+        public void VerifySysPathValueForPythonNet3Engine()
         {
             // open test graph
             var examplePath = Path.Combine(TestDirectory, @"core\python", "CPythonSysPath.dyn");
@@ -798,7 +734,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void CpythonRestart_ReloadsModules()
+        public void PythonNet3Restart_ReloadsModules()
         {
             var modName = "reload_test2";
             (ViewModel.CurrentSpace as HomeWorkspaceModel).RunSettings.RunType = RunType.Manual;
@@ -847,7 +783,7 @@ OUT = {modName}.value";
         [Test]
         [Category("Failure")]
         [Category("TechDebt")]
-        public void CpythonRestart_ReloadModuleFromDifferentLocationFails()
+        public void PythonNet3Restart_ReloadModuleFromDifferentLocationFails()
         {
             var modName = "reload_test3";
             (ViewModel.CurrentSpace as HomeWorkspaceModel).RunSettings.RunType = RunType.Manual;

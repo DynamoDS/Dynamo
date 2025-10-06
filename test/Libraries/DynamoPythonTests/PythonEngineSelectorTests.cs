@@ -40,7 +40,7 @@ namespace DynamoPythonTests
             CurrentDynamoModel.ExecuteCommand(new Dynamo.Models.DynamoModel.CreateNodeCommand(pyNode, 0, 0, false, false));
             Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
-            pyNode.EngineName = PythonEngineManager.CPython3EngineName;
+            pyNode.EngineName = PythonEngineManager.PythonNet3EngineName;
             CurrentDynamoModel.AddToSelection(pyNode);
            
             CurrentDynamoModel.Copy();
@@ -49,7 +49,7 @@ namespace DynamoPythonTests
             CurrentDynamoModel.Paste();
             Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
-            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<PythonNode>().All(x => x.EngineName == PythonEngineManager.CPython3EngineName));
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<PythonNode>().All(x => x.EngineName == PythonEngineManager.PythonNet3EngineName));
 
             CurrentDynamoModel.ExecuteCommand(new UndoRedoCommand(UndoRedoCommand.Operation.Undo));
             Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
@@ -57,8 +57,8 @@ namespace DynamoPythonTests
 
             CurrentDynamoModel.ExecuteCommand(
                  new UpdateModelValueCommand(
-                     Guid.Empty, pyNode.GUID, nameof(PythonNode.EngineName), PythonEngineManager.CPython3EngineName));
-            Assert.AreEqual(pyNode.EngineName, PythonEngineManager.CPython3EngineName);
+                     Guid.Empty, pyNode.GUID, nameof(PythonNode.EngineName), PythonEngineManager.PythonNet3EngineName));
+            Assert.AreEqual(pyNode.EngineName, PythonEngineManager.PythonNet3EngineName);
 
             CurrentDynamoModel.ExecuteCommand(new UndoRedoCommand(UndoRedoCommand.Operation.Undo));
 

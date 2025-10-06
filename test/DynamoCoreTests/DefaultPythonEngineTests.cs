@@ -10,15 +10,10 @@ namespace Dynamo.Tests
 {
     public class DefaultPythonEngineTests : DynamoModelTestBase
     {
-        protected override void GetLibrariesToPreload(List<string> libraries)
-        {
-            libraries.Add("DSCPython.dll");
-        }
-
         protected override IStartConfiguration CreateStartConfiguration(IPreferences settings)
         {
             var config = (DefaultStartConfiguration)base.CreateStartConfiguration(settings);
-            config.DefaultPythonEngine = PythonEngineManager.CPython3EngineName;
+            config.DefaultPythonEngine = PythonEngineManager.PythonNet3EngineName;
             return config;
         }
 
@@ -31,7 +26,7 @@ namespace Dynamo.Tests
             CurrentDynamoModel.ExecuteCommand(new CreateNodeCommand(node, 0, 0, true, false));
             node = CurrentDynamoModel.CurrentWorkspace.FirstNodeFromWorkspace<PythonNode>();
             AssertPreviewValue(node.AstIdentifierGuid, 0);
-            Assert.AreEqual(PythonEngineManager.CPython3EngineName, node.EngineName);
+            Assert.AreEqual(PythonEngineManager.PythonNet3EngineName, node.EngineName);
         }
 
         [Test]

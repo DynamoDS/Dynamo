@@ -30,7 +30,7 @@ namespace DynamoCoreWpfTests
 
         private readonly List<string> expectedEngineMenuItems = new List<string>()
         {
-            PythonEngineManager.CPython3EngineName,
+            PythonEngineManager.PythonNet3EngineName,
             PythonEngineManager.IronPython2EngineName
         };
 
@@ -510,19 +510,19 @@ namespace DynamoCoreWpfTests
 
             Assert.IsNotNull(engineMenuItem);
 
-            //Get the python engine menu option "CPython3"
-            var cPython3MenuItem = engineMenuItem.Items
+            //Get the python engine menu option "PythonNet3"
+            var pythonNet3MenuItem = engineMenuItem.Items
                 .OfType<MenuItem>()
                 .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree);
 
-            Assert.IsNotNull(cPython3MenuItem);
+            Assert.IsNotNull(pythonNet3MenuItem);
 
-            //Click the CPython3 option (previously was IronPython2)
-            cPython3MenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            //Click the PythonNet3 option (previously was IronPython2)
+            pythonNet3MenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
 
             DispatcherUtil.DoEvents();
 
-            //After running the graph if the python code is not valid for CPython3 we will get a null value in the Watch node
+            //After running the graph if the python code is not valid for PythonNet3 we will get a null value in the Watch node
             ViewModel.HomeSpace.Run();
 
             //Validate that the content of the Watch node is what we expected after running the Graph
@@ -572,7 +572,7 @@ namespace DynamoCoreWpfTests
         public void ChangingDropdownEngineDoesNotSavesCodeOrRun()
         {
             // Arrange
-            var engineChange = PythonEngineManager.CPython3EngineName;
+            var engineChange = PythonEngineManager.PythonNet3EngineName;
 
             Open(@"core\python\python.dyn");
             (Model.CurrentWorkspace as HomeWorkspaceModel).RunSettings.RunType = Dynamo.Models.RunType.Automatic;
@@ -655,7 +655,7 @@ namespace DynamoCoreWpfTests
                 case "IronPython2":
                     (engineSelection.Items[0] as MenuItem).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
                     break;
-                case "CPython3":
+                case "PythonNet3":
                     (engineSelection.Items[1] as MenuItem).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
                     break;
             }
@@ -724,7 +724,7 @@ namespace DynamoCoreWpfTests
         {
             // Arrange
             var expectedDefaultEngineLabelText = PythonEngineManager.IronPython2EngineName;
-            var engineChange = PythonEngineManager.CPython3EngineName;
+            var engineChange = PythonEngineManager.PythonNet3EngineName;
 
             Open(@"core\python\python.dyn");
 

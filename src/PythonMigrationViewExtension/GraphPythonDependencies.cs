@@ -16,7 +16,7 @@ namespace Dynamo.PythonMigration
     public class GraphPythonDependencies
     {
         internal static readonly string PythonPackage = "DynamoIronPython2.7";
-        // Current Dynamo inbuilt python package is CPython3. Change this when it is updated.
+        // Current Dynamo python engine is PythonNet3. Change this when it is updated.
         internal static readonly string InBuiltPythonPackage = PythonEngineManager.PythonNet3EngineName;
         internal readonly Version PythonPackageVersion;
         private IWorkspaceModel workspace;
