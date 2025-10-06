@@ -162,7 +162,8 @@ jobs:
           GH_TOKEN: ${{ secrets.DYNAMO_ACTIONS_TOKEN }}
         if: steps.check_changes.outputs.changed == 'true'
         run: |
-          gh pr create --title "Update HTML Documentation" \
-            --body "This PR contains automated changes generated due to changes in doc/distrib/html subfolders" \
+          gh pr create --title "DYN-9484 - Update HTML Documentation" \
+            --body "This PR contains automated changes generated due to changes in doc/distrib/html subfolders, @DynamoDS/eidos, please review and merge this PR" \
             --base $MAIN_BRANCH \
+            --assignee DynamoDS/eidos \
             --head ${{ steps.commit_changes.outputs.branch }}

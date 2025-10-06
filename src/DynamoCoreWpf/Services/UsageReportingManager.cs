@@ -82,7 +82,8 @@ namespace Dynamo.Services
                 && dynamoViewModel.Model.PreferenceSettings.IsFirstRun
                 && !dynamoViewModel.HideReportOptions
                 && !Analytics.DisableAnalytics
-                && !DynamoModel.IsTestMode)
+                && !DynamoModel.IsTestMode
+                && !dynamoViewModel.Model.NoNetworkMode)
             {
                 //Prompt user for detailed reporting
                 ShowUsageReportingPrompt(ownerWindow);
@@ -99,6 +100,7 @@ namespace Dynamo.Services
                 throw new InvalidOperationException(
                     "DynamoView must be supplied for this command");
             }
+
             ShowUsageReportingPrompt(ownerWindow);
         }
 
