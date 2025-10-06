@@ -223,6 +223,15 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Python engine has been automatically updated. No conversion necessary..
+        /// </summary>
+        public static string PythonScriptEditorMigrationAssistantButtonDisabledTooltip {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorMigrationAssistantButtonDisabledTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Convert script to Python 3....
         /// </summary>
         public static string PythonScriptEditorMigrationAssistantButtonTooltip {

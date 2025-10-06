@@ -303,10 +303,9 @@
                             Name="MigrationAssistantButton"
                             Click="OnMigrationAssistantClicked"
                             ToolTipService.ShowOnDisabled="True"
-                            ToolTipService.IsEnabled="True"
-                            IsEnabled="True">
+                            ToolTipService.IsEnabled="True">
                         <Button.ToolTip>
-                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorMigrationAssistantButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                            <ToolTip Style="{StaticResource GenericToolTipLight}"/>
                         </Button.ToolTip>
                         <Button.Resources>
                             <Image x:Key="Shape"

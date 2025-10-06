@@ -184,6 +184,7 @@ namespace PythonNodeModelsWpf
 
             dynamoViewModel.PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             UpdatePythonUpgradeBar();
+            UpdateMigrationAssistantButtonEnabled();
         }
 
         private void UpdatePythonUpgradeBar()
@@ -307,6 +308,18 @@ namespace PythonNodeModelsWpf
             return text.EndsWith(":");
         }
 
+        private void UpdateMigrationAssistantButtonEnabled()
+        {
+            var pyNode = NodeModel as PythonNodeBase;
+            bool isIronPython = pyNode?.EngineName == PythonEngineManager.IronPython2EngineName;
+
+            MigrationAssistantButton.IsEnabled = isIronPython;
+
+            var tooltip = MigrationAssistantButton.ToolTip as System.Windows.Controls.ToolTip;
+            tooltip.Content = isIronPython
+                ? PythonNodeModels.Properties.Resources.PythonScriptEditorMigrationAssistantButtonTooltip
+                : PythonNodeModels.Properties.Resources.PythonScriptEditorMigrationAssistantButtonDisabledTooltip;
+        }
 
         #region Text Zoom in Python Editor
 
@@ -503,6 +516,8 @@ namespace PythonNodeModelsWpf
                 Dynamo.Logging.Actions.Migration,
                 Dynamo.Logging.Categories.PythonOperations);
             NodeModel.RequestCodeMigration(e);
+
+            UpdateMigrationAssistantButtonEnabled();
         }
         private void OnConvertTabsToSpacesClicked(object sender, RoutedEventArgs e)
         {
@@ -735,11 +750,12 @@ namespace PythonNodeModelsWpf
             this.ZoomInButton.IsEnabled = true;
             this.ZoomOutButton.IsEnabled = true;
             this.EngineSelectorComboBox.IsEnabled = true;
-            this.MigrationAssistantButton.IsEnabled = true;
             this.ConvertTabsToSpacesButton.IsEnabled = true;
             this.MoreInfoButton.IsEnabled = true;
             this.SaveButtonBar.Visibility = Visibility.Visible;
             this.UnsavedChangesStatusBar.Visibility = Visibility.Collapsed;
+
+            UpdateMigrationAssistantButtonEnabled();
         }
 
         // Updates the IsEnterHit value
