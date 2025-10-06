@@ -2274,11 +2274,11 @@ Deseja desinstalar o {1}? Reinicie o {2} para concluir a desinstalação e tente
   <data name="AddStyleButton" xml:space="preserve">
     <value>Adic estilo</value>
   </data>
-  <data name="ResetPythonNet3ButtonText" xml:space="preserve">
-    <value>Redefinir PythonNet3</value>
+  <data name="ResetCPythonButtonText" xml:space="preserve">
+    <value>Redefinir CPython</value>
   </data>
-  <data name="ResetPythonNet3ButtonToolTip" xml:space="preserve">
-    <value>Redefine o ambiente PythonNet3 recarregando os módulos.</value>
+  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
+    <value>Redefine o ambiente CPython recarregando os módulos.</value>
   </data>
   <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
     <value>Cancelar e mostrar problemas</value>

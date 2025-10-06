@@ -2273,11 +2273,11 @@ Chcete {1} odinstalovat? Restartujte {2}, aby se dokončila odinstalace, a zkust
   <data name="AddStyleButton" xml:space="preserve">
     <value>Přidat styl</value>
   </data>
-  <data name="ResetPythonNet3ButtonText" xml:space="preserve">
-    <value>Obnovit PythonNet3</value>
+  <data name="ResetCPythonButtonText" xml:space="preserve">
+    <value>Obnovit CPython</value>
   </data>
-  <data name="ResetPythonNet3ButtonToolTip" xml:space="preserve">
-    <value>Obnoví prostředí PythonNet3 opakovaným načtením modulů.</value>
+  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
+    <value>Obnoví prostředí CPython opakovaným načtením modulů.</value>
   </data>
   <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
     <value>Zrušit a zobrazit problémy</value>

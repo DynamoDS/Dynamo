@@ -2274,11 +2274,11 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
   <data name="AddStyleButton" xml:space="preserve">
     <value>Add Style</value>
   </data>
-  <data name="ResetPythonNet3ButtonText" xml:space="preserve">
-    <value>Reset PythonNet3</value>
+  <data name="ResetCPythonButtonText" xml:space="preserve">
+    <value>Reset CPython</value>
   </data>
-  <data name="ResetPythonNet3ButtonToolTip" xml:space="preserve">
-    <value>Resets PythonNet3 environment by reloading modules.</value>
+  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
+    <value>Resets CPython environment by reloading modules.</value>
   </data>
   <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
     <value>Cancel and Show Issues</value>
