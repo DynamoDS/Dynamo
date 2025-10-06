@@ -591,8 +591,9 @@ namespace Dynamo.Core
         /// </summary>
         private void BuildCommonDirectories()
         {
+            var dynamoCorePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             // Common directories.
-            commonDataDir = GetCommonDataFolder();
+            commonDataDir = Path.Combine(dynamoCorePath,Configurations.SamplesAsString);
 
             samplesDirectory = GetSamplesFolder(commonDataDir);
             defaultTemplatesDirectory = GetTemplateFolder(commonDataDir);
@@ -664,15 +665,6 @@ namespace Dynamo.Core
             var executingAssemblyName = Assembly.GetExecutingAssembly().GetName();
             productVersion = Updates.BinaryVersion.FromString(executingAssemblyName.Version.ToString());
             return productVersion;
-        }
-
-        private string GetCommonDataFolder()
-        {
-            if (pathResolver != null && !string.IsNullOrEmpty(pathResolver.CommonDataRootFolder))
-                return GetDynamoDataFolder(pathResolver.CommonDataRootFolder);
-
-            var folder = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            return GetDynamoDataFolder(Path.Combine(folder, Configurations.DynamoAsString, "Dynamo Core"));
         }
 
         private string GetDynamoDataFolder(string folder)

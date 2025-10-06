@@ -49,6 +49,11 @@ namespace Dynamo.Configuration
         public static readonly string DynamoAsString = "Dynamo";
 
         /// <summary>
+        /// Const string of Samples folder
+        /// </summary>
+        public static readonly string SamplesAsString = "Samples";
+
+        /// <summary>
         /// Const string for Dynamo Node Help Docs
         /// </summary>
         public static readonly string DynamoNodeHelpDocs = "NodeHelpSharedDocs";
