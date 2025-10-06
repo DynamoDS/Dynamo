@@ -1,9 +1,10 @@
+using Autodesk.DesignScript.Runtime;
 using System;
 using System.Collections.Generic;
-using Autodesk.DesignScript.Runtime;
-using System.Reflection;
-using System.IO;
 using System.Configuration;
+using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using ForgeUnits = Autodesk.ForgeUnits;
 
 namespace DynamoUnits
@@ -14,13 +15,13 @@ namespace DynamoUnits
     public static class Utilities
     {
         private static ForgeUnits.UnitsEngine unitsEngine;
+        private static List<string> candidateDirectories = new List<string>();
 
         /// <summary>
         /// Path to the directory used load the schema definitions.
         /// </summary>
         [SupressImportIntoVM]
-        public static string SchemaDirectory { get; private set; } = Path.Combine(AssemblyDirectory, "unit");
-
+        public static string SchemaDirectory { get; private set; } = string.Empty;
 
         static Utilities()
         {
@@ -32,51 +33,50 @@ namespace DynamoUnits
         /// </summary>
         internal static void Initialize()
         {
+            // Build candidate schema directories list
+            candidateDirectories.Clear();
+
             var assemblyFilePath = Assembly.GetExecutingAssembly().Location;
-
             var config = ConfigurationManager.OpenExeConfiguration(assemblyFilePath);
-            var key = config.AppSettings.Settings["schemaPath"];
-            string path = null;
-            if (key != null)
+
+            // Add config path if it's valid
+            var configPath = config.AppSettings.Settings["schemaPath"]?.Value;
+            if (!string.IsNullOrEmpty(configPath) && Directory.Exists(configPath))
             {
-                path = key.Value;
+                candidateDirectories.Add(configPath);
             }
 
-            if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
-            {
-                SchemaDirectory = path;
-            }
+            // Add ASC schema paths from installed components
+            AddAscSchemaPaths(candidateDirectories);
 
-            try
+            // Add bundled schema directory as final candidate
+            candidateDirectories.Add(BundledSchemaDirectory);
+
+            // Try each candidate directory until we find one that works
+            foreach (var directory in candidateDirectories)
             {
-                unitsEngine = new ForgeUnits.UnitsEngine();
-                ForgeUnits.SchemaUtility.addDefinitionsFromFolder(SchemaDirectory, unitsEngine);
-                unitsEngine.resolveSchemas();
-            }
-            catch
-            {
-                unitsEngine = null;
-                //There was an issue initializing the schemas at the specified path.
+                // Always update SchemaDirectory to the current attempt for clearer error
+                // reporting. If loading succeeds, SchemaDirectory reflects the working
+                // path. Otherwise, it shows the last path tried, which will be displayed
+                // in any thrown exception. If all paths fail, the exception message will
+                // show the default bundled schema directory, which should never fail.
+                SchemaDirectory = directory;
+
+                unitsEngine = TryLoadSchemaFromDirectory(directory);
+                if (unitsEngine != null)
+                {
+                    break; // Found the schema directory, so stop trying.
+                }
             }
         }
-            
+
         /// <summary>
         /// only use this method during tests - allows setting a different schema location without
         /// worrying about distributing a test configuration file.
         /// </summary>
         internal static void SetTestEngine(string testSchemaDir)
         {
-            try
-            {
-                unitsEngine = new ForgeUnits.UnitsEngine();
-                ForgeUnits.SchemaUtility.addDefinitionsFromFolder(testSchemaDir, unitsEngine);
-                unitsEngine.resolveSchemas();
-            }
-            catch
-            {
-                unitsEngine = null;
-                //There was an issue initializing the schemas at the specified path.
-            }
+            unitsEngine = TryLoadSchemaFromDirectory(testSchemaDir);
         }
 
         /// <summary>
@@ -148,20 +148,20 @@ namespace DynamoUnits
             {
                 if (unitsEngine == null)
                 {
-                    throw new Exception("There was an issue loading Unit Schemas from the specified path: " 
-                                        + SchemaDirectory);
+                    var attemptedPaths = string.Join(", ", candidateDirectories);
+                    throw new Exception($"There was an issue loading Unit Schemas. Attempted paths: {attemptedPaths}");
                 }
 
                 return unitsEngine;
             }
         }
 
-        private static string AssemblyDirectory
+        private static string BundledSchemaDirectory
         {
             get
             {
                 string path = Assembly.GetExecutingAssembly().Location;
-                return Path.GetDirectoryName(path);
+                return Path.Combine(Path.GetDirectoryName(path), "unit");
             }
         }
 
@@ -403,6 +403,130 @@ namespace DynamoUnits
             version = null;
 
             return false;
+        }
+
+        /// <summary>
+        /// Adds ASC (Autodesk Shared Components) schema paths to the candidate directories list.
+        /// 
+        /// We use 'AscSdkWrapper' directly here because 'InstalledAscLookUp' is overkill -- it's got
+        /// extra logic we don't need. 'AscSdkWrapper' gives us just the version/path info for ASC
+        /// installs, which is all we care about for schema discovery. This also decouples us from
+        /// changes in 'InstalledAscLookUp' that could break or complicate schema path resolution.
+        /// </summary>
+        /// <param name="candidateDirectories">List to add discovered ASC schema paths to</param>
+        private static void AddAscSchemaPaths(List<string> candidateDirectories)
+        {
+            // Currently ASC discovery is only available on Windows. When cross-platform ASC
+            // support becomes available, we can extend this to work on other platforms.
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return;
+            }
+
+            try
+            {
+                // Use reflection to dynamically load DynamoInstallDetective at runtime.
+                // This avoids the need for a direct project reference and InternalsVisibleTo,
+                // maintaining cross-platform compatibility for the DynamoUnits library.
+                var dynamoInstallDetectiveAssembly = Assembly.LoadFrom(
+                    Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), 
+                    "DynamoInstallDetective.dll"));
+
+                var ascWrapperType = dynamoInstallDetectiveAssembly.GetType("DynamoInstallDetective.AscSdkWrapper");
+                if (ascWrapperType == null)
+                {
+                    return; // AscSdkWrapper type not found
+                }
+
+                // Get major versions using reflection: AscSdkWrapper.GetMajorVersions()
+                var getMajorVersionsMethod = ascWrapperType.GetMethod("GetMajorVersions", 
+                    BindingFlags.Public | BindingFlags.Static);
+                var majorVersions = (string[])getMajorVersionsMethod?.Invoke(null, null);
+
+                if (majorVersions == null) return;
+
+                // Get the ASC_STATUS enum for comparison
+                var ascStatusType = ascWrapperType.GetNestedType("ASC_STATUS");
+                var successValue = Enum.Parse(ascStatusType, "SUCCESS");
+
+                foreach (var majorVersion in majorVersions)
+                {
+                    // Create AscSdkWrapper instance: new AscSdkWrapper(majorVersion)
+                    var ascWrapper = Activator.CreateInstance(ascWrapperType, majorVersion);
+
+                    // Call GetInstalledPath using reflection
+                    var getInstalledPathMethod = ascWrapperType.GetMethod("GetInstalledPath");
+                    var parameters = new object[] { string.Empty };
+                    var result = getInstalledPathMethod?.Invoke(ascWrapper, parameters);
+
+                    // Check if result equals ASC_STATUS.SUCCESS
+                    if (result != null && result.Equals(successValue))
+                    {
+                        var installPath = (string)parameters[0];
+                        var schemaPath = Path.Combine(installPath, "coreschemas", "unit");
+                        candidateDirectories.Add(schemaPath);
+                    }
+                }
+            }
+            catch
+            {
+                // Ignore errors when discovering ASC paths - this is optional discovery.
+                // DynamoInstallDetective.dll might not be available on some deployments,
+                // or ASC might not be installed on the system.
+            }
+        }
+
+        /// <summary>
+        /// Attempts to load schema from the specified directory and create a UnitsEngine.
+        /// </summary>
+        /// <param name="schemaDirectory">Directory containing the schema definitions</param>
+        /// <returns>A ForgeUnits.UnitsEngine instance, or null if loading failed</returns>
+        private static ForgeUnits.UnitsEngine TryLoadSchemaFromDirectory(string schemaDirectory)
+        {
+            try
+            {
+                // Validate that the directory exists and contains required subdirectories
+                if (IsValidSchemaDirectory(schemaDirectory))
+                {
+                    var engine = new ForgeUnits.UnitsEngine();
+                    ForgeUnits.SchemaUtility.addDefinitionsFromFolder(schemaDirectory, engine);
+                    engine.resolveSchemas();
+                    return engine;
+                }
+
+                return null; // Invalid schema directory
+            }
+            catch
+            {
+                //There was an issue initializing the schemas at the specified path.
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Validates that a directory contains the required schema subdirectories.
+        /// </summary>
+        /// <param name="schemaDirectory">Directory to validate</param>
+        /// <returns>True if the directory contains all required subdirectories</returns>
+        private static bool IsValidSchemaDirectory(string schemaDirectory)
+        {
+            if (string.IsNullOrEmpty(schemaDirectory) || !Directory.Exists(schemaDirectory))
+            {
+                return false;
+            }
+
+            var requiredSubdirectories = new[] { "dimension", "quantity", "symbol", "unit" };
+
+            foreach (var subdirectory in requiredSubdirectories)
+            {
+                var subdirectoryPath = Path.Combine(schemaDirectory, subdirectory);
+                if (!Directory.Exists(subdirectoryPath))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
