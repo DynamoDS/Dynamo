@@ -22,7 +22,7 @@ jobs:
       MAIN_BRANCH: master   # Target branch for operations
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0   # fetches all commits
 
