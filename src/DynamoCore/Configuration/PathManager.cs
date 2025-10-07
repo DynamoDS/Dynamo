@@ -65,8 +65,6 @@ namespace Dynamo.Core
         public const string ExtensionsDirectoryName = "extensions";
         public const string ViewExtensionsDirectoryName = "viewExtensions";
         public const string DefinitionsDirectoryName = "definitions";
-        public const string SamplesDirectoryName = "samples";
-        public const string TemplateDirectoryName = "templates";
         public const string BackupDirectoryName = "backup";
         public const string PreferenceSettingsFileName = "DynamoSettings.xml";
         public const string PythonTemplateFileName = "PythonTemplate.py";
@@ -591,9 +589,8 @@ namespace Dynamo.Core
         /// </summary>
         private void BuildCommonDirectories()
         {
-            var dynamoCorePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             // Common directories.
-            commonDataDir = Path.Combine(dynamoCorePath, Configurations.SamplesAsString);
+            commonDataDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
             samplesDirectory = GetSamplesFolder(commonDataDir);
             defaultTemplatesDirectory = GetTemplateFolder(commonDataDir);
@@ -703,7 +700,7 @@ namespace Dynamo.Core
                 //
                 dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
             }
-            else if (!Directory.Exists(Path.Combine(versionedDirectory, SamplesDirectoryName)))
+            else if (!Directory.Exists(Path.Combine(versionedDirectory, Configurations.SamplesAsString)))
             {
                 // If the folder "%ProgramData%\{...}\{major}.{minor}" exists, then try to see
                 // if the folder "%ProgramData%\{...}\{major}.{minor}\samples" exists. If it
@@ -713,7 +710,7 @@ namespace Dynamo.Core
             }
 
             var uiCulture = CultureInfo.CurrentUICulture.Name;
-            var sampleDirectory = Path.Combine(dataRootDirectory, SamplesDirectoryName, uiCulture);
+            var sampleDirectory = Path.Combine(dataRootDirectory, Configurations.SamplesAsString, uiCulture);
 
             // If the localized samples directory does not exist then fall back 
             // to using the en-US samples folder. Do an additional check to see 
@@ -724,7 +721,7 @@ namespace Dynamo.Core
                 !di.GetDirectories().Any() ||
                 !di.GetFiles("*.dyn", SearchOption.AllDirectories).Any())
             {
-                var neturalCommonSamples = Path.Combine(dataRootDirectory, SamplesDirectoryName, "en-US");
+                var neturalCommonSamples = Path.Combine(dataRootDirectory, Configurations.SamplesAsString, "en-US");
                 if (Directory.Exists(neturalCommonSamples))
                     sampleDirectory = neturalCommonSamples;
             }
@@ -747,7 +744,7 @@ namespace Dynamo.Core
                 //
                 dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
             }
-            else if (!Directory.Exists(Path.Combine(versionedDirectory, TemplateDirectoryName)))
+            else if (!Directory.Exists(Path.Combine(versionedDirectory, Configurations.TemplatesAsString)))
             {
                 // If the folder "%ProgramData%\{...}\{major}.{minor}" exists, then try to see
                 // if the folder "%ProgramData%\{...}\{major}.{minor}\templates" exists. If it
@@ -757,7 +754,7 @@ namespace Dynamo.Core
             }
 
             var uiCulture = CultureInfo.CurrentUICulture.Name;
-            var templateDirectory = Path.Combine(dataRootDirectory, TemplateDirectoryName, uiCulture);
+            var templateDirectory = Path.Combine(dataRootDirectory, Configurations.TemplatesAsString, uiCulture);
 
             // If the localized template directory does not exist then fall back 
             // to using the en-US template folder. Do an additional check to see 
@@ -768,7 +765,7 @@ namespace Dynamo.Core
                 !di.GetDirectories().Any() ||
                 !di.GetFiles("*.dyn", SearchOption.AllDirectories).Any())
             {
-                var neturalCommonTemplates = Path.Combine(dataRootDirectory, TemplateDirectoryName, "en-US");
+                var neturalCommonTemplates = Path.Combine(dataRootDirectory, Configurations.TemplatesAsString, "en-US");
                 if (Directory.Exists(neturalCommonTemplates))
                     templateDirectory = neturalCommonTemplates;
             }
