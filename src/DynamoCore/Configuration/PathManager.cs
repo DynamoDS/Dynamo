@@ -593,7 +593,7 @@ namespace Dynamo.Core
         {
             var dynamoCorePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             // Common directories.
-            commonDataDir = Path.Combine(dynamoCorePath,Configurations.SamplesAsString);
+            commonDataDir = Path.Combine(dynamoCorePath, Configurations.SamplesAsString);
 
             samplesDirectory = GetSamplesFolder(commonDataDir);
             defaultTemplatesDirectory = GetTemplateFolder(commonDataDir);
