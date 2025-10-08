@@ -82,7 +82,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
         public void GeometryDoesIntersect_WithNurbsSolid_IsCorrect()
         {
             string openPath = Path.Combine(TestDirectory,

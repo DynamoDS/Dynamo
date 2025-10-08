@@ -141,7 +141,7 @@
                       Name="RightMenu">
                     <MenuItem Name="loginMenu" Margin="0,-3,-10,0">
                         <MenuItem.Header>
-                            <Button Name="LoginButton" Click="LoginButton_OnClick" Foreground="#DCDCDC"
+                            <Button Name="LoginButton" Click="LoginButton_OnClick" Foreground="#DCDCDC" ToolTipService.ShowOnDisabled="True"
                                     >
                                 <StackPanel FlowDirection="LeftToRight" Orientation="Horizontal">
 
@@ -210,7 +210,18 @@
 
                                 </Button.Style>
                                 <Button.ToolTip>
-                                    <ToolTip Content="{x:Static p:Resources.SignInButtonContentToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                                    <ToolTip>
+                                        <ToolTip.Style>
+                                            <Style TargetType="ToolTip" BasedOn="{StaticResource GenericToolTipLight}">
+                                                <Setter Property="Content" Value="{x:Static p:Resources.SignInButtonContentToolTip}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding PlacementTarget.IsEnabled, RelativeSource={RelativeSource Self}}" Value="False">
+                                                        <Setter Property="Content" Value="{x:Static p:Resources.SignInOfflineButtonContentToolTip}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ToolTip.Style>
+                                    </ToolTip>
                                 </Button.ToolTip>
                             </Button>
                         </MenuItem.Header>

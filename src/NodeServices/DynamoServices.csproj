@@ -16,13 +16,13 @@
       even though it should take precedence according to the docs.
       Dotnet build and builds in vs seem to work fine without this hack.-->
         <TargetFramework>$(Undefined)</TargetFramework>
-        <TargetFrameworks>netstandard2.0;net8.0;</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0;net8.0;net10.0</TargetFrameworks>
     </PropertyGroup>
     <PropertyGroup>
         <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
     </PropertyGroup>
     <ItemGroup>
-        <!--exclude these dependencies as Sys.Ref.MetadataLoadContext.dll is already pulled in from other projects and the transitive deps are part of the .net8 runtime.-->
+        <!--exclude these dependencies as Sys.Ref.MetadataLoadContext.dll is already pulled in from other projects and the transitive deps are part of the .net8/net10 runtime.-->
         <PackageReference Include="System.Reflection.MetadataLoadContext" Version="8.0.0" ExcludeAssets="runtime" />
     </ItemGroup>
     <ItemGroup>
