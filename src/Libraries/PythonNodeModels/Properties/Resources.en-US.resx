@@ -227,6 +227,6 @@
     <value>Please update Python Engine to PythonNet3</value>
   </data>
   <data name="PythonScriptEditorMigrationAssistantButtonDisabledTooltip" xml:space="preserve">
-    <value />
+    <value>Python engine has been automatically updated. No conversion necessary.</value>
   </data>
 </root>
