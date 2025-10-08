@@ -590,7 +590,7 @@ namespace Dynamo.Core
         private void BuildCommonDirectories()
         {
             // Common directories.
-            commonDataDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            commonDataDir = GetCommonDataFolder();
 
             samplesDirectory = GetSamplesFolder(commonDataDir);
             defaultTemplatesDirectory = GetTemplateFolder(commonDataDir);
@@ -662,6 +662,16 @@ namespace Dynamo.Core
             var executingAssemblyName = Assembly.GetExecutingAssembly().GetName();
             productVersion = Updates.BinaryVersion.FromString(executingAssemblyName.Version.ToString());
             return productVersion;
+        }
+
+        private string GetCommonDataFolder()
+        {
+            //This piece of code is only executed if we are running a host like Revit or Civil3D due that pathResolver is not null
+            if (pathResolver != null && !string.IsNullOrEmpty(pathResolver.CommonDataRootFolder))
+                return GetDynamoDataFolder(pathResolver.CommonDataRootFolder);
+
+            //This piece of code is only executed if we are running DynamoSandbox
+            return DynamoCoreDirectory;
         }
 
         private string GetDynamoDataFolder(string folder)
