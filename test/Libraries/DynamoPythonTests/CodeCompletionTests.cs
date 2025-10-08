@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using DSCPython;
 using Dynamo;
 using Dynamo.Python;
 using Dynamo.PythonServices;
 using Dynamo.Utilities;
 using NUnit.Framework;
+using DSPythonNet3;
 
 namespace DynamoPythonTests
 {
@@ -18,22 +18,23 @@ namespace DynamoPythonTests
         public override void Setup()
         {
             base.Setup();
-            //for some legacy tests we'll need the DSCPython binary loaded manually
-            //as the types are found using reflection - during normal dynamo use these types are already loaded. 
-            Assembly.LoadFrom(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "DSCPython.dll"));
+            //for some legacy tests we'll need the DSPythonNet3 binary loaded manually
+            //as the types are found using reflection - during normal dynamo use these types are already loaded.
+            var dllPath = Path.Combine(AppContext.BaseDirectory, "Built-In Packages", "packages", "PythonNet3Engine", "extra", "DSPythonNet3.dll");
+            Assembly.LoadFrom(dllPath);
         }
 
         [Test]
         public void SharedCoreCanFindLoadedProviders()
         {
-            var provider = new SharedCompletionProvider(PythonEngineManager.CPython3EngineName, "");
+            var provider = new SharedCompletionProvider(PythonEngineManager.PythonNet3EngineName, "");
             Assert.IsNotNull(provider);
         }
 
         [Test]
         public void SharedCoreCanReturnCLRCompletionData()
         {
-            var provider = new SharedCompletionProvider(PythonEngineManager.CPython3EngineName, "");
+            var provider = new SharedCompletionProvider(PythonEngineManager.PythonNet3EngineName, "");
             Assert.IsNotNull(provider);
             var str = "\nimport System.Collections\nSystem.Collections.";
 
@@ -140,7 +141,7 @@ namespace DynamoPythonTests
         public void CanMatchAllVariablesSingleLine()
         {
             var str = "a = { 'Alice': 7, 'Toby': 'Nuts' }";
-            var completionProvider = new DSCPythonCodeCompletionProviderCore();
+            var completionProvider = new DSPythonNet3CodeCompletionProviderCore();
 
             var matches = completionProvider.FindAllVariables(str);
 
@@ -153,7 +154,7 @@ namespace DynamoPythonTests
         public void CanMatchAllVariableTypes()
         {
             var str = "a = { 'Alice': 7, 'Toby': 'Nuts' }\nb = {}\nc = 5.0\nd = 'pete'\ne = []";
-            var completionProvider = new DSCPythonCodeCompletionProviderCore();
+            var completionProvider = new DSPythonNet3CodeCompletionProviderCore();
 
             var matches = completionProvider.FindAllVariables(str);
 
@@ -192,7 +193,7 @@ namespace DynamoPythonTests
         public void CanImportLibrary()
         {
             var str = "\nimport System\n";
-            var completionProvider = new DSCPythonCodeCompletionProviderCore();
+            var completionProvider = new DSPythonNet3CodeCompletionProviderCore();
             completionProvider.UpdateImportedTypes(str);
 
             Assert.AreEqual(2, completionProvider.ImportedTypes.Count);
@@ -204,7 +205,7 @@ namespace DynamoPythonTests
         public void DuplicateCallsToImportShouldBeFine()
         {
             var str = "\nimport System\nimport System";
-            var completionProvider = new DSCPythonCodeCompletionProviderCore();
+            var completionProvider = new DSPythonNet3CodeCompletionProviderCore();
             completionProvider.UpdateImportedTypes(str);
 
             Assert.AreEqual(2, completionProvider.ImportedTypes.Count);
@@ -216,7 +217,7 @@ namespace DynamoPythonTests
         public void CanImportSystemLibraryAndGetCompletionData()
         {
             var str = "\nimport System\nSystem.";
-            var completionProvider = new DSCPythonCodeCompletionProviderCore();
+            var completionProvider = new DSPythonNet3.DSPythonNet3CodeCompletionProviderCore();
 
             var completionData = completionProvider.GetCompletionData(str);
 
@@ -233,7 +234,7 @@ namespace DynamoPythonTests
         public void CanImportSystemCollectionsLibraryAndGetCompletionData()
         {
             var str = "\nimport System.Collections\nSystem.Collections.";
-            var completionProvider = new DSCPythonCodeCompletionProviderCore();
+            var completionProvider = new DSPythonNet3CodeCompletionProviderCore();
 
             var completionData = completionProvider.GetCompletionData(str);
             var completionList = completionData.Select(d => d.Text);
@@ -252,7 +253,7 @@ namespace DynamoPythonTests
         public void CanMatchImportSystemLibraryWithComment()
         {
             var str = "# Write your script here.\r\nimport System.";
-            var matches = DSCPythonCodeCompletionProviderCore.FindBasicImportStatements(str);
+            var matches = DSPythonNet3CodeCompletionProviderCore.FindBasicImportStatements(str);
 
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("System"));
@@ -263,7 +264,7 @@ namespace DynamoPythonTests
         public void CanMatchImportSystemAndLoadLibraryAndWithComment()
         {
             var str = "# Write your script here.\r\nimport System.";
-            var completionProvider = new DSCPythonCodeCompletionProviderCore();
+            var completionProvider = new DSPythonNet3CodeCompletionProviderCore();
             completionProvider.UpdateImportedTypes(str);
 
             Assert.AreEqual(2, completionProvider.ImportedTypes.Count);
@@ -276,7 +277,7 @@ namespace DynamoPythonTests
         {
             var str = "a = 5.0\na.";
 
-            var completionProvider = new DSCPythonCodeCompletionProviderCore();
+            var completionProvider = new DSPythonNet3CodeCompletionProviderCore();
             var completionData = completionProvider.GetCompletionData(str);
 
             Assert.AreNotEqual(0, completionData.Length);
@@ -334,7 +335,7 @@ namespace DynamoPythonTests
         {
             var str = "from itertools import *\nimport math\nfrom sys import exit\n";
 
-            var completionProvider = new DSCPythonCodeCompletionProviderCore();
+            var completionProvider = new DSPythonNet3CodeCompletionProviderCore();
             try
             {
                 completionProvider.UpdateImportedTypes(str);
@@ -353,7 +354,7 @@ namespace DynamoPythonTests
         public void CanFindSystemCollectionsAssignmentAndType()
         {
             var str = "from System.Collections import ArrayList\na = ArrayList()\n";
-            var completionProvider = new DSCPythonCodeCompletionProviderCore();
+            var completionProvider = new DSPythonNet3CodeCompletionProviderCore();
             completionProvider.UpdateImportedTypes(str);
             completionProvider.UpdateVariableTypes(str);
 
@@ -366,7 +367,7 @@ namespace DynamoPythonTests
         public void CanGetCompletionDataForArrayListVariable()
         {
             var str = "from System.Collections import ArrayList\na = ArrayList()\na.";
-            var completionProvider = new DSCPythonCodeCompletionProviderCore();
+            var completionProvider = new DSPythonNet3CodeCompletionProviderCore();
             var matches = completionProvider.GetCompletionData(str);
 
             var matchedTexts = matches.Select(x => x.Text);
@@ -382,7 +383,7 @@ namespace DynamoPythonTests
         [Category("UnitTests")]
         public void CanGetCompletionDataForPyBuiltInTypes()
         {
-            var completionProvider = new DSCPythonCodeCompletionProviderCore();
+            var completionProvider = new DSPythonNet3CodeCompletionProviderCore();
             var code = "str.";
             var matches = completionProvider.GetCompletionData(code);
             Assert.AreNotEqual(0, matches.Length);

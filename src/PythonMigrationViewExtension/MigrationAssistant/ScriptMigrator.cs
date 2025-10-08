@@ -26,8 +26,6 @@ namespace Dynamo.PythonMigration.MigrationAssistant
                 PythonEngine.BeginAllowThreads();
             }
 
-            IntPtr gs = PythonEngine.AcquireLock();
-
             try
             {
                 using (Py.GIL())
@@ -35,7 +33,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
                     string output;
                     var asm = Assembly.GetExecutingAssembly();
 
-                    using (PyScope scope = Py.CreateScope())
+                    using (PyModule scope = Py.CreateScope())
                     {
                         scope.Set(INPUT_NAME, code.ToPython());
 
@@ -51,7 +49,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
                     // that's not addressed by 2to3.
                     if (output.Contains("\t"))
                     {
-                        using (PyScope scope = Py.CreateScope())
+                        using (PyModule scope = Py.CreateScope())
                         {
                             scope.Set(INPUT_NAME, output.ToPython());
                             scope.Exec(GetReindentationScript(asm));
@@ -65,7 +63,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
 
             finally
             {
-                PythonEngine.ReleaseLock(gs);
+
             }
         }
 

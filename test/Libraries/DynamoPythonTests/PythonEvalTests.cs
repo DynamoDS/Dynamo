@@ -14,103 +14,38 @@ namespace DSPythonTests
 {
     public class PythonEvalTests : UnitTestBase
     {
+        public delegate object PythonEvaluatorDelegate(string code, IList bindingNames, IList bindingValues);
+
+        public PythonEvaluatorDelegate evaluator;
+        private System.Reflection.Assembly pyAsm;
+        private Type evalType;
+        private System.Reflection.MethodInfo evalMethod;
+
         [OneTimeSetUp]
         public void LoadPythonNet3()
         {
-            // 1) Locate the engine folder (prefer 'extra' per your screenshot)
-            var roots = new[]
-            {
-                @"C:\Users\IvoAutodesk\source\repos\Dynamo\bin\AnyCPU\Debug\Built-In Packages\packages\PythonNet3Engine",
-                Path.Combine(
-                    Path.GetDirectoryName(typeof(PythonEvalTests).Assembly.Location) ?? ".",
-                    @"..\..\..\..\bin\AnyCPU\Debug\Built-In Packages\packages\PythonNet3Engine")
-            };
-
-            string engineRoot = roots.FirstOrDefault(Directory.Exists)
-                ?? throw new DirectoryNotFoundException("Could not find PythonNet3Engine folder.");
-
-            string[] candidates = {
-                Path.Combine(engineRoot, "extra"),
-                Path.Combine(engineRoot, "bin")
-            };
-            string loadDir = candidates.FirstOrDefault(Directory.Exists)
-                ?? throw new DirectoryNotFoundException("Could not find 'extra' or 'bin' under PythonNet3Engine.");
-
-            // 2) Print diagnostics so we know exactly where we are loading from
-            Debug.WriteLine($"PythonNet3 load directory: {loadDir}");
-            foreach (var f in Directory.EnumerateFiles(loadDir, "*.dll"))
-                Debug.WriteLine("  found: " + Path.GetFileName(f));
-
-            // 3) Ensure the test is 64-bit (Python.Runtime is x64 in Dynamo)
-            Debug.WriteLine($"Process is 64-bit: {Environment.Is64BitProcess}");
-
-            // 4) Resolve ALL managed deps from the same folder
-            AppDomain.CurrentDomain.AssemblyResolve += (s, e) =>
-            {
-                var name = new System.Reflection.AssemblyName(e.Name).Name + ".dll";
-                var path = Path.Combine(loadDir, name);
-                if (File.Exists(path))
-                {
-                    Debug.WriteLine($"AssemblyResolve → {name} → {path}");
-                    return System.Reflection.Assembly.LoadFrom(path);
-                }
-                return null;
-            };
-
-            // 5) PRELOAD dependencies explicitly (reduces “FileNotFound” surprises)
-            string[] deps =
-            {
-                "Python.Runtime.dll",
-                "Python.Included.dll",
-                "Python.Deployment.dll",
-                "DSPythonNet3Wheels.dll",
-                "DSPythonNet3Extension.dll"
-            };
-            foreach (var dep in deps)
-            {
-                var p = Path.Combine(loadDir, dep);
-                if (File.Exists(p))
-                {
-                    Debug.WriteLine("Preloading: " + dep);
-                    System.Reflection.Assembly.LoadFrom(p);
-                }
-                else
-                {
-                    Debug.WriteLine("Missing (ok if not needed): " + dep);
-                }
-            }
-
-            // 6) Finally, load the engine itself
+            var loadDir = Path.Combine(AppContext.BaseDirectory, "Built-In Packages", "packages", "PythonNet3Engine", "extra");
             var enginePath = Path.Combine(loadDir, "DSPythonNet3.dll");
-            if (!File.Exists(enginePath))
-                throw new FileNotFoundException("DSPythonNet3.dll not found", enginePath);
 
-            var asm = System.Reflection.Assembly.LoadFrom(enginePath);
-            Debug.WriteLine($"Loaded engine: {asm.FullName} from {asm.Location}");
+            pyAsm = System.Reflection.Assembly.LoadFrom(enginePath);
+            evalType = pyAsm.GetType("DSPythonNet3.DSPythonNet3Evaluator", throwOnError: true);
+            evalMethod = evalType.GetMethod("EvaluatePythonScript",
+                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
 
-            // 7) Optional: assert the type exists so we fail early if wrong DLL
-            var t = asm.GetType("DSPythonNet3.DSPythonNet3Evaluator", throwOnError: false);
-            Assert.IsNotNull(t, "Could not find DSPythonNet3Evaluator in the loaded assembly.");
+            Assert.IsNotNull(evalMethod, "EvaluatePythonScript not found in DSPythonNet3Evaluator.");
+
+            evaluator = (string code, IList names, IList values) => evalMethod.Invoke(null, new object[] { code, names, values });
         }
-
-
-
-        public delegate object PythonEvaluatorDelegate(string code, IList bindingNames, IList bindingValues);
-
-        public IEnumerable<PythonEvaluatorDelegate> Evaluators = new List<PythonEvaluatorDelegate> {
-            DSPythonNet3.DSPythonNet3Evaluator.EvaluatePythonScript
-        };
 
         [Test]
         [Category("UnitTests")]
         public void EvaluatorWorks()
         {
-            foreach (var pythonEvaluator in Evaluators)
-            {
-                var empty = new ArrayList();
-                var output = pythonEvaluator("OUT = 0", empty, empty);
-                Assert.AreEqual(0, output);
-            }
+            var emptyNames = new ArrayList();
+            var emptyValues = new ArrayList();
+
+            var output = evaluator("OUT = 0", emptyNames, emptyValues);
+            Assert.AreEqual(0, output);
         }
 
         [Test]
@@ -122,38 +57,28 @@ namespace DSPythonTests
             var names = new ArrayList { "test" };
             var vals = new ArrayList { expected };
 
-            foreach (var pythonEvaluator in Evaluators)
-            {
-                var output = pythonEvaluator(
-                    "OUT = test",
-                    names,
-                    vals
-                );
-
-                Assert.AreEqual(expected, output);
-            }
+            var output = evaluator( "OUT = test", names, vals );
+            Assert.AreEqual(expected, output);
         }
 
         [Test]
         [Category("UnitTests")]
         public void DataMarshaling_Output()
         {
-            //const string script = "OUT = ['', ' ', '  ']";
+            const string script = "OUT = ['', ' ', '  ']";
 
-            //// Using the CPython Evaluator
-            //var marshaler = CPythonEvaluator.OutputMarshaler;
-            //marshaler.RegisterMarshaler((string s) => s.Length);
+            // Using the PythonNet3 Evaluator
+            var marshaler = DSPythonNet3Evaluator.OutputMarshaler;
+            marshaler.RegisterMarshaler((string s) => s.Length);
 
-            //var output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
-            //    script,
-            //    new ArrayList(),
-            //    new ArrayList());
+            var output = DSPythonNet3Evaluator.EvaluatePythonScript(
+                script,
+                new ArrayList(),
+                new ArrayList());
 
-            //Assert.AreEqual(new[] { 0, 1, 2 }, output);
+            Assert.AreEqual(new[] { 0, 1, 2 }, output);
 
-            //marshaler.UnregisterMarshalerOfType<string>();
-
-
+            marshaler.UnregisterMarshalerOfType<string>();
         }
 
         [Test]
@@ -162,10 +87,10 @@ namespace DSPythonTests
         {
             const string script = "OUT = sum(IN)";
 
-            var marshaler = DSCPython.CPythonEvaluator.InputMarshaler;
+            var marshaler = DSPythonNet3Evaluator.InputMarshaler;
             marshaler.RegisterMarshaler((string s) => s.Length);
 
-            var output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
+            var output = DSPythonNet3Evaluator.EvaluatePythonScript(
                 script,
                 new ArrayList { "IN" },
                 new ArrayList { new ArrayList { " ", "  " } });
@@ -182,21 +107,13 @@ namespace DSPythonTests
             var names = new ArrayList { "indx" };
             var vals = new ArrayList { 3 };
 
-            foreach (var pythonEvaluator in Evaluators)
-            {
-                var output = pythonEvaluator(
-                "OUT = [1,2,3,4,5,6,7][indx:indx+2]",
-                names,
-                vals);
-
-                var expected = new ArrayList { 4, 5 };
-
-                Assert.AreEqual(expected, output);
-            }
+            var output = evaluator("OUT = [1,2,3,4,5,6,7][indx:indx+2]", names, vals);
+            var expected = new ArrayList { 4, 5 };
+            Assert.AreEqual(expected, output);
         }
 
         [Test]
-        public void CPythonEngineIncludesTraceBack()
+        public void PythonEngineIncludesTraceBack()
         {
             var code = @"
 # extra line
@@ -205,13 +122,13 @@ namespace DSPythonTests
 ";
             try
             {
-                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
+                DSPythonNet3.DSPythonNet3Evaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
                 Assert.Fail("An exception was expected");
             }
             catch (Exception exc)
             {
                 // Trace back is expected here. Line is 3 due to the line break from the code variable declaration
-                Assert.AreEqual(@"ZeroDivisionError : division by zero ['  File ""<string>"", line 3, in <module>\n']", exc.Message);
+                Assert.AreEqual(@"ZeroDivisionError :division by zero ['  File ""<string>"", line 3, in <module>\n']", exc.Message);
             }
 
             code = @"
@@ -221,7 +138,7 @@ print 'hello'
 ";
             try
             {
-                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
+                DSPythonNet3Evaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
                 Assert.Fail("An exception was expected");
             }
             catch (Exception exc)
@@ -232,7 +149,7 @@ print 'hello'
         }
 
         [Test]
-        public void CPythonEngineWithErrorRaisesCorrectEvent()
+        public void PythonEngineWithErrorRaisesCorrectEvent()
         {
 
             var count = 0;
@@ -249,12 +166,12 @@ print 'hello'
                 }
             };
 
-            //CPythonEvaluator.Instance.EvaluationFinished += handler;
+            DSPythonNet3Evaluator.Instance.EvaluationFinished += handler;
 
             var code = @"1";
             try
             {
-                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
+                DSPythonNet3Evaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
             }
             finally
             {
@@ -264,7 +181,7 @@ print 'hello'
             code = @"1/a";
             try
             {
-                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
+                DSPythonNet3Evaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
             }
             catch
             {
@@ -272,8 +189,8 @@ print 'hello'
             }
             finally
             {
-                //CPythonEvaluator.Instance.EvaluationFinished -= handler;
-                //Assert.AreEqual(2, count);
+                DSPythonNet3Evaluator.Instance.EvaluationFinished -= handler;
+                Assert.AreEqual(2, count);
             }
         }
 
@@ -295,7 +212,7 @@ OUT = wr
             var empty = new ArrayList();
             Assert.DoesNotThrow(() =>
             {
-                Assert.IsTrue(DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty).ToString().Contains("weakref at"));
+                Assert.IsTrue(DSPythonNet3.DSPythonNet3Evaluator.EvaluatePythonScript(code, empty, empty).ToString().Contains("weakref at"));
 
             });
         }
@@ -315,7 +232,7 @@ OUT = o
             var empty = new ArrayList();
             Assert.DoesNotThrow(() =>
             {
-                Assert.AreEqual("I am a myobj", DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty).ToString());
+                Assert.AreEqual("I am a myobj", DSPythonNet3.DSPythonNet3Evaluator.EvaluatePythonScript(code, empty, empty).ToString());
 
             });
         }
@@ -353,12 +270,12 @@ o = notiterable()
 OUT = o
 ";
             var empty = new ArrayList();
-            var result1 = DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty);
-            var result2 = DSCPython.CPythonEvaluator.EvaluatePythonScript(code2, empty, empty);
+            var result1 = DSPythonNet3.DSPythonNet3Evaluator.EvaluatePythonScript(code, empty, empty);
+            var result2 = DSPythonNet3.DSPythonNet3Evaluator.EvaluatePythonScript(code2, empty, empty);
             Assert.IsInstanceOf(typeof(IList), result1);
             Assert.IsTrue(new List<object>() { 0L, 1L, 2L, 3L }
                 .SequenceEqual((IEnumerable<Object>)result1));
-            Assert.IsInstanceOf(typeof(DSCPython.DynamoCPythonHandle), result2);
+            Assert.IsInstanceOf(typeof(DSPythonNet3.DynamoCPythonHandle), result2);
 
         }
 
@@ -384,55 +301,48 @@ OUT = s,fs,dk,dv,di
                 new ArrayList { new ArrayList { "one", 1 } }
             };
             var empty = new ArrayList();
-            foreach (var pythonEvaluator in Evaluators)
-            {
-                var output = pythonEvaluator(code, empty, empty);
-                Assert.AreEqual(expected, output);
-            }
+            var output = evaluator(code, empty, empty);
+            Assert.AreEqual(expected, output);
         }
         [Test]
         public void ImportedLibrariesReloadedOnNewEvaluation()
         {
+            var modName = "reload_test1";
+            var tempPath = Path.Combine(TempFolder, $"{modName}.py");
 
-//            var modName = "reload_test1";
+            //clear file.
+            File.WriteAllText(tempPath, "value ='Hello World!'\n");
+            try
+            {
+                var script = $@"import sys
+sys.path.append(r'{Path.GetDirectoryName(tempPath)}')
+import {modName}
+OUT = {modName}.value";
 
-//            var tempPath = Path.Combine(TempFolder, $"{modName}.py");
+                var output = DSPythonNet3.DSPythonNet3Evaluator.EvaluatePythonScript(
+                   script,
+                   new ArrayList { "IN" },
+                   new ArrayList { new ArrayList { " ", "  " } });
 
-//            //clear file.
-//            File.WriteAllText(tempPath, "value ='Hello World!'\n");
-//            try
-//            {
-//                var script = $@"import sys
-//sys.path.append(r'{Path.GetDirectoryName(tempPath)}')
-//import {modName}
-//OUT = {modName}.value";
+                Assert.AreEqual("Hello World!", output);
 
-//                var output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
-//                   script,
-//                   new ArrayList { "IN" },
-//                   new ArrayList { new ArrayList { " ", "  " } });
+                //now modify the file.
+                File.AppendAllLines(tempPath, new string[] { "value ='bye'" });
 
-//                Assert.AreEqual("Hello World!", output);
+                //mock raise event
+                DSPythonNet3Evaluator.RequestPythonResetHandler(PythonEngineManager.PythonNet3EngineName);
 
-//                //now modify the file.
-//                File.AppendAllLines(tempPath, new string[] { "value ='bye'" });
+                output = DSPythonNet3Evaluator.EvaluatePythonScript(
+                 script,
+                 new ArrayList { "IN" },
+                 new ArrayList { new ArrayList { " ", "  " } });
+                Assert.AreEqual("bye", output);
 
-//                //mock raise event
-//                CPythonEvaluator.RequestPythonResetHandler(PythonEngineManager.CPython3EngineName);
-
-//                output = CPythonEvaluator.EvaluatePythonScript(
-//                 script,
-//                 new ArrayList { "IN" },
-//                 new ArrayList { new ArrayList { " ", "  " } });
-//                Assert.AreEqual("bye", output);
-
-//            }
-//            finally
-//            {
-//                File.Delete(tempPath);
-//            }
+            }
+            finally
+            {
+                File.Delete(tempPath);
+            }
         }
-
-
     }
 }

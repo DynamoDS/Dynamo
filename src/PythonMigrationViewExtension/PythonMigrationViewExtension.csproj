@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <UILib>true</UILib>
     </PropertyGroup>
@@ -12,15 +12,16 @@
         <RootNamespace>Dynamo.PythonMigration</RootNamespace>
         <AssemblyName>PythonMigrationViewExtension</AssemblyName>
         <EnableDefaultPageItems>false</EnableDefaultPageItems>
-    </PropertyGroup>
+    </PropertyGroup>    
+    <ItemGroup>
+      <Reference Include="Python.Runtime">
+        <HintPath>..\..\extern\PythonNet3Engine\extra\Python.Runtime.dll</HintPath>
+        <Private>false</Private>
+      </Reference>
+    </ItemGroup>    
     <ItemGroup>
         <PackageReference Include="DiffPlex" Version="1.6.3" CopyMetaData="true" />
         <PackageReference Include="FontAwesome5" Version="2.1.11" />
-        <Reference Include="Python.Runtime, Version=2.5.2.4265, Culture=neutral, processorArchitecture=MSIL">
-            <SpecificVersion>False</SpecificVersion>
-            <HintPath>..\..\extern\Python\Python.Runtime.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
@@ -33,7 +34,6 @@
             <Name>DynamoCore</Name>
             <Private>False</Private>
         </ProjectReference>
-        <ProjectReference Include="..\Libraries\DSCPython\DSCPython.csproj" />
         <ProjectReference Include="..\Libraries\PythonNodeModels\PythonNodeModels.csproj">
             <Project>{8872ca17-c10d-43b9-8393-5c5a57065eb0}</Project>
             <Name>PythonNodeModels</Name>

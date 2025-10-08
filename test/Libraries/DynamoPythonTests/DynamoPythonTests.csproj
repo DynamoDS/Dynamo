@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <UILib>true</UILib>
     </PropertyGroup>
@@ -21,18 +21,16 @@
     <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.6.0.2655"/>
     <PackageReference Include="DynamicLanguageRuntime" Version="1.2.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />      
     <Reference Include="DSPythonNet3">
         <HintPath>..\..\..\bin\AnyCPU\$(Configuration)\Built-In Packages\packages\PythonNet3Engine\extra\DSPythonNet3.dll</HintPath>
-        <Private>false</Private>
-        <SpecificVersion>false</SpecificVersion>
-      <HintPath>..\..\..\extern\PythonNet3Engine\extra\DSPythonNet3.dll</HintPath>
+      <Private>false</Private>
     </Reference>
     <Reference Include="Python.Runtime">
-      <HintPath>..\..\..\extern\Python\Python.Runtime.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-  </ItemGroup>
+        <HintPath>..\..\..\bin\AnyCPU\$(Configuration)\Built-In Packages\packages\PythonNet3Engine\extra\Python.Runtime.dll</HintPath>
+      <Private>false</Private>
+    </Reference>      
+  </ItemGroup>    
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj">
       <Project>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</Project>
@@ -47,11 +45,6 @@
     <ProjectReference Include="..\..\..\src\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
       <Name>ProtoCore</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Libraries\DSCPython\DSCPython.csproj">
-      <Project>{f1541c2d-80a9-4fe7-8d9e-75a8b9ff3479}</Project>
-      <Name>DSCPython</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\src\Libraries\PythonNodeModelsWpf\PythonNodeModelsWpf.csproj">

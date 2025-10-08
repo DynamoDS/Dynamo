@@ -17,7 +17,7 @@ namespace DynamoPythonTests
         }
 
         public IEnumerable<PythonEvaluatorDelegate> Evaluators = new List<PythonEvaluatorDelegate> {
-            DSCPython.CPythonEvaluator.EvaluatePythonScript
+            DSPythonNet3.DSPythonNet3Evaluator.EvaluatePythonScript
         };
 
         [Test]
@@ -191,11 +191,12 @@ OUT = a, l
         }
 
         [Test]
-        public void TestDictionaryDecodingCPython()
+        public void TestDictionaryDecodingPython()
         {
             string code = @"
 import sys
 import clr
+import System
 clr.AddReference('FFITarget')
 clr.AddReference('DSCoreNodes')
 from DSCore import List
@@ -205,11 +206,11 @@ d = {'one': 1, 'two': 2, 'three': 3}
 
 # Python dict => .NET IDictionary
 untypedDictionary = DummyCollection.AcceptIDictionary(d)
-untypedDictionary['four'] = 4
+untypedDictionary['four'] = System.Int(4)
 
 # Python dict => .NET IDictionary<> - Does not work in IronPython
 typedDictionary = DummyCollection.AcceptDictionary(d)
-typedDictionary['four'] = 4
+typedDictionary['four'] = System.Int(4)
 
 # Python dict => .NET IEnumerable - Returns keys in both engines
 sortedKeys = List.Sort(d)
@@ -221,7 +222,7 @@ OUT = untypedDictionary, typedDictionary, sortedKeys
                 { "one", 1 }, { "two", 2 }, { "three", 3 }, { "four", 4 }
             };
             var expectedKeys = new List<string> { "one", "three", "two" };
-            var result = DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty);
+            var result = DSPythonNet3.DSPythonNet3Evaluator.EvaluatePythonScript(code, empty, empty);
             Assert.IsTrue(result is IList);
             var resultList = result as IList;
             for (int i = 0; i < 2; i++)
@@ -286,7 +287,7 @@ OUT = s2, fs2
 ";
             var empty = new ArrayList();
             var expected = new string[] { "hello", "world" };
-            var result = DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty);
+            var result = DSPythonNet3.DSPythonNet3Evaluator.EvaluatePythonScript(code, empty, empty);
             Assert.IsTrue(result is IEnumerable);
             foreach (var item in result as IEnumerable)
             {
