@@ -46,7 +46,7 @@ namespace ProtoFFI
                         return Assembly.Load(System.IO.Path.GetFileNameWithoutExtension(name));
                     }
 
-                    return Assembly.LoadFrom(name);
+                    return Dynamo.Utilities.AssemblyHelper.LoadInALCFrom(name);
                 }
                 catch(System.IO.FileLoadException e)
                 {

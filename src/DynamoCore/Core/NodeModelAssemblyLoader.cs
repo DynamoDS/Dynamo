@@ -150,7 +150,7 @@ namespace Dynamo.Models
                     Assembly assembly;
                     if (!loadedAssembliesByPath.TryGetValue(assemblyPath, out assembly))
                     {
-                        assembly = Assembly.LoadFrom(assemblyPath);
+                        assembly = Dynamo.Utilities.AssemblyHelper.LoadInALCFrom(assemblyPath);
                         loadedAssembliesByName[assembly.GetName().Name] = assembly;
                         loadedAssembliesByPath[assemblyPath] = assembly;
                     }

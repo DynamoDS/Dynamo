@@ -137,7 +137,7 @@ namespace Dynamo.Wpf.Utilities
                     if (!File.Exists(assemblyPath))
                         throw new FileNotFoundException(assemblyPath);
 
-                    var assembly = Assembly.LoadFrom(assemblyPath);
+                    var assembly = Dynamo.Utilities.AssemblyHelper.LoadInALCFrom(assemblyPath);
                     type = assembly.GetType("DynamoInstallDetective.Utilities");
                 }
 

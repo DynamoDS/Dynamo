@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -89,7 +89,7 @@ namespace Dynamo.Engine
 
             if (ResolveResourceAssembly(assemblyPath, pathManager, useAdditionalPaths, out resourceAssemblyPath))
             {
-                resAssembly = Assembly.LoadFile(resourceAssemblyPath);
+                resAssembly = Dynamo.Utilities.AssemblyHelper.LoadInALCFrom(resourceAssemblyPath);
             }
 
             // We need 'LibraryCustomization' if either one is not 'null'

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Xml;
 using Dynamo.Logging;
 using DynamoUtilities;
@@ -30,7 +29,7 @@ namespace Dynamo.Extensions
                     CertificateVerification.CheckAssemblyForValidCertificate(extension.AssemblyPath);
                 }
 
-                var assembly = Assembly.LoadFrom(extension.AssemblyPath);
+                var assembly = Dynamo.Utilities.AssemblyHelper.LoadInALCFrom(extension.AssemblyPath);
                 var result = assembly.CreateInstance(extension.TypeName) as IExtension;
                 ExtensionLoading?.Invoke(result);
                 

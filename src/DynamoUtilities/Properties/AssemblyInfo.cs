@@ -32,3 +32,5 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Notifications")]
 [assembly: InternalsVisibleTo("SystemTestServices")]
 [assembly: InternalsVisibleTo("NodeAutoCompleteViewExtension")]
+[assembly: InternalsVisibleTo("DynamoSandbox")]
+[assembly: InternalsVisibleTo("DynamoWPFCLI")]

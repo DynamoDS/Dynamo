@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -268,7 +268,7 @@ namespace Dynamo.TestInfrastructure
                 {
                     try
                     {
-                        var assembly = Assembly.LoadFrom(assemblyPath);
+                        var assembly = Dynamo.Utilities.AssemblyHelper.LoadInALCFrom(assemblyPath);
                         allLoadedAssemblies[assembly.GetName().Name] = assembly;
                         List<Type> types = LoadNodesFromAssembly(assembly);
                         nodeTypes.AddRange(types);
