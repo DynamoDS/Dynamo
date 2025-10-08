@@ -546,6 +546,10 @@ namespace Dynamo.ViewModels
         private void HandleDoubleClick()
         {
             DynamoViewModel dynamoViewModel = this.node.DynamoViewModel;
+            if (!dynamoViewModel.EnableNodeAutoComplete)
+            {
+                return;
+            }
             WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
 
             workspaceViewModel.CancelActiveState();
