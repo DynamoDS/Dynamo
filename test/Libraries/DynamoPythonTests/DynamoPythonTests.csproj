@@ -21,9 +21,9 @@
     <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.6.0.2655"/>
     <PackageReference Include="DynamicLanguageRuntime" Version="1.2.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />      
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <Reference Include="DSPythonNet3">
-        <HintPath>..\..\..\bin\AnyCPU\$(Configuration)\Built-In Packages\packages\PythonNet3Engine\extra\DSPythonNet3.dll</HintPath>
+      <HintPath>..\..\..\bin\AnyCPU\$(Configuration)\Built-In Packages\packages\PythonNet3Engine\extra\DSPythonNet3.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="Python.Runtime">

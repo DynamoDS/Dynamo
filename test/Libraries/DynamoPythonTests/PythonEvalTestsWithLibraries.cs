@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Numerics;
 using Dynamo;
-using Dynamo.PythonServices;
 using NUnit.Framework;
 using static DSPythonTests.PythonEvalTests;
 
@@ -181,7 +180,6 @@ OUT = a, l
             var empty = new ArrayList();
             var expected = new ArrayList { new ArrayList { 0, 2, 4, 6, 8 }, new ArrayList { 0, 2, 4, 6, 8, 10 } };
 
-            //var result = DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty);
             var result = DSCore.PythonEvaluator.Evaluate(
                 Dynamo.PythonServices.PythonEngineManager.PythonNet3EngineName,
                 code, empty, empty);

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using DSPythonNet3;
 using Dynamo;
+using Dynamo.Core;
 using Dynamo.Python;
 using Dynamo.PythonServices;
 using Dynamo.Utilities;
 using NUnit.Framework;
-using DSPythonNet3;
 
 namespace DynamoPythonTests
 {
@@ -20,7 +21,7 @@ namespace DynamoPythonTests
             base.Setup();
             //for some legacy tests we'll need the DSPythonNet3 binary loaded manually
             //as the types are found using reflection - during normal dynamo use these types are already loaded.
-            var dllPath = Path.Combine(AppContext.BaseDirectory, "Built-In Packages", "packages", "PythonNet3Engine", "extra", "DSPythonNet3.dll");
+            var dllPath = Path.Combine(PathManager.BuiltinPackagesDirectory, "PythonNet3Engine", "extra", "DSPythonNet3.dll");
             Assembly.LoadFrom(dllPath);
         }
 

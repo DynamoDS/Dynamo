@@ -2274,11 +2274,11 @@
   <data name="AddStyleButton" xml:space="preserve">
     <value>Доб. стиль</value>
   </data>
-  <data name="ResetPythonNet3ButtonText" xml:space="preserve">
-    <value>Сбросить PythonNet3</value>
+  <data name="ResetCPythonButtonText" xml:space="preserve">
+    <value>Сбросить CPython</value>
   </data>
-  <data name="ResetPythonNet3ButtonToolTip" xml:space="preserve">
-    <value>Сброс среды PythonNet3 путем перезагрузки модулей.</value>
+  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
+    <value>Сброс среды CPython путем перезагрузки модулей.</value>
   </data>
   <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
     <value>Отменить и показать проблемы</value>
