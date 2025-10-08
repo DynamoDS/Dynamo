@@ -15,7 +15,7 @@
     </PropertyGroup>    
     <ItemGroup>
       <Reference Include="Python.Runtime">
-        <HintPath>..\..\extern\PythonNet3Engine\extra\Python.Runtime.dll</HintPath>
+        <HintPath>..\..\bin\AnyCPU\$(Configuration)\Built-In Packages\packages\PythonNet3Engine\extra\Python.Runtime.dll</HintPath>
         <Private>false</Private>
       </Reference>
     </ItemGroup>    

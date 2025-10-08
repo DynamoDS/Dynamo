@@ -8,7 +8,6 @@ using Dynamo;
 using Dynamo.PythonServices;
 using Dynamo.PythonServices.EventHandlers;
 using DSPythonNet3;
-using System.Diagnostics;
 
 namespace DSPythonTests
 {
