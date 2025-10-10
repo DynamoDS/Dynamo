@@ -148,7 +148,7 @@
     <value>Entre para acessar serviços on-line que se integram ao software de desktop.</value>
   </data>
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to sign in.</value>
+    <value>Ative modo de rede para poder entrar.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
