@@ -3815,6 +3815,15 @@ Para transformar este arquivo em um novo modelo, salve-o em uma pasta diferente 
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>Os dados do ícone de nó são descarregados em \"{0}\".</value>
   </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Advanced Sharing</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_General</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>Mostrar _propriedades do gráfico</value>
+  </data>
   <data name="GroupOptionalInportsText" xml:space="preserve">
     <value>Opcional</value>
   </data>

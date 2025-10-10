@@ -3813,6 +3813,15 @@
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>节点图标数据转储到“{0}”。</value>
   </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Advanced Sharing</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_General</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>显示图形特性(_P)</value>
+  </data>
   <data name="GroupOptionalInportsText" xml:space="preserve">
     <value>可选</value>
   </data>

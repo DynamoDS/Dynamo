@@ -3815,6 +3815,15 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>Node Icon Data is dumped to \"{0}\".</value>
   </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Advanced Sharing</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_General</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>Show Graph _Properties</value>
+  </data>
   <data name="GroupOptionalInportsText" xml:space="preserve">
     <value>Optional</value>
   </data>

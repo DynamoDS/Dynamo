@@ -3797,6 +3797,15 @@ Per trasformare questo file in un nuovo modello, salvarlo in un'altra cartella e
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>I dati sull'icona del nodo sono stati rimossi in \"{0}\".</value>
   </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Advanced Sharing</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_General</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>Mostra _proprietà grafico</value>
+  </data>
   <data name="GroupOptionalInportsText" xml:space="preserve">
     <value>Facoltative</value>
   </data>
