@@ -148,7 +148,7 @@
     <value>Melden Sie sich an, um auf Online-Dienste zuzugreifen, die in Ihre Desktop-Software integriert werden können.</value>
   </data>
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to sign in.</value>
+    <value>Aktivieren Sie den Netzwerkmodus, um sich anmelden zu können.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
