@@ -51,12 +51,12 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Const string of Samples folder
         /// </summary>
-        public static readonly string SamplesAsString = "Samples";
+        public static readonly string SamplesAsString = "samples";
 
         /// <summary>
         /// Const string of Templates folder
         /// </summary>
-        public static readonly string TemplatesAsString = "Templates";
+        public static readonly string TemplatesAsString = "templates";
 
         /// <summary>
         /// Const string for Dynamo Node Help Docs
