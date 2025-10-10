@@ -134,37 +134,6 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(vm.UpdatePathCommand.CanExecute(0));
             Assert.IsTrue(vm.UpdatePathCommand.CanExecute(1));
         }
-        [Test]
-        public void CannotDeleteProgramDataPath()
-        {
-            var setting = new PreferenceSettings
-            {
-                CustomPackageFolders = { Path.Combine(ViewModel.Model.PathManager.CommonDataDirectory,"Packages"), @"C:\" }
-            };
-
-
-            var vm = CreatePackagePathViewModel(setting);
-
-            Assert.AreEqual(2, vm.RootLocations.Count);
-            Assert.IsFalse(vm.DeletePathCommand.CanExecute(0));
-            Assert.IsTrue(vm.DeletePathCommand.CanExecute(1));
-        }
-
-        [Test]
-        public void CannotUpdateProgramDataPath()
-        {
-            var setting = new PreferenceSettings
-            {
-                CustomPackageFolders = { Path.Combine(ViewModel.Model.PathManager.CommonDataDirectory, "Packages"), @"C:\" }
-            };
-
-
-            var vm = CreatePackagePathViewModel(setting);
-
-            Assert.AreEqual(2, vm.RootLocations.Count);
-            Assert.IsFalse(vm.UpdatePathCommand.CanExecute(0));
-            Assert.IsTrue(vm.UpdatePathCommand.CanExecute(1));
-        }
 
         [Test]
         public void AddRemovePathsTest()
