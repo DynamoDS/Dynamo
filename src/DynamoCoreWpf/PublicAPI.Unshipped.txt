@@ -2196,6 +2196,8 @@ Dynamo.ViewModels.DynamoViewModel.ScaleFactorLog.set -> void
 Dynamo.ViewModels.DynamoViewModel.SelectAll(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.SelectAllCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.SelectAllCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.ShowGraphPropertiesCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.ShowGraphPropertiesCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubbles(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubblesCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubblesCommand.set -> void
@@ -2853,10 +2855,6 @@ Dynamo.ViewModels.PreferencesViewModel.DisableTrustWarnings.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.EnableConfidenceLevelSlider.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.EnableHideNodesToggle.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.EnableManualScaleOverrides.get -> bool
-Dynamo.ViewModels.PreferencesViewModel.EnablePanelingIsChecked.get -> bool
-Dynamo.ViewModels.PreferencesViewModel.EnablePanelingIsChecked.set -> void
-Dynamo.ViewModels.PreferencesViewModel.EnableTSplineIsChecked.get -> bool
-Dynamo.ViewModels.PreferencesViewModel.EnableTSplineIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.Filters.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.PackageFilter>
 Dynamo.ViewModels.PreferencesViewModel.GroupStyleFontSizeList.get -> System.Collections.ObjectModel.ObservableCollection<int>
 Dynamo.ViewModels.PreferencesViewModel.GroupStyleFontSizeList.set -> void
@@ -2869,13 +2867,13 @@ Dynamo.ViewModels.PreferencesViewModel.importSettingsContent(string content) -> 
 Dynamo.ViewModels.PreferencesViewModel.IsDynamoRevit.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.IsEnabledAddStyleButton.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.IsEnabledAddStyleButton.set -> void
+Dynamo.ViewModels.PreferencesViewModel.IsExperimentalExpanderVisible.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.IsolateSelectedGeometry.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.IsolateSelectedGeometry.set -> void
 Dynamo.ViewModels.PreferencesViewModel.IsSaveButtonEnabled.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.IsSaveButtonEnabled.set -> void
 Dynamo.ViewModels.PreferencesViewModel.IsTimeStampIncludedInExportFilePath.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.IsTimeStampIncludedInExportFilePath.set -> void
-Dynamo.ViewModels.PreferencesViewModel.IsTSplineNodesExperimentToggleVisible.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.IsVisibleAddStyleBorder.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.IsVisibleAddStyleBorder.set -> void
 Dynamo.ViewModels.PreferencesViewModel.IsWarningEnabled.get -> bool
@@ -3316,6 +3314,8 @@ Dynamo.Wpf.Controls.RunSettingsControl.InitializeComponent() -> void
 Dynamo.Wpf.Controls.RunSettingsControl.RunSettingsControl() -> void
 Dynamo.Wpf.CoreNodeViewCustomizations
 Dynamo.Wpf.CoreNodeViewCustomizations.CoreNodeViewCustomizations() -> void
+Dynamo.Wpf.Extensions.IExtensionMenuProvider
+Dynamo.Wpf.Extensions.IExtensionMenuProvider.GetFileMenuItem() -> System.Windows.Controls.MenuItem
 Dynamo.Wpf.Extensions.IViewExtension
 Dynamo.Wpf.Extensions.IViewExtension.Loaded(Dynamo.Wpf.Extensions.ViewLoadedParams viewLoadedParams) -> void
 Dynamo.Wpf.Extensions.IViewExtension.Name.get -> string
@@ -4756,6 +4756,8 @@ static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuExport.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuExport3DAsImage.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuExportAsImage.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuExportToSTL.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuGraphPropertiesAdvanced.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuGraphPropertiesGeneral.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuImport.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuInsert.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuNew.get -> string
@@ -4768,6 +4770,7 @@ static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuRecentFiles.get -> stri
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuSave.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuSaveAs.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewEditMenuUnpinAllPreviewBubbles.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuShowGraphProperties.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpDictionary.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenu.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenuDisplayStartPage.get -> string
@@ -5650,6 +5653,7 @@ static Dynamo.Wpf.Properties.Resources.SideBarPanelViewTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.SignInButtonContentToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.SignInButtonText.get -> string
 static Dynamo.Wpf.Properties.Resources.SigningInButtonText.get -> string
+static Dynamo.Wpf.Properties.Resources.SignInOfflineButtonContentToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.SignOutConfirmationDialogText.get -> string
 static Dynamo.Wpf.Properties.Resources.SignOutConfirmationDialogTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.SolutionToFolderNotWritatbleError.get -> string

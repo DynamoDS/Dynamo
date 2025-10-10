@@ -793,7 +793,7 @@ namespace Dynamo.ViewModels
             this.model.CommandCompleted += OnModelCommandCompleted;
             this.model.RequestsCrashPrompt += CrashReportTool.ShowCrashWindow;
 
-            this.HideReportOptions = startConfiguration.HideReportOptions;
+            this.HideReportOptions = startConfiguration.HideReportOptions || model.NoNetworkMode;
             UsageReportingManager.Instance.InitializeCore(this);
             this.WatchHandler = startConfiguration.WatchHandler;
             var pmExtension = model.GetPackageManagerExtension();
@@ -2856,6 +2856,18 @@ namespace Dynamo.ViewModels
         internal bool CanShowPackageManager(object parameters)
         {
             return !model.IsServiceMode && !model.NoNetworkMode;
+        }
+
+        internal event EventHandler ShowGraphPropertiesRequested;
+
+        internal void ShowGraphProperties(object parameter)
+        {
+            ShowGraphPropertiesRequested?.Invoke(this, EventArgs.Empty);
+        }
+
+        internal bool CanShowGraphProperties(object parameter)
+        {
+            return model.CurrentWorkspace is HomeWorkspaceModel;
         }
 
         /// <summary>

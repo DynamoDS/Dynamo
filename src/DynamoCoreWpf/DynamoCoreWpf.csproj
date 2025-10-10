@@ -94,7 +94,7 @@
 
     <Target Name="NpmRunBuildPMWizard" BeforeTargets="BeforeBuild">
         <PropertyGroup>
-            <PackageVersion>0.0.22</PackageVersion>
+            <PackageVersion>0.0.23</PackageVersion>
             <PackageName>PackageManagerWizard</PackageName>
         </PropertyGroup>
         <Exec Command="$(PowerShellCommand) -ExecutionPolicy Bypass -File &quot;$(SolutionDir)pkgexist.ps1&quot; &quot;$(PackageName)&quot; &quot;$(PackageVersion)&quot;" ConsoleToMSBuild="true">
@@ -482,7 +482,7 @@
       <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.6.0.1954" />
+      <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.2726" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
     <PackageReference Include="Greg" Version="3.0.2.8780" />
@@ -549,6 +549,7 @@
     </Compile>
     <Compile Include="Controls\UseLevelPopup.cs" />
     <Compile Include="Controls\UseLevelSpinner.cs" />
+    <Compile Include="Extensions\IExtensionMenuProvider.cs" />
     <Compile Include="Extensions\ViewModelCommandExecutive.cs" />
     <Compile Include="Extensions\IViewExtension.cs" />
     <Compile Include="Extensions\ViewExtensionBase.cs" />
