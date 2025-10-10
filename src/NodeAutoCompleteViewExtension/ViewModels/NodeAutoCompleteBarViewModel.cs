@@ -324,6 +324,15 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
             NodeAutoCompleteUtilities.PostAutoLayoutNodes(dynamoViewModel, node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, PortViewModel.PortType, null);
 
+            var parentGroup = node.WorkspaceViewModel.Annotations.FirstOrDefault(x=>x.Nodes.Any(x=>x.GUID==node.NodeModel.GUID));
+            if(parentGroup != null)
+            {
+                foreach(var newNode in transientNodes.Select(x => x.NodeModel))
+                {
+                    parentGroup.AnnotationModel.AddToTargetAnnotationModel(newNode);
+                }
+            }
+
             if (PortViewModel.PortType == PortType.Input)
             {
                 node.NodeModel.MarkNodeAsModified();
