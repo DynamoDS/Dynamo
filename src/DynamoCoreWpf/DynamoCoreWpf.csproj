@@ -2197,11 +2197,9 @@
  <Target Name="AfterBuildOps" AfterTargets="Build">
     <ItemGroup>
       <ExternTuneUpPkg Include="$(SolutionDir)..\extern\TuneUp\**\*.*" />
-      <ExternPythonNet3Pkg Include="$(SolutionDir)..\extern\PythonNet3Engine\**\*.*" />
     </ItemGroup>
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
     <Copy SourceFiles="@(ExternTuneUpPkg)" DestinationFolder="$(OutputPath)\Built-In Packages\packages\TuneUp\%(RecursiveDir)" />
-    <Copy SourceFiles="@(ExternPythonNet3Pkg)" DestinationFolder="$(OutputPath)\Built-In Packages\packages\PythonNet3Engine\%(RecursiveDir)" />
   </Target>    
   <Target Name="CopyPMWizardHtmlFiles" AfterTargets="Build">
     <ItemGroup>
