@@ -148,7 +148,7 @@
     <value>Přihlaste se, abyste získali přístup k online službám integrovaným s vaším desktopovým softwarem.</value>
   </data>
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to sign in.</value>
+    <value>Chcete-li se přihlásit, povolte režim sítě.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
