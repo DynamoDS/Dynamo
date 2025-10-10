@@ -17,7 +17,7 @@
         Title="{x:Static p:Resources.TermsOfUseViewTitle}"
         Style="{DynamicResource DynamoWindowStyle}"
         AllowsTransparency="True"
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="CenterOwner"
         WindowStyle="None">
 
     <Window.Background>
