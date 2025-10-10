@@ -1023,6 +1023,7 @@ Dynamo.PackageManager.PublishPackageViewModel.BaseVersionHeader.set -> void
 Dynamo.PackageManager.PublishPackageViewModel.BuildVersion.get -> string
 Dynamo.PackageManager.PublishPackageViewModel.BuildVersion.set -> void
 Dynamo.PackageManager.PublishPackageViewModel.CancelCommand.get -> Prism.Commands.DelegateCommand
+Dynamo.PackageManager.PublishPackageViewModel.CancelFileLoading() -> void
 Dynamo.PackageManager.PublishPackageViewModel.CanEditName.get -> bool
 Dynamo.PackageManager.PublishPackageViewModel.ClearMarkdownDirectoryCommand.get -> Prism.Commands.DelegateCommand
 Dynamo.PackageManager.PublishPackageViewModel.CompatibilityMatrix.get -> System.Collections.Generic.ICollection<Greg.Requests.PackageCompatibility>
@@ -1123,6 +1124,7 @@ Dynamo.PackageManager.PublishPackageViewModel.UploadHandle.get -> Dynamo.Package
 Dynamo.PackageManager.PublishPackageViewModel.UploadHandle.set -> void
 Dynamo.PackageManager.PublishPackageViewModel.Uploading.get -> bool
 Dynamo.PackageManager.PublishPackageViewModel.Uploading.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.UploadProgress -> System.Action<int, int, string>
 Dynamo.PackageManager.PublishPackageViewModel.UploadState.get -> Dynamo.PackageManager.PackageUploadHandle.State
 Dynamo.PackageManager.PublishPackageViewModel.UploadState.set -> void
 Dynamo.PackageManager.PublishPackageViewModel.UploadType.get -> Dynamo.PackageManager.PackageUploadHandle.UploadType
@@ -1716,6 +1718,7 @@ Dynamo.UI.Views.ScriptObject.SignOut() -> bool
 Dynamo.UI.Views.ScriptWizardObject
 Dynamo.UI.Views.ScriptWizardObject.AddFileOrFolder(string fileOrFolder) -> void
 Dynamo.UI.Views.ScriptWizardObject.ApplicationLoaded() -> void
+Dynamo.UI.Views.ScriptWizardObject.CancelUpload() -> void
 Dynamo.UI.Views.ScriptWizardObject.ClearMarkdownContent() -> void
 Dynamo.UI.Views.ScriptWizardObject.LoadMarkdownContent() -> void
 Dynamo.UI.Views.ScriptWizardObject.LogMessage(string message) -> void
@@ -1723,13 +1726,14 @@ Dynamo.UI.Views.ScriptWizardObject.OpenFolder(string path) -> void
 Dynamo.UI.Views.ScriptWizardObject.Publish() -> void
 Dynamo.UI.Views.ScriptWizardObject.RemoveFileOrFolder(string name) -> void
 Dynamo.UI.Views.ScriptWizardObject.Reset() -> void
-Dynamo.UI.Views.ScriptWizardObject.ScriptWizardObject(System.Action<string> requestAddFileOrFolder, System.Action<string> requestRemoveFileOrFolder, System.Action<bool> requestRetainFolderStructure, System.Action<string> requestUpdatePackageDetails, System.Action requestSubmit, System.Action requestPublish, System.Action requestReset, System.Action<string> requestToggleNodeLibraryOnItem, System.Action<string> requestOpenFolder, System.Action<string> requestUpdateCompatibilityMatrix, System.Action requestLoadMarkdownContent, System.Action requestClearMarkdownContent, System.Action<string> requestLogMessage, System.Action requestApplicationLoaded, System.Action<string, string> requestShowDialog) -> void
+Dynamo.UI.Views.ScriptWizardObject.ScriptWizardObject(System.Action<string> requestAddFileOrFolder, System.Action<string> requestRemoveFileOrFolder, System.Action<bool> requestRetainFolderStructure, System.Action<string> requestUpdatePackageDetails, System.Action requestSubmit, System.Action requestPublish, System.Action requestReset, System.Action<string> requestToggleNodeLibraryOnItem, System.Action<string> requestOpenFolder, System.Action<string> requestUpdateCompatibilityMatrix, System.Action requestLoadMarkdownContent, System.Action requestClearMarkdownContent, System.Action<string> requestLogMessage, System.Action requestApplicationLoaded, System.Action<string, string> requestShowDialog, System.Action requestCancelUpload, System.Action<int, int, string> requestUploadProgress) -> void
 Dynamo.UI.Views.ScriptWizardObject.ShowDialog(string title, string message) -> void
 Dynamo.UI.Views.ScriptWizardObject.Submit() -> void
 Dynamo.UI.Views.ScriptWizardObject.ToggleNodeLibraryOnItem(string name) -> void
 Dynamo.UI.Views.ScriptWizardObject.ToggleRetainFolderStructure(bool flag) -> void
 Dynamo.UI.Views.ScriptWizardObject.UpdateCompatibilityMatrix(string jsonPayload) -> void
 Dynamo.UI.Views.ScriptWizardObject.UpdatePackageDetails(string jsonPayload) -> void
+Dynamo.UI.Views.ScriptWizardObject.UploadProgress(int currentFile, int totalFiles, string currentFileName) -> void
 Dynamo.UI.Views.SplashScreen
 Dynamo.UI.Views.SplashScreen.CloseWasExplicit.get -> bool
 Dynamo.UI.Views.SplashScreen.DynamicSplashScreenReady -> Dynamo.UI.Views.SplashScreen.DynamicSplashScreenReadyHandler
@@ -5058,6 +5062,7 @@ static Dynamo.Wpf.Properties.Resources.MessageErrorOpeningInvalidPath.get -> str
 static Dynamo.Wpf.Properties.Resources.MessageExcessiveLoadTime.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageExcessiveLoadTimeTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToAddFile.get -> string
+static Dynamo.Wpf.Properties.Resources.MessageFailedToAddMultipleFiles.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToApplyCustomization.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToAttachToRowColumn.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToDelete.get -> string
@@ -5118,6 +5123,7 @@ static Dynamo.Wpf.Properties.Resources.NodeAutocomplete.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeAutoCompleteNotAvailableForCollapsedGroups.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeAutoCompleteToolTip.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDuplicateAssembliesFoundMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoCompleteNewUI.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoCompleteNewUITooltipText.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeContextMenuEnablePeriodicUpdate.get -> string
