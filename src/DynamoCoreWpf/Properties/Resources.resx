@@ -4163,6 +4163,18 @@ To make this file into a new template, save it to a different folder, then move 
     <value>Node Icon Data is dumped to \"{0}\".</value>
     <comment>Debug menu | Dump all node icons</comment>
   </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Advanced Sharing</value>
+    <comment>File menu | Show Graph Properties | Advanced Sharing</comment>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_General</value>
+    <comment>File menu | Show Graph Properties | General</comment>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>Show Graph _Properties</value>
+    <comment>File menu | Show Graph Properties</comment>
+  </data>
   <data name="GroupOptionalInportsText" xml:space="preserve">
     <value>Optional</value>
   </data>
