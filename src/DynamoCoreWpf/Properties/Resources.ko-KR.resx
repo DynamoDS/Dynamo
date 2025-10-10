@@ -3812,6 +3812,15 @@
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>노드 아이콘 데이터가 \"{0}\"에 덤프됩니다.</value>
   </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Advanced Sharing</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_General</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>그래프 특성 표시(_P)</value>
+  </data>
   <data name="GroupOptionalInportsText" xml:space="preserve">
     <value>선택적</value>
   </data>

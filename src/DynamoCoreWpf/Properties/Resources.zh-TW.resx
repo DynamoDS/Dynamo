@@ -3814,6 +3814,15 @@
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>節點圖示資料已傾印至「{0}」。</value>
   </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Advanced Sharing</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_General</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>展示圖表性質(_P)</value>
+  </data>
   <data name="GroupOptionalInportsText" xml:space="preserve">
     <value>選擇性</value>
   </data>

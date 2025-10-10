@@ -3813,6 +3813,15 @@ Führen Sie #Download und Installation=https://manage.autodesk.com/products/upda
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>Blocksymboldaten werden in \"{0}\" ausgegeben.</value>
   </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Advanced Sharing</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_General</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>Diagramm_eigenschaften anzeigen</value>
+  </data>
   <data name="GroupOptionalInportsText" xml:space="preserve">
     <value>Optional</value>
   </data>

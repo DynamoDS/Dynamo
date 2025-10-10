@@ -156,9 +156,6 @@
   <data name="ImageSelector_Title_SelectImage" xml:space="preserve">
     <value>이미지 선택</value>
   </data>
-  <data name="MenuItemText" xml:space="preserve">
-    <value>그래프 특성 표시(_P)</value>
-  </data>
   <data name="URIValidationRule_Fail_Message" xml:space="preserve">
     <value>문자열이 유효한 URI가 아닙니다.</value>
   </data>
