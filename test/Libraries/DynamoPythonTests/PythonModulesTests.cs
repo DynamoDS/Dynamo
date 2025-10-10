@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
 using CoreNodeModels.Input;
-using Dynamo;
+using Dynamo.PythonServices;
 using NUnit.Framework;
 using static DSPythonTests.PythonEvalTests;
 using Directory = CoreNodeModels.Input.Directory;
@@ -22,7 +22,10 @@ namespace DynamoPythonTests
         }
 
         public IEnumerable<PythonEvaluatorDelegate> Evaluators = new List<PythonEvaluatorDelegate> {
-            DSCPython.CPythonEvaluator.EvaluatePythonScript
+            (code, bindingNames, bindingValues) =>
+            DSCore.PythonEvaluator.Evaluate(
+                PythonEngineManager.PythonNet3EngineName,
+                code, bindingNames, bindingValues)
         };
 
         #region Python Modules
