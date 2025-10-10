@@ -156,9 +156,6 @@
   <data name="ImageSelector_Title_SelectImage" xml:space="preserve">
     <value>Выбор изображения</value>
   </data>
-  <data name="MenuItemText" xml:space="preserve">
-    <value>Пок_азать свойства графика</value>
-  </data>
   <data name="URIValidationRule_Fail_Message" xml:space="preserve">
     <value>Строка не является допустимым кодом URI</value>
   </data>

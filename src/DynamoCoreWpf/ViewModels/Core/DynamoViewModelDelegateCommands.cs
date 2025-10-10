@@ -72,6 +72,7 @@ namespace Dynamo.ViewModels
             GettingStartedGuideCommand = new DelegateCommand(StartGettingStartedGuide, CanStartGettingStartedGuide);
             ShowPackageManagerSearchCommand = new DelegateCommand(ShowPackageManagerSearch, CanShowPackageManagerSearch);
             ShowPackageManagerCommand = new DelegateCommand(ShowPackageManager, CanShowPackageManager);
+            ShowGraphPropertiesCommand = new DelegateCommand(ShowGraphProperties, CanShowGraphProperties);
 
             if (PackageManagerClientViewModel != null && !Model.IsServiceMode)
             {
@@ -189,5 +190,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand OpenDocumentationLinkCommand { get; set; }
         public DelegateCommand ShowNodeDocumentationCommand { get; set; }
         public DelegateCommand UnpinAllPreviewBubblesCommand { get; set; }
+        public DelegateCommand ShowGraphPropertiesCommand { get; set; }
     }
 }

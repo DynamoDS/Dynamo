@@ -3809,6 +3809,15 @@ Pour transformer ce fichier en nouveau gabarit, enregistrez-le dans un autre dos
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>Les données de l'icône du noeud sont vidées vers \"{0}\".</value>
   </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Advanced Sharing</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_General</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>Afficher les _propriétés du graphique</value>
+  </data>
   <data name="GroupOptionalInportsText" xml:space="preserve">
     <value>Facultatif</value>
   </data>
