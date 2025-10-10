@@ -109,7 +109,7 @@ namespace Dynamo.Wpf.Utilities
         /// <param name="newNodes">A collection of new nodes that are not properly positioned yet and need to be arranged.</param>
         /// <param name="skipInitialAutoLayout">Skip initial AutoLayout when we know that nodes are already in a good position.</param>
         /// <param name="checkWorkspaceNodes">Specifies whether to consider existing nodes in the workspace during the layout operation.</param>
-        /// <param name="reuseUndoGroup">Specify if the AutoLayout should use the existing undo group</param>
+        /// <param name="portType">Output if new nodes are downstream, Input if upstream</param>
         /// <param name="finalizer">An action to be executed after the layout operation is complete, typically for cleanup or further adjustments.</param>
         internal static void AutoLayoutNodes(WorkspaceModel wsModel,
             NodeModel queryNode,
