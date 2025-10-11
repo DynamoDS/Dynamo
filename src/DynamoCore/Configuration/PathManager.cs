@@ -51,7 +51,7 @@ namespace Dynamo.Core
     internal class PathManager : IPathManager
     {
         private static Lazy<PathManager> lazy;
-        private static bool isInitialized = false;
+        private static readonly object lockObject = new object();
 
         /// <summary>
         /// Initialize the PathManager singleton passing as a parameter a PathManagerParams object (which contains the Major and Minor version values).
@@ -59,11 +59,16 @@ namespace Dynamo.Core
         /// <param name="parameters"></param>
         public static void Initialize(PathManagerParams parameters)
         {
-            if (!isInitialized)
+            lock (lockObject)
             {
+                if (lazy != null)
+                {
+                    // Or do we want to reset the existing instance? See below for discussions.
+                    throw new InvalidOperationException("PathManager has already been initialized.");
+                }
+
                 lazy = new Lazy<PathManager>(() => new PathManager(parameters));
-                isInitialized = true;
-            }  
+            }
         }
 
         public static PathManager Instance
@@ -72,10 +77,16 @@ namespace Dynamo.Core
             {
                 if (lazy == null)
                 {
-                    // Fallback to default if not initialized
-                    lazy = new Lazy<PathManager>(() => new PathManager(new PathManagerParams()));
-                    isInitialized = true;
+                    lock (lockObject)
+                    {
+                        if (lazy == null)
+                        {
+                            // Fallback to default if not initialized
+                            lazy = new Lazy<PathManager>(() => new PathManager(new PathManagerParams()));
+                        }
+                    }
                 }
+
                 return lazy.Value;
             }
         }
