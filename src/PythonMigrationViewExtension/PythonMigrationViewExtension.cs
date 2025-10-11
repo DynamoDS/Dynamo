@@ -271,7 +271,7 @@ namespace Dynamo.PythonMigration
                     // saves or closes the workspace, then call the toas and upgrade the nodes
                     CurrentWorkspace.ShowCPythonNotifications = true;
                     ShowPythonEngineUpgradeToast();
-                    UpgradeAllCPython3Nodes(new List<PythonNodeBase> { pyNode });
+                    UpgradeCPython3Nodes(new List<PythonNodeBase> { pyNode });
                 }
             }
         }
@@ -301,7 +301,7 @@ namespace Dynamo.PythonMigration
             if (preferenceSettings.HideCPython3Notifications)
             {
                 CurrentWorkspace.ShowCPythonNotifications = false;
-                UpgradeAllCPython3Nodes(cPy3Nodes);
+                UpgradeCPython3Nodes(cPy3Nodes);
                 return;
             }
 
@@ -309,7 +309,7 @@ namespace Dynamo.PythonMigration
             // saves or closes the workspace, then call the toas and upgrade the nodes
             CurrentWorkspace.ShowCPythonNotifications = true;
             ShowPythonEngineUpgradeToast(cPy3Nodes.Count);
-            UpgradeAllCPython3Nodes(cPy3Nodes);
+            UpgradeCPython3Nodes(cPy3Nodes);
         }
 
         /// <summary>
@@ -328,7 +328,7 @@ namespace Dynamo.PythonMigration
                 new Action(() => DynamoViewModel.ShowPythonEngineUpgradeCanvasToast(msg, stayOpen: true)));
         }
 
-        private void UpgradeAllCPython3Nodes(List<PythonNodeBase> cPythonNodes)
+        private void UpgradeCPython3Nodes(List<PythonNodeBase> cPythonNodes)
         {
             if (CurrentWorkspace == null) return;
 
@@ -336,20 +336,15 @@ namespace Dynamo.PythonMigration
                 .Any(e => e.Name == PythonEngineManager.PythonNet3EngineName);
             if (!hasPyNet3) return;
 
-            // Record for undo
-            using (CurrentWorkspace.UndoRecorder.BeginActionGroup())
+            foreach (var node in cPythonNodes)
             {
-                foreach (var node in cPythonNodes)
+                if (node is PythonNode pyNode)
                 {
-                    if (node is PythonNode pyNode)
-                    {
-                        pyNode.ShowAutoUpgradedBar = true;
-                    }
-
-                    CurrentWorkspace.UndoRecorder.RecordModificationForUndo(node);
-                    node.EngineName = PythonEngineManager.PythonNet3EngineName;
-                    node.OnNodeModified();
+                    pyNode.ShowAutoUpgradedBar = true;
                 }
+
+                node.EngineName = PythonEngineManager.PythonNet3EngineName;
+                node.OnNodeModified();
             }
         }
 

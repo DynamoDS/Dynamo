@@ -293,7 +293,6 @@ namespace Dynamo.Graph.Workspaces
         protected Guid guid;
         private HashSet<Guid> dependencies = new HashSet<Guid>();
         private int delayGraphExecutionCounter = 0;
-        private bool enableCPythonNotifications;
 
         // For workspace references view extension.
         private bool forceComputeWorkspaceReferences;
@@ -1396,14 +1395,7 @@ namespace Dynamo.Graph.Workspaces
         /// on save/close. Runtime-only (not serialized) and reset on workspace switch.
         /// </summary>
         [JsonIgnore]
-        public bool ShowCPythonNotifications
-        {
-            get => enableCPythonNotifications;
-            internal set
-            {
-                enableCPythonNotifications = value;
-            }
-        }
+        public bool ShowCPythonNotifications { get; internal set; } = true;
 
         #endregion
 

@@ -185,26 +185,6 @@ namespace Dynamo.PythonServices
             dynCorePaths = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.GetFiles("*.dll", SearchOption.AllDirectories).Select(x => x.FullName);
 
             AvailableEngines = new ObservableCollection<PythonEngine>();
-
-            AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler((object sender, AssemblyLoadEventArgs args) => LoadDefaultPythonEngine(args.LoadedAssembly));
-        }
-
-        internal void LoadDefaultPythonEngine(Assembly a)
-        {
-            if (a == null ||
-                a.GetName().Name != CPythonAssemblyName)
-            {
-                return;
-            }
-
-            try
-            {
-                LoadPythonEngine(a);
-            }
-            catch (Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine($"Failed to load {CPythonAssemblyName} with error: {e.Message}");
-            }
         }
 
         private PythonEngine GetEngine(string name)

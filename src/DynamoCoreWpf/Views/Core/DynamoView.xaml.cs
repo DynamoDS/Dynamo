@@ -424,6 +424,23 @@ namespace Dynamo.Controls
             }
         }
 
+        private void OnPythonEngineUpgradeToastRequested(string msg, bool stayOpen)
+        {
+            Dispatcher.BeginInvoke(
+                System.Windows.Threading.DispatcherPriority.ContextIdle,
+                new Action(() =>
+                {
+                    dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(
+                        msg,
+                        stayOpen,
+                        showHeader: true,
+                        headerText: Res.CPython3EngineNotificationMessageBoxHeader,
+                        showHyperlink: true,
+                        hyperlinkText: Res.LearnMore,
+                        hyperlinkUri: new Uri(Res.CPython3EngineUpgradeLearnMoreUri));
+                }));
+        }
+
         /// <summary>
         /// Adds an extension control or if it already exists it makes sure it is focused.
         /// The control may be added as a window or a tab in the extension bar depending on settings.
@@ -1359,22 +1376,7 @@ namespace Dynamo.Controls
 
             // Subscribes to Python-engine-upgrade toast requests from the ViewModel and
             // forwards them to GuidesManager on the UI thread
-            dynamoViewModel.PythonEngineUpgradeToastRequested += (msg, stayOpen) =>
-            {
-                Dispatcher.BeginInvoke(
-                    System.Windows.Threading.DispatcherPriority.ContextIdle,
-                    new Action(() =>
-                    {
-                        dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(
-                            msg,
-                            stayOpen,
-                            true,
-                            Res.CPython3EngineNotificationMessageBoxHeader,
-                            true,
-                            Res.LearnMore,
-                            new Uri(Res.CPython3EngineUpgradeLearnMoreUri));
-                    }));
-            };
+            dynamoViewModel.PythonEngineUpgradeToastRequested += OnPythonEngineUpgradeToastRequested;
 
             GuideFlowEvents.GuidedTourStart += GuideFlowEvents_GuidedTourStart;
             _timer.Stop();
@@ -2129,6 +2131,7 @@ namespace Dynamo.Controls
             GuideFlowEvents.GuidedTourStart -= GuideFlowEvents_GuidedTourStart;
 
             dynamoViewModel.RequestPythonEngineChangeNotice -= DynamoViewModel_RequestPythonEngineChangeNotice;
+            dynamoViewModel.PythonEngineUpgradeToastRequested -= OnPythonEngineUpgradeToastRequested;
 
             if (dynamoViewModel.Model != null)
             {

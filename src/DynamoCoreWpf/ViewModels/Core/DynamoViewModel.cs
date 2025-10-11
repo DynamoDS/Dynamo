@@ -1105,8 +1105,16 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Raised by <see cref="DynamoViewModel"/> to ask listeners (e.g., Python migration UX)
+        /// whether a Python engine changed notice should be shown to the user.
+        /// </summary>
         internal event EventHandler<CancelEventArgs> RequestPythonEngineChangeNotice;
 
+        // <summary>
+        /// Raises <see cref="RequestPythonEngineChangeNotice"/> and returns whether any subscriber
+        /// requested to cancel showing the Python engine changed notice.
+        /// </summary>
         internal bool RaiseRequestPythonEngineChangeNotice()
         {
             var args = new CancelEventArgs();
