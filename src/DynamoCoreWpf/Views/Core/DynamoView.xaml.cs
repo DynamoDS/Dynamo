@@ -66,6 +66,7 @@ namespace Dynamo.Controls
         public const string BackgroundPreviewName = "BackgroundPreview";
         private const int SideBarCollapseThreshold = 20;
         private const int navigationInterval = 100;
+        private const string GraphMetadataExtensionId = "28992e1d-abb9-417f-8b1b-05e053bee670";
         // This is used to determine whether ESC key is being held down
         private bool IsEscKeyPressed = false;
         // internal for testing.
@@ -267,6 +268,7 @@ namespace Dynamo.Controls
             this.dynamoViewModel.Model.WorkspaceHidden += OnWorkspaceHidden;
             this.dynamoViewModel.RequestEnableShortcutBarItems += DynamoViewModel_RequestEnableShortcutBarItems;
             this.dynamoViewModel.RequestExportWorkSpaceAsImage += OnRequestExportWorkSpaceAsImage;
+            this.dynamoViewModel.ShowGraphPropertiesRequested += DynamoViewModel_ShowGraphPropertiesRequested;
 
             //add option to update python engine for all python nodes in the workspace.
             AddPythonEngineToMainMenu();
@@ -287,6 +289,22 @@ namespace Dynamo.Controls
             DefaultMinWidth = MinWidth;
             PinHomeButton();
         }
+
+        private void DynamoViewModel_ShowGraphPropertiesRequested(object sender, EventArgs e)
+        {
+            // Identify the GraphMetadata extension by its UniqueId because we can't reference its type directly.
+            // This exposes the menu item without creating a dependency on the Extensions project.
+            var provider = viewExtensionManager.ViewExtensions
+                .OfType<IExtensionMenuProvider>()
+                .FirstOrDefault(ext => (ext as IViewExtension)?.UniqueId == GraphMetadataExtensionId);
+            var menuItem = provider?.GetFileMenuItem();
+
+            if (menuItem != null)
+            {
+                menuItem.IsChecked = true;
+            }
+        }
+
         private void OnRequestCloseHomeWorkSpace()
         {
             CalculateWindowMinWidth();
@@ -2182,6 +2200,7 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestEnableShortcutBarItems -= DynamoViewModel_RequestEnableShortcutBarItems;
             this.dynamoViewModel.RequestExportWorkSpaceAsImage -= OnRequestExportWorkSpaceAsImage;
             this.dynamoViewModel.RequestShorcutToolbarLoaded -= onRequestShorcutToolbarLoaded;
+            this.dynamoViewModel.ShowGraphPropertiesRequested -= DynamoViewModel_ShowGraphPropertiesRequested;
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= OnPythonEngineListUpdated;
 
             if (homePage != null)

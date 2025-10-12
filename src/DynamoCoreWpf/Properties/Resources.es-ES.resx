@@ -148,7 +148,7 @@
     <value>Inicie sesión para acceder a los servicios en línea que se integran con el software de escritorio.</value>
   </data>
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to sign in.</value>
+    <value>Active el modo de red para poder iniciar sesión.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
@@ -3814,6 +3814,15 @@ Para convertir este archivo en una nueva plantilla, guárdelo en una carpeta dif
   </data>
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>Los datos de iconos de nodos se vuelcan en \"{0}\".</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Advanced Sharing</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_General</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>Mostrar _propiedades de gráfico</value>
   </data>
   <data name="GroupOptionalInportsText" xml:space="preserve">
     <value>Opcional</value>
