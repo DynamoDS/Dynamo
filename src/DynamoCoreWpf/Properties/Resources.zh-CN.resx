@@ -147,6 +147,9 @@
   <data name="SignInButtonContentToolTip" xml:space="preserve">
     <value>登录以访问与桌面软件集成的联机服务。</value>
   </data>
+  <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
+    <value>启用网络模式以便能够登录。</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -1304,7 +1307,7 @@
     <value>编辑...</value>
   </data>
   <data name="NullString" xml:space="preserve">
-    <value>空</value>
+    <value>null</value>
   </data>
   <data name="OKButton" xml:space="preserve">
     <value>确定</value>
@@ -2861,7 +2864,7 @@
     <value>工作空间</value>
   </data>
   <data name="PackagesGuideExitAcceptTerms" xml:space="preserve">
-    <value>要继续使用本手册并安装样例软件包，必须接受“服务条款”。\n\n **单击“继续”。** 然后，在条款中， **单击“我接受”。** \n\n\n\</value>
+    <value>要继续使用本手册并安装样例软件包，必须接受“服务条款”。\n\n **单击“继续”。** 然后，在条款中， **单击“我接受”。** \n\n\n\n</value>
   </data>
   <data name="PackagesGuideExitTitle" xml:space="preserve">
     <value>是否要退出本指南？</value>
@@ -3757,7 +3760,7 @@
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>您的系统上似乎未设置 Autodesk Identity Manager。要确保完全访问所有功能，请使用 Autodesk Identity Manager 登录您的 Autodesk 帐户。
-请在此处或通过 Autodesk Access #下载并安装=https://manage.autodesk.com/products/updates，然后登录。</value>
+请在此处或通过 Autodesk Access #下载并安装=https://manage.autodesk.com/products/updates 然后登录。</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>下载 Autodesk Identity Manager</value>
@@ -3809,6 +3812,33 @@
   </data>
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>节点图标数据转储到“{0}”。</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Advanced Sharing</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_General</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>显示图形特性(_P)</value>
+  </data>
+  <data name="GroupOptionalInportsText" xml:space="preserve">
+    <value>可选</value>
+  </data>
+  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
+    <value>未连接</value>
+  </data>
+  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
+    <value>折叠的组</value>
+  </data>
+  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
+    <value>默认情况下折叠为最小大小</value>
+  </data>
+  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
+    <value>默认情况下隐藏可选输入端口</value>
+  </data>
+  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
+    <value>默认情况下隐藏未连接的输出端口</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

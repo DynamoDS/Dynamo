@@ -1489,12 +1489,12 @@ var06 = g;
             Assert.AreEqual(ElementState.Warning, mathFloor.State);
             Assert.IsTrue(mathFloor.Infos.Any(x => x.Message.Equals(expectedWarning)
              && x.State == ElementState.Warning));
-            AssertPreviewValue(mathFloor.AstIdentifierGuid, long.MinValue);
+            AssertPreviewValue(mathFloor.AstIdentifierGuid, long.MaxValue);
 
             Assert.IsNotNull(mathCeiling);
             Assert.AreEqual(ElementState.Warning, mathCeiling.State);
             Assert.IsTrue(mathCeiling.Infos.Any(x => x.Message.Equals(expectedWarning) && x.State == ElementState.Warning));
-            AssertPreviewValue(mathCeiling.AstIdentifierGuid, long.MinValue);
+            AssertPreviewValue(mathCeiling.AstIdentifierGuid, long.MaxValue);
         }
 
         [Test]
@@ -1542,6 +1542,24 @@ var06 = g;
                 Assert.LessOrEqual(port.ToolTip.Length, Configurations.CBNMaxTooltipLength);
                 Assert.LessOrEqual(port.Name.Length, Configurations.CBNMaxPortNameLength);
             }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestOutportNameForRangeAndSequence()
+        {
+            var code =
+                @"0..10..#5;
+            0..10..1;
+            0..#4..1;
+            0..4..~2;";
+            var cbn = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(cbn, code);
+
+            Assert.AreEqual("range", cbn.OutPorts[0].Name);
+            Assert.AreEqual("range", cbn.OutPorts[1].Name);
+            Assert.AreEqual("sequence", cbn.OutPorts[2].Name);
+            Assert.AreEqual("range", cbn.OutPorts[3].Name);
         }
 
         #region CodeBlockUtils Specific Tests

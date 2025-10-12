@@ -147,6 +147,9 @@
   <data name="SignInButtonContentToolTip" xml:space="preserve">
     <value>로그인하여 데스크탑 소프트웨어와 통합되는 온라인 서비스에 액세스하십시오.</value>
   </data>
+  <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
+    <value>로그인하려면 네트워크 모드를 활성화합니다.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -1303,7 +1306,7 @@
     <value>편집...</value>
   </data>
   <data name="NullString" xml:space="preserve">
-    <value>NULL</value>
+    <value>null</value>
   </data>
   <data name="OKButton" xml:space="preserve">
     <value>확인</value>
@@ -3756,8 +3759,7 @@
     <value>이 버전과 사용 중인 설정의 호환성이 확인되지 않았습니다. 예상대로 작동할 수도 있고 예상대로 작동하지 않을 수도 있습니다.</value>
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
-    <value>Autodesk Identity Manager가 시스템에 설정되어 있지 않은 것 같습니다. 모든 기능에 대한 전체 액세스 권한을 확보하려면 Autodesk Identity Manager를 사용하여 Autodesk 계정에 로그인하십시오.
-#=https://manage.autodesk.com/products/updates에서 또는 Autodesk Access 통해 Autodesk Identity Manager를 다운로드한 후 설치한 다음 로그인하십시오.</value>
+    <value>Autodesk Identity Manager가 시스템에 설정되어 있지 않은 것 같습니다. 모든 기능에 대한 전체 액세스 권한을 확보하려면 Autodesk Identity Manager를 사용하여 Autodesk 계정에 로그인하십시오. 또는 Autodesk Access를 통해 Autodesk Identity Manager를 #다운로드한 후 설치=https://manage.autodesk.com/products/updates 한 다음 로그인하십시오.</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Autodesk Identity Manager 다운로드</value>
@@ -3809,6 +3811,33 @@
   </data>
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>노드 아이콘 데이터가 \"{0}\"에 덤프됩니다.</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Advanced Sharing</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_General</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>그래프 특성 표시(_P)</value>
+  </data>
+  <data name="GroupOptionalInportsText" xml:space="preserve">
+    <value>선택적</value>
+  </data>
+  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
+    <value>연결되지 않음</value>
+  </data>
+  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
+    <value>축소된 그룹</value>
+  </data>
+  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
+    <value>기본적으로 최소 크기로 축소</value>
+  </data>
+  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
+    <value>기본적으로 선택적 입력 포트 숨기기</value>
+  </data>
+  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
+    <value>기본적으로 연결되지 않은 출력 포트 숨기기</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

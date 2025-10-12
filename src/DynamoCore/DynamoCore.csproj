@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
@@ -30,17 +30,17 @@
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup Label="Common dependencies">
-    <PackageReference Include="Autodesk.IDSDK" Version="1.2.4" />
+    <PackageReference Include="Autodesk.IDSDK" Version="1.2.5" />
     <PackageReference Include="Greg" Version="3.0.2.8780" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.8595" GeneratePathProperty="true" ExcludeAssets="all"/>
-    <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.6.0.1954" Condition=" '$(Configuration)' == 'Release' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
-    <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0_debug" Version="3.6.0.1954" Condition=" '$(Configuration)' == 'Debug' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="4.0.0.2726" GeneratePathProperty="true" ExcludeAssets="all"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.2726" Condition=" '$(Configuration)' == 'Release' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0_debug" Version="4.0.0.2726" Condition=" '$(Configuration)' == 'Debug' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" CopyXML="true" />
     <PackageReference Include="RestSharp" Version="112.0.0" CopyXML="true" />
     <PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00016" />
-    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.2.1.9358" />
+    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.2.2.10064" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\GraphLayout\GraphLayout.csproj">
@@ -114,11 +114,11 @@
 
   <Target Name="BeforeBuildOps" BeforeTargets="Build">
     <PropertyGroup>
-        <LIBGVerMain>libg_231_0_0</LIBGVerMain>
-        <LIBGVerSecondary>libg_230_0_0</LIBGVerSecondary>
-        <LibGMainPackagePath Condition=" '$(Configuration)' == 'Release' ">$(PkgDynamoVisualProgramming_LibG_231_0_0)</LibGMainPackagePath>
-        <LibGMainPackagePath Condition=" '$(Configuration)' == 'Debug' ">$(PkgDynamoVisualProgramming_LibG_231_0_0_debug)</LibGMainPackagePath>
-        <LibGSecondaryPackagePath>$(PkgDynamoVisualProgramming_LibG_230_0_0)</LibGSecondaryPackagePath>
+        <LIBGVerMain>libg_232_0_0</LIBGVerMain>
+        <LIBGVerSecondary>libg_231_0_0</LIBGVerSecondary>
+        <LibGMainPackagePath Condition=" '$(Configuration)' == 'Release' ">$(PkgDynamoVisualProgramming_LibG_232_0_0)</LibGMainPackagePath>
+        <LibGMainPackagePath Condition=" '$(Configuration)' == 'Debug' ">$(PkgDynamoVisualProgramming_LibG_232_0_0_debug)</LibGMainPackagePath>
+        <LibGSecondaryPackagePath>$(PkgDynamoVisualProgramming_LibG_231_0_0)</LibGSecondaryPackagePath>
         <LibGProtoGeometryLibGLocale>$(LibGMainPackagePath)\tools\libg_locale</LibGProtoGeometryLibGLocale>
     </PropertyGroup>
     <ItemGroup>
@@ -132,6 +132,7 @@
 		<NodeHelpCsCZMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\cs-CZ\**\*.md" />
 		<NodeHelpDeDEMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\de-DE\**\*.md" />
 		<NodeHelpEnUSMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\en-US\**\*.md" />
+		<NodeHelpEnGBMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\en-GB\**\*.md" />
 		<NodeHelpEsESMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\es-ES\**\*.md" />
 		<NodeHelpFrFRMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\fr-FR\**\*.md" />
 		<NodeHelpItITMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\it-IT\**\*.md" />
@@ -160,6 +161,7 @@
     <Copy SourceFiles="@(NodeHelpCsCZMDFiles)" DestinationFolder="$(OutputPath)\cs-CZ\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpDeDEMDFiles)" DestinationFolder="$(OutputPath)\de-DE\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpEnUSMDFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpEnGBMDFiles)" DestinationFolder="$(OutputPath)\en-GB\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpEsESMDFiles)" DestinationFolder="$(OutputPath)\es-ES\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpFrFRMDFiles)" DestinationFolder="$(OutputPath)\fr-FR\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpItITMDFiles)" DestinationFolder="$(OutputPath)\it-IT\fallback_docs\" SkipUnchangedFiles="True" />
@@ -174,6 +176,7 @@
 	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\cs-CZ\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\de-DE\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\en-GB\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\es-ES\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\fr-FR\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\it-IT\fallback_docs\" SkipUnchangedFiles="True" />
@@ -187,6 +190,7 @@
 	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\cs-CZ\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\de-DE\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\en-GB\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\es-ES\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\fr-FR\fallback_docs\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\it-IT\fallback_docs\" SkipUnchangedFiles="True" />

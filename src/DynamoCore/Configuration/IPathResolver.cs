@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Dynamo.Interfaces
@@ -116,6 +117,7 @@ namespace Dynamo.Interfaces
         /// <summary>
         /// The local directory that contains custom nodes created by all users.
         /// </summary>
+        [Obsolete("This property will be removed in a future version of Dynamo.", false)]
         string CommonDefinitions { get; }
 
         /// <summary>

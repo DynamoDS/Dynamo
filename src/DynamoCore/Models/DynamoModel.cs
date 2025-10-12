@@ -159,6 +159,9 @@ namespace Dynamo.Models
         /// </summary>
         internal Dictionary<string, List<string>> GraphChecksumDictionary { get; set; }
 
+        // Get ProgramData folder path (usually C:\ProgramData)
+        static readonly string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+
         #endregion
 
         #region static properties
@@ -838,9 +841,6 @@ namespace Dynamo.Models
             var userDataFolder = pathManager.GetUserDataFolder(); // Get the default user data path
             AddPackagePath(userDataFolder);
 
-            // Make sure that the global package folder is added in the list
-            var userCommonPackageFolder = pathManager.CommonPackageDirectory;
-            AddPackagePath(userCommonPackageFolder);
 
                 // Load Python Template
                 // The loading pattern is conducted in the following order
@@ -969,15 +969,9 @@ namespace Dynamo.Models
 
                 foreach (var ext in extensions)
                 {
-                    if (ext is ILogSource logSource)
-                        logSource.MessageLogged += LogMessage;
-
                     try
                     {
-                        if (ext is LinterExtensionBase linter)
-                        {
-                            linter.InitializeBase(this.LinterManager);
-                        }
+                        SetupExtensions(ext);
 
                         ext.Startup(startupParams);
                         // if we are starting extension (A) which is a source of other extensions (like packageManager)
@@ -988,10 +982,7 @@ namespace Dynamo.Models
                             {
                                 if (loadedExtension is IExtension)
                                 {
-                                    if (loadedExtension is LinterExtensionBase loadedLinter)
-                                    {
-                                        loadedLinter.InitializeBase(this.LinterManager);
-                                    }
+                                    SetupExtensions(loadedExtension);
 
                                     (loadedExtension as IExtension).Startup(startupParams);
                                 }
@@ -1058,6 +1049,20 @@ namespace Dynamo.Models
         {
             PreferenceSettings.UpdateNamespacesToExcludeFromLibrary();
             return;
+        }
+
+        private void SetupExtensions(IExtension ext)
+        {
+            // Initialize extensions linter
+            if (ext is LinterExtensionBase linter)
+            {
+                linter.InitializeBase(this.LinterManager);
+            }
+            // Set up extension logging
+            if (ext is ILogSource loadedLogSource)
+            {
+                loadedLogSource.MessageLogged += LogMessage;
+            }
         }
 
         private void HandleAnalytics()
@@ -1188,7 +1193,7 @@ namespace Dynamo.Models
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log(String.Format(Properties.Resources.FailedToHandleReadyEvent, ext.Name, " ", ex.Message));
+                    Logger.Log($"{Properties.Resources.FailedToHandleReadyEvent} Source: {ext.Name} Error: {ex.Message}");
                 }
             }
         }
@@ -1649,7 +1654,9 @@ namespace Dynamo.Models
             //and loading from there is disabled, don't scan the directory.
             (disablePrefs.DisableBuiltinPackages && packagesDirectory == Core.PathManager.BuiltinPackagesDirectory)
             //or if custom package directories are disabled, and this is a custom package directory, don't scan.
-            || (disablePrefs.DisableCustomPackageLocations && isACustomPackageDirectory);
+            || (disablePrefs.DisableCustomPackageLocations && isACustomPackageDirectory)
+            //or if the package directory starts with the path "C:\ProgramData" then disable the path due to security concerns (now packages will be loaded only from AppData).
+            || packagesDirectory.StartsWith(programDataPath, StringComparison.OrdinalIgnoreCase);
         }
 
         private void InitializeNodeLibrary()
@@ -1720,8 +1727,6 @@ namespace Dynamo.Models
                 // Otherwise it is a custom node
                 CustomNodeManager.AddUninitializedCustomNodesInPath(path, IsTestMode);
             }
-
-            CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
         }
 
         /// <summary>
@@ -2465,7 +2470,7 @@ namespace Dynamo.Models
                 CustomNodeManager,
                 this.LinterManager);
 
-            workspace.FileName = string.IsNullOrEmpty(filePath) || isTemplate? string.Empty : filePath;
+            workspace.FileName = string.IsNullOrEmpty(filePath)? string.Empty : filePath;
             workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : string.Empty;
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
             workspace.IsTemplate = isTemplate;
@@ -3349,9 +3354,15 @@ namespace Dynamo.Models
                 AnnotationDescriptionText = model.AnnotationDescriptionText,
                 HeightAdjustment = model.HeightAdjustment,
                 WidthAdjustment = model.WidthAdjustment,
+                UserSetWidth = model.UserSetWidth,
+                UserSetHeight = model.UserSetHeight,
                 Background = model.Background,
                 FontSize = model.FontSize,
                 GroupStyleId = model.GroupStyleId,
+                IsOptionalInPortsCollapsed = model.IsOptionalInPortsCollapsed,
+                IsUnconnectedOutPortsCollapsed = model.IsUnconnectedOutPortsCollapsed,
+                HasToggledOptionalInPorts = model.HasToggledOptionalInPorts,
+                HasToggledUnconnectedOutPorts = model.HasToggledUnconnectedOutPorts,
             };
 
             modelLookup.Add(model.GUID, annotationModel);

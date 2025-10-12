@@ -1892,6 +1892,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Advanced Sharing.
+        /// </summary>
+        public static string DynamoViewFileMenuGraphPropertiesAdvanced {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuGraphPropertiesAdvanced", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _General.
+        /// </summary>
+        public static string DynamoViewFileMenuGraphPropertiesGeneral {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuGraphPropertiesGeneral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Import Library....
         /// </summary>
         public static string DynamoViewFileMenuImport {
@@ -1987,6 +2005,15 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewFileMenuSaveAs {
             get {
                 return ResourceManager.GetString("DynamoViewFileMenuSaveAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Graph _Properties.
+        /// </summary>
+        public static string DynamoViewFileMenuShowGraphProperties {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuShowGraphProperties", resourceCulture);
             }
         }
         
@@ -3759,6 +3786,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Optional.
+        /// </summary>
+        public static string GroupOptionalInportsText {
+            get {
+                return ResourceManager.GetString("GroupOptionalInportsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Group Style.
         /// </summary>
         public static string GroupStyleContextAnnotation {
@@ -3791,6 +3827,15 @@ namespace Dynamo.Wpf.Properties {
         public static string GroupStylesSaveButtonText {
             get {
                 return ResourceManager.GetString("GroupStylesSaveButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unconnected.
+        /// </summary>
+        public static string GroupUnconnectedOutportsText {
+            get {
+                return ResourceManager.GetString("GroupUnconnectedOutportsText", resourceCulture);
             }
         }
         
@@ -8006,6 +8051,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Collapsed Group.
+        /// </summary>
+        public static string PreferencesViewCollapsedGroupHeader {
+            get {
+                return ResourceManager.GetString("PreferencesViewCollapsedGroupHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Collapse to minimal size by default.
+        /// </summary>
+        public static string PreferencesViewCollapseToMinSizeDescription {
+            get {
+                return ResourceManager.GetString("PreferencesViewCollapseToMinSizeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default Python Engine.
         /// </summary>
         public static string PreferencesViewDefaultPythonEngine {
@@ -8213,6 +8276,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewGroupStylesHeader {
             get {
                 return ResourceManager.GetString("PreferencesViewGroupStylesHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide optional input ports by default.
+        /// </summary>
+        public static string PreferencesViewHideInportsDescription {
+            get {
+                return ResourceManager.GetString("PreferencesViewHideInportsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide unconnected output ports by default.
+        /// </summary>
+        public static string PreferencesViewHideOutportsDescription {
+            get {
+                return ResourceManager.GetString("PreferencesViewHideOutportsDescription", resourceCulture);
             }
         }
         
@@ -9921,6 +10002,15 @@ namespace Dynamo.Wpf.Properties {
         public static string SignInButtonContentToolTip {
             get {
                 return ResourceManager.GetString("SignInButtonContentToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign in to access online services that integrate with your desktop software..
+        /// </summary>
+        public static string SignInOfflineButtonContentToolTip {
+            get {
+                return ResourceManager.GetString("SignInOfflineButtonContentToolTip", resourceCulture);
             }
         }
         

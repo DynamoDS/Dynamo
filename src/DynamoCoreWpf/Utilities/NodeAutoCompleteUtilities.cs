@@ -1,13 +1,14 @@
-using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Search.SearchElements;
-using Dynamo.Selection;
-using Dynamo.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Search.SearchElements;
+using Dynamo.Selection;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Wpf.Utilities
 {
@@ -15,7 +16,7 @@ namespace Dynamo.Wpf.Utilities
     {
         // We want to perform an AutoLayout operation only after all nodes have updated their UI.
         // Therefore, we will queue the AutoLayout operation to execute during the next idle event.
-        internal static void PostAutoLayoutNodes(WorkspaceModel wsModel,
+        internal static void PostAutoLayoutNodes(DynamoViewModel dynamoViewModel, WorkspaceModel wsModel,
             NodeModel queryNode,
             IEnumerable<NodeModel> misplacedNodes,
             bool skipInitialAutoLayout,
@@ -23,16 +24,20 @@ namespace Dynamo.Wpf.Utilities
             PortType portType,
             Action finalizer)
         {
-            if (Application.Current?.Dispatcher != null)
+
+            var dispatcher = dynamoViewModel?.UIDispatcher ?? Dispatcher.CurrentDispatcher;
+
+            if (dispatcher != null)
             {
-                Application.Current.Dispatcher.BeginInvoke(() => AutoLayoutNodes(wsModel,
-                    queryNode,
-                    misplacedNodes,
-                    skipInitialAutoLayout,
-                    checkWorkspaceNodes,
-                    portType,
-                    finalizer), DispatcherPriority.ApplicationIdle);
+                dispatcher.BeginInvoke(() => AutoLayoutNodes(wsModel,
+                        queryNode,
+                        misplacedNodes,
+                        skipInitialAutoLayout,
+                        checkWorkspaceNodes,
+                        portType,
+                        finalizer), DispatcherPriority.ApplicationIdle);
             }
+            
         }
 
         internal static Rect2D GetNodesBoundingBox(IEnumerable<NodeModel> nodes)
@@ -45,7 +50,9 @@ namespace Dynamo.Wpf.Utilities
             double minY = nodes.Min(node => node.Rect.TopLeft.Y);
             double maxY = nodes.Max(node => node.Rect.BottomRight.Y);
 
-            return new Rect2D(minX, minY, maxX - minX, maxY - minY);
+            // Add buffer to ensure nearby nodes are considered for autolayout
+            const double buffer = 10.0;
+            return new Rect2D(minX - buffer, minY - buffer, (maxX - minX) + 2 * buffer, (maxY - minY) + 2 * buffer);
         }
 
         // Determines whether an AutoLayout operation is needed for a query node and other relevant nodes around it.
@@ -55,7 +62,7 @@ namespace Dynamo.Wpf.Utilities
         internal static bool AutoLayoutNeeded(WorkspaceModel wsModel, NodeModel originalNode, IEnumerable<NodeModel> nodesToConsider, out List<NodeModel> intersectedNodes)
         {
             //Collect all connected input or output nodes from the original node.
-            
+
             var nodesGuidsToConsider = nodesToConsider.Select(n => n.GUID).ToHashSet();
             nodesGuidsToConsider.Append(originalNode.GUID);
 
@@ -102,7 +109,7 @@ namespace Dynamo.Wpf.Utilities
         /// <param name="newNodes">A collection of new nodes that are not properly positioned yet and need to be arranged.</param>
         /// <param name="skipInitialAutoLayout">Skip initial AutoLayout when we know that nodes are already in a good position.</param>
         /// <param name="checkWorkspaceNodes">Specifies whether to consider existing nodes in the workspace during the layout operation.</param>
-        /// <param name="reuseUndoGroup">Specify if the AutoLayout should use the existing undo group</param>
+        /// <param name="portType">Output if new nodes are downstream, Input if upstream</param>
         /// <param name="finalizer">An action to be executed after the layout operation is complete, typically for cleanup or further adjustments.</param>
         internal static void AutoLayoutNodes(WorkspaceModel wsModel,
             NodeModel queryNode,
@@ -124,6 +131,13 @@ namespace Dynamo.Wpf.Utilities
             // disruption to the user's workspace.
             if (checkWorkspaceNodes)
             {
+                // Layout connected nodes based on connection direction
+                // This prevents cascading overlaps when multiple nodes are added in sequence
+                var connectedNodes = portType == PortType.Input
+                    ? queryNode.AllUpstreamNodes(new List<NodeModel>()).ToHashSet()
+                    : queryNode.AllDownstreamNodes(new List<NodeModel>()).ToHashSet();
+                wsModel.DoGraphAutoLayoutAutocomplete(queryNode.GUID, newNodes, connectedNodes, portType);
+
                 bool redoAutoLayout = AutoLayoutNeeded(wsModel, queryNode, newNodes, out List<NodeModel> intersectedNodes);
                 if (redoAutoLayout)
                 {
