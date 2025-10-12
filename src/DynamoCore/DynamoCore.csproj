@@ -41,7 +41,7 @@
     <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00016" />
     <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.2.1.9358" />
-    <PackageReference Include="DynamoVisualProgramming.PythonEngine.PythonNet3" Version="0.0.1" GeneratePathProperty="true" ExcludeAssets="all" />
+    <PackageReference Include="DynamoVisualProgramming.PythonEngine.PythonNet3" Version="1.4.2" GeneratePathProperty="true" ExcludeAssets="all" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\GraphLayout\GraphLayout.csproj">
@@ -233,15 +233,17 @@
             <DestExtra>$(DestRoot)extra\</DestExtra>
             <PkgRoot>$(PkgDynamoVisualProgramming_PythonEngine_PythonNet3)</PkgRoot>
             <LibDir>$(PkgRoot)\lib\net8.0\</LibDir>
-            <ContentDir>$(PkgRoot)\content\</ContentDir>
+            <ManifestDir>$(PkgRoot)\content\manifest\</ManifestDir>
+            <PkgJson>$(ManifestDir)pkg.json</PkgJson>
         </PropertyGroup>
         <MakeDir Directories="$(DestBin)" />
-        <MakeDir Directories="$(DestExtra)" />        
+        <MakeDir Directories="$(DestExtra)" />
+        <Copy SourceFiles="$(PkgJson)" DestinationFiles="$(DestRoot)pkg.json" SkipUnchangedFiles="True" />
         <ItemGroup>
             <DllEmpty Include="$(LibDir)DSPythonNet3Empty.dll" Condition="Exists('$(LibDir)DSPythonNet3Empty.dll')" />
             <DllEmpty Include="$(LibDir)DSPythonNet3Empty.deps.json" Condition="Exists('$(LibDir)DSPythonNet3Empty.deps.json')" />
         </ItemGroup>
-        <Copy SourceFiles="@(DllEmpty)" DestinationFolder="$(DestBin)" SkipUnchangedFiles="true" />        
+        <Copy SourceFiles="@(DllEmpty)" DestinationFolder="$(DestBin)" SkipUnchangedFiles="True" />        
         <ItemGroup>
             <DllExtra Include="$(LibDir)DSPythonNet3.dll" Condition="Exists('$(LibDir)DSPythonNet3.dll')" />
             <DllExtra Include="$(LibDir)Python.Runtime.dll" Condition="Exists('$(LibDir)Python.Runtime.dll')" />
@@ -254,30 +256,7 @@
             <DllExtra Include="$(LibDir)DSPythonNet3Wheels.deps.json" Condition="Exists('$(LibDir)DSPythonNet3Wheels.deps.json')" />            
             <DllExtra Include="$(LibDir)DSPythonNet3Extension_ExtensionDefinition.xml" Condition="Exists('$(LibDir)DSPythonNet3Extension_ExtensionDefinition.xml')" />            
         </ItemGroup>
-        <Copy SourceFiles="@(DllExtra)" DestinationFolder="$(DestExtra)" SkipUnchangedFiles="true" />         
-        <ItemGroup>
-            <PkgJsonReal Include="{&#xD;&#xA;
-                &quot;license&quot;: &quot;MIT&quot;,&#xD;&#xA;
-                &quot;file_hash&quot;: null,&#xD;&#xA;
-                &quot;name&quot;: &quot;DSPythonNet3&quot;,&#xD;&#xA;
-                &quot;version&quot;: &quot;1.1.1&quot;,&#xD;&#xA;
-                &quot;description&quot;: &quot;This is PythonNet3 version&quot;,&#xD;&#xA;
-                &quot;group&quot;: &quot;&quot;,&#xD;&#xA;
-                &quot;keywords&quot;: [ &quot;pythonnet&quot;, &quot;python&quot;, &quot;python3&quot; ],&#xD;&#xA;
-                &quot;dependencies&quot;: [],&#xD;&#xA;
-                &quot;host_dependencies&quot;: [],&#xD;&#xA;
-                &quot;contents&quot;: &quot;&quot;,&#xD;&#xA;
-                &quot;engine_version&quot;: &quot;3.3.0.6316&quot;,&#xD;&#xA;
-                &quot;engine&quot;: &quot;dynamo&quot;,&#xD;&#xA;
-                &quot;engine_metadata&quot;: &quot;&quot;,&#xD;&#xA;
-                &quot;site_url&quot;: &quot;https://dynamobim.org/&quot;,&#xD;&#xA;
-                &quot;repository_url&quot;: &quot;https://github.com/DynamoDS/Dynamo&quot;,&#xD;&#xA;
-                &quot;contains_binaries&quot;: true,&#xD;&#xA;
-                &quot;node_libraries&quot;: [ &quot;DSPythonNet3Empty, Version=1.4.0.0, Culture=neutral, PublicKeyToken=null&quot; ],&#xD;&#xA;
-                &quot;copyright_holder&quot;: &quot;DynamoTeam&quot;,&#xD;&#xA;
-                &quot;copyright_year&quot;: &quot;2024&quot;&#xD;&#xA;}" />
-        </ItemGroup>
-        <WriteLinesToFile File="$(DestRoot)pkg.json" Lines="@(PkgJsonReal)" Overwrite="true" Condition="!Exists('$(DestRoot)pkg.json')" />
+        <Copy SourceFiles="@(DllExtra)" DestinationFolder="$(DestExtra)" SkipUnchangedFiles="True" />  
     </Target>    
   <Target Name="AfterBuildOps" AfterTargets="ResolveSateliteResDeps">
     <ItemGroup>

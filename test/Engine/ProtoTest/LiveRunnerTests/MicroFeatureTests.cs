@@ -7,6 +7,7 @@ using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using ProtoScript.Runners;
 using ProtoTestFx.TD;
+using System.IO;
 
 namespace ProtoTest.LiveRunner
 {
