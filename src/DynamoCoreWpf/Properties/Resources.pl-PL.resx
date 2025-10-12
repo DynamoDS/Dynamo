@@ -148,7 +148,7 @@
     <value>Zaloguj się, aby uzyskać dostęp do usług online zintegrowanych z oprogramowaniem na komputerze.</value>
   </data>
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to sign in.</value>
+    <value>Aby móc się zalogować, włącz tryb sieciowy.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
@@ -3814,6 +3814,15 @@ Aby ustawić ten plik jako nowy szablon, zapisz go w innym folderze, a następni
   </data>
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>Dane ikon węzłów są zrzucane do „{0}”.</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Advanced Sharing</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_General</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>Pokaż _właściwości wykresu</value>
   </data>
   <data name="GroupOptionalInportsText" xml:space="preserve">
     <value>Opcjonalne</value>

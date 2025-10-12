@@ -2858,6 +2858,18 @@ namespace Dynamo.ViewModels
             return !model.IsServiceMode && !model.NoNetworkMode;
         }
 
+        internal event EventHandler ShowGraphPropertiesRequested;
+
+        internal void ShowGraphProperties(object parameter)
+        {
+            ShowGraphPropertiesRequested?.Invoke(this, EventArgs.Empty);
+        }
+
+        internal bool CanShowGraphProperties(object parameter)
+        {
+            return model.CurrentWorkspace is HomeWorkspaceModel;
+        }
+
         /// <summary>
         ///     Change the currently visible workspace to a custom node's workspace, unless the silent flag is set to true.
         /// </summary>

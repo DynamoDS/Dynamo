@@ -156,9 +156,6 @@
   <data name="ImageSelector_Title_SelectImage" xml:space="preserve">
     <value>Seleziona immagine</value>
   </data>
-  <data name="MenuItemText" xml:space="preserve">
-    <value>Mostra _proprietà grafico</value>
-  </data>
   <data name="URIValidationRule_Fail_Message" xml:space="preserve">
     <value>La stringa non è un URI valido</value>
   </data>
