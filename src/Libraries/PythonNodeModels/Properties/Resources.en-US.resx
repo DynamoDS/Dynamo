@@ -209,7 +209,7 @@
     <value>Convert script to Python 3...</value>
   </data>
   <data name="PythonSearchTags" xml:space="preserve">
-    <value>IronPython;CPython;</value>
+    <value>IronPython;PythonNet3;</value>
   </data>
   <data name="PythonScriptUnsavedChangesPromptText" xml:space="preserve">
     <value>It looks like you are still working on this. You may lose any unsaved changes if you leave now</value>

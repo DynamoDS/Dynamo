@@ -2200,7 +2200,7 @@
     </ItemGroup>
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
     <Copy SourceFiles="@(ExternTuneUpPkg)" DestinationFolder="$(OutputPath)\Built-In Packages\packages\TuneUp\%(RecursiveDir)" />
-  </Target>    
+  </Target>
   <Target Name="CopyPMWizardHtmlFiles" AfterTargets="Build">
     <ItemGroup>
       <HtmlAndBundleFiles Include="Packages\PackageManagerWizard\dist\index.html" />

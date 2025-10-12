@@ -358,7 +358,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to IronPython;CPython;.
+        ///   Looks up a localized string similar to IronPython;PythonNet3;.
         /// </summary>
         public static string PythonSearchTags {
             get {
