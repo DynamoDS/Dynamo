@@ -1395,7 +1395,7 @@ namespace Dynamo.Graph.Workspaces
         /// on save/close. Runtime-only (not serialized) and reset on workspace switch.
         /// </summary>
         [JsonIgnore]
-        public bool ShowCPythonNotifications { get; internal set; } = true;
+        public bool ShowCPythonNotifications { get; internal set; }
 
         #endregion
 
