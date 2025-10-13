@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Reflection;
 using System.Xml;
@@ -24,7 +24,7 @@ namespace DynamoCoreWpfTests
         {
             // Look in the nodes folder
             string assemblyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "nodes", new AssemblyName(args.Name).Name + ".dll");
-            return File.Exists(assemblyPath) ? Assembly.LoadFrom(assemblyPath) : null;
+            return File.Exists(assemblyPath) ? Dynamo.Utilities.AssemblyHelper.LoadInALCFrom(assemblyPath) : null;
         }
 
         [Test]

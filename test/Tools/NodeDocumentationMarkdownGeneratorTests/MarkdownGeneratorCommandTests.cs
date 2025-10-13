@@ -51,7 +51,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
             try
             {
                 AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
-                var libviewExtensionAssem = Assembly.LoadFrom(Path.Combine(DynamoCoreDir, LibraryViewExtension_DLL_NAME));
+                var libviewExtensionAssem = Dynamo.Utilities.AssemblyHelper.LoadInALCFrom(Path.Combine(DynamoCoreDir, LibraryViewExtension_DLL_NAME));
                 SaveCoreLayoutSpecToPath(libviewExtensionAssem, testLayoutSpecPath);
             }
             catch(Exception e)
@@ -80,7 +80,7 @@ namespace NodeDocumentationMarkdownGeneratorTests
             var found = files.Where(f => Path.GetFileNameWithoutExtension(f.FullName) == requestedAssembly.Name).FirstOrDefault();
             if (found != null)
             {
-                return Assembly.LoadFrom(found.FullName);
+                return Dynamo.Utilities.AssemblyHelper.LoadInALCFrom(found.FullName);
             }
             return null;
         }

@@ -34,3 +34,5 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("NodeAutoCompleteViewExtension")]
 [assembly: InternalsVisibleTo("DynamoSandbox")]
 [assembly: InternalsVisibleTo("DynamoWPFCLI")]
+[assembly: InternalsVisibleTo("DynamoPythonTests")]
+[assembly: InternalsVisibleTo("NodeDocumentationMarkdownGeneratorTests")]
