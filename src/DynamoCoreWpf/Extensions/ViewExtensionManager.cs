@@ -62,15 +62,18 @@ namespace Dynamo.Wpf.Extensions
         /// <summary>
         /// Creates ViewExtensionManager with directories which require package certificate verification.
         /// </summary>
-        public ViewExtensionManager(IEnumerable<string> directoriesToVerify) : this()
+        public ViewExtensionManager(IEnumerable<string>? directoriesToVerify = null) : this()
         {
-            this.viewExtensionLoader.DirectoriesToVerifyCertificates.AddRange(directoriesToVerify);
+            if (directoriesToVerify != null)
+            {
+                this.viewExtensionLoader.DirectoriesToVerifyCertificates.AddRange(directoriesToVerify);
+            }          
         }
 
         /// <summary>
         /// Creates ViewExtensionManager with directories which require package certificate verification and access to the ExtensionManager.
         /// </summary>
-        internal ViewExtensionManager(IExtensionManager manager,IEnumerable<string> directoriesToVerify) : this(directoriesToVerify)
+        internal ViewExtensionManager(IExtensionManager manager,IEnumerable<string>? directoriesToVerify = null) : this(directoriesToVerify)
         {
             extensionManager = manager;
         }

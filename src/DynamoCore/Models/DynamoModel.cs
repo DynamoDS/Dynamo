@@ -900,7 +900,7 @@ namespace Dynamo.Models
             NodeFactory.MessageLogged += LogMessage;
 
             //Initialize the ExtensionManager with the CommonDataDirectory so that extensions found here are checked first for dll's with signed certificates
-            extensionManager = new ExtensionManager(new[] { PathManager.CommonDataDirectory });
+            extensionManager = new ExtensionManager();
             extensionManager.MessageLogged += LogMessage;
             var extensions = config.Extensions ?? LoadExtensions();
 
