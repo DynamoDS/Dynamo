@@ -1,0 +1,46 @@
+<UserControl x:Class="CoreNodeModelsWpf.TestElementSelectionControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="200">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="26"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <!-- Selection Button -->
+        <Button Content="Select Element" 
+                Command="{Binding SelectCommand}"
+                Grid.Row="0" 
+                IsEnabled="{Binding Model.CanSelect}"
+                ToolTipService.ShowOnDisabled="True"
+                Background="#3c3c3c"
+                Foreground="White"
+                Padding="5,2"
+                Margin="2">
+            <Button.ToolTip>
+                <TextBlock Text="Click to select a model element" />
+            </Button.ToolTip>
+        </Button>
+        
+        <!-- Selection Status Text -->
+        <TextBlock Text="{Binding Model.Text}" 
+                   TextTrimming="WordEllipsis" 
+                   TextWrapping="Wrap"
+                   Grid.Row="1" 
+                   Margin="5"
+                   MaxWidth="200" 
+                   MaxHeight="200"
+                   Foreground="#F5F5F5">
+            <TextBlock.ToolTip>
+                <TextBlock Text="{Binding Model.Text}" 
+                           MaxHeight="200" 
+                           TextTrimming="WordEllipsis"/>
+            </TextBlock.ToolTip>
+        </TextBlock>
+    </Grid>
+</UserControl>
