@@ -351,14 +351,6 @@ namespace DSCore.IO
             }
         }
         #endregion
-
-        #region Obsolete Methods
-
-
-
-
-
-        #endregion
     }
 
     /// <summary>
