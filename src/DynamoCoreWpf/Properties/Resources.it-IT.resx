@@ -148,7 +148,7 @@
     <value>Accedere per usufruire dei servizi online che si integrano con il software desktop.</value>
   </data>
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to sign in.</value>
+    <value>Attivare la modalità di rete per poter accedere.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
@@ -3796,6 +3796,15 @@ Per trasformare questo file in un nuovo modello, salvarlo in un'altra cartella e
   </data>
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>I dati sull'icona del nodo sono stati rimossi in \"{0}\".</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Advanced Sharing</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_General</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>Mostra _proprietà grafico</value>
   </data>
   <data name="GroupOptionalInportsText" xml:space="preserve">
     <value>Facoltative</value>
