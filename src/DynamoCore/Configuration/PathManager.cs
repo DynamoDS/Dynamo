@@ -71,6 +71,9 @@ namespace Dynamo.Core
             }
         }
 
+        /// <summary>
+        /// Instance is the property used as an access point to the PathManager singleton (if is not created will be created with default parameters).
+        /// </summary>
         public static PathManager Instance
         {
             get
