@@ -4617,6 +4617,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to add the following files:\n\n {0}.
+        /// </summary>
+        public static string MessageFailedToAddMultipleFiles {
+            get {
+                return ResourceManager.GetString("MessageFailedToAddMultipleFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to apply NodeViewCustomization for {0}.
         /// </summary>
         public static string MessageFailedToApplyCustomization {
@@ -6130,6 +6139,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageDownloadStateStarting {
             get {
                 return ResourceManager.GetString("PackageDownloadStateStarting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to \n\nDuplicate assemblies found: {0}.
+        /// </summary>
+        public static string PackageDuplicateAssembliesFoundMessage {
+            get {
+                return ResourceManager.GetString("PackageDuplicateAssembliesFoundMessage", resourceCulture);
             }
         }
         
