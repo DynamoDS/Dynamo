@@ -2151,6 +2151,11 @@ namespace ProtoCore
 
         protected void EmitDefaultArgNode(ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None)
         {
+            if (emitReplicationGuide)
+            {
+                EmitAtLevel(null);
+                EmitReplicationGuides(new List<AST.AssociativeAST.AssociativeNode>());
+            }
             if (subPass == ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier)
             {
                 return;
