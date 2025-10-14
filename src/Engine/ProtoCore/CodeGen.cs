@@ -2151,14 +2151,14 @@ namespace ProtoCore
 
         protected void EmitDefaultArgNode(ProtoCore.CompilerDefinitions.SubCompilePass subPass = ProtoCore.CompilerDefinitions.SubCompilePass.None)
         {
+            if (subPass == ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier)
+            {
+                return;
+            }
             if (emitReplicationGuide)
             {
                 EmitAtLevel(null);
                 EmitReplicationGuides(new List<AST.AssociativeAST.AssociativeNode>());
-            }
-            if (subPass == ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier)
-            {
-                return;
             }
             EmitInstrConsole(ProtoCore.DSASM.kw.push, "defaultArg");
             EmitPush(StackValue.BuildDefaultArgument());
