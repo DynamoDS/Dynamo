@@ -1131,6 +1131,9 @@ Siempre puede volver a descargar el paquete.</value>
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>Error al añadir el archivo: {0}</value>
   </data>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>Failed to add the following files:\n\n {0}</value>
+  </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>Error al aplicar NodeViewCustomization para {0}</value>
   </data>
@@ -1355,6 +1358,9 @@ Los siguientes montajes se han cargado varias veces:
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>Debido a limitaciones de .NET Framework, no es posible actualizar el conjunto de paquetes mientras está cargado. Actualice el conjunto mientras {0} no se esté ejecutando e inténtelo de nuevo.</value>
+  </data>
+  <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
+    <value>\n\nDuplicate assemblies found: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>No se puede actualizar conjunto</value>

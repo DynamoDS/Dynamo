@@ -1131,6 +1131,9 @@ Balíček můžete kdykoli znovu stáhnout.</value>
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>Nepodařilo se přidat tento soubor: {0}.</value>
   </data>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>Failed to add the following files:\n\n {0}</value>
+  </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>Nepodařilo se použít NodeViewCustomization pro {0}.</value>
   </data>
@@ -1355,6 +1358,9 @@ Několikrát byly načteny i další sestavy:
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>Z důvodu omezení v rozhraní .NET Framework není možné aktualizovat sestavení balíčku při načítání. Proveďte aktualizaci sestavení, když není aplikace {0} spuštěna a opakujte akci.</value>
+  </data>
+  <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
+    <value>\n\nDuplicate assemblies found: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>Nelze aktualizovat sestavení</value>
