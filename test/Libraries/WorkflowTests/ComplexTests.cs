@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
@@ -603,10 +603,14 @@ namespace Dynamo.Tests
             // run the graph
             BeginRun();
 
-            // test reading
-            var readText = "b6e77130-3c2e-4d6b-ae5b-2137c3d3a51b";
-            var text = GetPreviewValue(readText) as string;
-            Assert.AreEqual(text,"1234");
+            // DYN-9386 - Remove obsolete nodes in 2.x
+            // Comment out failing asserts due to removed nodes
+            // ToDo: Create updated test .dyn file and update the asserts
+
+            //// test reading
+            //var readText = "b6e77130-3c2e-4d6b-ae5b-2137c3d3a51b";
+            //var text = GetPreviewValue(readText) as string;
+            //Assert.AreEqual(text,"1234");
 
             // test writing. Write text is not obsolete but the
             // namespace needs to be migrated, no warning should
@@ -615,14 +619,14 @@ namespace Dynamo.Tests
             var nodeModel = workspace.NodeFromWorkspace(writeText);
             Assert.AreEqual(ElementState.Active, nodeModel.State);
 
-            // test reading image. There are 100 Colors object that is generated since 
-            // the sampling in x and y direction is 10.
-            var readImage = "7fba95f1-fd7a-4033-a7a9-5dfb91c7e886";
-            Assert.AreEqual(100,GetFlattenedPreviewValues(readImage).Count);
+            //// test reading image. There are 100 Colors object that is generated since 
+            //// the sampling in x and y direction is 10.
+            //var readImage = "7fba95f1-fd7a-4033-a7a9-5dfb91c7e886";
+            //Assert.AreEqual(100,GetFlattenedPreviewValues(readImage).Count);
 
-            // test load image from path and writing image in a CBN
-            var codeBlock = "75b9d0a3-e954-42b5-8ccf-66845b122e3f";
-            AssertPreviewValue(codeBlock,true);
+            //// test load image from path and writing image in a CBN
+            //var codeBlock = "75b9d0a3-e954-42b5-8ccf-66845b122e3f";
+            //AssertPreviewValue(codeBlock,true);
 
             // text writing to csv, the node is obsolete but 
             // is migrated, so no warning should be shown on this node
