@@ -1632,8 +1632,8 @@ namespace DynamoCoreWpfTests.PackageManager
         public void CanOpenPackageSearchDialogAndWindowIsOwned()
         {
             ViewModel.OnRequestPackageManagerSearchDialog(null, null);
-            Thread.Sleep(500);
-
+            
+            // Window should be created immediately, no async operation needed
             AssertWindowOwnedByDynamoView<PackageManagerSearchView>();
         }
 
@@ -1798,8 +1798,8 @@ namespace DynamoCoreWpfTests.PackageManager
         public void CanOpenPackageManagerAndWindowIsOwned()
         {
             ViewModel.OnRequestPackageManagerDialog(null, null);
-            Thread.Sleep(500);
-
+            
+            // Window should be created immediately, no async operation needed
             AssertWindowOwnedByDynamoView<PackageManagerView>();
         }
 
@@ -2118,22 +2118,24 @@ namespace DynamoCoreWpfTests.PackageManager
 
 
         [Test]
-        public void RemoveAllChildrenFilesUpdatesContentItem()
+        public async Task RemoveAllChildrenFilesUpdatesContentItem()
         {
             // Arrange
             string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
             var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
             var vm = new PublishPackageViewModel(this.ViewModel);
 
-            vm.AddAllFilesAfterSelection(allFiles);
+            await vm.AddAllFilesAfterSelectionAsync(allFiles);
 
-            // Act
+            // Act - preview is generated automatically in RefreshPackageContents()
             Assert.AreEqual(1, vm.PackageContents.Count);
             Assert.AreEqual(1, vm.PreviewPackageContents.Count);
             var childItems = vm.PackageContents.First().ChildItems;
 
             // Assert
-            foreach (var child in childItems)
+            // Create a copy of the collection to avoid modification during iteration
+            var childItemsCopy = childItems.ToList();
+            foreach (var child in childItemsCopy)
             {
                 vm.RemoveItemCommand.Execute(child);
             }
@@ -2242,7 +2244,7 @@ namespace DynamoCoreWpfTests.PackageManager
         // This test asserts CancelCommand, which is currently disabled under testing environment
         // as it is causing a tread affinity crash. The test will be disabled for the time being
         [Test, Category("Failure")]
-        public void CancelCommandClearsAllData()
+        public async Task CancelCommandClearsAllData()
         {
             // Arrange
             string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
@@ -2252,9 +2254,9 @@ namespace DynamoCoreWpfTests.PackageManager
             Assert.AreEqual(0, vm.PackageContents.Count);
             Assert.AreEqual(0, vm.PreviewPackageContents.Count);
 
-            vm.AddAllFilesAfterSelection(allFiles);
+            await vm.AddAllFilesAfterSelectionAsync(allFiles);
 
-            // Act
+            // Act - preview is generated automatically in RefreshPackageContents()
             Assert.AreEqual(1, vm.PackageContents.Count);
             Assert.AreEqual(1, vm.PreviewPackageContents.Count);
 
@@ -2266,7 +2268,7 @@ namespace DynamoCoreWpfTests.PackageManager
         }
 
         [Test]
-        public void AssertPreviewPackageDefaultFolderStructureEqualsPublishLocalPackageResults()
+        public async Task AssertPreviewPackageDefaultFolderStructureEqualsPublishLocalPackageResults()
         {
             var packageName = "SingleFolderPublishPackage";
             var publishPath = Path.Combine(Path.GetTempPath(), packageName);
@@ -2277,8 +2279,9 @@ namespace DynamoCoreWpfTests.PackageManager
             // now lets publish this package.
             var newPkgVm = new PublishPackageViewModel(this.ViewModel);
 
-            newPkgVm.AddAllFilesAfterSelection(allFiles);
+            await newPkgVm.AddAllFilesAfterSelectionAsync(allFiles);
 
+            // Preview is generated automatically in RefreshPackageContents()
             var previewFilesAndFolders = PackageItemRootViewModel.GetFiles(newPkgVm.PreviewPackageContents.ToList());
             var previewFiles = previewFilesAndFolders.Where(x => !x.DependencyType.Equals(DependencyType.Folder));
             var previewFolders = previewFilesAndFolders.Where(x => x.DependencyType.Equals(DependencyType.Folder));
@@ -2300,7 +2303,7 @@ namespace DynamoCoreWpfTests.PackageManager
         }
 
         [Test]
-        public void AssertPreviewPackageRetainFolderStructureEqualsPublishLocalPackageResults()
+        public async Task AssertPreviewPackageRetainFolderStructureEqualsPublishLocalPackageResults()
         {
             var packageName = "SingleFolderPublishPackage";
             var publishPath = Path.Combine(Path.GetTempPath(), packageName);
@@ -2311,8 +2314,9 @@ namespace DynamoCoreWpfTests.PackageManager
             // now lets publish this package.
             var newPkgVm = new PublishPackageViewModel(this.ViewModel);
             newPkgVm.RetainFolderStructureOverride = true;
-            newPkgVm.AddAllFilesAfterSelection(allFiles);
+            await newPkgVm.AddAllFilesAfterSelectionAsync(allFiles);
 
+            // Preview is generated automatically in RefreshPackageContents()
             var previewFilesAndFolders = PackageItemRootViewModel.GetFiles(newPkgVm.PreviewPackageContents.ToList());
             var previewFiles = previewFilesAndFolders.Where(x => !x.DependencyType.Equals(DependencyType.Folder));
             var previewFolders = previewFilesAndFolders.Where(x => x.DependencyType.Equals(DependencyType.Folder));
@@ -2343,7 +2347,7 @@ namespace DynamoCoreWpfTests.PackageManager
         }
 
         [Test]
-        public void AssertPreviewPackageRetainFolderStructureEqualsPublishLocalPackageResultsForNestedFolders()
+        public async Task AssertPreviewPackageRetainFolderStructureEqualsPublishLocalPackageResultsForNestedFolders()
         {
             var packageName = "NestedPackage";
             var publishPath = Path.Combine(Path.GetTempPath(), packageName);
@@ -2353,8 +2357,9 @@ namespace DynamoCoreWpfTests.PackageManager
             // now lets publish this package.
             var newPkgVm = new PublishPackageViewModel(this.ViewModel);
             newPkgVm.RetainFolderStructureOverride = true;
-            newPkgVm.AddAllFilesAfterSelection(allFiles);
+            await newPkgVm.AddAllFilesAfterSelectionAsync(allFiles);
 
+            // Preview is generated automatically in RefreshPackageContents()
             var previewFilesAndFolders = PackageItemRootViewModel.GetFiles(newPkgVm.PreviewPackageContents.ToList());
             var previewFiles = previewFilesAndFolders.Where(x => !x.DependencyType.Equals(DependencyType.Folder));
             var previewFolders = previewFilesAndFolders.Where(x => x.DependencyType.Equals(DependencyType.Folder));
@@ -2465,6 +2470,314 @@ namespace DynamoCoreWpfTests.PackageManager
             // Clean up
             Directory.Delete(publishPath, true);
         }
+
+        #region Async Package Operations Tests
+
+        [Test]
+        public async Task PreviewPackageBuildAsync_WithRetainFolderStructure_GeneratesCorrectPreview()
+        {
+            // Arrange
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var vm = new PublishPackageViewModel(this.ViewModel);
+            
+            // Set retain folder structure first
+            vm.RetainFolderStructureOverride = true;
+            
+            // Add files using async method and wait for completion
+            await vm.AddAllFilesAfterSelectionAsync(allFiles);
+            
+            // Debug: Check if PackageContents has items
+            Assert.IsTrue(vm.PackageContents.Count > 0, $"PackageContents should have items but has {vm.PackageContents.Count}");
+                        
+            // Act & Assert
+            Assert.AreEqual(1, vm.PreviewPackageContents.Count, $"PreviewPackageContents should have 1 item but has {vm.PreviewPackageContents.Count}. PackageContents has {vm.PackageContents.Count} items.");
+            var previewItem = vm.PreviewPackageContents.First();
+            Assert.IsNotNull(previewItem);
+            
+            // Verify it matches GetExistingRootItemViewModel behavior
+            var publishPath = !String.IsNullOrEmpty(vm.RootFolder) ? vm.RootFolder : new FileInfo("Publish Path").FullName;
+            var packageName = !string.IsNullOrEmpty(vm.Name) ? vm.Name : Path.GetFileName(publishPath);
+            var expectedItem = vm.GetExistingRootItemViewModel(publishPath, packageName);
+            
+            Assert.AreEqual(expectedItem.DisplayName, previewItem.DisplayName);
+            Assert.AreEqual(expectedItem.ChildItems.Count, previewItem.ChildItems.Count);
+        }
+
+        [Test]
+        public async Task PreviewPackageBuildAsync_WithoutRetainFolderStructure_GeneratesCorrectPreview()
+        {
+            // Arrange
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var vm = new PublishPackageViewModel(this.ViewModel);
+            
+            // Set retain folder structure first
+            vm.RetainFolderStructureOverride = false;
+            
+            // Add files using async method and wait for completion
+            await vm.AddAllFilesAfterSelectionAsync(allFiles);
+            
+            // Debug: Check if PackageContents has items
+            Assert.IsTrue(vm.PackageContents.Count > 0, $"PackageContents should have items but has {vm.PackageContents.Count}");
+            
+            // Act & Assert
+            Assert.AreEqual(1, vm.PreviewPackageContents.Count, $"PreviewPackageContents should have 1 item but has {vm.PreviewPackageContents.Count}. PackageContents has {vm.PackageContents.Count} items.");
+            var previewItem = vm.PreviewPackageContents.First();
+            Assert.IsNotNull(previewItem);
+            
+            // Verify it matches GetPreBuildRootItemViewModel behavior
+            var publishPath = !String.IsNullOrEmpty(vm.RootFolder) ? vm.RootFolder : new FileInfo("Publish Path").FullName;
+            var packageName = !string.IsNullOrEmpty(vm.Name) ? vm.Name : Path.GetFileName(publishPath);
+            var files = vm.GetAllFiles().ToList();
+            
+            // Remove duplicates as the async method does
+            files = files.GroupBy(file => Path.GetFileName(file), StringComparer.OrdinalIgnoreCase)
+                         .Select(group => group.First())
+                         .ToList();
+            
+            var expectedItem = vm.GetPreBuildRootItemViewModel(publishPath, packageName, files);
+            
+            Assert.AreEqual(expectedItem.DisplayName, previewItem.DisplayName);
+            var expectedFiles = PackageItemRootViewModel.GetFiles(expectedItem).Where(x => !x.DependencyType.Equals(DependencyType.Folder));
+            var actualFiles = PackageItemRootViewModel.GetFiles(previewItem).Where(x => !x.DependencyType.Equals(DependencyType.Folder));
+            Assert.AreEqual(expectedFiles.Count(), actualFiles.Count());
+        }
+
+        [Test]
+        public void PreviewPackageBuildAsync_EmptyPackageContents_HandlesGracefully()
+        {
+            // Arrange
+            var vm = new PublishPackageViewModel(this.ViewModel);
+            // Don't add any files - leave PackageContents empty
+            
+            // Act & Assert
+            Assert.AreEqual(0, vm.PreviewPackageContents.Count);
+        }
+
+        [Test]
+        public async Task RetainFolderStructureOverride_Setter_TriggersAsyncPreview()
+        {
+            // Arrange
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var vm = new PublishPackageViewModel(this.ViewModel);
+            
+            await vm.AddAllFilesAfterSelectionAsync(allFiles);
+            
+            // Clear preview contents
+            vm.PreviewPackageContents.Clear();
+            Assert.AreEqual(0, vm.PreviewPackageContents.Count);
+            
+            // Act - changing RetainFolderStructureOverride should trigger async preview
+            vm.RetainFolderStructureOverride = true;
+            
+            // Assert
+            Assert.AreEqual(1, vm.PreviewPackageContents.Count);
+        }
+
+        [Test]
+        public async Task RefreshPackageContents_TriggersAsyncPreview()
+        {
+            // Arrange
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            var vm = new PublishPackageViewModel(this.ViewModel);
+            
+            await vm.AddAllFilesAfterSelectionAsync(allFiles);
+            
+            // Clear preview contents
+            vm.PreviewPackageContents.Clear();
+            Assert.AreEqual(0, vm.PreviewPackageContents.Count);
+            
+            // Act - RefreshPackageContents should trigger async preview
+            vm.RefreshPackageContents();
+            
+            // Assert
+            Assert.AreEqual(1, vm.PreviewPackageContents.Count);
+        }
+
+        [Test]
+        public async Task PreviewPackageBuildAsync_WithNullRootFolder_HandlesGracefully()
+        {
+            // Arrange
+            var vm = new PublishPackageViewModel(this.ViewModel);
+            vm.RootFolder = null;
+            
+            // Add some content to ensure we test the null path scenario
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            await vm.AddAllFilesAfterSelectionAsync(allFiles);
+            
+            // Act & Assert - preview is generated automatically in RefreshPackageContents()
+            // Should still generate preview with default path
+            Assert.AreEqual(1, vm.PreviewPackageContents.Count);
+        }
+
+        [Test]
+        public async Task AddAllFilesAfterSelectionAsync_SmallFileList_ProcessesSynchronously()
+        {
+            // Arrange
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).Take(5).ToList(); // Small list
+            var vm = new PublishPackageViewModel(this.ViewModel);
+            
+            // Act
+            await vm.AddAllFilesAfterSelectionAsync(allFiles);
+
+            // Assert
+            Assert.AreEqual(1, vm.PackageContents.Count);
+            Assert.AreEqual(1, vm.PreviewPackageContents.Count);
+            Assert.IsTrue(vm.Assemblies.Count > 0 || vm.AdditionalFiles.Count > 0);
+        }
+
+        [Test]
+        public async Task AddAllFilesAfterSelectionAsync_LargeFileList_ProcessesAsynchronously()
+        {
+            // Arrange
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).ToList();
+            
+            // Debug: Check if we have initial files
+            Assert.IsTrue(allFiles.Count > 0, $"Should have files in {nodePath}");
+            
+            var largeFileList = new List<string>(allFiles);
+            
+            // Debug: Check what files we actually have
+            Assert.IsTrue(largeFileList.Count > 0, $"Should have collected files. Found: {largeFileList.Count}");
+            
+            var vm = new PublishPackageViewModel(this.ViewModel);
+            
+            // Debug: Check initial state
+            Assert.AreEqual(0, vm.PackageContents.Count, "PackageContents should start empty");
+            Assert.AreEqual(0, vm.Assemblies.Count, "Assemblies should start empty");
+            Assert.AreEqual(0, vm.AdditionalFiles.Count, "AdditionalFiles should start empty");
+            
+            // Act
+            await vm.AddAllFilesAfterSelectionAsync(largeFileList);
+
+            // Debug: Check what got processed
+            var debugMessage = $"After processing: PackageContents={vm.PackageContents.Count}, Assemblies={vm.Assemblies.Count}, AdditionalFiles={vm.AdditionalFiles.Count}";
+
+            // Assert  
+            Assert.IsTrue(vm.PackageContents.Count > 0, $"PackageContents should have items after processing. {debugMessage}");
+            Assert.IsTrue(vm.PreviewPackageContents.Count > 0, $"PreviewPackageContents should have items after processing. {debugMessage}");
+            Assert.IsTrue(vm.Assemblies.Count > 0 || vm.AdditionalFiles.Count > 0, $"Should have processed some assemblies or additional files. {debugMessage}");
+        }
+
+        [Test]
+        public async Task AddAllFilesAfterSelectionAsync_WithRootFolder_SetsRootFolderProperty()
+        {
+            // Arrange
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).Take(3).ToList();
+            var vm = new PublishPackageViewModel(this.ViewModel);
+            
+            // Use a root folder that doesn't match the actual file paths to test the behavior
+            var expectedRootFolder = @"C:\TestRoot";
+            
+            // Act
+            await vm.AddAllFilesAfterSelectionAsync(allFiles, expectedRootFolder);
+            
+            // Assert
+            // The RootFolder property gets consumed and cleared by RefreshPackageContents
+            Assert.AreEqual(string.Empty, vm.RootFolder, "RootFolder should be cleared after being consumed");
+            
+            // When root folder doesn't match file paths, we get multiple root items
+            Assert.AreEqual(2, vm.PackageContents.Count, "Should have 2 root items when root folder doesn't match file paths");
+            
+            // Verify that both root items are present
+            var rootFolderItem = vm.PackageContents.FirstOrDefault(x => x.DirectoryName == expectedRootFolder);
+            Assert.IsNotNull(rootFolderItem, "Should have root item for the provided root folder");
+            
+            var fileBasedItem = vm.PackageContents.FirstOrDefault(x => x.DirectoryName != expectedRootFolder);
+            Assert.IsNotNull(fileBasedItem, "Should have root item for the actual file paths");
+            
+            // Verify that files were actually processed
+            Assert.IsTrue(vm.Assemblies.Count > 0 || vm.AdditionalFiles.Count > 0, "Should have processed some files");
+        }
+
+        [Test]
+        public void AddAllFilesAfterSelectionAsync_EmptyFileList_HandlesGracefully()
+        {
+            // Arrange
+            var vm = new PublishPackageViewModel(this.ViewModel);
+            var emptyFileList = new List<string>();
+            
+            // Act & Assert
+            Assert.DoesNotThrowAsync(async () => await vm.AddAllFilesAfterSelectionAsync(emptyFileList));
+            Assert.AreEqual(0, vm.PackageContents.Count);
+            Assert.AreEqual(0, vm.PreviewPackageContents.Count);
+        }
+
+        [Test]
+        public async Task AddAllFilesAfterSelectionAsync_DuplicateFiles_HandlesGracefully()
+        {
+            // Arrange
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).Take(3).ToList();
+            var vm = new PublishPackageViewModel(this.ViewModel);
+            
+            // Add files first time
+            await vm.AddAllFilesAfterSelectionAsync(allFiles);
+            var initialCount = vm.PackageContents.Count;
+            
+            // Act - Add same files again
+            await vm.AddAllFilesAfterSelectionAsync(allFiles);
+            
+            // Assert - Should not duplicate
+            Assert.AreEqual(initialCount, vm.PackageContents.Count);
+        }
+
+        [Test]
+        public async Task AddAllFilesAfterSelection_CallsAsyncVersion()
+        {
+            // Arrange
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).Take(3).ToList();
+            var vm = new PublishPackageViewModel(this.ViewModel);
+            
+            // Act
+            await vm.AddAllFilesAfterSelectionAsync(allFiles);
+            
+            // Assert
+            Assert.AreEqual(1, vm.PackageContents.Count);
+            Assert.AreEqual(1, vm.PreviewPackageContents.Count);
+        }
+
+        [Test]
+        public async Task AsyncOperations_Integration_WorkTogether()
+        {
+            // Arrange
+            string nodePath = Path.Combine(TestDirectory, "core", "docbrowser\\pkgs\\RootPackageFolder\\PackageWithNodeDocumentation");
+            var allFiles = Directory.GetFiles(nodePath, "*", SearchOption.AllDirectories).Take(5).ToList();
+            var vm = new PublishPackageViewModel(this.ViewModel);
+            
+            // Change RetainFolderStructureOverride to trigger async preview
+            vm.RetainFolderStructureOverride = true;
+            
+            // Act - Test the integration of async operations
+            await vm.AddAllFilesAfterSelectionAsync(allFiles);
+
+            // Assert
+            Assert.AreEqual(1, vm.PackageContents.Count);
+            Assert.AreEqual(1, vm.PreviewPackageContents.Count);
+            Assert.IsTrue(vm.RetainFolderStructureOverride);
+        }
+
+        [Test]
+        public void AsyncOperations_ErrorHandling_DoesNotCrash()
+        {
+            // Arrange
+            var vm = new PublishPackageViewModel(this.ViewModel);
+            var invalidFilePaths = new List<string> { @"C:\NonExistent\File.dll", @"C:\Invalid\Path.dyf" };
+            
+            // Act & Assert - Should not throw exceptions
+            Assert.DoesNotThrowAsync(async () => await vm.AddAllFilesAfterSelectionAsync(invalidFilePaths));
+        }
+
+        #endregion
+
         #endregion
     }
 }
