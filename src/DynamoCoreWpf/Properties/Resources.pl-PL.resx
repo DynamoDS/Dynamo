@@ -1131,6 +1131,9 @@ Można później ponownie pobrać pakiet.</value>
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>Nie można dodać pliku: {0}</value>
   </data>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>Failed to add the following files:\n\n {0}</value>
+  </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>Nie udało się zastosować NodeViewCustomization dla {0}</value>
   </data>
@@ -1355,6 +1358,9 @@ Poniższe zespoły zostały wczytane wiele razy:
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>Ze względu na ograniczenia programu .NET Framework nie jest możliwa aktualizacja spakowanego zespołu, gdy jest już wczytany. Zaktualizuj zespół, gdy {0} nie jest uruchomiony, i spróbuj ponownie.</value>
+  </data>
+  <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
+    <value>\n\nDuplicate assemblies found: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>Nie można uaktualnić zespołu</value>

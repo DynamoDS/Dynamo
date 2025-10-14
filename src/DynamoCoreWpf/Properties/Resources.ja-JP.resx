@@ -1131,6 +1131,9 @@
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>ファイル {0} を追加できませんでした。</value>
   </data>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>Failed to add the following files:\n\n {0}</value>
+  </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>{0} への NodeViewCustomization の適用に失敗しました</value>
   </data>
@@ -1355,6 +1358,9 @@
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>.NET フレームワークの制限により、既にロードされている場合は、パッケージ アセンブリを更新できません。{0} が実行されていないときにアセンブリを更新して、再度実行してください。</value>
+  </data>
+  <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
+    <value>\n\nDuplicate assemblies found: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>アセンブリを更新できません</value>

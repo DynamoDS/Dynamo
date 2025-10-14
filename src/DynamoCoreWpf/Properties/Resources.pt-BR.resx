@@ -1131,6 +1131,9 @@ Sempre é possível fazer o download do pacote novamente.</value>
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>Falha ao adicionar o arquivo: {0}</value>
   </data>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>Failed to add the following files:\n\n {0}</value>
+  </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>Falha ao aplicar NodeViewCustomization para {0}</value>
   </data>
@@ -1355,6 +1358,9 @@ As montagens a seguir foram carregadas diversas vezes:
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>Devido às limitações do .NET Framework, não é possível atualizar sua montagem do seu pacote enquanto ele já estiver carregado.  Atualize a montagem enquanto o {0} não estiver em execução e tente novamente.</value>
+  </data>
+  <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
+    <value>\n\nDuplicate assemblies found: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>Não é possível atualizar a montagem</value>
