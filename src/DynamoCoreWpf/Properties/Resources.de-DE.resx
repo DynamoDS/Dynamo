@@ -1131,6 +1131,9 @@ Sie können das Paket jederzeit erneut herunterladen.</value>
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>Fehler beim Hinzufügen von Datei: {0}</value>
   </data>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>Failed to add the following files:\n\n {0}</value>
+  </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>NodeViewCustomization für {0} konnte nicht angewendet werden.</value>
   </data>
@@ -1355,6 +1358,9 @@ Die nächsten Assemblys wurden mehrmals geladen:
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>Aufgrund von Einschränkungen im .NET Framework ist es nicht möglich, die Paket-Assembly zu aktualisieren, während sie bereits geladen ist. Führen Sie die Aktualisierung durch, während {0} nicht ausgeführt wird, und wiederholen Sie den Vorgang.</value>
+  </data>
+  <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
+    <value>\n\nDuplicate assemblies found: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>Assembly kann nicht aktualisiert werden.</value>

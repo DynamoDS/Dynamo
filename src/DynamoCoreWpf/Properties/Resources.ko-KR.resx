@@ -1130,6 +1130,9 @@
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>파일을 추가하지 못했습니다. {0}</value>
   </data>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>Failed to add the following files:\n\n {0}</value>
+  </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>{0}에 NodeViewCustomization을 적용하지 못했습니다</value>
   </data>
@@ -1354,6 +1357,9 @@
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>.NET Framework의 제한사항으로 인해 이미 로드된 패키지 조합은 업데이트할 수 없습니다. {0}이(가) 실행되고 있지 않는 동안 조합을 업데이트하고 다시 해보십시오.</value>
+  </data>
+  <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
+    <value>\n\nDuplicate assemblies found: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>조합을 업데이트할 수 없습니다</value>
