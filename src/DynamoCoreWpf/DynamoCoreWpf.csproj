@@ -482,7 +482,7 @@
       <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.2726" />
+      <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.2855" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
     <PackageReference Include="Greg" Version="3.0.2.8780" />
@@ -549,6 +549,7 @@
     </Compile>
     <Compile Include="Controls\UseLevelPopup.cs" />
     <Compile Include="Controls\UseLevelSpinner.cs" />
+    <Compile Include="Extensions\IExtensionMenuProvider.cs" />
     <Compile Include="Extensions\ViewModelCommandExecutive.cs" />
     <Compile Include="Extensions\IViewExtension.cs" />
     <Compile Include="Extensions\ViewExtensionBase.cs" />
@@ -2197,9 +2198,11 @@
  <Target Name="AfterBuildOps" AfterTargets="Build">
     <ItemGroup>
       <ExternTuneUpPkg Include="$(SolutionDir)..\extern\TuneUp\**\*.*" />
+	  <DistribSamples Include="$(SolutionDir)..\extern\doc\distrib\Samples\**\*.*" />
     </ItemGroup>
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
     <Copy SourceFiles="@(ExternTuneUpPkg)" DestinationFolder="$(OutputPath)\Built-In Packages\packages\TuneUp\%(RecursiveDir)" />
+	<Copy SourceFiles="@(DistribSamples)" DestinationFolder="$(OutputPath)\Samples" SkipUnchangedFiles="True" />
   </Target>
   <Target Name="CopyPMWizardHtmlFiles" AfterTargets="Build">
     <ItemGroup>

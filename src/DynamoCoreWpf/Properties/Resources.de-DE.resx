@@ -148,7 +148,7 @@
     <value>Melden Sie sich an, um auf Online-Dienste zuzugreifen, die in Ihre Desktop-Software integriert werden können.</value>
   </data>
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to sign in.</value>
+    <value>Aktivieren Sie den Netzwerkmodus, um sich anmelden zu können.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
@@ -3812,6 +3812,15 @@ Führen Sie #Download und Installation=https://manage.autodesk.com/products/upda
   </data>
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>Blocksymboldaten werden in \"{0}\" ausgegeben.</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Advanced Sharing</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_General</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>Diagramm_eigenschaften anzeigen</value>
   </data>
   <data name="GroupOptionalInportsText" xml:space="preserve">
     <value>Optional</value>

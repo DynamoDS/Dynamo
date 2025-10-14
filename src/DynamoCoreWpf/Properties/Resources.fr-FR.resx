@@ -148,7 +148,7 @@
     <value>Connectez-vous pour accéder aux services en ligne qui s'intègrent à votre logiciel de bureau.</value>
   </data>
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to sign in.</value>
+    <value>Activez le mode réseau pour pouvoir vous connecter.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
@@ -3808,6 +3808,15 @@ Pour transformer ce fichier en nouveau gabarit, enregistrez-le dans un autre dos
   </data>
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>Les données de l'icône du noeud sont vidées vers \"{0}\".</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Advanced Sharing</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_General</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>Afficher les _propriétés du graphique</value>
   </data>
   <data name="GroupOptionalInportsText" xml:space="preserve">
     <value>Facultatif</value>

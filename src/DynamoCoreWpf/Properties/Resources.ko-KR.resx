@@ -148,7 +148,7 @@
     <value>로그인하여 데스크탑 소프트웨어와 통합되는 온라인 서비스에 액세스하십시오.</value>
   </data>
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to sign in.</value>
+    <value>로그인하려면 네트워크 모드를 활성화합니다.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
@@ -3811,6 +3811,15 @@
   </data>
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>노드 아이콘 데이터가 \"{0}\"에 덤프됩니다.</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Advanced Sharing</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_General</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>그래프 특성 표시(_P)</value>
   </data>
   <data name="GroupOptionalInportsText" xml:space="preserve">
     <value>선택적</value>

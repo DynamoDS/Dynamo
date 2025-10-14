@@ -358,6 +358,16 @@
                                   Command="{Binding Path=DataContext.ImportLibraryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   Header="{x:Static p:Resources.DynamoViewFileMenuImport}" />
                         <Separator />
+                        <MenuItem Name="graphProperties"
+                                  Header="{x:Static p:Resources.DynamoViewFileMenuShowGraphProperties}">
+                            <MenuItem Name="general"
+                                      Command="{Binding ShowGraphPropertiesCommand}"
+                                      Header="{x:Static p:Resources.DynamoViewFileMenuGraphPropertiesGeneral}" />
+                            <!-- Host properties panel to be implemented in Dynamo C4D later -->
+                            <!--<MenuItem Name="advanced"
+                                      Header="{x:Static p:Resources.DynamoViewFileMenuGraphPropertiesAdvanced}" />-->                            
+                        </MenuItem>
+                        <Separator />
                         <MenuItem Name="exportMenu"
                                   Header="{x:Static p:Resources.DynamoViewFileMenuExport}"
                                   IsEnabled="False"
