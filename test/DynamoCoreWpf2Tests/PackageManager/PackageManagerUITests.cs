@@ -2140,14 +2140,6 @@ namespace DynamoCoreWpfTests.PackageManager
                 vm.RemoveItemCommand.Execute(child);
             }
 
-            // Debug: Check what's remaining
-            if (vm.PackageContents.Count > 0)
-            {
-                var remaining = vm.PackageContents.First();
-                var debugInfo = $"Remaining item: DisplayName='{remaining.DisplayName}', DependencyType='{remaining.DependencyType}', ChildItems.Count={remaining.ChildItems.Count}";
-                Assert.Fail($"Expected 0 PackageContents but got {vm.PackageContents.Count}. {debugInfo}");
-            }
-
             Assert.AreEqual(0, vm.PackageContents.Count);
             Assert.AreEqual(0, vm.PreviewPackageContents.Count);
         }

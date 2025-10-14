@@ -3250,8 +3250,6 @@ namespace Dynamo.PackageManager
             }
         }
 
-
-
         internal PackageItemRootViewModel GetExistingRootItemViewModel(string publishPath, string packageName)
         {
             if (!PackageContents.Any()) return null;
