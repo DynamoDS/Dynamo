@@ -153,12 +153,12 @@ namespace Dynamo.Logging
         DynamoHomeOperations,
 
         /// <summary>
-        /// Events Category related to MCP (Model Context Protocol) operations
+        /// Events Category related to MCPExtension and MCPServer operations
         /// </summary>
         MCPOperations,
 
         /// <summary>
-        /// Events Category related to Dynamo Assistant operations
+        /// Events Category related to DynamoAssistant operations
         /// </summary>
         AssistantOperations
     }
