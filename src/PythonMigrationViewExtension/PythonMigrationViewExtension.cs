@@ -196,9 +196,16 @@ namespace Dynamo.PythonMigration
                 .ForEach(x => SubscribeToPythonNodeEvents(x as PythonNodeBase));
         }
 
+        private void OnCurrentWorkspaceCleared(IWorkspaceModel workspace)
+        {
+            // Close the CPython toast notification when workspace is cleared/closed
+            DynamoViewModel.MainGuideManager?.CloseRealTimeInfoWindow();
+        }
+
         private void SubscribeToDynamoEvents()
         {
             LoadedParams.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
+            LoadedParams.CurrentWorkspaceCleared += OnCurrentWorkspaceCleared;
             DynamoViewModel.Model.Logger.NotificationLogged += OnNotificationLogged;
             SubscribeToWorkspaceEvents();
         }
@@ -240,6 +247,7 @@ namespace Dynamo.PythonMigration
             if (LoadedParams != null)
             {
                 LoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
+                LoadedParams.CurrentWorkspaceCleared -= OnCurrentWorkspaceCleared;
                 DynamoViewModel.CurrentSpaceViewModel.Model.NodeAdded -= OnNodeAdded;
                 DynamoViewModel.Model.Logger.NotificationLogged -= OnNotificationLogged;
             }
