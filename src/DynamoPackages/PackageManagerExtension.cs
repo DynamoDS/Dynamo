@@ -215,19 +215,6 @@ namespace Dynamo.PackageManager
                         NodePackageDictionary[assem.FullName].Add(new PackageInfo(pkg.Name, new Version(pkg.VersionName)));
                     }
                 }
-
-                // Set PythonNet3 as the default engine if it is isntalled and no other valid engine is set as default
-                var eng = e.NewItems[0] as PythonServices.PythonEngine;
-                if (eng != null && eng.Name == PythonServices.PythonEngineManager.PythonNet3EngineName && prefSettings != null)
-                {
-                    var currentDefault = prefSettings.DefaultPythonEngine;
-                    var currentIsValid = PythonServices.PythonEngineManager.Instance.AvailableEngines.Any(x => x.Name == currentDefault);
-                    if (!currentIsValid)
-                    {
-                        prefSettings.DefaultPythonEngine = eng.Name;
-                        OnMessageLogged(LogMessage.Info($"Setting default python engine to {eng.Name}"));
-                    }
-                }
             }
             catch (Exception ex)
             {
@@ -269,6 +256,25 @@ namespace Dynamo.PackageManager
             {
                 Preferences = preferences,
             });
+            EnsureDefaultPythonEngine();
+        }
+
+        private void EnsureDefaultPythonEngine()
+        {
+            if (prefSettings == null) return;
+
+            var mgr = PythonServices.PythonEngineManager.Instance;
+            var current = prefSettings.DefaultPythonEngine;
+            var isValid = !string.IsNullOrEmpty(current) && mgr.AvailableEngines.Any(x => x.Name == current);
+            if (isValid) return;
+
+            var preferred = mgr.AvailableEngines.FirstOrDefault(x => x.Name == PythonServices.PythonEngineManager.PythonNet3EngineName)
+                            ?? mgr.AvailableEngines.FirstOrDefault();
+
+            if (preferred != null && preferred.Name != current)
+            {
+                prefSettings.DefaultPythonEngine = preferred.Name;
+            }
         }
 
         private void OnMessageLogged(ILogMessage msg)
