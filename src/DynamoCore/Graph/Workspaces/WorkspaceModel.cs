@@ -305,6 +305,11 @@ namespace Dynamo.Graph.Workspaces
         private readonly string customNodeExtension = ".dyf";
 
         /// <summary>
+        /// Flag to indicate whether the CPython notification has been shown once.
+        /// </summary>
+        internal bool HasShownCPythonNotification;
+
+        /// <summary>
         /// Whether or not to delay graph execution.
         /// 64-bit read operations are already atomic so no need to lock here
         /// </summary>
@@ -1384,6 +1389,14 @@ namespace Dynamo.Graph.Workspaces
                 WorkspaceEvents.OnWorkspaceSettingsChanged(scaleFactor);
             }
         }
+
+        /// <summary>
+        /// Flag indicating whether the “Python Engine Change” notice should be shown
+        /// on save/close. Runtime-only (not serialized) and reset on workspace switch.
+        /// </summary>
+        [JsonIgnore]
+        public bool ShowCPythonNotifications { get; internal set; }
+
         #endregion
 
         #region constructors
