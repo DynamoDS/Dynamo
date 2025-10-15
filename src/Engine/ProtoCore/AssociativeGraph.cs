@@ -1500,8 +1500,13 @@ namespace ProtoCore.AssociativeGraph
                 return false;
             }
 
-            var firstNode = updateNodeRefList[0].nodeList[0];
-            return firstNode != null && firstNode.nodeType == UpdateNodeType.Symbol && firstNode.symbol.isSSATemp;
+            if (updateNodeRefList.Count > 0 && updateNodeRefList[0].nodeList.Count > 0)
+            {
+                var firstNode = updateNodeRefList[0].nodeList[0];
+                return firstNode != null && firstNode.nodeType == UpdateNodeType.Symbol && firstNode.symbol.isSSATemp;
+            }
+
+            return false;
         }
     }
 
