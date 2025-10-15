@@ -225,39 +225,29 @@
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.Migrations.xml" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="$(SolutionDir)Config\upiconfig.xml" DestinationFolder="$(OutputPath)" /> 
+  </Target>    
+  <Target Name="BuildPythonNet3EngineDynamoPackage" AfterTargets="Build">
+    <PropertyGroup>            
+      <DestRoot>$(OutputPath)Built-In Packages\packages\PythonNet3Engine\</DestRoot>
+      <DestBin>$(DestRoot)bin\</DestBin>
+      <DestExtra>$(DestRoot)extra\</DestExtra>            
+      <PkgRoot>$(PkgDynamoVisualProgramming_PythonEngine_PythonNet3)</PkgRoot>
+      <LibDir>$(PkgRoot)\lib\</LibDir>
+      <PkgJson>$(PkgRoot)\content\manifest\pkg.json</PkgJson>            
+    </PropertyGroup>        
+    <MakeDir Directories="$(DestBin)" />
+    <MakeDir Directories="$(DestExtra)" />
+    <Copy SourceFiles="$(PkgJson)" DestinationFiles="$(DestRoot)pkg.json" SkipUnchangedFiles="True" />        
+    <ItemGroup>
+      <DllEmpty Include="$(LibDir)**\DSPythonNet3Empty.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(DllEmpty)" DestinationFolder="$(DestBin)" SkipUnchangedFiles="True" />        
+    <ItemGroup>
+      <DllExtra Include="$(LibDir)**\*.dll" Exclude="@(DllEmpty)" />
+      <DllExtra Include="$(LibDir)**\DSPythonNet3Extension_ExtensionDefinition.xml" />            
+    </ItemGroup>        
+    <Copy SourceFiles="@(DllExtra)" DestinationFolder="$(DestExtra)" SkipUnchangedFiles="True" />  
   </Target>
-    <Target Name="BuildPythonNet3EngineDynamoPackage" AfterTargets="Build">
-        <PropertyGroup>
-            <DestRoot>$(OutputPath)Built-In Packages\packages\PythonNet3Engine\</DestRoot>
-            <DestBin>$(DestRoot)bin\</DestBin>
-            <DestExtra>$(DestRoot)extra\</DestExtra>
-            <PkgRoot>$(PkgDynamoVisualProgramming_PythonEngine_PythonNet3)</PkgRoot>
-            <LibDir>$(PkgRoot)\lib\net8.0\</LibDir>
-            <ManifestDir>$(PkgRoot)\content\manifest\</ManifestDir>
-            <PkgJson>$(ManifestDir)pkg.json</PkgJson>
-        </PropertyGroup>
-        <MakeDir Directories="$(DestBin)" />
-        <MakeDir Directories="$(DestExtra)" />
-        <Copy SourceFiles="$(PkgJson)" DestinationFiles="$(DestRoot)pkg.json" SkipUnchangedFiles="True" />
-        <ItemGroup>
-            <DllEmpty Include="$(LibDir)DSPythonNet3Empty.dll" Condition="Exists('$(LibDir)DSPythonNet3Empty.dll')" />
-            <DllEmpty Include="$(LibDir)DSPythonNet3Empty.deps.json" Condition="Exists('$(LibDir)DSPythonNet3Empty.deps.json')" />
-        </ItemGroup>
-        <Copy SourceFiles="@(DllEmpty)" DestinationFolder="$(DestBin)" SkipUnchangedFiles="True" />        
-        <ItemGroup>
-            <DllExtra Include="$(LibDir)DSPythonNet3.dll" Condition="Exists('$(LibDir)DSPythonNet3.dll')" />
-            <DllExtra Include="$(LibDir)Python.Runtime.dll" Condition="Exists('$(LibDir)Python.Runtime.dll')" />
-            <DllExtra Include="$(LibDir)Python.Included.dll" Condition="Exists('$(LibDir)Python.Included.dll')" />
-            <DllExtra Include="$(LibDir)Python.Deployment.dll" Condition="Exists('$(LibDir)Python.Deployment.dll')" />
-            <DllExtra Include="$(LibDir)DSPythonNet3Extension.dll" Condition="Exists('$(LibDir)DSPythonNet3Extension.dll')" />
-            <DllExtra Include="$(LibDir)DSPythonNet3Wheels.dll" Condition="Exists('$(LibDir)DSPythonNet3Wheels.dll')" />            
-            <DllExtra Include="$(LibDir)DSPythonNet3.deps.json" Condition="Exists('$(LibDir)DSPythonNet3.deps.json')" />
-            <DllExtra Include="$(LibDir)DSPythonNet3Extension.deps.json" Condition="Exists('$(LibDir)DSPythonNet3Extension.deps.json')" />
-            <DllExtra Include="$(LibDir)DSPythonNet3Wheels.deps.json" Condition="Exists('$(LibDir)DSPythonNet3Wheels.deps.json')" />            
-            <DllExtra Include="$(LibDir)DSPythonNet3Extension_ExtensionDefinition.xml" Condition="Exists('$(LibDir)DSPythonNet3Extension_ExtensionDefinition.xml')" />            
-        </ItemGroup>
-        <Copy SourceFiles="@(DllExtra)" DestinationFolder="$(DestExtra)" SkipUnchangedFiles="True" />  
-    </Target>    
   <Target Name="AfterBuildOps" AfterTargets="ResolveSateliteResDeps">
     <ItemGroup>
       <ASMLibG Include="$(SolutionDir)..\extern\LibG_*\*" />
