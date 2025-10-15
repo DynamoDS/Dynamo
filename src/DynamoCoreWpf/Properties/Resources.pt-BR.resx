@@ -148,7 +148,7 @@
     <value>Entre para acessar serviços on-line que se integram ao software de desktop.</value>
   </data>
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to sign in.</value>
+    <value>Ative modo de rede para poder entrar.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
@@ -1131,6 +1131,9 @@ Sempre é possível fazer o download do pacote novamente.</value>
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>Falha ao adicionar o arquivo: {0}</value>
   </data>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>Failed to add the following files:\n\n {0}</value>
+  </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>Falha ao aplicar NodeViewCustomization para {0}</value>
   </data>
@@ -1355,6 +1358,9 @@ As montagens a seguir foram carregadas diversas vezes:
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>Devido às limitações do .NET Framework, não é possível atualizar sua montagem do seu pacote enquanto ele já estiver carregado.  Atualize a montagem enquanto o {0} não estiver em execução e tente novamente.</value>
+  </data>
+  <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
+    <value>\n\nDuplicate assemblies found: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>Não é possível atualizar a montagem</value>
@@ -3814,6 +3820,15 @@ Para transformar este arquivo em um novo modelo, salve-o em uma pasta diferente 
   </data>
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>Os dados do ícone de nó são descarregados em \"{0}\".</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Advanced Sharing</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_General</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>Mostrar _propriedades do gráfico</value>
   </data>
   <data name="GroupOptionalInportsText" xml:space="preserve">
     <value>Opcional</value>

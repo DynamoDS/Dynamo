@@ -58,7 +58,7 @@ namespace DynamoShapeManager
         /// <summary>
         /// The mask to filter ASM binary
         /// </summary>
-        public static readonly string ASMFileMask = "ASMAHL*A.dll";
+        public static readonly string ASMFileMask = "ASMAHL*.dll";
         #endregion
 
         /// <summary>

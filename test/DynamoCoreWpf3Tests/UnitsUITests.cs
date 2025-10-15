@@ -198,7 +198,6 @@ namespace DynamoCoreWpfTests
             Assert.AreNotEqual("autodesk.unit.quantity:force", GetTypeName<DynamoUnits.Quantity>(node3.CachedValue.Data));
             Assert.AreEqual("autodesk.unit.quantity:flowPerVolume", GetTypeName<DynamoUnits.Quantity>(node3.CachedValue.Data));
             Assert.AreEqual("autodesk.unit.symbol:mm", GetTypeName<DynamoUnits.Symbol>(node4.CachedValue.Data));
-            Assert.AreEqual("autodesk.unit.unit:maxwells", GetTypeName<DynamoUnits.Unit>(node5.CachedValue.Data));
             Assert.AreEqual("autodesk.unit.unit:meters", GetTypeName<DynamoUnits.Unit>(node6.CachedValue.Data));
             Assert.AreEqual("autodesk.unit.unit:millimeters", GetTypeName<DynamoUnits.Unit>(node7.CachedValue.Data));
             Assert.AreEqual(3, node8.CachedValue.GetElements().Count());

@@ -148,7 +148,7 @@
     <value>Zaloguj się, aby uzyskać dostęp do usług online zintegrowanych z oprogramowaniem na komputerze.</value>
   </data>
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to sign in.</value>
+    <value>Aby móc się zalogować, włącz tryb sieciowy.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
@@ -1131,6 +1131,9 @@ Można później ponownie pobrać pakiet.</value>
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>Nie można dodać pliku: {0}</value>
   </data>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>Failed to add the following files:\n\n {0}</value>
+  </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>Nie udało się zastosować NodeViewCustomization dla {0}</value>
   </data>
@@ -1355,6 +1358,9 @@ Poniższe zespoły zostały wczytane wiele razy:
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>Ze względu na ograniczenia programu .NET Framework nie jest możliwa aktualizacja spakowanego zespołu, gdy jest już wczytany. Zaktualizuj zespół, gdy {0} nie jest uruchomiony, i spróbuj ponownie.</value>
+  </data>
+  <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
+    <value>\n\nDuplicate assemblies found: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>Nie można uaktualnić zespołu</value>
@@ -3814,6 +3820,15 @@ Aby ustawić ten plik jako nowy szablon, zapisz go w innym folderze, a następni
   </data>
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>Dane ikon węzłów są zrzucane do „{0}”.</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Advanced Sharing</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_General</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>Pokaż _właściwości wykresu</value>
   </data>
   <data name="GroupOptionalInportsText" xml:space="preserve">
     <value>Opcjonalne</value>

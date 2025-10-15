@@ -148,7 +148,7 @@
     <value>Přihlaste se, abyste získali přístup k online službám integrovaným s vaším desktopovým softwarem.</value>
   </data>
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to sign in.</value>
+    <value>Chcete-li se přihlásit, povolte režim sítě.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
@@ -1131,6 +1131,9 @@ Balíček můžete kdykoli znovu stáhnout.</value>
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>Nepodařilo se přidat tento soubor: {0}.</value>
   </data>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>Failed to add the following files:\n\n {0}</value>
+  </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>Nepodařilo se použít NodeViewCustomization pro {0}.</value>
   </data>
@@ -1355,6 +1358,9 @@ Několikrát byly načteny i další sestavy:
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>Z důvodu omezení v rozhraní .NET Framework není možné aktualizovat sestavení balíčku při načítání. Proveďte aktualizaci sestavení, když není aplikace {0} spuštěna a opakujte akci.</value>
+  </data>
+  <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
+    <value>\n\nDuplicate assemblies found: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>Nelze aktualizovat sestavení</value>
@@ -3813,6 +3819,15 @@ Chcete-li vytvořit z tohoto souboru novou šablonu, uložte ho do jiné složky
   </data>
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>Data ikony uzlu jsou vypsána do \"{0}\".</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Advanced Sharing</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_General</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>Zobrazit vlastnosti _grafu</value>
   </data>
   <data name="GroupOptionalInportsText" xml:space="preserve">
     <value>Volitelné</value>

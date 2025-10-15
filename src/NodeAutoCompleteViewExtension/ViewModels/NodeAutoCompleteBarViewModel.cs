@@ -322,7 +322,16 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 connector.IsTransient = false;
             }
 
-            NodeAutoCompleteUtilities.PostAutoLayoutNodes(node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, PortViewModel.PortType, null);
+            NodeAutoCompleteUtilities.PostAutoLayoutNodes(dynamoViewModel, node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, PortViewModel.PortType, null);
+
+            var parentGroup = node.WorkspaceViewModel.Annotations.FirstOrDefault(x=>x.Nodes.Any(x=>x.GUID==node.NodeModel.GUID));
+            if(parentGroup != null)
+            {
+                foreach(var newNode in transientNodes.Select(x => x.NodeModel))
+                {
+                    parentGroup.AnnotationModel.AddToTargetAnnotationModel(newNode);
+                }
+            }
 
             if (PortViewModel.PortType == PortType.Input)
             {
@@ -983,7 +992,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
 
             // Perform auto-layout for the newly added nodes
-            NodeAutoCompleteUtilities.PostAutoLayoutNodes(
+            NodeAutoCompleteUtilities.PostAutoLayoutNodes(dynamoViewModel,
                 workspaceViewModel.DynamoViewModel.CurrentSpace,
                 PortViewModel.NodeViewModel.NodeModel,
                 createdNodes.Values,

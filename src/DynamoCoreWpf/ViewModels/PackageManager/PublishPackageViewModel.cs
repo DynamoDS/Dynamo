@@ -27,6 +27,9 @@ using PythonNodeModels;
 using Double = System.Double;
 using NotificationObject = Dynamo.Core.NotificationObject;
 using String = System.String;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Windows.Threading;
 
 namespace Dynamo.PackageManager
 {
@@ -987,9 +990,12 @@ namespace Dynamo.PackageManager
         private bool IsPublishFromLocalPackage = false;
 
         /// <summary>
-        /// Notifies the view model that the user has cancelled the upload
+        /// Cancellation token source for file loading operations
         /// </summary>
+        private CancellationTokenSource _fileLoadingCancellation;
+
         public event Action UploadCancelled;
+        public event Action<int, int, string> UploadProgress;
 
         #endregion
 
@@ -1028,7 +1034,7 @@ namespace Dynamo.PackageManager
             DependencyNames = string.Join(", ", Dependencies.Select(x => x.name));
         }
 
-        private void RefreshPackageContents()
+        internal void RefreshPackageContents()
         {
             PackageContents.Clear();
 
@@ -1581,7 +1587,7 @@ namespace Dynamo.PackageManager
             }
 
             // First check if the local package has the compatibility info
-            var compatibility_matrix = pkg.CompatibilityMatrix  ?? pkg.Header?.compatibility_matrix;
+            var compatibility_matrix = pkg.CompatibilityMatrix ?? pkg.Header?.compatibility_matrix;
             //If we do not find compatibility info in the local package, we will check the cached packages
             if (compatibility_matrix == null)
             {
@@ -2022,10 +2028,10 @@ namespace Dynamo.PackageManager
         /// Opens the Select Folder dialog and prompts the user to select a directory.
         /// Recursively adds any files found in the given directory to PackageContents.
         /// </summary>
-        private void SelectDirectoryAndAddFilesRecursively()
+        private async void SelectDirectoryAndAddFilesRecursively()
         {
-            PathManager pathManager = DynamoViewModel.Model.PathManager as PathManager;
-            PackagePathEventArgs packagePathEventArgs = new PackagePathEventArgs
+            var pathManager = DynamoViewModel.Model.PathManager as PathManager;
+            var packagePathEventArgs = new PackagePathEventArgs
             {
                 Path = pathManager.DefaultPackagesDirectory
             };
@@ -2034,7 +2040,7 @@ namespace Dynamo.PackageManager
 
             if (packagePathEventArgs.Cancel) return;
 
-            string directoryPath = packagePathEventArgs.Path;
+            var directoryPath = packagePathEventArgs.Path;
 
             if (!IsDirectoryWritable(directoryPath))
             {
@@ -2044,17 +2050,273 @@ namespace Dynamo.PackageManager
                 return;
             }
 
-            List<string> filePaths = Directory
-                .GetFiles
-                (
-                    directoryPath,
-                    "*",
-                    SearchOption.AllDirectories
-                ).ToList();
+            // Cancel any previous operation
+            _fileLoadingCancellation?.Cancel();
+            _fileLoadingCancellation = new CancellationTokenSource();
 
-            if (filePaths.Count < 1) return;
+            // Clear any previous warnings
+            duplicateAssemblyWarnings.Clear();
+            failedFileErrors.Clear();
 
-            AddAllFilesAfterSelection(filePaths);
+            // Show progress indication
+            UploadState = PackageUploadHandle.State.Uploading;
+            Uploading = true;
+
+            try
+            {
+                // Offload file enumeration to background thread
+                var filePaths = await Task.Run(() =>
+                {
+                    return Directory
+                        .GetFiles(directoryPath, "*", SearchOption.AllDirectories)
+                        .ToList();
+                }, _fileLoadingCancellation.Token);
+
+                if (filePaths.Count < 1)
+                {
+                    UploadState = PackageUploadHandle.State.Ready;
+                    Uploading = false;
+                    return;
+                }
+
+                // Process files asynchronously in batches
+                await ProcessFilesInBatchesAsync(filePaths, _fileLoadingCancellation.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                // User cancelled the operation
+                UploadState = PackageUploadHandle.State.Ready;
+                Uploading = false;
+                UploadCancelled?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                // Collect error for later display instead of immediate ErrorString assignment
+                lock (failedFileErrorsLock)
+                {
+                    failedFileErrors.Add($"Error loading files: {ex.Message}");
+                }
+                UploadState = PackageUploadHandle.State.Error;
+                Uploading = false;
+            }
+        }
+
+        /// <summary>
+        /// Processes the list of files asynchronously in batches to avoid UI freezing
+        /// </summary>
+        /// <param name="filePaths">List of file paths to process</param>
+        /// <param name="cancellationToken">Token to cancel the operation</param>
+        private async Task ProcessFilesInBatchesAsync(List<string> filePaths, CancellationToken cancellationToken)
+        {
+            const int batchSize = 25; // Smaller batches for better responsiveness
+
+            var existingPackageContents = PackageItemRootViewModel.GetFiles(PackageContents.ToList())
+                .Where(x => x.FileInfo != null)
+                .Select(x => x.FileInfo.FullName)
+                .ToList();
+
+            // Filter out existing files on background thread
+            var filesToAdd = await Task.Run(() =>
+            {
+                return filePaths.Where(filePath => !existingPackageContents.Contains(filePath)).ToList();
+            }, cancellationToken);
+
+            var totalFiles = filesToAdd.Count;
+            var processedFiles = 0;
+
+            // Send initial progress
+            UploadProgress?.Invoke(0, totalFiles, "Starting file processing...");
+
+            // Process files in batches
+            for (var i = 0; i < filesToAdd.Count; i += batchSize)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var batch = filesToAdd.Skip(i).Take(batchSize).ToList();
+
+                // Process batch on background thread
+                await Task.Run(() =>
+                {
+                    foreach (var filePath in batch)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        
+                        processedFiles++;
+                        ProcessSingleFileInBackground(filePath);
+                    }
+                }, cancellationToken);
+
+                // Send progress update only after each batch (not every file!)
+                var lastFileInBatch = batch.LastOrDefault();
+                var fileName = lastFileInBatch != null ? Path.GetFileName(lastFileInBatch) : "Processing...";
+                UploadProgress?.Invoke(processedFiles, totalFiles, fileName);
+
+                // Yield control to UI thread properly
+                await System.Windows.Application.Current.Dispatcher.BeginInvoke(
+                    new Action(() => { /* Allow UI to update */ }),
+                    DispatcherPriority.Background);
+            }
+
+            // Send final progress
+            UploadProgress?.Invoke(totalFiles, totalFiles, "Processing complete");
+
+            // Final UI updates - only once at the end
+            RefreshPackageContents();
+            RaisePropertyChanged(nameof(PackageContents));
+            RefreshDependencyNames();
+            UploadState = PackageUploadHandle.State.Ready;
+            Uploading = false;
+            
+            // Show any duplicate assembly warnings collected during processing on UI thread
+            // Then generate preview after dialogs are dismissed
+            ShowCollectedErrors();
+        }
+
+        /// <summary>
+        /// Processes a single file on background thread without UI updates
+        /// </summary>
+        /// <param name="filename">File path to process</param>
+        private void ProcessSingleFileInBackground(string filename)
+        {
+            if (!File.Exists(filename)) return;
+
+            try
+            {
+                if (filename.ToLower().EndsWith(".dll"))
+                {
+                    ProcessDllFileInBackground(filename);
+                    return;
+                }
+
+                if (filename.ToLower().EndsWith(".dyf"))
+                {
+                    ProcessCustomNodeFileInBackground(filename);
+                    return;
+                }
+
+                // For additional files, add to collection on UI thread
+                System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    AdditionalFiles.Add(filename);
+                }), DispatcherPriority.Background);
+            }
+            catch (Exception ex)
+            {
+                // Log error but don't stop processing other files
+                dynamoViewModel.Model.Logger.Log($"Error processing file {filename}: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Process custom node file in background thread
+        /// </summary>
+        /// <param name="filename">Path to .dyf file</param>
+        private void ProcessCustomNodeFileInBackground(string filename)
+        {
+            // This needs to be done on UI thread due to CustomNodeManager dependencies
+            System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                try
+                {
+                    CustomNodeInfo nodeInfo;
+                    if (dynamoViewModel.Model.CustomNodeManager.AddUninitializedCustomNode(filename, DynamoModel.IsTestMode, out nodeInfo))
+                    {
+                        // add the new packages folder to path
+                        dynamoViewModel.Model.CustomNodeManager.AddUninitializedCustomNodesInPath(Path.GetDirectoryName(filename), DynamoModel.IsTestMode);
+
+                        // Update workspace node info
+                        foreach (var node in dynamoViewModel.Model.CustomNodeManager.LoadedWorkspaces)
+                        {
+                            if (node.CustomNodeId == dynamoViewModel.Model.CustomNodeManager.GuidFromPath(filename))
+                            {
+                                var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filename);
+                                node.SetInfo(fileNameWithoutExtension, null, null, filename);
+                            }
+                        }
+
+                        if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionDefinition(nodeInfo.FunctionId, DynamoModel.IsTestMode, out CustomNodeDefinition funcDef)
+                            && CustomNodeDefinitions.All(x => x.FunctionId != funcDef.FunctionId))
+                        {
+                            CustomNodeDefinitions.Add(funcDef);
+                            CustomDyfFilepaths.TryAdd(Path.GetFileName(filename), filename);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    dynamoViewModel.Model.Logger.Log($"Error processing custom node file {filename}: {ex.Message}");
+                }
+            }), DispatcherPriority.Background);
+        }
+
+        /// <summary>
+        /// Process DLL file in background thread
+        /// </summary>
+        /// <param name="filename">Path to .dll file</param>
+        private void ProcessDllFileInBackground(string filename)
+        {
+            try
+            {
+                // Try to load assembly
+                var result = PackageLoader.TryLoadFrom(filename, out Assembly assem);
+
+                // UI updates need to happen on UI thread
+                System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    try
+                    {
+                        if (result)
+                        {
+                            var assemName = assem.GetName().Name;
+
+                            // Check for duplicates - use lock to prevent race conditions
+                            lock (duplicateAssemblyWarningLock)
+                            {
+                                if (!this.RetainFolderStructureOverride &&
+                                    this.Assemblies.Any(x => assemName == x.Assembly.GetName().Name) &&
+                                    !duplicateAssemblyWarnings.Contains(assemName))
+                                {
+                                    // Collect duplicate assembly names for later warning
+                                    duplicateAssemblyWarnings.Add(assemName);
+                                    return;
+                                }
+                            }
+
+                            Assemblies.Add(new PackageAssembly()
+                            {
+                                Assembly = assem,
+                                LocalFilePath = filename
+                            });
+                        }
+                        else
+                        {
+                            // Add as additional file if not a managed assembly
+                            AdditionalFiles.Add(filename);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        dynamoViewModel.Model.Logger.Log($"Error processing DLL file {filename}: {ex.Message}");
+                        // Add as additional file if assembly loading fails
+                        AdditionalFiles.Add(filename);
+                        
+                        // Collect failed file errors for later display
+                        lock (failedFileErrorsLock)
+                        {
+                            failedFileErrors.Add(filename);
+                        }
+                    }
+                }), DispatcherPriority.Background);
+            }
+            catch (Exception ex)
+            {
+                // If background loading fails, add as additional file
+                System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    AdditionalFiles.Add(filename);
+                }), DispatcherPriority.Background);
+                dynamoViewModel.Model.Logger.Log($"Error processing DLL file {filename}: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -2063,24 +2325,81 @@ namespace Dynamo.PackageManager
         /// <param name="filePaths"></param>
         internal void AddAllFilesAfterSelection(List<string> filePaths, string rootFolder = null)
         {
-            this.RootFolder = rootFolder ?? string.Empty;
+            // Use async version for better performance
+            _ = AddAllFilesAfterSelectionAsync(filePaths, rootFolder);
+        }
 
+        /// <summary>
+        /// Async version of AddAllFilesAfterSelection for better performance with large file lists
+        /// </summary>
+        /// <param name="filePaths">List of file paths to add</param>
+        /// <param name="rootFolder">Optional root folder</param>
+        /// <returns>Task representing the async operation</returns>
+        internal async Task AddAllFilesAfterSelectionAsync(List<string> filePaths, string rootFolder = null)
+        {
+            this.RootFolder = rootFolder ?? string.Empty;
             UploadState = PackageUploadHandle.State.Ready;
 
-            List<string> existingPackageContents = PackageItemRootViewModel.GetFiles(PackageContents.ToList())
-                .Where(x => x.FileInfo != null)
-                .Select(x => x.FileInfo.FullName)
-                .ToList();
-
-            foreach (var filePath in filePaths)
+            // For small lists, process synchronously but still freeze UI during processing
+            if (filePaths.Count <= 10)
             {
-                if (existingPackageContents.Contains(filePath)) continue;
-                AddFile(filePath);
+                Uploading = true;
+                try
+                {
+                    // Send initial progress to freeze UI
+                    UploadProgress?.Invoke(0, filePaths.Count, "Starting file processing...");
+                    
+                    var existingPackageContents = PackageItemRootViewModel.GetFiles(PackageContents.ToList())
+                        .Where(x => x.FileInfo != null)
+                        .Select(x => x.FileInfo.FullName)
+                        .ToList();
+
+                    var processedCount = 0;
+                    foreach (var filePath in filePaths)
+                    {
+                        if (existingPackageContents.Contains(filePath)) continue;
+                        
+                        AddFile(filePath);
+                        processedCount++;
+                    }
+
+                    // Send completion progress
+                    UploadProgress?.Invoke(filePaths.Count, filePaths.Count, "Processing complete");
+                    
+                    RefreshPackageContents();
+                    RaisePropertyChanged(nameof(PackageContents));
+                    RefreshDependencyNames();
+                }
+                finally
+                {
+                    Uploading = false;
+                }
+                return;
             }
 
-            RefreshPackageContents();
-            RaisePropertyChanged(nameof(PackageContents));
-            RefreshDependencyNames();
+            // For large lists, use async processing
+            Uploading = true;
+            try
+            {
+                var cancellationToken = _fileLoadingCancellation?.Token ?? CancellationToken.None;
+                await ProcessFilesInBatchesAsync(filePaths, cancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                // Operation was cancelled
+                UploadState = PackageUploadHandle.State.Ready;
+                Uploading = false;
+            }
+            catch (Exception ex)
+            {
+                // Collect error for later display instead of immediate ErrorString assignment
+                lock (failedFileErrorsLock)
+                {
+                    failedFileErrors.Add($"Error processing files: {ex.Message}");
+                }
+                UploadState = PackageUploadHandle.State.Error;
+                Uploading = false;
+            }
         }
 
         /// <summary>
@@ -2088,7 +2407,7 @@ namespace Dynamo.PackageManager
         /// Prompts the user to specify a directory containing markdown files, which if successful,
         /// is saved to the MarkdownFilesDirectory property.
         /// </summary>
-        private void SelectMarkdownDirectory()
+        private async void SelectMarkdownDirectory()
         {
             PathManager pathManager = DynamoViewModel.Model.PathManager as PathManager;
             PackagePathEventArgs packagePathEventArgs = new PackagePathEventArgs
@@ -2110,18 +2429,51 @@ namespace Dynamo.PackageManager
                 MessageBoxService.Show(Owner, errorMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+
             MarkdownFilesDirectory = directoryPath;
 
-            // Store all files paths from the markdown directory to list without affecting the package content UI
-            MarkdownFiles = Directory
-                .GetFiles
-                (
-                    directoryPath,
-                    "*",
-                    SearchOption.AllDirectories
-                ).ToList();
+            // Cancel any previous operation
+            _fileLoadingCancellation?.Cancel();
+            _fileLoadingCancellation = new CancellationTokenSource();
 
-            RaisePropertyChanged(nameof(MarkdownFiles));
+            // Show progress indication for large directory operations
+            var originalUploadState = UploadState;
+            var originalUploading = Uploading;
+            UploadState = PackageUploadHandle.State.Uploading;
+            Uploading = true;
+
+            try
+            {
+                // Store all files paths from the markdown directory to list without affecting the package content UI
+                MarkdownFiles = await Task.Run(() =>
+                {
+                    return Directory
+                        .GetFiles(directoryPath, "*", SearchOption.AllDirectories)
+                        .ToList();
+                }, _fileLoadingCancellation.Token);
+
+                RaisePropertyChanged(nameof(MarkdownFiles));
+            }
+            catch (OperationCanceledException)
+            {
+                // User cancelled the operation
+                MarkdownFiles = new List<string>();
+            }
+            catch (Exception ex)
+            {
+                // Collect error for later display instead of immediate ErrorString assignment
+                lock (failedFileErrorsLock)
+                {
+                    failedFileErrors.Add($"Error loading markdown files: {ex.Message}");
+                }
+                MarkdownFiles = new List<string>();
+            }
+            finally
+            {
+                // Restore original state
+                UploadState = originalUploadState;
+                Uploading = originalUploading;
+            }
         }
 
         /// <summary>
@@ -2296,8 +2648,11 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
-                UploadState = PackageUploadHandle.State.Error;
-                ErrorString = String.Format(Resources.MessageFailedToAddFile, filename);
+                // Collect failed file errors for later display
+                lock (failedFileErrorsLock)
+                {
+                    failedFileErrors.Add(filename);
+                }
                 dynamoViewModel.Model.Logger.Log(e);
             }
         }
@@ -2305,6 +2660,10 @@ namespace Dynamo.PackageManager
         // A boolean flag used to trigger only once the message prompt
         // When the user has attempted to load an existing dll from another path
         private bool duplicateAssemblyWarningTriggered = false;
+        private readonly object duplicateAssemblyWarningLock = new object();
+        private readonly List<string> duplicateAssemblyWarnings = new List<string>();
+        private readonly List<string> failedFileErrors = new List<string>();
+        private readonly object failedFileErrorsLock = new object();
 
         private void AddDllFile(string filename)
         {
@@ -2344,8 +2703,11 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e)
             {
-                UploadState = PackageUploadHandle.State.Error;
-                ErrorString = String.Format(Resources.MessageFailedToAddFile, filename);
+                // Collect failed file errors for later display
+                lock (failedFileErrorsLock)
+                {
+                    failedFileErrors.Add(filename);
+                }
                 dynamoViewModel.Model.Logger.Log(e);
             }
         }
@@ -2982,6 +3344,55 @@ namespace Dynamo.PackageManager
             rootItemPreview.AddChildRecursively(docItemPreview);
 
             return rootItemPreview;
+        }
+
+        /// <summary>
+        /// Shows any duplicate assembly warnings and failed file errors that were collected during processing
+        /// </summary>
+        private void ShowCollectedErrors()
+        {
+            // Show failed file errors first and wait for user response
+            if (failedFileErrors.Count > 0)
+            {
+                var failedFiles = string.Join("\n• ", failedFileErrors);
+                var errorMessage = failedFileErrors.Count == 1
+                    ? string.Format(Resources.MessageFailedToAddFile, failedFileErrors[0])
+                    : string.Format(Resources.MessageFailedToAddMultipleFiles, failedFiles);
+                
+                MessageBoxService.Show(Owner,
+                    errorMessage,
+                    Resources.FileNotPublishCaption,
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                
+                // Clear the errors after showing them
+                failedFileErrors.Clear();
+            }
+
+            // Only show duplicate assembly warnings AFTER user dismisses the first dialog
+            if (duplicateAssemblyWarnings.Count > 0)
+            {
+                var duplicateNames = string.Join(", ", duplicateAssemblyWarnings);
+                var warningMessage = string.Format(Resources.PackageDuplicateAssemblyWarning, dynamoViewModel.BrandingResourceProvider.ProductName) +
+                                     string.Format(Resources.PackageDuplicateAssembliesFoundMessage, duplicateNames);
+                
+                MessageBoxService.Show(Owner,
+                    warningMessage,
+                    Resources.PackageDuplicateAssemblyWarningTitle,
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+                
+                // Clear the warnings after showing them
+                duplicateAssemblyWarnings.Clear();
+            }
+        }
+
+        /// <summary>
+        /// Cancels the current file loading operation
+        /// </summary>
+        public void CancelFileLoading()
+        {
+            _fileLoadingCancellation?.Cancel();
         }
     }
 }
