@@ -84,4 +84,16 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="$([System.IO.Path]::GetFullPath('$(SolutionDir)..\test\core\packageDependencyTests\PythonEnginePackage.zip'))" />
+  </ItemGroup>    
+  <Target Name="UnpackEngineTestPackage" AfterTargets="Build">
+    <PropertyGroup>
+      <PkgTestsRoot>$([System.IO.Path]::GetFullPath('$(SolutionDir)..\test\core\packageDependencyTests\'))</PkgTestsRoot>
+      <ZipPath>$(PkgTestsRoot)PythonEnginePackage.zip</ZipPath>
+      <DestRoot>$(PkgTestsRoot)PythonEnginePackage\</DestRoot>
+    </PropertyGroup>
+    <RemoveDir Directories="$(DestRoot)" Condition="Exists('$(DestRoot)')" />
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;Add-Type -AssemblyName 'System.IO.Compression.FileSystem'; [System.IO.Compression.ZipFile]::ExtractToDirectory('$(ZipPath)','$(DestRoot)')&quot;" />
+  </Target>    
 </Project>
