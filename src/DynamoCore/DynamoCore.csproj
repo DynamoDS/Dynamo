@@ -40,7 +40,8 @@
     <PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00016" />
-    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.2.2.10064" />
+    <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.2.1.9358" />
+    <PackageReference Include="DynamoVisualProgramming.PythonEngine.PythonNet3" Version="1.4.2" GeneratePathProperty="true" ExcludeAssets="all" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\GraphLayout\GraphLayout.csproj">
@@ -224,6 +225,28 @@
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.Migrations.xml" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="$(SolutionDir)Config\upiconfig.xml" DestinationFolder="$(OutputPath)" /> 
+  </Target>    
+  <Target Name="BuildPythonNet3EngineDynamoPackage" AfterTargets="Build">
+    <PropertyGroup>            
+      <DestRoot>$(OutputPath)Built-In Packages\packages\PythonNet3Engine\</DestRoot>
+      <DestBin>$(DestRoot)bin\</DestBin>
+      <DestExtra>$(DestRoot)extra\</DestExtra>            
+      <PkgRoot>$(PkgDynamoVisualProgramming_PythonEngine_PythonNet3)</PkgRoot>
+      <LibDir>$(PkgRoot)\lib\</LibDir>
+      <PkgJson>$(PkgRoot)\content\manifest\pkg.json</PkgJson>            
+    </PropertyGroup>        
+    <MakeDir Directories="$(DestBin)" />
+    <MakeDir Directories="$(DestExtra)" />
+    <Copy SourceFiles="$(PkgJson)" DestinationFiles="$(DestRoot)pkg.json" SkipUnchangedFiles="True" />        
+    <ItemGroup>
+      <DllEmpty Include="$(LibDir)**\DSPythonNet3Empty.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(DllEmpty)" DestinationFolder="$(DestBin)" SkipUnchangedFiles="True" />        
+    <ItemGroup>
+      <DllExtra Include="$(LibDir)**\*.dll" Exclude="@(DllEmpty)" />
+      <DllExtra Include="$(LibDir)**\DSPythonNet3Extension_ExtensionDefinition.xml" />            
+    </ItemGroup>        
+    <Copy SourceFiles="@(DllExtra)" DestinationFolder="$(DestExtra)" SkipUnchangedFiles="True" />  
   </Target>
   <Target Name="AfterBuildOps" AfterTargets="ResolveSateliteResDeps">
     <ItemGroup>
