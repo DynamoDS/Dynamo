@@ -2027,9 +2027,11 @@ namespace Dynamo.Controls
             {
                 PerformShutdownSequenceOnViewModel();
             }
+
+            // Force application shutdown when dynamo (in standalone mode) is closed, to prevent process hanging
+            bool isStandaloneMode = string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName);
             
-            // Force application shutdown when dynamo window is closed, to prevent process hanging
-            if (!DynamoModel.IsTestMode && Application.Current != null)
+            if (!DynamoModel.IsTestMode && isStandaloneMode && Application.Current != null)
             {
                 try
                 {
