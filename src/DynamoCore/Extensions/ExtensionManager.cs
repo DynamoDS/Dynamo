@@ -1,4 +1,4 @@
-﻿using Dynamo.Logging;
+using Dynamo.Logging;
 using Dynamo.Wpf.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -51,9 +51,12 @@ namespace Dynamo.Extensions
         /// <summary>
         /// Creates ExtensionManager with directories which require package certificate verification.
         /// </summary>
-        public ExtensionManager(IEnumerable<string> directoriesToVerify) :this()
+        public ExtensionManager(IEnumerable<string>? directoriesToVerify = null) :this()
         {
-            this.extensionLoader.DirectoriesToVerifyCertificates.AddRange(directoriesToVerify);
+            if(directoriesToVerify != null)
+            {
+                this.extensionLoader.DirectoriesToVerifyCertificates.AddRange(directoriesToVerify);
+            }        
         }
 
         private void RequestAddExtensionHandler(dynamic extension)

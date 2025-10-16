@@ -1131,6 +1131,9 @@
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>无法添加文件: {0}</value>
   </data>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>Failed to add the following files:\n\n {0}</value>
+  </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>无法为 {0} 应用 NodeViewCustomization</value>
   </data>
@@ -1355,6 +1358,9 @@
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>由于 .NET Framework 的限制，软件包组件虽已加载但却无法更新。请在 {0} 未运行时更新部件，然后重试。</value>
+  </data>
+  <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
+    <value>\n\nDuplicate assemblies found: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>无法更新部件</value>

@@ -1129,6 +1129,9 @@ Salvare le modifiche?</value>
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>Impossibile aggiungere il file: {0}</value>
   </data>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>Failed to add the following files:\n\n {0}</value>
+  </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>Impossibile applicare NodeViewCustomization a {0}</value>
   </data>
@@ -1347,6 +1350,9 @@ Gli assiemi successivi sono stati caricati più volte:
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>A causa di alcune limitazioni di .NET Framework, non è possibile aggiornare l'assembly del pacchetto se è già caricato. Aggiornare l'assembly quando {0} non è in esecuzione e riprovare.</value>
+  </data>
+  <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
+    <value>\n\nDuplicate assemblies found: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>Impossibile aggiornare l'assembly</value>
