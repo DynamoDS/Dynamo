@@ -486,7 +486,17 @@ namespace Dynamo.Logging
         /// <summary>
         /// Timed event: tracks graph execution time
         /// </summary>
-        UpdateGraphAsyncTask
+        UpdateGraphAsyncTask,
+
+        /// <summary>
+        /// Call tool event - when a tool is called/executed
+        /// </summary>
+        CallTool,
+
+        /// <summary>
+        /// Handle event - when processing requests/messages
+        /// </summary>
+        Handle
     }
 
     public enum HeartBeatType
