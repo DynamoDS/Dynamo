@@ -1318,6 +1318,9 @@ namespace Dynamo.PackageManager
             }
             catch { Exception ex; }
 
+            // Clear ErrorString first to prevent validation errors during cleanup
+            this.ErrorString = string.Empty;
+
             // this function clears all the entries of the publish package dialog
             this.Name = string.Empty;
             this.RepositoryUrl = string.Empty;
@@ -1329,7 +1332,6 @@ namespace Dynamo.PackageManager
             this.MajorVersion = "0";
             this.MinorVersion = "0";
             this.BuildVersion = "0";
-            this.ErrorString = string.Empty;
             this.Uploading = false;
             // Clearing the UploadHandle when using Submit currently throws - when testing? - check trheading
             try
@@ -1739,11 +1741,9 @@ namespace Dynamo.PackageManager
 
                 if (((PackageUploadHandle)sender).UploadState == PackageUploadHandle.State.Uploaded)
                 {
-                    BeginInvoke(() =>
-                    {
-                        OnPublishSuccess();
-                        ClearAllEntries();
-                    });
+                    OnPublishSuccess();
+                    // Don't clear entries on success - user needs to see the success state
+                    // Clearing will happen when user clicks Done/Reset from the success page
                 }
 
             }
@@ -2856,7 +2856,8 @@ namespace Dynamo.PackageManager
                 if (UploadState == PackageUploadHandle.State.Uploaded)
                 {
                     OnPublishSuccess();
-                    ClearAllEntries();
+                    // Don't clear entries on success - user needs to see the success state
+                    // Clearing will happen when user clicks Done/Reset from the success page
                 }
             }
             catch (Exception e)
@@ -3104,7 +3105,7 @@ namespace Dynamo.PackageManager
                 IsWarningEnabled = false;
             }
 
-            if (Name.Length <= 0 && !PackageContents.Any())
+            if (Name.Length <= 0 && !PackageContents.Any() && !PreviewPackageContents.Any())
             {
                 ErrorString = Resources.PackageManagerProvidePackageNameAndFiles;
                 return false;
@@ -3114,7 +3115,7 @@ namespace Dynamo.PackageManager
                 ErrorString = Resources.PackageManagerProvidePackageNameAndVersion;
                 return false;
             }
-            else if (!PackageContents.Any() && Double.Parse(BuildVersion) + Double.Parse(MinorVersion) + Double.Parse(MajorVersion) <= 0)
+            else if (!PackageContents.Any() && !PreviewPackageContents.Any() && Double.Parse(BuildVersion) + Double.Parse(MinorVersion) + Double.Parse(MajorVersion) <= 0)
             {
                 ErrorString = Resources.PackageManagerProvideVersionAndFiles;
                 return false;
@@ -3129,7 +3130,7 @@ namespace Dynamo.PackageManager
                 ErrorString = Resources.PackageManagerProvideVersion;
                 return false;
             }
-            else if (!PackageContents.Any())
+            else if (!PackageContents.Any() && !PreviewPackageContents.Any())
             {
                 ErrorString = Resources.PackageManagerProvideFiles;
                 return false;
