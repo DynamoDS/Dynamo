@@ -13,7 +13,7 @@
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
       "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\nprint('Hello from Python' + str(sys.version_info.major) + '!!!')\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = 0",
-      "Engine": "PythonNet3",
+      "Engine": "CPython3",
       "VariableInputPorts": true,
       "Id": "7fa1ef232e13484586b692c71d9e5c70",
       "Inputs": [
@@ -43,7 +43,7 @@
     },
     {
       "ConcreteType": "PythonNodeModels.PythonStringNode, PythonNodeModels",
-      "Engine": "PythonNet3",
+      "Engine": "CPython3",
       "VariableInputPorts": true,
       "NodeType": "ExtensionNode",
       "Id": "cb1179986e5a49b68b009fca1f5f1d5e",
@@ -103,7 +103,7 @@
     },
     {
       "ConcreteType": "PythonNodeModels.PythonStringNode, PythonNodeModels",
-      "Engine": "PythonNet3",
+      "Engine": "CPython3",
       "VariableInputPorts": true,
       "NodeType": "ExtensionNode",
       "Id": "f18a8dde5074415da6ac87614b7d53a3",
@@ -145,7 +145,7 @@
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
       "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\nprint(\"Hello\", \"Dynamo\", \"Print\", \"!!!\")\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = 0",
-      "Engine": "PythonNet3",
+      "Engine": "CPython3",
       "VariableInputPorts": true,
       "Id": "763b6063ac3e428fbe24673220bdac7e",
       "Inputs": [
@@ -177,7 +177,7 @@
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
       "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\nprint(\"Hello\", \"Dynamo\", \"Print\", \"!!!\", sep='_')\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = 0",
-      "Engine": "PythonNet3",
+      "Engine": "CPython3",
       "VariableInputPorts": true,
       "Id": "36ae4bcb97a144e6b79f96dabc661b34",
       "Inputs": [
@@ -209,7 +209,7 @@
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
       "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\nprint(\"Lot's of special characters!!!\")\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = 0",
-      "Engine": "PythonNet3",
+      "Engine": "CPython3",
       "VariableInputPorts": true,
       "Id": "da61a0ad7b024ec3bc05c63503a70358",
       "Inputs": [
@@ -327,7 +327,7 @@
     "NodeViews": [
       {
         "ShowGeometry": true,
-        "Name": "Greeting PythonNet3 node",
+        "Name": "Greeting CPython node",
         "Id": "7fa1ef232e13484586b692c71d9e5c70",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -337,7 +337,7 @@
       },
       {
         "ShowGeometry": true,
-        "Name": "Greeting Pythonnet3 String node",
+        "Name": "Greeting CPython String node",
         "Id": "cb1179986e5a49b68b009fca1f5f1d5e",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -357,7 +357,7 @@
       },
       {
         "ShowGeometry": true,
-        "Name": "Greeting PythonNet3 String node",
+        "Name": "Greeting CPython String node",
         "Id": "f18a8dde5074415da6ac87614b7d53a3",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,

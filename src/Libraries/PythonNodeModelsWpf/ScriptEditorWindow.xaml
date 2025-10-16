@@ -141,7 +141,6 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="60" />
-                    <RowDefinition Height="auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
@@ -303,9 +302,10 @@
                             Name="MigrationAssistantButton"
                             Click="OnMigrationAssistantClicked"
                             ToolTipService.ShowOnDisabled="True"
-                            ToolTipService.IsEnabled="True">
+                            ToolTipService.IsEnabled="True"
+                            IsEnabled="True">
                         <Button.ToolTip>
-                            <ToolTip Style="{StaticResource GenericToolTipLight}"/>
+                            <ToolTip Content="{x:Static p:Resources.PythonScriptEditorMigrationAssistantButtonTooltip}" Style="{StaticResource GenericToolTipLight}"/>
                         </Button.ToolTip>
                         <Button.Resources>
                             <Image x:Key="Shape"
@@ -350,7 +350,7 @@
                         Padding="20 0 20 10"
                         BorderThickness="0"
                         Background="{StaticResource PreferencesWindowBackgroundColor}"
-                        Grid.Row="3">
+                        Grid.Row="2">
                     <avalonedit:TextEditor Name="editText"
                                            IsEnabled="True"
                                            FontFamily="{StaticResource SourceCodePro}"
@@ -370,7 +370,7 @@
                             HorizontalAlignment="Right"
                             Height="60"
                             Visibility="Visible"
-                            Grid.Row="4">
+                            Grid.Row="3">
 
                     <Button Content="{x:Static p:Resources.PythonScriptEditorRunButton}"
                             Margin="11 0 20 15"
@@ -398,7 +398,7 @@
 
                 <!-- The Warning Bar - activates on Esc if unsaved changes -->
                 <Grid Name="UnsavedChangesStatusBar"
-                        Grid.Row="5"
+                        Grid.Row="4"
                         Margin="0 -20 0 5"
                         Height="95"
                         Background="#EFD5C1"
@@ -421,41 +421,6 @@
                         <Button Name="CloseWarningBarButton"
                             Style="{StaticResource UnSaveButtonStyle}" Content="Close" Click="CloseWarningBarButton_OnClick"></Button>
                     </StackPanel>
-                </Grid>
-
-                <!-- Python Update Bar -->
-                <Grid Name="PythonUpgradeBar"
-                      VerticalAlignment="Bottom"
-                      Grid.Row="2"
-                      Margin="0,0,0,5"
-                      Height="35"
-                      Visibility="Visible">
-                    <Border BorderThickness="1"
-                            BorderBrush="#0696d7"
-                            Background="#330696D7">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="35"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="35"/>
-                            </Grid.ColumnDefinitions>
-                            <Border Grid.Column="0" Background="#0696d7">
-                                <Image Source="/PythonNodeModelsWpf;component/Resources/info.png" Width="24" Height="24"/>
-                            </Border>
-                            <TextBlock x:Name="PythonUpgradeBannerText"
-                                       Grid.Column="1"
-                                       Margin="15,0,0,0"
-                                       VerticalAlignment="Center"
-                                       Foreground="White"
-                                       FontFamily="{StaticResource ArtifaktElementRegular}"
-                                       FontSize="13"
-                                       Text="{x:Static p:Resources.PythonScriptEditorEngineAutoUpdatedBarText}"
-                                       TextTrimming="CharacterEllipsis"/>
-                            <Button Grid.Column="2"
-                                    Style="{StaticResource CloseButtonStyle}"
-                                    Click="OnPythonAutoUpgradedBarClose"/>
-                        </Grid>
-                    </Border>
                 </Grid>
             </Grid>
         </Border>
