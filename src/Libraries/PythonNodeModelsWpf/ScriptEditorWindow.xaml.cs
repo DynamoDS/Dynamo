@@ -1,14 +1,12 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml;
-using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -181,26 +179,6 @@ namespace PythonNodeModelsWpf
             InstallFoldingManager();
 
             dynamoViewModel.PreferencesWindowChanged += DynamoViewModel_PreferencesWindowChanged;
-
-            dynamoViewModel.PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
-            UpdatePythonUpgradeBar();
-            UpdateMigrationAssistantButtonEnabled();
-        }
-
-        private void UpdatePythonUpgradeBar()
-        {
-            var hide = dynamoViewModel.PreferenceSettings.HideCPython3Notifications == true;
-            var showForThisNode = NodeModel.ShowAutoUpgradedBar && !hide;
-
-            PythonUpgradeBar.Visibility = showForThisNode ? Visibility.Visible : Visibility.Collapsed;
-        }
-
-        private void PreferenceSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(PreferenceSettings.HideCPython3Notifications))
-            {
-                UpdatePythonUpgradeBar();
-            }
         }
 
         /// <summary>
@@ -308,18 +286,6 @@ namespace PythonNodeModelsWpf
             return text.EndsWith(":");
         }
 
-        private void UpdateMigrationAssistantButtonEnabled()
-        {
-            var pyNode = NodeModel as PythonNodeBase;
-            bool isIronPython = pyNode?.EngineName == PythonEngineManager.IronPython2EngineName;
-
-            MigrationAssistantButton.IsEnabled = isIronPython;
-
-            var tooltip = MigrationAssistantButton.ToolTip as System.Windows.Controls.ToolTip;
-            tooltip.Content = isIronPython
-                ? PythonNodeModels.Properties.Resources.PythonScriptEditorMigrationAssistantButtonTooltip
-                : PythonNodeModels.Properties.Resources.PythonScriptEditorMigrationAssistantButtonDisabledTooltip;
-        }
 
         #region Text Zoom in Python Editor
 
@@ -446,10 +412,10 @@ namespace PythonNodeModelsWpf
         {
             originalScript = e.OldCode;
             editText.Text = e.NewCode;
-            if (CachedEngine != PythonEngineManager.PythonNet3EngineName)
+            if (CachedEngine != PythonEngineManager.CPython3EngineName)
             {
-                CachedEngine = PythonEngineManager.PythonNet3EngineName;
-                EngineSelectorComboBox.SelectedItem = PythonEngineManager.PythonNet3EngineName;
+                CachedEngine = PythonEngineManager.CPython3EngineName;
+                EngineSelectorComboBox.SelectedItem = PythonEngineManager.CPython3EngineName;
             }
         }
 
@@ -516,8 +482,6 @@ namespace PythonNodeModelsWpf
                 Dynamo.Logging.Actions.Migration,
                 Dynamo.Logging.Categories.PythonOperations);
             NodeModel.RequestCodeMigration(e);
-
-            UpdateMigrationAssistantButtonEnabled();
         }
         private void OnConvertTabsToSpacesClicked(object sender, RoutedEventArgs e)
         {
@@ -569,7 +533,6 @@ namespace PythonNodeModelsWpf
                 NodeModel.UserScriptWarned -= WarnUserScript;
                 this.Closed -= OnScriptEditorWindowClosed;
                 PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= UpdateAvailableEngines;
-                dynamoViewModel.PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
 
                 Analytics.TrackEvent(
                     Dynamo.Logging.Actions.Close,
@@ -609,11 +572,7 @@ namespace PythonNodeModelsWpf
             e.Handled = true;
         }
 
-        private void OnPythonAutoUpgradedBarClose(object sender, RoutedEventArgs e)
-        {
-            PythonUpgradeBar.Visibility = Visibility.Collapsed;
-            NodeModel.ShowAutoUpgradedBar = false;
-        }
+        
 
         #endregion
 
@@ -750,12 +709,11 @@ namespace PythonNodeModelsWpf
             this.ZoomInButton.IsEnabled = true;
             this.ZoomOutButton.IsEnabled = true;
             this.EngineSelectorComboBox.IsEnabled = true;
+            this.MigrationAssistantButton.IsEnabled = true;
             this.ConvertTabsToSpacesButton.IsEnabled = true;
             this.MoreInfoButton.IsEnabled = true;
             this.SaveButtonBar.Visibility = Visibility.Visible;
             this.UnsavedChangesStatusBar.Visibility = Visibility.Collapsed;
-
-            UpdateMigrationAssistantButtonEnabled();
         }
 
         // Updates the IsEnterHit value

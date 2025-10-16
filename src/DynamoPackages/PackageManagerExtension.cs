@@ -4,7 +4,6 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
-using Dynamo.Configuration;
 using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -33,7 +32,6 @@ namespace Dynamo.PackageManager
 
         private ReadyParams ReadyParams;
         private Core.CustomNodeManager customNodeManager;
-        private PreferenceSettings prefSettings;
 
         /// <summary>
         /// Dictionary mapping a custom node functionID to the package that contains it.
@@ -124,7 +122,6 @@ namespace Dynamo.PackageManager
         /// </summary>
         public void Startup(StartupParams startupParams)
         {
-            prefSettings = startupParams.Preferences as PreferenceSettings;
             string url = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, "packageManagerAddress");
 
             OnMessageLogged(LogMessage.Info("Dynamo will use the package manager server at : " + url));
@@ -151,6 +148,12 @@ namespace Dynamo.PackageManager
             PackageLoader.PackagesLoaded += LoadPackagesHandler;
             PackageLoader.RequestLoadNodeLibrary += RequestLoadNodeLibraryHandler;
             PackageLoader.RequestLoadCustomNodeDirectory += RequestLoadCustomNodeDirectoryHandler;
+
+            if (PythonServices.PythonEngineManager.Instance.AvailableEngines.Count == 0)
+            {
+                PythonServices.PythonEngineManager.Instance.LoadDefaultPythonEngine(AppDomain.CurrentDomain.GetAssemblies().
+                                                                                    FirstOrDefault(a => a != null && a.GetName().Name == PythonServices.PythonEngineManager.CPythonAssemblyName));
+            }
 
             PythonServices.PythonEngineManager.Instance.AvailableEngines.CollectionChanged += PythonEngineAdded;
                 
@@ -187,38 +190,39 @@ namespace Dynamo.PackageManager
         /// <param name="e"></param>
         internal void PythonEngineAdded(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action != NotifyCollectionChangedAction.Add || e.NewItems == null) return;
-
-            try
+            if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                var assem = e.NewItems[0]?.GetType().Assembly;
-                if (assem == null) return;
-
-                var assemLoc = assem.Location;
-                foreach (var pkg in PackageLoader.LocalPackages)
+                try
                 {
-                    if (assemLoc.StartsWith(pkg.RootDirectory))
+                    var assem = e.NewItems[0]?.GetType().Assembly;
+                    if (assem == null) return;
+
+                    var assemLoc = assem.Location;
+                    foreach (var pkg in PackageLoader.LocalPackages)
                     {
-                        if (NodePackageDictionary.ContainsKey(assem.FullName))
+                        if (assemLoc.StartsWith(pkg.RootDirectory))
                         {
-                            var assemName = AssemblyName.GetAssemblyName(assem.Location);
-                            OnMessageLogged(LogMessage.Info(
-                                string.Format("{0} contains the python engine library {1}, which has already been loaded " +
-                                "by another package. This may cause inconsistent results when determining which " +
-                                "python engine the nodes are dependent on.", pkg.Name, assemName.Name)
-                                ));
+                            if (NodePackageDictionary.ContainsKey(assem.FullName))
+                            {
+                                var assemName = AssemblyName.GetAssemblyName(assem.Location);
+                                OnMessageLogged(LogMessage.Info(
+                                    string.Format("{0} contains the python engine library {1}, which has already been loaded " +
+                                    "by another package. This may cause inconsistent results when determining which " +
+                                    "python engine the nodes are dependent on.", pkg.Name, assemName.Name)
+                                    ));
+                            }
+                            else
+                            {
+                                NodePackageDictionary[assem.FullName] = new List<PackageInfo>();
+                            }
+                            NodePackageDictionary[assem.FullName].Add(new PackageInfo(pkg.Name, new Version(pkg.VersionName)));
                         }
-                        else
-                        {
-                            NodePackageDictionary[assem.FullName] = new List<PackageInfo>();
-                        }
-                        NodePackageDictionary[assem.FullName].Add(new PackageInfo(pkg.Name, new Version(pkg.VersionName)));
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                OnMessageLogged(LogMessage.Info("Error occurred while recording python engine and package mapping. " + ex.Message));
+                catch(Exception ex)
+                {
+                    OnMessageLogged(LogMessage.Info("Error occurred while recording python engine and package mapping. " + ex.Message));
+                }
             }
         }
 
@@ -256,25 +260,6 @@ namespace Dynamo.PackageManager
             {
                 Preferences = preferences,
             });
-            EnsureDefaultPythonEngine();
-        }
-
-        private void EnsureDefaultPythonEngine()
-        {
-            if (prefSettings == null) return;
-
-            var mgr = PythonServices.PythonEngineManager.Instance;
-            var current = prefSettings.DefaultPythonEngine;
-            var isValid = !string.IsNullOrEmpty(current) && mgr.AvailableEngines.Any(x => x.Name == current);
-            if (isValid) return;
-
-            var preferred = mgr.AvailableEngines.FirstOrDefault(x => x.Name == PythonServices.PythonEngineManager.PythonNet3EngineName)
-                            ?? mgr.AvailableEngines.FirstOrDefault();
-
-            if (preferred != null && preferred.Name != current)
-            {
-                prefSettings.DefaultPythonEngine = preferred.Name;
-            }
         }
 
         private void OnMessageLogged(ILogMessage msg)

@@ -87,7 +87,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         {
             if (CurrentViewModel.DiffState == State.NoChanges)
             {
-                PythonNode.EngineName = PythonEngineManager.PythonNet3EngineName;
+                PythonNode.EngineName = PythonEngineManager.CPython3EngineName;
                 return;
             }
 
