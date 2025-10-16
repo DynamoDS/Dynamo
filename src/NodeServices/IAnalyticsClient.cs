@@ -476,7 +476,17 @@ namespace Dynamo.Logging
         /// <summary>
         /// Timed event: tracks graph execution time
         /// </summary>
-        UpdateGraphAsyncTask
+        UpdateGraphAsyncTask,
+
+        /// <summary>
+        /// Call tool event, when a tool is called/executed
+        /// </summary>
+        CallTool,
+
+        /// <summary>
+        /// Handle event, when processing requests/messages
+        /// </summary>
+        Handle
     }
 
     public enum HeartBeatType
@@ -515,6 +525,15 @@ namespace Dynamo.Logging
         /// <param name="description">Event description</param>
         /// <param name="value">A metric value associated with the event</param>
         void TrackEvent(Actions action, Categories category, string description, int? value);
+
+        /// <summary>
+        /// Tracks an arbitrary event with string category for external components
+        /// </summary>
+        /// <param name="action">Action performed</param>
+        /// <param name="category">Event category as string</param>
+        /// <param name="description">Event description</param>
+        /// <param name="value">A metric value associated with the event</param>
+        void TrackEvent(Actions action, string category, string description, int? value);
 
         /// <summary>
         /// Tracks a preference setting and its value.
