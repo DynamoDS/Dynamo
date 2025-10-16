@@ -1,8 +1,6 @@
-using Dynamo.Wpf.UI.GuidedTour;
-using System;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using Dynamo.Wpf.UI.GuidedTour;
 
 namespace Dynamo.Wpf.Views.GuidedTour
 {
@@ -16,31 +14,6 @@ namespace Dynamo.Wpf.Views.GuidedTour
         /// This property contains the text that will be shown in the popup and it can be updated on runtime.
         /// </summary>
         public string TextContent { get; set; }
-
-        /// <summary>
-        /// This property indicates if the Hyperlink will be shown in the RealTimeInfo window
-        /// </summary>
-        public bool ShowHyperlink { get; set; }
-
-        /// <summary>
-        /// This property indicates if the Header will be shown in the RealTimeInfo window
-        /// </summary>
-        public bool ShowHeader { get; set; }
-
-        /// <summary>
-        /// This property contains the text that will be shown in the Hyperlink
-        /// </summary>
-        public string HyperlinkText { get; set; }
-
-        /// <summary>
-        /// This property contains the text that will be shown in the Header
-        /// </summary>
-        public string HeaderContent { get; set; }
-
-        /// <summary>
-        /// This property contains the URI that will be opened when the Hyperlink is clicked
-        /// </summary>
-        public Uri HyperlinkUri { get; set; }
 
         public RealTimeInfoWindow()
         {
@@ -104,10 +77,6 @@ namespace Dynamo.Wpf.Views.GuidedTour
                 BorderLine.Y2 = PopupGrid.ActualHeight /*+ ((TextBlock)sender).Margin.Bottom*/;
         }
 
-        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
-        {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
-            e.Handled = true;
-        }
+
     }
 }

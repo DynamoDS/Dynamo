@@ -49,7 +49,6 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <!--  Title Bar + Close Button  -->
@@ -172,26 +171,9 @@
                                            Style="{StaticResource CustomRichTextBoxStyle}">
                 </localui:CustomRichTextBox>
 
-                <!--  Checkbox  -->
-                <StackPanel Grid.Row="2"
-                            x:Name="ExtraCheckPanel"
-                            Orientation="Horizontal"
-                            Margin="30,0,0,20"
-                            MaxWidth="500"
-                            Visibility="Collapsed">
-                    <CheckBox Name="ExtraCheckBox"
-                              Style="{StaticResource CheckBoxFileTrustStyle}"/>
-                    <Label x:Name="ExtraCheckBoxLabel"
-                           FontSize="14"
-                           FontFamily="{StaticResource ArtifaktElementRegular}"
-                           Target="{Binding ElementName=ExtraCheckBox}"
-                           VerticalAlignment="Center"
-                           Padding="0,2,0,0"/>
-                </StackPanel>
-
                 <!--  Buttons  -->
                 <DockPanel Name="ButtonsDockPanel"
-                           Grid.Row="3"
+                           Grid.Row="2"
                            Margin="16,0,20,20"
                            LastChildFill="False">
 

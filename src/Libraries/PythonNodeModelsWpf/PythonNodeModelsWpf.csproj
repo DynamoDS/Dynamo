@@ -24,7 +24,6 @@
     <None Remove="Resources\alert.png" />
     <None Remove="Resources\convert.png" />
     <None Remove="Resources\convert_hover.png" />
-    <None Remove="Resources\info.png" />
     <None Remove="Resources\question-filled.png" />
     <None Remove="Resources\question-filled_hover.png" />
     <None Remove="Resources\redo.png" />
@@ -80,7 +79,6 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Resource Include="Resources\convert_hover.png" />
-    <Resource Include="Resources\info.png" />
     <Resource Include="Resources\question-filled.png" />
     <Resource Include="Resources\question-filled_hover.png" />
     <Resource Include="Resources\redo.png" />
