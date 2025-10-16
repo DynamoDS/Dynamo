@@ -543,20 +543,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         /// <param name="content">The target content to display.</param>
         /// <param name="stayOpen">boolean indicates if the popup will stay open until user dismiss it.</param>
-        /// <param name="headerText">The header text to display.</param>
-        /// <param name="showHeader">boolean indicates if the header will be shown.</param>
-        /// <param name="showHyperlink">boolean indicates if the hyperlink will be shown.</param>
-        /// <param name="hyperlinkText">The hyperlink text to display.</param>
-        /// <param name="hyperlinkUri">The hyperlink uri to navigate to.</param>
         /// TODO: Make this API out of guide manager to a more generic place
-        internal void CreateRealTimeInfoWindow(
-            string content,
-            bool stayOpen = false,
-            bool showHeader = false,
-            string headerText = "",
-            bool showHyperlink = false,
-            string hyperlinkText = "",
-            Uri hyperlinkUri = null)
+        internal void CreateRealTimeInfoWindow(string content, bool stayOpen = false)
         {
             //Search a UIElement with the Name "statusBarPanel" inside the Dynamo VisualTree
             UIElement hostUIElement = GuideUtilities.FindChild(mainRootElement, "statusBarPanel");
@@ -571,12 +559,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 HorizontalOffset = ExitTourHorizontalOffset,
                 Placement = PlacementMode.Left,
                 TextContent = content,
-                StaysOpen = stayOpen,
-                ShowHeader = showHeader,
-                HeaderContent = headerText,
-                ShowHyperlink = showHyperlink,
-                HyperlinkText = hyperlinkText,
-                HyperlinkUri = hyperlinkUri
+                StaysOpen = stayOpen
             };
 
             if (hostUIElement != null)

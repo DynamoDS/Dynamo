@@ -96,8 +96,8 @@ namespace PythonNodeModels
             }
             else
             {
-                // Use PythonNet3 as default
-                engine = PythonEngineManager.PythonNet3EngineName;
+                // Use CPython as default
+                engine = PythonEngineManager.CPython3EngineName;
             }
         }
 
@@ -184,24 +184,6 @@ namespace PythonNodeModels
     [IsDesignScriptCompatible]
     public sealed class PythonNode : PythonNodeBase
     {
-        private bool showAutoUpgradedBar;
-        /// <summary>
-        /// This property is true if the node was auto-upgraded from CPython3 to PythonNet3.
-        /// </summary>
-        [JsonIgnore]
-        public bool ShowAutoUpgradedBar
-        {
-            get => showAutoUpgradedBar;
-            internal set
-            {
-                if (showAutoUpgradedBar != value)
-                {
-                    showAutoUpgradedBar = value;
-                    RaisePropertyChanged(nameof(ShowAutoUpgradedBar));
-                }
-            }
-        }
-
         /// <summary>
         /// The NodeType property provides a name which maps to the 
         /// server type for the node. This property should only be
