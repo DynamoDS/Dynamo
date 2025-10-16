@@ -806,7 +806,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private Dictionary<string, string> CustomDyfFilepaths { get; set; } = new Dictionary<string, string>();
+        internal Dictionary<string, string> CustomDyfFilepaths { get; set; } = new Dictionary<string, string>();
 
         public List<PackageAssembly> Assemblies { get; set; }
 
