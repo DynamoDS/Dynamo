@@ -150,17 +150,7 @@ namespace Dynamo.Logging
         /// <summary>
         /// Events Category related to DynamoHome
         /// </summary>
-        DynamoHomeOperations,
-
-        /// <summary>
-        /// Events Category related to MCPExtension and MCPServer operations
-        /// </summary>
-        MCPOperations,
-
-        /// <summary>
-        /// Events Category related to DynamoAssistant operations
-        /// </summary>
-        AssistantOperations
+        DynamoHomeOperations
     }
 
     /// <summary>
@@ -643,5 +633,14 @@ namespace Dynamo.Logging
         /// <param name="description">Event description</param>
         /// <returns>Event as IDisposable</returns>
         Task<IDisposable> TrackTaskFileOperationEvent(string filepath, Actions operation, int size, string description);
+
+        /// <summary>
+        /// Tracks an arbitrary event with string category for external components
+        /// </summary>
+        /// <param name="action">Action performed</param>
+        /// <param name="category">Event category as string</param>
+        /// <param name="description">Event description</param>
+        /// <param name="value">A metric value associated with the event</param>
+        void TrackEvent(Actions action, string category, string description, int? value);
     }
 }
