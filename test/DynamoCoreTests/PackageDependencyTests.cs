@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Dynamo.Configuration;
+using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -211,6 +213,32 @@ namespace Dynamo.Tests
                 var packageDependencyState = ((PackageDependencyInfo)package).State;
                 Assert.AreEqual(PackageDependencyState.Loaded, packageDependencyState);
             }
+        }
+
+
+        /// <summary>
+        /// This test verifies that the PathManager singleton instance is created with the expected properties
+        /// e.g. DefaultPackagesDirectory has a structure like C:\Users\<user>\AppData\Roaming\Dynamo\Dynamo Core\4.0\packages
+        /// </summary>
+        [Test]
+        public void PackageInstallationPathTest()
+        {
+            int CurrentMajorFileVersion = 4;
+            int CurrentMinorFileVersion = 0;
+
+            //The PathManager was already created with empty parameters when PreferenceSettings is created.
+            PathManager singletonPathManager = PathManager.Instance;
+            var dynCorePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+            var commonDataDirectory = dynCorePath;
+            var defaultPackagesDirectory = Path.Combine(appDataFolder, "Dynamo","Dynamo Core", CurrentMajorFileVersion.ToString("F1"), "packages");
+
+            //Checking that the properties in PathManager are the expected ones
+            Assert.IsTrue(singletonPathManager.MajorFileVersion == CurrentMajorFileVersion);
+            Assert.IsTrue(singletonPathManager.MinorFileVersion == CurrentMinorFileVersion);
+            Assert.IsTrue(singletonPathManager.CommonDataDirectory.Equals(commonDataDirectory));
+            Assert.IsTrue(singletonPathManager.DefaultPackagesDirectory.Equals(defaultPackagesDirectory));
         }
 
         [Test]
