@@ -479,12 +479,12 @@ namespace Dynamo.Logging
         UpdateGraphAsyncTask,
 
         /// <summary>
-        /// Call tool event - when a tool is called/executed
+        /// Call tool event, when a tool is called/executed
         /// </summary>
         CallTool,
 
         /// <summary>
-        /// Handle event - when processing requests/messages
+        /// Handle event, when processing requests/messages
         /// </summary>
         Handle
     }
@@ -525,6 +525,15 @@ namespace Dynamo.Logging
         /// <param name="description">Event description</param>
         /// <param name="value">A metric value associated with the event</param>
         void TrackEvent(Actions action, Categories category, string description, int? value);
+
+        /// <summary>
+        /// Tracks an arbitrary event with string category for external components
+        /// </summary>
+        /// <param name="action">Action performed</param>
+        /// <param name="category">Event category as string</param>
+        /// <param name="description">Event description</param>
+        /// <param name="value">A metric value associated with the event</param>
+        void TrackEvent(Actions action, string category, string description, int? value);
 
         /// <summary>
         /// Tracks a preference setting and its value.
@@ -633,14 +642,5 @@ namespace Dynamo.Logging
         /// <param name="description">Event description</param>
         /// <returns>Event as IDisposable</returns>
         Task<IDisposable> TrackTaskFileOperationEvent(string filepath, Actions operation, int size, string description);
-
-        /// <summary>
-        /// Tracks an arbitrary event with string category for external components
-        /// </summary>
-        /// <param name="action">Action performed</param>
-        /// <param name="category">Event category as string</param>
-        /// <param name="description">Event description</param>
-        /// <param name="value">A metric value associated with the event</param>
-        void TrackEvent(Actions action, string category, string description, int? value);
     }
 }
