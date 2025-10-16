@@ -358,9 +358,9 @@ namespace Dynamo.Wpf.Views
             }
         }
 
-        private void ReloadPythonNet3_Click(object sender, RoutedEventArgs e)
+        private void ReloadCPython_Click(object sender, RoutedEventArgs e)
         {
-            dynViewModel.Model.OnRequestPythonReset(PythonServices.PythonEngineManager.PythonNet3EngineName);
+            dynViewModel.Model.OnRequestPythonReset(PythonServices.PythonEngineManager.CPython3EngineName);
         }
 
         private void InstalledPackagesExpander_OnExpanded(object sender, RoutedEventArgs e)

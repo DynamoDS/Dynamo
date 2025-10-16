@@ -146,7 +146,6 @@ namespace Dynamo.PythonServices
         /// CPython Engine name
         /// </summary>
         internal static readonly string CPython3EngineName = "CPython3";
-        internal static readonly string PythonNet3EngineName = "PythonNet3";
 
         internal static readonly string PythonNodeNamespace = "PythonNodeModels.PythonNode";
 
@@ -164,7 +163,6 @@ namespace Dynamo.PythonServices
 
         internal static string IronPythonAssemblyName = "DSIronPython";
         internal static string CPythonAssemblyName = "DSCPython";
-        internal static string PythonNet3AssemblyName = "DSPythonNet3";
 
         internal static string IronPythonTypeName = IronPythonAssemblyName + "." + IronPythonEvaluatorClass;
         internal static string CPythonTypeName = CPythonAssemblyName + "." + CPythonEvaluatorClass;
@@ -185,6 +183,31 @@ namespace Dynamo.PythonServices
             dynCorePaths = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.GetFiles("*.dll", SearchOption.AllDirectories).Select(x => x.FullName);
 
             AvailableEngines = new ObservableCollection<PythonEngine>();
+
+            // We check only for the default python engine because it is the only one loaded by static references.
+            // Other engines can only be loaded through package manager
+            LoadDefaultPythonEngine(AppDomain.CurrentDomain.GetAssemblies().
+               FirstOrDefault(a => a != null && a.GetName().Name == CPythonAssemblyName));
+
+            AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler((object sender, AssemblyLoadEventArgs args) => LoadDefaultPythonEngine(args.LoadedAssembly));
+        }
+
+        internal void LoadDefaultPythonEngine(Assembly a)
+        {
+            if (a == null ||
+                a.GetName().Name != CPythonAssemblyName)
+            {
+                return;
+            }
+
+            try
+            {
+                LoadPythonEngine(a);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to load {CPythonAssemblyName} with error: {e.Message}");
+            }
         }
 
         private PythonEngine GetEngine(string name)
