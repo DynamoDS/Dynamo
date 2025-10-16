@@ -699,24 +699,19 @@ namespace ProtoCore.AssociativeEngine
 
                     foreach (AssociativeGraph.GraphNode graphNode in nodesInScope)
                     {
-                        bool allowRedefine = true;
-
                         if (isMember)
                         {
                             // For member vars, do not allow if not in the same scope
                             if (symbol.classScope != graphNode.classIndex || symbol.functionIndex != graphNode.procIndex)
                             {
-                                allowRedefine = false;
+                                continue;
                             }
                         }
 
-                        if (allowRedefine)
+                        // Check if graphnode was redefined by executingGraphNode
+                        if (AssociativeEngine.Utils.IsGraphNodeRedefined(graphNode, executingGraphNode))
                         {
-                            // Check if graphnode was redefined by executingGraphNode
-                            if (AssociativeEngine.Utils.IsGraphNodeRedefined(graphNode, executingGraphNode))
-                            {
-                                redefinedNodes.Add(graphNode);
-                            }
+                            redefinedNodes.Add(graphNode);
                         }
                     }
                 }
@@ -1500,7 +1495,7 @@ namespace ProtoCore.AssociativeGraph
                 return false;
             }
 
-            if (updateNodeRefList.Count > 0 && updateNodeRefList[0].nodeList.Count > 0)
+            if (updateNodeRefList[0].nodeList.Count > 0)
             {
                 var firstNode = updateNodeRefList[0].nodeList[0];
                 return firstNode != null && firstNode.nodeType == UpdateNodeType.Symbol && firstNode.symbol.isSSATemp;
