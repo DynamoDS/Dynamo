@@ -12,7 +12,7 @@
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "Code": "# Python script to find add or subtract a series of numbers. \r\n\r\n# Boiler-plate import statments included out-of-the-box\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variable.\r\nsign = IN[0]  # -1 for subtract all, 0 for do nothing, 1 for add all\r\nnums = IN[1]  # List of numbers to subtract or add\r\n\r\npartials = [] # Empty array to contain partial sums or differences\r\nresult = 0    # Initialize the sum or difference to 0\r\n\r\n# Loop through each item and add it or subtract it from the result.\r\nfor index in range(len(nums)):\r\n\tif sign > 0:\r\n\t\tresult = result + nums[index]\r\n\t\tpartials.append(result)\r\n\telif sign == 0:\r\n\t\tpartials.append(result)\r\n\t\tcontinue\r\n\telse:\r\n\t\tresult = result - nums[index]\r\n\t\tpartials.append(result)\r\n\r\n# Assign the output to the OUT variable\r\n#OUT = results  # Use this to output only the result.\r\nOUT = []\r\nOUT.append(result)\r\nOUT.append(partials)",
-      "Engine": "CPython3",
+      "Engine": "PythonNet3",
       "VariableInputPorts": true,
       "Id": "7183a2fe9a6a4eebb2233525a80ab2f2",
       "NodeType": "PythonScriptNode",
@@ -308,7 +308,7 @@
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "Code": "import clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n#The inputs to this node will be stored as a list in the IN variable.\r\ndataEnteringNode = IN\r\n\r\np1 = Point.ByCoordinates(0, 0, 0);\r\np2 = Point.ByCoordinates(-10, -10, -10);\r\n\r\nl = Line.ByStartPointEndPoint(p1, p2);\r\n\r\npts = [\r\n\tPoint.ByCoordinates(0, 0, 0),\r\n\tPoint.ByCoordinates(10, 10, 0),\r\n\tPoint.ByCoordinates(20, 0, 0),\r\n\tPoint.ByCoordinates(30, 10, 0),\r\n\tPoint.ByCoordinates(40, 0, 0) ]\r\n\t\r\nspline = NurbsCurve.ByPoints(pts)\r\n\r\nsurf = spline.Extrude(Vector.ByCoordinates(0, 0, 1), 10)\r\n\r\n#Assign your output to the OUT variable\r\nOUT = [l, spline, surf]",
-      "Engine": "CPython3",
+      "Engine": "PythonNet3",
       "VariableInputPorts": true,
       "Id": "9094d23b33384e5caf7b7d08e547cc25",
       "NodeType": "PythonScriptNode",
