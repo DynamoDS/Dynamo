@@ -2889,11 +2889,11 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
   <data name="AddStyleButton" xml:space="preserve">
     <value>Add Style</value>
   </data>
-  <data name="ResetCPythonButtonText" xml:space="preserve">
-    <value>Reset CPython</value>
+  <data name="ResetPythonNet3ButtonText" xml:space="preserve">
+    <value>Reset PythonNet3</value>
   </data>
-  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
-    <value>Resets CPython environment by reloading modules.</value>
+  <data name="ResetPythonNet3ButtonToolTip" xml:space="preserve">
+    <value>Resets PythonNet3 environment by reloading modules.</value>
   </data>
   <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
     <value>Cancel and Show Issues</value>
@@ -4199,5 +4199,24 @@ To make this file into a new template, save it to a different folder, then move 
   </data>
   <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
     <value>Hide unconnected output ports by default</value>
+  </data>
+  <data name="PreferencesViewHidePythonEngineChangeNotifications" xml:space="preserve">
+    <value>Hide Python Engine change notifications</value>
+  </data>
+  <data name="PreferencesViewHidePythonEngineChangeNotificationsTooltip" xml:space="preserve">
+    <value>CPython is no longer supported in Dynamo 4.0 or above and will be converted to the new default engine PythonNet3. Disable the toggle to hide all notifications about engine changes.</value>
+  </data>
+  <data name="MessageBoxDontShowAgainLabel" xml:space="preserve">
+    <value>Don't show this again</value>
+  </data>
+  <data name="CPython3EngineNotificationMessageBoxHeader" xml:space="preserve">
+    <value>Python Engine Change</value>
+  </data>
+  <data name="CPython3EngineNotificationMessageBoxText" xml:space="preserve">
+    <value>This graph includes CPython nodes, which are no longer supported in Dynamo 4.0. Saving will convert them to PythonNet3, the new default engine.
+To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the Package Manager.</value>
+  </data>
+  <data name="CPython3EngineUpgradeLearnMoreUri" xml:space="preserve">
+    <value>https://dynamobim.org/pythonnet3-a-new-dynamo-python-to-fix-everything/</value>
   </data>
 </root>
