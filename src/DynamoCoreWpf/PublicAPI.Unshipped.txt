@@ -2162,6 +2162,7 @@ Dynamo.ViewModels.DynamoViewModel.PublishNewPackageCommand.get -> Dynamo.UI.Comm
 Dynamo.ViewModels.DynamoViewModel.PublishNewPackageCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.PublishSelectedNodesCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.PublishSelectedNodesCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.PythonEngineUpgradeToastRequested -> System.Action<string, bool>
 Dynamo.ViewModels.DynamoViewModel.RecentFiles.get -> System.Collections.ObjectModel.ObservableCollection<string>
 Dynamo.ViewModels.DynamoViewModel.RecentFiles.set -> void
 Dynamo.ViewModels.DynamoViewModel.RedoCommand.get -> Dynamo.UI.Commands.DelegateCommand
@@ -2200,6 +2201,7 @@ Dynamo.ViewModels.DynamoViewModel.ScaleFactorLog.set -> void
 Dynamo.ViewModels.DynamoViewModel.SelectAll(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.SelectAllCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.SelectAllCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.ShowPythonEngineUpgradeCanvasToast(string message, bool stayOpen = true) -> void
 Dynamo.ViewModels.DynamoViewModel.ShowGraphPropertiesCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.ShowGraphPropertiesCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubbles(object parameter) -> void
@@ -2863,6 +2865,8 @@ Dynamo.ViewModels.PreferencesViewModel.Filters.get -> System.Collections.ObjectM
 Dynamo.ViewModels.PreferencesViewModel.GroupStyleFontSizeList.get -> System.Collections.ObjectModel.ObservableCollection<int>
 Dynamo.ViewModels.PreferencesViewModel.GroupStyleFontSizeList.set -> void
 Dynamo.ViewModels.PreferencesViewModel.HideAutocompleteMethodOptions.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.HideCPythonNotificationIsChecked.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.HideCPythonNotificationIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.HideNodesBelowSpecificConfidenceLevelIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.HideNodesBelowSpecificConfidenceLevelIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.HostGenericScaleUnits.get -> string
@@ -4301,8 +4305,18 @@ Dynamo.Wpf.Views.GuidedTour.RatingControl.RatingControl() -> void
 Dynamo.Wpf.Views.GuidedTour.RatingControl.Value.get -> int
 Dynamo.Wpf.Views.GuidedTour.RatingControl.Value.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HeaderContent.get -> string
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HeaderContent.set -> void
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkText.get -> string
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkText.set -> void
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkUri.get -> System.Uri
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkUri.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.InitializeComponent() -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.RealTimeInfoWindow() -> void
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHeader.get -> bool
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHeader.set -> void
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHyperlink.get -> bool
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHyperlink.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.TextContent.get -> string
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.TextContent.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.UpdateLocation() -> void
@@ -4516,6 +4530,7 @@ static Dynamo.UI.Prompts.DynamoMessageBox.Show(string messageBoxText, string cap
 static Dynamo.UI.Prompts.DynamoMessageBox.Show(System.Windows.Window owner, string messageBoxText, string caption, bool showRichTextBox, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage icon) -> System.Windows.MessageBoxResult
 static Dynamo.UI.Prompts.DynamoMessageBox.Show(System.Windows.Window owner, string messageBoxText, string caption, System.Collections.Generic.Dictionary<Dynamo.UI.Prompts.DynamoMessageBox.DialogFlags, bool> flags, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage icon) -> System.Windows.MessageBoxResult
 static Dynamo.UI.Prompts.DynamoMessageBox.Show(System.Windows.Window owner, string messageBoxText, string caption, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage icon) -> System.Windows.MessageBoxResult
+static Dynamo.UI.Prompts.DynamoMessageBox.ShowWithCheckbox(System.Windows.Window owner, string messageBoxText, string caption, System.Windows.MessageBoxButton button, System.Collections.Generic.IEnumerable<string> buttonNames, System.Windows.MessageBoxImage icon, string checkboxText, out bool isChecked) -> System.Windows.MessageBoxResult
 static Dynamo.UI.SharedDictionaryManager.ConnectorsDictionary.get -> System.Windows.ResourceDictionary
 static Dynamo.UI.SharedDictionaryManager.ConnectorsDictionaryUri.get -> System.Uri
 static Dynamo.UI.SharedDictionaryManager.DataTemplatesDictionary.get -> System.Windows.ResourceDictionary
@@ -4661,6 +4676,9 @@ static Dynamo.Wpf.Properties.Resources.ConverterMessageTransformOrigin.get -> st
 static Dynamo.Wpf.Properties.Resources.ConverterMessageZoom.get -> string
 static Dynamo.Wpf.Properties.Resources.CopyToClipboardTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.CopyToClipboardFailedMessage.get -> string
+static Dynamo.Wpf.Properties.Resources.CPython3EngineNotificationMessageBoxHeader.get -> string
+static Dynamo.Wpf.Properties.Resources.CPython3EngineNotificationMessageBoxText.get -> string
+static Dynamo.Wpf.Properties.Resources.CPython3EngineUpgradeLearnMoreUri.get -> string
 static Dynamo.Wpf.Properties.Resources.CrashPromptDialogCopyButton.get -> string
 static Dynamo.Wpf.Properties.Resources.CrashPromptDialogCrashMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.CrashPromptDialogDetailButton.get -> string
@@ -5046,6 +5064,7 @@ static Dynamo.Wpf.Properties.Resources.LogoutMenuItemText.get -> string
 static Dynamo.Wpf.Properties.Resources.MajorVersionNonNegative.get -> string
 static Dynamo.Wpf.Properties.Resources.Manual.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageAlreadyInstallDynamo.get -> string
+static Dynamo.Wpf.Properties.Resources.MessageBoxDontShowAgainLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageConfirmToDeletePackage.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageConfirmToInstallPackage.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageConfirmToInstallPackageToFolder.get -> string
@@ -5466,6 +5485,8 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralTab.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGroupStylesHeader.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewHideInportsDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewHideOutportsDescription.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewHidePythonEngineChangeNotifications.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewHidePythonEngineChangeNotificationsTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewIncludeTimestampExportPathTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewLanguageLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewLanguageSwitchHelp.get -> string
@@ -5611,8 +5632,8 @@ static Dynamo.Wpf.Properties.Resources.RenderingMemoryOutageSummary.get -> strin
 static Dynamo.Wpf.Properties.Resources.RerunButton.get -> string
 static Dynamo.Wpf.Properties.Resources.RerunButtonToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.ResetChangesWarningPopupMessage.get -> string
-static Dynamo.Wpf.Properties.Resources.ResetCPythonButtonText.get -> string
-static Dynamo.Wpf.Properties.Resources.ResetCPythonButtonToolTip.get -> string
+static Dynamo.Wpf.Properties.Resources.ResetPythonNet3ButtonText.get -> string
+static Dynamo.Wpf.Properties.Resources.ResetPythonNet3ButtonToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.ResourceManager.get -> System.Resources.ResourceManager
 static Dynamo.Wpf.Properties.Resources.RunBlockedMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.RunCompletedMessage.get -> string

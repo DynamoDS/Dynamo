@@ -118,3 +118,4 @@ dynamods-splash-screen-*.tgz
 /src/DynamoCoreWpf/.npmrc
 /src/Notifications/.npmrc
 src/LibraryViewExtensionWebView2/.npmrc
+test/core/packageDependencyTests/PythonEnginePackage

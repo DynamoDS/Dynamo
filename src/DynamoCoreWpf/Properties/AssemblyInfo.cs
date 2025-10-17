@@ -60,6 +60,7 @@ using System.Windows;
 [assembly: InternalsVisibleTo("DynamoPlayer")]
 [assembly: InternalsVisibleTo("DynamoConnector")]
 [assembly: InternalsVisibleTo("NodeAutoCompleteViewExtension")]
+[assembly: InternalsVisibleTo("PythonMigrationViewExtension")]
 
 // Disable PublicAPIAnalyzer errors for this type as they're already added to the public API text file
 #pragma warning disable RS0016 
