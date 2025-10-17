@@ -203,6 +203,24 @@ namespace Dynamo.Logging
             });
         }
 
+        public void TrackEvent(Actions action, string category, string description, int? value)
+        {
+            if (Analytics.DisableAnalytics) return;
+
+            Task.Run(() =>
+            {
+                serviceInitialized.Wait();
+
+                lock (trackEventLockObj)
+                {
+                    if (!ReportingAnalytics) return;
+
+                    var e = AnalyticsEvent.Create(category, action.ToString(), description, value);
+                    e.Track();
+                }
+            });
+        }
+
         public void TrackPreference(string name, string stringValue, int? metricValue)
         {
             if (Analytics.DisableAnalytics) return;
