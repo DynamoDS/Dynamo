@@ -32,16 +32,16 @@
   <ItemGroup Label="Common dependencies">
     <PackageReference Include="Autodesk.IDSDK" Version="1.2.5" />
     <PackageReference Include="Greg" Version="3.0.2.8780" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="4.0.0.2856" GeneratePathProperty="true" ExcludeAssets="all"/>
-    <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.2855" Condition=" '$(Configuration)' == 'Release' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
-    <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0_debug" Version="4.0.0.2855" Condition=" '$(Configuration)' == 'Debug' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="4.0.0.2856" GeneratePathProperty="true" ExcludeAssets="all" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.2855" Condition=" '$(Configuration)' == 'Release' " GeneratePathProperty="true" ExcludeAssets="runtime" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0_debug" Version="4.0.0.2855" Condition=" '$(Configuration)' == 'Debug' " GeneratePathProperty="true" ExcludeAssets="runtime" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" CopyXML="true" />
     <PackageReference Include="RestSharp" Version="112.0.0" CopyXML="true" />
     <PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00016" />
     <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.2.1.9358" />
-    <PackageReference Include="DynamoVisualProgramming.PythonEngine.PythonNet3" Version="1.4.2" GeneratePathProperty="true" ExcludeAssets="all" />
+    <PackageReference Include="DynamoVisualProgramming.PythonEngine.PythonNet3" Version="1.4.3" GeneratePathProperty="true" ExcludeAssets="all" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Engine\GraphLayout\GraphLayout.csproj">
