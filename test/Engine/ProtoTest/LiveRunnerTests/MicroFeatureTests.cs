@@ -7,6 +7,7 @@ using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 using ProtoScript.Runners;
 using ProtoTestFx.TD;
+using System.IO;
 
 namespace ProtoTest.LiveRunner
 {
@@ -3533,17 +3534,24 @@ r = __Equals(x, [41, 42]);
         [Test]
         public void TestPythonCodeExecution()
         {
+            var enginePath = Path.Combine(
+                AppContext.BaseDirectory,
+                @"Built-In Packages\packages\PythonNet3Engine\extra\DSPythonNet3.dll");
+            Assert.That(File.Exists(enginePath), "DSPythonNet3.dll not found: " + enginePath);
+            var dsImportPath = enginePath.Replace(@"\", @"\\");
+            var importCode = $"import(\"{dsImportPath}\");";
+
             List<string> codes = new List<string>() 
             {
-                @"import(""DSCPython.dll"");",
-                @"x = CPythonEvaluator.EvaluatePythonScript(""# Default imports
+                importCode,
+                @"x = DSPythonNet3.DSPythonNet3Evaluator.EvaluatePythonScript(""# Default imports
 
 #The inputs to this node will be stored as a list in the IN variable.
 dataEnteringNode = IN
 
 #Assign your output to the OUT variable
 OUT = 1"", [""IN""], [[]]); x = x;",
-                            @"x = CPythonEvaluator.EvaluatePythonScript(""# Default imports
+                            @"x = DSPythonNet3.DSPythonNet3Evaluator.EvaluatePythonScript(""# Default imports
 
 #The inputs to this node will be stored as a list in the IN variable.
 dataEnteringNode = IN

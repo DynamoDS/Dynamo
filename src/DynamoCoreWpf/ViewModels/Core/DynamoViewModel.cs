@@ -1106,6 +1106,23 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Raised by <see cref="DynamoViewModel"/> to ask listeners (e.g., Python migration UX)
+        /// whether a Python engine changed notice should be shown to the user.
+        /// </summary>
+        internal event EventHandler<CancelEventArgs> RequestPythonEngineChangeNotice;
+
+        // <summary>
+        /// Raises <see cref="RequestPythonEngineChangeNotice"/> and returns whether any subscriber
+        /// requested to cancel showing the Python engine changed notice.
+        /// </summary>
+        internal bool RaiseRequestPythonEngineChangeNotice()
+        {
+            var args = new CancelEventArgs();
+            RequestPythonEngineChangeNotice?.Invoke(this, args);
+            return args.Cancel;
+        }
+
+        /// <summary>
         /// Returns whether the IDSDK is initialized or not for Dynamo Sandbox, in host environment defaults to true.
         /// If showWarning is true, a warning message will be shown to the user if the IDSDK is not initialized.
         /// If owner is not null, the warning message will be shown as a dialog with the owner as the parent.
@@ -2377,6 +2394,20 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Raised when a toast should be shown to inform about a CPython to PythonNet3 engine upgrade
+        /// </summary>
+        public event Action<string, bool> PythonEngineUpgradeToastRequested;
+
+        /// <summary>
+        /// Requests the UI to show a Python-engine-upgrade toast on the canvas.
+        /// This is UI-agnostic; the View decides when/where to render.
+        /// </summary>
+        public void ShowPythonEngineUpgradeCanvasToast(string message, bool stayOpen = true)
+        {
+            PythonEngineUpgradeToastRequested?.Invoke(message, stayOpen);
+        }
+
+        /// <summary>
         /// Present the open dialog and open the workspace that is selected.
         /// - If template is selected, opens the template folder
         /// - else, if current file is saved , opens the file dialog at the current file's directory
@@ -3036,8 +3067,17 @@ namespace Dynamo.ViewModels
         public void ShowSaveDialogIfNeededAndSaveResult(object parameter)
         {
             var vm = this;
+            var currentWorkspace = vm.Model.CurrentWorkspace;
 
-            if (string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName) || vm.Model.CurrentWorkspace.IsTemplate)
+            // First-time CPython notice when saving a *new, unsaved* Home workspace
+            if (currentWorkspace.ShowCPythonNotifications
+                && !currentWorkspace.HasShownCPythonNotification)
+            {
+                var cancel = RaiseRequestPythonEngineChangeNotice();
+                if (cancel) return;
+            }
+
+            if (string.IsNullOrEmpty(currentWorkspace.FileName) || currentWorkspace.IsTemplate)
             {
                 if (CanShowSaveDialogAndSaveResult(parameter))
                 {
