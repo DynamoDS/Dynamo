@@ -292,10 +292,19 @@ namespace Dynamo.Controls
 
         private void DynamoViewModel_ShowGraphPropertiesRequested(object sender, EventArgs e)
         {
-            BindGraphPropertiesMenu(true);
+            EnsureGraphPropertiesBinding();
+
+            var provider = viewExtensionManager.ViewExtensions
+                .OfType<IExtensionMenuProvider>()
+                .FirstOrDefault(ext => (ext as IViewExtension)?.UniqueId == GraphMetadataExtensionId);
+
+            var extItem = provider?.GetFileMenuItem();
+            if (extItem == null) return;
+
+            extItem.IsChecked = !extItem.IsChecked;
         }
 
-        private void BindGraphPropertiesMenu(bool toggle)
+        private void EnsureGraphPropertiesBinding()
         {
             var generalItem = this.FindName("general") as MenuItem;
             if (generalItem == null) return;
@@ -312,15 +321,10 @@ namespace Dynamo.Controls
                 generalItem.IsCheckable = true;
                 generalItem.IsChecked = extItem.IsChecked;
 
-                extItem.Checked += (_, __) => generalItem.IsChecked = true;
-                extItem.Unchecked += (_, __) => generalItem.IsChecked = false;
+                extItem.Checked += (s, e) => generalItem.IsChecked = true;
+                extItem.Unchecked += (s, e) => generalItem.IsChecked = false;
 
                 graphMetadataHooked = true;
-            }
-
-            if (toggle)
-            {
-                extItem.IsChecked = !extItem.IsChecked;
             }
         }
 
@@ -1481,7 +1485,7 @@ namespace Dynamo.Controls
 
             loaded = true;
 
-            BindGraphPropertiesMenu(false);
+            EnsureGraphPropertiesBinding();
         }
 
         // Add the HomePage to the DynamoView once its loaded
