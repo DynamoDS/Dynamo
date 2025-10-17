@@ -394,7 +394,7 @@ namespace DSOffice
                     {
                         if (cell.CellValue.TryGetInt(out var index))
                         {
-                            return sharedStringTable.ElementAt(index).InnerText;
+                            return GetSharedStringText(sharedStringTable.ElementAt(index));
                         }
                     }
 
@@ -430,6 +430,47 @@ namespace DSOffice
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Extracts text content from a SharedStringItem while excluding phonetic guides.
+        /// Excel stores phonetic guides (furigana for Japanese, pinyin for Chinese) in PhoneticRun elements,
+        /// which should not be included in the text output as they are pronunciation hints, not actual content.
+        /// </summary>
+        /// <param name="sharedStringItem">The SharedStringItem to extract text from</param>
+        /// <returns>The text content without phonetic annotations</returns>
+        private static string GetSharedStringText(OpenXmlElement sharedStringItem)
+        {
+            if (sharedStringItem == null)
+            {
+                return string.Empty;
+            }
+
+            // Extract text from Text elements, excluding those within PhoneticRun elements
+            var textElements = sharedStringItem.Descendants<Text>().Where(t => !IsInsidePhoneticRun(t));
+
+            return string.Concat(textElements.Select(t => t.Text));
+        }
+
+        /// <summary>
+        /// Checks if a text element is inside a PhoneticRun element.
+        /// PhoneticRun elements contain phonetic guides (furigana) that should be excluded.
+        /// </summary>
+        /// <param name="textElement">The Text element to check</param>
+        /// <returns>True if the text is inside a PhoneticRun, false otherwise</returns>
+        private static bool IsInsidePhoneticRun(Text textElement)
+        {
+            var parent = textElement.Parent;
+            while (parent != null)
+            {
+                // PhoneticRun is the element type that contains phonetic text
+                if (parent is PhoneticRun)
+                {
+                    return true;
+                }
+                parent = parent.Parent;
+            }
+            return false;
         }
 
         /// <summary>
