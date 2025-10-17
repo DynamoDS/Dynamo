@@ -75,7 +75,7 @@ namespace NodeDocumentationMarkdownGenerator
             Assembly assembly = null;
             try
             {
-                assembly = Assembly.LoadFrom(requestedAssemblyLocation.FullName);
+                assembly = Dynamo.Utilities.AssemblyHelper.LoadInALCFrom(requestedAssemblyLocation.FullName);
             }
             catch (Exception ex)
             {

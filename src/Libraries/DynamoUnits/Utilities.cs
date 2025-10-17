@@ -5,6 +5,7 @@ using System.Configuration;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Loader;
 using ForgeUnits = Autodesk.ForgeUnits;
 
 namespace DynamoUnits
@@ -425,11 +426,12 @@ namespace DynamoUnits
 
             try
             {
+                var executingAssem = Assembly.GetExecutingAssembly();
                 // Use reflection to dynamically load DynamoInstallDetective at runtime.
                 // This avoids the need for a direct project reference and InternalsVisibleTo,
                 // maintaining cross-platform compatibility for the DynamoUnits library.
-                var dynamoInstallDetectiveAssembly = Assembly.LoadFrom(
-                    Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), 
+                var dynamoInstallDetectiveAssembly = AssemblyLoadContext.GetLoadContext(executingAssem).LoadFromAssemblyPath(
+                    Path.Combine(Path.GetDirectoryName(executingAssem.Location), 
                     "DynamoInstallDetective.dll"));
 
                 var ascWrapperType = dynamoInstallDetectiveAssembly.GetType("DynamoInstallDetective.AscSdkWrapper");

@@ -1,3 +1,4 @@
+using Dynamo.Utilities;
 using Dynamo.Wpf.Utilities;
 using System;
 using System.Diagnostics;
@@ -45,13 +46,13 @@ namespace DynamoSandbox
             {
                 string assemblyPath = Path.Combine(DynamoCorePath, assemblyName);
                 if (File.Exists(assemblyPath))
-                    return Assembly.LoadFrom(assemblyPath);
+                    return AssemblyHelper.LoadInALCFrom(assemblyPath);
 
                 var assemblyLocation = Assembly.GetExecutingAssembly().Location;
                 var assemblyDirectory = Path.GetDirectoryName(assemblyLocation);
 
                 assemblyPath = Path.Combine(assemblyDirectory, assemblyName);
-                return (File.Exists(assemblyPath) ? Assembly.LoadFrom(assemblyPath) : null);
+                return (File.Exists(assemblyPath) ? AssemblyHelper.LoadInALCFrom(assemblyPath) : null);
             }
             catch (Exception ex)
             {

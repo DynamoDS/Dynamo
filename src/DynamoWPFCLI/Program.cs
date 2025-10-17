@@ -5,8 +5,8 @@ using System.Runtime.Versioning;
 #endif
 using System.Threading;
 using Dynamo.Applications;
-using Dynamo.Logging;
 using Dynamo.Models;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using static System.Windows.Threading.Dispatcher;
@@ -156,7 +156,7 @@ namespace DynamoWPFCLI
                 else
                 {
                     Console.WriteLine($"attempting to import assembly {path}");
-                    var assembly = System.Reflection.Assembly.LoadFile(path);
+                    var assembly = AssemblyHelper.LoadInALCFrom(path);
                     model.LoadNodeLibrary(assembly, true);
                 }
             }

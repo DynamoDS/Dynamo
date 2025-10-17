@@ -108,7 +108,7 @@ namespace ProtoFFI
                 //load from search path, if file exists
                 string filepath = ProtoCore.Utils.FileUtils.GetDSFullPathName(shortname + ".dll");
                 if (File.Exists(filepath))
-                    return Assembly.LoadFrom(filepath);
+                    return Dynamo.Utilities.AssemblyHelper.LoadInALCFrom(filepath);
             }
             catch (Exception)
             {

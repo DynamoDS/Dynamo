@@ -20,7 +20,7 @@ namespace DynamoPythonTests
             base.Setup();
             //for some legacy tests we'll need the DSCPython binary loaded manually
             //as the types are found using reflection - during normal dynamo use these types are already loaded. 
-            Assembly.LoadFrom(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "DSCPython.dll"));
+            AssemblyHelper.LoadInALCFrom(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "DSCPython.dll"));
         }
 
         [Test]

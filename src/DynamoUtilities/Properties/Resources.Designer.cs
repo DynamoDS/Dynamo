@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DynamoUtilities.Properties {
+namespace DynamoUtility.Properties {
     using System;
     
     

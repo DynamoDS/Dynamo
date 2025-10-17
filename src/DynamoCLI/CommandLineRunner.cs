@@ -105,7 +105,7 @@ namespace DynamoCLI
                 else
                 {
                     Console.WriteLine($"attempting to import assembly {path}");
-                    var assembly = System.Reflection.Assembly.LoadFile(path);
+                    var assembly = Dynamo.Utilities.AssemblyHelper.LoadInALCFrom(path);
                     model.LoadNodeLibrary(assembly, true);
                 }
             }

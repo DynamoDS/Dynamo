@@ -69,7 +69,7 @@ namespace NodeDocumentationMarkdownGenerator
                     else
                     {
                         //load the assembly.
-                        Assembly asm = Assembly.LoadFrom(path);
+                        Assembly asm = Dynamo.Utilities.AssemblyHelper.LoadInALCFrom(path);
                         AssemblyName name = asm.GetName();
 
                         if (NodeModelAssemblyLoader.ContainsNodeModelSubType(asm))

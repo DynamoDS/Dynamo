@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,7 +25,7 @@ namespace Dynamo.TestInfrastructure
             string assemblyPath = Assembly.GetExecutingAssembly().Location;
             string assemblyDir = Path.GetDirectoryName(assemblyPath);
             string pathToNodesDll = assemblyDir + "\\nodes\\CoreNodeModels.dll";
-            Assembly assembly = Assembly.LoadFile(pathToNodesDll);
+            Assembly assembly = Dynamo.Utilities.AssemblyHelper.LoadInALCFrom(pathToNodesDll);
             Type type = assembly.GetType("CoreNodeModels.CreateList");
 
             return type;

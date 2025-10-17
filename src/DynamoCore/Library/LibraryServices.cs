@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Core;
@@ -106,14 +105,14 @@ namespace Dynamo.Engine
             {
                 if (pathManager.ResolveLibraryPath(ref assemblyPath))
                 {
-                    return Assembly.LoadFrom(assemblyPath);
+                    return Dynamo.Utilities.AssemblyHelper.LoadInALCFrom(assemblyPath);
                 }
 
                 foreach (var packagesDirectory in pathManager.PackagesDirectories)
                 {
                     assemblyPath = Path.Combine(packagesDirectory, assemblyName);
                     if (File.Exists(assemblyPath))
-                        return Assembly.LoadFrom(assemblyPath);
+                        return Dynamo.Utilities.AssemblyHelper.LoadInALCFrom(assemblyPath);
                 }
 
                 return null;
