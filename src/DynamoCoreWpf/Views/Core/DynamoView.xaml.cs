@@ -80,6 +80,7 @@ namespace Dynamo.Controls
         private PreferencesView preferencesWindow;
         private PackageManagerView packageManagerWindow;
         private bool loaded = false;
+        private bool graphMetadataHooked;
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
         private bool isPSSCalledOnViewModelNoCancel = false;
@@ -291,17 +292,39 @@ namespace Dynamo.Controls
 
         private void DynamoViewModel_ShowGraphPropertiesRequested(object sender, EventArgs e)
         {
-            // Identify the GraphMetadata extension by its UniqueId because we can't reference its type directly.
-            // This exposes the menu item without creating a dependency on the Extensions project.
+            EnsureGraphPropertiesBinding();
+
             var provider = viewExtensionManager.ViewExtensions
                 .OfType<IExtensionMenuProvider>()
                 .FirstOrDefault(ext => (ext as IViewExtension)?.UniqueId == GraphMetadataExtensionId);
-            var menuItem = provider?.GetFileMenuItem();
 
-            if (menuItem != null)
-            {
-                menuItem.IsChecked = true;
-            }
+            var extItem = provider?.GetFileMenuItem();
+            if (extItem == null) return;
+
+            extItem.IsChecked = !extItem.IsChecked;
+        }
+
+        private void EnsureGraphPropertiesBinding()
+        {
+            if (graphMetadataHooked) return;
+
+            var generalItem = this.FindName("general") as MenuItem;
+            if (generalItem == null) return;
+
+            var provider = viewExtensionManager.ViewExtensions
+                .OfType<IExtensionMenuProvider>()
+                .FirstOrDefault(ext => (ext as IViewExtension)?.UniqueId == GraphMetadataExtensionId);
+
+            var extItem = provider?.GetFileMenuItem();
+            if (extItem == null) return;
+
+            generalItem.IsCheckable = true;
+            generalItem.IsChecked = extItem.IsChecked;
+
+            extItem.Checked += (s, e) => generalItem.IsChecked = true;
+            extItem.Unchecked += (s, e) => generalItem.IsChecked = false;
+
+            graphMetadataHooked = true;
         }
 
         private void OnRequestCloseHomeWorkSpace()
@@ -1460,6 +1483,8 @@ namespace Dynamo.Controls
             LoadHomePage();
 
             loaded = true;
+
+            EnsureGraphPropertiesBinding();
         }
 
         // Add the HomePage to the DynamoView once its loaded
