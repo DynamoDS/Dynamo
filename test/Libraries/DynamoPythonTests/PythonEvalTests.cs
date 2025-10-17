@@ -1,10 +1,9 @@
-using DSPythonNet3;
-using Dynamo.Core;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using System.Linq;
+using DSCPython;
 using System.IO;
 using Dynamo;
 using Dynamo.PythonServices;
@@ -16,34 +15,20 @@ using Dynamo.PythonServices.EventHandlers;
     {
         public delegate object PythonEvaluatorDelegate(string code, IList bindingNames, IList bindingValues);
 
-        public PythonEvaluatorDelegate evaluator;
-        private System.Reflection.Assembly pyAsm;
-        private Type evalType;
-        private System.Reflection.MethodInfo evalMethod;
-
-        [OneTimeSetUp]
-        public void LoadPythonNet3()
-        {
-            var enginePath = Path.Combine(PathManager.BuiltinPackagesDirectory, @"PythonNet3Engine\extra\DSPythonNet3.dll");
-            pyAsm = System.Reflection.Assembly.LoadFrom(enginePath);
-            evalType = pyAsm.GetType("DSPythonNet3.DSPythonNet3Evaluator", throwOnError: true);
-            evalMethod = evalType.GetMethod("EvaluatePythonScript",
-                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
-
-            Assert.IsNotNull(evalMethod, "EvaluatePythonScript not found in DSPythonNet3Evaluator.");
-
-            evaluator = (string code, IList names, IList values) => evalMethod.Invoke(null, new object[] { code, names, values });
-        }
+        public IEnumerable<PythonEvaluatorDelegate> Evaluators = new List<PythonEvaluatorDelegate> {
+            DSCPython.CPythonEvaluator.EvaluatePythonScript
+        };
 
         [Test]
         [Category("UnitTests")]
         public void EvaluatorWorks()
         {
-            var emptyNames = new ArrayList();
-            var emptyValues = new ArrayList();
-
-            var output = evaluator("OUT = 0", emptyNames, emptyValues);
-            Assert.AreEqual(0, output);
+            foreach (var pythonEvaluator in Evaluators)
+            {
+                var empty = new ArrayList();
+                var output = pythonEvaluator("OUT = 0", empty, empty);
+                Assert.AreEqual(0, output);
+            }
         }
 
         [Test]
@@ -55,8 +40,16 @@ using Dynamo.PythonServices.EventHandlers;
             var names = new ArrayList { "test" };
             var vals = new ArrayList { expected };
 
-            var output = evaluator("OUT = test", names, vals);
-            Assert.AreEqual(expected, output);
+            foreach (var pythonEvaluator in Evaluators)
+            {
+                var output = pythonEvaluator(
+                    "OUT = test",
+                    names,
+                    vals
+                );
+
+                Assert.AreEqual(expected, output);
+            }
         }
 
         [Test]
@@ -65,11 +58,11 @@ using Dynamo.PythonServices.EventHandlers;
         {
             const string script = "OUT = ['', ' ', '  ']";
 
-            // Using the PythonNet3 Evaluator
-            var marshaler = DSPythonNet3Evaluator.OutputMarshaler;
+            // Using the CPython Evaluator
+            var marshaler = CPythonEvaluator.OutputMarshaler;
             marshaler.RegisterMarshaler((string s) => s.Length);
 
-            var output = DSPythonNet3Evaluator.EvaluatePythonScript(
+            var output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
                 script,
                 new ArrayList(),
                 new ArrayList());
@@ -77,6 +70,8 @@ using Dynamo.PythonServices.EventHandlers;
             Assert.AreEqual(new[] { 0, 1, 2 }, output);
 
             marshaler.UnregisterMarshalerOfType<string>();
+
+
         }
 
         [Test]
@@ -85,10 +80,10 @@ using Dynamo.PythonServices.EventHandlers;
         {
             const string script = "OUT = sum(IN)";
 
-            var marshaler = DSPythonNet3.DSPythonNet3Evaluator.InputMarshaler;
+            var marshaler = DSCPython.CPythonEvaluator.InputMarshaler;
             marshaler.RegisterMarshaler((string s) => s.Length);
 
-            var output = DSPythonNet3.DSPythonNet3Evaluator.EvaluatePythonScript(
+            var output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
                 script,
                 new ArrayList { "IN" },
                 new ArrayList { new ArrayList { " ", "  " } });
@@ -105,13 +100,21 @@ using Dynamo.PythonServices.EventHandlers;
             var names = new ArrayList { "indx" };
             var vals = new ArrayList { 3 };
 
-            var output = evaluator("OUT = [1,2,3,4,5,6,7][indx:indx+2]", names, vals);
-            var expected = new ArrayList { 4, 5 };
-            Assert.AreEqual(expected, output);
+            foreach (var pythonEvaluator in Evaluators)
+            {
+                var output = pythonEvaluator(
+                "OUT = [1,2,3,4,5,6,7][indx:indx+2]",
+                names,
+                vals);
+
+                var expected = new ArrayList { 4, 5 };
+
+                Assert.AreEqual(expected, output);
+            }
         }
 
         [Test]
-        public void PythonEngineIncludesTraceBack()
+        public void CPythonEngineIncludesTraceBack()
         {
             var code = @"
 # extra line
@@ -120,13 +123,13 @@ using Dynamo.PythonServices.EventHandlers;
 ";
             try
             {
-                DSPythonNet3.DSPythonNet3Evaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
+                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
                 Assert.Fail("An exception was expected");
             }
             catch (Exception exc)
             {
                 // Trace back is expected here. Line is 3 due to the line break from the code variable declaration
-                Assert.AreEqual("division by zero\n  File \"<string>\", line 3, in <module>\n", exc.Message);
+                Assert.AreEqual(@"ZeroDivisionError : division by zero ['  File ""<string>"", line 3, in <module>\n']", exc.Message);
             }
 
             code = @"
@@ -136,18 +139,18 @@ print 'hello'
 ";
             try
             {
-                DSPythonNet3.DSPythonNet3Evaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
+                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
                 Assert.Fail("An exception was expected");
             }
             catch (Exception exc)
             {
                 // Trace back is not available for this call, but we still get a reasonable message back
-                Assert.AreEqual("Missing parentheses in call to 'print'. Did you mean print(...)? (<string>, line 3)", exc.Message);
+                Assert.AreEqual(@"SyntaxError : ('invalid syntax', ('<string>', 3, 7, ""print 'hello'\n""))", exc.Message);
             }
         }
 
         [Test]
-        public void PythonEngineWithErrorRaisesCorrectEvent()
+        public void CPythonEngineWithErrorRaisesCorrectEvent()
         {
 
             var count = 0;
@@ -164,12 +167,12 @@ print 'hello'
                 }
             };
 
-            DSPythonNet3Evaluator.Instance.EvaluationFinished += handler;
+            CPythonEvaluator.Instance.EvaluationFinished += handler;
 
             var code = @"1";
             try
             {
-                DSPythonNet3.DSPythonNet3Evaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
+                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
             }
             finally
             {
@@ -179,7 +182,7 @@ print 'hello'
             code = @"1/a";
             try
             {
-                DSPythonNet3.DSPythonNet3Evaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
+                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
             }
             catch
             {
@@ -187,7 +190,7 @@ print 'hello'
             }
             finally
             {
-                DSPythonNet3Evaluator.Instance.EvaluationFinished -= handler;
+                CPythonEvaluator.Instance.EvaluationFinished -= handler;
                 Assert.AreEqual(2, count);
             }
         }
@@ -210,7 +213,7 @@ OUT = wr
             var empty = new ArrayList();
             Assert.DoesNotThrow(() =>
             {
-                Assert.IsTrue(DSPythonNet3.DSPythonNet3Evaluator.EvaluatePythonScript(code, empty, empty).ToString().Contains("weakref at"));
+                Assert.IsTrue(DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty).ToString().Contains("weakref at"));
 
             });
         }
@@ -230,7 +233,7 @@ OUT = o
             var empty = new ArrayList();
             Assert.DoesNotThrow(() =>
             {
-                Assert.AreEqual("I am a myobj", DSPythonNet3.DSPythonNet3Evaluator.EvaluatePythonScript(code, empty, empty).ToString());
+                Assert.AreEqual("I am a myobj", DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty).ToString());
 
             });
         }
@@ -268,12 +271,12 @@ o = notiterable()
 OUT = o
 ";
             var empty = new ArrayList();
-            var result1 = DSPythonNet3.DSPythonNet3Evaluator.EvaluatePythonScript(code, empty, empty);
-            var result2 = DSPythonNet3.DSPythonNet3Evaluator.EvaluatePythonScript(code2, empty, empty);
+            var result1 = DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty);
+            var result2 = DSCPython.CPythonEvaluator.EvaluatePythonScript(code2, empty, empty);
             Assert.IsInstanceOf(typeof(IList), result1);
             Assert.IsTrue(new List<object>() { 0L, 1L, 2L, 3L }
                 .SequenceEqual((IEnumerable<Object>)result1));
-            Assert.IsInstanceOf(typeof(DSPythonNet3.DynamoCPythonHandle), result2);
+            Assert.IsInstanceOf(typeof(DSCPython.DynamoCPythonHandle), result2);
 
         }
 
@@ -299,8 +302,11 @@ OUT = s,fs,dk,dv,di
                 new ArrayList { new ArrayList { "one", 1 } }
             };
             var empty = new ArrayList();
-            var output = evaluator(code, empty, empty);
-            Assert.AreEqual(expected, output);
+            foreach (var pythonEvaluator in Evaluators)
+            {
+                var output = pythonEvaluator(code, empty, empty);
+                Assert.AreEqual(expected, output);
+            }
         }
         [Test]
         public void ImportedLibrariesReloadedOnNewEvaluation()
@@ -319,7 +325,7 @@ sys.path.append(r'{Path.GetDirectoryName(tempPath)}')
 import {modName}
 OUT = {modName}.value";
 
-                var output = DSPythonNet3.DSPythonNet3Evaluator.EvaluatePythonScript(
+                var output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
                    script,
                    new ArrayList { "IN" },
                    new ArrayList { new ArrayList { " ", "  " } });
@@ -330,9 +336,9 @@ OUT = {modName}.value";
                 File.AppendAllLines(tempPath, new string[] { "value ='bye'" });
 
                 //mock raise event
-                DSPythonNet3Evaluator.RequestPythonResetHandler(PythonEngineManager.PythonNet3EngineName);
+                CPythonEvaluator.RequestPythonResetHandler(PythonEngineManager.CPython3EngineName);
 
-                output = DSPythonNet3Evaluator.EvaluatePythonScript(
+                output = CPythonEvaluator.EvaluatePythonScript(
                  script,
                  new ArrayList { "IN" },
                  new ArrayList { new ArrayList { " ", "  " } });

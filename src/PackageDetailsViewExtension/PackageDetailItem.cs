@@ -433,8 +433,7 @@ namespace Dynamo.PackageDetails
                 foreach (string stringValue in PackageVersion.host_dependencies)
                 {
                     if (stringValue == PythonEngineManager.IronPython2EngineName ||
-                        stringValue == PythonEngineManager.CPython3EngineName ||
-                        stringValue == PythonEngineManager.PythonNet3EngineName)
+                        stringValue == PythonEngineManager.CPython3EngineName)
                     {
                         pythonEngineVersions.Add(stringValue);
                     }

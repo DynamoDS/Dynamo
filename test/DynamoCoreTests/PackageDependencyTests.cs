@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Dynamo.Configuration;
+using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
@@ -128,23 +130,23 @@ namespace Dynamo.Tests
             var currentws = CurrentDynamoModel.CurrentWorkspace;
             var pyNode = currentws.Nodes.OfType<PythonNode>().FirstOrDefault();
             Assert.IsNotNull(pyNode);
-            Assert.AreEqual(pyNode.EngineName, PythonEngineManager.PythonNet3EngineName);
+            Assert.AreEqual(pyNode.EngineName, PythonEngineManager.CPython3EngineName);
             Assert.AreEqual(PythonEngineManager.Instance.AvailableEngines.Count, 2);
 
             currentws.ForceComputeWorkspaceReferences = true;
             var packageDependencies = currentws.NodeLibraryDependencies;
-            // PythonNet3 is loaded as a default package, ww should have a single package dependency.
-            Assert.AreEqual(1, packageDependencies.Count);
+            // Since Cpython is inbuilt and not loaded as a package, it shouldn't show up in package dependencies.
+            Assert.AreEqual(0, packageDependencies.Count);
 
-            // Change engine to IronPython2, which is loaded as a package.
-            UpdatePythonEngineAndRun(pyNode, "IronPython2");
+            // Change engine to PythonNet3, which is loaded as a package.
+            UpdatePythonEngineAndRun(pyNode, "PythonNet3");
             currentws.ForceComputeWorkspaceReferences = true;
 
             //assert that python engine imported from a package gets added to NodeLibraryDependencies
             packageDependencies = currentws.NodeLibraryDependencies;
             Assert.AreEqual(1, packageDependencies.Count);
             var package = packageDependencies.First();
-            Assert.AreEqual(new PackageDependencyInfo("DynamoIronPython2.7", new Version("3.2.1")), package);
+            Assert.AreEqual(new PackageDependencyInfo("TestCP311", new Version("1.0.8")), package);
             Assert.AreEqual(1, package.Nodes.Count);
 
             Assert.IsTrue(package.IsLoaded);
@@ -211,6 +213,32 @@ namespace Dynamo.Tests
                 var packageDependencyState = ((PackageDependencyInfo)package).State;
                 Assert.AreEqual(PackageDependencyState.Loaded, packageDependencyState);
             }
+        }
+
+
+        /// <summary>
+        /// This test verifies that the PathManager singleton instance is created with the expected properties
+        /// e.g. DefaultPackagesDirectory has a structure like C:\Users\<user>\AppData\Roaming\Dynamo\Dynamo Core\4.0\packages
+        /// </summary>
+        [Test]
+        public void PackageInstallationPathTest()
+        {
+            int CurrentMajorFileVersion = 4;
+            int CurrentMinorFileVersion = 0;
+
+            //The PathManager was already created with empty parameters when PreferenceSettings is created.
+            PathManager singletonPathManager = PathManager.Instance;
+            var dynCorePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+            var commonDataDirectory = dynCorePath;
+            var defaultPackagesDirectory = Path.Combine(appDataFolder, "Dynamo","Dynamo Core", CurrentMajorFileVersion.ToString("F1"), "packages");
+
+            //Checking that the properties in PathManager are the expected ones
+            Assert.IsTrue(singletonPathManager.MajorFileVersion == CurrentMajorFileVersion);
+            Assert.IsTrue(singletonPathManager.MinorFileVersion == CurrentMinorFileVersion);
+            Assert.IsTrue(singletonPathManager.CommonDataDirectory.Equals(commonDataDirectory));
+            Assert.IsTrue(singletonPathManager.DefaultPackagesDirectory.Equals(defaultPackagesDirectory));
         }
 
         [Test]

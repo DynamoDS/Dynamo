@@ -781,48 +781,6 @@
                                                 Style="{StaticResource NoBordersComboBoxStyle}">
                                     </ComboBox>
                                     
-                                    <!-- Hide notices -->
-                                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
-                                        <ToggleButton Name="ShowPythonEngineChangeNotification"
-                                                      Width="{StaticResource ToggleButtonWidth}"
-                                                      Height="{StaticResource ToggleButtonHeight}"
-                                                      VerticalAlignment="Center"
-                                                      IsChecked="{Binding Path=HideCPythonNotificationIsChecked}"
-                                                      Style="{StaticResource EllipseToggleButton1}"/>
-                                        <Label Content="{x:Static p:Resources.PreferencesViewHidePythonEngineChangeNotifications}"
-                                               VerticalAlignment="Center"
-                                               Margin="10,0,0,0"
-                                               Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                        <Label Name="ShowPythonEngineChangeNotificationLabel" MouseLeftButtonDown="OnMoreInfoClicked">
-                                            <Image Name="ShowPythonEngineChangeNotificationTooltip"
-                                                   Margin="5,3,0,0"
-                                                   Width="14"
-                                                   Height="14"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"
-                                                   Style="{StaticResource QuestionIconClickable}"
-                                                   ToolTipService.ShowDuration="30000">
-                                                <Image.ToolTip>
-                                                    <ToolTip Content="{x:Static p:Resources.PreferencesViewHidePythonEngineChangeNotificationsTooltip}"
-                                                             Style="{StaticResource GenericToolTipLight}"/>
-                                                </Image.ToolTip>
-                                            </Image>
-                                        </Label>
-                                    </StackPanel>
-
-                                    <!-- Reset PythonNet3 -->
-                                    <Button x:Name="ReloadPythonNet3"
-                                            Style="{StaticResource SolidButtonStyle}"
-                                            HorizontalAlignment="Left"
-                                            Grid.Row="0"
-                                            Margin="0,10,0,0"
-                                            Click="ReloadPythonNet3_Click"
-                                            Content="{x:Static p:Resources.ResetPythonNet3ButtonText}">
-                                        <Button.ToolTip>
-                                            <ToolTip Content="{x:Static p:Resources.ResetPythonNet3ButtonToolTip}" Style="{StaticResource GenericToolTipLight}"/>
-                                        </Button.ToolTip>
-                                    </Button>
-
                                     <!-- Python Template File Path -->
                                     <StackPanel Orientation="Vertical" Margin="0,12,0,5">
                                         <Label  Content="{x:Static p:Resources.PreferencesSettingCustomPythomTemplate}" 
@@ -901,7 +859,20 @@
                                                     Margin="10,0,0,0"
                                                     Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                         </StackPanel>
-                                    </Grid>                                    
+                                    </Grid>
+                                    <!-- Reset CPython -->
+                                    <Button x:Name="ReloadCPython"
+                                                Style="{StaticResource SolidButtonStyle}" 
+                                                HorizontalAlignment="Left"                                             
+                                                Grid.Row="0"
+                                                Margin="0,10,0,0"
+                                                Click="ReloadCPython_Click"
+                                                Content="{x:Static p:Resources.ResetCPythonButtonText}">
+                                        <Button.ToolTip>
+                                            <ToolTip Content="{x:Static p:Resources.ResetCPythonButtonToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                                        </Button.ToolTip>
+                                    </Button>
+                                    
                                 </StackPanel>
                             </Expander>
 
