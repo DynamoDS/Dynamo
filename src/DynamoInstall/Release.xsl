@@ -85,8 +85,4 @@
     <xsl:key name="int-search" match="wix:Component[contains(wix:File/@Source, '\int\')]" use="@Id"/>
     <xsl:template match="wix:Component[key('int-search', @Id)]" />
   
-    <!--Exclude 'samples' folders-->
-    <xsl:template match="wix:Directory[@Name = 'samples']" />
-    <xsl:key name="samples-search" match="wix:Component[contains(wix:File/@Source, '\samples\')]" use="@Id"/>
-    <xsl:template match="wix:Component[key('samples-search', @Id)]" />
 </xsl:stylesheet>
