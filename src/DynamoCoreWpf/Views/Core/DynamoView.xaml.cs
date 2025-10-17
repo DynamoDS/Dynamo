@@ -306,6 +306,8 @@ namespace Dynamo.Controls
 
         private void EnsureGraphPropertiesBinding()
         {
+            if (graphMetadataHooked) return;
+
             var generalItem = this.FindName("general") as MenuItem;
             if (generalItem == null) return;
 
@@ -316,16 +318,13 @@ namespace Dynamo.Controls
             var extItem = provider?.GetFileMenuItem();
             if (extItem == null) return;
 
-            if (!graphMetadataHooked)
-            {
-                generalItem.IsCheckable = true;
-                generalItem.IsChecked = extItem.IsChecked;
+            generalItem.IsCheckable = true;
+            generalItem.IsChecked = extItem.IsChecked;
 
-                extItem.Checked += (s, e) => generalItem.IsChecked = true;
-                extItem.Unchecked += (s, e) => generalItem.IsChecked = false;
+            extItem.Checked += (s, e) => generalItem.IsChecked = true;
+            extItem.Unchecked += (s, e) => generalItem.IsChecked = false;
 
-                graphMetadataHooked = true;
-            }
+            graphMetadataHooked = true;
         }
 
         private void OnRequestCloseHomeWorkSpace()
