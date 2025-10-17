@@ -50,12 +50,49 @@ namespace Dynamo.Core
 
     internal class PathManager : IPathManager
     {
-        internal static Lazy<PathManager>
-         lazy =
-         new Lazy<PathManager>
-         (() => new PathManager(new PathManagerParams()));
+        private static Lazy<PathManager> lazy;
+        private static readonly object lockObject = new object();
 
-        public static PathManager Instance { get { return lazy.Value; } }
+        /// <summary>
+        /// Initialize the PathManager singleton passing as a parameter a PathManagerParams object (which contains the Major and Minor version values).
+        /// </summary>
+        /// <param name="parameters"></param>
+        public static void Initialize(PathManagerParams parameters)
+        {
+            lock (lockObject)
+            {
+                if (lazy != null)
+                {
+                    // Or do we want to reset the existing instance? See below for discussions.
+                    throw new InvalidOperationException("PathManager has already been initialized.");
+                }
+
+                lazy = new Lazy<PathManager>(() => new PathManager(parameters));
+            }
+        }
+
+        /// <summary>
+        /// Instance is the property used as an access point to the PathManager singleton (if is not created will be created with default parameters).
+        /// </summary>
+        public static PathManager Instance
+        {
+            get
+            {
+                if (lazy == null)
+                {
+                    lock (lockObject)
+                    {
+                        if (lazy == null)
+                        {
+                            // Fallback to default if not initialized
+                            lazy = new Lazy<PathManager>(() => new PathManager(new PathManagerParams()));
+                        }
+                    }
+                }
+
+                return lazy.Value;
+            }
+        }
 
         #region Class Private Data Members
 
