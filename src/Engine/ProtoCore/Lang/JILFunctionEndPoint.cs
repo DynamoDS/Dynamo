@@ -1,4 +1,4 @@
-﻿
+
 using System.Collections.Generic;
 using ProtoCore.DSASM;
 using ProtoCore.Lang.Replication;
@@ -19,6 +19,8 @@ namespace ProtoCore.Lang
     public class JILFunctionEndPoint : FunctionEndPoint
     {
         private readonly JILActivationRecord activation;
+        private Interpreter mInterpreter;
+
         public JILFunctionEndPoint()
         {
             activation = new JILActivationRecord();
@@ -35,14 +37,29 @@ namespace ProtoCore.Lang
             return true;
         }
 
+        private void Init(RuntimeCore runtimeCore)
+        {
+            //if (mInterpreter != null) return;
+
+            mInterpreter = new ProtoCore.DSASM.Interpreter(runtimeCore, true);
+        }
+
         public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, RuntimeCore runtimeCore)
         {
-            ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore, true);
+            if (mInterpreter == null || c.IsImplicitCall)
+            {
+                Init(runtimeCore);
+            }
+            else
+            {
+                mInterpreter.runtime.Reset(true);
+            }
+
             ProtoCore.DSASM.Executive oldDSASMExec = null;
             if (runtimeCore.CurrentExecutive != null)
             {
                 oldDSASMExec = runtimeCore.CurrentExecutive.CurrentDSASMExec;
-                runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
+                runtimeCore.CurrentExecutive.CurrentDSASMExec = mInterpreter.runtime;
             }
 
             try
@@ -60,14 +77,14 @@ namespace ProtoCore.Lang
                 for (int n = execStateSize - 1; n >= 0; --n)
                 {
                     AssociativeGraph.GraphNode gnode = procedureNode.GraphNodeList[n];
-                    interpreter.Push(StackValue.BuildBoolean(gnode.isDirty));
+                    mInterpreter.Push(StackValue.BuildBoolean(gnode.isDirty));
                 }
 
                 // Push Params
                 formalParameters.Reverse();
                 for (int i = 0; i < formalParameters.Count; i++)
                 {
-                    interpreter.Push(formalParameters[i]);
+                    mInterpreter.Push(formalParameters[i]);
                 }
 
                 StackValue svThisPtr = stackFrame.ThisPtr;
@@ -108,7 +125,7 @@ namespace ProtoCore.Lang
                 }
 
                 stackFrame.TX = svCallConvention;
-                interpreter.runtime.TX = svCallConvention;
+                mInterpreter.runtime.TX = svCallConvention;
 
                 // Set SX register 
                 stackFrame.BlockIndex = svBlockDecl;
@@ -138,7 +155,7 @@ namespace ProtoCore.Lang
                 }
                 else
                 {
-                    svRet = interpreter.Run(runtimeCore.RunningBlock, activation.pc, Language.NotSpecified, runtimeCore.Breakpoints);
+                    svRet = mInterpreter.Run(runtimeCore.RunningBlock, activation.pc, Language.NotSpecified, runtimeCore.Breakpoints);
                     runtimeCore.RunningBlock = origRunningBlock;
                 }
 
