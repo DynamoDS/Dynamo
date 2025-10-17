@@ -769,6 +769,7 @@ namespace Dynamo.PackageManager
         /// add directories via `SelectDirectoryAndAddFilesRecursivelyCommand`, or remove items via
         /// `RemoveItemCommand`.
         /// </summary>
+        /// 
         public ObservableCollection<PackageItemRootViewModel> PackageContents { get; set; } = new ObservableCollection<PackageItemRootViewModel>();
         /// <summary>
         /// Preview of the final package directory structure before publishing. Shows how files in
