@@ -763,9 +763,20 @@ namespace Dynamo.PackageManager
         public Package Package { get; set; }
 
         /// <summary>
-        /// PackageContents property 
+        /// Stores the raw files/folders the user has added for package publishing. Items represent
+        /// files in their current disk locations, NOT their final locations in the published package.
+        /// This collection is modified when users add files via `ShowAddFileDialogAndAddCommand`,
+        /// add directories via `SelectDirectoryAndAddFilesRecursivelyCommand`, or remove items via
+        /// `RemoveItemCommand`.
         /// </summary>
         public ObservableCollection<PackageItemRootViewModel> PackageContents { get; set; } = new ObservableCollection<PackageItemRootViewModel>();
+        /// <summary>
+        /// Preview of the final package directory structure before publishing. Shows how files in
+        /// PackageContents will be organized in the published package. It reorganizes the files
+        /// into the standard Dynamo package folders (`bin/`, `dyf/`, `extra/`, `doc/`, `pkg.json`)
+        /// if `RetainFolderStructureOverride == false`, or preserves the user's existing folder
+        /// structure from PackageContents if `RetainFolderStructureOverride == true`.
+        /// </summary>
         public ObservableCollection<PackageItemRootViewModel> PreviewPackageContents { get; set; } = new ObservableCollection<PackageItemRootViewModel>();
 
         private ObservableCollection<PackageItemRootViewModel> _rootContents;
