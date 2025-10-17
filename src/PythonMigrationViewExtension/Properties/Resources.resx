@@ -221,16 +221,4 @@ By clicking “Continue”, you are agreeing to implement the syntax changes to 
   <data name="SwitchViewButton" xml:space="preserve">
     <value>Switch View</value>
   </data>
-  <data name="CPython3NotificationDetailedMessage" xml:space="preserve">
-    <value>This graph currently contains python nodes that are using the old CPython Engine which has been deprecated. Consider updating these nodes to use the new PythonNet3 Engine.</value>
-  </data>
-  <data name="CPython3NotificationShortMessage" xml:space="preserve">
-    <value>This graph currently contains nodes that are using the old CPython3 engine which has been deprecated. A new PythonNet3 has been implemented and is accessible inside the Python editor.</value>
-  </data>
-  <data name="CPythonUpgradeToastMessagePlural" xml:space="preserve">
-    <value>{0} CPython nodes have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported.</value>
-  </data>
-  <data name="CPythonUpgradeToastMessageSingular" xml:space="preserve">
-    <value>1 CPython node has been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported.</value>
-  </data>
 </root>

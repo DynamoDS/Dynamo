@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Dynamo;
 using Dynamo.PythonServices;
 using Dynamo.PythonServices.EventHandlers;
@@ -14,13 +16,20 @@ namespace DynamoPythonTests
     [TestFixture]
     class PythonEngineSelectorTests : DynamoModelTestBase
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            // Add multiple libraries to better simulate typical Dynamo application usage.
+            libraries.Add("DSCPython.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         /// <summary>
         /// This test will cover the use case of the API to query certain Python engine ability for evaluation
         /// </summary>
         [Test]
         public void TestEngineSelectorInitialization()
         {
-            Assert.AreEqual(true, PythonEngineManager.Instance.AvailableEngines.Any(x => x.Name == PythonEngineManager.PythonNet3EngineName));
+            Assert.AreEqual(true, PythonEngineManager.Instance.AvailableEngines.Any(x => x.Name == PythonEngineManager.CPython3EngineName));
             Assert.AreEqual(false, PythonEngineManager.Instance.AvailableEngines.Any(x => x.Name == PythonEngineManager.IronPython2EngineName));
         }
 
@@ -32,7 +41,7 @@ namespace DynamoPythonTests
             CurrentDynamoModel.ExecuteCommand(new Dynamo.Models.DynamoModel.CreateNodeCommand(pyNode, 0, 0, false, false));
             Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
-            pyNode.EngineName = PythonEngineManager.PythonNet3EngineName;
+            pyNode.EngineName = PythonEngineManager.CPython3EngineName;
             CurrentDynamoModel.AddToSelection(pyNode);
            
             CurrentDynamoModel.Copy();
@@ -41,7 +50,7 @@ namespace DynamoPythonTests
             CurrentDynamoModel.Paste();
             Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
-            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<PythonNode>().All(x => x.EngineName == PythonEngineManager.PythonNet3EngineName));
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<PythonNode>().All(x => x.EngineName == PythonEngineManager.CPython3EngineName));
 
             CurrentDynamoModel.ExecuteCommand(new UndoRedoCommand(UndoRedoCommand.Operation.Undo));
             Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
@@ -49,8 +58,8 @@ namespace DynamoPythonTests
 
             CurrentDynamoModel.ExecuteCommand(
                  new UpdateModelValueCommand(
-                     Guid.Empty, pyNode.GUID, nameof(PythonNode.EngineName), PythonEngineManager.PythonNet3EngineName));
-            Assert.AreEqual(pyNode.EngineName, PythonEngineManager.PythonNet3EngineName);
+                     Guid.Empty, pyNode.GUID, nameof(PythonNode.EngineName), PythonEngineManager.CPython3EngineName));
+            Assert.AreEqual(pyNode.EngineName, PythonEngineManager.CPython3EngineName);
 
             CurrentDynamoModel.ExecuteCommand(new UndoRedoCommand(UndoRedoCommand.Operation.Undo));
 
@@ -60,34 +69,34 @@ namespace DynamoPythonTests
         [Test]
         public void CPytonEngineManagerAPITest()
         {
-            var pythonNet3Eng = PythonEngineManager.Instance.AvailableEngines.FirstOrDefault(x => x.Name == PythonEngineManager.PythonNet3EngineName);
+            var cPython3Eng = PythonEngineManager.Instance.AvailableEngines.FirstOrDefault(x => x.Name == PythonEngineManager.CPython3EngineName);
 
-            Assert.IsNotNull(pythonNet3Eng);
+            Assert.IsNotNull(cPython3Eng);
 
             EvaluationStartedEventHandler start1 = ((code, bindings, scopeSet) => { scopeSet("IN", new ArrayList { " ", "  " }); });
-            pythonNet3Eng.EvaluationStarted += start1;
+            cPython3Eng.EvaluationStarted += start1;
 
             int counter = 0;
             EvaluationFinishedEventHandler end = ((state, code, bindings, scopeGet) => { counter++; });
-            pythonNet3Eng.EvaluationFinished += end;
+            cPython3Eng.EvaluationFinished += end;
 
-            var inputM = pythonNet3Eng.InputDataMarshaler as DataMarshaler;
+            var inputM = cPython3Eng.InputDataMarshaler as DataMarshaler;
             inputM.RegisterMarshaler((string s) => s.Length);
 
-            var output = DSPythonNet3.DSPythonNet3Evaluator.EvaluatePythonScript(
+            var output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
                 "OUT = sum(IN)", new ArrayList(), new ArrayList());
 
             inputM.UnregisterMarshalerOfType<string>();
 
             Assert.AreEqual(3, output);
 
-            var outputM = pythonNet3Eng.OutputDataMarshaler as DataMarshaler;
+            var outputM = cPython3Eng.OutputDataMarshaler as DataMarshaler;
             outputM.RegisterMarshaler((string s) => s.Length);
 
             EvaluationStartedEventHandler start2 = ((code, bindings, scopeSet) => { scopeSet("TEST", new ArrayList { "", " ", "  " }); });
-            pythonNet3Eng.EvaluationStarted += start2;
+            cPython3Eng.EvaluationStarted += start2;
 
-            output = DSPythonNet3.DSPythonNet3Evaluator.EvaluatePythonScript(
+            output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
                 "OUT = TEST",
                 new ArrayList(),
                 new ArrayList());
@@ -97,9 +106,9 @@ namespace DynamoPythonTests
             Assert.AreEqual(new[] { 0, 1, 2 }, output);
             Assert.AreEqual(2, counter);
 
-            pythonNet3Eng.EvaluationStarted -= start1;
-            pythonNet3Eng.EvaluationStarted -= start2;
-            pythonNet3Eng.EvaluationFinished -= end;
+            cPython3Eng.EvaluationStarted -= start1;
+            cPython3Eng.EvaluationStarted -= start2;
+            cPython3Eng.EvaluationFinished -= end;
         }
     }
 }

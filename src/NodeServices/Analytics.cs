@@ -87,6 +87,18 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
+        /// Tracks an arbitrary event with string category for external components
+        /// </summary>
+        /// <param name="action">Action performed</param>
+        /// <param name="category">Event category</param>
+        /// <param name="description">Event description</param>
+        /// <param name="value">A metric value associated with the event</param>
+        public static void TrackEvent(Actions action, string category, string description = "", int? value = null)
+        {
+            if (client != null) client.TrackEvent(action, category, description, value);
+        }
+
+        /// <summary>
         /// Tracks user preference setting and its value.
         /// </summary>
         /// <param name="name">Name of the preference</param>
