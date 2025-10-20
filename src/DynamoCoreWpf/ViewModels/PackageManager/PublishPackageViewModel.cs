@@ -763,9 +763,21 @@ namespace Dynamo.PackageManager
         public Package Package { get; set; }
 
         /// <summary>
-        /// PackageContents property 
+        /// Stores the raw files/folders the user has added for package publishing. Items represent
+        /// files in their current disk locations, NOT their final locations in the published package.
+        /// This collection is modified when users add files via `ShowAddFileDialogAndAddCommand`,
+        /// add directories via `SelectDirectoryAndAddFilesRecursivelyCommand`, or remove items via
+        /// `RemoveItemCommand`.
         /// </summary>
+        /// 
         public ObservableCollection<PackageItemRootViewModel> PackageContents { get; set; } = new ObservableCollection<PackageItemRootViewModel>();
+        /// <summary>
+        /// Preview of the final package directory structure before publishing. Shows how files in
+        /// PackageContents will be organized in the published package. It reorganizes the files
+        /// into the standard Dynamo package folders (`bin/`, `dyf/`, `extra/`, `doc/`, `pkg.json`)
+        /// if `RetainFolderStructureOverride == false`, or preserves the user's existing folder
+        /// structure from PackageContents if `RetainFolderStructureOverride == true`.
+        /// </summary>
         public ObservableCollection<PackageItemRootViewModel> PreviewPackageContents { get; set; } = new ObservableCollection<PackageItemRootViewModel>();
 
         private ObservableCollection<PackageItemRootViewModel> _rootContents;
@@ -806,7 +818,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private Dictionary<string, string> CustomDyfFilepaths { get; set; } = new Dictionary<string, string>();
+        internal Dictionary<string, string> CustomDyfFilepaths { get; set; } = new Dictionary<string, string>();
 
         public List<PackageAssembly> Assemblies { get; set; }
 
@@ -1318,6 +1330,9 @@ namespace Dynamo.PackageManager
             }
             catch { Exception ex; }
 
+            // Clear ErrorString first to prevent validation errors during cleanup
+            this.ErrorString = string.Empty;
+
             // this function clears all the entries of the publish package dialog
             this.Name = string.Empty;
             this.RepositoryUrl = string.Empty;
@@ -1329,7 +1344,6 @@ namespace Dynamo.PackageManager
             this.MajorVersion = "0";
             this.MinorVersion = "0";
             this.BuildVersion = "0";
-            this.ErrorString = string.Empty;
             this.Uploading = false;
             // Clearing the UploadHandle when using Submit currently throws - when testing? - check trheading
             try
@@ -1739,11 +1753,9 @@ namespace Dynamo.PackageManager
 
                 if (((PackageUploadHandle)sender).UploadState == PackageUploadHandle.State.Uploaded)
                 {
-                    BeginInvoke(() =>
-                    {
-                        OnPublishSuccess();
-                        ClearAllEntries();
-                    });
+                    OnPublishSuccess();
+                    // Don't clear entries on success - user needs to see the success state
+                    // Clearing will happen when user clicks Done/Reset from the success page
                 }
 
             }
@@ -2856,7 +2868,8 @@ namespace Dynamo.PackageManager
                 if (UploadState == PackageUploadHandle.State.Uploaded)
                 {
                     OnPublishSuccess();
-                    ClearAllEntries();
+                    // Don't clear entries on success - user needs to see the success state
+                    // Clearing will happen when user clicks Done/Reset from the success page
                 }
             }
             catch (Exception e)
@@ -3104,7 +3117,7 @@ namespace Dynamo.PackageManager
                 IsWarningEnabled = false;
             }
 
-            if (Name.Length <= 0 && !PackageContents.Any())
+            if (Name.Length <= 0 && !PackageContents.Any() && !PreviewPackageContents.Any())
             {
                 ErrorString = Resources.PackageManagerProvidePackageNameAndFiles;
                 return false;
@@ -3114,7 +3127,7 @@ namespace Dynamo.PackageManager
                 ErrorString = Resources.PackageManagerProvidePackageNameAndVersion;
                 return false;
             }
-            else if (!PackageContents.Any() && Double.Parse(BuildVersion) + Double.Parse(MinorVersion) + Double.Parse(MajorVersion) <= 0)
+            else if (!PackageContents.Any() && !PreviewPackageContents.Any() && Double.Parse(BuildVersion) + Double.Parse(MinorVersion) + Double.Parse(MajorVersion) <= 0)
             {
                 ErrorString = Resources.PackageManagerProvideVersionAndFiles;
                 return false;
@@ -3129,7 +3142,7 @@ namespace Dynamo.PackageManager
                 ErrorString = Resources.PackageManagerProvideVersion;
                 return false;
             }
-            else if (!PackageContents.Any())
+            else if (!PackageContents.Any() && !PreviewPackageContents.Any())
             {
                 ErrorString = Resources.PackageManagerProvideFiles;
                 return false;
