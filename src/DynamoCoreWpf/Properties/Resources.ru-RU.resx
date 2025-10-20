@@ -1132,7 +1132,7 @@
     <value>Не удалось добавить файл: {0}</value>
   </data>
   <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
-    <value>Failed to add the following files:\n\n {0}</value>
+    <value>Не удалось добавить следующие файлы:\n\n {0}</value>
   </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>Не удалось применить NodeViewCustomization для {0}</value>
@@ -1360,7 +1360,7 @@
     <value>Из-за ограничений в .NET Framework невозможно обновить сборку пакета, поскольку он уже загружен. Закройте {0}, обновите сборку и повторите попытку.</value>
   </data>
   <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
-    <value>\n\nDuplicate assemblies found: {0}</value>
+    <value>\n\nНайдено дубликатов сборок: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>Не удалось обновить сборку</value>
@@ -3822,10 +3822,10 @@
     <value>Данные значка узла доступны в папке «{0}».</value>
   </data>
   <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
-    <value>Advanced Sharing</value>
+    <value>Расширенный общий доступ</value>
   </data>
   <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
-    <value>_General</value>
+    <value>_Общие</value>
   </data>
   <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
     <value>Пок_азать свойства графика</value>

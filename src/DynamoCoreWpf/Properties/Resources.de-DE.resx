@@ -1132,7 +1132,7 @@ Sie können das Paket jederzeit erneut herunterladen.</value>
     <value>Fehler beim Hinzufügen von Datei: {0}</value>
   </data>
   <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
-    <value>Failed to add the following files:\n\n {0}</value>
+    <value>Folgende Dateien konnten nicht hinzugefügt werden:\n\n {0}</value>
   </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>NodeViewCustomization für {0} konnte nicht angewendet werden.</value>
@@ -1360,7 +1360,7 @@ Die nächsten Assemblys wurden mehrmals geladen:
     <value>Aufgrund von Einschränkungen im .NET Framework ist es nicht möglich, die Paket-Assembly zu aktualisieren, während sie bereits geladen ist. Führen Sie die Aktualisierung durch, während {0} nicht ausgeführt wird, und wiederholen Sie den Vorgang.</value>
   </data>
   <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
-    <value>\n\nDuplicate assemblies found: {0}</value>
+    <value>\n\nDoppelte Assemblys gefunden: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>Assembly kann nicht aktualisiert werden.</value>
@@ -3820,10 +3820,10 @@ Führen Sie #Download und Installation=https://manage.autodesk.com/products/upda
     <value>Blocksymboldaten werden in \"{0}\" ausgegeben.</value>
   </data>
   <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
-    <value>Advanced Sharing</value>
+    <value>Erweiterte Freigabe</value>
   </data>
   <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
-    <value>_General</value>
+    <value>_Allgemein</value>
   </data>
   <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
     <value>Diagramm_eigenschaften anzeigen</value>
