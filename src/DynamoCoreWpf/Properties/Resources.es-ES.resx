@@ -1132,7 +1132,7 @@ Siempre puede volver a descargar el paquete.</value>
     <value>Error al añadir el archivo: {0}</value>
   </data>
   <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
-    <value>Failed to add the following files:\n\n {0}</value>
+    <value>No se han podido añadir los siguientes archivos:\n\n {0}</value>
   </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>Error al aplicar NodeViewCustomization para {0}</value>
@@ -1360,7 +1360,7 @@ Los siguientes montajes se han cargado varias veces:
     <value>Debido a limitaciones de .NET Framework, no es posible actualizar el conjunto de paquetes mientras está cargado. Actualice el conjunto mientras {0} no se esté ejecutando e inténtelo de nuevo.</value>
   </data>
   <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
-    <value>\n\nDuplicate assemblies found: {0}</value>
+    <value>\n\nSe han encontrado montajes duplicados: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>No se puede actualizar conjunto</value>
@@ -3822,7 +3822,7 @@ Para convertir este archivo en una nueva plantilla, guárdelo en una carpeta dif
     <value>Los datos de iconos de nodos se vuelcan en \"{0}\".</value>
   </data>
   <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
-    <value>Advanced Sharing</value>
+    <value>Uso compartido avanzado</value>
   </data>
   <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
     <value>_General</value>
