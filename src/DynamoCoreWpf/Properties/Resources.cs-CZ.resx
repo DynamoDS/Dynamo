@@ -1132,7 +1132,7 @@ Balíček můžete kdykoli znovu stáhnout.</value>
     <value>Nepodařilo se přidat tento soubor: {0}.</value>
   </data>
   <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
-    <value>Failed to add the following files:\n\n {0}</value>
+    <value>Selhání při přidání následujících souborů:\n\n {0}</value>
   </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>Nepodařilo se použít NodeViewCustomization pro {0}.</value>
@@ -1360,7 +1360,7 @@ Několikrát byly načteny i další sestavy:
     <value>Z důvodu omezení v rozhraní .NET Framework není možné aktualizovat sestavení balíčku při načítání. Proveďte aktualizaci sestavení, když není aplikace {0} spuštěna a opakujte akci.</value>
   </data>
   <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
-    <value>\n\nDuplicate assemblies found: {0}</value>
+    <value>\n\nNalezeny duplicitní sestavy: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>Nelze aktualizovat sestavení</value>
@@ -3821,10 +3821,10 @@ Chcete-li vytvořit z tohoto souboru novou šablonu, uložte ho do jiné složky
     <value>Data ikony uzlu jsou vypsána do \"{0}\".</value>
   </data>
   <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
-    <value>Advanced Sharing</value>
+    <value>Rozšířené sdílení</value>
   </data>
   <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
-    <value>_General</value>
+    <value>_Obecné</value>
   </data>
   <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
     <value>Zobrazit vlastnosti _grafu</value>

@@ -153,8 +153,11 @@ namespace Dynamo.UI.Views
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            // If we have triggered on data context chagnes with the same context, return
-            if (this.DataContext as PublishPackageViewModel == previousViewModel) return;
+            var newViewModel = this.DataContext as PublishPackageViewModel;
+            
+            // If we have triggered on data context changes with the same context, return
+            if (newViewModel == previousViewModel) return;
+            
             if (previousViewModel != null)
             {
                 previousViewModel.PropertyChanged -= PublishPackageViewModel_PropertyChanged;
@@ -164,12 +167,21 @@ namespace Dynamo.UI.Views
             }
 
             // Cast and assign the new DataContext
-            publishPackageViewModel = this.DataContext as PublishPackageViewModel;
+            publishPackageViewModel = newViewModel;
             previousViewModel = publishPackageViewModel;
 
             // If the application hasn't been loaded, and the flag hasn't been flipped, flip it here
-            if(!_applicationLoaded && !_hasPendingUpdates && (bool)publishPackageViewModel?.HasChanges)
+            // Check both HasChanges AND if there's actual content to display (PackageContents, CustomDyfFilepaths, etc.)
+            var hasContent = publishPackageViewModel != null && (
+                (publishPackageViewModel.PackageContents?.Count ?? 0) > 0 ||
+                (publishPackageViewModel.CustomDyfFilepaths?.Count ?? 0) > 0 ||
+                (publishPackageViewModel.HasChanges == true)
+            );
+            
+            if(!_applicationLoaded && !_hasPendingUpdates && hasContent)
+            {
                 _hasPendingUpdates = true;
+            }
 
             // Subscribe to the new ViewModel
             if (publishPackageViewModel != null)
