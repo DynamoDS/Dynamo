@@ -95,7 +95,7 @@ namespace CoreNodeModels.Input
         /// Returns an object in the model from a string identifier.
         /// For testing purposes, this just returns the identifier itself.
         /// </summary>
-        protected override string GetModelObjectFromIdentifer(string id)
+        protected override string GetModelObjectFromIdentifier(string id)
         {
             return id;
         }
