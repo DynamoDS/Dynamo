@@ -27,7 +27,7 @@ namespace CoreNodeModels.Input
     [InPortTypes("UI Input")]
     [OutPortTypes("string")]
     [IsDesignScriptCompatible]
-    //[IsVisibleInDynamoLibrary(false)]
+    [IsVisibleInDynamoLibrary(false)]
     [AlsoKnownAs("CoreNodeModels.Input.TestSelectModelElement")]
     public class TestSelectModelElement : SelectionBase<string, string>
     {
