@@ -1132,7 +1132,7 @@ Vous pouvez toujours télécharger une nouvelle fois le package.</value>
     <value>Echec de l'ajout de fichier: {0}</value>
   </data>
   <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
-    <value>Failed to add the following files:\n\n {0}</value>
+    <value>Échec de l'ajout des fichiers suivants:\n\n {0}</value>
   </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>Impossible d'appliquer NodeViewCustomization pour {0}</value>
@@ -1360,7 +1360,7 @@ Les ensembles suivants ont été chargés plusieurs fois:
     <value>En raison des limitations de .NET Framework, il n'est pas possible de mettre à jour votre ensemble de packages déjà chargé. Mettez à jour l'ensemble de packages pendant que {0} n'est pas en cours d'exécution et essayez à nouveau.</value>
   </data>
   <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
-    <value>\n\nDuplicate assemblies found: {0}</value>
+    <value>\n\nAssemblages en double trouvés: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>Impossible de mettre à jour l'ensemble</value>
@@ -3816,10 +3816,10 @@ Pour transformer ce fichier en nouveau gabarit, enregistrez-le dans un autre dos
     <value>Les données de l'icône du noeud sont vidées vers \"{0}\".</value>
   </data>
   <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
-    <value>Advanced Sharing</value>
+    <value>Partage avancé</value>
   </data>
   <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
-    <value>_General</value>
+    <value>_Généralités</value>
   </data>
   <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
     <value>Afficher les _propriétés du graphique</value>
