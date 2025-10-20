@@ -140,10 +140,10 @@
     <value>不要再顯示。</value>
   </data>
   <data name="IronPythonNotificationDetailedMessage" xml:space="preserve">
-    <value>此圖表目前包含的 python 節點使用已被捨棄的舊版 IronPython 引擎。請考慮更新這些節點以使用新的 CPython 3.7 引擎。</value>
+    <value>此圖表目前包含的 Python 節點使用已棄用的舊版 IronPython 引擎。請考慮更新這些節點以使用新的 CPython 3.7 引擎。</value>
   </data>
   <data name="IronPythonNotificationShortMessage" xml:space="preserve">
-    <value>此圖表目前包含的節點使用已被捨棄的舊版 IronPython2 (Python 2) 引擎。我們已導入新的 CPython3 (Python 3)，您可以在 Python 編輯器中存取。</value>
+    <value>此圖表目前包含的節點使用已棄用的舊版 IronPython2 (Python 2) 引擎。我們已導入新的 CPython3 (Python 3)，您可以在 Python 編輯器中存取。</value>
   </data>
   <data name="MigrationAssistantDisclaimerContinueButtonContent" xml:space="preserve">
     <value>繼續</value>

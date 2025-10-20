@@ -1132,7 +1132,7 @@
     <value>ファイル {0} を追加できませんでした。</value>
   </data>
   <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
-    <value>Failed to add the following files:\n\n {0}</value>
+    <value>次のファイルを追加できませんでした:\n\n {0}</value>
   </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>{0} への NodeViewCustomization の適用に失敗しました</value>
@@ -1360,7 +1360,7 @@
     <value>.NET フレームワークの制限により、既にロードされている場合は、パッケージ アセンブリを更新できません。{0} が実行されていないときにアセンブリを更新して、再度実行してください。</value>
   </data>
   <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
-    <value>\n\nDuplicate assemblies found: {0}</value>
+    <value>\n\n重複したアセンブリが見つかりました: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>アセンブリを更新できません</value>
@@ -3822,10 +3822,10 @@ Dynamo を再起動してアンインストールを完了します。
     <value>ノード アイコン データは \"{0}\" にダンプされます。</value>
   </data>
   <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
-    <value>Advanced Sharing</value>
+    <value>高度な共有</value>
   </data>
   <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
-    <value>_General</value>
+    <value>一般(_G)</value>
   </data>
   <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
     <value>グラフ プロパティを表示(_P)</value>
