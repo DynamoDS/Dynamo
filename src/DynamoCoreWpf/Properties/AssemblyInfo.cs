@@ -60,6 +60,9 @@ using System.Windows;
 [assembly: InternalsVisibleTo("DynamoPlayer")]
 [assembly: InternalsVisibleTo("DynamoConnector")]
 [assembly: InternalsVisibleTo("NodeAutoCompleteViewExtension")]
+// PythonMigrationViewExtension requires access to the following internal APIs:
+// TODO: List specific internal types/methods used by PythonMigrationViewExtension.
+// This friend assembly usage is intentional and tracked. Consider promoting these APIs to a public/extension API if appropriate.
 [assembly: InternalsVisibleTo("PythonMigrationViewExtension")]
 
 // Disable PublicAPIAnalyzer errors for this type as they're already added to the public API text file
