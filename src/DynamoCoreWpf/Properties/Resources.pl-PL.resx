@@ -1132,7 +1132,7 @@ Można później ponownie pobrać pakiet.</value>
     <value>Nie można dodać pliku: {0}</value>
   </data>
   <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
-    <value>Failed to add the following files:\n\n {0}</value>
+    <value>Nie udało się dodać następujących plików:\n\n {0}</value>
   </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>Nie udało się zastosować NodeViewCustomization dla {0}</value>
@@ -1360,7 +1360,7 @@ Poniższe zespoły zostały wczytane wiele razy:
     <value>Ze względu na ograniczenia programu .NET Framework nie jest możliwa aktualizacja spakowanego zespołu, gdy jest już wczytany. Zaktualizuj zespół, gdy {0} nie jest uruchomiony, i spróbuj ponownie.</value>
   </data>
   <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
-    <value>\n\nDuplicate assemblies found: {0}</value>
+    <value>\n\nZnaleziono duplikaty zespołów: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>Nie można uaktualnić zespołu</value>
@@ -3822,10 +3822,10 @@ Aby ustawić ten plik jako nowy szablon, zapisz go w innym folderze, a następni
     <value>Dane ikon węzłów są zrzucane do „{0}”.</value>
   </data>
   <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
-    <value>Advanced Sharing</value>
+    <value>Udostępnianie zaawansowane</value>
   </data>
   <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
-    <value>_General</value>
+    <value>_Ogólne</value>
   </data>
   <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
     <value>Pokaż _właściwości wykresu</value>

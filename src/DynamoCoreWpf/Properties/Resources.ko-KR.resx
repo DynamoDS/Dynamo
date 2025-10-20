@@ -1131,7 +1131,7 @@
     <value>파일을 추가하지 못했습니다. {0}</value>
   </data>
   <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
-    <value>Failed to add the following files:\n\n {0}</value>
+    <value>다음 파일을 추가하지 못했습니다.\n\n {0}</value>
   </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>{0}에 NodeViewCustomization을 적용하지 못했습니다</value>
@@ -1359,7 +1359,7 @@
     <value>.NET Framework의 제한사항으로 인해 이미 로드된 패키지 조합은 업데이트할 수 없습니다. {0}이(가) 실행되고 있지 않는 동안 조합을 업데이트하고 다시 해보십시오.</value>
   </data>
   <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
-    <value>\n\nDuplicate assemblies found: {0}</value>
+    <value>\n\n중복 어셈블리 찾음: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>조합을 업데이트할 수 없습니다</value>
@@ -3819,10 +3819,10 @@
     <value>노드 아이콘 데이터가 \"{0}\"에 덤프됩니다.</value>
   </data>
   <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
-    <value>Advanced Sharing</value>
+    <value>고급 공유</value>
   </data>
   <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
-    <value>_General</value>
+    <value>일반(_G)</value>
   </data>
   <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
     <value>그래프 특성 표시(_P)</value>
