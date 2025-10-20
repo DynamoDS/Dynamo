@@ -36,14 +36,6 @@ namespace CoreNodeModels.Input
         /// server type for the node. This property should only be
         /// used for serialization. 
         /// </summary>
-        //public override string NodeType
-        //{
-        //    get
-        //    {
-        //        return "TestSelectModelElementNode";
-        //    }
-        //}
-
         /// <summary>
         /// Selection helper for this node. In a real implementation, this would
         /// interact with the host application's selection system.
