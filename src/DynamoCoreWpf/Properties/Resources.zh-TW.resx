@@ -1132,7 +1132,7 @@
     <value>無法加入檔案：{0}</value>
   </data>
   <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
-    <value>Failed to add the following files:\n\n {0}</value>
+    <value>無法加入下列檔案:\n\n {0}</value>
   </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>無法對 {0} 套用 NodeViewCustomization</value>
@@ -1360,7 +1360,7 @@
     <value>由於 .NET Framework 的限制，在您的套件組合已載入時無法對其進行更新。請在 {0} 未執行時更新組合，然後再試一次。</value>
   </data>
   <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
-    <value>\n\nDuplicate assemblies found: {0}</value>
+    <value>\n\n找到重複的組合: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>無法更新組合</value>
@@ -1922,7 +1922,7 @@
     <value>公分</value>
   </data>
   <data name="UnitCubicCentimeter" xml:space="preserve">
-    <value>立方厘米</value>
+    <value>立方公分</value>
   </data>
   <data name="UnitCubicFoot" xml:space="preserve">
     <value>立方英尺</value>
@@ -1931,10 +1931,10 @@
     <value>立方英寸</value>
   </data>
   <data name="UnitCubicMeters" xml:space="preserve">
-    <value>立方米</value>
+    <value>立方公尺</value>
   </data>
   <data name="UnitCubicMillimeter" xml:space="preserve">
-    <value>立方毫米</value>
+    <value>立方公釐</value>
   </data>
   <data name="UnitCubicYards" xml:space="preserve">
     <value>立方碼</value>
@@ -1967,7 +1967,7 @@
     <value>單位:</value>
   </data>
   <data name="UnitSquareCentimeter" xml:space="preserve">
-    <value>平方厘米</value>
+    <value>平方公分</value>
   </data>
   <data name="UnitSquareFoot" xml:space="preserve">
     <value>平方英尺</value>
@@ -1976,10 +1976,10 @@
     <value>平方英寸</value>
   </data>
   <data name="UnitSquareMeter" xml:space="preserve">
-    <value>平方米</value>
+    <value>平方公尺</value>
   </data>
   <data name="UnitSquareMillimeter" xml:space="preserve">
-    <value>平方毫米</value>
+    <value>平方公釐</value>
   </data>
   <data name="UnitUSGallons" xml:space="preserve">
     <value>美制加侖</value>
@@ -3821,10 +3821,10 @@
     <value>節點圖示資料已傾印至「{0}」。</value>
   </data>
   <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
-    <value>Advanced Sharing</value>
+    <value>進階共用</value>
   </data>
   <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
-    <value>_General</value>
+    <value>一般(_G)</value>
   </data>
   <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
     <value>展示圖表性質(_P)</value>
