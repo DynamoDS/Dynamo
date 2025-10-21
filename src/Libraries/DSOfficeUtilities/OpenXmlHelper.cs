@@ -433,11 +433,11 @@ namespace DSOffice
         }
 
         /// <summary>
-        /// Extracts text content from a SharedStringItem while excluding phonetic guides.
+        /// Extracts text content from an OpenXmlElement (typically a SharedStringItem) while excluding phonetic guides.
         /// Excel stores phonetic guides (furigana for Japanese, pinyin for Chinese) in PhoneticRun elements,
         /// which should not be included in the text output as they are pronunciation hints, not actual content.
         /// </summary>
-        /// <param name="sharedStringItem">The SharedStringItem to extract text from</param>
+        /// <param name="sharedStringItem">The OpenXmlElement to extract text from (typically SharedStringItem from the shared string table)</param>
         /// <returns>The text content without phonetic annotations</returns>
         private static string GetSharedStringText(OpenXmlElement sharedStringItem)
         {
@@ -460,17 +460,8 @@ namespace DSOffice
         /// <returns>True if the text is inside a PhoneticRun, false otherwise</returns>
         private static bool IsInsidePhoneticRun(Text textElement)
         {
-            var parent = textElement.Parent;
-            while (parent != null)
-            {
-                // PhoneticRun is the element type that contains phonetic text
-                if (parent is PhoneticRun)
-                {
-                    return true;
-                }
-                parent = parent.Parent;
-            }
-            return false;
+            // Check if any ancestor is a PhoneticRun
+            return textElement.Ancestors<PhoneticRun>().Any();
         }
 
         /// <summary>
