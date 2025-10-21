@@ -523,7 +523,25 @@ namespace Dynamo.UI.Views
                 if (viewModel.Model.PathManager.HostApplicationDirectory != null && !string.IsNullOrEmpty(viewModel.Model.HostVersion))
                 {
                     //Move the current location two levels up for finding the DynamoSettings.xml file (just for Hosts)
-                    programDataDir = Directory.GetParent(Directory.GetParent(viewModel.Model.PathManager.CommonDataDirectory).ToString()).ToString();
+                    var firstParent = Directory.GetParent(viewModel.Model.PathManager.CommonDataDirectory);
+                    if (firstParent != null)
+                    {
+                        var secondParent = Directory.GetParent(firstParent.ToString());
+                        if (secondParent != null)
+                        {
+                            programDataDir = secondParent.ToString();
+                        }
+                        else
+                        {
+                            // Fallback: use firstParent or handle as appropriate
+                            programDataDir = firstParent.ToString();
+                        }
+                    }
+                    else
+                    {
+                        // Fallback: use CommonDataDirectory or handle as appropriate
+                        programDataDir = viewModel.Model.PathManager.CommonDataDirectory;
+                    }
                 }
                 //This code will be executed when Dynamo is running as a standalone application
                 else
