@@ -522,7 +522,7 @@ namespace Dynamo.UI.Views
                 //This code will be executed only when Dynamo is running inside any Host application like Revit, FormIt, Civil3D
                 if (viewModel.Model.PathManager.HostApplicationDirectory != null && !string.IsNullOrEmpty(viewModel.Model.HostVersion))
                 {
-                    //Move the current location two levels up for fiding the DynamoSettings.xml file (just for Hosts)
+                    //Move the current location two levels up for finding the DynamoSettings.xml file (just for Hosts)
                     programDataDir = Directory.GetParent(Directory.GetParent(viewModel.Model.PathManager.CommonDataDirectory).ToString()).ToString();
                 }
                 //This code will be executed when Dynamo is running as a standalone application
