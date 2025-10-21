@@ -517,8 +517,20 @@ namespace Dynamo.UI.Views
         {
             if (viewModel.PreferenceSettings.IsFirstRun == true)
             {
-                //Move the current location two levels up
-                var programDataDir = Directory.GetParent(Directory.GetParent(viewModel.Model.PathManager.CommonDataDirectory).ToString()).ToString();
+                var programDataDir = string.Empty;
+
+                //This code will be executed only when Dynamo is running inside any Host application like Revit, FormIt, Civil3D
+                if (viewModel.Model.PathManager.HostApplicationDirectory != null && !string.IsNullOrEmpty(viewModel.Model.HostVersion))
+                {
+                    //Move the current location two levels up for fiding the DynamoSettings.xml file (just for Hosts)
+                    programDataDir = Directory.GetParent(Directory.GetParent(viewModel.Model.PathManager.CommonDataDirectory).ToString()).ToString();
+                }
+                //This code will be executed when Dynamo is running as a standalone application
+                else
+                {
+                    programDataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),Configurations.DynamoAsString);
+                }
+                
                 var listOfXmlFiles = Directory.GetFiles(programDataDir, "*.xml");
                 string PreferencesSettingFilePath = string.Empty;
 
