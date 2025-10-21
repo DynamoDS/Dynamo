@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
 using Dynamo;
@@ -98,7 +98,7 @@ OUT = untypedList, typedList, flattenedList, elementCount, sum, max, enumerable
             }
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void TestArrayEncoding()
         {
             string code = @"

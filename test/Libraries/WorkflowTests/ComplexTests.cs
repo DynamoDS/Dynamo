@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
@@ -544,7 +544,7 @@ namespace Dynamo.Tests
 
         //add test cases that are related to Python.
         #region Python test
-        [Test, Category("Failure")]
+        [Test]
         public void Test_Core_Python()
         {
             // Create automation for Dynamo file : Core_Python.dyn
