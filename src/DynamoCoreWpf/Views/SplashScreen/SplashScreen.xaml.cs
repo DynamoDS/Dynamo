@@ -528,7 +528,7 @@ namespace Dynamo.UI.Views
                 //This code will be executed when Dynamo is running as a standalone application
                 else
                 {
-                    programDataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),Configurations.DynamoAsString);
+                    programDataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), Configurations.DynamoAsString);
                 }
                 
                 var listOfXmlFiles = Directory.GetFiles(programDataDir, "*.xml");
