@@ -81,6 +81,8 @@ namespace Dynamo.Controls
         private PackageManagerView packageManagerWindow;
         private bool loaded = false;
         private bool graphMetadataHooked;
+        private MenuItem graphPropsGeneralMenuItem;
+        private MenuItem graphPropsExtensionMenuItem;
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
         private bool isPSSCalledOnViewModelNoCancel = false;
@@ -308,23 +310,39 @@ namespace Dynamo.Controls
         {
             if (graphMetadataHooked) return;
 
-            var generalItem = this.FindName("general") as MenuItem;
-            if (generalItem == null) return;
+            graphPropsGeneralMenuItem = this.FindName("general") as MenuItem;
+            if (graphPropsGeneralMenuItem == null) return;
 
             var provider = viewExtensionManager.ViewExtensions
                 .OfType<IExtensionMenuProvider>()
                 .FirstOrDefault(ext => (ext as IViewExtension)?.UniqueId == GraphMetadataExtensionId);
 
-            var extItem = provider?.GetFileMenuItem();
-            if (extItem == null) return;
+            graphPropsExtensionMenuItem = provider?.GetFileMenuItem();
+            if (graphPropsExtensionMenuItem == null) return;
 
-            generalItem.IsCheckable = true;
-            generalItem.IsChecked = extItem.IsChecked;
+            graphPropsGeneralMenuItem.IsCheckable = true;
+            graphPropsGeneralMenuItem.IsChecked = graphPropsExtensionMenuItem.IsChecked;
 
-            extItem.Checked += (s, e) => generalItem.IsChecked = true;
-            extItem.Unchecked += (s, e) => generalItem.IsChecked = false;
+            graphPropsExtensionMenuItem.Checked += OnGraphMetadataChecked;
+            graphPropsExtensionMenuItem.Unchecked += OnGraphMetadataUnchecked;
 
             graphMetadataHooked = true;
+        }
+
+        private void OnGraphMetadataChecked(object sender, RoutedEventArgs e)
+        {
+            if (graphPropsGeneralMenuItem != null)
+            {
+                graphPropsGeneralMenuItem.IsChecked = true;
+            }
+        }
+
+        private void OnGraphMetadataUnchecked(object sender, RoutedEventArgs e)
+        {
+            if (graphPropsGeneralMenuItem != null)
+            {
+                graphPropsGeneralMenuItem.IsChecked = false;
+            }
         }
 
         private void OnRequestCloseHomeWorkSpace()
@@ -2111,6 +2129,12 @@ namespace Dynamo.Controls
 
             dynamoViewModel.RequestUserSaveWorkflow -= DynamoViewModelRequestUserSaveWorkflow;
             GuideFlowEvents.GuidedTourStart -= GuideFlowEvents_GuidedTourStart;
+
+            if (graphPropsExtensionMenuItem != null)
+            {
+                graphPropsExtensionMenuItem.Checked -= OnGraphMetadataChecked;
+                graphPropsExtensionMenuItem.Unchecked -= OnGraphMetadataUnchecked;
+            }
 
             if (dynamoViewModel.Model != null)
             {
