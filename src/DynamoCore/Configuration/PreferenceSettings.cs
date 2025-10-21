@@ -818,6 +818,15 @@ namespace Dynamo.Configuration
             set
             {
                 isMLAutocompleteTOUApproved = value;
+
+                // If user unchecks the agreement, automatically revert to ObjectType matching
+                if (!value && defaultNodeAutocompleteSuggestion == NodeAutocompleteSuggestion.MLRecommendation)
+                {
+                    defaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.ObjectType;
+                    AutocompletePreferencesChanged?.Invoke();
+                }
+
+                RaisePropertyChanged(nameof(IsMLAutocompleteTOUApproved));
             }
         }        
 
