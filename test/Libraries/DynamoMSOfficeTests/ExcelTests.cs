@@ -1475,5 +1475,26 @@ namespace Dynamo.Tests
             var result = Data.OpenXMLExportExcel(filePath, "Sheet1", data, 1, 1);
             Assert.IsTrue(result);
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void OpenXML_ImportExcelWithPhoneticGuides()
+        {
+            // Test file has cell A1 = "漢字" with phonetic guide (furigana)
+            // Verify phonetic text is NOT appended to the cell value
+            string filePath = Path.Combine(TestDirectory, @"core\excel\PhoneticGuides.xlsx");
+
+            var data = Data.OpenXMLImportExcel(filePath, "Sheet1", 0, 0, false);
+            
+            Assert.IsNotNull(data);
+            Assert.That(data.Length > 0, "Expected at least one row");
+            Assert.That(data[0].Length > 0, "Expected at least one column");
+            
+            string firstCell = data[0][0]?.ToString();
+            Assert.IsNotNull(firstCell);
+            
+            // Assert exact expected value (kanji only, no phonetic text appended)
+            Assert.AreEqual("漢字", firstCell);
+        }
     }
 }

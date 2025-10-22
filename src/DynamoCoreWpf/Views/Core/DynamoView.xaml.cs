@@ -142,7 +142,7 @@ namespace Dynamo.Controls
             tabSlidingWindowStart = tabSlidingWindowEnd = 0;
 
             //Initialize the ViewExtensionManager with the CommonDataDirectory so that view extensions found here are checked first for dll's with signed certificates
-            viewExtensionManager = new ViewExtensionManager(dynamoViewModel.Model.ExtensionManager, new[] { dynamoViewModel.Model.PathManager.CommonDataDirectory });
+            viewExtensionManager = new ViewExtensionManager(dynamoViewModel.Model.ExtensionManager);
 
             _timer = new Stopwatch();
             _timer.Start();
@@ -2121,6 +2121,22 @@ namespace Dynamo.Controls
             if (!isPSSCalledOnViewModelNoCancel)
             {
                 PerformShutdownSequenceOnViewModel();
+            }
+
+            // Force application shutdown when dynamo (in standalone mode) is closed, to prevent process hanging
+            bool isStandaloneMode = string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName);
+            
+            if (!DynamoModel.IsTestMode && isStandaloneMode && Application.Current != null)
+            {
+                try
+                {
+                    Application.Current.Shutdown();
+                }
+                catch (Exception ex)
+                {
+                    Log($"Error during Application.Shutdown: {ex.Message}. Forcing process exit.");
+                    Environment.Exit(0);
+                }
             }
 
             dynamoViewModel.Model.RequestLayoutUpdate -= vm_RequestLayoutUpdate;

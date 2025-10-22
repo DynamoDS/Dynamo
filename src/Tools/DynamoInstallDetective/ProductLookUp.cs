@@ -522,7 +522,7 @@ namespace DynamoInstallDetective
             if (installs == null) return string.Empty;
 
             return installs.Products
-                .Where(p => p.VersionInfo.Item1 == version.Major)
+                .Where(p => p.VersionInfo.Item1 <= version.Major)
                 .Where(p => p.VersionInfo.Item2 >= version.Minor)
                 .Select(p => p.InstallLocation)
                 .LastOrDefault();

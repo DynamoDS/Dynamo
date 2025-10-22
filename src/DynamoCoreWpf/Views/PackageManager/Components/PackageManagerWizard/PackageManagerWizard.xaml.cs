@@ -63,6 +63,8 @@ namespace Dynamo.UI.Views
         internal Action<string> RequestLogMessage;
         internal Action RequestApplicationLoaded;
         internal Action<string, string> RequestShowDialog;
+        internal Action RequestCancelUpload;
+        internal Action<int, int, string> RequestUploadProgress;
 
         private PackageUpdateRequest previousPackageDetails;
 
@@ -102,6 +104,8 @@ namespace Dynamo.UI.Views
             RequestLogMessage = LogMessage;
             RequestApplicationLoaded = ApplicationLoaded;
             RequestShowDialog = ShowDialog;
+            RequestCancelUpload = CancelUpload;
+            RequestUploadProgress = UploadProgress;
 
             DataContextChanged += OnDataContextChanged;
         }
@@ -149,22 +153,35 @@ namespace Dynamo.UI.Views
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            // If we have triggered on data context chagnes with the same context, return
-            if (this.DataContext as PublishPackageViewModel == previousViewModel) return;
+            var newViewModel = this.DataContext as PublishPackageViewModel;
+            
+            // If we have triggered on data context changes with the same context, return
+            if (newViewModel == previousViewModel) return;
+            
             if (previousViewModel != null)
             {
                 previousViewModel.PropertyChanged -= PublishPackageViewModel_PropertyChanged;
                 previousViewModel.PublishSuccess -= PublishPackageViewModel_PublishSuccess;
                 previousViewModel.UploadCancelled -= OnUploadCancelled;
+                previousViewModel.UploadProgress -= OnUploadProgress;
             }
 
             // Cast and assign the new DataContext
-            publishPackageViewModel = this.DataContext as PublishPackageViewModel;
+            publishPackageViewModel = newViewModel;
             previousViewModel = publishPackageViewModel;
 
             // If the application hasn't been loaded, and the flag hasn't been flipped, flip it here
-            if(!_applicationLoaded && !_hasPendingUpdates && (bool)publishPackageViewModel?.HasChanges)
+            // Check both HasChanges AND if there's actual content to display (PackageContents, CustomDyfFilepaths, etc.)
+            var hasContent = publishPackageViewModel != null && (
+                (publishPackageViewModel.PackageContents?.Count ?? 0) > 0 ||
+                (publishPackageViewModel.CustomDyfFilepaths?.Count ?? 0) > 0 ||
+                (publishPackageViewModel.HasChanges == true)
+            );
+            
+            if(!_applicationLoaded && !_hasPendingUpdates && hasContent)
+            {
                 _hasPendingUpdates = true;
+            }
 
             // Subscribe to the new ViewModel
             if (publishPackageViewModel != null)
@@ -172,6 +189,7 @@ namespace Dynamo.UI.Views
                 publishPackageViewModel.PropertyChanged += PublishPackageViewModel_PropertyChanged;
                 publishPackageViewModel.PublishSuccess += PublishPackageViewModel_PublishSuccess;
                 previousViewModel.UploadCancelled += OnUploadCancelled;
+                previousViewModel.UploadProgress += OnUploadProgress;
 
                 // Only send updates if the application has been loaded
                 if (_applicationLoaded) UpdateFromBackEnd();
@@ -250,7 +268,9 @@ namespace Dynamo.UI.Views
                             RequestClearMarkdownContent,
                             RequestLogMessage,
                             RequestApplicationLoaded,
-                            RequestShowDialog));
+                            RequestShowDialog,
+                            RequestCancelUpload,
+                            RequestUploadProgress));
 
                 }
                 catch (Exception ex)
@@ -560,8 +580,44 @@ namespace Dynamo.UI.Views
             }
         }
 
+        private async void SendUploadProgress(int currentFile, int totalFiles, string currentFileName)
+        {
+            // Ensure we're on the UI thread when accessing the WebView
+            if (!System.Windows.Application.Current.Dispatcher.CheckAccess())
+            {
+                await System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    SendUploadProgress(currentFile, totalFiles, currentFileName);
+                }));
+                return;
+            }
+
+            var payload = new { 
+                currentFile = currentFile, 
+                totalFiles = totalFiles, 
+                currentFileName = currentFileName,
+                percentage = totalFiles > 0 ? (int)((double)currentFile / totalFiles * 100) : 0
+            };
+            string jsonPayload = JsonSerializer.Serialize(payload);
+
+            if (dynWebView?.CoreWebView2 != null)
+            {
+                await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveUploadProgress({jsonPayload});");
+            }
+        }
+
         private async void SendUploadCancel()
         {
+            // Ensure we're on the UI thread when accessing the WebView
+            if (!System.Windows.Application.Current.Dispatcher.CheckAccess())
+            {
+                await System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    SendUploadCancel();
+                }));
+                return;
+            }
+
             if (dynWebView?.CoreWebView2 != null)
             {
                 await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveUploadCancel();");
@@ -856,7 +912,30 @@ namespace Dynamo.UI.Views
         }
 
         /// <summary>
-        ///  Notify the front-end that the upload was cancelled
+        /// Handles cancellation of file upload operations
+        /// </summary>
+        internal void CancelUpload()
+        {
+            if (publishPackageViewModel != null)
+            {
+                publishPackageViewModel.CancelFileLoading();
+                LogMessage("File upload cancelled by user.");
+            }
+        }
+
+        /// <summary>
+        /// Reports progress of file upload operations
+        /// </summary>
+        /// <param name="currentFile">Current file being processed</param>
+        /// <param name="totalFiles">Total number of files to process</param>
+        /// <param name="currentFileName">Name of the current file</param>
+        internal void UploadProgress(int currentFile, int totalFiles, string currentFileName)
+        {
+            SendUploadProgress(currentFile, totalFiles, currentFileName);
+        }
+
+        /// <summary>
+        /// Handles the upload cancelled event from the view model
         /// </summary>
         /// <exception cref="NotImplementedException"></exception>
         private void OnUploadCancelled()
@@ -864,6 +943,16 @@ namespace Dynamo.UI.Views
            SendUploadCancel();
         }
 
+        /// <summary>
+        /// Handles the upload progress event from the view model
+        /// </summary>
+        /// <param name="currentFile">Current file being processed</param>
+        /// <param name="totalFiles">Total number of files to process</param>
+        /// <param name="currentFileName">Name of the current file</param>
+        private void OnUploadProgress(int currentFile, int totalFiles, string currentFileName)
+        {
+            SendUploadProgress(currentFile, totalFiles, currentFileName);
+        }
         #endregion
 
         #region Utility
@@ -1070,6 +1159,7 @@ namespace Dynamo.UI.Views
                         this.publishPackageViewModel.PropertyChanged -= PublishPackageViewModel_PropertyChanged;
                         this.publishPackageViewModel.PublishSuccess -= PublishPackageViewModel_PublishSuccess;
                         this.previousViewModel.UploadCancelled -= OnUploadCancelled;
+                        this.previousViewModel.UploadProgress -= OnUploadProgress;
                     }
 
                     if (this.dynWebView != null && this.dynWebView.CoreWebView2 != null)
@@ -1104,6 +1194,8 @@ namespace Dynamo.UI.Views
         readonly Action<string> RequestLogMessage;
         readonly Action RequestApplicationLoaded;
         readonly Action<string, string> RequestShowDialog;
+        readonly Action RequestCancelUpload;
+        readonly Action<int, int, string> RequestUploadProgress;
 
         public ScriptWizardObject(
             Action<string> requestAddFileOrFolder,
@@ -1120,7 +1212,9 @@ namespace Dynamo.UI.Views
             Action requestClearMarkdownContent,
             Action<string> requestLogMessage,
             Action requestApplicationLoaded,
-            Action<string, string> requestShowDialog)
+            Action<string, string> requestShowDialog,
+            Action requestCancelUpload,
+            Action<int, int, string> requestUploadProgress)
         {
             RequestAddFileOrFolder = requestAddFileOrFolder;
             RequestRemoveFileOrFolder = requestRemoveFileOrFolder;
@@ -1137,6 +1231,8 @@ namespace Dynamo.UI.Views
             RequestLogMessage = requestLogMessage;
             RequestApplicationLoaded = requestApplicationLoaded;
             RequestShowDialog = requestShowDialog;
+            RequestCancelUpload = requestCancelUpload;
+            RequestUploadProgress = requestUploadProgress;
         }
 
         [DynamoJSInvokable]
@@ -1229,6 +1325,18 @@ namespace Dynamo.UI.Views
         public void ShowDialog(string title, string message)
         {
             RequestShowDialog(title, message);
+        }
+
+        [DynamoJSInvokable]
+        public void CancelUpload()
+        {
+            RequestCancelUpload();
+        }
+
+        [DynamoJSInvokable]
+        public void UploadProgress(int currentFile, int totalFiles, string currentFileName)
+        {
+            RequestUploadProgress(currentFile, totalFiles, currentFileName);
         }
     }
 
