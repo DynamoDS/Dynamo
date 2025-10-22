@@ -75,6 +75,8 @@ namespace Dynamo.ViewModels
         private string dynamoMLDataPath = string.Empty;
         private const string dynamoMLDataFileName = "DynamoMLDataPipeline.json";
 
+        private bool onlineAccess = true;
+
         // Can the user run the graph
         private bool CanRunGraph => HomeSpace.RunSettings.RunEnabled && !HomeSpace.GraphRunInProgress;
         private ObservableCollection<DefaultWatch3DViewModel> watch3DViewModels = new ObservableCollection<DefaultWatch3DViewModel>();
@@ -247,7 +249,49 @@ namespace Dynamo.ViewModels
         public int LinterIssuesCount
         {
             get => Model.LinterManager?.RuleEvaluationResults.Count ?? 0;
+        }        
+
+        /// <summary>
+        /// Indicates whether Dynamo has online access.
+        /// </summary>
+        public bool OnlineAccess
+        {
+            get => onlineAccess;
+            private set
+            {
+                if (onlineAccess != value)
+                {
+                    onlineAccess = value;
+                    RaisePropertyChanged(nameof(OnlineAccess));
+                }
+            }
         }
+
+        /// <summary>
+        /// Check for online access and update OnlineAccess property.
+        /// </summary>
+        internal void CheckOnlineAccess()
+        {
+            if (Model.NoNetworkMode)
+            {
+                OnlineAccess = false;
+                return;
+            }
+
+            Task.Run(async () =>
+            {
+                try
+                {
+                    bool isOnline = await NetworkUtilities.CheckOnlineAccessAsync();                    
+                    UIDispatcher?.BeginInvoke(DispatcherPriority.ApplicationIdle , () => OnlineAccess = isOnline);
+                }
+                catch
+                {
+                    //Nothing to do here, just swallow the exception
+                }
+            });
+        }
+
 
         public double WorkspaceActualHeight { get; set; }
         public double WorkspaceActualWidth { get; set; }
@@ -885,6 +929,8 @@ namespace Dynamo.ViewModels
             FileTrustViewModel = new FileTrustWarningViewModel();
             MLDataPipelineExtension = model.ExtensionManager.Extensions.OfType<DynamoMLDataPipelineExtension>().FirstOrDefault();
             IsIDSDKInitialized();
+
+            CheckOnlineAccess();
         }
 
         private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)

@@ -4369,4 +4369,25 @@ namespace Dynamo.Controls
             return Binding.DoNothing;
         }
     }
+
+    /// <summary>
+    /// Converts boolean to appropriate online status text
+    /// </summary>
+    public class OnlineStatusTextConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool online)
+            {
+                return online ? Resources.OfflineStatusTooltip : Resources.OnlineStatusTooltip;
+            }
+
+            return Resources.OnlineStatusTooltip;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

@@ -2127,6 +2127,7 @@ Dynamo.ViewModels.DynamoViewModel.NewHomeWorkspaceCommand.get -> Dynamo.UI.Comma
 Dynamo.ViewModels.DynamoViewModel.NewHomeWorkspaceCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.NodeFromSelectionCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.NodeFromSelectionCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.OnlineAccess.get -> bool
 Dynamo.ViewModels.DynamoViewModel.OnRequestPackagePublishDialog(Dynamo.PackageManager.PublishPackageViewModel vm) -> void
 Dynamo.ViewModels.DynamoViewModel.OnRequestShorcutToolbarLoaded(double rightMenuActualWidth) -> void
 Dynamo.ViewModels.DynamoViewModel.OpenCommand.get -> Dynamo.UI.Commands.DelegateCommand

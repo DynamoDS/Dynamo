@@ -630,6 +630,7 @@
     <Compile Include="Utilities\GroupStyleItemSelector.cs" />
     <Compile Include="Utilities\LibraryDragAndDrop.cs" />
     <Compile Include="Utilities\MessageBoxUtilities.cs" />
+    <Compile Include="Utilities\NetworkUtilities.cs" />
     <Compile Include="Utilities\NodeAutoCompleteUtilities.cs" />
     <Compile Include="Utilities\NodeContextMenuBuilder.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />

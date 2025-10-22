@@ -2712,6 +2712,15 @@ namespace Dynamo.Controls
             UpdateHandleHoveredStyle(tb, collapseIcon);
         }
 
+        private void OnlineStatusGrid_MouseEnter(object sender, MouseEventArgs e)
+        {
+            // Trigger connectivity check when hovering over network status indicator
+            if (dynamoViewModel != null)
+            {
+                dynamoViewModel.CheckOnlineAccess();
+            }
+        }
+
         private bool libraryCollapsed;
         private bool extensionsCollapsed;
         private GridLength? extensionsColumnWidth;
