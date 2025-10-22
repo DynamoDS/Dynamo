@@ -111,6 +111,17 @@ namespace ProtoCore.DSASM
             deferedGraphNodes = new List<AssociativeGraph.GraphNode>();
         }
 
+        public void Reset(bool isFep = false)
+        {
+            pc = Constants.kInvalidIndex;
+            executingBlock = Constants.kInvalidIndex;
+            RX = StackValue.BuildInvalid();
+            TX = StackValue.BuildInvalid();
+            fepRun = isFep;
+            terminate = false;
+            graphNodesInProgramScope = null;
+        }
+
         /// <summary>
         /// Cache the graphnodes in scope
         /// </summary>
@@ -2308,15 +2319,35 @@ namespace ProtoCore.DSASM
             }
         }
 
+        private int cacheBlockID = -1;
+        private int cacheClassIndex = -1;
+        private int cachesymbolIndex = -1;
+        private SymbolNode cachedSymbol = null;
+
         protected SymbolNode GetSymbolNode(int blockId, int classIndex, int symbolIndex)
         {
+            if (blockId == cacheBlockID && classIndex == cacheClassIndex && symbolIndex == cachesymbolIndex && cachedSymbol != null)
+            {
+                return cachedSymbol;
+            }
+
             if (Constants.kGlobalScope == classIndex)
             {
-                return exe.runtimeSymbols[blockId].symbolList[symbolIndex];
+                var symbol = exe.runtimeSymbols[blockId].symbolList[symbolIndex];
+                cacheBlockID = blockId;
+                cacheClassIndex = classIndex;
+                cachesymbolIndex = symbolIndex;
+                cachedSymbol = symbol;
+                return symbol;
             }
             else
             {
-                return exe.classTable.ClassNodes[classIndex].Symbols.symbolList[symbolIndex];
+                var symbol = exe.classTable.ClassNodes[classIndex].Symbols.symbolList[symbolIndex];
+                cacheBlockID = blockId;
+                cacheClassIndex = classIndex;
+                cachesymbolIndex = symbolIndex;
+                cachedSymbol = symbol;
+                return symbol;
             }
         }
 
@@ -2438,10 +2469,11 @@ namespace ProtoCore.DSASM
                 case AddressType.MemVarIndex:
 
                     SymbolNode symbol = GetSymbolNode(blockId, op2.ClassIndex, op1.SymbolIndex);
-                    opPrev = rmem.GetSymbolValue(symbol);
-                    rmem.SetSymbolValue(symbol, opVal);
-                    exe.UpdatedSymbols.Add(symbol);
+                    opPrev = rmem.SetSymbolValueAndGetPreviousValue(symbol, opVal);
 
+
+                    exe.UpdatedSymbols.Add(symbol);
+#if DEBUG
                     if (IsDebugRun())
                     {
                         logWatchWindow(blockId, op1.SymbolIndex);
@@ -2452,16 +2484,17 @@ namespace ProtoCore.DSASM
                     {
                         logWatchWindow(blockId, op1.SymbolIndex);
                     }
-
+#endif
                     RecordExecutedGraphNode();
                     break;
 
                 case AddressType.StaticMemVarIndex:
                     var staticMember = GetSymbolNode(blockId, Constants.kGlobalScope, op1.StaticVariableIndex);
-                    opPrev = rmem.GetSymbolValue(staticMember);
-                    rmem.SetSymbolValue(staticMember, opVal);
-                    exe.UpdatedSymbols.Add(staticMember);
+                    opPrev = rmem.SetSymbolValueAndGetPreviousValue(staticMember, opVal);
 
+
+                    exe.UpdatedSymbols.Add(staticMember);
+#if DEBUG
                     if (IsDebugRun())
                     {
                         logWatchWindow(blockId, op1.StaticVariableIndex);
@@ -2469,6 +2502,7 @@ namespace ProtoCore.DSASM
                     }
 
                     logWatchWindow(blockId, op1.StaticVariableIndex);
+#endif
                     break;
                 case AddressType.Register:
                     {
