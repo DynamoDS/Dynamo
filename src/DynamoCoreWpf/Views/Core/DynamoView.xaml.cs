@@ -1370,6 +1370,7 @@ namespace Dynamo.Controls
                     Log(ext.Name + ": " + exc.Message);
                 }
             }
+            EnsureGraphPropertiesBinding();
         }
 
         /// <summary>
@@ -1501,8 +1502,6 @@ namespace Dynamo.Controls
             LoadHomePage();
 
             loaded = true;
-
-            EnsureGraphPropertiesBinding();
         }
 
         // Add the HomePage to the DynamoView once its loaded
