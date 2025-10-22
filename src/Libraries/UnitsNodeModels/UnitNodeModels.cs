@@ -502,6 +502,9 @@ namespace UnitsUI
             get { return selectedQuantityConversion; }
             set
             {
+                // Ensure the assigned value always matches a valid entry in source
+                value = ReconcileFromCollection(value, QuantityConversionSource);
+
                 selectedQuantityConversion = value;
                 SelectedFromConversionSource =
                     selectedQuantityConversion?.Units;
@@ -523,6 +526,9 @@ namespace UnitsUI
             get { return selectedFromConversion; }
             set
             {
+                // Ensure the assigned value always matches a valid entry in source
+                value = ReconcileFromCollection(value, SelectedFromConversionSource);
+
                 selectedFromConversion = value;
                 this.OnNodeModified();
                 RaisePropertyChanged(nameof(SelectedFromConversion));
@@ -538,10 +544,70 @@ namespace UnitsUI
             get { return selectedToConversion; }
             set
             {
+                // Ensure the assigned value always matches a valid entry in source
+                value = ReconcileFromCollection(value, SelectedToConversionSource);
+
                 selectedToConversion = value;
                 this.OnNodeModified();
                 RaisePropertyChanged(nameof(SelectedToConversion));
             }
+        }
+
+        /// <summary>
+        /// Finds and returns a matching item from a collection based on typeName. This
+        /// ensures the assigned value will always match something valid in the collection.
+        /// </summary>
+        /// <typeparam name="T">Type of item (Unit, Quantity, Symbol)</typeparam>
+        /// <param name="item">The item to match against the entries in the collection</param>
+        /// <param name="collection">The collection to search for a matching entry</param>
+        /// <returns>The matching entry from the collection, or the original item if none is found</returns>
+        internal static T ReconcileFromCollection<T>(T item, IEnumerable<T> collection) where T : class
+        {
+            if (item == null || collection == null)
+            {
+                return item;
+            }
+
+            // Try to find a matching entry by comparing typeName.
+            var typeIdProperty = typeof(T).GetProperty("TypeId");
+
+            if (typeIdProperty != null)
+            {
+                var itemTypeId = typeIdProperty.GetValue(item) as string;
+                if (string.IsNullOrEmpty(itemTypeId))
+                {
+                    return item;
+                }
+
+                var targetTypeName = GetTypeName(itemTypeId);
+
+                foreach (var collectionItem in collection)
+                {
+                    var currTypeId = typeIdProperty.GetValue(collectionItem) as string;
+                    if (targetTypeName == GetTypeName(currTypeId))
+                    {
+                        return collectionItem;
+                    }
+                }
+            }
+
+            return item;
+        }
+
+        /// <summary>
+        /// Extracts the typeName from a TypeId string by removing the version suffix.
+        /// </summary>
+        /// <param name="typeId">Full TypeId (e.g. "autodesk.unit.quantity:length-1.0.5")</param>
+        /// <returns>TypeName (e.g. "autodesk.unit.quantity:length")</returns>
+        internal static string GetTypeName(string typeId)
+        {
+            if (string.IsNullOrEmpty(typeId))
+            {
+                return typeId;
+            }
+
+            var split = typeId.Split('-');
+            return split.Length == 2 ? split[0] : typeId;
         }
 
         [JsonConstructor]
