@@ -349,6 +349,15 @@ namespace Dynamo.PythonMigration.Properties {
                 return ResourceManager.GetString("PythonMigrationBackupExtension", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to CPython.
+        /// </summary>
+        public static string CPythonMigrationBackupExtension {
+            get {
+                return ResourceManager.GetString("CPythonMigrationBackupExtension", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Before applying the Python code migration, a backup of this graph has been saved to the configured backup location : {0}.
@@ -358,7 +367,18 @@ namespace Dynamo.PythonMigration.Properties {
                 return ResourceManager.GetString("PythonMigrationBackupFileCreatedMessage", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Before converting CPython nodes to PythonNet3, a backup of this graph has been saved to the configured backup location : {0}.
+        /// </summary>
+        public static string CPythonMigrationBackupFileCreatedMessage
+        {
+            get
+            {
+                return ResourceManager.GetString("CPythonMigrationBackupFileCreatedMessage", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>

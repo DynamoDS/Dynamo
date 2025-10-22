@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
@@ -15,6 +16,7 @@ using Dynamo.PythonMigration.Properties;
 using Dynamo.PythonServices;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
+using Dynamo.Wpf.Utilities;
 using PythonNodeModels;
 
 namespace Dynamo.PythonMigration
@@ -344,6 +346,14 @@ namespace Dynamo.PythonMigration
                 .Any(e => e.Name == PythonEngineManager.PythonNet3EngineName);
             if (!hasPyNet3) return;
 
+            // Save backup
+            PythonMigrationBackup.SavePythonMigrationBackup(
+                    CurrentWorkspace,
+                    LoadedParams.StartupParams.PathManager.BackupDirectory,
+                    Properties.Resources.CPythonMigrationBackupExtension,
+                    Properties.Resources.CPythonMigrationBackupFileCreatedMessage
+                    );
+
             foreach (var node in cPythonNodes)
             {
                 if (node is PythonNode pyNode)
@@ -383,6 +393,39 @@ namespace Dynamo.PythonMigration
 
             hasPythonNet3Engine = PythonEngineManager.Instance.AvailableEngines
                 .Any(e => e.Name == PythonEngineManager.PythonNet3EngineName);
+        }
+    }
+
+    internal static class PythonMigrationBackup
+    {
+        /// <summary>
+        /// Creates a one-time backup of the current workspace and (optionally) shows a message.
+        /// </summary>
+        internal static void SavePythonMigrationBackup(
+            WorkspaceModel workspace,
+            string backupDir,
+            string backupExtensionToken,
+            string messageResource)
+        {
+            if (workspace == null || backupDir == null) return;
+            if (Models.DynamoModel.IsTestMode) return;
+
+            var extension = workspace is CustomNodeWorkspaceModel ? ".dyf" : ".dyn";
+            var fileName = string.Concat(workspace.Name, ".", backupExtensionToken, extension);
+
+            // Only create a backup file the first time a migration is performed on this graph/custom node file
+            var path = Path.Combine(backupDir, fileName);
+            if (File.Exists(path)) return;
+
+            workspace.Save(path, true);
+
+            var message = string.Format(messageResource, path);
+
+            // Show the MessageBox after the UI finishes rendering to avoid disrupting connector redraw
+            System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                MessageBoxService.Show(message, string.Empty, MessageBoxButton.OK, MessageBoxImage.None);
+            }), DispatcherPriority.ApplicationIdle);
         }
     }
 }

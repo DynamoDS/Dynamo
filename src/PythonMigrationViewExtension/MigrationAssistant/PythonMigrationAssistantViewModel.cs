@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Windows;
 using DiffPlex.DiffBuilder;
 using DiffPlex.DiffBuilder.Model;
 using Dynamo.Core;
@@ -9,7 +8,6 @@ using Dynamo.Interfaces;
 using Dynamo.PythonMigration.Controls;
 using Dynamo.PythonMigration.Differ;
 using Dynamo.PythonServices;
-using Dynamo.Wpf.Utilities;
 using Python.Runtime;
 using PythonNodeModels;
 
@@ -99,37 +97,15 @@ namespace Dynamo.PythonMigration.MigrationAssistant
                     return;
             }
 
-            SavePythonMigrationBackup();
+            // Save backup
+            PythonMigrationBackup.SavePythonMigrationBackup(
+                this.workspace,
+                this.backupDirectory,
+                Properties.Resources.PythonMigrationBackupExtension,
+                Properties.Resources.PythonMigrationBackupFileCreatedMessage
+                );
+
             PythonNode.MigrateCode(this.NewCode);
-        }
-
-        #endregion
-
-        #region Backup
-
-        private void SavePythonMigrationBackup()
-        {
-            // only create a backup file the first time a migration is performed on this graph/custom node file
-            var path = GetPythonMigrationBackupPath();
-            if (File.Exists(path))
-                return;
-
-            this.workspace.Save(path, true);
-
-            // notify user a backup file has been created
-            if (!Models.DynamoModel.IsTestMode)
-            {
-                var message = string.Format(Properties.Resources.PythonMigrationBackupFileCreatedMessage, path);
-                MessageBoxService.Show(message, string.Empty, MessageBoxButton.OK, MessageBoxImage.None);
-            }
-        }
-
-        private string GetPythonMigrationBackupPath()
-        {
-            var extension = this.workspace is CustomNodeWorkspaceModel ? ".dyf" : ".dyn";
-            var fileName = string.Concat(this.workspace.Name, ".", Properties.Resources.PythonMigrationBackupExtension, extension);
-
-            return Path.Combine(this.backupDirectory, fileName);
         }
 
         #endregion
