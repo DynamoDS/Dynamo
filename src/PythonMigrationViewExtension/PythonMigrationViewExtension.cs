@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Core;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.PackageManager;
@@ -297,10 +298,11 @@ namespace Dynamo.PythonMigration
                 return;
             }
 
-            var cPy3Nodes = CurrentWorkspace.Nodes
-                .OfType<PythonNodeBase>()
-                .Where(n => GraphPythonDependencies.IsCPythonNode(n))
-                .ToList();
+            //var cPy3Nodes = CurrentWorkspace.Nodes
+            //    .OfType<PythonNodeBase>()
+            //    .Where(n => GraphPythonDependencies.IsCPythonNode(n))
+            //    .ToList();
+            var cPy3Nodes = FindCPythonNodesIncludingCustoms(CurrentWorkspace);
 
             if (cPy3Nodes.Count == 0)
             {
@@ -320,6 +322,43 @@ namespace Dynamo.PythonMigration
             CurrentWorkspace.ShowCPythonNotifications = true;
             ShowPythonEngineUpgradeToast(cPy3Nodes.Count);
             UpgradeCPython3Nodes(cPy3Nodes);
+        }
+
+        private List<PythonNodeBase> FindCPythonNodesIncludingCustoms(WorkspaceModel root)
+        {
+            var result = new List<PythonNodeBase>();
+            if (root == null) return result;
+            var visitedCustomDefs = new HashSet<Guid>();
+
+            void CollectFromWorkspace(WorkspaceModel ws)
+            {
+                // Add CPython nodes from this workspace
+                foreach (var n in ws.Nodes.OfType<PythonNodeBase>())
+                {
+                    if (n.EngineName == PythonEngineManager.CPython3EngineName)
+                        result.Add(n);
+                }
+
+                // Traverse any Custom Nodes referenced by this workspace
+                foreach (var func in ws.Nodes.OfType<Function>())
+                {
+                    var defId = func.Definition?.FunctionId ?? Guid.Empty;
+                    if (defId == Guid.Empty) continue;
+                    if (!visitedCustomDefs.Add(defId)) continue;
+
+                    // Resolve the definition workspace
+                    var cnm = DynamoViewModel?.Model?.CustomNodeManager;
+                    if (cnm != null && cnm.TryGetFunctionWorkspace(defId, Models.DynamoModel.IsTestMode, out CustomNodeWorkspaceModel defWsModel))
+                    {
+                        var defWs = defWsModel as WorkspaceModel;
+                        if (defWs != null)
+                            CollectFromWorkspace(defWs);
+                    }
+                }
+            }
+
+            CollectFromWorkspace(root);
+            return result;
         }
 
         /// <summary>
