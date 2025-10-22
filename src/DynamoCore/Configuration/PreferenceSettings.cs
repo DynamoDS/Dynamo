@@ -820,8 +820,6 @@ namespace Dynamo.Configuration
                 isMLAutocompleteTOUApproved = value;
                 RaisePropertyChanged(nameof(IsMLAutocompleteTOUApproved));
 
-                Analytics.TrackPreference("MLTermsOfUse", "", value ? 1 : 0);
-
                 // If user unchecks the agreement, automatically revert to ObjectType matching
                 if (!value && defaultNodeAutocompleteSuggestion == NodeAutocompleteSuggestion.MLRecommendation)
                 {
