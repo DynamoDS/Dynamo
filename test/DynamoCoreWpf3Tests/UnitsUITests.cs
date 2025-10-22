@@ -284,7 +284,103 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("british thermal units per hour", node1.SelectedFromConversion.Name.ToLower());
             Assert.AreEqual("british thermal units per hour", node1.SelectedToConversion.Name.ToLower());
             Assert.AreEqual("power", node1.SelectedQuantityConversion.Name.ToLower());
+        }
 
+        [Test]
+        public void GetTypeName_ValidTypeId_ReturnsTypeName()
+        {
+            var typeId = "autodesk.unit.quantity:length-1.0.5";
+            var result = DynamoUnitConvert.GetTypeName(typeId);
+            Assert.AreEqual("autodesk.unit.quantity:length", result);
+        }
+
+        [Test]
+        public void GetTypeName_TypeIdWithoutVersion_ReturnsOriginal()
+        {
+            var typeId = "autodesk.unit.quantity:length";
+            var result = DynamoUnitConvert.GetTypeName(typeId);
+            Assert.AreEqual("autodesk.unit.quantity:length", result);
+        }
+
+        [Test]
+        public void GetTypeName_NullTypeId_ReturnsNull()
+        {
+            string typeId = null;
+            var result = DynamoUnitConvert.GetTypeName(typeId);
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public void GetTypeName_EmptyTypeId_ReturnsEmpty()
+        {
+            var typeId = "";
+            var result = DynamoUnitConvert.GetTypeName(typeId);
+            Assert.AreEqual("", result);
+        }
+
+        [Test]
+        public void GetTypeName_MultipleHyphens_ReturnsOriginal()
+        {
+            var typeId = "autodesk.unit.quantity:length-1.0.5-extra";
+            var result = DynamoUnitConvert.GetTypeName(typeId);
+            Assert.AreEqual("autodesk.unit.quantity:length-1.0.5-extra", result);
+        }
+
+        [Test]
+        public void ReconcileFromCollection_MatchingTypeName_ReturnsCollectionItem()
+        {
+            var quantities = DynamoUnits.Utilities.GetAllQuantities().ToList();
+            var lengthQuantity = quantities.FirstOrDefault(q => q.Name == "Length");
+            Assert.IsNotNull(lengthQuantity, "Length quantity not found in collection");
+            var result = DynamoUnitConvert.ReconcileFromCollection(lengthQuantity, quantities);
+            Assert.AreSame(lengthQuantity, result, "Should return the same instance from collection");
+        }
+
+        [Test]
+        public void ReconcileFromCollection_NoMatch_ReturnsOriginalItem()
+        {
+            var quantities = DynamoUnits.Utilities.GetAllQuantities().ToList();
+            var mockQuantity = new MockQuantity("nonexistent.quantity:fake-1.0.0");
+            var result = DynamoUnitConvert.ReconcileFromCollection<object>(mockQuantity, quantities.Cast<object>());
+            Assert.AreSame(mockQuantity, result, "Should return original item when no match found");
+        }
+
+        [Test]
+        public void ReconcileFromCollection_NullItem_ReturnsNull()
+        {
+            var quantities = DynamoUnits.Utilities.GetAllQuantities();
+            var result = DynamoUnitConvert.ReconcileFromCollection<DynamoUnits.Quantity>(null, quantities);
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public void ReconcileFromCollection_NullCollection_ReturnsOriginalItem()
+        {
+            var quantities = DynamoUnits.Utilities.GetAllQuantities().ToList();
+            var lengthQuantity = quantities.FirstOrDefault(q => q.Name == "Length");
+            var result = DynamoUnitConvert.ReconcileFromCollection(lengthQuantity, null);
+            Assert.AreSame(lengthQuantity, result);
+        }
+
+        [Test]
+        public void ReconcileFromCollection_Units_MatchesCorrectly()
+        {
+            var units = DynamoUnits.Utilities.GetAllUnits().ToList();
+            var feetUnit = units.FirstOrDefault(u => u.Name == "Feet");
+            Assert.IsNotNull(feetUnit, "Feet unit not found in collection");
+            var result = DynamoUnitConvert.ReconcileFromCollection(feetUnit, units);
+            Assert.AreSame(feetUnit, result, "Should return the same Feet unit instance from collection");
+        }
+
+        // Helper class for testing non-matching items
+        private class MockQuantity
+        {
+            public string TypeId { get; }
+
+            public MockQuantity(string typeId)
+            {
+                TypeId = typeId;
+            }
         }
 
         /// <summary>
