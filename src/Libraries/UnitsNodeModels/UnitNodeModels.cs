@@ -502,7 +502,7 @@ namespace UnitsUI
             get { return selectedQuantityConversion; }
             set
             {
-                // Ensure the assigned value always matches a valid entry is source
+                // Ensure the assigned value always matches a valid entry in source
                 value = ReconcileFromCollection(value, QuantityConversionSource);
 
                 selectedQuantityConversion = value;
@@ -526,7 +526,7 @@ namespace UnitsUI
             get { return selectedFromConversion; }
             set
             {
-                // Ensure the assigned value always matches a valid entry is source
+                // Ensure the assigned value always matches a valid entry in source
                 value = ReconcileFromCollection(value, SelectedFromConversionSource);
 
                 selectedFromConversion = value;
@@ -544,7 +544,7 @@ namespace UnitsUI
             get { return selectedToConversion; }
             set
             {
-                // Ensure the assigned value always matches a valid entry is source
+                // Ensure the assigned value always matches a valid entry in source
                 value = ReconcileFromCollection(value, SelectedToConversionSource);
 
                 selectedToConversion = value;
