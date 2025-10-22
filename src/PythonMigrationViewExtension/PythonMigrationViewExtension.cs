@@ -411,7 +411,8 @@ namespace Dynamo.PythonMigration
             if (Models.DynamoModel.IsTestMode) return;
 
             var extension = workspace is CustomNodeWorkspaceModel ? ".dyf" : ".dyn";
-            var fileName = string.Concat(workspace.Name, ".", backupExtensionToken, extension);
+            var timeStamp = DateTime.Now.ToString("yyyyMMdd'T'HHmmss");
+            var fileName = string.Concat(workspace.Name, ".", backupExtensionToken, ".", timeStamp, extension);
 
             // Only create a backup file the first time a migration is performed on this graph/custom node file
             var path = Path.Combine(backupDir, fileName);
@@ -419,12 +420,13 @@ namespace Dynamo.PythonMigration
 
             workspace.Save(path, true);
 
+            var title = Properties.Resources.CPythonMigrationBackupFileCreatedTitle;
             var message = string.Format(messageResource, path);
 
             // Show the MessageBox after the UI finishes rendering to avoid disrupting connector redraw
             System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
-                MessageBoxService.Show(message, string.Empty, MessageBoxButton.OK, MessageBoxImage.None);
+                MessageBoxService.Show(message, title, MessageBoxButton.OK, MessageBoxImage.None);
             }), DispatcherPriority.ApplicationIdle);
         }
     }

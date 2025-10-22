@@ -239,4 +239,7 @@ By clicking “Continue”, you are agreeing to implement the syntax changes to 
   <data name="CPythonUpgradeToastMessageSingular" xml:space="preserve">
     <value>1 CPython node has been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported.</value>
   </data>
+  <data name="CPythonMigrationBackupFileCreatedHeader" xml:space="preserve">
+    <value>Backup graph has been saved</value>
+  </data>
 </root>
