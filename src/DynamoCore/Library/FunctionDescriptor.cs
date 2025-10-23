@@ -348,7 +348,7 @@ namespace Dynamo.Engine
 #if DEBUG
                         var LoadedAssemblyCount = AppDomain.CurrentDomain.GetAssemblies().Length;
 #endif
-                        var asm = AppDomain.CurrentDomain.Load(Path.GetFileNameWithoutExtension(Assembly));
+                        var asm = Dynamo.Utilities.AssemblyHelper.LoadInALCFrom(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), Assembly));
 #if DEBUG
 
                         Debug.Assert(AppDomain.CurrentDomain.GetAssemblies().Length == LoadedAssemblyCount,
