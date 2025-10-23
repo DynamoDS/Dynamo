@@ -2805,7 +2805,13 @@ namespace Dynamo.PackageManager
         {
             var publishPath = GetPublishFolder();
             if (string.IsNullOrEmpty(publishPath))
+            {
+                // Reset uploading state when user cancels folder selection
+                Uploading = false;
+                // Notify the front-end that the user has cancelled the upload
+                UploadCancelled?.Invoke();
                 return;
+            }
 
             UploadType = PackageUploadHandle.UploadType.Local;
 
