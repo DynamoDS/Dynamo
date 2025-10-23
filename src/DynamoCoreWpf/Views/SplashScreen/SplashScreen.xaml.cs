@@ -517,8 +517,46 @@ namespace Dynamo.UI.Views
         {
             if (viewModel.PreferenceSettings.IsFirstRun == true)
             {
-                //Move the current location two levels up
-                var programDataDir = Directory.GetParent(Directory.GetParent(viewModel.Model.PathManager.CommonDataDirectory).ToString()).ToString();
+                var programDataDir = string.Empty;
+
+                try
+                {
+                    //This code will be executed only when Dynamo is running inside any Host application like Revit, FormIt, Civil3D
+                    if (viewModel.Model.PathManager.HostApplicationDirectory != null && !string.IsNullOrEmpty(viewModel.Model.HostVersion))
+                    {
+                        //Move the current location two levels up for finding the DynamoSettings.xml file (just for Hosts)
+                        var firstParent = Directory.GetParent(viewModel.Model.PathManager.CommonDataDirectory);
+                        if (firstParent != null)
+                        {
+                            var secondParent = Directory.GetParent(firstParent.ToString());
+                            if (secondParent != null)
+                            {
+                                programDataDir = secondParent.ToString();
+                            }
+                            else
+                            {
+                                // Fallback: use firstParent or handle as appropriate
+                                programDataDir = firstParent.ToString();
+                            }
+                        }
+                        else
+                        {
+                            // Fallback: use CommonDataDirectory or handle as appropriate
+                            programDataDir = viewModel.Model.PathManager.CommonDataDirectory;
+                        }
+                    }
+                    //This code will be executed when Dynamo is running as a standalone application
+                    else
+                    {
+                        programDataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), Configurations.DynamoAsString);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    viewModel.Model.Logger.Log("programDataDir was not set successfully: " + ex.Message);
+                }
+                
+                
                 var listOfXmlFiles = Directory.GetFiles(programDataDir, "*.xml");
                 string PreferencesSettingFilePath = string.Empty;
 
