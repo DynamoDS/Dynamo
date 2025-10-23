@@ -454,6 +454,7 @@ namespace Dynamo.Models
 
             PreShutdownCore(shutdownHost);
             ShutDownCore(shutdownHost);
+            PostShutdownCore(shutdownHost);
 
             AnalyticsService.ShutDown();
 
