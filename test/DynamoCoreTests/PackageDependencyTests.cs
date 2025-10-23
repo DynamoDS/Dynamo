@@ -232,7 +232,8 @@ namespace Dynamo.Tests
             var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
             var commonDataDirectory = dynCorePath;
-            var defaultPackagesDirectory = Path.Combine(appDataFolder, "Dynamo","Dynamo Core", CurrentMajorFileVersion.ToString("F1"), "packages");
+            string DynamoVersion = $"{CurrentMajorFileVersion}.{CurrentMinorFileVersion}";
+            var defaultPackagesDirectory = Path.Combine(appDataFolder, "Dynamo", "Dynamo Core", DynamoVersion, "packages");
 
             //Checking that the properties in PathManager are the expected ones
             Assert.IsTrue(singletonPathManager.MajorFileVersion == CurrentMajorFileVersion);
