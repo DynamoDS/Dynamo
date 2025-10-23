@@ -17,12 +17,26 @@ namespace Dynamo.Utilities
         {
             try
             {
-                // Use a simple HTTP HEAD request to check connectivity
-                // This is faster than GET and doesn't download content
                 using (var client = new HttpClient())
                 {
                     client.Timeout = TimeSpan.FromSeconds(5);
-                    return await PingUrlAsync(client, "https://www.autodesk.com");
+                    
+                    // Use endpoints that reliably support HEAD requests
+                    var endpoints = new[]
+                    {
+                        "https://www.google.com",  
+                        "https://www.microsoft.com"
+                    };
+
+                    foreach (var endpoint in endpoints)
+                    {
+                        if (await PingUrlAsync(client, endpoint))
+                        {
+                            return true;
+                        }
+                    }
+                    
+                    return false;
                 }
             }
             catch
@@ -33,7 +47,7 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        /// Pings a URL.
+        /// Pings a URL using HEAD request only (no content download).
         /// </summary>
         /// <param name="client">HTTP client to use</param>
         /// <param name="url">URL to ping</param>
@@ -42,6 +56,7 @@ namespace Dynamo.Utilities
         {
             try
             {
+                // Use HEAD request only - no content download
                 using (var request = new HttpRequestMessage(HttpMethod.Head, url))
                 using (var response = await client.SendAsync(request))
                 {

@@ -168,8 +168,8 @@
                                       FalseBrush="{StaticResource UnpinnedIconForegroundColor}"
                                       TrueBrush="{StaticResource PinnedIconForegroundColor}" />
     <controls:BooleanToBrushConverter x:Key="OnlineStatusBrushConverter"
-                                      TrueBrush="Red"
-                                      FalseBrush="LightGreen" />    
+                                      TrueBrush="LightGreen"
+                                      FalseBrush="Red" />
     <controls:NestedGroupsLabelConverter x:Key="NestedGroupsLabelConverter" />
     <controls:CollectionHasMoreThanNItemsToBoolConverter x:Key="CollectionHasMoreThanNItemsToBoolConverter" />
     <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />

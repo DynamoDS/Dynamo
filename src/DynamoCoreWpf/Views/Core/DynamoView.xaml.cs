@@ -439,6 +439,8 @@ namespace Dynamo.Controls
             {
                 DynamoModel.RaiseIExtensionStorageAccessWorkspaceSaving(hws, extension, saveContext, dynamoViewModel.Model.Logger);
             }
+
+            dynamoViewModel?.CheckOnlineAccess();
         }
 
         /// <summary>

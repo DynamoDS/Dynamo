@@ -4379,7 +4379,7 @@ namespace Dynamo.Controls
         {
             if (value is bool online)
             {
-                return online ? Resources.OfflineStatusTooltip : Resources.OnlineStatusTooltip;
+                return online ? Resources.OnlineStatusTooltip : Resources.OfflineStatusTooltip;
             }
 
             return Resources.OnlineStatusTooltip;
