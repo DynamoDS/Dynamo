@@ -550,30 +550,32 @@ namespace Dynamo.UI.Views
                     {
                         programDataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), Configurations.DynamoAsString);
                     }
+
+                    if (Directory.Exists(programDataDir))
+                    {
+                        var listOfXmlFiles = Directory.GetFiles(programDataDir, "*.xml");
+                        string PreferencesSettingFilePath = string.Empty;
+
+                        //Find the first xml file name from the list that can be Deserialized to PreferenceSettings
+                        foreach (var xmlFile in listOfXmlFiles)
+                        {
+                            if (IsValidPreferencesFile(xmlFile))
+                            {
+                                PreferencesSettingFilePath = xmlFile;
+                                break;
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(PreferencesSettingFilePath) && File.Exists(PreferencesSettingFilePath))
+                        {
+                            var content = File.ReadAllText(PreferencesSettingFilePath);
+                            ImportSettings(content);
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
                     viewModel.Model.Logger.Log("programDataDir was not set successfully: " + ex.Message);
-                }
-                
-                
-                var listOfXmlFiles = Directory.GetFiles(programDataDir, "*.xml");
-                string PreferencesSettingFilePath = string.Empty;
-
-                //Find the first xml file name from the list that can be Deserialized to PreferenceSettings
-                foreach (var xmlFile in listOfXmlFiles)
-                {
-                    if (IsValidPreferencesFile(xmlFile))
-                    {
-                        PreferencesSettingFilePath = xmlFile;
-                        break;
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(PreferencesSettingFilePath) && File.Exists(PreferencesSettingFilePath))
-                {
-                    var content = File.ReadAllText(PreferencesSettingFilePath);
-                    ImportSettings(content);
                 }
             }
         }
