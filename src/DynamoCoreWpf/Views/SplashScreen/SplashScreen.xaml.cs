@@ -575,7 +575,7 @@ namespace Dynamo.UI.Views
                 }
                 catch (Exception ex)
                 {
-                    viewModel.Model.Logger.Log("programDataDir was not set successfully: " + ex.Message);
+                    viewModel.Model.Logger.Log("Error loading preferences from programDataDir: " + ex.Message);
                 }
             }
         }
