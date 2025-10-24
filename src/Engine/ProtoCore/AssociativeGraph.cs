@@ -17,7 +17,17 @@ namespace ProtoCore.AssociativeEngine
         public static AssociativeGraph.GraphNode GetGraphNodeAtPC(int pc, List<AssociativeGraph.GraphNode> graphNodesInScope)
         {
             Validity.Assert(graphNodesInScope != null);
-            return graphNodesInScope.FirstOrDefault(g => g.isActive && g.isDirty && g.updateBlock.startpc == pc);
+
+            for (int i = 0; i < graphNodesInScope.Count; i++)
+            {
+                var g = graphNodesInScope[i];
+                if (g.isActive && g.isDirty && g.updateBlock.startpc == pc)
+                {
+                    return g;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -29,7 +39,17 @@ namespace ProtoCore.AssociativeEngine
         public static AssociativeGraph.GraphNode GetFirstDirtyGraphNodeFromPC(int pc, List<AssociativeGraph.GraphNode> graphNodesInScope)
         {
             Validity.Assert(graphNodesInScope != null);
-            return graphNodesInScope.FirstOrDefault(g => g.isActive && g.isDirty && g.updateBlock.startpc >= pc);
+
+            for (int i = 0; i < graphNodesInScope.Count; i++)
+            {
+                var g = graphNodesInScope[i];
+                if (g.isActive && g.isDirty && g.updateBlock.startpc >= pc)
+                {
+                    return g;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -659,39 +679,39 @@ namespace ProtoCore.AssociativeEngine
             List<AssociativeGraph.GraphNode> redefinedNodes = new List<AssociativeGraph.GraphNode>();
             if (executingGraphNode != null)
             {
-                // Remove this condition when full SSA is enabled
-                bool isssa = (!executingGraphNode.IsSSANode() && executingGraphNode.DependsOnTempSSA());
-
+                bool isssa;
                 if (runtimeCore.Options.ExecuteSSA)
                 {
                     isssa = executingGraphNode.IsSSANode();
                 }
+                else
+                {
+                    // Remove this condition when full SSA is enabled
+                    isssa = (!executingGraphNode.IsSSANode() && executingGraphNode.DependsOnTempSSA());
+                }
+
                 if (!isssa)
                 {
+
+                    SymbolNode symbol = executingGraphNode.updateNodeRefList[0].nodeList[0].symbol;
+                    bool isMember = symbol.classScope != Constants.kInvalidIndex
+                        && symbol.functionIndex == Constants.kInvalidIndex;
+
                     foreach (AssociativeGraph.GraphNode graphNode in nodesInScope)
                     {
-                        bool allowRedefine = true;
-
-                        SymbolNode symbol = executingGraphNode.updateNodeRefList[0].nodeList[0].symbol;
-                        bool isMember = symbol.classScope != Constants.kInvalidIndex
-                            && symbol.functionIndex == Constants.kInvalidIndex;
-
                         if (isMember)
                         {
                             // For member vars, do not allow if not in the same scope
                             if (symbol.classScope != graphNode.classIndex || symbol.functionIndex != graphNode.procIndex)
                             {
-                                allowRedefine = false;
+                                continue;
                             }
                         }
 
-                        if (allowRedefine)
+                        // Check if graphnode was redefined by executingGraphNode
+                        if (AssociativeEngine.Utils.IsGraphNodeRedefined(graphNode, executingGraphNode))
                         {
-                            // Check if graphnode was redefined by executingGraphNode
-                            if (AssociativeEngine.Utils.IsGraphNodeRedefined(graphNode, executingGraphNode))
-                            {
-                                redefinedNodes.Add(graphNode);
-                            }
+                            redefinedNodes.Add(graphNode);
                         }
                     }
                 }
@@ -1475,8 +1495,13 @@ namespace ProtoCore.AssociativeGraph
                 return false;
             }
 
-            var firstNode = updateNodeRefList.First().nodeList.FirstOrDefault();
-            return firstNode != null && firstNode.nodeType == UpdateNodeType.Symbol && firstNode.symbol.isSSATemp;
+            if (updateNodeRefList[0].nodeList.Count > 0)
+            {
+                var firstNode = updateNodeRefList[0].nodeList[0];
+                return firstNode != null && firstNode.nodeType == UpdateNodeType.Symbol && firstNode.symbol.isSSATemp;
+            }
+
+            return false;
         }
     }
 
