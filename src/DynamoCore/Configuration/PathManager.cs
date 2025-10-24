@@ -61,13 +61,11 @@ namespace Dynamo.Core
         {
             lock (lockObject)
             {
-                if (lazy != null)
+                //If is already initialized then do nothing
+                if (lazy == null)
                 {
-                    // Or do we want to reset the existing instance? See below for discussions.
-                    throw new InvalidOperationException("PathManager has already been initialized.");
-                }
-
-                lazy = new Lazy<PathManager>(() => new PathManager(parameters));
+                    lazy = new Lazy<PathManager>(() => new PathManager(parameters));
+                }                 
             }
         }
 
