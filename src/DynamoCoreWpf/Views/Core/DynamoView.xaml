@@ -1707,9 +1707,9 @@
                             </TextBlock>
                         </ToolTip>
                     </Grid.ToolTip>
-                    <Ellipse Width="12" 
-                             Height="12" 
-                             Fill="{Binding OnlineAccess, Converter={StaticResource OnlineStatusBrushConverter}, Mode=OneWay}"/>
+                    <Image Width="16" 
+                           Height="16" 
+                           Source="{Binding OnlineAccess, Converter={StaticResource NetworkStatusIconConverter}, Mode=OneWay}"/>
                 </Grid>
             </Grid>
         </Grid>

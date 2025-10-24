@@ -167,9 +167,6 @@
     <controls:BooleanToBrushConverter x:Key="PinIconForegroundConverter"
                                       FalseBrush="{StaticResource UnpinnedIconForegroundColor}"
                                       TrueBrush="{StaticResource PinnedIconForegroundColor}" />
-    <controls:BooleanToBrushConverter x:Key="OnlineStatusBrushConverter"
-                                      TrueBrush="LightGreen"
-                                      FalseBrush="Red" />
     <controls:NestedGroupsLabelConverter x:Key="NestedGroupsLabelConverter" />
     <controls:CollectionHasMoreThanNItemsToBoolConverter x:Key="CollectionHasMoreThanNItemsToBoolConverter" />
     <controls:ListHasMoreThanNItemsToVisibilityConverter x:Key="ListHasMoreThanNItemsToVisibilityConverter" />
@@ -180,4 +177,5 @@
     <controls:LeftMarginConverter x:Key="LeftMarginConverter" />
     <controls:LengthToVisibilityConverter x:Key="LengthToVisibilityConverter" />
     <controls:OnlineStatusTextConverter x:Key="OnlineStatusTextConverter" />
+    <controls:NetworkStatusIconConverter x:Key="NetworkStatusIconConverter" />
 </ResourceDictionary>
