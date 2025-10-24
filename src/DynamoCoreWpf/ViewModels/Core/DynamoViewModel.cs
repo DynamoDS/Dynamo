@@ -1111,7 +1111,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal event EventHandler<CancelEventArgs> RequestPythonEngineChangeNotice;
 
-        // <summary>
+        /// <summary>
         /// Raises <see cref="RequestPythonEngineChangeNotice"/> and returns whether any subscriber
         /// requested to cancel showing the Python engine changed notice.
         /// </summary>
