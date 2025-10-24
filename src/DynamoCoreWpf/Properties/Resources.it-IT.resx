@@ -147,6 +147,9 @@
   <data name="SignInButtonContentToolTip" xml:space="preserve">
     <value>Accedere per usufruire dei servizi online che si integrano con il software desktop.</value>
   </data>
+  <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
+    <value>Attivare la modalità di rete per poter accedere.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -400,6 +403,12 @@
   </data>
   <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
     <value>Avviso download</value>
+  </data>
+  <data name="CopyToClipboardTooltip" xml:space="preserve">
+    <value>Copia negli Appunti</value>
+  </data>
+  <data name="CopyToClipboardFailedMessage" xml:space="preserve">
+    <value>Copia negli Appunti non riuscita</value>
   </data>
   <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
     <value>È disponibile un aggiornamento di Dynamo. Fare clic per installarlo.</value>
@@ -1120,6 +1129,9 @@ Salvare le modifiche?</value>
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>Impossibile aggiungere il file: {0}</value>
   </data>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>Impossibile aggiungere i seguenti file:\n\n {0}</value>
+  </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>Impossibile applicare NodeViewCustomization a {0}</value>
   </data>
@@ -1338,6 +1350,9 @@ Gli assiemi successivi sono stati caricati più volte:
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>A causa di alcune limitazioni di .NET Framework, non è possibile aggiornare l'assembly del pacchetto se è già caricato. Aggiornare l'assembly quando {0} non è in esecuzione e riprovare.</value>
+  </data>
+  <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
+    <value>\n\nTrovati assiemi duplicati: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>Impossibile aggiornare l'assembly</value>
@@ -3213,7 +3228,7 @@ Provare a posizionare il nodo **ByOrigin** evidenziato.</value>
     <value>Il livello di affidabilità viene visualizzato accanto a ciascun nodo consigliato e rappresenta la probabilità stimata che il nodo sia una buona scelta. Quando è attivata, questa impostazione nasconde i nodi consigliati che non soddisfano il livello di affidabilità specificato. È possibile fare clic sull'intestazione Bassa affidabilità per mostrare i nodi.</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Number of results for Recommended Nodes</value>
+    <value>Numero di risultati per i nodi consigliati</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>Importa</value>
@@ -3775,6 +3790,45 @@ Per trasformare questo file in un nuovo modello, salvarlo in un'altra cartella e
   </data>
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
     <value>Questo gruppo è congelato. Fare clic per scongelare.</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
+    <value>Attiva barra degli strumenti mobile</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
+    <value>Attiva una barra degli strumenti mobile per i suggerimenti relativi ai nodi per un workflow più semplificato. Disattivare per tornare alla tradizionale finestra di dialogo a comparsa.</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
+    <value>_Rimuovi dati icona nodo</value>
+  </data>
+  <data name="NodeIconDataIsDumped" xml:space="preserve">
+    <value>I dati sull'icona del nodo sono stati rimossi in \"{0}\".</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Condivisione avanzata</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_Generale</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>Mostra _proprietà grafico</value>
+  </data>
+  <data name="GroupOptionalInportsText" xml:space="preserve">
+    <value>Facoltative</value>
+  </data>
+  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
+    <value>Non connesse</value>
+  </data>
+  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
+    <value>Gruppo compresso</value>
+  </data>
+  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
+    <value>Comprime alla grandezza minima per default</value>
+  </data>
+  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
+    <value>Nasconde le porte di input facoltative per default</value>
+  </data>
+  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
+    <value>Nasconde le porte di output non connesse per default</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

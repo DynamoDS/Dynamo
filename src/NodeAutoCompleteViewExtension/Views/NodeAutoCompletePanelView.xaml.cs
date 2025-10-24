@@ -154,7 +154,7 @@ namespace Dynamo.NodeAutoComplete
         /// <summary>
         /// confidence level
         /// </summary>
-        public string Probability => clusterResultItem.Probability;
+        public double Probability => clusterResultItem.Probability;
 
         /// <summary>
         /// Nodes in the node cluster

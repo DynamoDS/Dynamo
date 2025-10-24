@@ -124,7 +124,7 @@
     <value>Assembly kann nicht aktualisiert werden</value>
   </data>
   <data name="DownloadPackageDisabled" xml:space="preserve">
-    <value>Package download is disabled in no-network mode.</value>
+    <value>Der Paket-Download ist im Modus ohne Netzwerk deaktiviert.</value>
   </data>
   <data name="InvalidPackageFolderWarning" xml:space="preserve">
     <value>Der Ordner '{0}' ist nicht vorhanden.</value>

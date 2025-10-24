@@ -147,6 +147,9 @@
   <data name="SignInButtonContentToolTip" xml:space="preserve">
     <value>로그인하여 데스크탑 소프트웨어와 통합되는 온라인 서비스에 액세스하십시오.</value>
   </data>
+  <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
+    <value>로그인하려면 네트워크 모드를 활성화합니다.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -400,6 +403,12 @@
   </data>
   <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
     <value>다운로드 경고</value>
+  </data>
+  <data name="CopyToClipboardTooltip" xml:space="preserve">
+    <value>클립보드로 복사</value>
+  </data>
+  <data name="CopyToClipboardFailedMessage" xml:space="preserve">
+    <value>클립보드로 복사하는 데 실패했습니다.</value>
   </data>
   <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
     <value>Dynamo 업데이트를 사용할 수 있습니다. 설치하려면 클릭하십시오.</value>
@@ -1121,6 +1130,9 @@
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>파일을 추가하지 못했습니다. {0}</value>
   </data>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>다음 파일을 추가하지 못했습니다.\n\n {0}</value>
+  </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>{0}에 NodeViewCustomization을 적용하지 못했습니다</value>
   </data>
@@ -1297,7 +1309,7 @@
     <value>편집...</value>
   </data>
   <data name="NullString" xml:space="preserve">
-    <value>NULL</value>
+    <value>null</value>
   </data>
   <data name="OKButton" xml:space="preserve">
     <value>확인</value>
@@ -1345,6 +1357,9 @@
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>.NET Framework의 제한사항으로 인해 이미 로드된 패키지 조합은 업데이트할 수 없습니다. {0}이(가) 실행되고 있지 않는 동안 조합을 업데이트하고 다시 해보십시오.</value>
+  </data>
+  <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
+    <value>\n\n중복 어셈블리 찾음: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>조합을 업데이트할 수 없습니다</value>
@@ -3229,7 +3244,7 @@
     <value>신뢰도 수준은 각 권장 노드 옆에 표시되며 노드가 적절한 선택일 수 있는 예상 확률을 나타냅니다. 이 설정을 켜면 지정된 신뢰도 수준을 충족하지 않는 권장 노드가 숨겨집니다. 낮은 신뢰도 헤더를 클릭하여 노드를 표시할 수 있습니다.</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Number of results for Recommended Nodes</value>
+    <value>권장 노드에 대한 결과 수</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>가져오기</value>
@@ -3750,8 +3765,7 @@
     <value>이 버전과 사용 중인 설정의 호환성이 확인되지 않았습니다. 예상대로 작동할 수도 있고 예상대로 작동하지 않을 수도 있습니다.</value>
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
-    <value>Autodesk Identity Manager가 시스템에 설정되어 있지 않은 것 같습니다. 모든 기능에 대한 전체 액세스 권한을 확보하려면 Autodesk Identity Manager를 사용하여 Autodesk 계정에 로그인하십시오.
-#=https://manage.autodesk.com/products/updates에서 또는 Autodesk Access 통해 Autodesk Identity Manager를 다운로드한 후 설치한 다음 로그인하십시오.</value>
+    <value>Autodesk Identity Manager가 시스템에 설정되어 있지 않은 것 같습니다. 모든 기능에 대한 전체 액세스 권한을 확보하려면 Autodesk Identity Manager를 사용하여 Autodesk 계정에 로그인하십시오. 또는 Autodesk Access를 통해 Autodesk Identity Manager를 #다운로드한 후 설치=https://manage.autodesk.com/products/updates 한 다음 로그인하십시오.</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Autodesk Identity Manager 다운로드</value>
@@ -3791,6 +3805,45 @@
   </data>
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
     <value>이 그룹은 동결되었습니다. 동결을 해제하려면 클릭하십시오.</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
+    <value>부동 도구막대 활성화</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
+    <value>더 효율적인 워크폴로우를 위해 노드 제안용 부동 도구막대를 활성화하십시오. 기존의 팝업 대화상자로 돌아가려면 비활성화하십시오.</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
+    <value>_노드 아이콘 데이터 덤프</value>
+  </data>
+  <data name="NodeIconDataIsDumped" xml:space="preserve">
+    <value>노드 아이콘 데이터가 \"{0}\"에 덤프됩니다.</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>고급 공유</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>일반(_G)</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>그래프 특성 표시(_P)</value>
+  </data>
+  <data name="GroupOptionalInportsText" xml:space="preserve">
+    <value>선택적</value>
+  </data>
+  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
+    <value>연결되지 않음</value>
+  </data>
+  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
+    <value>축소된 그룹</value>
+  </data>
+  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
+    <value>기본적으로 최소 크기로 축소</value>
+  </data>
+  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
+    <value>기본적으로 선택적 입력 포트 숨기기</value>
+  </data>
+  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
+    <value>기본적으로 연결되지 않은 출력 포트 숨기기</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

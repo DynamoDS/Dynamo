@@ -1,6 +1,10 @@
+using System;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Interop;
+using System.Windows.Threading;
 
 namespace Dynamo.Notifications.View
 {
@@ -40,6 +44,8 @@ namespace Dynamo.Notifications.View
             mainPopupGrid.Width = notificationsUIViewModel.PopupRectangleWidth;
             mainPopupGrid.Height = notificationsUIViewModel.PopupRectangleHeight;
             mainPopupGrid.Margin = new Thickness(notificationsUIViewModel.PopupBordersOffSet, notificationsUIViewModel.PopupBordersOffSet, 0, 0);
+
+
         }
 
         internal void UpdatePopupLocation()
@@ -60,5 +66,41 @@ namespace Dynamo.Notifications.View
 
             this.Height = notificationsUIViewModel.PopupRectangleHeight + notificationsUIViewModel.PopupBordersOffSet + 10;
         }
+
+        // Wait until the Popup is opened to set focus back to the main window.
+        // This is necessary because Popup opens asynchronously, and WebView2 (HWND-based)
+        // can steal focus. We explicitly reclaim native focus to ensure correct interaction
+        // with the main window (e.g., close button, click handling).
+        private void NotificationUI_Opened(object sender, EventArgs e)
+        {
+            // Ensure the application and main window are available and fully loaded.
+            ForceMainWindowFocus();
+        }
+
+        private void ForceMainWindowFocus()
+        {
+            if (Application.Current?.MainWindow == null)
+                return;
+
+            if (!ReleaseCapture())
+            {
+                int errorCode = Marshal.GetLastWin32Error();
+                Console.WriteLine($"ReleaseCapture failed with error code: {errorCode}");
+            }
+
+            if (!SetForegroundWindow(new WindowInteropHelper(Application.Current.MainWindow).Handle))
+            {
+                int errorCode = Marshal.GetLastWin32Error();
+                Console.WriteLine($"SetForegroundWindow failed with error code: {errorCode}");
+            }   
+        }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool ReleaseCapture();
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
     }
 }

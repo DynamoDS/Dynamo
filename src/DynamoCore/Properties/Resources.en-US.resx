@@ -876,16 +876,16 @@ This package likely contains an assembly that is blocked. You will need to load 
     <value>Loading Node Library...</value>
   </data>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
-    <value>No recommendations</value>
+    <value>No suggestions available</value>
   </data>
   <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
     <value>Low confidence</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>There are no recommendations yet. You can try switching to node type match autocomplete.</value>
+    <value>The model is continuously improving - check back soon</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
-    <value>All recommendations are below the specified confidence level. You can try them or adjust the confidence settings in Preferences.</value>
+    <value>No confident suggestions available. The model is continuously improving - check back soon.</value>
   </data>
   <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
     <value>Show Recommendations that are below the confidence level.</value>
@@ -906,7 +906,7 @@ This package likely contains an assembly that is blocked. You will need to load 
     <value>Example file added to workspace. Run mode changed to Manual.</value>
   </data>
   <data name="DynamoLanguages_noxlate" xml:space="preserve">
-    <value>Default,English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
+    <value>Default,English,English (UK),Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
   </data>
   <data name="FormulaDSConversionFailure" xml:space="preserve">
     <value>Formula failed to convert to DesignScript code. Please edit the formula manually to use it in a CodeBlock node.</value>
@@ -922,5 +922,11 @@ This package likely contains an assembly that is blocked. You will need to load 
   </data>
   <data name="DocsExperimentalPrefixMessage" xml:space="preserve">
     <value>This node is currently experimental. Its behavior, name, and signature are subject to change.</value>
+  </data>
+  <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
+    <value>Click on the sparkle icon next to the port to activate Node Autocomplete.</value>
+  </data>
+  <data name="UnknownErrorProcessingFile" xml:space="preserve">
+    <value>An unknown error occurred while processing the file.</value>
   </data>
 </root>

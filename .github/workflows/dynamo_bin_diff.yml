@@ -13,25 +13,24 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout Dynamo Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: Dynamo
           repository: DynamoDS/Dynamo
       - name: Setup dotnet
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: |
+            8.0.x
+            10.0.100-preview.5.25277.114
       - name: Disable problem matcher
         run: Write-Output "::remove-matcher owner=csc::"
       - name: Setup msbuild
         uses: microsoft/setup-msbuild@v2
       - name: Install dependencies for windows runtime
-        run: |
-          dotnet restore ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln /p:Configuration=Release --runtime=win-x64 -p:DotNet=net8.0
+        run: dotnet restore ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln -p:Configuration=Release --runtime=win-x64 -p:DotNet=net10.0
       - name: Build Dynamo with MSBuild
-        run: |
-          Write-Output "***Continue with the build, Good luck developer!***"
-          msbuild ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln /p:Configuration=Release /p:DotNet=net8.0
+        run: msbuild ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln /p:Configuration=Release
       - name: Look for DynamoCLI.exe
         run: |
           Write-Output "***Locating DynamoCLI.exe!***"
@@ -52,26 +51,25 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout Dynamo Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: master
           ref: master
           repository: DynamoDS/Dynamo
       - name: Setup dotnet
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: |
+            8.0.x
+            10.0.100-preview.5.25277.114
       - name: Disable problem matcher
         run: Write-Output "::remove-matcher owner=csc::"
       - name: Setup msbuild
         uses: microsoft/setup-msbuild@v2
       - name: Install dependencies for windows runtime
-        run: |
-          dotnet restore ${{ github.workspace }}\master\src\Dynamo.All.sln /p:Configuration=Release --runtime=win-x64 -p:DotNet=net8.0
+        run: dotnet restore ${{ github.workspace }}\master\src\Dynamo.All.sln -p:Configuration=Release --runtime=win-x64 -p:DotNet=net10.0
       - name: Build Dynamo with MSBuild
-        run: |
-          Write-Output "***Continue with the build, Good luck developer!***"
-          msbuild ${{ github.workspace }}\master\src\Dynamo.All.sln /p:Configuration=Release /p:DotNet=net8.0
+        run: msbuild ${{ github.workspace }}\master\src\Dynamo.All.sln /p:Configuration=Release
       - name: Look for DynamoCLI.exe
         run: |
           Write-Output "***Locating DynamoCLI.exe!***"

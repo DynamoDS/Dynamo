@@ -2155,6 +2155,11 @@ namespace ProtoCore
             {
                 return;
             }
+            if (emitReplicationGuide)
+            {
+                EmitAtLevel(null);
+                EmitReplicationGuides(new List<AST.AssociativeAST.AssociativeNode>());
+            }
             EmitInstrConsole(ProtoCore.DSASM.kw.push, "defaultArg");
             EmitPush(StackValue.BuildDefaultArgument());
         }

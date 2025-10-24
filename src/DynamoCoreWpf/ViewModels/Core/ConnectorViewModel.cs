@@ -20,7 +20,7 @@ using Point = System.Windows.Point;
 
 namespace Dynamo.ViewModels
 {
-    public enum PreviewState { Selection, ExecutionPreview, Hover, None }
+    public enum PreviewState { Selection, ExecutionPreview, Hover, None, Transient  }
 
     public partial class ConnectorViewModel : ViewModelBase
     {
@@ -38,6 +38,7 @@ namespace Dynamo.ViewModels
         private bool isConnecting = false;
         private bool isCollapsed = false;
         private bool isHidden = false;
+        private bool isTransient = false;
         private bool isTemporarilyVisible = false;
         private string connectorDataToolTip;
         private bool canShowConnectorTooltip = true;
@@ -196,6 +197,22 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(IsHidden));
                 SetVisibilityOfPins(IsHidden);
                 SetPartialVisibilityOfPins(IsHidden);
+            }
+        }
+
+        internal bool IsTransient
+        {
+            get => isTransient;
+            set
+            {
+                if (isTransient == value)
+                {
+                    return;
+                }
+
+                isTransient = value;
+                RaisePropertyChanged(nameof(IsTransient));
+                RaisePropertyChanged(nameof(PreviewState));
             }
         }
 
@@ -358,13 +375,11 @@ namespace Dynamo.ViewModels
                 zIndex = value;
                 RaisePropertyChanged(nameof(ZIndex));
             }
-         
         }
 
         private int SetZIndex()
         {
-            if (isConnecting)
-                return (int)zIndex;
+            if (isConnecting) return 0;
 
             var firstNode = this.Nodevm;
             var lastNode = this.NodeEnd;
@@ -373,8 +388,7 @@ namespace Dynamo.ViewModels
 
             //reduce ZIndex if one of associated nodes is collapsed
             bool oneNodeInCollapsedGroup = OneConnectingNodeInCollapsedGroup(firstNode, lastNode);
-            bool bothNodesInCollapsedGroup = ConnectingNodesBothInCollapsedGroup(firstNode, lastNode);
-            if (oneNodeInCollapsedGroup && !bothNodesInCollapsedGroup)
+            if (oneNodeInCollapsedGroup)
             {
                 var lowestIndex = new int[] { this.Nodevm.ZIndex, this.NodeEnd.ZIndex }
                 .OrderBy(x => x)
@@ -393,11 +407,6 @@ namespace Dynamo.ViewModels
         {
             if (firstNode == null || lastNode == null) return false;
             return firstNode.IsNodeInCollapsedGroup || lastNode.IsNodeInCollapsedGroup;
-        }
-        private bool ConnectingNodesBothInCollapsedGroup(NodeViewModel firstNode, NodeViewModel lastNode)
-        {
-            if (firstNode == null || lastNode == null) return false;
-            return firstNode.IsNodeInCollapsedGroup && lastNode.IsNodeInCollapsedGroup;
         }
 
         /// <summary>
@@ -503,6 +512,11 @@ namespace Dynamo.ViewModels
                 if (model == null)
                 {
                     return PreviewState.None;
+                }
+
+                if (IsTransient)
+                {
+                    return PreviewState.Transient;
                 }
 
                 if (Nodevm.ShowExecutionPreview || NodeEnd.ShowExecutionPreview)
@@ -1492,7 +1506,11 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void SetCollapsedByNodeViewModel()
         {
-            if (Nodevm?.IsCollapsed == true && NodeEnd?.IsCollapsed == true)
+            // Check if the connector is between two proxy ports. 
+            // Connectors between proxy ports should not be collapsed.
+            bool bothEndsAreProxyPorts = ConnectorModel.Start.IsProxyPort && ConnectorModel.End.IsProxyPort;
+
+            if (Nodevm?.IsCollapsed == true && NodeEnd?.IsCollapsed == true && !bothEndsAreProxyPorts)
             {
                 IsCollapsed = true;
             }

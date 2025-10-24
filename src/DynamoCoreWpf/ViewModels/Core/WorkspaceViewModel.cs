@@ -349,6 +349,12 @@ namespace Dynamo.ViewModels
         }
 
         [JsonIgnore]
+        public bool IsTemplate
+        {
+            get { return Model.IsTemplate; }
+        }
+
+        [JsonIgnore]
         public bool CanEditName
         {
             get { return Model != DynamoViewModel.HomeSpace; }
@@ -583,6 +589,14 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Ensures that a preview control is initialized only when it is
+        /// absolutely needed. It lives here so that it can be shared by
+        /// all node views for reduced overhead and better management.
+        /// </summary>
+        internal Wpf.Utilities.ActionDebouncer DelayNodePreviewControl
+            = new Wpf.Utilities.ActionDebouncer(null);
+
         #endregion
 
         public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel dynamoViewModel)
@@ -746,6 +760,9 @@ namespace Dynamo.ViewModels
             InCanvasSearchViewModel?.Dispose();
             NodeAutoCompleteSearchViewModel.LuceneUtility?.DisposeAll();
             NodeAutoCompleteSearchViewModel?.Dispose();
+
+            DelayNodePreviewControl?.Dispose();
+            DelayNodePreviewControl = null;
         }
 
         internal void ZoomInInternal()
@@ -845,6 +862,12 @@ namespace Dynamo.ViewModels
 
                     Model.FileName = filePath;
                     Model.OnSaved();
+
+                    if (Path.GetExtension(filePath).Equals(".dyn") && saveContext.Equals(SaveContext.SaveAs))
+                    {
+                        DynamoViewModel.Model.ClearCurrentWorkspace();
+                        DynamoViewModel.Model.OpenJsonFileFromPath(saveContent, filePath, false);
+                    }
                 }
 
                 // If a new CustomNodeWorkspaceModel is created, store that info in CustomNodeManager without creating an instance of the custom node.
@@ -926,6 +949,7 @@ namespace Dynamo.ViewModels
         {
             var viewModel = new AnnotationViewModel(this, annotation);
             Annotations.Add(viewModel);
+            viewModel.SnapInputEvent += nodeViewModel_SnapInputEvent;
         }
 
         private void Model_AnnotationRemoved(AnnotationModel annotation)
@@ -1212,6 +1236,26 @@ namespace Dynamo.ViewModels
                 }
             }
             return IsInCollapsedGroup;
+        }
+
+        /// <summary>
+        /// Handles double-clicks on annotation groups by creating a CBN at the click position
+        /// and adding it to the group if the position intersects with the group's region.
+        /// </summary>
+        internal void HandleAnnotationDoubleClick(Point position, AnnotationModel annotation)
+        {
+            if (DynamoViewModel?.Model == null) return;
+
+            var model = DynamoViewModel.Model;
+
+            // Create and add code node block
+            var newNode = new CodeBlockNodeModel(model.LibraryServices);
+            var cmd = new DynamoModel.CreateNodeCommand(newNode, position.X, position.Y, false, true);
+            DynamoViewModel.ExecuteCommand(cmd);
+
+            var updated = annotation.Nodes.ToList();
+            updated.Add(newNode);
+            annotation.Nodes = updated;
         }
 
         private static bool IsInRegion(Rect2D region, ILocatable locatable, bool fullyEnclosed)

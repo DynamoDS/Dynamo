@@ -65,6 +65,7 @@ namespace Dynamo.Controls
         public const string BackgroundPreviewName = "BackgroundPreview";
         private const int SideBarCollapseThreshold = 20;
         private const int navigationInterval = 100;
+        private const string GraphMetadataExtensionId = "28992e1d-abb9-417f-8b1b-05e053bee670";
         // This is used to determine whether ESC key is being held down
         private bool IsEscKeyPressed = false;
         // internal for testing.
@@ -140,7 +141,7 @@ namespace Dynamo.Controls
             tabSlidingWindowStart = tabSlidingWindowEnd = 0;
 
             //Initialize the ViewExtensionManager with the CommonDataDirectory so that view extensions found here are checked first for dll's with signed certificates
-            viewExtensionManager = new ViewExtensionManager(dynamoViewModel.Model.ExtensionManager, new[] { dynamoViewModel.Model.PathManager.CommonDataDirectory });
+            viewExtensionManager = new ViewExtensionManager(dynamoViewModel.Model.ExtensionManager);
 
             _timer = new Stopwatch();
             _timer.Start();
@@ -266,6 +267,7 @@ namespace Dynamo.Controls
             this.dynamoViewModel.Model.WorkspaceHidden += OnWorkspaceHidden;
             this.dynamoViewModel.RequestEnableShortcutBarItems += DynamoViewModel_RequestEnableShortcutBarItems;
             this.dynamoViewModel.RequestExportWorkSpaceAsImage += OnRequestExportWorkSpaceAsImage;
+            this.dynamoViewModel.ShowGraphPropertiesRequested += DynamoViewModel_ShowGraphPropertiesRequested;
 
             //add option to update python engine for all python nodes in the workspace.
             AddPythonEngineToMainMenu();
@@ -286,6 +288,22 @@ namespace Dynamo.Controls
             DefaultMinWidth = MinWidth;
             PinHomeButton();
         }
+
+        private void DynamoViewModel_ShowGraphPropertiesRequested(object sender, EventArgs e)
+        {
+            // Identify the GraphMetadata extension by its UniqueId because we can't reference its type directly.
+            // This exposes the menu item without creating a dependency on the Extensions project.
+            var provider = viewExtensionManager.ViewExtensions
+                .OfType<IExtensionMenuProvider>()
+                .FirstOrDefault(ext => (ext as IViewExtension)?.UniqueId == GraphMetadataExtensionId);
+            var menuItem = provider?.GetFileMenuItem();
+
+            if (menuItem != null)
+            {
+                menuItem.IsChecked = true;
+            }
+        }
+
         private void OnRequestCloseHomeWorkSpace()
         {
             CalculateWindowMinWidth();
@@ -376,6 +394,11 @@ namespace Dynamo.Controls
                     shortcutBar.IsOpenButtonEnabled = true;
                     shortcutBar.IsLoginMenuEnabled = true;
                     shortcutBar.IsNotificationCenterEnabled = true;
+                }
+
+                if (dynamoViewModel.Model.NoNetworkMode)
+                {
+                    shortcutBar.IsLoginMenuEnabled = false;
                 }
             }
         }
@@ -2023,6 +2046,22 @@ namespace Dynamo.Controls
                 PerformShutdownSequenceOnViewModel();
             }
 
+            // Force application shutdown when dynamo (in standalone mode) is closed, to prevent process hanging
+            bool isStandaloneMode = string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName);
+            
+            if (!DynamoModel.IsTestMode && isStandaloneMode && Application.Current != null)
+            {
+                try
+                {
+                    Application.Current.Shutdown();
+                }
+                catch (Exception ex)
+                {
+                    Log($"Error during Application.Shutdown: {ex.Message}. Forcing process exit.");
+                    Environment.Exit(0);
+                }
+            }
+
             dynamoViewModel.Model.RequestLayoutUpdate -= vm_RequestLayoutUpdate;
             dynamoViewModel.RequestViewOperation -= DynamoViewModelRequestViewOperation;
 
@@ -2097,6 +2136,7 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestEnableShortcutBarItems -= DynamoViewModel_RequestEnableShortcutBarItems;
             this.dynamoViewModel.RequestExportWorkSpaceAsImage -= OnRequestExportWorkSpaceAsImage;
             this.dynamoViewModel.RequestShorcutToolbarLoaded -= onRequestShorcutToolbarLoaded;
+            this.dynamoViewModel.ShowGraphPropertiesRequested -= DynamoViewModel_ShowGraphPropertiesRequested;
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= OnPythonEngineListUpdated;
 
             if (homePage != null)

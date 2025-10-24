@@ -147,6 +147,9 @@
   <data name="SignInButtonContentToolTip" xml:space="preserve">
     <value>Entre para acessar serviços on-line que se integram ao software de desktop.</value>
   </data>
+  <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
+    <value>Ative modo de rede para poder entrar.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -400,6 +403,12 @@ Você terá a opção para salvar seu trabalho.</value>
   </data>
   <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
     <value>Aviso de download</value>
+  </data>
+  <data name="CopyToClipboardTooltip" xml:space="preserve">
+    <value>Copiar para a área de transferência</value>
+  </data>
+  <data name="CopyToClipboardFailedMessage" xml:space="preserve">
+    <value>Falha ao copiar para a área de transferência</value>
   </data>
   <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
     <value>A atualização do Dynamo está disponível. Clique para instalar.</value>
@@ -1122,6 +1131,9 @@ Sempre é possível fazer o download do pacote novamente.</value>
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>Falha ao adicionar o arquivo: {0}</value>
   </data>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>Falha ao adicionar os seguintes arquivos:\n\n {0}</value>
+  </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>Falha ao aplicar NodeViewCustomization para {0}</value>
   </data>
@@ -1298,7 +1310,7 @@ Para evitar esse comportamento, desinstale os pacotes carregados que entram em c
     <value>Editar...</value>
   </data>
   <data name="NullString" xml:space="preserve">
-    <value>nulo</value>
+    <value>null</value>
   </data>
   <data name="OKButton" xml:space="preserve">
     <value>OK</value>
@@ -1346,6 +1358,9 @@ As montagens a seguir foram carregadas diversas vezes:
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>Devido às limitações do .NET Framework, não é possível atualizar sua montagem do seu pacote enquanto ele já estiver carregado.  Atualize a montagem enquanto o {0} não estiver em execução e tente novamente.</value>
+  </data>
+  <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
+    <value>\n\nMontagens duplicadas encontradas: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>Não é possível atualizar a montagem</value>
@@ -2879,7 +2894,7 @@ Para instalar a versão mais recente de um pacote, clique em Instalar. \n
 %./UI/Images/alert.png% O pacote Autodesk de amostra já está instalado no computador.</value>
   </data>
   <data name="PackagesGuideDependenciesText" xml:space="preserve">
-    <value>\nSe você precisar de outros softwares ou ferramentas para usar esse pacote, eles serão listados em Requisitos de versões e pacote.</value>
+    <value>\nSe você precisar de outros softwares ou ferramentas para usar esse pacote, eles serão listados em Versões e requisitos de pacote.</value>
   </data>
   <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
     <value>Dependências do pacote</value>
@@ -3231,7 +3246,7 @@ Tente colocar o nó **ByOrigin** realçado.</value>
     <value>O nível de confiança aparece próximo a cada nó recomendado e representa a probabilidade estimada de que o nó seja uma boa escolha. Quando ativada, essa configuração oculta os nós recomendados que não atendem ao nível de confiança especificado. É possível clicar no cabeçalho Baixa confiança para mostrar os nós.</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Number of results for Recommended Nodes</value>
+    <value>Número de resultados para nós recomendados</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>Importar</value>
@@ -3793,6 +3808,45 @@ Para transformar este arquivo em um novo modelo, salve-o em uma pasta diferente 
   </data>
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
     <value>Esse grupo está congelado. Clique para descongelar.</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
+    <value>Ativar barra de ferramentas flutuante</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
+    <value>Ative uma barra de ferramentas flutuante para as sugestões de nós para obter um fluxo de trabalho mais simplificado. Desative para retornar à caixa de diálogo pop-up tradicional.</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
+    <value>_Descarregar dados do ícone de nó</value>
+  </data>
+  <data name="NodeIconDataIsDumped" xml:space="preserve">
+    <value>Os dados do ícone de nó são descarregados em \"{0}\".</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Compartilhamento avançado</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_Geral</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>Mostrar _propriedades do gráfico</value>
+  </data>
+  <data name="GroupOptionalInportsText" xml:space="preserve">
+    <value>Opcional</value>
+  </data>
+  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
+    <value>Não conectado</value>
+  </data>
+  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
+    <value>Grupo recolhido</value>
+  </data>
+  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
+    <value>Retrair para tamanho mínimo por padrão</value>
+  </data>
+  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
+    <value>Ocultar portas de entrada opcionais por padrão</value>
+  </data>
+  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
+    <value>Ocultar portas de saída não conectadas por padrão</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

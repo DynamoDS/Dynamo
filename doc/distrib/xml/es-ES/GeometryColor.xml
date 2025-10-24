@@ -16,9 +16,9 @@
              se asigna a la superficie.</summary>
              <param name="surface">La superficie en la que se aplicarán los colores.</param>
              <param name="colors">Una lista bidimensional de colores.
-            
-             La lista de colores debe ser cuadrada. Si se intenta transferir una matriz irregular,
-             se generará una excepción.</param>
+            
+             La lista de colores debe ser cuadrada. Si se intenta transferir una matriz irregular,
+             se generará una excepción.</param>
              <returns>Un objeto de visualización.</returns>
         </member>
         <member name="M:Modifiers.GeometryColor.ByPointsColors(Autodesk.DesignScript.Geometry.Point[],DSCore.Color[])">

@@ -316,6 +316,18 @@ namespace Dynamo.ViewModels
                     ws.CustomNodeId,
                     out currentFunInfo))
                 {
+                    // Use the workspace's FileName directly if info.Path is not set
+                    if (string.IsNullOrEmpty(currentFunInfo.Path) && !string.IsNullOrEmpty(ws.FileName))
+                    {
+                        currentFunInfo = new CustomNodeInfo(
+                            currentFunInfo.FunctionId,
+                            currentFunInfo.Name,
+                            currentFunInfo.Category,
+                            currentFunInfo.Description,
+                            ws.FileName,  // Use workspace FileName
+                            currentFunInfo.IsVisibleInDynamoLibrary);
+                    }
+
                     var touParams = new TermsOfUseHelperParams
                     {
                         PackageManagerClient = Model,
@@ -487,7 +499,23 @@ namespace Dynamo.ViewModels
                 }
             }
 
-            var newPkgVm = new PublishPackageViewModel(DynamoViewModel) { CustomNodeDefinitions = funcDefs.Select(pair => pair.Item2).ToList() };
+            var newPkgVm = new PublishPackageViewModel(DynamoViewModel);
+
+            // Populate CustomDyfFilepaths FIRST (before CustomNodeDefinitions triggers RefreshPackageContents)
+            foreach (var funcDef in funcDefs)
+            {
+                var info = funcDef.Item1;  // CustomNodeInfo
+                var def = funcDef.Item2;   // CustomNodeDefinition
+                
+                if (!string.IsNullOrEmpty(info.Path))
+                {
+                    var fileName = System.IO.Path.GetFileName(info.Path);
+                    newPkgVm.CustomDyfFilepaths.TryAdd(fileName, info.Path);
+                }
+            }
+
+            // Now set CustomNodeDefinitions - this will trigger RefreshPackageContents() which includes CustomDyfFilepaths
+            newPkgVm.CustomNodeDefinitions = funcDefs.Select(pair => pair.Item2).ToList();
 
             DynamoViewModel.OnRequestPackagePublishDialog(newPkgVm);
         }
@@ -950,7 +978,7 @@ namespace Dynamo.ViewModels
                     // also identify packages that have a dynamo engine version less than 3.x as a special case,
                     // as Dynamo 3.x uses .net8 and older versions used .net framework - these packages may not be compatible.
                     // This check will return empty if the current major version is not 3.
-                    var preDYN3Deps = newPackageHeaders.Where(dep => dynamoVersion.Major == 3 && Version.Parse(dep.engine_version).Major < dynamoVersion.Major);
+                    var preDYN4Deps = newPackageHeaders.Where(dep => dynamoVersion.Major == 4 && Version.Parse(dep.engine_version).Major < dynamoVersion.Major);
 
                     // If any of the required packages use a newer version of Dynamo, show a dialog to the user
                     // allowing them to cancel the package download
@@ -971,7 +999,7 @@ namespace Dynamo.ViewModels
 
                     //if any of the required packages use a pre 3.x version of Dynamo, show a dialog to the user
                     //allowing them to cancel the package download
-                    if (preDYN3Deps.Any())
+                    if (preDYN4Deps.Any())
                     {
                         var res = MessageBoxService.Show(ViewModelOwner,
                         $"{string.Format(Resources.MessagePackageOlderDynamo, DynamoViewModel.BrandingResourceProvider.ProductName)} {Resources.MessagePackOlderDynamoLink}",

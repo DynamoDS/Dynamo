@@ -843,16 +843,16 @@ Il pacchetto non è stato caricato perché prima era stato caricato un altro pac
     <value>Caricamento della libreria di nodi in corso...</value>
   </data>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
-    <value>Nessun suggerimento</value>
+    <value>Nessun suggerimento disponibile</value>
   </data>
   <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
     <value>Bassa affidabilità</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>Non sono ancora presenti suggerimenti. È possibile provare a passare al completamento automatico per tipo di nodo.</value>
+    <value>Il modello è in costante miglioramento: controllare nuovamente in seguito</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
-    <value>Tutti i suggerimenti sono sotto il livello di affidabilità specificato. È possibile provarli ora o regolare le impostazioni dell'affidabilità in Preferenze.</value>
+    <value>Nessun suggerimento affidabile disponibile. Il modello viene migliorato continuamente. Ricontrollare più tardi.</value>
   </data>
   <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
     <value>Mostra i suggerimenti che sono sotto il livello di affidabilità.</value>
@@ -873,7 +873,7 @@ Il pacchetto non è stato caricato perché prima era stato caricato un altro pac
     <value>File di esempio aggiunto all'area di lavoro. Modalità di esecuzione modificata in Manuale.</value>
   </data>
   <data name="DynamoLanguages_noxlate" xml:space="preserve">
-    <value>Default,English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
+    <value>Default,English,English (UK),Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
   </data>
   <data name="FormulaDSConversionFailure" xml:space="preserve">
     <value>Impossibile convertire la formula in codice DesignScript. Modificare la formula manualmente per utilizzarla in un nodo CodeBlock.</value>
@@ -889,5 +889,11 @@ Il pacchetto non è stato caricato perché prima era stato caricato un altro pac
   </data>
   <data name="DocsExperimentalPrefixMessage" xml:space="preserve">
     <value>Questo nodo è attualmente sperimentale. Il suo comportamento, il suo nome e la sua firma sono soggetti a modifiche.</value>
+  </data>
+  <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
+    <value>Fare clic sull'icona a forma di scintilla accanto alla porta per attivare Completamento automatico nodi.</value>
+  </data>
+  <data name="UnknownErrorProcessingFile" xml:space="preserve">
+    <value>Errore sconosciuto durante l'elaborazione del file.</value>
   </data>
 </root>

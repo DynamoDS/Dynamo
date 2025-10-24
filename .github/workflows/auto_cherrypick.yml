@@ -72,7 +72,7 @@ jobs:
             exit 1
           fi
         shell: bash
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Start Cherrypick
         uses: korthout/backport-action@v3
         with:

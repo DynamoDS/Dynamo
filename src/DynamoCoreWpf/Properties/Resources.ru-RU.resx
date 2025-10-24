@@ -147,6 +147,9 @@
   <data name="SignInButtonContentToolTip" xml:space="preserve">
     <value>Войдите в систему, чтобы получить доступ к онлайн-службам, которые интегрируются с классическими программами.</value>
   </data>
+  <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
+    <value>Включите сетевой режим, чтобы иметь возможность входить в систему.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -400,6 +403,12 @@
   </data>
   <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
     <value>Предупреждение о загрузке</value>
+  </data>
+  <data name="CopyToClipboardTooltip" xml:space="preserve">
+    <value>Копировать в буфер обмена</value>
+  </data>
+  <data name="CopyToClipboardFailedMessage" xml:space="preserve">
+    <value>Не удалось копировать в буфер обмена</value>
   </data>
   <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
     <value>Доступно обновление для Dynamo. Нажмите, чтобы установить его.</value>
@@ -1122,6 +1131,9 @@
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>Не удалось добавить файл: {0}</value>
   </data>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>Не удалось добавить следующие файлы:\n\n {0}</value>
+  </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>Не удалось применить NodeViewCustomization для {0}</value>
   </data>
@@ -1298,7 +1310,7 @@
     <value>Редактировать...</value>
   </data>
   <data name="NullString" xml:space="preserve">
-    <value>ноль</value>
+    <value>null</value>
   </data>
   <data name="OKButton" xml:space="preserve">
     <value>OK</value>
@@ -1346,6 +1358,9 @@
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>Из-за ограничений в .NET Framework невозможно обновить сборку пакета, поскольку он уже загружен. Закройте {0}, обновите сборку и повторите попытку.</value>
+  </data>
+  <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
+    <value>\n\nНайдено дубликатов сборок: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>Не удалось обновить сборку</value>
@@ -2658,7 +2673,7 @@
     <value>Добавить папку</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
-    <value>Путь к файлам разметки (необязательно)</value>
+    <value>Путь к файлам Markdown (необязательно)</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectoryToolTip" xml:space="preserve">
     <value>Необязательная папка для документирования пакета в формате пометки.</value>
@@ -3231,7 +3246,7 @@
     <value>Уровень надежности отображается рядом с каждым рекомендуемым узлом и представляет собой предполагаемую вероятность удачного выбора узла. При включении этого параметра рекомендуемые узлы, которые не соответствуют заданному уровню надежности, скрываются. Для отображения узлов можно щелкнуть заголовок «Низкая надежность».</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Number of results for Recommended Nodes</value>
+    <value>Количество результатов для рекомендуемых узлов</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>Импорт</value>
@@ -3793,6 +3808,45 @@
   </data>
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
     <value>Эта группа заморожена. Щелкните, чтобы разморозить.</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
+    <value>Включить плавающую панель инструментов</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
+    <value>Включите плавающую панель инструментов для получения рекомендаций в отношении узлов, чтобы оптимизировать рабочий процесс. Отключите параметр, чтобы вернуться к стандартному всплывающему диалоговому окну.</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
+    <value>_Дамп данных значка узла</value>
+  </data>
+  <data name="NodeIconDataIsDumped" xml:space="preserve">
+    <value>Данные значка узла доступны в папке «{0}».</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Расширенный общий доступ</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_Общие</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>Пок_азать свойства графика</value>
+  </data>
+  <data name="GroupOptionalInportsText" xml:space="preserve">
+    <value>Дополнительные</value>
+  </data>
+  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
+    <value>Несоединенные</value>
+  </data>
+  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
+    <value>Свернутая группа</value>
+  </data>
+  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
+    <value>Сворачивание до минимального размера по умолчанию</value>
+  </data>
+  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
+    <value>Скрытие дополнительных портов ввода по умолчанию</value>
+  </data>
+  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
+    <value>Скрытие несоединенных портов вывода по умолчанию</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

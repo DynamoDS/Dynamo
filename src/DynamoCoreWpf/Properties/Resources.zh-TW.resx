@@ -147,6 +147,9 @@
   <data name="SignInButtonContentToolTip" xml:space="preserve">
     <value>登入以存取與桌面軟體整合的線上服務。</value>
   </data>
+  <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
+    <value>啟用網路模式以便登入。</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -400,6 +403,12 @@
   </data>
   <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
     <value>下載警告</value>
+  </data>
+  <data name="CopyToClipboardTooltip" xml:space="preserve">
+    <value>複製到剪貼簿</value>
+  </data>
+  <data name="CopyToClipboardFailedMessage" xml:space="preserve">
+    <value>複製到剪貼簿失敗</value>
   </data>
   <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
     <value>有一個 Dynamo 更新可用。請按一下以安裝。</value>
@@ -1122,6 +1131,9 @@
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>無法加入檔案：{0}</value>
   </data>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>無法加入下列檔案:\n\n {0}</value>
+  </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>無法對 {0} 套用 NodeViewCustomization</value>
   </data>
@@ -1298,7 +1310,7 @@
     <value>編輯...</value>
   </data>
   <data name="NullString" xml:space="preserve">
-    <value>空</value>
+    <value>null</value>
   </data>
   <data name="OKButton" xml:space="preserve">
     <value>確定</value>
@@ -1346,6 +1358,9 @@
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>由於 .NET Framework 的限制，在您的套件組合已載入時無法對其進行更新。請在 {0} 未執行時更新組合，然後再試一次。</value>
+  </data>
+  <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
+    <value>\n\n找到重複的組合: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>無法更新組合</value>
@@ -1907,7 +1922,7 @@
     <value>公分</value>
   </data>
   <data name="UnitCubicCentimeter" xml:space="preserve">
-    <value>立方厘米</value>
+    <value>立方公分</value>
   </data>
   <data name="UnitCubicFoot" xml:space="preserve">
     <value>立方英尺</value>
@@ -1916,10 +1931,10 @@
     <value>立方英寸</value>
   </data>
   <data name="UnitCubicMeters" xml:space="preserve">
-    <value>立方米</value>
+    <value>立方公尺</value>
   </data>
   <data name="UnitCubicMillimeter" xml:space="preserve">
-    <value>立方毫米</value>
+    <value>立方公釐</value>
   </data>
   <data name="UnitCubicYards" xml:space="preserve">
     <value>立方碼</value>
@@ -1952,7 +1967,7 @@
     <value>單位:</value>
   </data>
   <data name="UnitSquareCentimeter" xml:space="preserve">
-    <value>平方厘米</value>
+    <value>平方公分</value>
   </data>
   <data name="UnitSquareFoot" xml:space="preserve">
     <value>平方英尺</value>
@@ -1961,10 +1976,10 @@
     <value>平方英寸</value>
   </data>
   <data name="UnitSquareMeter" xml:space="preserve">
-    <value>平方米</value>
+    <value>平方公尺</value>
   </data>
   <data name="UnitSquareMillimeter" xml:space="preserve">
-    <value>平方毫米</value>
+    <value>平方公釐</value>
   </data>
   <data name="UnitUSGallons" xml:space="preserve">
     <value>美制加侖</value>
@@ -3230,7 +3245,7 @@
     <value>信賴水準會出現在每個建議的節點旁邊，表示適合使用該節點的預估機率。開啟時，此設定會隱藏未達到指定信賴水準的建議節點。您可以按一下「低信賴」標頭以顯示節點。</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Number of results for Recommended Nodes</value>
+    <value>建議的節點結果數</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>匯入</value>
@@ -3751,8 +3766,8 @@
     <value>尚未驗證此版本與您設定的相容性。它不一定會如預期般運作。</value>
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
-    <value>您的系統似乎未設定 Autodesk Identity Manager。若要確保完整存取所有功能，請使用 Autodesk Identity Manager 登入您的 Autodesk 帳戶。
-請在此網址或透過 Autodesk Access #下載並安裝=https://manage.autodesk.com/products/updates，然後登入。</value>
+    <value>您的系統似乎未設定 Autodesk Identity Manager。為了確保完整存取所有功能，請使用 Autodesk Identity Manager 登入您的 Autodesk 帳戶。
+請透過 Autodesk Access 或此處: #下載並安裝=https://manage.autodesk.com/products/updates Autodesk Identity Manager，然後登入。</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>下載 Autodesk Identity Manager</value>
@@ -3792,6 +3807,45 @@
   </data>
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
     <value>此群組已凍結。按一下可解凍。</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
+    <value>啟用浮動工具列</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
+    <value>對節點建議啟用浮動工具列，使用更簡化的工作流程。關閉可回到傳統的快顯對話方塊。</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
+    <value>傾印節點圖示資料(_D)</value>
+  </data>
+  <data name="NodeIconDataIsDumped" xml:space="preserve">
+    <value>節點圖示資料已傾印至「{0}」。</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>進階共用</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>一般(_G)</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>展示圖表性質(_P)</value>
+  </data>
+  <data name="GroupOptionalInportsText" xml:space="preserve">
+    <value>選擇性</value>
+  </data>
+  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
+    <value>未連接</value>
+  </data>
+  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
+    <value>收闔的群組</value>
+  </data>
+  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
+    <value>預設收闔為最小大小</value>
+  </data>
+  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
+    <value>預設隱藏選擇性的輸入埠</value>
+  </data>
+  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
+    <value>預設隱藏未連線的輸出埠</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

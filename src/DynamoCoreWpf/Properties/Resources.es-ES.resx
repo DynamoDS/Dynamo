@@ -147,6 +147,9 @@
   <data name="SignInButtonContentToolTip" xml:space="preserve">
     <value>Inicie sesión para acceder a los servicios en línea que se integran con el software de escritorio.</value>
   </data>
+  <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
+    <value>Active el modo de red para poder iniciar sesión.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -400,6 +403,12 @@ No se preocupe; tendrá la opción de guardar su trabajo.</value>
   </data>
   <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
     <value>Advertencia de descarga</value>
+  </data>
+  <data name="CopyToClipboardTooltip" xml:space="preserve">
+    <value>Copiar en el portapapeles</value>
+  </data>
+  <data name="CopyToClipboardFailedMessage" xml:space="preserve">
+    <value>Error al copiar en el portapapeles</value>
   </data>
   <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
     <value>Hay disponible una actualización de Dynamo. Haga clic para instalar.</value>
@@ -1122,6 +1131,9 @@ Siempre puede volver a descargar el paquete.</value>
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>Error al añadir el archivo: {0}</value>
   </data>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>No se han podido añadir los siguientes archivos:\n\n {0}</value>
+  </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>Error al aplicar NodeViewCustomization para {0}</value>
   </data>
@@ -1346,6 +1358,9 @@ Los siguientes montajes se han cargado varias veces:
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>Debido a limitaciones de .NET Framework, no es posible actualizar el conjunto de paquetes mientras está cargado. Actualice el conjunto mientras {0} no se esté ejecutando e inténtelo de nuevo.</value>
+  </data>
+  <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
+    <value>\n\nSe han encontrado montajes duplicados: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>No se puede actualizar conjunto</value>
@@ -2658,16 +2673,16 @@ Este paquete se descargará después del siguiente reinicio de Dynamo.</value>
     <value>Añadir carpeta</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
-    <value>Ruta de archivos de anotaciones (opcional)</value>
+    <value>Ruta de archivos Markdown (opcional)</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectoryToolTip" xml:space="preserve">
-    <value>Una ubicación opcional para documentar el paquete en formato de anotación.</value>
+    <value>Una ubicación opcional para documentar el paquete en formato Markdown.</value>
   </data>
   <data name="PublishPackageViewResetMarkdownDirectoryButton" xml:space="preserve">
     <value>Restablecer</value>
   </data>
   <data name="PublishPackageViewResetMarkdownDirectoryButtonToolTip" xml:space="preserve">
-    <value>Borra el directorio de anotaciones de este paquete.</value>
+    <value>Borra el directorio de Markdown de este paquete.</value>
   </data>
   <data name="PublishPackageViewRemoveItemToolTip" xml:space="preserve">
     <value>Elimina este elemento de la lista de contenido del paquete.</value>
@@ -2676,7 +2691,7 @@ Este paquete se descargará después del siguiente reinicio de Dynamo.</value>
     <value>Dependencias de paquetes externos</value>
   </data>
   <data name="PreferencesViewMarkdownDirectoryTooltip" xml:space="preserve">
-    <value>La documentación de anotaciones se puede añadir al paquete para que el Navegador de documentación muestre la información generada por el autor en cada nodo.</value>
+    <value>La documentación de Markdown se puede añadir al paquete para que el Navegador de documentación muestre la información generada por el autor en cada nodo.</value>
   </data>
   <data name="PublishPackageViewPublisherURLWatermark" xml:space="preserve">
     <value>URL</value>
@@ -3231,7 +3246,7 @@ Puede administrar esto en Preferencias - &gt; Seguridad.</value>
     <value>El nivel de confianza aparece junto a cada nodo recomendado y representa la probabilidad estimada de que el nodo sea una buena opción. Si se activa este parámetro, oculta los nodos recomendados que no cumplen el nivel de confianza especificado. Puede hacer clic en el encabezado Confianza baja para visualizar los nodos.</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Number of results for Recommended Nodes</value>
+    <value>Número de resultados para los nodos recomendados</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>Importar</value>
@@ -3793,6 +3808,45 @@ Para convertir este archivo en una nueva plantilla, guárdelo en una carpeta dif
   </data>
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
     <value>Este grupo está inutilizado. Haga clic para reutilizarlo.</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
+    <value>Activar barra de herramientas flotante</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
+    <value>Active una barra de herramientas flotante de sugerencias de nodos a fin de optimizar el flujo de trabajo. Desactive esta opción para volver al cuadro de diálogo emergente tradicional.</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
+    <value>_Volcar datos de iconos de nodos</value>
+  </data>
+  <data name="NodeIconDataIsDumped" xml:space="preserve">
+    <value>Los datos de iconos de nodos se vuelcan en \"{0}\".</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Uso compartido avanzado</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_General</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>Mostrar _propiedades de gráfico</value>
+  </data>
+  <data name="GroupOptionalInportsText" xml:space="preserve">
+    <value>Opcional</value>
+  </data>
+  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
+    <value>No conectado</value>
+  </data>
+  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
+    <value>Grupo contraído</value>
+  </data>
+  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
+    <value>Contraer al tamaño mínimo por defecto</value>
+  </data>
+  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
+    <value>Ocultar puertos de entrada opcionales por defecto</value>
+  </data>
+  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
+    <value>Ocultar puertos de salida no conectados por defecto</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

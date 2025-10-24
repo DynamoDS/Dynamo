@@ -156,9 +156,6 @@
   <data name="ImageSelector_Title_SelectImage" xml:space="preserve">
     <value>選取影像</value>
   </data>
-  <data name="MenuItemText" xml:space="preserve">
-    <value>展示圖表性質(_P)</value>
-  </data>
   <data name="URIValidationRule_Fail_Message" xml:space="preserve">
     <value>字串不是有效的 URI</value>
   </data>

@@ -207,12 +207,107 @@ namespace Dynamo.Tests
             var heightAdjustment = 100;
 
             // Act
+            annotationModel.IsThumbResizing = true;
             annotationModel.WidthAdjustment = widthAdjustment;
             annotationModel.HeightAdjustment = heightAdjustment;
+            annotationModel.IsThumbResizing = false;
 
             // Assert
             Assert.That(annotationModel.Width == initialWidth + widthAdjustment);
             Assert.That(annotationModel.Height == initialHeight + heightAdjustment);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GroupDoesNotExpandBeyondUserSetSizeWhenNodeIsInside()
+        {
+            // Arrange
+            // Add the first node to initialize the group
+            var firstNode = new DummyNode();
+            annotationModel.AddToTargetAnnotationModel(firstNode);
+
+            var originalWidth = annotationModel.Width;
+            var originalHeight = annotationModel.Height;
+            var originalRect = annotationModel.Rect;
+
+            // Simulate user resizing with thumb
+            annotationModel.UserSetWidth = originalWidth + 200;
+            annotationModel.UserSetHeight = originalHeight + 200;
+            annotationModel.UpdateBoundaryFromSelection();
+
+            var userResizedWidth = annotationModel.Width;
+            var userResizedHeight = annotationModel.Height;
+
+            Assert.AreEqual(1, annotationModel.Nodes.Count());
+            Assert.IsTrue(userResizedWidth > originalWidth);
+            Assert.IsTrue(userResizedHeight > originalHeight);
+
+            // Create a second node that sits within the resized area but outside the original bounds
+            var secondNode = new DummyNode { X = 100, Y = 50 };
+
+            // Confirm the node exceeds the original boundary
+            Assert.IsTrue(secondNode.Rect.Right > originalRect.Right);
+            Assert.IsTrue(secondNode.Rect.Bottom > originalRect.Bottom);
+
+            // Act
+            annotationModel.AddToTargetAnnotationModel(secondNode);
+            annotationModel.UpdateBoundaryFromSelection();
+
+            // Assert: group size should remain at user-set dimensions
+            Assert.AreEqual(2, annotationModel.Nodes.Count());
+            Assert.AreEqual(userResizedWidth, annotationModel.Width);
+            Assert.AreEqual(userResizedHeight, annotationModel.Height);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GroupExpandsWhenNodeExceedsUserSetSize_AndShrinksBackOnRemoval()
+        {
+            // Arrange: Add an initial node to initialize the group
+            var firstNode = new DummyNode();
+            annotationModel.AddToTargetAnnotationModel(firstNode);
+
+            var initialWidth = annotationModel.Width;
+            var initialHeight = annotationModel.Height;
+
+            // Simulate manual resize by the user
+            annotationModel.UserSetWidth = initialWidth + 200;
+            annotationModel.UserSetHeight = initialHeight + 200;
+            annotationModel.UpdateBoundaryFromSelection();
+
+            var resizedWidth = annotationModel.Width;
+            var resizedHeight = annotationModel.Height;
+            var resizedRect = annotationModel.Rect;
+
+            // Assert: Manual resize increased size
+            Assert.Greater(resizedWidth, initialWidth);
+            Assert.Greater(resizedHeight, initialHeight);
+
+            // Arrange: Create a second node that is fully outside the resized boundary
+            var secondNode = new DummyNode { X = 1000, Y = 500 };
+
+            // Verify that the new node falls outside the resized group bounds
+            Assert.Greater(secondNode.Rect.Left, resizedRect.Right);
+            Assert.Greater(secondNode.Rect.Top, resizedRect.Bottom);
+
+            // Act: Add the second node to the group
+            annotationModel.AddToTargetAnnotationModel(secondNode);
+            annotationModel.UpdateBoundaryFromSelection();
+
+            // Assert: Group expanded to accommodate second node
+            Assert.AreEqual(2, annotationModel.Nodes.Count());
+            Assert.Greater(annotationModel.Width, resizedWidth);
+            Assert.Greater(annotationModel.Height, resizedHeight);
+
+            // Act: Remove the second node
+            var updatedNodes = annotationModel.Nodes.Where(n => n != secondNode).ToList();
+            annotationModel.Nodes = updatedNodes;
+            annotationModel.UpdateBoundaryFromSelection();
+
+            // Assert: Group size reverts to user-defined dimensions
+            Assert.AreEqual(1, annotationModel.Nodes.Count());
+            Assert.AreEqual(resizedWidth, annotationModel.Width);
+            Assert.AreEqual(resizedHeight, annotationModel.Height);
         }
     }
 }

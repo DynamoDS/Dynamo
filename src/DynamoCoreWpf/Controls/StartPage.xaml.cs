@@ -419,7 +419,11 @@ namespace Dynamo.UI.Controls
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
-                recentFiles.RemoveRange(e.OldStartingIndex, recentFiles.Count - e.OldStartingIndex);
+                var removedItemsCount = e.OldItems?.Count ?? 0;
+                if (recentFiles.Count > e.OldStartingIndex && recentFiles.Count >= removedItemsCount)
+                {
+                    recentFiles.RemoveRange(e.OldStartingIndex, removedItemsCount);
+                }
             }
             else
             {

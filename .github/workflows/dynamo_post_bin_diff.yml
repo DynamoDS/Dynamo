@@ -17,13 +17,13 @@ jobs:
     if: github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'
     steps:
       - name: Download Pull Request Data
-        uses: dawidd6/action-download-artifact@v9
+        uses: dawidd6/action-download-artifact@v11
         with:
           name: pr_data
           run_id: ${{ github.event.workflow_run.id }}
           path: ${{ github.workspace }}/pr
       - name: Download Bin Diff Result
-        uses: dawidd6/action-download-artifact@v9
+        uses: dawidd6/action-download-artifact@v11
         with:
           name: bin_diff_result
           run_id: ${{ github.event.workflow_run.id }}
@@ -35,7 +35,7 @@ jobs:
           echo "DIFF=$(cat ${{ github.workspace }}/bin_diff_result/result.txt)" >> $GITHUB_OUTPUT
           echo "TIMESTAMP=$(date +%Y-%m-%d-%H:%M:%S)" >> $GITHUB_OUTPUT
       - name: Find Comment
-        uses: peter-evans/find-comment@v3
+        uses: peter-evans/find-comment@v4
         id: find_comment
         with:
           issue-number: ${{ steps.set_details.outputs.PR_NUMBER }}
@@ -44,14 +44,14 @@ jobs:
           direction: last
       - name: Create comment
         if: steps.find_comment.outputs.comment-id == '' && steps.set_details.outputs.DIFF != ''
-        uses: peter-evans/create-or-update-comment@v4
+        uses: peter-evans/create-or-update-comment@v5
         with:
           issue-number: ${{ steps.set_details.outputs.PR_NUMBER }}
           body: |
             ${{ steps.set_details.outputs.DIFF }}
       - name: Update comment
         if: steps.find_comment.outputs.comment-id != '' && steps.set_details.outputs.DIFF != ''
-        uses: peter-evans/create-or-update-comment@v4
+        uses: peter-evans/create-or-update-comment@v5
         with:
           comment-id: ${{ steps.find_comment.outputs.comment-id }}
           edit-mode: replace
@@ -60,7 +60,7 @@ jobs:
             (♻️ Updated: ${{ steps.set_details.outputs.TIMESTAMP }})
       - name: Update comment as resolved
         if: steps.find_comment.outputs.comment-id != '' && steps.set_details.outputs.DIFF == ''
-        uses: peter-evans/create-or-update-comment@v4
+        uses: peter-evans/create-or-update-comment@v5
         with:
           comment-id: ${{ steps.find_comment.outputs.comment-id }}
           edit-mode: replace

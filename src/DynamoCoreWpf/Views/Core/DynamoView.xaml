@@ -358,6 +358,16 @@
                                   Command="{Binding Path=DataContext.ImportLibraryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   Header="{x:Static p:Resources.DynamoViewFileMenuImport}" />
                         <Separator />
+                        <MenuItem Name="graphProperties"
+                                  Header="{x:Static p:Resources.DynamoViewFileMenuShowGraphProperties}">
+                            <MenuItem Name="general"
+                                      Command="{Binding ShowGraphPropertiesCommand}"
+                                      Header="{x:Static p:Resources.DynamoViewFileMenuGraphPropertiesGeneral}" />
+                            <!-- Host properties panel to be implemented in Dynamo C4D later -->
+                            <!--<MenuItem Name="advanced"
+                                      Header="{x:Static p:Resources.DynamoViewFileMenuGraphPropertiesAdvanced}" />-->                            
+                        </MenuItem>
+                        <Separator />
                         <MenuItem Name="exportMenu"
                                   Header="{x:Static p:Resources.DynamoViewFileMenuExport}"
                                   IsEnabled="False"
@@ -686,6 +696,9 @@
                                       IsEnabled="True" />
                             <MenuItem Command="{Binding DumpNodeHelpDataCommand}"
                                       Header="{x:Static p:Resources.DynamoViewDebugMenuDumpNodeHelpData}"
+                                      IsEnabled="True" />
+                            <MenuItem Command="{Binding DumpNodeIconsCommand}"
+                                      Header="{x:Static p:Resources.DynamoViewDebugMenuDumpNodeIcons}"
                                       IsEnabled="True" />
                         </MenuItem>
                         <MenuItem Name="DebugModes"
@@ -1290,6 +1303,14 @@
                                                     </MultiDataTrigger.Conditions>
                                                     <Setter Property="Text" Value="{Binding Path=FileName, Converter={StaticResource PathToFileNameConverter}}" />
                                                 </MultiDataTrigger>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type workspaces:HomeWorkspaceModel}" />
+                                                        <Condition Binding="{Binding Path=IsTemplate}" Value="True" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <!--  The value of the unsaved Workspace tab text field  -->
+                                                    <Setter Property="Text" Value="Workspace" />
+                                                </MultiDataTrigger> 
                                                 <MultiDataTrigger>
                                                     <MultiDataTrigger.Conditions>
                                                         <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type workspaces:CustomNodeWorkspaceModel}" />

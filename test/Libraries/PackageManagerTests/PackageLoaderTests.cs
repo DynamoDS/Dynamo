@@ -1297,11 +1297,11 @@ namespace Dynamo.PackageManager.Tests
             // Assert
             const string ExpectedToken = @"%BuiltInPackages%";
             Assert.AreNotEqual(ExpectedToken, defaultPackageDirectory);
-            Assert.AreEqual(3, packageDirectories.Count());
+            Assert.AreEqual(2, packageDirectories.Count());
             Assert.IsFalse(packageDirectories.Contains(ExpectedToken));
             Assert.IsTrue(packageDirectories.Contains(PathManager.BuiltinPackagesDirectory));
             Assert.AreNotEqual(ExpectedToken, defaultUserDefinitions);
-            Assert.AreEqual(3, userDefinitions.Count());
+            Assert.AreEqual(2, userDefinitions.Count());
             Assert.IsFalse(userDefinitions.Contains(ExpectedToken));
             Assert.IsTrue(userDefinitions.Contains(PathManager.BuiltinPackagesDirectory));
         }

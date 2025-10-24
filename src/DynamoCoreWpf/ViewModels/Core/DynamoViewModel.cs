@@ -11,7 +11,6 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Dynamo.Configuration;
@@ -209,13 +208,13 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls if the the ML data ingestion pipeline is beta from feature flag
+        /// Controls if the the ML data ingestion pipeline is enabled or not.
         /// </summary>
-        internal bool IsDNADataIngestionPipelineinBeta
+        internal bool EnableDNADataIngestionPipeline
         {
             get
             {
-                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsDNADataIngestionPipelineinBeta", true) ?? true;
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("EnableDNADataIngestionPipeline", false) ?? false;
             }
         }
 
@@ -227,6 +226,17 @@ namespace Dynamo.ViewModels
             get
             {
                 return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsDNAClusterPlacementEnabled", false) ?? false;
+            }
+        }
+
+        /// <summary>
+        /// Controls if the new DNA Flyout is enabled from preference settings.
+        /// </summary>
+        internal bool IsNewDNAUIEnabled
+        {
+            get
+            {
+                return model.PreferenceSettings.EnableNewNodeAutoCompleteUI;
             }
         }
 
@@ -783,7 +793,7 @@ namespace Dynamo.ViewModels
             this.model.CommandCompleted += OnModelCommandCompleted;
             this.model.RequestsCrashPrompt += CrashReportTool.ShowCrashWindow;
 
-            this.HideReportOptions = startConfiguration.HideReportOptions;
+            this.HideReportOptions = startConfiguration.HideReportOptions || model.NoNetworkMode;
             UsageReportingManager.Instance.InitializeCore(this);
             this.WatchHandler = startConfiguration.WatchHandler;
             var pmExtension = model.GetPackageManagerExtension();
@@ -1535,26 +1545,26 @@ namespace Dynamo.ViewModels
         /// <param name="isBinding">Should be set to true, if you require to bind the passed
         /// NodeModel engine value with the menu item, works only when a single node is passed in the list.</param>
         internal void AddPythonEngineToMenuItems(List<PythonNodeBase> pythonNodeModel,
-           MenuItem pythonEngineVersionMenu,
+           System.Windows.Controls.MenuItem pythonEngineVersionMenu,
            RoutedEventHandler updateEngineDelegate,
            string engineName, bool isBinding = false)
         {
             //if all nodes in the selection are set to a specific engine, then that engine will be checked in the list.
             bool hasCommonEngine = pythonNodeModel.All(x => x.EngineName == engineName);
-            var currentItem = pythonEngineVersionMenu.Items.Cast<MenuItem>().FirstOrDefault(x => x.Header as string == engineName);
+            var currentItem = pythonEngineVersionMenu.Items.Cast<System.Windows.Controls.MenuItem>().FirstOrDefault(x => x.Header as string == engineName);
             if (currentItem != null)
             {
                 if (pythonNodeModel.Count == 1) return;
                 currentItem.IsChecked = hasCommonEngine;
                 return;
             }
-            MenuItem pythonEngineItem = null;
+            System.Windows.Controls.MenuItem pythonEngineItem = null;
             //if single node, then checked property is bound to the engine value, as python node context menu is not recreated
             if (pythonNodeModel.Count == 1 && isBinding)
             {
                 var pythonNode = pythonNodeModel.FirstOrDefault(); ;
-                pythonEngineItem = new MenuItem { Header = engineName, IsCheckable = false };
-                pythonEngineItem.SetBinding(MenuItem.IsCheckedProperty, new System.Windows.Data.Binding(nameof(pythonNode.EngineName))
+                pythonEngineItem = new System.Windows.Controls.MenuItem { Header = engineName, IsCheckable = false };
+                pythonEngineItem.SetBinding(System.Windows.Controls.MenuItem.IsCheckedProperty, new System.Windows.Data.Binding(nameof(pythonNode.EngineName))
                 {
                     Source = pythonNode,
                     Converter = new CompareToParameterConverter(),
@@ -1565,7 +1575,7 @@ namespace Dynamo.ViewModels
             {
                 //when updating multiple nodes checked value is not bound to any specific node,
                 //rather takes into account all the selected nodes
-                pythonEngineItem = new MenuItem { Header = engineName, IsCheckable = true };
+                pythonEngineItem = new System.Windows.Controls.MenuItem { Header = engineName, IsCheckable = true };
                 pythonEngineItem.IsChecked = hasCommonEngine;
             }
             pythonEngineItem.Click += updateEngineDelegate;
@@ -1937,9 +1947,9 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="workspace"></param>
         /// <returns>A customized file-save dialog</returns>
-        public FileDialog GetSaveDialog(WorkspaceModel workspace)
+        public CustomSaveFileDialog GetSaveDialog(WorkspaceModel workspace)
         {
-            FileDialog fileDialog = new SaveFileDialog
+            CustomSaveFileDialog fileDialog = new CustomSaveFileDialog
             {
                 AddExtension = true,
             };
@@ -2334,6 +2344,7 @@ namespace Dynamo.ViewModels
         {
             try
             {
+                filePath = Model.CurrentWorkspace.FileName;
                 string fileContentsInUse = String.IsNullOrEmpty(filePath) ? fileContents : File.ReadAllText(filePath);
                 if (string.IsNullOrEmpty(fileContentsInUse))
                 {
@@ -2432,7 +2443,7 @@ namespace Dynamo.ViewModels
                 }
             }
 
-            if (_fileDialog.ShowDialog() == DialogResult.OK)
+            if (_fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 if (CanOpen(_fileDialog.FileName))
                 {
@@ -2527,7 +2538,7 @@ namespace Dynamo.ViewModels
                     _fileDialog.InitialDirectory = path;
             }
 
-            if (_fileDialog.ShowDialog() == DialogResult.OK)
+            if (_fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 if (CanOpen(_fileDialog.FileName))
                 {
@@ -2791,7 +2802,7 @@ namespace Dynamo.ViewModels
                 // Since the workspace file directory is null, we set the initial directory
                 // for the file to be MyDocument folder in the local computer.
                 fd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                if (fd.ShowDialog() == DialogResult.OK)
+                if (fd.ShowDialog() == true)
                 {
                     SaveAs(workspace.Guid, fd.FileName);
                     return true;
@@ -2845,6 +2856,18 @@ namespace Dynamo.ViewModels
         internal bool CanShowPackageManager(object parameters)
         {
             return !model.IsServiceMode && !model.NoNetworkMode;
+        }
+
+        internal event EventHandler ShowGraphPropertiesRequested;
+
+        internal void ShowGraphProperties(object parameter)
+        {
+            ShowGraphPropertiesRequested?.Invoke(this, EventArgs.Empty);
+        }
+
+        internal bool CanShowGraphProperties(object parameter)
+        {
+            return model.CurrentWorkspace is HomeWorkspaceModel;
         }
 
         /// <summary>
@@ -3014,7 +3037,7 @@ namespace Dynamo.ViewModels
         {
             var vm = this;
 
-            if (string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName))
+            if (string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName) || vm.Model.CurrentWorkspace.IsTemplate)
             {
                 if (CanShowSaveDialogAndSaveResult(parameter))
                 {
@@ -3046,7 +3069,18 @@ namespace Dynamo.ViewModels
 
             try
             {
-                FileDialog _fileDialog = vm.GetSaveDialog(vm.Model.CurrentWorkspace);
+                //This get the real SaveFileDialog (instead of the mocked one assigned below)
+                IFileSaver _fileDialog = vm.GetSaveDialog(vm.Model.CurrentWorkspace);
+
+                //This section will be only executed when the IFileSaver was mocked and passed as a parameter (method dependency injection)
+                if (parameter != null)
+                {
+                    var saveDialog = parameter as IFileSaver;
+                    if(saveDialog != null)
+                    {
+                        _fileDialog = saveDialog;
+                    }
+                }
 
                 // If the current workspace is a template use the last saved location.
                 if (vm.Model.CurrentWorkspace.IsTemplate)
@@ -3071,7 +3105,7 @@ namespace Dynamo.ViewModels
                     _fileDialog.InitialDirectory = pathManager.DefaultUserDefinitions;
                 }
 
-                if (_fileDialog.ShowDialog() == DialogResult.OK)
+                if (_fileDialog.ShowDialog() == true)
                 {
                     SaveAs(_fileDialog.FileName);
                     if(FileTrustViewModel != null)
@@ -3309,25 +3343,31 @@ namespace Dynamo.ViewModels
             // Upon closing a workspace, validate if the workspace is valid to be sent to the ML datapipeline and then send it.
             if (!DynamoModel.IsTestMode && !HomeSpace.HasUnsavedChanges && (currentWorkspaceViewModel?.IsHomeSpace ?? true) && HomeSpace.HasRunWithoutCrash)
             {
-                if (!IsDNADataIngestionPipelineinBeta && Model.CurrentWorkspace.IsValidForFDX && currentWorkspaceViewModel.Checksum != string.Empty)
+                if (preferencesViewModel.IsMLAutocompleteTOUApproved)
                 {
-                    if (HasDifferentialCheckSum())
+                    // Currently EnableDNADataIngestionPipeline is set to false for debug builds and true for release builds. so we need to modify it here, when testing the pipeline in debug builds.
+                    if (EnableDNADataIngestionPipeline && Model.CurrentWorkspace.IsValidForFDX && currentWorkspaceViewModel.Checksum != string.Empty)
                     {
-                        Model.Logger.Log("This Workspace is being shared to train the Dynamo Machine Learning model.", LogLevel.File);
-                        var workspacePath = model.CurrentWorkspace.FileName;
-
-                        Task.Run(() =>
+                        if (HasDifferentialCheckSum())
                         {
-                            try
+                            Model.Logger.Log("This Workspace is being shared to train the Dynamo Machine Learning model.", LogLevel.File);
+                            MLDataPipelineExtension.DynamoMLDataPipeline.isWorkspaceSharedWithML = true;
+
+                            var workspacePath = model.CurrentWorkspace.FileName;
+
+                            Task.Run(() =>
                             {
-                                MLDataPipelineExtension.DynamoMLDataPipeline.SendWorkspaceLog(workspacePath);
-                            }
-                            catch (Exception ex)
-                            {
-                                Model.Logger.Log("Failed to share this workspace with ML pipeline.", LogLevel.File);
-                                Model.Logger.Log(ex.StackTrace, LogLevel.File);
-                            }
-                        });
+                                try
+                                {
+                                    MLDataPipelineExtension.DynamoMLDataPipeline.SendWorkspaceLog(workspacePath);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Model.Logger.Log("Failed to share this workspace with ML pipeline.", LogLevel.File);
+                                    Model.Logger.Log(ex.StackTrace, LogLevel.File);
+                                }
+                            });
+                        }
                     }
                 }
             }
@@ -3478,11 +3518,11 @@ namespace Dynamo.ViewModels
 
         public void ShowSaveImageDialogAndSave(object parameter)
         {
-            FileDialog _fileDialog = null;
+            System.Windows.Forms.FileDialog _fileDialog = null;
 
             if (_fileDialog == null)
             {
-                _fileDialog = new SaveFileDialog()
+                _fileDialog = new System.Windows.Forms.SaveFileDialog()
                 {
                     AddExtension = true,
                     DefaultExt = ".png",
@@ -3500,7 +3540,7 @@ namespace Dynamo.ViewModels
                 _fileDialog.FileName = snapshotName;
             }
 
-            if (_fileDialog.ShowDialog() != DialogResult.OK) return;
+            if (_fileDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
             if (!CanSaveImage(_fileDialog.FileName)) return;
 
             if (parameter == null)
@@ -3911,14 +3951,14 @@ namespace Dynamo.ViewModels
         {
             string[] fileFilter = {string.Format(Resources.FileDialogLibraryFiles, "*.dll; *.ds" ), string.Format(Resources.FileDialogAssemblyFiles, "*.dll"),
                                    string.Format(Resources.FileDialogDesignScriptFiles, "*.ds"), string.Format(Resources.FileDialogAllFiles,"*.*")};
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
             openFileDialog.Filter = String.Join("|", fileFilter);
             openFileDialog.Title = Resources.ImportLibraryDialogTitle;
             openFileDialog.Multiselect = true;
             openFileDialog.RestoreDirectory = true;
 
-            DialogResult result = openFileDialog.ShowDialog();
-            if (result == DialogResult.OK)
+            System.Windows.Forms.DialogResult result = openFileDialog.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
             {
                 try
                 {
@@ -4015,7 +4055,7 @@ namespace Dynamo.ViewModels
 
         private void ExportToSTL(object parameter)
         {
-            FileDialog _fileDialog = null ?? new SaveFileDialog()
+            System.Windows.Forms.FileDialog _fileDialog = null ?? new System.Windows.Forms.SaveFileDialog()
             {
                 AddExtension = true,
                 DefaultExt = ".stl",
@@ -4031,7 +4071,7 @@ namespace Dynamo.ViewModels
                 _fileDialog.InitialDirectory = fi.DirectoryName;
             }
 
-            if (_fileDialog.ShowDialog() == DialogResult.OK)
+            if (_fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 BackgroundPreviewViewModel.ExportToSTL(_fileDialog.FileName, HomeSpace.Name);
 
@@ -4291,6 +4331,45 @@ namespace Dynamo.ViewModels
             File.WriteAllText(fullFileName, stat.ToString());
         }
 
+        internal void DumpNodeIconData(object parameter)
+        {
+            //set to manual run mode to prevent execution of the nodes as wel place them
+            this.HomeSpace.RunSettings.RunType = RunType.Manual;
+
+            string nodesWithoutIconsFileName = String.Format("NodesWithoutIcons_{0}.csv", DateTime.Now.ToString("yyyyMMddHmmss"));
+            string nodesWithoutIconsFullFileName = Path.Combine(Model.PathManager.LogDirectory, nodesWithoutIconsFileName);
+
+            //creating a copy to avoid collection changed exceptions
+            var entriesCopy = Model.SearchModel.Entries.Where(n => n.IsVisibleInSearch).ToList();
+
+            StreamWriter sw = File.CreateText(nodesWithoutIconsFullFileName);
+
+            sw.WriteLine("NODE ASSEMBLY,NODE NAME");
+
+            foreach (var nse in entriesCopy)
+            {
+                var newNode = nse.CreateNode();
+                this.CurrentSpace.AddAndRegisterNode(newNode);
+                var placedNode = this.CurrentSpaceViewModel.Nodes.Last();
+                var imageSource = placedNode.ImageSource;
+
+                //if image source is null, then no icon is found
+                if (imageSource is null)
+                {
+                    sw.WriteLine($"{nse.Assembly},{nse.Name}");
+                }
+                else
+                {
+                    this.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(placedNode.Id));
+                }
+            }
+
+            sw.Close();
+
+            //alert user to new file location
+            MainGuideManager.CreateRealTimeInfoWindow(string.Format(Resources.NodeIconDataIsDumped, nodesWithoutIconsFullFileName), true);
+        }
+
         private FileInfo GetMatchingDocFromDirectory(string nodeName, string hash, List<string> suffix, DirectoryInfo dir)
         {
             FileInfo matchingFile = null;
@@ -4311,6 +4390,10 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanDumpNodeHelpData(object obj)
+        {
+            return true;
+        }
+        internal bool CanDumpNodeIconData(object obj)
         {
             return true;
         }

@@ -151,6 +151,9 @@
   <data name="SignInButtonContentToolTip" xml:space="preserve">
     <value>Sign in to access online services that integrate with your desktop software.</value>
   </data>
+  <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
+    <value>Enable Network Mode to be able to sign in.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -446,6 +449,12 @@ Don't worry, you'll have the option to save your work.</value>
   </data>
   <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
     <value>Download Warning</value>
+  </data>
+  <data name="CopyToClipboardTooltip" xml:space="preserve">
+    <value>Copy to clipboard</value>
+  </data>
+  <data name="CopyToClipboardFailedMessage" xml:space="preserve">
+    <value>Copy to clipboard failed</value>
   </data>
   <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
     <value>A Dynamo update is available. Click to install.</value>
@@ -1316,6 +1325,10 @@ You can always redownload the package.</value>
     <value>Failed to add file: {0}</value>
     <comment>Message box content</comment>
   </data>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>Failed to add the following files:\n\n {0}</value>
+    <comment>Message box content</comment>
+  </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>Failed to apply NodeViewCustomization for {0}</value>
   </data>
@@ -1571,6 +1584,9 @@ Next assemblies were loaded several times:
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>Due to limitations in the .NET framework, it is not possible to update your package assembly while it is already loaded.  Please update the assembly while {0} is not running and try again.</value>
+  </data>
+  <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
+    <value>\n\nDuplicate assemblies found: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>Cannot update assembly</value>
@@ -4154,5 +4170,47 @@ To make this file into a new template, save it to a different folder, then move 
   </data>
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
     <value>This group is frozen. Click to unfreeze.</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
+    <value>Enable Floating Toolbar</value>
+    <comment>Preferences | Features | Experimental | Enable Node AutoComplete New UI</comment>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
+    <value>Enable a floating toolbar for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog.</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
+    <value>_Dump Node Icon Data</value>
+    <comment>Debug menu | Dump all node icon data</comment>
+  </data>
+  <data name="NodeIconDataIsDumped" xml:space="preserve">
+    <value>Node Icon Data is dumped to \"{0}\".</value>
+    <comment>Debug menu | Dump all node icons</comment>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Advanced Sharing</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_General</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>Show Graph _Properties</value>
+  </data>
+  <data name="GroupOptionalInportsText" xml:space="preserve">
+    <value>Optional</value>
+  </data>
+  <data name="GroupUnconnectedOutportsText" xml:space="preserve">
+    <value>Unconnected</value>
+  </data>
+  <data name="PreferencesViewCollapsedGroupHeader" xml:space="preserve">
+    <value>Collapsed Group</value>
+  </data>
+  <data name="PreferencesViewCollapseToMinSizeDescription" xml:space="preserve">
+    <value>Collapse to minimal size by default</value>
+  </data>
+  <data name="PreferencesViewHideInportsDescription" xml:space="preserve">
+    <value>Hide optional input ports by default</value>
+  </data>
+  <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
+    <value>Hide unconnected output ports by default</value>
   </data>
 </root>
