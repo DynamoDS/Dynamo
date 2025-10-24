@@ -184,13 +184,23 @@ namespace Dynamo.PythonMigration
         private void OnCurrentWorkspaceChanged(IWorkspaceModel workspace)
         {
             UnSubscribeWorkspaceEvents();
+
+            // Switching to a new workspace, until first build finishes, don’t mutate nodes
             initialBuildDone = false;
 
+            var previous = CurrentWorkspace;
             CurrentWorkspace = workspace as WorkspaceModel;
             PythonDependencies.UpdateWorkspace(CurrentWorkspace);
             SubscribeToWorkspaceEvents();
 
-            NotificationTracker.Remove(CurrentWorkspace.Guid);
+            // Close any CPython upgrade toast on *any* workspace switch.
+            // Closing a Custom Node tab triggers a workspace change, not a workspace cleared
+            DynamoViewModel.MainGuideManager?.CloseRealTimeInfoWindow();
+
+            if (previous != null)
+            {
+                NotificationTracker.Remove(previous.Guid);
+            }
             GraphPythonDependencies.CustomNodePythonDependencyMap.Clear();
 
             if (CurrentWorkspace is HomeWorkspaceModel hws)
@@ -200,8 +210,7 @@ namespace Dynamo.PythonMigration
             else if (CurrentWorkspace is ICustomNodeWorkspaceModel)
             {
                 initialBuildDone = true;
-                RecomputeCPython3NotificationForWorkspace();
-                
+                RecomputeCPython3NotificationForWorkspace();                
             }
 
             CurrentWorkspace.Nodes
