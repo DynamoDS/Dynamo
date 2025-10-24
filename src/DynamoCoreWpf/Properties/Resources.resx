@@ -2052,6 +2052,9 @@ Do you want to install the latest Dynamo update?</value>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>Due to limitations in the .NET framework, it is not possible to update your package assembly while it is already loaded.  Please update the assembly while {0} is not running and try again.</value>
   </data>
+  <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
+    <value>\n\nDuplicate assemblies found: {0}</value>
+  </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>Cannot update assembly</value>
   </data>
@@ -2441,6 +2444,10 @@ Next assemblies were loaded several times:
   </data>
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>Failed to add file: {0}</value>
+    <comment>Message box content</comment>
+  </data>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>Failed to add the following files:\n\n {0}</value>
     <comment>Message box content</comment>
   </data>
   <data name="MessageConfirmToSaveReadOnlyCustomNode" xml:space="preserve">

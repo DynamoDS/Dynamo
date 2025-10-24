@@ -316,6 +316,18 @@ namespace Dynamo.ViewModels
                     ws.CustomNodeId,
                     out currentFunInfo))
                 {
+                    // Use the workspace's FileName directly if info.Path is not set
+                    if (string.IsNullOrEmpty(currentFunInfo.Path) && !string.IsNullOrEmpty(ws.FileName))
+                    {
+                        currentFunInfo = new CustomNodeInfo(
+                            currentFunInfo.FunctionId,
+                            currentFunInfo.Name,
+                            currentFunInfo.Category,
+                            currentFunInfo.Description,
+                            ws.FileName,  // Use workspace FileName
+                            currentFunInfo.IsVisibleInDynamoLibrary);
+                    }
+
                     var touParams = new TermsOfUseHelperParams
                     {
                         PackageManagerClient = Model,
@@ -487,7 +499,23 @@ namespace Dynamo.ViewModels
                 }
             }
 
-            var newPkgVm = new PublishPackageViewModel(DynamoViewModel) { CustomNodeDefinitions = funcDefs.Select(pair => pair.Item2).ToList() };
+            var newPkgVm = new PublishPackageViewModel(DynamoViewModel);
+
+            // Populate CustomDyfFilepaths FIRST (before CustomNodeDefinitions triggers RefreshPackageContents)
+            foreach (var funcDef in funcDefs)
+            {
+                var info = funcDef.Item1;  // CustomNodeInfo
+                var def = funcDef.Item2;   // CustomNodeDefinition
+                
+                if (!string.IsNullOrEmpty(info.Path))
+                {
+                    var fileName = System.IO.Path.GetFileName(info.Path);
+                    newPkgVm.CustomDyfFilepaths.TryAdd(fileName, info.Path);
+                }
+            }
+
+            // Now set CustomNodeDefinitions - this will trigger RefreshPackageContents() which includes CustomDyfFilepaths
+            newPkgVm.CustomNodeDefinitions = funcDefs.Select(pair => pair.Item2).ToList();
 
             DynamoViewModel.OnRequestPackagePublishDialog(newPkgVm);
         }
