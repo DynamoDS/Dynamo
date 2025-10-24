@@ -1078,7 +1078,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the IsChecked property in the "HIde CPython notifications" toggle button
+        /// Controls the IsChecked property in the "Hide CPython notifications" toggle button
         /// </summary>
         public bool HideCPythonNotificationIsChecked
         {
