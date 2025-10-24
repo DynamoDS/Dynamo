@@ -7,9 +7,10 @@ using System.Windows;
 using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Core;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
-using Dynamo.PackageManager;
+using Dynamo.Models;
 using Dynamo.PythonMigration.Controls;
 using Dynamo.PythonMigration.MigrationAssistant;
 using Dynamo.PythonMigration.Properties;
@@ -28,6 +29,7 @@ namespace Dynamo.PythonMigration
         private bool hasCPython3Engine;
         private bool hasPythonNet3Engine;
         private bool enginesSubscribed;
+        private bool initialBuildDone;
 
         internal ViewLoadedParams LoadedParams { get; set; }
         internal DynamoViewModel DynamoViewModel { get; set; }
@@ -63,7 +65,6 @@ namespace Dynamo.PythonMigration
         {
             UnsubscribeEvents();
         }
-
 
         public void Loaded(ViewLoadedParams p)
         {
@@ -183,6 +184,8 @@ namespace Dynamo.PythonMigration
         private void OnCurrentWorkspaceChanged(IWorkspaceModel workspace)
         {
             UnSubscribeWorkspaceEvents();
+            initialBuildDone = false;
+
             CurrentWorkspace = workspace as WorkspaceModel;
             PythonDependencies.UpdateWorkspace(CurrentWorkspace);
             SubscribeToWorkspaceEvents();
@@ -190,12 +193,31 @@ namespace Dynamo.PythonMigration
             NotificationTracker.Remove(CurrentWorkspace.Guid);
             GraphPythonDependencies.CustomNodePythonDependencyMap.Clear();
 
-            RecomputeCPython3NotificationForWorkspace();
+            if (CurrentWorkspace is HomeWorkspaceModel hws)
+            {
+                hws.EvaluationCompleted += OnFirstEvaluationCompleted;
+            }
+            else if (CurrentWorkspace is ICustomNodeWorkspaceModel)
+            {
+                initialBuildDone = true;
+                RecomputeCPython3NotificationForWorkspace();
+                
+            }
 
             CurrentWorkspace.Nodes
-                .Where(x => x is PythonNodeBase)
-                .ToList()
-                .ForEach(x => SubscribeToPythonNodeEvents(x as PythonNodeBase));
+                    .Where(x => x is PythonNodeBase)
+                    .ToList()
+                    .ForEach(x => SubscribeToPythonNodeEvents(x as PythonNodeBase));
+        }
+
+        private void OnFirstEvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
+        {
+            // unsubscribe so it runs only once
+            if (sender is HomeWorkspaceModel hws)
+                hws.EvaluationCompleted -= OnFirstEvaluationCompleted;
+
+            initialBuildDone = true;
+            RecomputeCPython3NotificationForWorkspace();
         }
 
         private void OnCurrentWorkspaceCleared(IWorkspaceModel workspace)
@@ -241,6 +263,11 @@ namespace Dynamo.PythonMigration
                     .Cast<PythonNode>()
                     .ToList()
                     .ForEach(n => UnSubscribePythonNodeEvents(n));
+
+                if (CurrentWorkspace is HomeWorkspaceModel hws)
+                {
+                    hws.EvaluationCompleted -= OnFirstEvaluationCompleted;
+                }
             }
         }
 
@@ -289,6 +316,7 @@ namespace Dynamo.PythonMigration
         private void RecomputeCPython3NotificationForWorkspace()
         {
             if (CurrentWorkspace == null) return;
+            if (CurrentWorkspace is HomeWorkspaceModel && !initialBuildDone) return;
 
             var preferenceSettings = DynamoViewModel?.Model?.PreferenceSettings;
             if (preferenceSettings == null || hasCPython3Engine)
@@ -297,10 +325,11 @@ namespace Dynamo.PythonMigration
                 return;
             }
 
-            var cPy3Nodes = CurrentWorkspace.Nodes
-                .OfType<PythonNodeBase>()
-                .Where(n => GraphPythonDependencies.IsCPythonNode(n))
-                .ToList();
+            //var cPy3Nodes = CurrentWorkspace.Nodes
+            //    .OfType<PythonNodeBase>()
+            //    .Where(n => GraphPythonDependencies.IsCPythonNode(n))
+            //    .ToList();
+            var cPy3Nodes = FindCPythonNodesIncludingCustoms(CurrentWorkspace);
 
             if (cPy3Nodes.Count == 0)
             {
@@ -320,6 +349,43 @@ namespace Dynamo.PythonMigration
             CurrentWorkspace.ShowCPythonNotifications = true;
             ShowPythonEngineUpgradeToast(cPy3Nodes.Count);
             UpgradeCPython3Nodes(cPy3Nodes);
+        }
+
+        private List<PythonNodeBase> FindCPythonNodesIncludingCustoms(WorkspaceModel root)
+        {
+            var result = new List<PythonNodeBase>();
+            if (root == null) return result;
+            var visitedCustomDefs = new HashSet<Guid>();
+
+            void CollectFromWorkspace(WorkspaceModel ws)
+            {
+                // Add CPython nodes from this workspace
+                foreach (var n in ws.Nodes.OfType<PythonNodeBase>())
+                {
+                    if (n.EngineName == PythonEngineManager.CPython3EngineName)
+                        result.Add(n);
+                }
+
+                // Traverse any Custom Nodes referenced by this workspace
+                foreach (var func in ws.Nodes.OfType<Function>())
+                {
+                    var defId = func.Definition?.FunctionId ?? Guid.Empty;
+                    if (defId == Guid.Empty) continue;
+                    if (!visitedCustomDefs.Add(defId)) continue;
+
+                    // Resolve the definition workspace
+                    var cnm = DynamoViewModel?.Model?.CustomNodeManager;
+                    if (cnm != null && cnm.TryGetFunctionWorkspace(defId, Models.DynamoModel.IsTestMode, out CustomNodeWorkspaceModel defWsModel))
+                    {
+                        var defWs = defWsModel as WorkspaceModel;
+                        if (defWs != null)
+                            CollectFromWorkspace(defWs);
+                    }
+                }
+            }
+
+            CollectFromWorkspace(root);
+            return result;
         }
 
         /// <summary>
