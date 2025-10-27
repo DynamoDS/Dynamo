@@ -1,19 +1,296 @@
-<Workspace Version="1.0.1.1743" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
-  <NamespaceResolutionMap />
-  <Elements>
-    <CoreNodeModels.Watch guid="f72f6210-b32f-4dc4-9b2a-61f0144a0109" type="CoreNodeModels.Watch" nickname="Watch" x="609" y="310.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" />
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="b1255415-8ae7-4d00-8cdf-6a88ad1031b1" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="String.FromObject" x="390" y="310.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.String.FromObject@var" />
-    <CoreNodeModels.Input.Filename guid="5ccbc3c1-fdb1-485b-8d52-4ad11871ef5b" type="CoreNodeModels.Input.Filename" nickname="File Path" x="0" y="167.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="True" IsFrozen="false" isPinned="false">
-      <System.String>..\..\..\test\core\string\TestToString_fromFile.txt</System.String>
-    </CoreNodeModels.Input.Filename>
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="600ef0b7-189b-4bf4-9ceb-872fa86933cc" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="File.ReadText" x="205" y="311.02" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.IO.File.ReadText@string" />
-  </Elements>
-  <Connectors>
-    <Dynamo.Graph.Connectors.ConnectorModel start="b1255415-8ae7-4d00-8cdf-6a88ad1031b1" start_index="0" end="f72f6210-b32f-4dc4-9b2a-61f0144a0109" end_index="0" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="5ccbc3c1-fdb1-485b-8d52-4ad11871ef5b" start_index="0" end="600ef0b7-189b-4bf4-9ceb-872fa86933cc" end_index="0" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="600ef0b7-189b-4bf4-9ceb-872fa86933cc" start_index="0" end="b1255415-8ae7-4d00-8cdf-6a88ad1031b1" end_index="0" portType="0" />
-  </Connectors>
-  <Notes />
-  <Annotations />
-  <Presets />
-</Workspace>
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "TestToString_fromFile",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "5ccbc3c1fdb1485b8d524ad11871ef5b",
+      "Name": "File Path",
+      "Type": "string",
+      "Type2": "string",
+      "Value": "..\\..\\..\\test\\core\\string\\TestToString_fromFile.txt",
+      "Description": "Allows you to select a file on the system and returns its file path"
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 148.0,
+      "WatchHeight": 40.0,
+      "Id": "f72f6210b32f4dc49b2a61f0144a0109",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "a8370d9ba43846d18520dd7cce825326",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "778bcfa7dc824b54838680dcee2536bb",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "Id": "5ccbc3c1fdb1485b8d524ad11871ef5b",
+      "NodeType": "ExtensionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "bd62edd41b5347cc806d422adf3373a8",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system and returns its file path",
+      "HintPath": "C:\\dev\\Dynamo\\test\\core\\string\\TestToString_fromFile.txt",
+      "InputValue": "..\\..\\..\\test\\core\\string\\TestToString_fromFile.txt"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.FromObject, CoreNodeModels",
+      "Id": "f66bc1d556c54b3587b118d36f689f22",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "84593e9567254e5987dc42509b651333",
+          "Name": "object",
+          "Description": "Object to be serialized",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f78569410ae94ad189157fc0fe1131f1",
+          "Name": "string",
+          "Description": "String representation of the object",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Converts an object to a string representation"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.FileObject, CoreNodeModels",
+      "Id": "f580e6e470a442fc8a19838f40cd17f9",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "01f00e17d7d34654b7ecd824814b4666",
+          "Name": "path",
+          "Description": "Path to the file as string.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f399a91ea6ae4893ae20d85a7173638d",
+          "Name": "file",
+          "Description": "File object",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a file object from the given path"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "16e2dcad56504ca2871e36f4611d6b96",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "d7a271b536994142ae896ec93c3bb7dc",
+          "Name": "file",
+          "Description": "File object to read text from\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e1e367a611cc461a8af97ba102d71b86",
+          "Name": "string",
+          "Description": "Contents of the text file.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.IO.FileSystem.ReadText@var",
+      "Replication": "Auto",
+      "Description": "Reads a text file and returns the contents as a string.\n\nFileSystem.ReadText (file: var): string"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "bd62edd41b5347cc806d422adf3373a8",
+      "End": "01f00e17d7d34654b7ecd824814b4666",
+      "Id": "307a2cc88619403cabb7d40ce07f4845",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f78569410ae94ad189157fc0fe1131f1",
+      "End": "a8370d9ba43846d18520dd7cce825326",
+      "Id": "88cdbb805af2462e876443e3f5cc0741",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f399a91ea6ae4893ae20d85a7173638d",
+      "End": "d7a271b536994142ae896ec93c3bb7dc",
+      "Id": "55694740c93b40c3a1356530847402b8",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e1e367a611cc461a8af97ba102d71b86",
+      "End": "84593e9567254e5987dc42509b651333",
+      "Id": "46d66a904b2947e7af8ee6db446808a7",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "TestToString_fromFile.txt",
+      "ReferenceType": "External",
+      "Nodes": [
+        "5ccbc3c1fdb1485b8d524ad11871ef5b"
+      ]
+    }
+  ],
+  "EnableLegacyPolyCurveBehavior": null,
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "4.0",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "4.0.0.2016",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": 958.3822021484375,
+      "EyeY": 974.3681640625,
+      "EyeZ": -152.89370727539062,
+      "LookX": -1360.763671875,
+      "LookY": -727.09033203125,
+      "LookZ": -281.5401306152344,
+      "UpX": 0.6294578313827515,
+      "UpY": -0.7660432457923889,
+      "UpZ": 0.13023266196250916
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "f72f6210b32f4dc49b2a61f0144a0109",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 609.0,
+        "Y": 310.02
+      },
+      {
+        "Id": "5ccbc3c1fdb1485b8d524ad11871ef5b",
+        "Name": "File Path",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 0.0,
+        "Y": 167.02
+      },
+      {
+        "Id": "f66bc1d556c54b3587b118d36f689f22",
+        "Name": "String from Object",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 603.5,
+        "Y": 493.0
+      },
+      {
+        "Id": "f580e6e470a442fc8a19838f40cd17f9",
+        "Name": "File From Path",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 67.5,
+        "Y": 461.0
+      },
+      {
+        "Id": "16e2dcad56504ca2871e36f4611d6b96",
+        "Name": "FileSystem.ReadText",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 296.5,
+        "Y": 468.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
