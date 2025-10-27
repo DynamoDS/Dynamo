@@ -283,7 +283,10 @@ namespace Dynamo.ViewModels
                 try
                 {
                     bool isOnline = await NetworkUtilities.CheckOnlineAccessAsync();                    
-                    UIDispatcher?.BeginInvoke(DispatcherPriority.ApplicationIdle , () => OnlineAccess = isOnline);
+                    if (UIDispatcher != null && (!UIDispatcher.HasShutdownStarted && !UIDispatcher.HasShutdownFinished))
+                    {
+                        await UIDispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, () => OnlineAccess = isOnline);
+                    }
                 }
                 catch
                 {

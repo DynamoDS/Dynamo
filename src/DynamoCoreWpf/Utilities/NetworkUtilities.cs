@@ -9,6 +9,8 @@ namespace Dynamo.Utilities
     /// </summary>
     internal static class NetworkUtilities
     {
+        private static readonly HttpClient httpClient = new HttpClient() { Timeout = TimeSpan.FromSeconds(5) };
+        private static readonly string[] endPoints = { "https://www.google.com",  "https://www.microsoft.com" };
         /// <summary>
         /// Checks online access by pinging reliable external services
         /// </summary>
@@ -17,27 +19,15 @@ namespace Dynamo.Utilities
         {
             try
             {
-                using (var client = new HttpClient())
+                foreach (var endpoint in endPoints)
                 {
-                    client.Timeout = TimeSpan.FromSeconds(5);
-                    
-                    // Use endpoints that reliably support HEAD requests
-                    var endpoints = new[]
+                    if (await PingUrlAsync(httpClient, endpoint))
                     {
-                        "https://www.google.com",  
-                        "https://www.microsoft.com"
-                    };
-
-                    foreach (var endpoint in endpoints)
-                    {
-                        if (await PingUrlAsync(client, endpoint))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
-                    
-                    return false;
                 }
+                    
+                return false;
             }
             catch
             {
