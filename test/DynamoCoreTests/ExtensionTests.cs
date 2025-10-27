@@ -242,7 +242,7 @@ namespace Dynamo.Tests
         public void ExtensionLoader_LoadNodeLibraryAddsZTNodesToSearch()
         {
             var assemPath = Path.Combine(testpkgPath, "Dynamo Samples", "bin", "SampleLibraryZeroTouch.dll");
-            var assembly = Assembly.LoadFrom(assemPath);
+            var assembly = Utilities.AssemblyHelper.LoadInALCFrom(assemPath);
             var libraryLoader = new ExtensionLibraryLoader(model);
             libraryLoader.LoadNodeLibrary(assembly);
 

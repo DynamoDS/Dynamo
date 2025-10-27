@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.Loader;
 
 namespace Dynamo.Utilities
 {
@@ -50,7 +51,7 @@ namespace Dynamo.Utilities
                         Console.WriteLine("loading from " + assemblyPath);
 
                     }
-                    return Assembly.LoadFrom(assemblyPath);
+                    return LoadInALCFrom(assemblyPath);
                 }
 
                 // Then check all additional resolution paths
@@ -68,7 +69,7 @@ namespace Dynamo.Utilities
                         {
                             Console.WriteLine("loading from " + assemblyPath);
                         }
-                        return Assembly.LoadFrom(assemblyPath);
+                        return LoadInALCFrom(assemblyPath);
                     }
                 }
 
@@ -88,6 +89,12 @@ namespace Dynamo.Utilities
             return includeRevisionNumber
                 ? version
                 : new Version(version.Major, version.Minor, version.Build, 0);
+        }
+
+        internal static Assembly LoadInALCFrom(string assemblyPath, AssemblyLoadContext alc = null)
+        {
+            alc ??= AssemblyLoadContext.GetLoadContext(Assembly.GetExecutingAssembly());
+            return alc.LoadFromAssemblyPath(assemblyPath);
         }
     }
 }

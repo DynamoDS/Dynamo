@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Xml;
 using Dynamo.Logging;
 using DynamoUtilities;
@@ -20,7 +19,7 @@ namespace Dynamo.Wpf.Extensions
                     {
                         CertificateVerification.CheckAssemblyForValidCertificate(viewExtension.AssemblyPath);
                     }
-                    var assembly = Assembly.LoadFrom(viewExtension.AssemblyPath);
+                    var assembly = Dynamo.Utilities.AssemblyHelper.LoadInALCFrom(viewExtension.AssemblyPath);
                     var result = assembly.CreateInstance(viewExtension.TypeName) as IViewExtension;
                     ExtensionLoading?.Invoke(result);
 

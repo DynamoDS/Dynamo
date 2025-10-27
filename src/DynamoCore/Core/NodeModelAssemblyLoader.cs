@@ -150,7 +150,7 @@ namespace Dynamo.Models
                     Assembly assembly;
                     if (!loadedAssembliesByPath.TryGetValue(assemblyPath, out assembly))
                     {
-                        assembly = Assembly.LoadFrom(assemblyPath);
+                        assembly = Dynamo.Utilities.AssemblyHelper.LoadInALCFrom(assemblyPath);
                         loadedAssembliesByName[assembly.GetName().Name] = assembly;
                         loadedAssembliesByPath[assemblyPath] = assembly;
                     }
@@ -214,6 +214,7 @@ namespace Dynamo.Models
             }
             try
             {
+                // TODO: ALC issue ? DynamoCoreWpf will probably be loaded only once, in a single ALC?
                 var customizerType = Type.GetType("Dynamo.Wpf.INodeViewCustomization`1,DynamoCoreWpf");
                 if (customizerType != null)
                 {

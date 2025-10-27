@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Loader;
 using System.Text.RegularExpressions;
 
 namespace DynamoShapeManager
@@ -263,7 +264,7 @@ namespace DynamoShapeManager
             Debug.WriteLine(string.Format("LibG ASM Preloader location: {0}", preloaderPath));
             Debug.WriteLine(string.Format("ASM loading location: {0}", asmLocation));
 
-            var libG = Assembly.LoadFrom(preloaderPath);
+            var libG = AssemblyLoadContext.GetLoadContext(Assembly.GetExecutingAssembly()).LoadFromAssemblyPath(preloaderPath);
             var preloadType = libG.GetType(PreloaderClassName);
 
             var preloadMethod = preloadType.GetMethod(PreloaderMethodName,
@@ -367,7 +368,7 @@ namespace DynamoShapeManager
                 if (!File.Exists(assemblyPath))
                     throw new FileNotFoundException(assemblyPath);
 
-                var assembly = Assembly.LoadFrom(assemblyPath);
+                var assembly = AssemblyLoadContext.GetLoadContext(Assembly.GetExecutingAssembly()).LoadFromAssemblyPath(assemblyPath);
                 type = assembly.GetType("DynamoInstallDetective.Utilities");
             }
 

@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Threading;
-using DynamoUtilities.Properties;
+using DynamoUtility.Properties;
 using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Utilities

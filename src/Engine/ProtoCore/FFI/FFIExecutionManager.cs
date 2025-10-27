@@ -43,10 +43,11 @@ namespace ProtoFFI
                     //https://github.com/dotnet/runtime/issues/89215
                     if (name.ToLower().Contains("system.private.corelib"))
                     {
+                        // Assembly.Load will either return an already loaded assembly or load it in the Default load context (which is where it should be).
                         return Assembly.Load(System.IO.Path.GetFileNameWithoutExtension(name));
                     }
 
-                    return Assembly.LoadFrom(name);
+                    return Dynamo.Utilities.AssemblyHelper.LoadInALCFrom(name);
                 }
                 catch(System.IO.FileLoadException e)
                 {

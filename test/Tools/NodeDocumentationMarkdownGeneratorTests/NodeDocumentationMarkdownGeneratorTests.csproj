@@ -18,6 +18,7 @@
         <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
     </ItemGroup>
     <ItemGroup>
+    <ProjectReference Include="..\..\..\src\DynamoUtilities\DynamoUtilities.csproj" />
     <ProjectReference Include="..\..\..\src\Tools\NodeDocumentationMarkdownGenerator\NodeDocumentationMarkdownGenerator.csproj">
       <Project>{0dd3e4ed-66aa-47fc-9eb9-2a0e6a0ea01b}</Project>
       <Name>NodeDocumentationMarkdownGenerator</Name>
