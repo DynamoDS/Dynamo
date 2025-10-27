@@ -177,6 +177,7 @@ namespace Dynamo.Logging
             Task.Run(() => StartInternal());
 
             TrackPreference("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
+            TrackPreference("MLTermsOfUse", "", PreferenceSettings.Instance?.IsMLAutocompleteTOUApproved == true ? 1 : 0);
         }
 
         public void ShutDown()

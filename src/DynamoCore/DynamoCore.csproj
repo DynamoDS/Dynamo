@@ -32,9 +32,9 @@
   <ItemGroup Label="Common dependencies">
     <PackageReference Include="Autodesk.IDSDK" Version="1.2.5" />
     <PackageReference Include="Greg" Version="3.0.2.8780" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="4.0.0.2856" GeneratePathProperty="true" ExcludeAssets="all"/>
-    <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.2855" Condition=" '$(Configuration)' == 'Release' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
-    <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0_debug" Version="4.0.0.2855" Condition=" '$(Configuration)' == 'Debug' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="4.0.0.2951" GeneratePathProperty="true" ExcludeAssets="all"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.2950" Condition=" '$(Configuration)' == 'Release' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0_debug" Version="4.0.0.2950" Condition=" '$(Configuration)' == 'Debug' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" CopyXML="true" />
     <PackageReference Include="RestSharp" Version="112.0.0" CopyXML="true" />
     <PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
@@ -122,12 +122,12 @@
         <LibGProtoGeometryLibGLocale>$(LibGMainPackagePath)\tools\libg_locale</LibGProtoGeometryLibGLocale>
     </PropertyGroup>
     <ItemGroup>
-        <LibGInterface Include="$(LibGMainPackagePath)\tools\netstandard2.0\$(LibGOsToken)\LibG.Interface.dll" />
-        <LibGProtoGeometryDLL Include="$(LibGMainPackagePath)\tools\netstandard2.0\$(LibGOsToken)\ProtoGeometry.dll" />
-        <LibGProtoGeometryXML Include="$(LibGMainPackagePath)\tools\netstandard2.0\$(LibGOsToken)\ProtoGeometry.XML" />
-        <LibGMainDeps Include="$(LibGMainPackagePath)\tools\netstandard2.0\$(LibGOsToken)\asm_deps.csproj" />
-        <LibGMain Include="$(LibGMainPackagePath)\tools\netstandard2.0\$(LibGOsToken)\$(LIBGVerMain)\*" />
-        <LibGSecondary Include="$(LibGSecondaryPackagePath)\tools\netstandard2.0\$(LibGOsToken)\$(LIBGVerSecondary)\*" />
+        <LibGInterface Include="$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\LibG.Interface.dll" />
+        <LibGProtoGeometryDLL Include="$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\ProtoGeometry.dll" />
+        <LibGProtoGeometryXML Include="$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\ProtoGeometry.XML" />
+        <LibGMainDeps Include="$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\asm_deps.csproj" />
+        <LibGMain Include="$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\$(LIBGVerMain)\*" />
+        <LibGSecondary Include="$(LibGSecondaryPackagePath)\tools\netstandard2.1\$(LibGOsToken)\$(LIBGVerSecondary)\*" />
         <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
 		<NodeHelpCsCZMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\cs-CZ\**\*.md" />
 		<NodeHelpDeDEMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\de-DE\**\*.md" />
@@ -211,7 +211,7 @@
     <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <ItemGroup>
-      <LibGProtoGeometryUICultureAllLanguages Include="$(LibGMainPackagePath)\tools\netstandard2.0\$(LibGOsToken)\**\*.resources.dll;$(LibGMainPackagePath)\tools\netstandard2.0\$(LibGOsToken)\**\*.resx" />
+      <LibGProtoGeometryUICultureAllLanguages Include="$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\**\*.resources.dll;$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\**\*.resx" />
     </ItemGroup>
     <Copy SourceFiles="@(LibGProtoGeometryUICultureAllLanguages)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" />
     <Copy SourceFiles="@(LibGMainDeps)" DestinationFolder="$(OutputPath)$(LIBGVerMain)\asm_deps\" />

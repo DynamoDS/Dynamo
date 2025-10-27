@@ -517,25 +517,65 @@ namespace Dynamo.UI.Views
         {
             if (viewModel.PreferenceSettings.IsFirstRun == true)
             {
-                //Move the current location two levels up
-                var programDataDir = Directory.GetParent(Directory.GetParent(viewModel.Model.PathManager.CommonDataDirectory).ToString()).ToString();
-                var listOfXmlFiles = Directory.GetFiles(programDataDir, "*.xml");
-                string PreferencesSettingFilePath = string.Empty;
+                var programDataDir = string.Empty;
 
-                //Find the first xml file name from the list that can be Deserialized to PreferenceSettings
-                foreach (var xmlFile in listOfXmlFiles)
+                try
                 {
-                    if (IsValidPreferencesFile(xmlFile))
+                    //This code will be executed only when Dynamo is running inside any Host application like Revit, FormIt, Civil3D
+                    if (viewModel.Model.PathManager.HostApplicationDirectory != null && !string.IsNullOrEmpty(viewModel.Model.HostVersion))
                     {
-                        PreferencesSettingFilePath = xmlFile;
-                        break;
+                        //Move the current location two levels up for finding the DynamoSettings.xml file (just for Hosts)
+                        var firstParent = Directory.GetParent(viewModel.Model.PathManager.CommonDataDirectory);
+                        if (firstParent != null)
+                        {
+                            var secondParent = Directory.GetParent(firstParent.ToString());
+                            if (secondParent != null)
+                            {
+                                programDataDir = secondParent.ToString();
+                            }
+                            else
+                            {
+                                // Fallback: use firstParent or handle as appropriate
+                                programDataDir = firstParent.ToString();
+                            }
+                        }
+                        else
+                        {
+                            // Fallback: use CommonDataDirectory or handle as appropriate
+                            programDataDir = viewModel.Model.PathManager.CommonDataDirectory;
+                        }
+                    }
+                    //This code will be executed when Dynamo is running as a standalone application
+                    else
+                    {
+                        programDataDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), Configurations.DynamoAsString);
+                    }
+
+                    if (Directory.Exists(programDataDir))
+                    {
+                        var listOfXmlFiles = Directory.GetFiles(programDataDir, "*.xml");
+                        string PreferencesSettingFilePath = string.Empty;
+
+                        //Find the first xml file name from the list that can be Deserialized to PreferenceSettings
+                        foreach (var xmlFile in listOfXmlFiles)
+                        {
+                            if (IsValidPreferencesFile(xmlFile))
+                            {
+                                PreferencesSettingFilePath = xmlFile;
+                                break;
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(PreferencesSettingFilePath) && File.Exists(PreferencesSettingFilePath))
+                        {
+                            var content = File.ReadAllText(PreferencesSettingFilePath);
+                            ImportSettings(content);
+                        }
                     }
                 }
-
-                if (!string.IsNullOrEmpty(PreferencesSettingFilePath) && File.Exists(PreferencesSettingFilePath))
+                catch (Exception ex)
                 {
-                    var content = File.ReadAllText(PreferencesSettingFilePath);
-                    ImportSettings(content);
+                    viewModel.Model.Logger.Log("Error loading preferences from programDataDir: " + ex.Message);
                 }
             }
         }
