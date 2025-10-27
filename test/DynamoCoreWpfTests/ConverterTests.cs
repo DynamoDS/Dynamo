@@ -755,23 +755,23 @@ namespace DynamoCoreWpfTests
         public void OnlineStatusTextConverterTest()
         {
             var converter = new OnlineStatusTextConverter();
-            object result;
+            string result;
 
             // Test offline mode (true)
-            result = converter.Convert(true, null, null, null);
-            Assert.AreEqual("Offline Mode", result);
+            result = converter.Convert(true, null, null, null) as string;
+            Assert.AreEqual(Dynamo.Wpf.Properties.Resources.OnlineStatusTooltip, result);
 
             // Test online mode (false)
-            result = converter.Convert(false, null, null, null);
-            Assert.AreEqual("Online Mode", result);
+            result = converter.Convert(false, null, null, null) as string;
+            Assert.AreEqual(Dynamo.Wpf.Properties.Resources.OfflineStatusTooltip, result);
 
             // Test null value
-            result = converter.Convert(null, null, null, null);
-            Assert.AreEqual("Unknown", result);
+            result = converter.Convert(null, null, null, null) as string;
+            Assert.AreEqual(Dynamo.Wpf.Properties.Resources.OnlineStatusTooltip, result);
 
             // Test non-boolean value
-            result = converter.Convert("invalid", null, null, null);
-            Assert.AreEqual("Unknown", result);
+            result = converter.Convert("invalid", null, null, null) as string;
+            Assert.AreEqual(Dynamo.Wpf.Properties.Resources.OnlineStatusTooltip, result);
         }
     }
 }
