@@ -462,8 +462,6 @@ namespace DynamoCoreWpfTests
             PreferenceSettings initalSetting = new PreferenceSettings();
             PreferenceSettings resultSetting;
 
-            initalSetting.IsBackgroundPreviewActive = true;
-
             initalSetting.Save(tempPath);
             resultSetting = PreferenceSettings.Load(tempPath);
 
@@ -471,8 +469,6 @@ namespace DynamoCoreWpfTests
             #endregion
 
             #region Second Test
-            initalSetting.IsBackgroundPreviewActive = false;
-
             initalSetting.Save(tempPath);
             resultSetting = PreferenceSettings.Load(tempPath);
 

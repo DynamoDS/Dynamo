@@ -68,9 +68,7 @@ namespace Dynamo.Interfaces
 
         /// <summary>
         /// Indicates whether background preview is active or not.
-        /// </summary>
-        [Obsolete("Property will be deprecated in a future version of Dynamo, please use BackgroundPreviews")]
-        bool IsBackgroundPreviewActive { get; set; }
+        bool IsBackgroundPreviewActive { get; }
 
         /// <summary>
         /// Returns the decimal precision used to display numbers.

@@ -391,19 +391,7 @@ namespace Dynamo.Configuration
 
         /// <summary>
         /// Indicates whether background preview is active or not.
-        /// </summary>
-        [Obsolete("Property will be deprecated in a future version of Dynamo, please use BackgroundPreviews")]
-        public bool IsBackgroundPreviewActive
-        {
-            get
-            {
-                return GetIsBackgroundPreviewActive("IsBackgroundPreviewActive");
-            }
-            set
-            {
-                SetIsBackgroundPreviewActive("IsBackgroundPreviewActive", value);
-            }
-        }
+        public bool IsBackgroundPreviewActive { get { return BackgroundPreviews.Count > 0; } }
 
         /// <summary>
         /// Indicate which render precision will be used
