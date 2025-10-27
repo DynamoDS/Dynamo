@@ -1,16 +1,188 @@
-<Workspace Version="0.7.5.3233" X="0" Y="0" zoom="1" Description="" Category="" Name="Home">
-  <Elements>
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="1c1cbeec-c02e-4c1c-a880-dc195d53ef29" nickname="ToString" x="271.5" y="69" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="" function="ToString@var[]..[]" />
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="e4ff05a2-3795-48d1-aef7-c0e7814802cc" nickname="String.FromObject" x="271.5" y="211" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.String.FromObject@var" />
-    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="f359ea84-d1ab-468b-9745-f280cff75eda" nickname="Code Block" x="76" y="85" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="42;" ShouldFocus="false" />
-    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="88ecf13c-40dc-42c2-89b3-375c2773f5b1" nickname="Watch" x="497.5" y="129" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-    <Dynamo.Nodes.Watch type="Dynamo.Nodes.Watch" guid="257aaba5-5e11-4646-a25f-6cd17eb8d200" nickname="Watch" x="542.5" y="279" isVisible="true" isUpstreamVisible="true" lacing="Disabled" />
-  </Elements>
-  <Connectors>
-    <Dynamo.Models.ConnectorModel start="1c1cbeec-c02e-4c1c-a880-dc195d53ef29" start_index="0" end="88ecf13c-40dc-42c2-89b3-375c2773f5b1" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="e4ff05a2-3795-48d1-aef7-c0e7814802cc" start_index="0" end="257aaba5-5e11-4646-a25f-6cd17eb8d200" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="f359ea84-d1ab-468b-9745-f280cff75eda" start_index="0" end="1c1cbeec-c02e-4c1c-a880-dc195d53ef29" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="f359ea84-d1ab-468b-9745-f280cff75eda" start_index="0" end="e4ff05a2-3795-48d1-aef7-c0e7814802cc" end_index="0" portType="0" />
-  </Connectors>
-  <Notes />
-</Workspace>
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "TestObsoleteStringFunctions",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "1c1cbeecc02e4c1ca880dc195d53ef29",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "8fd2b41b3873448c94456bc584bca00f",
+          "Name": "object",
+          "Description": "some object\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4f15e035506f414ebbb6af00326c5926",
+          "Name": "string",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "ToString@var[]..[]",
+      "Replication": "Auto",
+      "Description": "ToString (object: var[]..[]): string"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "f359ea84d1ab468b9745f280cff75eda",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "dce6e645c25841a3b290a89cf3cb1f11",
+          "Name": "integer",
+          "Description": "42",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "42;"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 200.0,
+      "WatchHeight": 40.0,
+      "Id": "88ecf13c40dc42c289b3375c2773f5b1",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "daa632b5b49645b9aab4fa406a3de3ef",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "951d36efe6c540509f78f0de11ae8388",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "4f15e035506f414ebbb6af00326c5926",
+      "End": "daa632b5b49645b9aab4fa406a3de3ef",
+      "Id": "15fb121ba3434719bba4685f85934c5d",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "dce6e645c25841a3b290a89cf3cb1f11",
+      "End": "8fd2b41b3873448c94456bc584bca00f",
+      "Id": "8dd254d6697e426993aa99db99685807",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": null,
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "4.0",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "4.0.0.2016",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "1c1cbeecc02e4c1ca880dc195d53ef29",
+        "Name": "ToString",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 271.5,
+        "Y": 69.0
+      },
+      {
+        "Id": "f359ea84d1ab468b9745f280cff75eda",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 76.0,
+        "Y": 85.0
+      },
+      {
+        "Id": "88ecf13c40dc42c289b3375c2773f5b1",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 497.5,
+        "Y": 129.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
