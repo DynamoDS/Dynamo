@@ -371,6 +371,10 @@ namespace Dynamo.PythonMigration
                 return;
             }
 
+            //var cPy3Nodes = CurrentWorkspace.Nodes
+            //    .OfType<PythonNodeBase>()
+            //    .Where(n => GraphPythonDependencies.IsCPythonNode(n))
+            //    .ToList();
             var cPy3Nodes = FindCPythonNodesIncludingCustoms(CurrentWorkspace);
 
             if (cPy3Nodes.Count == 0)
@@ -393,11 +397,10 @@ namespace Dynamo.PythonMigration
             UpgradeCPython3Nodes(cPy3Nodes);
         }
 
-        private List<PyNodeWithWorkspace> FindCPythonNodesIncludingCustoms(WorkspaceModel root)
+        private List<PythonNodeBase> FindCPythonNodesIncludingCustoms(WorkspaceModel root)
         {
-            var result = new List<PyNodeWithWorkspace>();
+            var result = new List<PythonNodeBase>();
             if (root == null) return result;
-
             var visitedCustomDefs = new HashSet<Guid>();
 
             void CollectFromWorkspace(WorkspaceModel ws)
@@ -406,7 +409,7 @@ namespace Dynamo.PythonMigration
                 foreach (var n in ws.Nodes.OfType<PythonNodeBase>())
                 {
                     if (n.EngineName == PythonEngineManager.CPython3EngineName)
-                        result.Add(new PyNodeWithWorkspace(ws, n));
+                        result.Add(n);
                 }
 
                 // Traverse any Custom Nodes referenced by this workspace
