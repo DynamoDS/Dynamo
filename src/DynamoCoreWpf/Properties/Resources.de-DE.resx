@@ -3765,8 +3765,8 @@ Um diese Datei als neue Vorlage zu speichern, speichern Sie sie in einem anderen
     <value>Die Kompatibilität dieser Version mit Ihrem Setup wurde nicht überprüft. Sie funktioniert möglicherweise nicht wie erwartet.</value>
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
-    <value>Autodesk Identity Manager ist offenbar nicht auf Ihrem System eingerichtet. Um vollen Zugriff auf alle Funktionen zu haben, melden Sie sich mit Autodesk Identity Manager bei Ihrem Autodesk-Konto an.
-Führen Sie #Download und Installation=https://manage.autodesk.com/products/updates hier oder über Autodesk Access durch, und melden Sie sich dann an.</value>
+    <value>It seems like Autodesk Identity Manager is not set up on your system. To ensure full access to all features, please sign in to your Autodesk account using Autodesk Identity Manager.
+#Download and install=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html it here or through Autodesk Access, then sign in.</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Autodesk Identity Manager herunterladen</value>
