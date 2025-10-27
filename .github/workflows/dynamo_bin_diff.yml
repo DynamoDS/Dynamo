@@ -22,7 +22,7 @@ jobs:
         with:
           dotnet-version: |
             8.0.x
-            10.0.100-rc.1.25451.107
+            10.0.100-rc.2.25502.107
       - name: Disable problem matcher
         run: Write-Output "::remove-matcher owner=csc::"
       - name: Setup msbuild
@@ -61,7 +61,7 @@ jobs:
         with:
           dotnet-version: |
             8.0.x
-            10.0.100-rc.1.25451.107
+            10.0.100-rc.2.25502.107
       - name: Disable problem matcher
         run: Write-Output "::remove-matcher owner=csc::"
       - name: Setup msbuild
