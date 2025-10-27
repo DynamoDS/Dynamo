@@ -22,7 +22,7 @@
     <PackageReference Include="DynamicLanguageRuntime" Version="1.2.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
-      <PackageReference Include="DynamoVisualProgramming.PythonEngine.PythonNet3" Version="1.4.3">
+      <PackageReference Include="DynamoVisualProgramming.PythonEngine.PythonNet3" Version="1.4.2">
           <ExcludeAssets>runtime;native;contentFiles;build;buildTransitive;analyzers</ExcludeAssets>
           <PrivateAssets>all</PrivateAssets>
       </PackageReference>
