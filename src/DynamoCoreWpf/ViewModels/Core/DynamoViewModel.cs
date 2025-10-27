@@ -280,17 +280,19 @@ namespace Dynamo.ViewModels
 
             Task.Run(async () =>
             {
+                var result = await NetworkUtilities.CheckOnlineAccessAsync();
+                if (!result.Item2) //if check was canceled we just return - we are during shutdown sequence.
+                {
+                    return;
+                }
+
                 try
                 {
-                    bool isOnline = await NetworkUtilities.CheckOnlineAccessAsync();                    
-                    if (UIDispatcher != null && (!UIDispatcher.HasShutdownStarted && !UIDispatcher.HasShutdownFinished))
-                    {
-                        await UIDispatcher.BeginInvoke(DispatcherPriority.ApplicationIdle, () => OnlineAccess = isOnline);
-                    }
+                    await UIDispatcher?.BeginInvoke(DispatcherPriority.ApplicationIdle, () => OnlineAccess = result.Item1);
                 }
-                catch
+                catch(Exception ex)
                 {
-                    //Nothing to do here, just swallow the exception
+                    Trace.WriteLine($"Something went wrong mostlikely during the shutdown sequence: {ex.Message}");
                 }
             });
         }
@@ -933,6 +935,7 @@ namespace Dynamo.ViewModels
             MLDataPipelineExtension = model.ExtensionManager.Extensions.OfType<DynamoMLDataPipelineExtension>().FirstOrDefault();
             IsIDSDKInitialized();
 
+            NetworkUtilities.InitInternetCheck();
             CheckOnlineAccess();
         }
 
@@ -4524,6 +4527,9 @@ namespace Dynamo.ViewModels
 
             if (!AskUserToSaveWorkspacesOrCancel(shutdownParams.AllowCancellation))
                 return false;
+
+
+            NetworkUtilities.StopInternetCheck();
 
             // 'shutdownSequenceInitiated' is marked as true here indicating
             // that the shutdown may not be stopped.
