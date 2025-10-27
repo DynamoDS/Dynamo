@@ -443,6 +443,10 @@ Dynamo.Controls.NestedGroupsLabelConverter
 Dynamo.Controls.NestedGroupsLabelConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NestedGroupsLabelConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NestedGroupsLabelConverter.NestedGroupsLabelConverter() -> void
+Dynamo.Controls.NetworkStatusIconConverter
+Dynamo.Controls.NetworkStatusIconConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.NetworkStatusIconConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.NetworkStatusIconConverter.NetworkStatusIconConverter() -> void
 Dynamo.Controls.NodeAutocompleteImageConverter
 Dynamo.Controls.NodeAutocompleteImageConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NodeAutocompleteImageConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -528,6 +532,10 @@ Dynamo.Controls.ObjectTypeConverter
 Dynamo.Controls.ObjectTypeConverter.Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.ObjectTypeConverter.ConvertBack(object value, System.Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) -> object[]
 Dynamo.Controls.ObjectTypeConverter.ObjectTypeConverter() -> void
+Dynamo.Controls.OnlineStatusTextConverter
+Dynamo.Controls.OnlineStatusTextConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.OnlineStatusTextConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.OnlineStatusTextConverter.OnlineStatusTextConverter() -> void
 Dynamo.Controls.PackageDetailsLinkCollapseOnEmpty
 Dynamo.Controls.PackageDetailsLinkCollapseOnEmpty.Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.PackageDetailsLinkCollapseOnEmpty.ConvertBack(object value, System.Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) -> object[]
