@@ -1884,6 +1884,8 @@ namespace Dynamo.ViewModels
                 }
                 workspaces.Add(newVm);
             }
+
+            CheckOnlineAccess();
         }
 
         private void WorkspaceRemoved(WorkspaceModel item)
