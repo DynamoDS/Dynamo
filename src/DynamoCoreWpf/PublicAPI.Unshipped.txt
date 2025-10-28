@@ -443,6 +443,10 @@ Dynamo.Controls.NestedGroupsLabelConverter
 Dynamo.Controls.NestedGroupsLabelConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NestedGroupsLabelConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NestedGroupsLabelConverter.NestedGroupsLabelConverter() -> void
+Dynamo.Controls.NetworkStatusIconConverter
+Dynamo.Controls.NetworkStatusIconConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.NetworkStatusIconConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.NetworkStatusIconConverter.NetworkStatusIconConverter() -> void
 Dynamo.Controls.NodeAutocompleteImageConverter
 Dynamo.Controls.NodeAutocompleteImageConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NodeAutocompleteImageConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -528,6 +532,10 @@ Dynamo.Controls.ObjectTypeConverter
 Dynamo.Controls.ObjectTypeConverter.Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.ObjectTypeConverter.ConvertBack(object value, System.Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) -> object[]
 Dynamo.Controls.ObjectTypeConverter.ObjectTypeConverter() -> void
+Dynamo.Controls.OnlineStatusTextConverter
+Dynamo.Controls.OnlineStatusTextConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.OnlineStatusTextConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.OnlineStatusTextConverter.OnlineStatusTextConverter() -> void
 Dynamo.Controls.PackageDetailsLinkCollapseOnEmpty
 Dynamo.Controls.PackageDetailsLinkCollapseOnEmpty.Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.PackageDetailsLinkCollapseOnEmpty.ConvertBack(object value, System.Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) -> object[]
@@ -2127,6 +2135,7 @@ Dynamo.ViewModels.DynamoViewModel.NewHomeWorkspaceCommand.get -> Dynamo.UI.Comma
 Dynamo.ViewModels.DynamoViewModel.NewHomeWorkspaceCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.NodeFromSelectionCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.NodeFromSelectionCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.OnlineAccess.get -> bool
 Dynamo.ViewModels.DynamoViewModel.OnRequestPackagePublishDialog(Dynamo.PackageManager.PublishPackageViewModel vm) -> void
 Dynamo.ViewModels.DynamoViewModel.OnRequestShorcutToolbarLoaded(double rightMenuActualWidth) -> void
 Dynamo.ViewModels.DynamoViewModel.OpenCommand.get -> Dynamo.UI.Commands.DelegateCommand
@@ -5123,6 +5132,8 @@ static Dynamo.Wpf.Properties.Resources.NodeAutocomplete.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeAutoCompleteNotAvailableForCollapsedGroups.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeAutoCompleteToolTip.get -> string
+static Dynamo.Wpf.Properties.Resources.OfflineStatusTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.OnlineStatusTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDuplicateAssembliesFoundMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoCompleteNewUI.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoCompleteNewUITooltipText.get -> string
