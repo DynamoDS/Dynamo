@@ -242,4 +242,10 @@ By clicking “Continue”, you are agreeing to implement the syntax changes to 
   <data name="CPythonMigrationBackupFileCreatedHeader" xml:space="preserve">
     <value>Backup graph has been saved</value>
   </data>
+  <data name="CustomNodeUpgradeToastMessagePlural" xml:space="preserve">
+    <value>{0} custom node definitions have been temporarily converted to PythonNet3 for this session. Save the graph to update their .dyf files. CPython is no longer supported.</value>
+  </data>
+  <data name="CustomNodeUpgradeToastMessageSingular" xml:space="preserve">
+    <value>1 custom node definition has been temporarily converted to PythonNet3 for this session. Save the graph to update its .dyf file. CPython is no longer supported.</value>
+  </data>
 </root>

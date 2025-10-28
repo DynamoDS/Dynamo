@@ -108,7 +108,7 @@ namespace Dynamo.PythonMigration.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Backup graph has been saved.
         /// </summary>
-        public static string CPythonMigrationBackupFileCreatedTitle {
+        public static string CPythonMigrationBackupFileCreatedHeader {
             get {
                 return ResourceManager.GetString("CPythonMigrationBackupFileCreatedHeader", resourceCulture);
             }
@@ -147,6 +147,24 @@ namespace Dynamo.PythonMigration.Properties {
         public static string CustomNodesPythonDependencyHeader {
             get {
                 return ResourceManager.GetString("CustomNodesPythonDependencyHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} custom node definitions have been temporarily converted to PythonNet3 for this session. Save the graph to update their .dyf files. CPython is no longer supported..
+        /// </summary>
+        public static string CustomNodeUpgradeToastMessagePlural {
+            get {
+                return ResourceManager.GetString("CustomNodeUpgradeToastMessagePlural", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 custom node definition has been temporarily converted to PythonNet3 for this session. Save the graph to update its .dyf file. CPython is no longer supported..
+        /// </summary>
+        public static string CustomNodeUpgradeToastMessageSingular {
+            get {
+                return ResourceManager.GetString("CustomNodeUpgradeToastMessageSingular", resourceCulture);
             }
         }
         

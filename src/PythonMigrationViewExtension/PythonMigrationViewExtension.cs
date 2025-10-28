@@ -12,6 +12,8 @@ using Dynamo.PythonServices;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Utilities;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PythonNodeModels;
 using System;
 using System.Collections.Generic;
@@ -30,8 +32,16 @@ namespace Dynamo.PythonMigration
         private bool hasCPython3Engine;
         private bool hasPythonNet3Engine;
         private bool enginesSubscribed;
-        private bool initialBuildDone;
-        private readonly HashSet<WorkspaceModel> touchedCustomWorkspaces = new HashSet<WorkspaceModel>();
+
+
+        // NEW STRATEGY
+        private readonly HashSet<Guid> tempMigratedCustomDefs = new HashSet<Guid>();                        // defId -> initial CP count seen
+        private readonly HashSet<Guid> permMigratedCustomDefs = new HashSet<Guid>();                        // permanently migrated defs this session
+        private readonly HashSet<WorkspaceModel> touchedCustomWorkspaces = new HashSet<WorkspaceModel>();   // custom workspaces to save
+
+
+        // SUSPEND AUTOMATIC EXECUTION UTIL THE NODES ARE PROCESSED
+        private bool autoRunTemporarilyDisabled = false;
 
 
         internal ViewLoadedParams LoadedParams { get; set; }
@@ -169,11 +179,14 @@ namespace Dynamo.PythonMigration
                 }
             }
 
-            // IF WE HAVE CUSTOM NODE WITH A CPYTHON NODE INSIDE
+            // ------------------------------------------------------------------------
+            // CUSTOM NODE INSTANCE ADDED
+            // ------------------------------------------------------------------------
             if (obj is Dynamo.Graph.Nodes.CustomNodes.Function funcNode)
             {
                 var cnm = DynamoViewModel.Model.CustomNodeManager;
                 var defId = funcNode.Definition?.FunctionId ?? Guid.Empty;
+
                 if (defId != Guid.Empty
                     && cnm.TryGetFunctionWorkspace(defId, Models.DynamoModel.IsTestMode, out ICustomNodeWorkspaceModel defWsModel) == true
                     && defWsModel is WorkspaceModel defWs)
@@ -185,18 +198,25 @@ namespace Dynamo.PythonMigration
 
                     if (nestedCP.Count > 0)
                     {
-                        // still show toast
-                        ShowPythonEngineUpgradeToast(nestedCP.Count);
+                        // Track this def as temp-migrated for the session
+                        tempMigratedCustomDefs.Add(defId);
+                        touchedCustomWorkspaces.Add(defWs);
 
-                        // and actually switch their EngineName so they run under PyNet3
-                        var pairs = nestedCP
-                            .Select(n => new PyNodeWithWorkspace(defWs, n))
-                            .ToList();
-                        UpgradeCPython3Nodes(pairs);
+                        TempUpgradeCustomNodeDefinitions(new HashSet<Guid> { defId });
                     }
+                }
+                
+                if (tempMigratedCustomDefs.Contains(defId))
+                {
+                    // still show toast and mark the workspace to show notification on close
+                    ShowPythonEngineUpgradeToast(0, 1);
+                    CurrentWorkspace.ShowCPythonNotifications = true;
                 }
             }
 
+            // ------------------------------------------------------------------------
+            // DIRECT PYTHON NODE ADDED
+            // ------------------------------------------------------------------------
             if (obj is PythonNodeBase pyNode)
             {
                 SubscribeToPythonNodeEvents(pyNode);
@@ -204,32 +224,58 @@ namespace Dynamo.PythonMigration
             }
         }
 
-        private void OnNodeRemoved(Graph.Nodes.NodeModel obj)
+        private void OnNodeRemoved(Graph.Nodes.NodeModel obj) // REMOVE THE NODE FROM THE NEW DICTIONARY !!??
         {
             if (!(obj is PythonNodeBase pythonNode))
                 return;
 
             UnSubscribePythonNodeEvents(pythonNode);
+
+            // REMOVE THE NODE FROM THE LIST TO UPGRADE
+            if (obj is Dynamo.Graph.Nodes.CustomNodes.Function funcNode)
+            {
+                var cnm = DynamoViewModel.Model.CustomNodeManager;
+                var defId = funcNode.Definition?.FunctionId ?? Guid.Empty;
+                if (defId != Guid.Empty
+                    && cnm.TryGetFunctionWorkspace(defId, Models.DynamoModel.IsTestMode, out ICustomNodeWorkspaceModel defWsModel) == true
+                    && defWsModel is WorkspaceModel defWs)
+                {
+                    if (touchedCustomWorkspaces.Contains(defWs))
+                    {
+                        touchedCustomWorkspaces.Remove(defWs);
+                    }
+                }
+            }
         }
 
         private void OnCurrentWorkspaceChanged(IWorkspaceModel workspace)
         {
             UnSubscribeWorkspaceEvents();
 
+            touchedCustomWorkspaces.Clear();                // MAYBE MOVE THIS CLEAR?
+
+
+            // CHECKS
+            var c1 = tempMigratedCustomDefs;
+            var c2 = permMigratedCustomDefs;
+
             // Switching to a new workspace, until first build finishes, don’t mutate nodes
-            initialBuildDone = false;
-            //transientMapCPythonToPyNet3 = false;
+            autoRunTemporarilyDisabled = false;
 
             var previous = CurrentWorkspace;
             CurrentWorkspace = workspace as WorkspaceModel;
             PythonDependencies.UpdateWorkspace(CurrentWorkspace);
+
             SubscribeToWorkspaceEvents();
+
+            // Reset notification flag for the new workspace
+            CurrentWorkspace.HasShownCPythonNotification = false;
 
             // Close any CPython upgrade toast on *any* workspace switch.
             // Closing a Custom Node tab triggers a workspace change, not a workspace cleared
             DynamoViewModel.MainGuideManager?.CloseRealTimeInfoWindow();
 
-            if (previous != null)
+                                                                                                                                                                                                                                                                                                if (previous != null)
             {
                 NotificationTracker.Remove(previous.Guid);
             }
@@ -237,28 +283,31 @@ namespace Dynamo.PythonMigration
 
             if (CurrentWorkspace is HomeWorkspaceModel hws)
             {
-                hws.EvaluationCompleted += OnFirstEvaluationCompleted;
+                // if opening in Automatic mode, switch to Manual before recompute / upgrade
+                if (hws.RunSettings.RunType == RunType.Automatic)
+                {
+                    hws.RunSettings.RunType = RunType.Manual;
+                    autoRunTemporarilyDisabled = true;
+                }
+
+                RecomputeCPython3NotificationForWorkspace();
+
+                if (autoRunTemporarilyDisabled)
+                {
+                    hws.RunSettings.RunType = RunType.Automatic;
+                    hws.RequestRun();                                   // DO WE NEED THIS??
+                    autoRunTemporarilyDisabled = false;
+                }
             }
             else if (CurrentWorkspace is ICustomNodeWorkspaceModel)
             {
-                initialBuildDone = true;
-                RecomputeCPython3NotificationForWorkspace();                
+                RecomputeCPython3NotificationForWorkspace();
             }
 
             CurrentWorkspace.Nodes
                     .Where(x => x is PythonNodeBase)
                     .ToList()
                     .ForEach(x => SubscribeToPythonNodeEvents(x as PythonNodeBase));
-        }
-
-        private void OnFirstEvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
-        {
-            // unsubscribe so it runs only once
-            if (sender is HomeWorkspaceModel hws)
-                hws.EvaluationCompleted -= OnFirstEvaluationCompleted;
-
-            initialBuildDone = true;
-            RecomputeCPython3NotificationForWorkspace();
         }
 
         private void OnCurrentWorkspaceCleared(IWorkspaceModel workspace)
@@ -310,10 +359,10 @@ namespace Dynamo.PythonMigration
                     .ToList()
                     .ForEach(n => UnSubscribePythonNodeEvents(n));
 
-                if (CurrentWorkspace is HomeWorkspaceModel hws)
-                {
-                    hws.EvaluationCompleted -= OnFirstEvaluationCompleted;
-                }
+                //if (CurrentWorkspace is HomeWorkspaceModel hws)
+                //{
+                //    hws.EvaluationCompleted -= OnFirstEvaluationCompleted;
+                //}
             }
         }
 
@@ -353,8 +402,8 @@ namespace Dynamo.PythonMigration
                     // Flag that python engine upgrade notice should be shown when the user
                     // saves or closes the workspace, then call the toas and upgrade the nodes
                     CurrentWorkspace.ShowCPythonNotifications = true;
-                    ShowPythonEngineUpgradeToast();
-                    UpgradeCPython3Nodes(new List<PythonNodeBase> { pyNode });
+                    ShowPythonEngineUpgradeToast(1,0);                                                                      // IS THI CORRECT??
+                    TempUpgradeDirectCPythonNodes(new List<PythonNodeBase> { pyNode });
                 }
             }
         }
@@ -362,7 +411,6 @@ namespace Dynamo.PythonMigration
         private void RecomputeCPython3NotificationForWorkspace()
         {
             if (CurrentWorkspace == null) return;
-            if (CurrentWorkspace is HomeWorkspaceModel && !initialBuildDone) return;
 
             var preferenceSettings = DynamoViewModel?.Model?.PreferenceSettings;
             if (preferenceSettings == null || hasCPython3Engine)
@@ -371,13 +419,71 @@ namespace Dynamo.PythonMigration
                 return;
             }
 
-            //var cPy3Nodes = CurrentWorkspace.Nodes
-            //    .OfType<PythonNodeBase>()
-            //    .Where(n => GraphPythonDependencies.IsCPythonNode(n))
-            //    .ToList();
-            var cPy3Nodes = FindCPythonNodesIncludingCustoms(CurrentWorkspace);
+            // Log direct CPython nodes on this graph
+            var directCPythonNodes = CurrentWorkspace
+                .Nodes
+                .OfType<PythonNodeBase>()
+                .Where(n => n.EngineName == PythonEngineManager.CPython3EngineName)
+                .ToList();
 
-            if (cPy3Nodes.Count == 0)
+
+
+            // CHECKS
+            var c1 = tempMigratedCustomDefs;
+            var c2 = permMigratedCustomDefs;
+            var c3 = touchedCustomWorkspaces;
+
+
+
+            // Log custom nodes that have CPython nodes inside          FOR NOW ONLY ONE LAYER DEEP
+            var referencedCustomDefs = new HashSet<Guid>();
+            var defsWithCurrentCPInside = new HashSet<Guid>();
+            var defsRememberedTemp = new HashSet<Guid>();
+
+            foreach (var func in CurrentWorkspace.Nodes.OfType<Function>())
+            {
+                var defId = func.Definition?.FunctionId ?? Guid.Empty;
+                if (defId == Guid.Empty) continue;
+                if (!referencedCustomDefs.Add(defId)) continue;
+
+                if (permMigratedCustomDefs.Contains(defId)) continue;
+
+                // Try to inspect the custom definition workspace
+                var cnm = DynamoViewModel?.Model?.CustomNodeManager;
+                CustomNodeWorkspaceModel defWsModel;
+                WorkspaceModel defWs = null;
+
+
+                if (cnm != null &&
+                    cnm.TryGetFunctionWorkspace(defId, Models.DynamoModel.IsTestMode, out defWsModel) &&
+                    defWsModel is WorkspaceModel defWsCast)
+                {
+                    defWs = defWsCast;
+                    var hasCPInsideNow = defWs.Nodes
+                        .OfType<PythonNodeBase>()
+                        .Any(n => n.EngineName == PythonEngineManager.CPython3EngineName);
+
+                    if (hasCPInsideNow)
+                    {
+                        defsWithCurrentCPInside.Add(defId);
+                    }
+                }
+
+                // If this def was already temp-migrated earlier in this session, count it
+                if (tempMigratedCustomDefs.Contains(defId))
+                {
+                    defsRememberedTemp.Add(defId);
+                    if (defWs != null)
+                    {
+                        touchedCustomWorkspaces.Add(defWs);
+                    }
+                }
+            }
+
+            int directCount = directCPythonNodes.Count;
+            int customCount = defsWithCurrentCPInside.Count + defsRememberedTemp.Count;
+
+            if (directCount <= 0 && customCount <= 0)
             {
                 CurrentWorkspace.ShowCPythonNotifications = false;
                 return;
@@ -386,71 +492,176 @@ namespace Dynamo.PythonMigration
             if (preferenceSettings.HideCPython3Notifications)
             {
                 CurrentWorkspace.ShowCPythonNotifications = false;
-                UpgradeCPython3Nodes(cPy3Nodes);
+                TempUpgradeDirectCPythonNodes(directCPythonNodes);
+                TempUpgradeCustomNodeDefinitions(defsWithCurrentCPInside);
                 return;
             }
 
             // Flag that python engine upgrade notice should be shown when the user
             // saves or closes the workspace, then call the toas and upgrade the nodes
             CurrentWorkspace.ShowCPythonNotifications = true;
-            ShowPythonEngineUpgradeToast(cPy3Nodes.Count);
-            UpgradeCPython3Nodes(cPy3Nodes);
+
+            ShowPythonEngineUpgradeToast(directCount, customCount);
+            TempUpgradeDirectCPythonNodes(directCPythonNodes);
+            TempUpgradeCustomNodeDefinitions(defsWithCurrentCPInside);
         }
 
-        private List<PythonNodeBase> FindCPythonNodesIncludingCustoms(WorkspaceModel root)
-        {
-            var result = new List<PythonNodeBase>();
-            if (root == null) return result;
-            var visitedCustomDefs = new HashSet<Guid>();
 
-            void CollectFromWorkspace(WorkspaceModel ws)
-            {
-                // Add CPython nodes from this workspace
-                foreach (var n in ws.Nodes.OfType<PythonNodeBase>())
-                {
-                    if (n.EngineName == PythonEngineManager.CPython3EngineName)
-                        result.Add(n);
-                }
-
-                // Traverse any Custom Nodes referenced by this workspace
-                foreach (var func in ws.Nodes.OfType<Function>())
-                {
-                    var defId = func.Definition?.FunctionId ?? Guid.Empty;
-                    if (defId == Guid.Empty) continue;
-                    if (!visitedCustomDefs.Add(defId)) continue;
-
-                    // Resolve the definition workspace
-                    var cnm = DynamoViewModel?.Model?.CustomNodeManager;
-                    if (cnm != null && cnm.TryGetFunctionWorkspace(defId, Models.DynamoModel.IsTestMode, out CustomNodeWorkspaceModel defWsModel))
-                    {
-                        var defWs = defWsModel as WorkspaceModel;
-                        if (defWs != null)
-                            CollectFromWorkspace(defWs);
-                    }
-                }
-            }
-
-            CollectFromWorkspace(root);
-            return result;
-        }
+        #region NOTIFICATION TOAST
 
         /// <summary>
-        /// Shows a canvas toast informing the user that legacy CPython nodes were switched to PythonNet3
+        /// Shows a single canvas toast covering:
+        ///  - direct CPython nodes converted to PythonNet3, and
+        ///  - custom node definitions temporarily converted (save to persist)
+        /// Uses your existing resource strings for each part and concatenates them.
         /// </summary>
-        private void ShowPythonEngineUpgradeToast(int nodesCount = 1)
+        private void ShowPythonEngineUpgradeToast(int directCount, int customCount)
         {
-            if (nodesCount < 1) return;
+            if (directCount < 1 && customCount < 1) return;
 
-            var msg = nodesCount == 1
-                ? Resources.CPythonUpgradeToastMessageSingular
-                : string.Format(Resources.CPythonUpgradeToastMessagePlural, nodesCount);
+            string partDirect = string.Empty;
+            if (directCount > 0)
+            {
+                partDirect = (directCount == 1)
+                    ? Resources.CPythonUpgradeToastMessageSingular
+                    : string.Format(Resources.CPythonUpgradeToastMessagePlural, directCount);
+            }
+
+            string partCustom = string.Empty;
+            if (customCount > 0)
+            {
+                partCustom = (customCount == 1)
+                    ? Resources.CustomNodeUpgradeToastMessageSingular
+                    : string.Format(Resources.CustomNodeUpgradeToastMessagePlural, customCount);
+            }
+
+            var parts = new[] { partDirect, partCustom }.Where(s => !string.IsNullOrWhiteSpace(s));
+            var msg = string.Join("\n", parts);
 
             Dispatcher.BeginInvoke(
                 DispatcherPriority.Background,
                 new Action(() => DynamoViewModel.ShowPythonEngineUpgradeCanvasToast(msg, stayOpen: true)));
         }
 
-        private void UpgradeCPython3Nodes(List<PyNodeWithWorkspace> pairs)
+        #endregion
+
+
+
+        #region TEMPORARY UPGRADES
+
+        // NEW - Temp-upgrade direct CPython nodes on the active graph
+        private void TempUpgradeDirectCPythonNodes(List<PythonNodeBase> directCPythonNodes)
+        {
+            if (CurrentWorkspace == null) return;
+            if (directCPythonNodes == null || directCPythonNodes.Count == 0) return;
+
+            // Convert to (workspace,node) pairs against the active graph
+            var pairs = directCPythonNodes
+                .Where(n => n != null)
+                .Select(n => new PyNodeWithWorkspace(CurrentWorkspace, n))
+                .ToList();
+
+            // For direct nodes: allow backup of the active Home workspace
+            InternalUpgradePairs(pairs, backupHomeWorkspaces: true);
+        }
+
+        // NEW - Temp-upgrade custom node definitions (one layer deep)
+        private void TempUpgradeCustomNodeDefinitions(HashSet<Guid> defsWithCurrentCPInside)
+        {
+            if (defsWithCurrentCPInside == null || defsWithCurrentCPInside.Count == 0) return;
+
+            var cnm = DynamoViewModel?.Model?.CustomNodeManager;
+            if (cnm == null) return;
+
+            var pairs = new List<PyNodeWithWorkspace>();
+
+            foreach (var defId in defsWithCurrentCPInside)
+            {
+                if (!cnm.TryGetFunctionWorkspace(defId, Models.DynamoModel.IsTestMode, out CustomNodeWorkspaceModel defWsModel))
+                    continue;
+
+                if (!(defWsModel is WorkspaceModel defWs))
+                    continue;
+
+                // Gather just the CPython nodes currently inside the definition
+                var nestedCP = defWs.Nodes
+                    .OfType<PythonNodeBase>()
+                    .Where(n => n.EngineName == PythonEngineManager.CPython3EngineName)
+                    .ToList();
+
+                if (nestedCP.Count == 0) continue;
+
+                // Convert to pairs for in-memory flip
+                pairs.AddRange(nestedCP.Select(n => new PyNodeWithWorkspace(defWs, n)));
+
+                // Track for this session: ListB (temp)
+                tempMigratedCustomDefs.Add(defId);
+                touchedCustomWorkspaces.Add(defWs);
+            }
+
+            // For custom defs: never back up; overwrite only on Save
+            InternalUpgradePairs(pairs, backupHomeWorkspaces: false);
+        }
+
+        // NEW - Persist custom definitions on Save (overwrite .dyf, move ListB→ListC) call this from OnCurrentWorkspaceSaving
+        private void PersistTouchedCustomDefinitionsOnSave()
+        {
+            // Belt-and-braces: ensure any referenced ListB defs are touched
+            try
+            {
+                var cnm = DynamoViewModel?.Model?.CustomNodeManager;
+                if (cnm != null && CurrentWorkspace != null)
+                {
+                    foreach (var func in CurrentWorkspace.Nodes.OfType<Function>())
+                    {
+                        var defId = func.Definition?.FunctionId ?? Guid.Empty;
+                        if (defId == Guid.Empty) continue;
+                        if (!tempMigratedCustomDefs.Contains(defId)) continue;
+
+                        if (cnm.TryGetFunctionWorkspace(defId, Models.DynamoModel.IsTestMode, out CustomNodeWorkspaceModel defWsModel) &&
+                            defWsModel is WorkspaceModel defWs)
+                        {
+                            touchedCustomWorkspaces.Add(defWs);
+                        }
+                    }
+                }
+            }
+            catch { /* non-fatal */ }
+
+            foreach (var ws in touchedCustomWorkspaces.ToList())
+            {
+                try
+                {
+                    if (!TryGetCustomIdAndPath(ws, out var defId, out var dyfPath) || string.IsNullOrEmpty(dyfPath))
+                        continue;
+
+                    var path = GetWorkspaceFilePath(ws);
+                    if (string.IsNullOrEmpty(path)) continue;
+
+                    if (ws is Dynamo.Graph.Workspaces.CustomNodeWorkspaceModel cws)
+                        cws.IsVisibleInDynamoLibrary = true;
+
+                    // Overwrite in place (no backup/suffix for customs)
+                    ws.Save(path, false, DynamoViewModel?.Model?.EngineController);
+                    EnsureDyfHasLibraryViewFlag(dyfPath);
+
+                    // Move ListB → ListC
+                    permMigratedCustomDefs.Add(defId);
+                    tempMigratedCustomDefs.Remove(defId);
+                }
+                catch (Exception ex)
+                {
+                    DynamoViewModel?.Model?.Logger?.Log($"Failed to save custom node '{ws?.Name}': {ex.Message}");
+                }
+            }
+        }
+
+
+
+
+
+        // NEW - single place that actually flips engines and (optionally) backs up only *home* workspaces
+        private void InternalUpgradePairs(List<PyNodeWithWorkspace> pairs, bool backupHomeWorkspaces)
         {
             if (CurrentWorkspace == null) return;
 
@@ -458,56 +669,53 @@ namespace Dynamo.PythonMigration
                 .Any(e => e.Name == PythonEngineManager.PythonNet3EngineName);
             if (!hasPyNet3) return;
 
+            if (pairs == null || pairs.Count == 0) return;
 
-            var groups = pairs.GroupBy(p => p.Workspace).ToList();
             var pm = LoadedParams?.StartupParams?.PathManager;
-            if (pm != null)
+            if (pm == null) return;
+
+            var groups = pairs
+                .Where(p => p != null && p.Workspace != null && p.Node != null)
+                .GroupBy(p => p.Workspace);
+
+            foreach (var wsGroup in groups)
             {
-                foreach (var wsGroup in groups)
+                var ws = wsGroup.Key;
+                if (ws == null) continue;
+
+                var isCustom = ws is CustomNodeWorkspaceModel;
+
+                // Only back up when asked *and* it's not a custom definition
+                if (backupHomeWorkspaces && !isCustom)
                 {
-                    var ws = wsGroup.Key;
-                    if (ws == null) continue;
-                    
-                    bool isCustom = ws is CustomNodeWorkspaceModel; // Why do we need to check that , Don't we want teh same for a cusotm node?
-
-                    if (!isCustom)
-                    {
-                        bool isActiveWorkspace = ws.Guid == CurrentWorkspace.Guid;
-                        PythonMigrationBackup.SavePythonMigrationBackup(
-                            ws,
-                            pm.BackupDirectory,
-                            Properties.Resources.CPythonMigrationBackupExtension,
-                            Properties.Resources.CPythonMigrationBackupFileCreatedMessage,
-                            showMessage: isActiveWorkspace
-                            );
-                    }
-
-                    foreach (var p in wsGroup)
-                    {
-                        var node = p.Node;
-                        if (node is PythonNode pyNode)
-                        {
-                            pyNode.ShowAutoUpgradedBar = true; // NOT SURE WE NEED THIS
-                        }
-                   
-                        node.EngineName = PythonEngineManager.PythonNet3EngineName;
-                        node.OnNodeModified();                        
-                    }
-
-                    if (isCustom)
-                    {
-                        touchedCustomWorkspaces.Add(ws);
-                    }
+                    bool isActiveWorkspace = ws.Guid == CurrentWorkspace.Guid;
+                    PythonMigrationBackup.SavePythonMigrationBackup(
+                        ws,
+                        pm.BackupDirectory,
+                        Properties.Resources.CPythonMigrationBackupExtension,
+                        Properties.Resources.CPythonMigrationBackupFileCreatedMessage,
+                        showMessage: isActiveWorkspace);
                 }
-            } 
+
+                foreach (var p in wsGroup)
+                {
+                    var node = p.Node;
+
+                    if (node is PythonNode pyNode)
+                        pyNode.ShowAutoUpgradedBar = true;
+
+                    node.EngineName = PythonEngineManager.PythonNet3EngineName;
+                    node.OnNodeModified();
+                }
+
+                if (isCustom)
+                    touchedCustomWorkspaces.Add(ws);
+            }
         }
 
-        // Adapter: old List<PythonNodeBase> -> new List<PyNodeWithWorkspace> (assumes all from CurrentWorkspace)
-        private void UpgradeCPython3Nodes(List<PythonNodeBase> nodes)
-        {
-            var pairs = nodes.Select(n => new PyNodeWithWorkspace(CurrentWorkspace, n)).ToList();
-            UpgradeCPython3Nodes(pairs);
-        }
+        #endregion
+
+
 
 
         private void InitEngineFlagAndSubscribe()
@@ -539,68 +747,10 @@ namespace Dynamo.PythonMigration
                 .Any(e => e.Name == PythonEngineManager.PythonNet3EngineName);
         }
 
-        private sealed class PyNodeWithWorkspace
+
+        private void OnCurrentWorkspaceSaving(SaveContext ctx)  //
         {
-            public WorkspaceModel Workspace { get; }
-            public PythonNodeBase Node { get; }
-
-            public PyNodeWithWorkspace(WorkspaceModel ws, PythonNodeBase node)
-            {
-                Workspace = ws;
-                Node = node;
-            }
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-        private void OnCurrentWorkspaceSaving(SaveContext ctx)
-        {
-            //foreach (var cws in touchedCustomWorkspaces.ToList())
-            //{
-            //    var path = (cws as WorkspaceModel)?.FileName;
-            //    if (string.IsNullOrEmpty(path)) continue;
-
-            //    try { cws.Save(path, isBackup: false); }
-            //    catch (Exception ex)
-            //    {
-            //        DynamoViewModel?.Model?.Logger?.Log(
-            //            $"Failed to save custom node '{cws?.Name}': {ex.Message}");
-            //    }
-            //}
-
-
-            // Save each custom node definition we auto-upgraded in this session
-            foreach (var ws in touchedCustomWorkspaces.ToList())
-            {
-                try
-                {
-                    var path = GetWorkspaceFilePath(ws);
-                    if (string.IsNullOrEmpty(path))
-                    {
-                        DynamoViewModel?.Model?.Logger?.Log(
-                            $"Skip saving custom node '{ws?.Name}': file path not found.");
-                        continue;
-                    }
-
-                    ws.Save(path, isBackup: false); // overwrite the actual .dyf
-                }
-                catch (Exception ex)
-                {
-                    DynamoViewModel?.Model?.Logger?.Log(
-                        $"Failed to save custom node '{ws?.Name}': {ex.Message}");
-                }
-            }
-
-
+            PersistTouchedCustomDefinitionsOnSave();
         }
 
         private void OnCurrentWorkspaceSaved()
@@ -609,11 +759,12 @@ namespace Dynamo.PythonMigration
         }
 
 
-        private string GetWorkspaceFilePath(WorkspaceModel ws)
+        #region PRMANENT UPGRADE HELPERS
+
+        private string GetWorkspaceFilePath(WorkspaceModel ws)  //
         {
             if (ws == null) return null;
 
-            // Most of the time this is already set
             var path = ws.FileName;
             if (!string.IsNullOrEmpty(path)) return path;
 
@@ -636,11 +787,63 @@ namespace Dynamo.PythonMigration
             return null;
         }
 
+        private bool TryGetCustomIdAndPath(WorkspaceModel ws, out Guid defId, out string dyfPath)   //
+        {
+            defId = Guid.Empty;
+            dyfPath = null;
+
+            if (ws is Dynamo.Graph.Workspaces.CustomNodeWorkspaceModel cws)
+            {
+                defId = cws.CustomNodeId;
+
+                var cnm = DynamoViewModel?.Model?.CustomNodeManager;
+                if (cnm != null &&
+                    cnm.NodeInfos.TryGetValue(defId, out var info) &&
+                    !string.IsNullOrEmpty(info.Path))
+                {
+                    dyfPath = info.Path;
+                }
+                return true;
+            }
+            return false;
+        }
+
+        private void EnsureDyfHasLibraryViewFlag(string dyfPath)    //
+        {
+            if (string.IsNullOrEmpty(dyfPath) || !File.Exists(dyfPath)) return;
+
+            var json = File.ReadAllText(dyfPath);
+            var root = JObject.Parse(json);
+
+            var view = (JObject?)root["View"] ?? new JObject();
+            var dyn = (JObject?)view["Dynamo"] ?? new JObject();
+
+            dyn["IsVisibleInDynamoLibrary"] = true;
+            view["Dynamo"] = dyn;
+            root["View"] = view;
+
+            File.WriteAllText(dyfPath, root.ToString(Formatting.Indented));
+        }
+
+        #endregion
 
 
 
+        #region HELPER CLASS
 
+        private sealed class PyNodeWithWorkspace
+        {
+            public WorkspaceModel Workspace { get; }
+            public PythonNodeBase Node { get; }
 
+            public PyNodeWithWorkspace(WorkspaceModel ws, PythonNodeBase node)
+            {
+                Workspace = ws;
+                Node = node;
+            }
+        }
+
+        #endregion
     }
 
     internal static class PythonMigrationBackup
@@ -670,7 +873,7 @@ namespace Dynamo.PythonMigration
 
             if (showMessage)
             {
-                var title = Properties.Resources.CPythonMigrationBackupFileCreatedTitle;
+                var title = Properties.Resources.CPythonMigrationBackupFileCreatedHeader;
                 var message = string.Format(messageResource, path);
 
                 // Show the MessageBox after the UI finishes rendering to avoid disrupting connector redraw

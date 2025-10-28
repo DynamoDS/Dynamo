@@ -3450,6 +3450,9 @@ namespace Dynamo.ViewModels
             // otherwise overwrite the home workspace with new workspace
             if (!HomeSpace.HasUnsavedChanges || AskUserToSaveWorkspaceOrCancel(HomeSpace))
             {
+                // Reset the one-time CPython notification flag
+                HomeSpace.HasShownCPythonNotification = false;
+
                 Model.CurrentWorkspace = HomeSpace;
 
                 model.ClearCurrentWorkspace();
