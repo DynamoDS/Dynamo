@@ -443,14 +443,14 @@ namespace DynamoCoreWpfTests
         [Category("DynamoUI")]
         public void PreferenceSetting_BackgroundPreview_1_0API()
         {
-            bool expectedValue = !ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive;
+            bool expectedValue = !(ViewModel.Model.PreferenceSettings.BackgroundPreviews.Count > 0);
             ViewModel.ToggleFullscreenWatchShowing(null);
-            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive);
+            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.BackgroundPreviews.Count > 0);
 
 
-            expectedValue = !ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive;
+            expectedValue = !(ViewModel.Model.PreferenceSettings.BackgroundPreviews.Count > 0);
             ViewModel.ToggleFullscreenWatchShowing(null);
-            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive);
+            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.BackgroundPreviews.Count > 0);
 
             #region Save And Load of PreferenceSettings
 
@@ -465,14 +465,14 @@ namespace DynamoCoreWpfTests
             initalSetting.Save(tempPath);
             resultSetting = PreferenceSettings.Load(tempPath);
 
-            Assert.AreEqual(resultSetting.IsBackgroundPreviewActive, initalSetting.IsBackgroundPreviewActive);
+            Assert.AreEqual(resultSetting.BackgroundPreviews.Count > 0, initalSetting.BackgroundPreviews.Count > 0);
             #endregion
 
             #region Second Test
             initalSetting.Save(tempPath);
             resultSetting = PreferenceSettings.Load(tempPath);
 
-            Assert.AreEqual(resultSetting.IsBackgroundPreviewActive, initalSetting.IsBackgroundPreviewActive);
+            Assert.AreEqual(resultSetting.BackgroundPreviews.Count > 0, initalSetting.BackgroundPreviews.Count > 0);
             #endregion
         }
 

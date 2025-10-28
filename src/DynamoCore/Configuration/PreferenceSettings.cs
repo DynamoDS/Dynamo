@@ -390,10 +390,6 @@ namespace Dynamo.Configuration
 
 
         /// <summary>
-        /// Indicates whether background preview is active or not.
-        public bool IsBackgroundPreviewActive { get { return BackgroundPreviews.Count > 0; } }
-
-        /// <summary>
         /// Indicate which render precision will be used
         /// </summary>
         public int RenderPrecision { get; set; }
