@@ -782,7 +782,7 @@ namespace Dynamo.Core
         /// <returns></returns>
         private string GetTemplateFolder(string dataRootDirectory)
         {
-            //Means that we are running on a host like Revit or Civil3D
+            // Means that we are running on a host like Revit or Civil3D.
             if (!string.IsNullOrEmpty(hostApplicationDirectory) && pathResolver != null)
             {
                 var versionedDirectory = dataRootDirectory;
