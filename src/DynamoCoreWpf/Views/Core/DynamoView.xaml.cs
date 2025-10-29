@@ -80,6 +80,9 @@ namespace Dynamo.Controls
         private PreferencesView preferencesWindow;
         private PackageManagerView packageManagerWindow;
         private bool loaded = false;
+        private bool graphMetadataHooked;
+        private MenuItem graphPropsGeneralMenuItem;
+        private MenuItem graphPropsExtensionMenuItem;
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
         private bool isPSSCalledOnViewModelNoCancel = false;
@@ -291,16 +294,54 @@ namespace Dynamo.Controls
 
         private void DynamoViewModel_ShowGraphPropertiesRequested(object sender, EventArgs e)
         {
-            // Identify the GraphMetadata extension by its UniqueId because we can't reference its type directly.
-            // This exposes the menu item without creating a dependency on the Extensions project.
+            EnsureGraphPropertiesBinding();
+
             var provider = viewExtensionManager.ViewExtensions
                 .OfType<IExtensionMenuProvider>()
                 .FirstOrDefault(ext => (ext as IViewExtension)?.UniqueId == GraphMetadataExtensionId);
-            var menuItem = provider?.GetFileMenuItem();
 
-            if (menuItem != null)
+            var extItem = provider?.GetFileMenuItem();
+            if (extItem == null) return;
+
+            extItem.IsChecked = !extItem.IsChecked;
+        }
+
+        private void EnsureGraphPropertiesBinding()
+        {
+            if (graphMetadataHooked) return;
+
+            graphPropsGeneralMenuItem = this.FindName("general") as MenuItem;
+            if (graphPropsGeneralMenuItem == null) return;
+
+            var provider = viewExtensionManager.ViewExtensions
+                .OfType<IExtensionMenuProvider>()
+                .FirstOrDefault(ext => (ext as IViewExtension)?.UniqueId == GraphMetadataExtensionId);
+
+            graphPropsExtensionMenuItem = provider?.GetFileMenuItem();
+            if (graphPropsExtensionMenuItem == null) return;
+
+            graphPropsGeneralMenuItem.IsCheckable = true;
+            graphPropsGeneralMenuItem.IsChecked = graphPropsExtensionMenuItem.IsChecked;
+
+            graphPropsExtensionMenuItem.Checked += OnGraphMetadataChecked;
+            graphPropsExtensionMenuItem.Unchecked += OnGraphMetadataUnchecked;
+
+            graphMetadataHooked = true;
+        }
+
+        private void OnGraphMetadataChecked(object sender, RoutedEventArgs e)
+        {
+            if (graphPropsGeneralMenuItem != null)
             {
-                menuItem.IsChecked = true;
+                graphPropsGeneralMenuItem.IsChecked = true;
+            }
+        }
+
+        private void OnGraphMetadataUnchecked(object sender, RoutedEventArgs e)
+        {
+            if (graphPropsGeneralMenuItem != null)
+            {
+                graphPropsGeneralMenuItem.IsChecked = false;
             }
         }
 
@@ -439,6 +480,8 @@ namespace Dynamo.Controls
             {
                 DynamoModel.RaiseIExtensionStorageAccessWorkspaceSaving(hws, extension, saveContext, dynamoViewModel.Model.Logger);
             }
+
+            dynamoViewModel?.CheckOnlineAccess();
         }
 
         /// <summary>
@@ -1329,6 +1372,7 @@ namespace Dynamo.Controls
                     Log(ext.Name + ": " + exc.Message);
                 }
             }
+            EnsureGraphPropertiesBinding();
         }
 
         /// <summary>
@@ -2087,6 +2131,12 @@ namespace Dynamo.Controls
             dynamoViewModel.RequestUserSaveWorkflow -= DynamoViewModelRequestUserSaveWorkflow;
             GuideFlowEvents.GuidedTourStart -= GuideFlowEvents_GuidedTourStart;
 
+            if (graphPropsExtensionMenuItem != null)
+            {
+                graphPropsExtensionMenuItem.Checked -= OnGraphMetadataChecked;
+                graphPropsExtensionMenuItem.Unchecked -= OnGraphMetadataUnchecked;
+            }
+
             if (dynamoViewModel.Model != null)
             {
                 dynamoViewModel.Model.RequestTaskDialog -= Controller_RequestTaskDialog;
@@ -2710,6 +2760,15 @@ namespace Dynamo.Controls
             Image collapseIcon = (Image)sp.Children[0];
 
             UpdateHandleHoveredStyle(tb, collapseIcon);
+        }
+
+        private void OnlineStatusGrid_MouseEnter(object sender, MouseEventArgs e)
+        {
+            // Trigger connectivity check when hovering over network status indicator
+            if (dynamoViewModel != null)
+            {
+                dynamoViewModel.CheckOnlineAccess();
+            }
         }
 
         private bool libraryCollapsed;

@@ -630,6 +630,7 @@
     <Compile Include="Utilities\GroupStyleItemSelector.cs" />
     <Compile Include="Utilities\LibraryDragAndDrop.cs" />
     <Compile Include="Utilities\MessageBoxUtilities.cs" />
+    <Compile Include="Utilities\NetworkUtilities.cs" />
     <Compile Include="Utilities\NodeAutoCompleteUtilities.cs" />
     <Compile Include="Utilities\NodeContextMenuBuilder.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
@@ -2126,6 +2127,8 @@
     <Resource Include="UI\Images\more-vertical.png" />
     <Resource Include="UI\Images\watch_hidden_16_16.png" />
     <Resource Include="UI\Images\alert.png" />
+    <Resource Include="UI\Images\online.png" />
+    <Resource Include="UI\Images\offline.png" />
     <Resource Include="UI\Images\menu_16_16.png" />
     <Resource Include="UI\Images\menu-hover-16px.png" />
     <Resource Include="UI\Images\caret_down.png" />

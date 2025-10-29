@@ -3765,7 +3765,8 @@
     <value>이 버전과 사용 중인 설정의 호환성이 확인되지 않았습니다. 예상대로 작동할 수도 있고 예상대로 작동하지 않을 수도 있습니다.</value>
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
-    <value>Autodesk Identity Manager가 시스템에 설정되어 있지 않은 것 같습니다. 모든 기능에 대한 전체 액세스 권한을 확보하려면 Autodesk Identity Manager를 사용하여 Autodesk 계정에 로그인하십시오. 또는 Autodesk Access를 통해 Autodesk Identity Manager를 #다운로드한 후 설치=https://manage.autodesk.com/products/updates 한 다음 로그인하십시오.</value>
+    <value>It seems like Autodesk Identity Manager is not set up on your system. To ensure full access to all features, please sign in to your Autodesk account using Autodesk Identity Manager.
+#Download and install=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html it here or through Autodesk Access, then sign in.</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Autodesk Identity Manager 다운로드</value>

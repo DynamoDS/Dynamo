@@ -3766,8 +3766,8 @@ Chcete-li vytvořit z tohoto souboru novou šablonu, uložte ho do jiné složky
     <value>Kompatibilita této verze s vaším nastavením nebyla ověřena. Může, ale nemusí fungovat podle očekávání.</value>
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
-    <value>Zdá se, že v systému není nastaven nástroj Autodesk Identity Manager. Chcete-li zajistit plný přístup ke všem funkcím, přihlaste se ke svému účtu Autodesk pomocí nástroje Autodesk Identity Manager.
-#Stáhněte a instalujte=https://manage.autodesk.com/products/updates zde nebo prostřednictvím aplikace Autodesk Access a poté se přihlaste.</value>
+    <value>It seems like Autodesk Identity Manager is not set up on your system. To ensure full access to all features, please sign in to your Autodesk account using Autodesk Identity Manager.
+#Download and install=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html it here or through Autodesk Access, then sign in.</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Stáhnout aplikaci Autodesk Identity Manager</value>
