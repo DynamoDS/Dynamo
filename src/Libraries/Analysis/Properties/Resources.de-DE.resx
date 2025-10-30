@@ -117,31 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ByPointsAndValueObsolete" xml:space="preserve">
-    <value>Verwenden Sie Point- und Number-Blöcke als direkte Eingaben für Blöcke, für die bisher PointData-Blöcke verwendet wurden.</value>
-  </data>
-  <data name="BySurfacePointObsolete" xml:space="preserve">
-    <value>Verwenden Sie Surface- und UV-Blöcke als direkte Eingaben für Blöcke, für die bisher SurfaceData-Blöcke verwendet wurden.</value>
-  </data>
-  <data name="BySurfacePointsAndValues" xml:space="preserve">
-    <value>Verwenden Sie Surface-, UV- und Number-Blöcke als direkte Eingaben für Blöcke, für die bisher SurfaceData-Blöcke verwendet wurden.</value>
-  </data>
-  <data name="SurfaceObsolete" xml:space="preserve">
-    <value>Verwenden Sie die an anderer Stelle des Diagramms verfügbare Surface.</value>
-  </data>
-  <data name="ValueLocationObsolete" xml:space="preserve">
-    <value>Verwenden Sie die an anderer Stelle des Diagramms verfügbaren Points.</value>
-  </data>
-  <data name="ValueLocationsObsolete" xml:space="preserve">
-    <value>Verwenden Sie die an anderer Stelle des Diagramms verfügbaren UV-Positionen.</value>
-  </data>
-  <data name="ValuesObsolete" xml:space="preserve">
-    <value>Verwenden Sie die Werte aus dem Block, der die Analyse durchführt.</value>
-  </data>
-  <data name="ValueSurfaceObsolete" xml:space="preserve">
-    <value>Verwenden Sie die Werte aus dem Block, der die Analyse durchführt.</value>
-  </data>
-  <data name="VectorValueObsolete" xml:space="preserve">
-    <value>Verwenden Sie Vector- und Number-Blöcke als direkte Eingaben für Blöcke, für die bisher VectorData-Blöcke verwendet wurden.</value>
-  </data>
 </root>

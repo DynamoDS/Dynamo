@@ -120,9 +120,6 @@
   <data name="ExcelInteropObsoleteNode" xml:space="preserve">
     <value>Dieser Block ist veraltet und wird in einer zukünftigen Version von Dynamo entfernt. Verwenden Sie den entsprechenden Block, der auf OpenXML basiert.</value>
   </data>
-  <data name="ReadObsolete" xml:space="preserve">
-    <value>Verwenden Sie stattdessen den Block File.FromPath -&gt; Excel.ReadFromFile.</value>
-  </data>
   <data name="StreamWriterNotFoundException" xml:space="preserve">
     <value>Datei oder Verzeichnis wurde nicht gefunden</value>
   </data>
