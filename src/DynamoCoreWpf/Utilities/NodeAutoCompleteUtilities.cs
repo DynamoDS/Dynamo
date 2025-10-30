@@ -41,8 +41,10 @@ namespace Dynamo.Wpf.Utilities
         }
 
         /// <summary>
-        /// Filters nodes to only those within the same group as the query node, if applicable.
-        /// If the query node is not in a group, all nodes are returned.
+        /// Filters nodes to only those within the same group as the query node
+        /// If there is no group, all nodes are returned.
+        /// This is to ensure that AutoLayout operations only affect nodes within the same group.
+        /// Nodes outside the group should not be affected.
         /// </summary>
         /// <param name="wsModel">The workspace model.</param>
         /// <param name="queryNode">The node to check for group membership.</param>
@@ -97,6 +99,7 @@ namespace Dynamo.Wpf.Utilities
         // an additional AutoLayout operation is needed.
         internal static bool AutoLayoutNeeded(WorkspaceModel wsModel, NodeModel originalNode, IEnumerable<NodeModel> nodesToConsider, out List<NodeModel> intersectedNodes)
         {
+            // Filter connected nodes to only those in the same group as the original node
             var nodesToConsiderFiltered = FilterNodesToSameGroup(wsModel, originalNode, nodesToConsider);
 
             //Collect all connected input or output nodes from the original node.
@@ -174,6 +177,8 @@ namespace Dynamo.Wpf.Utilities
                 var connectedNodes = portType == PortType.Input
                     ? queryNode.AllUpstreamNodes(new List<NodeModel>())
                     : queryNode.AllDownstreamNodes(new List<NodeModel>());
+
+                // Filter connected nodes to only those in the same group as the query node
                 var connectedNodesFiltered = FilterNodesToSameGroup(wsModel, queryNode, connectedNodes);
 
                 wsModel.DoGraphAutoLayoutAutocomplete(queryNode.GUID, newNodes, connectedNodesFiltered, portType);
