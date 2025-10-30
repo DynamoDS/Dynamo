@@ -75,6 +75,8 @@ namespace Dynamo.ViewModels
         private string dynamoMLDataPath = string.Empty;
         private const string dynamoMLDataFileName = "DynamoMLDataPipeline.json";
 
+        private bool onlineAccess = true;
+
         // Can the user run the graph
         private bool CanRunGraph => HomeSpace.RunSettings.RunEnabled && !HomeSpace.GraphRunInProgress;
         private ObservableCollection<DefaultWatch3DViewModel> watch3DViewModels = new ObservableCollection<DefaultWatch3DViewModel>();
@@ -247,7 +249,54 @@ namespace Dynamo.ViewModels
         public int LinterIssuesCount
         {
             get => Model.LinterManager?.RuleEvaluationResults.Count ?? 0;
+        }        
+
+        /// <summary>
+        /// Indicates whether Dynamo has online access.
+        /// </summary>
+        public bool OnlineAccess
+        {
+            get => onlineAccess;
+            private set
+            {
+                if (onlineAccess != value)
+                {
+                    onlineAccess = value;
+                    RaisePropertyChanged(nameof(OnlineAccess));
+                }
+            }
         }
+
+        /// <summary>
+        /// Check for online access and update OnlineAccess property.
+        /// </summary>
+        internal void CheckOnlineAccess()
+        {
+            if (Model.NoNetworkMode)
+            {
+                OnlineAccess = false;
+                return;
+            }
+
+            Task.Run(async () =>
+            {
+                var result = await NetworkUtilities.CheckOnlineAccessAsync();
+                if (!result.Item2) //if check was canceled we just return - we are during shutdown sequence.
+                {
+                    return;
+                }
+
+                try
+                {
+                    await UIDispatcher?.BeginInvoke(DispatcherPriority.ApplicationIdle, () => OnlineAccess = result.Item1);
+                }
+                catch(Exception ex)
+                {
+                    Trace.WriteLine($"Something went wrong mostlikely during the shutdown sequence: {ex.Message}");
+                }
+            });
+        }
+
 
         public double WorkspaceActualHeight { get; set; }
         public double WorkspaceActualWidth { get; set; }
@@ -885,6 +934,9 @@ namespace Dynamo.ViewModels
             FileTrustViewModel = new FileTrustWarningViewModel();
             MLDataPipelineExtension = model.ExtensionManager.Extensions.OfType<DynamoMLDataPipelineExtension>().FirstOrDefault();
             IsIDSDKInitialized();
+
+            NetworkUtilities.InitInternetCheck();
+            CheckOnlineAccess();
         }
 
         private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
@@ -1832,6 +1884,8 @@ namespace Dynamo.ViewModels
                 }
                 workspaces.Add(newVm);
             }
+
+            CheckOnlineAccess();
         }
 
         private void WorkspaceRemoved(WorkspaceModel item)
@@ -4475,6 +4529,9 @@ namespace Dynamo.ViewModels
 
             if (!AskUserToSaveWorkspacesOrCancel(shutdownParams.AllowCancellation))
                 return false;
+
+
+            NetworkUtilities.StopInternetCheck();
 
             // 'shutdownSequenceInitiated' is marked as true here indicating
             // that the shutdown may not be stopped.
