@@ -55,27 +55,27 @@ namespace Dynamo.Wpf.Utilities
             NodeModel queryNode,
             IEnumerable<NodeModel> nodes)
         {
-            HashSet<Guid> allowedNodeIdsForConnected = null;
+            HashSet<Guid> allowedNodeIds = null;
             var containingGroup = wsModel.Annotations
                 .Where(g => g.ContainsModel(queryNode))
                 .FirstOrDefault();
 
-            IEnumerable<NodeModel> connectedNodes;
+            IEnumerable<NodeModel> filteredNodes;
             if (containingGroup != null)
             {
-                allowedNodeIdsForConnected = containingGroup.Nodes
+                allowedNodeIds = containingGroup.Nodes
                     .OfType<NodeModel>()
                     .Select(n => n.GUID)
                     .ToHashSet();
 
-                // Filter connectedNodes to only those in the same group as queryNode
-                connectedNodes = nodes.Where(n => allowedNodeIdsForConnected.Contains(n.GUID));
+                // Filtered nodes to only those in the same group as queryNode
+                filteredNodes = nodes.Where(n => allowedNodeIds.Contains(n.GUID));
             }
             else
             {
-                connectedNodes = nodes;
+                filteredNodes = nodes;
             }
-            return connectedNodes;
+            return filteredNodes;
         }
 
         internal static Rect2D GetNodesBoundingBox(IEnumerable<NodeModel> nodes)
