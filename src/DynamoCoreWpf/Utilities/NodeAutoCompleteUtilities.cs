@@ -105,7 +105,7 @@ namespace Dynamo.Wpf.Utilities
             //Collect all connected input or output nodes from the original node.
 
             var nodesGuidsToConsider = nodesToConsiderFiltered.Select(n => n.GUID).ToHashSet();
-            nodesGuidsToConsider.Append(originalNode.GUID);
+            nodesGuidsToConsider.Add(originalNode.GUID);
 
             Rect2D connectedNodesBBox = GetNodesBoundingBox(nodesToConsiderFiltered);
 
