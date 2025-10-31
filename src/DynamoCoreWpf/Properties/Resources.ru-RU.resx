@@ -3767,8 +3767,8 @@
     <value>Совместимость этой версии с вашими настройками не проверялась. Они могут как работать надлежащим образом, так и нет.</value>
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
-    <value>It seems like Autodesk Identity Manager is not set up on your system. To ensure full access to all features, please sign in to your Autodesk account using Autodesk Identity Manager.
-#Download and install=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html it here or through Autodesk Access, then sign in.</value>
+    <value>Возможно, в системе не настроен компонент Autodesk Identity Manager. Чтобы обеспечить полный доступ ко всем функциям, войдите в учетную запись на портале Autodesk Account с помощью Autodesk Identity Manager.
+#Скачайте и установите=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html этот компонент здесь или через Autodesk Access, а затем войдите в систему.</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Скачивание Autodesk Identity Manager</value>
@@ -3847,6 +3847,12 @@
   </data>
   <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
     <value>Скрытие несоединенных портов вывода по умолчанию</value>
+  </data>
+  <data name="OnlineStatusTooltip" xml:space="preserve">
+    <value>Connected to the internet.</value>
+  </data>
+  <data name="OfflineStatusTooltip" xml:space="preserve">
+    <value>Not connected to the internet.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

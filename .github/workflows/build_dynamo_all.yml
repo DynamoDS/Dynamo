@@ -19,9 +19,8 @@ jobs:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: |
-            8.0.x
-            10.0.100-preview.5.25277.114
+          dotnet-version: 8.0.x
+          global-json-file: Dynamo/global.json
       - name: Disable problem matcher
         run: Write-Output "::remove-matcher owner=csc::"
       - name: Setup msbuild
