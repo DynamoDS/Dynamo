@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
@@ -12,11 +12,8 @@ namespace ProtoCore.Utils
 
         public static void InsertPredefinedAndBuiltinMethods(Core core, CodeBlockNode root)
         {
-            if (DSASM.InterpreterMode.Normal == core.Options.RunMode)
-            {
-                InsertPredefinedMethod(core, root);
-                InsertBuiltInMethods(core, root);
-            }
+            InsertPredefinedMethod(core, root);
+            InsertBuiltInMethods(core, root);
         }
         private static FunctionDefinitionNode GenerateBuiltInMethodSignatureNode(Lang.BuiltInMethods.BuiltInMethod method)
         {
