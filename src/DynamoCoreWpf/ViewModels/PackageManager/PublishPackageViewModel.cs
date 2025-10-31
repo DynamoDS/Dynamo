@@ -1757,7 +1757,7 @@ namespace Dynamo.PackageManager
                     // and UI operations happen on the correct thread
                     if (dynamoViewModel?.UIDispatcher != null)
                     {
-                        dynamoViewModel.UIDispatcher.BeginInvoke(new Action(() => OnPublishSuccess()));
+                        dynamoViewModel.UIDispatcher.Invoke(new Action(() => OnPublishSuccess()));
                     }
                     else
                     {
