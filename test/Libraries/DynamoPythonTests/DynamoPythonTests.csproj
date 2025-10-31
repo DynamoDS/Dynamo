@@ -22,10 +22,10 @@
     <PackageReference Include="DynamicLanguageRuntime" Version="1.2.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
-    <Reference Include="Python.Runtime">
-      <HintPath>..\..\..\extern\Python\Python.Runtime.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
+      <PackageReference Include="DynamoVisualProgramming.PythonEngine.PythonNet3" Version="1.4.2">
+          <ExcludeAssets>runtime;native;contentFiles;build;buildTransitive;analyzers</ExcludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+      </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj">
@@ -41,11 +41,6 @@
     <ProjectReference Include="..\..\..\src\Engine\ProtoCore\ProtoCore.csproj">
       <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
       <Name>ProtoCore</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Libraries\DSCPython\DSCPython.csproj">
-      <Project>{f1541c2d-80a9-4fe7-8d9e-75a8b9ff3479}</Project>
-      <Name>DSCPython</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\..\src\Libraries\PythonNodeModelsWpf\PythonNodeModelsWpf.csproj">
@@ -89,4 +84,16 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="$([System.IO.Path]::GetFullPath('$(SolutionDir)..\test\core\packageDependencyTests\PythonEnginePackage.zip'))" />
+  </ItemGroup>    
+  <Target Name="UnpackEngineTestPackage" AfterTargets="Build">
+    <PropertyGroup>
+      <PkgTestsRoot>$([System.IO.Path]::GetFullPath('$(SolutionDir)..\test\core\packageDependencyTests\'))</PkgTestsRoot>
+      <ZipPath>$(PkgTestsRoot)PythonEnginePackage.zip</ZipPath>
+      <DestRoot>$(PkgTestsRoot)PythonEnginePackage\</DestRoot>
+    </PropertyGroup>
+    <RemoveDir Directories="$(DestRoot)" Condition="Exists('$(DestRoot)')" />
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;Add-Type -AssemblyName 'System.IO.Compression.FileSystem'; [System.IO.Compression.ZipFile]::ExtractToDirectory('$(ZipPath)','$(DestRoot)')&quot;" />
+  </Target>    
 </Project>
