@@ -114,7 +114,11 @@ namespace Dynamo.Wpf.Utilities
             //connected nodes and select them for auto layout.
             intersectedNodes = new List<NodeModel>();
             bool realIntersection = false;
-            foreach (var node in wsModel.Nodes)
+
+            // Filter wsModel.Nodes to only those in the same group as originalNode
+            var nodesToCheck = FilterNodesToSameGroup(wsModel, originalNode, wsModel.Nodes);
+
+            foreach (var node in nodesToCheck)
             {
                 if (nodesGuidsToConsider.Contains(node.GUID))
                     continue;
