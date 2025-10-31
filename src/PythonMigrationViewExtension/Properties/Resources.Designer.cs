@@ -124,15 +124,6 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Backup graph has been saved.
-        /// </summary>
-        public static string CPythonMigrationBackupFileCreatedHeader {
-            get {
-                return ResourceManager.GetString("CPythonMigrationBackupFileCreatedHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Before updating, a backup file has been saved here : {0}.
         /// </summary>
         public static string CPythonMigrationBackupFileCreatedMessage {
@@ -410,6 +401,15 @@ namespace Dynamo.PythonMigration.Properties {
         public static string PythonMigrationBackupExtension {
             get {
                 return ResourceManager.GetString("PythonMigrationBackupExtension", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backup graph has been saved.
+        /// </summary>
+        public static string PythonMigrationBackupFileCreatedHeader {
+            get {
+                return ResourceManager.GetString("PythonMigrationBackupFileCreatedHeader", resourceCulture);
             }
         }
         

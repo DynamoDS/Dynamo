@@ -120,7 +120,8 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             if (!Models.DynamoModel.IsTestMode)
             {
                 var message = string.Format(Properties.Resources.PythonMigrationBackupFileCreatedMessage, path);
-                MessageBoxService.Show(message, string.Empty, MessageBoxButton.OK, MessageBoxImage.None);
+                var title = Properties.Resources.PythonMigrationBackupFileCreatedHeader;
+                MessageBoxService.Show(message, title, MessageBoxButton.OK, MessageBoxImage.None);
             }
         }
 

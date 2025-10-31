@@ -470,6 +470,17 @@ namespace Dynamo.PythonMigration
                 .Where(n => n.EngineName == PythonEngineManager.CPython3EngineName)
                 .ToList();
 
+            // If we are inside a custom node and it is already PythonNet3,
+            // clear any stale auto-upgrade banners left from a cached definition
+            if (CurrentWorkspace is CustomNodeWorkspaceModel)
+            {
+                foreach (var py in CurrentWorkspace.Nodes.OfType<PythonNode>()
+                             .Where(n => n.EngineName == PythonEngineManager.PythonNet3EngineName))
+                {
+                    py.ShowAutoUpgradedBar = false;
+                }
+            }
+
             var cnManager = DynamoViewModel?.Model?.CustomNodeManager;
 
             // Collect custom def IDs
