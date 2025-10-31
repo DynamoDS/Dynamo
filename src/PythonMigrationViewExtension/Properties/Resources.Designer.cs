@@ -115,7 +115,7 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Before converting CPython nodes to PythonNet3, a backup of this graph has been saved to the configured backup location : {0}.
+        ///   Looks up a localized string similar to Before updating, a backup file has been saved here : {0}.
         /// </summary>
         public static string CPythonMigrationBackupFileCreatedMessage {
             get {
@@ -151,7 +151,7 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} custom node definitions have been temporarily converted to PythonNet3 for this session. Save the graph to update their .dyf files. CPython is no longer supported..
+        ///   Looks up a localized string similar to {0} custom node definitions have been automatically converted to PythonNet3 for this session. Save the graph to update their .dyf files. .
         /// </summary>
         public static string CustomNodeUpgradeToastMessagePlural {
             get {
@@ -160,7 +160,7 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 1 custom node definition has been temporarily converted to PythonNet3 for this session. Save the graph to update its .dyf file. CPython is no longer supported..
+        ///   Looks up a localized string similar to 1 custom node definition has been automatically converted to PythonNet3 for this session. Save the graph to update its .dyf file. .
         /// </summary>
         public static string CustomNodeUpgradeToastMessageSingular {
             get {
