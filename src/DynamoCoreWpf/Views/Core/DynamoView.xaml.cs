@@ -481,6 +481,8 @@ namespace Dynamo.Controls
             {
                 DynamoModel.RaiseIExtensionStorageAccessWorkspaceSaving(hws, extension, saveContext, dynamoViewModel.Model.Logger);
             }
+
+            dynamoViewModel?.CheckOnlineAccess();
         }
 
         private void OnPythonEngineUpgradeToastRequested(string msg, bool stayOpen)
@@ -2835,6 +2837,15 @@ namespace Dynamo.Controls
             Image collapseIcon = (Image)sp.Children[0];
 
             UpdateHandleHoveredStyle(tb, collapseIcon);
+        }
+
+        private void OnlineStatusGrid_MouseEnter(object sender, MouseEventArgs e)
+        {
+            // Trigger connectivity check when hovering over network status indicator
+            if (dynamoViewModel != null)
+            {
+                dynamoViewModel.CheckOnlineAccess();
+            }
         }
 
         private bool libraryCollapsed;

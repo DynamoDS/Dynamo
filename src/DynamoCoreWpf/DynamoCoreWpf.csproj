@@ -482,7 +482,7 @@
       <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.2950" />
+      <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.3011" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
     <PackageReference Include="Greg" Version="3.0.2.8780" />
@@ -630,6 +630,7 @@
     <Compile Include="Utilities\GroupStyleItemSelector.cs" />
     <Compile Include="Utilities\LibraryDragAndDrop.cs" />
     <Compile Include="Utilities\MessageBoxUtilities.cs" />
+    <Compile Include="Utilities\NetworkUtilities.cs" />
     <Compile Include="Utilities\NodeAutoCompleteUtilities.cs" />
     <Compile Include="Utilities\NodeContextMenuBuilder.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
@@ -2126,6 +2127,8 @@
     <Resource Include="UI\Images\more-vertical.png" />
     <Resource Include="UI\Images\watch_hidden_16_16.png" />
     <Resource Include="UI\Images\alert.png" />
+    <Resource Include="UI\Images\online.png" />
+    <Resource Include="UI\Images\offline.png" />
     <Resource Include="UI\Images\menu_16_16.png" />
     <Resource Include="UI\Images\menu-hover-16px.png" />
     <Resource Include="UI\Images\caret_down.png" />
