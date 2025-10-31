@@ -3768,7 +3768,7 @@ Aby ustawić ten plik jako nowy szablon, zapisz go w innym folderze, a następni
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>Wygląda na to, że program Autodesk Identity Manager nie jest skonfigurowany w systemie. Aby zapewnić pełny dostęp do wszystkich funkcji, zaloguj się na konto Autodesk przy użyciu programu Autodesk Identity Manager.
-#Pobierz i zainstaluj=https://manage.autodesk.com/products/updates tutaj lub za pośrednictwem konta w portalu Autodesk Access, a następnie zaloguj się.</value>
+#Pobierz i zainstaluj=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html tutaj lub za pośrednictwem konta w portalu Autodesk Access, a następnie zaloguj się.</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Pobierz program Autodesk Identity Manager</value>

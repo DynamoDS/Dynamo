@@ -443,14 +443,14 @@ namespace DynamoCoreWpfTests
         [Category("DynamoUI")]
         public void PreferenceSetting_BackgroundPreview_1_0API()
         {
-            bool expectedValue = !ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive;
+            var backgroundPreviewName = ViewModel.BackgroundPreviewViewModel.PreferenceWatchName;
+            bool expectedValue = !ViewModel.Model.PreferenceSettings.GetIsBackgroundPreviewActive(backgroundPreviewName);
             ViewModel.ToggleFullscreenWatchShowing(null);
-            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive);
+            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.GetIsBackgroundPreviewActive(backgroundPreviewName));
 
-
-            expectedValue = !ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive;
+            expectedValue = !ViewModel.Model.PreferenceSettings.GetIsBackgroundPreviewActive(backgroundPreviewName);
             ViewModel.ToggleFullscreenWatchShowing(null);
-            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.IsBackgroundPreviewActive);
+            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.GetIsBackgroundPreviewActive(backgroundPreviewName));
 
             #region Save And Load of PreferenceSettings
 
@@ -462,21 +462,19 @@ namespace DynamoCoreWpfTests
             PreferenceSettings initalSetting = new PreferenceSettings();
             PreferenceSettings resultSetting;
 
-            initalSetting.IsBackgroundPreviewActive = true;
-
             initalSetting.Save(tempPath);
             resultSetting = PreferenceSettings.Load(tempPath);
 
-            Assert.AreEqual(resultSetting.IsBackgroundPreviewActive, initalSetting.IsBackgroundPreviewActive);
+            Assert.AreEqual(resultSetting.GetIsBackgroundPreviewActive(backgroundPreviewName),
+                            initalSetting.GetIsBackgroundPreviewActive(backgroundPreviewName));
             #endregion
 
             #region Second Test
-            initalSetting.IsBackgroundPreviewActive = false;
-
             initalSetting.Save(tempPath);
             resultSetting = PreferenceSettings.Load(tempPath);
 
-            Assert.AreEqual(resultSetting.IsBackgroundPreviewActive, initalSetting.IsBackgroundPreviewActive);
+            Assert.AreEqual(resultSetting.GetIsBackgroundPreviewActive(backgroundPreviewName),
+                            initalSetting.GetIsBackgroundPreviewActive(backgroundPreviewName));
             #endregion
         }
 

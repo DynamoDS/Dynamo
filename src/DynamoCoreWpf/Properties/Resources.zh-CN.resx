@@ -3766,7 +3766,7 @@
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>您的系统上似乎未设置 Autodesk Identity Manager。要确保完全访问所有功能，请使用 Autodesk Identity Manager 登录您的 Autodesk 帐户。
-请在此处或通过 Autodesk Access #下载并安装=https://manage.autodesk.com/products/updates 然后登录。</value>
+请在此处或通过 Autodesk Access #下载并安装=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html 然后登录。</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>下载 Autodesk Identity Manager</value>

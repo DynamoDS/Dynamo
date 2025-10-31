@@ -23,8 +23,6 @@ namespace TestServices
                 };
 
         public string DynamoCorePath { get; private set; }
-        [Obsolete("Please use the Version2 Property instead.")]
-        public LibraryVersion RequestedLibraryVersion { get { return (LibraryVersion)this.RequestedLibraryVersion2.Major; }}
 
         /// <summary>
         /// The requested libG library version as a full system.version string.
@@ -115,7 +113,6 @@ namespace TestServices
             var versionStr = GetAppSetting(config, "RequestedLibraryVersion2");
 
             Version version;
-            LibraryVersion libVersion;
             // first try to load the requested library in the more precise format.
             if (Version.TryParse(versionStr, out version))
             {

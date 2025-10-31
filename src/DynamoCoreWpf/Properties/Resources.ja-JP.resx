@@ -3768,7 +3768,7 @@ Dynamo を再起動してアンインストールを完了します。
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>Autodesk Identity Manager がシステムに設定されていないようです。すべての機能に完全にアクセスするには、Autodesk Identity Manager を使用して Autodesk Account にサインインしてください。
-#ダウンロードとインストール=https://manage.autodesk.com/products/updates をここで行うか、Autodesk Access からサインインしてください。</value>
+#ダウンロードとインストール=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html をここで行うか、Autodesk Access からサインインしてください。</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Autodesk Identity Manager をダウンロードする</value>

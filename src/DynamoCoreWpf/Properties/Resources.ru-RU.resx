@@ -3768,7 +3768,7 @@
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>Возможно, в системе не настроен компонент Autodesk Identity Manager. Чтобы обеспечить полный доступ ко всем функциям, войдите в учетную запись на портале Autodesk Account с помощью Autodesk Identity Manager.
-#Скачайте и установите=https://manage.autodesk.com/products/updates этот компонент здесь или через Autodesk Access, а затем войдите в систему.</value>
+#Скачайте и установите=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html этот компонент здесь или через Autodesk Access, а затем войдите в систему.</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Скачивание Autodesk Identity Manager</value>

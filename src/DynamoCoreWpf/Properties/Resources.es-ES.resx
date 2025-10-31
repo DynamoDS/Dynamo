@@ -3768,7 +3768,7 @@ Para convertir este archivo en una nueva plantilla, guárdelo en una carpeta dif
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>Parece que Autodesk Identity Manager no está configurado en el sistema. Para garantizar el acceso completo a todas las funciones, inicie sesión en su cuenta de Autodesk Account mediante Autodesk Identity Manager.
-#Descargue e instale este componente=https://manage.autodesk.com/products/updates desde aquí o mediante Autodesk Access y, a continuación, inicie sesión.</value>
+#Descargue e instale este componente=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html desde aquí o mediante Autodesk Access y, a continuación, inicie sesión.</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Descargar Autodesk Identity Manager</value>

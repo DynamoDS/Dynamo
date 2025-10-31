@@ -3768,7 +3768,7 @@ Para transformar este arquivo em um novo modelo, salve-o em uma pasta diferente 
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>Parece que o Autodesk Identity Manager não está configurado no sistema. Para garantir o acesso completo a todos os recursos, entre na conta da Autodesk Account usando o Autodesk Identity Manager.
-#Faça o download e instale=https://manage.autodesk.com/products/updates aqui ou por meio do Autodesk Access e, em seguida, entre.</value>
+#Faça o download e instale=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html aqui ou por meio do Autodesk Access e, em seguida, entre.</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Fazer o download do Autodesk Identity Manager</value>

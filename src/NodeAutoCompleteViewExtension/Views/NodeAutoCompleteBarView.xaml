@@ -558,7 +558,7 @@
                                                     <Style TargetType="Image">
                                                         <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/check-disabled.png"/>
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding ResultsLoaded}" Value="True">
+                                                            <DataTrigger Binding="{Binding HasUnfilteredResults}" Value="True">
                                                                 <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/check.png"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
