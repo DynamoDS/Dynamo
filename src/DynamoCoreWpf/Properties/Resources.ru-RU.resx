@@ -148,7 +148,7 @@
     <value>Войдите в систему, чтобы получить доступ к онлайн-службам, которые интегрируются с классическими программами.</value>
   </data>
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to sign in.</value>
+    <value>Включите сетевой режим, чтобы иметь возможность входить в систему.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
@@ -1131,6 +1131,9 @@
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>Не удалось добавить файл: {0}</value>
   </data>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>Не удалось добавить следующие файлы:\n\n {0}</value>
+  </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>Не удалось применить NodeViewCustomization для {0}</value>
   </data>
@@ -1355,6 +1358,9 @@
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>Из-за ограничений в .NET Framework невозможно обновить сборку пакета, поскольку он уже загружен. Закройте {0}, обновите сборку и повторите попытку.</value>
+  </data>
+  <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
+    <value>\n\nНайдено дубликатов сборок: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>Не удалось обновить сборку</value>
@@ -3762,7 +3768,7 @@
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>Возможно, в системе не настроен компонент Autodesk Identity Manager. Чтобы обеспечить полный доступ ко всем функциям, войдите в учетную запись на портале Autodesk Account с помощью Autodesk Identity Manager.
-#Скачайте и установите=https://manage.autodesk.com/products/updates этот компонент здесь или через Autodesk Access, а затем войдите в систему.</value>
+#Скачайте и установите=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html этот компонент здесь или через Autodesk Access, а затем войдите в систему.</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Скачивание Autodesk Identity Manager</value>
@@ -3815,6 +3821,15 @@
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>Данные значка узла доступны в папке «{0}».</value>
   </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Расширенный общий доступ</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_Общие</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>Пок_азать свойства графика</value>
+  </data>
   <data name="GroupOptionalInportsText" xml:space="preserve">
     <value>Дополнительные</value>
   </data>
@@ -3832,6 +3847,12 @@
   </data>
   <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
     <value>Скрытие несоединенных портов вывода по умолчанию</value>
+  </data>
+  <data name="OnlineStatusTooltip" xml:space="preserve">
+    <value>Connected to the internet.</value>
+  </data>
+  <data name="OfflineStatusTooltip" xml:space="preserve">
+    <value>Not connected to the internet.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

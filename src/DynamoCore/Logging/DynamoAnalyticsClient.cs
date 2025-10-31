@@ -177,6 +177,7 @@ namespace Dynamo.Logging
             Task.Run(() => StartInternal());
 
             TrackPreference("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
+            TrackPreference("MLTermsOfUse", "", PreferenceSettings.Instance?.IsMLAutocompleteTOUApproved == true ? 1 : 0);
         }
 
         public void ShutDown()
@@ -198,6 +199,24 @@ namespace Dynamo.Logging
                     if (!ReportingAnalytics) return;
 
                     var e = AnalyticsEvent.Create(category.ToString(), action.ToString(), description, value);
+                    e.Track();
+                }
+            });
+        }
+
+        public void TrackEvent(Actions action, string category, string description, int? value)
+        {
+            if (Analytics.DisableAnalytics) return;
+
+            Task.Run(() =>
+            {
+                serviceInitialized.Wait();
+
+                lock (trackEventLockObj)
+                {
+                    if (!ReportingAnalytics) return;
+
+                    var e = AnalyticsEvent.Create(category, action.ToString(), description, value);
                     e.Track();
                 }
             });

@@ -1129,10 +1129,10 @@ Don't worry, you'll have the option to save your work.</value>
   <data name="CopyToClipboardTooltip" xml:space="preserve">
     <value>Copy to clipboard</value>
   </data>
-    <data name="CopyToClipboardFailedMessage" xml:space="preserve">
+  <data name="CopyToClipboardFailedMessage" xml:space="preserve">
     <value>Copy to clipboard failed</value>
   </data>
-    <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
+  <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
     <value>A Dynamo update is available. Click to install.</value>
   </data>
   <data name="EditNodeWindowTitle" xml:space="preserve">
@@ -2052,6 +2052,9 @@ Do you want to install the latest Dynamo update?</value>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>Due to limitations in the .NET framework, it is not possible to update your package assembly while it is already loaded.  Please update the assembly while {0} is not running and try again.</value>
   </data>
+  <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
+    <value>\n\nDuplicate assemblies found: {0}</value>
+  </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>Cannot update assembly</value>
   </data>
@@ -2441,6 +2444,10 @@ Next assemblies were loaded several times:
   </data>
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>Failed to add file: {0}</value>
+    <comment>Message box content</comment>
+  </data>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>Failed to add the following files:\n\n {0}</value>
     <comment>Message box content</comment>
   </data>
   <data name="MessageConfirmToSaveReadOnlyCustomNode" xml:space="preserve">
@@ -4114,7 +4121,7 @@ To make this file into a new template, save it to a different folder, then move 
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>It seems like Autodesk Identity Manager is not set up on your system. To ensure full access to all features, please sign in to your Autodesk account using Autodesk Identity Manager.
-#Download and install=https://manage.autodesk.com/products/updates it here or through Autodesk Access, then sign in.</value>
+#Download and install=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html it here or through Autodesk Access, then sign in.</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Download Autodesk Identity Manager</value>
@@ -4163,6 +4170,18 @@ To make this file into a new template, save it to a different folder, then move 
     <value>Node Icon Data is dumped to \"{0}\".</value>
     <comment>Debug menu | Dump all node icons</comment>
   </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Advanced Sharing</value>
+    <comment>File menu | Show Graph Properties | Advanced Sharing</comment>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_General</value>
+    <comment>File menu | Show Graph Properties | General</comment>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>Show Graph _Properties</value>
+    <comment>File menu | Show Graph Properties</comment>
+  </data>
   <data name="GroupOptionalInportsText" xml:space="preserve">
     <value>Optional</value>
   </data>
@@ -4180,5 +4199,11 @@ To make this file into a new template, save it to a different folder, then move 
   </data>
   <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
     <value>Hide unconnected output ports by default</value>
+  </data>
+  <data name="OnlineStatusTooltip" xml:space="preserve">
+    <value>Connected to the internet.</value>
+  </data>
+  <data name="OfflineStatusTooltip" xml:space="preserve">
+    <value>Not connected to the internet.</value>
   </data>
 </root>

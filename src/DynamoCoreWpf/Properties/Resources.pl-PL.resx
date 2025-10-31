@@ -148,7 +148,7 @@
     <value>Zaloguj się, aby uzyskać dostęp do usług online zintegrowanych z oprogramowaniem na komputerze.</value>
   </data>
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to sign in.</value>
+    <value>Aby móc się zalogować, włącz tryb sieciowy.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
@@ -1131,6 +1131,9 @@ Można później ponownie pobrać pakiet.</value>
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>Nie można dodać pliku: {0}</value>
   </data>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>Nie udało się dodać następujących plików:\n\n {0}</value>
+  </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>Nie udało się zastosować NodeViewCustomization dla {0}</value>
   </data>
@@ -1355,6 +1358,9 @@ Poniższe zespoły zostały wczytane wiele razy:
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>Ze względu na ograniczenia programu .NET Framework nie jest możliwa aktualizacja spakowanego zespołu, gdy jest już wczytany. Zaktualizuj zespół, gdy {0} nie jest uruchomiony, i spróbuj ponownie.</value>
+  </data>
+  <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
+    <value>\n\nZnaleziono duplikaty zespołów: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>Nie można uaktualnić zespołu</value>
@@ -3762,7 +3768,7 @@ Aby ustawić ten plik jako nowy szablon, zapisz go w innym folderze, a następni
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>Wygląda na to, że program Autodesk Identity Manager nie jest skonfigurowany w systemie. Aby zapewnić pełny dostęp do wszystkich funkcji, zaloguj się na konto Autodesk przy użyciu programu Autodesk Identity Manager.
-#Pobierz i zainstaluj=https://manage.autodesk.com/products/updates tutaj lub za pośrednictwem konta w portalu Autodesk Access, a następnie zaloguj się.</value>
+#Pobierz i zainstaluj=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html tutaj lub za pośrednictwem konta w portalu Autodesk Access, a następnie zaloguj się.</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Pobierz program Autodesk Identity Manager</value>
@@ -3815,6 +3821,15 @@ Aby ustawić ten plik jako nowy szablon, zapisz go w innym folderze, a następni
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>Dane ikon węzłów są zrzucane do „{0}”.</value>
   </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>Udostępnianie zaawansowane</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>_Ogólne</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>Pokaż _właściwości wykresu</value>
+  </data>
   <data name="GroupOptionalInportsText" xml:space="preserve">
     <value>Opcjonalne</value>
   </data>
@@ -3832,6 +3847,12 @@ Aby ustawić ten plik jako nowy szablon, zapisz go w innym folderze, a następni
   </data>
   <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
     <value>Domyślnie ukryj niepołączone porty wyjściowe</value>
+  </data>
+  <data name="OnlineStatusTooltip" xml:space="preserve">
+    <value>Connected to the internet.</value>
+  </data>
+  <data name="OfflineStatusTooltip" xml:space="preserve">
+    <value>Not connected to the internet.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

@@ -443,6 +443,10 @@ Dynamo.Controls.NestedGroupsLabelConverter
 Dynamo.Controls.NestedGroupsLabelConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NestedGroupsLabelConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NestedGroupsLabelConverter.NestedGroupsLabelConverter() -> void
+Dynamo.Controls.NetworkStatusIconConverter
+Dynamo.Controls.NetworkStatusIconConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.NetworkStatusIconConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.NetworkStatusIconConverter.NetworkStatusIconConverter() -> void
 Dynamo.Controls.NodeAutocompleteImageConverter
 Dynamo.Controls.NodeAutocompleteImageConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NodeAutocompleteImageConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -528,6 +532,10 @@ Dynamo.Controls.ObjectTypeConverter
 Dynamo.Controls.ObjectTypeConverter.Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.ObjectTypeConverter.ConvertBack(object value, System.Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) -> object[]
 Dynamo.Controls.ObjectTypeConverter.ObjectTypeConverter() -> void
+Dynamo.Controls.OnlineStatusTextConverter
+Dynamo.Controls.OnlineStatusTextConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.OnlineStatusTextConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.OnlineStatusTextConverter.OnlineStatusTextConverter() -> void
 Dynamo.Controls.PackageDetailsLinkCollapseOnEmpty
 Dynamo.Controls.PackageDetailsLinkCollapseOnEmpty.Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.PackageDetailsLinkCollapseOnEmpty.ConvertBack(object value, System.Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) -> object[]
@@ -1023,6 +1031,7 @@ Dynamo.PackageManager.PublishPackageViewModel.BaseVersionHeader.set -> void
 Dynamo.PackageManager.PublishPackageViewModel.BuildVersion.get -> string
 Dynamo.PackageManager.PublishPackageViewModel.BuildVersion.set -> void
 Dynamo.PackageManager.PublishPackageViewModel.CancelCommand.get -> Prism.Commands.DelegateCommand
+Dynamo.PackageManager.PublishPackageViewModel.CancelFileLoading() -> void
 Dynamo.PackageManager.PublishPackageViewModel.CanEditName.get -> bool
 Dynamo.PackageManager.PublishPackageViewModel.ClearMarkdownDirectoryCommand.get -> Prism.Commands.DelegateCommand
 Dynamo.PackageManager.PublishPackageViewModel.CompatibilityMatrix.get -> System.Collections.Generic.ICollection<Greg.Requests.PackageCompatibility>
@@ -1123,6 +1132,7 @@ Dynamo.PackageManager.PublishPackageViewModel.UploadHandle.get -> Dynamo.Package
 Dynamo.PackageManager.PublishPackageViewModel.UploadHandle.set -> void
 Dynamo.PackageManager.PublishPackageViewModel.Uploading.get -> bool
 Dynamo.PackageManager.PublishPackageViewModel.Uploading.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.UploadProgress -> System.Action<int, int, string>
 Dynamo.PackageManager.PublishPackageViewModel.UploadState.get -> Dynamo.PackageManager.PackageUploadHandle.State
 Dynamo.PackageManager.PublishPackageViewModel.UploadState.set -> void
 Dynamo.PackageManager.PublishPackageViewModel.UploadType.get -> Dynamo.PackageManager.PackageUploadHandle.UploadType
@@ -1716,6 +1726,7 @@ Dynamo.UI.Views.ScriptObject.SignOut() -> bool
 Dynamo.UI.Views.ScriptWizardObject
 Dynamo.UI.Views.ScriptWizardObject.AddFileOrFolder(string fileOrFolder) -> void
 Dynamo.UI.Views.ScriptWizardObject.ApplicationLoaded() -> void
+Dynamo.UI.Views.ScriptWizardObject.CancelUpload() -> void
 Dynamo.UI.Views.ScriptWizardObject.ClearMarkdownContent() -> void
 Dynamo.UI.Views.ScriptWizardObject.LoadMarkdownContent() -> void
 Dynamo.UI.Views.ScriptWizardObject.LogMessage(string message) -> void
@@ -1723,13 +1734,14 @@ Dynamo.UI.Views.ScriptWizardObject.OpenFolder(string path) -> void
 Dynamo.UI.Views.ScriptWizardObject.Publish() -> void
 Dynamo.UI.Views.ScriptWizardObject.RemoveFileOrFolder(string name) -> void
 Dynamo.UI.Views.ScriptWizardObject.Reset() -> void
-Dynamo.UI.Views.ScriptWizardObject.ScriptWizardObject(System.Action<string> requestAddFileOrFolder, System.Action<string> requestRemoveFileOrFolder, System.Action<bool> requestRetainFolderStructure, System.Action<string> requestUpdatePackageDetails, System.Action requestSubmit, System.Action requestPublish, System.Action requestReset, System.Action<string> requestToggleNodeLibraryOnItem, System.Action<string> requestOpenFolder, System.Action<string> requestUpdateCompatibilityMatrix, System.Action requestLoadMarkdownContent, System.Action requestClearMarkdownContent, System.Action<string> requestLogMessage, System.Action requestApplicationLoaded, System.Action<string, string> requestShowDialog) -> void
+Dynamo.UI.Views.ScriptWizardObject.ScriptWizardObject(System.Action<string> requestAddFileOrFolder, System.Action<string> requestRemoveFileOrFolder, System.Action<bool> requestRetainFolderStructure, System.Action<string> requestUpdatePackageDetails, System.Action requestSubmit, System.Action requestPublish, System.Action requestReset, System.Action<string> requestToggleNodeLibraryOnItem, System.Action<string> requestOpenFolder, System.Action<string> requestUpdateCompatibilityMatrix, System.Action requestLoadMarkdownContent, System.Action requestClearMarkdownContent, System.Action<string> requestLogMessage, System.Action requestApplicationLoaded, System.Action<string, string> requestShowDialog, System.Action requestCancelUpload, System.Action<int, int, string> requestUploadProgress) -> void
 Dynamo.UI.Views.ScriptWizardObject.ShowDialog(string title, string message) -> void
 Dynamo.UI.Views.ScriptWizardObject.Submit() -> void
 Dynamo.UI.Views.ScriptWizardObject.ToggleNodeLibraryOnItem(string name) -> void
 Dynamo.UI.Views.ScriptWizardObject.ToggleRetainFolderStructure(bool flag) -> void
 Dynamo.UI.Views.ScriptWizardObject.UpdateCompatibilityMatrix(string jsonPayload) -> void
 Dynamo.UI.Views.ScriptWizardObject.UpdatePackageDetails(string jsonPayload) -> void
+Dynamo.UI.Views.ScriptWizardObject.UploadProgress(int currentFile, int totalFiles, string currentFileName) -> void
 Dynamo.UI.Views.SplashScreen
 Dynamo.UI.Views.SplashScreen.CloseWasExplicit.get -> bool
 Dynamo.UI.Views.SplashScreen.DynamicSplashScreenReady -> Dynamo.UI.Views.SplashScreen.DynamicSplashScreenReadyHandler
@@ -2123,6 +2135,7 @@ Dynamo.ViewModels.DynamoViewModel.NewHomeWorkspaceCommand.get -> Dynamo.UI.Comma
 Dynamo.ViewModels.DynamoViewModel.NewHomeWorkspaceCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.NodeFromSelectionCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.NodeFromSelectionCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.OnlineAccess.get -> bool
 Dynamo.ViewModels.DynamoViewModel.OnRequestPackagePublishDialog(Dynamo.PackageManager.PublishPackageViewModel vm) -> void
 Dynamo.ViewModels.DynamoViewModel.OnRequestShorcutToolbarLoaded(double rightMenuActualWidth) -> void
 Dynamo.ViewModels.DynamoViewModel.OpenCommand.get -> Dynamo.UI.Commands.DelegateCommand
@@ -2196,6 +2209,8 @@ Dynamo.ViewModels.DynamoViewModel.ScaleFactorLog.set -> void
 Dynamo.ViewModels.DynamoViewModel.SelectAll(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.SelectAllCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.SelectAllCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.ShowGraphPropertiesCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.ShowGraphPropertiesCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubbles(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubblesCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubblesCommand.set -> void
@@ -3312,6 +3327,8 @@ Dynamo.Wpf.Controls.RunSettingsControl.InitializeComponent() -> void
 Dynamo.Wpf.Controls.RunSettingsControl.RunSettingsControl() -> void
 Dynamo.Wpf.CoreNodeViewCustomizations
 Dynamo.Wpf.CoreNodeViewCustomizations.CoreNodeViewCustomizations() -> void
+Dynamo.Wpf.Extensions.IExtensionMenuProvider
+Dynamo.Wpf.Extensions.IExtensionMenuProvider.GetFileMenuItem() -> System.Windows.Controls.MenuItem
 Dynamo.Wpf.Extensions.IViewExtension
 Dynamo.Wpf.Extensions.IViewExtension.Loaded(Dynamo.Wpf.Extensions.ViewLoadedParams viewLoadedParams) -> void
 Dynamo.Wpf.Extensions.IViewExtension.Name.get -> string
@@ -4752,6 +4769,8 @@ static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuExport.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuExport3DAsImage.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuExportAsImage.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuExportToSTL.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuGraphPropertiesAdvanced.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuGraphPropertiesGeneral.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuImport.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuInsert.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuNew.get -> string
@@ -4764,6 +4783,7 @@ static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuRecentFiles.get -> stri
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuSave.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuSaveAs.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewEditMenuUnpinAllPreviewBubbles.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoViewFileMenuShowGraphProperties.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpDictionary.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenu.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewHelpMenuDisplayStartPage.get -> string
@@ -5051,6 +5071,7 @@ static Dynamo.Wpf.Properties.Resources.MessageErrorOpeningInvalidPath.get -> str
 static Dynamo.Wpf.Properties.Resources.MessageExcessiveLoadTime.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageExcessiveLoadTimeTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToAddFile.get -> string
+static Dynamo.Wpf.Properties.Resources.MessageFailedToAddMultipleFiles.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToApplyCustomization.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToAttachToRowColumn.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageFailedToDelete.get -> string
@@ -5111,6 +5132,9 @@ static Dynamo.Wpf.Properties.Resources.NodeAutocomplete.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeAutoCompleteNotAvailableForCollapsedGroups.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeAutoCompleteToolTip.get -> string
+static Dynamo.Wpf.Properties.Resources.OfflineStatusTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.OnlineStatusTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDuplicateAssembliesFoundMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoCompleteNewUI.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoCompleteNewUITooltipText.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeContextMenuEnablePeriodicUpdate.get -> string

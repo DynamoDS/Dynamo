@@ -79,6 +79,36 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void PublishLocallyCommand_WhenUserCancelsFolderDialog_ResetsUploadingState()
+        {
+            // Arrange
+            var vm = new PublishPackageViewModel(ViewModel);
+            ViewModel.OnRequestPackagePublishDialog(vm);
+            
+            // Add a custom node to make the package valid
+            string packagedirectory = Path.Combine(TestDirectory, "pkgs");
+            var packages = Directory.EnumerateDirectories(packagedirectory);
+            var firstnode = packages.First();
+            vm.AddFile(firstnode);
+            
+            // Set up the folder dialog to return cancel
+            vm.RequestShowFolderBrowserDialog += (sender, e) => {
+                e.Cancel = true; // Simulate user cancelling the dialog
+            };
+            
+            // Track if UploadCancelled event was triggered
+            bool uploadCancelledTriggered = false;
+            vm.UploadCancelled += () => uploadCancelledTriggered = true;
+            
+            // Act
+            vm.PublishLocallyCommand.Execute();
+            
+            // Assert
+            Assert.IsFalse(vm.Uploading, "Uploading should be false when user cancels folder dialog");
+            Assert.IsTrue(uploadCancelledTriggered, "UploadCancelled event should be triggered when user cancels folder dialog");
+        }
+
+        [Test]
         public void CanRemoveCustomNodesWithIdenticalNames()
         {
             var vm = new PublishPackageViewModel(this.ViewModel);

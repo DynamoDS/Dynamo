@@ -65,6 +65,7 @@ namespace Dynamo.Controls
         public const string BackgroundPreviewName = "BackgroundPreview";
         private const int SideBarCollapseThreshold = 20;
         private const int navigationInterval = 100;
+        private const string GraphMetadataExtensionId = "28992e1d-abb9-417f-8b1b-05e053bee670";
         // This is used to determine whether ESC key is being held down
         private bool IsEscKeyPressed = false;
         // internal for testing.
@@ -79,6 +80,9 @@ namespace Dynamo.Controls
         private PreferencesView preferencesWindow;
         private PackageManagerView packageManagerWindow;
         private bool loaded = false;
+        private bool graphMetadataHooked;
+        private MenuItem graphPropsGeneralMenuItem;
+        private MenuItem graphPropsExtensionMenuItem;
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
         private bool isPSSCalledOnViewModelNoCancel = false;
@@ -140,7 +144,7 @@ namespace Dynamo.Controls
             tabSlidingWindowStart = tabSlidingWindowEnd = 0;
 
             //Initialize the ViewExtensionManager with the CommonDataDirectory so that view extensions found here are checked first for dll's with signed certificates
-            viewExtensionManager = new ViewExtensionManager(dynamoViewModel.Model.ExtensionManager, new[] { dynamoViewModel.Model.PathManager.CommonDataDirectory });
+            viewExtensionManager = new ViewExtensionManager(dynamoViewModel.Model.ExtensionManager);
 
             _timer = new Stopwatch();
             _timer.Start();
@@ -266,6 +270,7 @@ namespace Dynamo.Controls
             this.dynamoViewModel.Model.WorkspaceHidden += OnWorkspaceHidden;
             this.dynamoViewModel.RequestEnableShortcutBarItems += DynamoViewModel_RequestEnableShortcutBarItems;
             this.dynamoViewModel.RequestExportWorkSpaceAsImage += OnRequestExportWorkSpaceAsImage;
+            this.dynamoViewModel.ShowGraphPropertiesRequested += DynamoViewModel_ShowGraphPropertiesRequested;
 
             //add option to update python engine for all python nodes in the workspace.
             AddPythonEngineToMainMenu();
@@ -286,6 +291,60 @@ namespace Dynamo.Controls
             DefaultMinWidth = MinWidth;
             PinHomeButton();
         }
+
+        private void DynamoViewModel_ShowGraphPropertiesRequested(object sender, EventArgs e)
+        {
+            EnsureGraphPropertiesBinding();
+
+            var provider = viewExtensionManager.ViewExtensions
+                .OfType<IExtensionMenuProvider>()
+                .FirstOrDefault(ext => (ext as IViewExtension)?.UniqueId == GraphMetadataExtensionId);
+
+            var extItem = provider?.GetFileMenuItem();
+            if (extItem == null) return;
+
+            extItem.IsChecked = !extItem.IsChecked;
+        }
+
+        private void EnsureGraphPropertiesBinding()
+        {
+            if (graphMetadataHooked) return;
+
+            graphPropsGeneralMenuItem = this.FindName("general") as MenuItem;
+            if (graphPropsGeneralMenuItem == null) return;
+
+            var provider = viewExtensionManager.ViewExtensions
+                .OfType<IExtensionMenuProvider>()
+                .FirstOrDefault(ext => (ext as IViewExtension)?.UniqueId == GraphMetadataExtensionId);
+
+            graphPropsExtensionMenuItem = provider?.GetFileMenuItem();
+            if (graphPropsExtensionMenuItem == null) return;
+
+            graphPropsGeneralMenuItem.IsCheckable = true;
+            graphPropsGeneralMenuItem.IsChecked = graphPropsExtensionMenuItem.IsChecked;
+
+            graphPropsExtensionMenuItem.Checked += OnGraphMetadataChecked;
+            graphPropsExtensionMenuItem.Unchecked += OnGraphMetadataUnchecked;
+
+            graphMetadataHooked = true;
+        }
+
+        private void OnGraphMetadataChecked(object sender, RoutedEventArgs e)
+        {
+            if (graphPropsGeneralMenuItem != null)
+            {
+                graphPropsGeneralMenuItem.IsChecked = true;
+            }
+        }
+
+        private void OnGraphMetadataUnchecked(object sender, RoutedEventArgs e)
+        {
+            if (graphPropsGeneralMenuItem != null)
+            {
+                graphPropsGeneralMenuItem.IsChecked = false;
+            }
+        }
+
         private void OnRequestCloseHomeWorkSpace()
         {
             CalculateWindowMinWidth();
@@ -421,6 +480,8 @@ namespace Dynamo.Controls
             {
                 DynamoModel.RaiseIExtensionStorageAccessWorkspaceSaving(hws, extension, saveContext, dynamoViewModel.Model.Logger);
             }
+
+            dynamoViewModel?.CheckOnlineAccess();
         }
 
         /// <summary>
@@ -1311,6 +1372,7 @@ namespace Dynamo.Controls
                     Log(ext.Name + ": " + exc.Message);
                 }
             }
+            EnsureGraphPropertiesBinding();
         }
 
         /// <summary>
@@ -2028,6 +2090,22 @@ namespace Dynamo.Controls
                 PerformShutdownSequenceOnViewModel();
             }
 
+            // Force application shutdown when dynamo (in standalone mode) is closed, to prevent process hanging
+            bool isStandaloneMode = string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName);
+            
+            if (!DynamoModel.IsTestMode && isStandaloneMode && Application.Current != null)
+            {
+                try
+                {
+                    Application.Current.Shutdown();
+                }
+                catch (Exception ex)
+                {
+                    Log($"Error during Application.Shutdown: {ex.Message}. Forcing process exit.");
+                    Environment.Exit(0);
+                }
+            }
+
             dynamoViewModel.Model.RequestLayoutUpdate -= vm_RequestLayoutUpdate;
             dynamoViewModel.RequestViewOperation -= DynamoViewModelRequestViewOperation;
 
@@ -2052,6 +2130,12 @@ namespace Dynamo.Controls
 
             dynamoViewModel.RequestUserSaveWorkflow -= DynamoViewModelRequestUserSaveWorkflow;
             GuideFlowEvents.GuidedTourStart -= GuideFlowEvents_GuidedTourStart;
+
+            if (graphPropsExtensionMenuItem != null)
+            {
+                graphPropsExtensionMenuItem.Checked -= OnGraphMetadataChecked;
+                graphPropsExtensionMenuItem.Unchecked -= OnGraphMetadataUnchecked;
+            }
 
             if (dynamoViewModel.Model != null)
             {
@@ -2102,6 +2186,7 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestEnableShortcutBarItems -= DynamoViewModel_RequestEnableShortcutBarItems;
             this.dynamoViewModel.RequestExportWorkSpaceAsImage -= OnRequestExportWorkSpaceAsImage;
             this.dynamoViewModel.RequestShorcutToolbarLoaded -= onRequestShorcutToolbarLoaded;
+            this.dynamoViewModel.ShowGraphPropertiesRequested -= DynamoViewModel_ShowGraphPropertiesRequested;
             PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= OnPythonEngineListUpdated;
 
             if (homePage != null)
@@ -2675,6 +2760,15 @@ namespace Dynamo.Controls
             Image collapseIcon = (Image)sp.Children[0];
 
             UpdateHandleHoveredStyle(tb, collapseIcon);
+        }
+
+        private void OnlineStatusGrid_MouseEnter(object sender, MouseEventArgs e)
+        {
+            // Trigger connectivity check when hovering over network status indicator
+            if (dynamoViewModel != null)
+            {
+                dynamoViewModel.CheckOnlineAccess();
+            }
         }
 
         private bool libraryCollapsed;

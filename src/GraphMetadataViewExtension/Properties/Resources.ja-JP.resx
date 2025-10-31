@@ -156,9 +156,6 @@
   <data name="ImageSelector_Title_SelectImage" xml:space="preserve">
     <value>イメージを選択</value>
   </data>
-  <data name="MenuItemText" xml:space="preserve">
-    <value>グラフ プロパティを表示(_P)</value>
-  </data>
   <data name="URIValidationRule_Fail_Message" xml:space="preserve">
     <value>文字列は有効な URI ではありません</value>
   </data>

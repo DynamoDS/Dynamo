@@ -148,7 +148,7 @@
     <value>サインインして、デスクトップソフトウェアに統合されるオンラインサービスにアクセスします。</value>
   </data>
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to sign in.</value>
+    <value>サインインできるようにするには、ネットワーク モードを有効にします。</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
@@ -1131,6 +1131,9 @@
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>ファイル {0} を追加できませんでした。</value>
   </data>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>次のファイルを追加できませんでした:\n\n {0}</value>
+  </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>{0} への NodeViewCustomization の適用に失敗しました</value>
   </data>
@@ -1355,6 +1358,9 @@
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>.NET フレームワークの制限により、既にロードされている場合は、パッケージ アセンブリを更新できません。{0} が実行されていないときにアセンブリを更新して、再度実行してください。</value>
+  </data>
+  <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
+    <value>\n\n重複したアセンブリが見つかりました: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>アセンブリを更新できません</value>
@@ -3762,7 +3768,7 @@ Dynamo を再起動してアンインストールを完了します。
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>Autodesk Identity Manager がシステムに設定されていないようです。すべての機能に完全にアクセスするには、Autodesk Identity Manager を使用して Autodesk Account にサインインしてください。
-#ダウンロードとインストール=https://manage.autodesk.com/products/updates をここで行うか、Autodesk Access からサインインしてください。</value>
+#ダウンロードとインストール=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html をここで行うか、Autodesk Access からサインインしてください。</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Autodesk Identity Manager をダウンロードする</value>
@@ -3815,6 +3821,15 @@ Dynamo を再起動してアンインストールを完了します。
   <data name="NodeIconDataIsDumped" xml:space="preserve">
     <value>ノード アイコン データは \"{0}\" にダンプされます。</value>
   </data>
+  <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
+    <value>高度な共有</value>
+  </data>
+  <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
+    <value>一般(_G)</value>
+  </data>
+  <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
+    <value>グラフ プロパティを表示(_P)</value>
+  </data>
   <data name="GroupOptionalInportsText" xml:space="preserve">
     <value>オプション</value>
   </data>
@@ -3832,6 +3847,12 @@ Dynamo を再起動してアンインストールを完了します。
   </data>
   <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
     <value>既定で未接続の出力ポートを非表示</value>
+  </data>
+  <data name="OnlineStatusTooltip" xml:space="preserve">
+    <value>Connected to the internet.</value>
+  </data>
+  <data name="OfflineStatusTooltip" xml:space="preserve">
+    <value>Not connected to the internet.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

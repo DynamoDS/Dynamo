@@ -504,12 +504,27 @@ namespace ProtoFFI
 
         internal static bool IsAssignableFromDictionary(Type expectedCLRType)
         {
-            return expectedCLRType == typeof(IDictionary) ||
-                expectedCLRType.GetInterfaces()
-                    .Where(i => i.IsGenericType)
-                    .Select(i => i.GetGenericTypeDefinition())
-                    .Contains(typeof(IDictionary<,>)) ||
-                expectedCLRType.IsAssignableFrom(typeof(DesignScript.Builtin.Dictionary));
+            if (expectedCLRType == typeof(IDictionary))
+                return true;
+
+            // Fast path for common generic IDictionary<,>
+            if (expectedCLRType.IsGenericType && expectedCLRType.GetGenericTypeDefinition() == typeof(IDictionary<,>))
+                return true;
+
+            // Check interfaces without LINQ
+            var interfaces = expectedCLRType.GetInterfaces();
+            for (int i = 0; i < interfaces.Length; i++)
+            {
+                var iface = interfaces[i];
+                if (iface.IsGenericType && iface.GetGenericTypeDefinition() == typeof(IDictionary<,>))
+                    return true;
+            }
+
+            // Check assignability from DesignScript.Builtin.Dictionary
+            if (expectedCLRType.IsAssignableFrom(typeof(DesignScript.Builtin.Dictionary)))
+                return true;
+
+            return false;
         }
 
         private object ToIDictionary(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type expectedType)
@@ -709,9 +724,9 @@ namespace ProtoFFI
                 return retVal;
 
             //5. If it is a StackValue, simply return it.
-            if (obj is StackValue)
+            if (obj is StackValue sv)
             {
-                return (StackValue)obj;
+                return sv;
             }
 
             //6. Seems like a new object create a new DS object and bind it.

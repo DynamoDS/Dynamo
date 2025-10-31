@@ -358,6 +358,16 @@
                                   Command="{Binding Path=DataContext.ImportLibraryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   Header="{x:Static p:Resources.DynamoViewFileMenuImport}" />
                         <Separator />
+                        <MenuItem Name="graphProperties"
+                                  Header="{x:Static p:Resources.DynamoViewFileMenuShowGraphProperties}">
+                            <MenuItem Name="general"
+                                      Command="{Binding ShowGraphPropertiesCommand}"
+                                      Header="{x:Static p:Resources.DynamoViewFileMenuGraphPropertiesGeneral}" />
+                            <!-- Host properties panel to be implemented in Dynamo C4D later -->
+                            <!--<MenuItem Name="advanced"
+                                      Header="{x:Static p:Resources.DynamoViewFileMenuGraphPropertiesAdvanced}" />-->                            
+                        </MenuItem>
+                        <Separator />
                         <MenuItem Name="exportMenu"
                                   Header="{x:Static p:Resources.DynamoViewFileMenuExport}"
                                   IsEnabled="False"
@@ -1665,6 +1675,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
                 <WrapPanel Grid.Row="0"
@@ -1682,6 +1693,24 @@
 
                 <!--  NotificationControl for showing run-time notifications  -->
                 <controls1:NotificationsControl Grid.Column="1" />
+
+                <!--  Online Status Indicator  -->
+                <Grid Grid.Column="2" 
+                      Margin="5,5,10,5" 
+                      VerticalAlignment="Center" 
+                      HorizontalAlignment="Right"
+                      MouseEnter="OnlineStatusGrid_MouseEnter">
+                    <Grid.ToolTip>
+                        <ToolTip>
+                            <TextBlock>
+                                <Run Text="{Binding OnlineAccess, Converter={StaticResource OnlineStatusTextConverter}, Mode=OneWay}" />
+                            </TextBlock>
+                        </ToolTip>
+                    </Grid.ToolTip>
+                    <Image Width="16" 
+                           Height="16" 
+                           Source="{Binding OnlineAccess, Converter={StaticResource NetworkStatusIconConverter}, Mode=OneWay}"/>
+                </Grid>
             </Grid>
         </Grid>
 
