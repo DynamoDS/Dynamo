@@ -77,7 +77,25 @@ namespace Dynamo.PythonMigration.Properties {
                 return ResourceManager.GetString("AcceptButtonTooltip", resourceCulture);
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to and.
+        /// </summary>
+        public static string AndConjunction {
+            get {
+                return ResourceManager.GetString("AndConjunction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported..
+        /// </summary>
+        public static string CombinedUpgradeToastSuffix {
+            get {
+                return ResourceManager.GetString("CombinedUpgradeToastSuffix", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to This graph currently contains python nodes that are using the old CPython Engine which has been deprecated. Consider updating these nodes to use the new PythonNet3 Engine..
         /// </summary>
@@ -124,20 +142,38 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} CPython nodes have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported..
+        ///   Looks up a localized string similar to CPython nodes.
         /// </summary>
-        public static string CPythonUpgradeToastMessagePlural {
+        public static string CPythonNodesLabelPlural {
             get {
-                return ResourceManager.GetString("CPythonUpgradeToastMessagePlural", resourceCulture);
+                return ResourceManager.GetString("CPythonNodesLabelPlural", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to 1 CPython node has been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported..
+        ///   Looks up a localized string similar to CPython node.
         /// </summary>
-        public static string CPythonUpgradeToastMessageSingular {
+        public static string CPythonNodesLabelSingular {
             get {
-                return ResourceManager.GetString("CPythonUpgradeToastMessageSingular", resourceCulture);
+                return ResourceManager.GetString("CPythonNodesLabelSingular", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to custom node definitions.
+        /// </summary>
+        public static string CustomNodeDefsLabelPlural {
+            get {
+                return ResourceManager.GetString("CustomNodeDefsLabelPlural", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to custom node definition.
+        /// </summary>
+        public static string CustomNodeDefsLabelSingular {
+            get {
+                return ResourceManager.GetString("CustomNodeDefsLabelSingular", resourceCulture);
             }
         }
         
@@ -147,24 +183,6 @@ namespace Dynamo.PythonMigration.Properties {
         public static string CustomNodesPythonDependencyHeader {
             get {
                 return ResourceManager.GetString("CustomNodesPythonDependencyHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} custom node definitions have been automatically converted to PythonNet3 for this session. Save the graph to update their .dyf files. .
-        /// </summary>
-        public static string CustomNodeUpgradeToastMessagePlural {
-            get {
-                return ResourceManager.GetString("CustomNodeUpgradeToastMessagePlural", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 1 custom node definition has been automatically converted to PythonNet3 for this session. Save the graph to update its .dyf file. .
-        /// </summary>
-        public static string CustomNodeUpgradeToastMessageSingular {
-            get {
-                return ResourceManager.GetString("CustomNodeUpgradeToastMessageSingular", resourceCulture);
             }
         }
         

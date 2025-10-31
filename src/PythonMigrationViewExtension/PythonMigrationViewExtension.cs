@@ -559,21 +559,7 @@ namespace Dynamo.PythonMigration
         {
             if (cpythonNodeCount < 1 && customDefCount < 1) return;
 
-            string cpyText = string.Empty;
-            if (cpythonNodeCount > 0)
-            {
-                cpyText = (cpythonNodeCount == 1)
-                    ? Resources.CPythonUpgradeToastMessageSingular
-                    : string.Format(Resources.CPythonUpgradeToastMessagePlural, cpythonNodeCount);
-            }
-
-            string cnText = string.Empty;
-            if (customDefCount > 0)
-            {
-                cnText = (customDefCount == 1)
-                    ? Resources.CustomNodeUpgradeToastMessageSingular
-                    : string.Format(Resources.CustomNodeUpgradeToastMessagePlural, customDefCount);
-            }
+            string combined = BuildCombinedUpgradeLine(cpythonNodeCount, customDefCount);
 
             string bachuptext = string.Empty;
             if (backupPath != "")
@@ -581,7 +567,7 @@ namespace Dynamo.PythonMigration
                 bachuptext = string.Format(Resources.CPythonMigrationBackupFileCreatedMessage, MakeWrapFriendlyPath(backupPath));
             }
 
-            var parts = new[] { cpyText, cnText, bachuptext }.Where(s => !string.IsNullOrWhiteSpace(s));
+            var parts = new[] { combined, bachuptext }.Where(s => !string.IsNullOrWhiteSpace(s));
             var msg = string.Join("\n\n", parts);
 
             Dispatcher.BeginInvoke(
@@ -602,6 +588,37 @@ namespace Dynamo.PythonMigration
                 .Replace(".", ".\u200B")
                 .Replace("_", "_\u200B")
                 .Replace("-", "-\u200B");
+        }
+
+        private static string BuildCombinedUpgradeLine(int cpythonNodeCount, int customDefCount)
+        {
+            // nothing to say
+            if (cpythonNodeCount < 1 && customDefCount < 1) return string.Empty;
+
+            // piece 1: "N CPython node(s)"
+            string cpyLabel = (cpythonNodeCount == 1)
+                ? Dynamo.PythonMigration.Properties.Resources.CPythonNodesLabelSingular
+                : Dynamo.PythonMigration.Properties.Resources.CPythonNodesLabelPlural;
+
+            string part1 = (cpythonNodeCount > 0)
+                ? $"{cpythonNodeCount} {cpyLabel}"
+                : string.Empty;
+
+            // piece 2: "N custom node definition(s)"
+            string cnLabel = (customDefCount == 1)
+                ? Dynamo.PythonMigration.Properties.Resources.CustomNodeDefsLabelSingular
+                : Dynamo.PythonMigration.Properties.Resources.CustomNodeDefsLabelPlural;
+
+            string part2 = (customDefCount > 0)
+                ? $"{customDefCount} {cnLabel}"
+                : string.Empty;
+
+            string subject = (part1.Length > 0 && part2.Length > 0)
+                ? $"{part1} {Dynamo.PythonMigration.Properties.Resources.AndConjunction} {part2}"
+                : (part1.Length > 0 ? part1 : part2);
+
+            // finish with a single, reusable suffix
+            return $"{subject} {Dynamo.PythonMigration.Properties.Resources.CombinedUpgradeToastSuffix}";
         }
 
         #endregion
@@ -871,44 +888,5 @@ namespace Dynamo.PythonMigration
                 Node = node;
             }
         }
-    }
-
-    internal static class PythonMigrationBackup                                             // REVERT THIS !!
-    {
-        /// <summary>
-        /// Creates a one-time backup of the current workspace and (optionally) shows a message.
-        /// </summary>
-        internal static void SavePythonMigrationBackup(
-            WorkspaceModel workspace,
-            string backupDir,
-            string backupExtensionToken,
-            string messageResource,
-            bool showMessage = true)
-        {
-            if (workspace == null || backupDir == null) return;
-            if (Models.DynamoModel.IsTestMode) return;
-
-            var extension = workspace is CustomNodeWorkspaceModel ? ".dyf" : ".dyn";
-            var timeStamp = DateTime.Now.ToString("yyyyMMdd'T'HHmmss");
-            var fileName = string.Concat(workspace.Name, ".", backupExtensionToken, ".", timeStamp, extension);
-
-            // Only create a backup file the first time a migration is performed on this graph/custom node file
-            var path = Path.Combine(backupDir, fileName);
-            if (File.Exists(path)) return;
-
-            workspace.Save(path, true);
-
-            if (showMessage)
-            {
-                var title = Properties.Resources.CPythonMigrationBackupFileCreatedHeader;
-                var message = string.Format(messageResource, path);
-
-                // Show the MessageBox after the UI finishes rendering to avoid disrupting connector redraw
-                System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    MessageBoxService.Show(message, title, MessageBoxButton.OK, MessageBoxImage.None);
-                }), DispatcherPriority.ApplicationIdle);
-            }            
-        }
-    }    
+    }  
 }
