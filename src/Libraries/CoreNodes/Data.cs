@@ -961,9 +961,9 @@ namespace DSCore
             }
             else
             {
-                if (inputValue is not ArrayList arrayList) return false;
+                if (inputValue is not IEnumerable list) return false;
 
-                foreach (var item in arrayList) 
+                foreach (var item in list) 
                 {
                     if (!IsItemOfType(item, type))
                     {
