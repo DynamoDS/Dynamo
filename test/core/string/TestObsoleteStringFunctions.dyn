@@ -15,7 +15,7 @@
       "NodeType": "FunctionNode",
       "Inputs": [
         {
-          "Id": "8fd2b41b3873448c94456bc584bca00f",
+          "Id": "1fe55810f1ba41f793d9bfa9baf6e5ea",
           "Name": "object",
           "Description": "some object\n\nvar[]..[]",
           "UsingDefaultValue": false,
@@ -26,7 +26,7 @@
       ],
       "Outputs": [
         {
-          "Id": "4f15e035506f414ebbb6af00326c5926",
+          "Id": "c18067040042474dae24414d3c0f4f1d",
           "Name": "string",
           "Description": "string",
           "UsingDefaultValue": false,
@@ -46,7 +46,7 @@
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "dce6e645c25841a3b290a89cf3cb1f11",
+          "Id": "7e9a1906385c4f1f99482a3a6c34ffd5",
           "Name": "integer",
           "Description": "42",
           "UsingDefaultValue": false,
@@ -67,7 +67,7 @@
       "NodeType": "ExtensionNode",
       "Inputs": [
         {
-          "Id": "daa632b5b49645b9aab4fa406a3de3ef",
+          "Id": "f37591241dee431aaaee7b28c88cd424",
           "Name": "",
           "Description": "Node to show output from",
           "UsingDefaultValue": false,
@@ -78,7 +78,38 @@
       ],
       "Outputs": [
         {
-          "Id": "951d36efe6c540509f78f0de11ae8388",
+          "Id": "3fc6457b95d348a6acaa5cab8f699ffc",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 200.0,
+      "WatchHeight": 40.0,
+      "Id": "257aaba55e114646a25f6cd17eb8d200",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "4ee6ab3c11bc4e57b8e53353a6814698",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "78d0f8945a6d4b7e85a7688af3fc527d",
           "Name": "",
           "Description": "Node output",
           "UsingDefaultValue": false,
@@ -93,15 +124,15 @@
   ],
   "Connectors": [
     {
-      "Start": "4f15e035506f414ebbb6af00326c5926",
-      "End": "daa632b5b49645b9aab4fa406a3de3ef",
-      "Id": "15fb121ba3434719bba4685f85934c5d",
+      "Start": "c18067040042474dae24414d3c0f4f1d",
+      "End": "f37591241dee431aaaee7b28c88cd424",
+      "Id": "f115b3d639e347e9b8cb7be50250e1c7",
       "IsHidden": "False"
     },
     {
-      "Start": "dce6e645c25841a3b290a89cf3cb1f11",
-      "End": "8fd2b41b3873448c94456bc584bca00f",
-      "Id": "8dd254d6697e426993aa99db99685807",
+      "Start": "7e9a1906385c4f1f99482a3a6c34ffd5",
+      "End": "1fe55810f1ba41f793d9bfa9baf6e5ea",
+      "Id": "eb81f62e518441ae8391ab643d62971a",
       "IsHidden": "False"
     }
   ],
@@ -114,7 +145,7 @@
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
       "Name": "Properties",
-      "Version": "4.0",
+      "Version": "4.1",
       "Data": {}
     }
   ],
@@ -131,7 +162,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": false,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "4.0.0.2016",
+      "Version": "4.1.0.3057",
       "RunType": "Manual",
       "RunPeriod": "1000"
     },
@@ -178,11 +209,21 @@
         "ShowGeometry": true,
         "X": 497.5,
         "Y": 129.0
+      },
+      {
+        "Id": "257aaba55e114646a25f6cd17eb8d200",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 542.5,
+        "Y": 279.0
       }
     ],
     "Annotations": [],
-    "X": 0.0,
-    "Y": 0.0,
-    "Zoom": 1.0
+    "X": 63.056507555512894,
+    "Y": 12.900449517529964,
+    "Zoom": 0.8887892282971555
   }
 }
