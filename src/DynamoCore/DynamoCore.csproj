@@ -40,7 +40,7 @@
     <PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00016" />
-    <PackageReference Include="DynamoVisualProgramming.PythonEngine.PythonNet3" Version="1.4.3" GeneratePathProperty="true" ExcludeAssets="all" />
+    <PackageReference Include="DynamoVisualProgramming.PythonEngine.PythonNet3" Version="1.4.4" GeneratePathProperty="true" ExcludeAssets="all" />
     <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.2.1.9358" />
   </ItemGroup>
   <ItemGroup>
