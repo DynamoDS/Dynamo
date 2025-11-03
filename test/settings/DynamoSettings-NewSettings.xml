@@ -17,6 +17,7 @@
   <ShowConnectorToolTip>false</ShowConnectorToolTip>
   <LibraryZoomScale>200</LibraryZoomScale>
   <PythonScriptZoomScale>25</PythonScriptZoomScale>
+  <HideCPython3Notifications>true</HideCPython3Notifications>
   <ConnectorType>POLYLINE</ConnectorType>
   <BackgroundPreviews>
     <BackgroundPreviewActiveState>
