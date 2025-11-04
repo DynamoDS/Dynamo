@@ -1,6 +1,5 @@
 using Dynamo.Configuration;
 using Dynamo.Core;
-using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
@@ -182,7 +181,7 @@ namespace Dynamo.PythonMigration
                     {
                         if (upgradeService != null)
                         {
-                            var usageInside = upgradeService.DetectPythonUsage(defWs, IsPythonNode);
+                            var usageInside = upgradeService.DetectPythonUsage(defWs, IsCPythonNode);
 
                             if (usageInside.DirectPythonNodes.Count() > 0)
                             {
@@ -313,7 +312,6 @@ namespace Dynamo.PythonMigration
                     }
                     else if (upgradeService.TempMigratedCustomDefs.Contains(defId))
                     {
-                        var preferenceSettings = DynamoViewModel?.Model?.PreferenceSettings;
                         if (!upgradeService.CustomToastShownDef.Contains(defId))
                         {
                             var pyNodes = CurrentWorkspace.Nodes.OfType<PythonNodeBase>().ToList();
@@ -342,6 +340,19 @@ namespace Dynamo.PythonMigration
             lastWorkspaceGuid = Guid.Empty;
         }
 
+        private void OnWorkspaceRemoveStarted(IWorkspaceModel workspace)
+        {
+            // Ensure that after we close custom node once, when we open it again we can show the toast again
+            if (workspace is CustomNodeWorkspaceModel cws)
+            {
+                var defId = cws.CustomNodeDefinition?.FunctionId ?? Guid.Empty;
+                if (defId != Guid.Empty)
+                {
+                    upgradeService.CustomToastShownDef.Remove(defId);
+                }
+            }
+        }
+
         private void OnCurrentWorkspaceSaved()
         {
             // If we are in a Custom Node workspace, remove this definition from tracking
@@ -355,7 +366,7 @@ namespace Dynamo.PythonMigration
             upgradeService.CommitCustomNodeMigrationsOnSave();
 
             // Show the notification only once
-            // CurrentWorkspace.HasShownCPythonNotification = true;
+            CurrentWorkspace.HasShownCPythonNotification = true;
             upgradeService.TouchedCustomWorkspaces.Clear();
         }
 
@@ -363,6 +374,7 @@ namespace Dynamo.PythonMigration
         {
             LoadedParams.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
             LoadedParams.CurrentWorkspaceCleared += OnCurrentWorkspaceCleared;
+            LoadedParams.CurrentWorkspaceRemoveStarted += OnWorkspaceRemoveStarted;
             DynamoViewModel.Model.Logger.NotificationLogged += OnNotificationLogged;
             SubscribeToWorkspaceEvents();
         }
@@ -407,6 +419,7 @@ namespace Dynamo.PythonMigration
             {
                 LoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
                 LoadedParams.CurrentWorkspaceCleared -= OnCurrentWorkspaceCleared;
+                LoadedParams.CurrentWorkspaceRemoveStarted -= OnWorkspaceRemoveStarted;
                 DynamoViewModel.CurrentSpaceViewModel.Model.NodeAdded -= OnNodeAdded;
                 DynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved -= OnNodeRemoved;
                 DynamoViewModel.Model.Logger.NotificationLogged -= OnNotificationLogged;
@@ -460,7 +473,7 @@ namespace Dynamo.PythonMigration
             var cnManager = DynamoViewModel?.Model?.CustomNodeManager;
 
             // Detect any direct CPythonNodes and custom node definitions with CPython nodes
-            var usage = upgradeService.DetectPythonUsage(CurrentWorkspace, IsPythonNode);
+            var usage = upgradeService.DetectPythonUsage(CurrentWorkspace, IsCPythonNode);
 
             // Migrate the direct CPython nodes in memory
             if (usage.DirectPythonNodes.Count() > 0)
@@ -474,15 +487,13 @@ namespace Dynamo.PythonMigration
             // Prepare custom node definitions that contain CPython nodes
             foreach (var defId in usage.CustomNodeDefIdsWithPython)
             {
-                WorkspaceModel defWs = null;
-
                 // Open the custom node worskspace to perform in-memory upgrade and log it for later save
                 if (cnManager != null
                     && cnManager.TryGetFunctionWorkspace(defId, Models.DynamoModel.IsTestMode, out CustomNodeWorkspaceModel defWsModel)
                     && defWsModel is WorkspaceModel workspace)
                 {
                     
-                    var inner = upgradeService.DetectPythonUsage(workspace, IsPythonNode);
+                    var inner = upgradeService.DetectPythonUsage(workspace, IsCPythonNode);
 
                     if (inner.DirectPythonNodes.Count() > 0)
                     {
@@ -511,7 +522,14 @@ namespace Dynamo.PythonMigration
             }
         }
 
-        private static bool IsPythonNode(NodeModel n) => n is PythonNodeBase;
+        private static bool IsCPythonNode(NodeModel n)
+        {
+            if (n is PythonNodeBase pyNode)
+            {
+                return pyNode.EngineName == PythonEngineManager.CPython3EngineName;
+            }
+            return false;
+        }
 
         private static void SetEngine(NodeModel node, WorkspaceModel workspace)
         {

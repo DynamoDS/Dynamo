@@ -1,3 +1,4 @@
+using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -91,7 +92,7 @@ namespace Dynamo.Models.Migration.Python
             if (isPythonNode == null) throw new ArgumentNullException(nameof(isPythonNode));
 
             // Direct python nodes
-            var directNodes = workspace.Nodes.Where(isPythonNode).ToList();
+            var directNodes = workspace.Nodes.Where(isPythonNode).ToList();            
 
             // Custom nodes that contain python
             var customDefIds = new HashSet<Guid>();
@@ -175,12 +176,22 @@ namespace Dynamo.Models.Migration.Python
                     if (!TryGetCustomIdAndPath(workspace, out var defId, out var dyfPath) || string.IsNullOrEmpty(dyfPath)) continue;
 
                     var path = GetWorkspaceFilePath(workspace);
+
                     if (workspace is CustomNodeWorkspaceModel customWorkspace)
                     {
                         customWorkspace.IsVisibleInDynamoLibrary = true;
                     }
 
+
+                    // get the view
+                    var parsedView = TryReadViewFromFile(path);
+
+                    // save the file without the view first
                     workspace.Save(path, false, model.EngineController);
+
+                    // patch the save file with the view
+                    PatchFileWithView(path, workspace, parsedView);
+
                     EnsureDyfHasLibraryViewFlag(dyfPath);
 
                     PermMigratedCustomDefs.Add(defId);
@@ -189,6 +200,153 @@ namespace Dynamo.Models.Migration.Python
                 catch { }
             }
         }
+
+        private string TryReadViewFromFile(string filePath)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) return null;
+
+                var jo = JObject.Parse(File.ReadAllText(filePath));
+
+                return jo["View"]?.ToString(Newtonsoft.Json.Formatting.None);
+            }
+            catch { return null; }
+        }
+
+        private static void PatchFileWithView(string filePath, WorkspaceModel ws, JToken preSaveView)
+        {
+            // 2) re-read the just-saved MODEL json
+            var modelOnly = JObject.Parse(File.ReadAllText(filePath)); // model only (no "View")
+
+            // Use original View if available; otherwise synthesize a minimal, valid one Dynamo expects.
+            // ExtraWorkspaceViewInfo expects at least: X, Y, Zoom, NodeViews, Notes, Annotations, ConnectorPins.  :contentReference[oaicite:1]{index=1}
+            JToken view = preSaveView?.DeepClone();
+            //////if (view == null)
+            //////{
+            //////    var safeZoom = ws.Zoom > 0 ? ws.Zoom : 1.0; // avoid zoom==0 hangs in view code
+            //////    view = new JObject
+            //////    {
+            //////        ["X"] = ws.X,
+            //////        ["Y"] = ws.Y,
+            //////        ["Zoom"] = safeZoom,
+            //////        ["NodeViews"] = new JArray(
+            //////            ws.Nodes.Select(n => new JObject
+            //////            {
+            //////                ["Id"] = n.GUID.ToString(),
+            //////                ["Name"] = n.Name ?? string.Empty,
+            //////                ["X"] = n.X,
+            //////                ["Y"] = n.Y,
+            //////                ["ShowGeometry"] = n.IsVisible,
+            //////                ["Excluded"] = n.IsFrozen,
+            //////                ["IsSetAsInput"] = n.IsSetAsInput,
+            //////                ["IsSetAsOutput"] = n.IsSetAsOutput,
+            //////                ["UserDescription"] = n.UserDescription ?? string.Empty
+            //////            })
+            //////        ),
+            //////        ["Notes"] = new JArray(),
+            //////        ["Annotations"] = new JArray(),
+            //////        ["ConnectorPins"] = new JArray(),
+            //////        // Keep Library visibility in the place the reader checks
+            //////        ["Dynamo"] = new JObject { ["IsVisibleInDynamoLibrary"] = true } // read by WorkspaceReadConverter  :contentReference[oaicite:2]{index=2}
+            //////    };
+            //////}
+
+            modelOnly["View"] = view;
+
+            File.WriteAllText(filePath, modelOnly.ToString());
+        }
+
+
+
+
+
+
+
+
+
+
+
+        private static void OpenDyfThenSaveWithView_(WorkspaceModel upgradedWs, string inputPath, string outputPath)
+        {
+            // Read original (if overwriting in place), to lift its "View" verbatim when present
+            var originalJson = File.Exists(outputPath) ? File.ReadAllText(outputPath) : null;
+
+            JToken originalView = null;
+            if (!string.IsNullOrEmpty(originalJson))
+            {
+                var original = JObject.Parse(originalJson);
+                originalView = original["View"]; // may be null
+            }
+
+            // Model-only JSON
+            var upgradedModelJson = upgradedWs.ToJson(null); // model serializer only  :contentReference[oaicite:3]{index=3}
+            var upgraded = JObject.Parse(upgradedModelJson);
+
+            if (originalView != null)
+            {
+                // Keep the user's layout exactly
+                upgraded["View"] = originalView.DeepClone();
+            }
+            else
+            {
+                // Synthesize a minimal but complete "View" block that Dynamo expects  :contentReference[oaicite:4]{index=4}
+                // CHANGED: ensure every required property is present, and include "Dynamo" → IsVisibleInDynamoLibrary
+                // CHANGED: coerce Name to non-null, and always write IsSetAsInput/IsSetAsOutput/Excluded
+                double safeZoom = upgradedWs.Zoom > 0 ? upgradedWs.Zoom : 1.0; // avoid zoom==0 hangs
+
+                var nodeViews = new JArray(
+                    upgradedWs.Nodes.Select(n => new JObject
+                    {
+                        ["Id"] = n.GUID.ToString(),
+                        ["Name"] = n.Name ?? string.Empty,                    // <-- CHANGED
+                        ["X"] = n.X,
+                        ["Y"] = n.Y,
+                        ["ShowGeometry"] = n.IsVisible,
+                        ["Excluded"] = n.IsFrozen,                            // <-- CHANGED (present even if false)
+                        ["IsSetAsInput"] = n.IsSetAsInput,                   // <-- CHANGED
+                        ["IsSetAsOutput"] = n.IsSetAsOutput,                 // <-- CHANGED
+                        ["UserDescription"] = n.UserDescription ?? string.Empty
+                    })
+                );
+
+                upgraded["View"] = new JObject
+                {
+                    ["X"] = upgradedWs.X,
+                    ["Y"] = upgradedWs.Y,
+                    ["Zoom"] = safeZoom,
+                    ["NodeViews"] = nodeViews,
+                    ["Notes"] = new JArray(),                                // required by reader API  :contentReference[oaicite:5]{index=5}
+                    ["Annotations"] = new JArray(),                          // required by reader API  :contentReference[oaicite:6]{index=6}
+                    ["ConnectorPins"] = new JArray(),                        // required by reader API  :contentReference[oaicite:7]{index=7}
+
+                    // CHANGED: include the flag the loader looks for when deciding Library visibility
+                    ["Dynamo"] = new JObject
+                    {
+                        ["IsVisibleInDynamoLibrary"] = true                  // :contentReference[oaicite:8]{index=8}
+                    }
+                    // Optional: ["Camera"] can be added for Home workspaces; not needed for custom nodes
+                };
+            }
+
+            // Atomic write (avoid partial files)
+            var temp = outputPath + ".tmp";
+            File.WriteAllText(temp, upgraded.ToString());
+            if (File.Exists(outputPath))
+            {
+                var bak = outputPath + ".bak";
+                File.Replace(temp, outputPath, bak);
+                try { File.Delete(bak); } catch { /* ignore */ }
+            }
+            else
+            {
+                File.Move(temp, outputPath);
+            }
+        }
+
+
+
+
 
         private string GetWorkspaceFilePath(WorkspaceModel workspace)
         {
