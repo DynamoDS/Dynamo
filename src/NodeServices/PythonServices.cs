@@ -680,8 +680,24 @@ namespace Dynamo.PythonServices
                 string statement = "";
                 var previousTries = 0;
 
-                if (name != "*" && (ScopeHasVariable(name) || ImportedTypes.ContainsKey(name)))
+                if (name != "*" && ImportedTypes.ContainsKey(name))
                 {
+                    continue;
+                }
+
+                // If already in scope, just track it without re-importing
+                if (name != "*" && ScopeHasVariable(name))
+                {
+                    try
+                    {
+                        string typeName = module == null ? memberName : String.Format("{0}.{1}", module, memberName);
+                        var type = Type.GetType(typeName);
+                        ImportedTypes.Add(name, type);
+                    }
+                    catch(Exception ex)
+                    {
+                        LogError(ex.ToString());
+                    }
                     continue;
                 }
 
