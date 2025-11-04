@@ -7,8 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace Dynamo.Models.Migration.Python
 {
@@ -46,7 +44,7 @@ namespace Dynamo.Models.Migration.Python
         /// <summary>
         /// Custom node definition IDs for which a toast/notice has already been shown
         /// </summary>
-        public readonly HashSet<Guid> customToastShownDef = new HashSet<Guid>();
+        public readonly HashSet<Guid> customToastShownDef = new HashSet<Guid>();                // DO WE USE THIS?
 
         public Guid LastWorkspaceId = Guid.Empty;
 
@@ -133,104 +131,109 @@ namespace Dynamo.Models.Migration.Python
             return changed;
         }
 
-        //#region Commit Custom Node Migration
-        ///// <summary>
-        ///// Commit custom node migrations on save: overwrite .dyf files for any definitions
-        ///// we temporarily upgraded this session, and mark them as permanent.
-        ///// </summary>
-        //public void CommitCustomNodeMigrationsOnSave()
-        //{
-        //    foreach (var workspace in touchedCustomWorkspaces.ToList())
-        //    {
-        //        try
-        //        {
-        //            if (!TryGetCustomIdAndPath(workspace, out var defId, out var dyfPath) ||
-        //                string.IsNullOrEmpty(dyfPath))
-        //                continue;
+        /// <summary>
+        /// Build a backup file path for a .dyn backup of the given workspace with the given token.
+        /// </summary>
+        public string BuildDynBackupFilePath(WorkspaceModel workspace, string token)
+        {
+            if (workspace == null || pathManager == null) return null;
+            if (DynamoModel.IsTestMode) return null;
+            if (workspace is CustomNodeWorkspaceModel) return null;
 
-        //            var path = GetWorkspaceFilePath(workspace);
-        //            if (string.IsNullOrEmpty(path))
-        //            {
-        //                path = dyfPath;
-        //                if (string.IsNullOrEmpty(path)) continue;
-        //            }
+            var backupDir = pathManager.BackupDirectory;
+            var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+            var fileName = $"{workspace.Name}.{token}.{timestamp}.dyn";
+            return Path.Combine(backupDir, fileName);
+        }
 
-        //            if (workspace is CustomNodeWorkspaceModel customWorkspace)
-        //            {
-        //                customWorkspace.IsVisibleInDynamoLibrary = true;
-        //            }
+        /// <summary>
+        /// Save a .dyn backup of the given workspace with the given token.
+        /// </summary>
+        public string SaveDynBackup(WorkspaceModel workspace, string token)
+        {
+            var path = BuildDynBackupFilePath(workspace, token);
+            if (string.IsNullOrEmpty(path)) return null;
 
-        //            // Overwrite the .dyf file
-        //            workspace.Save(path, false, model.EngineController);
-        //            EnsureDyfHasLibraryViewFlag(dyfPath);
+            workspace.Save(path, true);
+            return path;
+        }
 
-        //            permMigratedCustomDefs.Add(defId);
-        //            tempMigratedCustomDefs.Remove(defId);
-        //        }
-        //        catch { }
-        //    }
-        //}
+        /// <summary>
+        /// Commits migration changes for custom node workspaces when saving, ensuring that updated definitions are
+        /// persisted and made visible in the library.
+        /// </summary>
+        /// <remarks>This method processes all custom node workspaces that have been modified, saving
+        /// their current state and updating their visibility in the Dynamo library. It also manages migration tracking
+        /// for custom node definitions. Exceptions during individual workspace processing are silently ignored,
+        /// allowing the method to continue with other workspaces.</remarks>
+        public void CommitCustomNodeMigrationsOnSave()
+        {
+            foreach (var workspace in touchedCustomWorkspaces.ToList())
+            {
+                try
+                {
+                    if (!TryGetCustomIdAndPath(workspace, out var defId, out var dyfPath) || string.IsNullOrEmpty(dyfPath)) continue;
 
-        ///// <summary>
-        ///// Returns the on-disk file path for the given workspace
-        ///// </summary>
-        //private string GetWorkspaceFilePath(WorkspaceModel ws)
-        //{
-        //    if (ws == null) return null;
+                    var path = GetWorkspaceFilePath(workspace);
+                    if (workspace is CustomNodeWorkspaceModel customWorkspace)
+                    {
+                        customWorkspace.IsVisibleInDynamoLibrary = true;
+                    }
 
-        //    var path = ws.FileName;
-        //    if (!string.IsNullOrEmpty(path)) return path;
+                    workspace.Save(path, false, model.EngineController);
+                    EnsureDyfHasLibraryViewFlag(dyfPath);
 
-        //    return null;
-        //}
+                    permMigratedCustomDefs.Add(defId);
+                    tempMigratedCustomDefs.Remove(defId);
+                }
+                catch { }
+            }
+        }
 
-        ///// <summary>
-        ///// Outputs the custom node definition ID and its .dyf path for a custom workspace, returning true if the workspace is a custom node
-        ///// </summary>
-        //private bool TryGetCustomIdAndPath(WorkspaceModel ws, out Guid defId, out string dyfPath)
-        //{
-        //    defId = Guid.Empty;
-        //    dyfPath = null;
+        private string GetWorkspaceFilePath(WorkspaceModel workspace)
+        {
+            if (workspace == null) return null;
+            var path = workspace.FileName;
+            if (!string.IsNullOrEmpty(path)) return path;
+            return null;
+        }
 
-        //    if (ws is Dynamo.Graph.Workspaces.CustomNodeWorkspaceModel cws)
-        //    {
-        //        defId = cws.CustomNodeId;
+        private bool TryGetCustomIdAndPath(WorkspaceModel workspace, out Guid defId, out string dyfPath)
+        {
+            defId = Guid.Empty;
+            dyfPath = null;
 
-        //        var cnm = model?.CustomNodeManager;
-        //        if (cnm != null &&
-        //            cnm.NodeInfos.TryGetValue(defId, out var info) &&
-        //            !string.IsNullOrEmpty(info.Path))
-        //        {
-        //            dyfPath = info.Path;
-        //        }
-        //        return true;
-        //    }
-        //    return false;
-        //}
+            if (workspace is CustomNodeWorkspaceModel cws)
+            {
+                defId = cws.CustomNodeId;
+                var cnm = model?.CustomNodeManager;
+                if (cnm != null &&
+                    cnm.NodeInfos.TryGetValue(defId, out var info) &&
+                    !string.IsNullOrEmpty(info.Path))
+                {
+                    dyfPath = info.Path;
+                }
+                return true;
+            }
+            return false;
+        }
 
-        ///// <summary>
-        ///// Ensures the .dyf JSON sets View.Dynamo.IsVisibleInDynamoLibrary = true and writes the file back if needed
-        ///// </summary>
-        //private void EnsureDyfHasLibraryViewFlag(string dyfPath)
-        //{
-        //    if (string.IsNullOrEmpty(dyfPath) || !File.Exists(dyfPath)) return;
+        private void EnsureDyfHasLibraryViewFlag(string dyfPath)
+        {
+            if (string.IsNullOrEmpty(dyfPath) || !File.Exists(dyfPath)) return;
 
-        //    var json = File.ReadAllText(dyfPath);
-        //    var root = JObject.Parse(json);
+            var json = File.ReadAllText(dyfPath);
+            var root = JObject.Parse(json);
 
-        //    var view = (JObject?)root["View"] ?? new JObject();
-        //    var dyn = (JObject?)view["Dynamo"] ?? new JObject();
+            var view = (JObject?)root["View"] ?? new JObject();
+            var dyn = (JObject?)view["Dynamo"] ?? new JObject();
 
-        //    dyn["IsVisibleInDynamoLibrary"] = true;
-        //    view["Dynamo"] = dyn;
-        //    root["View"] = view;
+            dyn["IsVisibleInDynamoLibrary"] = true;
+            view["Dynamo"] = dyn;
+            root["View"] = view;
 
-        //    File.WriteAllText(dyfPath, root.ToString(Formatting.Indented));
-        //}
-        //#endregion
-
-
-        
+            File.WriteAllText(dyfPath, root.ToString(Formatting.Indented));
+        }
 
         private bool CustomNodeHasPython(Guid defId, Func<NodeModel, bool> isPythonNode)
         {
