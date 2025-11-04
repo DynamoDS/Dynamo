@@ -1132,7 +1132,7 @@
     <value>无法添加文件: {0}</value>
   </data>
   <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
-    <value>Failed to add the following files:\n\n {0}</value>
+    <value>无法添加以下文件:\n\n {0}</value>
   </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>无法为 {0} 应用 NodeViewCustomization</value>
@@ -1360,7 +1360,7 @@
     <value>由于 .NET Framework 的限制，软件包组件虽已加载但却无法更新。请在 {0} 未运行时更新部件，然后重试。</value>
   </data>
   <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
-    <value>\n\nDuplicate assemblies found: {0}</value>
+    <value>\n\n找到重复的部件: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>无法更新部件</value>
@@ -3766,7 +3766,7 @@
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>您的系统上似乎未设置 Autodesk Identity Manager。要确保完全访问所有功能，请使用 Autodesk Identity Manager 登录您的 Autodesk 帐户。
-请在此处或通过 Autodesk Access #下载并安装=https://manage.autodesk.com/products/updates 然后登录。</value>
+请在此处或通过 Autodesk Access #下载并安装=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html 然后登录。</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>下载 Autodesk Identity Manager</value>
@@ -3820,10 +3820,10 @@
     <value>节点图标数据转储到“{0}”。</value>
   </data>
   <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
-    <value>Advanced Sharing</value>
+    <value>高级共享</value>
   </data>
   <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
-    <value>_General</value>
+    <value>常规(_G)</value>
   </data>
   <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
     <value>显示图形特性(_P)</value>
@@ -3845,6 +3845,12 @@
   </data>
   <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
     <value>默认情况下隐藏未连接的输出端口</value>
+  </data>
+  <data name="OnlineStatusTooltip" xml:space="preserve">
+    <value>Connected to the internet.</value>
+  </data>
+  <data name="OfflineStatusTooltip" xml:space="preserve">
+    <value>Not connected to the internet.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

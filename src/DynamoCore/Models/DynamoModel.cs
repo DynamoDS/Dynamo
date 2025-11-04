@@ -1109,6 +1109,18 @@ namespace Dynamo.Models
         /// <returns></returns>
         internal PathManager CreatePathManager(IStartConfiguration config)
         {
+            var pathManagerParams = new PathManagerParams();
+
+            var version = config.HostAnalyticsInfo.HostVersion;
+            if (version != null)
+            {
+                // Use host versions if provided
+                pathManagerParams.MajorFileVersion = version.Major;
+                pathManagerParams.MinorFileVersion = version.Minor;
+
+                Dynamo.Core.PathManager.Initialize(pathManagerParams);
+            }
+
             if (!config.StartInTestMode)
             {
                 if (!Core.PathManager.Instance.HasPathResolver)

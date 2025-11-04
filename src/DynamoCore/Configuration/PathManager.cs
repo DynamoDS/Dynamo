@@ -50,12 +50,47 @@ namespace Dynamo.Core
 
     internal class PathManager : IPathManager
     {
-        internal static Lazy<PathManager>
-         lazy =
-         new Lazy<PathManager>
-         (() => new PathManager(new PathManagerParams()));
+        private static Lazy<PathManager> lazy;
+        private static readonly object lockObject = new object();
 
-        public static PathManager Instance { get { return lazy.Value; } }
+        /// <summary>
+        /// Initialize the PathManager singleton passing as a parameter a PathManagerParams object (which contains the Major and Minor version values).
+        /// </summary>
+        /// <param name="parameters"></param>
+        public static void Initialize(PathManagerParams parameters)
+        {
+            lock (lockObject)
+            {
+                //If is already initialized then do nothing
+                if (lazy == null)
+                {
+                    lazy = new Lazy<PathManager>(() => new PathManager(parameters));
+                }                 
+            }
+        }
+
+        /// <summary>
+        /// Instance is the property used as an access point to the PathManager singleton (if is not created will be created with default parameters).
+        /// </summary>
+        public static PathManager Instance
+        {
+            get
+            {
+                if (lazy == null)
+                {
+                    lock (lockObject)
+                    {
+                        if (lazy == null)
+                        {
+                            // Fallback to default if not initialized
+                            lazy = new Lazy<PathManager>(() => new PathManager(new PathManagerParams()));
+                        }
+                    }
+                }
+
+                return lazy.Value;
+            }
+        }
 
         #region Class Private Data Members
 
@@ -471,6 +506,7 @@ namespace Dynamo.Core
             exceptions.Add(PathHelper.CreateFolderIfNotExist(logDirectory));
             exceptions.Add(PathHelper.CreateFolderIfNotExist(DefaultPackagesDirectory));
             exceptions.Add(PathHelper.CreateFolderIfNotExist(backupDirectory));
+            exceptions.Add(PathHelper.CreateFolderIfNotExist(DefaultTemplatesDirectory));
 
             // Common data folders for all users.
             exceptions.Add(PathHelper.CreateFolderIfNotExist(commonDataDir));
@@ -746,21 +782,25 @@ namespace Dynamo.Core
         /// <returns></returns>
         private string GetTemplateFolder(string dataRootDirectory)
         {
-            var versionedDirectory = dataRootDirectory;
-            if (!Directory.Exists(versionedDirectory))
+            // Means that we are running on a host like Revit or Civil3D.
+            if (!string.IsNullOrEmpty(hostApplicationDirectory) && pathResolver != null)
             {
-                // Try to see if folder "%ProgramData%\{...}\{major}.{minor}" exists, if it
-                // does not, then root directory would be "%ProgramData%\{...}".
-                //
-                dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
-            }
-            else if (!Directory.Exists(Path.Combine(versionedDirectory, Configurations.TemplatesAsString)))
-            {
-                // If the folder "%ProgramData%\{...}\{major}.{minor}" exists, then try to see
-                // if the folder "%ProgramData%\{...}\{major}.{minor}\templates" exists. If it
-                // doesn't exist, then root directory would be "%ProgramData%\{...}".
-                //
-                dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
+                var versionedDirectory = dataRootDirectory;
+                if (!Directory.Exists(versionedDirectory))
+                {
+                    // Try to see if folder "%ProgramData%\{...}\{major}.{minor}" exists, if it
+                    // does not, then root directory would be "%ProgramData%\{...}".
+                    //
+                    dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
+                }
+                else if (!Directory.Exists(Path.Combine(versionedDirectory, Configurations.TemplatesAsString)))
+                {
+                    // If the folder "%ProgramData%\{...}\{major}.{minor}" exists, then try to see
+                    // if the folder "%ProgramData%\{...}\{major}.{minor}\templates" exists. If it
+                    // doesn't exist, then root directory would be "%ProgramData%\{...}".
+                    //
+                    dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
+                }
             }
 
             var uiCulture = CultureInfo.CurrentUICulture.Name;

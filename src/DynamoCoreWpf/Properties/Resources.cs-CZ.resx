@@ -1132,7 +1132,7 @@ Balíček můžete kdykoli znovu stáhnout.</value>
     <value>Nepodařilo se přidat tento soubor: {0}.</value>
   </data>
   <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
-    <value>Failed to add the following files:\n\n {0}</value>
+    <value>Selhání při přidání následujících souborů:\n\n {0}</value>
   </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
     <value>Nepodařilo se použít NodeViewCustomization pro {0}.</value>
@@ -1360,7 +1360,7 @@ Několikrát byly načteny i další sestavy:
     <value>Z důvodu omezení v rozhraní .NET Framework není možné aktualizovat sestavení balíčku při načítání. Proveďte aktualizaci sestavení, když není aplikace {0} spuštěna a opakujte akci.</value>
   </data>
   <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
-    <value>\n\nDuplicate assemblies found: {0}</value>
+    <value>\n\nNalezeny duplicitní sestavy: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>Nelze aktualizovat sestavení</value>
@@ -3767,7 +3767,7 @@ Chcete-li vytvořit z tohoto souboru novou šablonu, uložte ho do jiné složky
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>Zdá se, že v systému není nastaven nástroj Autodesk Identity Manager. Chcete-li zajistit plný přístup ke všem funkcím, přihlaste se ke svému účtu Autodesk pomocí nástroje Autodesk Identity Manager.
-#Stáhněte a instalujte=https://manage.autodesk.com/products/updates zde nebo prostřednictvím aplikace Autodesk Access a poté se přihlaste.</value>
+#Stáhněte a instalujte=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html zde nebo prostřednictvím aplikace Autodesk Access a poté se přihlaste.</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Stáhnout aplikaci Autodesk Identity Manager</value>
@@ -3821,10 +3821,10 @@ Chcete-li vytvořit z tohoto souboru novou šablonu, uložte ho do jiné složky
     <value>Data ikony uzlu jsou vypsána do \"{0}\".</value>
   </data>
   <data name="DynamoViewFileMenuGraphPropertiesAdvanced" xml:space="preserve">
-    <value>Advanced Sharing</value>
+    <value>Rozšířené sdílení</value>
   </data>
   <data name="DynamoViewFileMenuGraphPropertiesGeneral" xml:space="preserve">
-    <value>_General</value>
+    <value>_Obecné</value>
   </data>
   <data name="DynamoViewFileMenuShowGraphProperties" xml:space="preserve">
     <value>Zobrazit vlastnosti _grafu</value>
@@ -3846,6 +3846,12 @@ Chcete-li vytvořit z tohoto souboru novou šablonu, uložte ho do jiné složky
   </data>
   <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
     <value>Ve výchozím nastavení skrýt nepřipojené výstupní porty</value>
+  </data>
+  <data name="OnlineStatusTooltip" xml:space="preserve">
+    <value>Connected to the internet.</value>
+  </data>
+  <data name="OfflineStatusTooltip" xml:space="preserve">
+    <value>Not connected to the internet.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
