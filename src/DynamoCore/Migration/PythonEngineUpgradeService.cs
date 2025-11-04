@@ -1,3 +1,4 @@
+using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -91,7 +92,7 @@ namespace Dynamo.Models.Migration.Python
             if (isPythonNode == null) throw new ArgumentNullException(nameof(isPythonNode));
 
             // Direct python nodes
-            var directNodes = workspace.Nodes.Where(isPythonNode).ToList();
+            var directNodes = workspace.Nodes.Where(isPythonNode).ToList();            
 
             // Custom nodes that contain python
             var customDefIds = new HashSet<Guid>();
@@ -159,13 +160,9 @@ namespace Dynamo.Models.Migration.Python
         }
 
         /// <summary>
-        /// Commits migration changes for custom node workspaces when saving, ensuring that updated definitions are
-        /// persisted and made visible in the library.
+        /// Commits migration changes for custom-node workspaces and ensures the saved .dyf
+        /// includes its View section, so nodes keep their positions/zoom and remain visible in the Library.
         /// </summary>
-        /// <remarks>This method processes all custom node workspaces that have been modified, saving
-        /// their current state and updating their visibility in the Dynamo library. It also manages migration tracking
-        /// for custom node definitions. Exceptions during individual workspace processing are silently ignored,
-        /// allowing the method to continue with other workspaces.</remarks>
         public void CommitCustomNodeMigrationsOnSave()
         {
             foreach (var workspace in TouchedCustomWorkspaces.ToList())
@@ -175,19 +172,45 @@ namespace Dynamo.Models.Migration.Python
                     if (!TryGetCustomIdAndPath(workspace, out var defId, out var dyfPath) || string.IsNullOrEmpty(dyfPath)) continue;
 
                     var path = GetWorkspaceFilePath(workspace);
-                    if (workspace is CustomNodeWorkspaceModel customWorkspace)
-                    {
-                        customWorkspace.IsVisibleInDynamoLibrary = true;
-                    }
-
+                    var parsedView = TryReadViewTokenFromFile(path);
                     workspace.Save(path, false, model.EngineController);
-                    EnsureDyfHasLibraryViewFlag(dyfPath);
+                    PatchFileWithView(path, parsedView);
 
                     PermMigratedCustomDefs.Add(defId);
                     TempMigratedCustomDefs.Remove(defId);
                 }
                 catch { }
             }
+        }
+
+        private string TryReadViewTokenFromFile(string filePath)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) return null;
+
+                var jo = JObject.Parse(File.ReadAllText(filePath));
+
+                return jo["View"]?.ToString(Newtonsoft.Json.Formatting.None);
+            }
+            catch { return null; }
+        }
+
+        private static void PatchFileWithView(string filePath, JToken viewToken)
+        {
+            if (viewToken == null) return;
+            
+            var modelOnly = JObject.Parse(File.ReadAllText(filePath));
+
+            if (viewToken is JValue jv && jv.Type == JTokenType.String)
+            {
+                try { viewToken = JToken.Parse((string)jv.Value); }
+                catch { viewToken = null; }
+            }
+
+            modelOnly.Remove("View");
+            modelOnly.Add("View", viewToken.DeepClone());
+            File.WriteAllText(filePath, modelOnly.ToString(Formatting.Indented));
         }
 
         private string GetWorkspaceFilePath(WorkspaceModel workspace)
