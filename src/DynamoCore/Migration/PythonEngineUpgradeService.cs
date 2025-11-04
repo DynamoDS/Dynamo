@@ -29,22 +29,22 @@ namespace Dynamo.Models.Migration.Python
         /// <summary>
         /// Custom node definition IDs temporarily migrated
         /// </summary>
-        public readonly HashSet<Guid> tempMigratedCustomDefs = new HashSet<Guid>();
+        public readonly HashSet<Guid> TempMigratedCustomDefs = new HashSet<Guid>();
 
         /// <summary>
         /// Custom node definition IDs permanently migrated
         /// </summary>
-        public readonly HashSet<Guid> permMigratedCustomDefs = new HashSet<Guid>();
+        public readonly HashSet<Guid> PermMigratedCustomDefs = new HashSet<Guid>();
 
         /// <summary>
         /// Custom node workspaces touched during this session
         /// </summary>
-        public readonly HashSet<WorkspaceModel> touchedCustomWorkspaces = new HashSet<WorkspaceModel>();
+        public readonly HashSet<WorkspaceModel> TouchedCustomWorkspaces = new HashSet<WorkspaceModel>();
 
         /// <summary>
         /// Custom node definition IDs for which a toast/notice has already been shown
         /// </summary>
-        public readonly HashSet<Guid> customToastShownDef = new HashSet<Guid>();                // DO WE USE THIS?
+        public readonly HashSet<Guid> CustomToastShownDef = new HashSet<Guid>();
 
         public Guid LastWorkspaceId = Guid.Empty;
 
@@ -168,7 +168,7 @@ namespace Dynamo.Models.Migration.Python
         /// allowing the method to continue with other workspaces.</remarks>
         public void CommitCustomNodeMigrationsOnSave()
         {
-            foreach (var workspace in touchedCustomWorkspaces.ToList())
+            foreach (var workspace in TouchedCustomWorkspaces.ToList())
             {
                 try
                 {
@@ -183,8 +183,8 @@ namespace Dynamo.Models.Migration.Python
                     workspace.Save(path, false, model.EngineController);
                     EnsureDyfHasLibraryViewFlag(dyfPath);
 
-                    permMigratedCustomDefs.Add(defId);
-                    tempMigratedCustomDefs.Remove(defId);
+                    PermMigratedCustomDefs.Add(defId);
+                    TempMigratedCustomDefs.Remove(defId);
                 }
                 catch { }
             }

@@ -1,5 +1,6 @@
 using Dynamo.Configuration;
 using Dynamo.Core;
+using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
@@ -186,8 +187,8 @@ namespace Dynamo.PythonMigration
                             if (usageInside.DirectPythonNodes.Count() > 0)
                             {
                                 // Track this def as temp-migrated for the session
-                                upgradeService.tempMigratedCustomDefs.Add(defId);
-                                upgradeService.touchedCustomWorkspaces.Add(defWs);
+                                upgradeService.TempMigratedCustomDefs.Add(defId);
+                                upgradeService.TouchedCustomWorkspaces.Add(defWs);
 
                                 var count = upgradeService.UpgradeNodesInMemory(
                                     usageInside.DirectPythonNodes,
@@ -233,7 +234,7 @@ namespace Dynamo.PythonMigration
                 var defId = customNode.Definition?.FunctionId ?? Guid.Empty;
                 if (defId == Guid.Empty || cnm == null) return;
 
-                // Remove upgrade tracking only If this was the last instance of that custom node
+                // Remove tracking if this was the last instance of that custom node
                 var anyRemaining = CurrentWorkspace?.Nodes
                     .OfType<Dynamo.Graph.Nodes.CustomNodes.Function>()
                     .Any(f => (f.Definition?.FunctionId ?? Guid.Empty) == defId) == true;
@@ -242,7 +243,8 @@ namespace Dynamo.PythonMigration
                     && cnm.TryGetFunctionWorkspace(defId, Models.DynamoModel.IsTestMode, out ICustomNodeWorkspaceModel defWsModel) == true
                     && defWsModel is WorkspaceModel defWs)
                 {
-                    upgradeService.touchedCustomWorkspaces.Remove(defWs);
+                    upgradeService.TouchedCustomWorkspaces.Remove(defWs);
+                    upgradeService.CustomToastShownDef.Remove(defId);
                 }
             }
         }
@@ -305,14 +307,14 @@ namespace Dynamo.PythonMigration
                     // A) Already permanently migrated in this session → no notification
                     // B) Temp-migrated earlier via a host graph → show one-time toast in this tab
                     // C) Opened directly from file and not processed yet → recompute/upgrade now
-                    if (upgradeService.permMigratedCustomDefs.Contains(defId))
+                    if (upgradeService.PermMigratedCustomDefs.Contains(defId))
                     {
                         // no notificarions needed
                     }
-                    else if (upgradeService.tempMigratedCustomDefs.Contains(defId))
+                    else if (upgradeService.TempMigratedCustomDefs.Contains(defId))
                     {
                         var preferenceSettings = DynamoViewModel?.Model?.PreferenceSettings;
-                        if (!upgradeService.customToastShownDef.Contains(defId) || !preferenceSettings.HideCPython3Notifications)
+                        if (!upgradeService.CustomToastShownDef.Contains(defId))
                         {
                             var pyNodes = CurrentWorkspace.Nodes.OfType<PythonNodeBase>().ToList();
                             TryShowPythonEngineUpgradeToast(pyNodes.Count, 0);
@@ -322,6 +324,8 @@ namespace Dynamo.PythonMigration
                     {
                         RecomputeCPython3NotificationForWorkspace();
                     }
+
+                    upgradeService.CustomToastShownDef.Add(defId);
                 }
             }
 
@@ -343,8 +347,8 @@ namespace Dynamo.PythonMigration
             // If we are in a Custom Node workspace, remove this definition from tracking
             if (CurrentWorkspace is CustomNodeWorkspaceModel cws)
             {
-                upgradeService.touchedCustomWorkspaces.Remove(cws);
-                upgradeService.tempMigratedCustomDefs.Remove(cws.CustomNodeId);
+                upgradeService.TouchedCustomWorkspaces.Remove(cws);
+                upgradeService.TempMigratedCustomDefs.Remove(cws.CustomNodeId);
                 return;
             }
 
@@ -352,7 +356,7 @@ namespace Dynamo.PythonMigration
 
             // Show the notification only once
             // CurrentWorkspace.HasShownCPythonNotification = true;
-            upgradeService.touchedCustomWorkspaces.Clear();
+            upgradeService.TouchedCustomWorkspaces.Clear();
         }
 
         private void SubscribeToDynamoEvents()
@@ -482,8 +486,8 @@ namespace Dynamo.PythonMigration
 
                     if (inner.DirectPythonNodes.Count() > 0)
                     {
-                        upgradeService.tempMigratedCustomDefs.Add(defId);
-                        upgradeService.touchedCustomWorkspaces.Add(workspace);
+                        upgradeService.TempMigratedCustomDefs.Add(defId);
+                        upgradeService.TouchedCustomWorkspaces.Add(workspace);
 
                         upgradeService.UpgradeNodesInMemory(
                         inner.DirectPythonNodes,
