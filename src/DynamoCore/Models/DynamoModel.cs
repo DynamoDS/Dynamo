@@ -1041,7 +1041,7 @@ namespace Dynamo.Models
             {
                 if (trustedLoc.StartsWith(programDataPath))
                 {
-                    Logger.Log(($"The next unsafe path as added to Trusted Locations: " + trustedLoc));
+                    Logger.Log(("An unsafe path has been detected in Trusted Locations: " + trustedLoc));
                 }
             }        
         }
