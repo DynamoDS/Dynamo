@@ -150,7 +150,7 @@ namespace Dynamo.ViewModels
         internal string LastSavedLocation { get; set; }
 
 
-        internal ToastManager ToastManager { get; set; }
+        public ToastManager ToastManager { get; set; }
 
         /// <summary>
         /// Guided Tour Manager
