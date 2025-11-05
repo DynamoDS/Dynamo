@@ -82,7 +82,7 @@ namespace Dynamo.Models.Migration.Python
                 var defId = func.Definition?.FunctionId ?? Guid.Empty;
                 if (defId == Guid.Empty) continue;
 
-                if (CustomNodeHasPython(defId, isPythonNode))
+                if (CustomNodeHasPython(defId, isPythonNode) || TempMigratedCustomDefs.Contains(defId))
                 {
                     customDefIds.Add(defId);
                 }
