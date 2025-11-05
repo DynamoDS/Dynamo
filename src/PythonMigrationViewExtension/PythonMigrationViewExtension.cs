@@ -663,5 +663,5 @@ namespace Dynamo.PythonMigration
             hasCPython3Engine = PythonEngineManager.Instance.AvailableEngines
                 .Any(e => e.Name == PythonEngineManager.CPython3EngineName);
         }
-    }  
+    }
 }

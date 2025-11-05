@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+using System.Windows;
 using DiffPlex.DiffBuilder;
 using DiffPlex.DiffBuilder.Model;
 using Dynamo.Core;
@@ -9,9 +12,6 @@ using Dynamo.PythonServices;
 using Dynamo.Wpf.Utilities;
 using Python.Runtime;
 using PythonNodeModels;
-using System;
-using System.IO;
-using System.Windows;
 
 namespace Dynamo.PythonMigration.MigrationAssistant
 {
