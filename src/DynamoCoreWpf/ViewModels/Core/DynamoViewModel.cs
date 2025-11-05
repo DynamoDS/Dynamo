@@ -149,7 +149,9 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal string LastSavedLocation { get; set; }
 
-
+        /// <summary>
+        /// Toast messages manager used to create, update and clear toasts on Dynamo UI
+        /// </summary>
         public ToastManager ToastManager { get; set; }
 
         /// <summary>
