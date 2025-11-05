@@ -3768,7 +3768,7 @@ Para convertir este archivo en una nueva plantilla, guárdelo en una carpeta dif
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>Parece que Autodesk Identity Manager no está configurado en el sistema. Para garantizar el acceso completo a todas las funciones, inicie sesión en su cuenta de Autodesk Account mediante Autodesk Identity Manager.
-#Descargue e instale este componente=https://manage.autodesk.com/products/updates desde aquí o mediante Autodesk Access y, a continuación, inicie sesión.</value>
+#Descargue e instale este componente=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html desde aquí o mediante Autodesk Access y, a continuación, inicie sesión.</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Descargar Autodesk Identity Manager</value>
@@ -3847,6 +3847,12 @@ Para convertir este archivo en una nueva plantilla, guárdelo en una carpeta dif
   </data>
   <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
     <value>Ocultar puertos de salida no conectados por defecto</value>
+  </data>
+  <data name="OnlineStatusTooltip" xml:space="preserve">
+    <value>Connected to the internet.</value>
+  </data>
+  <data name="OfflineStatusTooltip" xml:space="preserve">
+    <value>Not connected to the internet.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

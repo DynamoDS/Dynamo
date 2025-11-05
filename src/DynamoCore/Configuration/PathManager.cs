@@ -61,13 +61,11 @@ namespace Dynamo.Core
         {
             lock (lockObject)
             {
-                if (lazy != null)
+                //If is already initialized then do nothing
+                if (lazy == null)
                 {
-                    // Or do we want to reset the existing instance? See below for discussions.
-                    throw new InvalidOperationException("PathManager has already been initialized.");
-                }
-
-                lazy = new Lazy<PathManager>(() => new PathManager(parameters));
+                    lazy = new Lazy<PathManager>(() => new PathManager(parameters));
+                }                 
             }
         }
 
@@ -508,6 +506,7 @@ namespace Dynamo.Core
             exceptions.Add(PathHelper.CreateFolderIfNotExist(logDirectory));
             exceptions.Add(PathHelper.CreateFolderIfNotExist(DefaultPackagesDirectory));
             exceptions.Add(PathHelper.CreateFolderIfNotExist(backupDirectory));
+            exceptions.Add(PathHelper.CreateFolderIfNotExist(DefaultTemplatesDirectory));
 
             // Common data folders for all users.
             exceptions.Add(PathHelper.CreateFolderIfNotExist(commonDataDir));
@@ -783,21 +782,25 @@ namespace Dynamo.Core
         /// <returns></returns>
         private string GetTemplateFolder(string dataRootDirectory)
         {
-            var versionedDirectory = dataRootDirectory;
-            if (!Directory.Exists(versionedDirectory))
+            // Means that we are running on a host like Revit or Civil3D.
+            if (!string.IsNullOrEmpty(hostApplicationDirectory) && pathResolver != null)
             {
-                // Try to see if folder "%ProgramData%\{...}\{major}.{minor}" exists, if it
-                // does not, then root directory would be "%ProgramData%\{...}".
-                //
-                dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
-            }
-            else if (!Directory.Exists(Path.Combine(versionedDirectory, Configurations.TemplatesAsString)))
-            {
-                // If the folder "%ProgramData%\{...}\{major}.{minor}" exists, then try to see
-                // if the folder "%ProgramData%\{...}\{major}.{minor}\templates" exists. If it
-                // doesn't exist, then root directory would be "%ProgramData%\{...}".
-                //
-                dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
+                var versionedDirectory = dataRootDirectory;
+                if (!Directory.Exists(versionedDirectory))
+                {
+                    // Try to see if folder "%ProgramData%\{...}\{major}.{minor}" exists, if it
+                    // does not, then root directory would be "%ProgramData%\{...}".
+                    //
+                    dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
+                }
+                else if (!Directory.Exists(Path.Combine(versionedDirectory, Configurations.TemplatesAsString)))
+                {
+                    // If the folder "%ProgramData%\{...}\{major}.{minor}" exists, then try to see
+                    // if the folder "%ProgramData%\{...}\{major}.{minor}\templates" exists. If it
+                    // doesn't exist, then root directory would be "%ProgramData%\{...}".
+                    //
+                    dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
+                }
             }
 
             var uiCulture = CultureInfo.CurrentUICulture.Name;

@@ -244,8 +244,8 @@
     },
     {
       "ConcreteType": "PythonNodeModels.PythonStringNode, PythonNodeModels",
-      "EngineName": "CPython3",
-      "Engine": "CPython3",
+      "EngineName": "PythonNet3",
+      "Engine": "PythonNet3",
       "VariableInputPorts": true,
       "Id": "45073da27bc84c689246c0a66bf70784",
       "NodeType": "ExtensionNode",

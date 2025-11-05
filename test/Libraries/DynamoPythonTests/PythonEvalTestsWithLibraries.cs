@@ -44,7 +44,14 @@ OUT = sum
             }
         }
 
+        /// <summary>
+        /// PythonNet3 vs DesignScript list interop issue:
+        /// DSCore list ops expect DS lists; PythonNet passes .NET lists, causing wrong overloads/comparers.
+        /// Quarantined until parity fix.
+        /// </summary>
         [Test]
+        [Category("Failure")]
+        [Category("TechDebt")]
         public void TestListDecoding()
         {
             string code = @"

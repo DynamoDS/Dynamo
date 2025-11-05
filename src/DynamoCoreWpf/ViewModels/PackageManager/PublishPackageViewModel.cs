@@ -1753,7 +1753,18 @@ namespace Dynamo.PackageManager
 
                 if (((PackageUploadHandle)sender).UploadState == PackageUploadHandle.State.Uploaded)
                 {
-                    OnPublishSuccess();
+                    // Marshal the success notification to the UI thread to ensure all event handlers
+                    // and UI operations happen on the correct thread
+                    if (dynamoViewModel?.UIDispatcher != null)
+                    {
+                        dynamoViewModel.UIDispatcher.Invoke(new Action(() => OnPublishSuccess()));
+                    }
+                    else
+                    {
+                        // In non-UI contexts (tests, headless), we might be on a background thread
+                        // but we still need to trigger the success event
+                        OnPublishSuccess();
+                    }
                     // Don't clear entries on success - user needs to see the success state
                     // Clearing will happen when user clicks Done/Reset from the success page
                 }
@@ -2805,7 +2816,13 @@ namespace Dynamo.PackageManager
         {
             var publishPath = GetPublishFolder();
             if (string.IsNullOrEmpty(publishPath))
+            {
+                // Reset uploading state when user cancels folder selection
+                Uploading = false;
+                // Notify the front-end that the user has cancelled the upload
+                UploadCancelled?.Invoke();
                 return;
+            }
 
             UploadType = PackageUploadHandle.UploadType.Local;
 

@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Windows;
+using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes;
@@ -30,7 +36,6 @@ namespace Dynamo.PythonMigration
         private Guid lastWorkspaceGuid = Guid.Empty;
         private PythonEngineUpgradeService upgradeService;
         private bool saveBackup;
-
 
         internal ViewLoadedParams LoadedParams { get; set; }
         internal DynamoViewModel DynamoViewModel { get; set; }
