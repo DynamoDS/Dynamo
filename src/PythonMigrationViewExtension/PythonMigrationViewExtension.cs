@@ -314,7 +314,7 @@ namespace Dynamo.PythonMigration
                     // C) Opened directly from file and not processed yet → recompute/upgrade now
                     if (upgradeService.PermMigratedCustomDefs.Contains(defId))
                     {
-                        // no notificarions needed
+                        // no notifications needed
                     }
                     else if (upgradeService.TempMigratedCustomDefs.Contains(defId))
                     {
