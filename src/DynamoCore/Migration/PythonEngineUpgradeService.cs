@@ -160,8 +160,8 @@ namespace Dynamo.Models.Migration.Python
         }
 
         /// <summary>
-        /// Commits migration changes for custom-node workspaces and ensures the saved .dyf
-        /// includes its View section, so nodes keep their positions/zoom and remain visible in the Library.
+        /// Commits migration changes for custom-node workspaces by editing the .dyf JSON in place:
+        /// switches Python nodes from CPython3 to PythonNet3 and saves a backup file
         /// </summary>
         public void CommitCustomNodeMigrationsOnSave()
         {
@@ -172,45 +172,40 @@ namespace Dynamo.Models.Migration.Python
                     if (!TryGetCustomIdAndPath(workspace, out var defId, out var dyfPath) || string.IsNullOrEmpty(dyfPath)) continue;
 
                     var path = GetWorkspaceFilePath(workspace);
-                    var parsedView = TryReadViewTokenFromFile(path);
-                    workspace.Save(path, false, model.EngineController);
-                    PatchFileWithView(path, parsedView);
+                    var upgraded = SwitchDyfPythonEngineInPlace(dyfPath);
 
-                    PermMigratedCustomDefs.Add(defId);
-                    TempMigratedCustomDefs.Remove(defId);
+                    if (upgraded)
+                    {
+                        PermMigratedCustomDefs.Add(defId);
+                        TempMigratedCustomDefs.Remove(defId);
+                    }
                 }
                 catch { }
             }
         }
 
-        private string TryReadViewTokenFromFile(string filePath)
+        private static bool SwitchDyfPythonEngineInPlace(string dyfPath)
         {
-            try
+            if (string.IsNullOrEmpty(dyfPath) || !File.Exists(dyfPath)) return false;
+                
+            var root = JObject.Parse(File.ReadAllText(dyfPath));
+            var nodes = root["Nodes"] as JArray;
+            if (nodes == null || nodes.Count == 0) return false;
+
+            foreach (var n in nodes.OfType<JObject>())
             {
-                if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) return null;
+                var concrete = n.Value<string>("ConcreteType");
+                if (string.IsNullOrEmpty(concrete) || !concrete.StartsWith("PythonNodeModels")) continue;
 
-                var jo = JObject.Parse(File.ReadAllText(filePath));
-
-                return jo["View"]?.ToString(Newtonsoft.Json.Formatting.None);
+                var engine = n.Property("Engine", StringComparison.OrdinalIgnoreCase);
+                if (engine != null && string.Equals((string)engine.Value, PythonServices.PythonEngineManager.CPython3EngineName))
+                {
+                    engine.Value = PythonServices.PythonEngineManager.PythonNet3EngineName;
+                }
             }
-            catch { return null; }
-        }
-
-        private static void PatchFileWithView(string filePath, JToken viewToken)
-        {
-            if (viewToken == null) return;
-            
-            var modelOnly = JObject.Parse(File.ReadAllText(filePath));
-
-            if (viewToken is JValue jv && jv.Type == JTokenType.String)
-            {
-                try { viewToken = JToken.Parse((string)jv.Value); }
-                catch { viewToken = null; }
-            }
-
-            modelOnly.Remove("View");
-            modelOnly.Add("View", viewToken.DeepClone());
-            File.WriteAllText(filePath, modelOnly.ToString(Formatting.Indented));
+                        
+            File.WriteAllText(dyfPath, root.ToString(Formatting.Indented));
+            return true;
         }
 
         private string GetWorkspaceFilePath(WorkspaceModel workspace)
@@ -239,23 +234,6 @@ namespace Dynamo.Models.Migration.Python
                 return true;
             }
             return false;
-        }
-
-        private void EnsureDyfHasLibraryViewFlag(string dyfPath)
-        {
-            if (string.IsNullOrEmpty(dyfPath) || !File.Exists(dyfPath)) return;
-
-            var json = File.ReadAllText(dyfPath);
-            var root = JObject.Parse(json);
-
-            var view = (JObject?)root["View"] ?? new JObject();
-            var dyn = (JObject?)view["Dynamo"] ?? new JObject();
-
-            dyn["IsVisibleInDynamoLibrary"] = true;
-            view["Dynamo"] = dyn;
-            root["View"] = view;
-
-            File.WriteAllText(dyfPath, root.ToString(Formatting.Indented));
         }
 
         private bool CustomNodeHasPython(Guid defId, Func<NodeModel, bool> isPythonNode)
