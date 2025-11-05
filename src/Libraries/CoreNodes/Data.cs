@@ -961,7 +961,7 @@ namespace DSCore
             }
             else
             {
-                if (inputValue is not IEnumerable list) return false;
+                if (inputValue is not IEnumerable list || inputValue is string) return false;
 
                 foreach (var item in list) 
                 {
