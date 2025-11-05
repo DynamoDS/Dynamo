@@ -1037,7 +1037,7 @@ namespace Dynamo.Models
             DynamoReady(new ReadyParams(this));
 
             string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            foreach(var trustedLoc in PreferenceSettings.TrustedLocations)
+            foreach (var trustedLoc in PreferenceSettings.TrustedLocations)
             {
                 if (trustedLoc.StartsWith(programDataPath))
                 {
