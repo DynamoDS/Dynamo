@@ -1172,10 +1172,8 @@ namespace Dynamo.Controls
             dynamoViewModel.Model.PreferenceSettings.WindowY = Top;
 
             //When the Dynamo window is moved to another place we need to update the Steps location
-            if(dynamoViewModel.MainGuideManager != null)
-                dynamoViewModel.MainGuideManager.UpdateGuideStepsLocation();
-            if (dynamoViewModel.MainGuideManager != null)
-                dynamoViewModel.ToastManager.UpdateLocation();
+            dynamoViewModel.MainGuideManager?.UpdateGuideStepsLocation();
+            dynamoViewModel.ToastManager?.UpdateLocation();
 
             if (fileTrustWarningPopup != null && fileTrustWarningPopup.IsOpen)
             {

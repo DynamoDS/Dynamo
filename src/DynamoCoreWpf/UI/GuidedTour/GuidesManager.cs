@@ -520,7 +520,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
             //The exit tour popup will be shown only when a popup (doesn't apply for survey) is closed or when the tour is closed. 
             if (stepType != Step.StepTypes.SURVEY)
-                dynamoViewModel.ToastManager.CreateRealTimeInfoWindow(Res.ExitTourWindowContent);
+                dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(Res.ExitTourWindowContent);
         }
     }
 }
