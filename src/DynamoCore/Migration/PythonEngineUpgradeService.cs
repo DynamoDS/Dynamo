@@ -1,4 +1,3 @@
-using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -46,24 +45,6 @@ namespace Dynamo.Models.Migration.Python
         /// Custom node definition IDs for which a toast/notice has already been shown
         /// </summary>
         public readonly HashSet<Guid> CustomToastShownDef = new HashSet<Guid>();
-
-        public Guid LastWorkspaceId = Guid.Empty;
-
-        /// <summary>
-        /// Lightweight pair that binds a NodeModel to the WorkspaceModel it lives in.
-        /// Keep this identical in usage to your original PyNodeWithWorkspace.
-        /// </summary>
-        public sealed class NodeWithWorkspace
-        {
-            public WorkspaceModel Workspace { get; }
-            public NodeModel Node { get; }
-
-            public NodeWithWorkspace(WorkspaceModel ws, NodeModel node)
-            {
-                Workspace = ws;
-                Node = node;
-            }
-        }
 
         /// <summary>
         /// Result of a simple scan: direct python nodes + custom node definitions that contain python.
@@ -133,33 +114,6 @@ namespace Dynamo.Models.Migration.Python
         }
 
         /// <summary>
-        /// Build a backup file path for a .dyn backup of the given workspace with the given token.
-        /// </summary>
-        public string BuildDynBackupFilePath(WorkspaceModel workspace, string token)
-        {
-            if (workspace == null || pathManager == null) return null;
-            if (DynamoModel.IsTestMode) return null;
-            if (workspace is CustomNodeWorkspaceModel) return null;
-
-            var backupDir = pathManager.BackupDirectory;
-            var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            var fileName = $"{workspace.Name}.{token}.{timestamp}.dyn";
-            return Path.Combine(backupDir, fileName);
-        }
-
-        /// <summary>
-        /// Save a .dyn backup of the given workspace with the given token.
-        /// </summary>
-        public string SaveDynBackup(WorkspaceModel workspace, string token)
-        {
-            var path = BuildDynBackupFilePath(workspace, token);
-            if (string.IsNullOrEmpty(path)) return null;
-
-            workspace.Save(path, true);
-            return path;
-        }
-
-        /// <summary>
         /// Commits migration changes for custom-node workspaces by editing the .dyf JSON in place:
         /// switches Python nodes from CPython3 to PythonNet3 and saves a backup file
         /// </summary>
@@ -171,8 +125,12 @@ namespace Dynamo.Models.Migration.Python
                 {
                     if (!TryGetCustomIdAndPath(workspace, out var defId, out var dyfPath) || string.IsNullOrEmpty(dyfPath)) continue;
 
-                    var path = GetWorkspaceFilePath(workspace);
-                    var upgraded = SwitchDyfPythonEngineInPlace(dyfPath);
+                    SaveCustomNodeBackup(workspace, dyfPath, PythonServices.PythonEngineManager.CPython3EngineName);
+
+                    var upgraded = SwitchDyfPythonEngineInPlace(
+                        dyfPath,
+                        PythonServices.PythonEngineManager.CPython3EngineName,
+                        PythonServices.PythonEngineManager.PythonNet3EngineName);
 
                     if (upgraded)
                     {
@@ -184,7 +142,51 @@ namespace Dynamo.Models.Migration.Python
             }
         }
 
-        private static bool SwitchDyfPythonEngineInPlace(string dyfPath)
+        /// <summary>
+        /// Build a backup file path for a .dyn or .dyf backup
+        /// </summary>
+        public string BuildDynBackupFilePath(WorkspaceModel workspace, string token)
+        {
+            if (workspace == null || pathManager == null) return null;
+            if (DynamoModel.IsTestMode) return null;
+
+            var backupDir = pathManager.BackupDirectory;
+            var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+
+            string baseName = Path.GetFileNameWithoutExtension(workspace.FileName);
+            string ext = Path.GetExtension(workspace.FileName);
+
+            baseName = SanitizeFileName(baseName);
+            var fileName = $"{baseName}.{token}.{timestamp}{ext}";
+
+            return Path.Combine(backupDir, fileName);
+        }
+
+        /// <summary>
+        /// Save a .dyn backup of the given workspace with the given token.
+        /// </summary>
+        public string SaveGraphBackup(WorkspaceModel workspace, string token)
+        {
+            var path = BuildDynBackupFilePath(workspace, token);
+            if (string.IsNullOrEmpty(path)) return null;
+
+            workspace.Save(path, true);
+            return path;
+        }
+
+        /// <summary>
+        /// Save a .dyf backup of the given custom node workspace before engine upgrade.
+        /// </summary>
+        public string SaveCustomNodeBackup(WorkspaceModel workspace, string sourcePath, string token) 
+        {
+            var backupPath = BuildDynBackupFilePath(workspace, token);
+            if (string.IsNullOrEmpty(backupPath)) return null;
+
+            File.Copy(sourcePath, backupPath);
+            return backupPath;
+        }
+
+        private static bool SwitchDyfPythonEngineInPlace(string dyfPath, string oldEngName, string newEngName)
         {
             if (string.IsNullOrEmpty(dyfPath) || !File.Exists(dyfPath)) return false;
                 
@@ -195,25 +197,17 @@ namespace Dynamo.Models.Migration.Python
             foreach (var n in nodes.OfType<JObject>())
             {
                 var concrete = n.Value<string>("ConcreteType");
-                if (string.IsNullOrEmpty(concrete) || !concrete.StartsWith("PythonNodeModels")) continue;
+                if (string.IsNullOrEmpty(concrete) || !concrete.StartsWith("PythonNodeModels", StringComparison.Ordinal)) continue;
 
                 var engine = n.Property("Engine", StringComparison.OrdinalIgnoreCase);
-                if (engine != null && string.Equals((string)engine.Value, PythonServices.PythonEngineManager.CPython3EngineName))
+                if (engine != null && string.Equals((string)engine.Value, oldEngName, StringComparison.Ordinal))
                 {
-                    engine.Value = PythonServices.PythonEngineManager.PythonNet3EngineName;
+                    engine.Value = newEngName;
                 }
             }
                         
             File.WriteAllText(dyfPath, root.ToString(Formatting.Indented));
             return true;
-        }
-
-        private string GetWorkspaceFilePath(WorkspaceModel workspace)
-        {
-            if (workspace == null) return null;
-            var path = workspace.FileName;
-            if (!string.IsNullOrEmpty(path)) return path;
-            return null;
         }
 
         private bool TryGetCustomIdAndPath(WorkspaceModel workspace, out Guid defId, out string dyfPath)
@@ -234,6 +228,12 @@ namespace Dynamo.Models.Migration.Python
                 return true;
             }
             return false;
+        }
+
+        private static string SanitizeFileName(string name)
+        {
+            var invalid = Path.GetInvalidFileNameChars();
+            return new string(name.Select(ch => invalid.Contains(ch) ? '_' : ch).ToArray());
         }
 
         private bool CustomNodeHasPython(Guid defId, Func<NodeModel, bool> isPythonNode)

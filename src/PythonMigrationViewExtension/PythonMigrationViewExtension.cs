@@ -29,6 +29,7 @@ namespace Dynamo.PythonMigration
         private bool enginesSubscribed;
         private Guid lastWorkspaceGuid = Guid.Empty;
         private PythonEngineUpgradeService upgradeService;
+        private bool saveBackup;
 
 
         internal ViewLoadedParams LoadedParams { get; set; }
@@ -331,6 +332,12 @@ namespace Dynamo.PythonMigration
                     .Where(x => x is PythonNodeBase)
                     .ToList()
                     .ForEach(x => SubscribeToPythonNodeEvents(x as PythonNodeBase));
+
+            if (saveBackup)
+            {
+                upgradeService.SaveGraphBackup(CurrentWorkspace, PythonServices.PythonEngineManager.CPython3EngineName);
+                saveBackup = false;
+            }
         }
 
         private void OnCurrentWorkspaceCleared(IWorkspaceModel workspace)
@@ -451,7 +458,6 @@ namespace Dynamo.PythonMigration
         {
             if (CurrentWorkspace == null) return;
 
-            // Exit early if CPython engine is available
             var preferenceSettings = DynamoViewModel?.Model?.PreferenceSettings;
             if (preferenceSettings == null || hasCPython3Engine)
             {
@@ -487,7 +493,6 @@ namespace Dynamo.PythonMigration
             // Prepare custom node definitions that contain CPython nodes
             foreach (var defId in usage.CustomNodeDefIdsWithPython)
             {
-                // Open the custom node worskspace to perform in-memory upgrade and log it for later save
                 if (cnManager != null
                     && cnManager.TryGetFunctionWorkspace(defId, Models.DynamoModel.IsTestMode, out CustomNodeWorkspaceModel defWsModel)
                     && defWsModel is WorkspaceModel workspace)
@@ -508,7 +513,6 @@ namespace Dynamo.PythonMigration
                 }
             }
 
-            // Show notification if any upgrades were made
             if (usage.DirectPythonNodes.Count() > 0 || usage.CustomNodeDefIdsWithPython.Count() > 0)
             {
                 var backupPath = upgradeService.BuildDynBackupFilePath(
@@ -519,6 +523,8 @@ namespace Dynamo.PythonMigration
                     usage.DirectPythonNodes.Count(),
                     usage.CustomNodeDefIdsWithPython.Count(),
                     backupPath);
+
+                saveBackup = true;
             }
         }
 
@@ -542,7 +548,7 @@ namespace Dynamo.PythonMigration
                 // clear any stale auto-upgrade banners left from a cached definition
                 if (workspace is CustomNodeWorkspaceModel && pyNode is PythonNode p)
                 {
-                    p.ShowAutoUpgradedBar = false;                              // NOT SURE ABUTE THAT !?! WOULD IT WORK IF WE OPEN CUSTOM NODE DIRECTLY??
+                    p.ShowAutoUpgradedBar = false;
                 }
             }
         }
