@@ -583,13 +583,13 @@ namespace Dynamo.PythonMigration
 
             string combined = BuildCombinedUpgradeLine(cpythonNodeCount, customDefCount);
 
-            string bachuptext = string.Empty;
+            string backuptext = string.Empty;
             if (backupPath != "")
             {
-                bachuptext = string.Format(Resources.CPythonMigrationBackupFileCreatedMessage, MakeWrapFriendlyPath(backupPath));
+                backuptext = string.Format(Resources.CPythonMigrationBackupFileCreatedMessage, MakeWrapFriendlyPath(backupPath));
             }
 
-            var parts = new[] { combined, bachuptext }.Where(s => !string.IsNullOrWhiteSpace(s));
+            var parts = new[] { combined, backuptext }.Where(s => !string.IsNullOrWhiteSpace(s));
             var msg = string.Join("\n\n", parts);
 
             Dispatcher.BeginInvoke(
