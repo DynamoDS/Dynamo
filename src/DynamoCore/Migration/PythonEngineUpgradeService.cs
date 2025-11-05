@@ -92,7 +92,7 @@ namespace Dynamo.Models.Migration.Python
         }
 
         /// <summary>
-        /// Upgrade the engine for a set of python nodes in memory and rerurn the count changed.
+        /// Upgrade the engine for a set of python nodes in memory and return the count changed.
         /// </summary>
         public int UpgradeNodesInMemory(
             IEnumerable<NodeModel> pyNodes,
