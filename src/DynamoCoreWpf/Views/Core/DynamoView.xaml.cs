@@ -502,23 +502,6 @@ namespace Dynamo.Controls
                 }));
         }
 
-        private void OnPythonEngineUpgradeToastRequested(string msg, bool stayOpen)
-        {
-            Dispatcher.BeginInvoke(
-                System.Windows.Threading.DispatcherPriority.ContextIdle,
-                new Action(() =>
-                {
-                    dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(
-                        msg,
-                        stayOpen,
-                        showHeader: true,
-                        headerText: Res.CPython3EngineNotificationMessageBoxHeader,
-                        showHyperlink: true,
-                        hyperlinkText: Res.LearnMore,
-                        hyperlinkUri: new Uri(Res.CPython3EngineUpgradeLearnMoreUri));
-                }));
-        }
-
         /// <summary>
         /// Adds an extension control or if it already exists it makes sure it is focused.
         /// The control may be added as a window or a tab in the extension bar depending on settings.

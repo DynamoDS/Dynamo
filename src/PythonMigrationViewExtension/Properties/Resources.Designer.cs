@@ -133,24 +133,6 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This graph currently contains python nodes that are using the old CPython Engine which has been deprecated. Consider updating these nodes to use the new PythonNet3 Engine..
-        /// </summary>
-        public static string CPython3NotificationDetailedMessage {
-            get {
-                return ResourceManager.GetString("CPython3NotificationDetailedMessage", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to This graph currently contains nodes that are using the old CPython3 engine which has been deprecated. A new PythonNet3 has been implemented and is accessible inside the Python editor..
-        /// </summary>
-        public static string CPython3NotificationShortMessage {
-            get {
-                return ResourceManager.GetString("CPython3NotificationShortMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to CPython.
         /// </summary>
         public static string CPythonMigrationBackupExtension {

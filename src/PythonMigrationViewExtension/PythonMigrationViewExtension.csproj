@@ -14,8 +14,7 @@
         <EnableDefaultPageItems>false</EnableDefaultPageItems>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="DiffPlex" Version="1.6.3" CopyMetaData="true" />        
-        <PackageReference Include="DynamoVisualProgramming.PythonEngine.PythonNet3" Version="1.4.2">
+        <PackageReference Include="DiffPlex" Version="1.6.3" CopyMetaData="true" />
         <PackageReference Include="DynamoVisualProgramming.PythonEngine.PythonNet3" Version="1.4.4">
             <ExcludeAssets>runtime;native;contentFiles;build;buildTransitive;analyzers</ExcludeAssets>
             <PrivateAssets>all</PrivateAssets>
