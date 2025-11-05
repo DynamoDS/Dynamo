@@ -174,7 +174,7 @@ namespace Dynamo.ViewModels
                     if (Configurations.SupportedLocaleDic.TryGetValue(selectedLanguage, out string locale))
                     {
                         preferenceSettings.Locale = locale;
-                        dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.PreferencesViewLanguageSwitchHelp, true);
+                        dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(Res.PreferencesViewLanguageSwitchHelp, true);
                     }
                 }
             }

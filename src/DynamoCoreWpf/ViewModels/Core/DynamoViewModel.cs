@@ -150,6 +150,8 @@ namespace Dynamo.ViewModels
         internal string LastSavedLocation { get; set; }
 
 
+        internal ToastManager ToastManager { get; set; }
+
         /// <summary>
         /// Guided Tour Manager
         /// </summary>
@@ -2443,7 +2445,7 @@ namespace Dynamo.ViewModels
         /// <param name="notification"></param>
         private void model_RequestNotification(string notification, bool stayOpen = false)
         {
-            this.MainGuideManager?.CreateRealTimeInfoWindow(notification, stayOpen);
+            this.ToastManager?.CreateRealTimeInfoWindow(notification, stayOpen);
             model?.Logger?.Log(notification);
         }
 
@@ -2631,7 +2633,7 @@ namespace Dynamo.ViewModels
 
                     if (HomeSpace.RunSettings.RunType != RunType.Manual)
                     {
-                        MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.InsertGraphRunModeNotificationText);
+                        ToastManager.CreateRealTimeInfoWindow(Properties.Resources.InsertGraphRunModeNotificationText);
                         HomeSpace.RunSettings.RunType = RunType.Manual;
                     }
                 }
@@ -3589,7 +3591,7 @@ namespace Dynamo.ViewModels
 
             string message = String.Concat(WpfResources.ExportWorkspaceAsImage, parameters.ToString());
 
-            MainGuideManager?.CreateRealTimeInfoWindow(message, true);
+            ToastManager?.CreateRealTimeInfoWindow(message, true);
 
             Dynamo.Logging.Analytics.TrackTaskCommandEvent("ImageCapture",
                 "NodeCount", CurrentSpace.Nodes.Count());
@@ -3602,7 +3604,7 @@ namespace Dynamo.ViewModels
 
             string message = String.Concat(WpfResources.ExportWorkspaceAs3DImage, parameters.ToString());
 
-            MainGuideManager?.CreateRealTimeInfoWindow(message, true);
+            ToastManager?.CreateRealTimeInfoWindow(message, true);
         }
 
         internal bool CanSaveImage(object parameters)
@@ -4461,7 +4463,7 @@ namespace Dynamo.ViewModels
             sw.Close();
 
             //alert user to new file location
-            MainGuideManager.CreateRealTimeInfoWindow(string.Format(Resources.NodeIconDataIsDumped, nodesWithoutIconsFullFileName), true);
+            ToastManager.CreateRealTimeInfoWindow(string.Format(Resources.NodeIconDataIsDumped, nodesWithoutIconsFullFileName), true);
         }
 
         private FileInfo GetMatchingDocFromDirectory(string nodeName, string hash, List<string> suffix, DirectoryInfo dir)
@@ -4594,7 +4596,7 @@ namespace Dynamo.ViewModels
             {
                 wsvm.Dispose();
             }
-            MainGuideManager?.CloseRealTimeInfoWindow();
+            ToastManager?.CloseRealTimeInfoWindow();
 
             model.ShutDown(shutdownParams.ShutdownHost);
             UsageReportingManager.DestroyInstance();
