@@ -161,6 +161,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 Initialize();
                 GuideFlowEvents.OnGuidedTourStart(tourName);
+                dynamoViewModel.ToastManager?.CloseRealTimeInfoWindow();
                 dynamoViewModel.OnEnableShortcutBarItems(false);
                 Logging.Analytics.TrackScreenView("InteractiveGuidedTours");
                 Logging.Analytics.TrackEvent(Logging.Actions.Start, Logging.Categories.GuidedTourOperations, Resources.ResourceManager.GetString(currentGuide.GuideNameResource, System.Globalization.CultureInfo.InvariantCulture).Replace("_", ""), currentGuide.SequenceOrder);
@@ -517,6 +518,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private void Popup_StepClosed(string name, Step.StepTypes stepType)
         {
             GuideFlowEvents.OnGuidedTourFinish(currentGuide.Name);
+            dynamoViewModel.ToastManager?.CloseRealTimeInfoWindow();
 
             //The exit tour popup will be shown only when a popup (doesn't apply for survey) is closed or when the tour is closed. 
             if (stepType != Step.StepTypes.SURVEY)
