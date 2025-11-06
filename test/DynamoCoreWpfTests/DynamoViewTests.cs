@@ -201,7 +201,7 @@ namespace DynamoCoreWpfTests
                 ViewModel.PerformShutdownSequence(shutdownParams);
             }
 
-            bool isToastNotificationVisible = (bool)(ViewModel.MainGuideManager?.ExitTourPopupIsVisible);
+            bool isToastNotificationVisible = (bool)(ViewModel.ToastManager?.PopupIsVisible);
             Assert.IsFalse(isToastNotificationVisible);
         }
 

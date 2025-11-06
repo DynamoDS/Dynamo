@@ -36,6 +36,7 @@ using Dynamo.Views;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Authentication;
 using Dynamo.Wpf.Extensions;
+using Dynamo.Wpf.UI;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.Views;
@@ -392,11 +393,11 @@ namespace Dynamo.Controls
             }
             else if (isCurrentWorkSpaceValidForImage == WorkspaceView.ExportImageResult.EmptyDrawing)
             {
-                dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.CantExportWorkspaceAsImageEmptyMessage, true);
+                dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(Res.CantExportWorkspaceAsImageEmptyMessage, true);
             }
             else if (isCurrentWorkSpaceValidForImage == WorkspaceView.ExportImageResult.NotValidAsImage)
             {
-                dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.CantExportWorkspaceAsImageNotValidMessage, true);
+                dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(Res.CantExportWorkspaceAsImageNotValidMessage, true);
             }
         }
 
@@ -404,7 +405,7 @@ namespace Dynamo.Controls
         {
             if (PreferencesWindow != null && PreferencesWindow.IsLoaded)
             {
-                dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.PreferencesMustBeClosedMessage, true);
+                dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(Res.PreferencesMustBeClosedMessage, true);
             }
         }
 
@@ -480,6 +481,25 @@ namespace Dynamo.Controls
             {
                 DynamoModel.RaiseIExtensionStorageAccessWorkspaceSaving(hws, extension, saveContext, dynamoViewModel.Model.Logger);
             }
+
+            dynamoViewModel?.CheckOnlineAccess();
+        }
+
+        private void OnPythonEngineUpgradeToastRequested(string msg, bool stayOpen)
+        {
+            Dispatcher.BeginInvoke(
+                System.Windows.Threading.DispatcherPriority.ContextIdle,
+                new Action(() =>
+                {
+                    dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(
+                        msg,
+                        stayOpen,
+                        showHeader: true,
+                        headerText: Res.CPython3EngineNotificationMessageBoxHeader,
+                        showHyperlink: true,
+                        hyperlinkText: Res.LearnMore,
+                        hyperlinkUri: new Uri(Res.CPython3EngineUpgradeLearnMoreUri));
+                }));
         }
 
         /// <summary>
@@ -1151,8 +1171,8 @@ namespace Dynamo.Controls
             dynamoViewModel.Model.PreferenceSettings.WindowY = Top;
 
             //When the Dynamo window is moved to another place we need to update the Steps location
-            if(dynamoViewModel.MainGuideManager != null)
-                dynamoViewModel.MainGuideManager.UpdateGuideStepsLocation();
+            dynamoViewModel.MainGuideManager?.UpdateGuideStepsLocation();
+            dynamoViewModel.ToastManager?.UpdateLocation();
 
             if (fileTrustWarningPopup != null && fileTrustWarningPopup.IsOpen)
             {
@@ -1414,6 +1434,7 @@ namespace Dynamo.Controls
 
             // Initialize Guide Manager as a member on Dynamo ViewModel so other than guided tour,
             // other part of application can also leverage it.
+            dynamoViewModel.ToastManager = new ToastManager(_this);
             dynamoViewModel.MainGuideManager = new GuidesManager(_this, dynamoViewModel);
             GuideFlowEvents.GuidedTourStart += GuideFlowEvents_GuidedTourStart;
             _timer.Stop();

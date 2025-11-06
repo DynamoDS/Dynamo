@@ -640,7 +640,7 @@ namespace Dynamo.Wpf.Views
         {
             if (!viewModel.IsMLAutocompleteTOUApproved)
             {
-                dynViewModel.MainGuideManager.CreateRealTimeInfoWindow(Res.NotificationToAgreeMLNodeautocompleteTOU);
+                dynViewModel.ToastManager.CreateRealTimeInfoWindow(Res.NotificationToAgreeMLNodeautocompleteTOU);
                 // Reset back to object type recommendations
                 RecommendedNodesRadioButton.IsChecked = false;
                 ObjectTypeRadioButton.IsChecked = true;
