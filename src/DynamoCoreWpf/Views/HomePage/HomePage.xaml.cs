@@ -170,9 +170,27 @@ namespace Dynamo.UI.Views
                 this.dynWebView.CoreWebView2.Settings.AreDevToolsEnabled = true;
                 this.dynWebView.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
 
-                // Load the embedded resources
+                // Set up Referer header for YouTube requests to fix Error 153
+                // According to YouTube API terms, embedded players must provide identification via HTTP Referer
+                // See: https://developers.google.com/youtube/terms/required-minimum-functionality#embedded-player-api-client-identity
                 var assembly = Assembly.GetExecutingAssembly();
+                var assemblyName = assembly.GetName().Name;
+                // Use HTTPS URL format with the application identifier as required by YouTube
+                var refererUrl = $"https://{assemblyName.ToLowerInvariant()}";
+                
+                // Filter for YouTube requests and add Referer header
+                this.dynWebView.CoreWebView2.AddWebResourceRequestedFilter("*youtube.com*", CoreWebView2WebResourceContext.All);
+                this.dynWebView.CoreWebView2.WebResourceRequested += (sender, args) =>
+                {
+                    var uri = args.Request.Uri;
+                    if (uri.Contains("youtube.com"))
+                    {
+                        // Set the Referer header as required by YouTube API terms
+                        args.Request.Headers.SetHeader("Referer", refererUrl);
+                    }
+                };
 
+                // Load the embedded resources
                 htmlString = PathHelper.LoadEmbeddedResourceAsString(htmlEmbeddedFile, assembly);
                 jsonString = PathHelper.LoadEmbeddedResourceAsString(jsEmbeddedFile, assembly);
 
