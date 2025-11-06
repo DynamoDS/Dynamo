@@ -553,7 +553,7 @@ namespace Dynamo.ViewModels
             WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
 
             workspaceViewModel.CancelActiveState();
-            dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.ToastFileNodeAutoCompleteDoubleClick, true);
+            dynamoViewModel.ToastManager.CreateRealTimeInfoWindow(Properties.Resources.ToastFileNodeAutoCompleteDoubleClick, true);
 
             var timer = new DispatcherTimer
             {
@@ -563,7 +563,7 @@ namespace Dynamo.ViewModels
             timer.Tick += (s, e) =>
             {
                 timer.Stop();
-                dynamoViewModel.MainGuideManager.CloseRealTimeInfoWindow();
+                dynamoViewModel.ToastManager.CloseRealTimeInfoWindow();
             };
 
             timer.Start();
@@ -649,7 +649,7 @@ namespace Dynamo.ViewModels
             // telling user it is not available that way
             if (port.IsProxyPort)
             {
-                dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Wpf.Properties.Resources.NodeAutoCompleteNotAvailableForCollapsedGroups);
+                dynamoViewModel.ToastManager.CreateRealTimeInfoWindow(Wpf.Properties.Resources.NodeAutoCompleteNotAvailableForCollapsedGroups);
             }
 
             // We can AutoComplete if the feature is enabled from Dynamo experiment setting,

@@ -199,7 +199,7 @@ namespace Dynamo.PythonMigration
         private void OnCurrentWorkspaceCleared(IWorkspaceModel workspace)
         {
             // Close the CPython toast notification when workspace is cleared/closed
-            DynamoViewModel.MainGuideManager?.CloseRealTimeInfoWindow();
+            DynamoViewModel.ToastManager?.CloseRealTimeInfoWindow();
         }
 
         private void SubscribeToDynamoEvents()
