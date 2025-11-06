@@ -170,6 +170,9 @@ namespace Dynamo.UI.Views
                 this.dynWebView.CoreWebView2.Settings.AreDevToolsEnabled = true;
                 this.dynWebView.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
 
+                var assembly = Assembly.GetExecutingAssembly();
+                var assemblyName = assembly.GetName().Name;
+
                 // Set up Referer header for YouTube requests to fix Error 153
                 // According to YouTube API terms, embedded players must provide identification via HTTP Referer
                 // See: https://developers.google.com/youtube/terms/required-minimum-functionality#embedded-player-api-client-identity
