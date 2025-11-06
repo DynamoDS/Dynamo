@@ -183,11 +183,8 @@ namespace Dynamo.UI.Views
                 this.dynWebView.CoreWebView2.WebResourceRequested += (sender, args) =>
                 {
                     var uri = args.Request.Uri;
-                    if (uri.Contains("youtube.com"))
-                    {
-                        // Set the Referer header as required by YouTube API terms
-                        args.Request.Headers.SetHeader("Referer", refererUrl);
-                    }
+                    // Set the Referer header as required by YouTube API terms
+                    args.Request.Headers.SetHeader("Referer", refererUrl);
                 };
 
                 // Load the embedded resources
