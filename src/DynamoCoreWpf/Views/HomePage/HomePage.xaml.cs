@@ -173,10 +173,10 @@ namespace Dynamo.UI.Views
                 // Set up Referer header for YouTube requests to fix Error 153
                 // According to YouTube API terms, embedded players must provide identification via HTTP Referer
                 // See: https://developers.google.com/youtube/terms/required-minimum-functionality#embedded-player-api-client-identity
-                var assembly = Assembly.GetExecutingAssembly();
-                var assemblyName = assembly.GetName().Name;
-                // Use HTTPS URL format with the application identifier as required by YouTube
-                var refererUrl = $"https://{assemblyName.ToLowerInvariant()}";
+                // Use a valid HTTPS URL as required by YouTube API terms.
+                // See: https://developers.google.com/youtube/terms/required-minimum-functionality#embedded-player-api-client-identity
+                // Using the official Dynamo website as the referer domain.
+                var refererUrl = "https://dynamobim.org";
                 
                 // Filter for YouTube requests and add Referer header
                 this.dynWebView.CoreWebView2.AddWebResourceRequestedFilter("*youtube.com*", CoreWebView2WebResourceContext.All);
