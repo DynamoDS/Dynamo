@@ -170,8 +170,15 @@ namespace Dynamo.Models.Migration.Python
             var path = BuildDynBackupFilePath(workspace, token);
             if (string.IsNullOrEmpty(path)) return null;
 
-            workspace.Save(path, true);
-            return path;
+            try
+            {
+                workspace.Save(path, true);
+                return path;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -182,8 +189,15 @@ namespace Dynamo.Models.Migration.Python
             var backupPath = BuildDynBackupFilePath(workspace, token);
             if (string.IsNullOrEmpty(backupPath)) return null;
 
-            File.Copy(sourcePath, backupPath);
-            return backupPath;
+            try
+            {
+                File.Copy(sourcePath, backupPath);
+                return backupPath;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         private static bool SwitchDyfPythonEngineInPlace(string dyfPath, string oldEngName, string newEngName)
@@ -194,20 +208,27 @@ namespace Dynamo.Models.Migration.Python
             var nodes = root["Nodes"] as JArray;
             if (nodes == null || nodes.Count == 0) return false;
 
-            foreach (var n in nodes.OfType<JObject>())
+            try
             {
-                var concrete = n.Value<string>("ConcreteType");
-                if (string.IsNullOrEmpty(concrete) || !concrete.StartsWith("PythonNodeModels", StringComparison.Ordinal)) continue;
-
-                var engine = n.Property("Engine", StringComparison.OrdinalIgnoreCase);
-                if (engine != null && string.Equals((string)engine.Value, oldEngName, StringComparison.Ordinal))
+                foreach (var n in nodes.OfType<JObject>())
                 {
-                    engine.Value = newEngName;
+                    var concrete = n.Value<string>("ConcreteType");
+                    if (string.IsNullOrEmpty(concrete) || !concrete.StartsWith("PythonNodeModels", StringComparison.Ordinal)) continue;
+
+                    var engine = n.Property("Engine", StringComparison.OrdinalIgnoreCase);
+                    if (engine != null && string.Equals((string)engine.Value, oldEngName, StringComparison.Ordinal))
+                    {
+                        engine.Value = newEngName;
+                    }
                 }
+
+                File.WriteAllText(dyfPath, root.ToString(Formatting.Indented));
+                return true;
             }
-                        
-            File.WriteAllText(dyfPath, root.ToString(Formatting.Indented));
-            return true;
+            catch
+            {
+                return false;
+            }
         }
 
         private bool TryGetCustomIdAndPath(WorkspaceModel workspace, out Guid defId, out string dyfPath)
