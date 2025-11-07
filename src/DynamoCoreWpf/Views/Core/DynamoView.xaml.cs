@@ -492,6 +492,9 @@ namespace Dynamo.Controls
                 System.Windows.Threading.DispatcherPriority.ContextIdle,
                 new Action(() =>
                 {
+                    Uri fileUri = null;
+                    var hasFile = !string.IsNullOrWhiteSpace(filePath) && Uri.TryCreate(filePath, UriKind.Absolute, out fileUri);
+
                     dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(
                         msg,
                         stayOpen,
@@ -500,8 +503,8 @@ namespace Dynamo.Controls
                         showHyperlink: true,
                         hyperlinkText: Res.LearnMore,
                         hyperlinkUri: new Uri(Res.CPython3EngineUpgradeLearnMoreUri),
-                        showFileLink: true,
-                        fileLinkUri: new Uri(filePath));
+                        showFileLink: hasFile,
+                        fileLinkUri: hasFile ? fileUri : null);
                 }));
         }
 
