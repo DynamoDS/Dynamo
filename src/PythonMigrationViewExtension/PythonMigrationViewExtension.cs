@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Windows;
-using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Models.Migration.Python;
@@ -18,6 +13,18 @@ using Dynamo.PythonServices;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using PythonNodeModels;
+using System;
+using System;
+using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Linq;
+using System.Windows;
+using System.Windows;
+using System.Windows.Threading;
+using System.Windows.Threading;
 
 namespace Dynamo.PythonMigration
 {
@@ -508,14 +515,10 @@ namespace Dynamo.PythonMigration
 
             if (directCount > 0 || customCount > 0)
             {
-                var backupPath = upgradeService.BuildDynBackupFilePath(
-                    CurrentWorkspace,
-                    Properties.Resources.CPythonMigrationBackupExtension);
-
                 TryShowPythonEngineUpgradeToast(
                     directCount,
                     customCount,
-                    backupPath);
+                    LoadedParams.StartupParams.PathManager.BackupDirectory);
 
                 saveBackup = true;
             }
@@ -571,33 +574,18 @@ namespace Dynamo.PythonMigration
                 cpythonNodeCount,
                 customDefCount);
 
-            string backuptext = string.Empty;
+            string backupText = string.Empty;
             if (backupPath != "")
             {
-                backuptext = string.Format(Resources.CPythonMigrationBackupFileCreatedMessage, MakeWrapFriendlyPath(backupPath));
+                backupText = Resources.CPythonMigrationBackupFileCreatedMessage;
             }
 
-            var parts = new[] { combined, backuptext }.Where(s => !string.IsNullOrWhiteSpace(s));
-            var msg = string.Join("\n\n", parts);
+            var parts = new[] { combined, backupText }.Where(s => !string.IsNullOrWhiteSpace(s));
+            var msg = string.Join("\n", parts);
 
             Dispatcher.BeginInvoke(
                 DispatcherPriority.Background,
-                new Action(() => DynamoViewModel.ShowPythonEngineUpgradeCanvasToast(msg, stayOpen: true)));
-        }
-
-        /// <summary>
-        /// Inserts a zero-width space U+200B after common separators so WPF can wrap
-        /// </summary>
-        private static string MakeWrapFriendlyPath(string path)
-        {
-            if (string.IsNullOrEmpty(path)) return path;
-            
-            return path
-                .Replace("\\", "\\\u200B")
-                .Replace("/", "/\u200B")
-                .Replace(".", ".\u200B")
-                .Replace("_", "_\u200B")
-                .Replace("-", "-\u200B");
+                new Action(() => DynamoViewModel.ShowPythonEngineUpgradeCanvasToast(msg, stayOpen: true, filePath: backupPath)));
         }
         #endregion
 
