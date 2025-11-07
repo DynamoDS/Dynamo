@@ -142,7 +142,7 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Before updating, a backup file has been saved here : {0}.
+        ///   Looks up a localized string similar to Before updating, a backup file has been saved .
         /// </summary>
         public static string CPythonMigrationBackupFileCreatedMessage {
             get {

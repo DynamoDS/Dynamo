@@ -204,7 +204,7 @@ By clicking “Continue”, you are agreeing to implement the syntax changes to 
     <value>Before applying the Python code migration, a backup of this graph has been saved to the configured backup location : {0}</value>
   </data>
   <data name="CPythonMigrationBackupFileCreatedMessage" xml:space="preserve">
-    <value>Before updating, a backup file has been saved here : {0}</value>
+    <value>Before updating, a backup file has been saved </value>
   </data>
   <data name="RejectButtonTooltip" xml:space="preserve">
     <value>Reject the current code changes.</value>

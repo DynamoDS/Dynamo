@@ -2171,7 +2171,7 @@ Dynamo.ViewModels.DynamoViewModel.PublishNewPackageCommand.get -> Dynamo.UI.Comm
 Dynamo.ViewModels.DynamoViewModel.PublishNewPackageCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.PublishSelectedNodesCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.PublishSelectedNodesCommand.set -> void
-Dynamo.ViewModels.DynamoViewModel.PythonEngineUpgradeToastRequested -> System.Action<string, bool>
+Dynamo.ViewModels.DynamoViewModel.PythonEngineUpgradeToastRequested -> System.Action<string, bool, string>
 Dynamo.ViewModels.DynamoViewModel.RecentFiles.get -> System.Collections.ObjectModel.ObservableCollection<string>
 Dynamo.ViewModels.DynamoViewModel.RecentFiles.set -> void
 Dynamo.ViewModels.DynamoViewModel.RedoCommand.get -> Dynamo.UI.Commands.DelegateCommand
@@ -2210,9 +2210,9 @@ Dynamo.ViewModels.DynamoViewModel.ScaleFactorLog.set -> void
 Dynamo.ViewModels.DynamoViewModel.SelectAll(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.SelectAllCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.SelectAllCommand.set -> void
-Dynamo.ViewModels.DynamoViewModel.ShowPythonEngineUpgradeCanvasToast(string message, bool stayOpen = true) -> void
 Dynamo.ViewModels.DynamoViewModel.ShowGraphPropertiesCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.ShowGraphPropertiesCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.ShowPythonEngineUpgradeCanvasToast(string message, bool stayOpen = true, string filePath = null) -> void
 Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubbles(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubblesCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubblesCommand.set -> void
@@ -4314,6 +4314,8 @@ Dynamo.Wpf.Views.GuidedTour.RatingControl.RatingControl() -> void
 Dynamo.Wpf.Views.GuidedTour.RatingControl.Value.get -> int
 Dynamo.Wpf.Views.GuidedTour.RatingControl.Value.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.FileLinkUri.get -> System.Uri
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.FileLinkUri.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HeaderContent.get -> string
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HeaderContent.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkText.get -> string
@@ -4322,6 +4324,9 @@ Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkUri.get -> System.Uri
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkUri.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.InitializeComponent() -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.RealTimeInfoWindow() -> void
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.SetBackupMessage(string sentencePrefix, bool showFileLink, System.Uri fileUri) -> void
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowFileLink.get -> bool
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowFileLink.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHeader.get -> bool
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHeader.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHyperlink.get -> bool

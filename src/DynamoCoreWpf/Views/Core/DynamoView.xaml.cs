@@ -485,7 +485,7 @@ namespace Dynamo.Controls
             dynamoViewModel?.CheckOnlineAccess();
         }
 
-        private void OnPythonEngineUpgradeToastRequested(string msg, bool stayOpen)
+        private void OnPythonEngineUpgradeToastRequested(string msg, bool stayOpen, string filePath)
         {
             Dispatcher.BeginInvoke(
                 System.Windows.Threading.DispatcherPriority.ContextIdle,
@@ -498,7 +498,9 @@ namespace Dynamo.Controls
                         headerText: Res.CPython3EngineNotificationMessageBoxHeader,
                         showHyperlink: true,
                         hyperlinkText: Res.LearnMore,
-                        hyperlinkUri: new Uri(Res.CPython3EngineUpgradeLearnMoreUri));
+                        hyperlinkUri: new Uri(Res.CPython3EngineUpgradeLearnMoreUri),
+                        showFileLink: true,
+                        fileLinkUri: new Uri(filePath));
                 }));
         }
 

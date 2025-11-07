@@ -548,6 +548,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="showHyperlink">boolean indicates if the hyperlink will be shown.</param>
         /// <param name="hyperlinkText">The hyperlink text to display.</param>
         /// <param name="hyperlinkUri">The hyperlink uri to navigate to.</param>
+        /// <param name="showFileLink"></param>
+        /// <param name="fileLinkUri"></param>
         /// TODO: Make this API out of guide manager to a more generic place
         internal void CreateRealTimeInfoWindow(
             string content,
@@ -556,7 +558,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
             string headerText = "",
             bool showHyperlink = false,
             string hyperlinkText = "",
-            Uri hyperlinkUri = null)
+            Uri hyperlinkUri = null,
+            bool showFileLink = false,
+            Uri fileLinkUri = null)
         {
             //Search a UIElement with the Name "statusBarPanel" inside the Dynamo VisualTree
             UIElement hostUIElement = GuideUtilities.FindChild(mainRootElement, "statusBarPanel");
@@ -570,14 +574,17 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 VerticalOffset = ExitTourVerticalOffset,
                 HorizontalOffset = ExitTourHorizontalOffset,
                 Placement = PlacementMode.Left,
-                TextContent = content,
                 StaysOpen = stayOpen,
                 ShowHeader = showHeader,
                 HeaderContent = headerText,
                 ShowHyperlink = showHyperlink,
                 HyperlinkText = hyperlinkText,
-                HyperlinkUri = hyperlinkUri
+                HyperlinkUri = hyperlinkUri,
+                ShowFileLink = showFileLink,
+                FileLinkUri = fileLinkUri
             };
+
+            exitTourPopup.SetToastMessage(content, showFileLink, fileLinkUri);
 
             if (hostUIElement != null)
                 exitTourPopup.PlacementTarget = hostUIElement;

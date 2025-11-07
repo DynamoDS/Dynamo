@@ -3,6 +3,8 @@ using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Documents;
+using System.Windows.Media;
 
 namespace Dynamo.Wpf.Views.GuidedTour
 {
@@ -11,6 +13,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
     /// </summary>
     public partial class RealTimeInfoWindow : Popup
     {
+        private Hyperlink fileLink;
 
         /// <summary>
         /// This property contains the text that will be shown in the popup and it can be updated on runtime.
@@ -21,6 +24,11 @@ namespace Dynamo.Wpf.Views.GuidedTour
         /// This property indicates if the Hyperlink will be shown in the RealTimeInfo window
         /// </summary>
         public bool ShowHyperlink { get; set; }
+
+        /// <summary>
+        /// This property indicates if the file link will be shown in the RealTimeInfo window
+        /// </summary>
+        public bool ShowFileLink { get; set; }
 
         /// <summary>
         /// This property indicates if the Header will be shown in the RealTimeInfo window
@@ -42,6 +50,11 @@ namespace Dynamo.Wpf.Views.GuidedTour
         /// </summary>
         public Uri HyperlinkUri { get; set; }
 
+        /// <summary>
+        /// This property contains the path that will be opened when the file link is clicked
+        /// </summary>
+        public Uri FileLinkUri { get; set; }
+
         public RealTimeInfoWindow()
         {
             InitializeComponent();
@@ -57,6 +70,11 @@ namespace Dynamo.Wpf.Views.GuidedTour
             IsOpen = false;
             GuideFlowEvents.GuidedTourFinish -= GuideFlowEvents_GuidedTourFinish;
             GuideFlowEvents.GuidedTourStart -= GuideFlowEvents_GuidedTourStart;
+            if (fileLink != null)
+            {
+                fileLink.RequestNavigate -= Hyperlink_RequestNavigate;
+                fileLink = null;
+            }
         }
 
         /// <summary>
@@ -108,6 +126,38 @@ namespace Dynamo.Wpf.Views.GuidedTour
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
             e.Handled = true;
+        }
+
+        internal void SetToastMessage(string sentencePrefix, bool showFileLink, Uri fileUri)
+        {
+            MessageTextBlock.Inlines.Clear();
+            MessageTextBlock.Inlines.Add(new Run(sentencePrefix ?? string.Empty));
+
+            if (showFileLink && fileUri != null)
+            {
+                if (fileLink != null)
+                {
+                    fileLink.RequestNavigate -= Hyperlink_RequestNavigate;
+                }
+
+                fileLink = new Hyperlink(new Run(Dynamo.Wpf.Properties.Resources.ToastHyperlinkPathText))
+                {
+                    NavigateUri = fileUri
+                };
+
+                var brush = TryFindResource("TextBlockLinkForegroundColor") as Brush;
+                if (brush != null)
+                {
+                    fileLink.Foreground = brush;
+                }
+
+                fileLink.TextDecorations = null;
+
+                fileLink.RequestNavigate += Hyperlink_RequestNavigate;
+
+                MessageTextBlock.Inlines.Add(fileLink);
+                MessageTextBlock.Inlines.Add(new Run("."));
+            }
         }
     }
 }
