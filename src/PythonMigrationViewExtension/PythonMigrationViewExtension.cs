@@ -564,9 +564,6 @@ namespace Dynamo.PythonMigration
 
         private void TryShowPythonEngineUpgradeToast(int cpythonNodeCount, int customDefCount, string backupPath = "")
         {
-            var prefs = DynamoViewModel?.Model?.PreferenceSettings;
-            if (prefs != null && prefs.HideCPython3Notifications) return;
-
             CurrentWorkspace.ShowCPythonNotifications = true;
             ShowPythonEngineUpgradeToast(cpythonNodeCount, customDefCount, backupPath);
         }
