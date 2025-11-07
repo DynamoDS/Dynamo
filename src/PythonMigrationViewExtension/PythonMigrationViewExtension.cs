@@ -262,7 +262,7 @@ namespace Dynamo.PythonMigration
             CurrentWorkspace.HasShownCPythonNotification = false;
 
             // Close any upgrade toast when switching tabs/workspaces.
-            DynamoViewModel.MainGuideManager?.CloseRealTimeInfoWindow();
+            DynamoViewModel.ToastManager?.CloseRealTimeInfoWindow();
 
             if (previous != null)
             {
@@ -333,7 +333,7 @@ namespace Dynamo.PythonMigration
         private void OnCurrentWorkspaceCleared(IWorkspaceModel workspace)
         {
             // Close the CPython toast notification when workspace is cleared/closed
-            DynamoViewModel.MainGuideManager?.CloseRealTimeInfoWindow();
+            DynamoViewModel.ToastManager?.CloseRealTimeInfoWindow();
             lastWorkspaceGuid = Guid.Empty;
         }
 
