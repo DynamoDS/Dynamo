@@ -206,7 +206,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
                         {
                             if (!customNodeWorkspaceModel.Nodes.Any(n => n.GetOriginalName().Contains("ScopeIf")))
                             {
-                                dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.CannotAddNodeToWorkspace);
+                                dynamoViewModel.ToastManager.CreateRealTimeInfoWindow(Properties.Resources.CannotAddNodeToWorkspace);
                                 return;
                             }
                             else

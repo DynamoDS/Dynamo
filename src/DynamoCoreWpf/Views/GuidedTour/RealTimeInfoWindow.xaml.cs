@@ -47,34 +47,11 @@ namespace Dynamo.Wpf.Views.GuidedTour
             InitializeComponent();
 
             DataContext = this;
-
-            GuideFlowEvents.GuidedTourFinish += GuideFlowEvents_GuidedTourFinish;
-            GuideFlowEvents.GuidedTourStart += GuideFlowEvents_GuidedTourStart;
         }
 
         private void CleanRealTimeInfoWindow()
         {
             IsOpen = false;
-            GuideFlowEvents.GuidedTourFinish -= GuideFlowEvents_GuidedTourFinish;
-            GuideFlowEvents.GuidedTourStart -= GuideFlowEvents_GuidedTourStart;
-        }
-
-        /// <summary>
-        /// This method remove the existing subscription to events and close the current RealTimeInfo window
-        /// </summary>
-        /// <param name="args"></param>
-        private void GuideFlowEvents_GuidedTourStart(GuidedTourStateEventArgs args)
-        {
-            CleanRealTimeInfoWindow();
-        }
-            
-        /// <summary>
-        /// When the Tour has finished we need to close the RealTimeInfo window and remove subscriptions to events
-        /// </summary>
-        /// <param name="args"></param>
-        private void GuideFlowEvents_GuidedTourFinish(GuidedTourStateEventArgs args)
-        {
-            CleanRealTimeInfoWindow();
         }
 
         /// <summary>
