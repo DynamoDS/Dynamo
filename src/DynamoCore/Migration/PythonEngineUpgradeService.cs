@@ -17,12 +17,12 @@ namespace Dynamo.Models.Migration.Python
     /// </summary>
     public sealed class PythonEngineUpgradeService
     {
-        private readonly DynamoModel model;
+        private readonly DynamoModel dynamoModel;
         private readonly IPathManager pathManager;
 
-        public PythonEngineUpgradeService( DynamoModel model, IPathManager pathManager)
+        public PythonEngineUpgradeService( DynamoModel dynamoModel, IPathManager pathManager)
         {
-            this.model = model;
+            this.dynamoModel = dynamoModel;
             this.pathManager = pathManager;
         }
 
@@ -54,13 +54,12 @@ namespace Dynamo.Models.Migration.Python
             public WorkspaceModel Workspace { get; }
             public IEnumerable<NodeModel> DirectPythonNodes { get; }
             public IEnumerable<Guid> CustomNodeDefIdsWithPython { get; }
-            public int TotalCount => (DirectPythonNodes?.Count() ?? 0) + (CustomNodeDefIdsWithPython?.Count() ?? 0);
 
             internal Usage(WorkspaceModel workspace, IReadOnlyList<NodeModel> pyNodes, IReadOnlyList<Guid> customDefs)
             {
                 Workspace = workspace;
-                DirectPythonNodes = pyNodes;
-                CustomNodeDefIdsWithPython = customDefs;
+                DirectPythonNodes = pyNodes ?? Enumerable.Empty<NodeModel>();
+                CustomNodeDefIdsWithPython = customDefs ?? Enumerable.Empty<Guid>();
             }
         }
 
@@ -103,14 +102,9 @@ namespace Dynamo.Models.Migration.Python
             if (workspace is null) throw new ArgumentNullException(nameof(workspace));
             if (setEngine is null) throw new ArgumentNullException(nameof(setEngine));
 
-            int changed = 0;
-
-            foreach (var node in pyNodes)
-            {
-                setEngine(node, workspace);
-                changed++;
-            }
-            return changed;
+            var nodes = pyNodes.ToList();
+            nodes.ForEach(node => setEngine(node, workspace));
+            return nodes.Count;
         }
 
         /// <summary>
@@ -138,7 +132,10 @@ namespace Dynamo.Models.Migration.Python
                         TempMigratedCustomDefs.Remove(defId);
                     }
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    this.dynamoModel?.Logger?.Log(ex);
+                }
             }
         }
 
@@ -175,8 +172,9 @@ namespace Dynamo.Models.Migration.Python
                 workspace.Save(path, true);
                 return path;
             }
-            catch
+            catch (Exception ex)
             {
+                this.dynamoModel?.Logger?.Log(ex);
                 return null;
             }
         }
@@ -184,7 +182,7 @@ namespace Dynamo.Models.Migration.Python
         /// <summary>
         /// Save a .dyf backup of the given custom node workspace before engine upgrade.
         /// </summary>
-        public string SaveCustomNodeBackup(WorkspaceModel workspace, string sourcePath, string token) 
+        private string SaveCustomNodeBackup(WorkspaceModel workspace, string sourcePath, string token) 
         {
             var backupPath = BuildDynBackupFilePath(workspace, token);
             if (string.IsNullOrEmpty(backupPath)) return null;
@@ -194,13 +192,14 @@ namespace Dynamo.Models.Migration.Python
                 File.Copy(sourcePath, backupPath);
                 return backupPath;
             }
-            catch
+            catch (Exception ex)
             {
+                this.dynamoModel?.Logger?.Log(ex);
                 return null;
             }
         }
 
-        private static bool SwitchDyfPythonEngineInPlace(string dyfPath, string oldEngName, string newEngName)
+        private bool SwitchDyfPythonEngineInPlace(string dyfPath, string oldEngName, string newEngName)
         {
             if (string.IsNullOrEmpty(dyfPath) || !File.Exists(dyfPath)) return false;
                 
@@ -225,8 +224,9 @@ namespace Dynamo.Models.Migration.Python
                 File.WriteAllText(dyfPath, root.ToString(Formatting.Indented));
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                this.dynamoModel?.Logger?.Log(ex);
                 return false;
             }
         }
@@ -239,7 +239,7 @@ namespace Dynamo.Models.Migration.Python
             if (workspace is CustomNodeWorkspaceModel cws)
             {
                 defId = cws.CustomNodeId;
-                var cnm = model?.CustomNodeManager;
+                var cnm = dynamoModel?.CustomNodeManager;
                 if (cnm != null &&
                     cnm.NodeInfos.TryGetValue(defId, out var info) &&
                     !string.IsNullOrEmpty(info.Path))
@@ -259,10 +259,10 @@ namespace Dynamo.Models.Migration.Python
 
         private bool CustomNodeHasPython(Guid defId, Func<NodeModel, bool> isPythonNode)
         {
-            if (model?.CustomNodeManager == null) return false;
+            if (dynamoModel?.CustomNodeManager == null) return false;
 
             CustomNodeWorkspaceModel ws;
-            if (model.CustomNodeManager.TryGetFunctionWorkspace(defId, DynamoModel.IsTestMode, out ws) && ws != null)
+            if (dynamoModel.CustomNodeManager.TryGetFunctionWorkspace(defId, DynamoModel.IsTestMode, out ws) && ws != null)
             {
                 return ws.Nodes?.Any(isPythonNode) == true;
             }

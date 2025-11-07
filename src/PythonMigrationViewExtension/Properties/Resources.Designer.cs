@@ -149,40 +149,13 @@ namespace Dynamo.PythonMigration.Properties {
                 return ResourceManager.GetString("CPythonMigrationBackupFileCreatedMessage", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to CPython nodes.
-        /// </summary>
-        public static string CPythonNodesLabelPlural {
-            get {
-                return ResourceManager.GetString("CPythonNodesLabelPlural", resourceCulture);
-            }
-        }
 
         /// <summary>
-        ///   Looks up a localized string similar to CPython node.
+        ///   Looks up a localized string similar to {0} CPython node(s) and {1} custom node definition(s) have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported..
         /// </summary>
-        public static string CPythonNodesLabelSingular {
+        public static string CPythonUpgradeToastMessage {
             get {
-                return ResourceManager.GetString("CPythonNodesLabelSingular", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to custom node definitions.
-        /// </summary>
-        public static string CustomNodeDefsLabelPlural {
-            get {
-                return ResourceManager.GetString("CustomNodeDefsLabelPlural", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to custom node definition.
-        /// </summary>
-        public static string CustomNodeDefsLabelSingular {
-            get {
-                return ResourceManager.GetString("CustomNodeDefsLabelSingular", resourceCulture);
+                return ResourceManager.GetString("CPythonUpgradeToastMessage", resourceCulture);
             }
         }
         

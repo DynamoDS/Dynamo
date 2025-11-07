@@ -236,17 +236,8 @@ By clicking “Continue”, you are agreeing to implement the syntax changes to 
   <data name="PythonMigrationBackupFileCreatedHeader" xml:space="preserve">
     <value>Backup graph has been saved</value>
   </data>
-  <data name="CPythonNodesLabelSingular" xml:space="preserve">
-    <value>CPython node</value>
-  </data>
-  <data name="CPythonNodesLabelPlural" xml:space="preserve">
-    <value>CPython nodes</value>
-  </data>
-  <data name="CustomNodeDefsLabelSingular" xml:space="preserve">
-    <value>custom node definition</value>
-  </data>
-  <data name="CustomNodeDefsLabelPlural" xml:space="preserve">
-    <value>custom node definitions</value>
+  <data name="CPythonUpgradeToastMessage" xml:space="preserve">
+    <value>{0} CPython node(s) and {1} custom node definition(s) have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported.</value>
   </data>
   <data name="AndConjunction" xml:space="preserve">
     <value>and</value>

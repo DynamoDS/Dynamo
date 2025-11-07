@@ -18,12 +18,6 @@ using Dynamo.PythonServices;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using PythonNodeModels;
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Windows;
-using System.Windows.Threading;
 
 namespace Dynamo.PythonMigration
 {
@@ -189,7 +183,7 @@ namespace Dynamo.PythonMigration
                         {
                             var usageInside = upgradeService.DetectPythonUsage(defWs, IsCPythonNode);
 
-                            if (usageInside.DirectPythonNodes.Count() > 0)
+                            if (usageInside.DirectPythonNodes.Any())
                             {
                                 // Track this def as temp-migrated for the session
                                 upgradeService.TempMigratedCustomDefs.Add(defId);
@@ -282,25 +276,16 @@ namespace Dynamo.PythonMigration
                 {
                     // Track last home workspace to avoid duplicate work on the same one
                     lastWorkspaceGuid = hws.Guid;
-                    bool isAutoRun = hws.RunSettings.RunType == RunType.Automatic;
 
-                    // If opening in Automatic, switch to Manual before upgrading to avoid mutating during eval
-                    if (isAutoRun)
-                    {
-                        hws.RunSettings.RunType = RunType.Manual;
-                    }
+                    // Always switch to Manual before upgrading to avoid mutating during eval
+                    var oldRunType = hws.RunSettings.RunType;                   
+                    hws.RunSettings.RunType = RunType.Manual;
 
                     RecomputeCPython3NotificationForWorkspace();
 
-                    if (isAutoRun)
-                    {
-                        System.Windows.Application.Current.Dispatcher.BeginInvoke(
-                            new Action(() =>
-                            {
-                                hws.RunSettings.RunType = RunType.Automatic;
-                            }),
-                            System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-                    }
+                    System.Windows.Application.Current.Dispatcher.BeginInvoke(
+                        () => hws.RunSettings.RunType = oldRunType,
+                        System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                 }
             }
             else if (CurrentWorkspace is ICustomNodeWorkspaceModel cws)
@@ -487,7 +472,7 @@ namespace Dynamo.PythonMigration
             var usage = upgradeService.DetectPythonUsage(CurrentWorkspace, IsCPythonNode);
 
             // Migrate the direct CPython nodes in memory
-            if (usage.DirectPythonNodes.Count() > 0)
+            if (usage.DirectPythonNodes.Any())
             {
                 upgradeService.UpgradeNodesInMemory(
                     usage.DirectPythonNodes,
@@ -505,7 +490,7 @@ namespace Dynamo.PythonMigration
                     
                     var inner = upgradeService.DetectPythonUsage(workspace, IsCPythonNode);
 
-                    if (inner.DirectPythonNodes.Count() > 0)
+                    if (inner.DirectPythonNodes.Any())
                     {
                         upgradeService.TempMigratedCustomDefs.Add(defId);
                         upgradeService.TouchedCustomWorkspaces.Add(workspace);
@@ -518,15 +503,18 @@ namespace Dynamo.PythonMigration
                 }
             }
 
-            if (usage.DirectPythonNodes.Count() > 0 || usage.CustomNodeDefIdsWithPython.Count() > 0)
+            var directCount = usage.DirectPythonNodes.Count();
+            var customCount = usage.CustomNodeDefIdsWithPython.Count();
+
+            if (directCount > 0 || customCount > 0)
             {
                 var backupPath = upgradeService.BuildDynBackupFilePath(
                     CurrentWorkspace,
                     Properties.Resources.CPythonMigrationBackupExtension);
 
                 TryShowPythonEngineUpgradeToast(
-                    usage.DirectPythonNodes.Count(),
-                    usage.CustomNodeDefIdsWithPython.Count(),
+                    directCount,
+                    customCount,
                     backupPath);
 
                 saveBackup = true;
@@ -578,7 +566,10 @@ namespace Dynamo.PythonMigration
         {
             if (cpythonNodeCount < 1 && customDefCount < 1) return;
 
-            string combined = BuildCombinedUpgradeLine(cpythonNodeCount, customDefCount);
+            string combined = string.Format(
+                Dynamo.PythonMigration.Properties.Resources.CPythonUpgradeToastMessage,
+                cpythonNodeCount,
+                customDefCount);
 
             string backuptext = string.Empty;
             if (backupPath != "")
@@ -607,31 +598,6 @@ namespace Dynamo.PythonMigration
                 .Replace(".", ".\u200B")
                 .Replace("_", "_\u200B")
                 .Replace("-", "-\u200B");
-        }
-
-        private static string BuildCombinedUpgradeLine(int cpythonNodeCount, int customDefCount)
-        {
-            if (cpythonNodeCount < 1 && customDefCount < 1) return string.Empty;
-
-            string cpyLabel = (cpythonNodeCount == 1)
-                ? Dynamo.PythonMigration.Properties.Resources.CPythonNodesLabelSingular
-                : Dynamo.PythonMigration.Properties.Resources.CPythonNodesLabelPlural;
-            string part1 = (cpythonNodeCount > 0)
-                ? $"{cpythonNodeCount} {cpyLabel}"
-                : string.Empty;
-
-            string cnLabel = (customDefCount == 1)
-                ? Dynamo.PythonMigration.Properties.Resources.CustomNodeDefsLabelSingular
-                : Dynamo.PythonMigration.Properties.Resources.CustomNodeDefsLabelPlural;
-            string part2 = (customDefCount > 0)
-                ? $"{customDefCount} {cnLabel}"
-                : string.Empty;
-
-            string subject = (part1.Length > 0 && part2.Length > 0)
-                ? $"{part1} {Dynamo.PythonMigration.Properties.Resources.AndConjunction} {part2}"
-                : (part1.Length > 0 ? part1 : part2);
-
-            return $"{subject} {Dynamo.PythonMigration.Properties.Resources.CombinedUpgradeToastSuffix}";
         }
         #endregion
 
