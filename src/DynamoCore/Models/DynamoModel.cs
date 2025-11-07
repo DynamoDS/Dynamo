@@ -1035,6 +1035,15 @@ namespace Dynamo.Models
             GraphChecksumDictionary = new Dictionary<string, List<string>>();
             // This event should only be raised at the end of this method.
             DynamoReady(new ReadyParams(this));
+
+            string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            foreach (var trustedLoc in PreferenceSettings.TrustedLocations)
+            {
+                if (trustedLoc.StartsWith(programDataPath))
+                {
+                    Logger.Log(("An unsafe path has been detected in Trusted Locations: " + trustedLoc));
+                }
+            }        
         }
 
         private void AuthServicesEvents_AuthProviderRequested(RequestAuthProviderEventArgs args)

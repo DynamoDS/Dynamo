@@ -2213,6 +2213,8 @@ Dynamo.ViewModels.DynamoViewModel.SelectAllCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.ShowPythonEngineUpgradeCanvasToast(string message, bool stayOpen = true) -> void
 Dynamo.ViewModels.DynamoViewModel.ShowGraphPropertiesCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.ShowGraphPropertiesCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.ToastManager.get -> Dynamo.Wpf.UI.ToastManager
+Dynamo.ViewModels.DynamoViewModel.ToastManager.set -> void
 Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubbles(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubblesCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubblesCommand.set -> void
@@ -3822,6 +3824,10 @@ Dynamo.Wpf.UI.MouseBehaviour.MouseX.get -> double
 Dynamo.Wpf.UI.MouseBehaviour.MouseX.set -> void
 Dynamo.Wpf.UI.MouseBehaviour.MouseY.get -> double
 Dynamo.Wpf.UI.MouseBehaviour.MouseY.set -> void
+Dynamo.Wpf.UI.ToastManager
+Dynamo.Wpf.UI.ToastManager.CloseRealTimeInfoWindow() -> void
+Dynamo.Wpf.UI.ToastManager.CreateRealTimeInfoWindow(string content, bool stayOpen = false, bool showHeader = false, string headerText = "", bool showHyperlink = false, string hyperlinkText = "", System.Uri hyperlinkUri = null) -> void
+Dynamo.Wpf.UI.ToastManager.ToastManager(System.Windows.UIElement rootElement) -> void
 Dynamo.Wpf.UI.VisualConfigurations
 Dynamo.Wpf.Utilities.CompactBubbleHandler
 Dynamo.Wpf.Utilities.DynamoWebView2
