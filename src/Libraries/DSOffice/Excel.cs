@@ -164,12 +164,6 @@ namespace DSOffice
             return data;
         }
 
-        [NodeObsolete("ReadObsolete", typeof(Properties.Resources))]
-        public static object[][] Read(string filePath, string sheetName)
-        {
-            return ReadFromFile(new FileInfo(filePath), sheetName);
-        }
-
         /// <summary>
         ///     Write data to a Microsoft Excel spreadsheet. Data is written by row
         ///     with sublists to be written in successive rows. Rows and columns are
