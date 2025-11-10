@@ -219,8 +219,14 @@ namespace Dynamo.DocumentationBrowser
                             openNodeAnnotationEventArgs.MinimumQualifiedName, 
                             openNodeAnnotationEventArgs.PackageName);
 
-                        bool isBuiltInByPath = IsBuiltInDocPath(mdLink);
-                        ownedByPackage = !string.IsNullOrEmpty(openNodeAnnotationEventArgs.PackageName) && !isBuiltInByPath;
+                        bool isBuiltInByPath = false;
+                        if (!string.IsNullOrEmpty(packageName))
+                        {
+                            isBuiltInByPath = IsBuiltInDocPath(mdLink);
+                        }
+
+                        ownedByPackage = !string.IsNullOrEmpty(packageName) && !isBuiltInByPath;
+
                         link = string.IsNullOrEmpty(mdLink) ? new Uri(String.Empty, UriKind.Relative) : new Uri(mdLink);
                         graphPath = GetGraphLinkFromMDLocation(link, ownedByPackage);
                         targetContent = CreateNodeAnnotationContent(openNodeAnnotationEventArgs);
@@ -294,6 +300,8 @@ namespace Dynamo.DocumentationBrowser
 
         private bool IsBuiltInDocPath(string mdLink)
         {
+            if (string.IsNullOrEmpty(mdLink)) return false;
+
             try
             {
                 var binDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
@@ -305,11 +313,15 @@ namespace Dynamo.DocumentationBrowser
                 var hostFull = hostFallback == null ? string.Empty : Path.GetFullPath(hostFallback);
                 var coreFull = coreFallback == null ? string.Empty : Path.GetFullPath(coreFallback);
 
+                if (!string.IsNullOrEmpty(sharedFull) && !sharedFull.EndsWith(Path.DirectorySeparatorChar)) sharedFull += Path.DirectorySeparatorChar;
+                if (!string.IsNullOrEmpty(hostFull) && !hostFull.EndsWith(Path.DirectorySeparatorChar)) hostFull += Path.DirectorySeparatorChar;
+                if (!string.IsNullOrEmpty(coreFull) && !coreFull.EndsWith(Path.DirectorySeparatorChar)) coreFull += Path.DirectorySeparatorChar;
+
                 return (!string.IsNullOrEmpty(sharedFull) && mdFull.StartsWith(sharedFull, StringComparison.OrdinalIgnoreCase)) ||
                        (!string.IsNullOrEmpty(hostFull) && mdFull.StartsWith(hostFull, StringComparison.OrdinalIgnoreCase)) ||
                        (!string.IsNullOrEmpty(coreFull) && mdFull.StartsWith(coreFull, StringComparison.OrdinalIgnoreCase));
             }
-            catch (ArgumentException)
+            catch (Exception)
             {
                 return false;
             }
