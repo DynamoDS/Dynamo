@@ -540,11 +540,9 @@ namespace Dynamo.PythonMigration
                 pyNode.EngineName = PythonEngineManager.PythonNet3EngineName;
                 pyNode.OnNodeModified();
 
-                // If we are inside a custom node and it is already PythonNet3,
-                // clear any stale auto-upgrade banners left from a cached definition
-                if (workspace is CustomNodeWorkspaceModel && pyNode is PythonNode p)
+                if (pyNode is PythonNode py)
                 {
-                    p.ShowAutoUpgradedBar = false;
+                    py.ShowAutoUpgradedBar = workspace is HomeWorkspaceModel;
                 }
             }
         }
