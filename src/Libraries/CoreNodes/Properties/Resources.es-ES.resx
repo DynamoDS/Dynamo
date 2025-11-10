@@ -156,9 +156,6 @@
   <data name="Exception_Serialize_Unsupported_Type" xml:space="preserve">
     <value>No se pueden almacenar datos del tipo {0}.</value>
   </data>
-  <data name="ExportToCSVObsolete" xml:space="preserve">
-    <value>Utilizar el nodo Data.ExportCSV en su lugar</value>
-  </data>
   <data name="FactorialNegativeInt" xml:space="preserve">
     <value>El valor de entrada de Math.Factorial no puede ser negativo.</value>
   </data>
@@ -170,9 +167,6 @@
   </data>
   <data name="FindPointsWithinRadiusSearchRadiusMessage" xml:space="preserve">
     <value>El radio de búsqueda no puede ser cero</value>
-  </data>
-  <data name="FromObjectObsolete" xml:space="preserve">
-    <value>Este nodo es obsoleto, utilice "String from Object"</value>
   </data>
   <data name="IntegerOverflow" xml:space="preserve">
     <value>La operación ha generado un desbordamiento de número entero. El resultado puede ser inesperado.</value>
@@ -186,9 +180,6 @@
   <data name="InvalidKeysLenghtErrorMessage" xml:space="preserve">
     <value>El número de elementos no coincide con el número de claves. href=InvalidKeysLenghtErrorMessage.html</value>
   </data>
-  <data name="LoadImageFromPathObsolete" xml:space="preserve">
-    <value>Utiliza los nodos File.FromPath - &gt; Image.ReadFromFile en su lugar</value>
-  </data>
   <data name="MissingPythonEngine" xml:space="preserve">
     <value>No se ha podido encontrar el motor de Python seleccionado</value>
   </data>
@@ -201,12 +192,6 @@
   <data name="QuadtreeConstructionNullUVSetMessage" xml:space="preserve">
     <value>No se puede generar un árbol cuádruple a partir de un conjunto nulo de UV</value>
   </data>
-  <data name="ReadImageObsolete" xml:space="preserve">
-    <value>Utiliza los nodos File.FromPath - &gt; Image.ReadFromFile - &gt; Image.Pixels en su lugar</value>
-  </data>
-  <data name="ReadTextObsolete" xml:space="preserve">
-    <value>Utiliza los nodos File.FromPath - &gt; File.ReadText en su lugar.</value>
-  </data>
   <data name="StringRemoveCountOutOfRangeMessage" xml:space="preserve">
     <value>El recuento está fuera de rango.</value>
   </data>
@@ -218,9 +203,6 @@
   </data>
   <data name="WebRequestNullUrlMessage" xml:space="preserve">
     <value>La URL no puede ser nula.</value>
-  </data>
-  <data name="WriteImageObsolete" xml:space="preserve">
-    <value>Utiliza el nodo Image.WriteToFile en su lugar</value>
   </data>
   <data name="DefineDataUnexpectedInputExceptionMessage" xml:space="preserve">
     <value>Este nodo esperaba una entrada {0}, pero ha recibido una entrada {1}. Proporcione la entrada esperada o elija un nuevo tipo en el menú desplegable del nodo.</value>

@@ -156,9 +156,6 @@
   <data name="Exception_Serialize_Unsupported_Type" xml:space="preserve">
     <value>Daten des Typs {0} können nicht gespeichert werden.</value>
   </data>
-  <data name="ExportToCSVObsolete" xml:space="preserve">
-    <value>Verwenden Sie stattdessen den Block Data.ExportCSV.</value>
-  </data>
   <data name="FactorialNegativeInt" xml:space="preserve">
     <value>Der Eingabewert von Math.Factorial darf nicht negativ sein.</value>
   </data>
@@ -170,9 +167,6 @@
   </data>
   <data name="FindPointsWithinRadiusSearchRadiusMessage" xml:space="preserve">
     <value>Der Suchradius darf nicht null sein.</value>
-  </data>
-  <data name="FromObjectObsolete" xml:space="preserve">
-    <value>Dieser Block ist veraltet, bitte "String from Object" verwenden.</value>
   </data>
   <data name="IntegerOverflow" xml:space="preserve">
     <value>Der Vorgang führte zu einem Ganzzahlüberlauf. Das Ergebnis ist möglicherweise unerwartet.</value>
@@ -186,9 +180,6 @@
   <data name="InvalidKeysLenghtErrorMessage" xml:space="preserve">
     <value>Anzahl der Elemente stimmt nicht mit der Anzahl der Schlüssel überein. href=InvalidKeysLenghtErrorMessage.html</value>
   </data>
-  <data name="LoadImageFromPathObsolete" xml:space="preserve">
-    <value>Verwenden Sie stattdessen File.FromPath -&gt;  Image.ReadFromFile-Blöcke.</value>
-  </data>
   <data name="MissingPythonEngine" xml:space="preserve">
     <value>Die ausgewählte Python-Engine wurde nicht gefunden</value>
   </data>
@@ -201,12 +192,6 @@
   <data name="QuadtreeConstructionNullUVSetMessage" xml:space="preserve">
     <value>Aus einer Nullmenge von UVs kann kein Quadtree erstellt werden.</value>
   </data>
-  <data name="ReadImageObsolete" xml:space="preserve">
-    <value>Verwenden Sie stattdessen File.FromPath -&gt;  Image.ReadFromFile -&gt;  Image.Pixels-Blöcke.</value>
-  </data>
-  <data name="ReadTextObsolete" xml:space="preserve">
-    <value>Verwenden Sie stattdessen File.FromPath -&gt;  File.ReadText-Blöcke.</value>
-  </data>
   <data name="StringRemoveCountOutOfRangeMessage" xml:space="preserve">
     <value>Anzahl liegt außerhalb des Bereichs.</value>
   </data>
@@ -218,9 +203,6 @@
   </data>
   <data name="WebRequestNullUrlMessage" xml:space="preserve">
     <value>URL darf nicht null sein.</value>
-  </data>
-  <data name="WriteImageObsolete" xml:space="preserve">
-    <value>Verwenden Sie stattdessen den Block Image.WriteToFile.</value>
   </data>
   <data name="DefineDataUnexpectedInputExceptionMessage" xml:space="preserve">
     <value>Dieser Block erwartete eine {0}-Eingabe, erhielt jedoch eine {1}-Eingabe. Geben Sie die erwartete Eingabe ein, oder wählen Sie im Dropdown-Menü des Blocks einen neuen Typ aus.</value>

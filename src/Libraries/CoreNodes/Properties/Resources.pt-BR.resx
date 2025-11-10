@@ -156,12 +156,6 @@
   <data name="Exception_Serialize_Unsupported_Type" xml:space="preserve">
     <value>Não é possível armazenar dados do tipo {0}.</value>
   </data>
-  <data name="ExportToCSVObsolete" xml:space="preserve">
-    <value>Utilizar o nó Data.ExportCSV</value>
-  </data>
-  <data name="FactorialNegativeInt" xml:space="preserve">
-    <value>O valor de entrada Math.Factorial não pode ser negativo.</value>
-  </data>
   <data name="FactorialOverflow" xml:space="preserve">
     <value>O valor de retorno de Math.Factorial está fora do intervalo.</value>
   </data>
@@ -170,9 +164,6 @@
   </data>
   <data name="FindPointsWithinRadiusSearchRadiusMessage" xml:space="preserve">
     <value>O raio da pesquisa não pode ser zero.</value>
-  </data>
-  <data name="FromObjectObsolete" xml:space="preserve">
-    <value>Este nó é obsoleto, utilize "String from Object"</value>
   </data>
   <data name="IntegerOverflow" xml:space="preserve">
     <value>A operação resultou em um estouro de número inteiro. O resultado pode ser inesperado.</value>
@@ -186,9 +177,6 @@
   <data name="InvalidKeysLenghtErrorMessage" xml:space="preserve">
     <value>O número de itens não coincide com o número de chaves. href=InvalidKeysLenghtErrorMessage.html</value>
   </data>
-  <data name="LoadImageFromPathObsolete" xml:space="preserve">
-    <value>Utilize em seu lugar os nós File.FromPath -&gt; Image.ReadFromFile</value>
-  </data>
   <data name="MissingPythonEngine" xml:space="preserve">
     <value>Não foi possível localizar o mecanismo Python selecionado</value>
   </data>
@@ -201,12 +189,6 @@
   <data name="QuadtreeConstructionNullUVSetMessage" xml:space="preserve">
     <value>Uma árvore quádrupla não pode ser construída a partir de um conjunto nulo de UVs.</value>
   </data>
-  <data name="ReadImageObsolete" xml:space="preserve">
-    <value>Utilize em seu lugar os nós File.FromPath - &gt; Image.ReadFromFile - &gt; Image.Pixels</value>
-  </data>
-  <data name="ReadTextObsolete" xml:space="preserve">
-    <value>Utilize em seu lugar os nós File.FromPath - &gt; File.ReadText.</value>
-  </data>
   <data name="StringRemoveCountOutOfRangeMessage" xml:space="preserve">
     <value>A contagem está fora da faixa!</value>
   </data>
@@ -218,9 +200,6 @@
   </data>
   <data name="WebRequestNullUrlMessage" xml:space="preserve">
     <value>O URL não pode ser nulo.</value>
-  </data>
-  <data name="WriteImageObsolete" xml:space="preserve">
-    <value>Utilize em seu lugar o nó Image.WriteToFile</value>
   </data>
   <data name="DefineDataUnexpectedInputExceptionMessage" xml:space="preserve">
     <value>Esse nó esperava uma entrada {0}, mas recebeu uma entrada {1}. Forneça a entrada esperada ou selecione um novo tipo no menu suspenso do nó.</value>

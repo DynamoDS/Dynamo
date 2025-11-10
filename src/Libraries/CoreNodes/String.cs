@@ -13,14 +13,6 @@ namespace DSCore
     /// </summary>
     public static class String
     {
-        // It has been moved to String.FromObject UI node, which is compiled 
-        // to built-in function __ToStringFromObject().
-        [NodeObsolete("FromObjectObsolete", typeof(Properties.Resources))]
-        public static string FromObject(object obj)
-        {
-            return obj.ToString();
-        }
-
         /// <summary>
         ///     Converts a string to an integer or a double.
         /// </summary>
