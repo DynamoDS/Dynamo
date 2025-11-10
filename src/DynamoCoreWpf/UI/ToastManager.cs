@@ -15,7 +15,7 @@ namespace Dynamo.Wpf.UI
         private const double VerticalOffset = 10;
         //The HorizontalOffset is used to move horizontally the popup (using as a reference the statusBarPanel position)
         private const double HorizontalOffset = 110;
-        private const int AutoCloseSeconds = 3;
+        internal const int AutoCloseSeconds = 3;
 
         private RealTimeInfoWindow toastPopup;
         private UIElement mainRootElement;
