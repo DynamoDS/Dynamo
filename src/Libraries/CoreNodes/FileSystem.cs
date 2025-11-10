@@ -351,52 +351,6 @@ namespace DSCore.IO
             }
         }
         #endregion
-
-        #region Obsolete Methods
-
-#if NET6_0_OR_GREATER
-        [SupportedOSPlatform("windows")]
-#endif
-        [NodeObsolete("ReadImageObsolete", typeof(Properties.Resources))]
-        public static Color[] ReadImage(string path, int xSamples, int ySamples)
-        {
-            var info = FileFromPath(path);
-            var image = Image.ReadFromFile(info);
-            return Image.Pixels(image, xSamples, ySamples).SelectMany(x => x).ToArray();
-        }
-
-#if NET6_0_OR_GREATER
-        [SupportedOSPlatform("windows")]
-#endif
-        [NodeObsolete("LoadImageFromPathObsolete", typeof(Properties.Resources))]
-        public static Bitmap LoadImageFromPath(string path)
-        {
-            return Image.ReadFromFile(FileFromPath(path));
-        }
-
-        [NodeObsolete("ReadTextObsolete", typeof(Properties.Resources))]
-        public static string ReadText(string path)
-        {
-            return ReadText(FileFromPath(path));
-        }
-
-#if NET6_0_OR_GREATER
-        [SupportedOSPlatform("windows")]
-#endif
-        [NodeObsolete("WriteImageObsolete", typeof(Properties.Resources))]
-        public static bool WriteImage(string filePath, string fileName, Bitmap image)
-        {
-            fileName = Path.ChangeExtension(fileName, "png");
-            Image.WriteToFile(Path.Combine(filePath, fileName), image);
-            return true;
-        }
-
-        [NodeObsolete("ExportToCSVObsolete", typeof(Properties.Resources))]
-        public static bool ExportToCSV(string filePath, object[][] data)
-        {
-            return false;
-        }
-        #endregion
     }
 
     /// <summary>

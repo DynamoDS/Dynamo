@@ -117,31 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ByPointsAndValueObsolete" xml:space="preserve">
-    <value>Utiliza nodos de puntos y nodos de números como entradas directas a nodos que ya utilizaron nodos PointData</value>
-  </data>
-  <data name="BySurfacePointObsolete" xml:space="preserve">
-    <value>Utiliza nodos de superficies y UV como entradas directas a nodos que ya utilizaron nodos SurfaceData</value>
-  </data>
-  <data name="BySurfacePointsAndValues" xml:space="preserve">
-    <value>Utiliza nodos de superficies, UV y números como entradas directas a nodos que ya utilizaron nodos SurfaceData</value>
-  </data>
-  <data name="SurfaceObsolete" xml:space="preserve">
-    <value>Utiliza la superficie disponible en el gráfico</value>
-  </data>
-  <data name="ValueLocationObsolete" xml:space="preserve">
-    <value>Utiliza los puntos disponibles en cualquier otra parte del gráfico</value>
-  </data>
-  <data name="ValueLocationsObsolete" xml:space="preserve">
-    <value>Utiliza las ubicaciones de UV disponibles en cualquier otra parte del gráfico.</value>
-  </data>
-  <data name="ValuesObsolete" xml:space="preserve">
-    <value>Utiliza los valores proporcionados por el nodo que efectúa el análisis.</value>
-  </data>
-  <data name="ValueSurfaceObsolete" xml:space="preserve">
-    <value>Utiliza los valores proporcionados por el nodo que efectúa el análisis</value>
-  </data>
-  <data name="VectorValueObsolete" xml:space="preserve">
-    <value>Utiliza nodos de vectores y nodos de números como entradas directas a nodos que ya utilizaron nodos VectorData</value>
-  </data>
 </root>

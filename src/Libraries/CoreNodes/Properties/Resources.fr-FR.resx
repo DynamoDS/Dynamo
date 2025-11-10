@@ -156,9 +156,6 @@
   <data name="Exception_Serialize_Unsupported_Type" xml:space="preserve">
     <value>Impossible de stocker les données de type {0}.</value>
   </data>
-  <data name="ExportToCSVObsolete" xml:space="preserve">
-    <value>Utiliser le noeud Data.ExportCSV à la place</value>
-  </data>
   <data name="FactorialNegativeInt" xml:space="preserve">
     <value>La valeur d'entrée de Math.Factorial ne peut pas être négative.</value>
   </data>
@@ -170,9 +167,6 @@
   </data>
   <data name="FindPointsWithinRadiusSearchRadiusMessage" xml:space="preserve">
     <value>Le rayon de recherche ne peut pas être égal à zéro.</value>
-  </data>
-  <data name="FromObjectObsolete" xml:space="preserve">
-    <value>Ce noeud est obsolète, utilisez "String from Object"</value>
   </data>
   <data name="IntegerOverflow" xml:space="preserve">
     <value>L'opération a entraîné un dépassement de l'entier. Son résultat peut être inattendu.</value>
@@ -186,9 +180,6 @@
   <data name="InvalidKeysLenghtErrorMessage" xml:space="preserve">
     <value>Le nombre d'éléments ne correspond pas au nombre de clés. href=InvalidKeysLenghtErrorMessage.html</value>
   </data>
-  <data name="LoadImageFromPathObsolete" xml:space="preserve">
-    <value>Utiliser les noeuds File.FromPath -&gt; Image.ReadFromFile à la place</value>
-  </data>
   <data name="MissingPythonEngine" xml:space="preserve">
     <value>Le moteur Python sélectionné est introuvable</value>
   </data>
@@ -201,12 +192,6 @@
   <data name="QuadtreeConstructionNullUVSetMessage" xml:space="preserve">
     <value>Un arbre quadratique ne peut pas être créé à partir d'un jeu d'UV nul.</value>
   </data>
-  <data name="ReadImageObsolete" xml:space="preserve">
-    <value>Utiliser les noeuds File.FromPath -&gt;  Image.ReadFromFile -&gt;  Image.Pixels à la place</value>
-  </data>
-  <data name="ReadTextObsolete" xml:space="preserve">
-    <value>Utilisez les noeuds File.FromPath -&gt; File.ReadText à la place.</value>
-  </data>
   <data name="StringRemoveCountOutOfRangeMessage" xml:space="preserve">
     <value>Le nombre est hors intervalle.</value>
   </data>
@@ -218,9 +203,6 @@
   </data>
   <data name="WebRequestNullUrlMessage" xml:space="preserve">
     <value>L'URL ne peut pas être nulle.</value>
-  </data>
-  <data name="WriteImageObsolete" xml:space="preserve">
-    <value>Utiliser le noeud Image.WriteToFile à la place</value>
   </data>
   <data name="DefineDataUnexpectedInputExceptionMessage" xml:space="preserve">
     <value>Ce noeud attendait une entrée {0} mais a reçu une entrée {1}. Veuillez fournir l'entrée attendue ou choisir un nouveau type dans le menu déroulant du noeud.</value>
