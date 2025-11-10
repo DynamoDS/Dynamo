@@ -110,13 +110,13 @@ namespace Dynamo.Wpf.UI
 
         private void AutoCloseTimer_Tick(object sender, EventArgs e)
         {
-            StopAutoCloseTimer();
             CloseRealTimeInfoWindow();
         }
 
         private void StartAutoCloseTimer(int seconds)
         {
             if (seconds <= 0) return;
+            StopAutoCloseTimer();
             closeTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(seconds) };
             closeTimer.Tick += AutoCloseTimer_Tick;
             closeTimer.Start();
