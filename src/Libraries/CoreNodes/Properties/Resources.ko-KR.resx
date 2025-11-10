@@ -156,9 +156,6 @@
   <data name="Exception_Serialize_Unsupported_Type" xml:space="preserve">
     <value>{0} 유형의 데이터를 저장할 수 없습니다.</value>
   </data>
-  <data name="ExportToCSVObsolete" xml:space="preserve">
-    <value>대신 Data.ExportCSV 노드를 사용하십시오.</value>
-  </data>
   <data name="FactorialNegativeInt" xml:space="preserve">
     <value>Math.Factorial의 입력 값은 음수일 수 없습니다.</value>
   </data>
@@ -170,9 +167,6 @@
   </data>
   <data name="FindPointsWithinRadiusSearchRadiusMessage" xml:space="preserve">
     <value>검색 반지름은 0이 아니어야 합니다.</value>
-  </data>
-  <data name="FromObjectObsolete" xml:space="preserve">
-    <value>사용하지 않는 노드입니다. "String from Object"를 사용하십시오.</value>
   </data>
   <data name="IntegerOverflow" xml:space="preserve">
     <value>작업으로 인해 정수 오버플로우가 발생했습니다. 그 결과가 예기치 않게 발생할 수 있습니다.</value>
@@ -186,9 +180,6 @@
   <data name="InvalidKeysLenghtErrorMessage" xml:space="preserve">
     <value>항목 수가 키 수와 일치하지 않습니다. href=InvalidKeysLenghtErrorMessage.html</value>
   </data>
-  <data name="LoadImageFromPathObsolete" xml:space="preserve">
-    <value>대신 File.FromPath -&gt; Image.ReadFromFile 노드를 사용하십시오.</value>
-  </data>
   <data name="MissingPythonEngine" xml:space="preserve">
     <value>선택한 Python 엔진을 찾을 수 없음</value>
   </data>
@@ -201,12 +192,6 @@
   <data name="QuadtreeConstructionNullUVSetMessage" xml:space="preserve">
     <value>빈 UV 세트에서 쿼드 트리를 구성할 수 없습니다.</value>
   </data>
-  <data name="ReadImageObsolete" xml:space="preserve">
-    <value>대신 File.FromPath -&gt; Image.ReadFromFile -&gt; Image.Pixels 노드를 사용하십시오.</value>
-  </data>
-  <data name="ReadTextObsolete" xml:space="preserve">
-    <value>대신 File.FromPath -&gt; File.ReadText 노드를 사용하십시오.</value>
-  </data>
   <data name="StringRemoveCountOutOfRangeMessage" xml:space="preserve">
     <value>개수가 범위를 벗어났습니다!</value>
   </data>
@@ -218,9 +203,6 @@
   </data>
   <data name="WebRequestNullUrlMessage" xml:space="preserve">
     <value>URL은 Null이 될 수 없습니다.</value>
-  </data>
-  <data name="WriteImageObsolete" xml:space="preserve">
-    <value>대신 Image.WriteToFile 노드를 사용하십시오.</value>
   </data>
   <data name="DefineDataUnexpectedInputExceptionMessage" xml:space="preserve">
     <value>이 노드는 {0} 입력을 예상했지만 {1} 입력을 수신했습니다. 예상된 입력을 제공하거나 노드의 드롭다운 메뉴에서 새 유형을 선택하십시오.</value>

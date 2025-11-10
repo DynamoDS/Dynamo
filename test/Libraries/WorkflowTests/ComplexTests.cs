@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
@@ -580,8 +580,8 @@ namespace Dynamo.Tests
             var workspace = CurrentDynamoModel.CurrentWorkspace;
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(10, workspace.Connectors.Count());
-            Assert.AreEqual(11, workspace.Nodes.Count());
+            Assert.AreEqual(12, workspace.Connectors.Count());
+            Assert.AreEqual(13, workspace.Nodes.Count());
 
             // give absolute path
             var textFileName = workspace.NodeFromWorkspace<Filename>("545b092b-8b2c-4cd4-b15e-9e4162dd4579");
@@ -593,9 +593,6 @@ namespace Dynamo.Tests
             var imgFileName = workspace.NodeFromWorkspace<Filename>("c20d8f16-4bf7-465f-93ca-6afd05fe02a2");
             imgFileName.Value = Path.Combine(directory, imgFileName.Value);
 
-            var imgDirectory = workspace.NodeFromWorkspace<Directory>("729b5ffd-7813-4e09-94a2-74a1e4619c5f");
-            imgDirectory.Value = directory;
-
             var xlsxFileName = workspace.NodeFromWorkspace<Filename>("b8f8f48b-c546-4ae8-b7f6-45e52310e361");
             xlsxFileName.Value = Path.Combine(directory, xlsxFileName.Value);
 
@@ -603,7 +600,7 @@ namespace Dynamo.Tests
             BeginRun();
 
             // test reading
-            var readText = "b6e77130-3c2e-4d6b-ae5b-2137c3d3a51b";
+            var readText =  "2d8d7891-3de2-40d6-bd11-5cd46f983030";
             var text = GetPreviewValue(readText) as string;
             Assert.AreEqual(text,"1234");
 
@@ -615,13 +612,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(ElementState.Active, nodeModel.State);
 
             // test reading image. There are 100 Colors object that is generated since 
-            // the sampling in x and y direction is 10.
-            var readImage = "7fba95f1-fd7a-4033-a7a9-5dfb91c7e886";
-            Assert.AreEqual(100,GetFlattenedPreviewValues(readImage).Count);
+            var imagePixels = "f866a25b-df8f-4c11-a57a-6483d007d432";
+            Assert.AreEqual(100,GetFlattenedPreviewValues(imagePixels).Count);
 
             // test load image from path and writing image in a CBN
             var codeBlock = "75b9d0a3-e954-42b5-8ccf-66845b122e3f";
-            AssertPreviewValue(codeBlock,true);
+            var bitmap = GetPreviewValue(codeBlock);
+            Assert.IsNotNull(bitmap);
+            Assert.IsInstanceOf<System.Drawing.Bitmap>(bitmap);
 
             // text writing to csv, the node is obsolete but 
             // is migrated, so no warning should be shown on this node
