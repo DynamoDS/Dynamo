@@ -100,6 +100,8 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             }
 
             SavePythonMigrationBackup();
+
+            PythonNode.EngineName = PythonEngineManager.PythonNet3EngineName;
             PythonNode.MigrateCode(this.NewCode);
         }
 

@@ -183,8 +183,9 @@ namespace PythonNodeModelsWpf
             dynamoViewModel.PreferencesWindowChanged += DynamoViewModel_PreferencesWindowChanged;
 
             dynamoViewModel.PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+            NodeModel.PropertyChanged += OnNodeModelPropertyChanged;
+
             UpdatePythonUpgradeBar();
-            UpdateMigrationAssistantButtonEnabled();
         }
 
         private void UpdatePythonUpgradeBar()
@@ -310,17 +311,19 @@ namespace PythonNodeModelsWpf
 
         private void UpdateMigrationAssistantButtonEnabled()
         {
-            var pyNode = NodeModel as PythonNodeBase;
-            bool isIronPython = pyNode?.EngineName == PythonEngineManager.IronPython2EngineName;
+            var enable = CachedEngine == PythonEngineManager.IronPython2EngineName;
 
-            MigrationAssistantButton.IsEnabled = isIronPython;
+            MigrationAssistantButton.IsEnabled = enable;
 
             var tooltip = MigrationAssistantButton.ToolTip as System.Windows.Controls.ToolTip;
-            tooltip.Content = isIronPython
+            var message = enable
                 ? String.Format(
                     PythonNodeModels.Properties.Resources.PythonScriptEditorMigrationAssistantButtonTooltip,
                     PythonEngineManager.PythonNet3EngineName)
-                : PythonNodeModels.Properties.Resources.PythonScriptEditorMigrationAssistantButtonDisabledTooltip;
+                : String.Format(
+                    PythonNodeModels.Properties.Resources.PythonScriptEditorMigrationAssistantButtonDisabledTooltip,
+                    PythonEngineManager.CPython3EngineName);
+            tooltip.Content = message;
         }
 
         #region Text Zoom in Python Editor
@@ -444,6 +447,18 @@ namespace PythonNodeModelsWpf
 
         #region Private Event Handlers
 
+        private void OnNodeModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(PythonNode.EngineName))
+            {
+                if (CachedEngine != NodeModel.EngineName)
+                {
+                    CachedEngine = NodeModel.EngineName;
+                    EngineSelectorComboBox.SelectedItem = CachedEngine;
+                }
+            }
+        }
+
         private void OnNodeModelCodeMigrated(object sender, PythonCodeMigrationEventArgs e)
         {
             originalScript = e.OldCode;
@@ -518,8 +533,6 @@ namespace PythonNodeModelsWpf
                 Dynamo.Logging.Actions.Migration,
                 Dynamo.Logging.Categories.PythonOperations);
             NodeModel.RequestCodeMigration(e);
-
-            UpdateMigrationAssistantButtonEnabled();
         }
         private void OnConvertTabsToSpacesClicked(object sender, RoutedEventArgs e)
         {
@@ -558,6 +571,7 @@ namespace PythonNodeModelsWpf
             }
 
             editText.Options.ConvertTabsToSpaces = CachedEngine != PythonEngineManager.IronPython2EngineName;
+            UpdateMigrationAssistantButtonEnabled();
         }
 
         private void OnScriptEditorWindowClosed(object sender, EventArgs e)
@@ -569,6 +583,7 @@ namespace PythonNodeModelsWpf
                 completionProvider?.Dispose();
                 NodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
                 NodeModel.UserScriptWarned -= WarnUserScript;
+                NodeModel.PropertyChanged -= OnNodeModelPropertyChanged;
                 this.Closed -= OnScriptEditorWindowClosed;
                 PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= UpdateAvailableEngines;
                 dynamoViewModel.PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
@@ -756,8 +771,6 @@ namespace PythonNodeModelsWpf
             this.MoreInfoButton.IsEnabled = true;
             this.SaveButtonBar.Visibility = Visibility.Visible;
             this.UnsavedChangesStatusBar.Visibility = Visibility.Collapsed;
-
-            UpdateMigrationAssistantButtonEnabled();
         }
 
         // Updates the IsEnterHit value
