@@ -1258,7 +1258,7 @@ namespace Dynamo.ViewModels
                         }
                         else
                         {
-                            owningWorkspace.DynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Wpf.Properties.Resources.UngroupParentGroupWarning, true);
+                            owningWorkspace.DynamoViewModel.ToastManager.CreateRealTimeInfoWindow(Wpf.Properties.Resources.UngroupParentGroupWarning, true);
                         }
                     }
                 }
