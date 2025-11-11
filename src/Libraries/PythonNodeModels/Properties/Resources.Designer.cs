@@ -232,7 +232,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Convert script to Python 3....
+        ///   Looks up a localized string similar to Convert script to {0}....
         /// </summary>
         public static string PythonScriptEditorMigrationAssistantButtonTooltip {
             get {

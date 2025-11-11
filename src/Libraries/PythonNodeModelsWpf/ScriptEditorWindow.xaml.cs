@@ -317,7 +317,9 @@ namespace PythonNodeModelsWpf
 
             var tooltip = MigrationAssistantButton.ToolTip as System.Windows.Controls.ToolTip;
             tooltip.Content = isIronPython
-                ? PythonNodeModels.Properties.Resources.PythonScriptEditorMigrationAssistantButtonTooltip
+                ? String.Format(
+                    PythonNodeModels.Properties.Resources.PythonScriptEditorMigrationAssistantButtonTooltip,
+                    PythonEngineManager.PythonNet3EngineName)
                 : PythonNodeModels.Properties.Resources.PythonScriptEditorMigrationAssistantButtonDisabledTooltip;
         }
 

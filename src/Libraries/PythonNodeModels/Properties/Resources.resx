@@ -204,7 +204,7 @@
     <value>Select the Python version/engine to execute the script</value>
   </data>
   <data name="PythonScriptEditorMigrationAssistantButtonTooltip" xml:space="preserve">
-    <value>Convert script to Python 3...</value>
+    <value>Convert script to {0}...</value>
   </data>
   <data name="PythonScriptEditorConvertTabsToSpacesButtonTooltip" xml:space="preserve">
     <value>Convert indentation tabs to spaces...</value>
