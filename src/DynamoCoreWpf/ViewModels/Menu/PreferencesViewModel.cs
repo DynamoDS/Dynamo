@@ -174,7 +174,7 @@ namespace Dynamo.ViewModels
                     if (Configurations.SupportedLocaleDic.TryGetValue(selectedLanguage, out string locale))
                     {
                         preferenceSettings.Locale = locale;
-                        dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.PreferencesViewLanguageSwitchHelp, true);
+                        dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(Res.PreferencesViewLanguageSwitchHelp, true);
                     }
                 }
             }
@@ -1078,6 +1078,19 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Controls the IsChecked property in the "Hide CPython notifications" toggle button
+        /// </summary>
+        public bool HideCPythonNotificationIsChecked
+        {
+            get => preferenceSettings.HideCPython3Notifications;
+            set
+            {
+                preferenceSettings.HideCPython3Notifications = value;
+                RaisePropertyChanged(nameof(HideCPythonNotificationIsChecked));
+            }
+        }
+
+        /// <summary>
         /// Controls the IsChecked property in the "Notification Center" toggle button
         /// </summary>
         public bool NotificationCenterIsChecked
@@ -1886,6 +1899,9 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(ShowWhitespaceIsChecked):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowWhitespaceInPythonEditor), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
+                case nameof(HideCPythonNotificationIsChecked):
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewHidePythonEngineChangeNotifications), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(NodeAutocompleteIsChecked):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewEnableNodeAutoComplete), System.Globalization.CultureInfo.InvariantCulture);

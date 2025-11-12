@@ -357,7 +357,7 @@ namespace Dynamo.Wpf.ViewModels
                         {
                             if (!customNodeWorkspaceModel.Nodes.Any(n => n.GetOriginalName().Contains("ScopeIf")))
                             {
-                                dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.CannotAddNodeToWorkspace);
+                                dynamoViewModel.ToastManager.CreateRealTimeInfoWindow(Properties.Resources.CannotAddNodeToWorkspace);
                                 return;
                             }
                             else
@@ -372,7 +372,7 @@ namespace Dynamo.Wpf.ViewModels
                 catch (Exception ex)
                 {
                     searchViewModel.dynamoViewModel.Model.Logger.Log("Failed to create node from search element: " + Model.Name + "\n" + ex.Message);
-                    searchViewModel.dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Wpf.Properties.Resources.NodeInCanvasSearchCreationError + Model.Name, true);
+                    searchViewModel.dynamoViewModel.ToastManager.CreateRealTimeInfoWindow(Wpf.Properties.Resources.NodeInCanvasSearchCreationError + Model.Name, true);
                 }
             }
         }
