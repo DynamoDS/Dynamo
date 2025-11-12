@@ -221,4 +221,16 @@ IronPython 엔진은 여전히 Dynamo Package Manager를 통해 패키지로 제
   <data name="SwitchViewButton" xml:space="preserve">
     <value>뷰 전환</value>
   </data>
+  <data name="CPython3NotificationDetailedMessage" xml:space="preserve">
+    <value>이 그래프에는 더 이상 사용되지 않는 이전 CPython 엔진을 사용하는 Python 노드가 포함되어 있습니다. 새 PythonNet3 엔진을 사용하려면 이러한 노드를 업데이트해 보십시오.</value>
+  </data>
+  <data name="CPython3NotificationShortMessage" xml:space="preserve">
+    <value>이 그래프에는 더 이상 사용되지 않는 이전 CPython3 엔진을 사용하는 노드가 포함되어 있습니다. 새로운 PythonNet3가 구현되어 Python 편집기 내에서 액세스할 수 있습니다.</value>
+  </data>
+  <data name="CPythonUpgradeToastMessagePlural" xml:space="preserve">
+    <value>{0}개의 CPython 노드가 Dynamo 4.0에서 실행되도록 PythonNet3으로 자동 변환되었습니다. CPython은 더 이상 지원되지 않습니다.</value>
+  </data>
+  <data name="CPythonUpgradeToastMessageSingular" xml:space="preserve">
+    <value>1개의 CPython 노드가 Dynamo 4.0에서 실행되도록 PythonNet3으로 자동 변환되었습니다. CPython은 더 이상 지원되지 않습니다.</value>
+  </data>
 </root>

@@ -221,4 +221,16 @@ Kliknięcie przycisku Kontynuuj oznacza zaakceptowanie wprowadzenia zmian w skł
   <data name="SwitchViewButton" xml:space="preserve">
     <value>Przełącz widok</value>
   </data>
+  <data name="CPython3NotificationDetailedMessage" xml:space="preserve">
+    <value>Ten wykres zawiera obecnie węzły w języku Python korzystające ze starego, wycofanego aparatu CPython. Rozważ ich zaktualizowanie, aby używały nowego aparatu PythonNet3.</value>
+  </data>
+  <data name="CPython3NotificationShortMessage" xml:space="preserve">
+    <value>Ten wykres zawiera obecnie węzły korzystające ze starego, wycofanego aparatu CPython3. Zaimplementowano nowy aparat PythonNet3, który jest dostępny w edytorze języka Python.</value>
+  </data>
+  <data name="CPythonUpgradeToastMessagePlural" xml:space="preserve">
+    <value>Węzły CPython ({0}) zostały automatycznie przekształcone w węzły PythonNet3, aby działały w dodatku Dynamo 4.0. Aparat CPython nie jest już obsługiwany.</value>
+  </data>
+  <data name="CPythonUpgradeToastMessageSingular" xml:space="preserve">
+    <value>1 węzeł CPython został automatycznie przekształcony w węzeł PythonNet3, aby działał w dodatku Dynamo 4.0. Aparat CPython nie jest już obsługiwany.</value>
+  </data>
 </root>

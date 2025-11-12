@@ -133,7 +133,7 @@
     <value>Versión del motor de Python</value>
   </data>
   <data name="PythonNodeContextMenuEngineVersionThree" xml:space="preserve">
-    <value>CPython3</value>
+    <value>PythonNet3</value>
   </data>
   <data name="PythonNodeContextMenuEngineVersionTwo" xml:space="preserve">
     <value>IronPython2</value>
@@ -205,12 +205,24 @@
     <value>Convertir la secuencia de comandos a Python 3...</value>
   </data>
   <data name="PythonSearchTags" xml:space="preserve">
-    <value>IronPython;CPython;</value>
+    <value>IronPython;PythonNet3;</value>
   </data>
   <data name="PythonScriptUnsavedChangesPromptText" xml:space="preserve">
     <value>Parece que aún está trabajando en esto. Si sale ahora, puede perder los cambios no guardados.</value>
   </data>
   <data name="PythonScriptUnsavedChangesPromptTitle" xml:space="preserve">
     <value>¿Confirma que desea salir?</value>
+  </data>
+  <data name="PythonNodeContextMenuEngineVersionNetThree" xml:space="preserve">
+    <value>PythonNet3</value>
+  </data>
+  <data name="PythonScriptEditorEngineAutoUpdatedBarText" xml:space="preserve">
+    <value>Motor de Python actualizado automáticamente a PythonNet3</value>
+  </data>
+  <data name="PythonScriptEditorEngineRequestToUpdatedBarText" xml:space="preserve">
+    <value>Actualice el motor de Python a PythonNet3</value>
+  </data>
+  <data name="PythonScriptEditorMigrationAssistantButtonDisabledTooltip" xml:space="preserve">
+    <value>El motor de Python se ha actualizado automáticamente. No es necesario realizar ninguna conversión.</value>
   </data>
 </root>

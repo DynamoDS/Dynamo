@@ -221,4 +221,16 @@ IronPython 引擎仍然作为 Dynamo Package Manager 的一个软件包进行提
   <data name="SwitchViewButton" xml:space="preserve">
     <value>切换视图</value>
   </data>
+  <data name="CPython3NotificationDetailedMessage" xml:space="preserve">
+    <value>此图形当前包含使用已弃用的旧 CPython 引擎的 Python 节点。请考虑更新这些节点以使用新的 PythonNet3 引擎。</value>
+  </data>
+  <data name="CPython3NotificationShortMessage" xml:space="preserve">
+    <value>此图形当前包含使用已弃用的旧 CPython3 引擎的节点。新的 PythonNet3 已实现，并可在 Python 编辑器内访问。</value>
+  </data>
+  <data name="CPythonUpgradeToastMessagePlural" xml:space="preserve">
+    <value>{0} CPython 节点已自动转换为 PythonNet3，可在 Dynamo 4.0 中运行。CPython 不再受支持。</value>
+  </data>
+  <data name="CPythonUpgradeToastMessageSingular" xml:space="preserve">
+    <value>1 个 CPython 节点已自动转换为 PythonNet3，可在 Dynamo 4.0 中运行。CPython 不再受支持。</value>
+  </data>
 </root>

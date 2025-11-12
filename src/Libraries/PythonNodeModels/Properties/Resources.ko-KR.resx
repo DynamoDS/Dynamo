@@ -133,7 +133,7 @@
     <value>Python 엔진 버전</value>
   </data>
   <data name="PythonNodeContextMenuEngineVersionThree" xml:space="preserve">
-    <value>CPython3</value>
+    <value>PythonNet3</value>
   </data>
   <data name="PythonNodeContextMenuEngineVersionTwo" xml:space="preserve">
     <value>IronPython2</value>
@@ -205,12 +205,24 @@
     <value>스크립트를 Python 3로 변환...</value>
   </data>
   <data name="PythonSearchTags" xml:space="preserve">
-    <value>IronPython;CPython;</value>
+    <value>IronPython;PythonNet3;</value>
   </data>
   <data name="PythonScriptUnsavedChangesPromptText" xml:space="preserve">
     <value>아직 이 작업을 수행하고 있는 것 같습니다. 지금 종료하면 저장되지 않은 변경 사항이 손실될 수 있습니다.</value>
   </data>
   <data name="PythonScriptUnsavedChangesPromptTitle" xml:space="preserve">
     <value>나가시겠습니까?</value>
+  </data>
+  <data name="PythonNodeContextMenuEngineVersionNetThree" xml:space="preserve">
+    <value>PythonNet3</value>
+  </data>
+  <data name="PythonScriptEditorEngineAutoUpdatedBarText" xml:space="preserve">
+    <value>Python 엔진이 PythonNet3으로 자동 업데이트됨</value>
+  </data>
+  <data name="PythonScriptEditorEngineRequestToUpdatedBarText" xml:space="preserve">
+    <value>Python 엔진을 PythonNet3으로 업데이트하십시오.</value>
+  </data>
+  <data name="PythonScriptEditorMigrationAssistantButtonDisabledTooltip" xml:space="preserve">
+    <value>Python 엔진이 자동으로 업데이트되었습니다. 변환이 필요하지 않습니다.</value>
   </data>
 </root>

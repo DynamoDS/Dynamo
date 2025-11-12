@@ -221,4 +221,16 @@ IronPython エンジンも 1 つのパッケージとして Dynamo Package Manag
   <data name="SwitchViewButton" xml:space="preserve">
     <value>ビューを切り替え</value>
   </data>
+  <data name="CPython3NotificationDetailedMessage" xml:space="preserve">
+    <value>現在このグラフには、廃止された旧式の CPython エンジンを使用する Python ノードが含まれています。このノードを更新し、新しい PythonNet3 エンジンを使用することを検討してください。</value>
+  </data>
+  <data name="CPython3NotificationShortMessage" xml:space="preserve">
+    <value>現在このグラフには、廃止された旧式の CPython3 エンジンを使用したノードが含まれています。新しい PythonNet3 が実装されており、Python エディタ内で利用可能です。</value>
+  </data>
+  <data name="CPythonUpgradeToastMessagePlural" xml:space="preserve">
+    <value>{0} 個の CPython ノードは、Dynamo 4.0 で動作するように PythonNet3 に自動的に変換されます。CPython はサポートされなくなりました。</value>
+  </data>
+  <data name="CPythonUpgradeToastMessageSingular" xml:space="preserve">
+    <value>1 個の CPython ノードが、Dynamo 4.0 で動作するように PythonNet3 に自動的に変換されます。CPython はサポートされなくなりました。</value>
+  </data>
 </root>

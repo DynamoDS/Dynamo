@@ -133,7 +133,7 @@
     <value>Python 引擎版本</value>
   </data>
   <data name="PythonNodeContextMenuEngineVersionThree" xml:space="preserve">
-    <value>CPython3</value>
+    <value>PythonNet3</value>
   </data>
   <data name="PythonNodeContextMenuEngineVersionTwo" xml:space="preserve">
     <value>IronPython2</value>
@@ -205,12 +205,24 @@
     <value>將指令碼轉換為 Python 3...</value>
   </data>
   <data name="PythonSearchTags" xml:space="preserve">
-    <value>IronPython;CPython;</value>
+    <value>IronPython;PythonNet3;</value>
   </data>
   <data name="PythonScriptUnsavedChangesPromptText" xml:space="preserve">
     <value>您似乎仍在處理此項目。如果您現在離開，可能會遺失任何未儲存的變更</value>
   </data>
   <data name="PythonScriptUnsavedChangesPromptTitle" xml:space="preserve">
     <value>您確定要離開嗎？</value>
+  </data>
+  <data name="PythonNodeContextMenuEngineVersionNetThree" xml:space="preserve">
+    <value>PythonNet3</value>
+  </data>
+  <data name="PythonScriptEditorEngineAutoUpdatedBarText" xml:space="preserve">
+    <value>Python 引擎已自動更新為 PythonNet3</value>
+  </data>
+  <data name="PythonScriptEditorEngineRequestToUpdatedBarText" xml:space="preserve">
+    <value>請將 Python 引擎更新為 PythonNet3</value>
+  </data>
+  <data name="PythonScriptEditorMigrationAssistantButtonDisabledTooltip" xml:space="preserve">
+    <value>Python 引擎已自動更新。無需轉換。</value>
   </data>
 </root>
