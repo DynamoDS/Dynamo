@@ -39,7 +39,6 @@
         <file src="DesignScriptBuiltin.xml" target="lib\$TargetFramework$" />
         <file src="VMDataBridge.dll" target="lib\$TargetFramework$" />
         <file src="VMDataBridge.xml" target="lib\$TargetFramework$" />
-        <file src="DSCPython.dll" target="lib\$TargetFramework$" />
         <!--TODO - arguable if DynamoPackages should be in this package-->
         <file src="DynamoPackages.dll" target="lib\$TargetFramework$" />
         <file src="DynamoPackages.xml" target="lib\$TargetFramework$" />

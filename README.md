@@ -20,29 +20,27 @@ Looking to learn or download Dynamo? Check out [dynamobim.org](https://dynamobim
 
 ## Develop
 
-### Create a Node Library for Dynamo
-
-If you're interested in developing a Node library for Dynamo, the easiest place to start is by browsing the [DynamoSamples](https://github.com/DynamoDS/DynamoSamples).
-These samples use the [Dynamo NuGet packages](https://www.nuget.org/packages?q=DynamoVisualProgramming) which can be installed using the NuGet package manager in Visual Studio.
-
-[Documentation of the Dynamo API via Fuget.org](https://www.fuget.org/packages/DynamoVisualProgramming.Core/) with a searchable index of public API calls for core functionality in the dynamo nuget packages. *WIP*.
-
-The [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document explains changes made to the Dynamo API with every version.
-
-You can learn more about developing libraries for Dynamo on the [Dynamo wiki](https://github.com/DynamoDS/Dynamo/wiki/Zero-Touch-Plugin-Development) or the [Developer page](https://developer.dynamobim.org/).
-
 ### Build Dynamo from Source
 
 You will need the following to build the latest Dynamo on Windows:
 
 - [Microsoft Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) (any edition)
-- [Microsoft .NET Framework 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) (included with Visual Studio 2022)
+- [Microsoft .NET 10 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
 - [Node.js LTS](https://nodejs.org/en/download/) and npm
 
 If you are working on legacy branches, you may need to install legacy .NET Framework versions through Visual Studio `Tools > Get Tools and Features...` or downloading from [the archive here](https://www.microsoft.com/net/download/archives).
 
 The Dynamo user interface is Windows-only, but the Dynamo engine can be built for other platforms. [Directions for building Dynamo on Linux or OS X can be found here](https://github.com/DynamoDS/Dynamo/wiki/Dynamo-on-Linux,-Mac).
 Find more about how to build Dynamo at our [wiki](https://github.com/DynamoDS/Dynamo/wiki) and [Dynamo Developer Resources](https://developer.dynamobim.org/).
+
+### Create a Node Library for Dynamo
+
+If you're interested in developing a Node library for Dynamo, the easiest place to start is by browsing the [DynamoSamples](https://github.com/DynamoDS/DynamoSamples).
+These samples use the [Dynamo NuGet packages](https://www.nuget.org/packages?q=DynamoVisualProgramming) which can be installed using the NuGet package manager in Visual Studio.
+
+The [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document explains changes made to the Dynamo API with every version.
+
+You can learn more about developing libraries for Dynamo on the [Dynamo wiki](https://github.com/DynamoDS/Dynamo/wiki/Zero-Touch-Plugin-Development) or the [Developer page](https://developer.dynamobim.org/).
 
 ## Contribute
 

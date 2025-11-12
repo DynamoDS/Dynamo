@@ -147,6 +147,10 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal string LastSavedLocation { get; set; }
 
+        /// <summary>
+        /// Toast messages manager used to create, update and clear toasts on Dynamo UI
+        /// </summary>
+        public ToastManager ToastManager { get; set; }
 
         /// <summary>
         /// Guided Tour Manager
@@ -1103,6 +1107,23 @@ namespace Dynamo.ViewModels
             {
                 this.NodeViewReady(nodeView, new EventArgs());
             }
+        }
+
+        /// <summary>
+        /// Raised by <see cref="DynamoViewModel"/> to ask listeners (e.g., Python migration UX)
+        /// whether a Python engine changed notice should be shown to the user.
+        /// </summary>
+        internal event EventHandler<CancelEventArgs> RequestPythonEngineChangeNotice;
+
+        /// <summary>
+        /// Raises <see cref="RequestPythonEngineChangeNotice"/> and returns whether any subscriber
+        /// requested to cancel showing the Python engine changed notice.
+        /// </summary>
+        internal bool RaiseRequestPythonEngineChangeNotice()
+        {
+            var args = new CancelEventArgs();
+            RequestPythonEngineChangeNotice?.Invoke(this, args);
+            return args.Cancel;
         }
 
         /// <summary>
@@ -2372,8 +2393,22 @@ namespace Dynamo.ViewModels
         /// <param name="notification"></param>
         private void model_RequestNotification(string notification, bool stayOpen = false)
         {
-            this.MainGuideManager?.CreateRealTimeInfoWindow(notification, stayOpen);
+            this.ToastManager?.CreateRealTimeInfoWindow(notification, stayOpen);
             model?.Logger?.Log(notification);
+        }
+
+        /// <summary>
+        /// Raised when a toast should be shown to inform about a CPython to PythonNet3 engine upgrade
+        /// </summary>
+        public event Action<string, bool> PythonEngineUpgradeToastRequested;
+
+        /// <summary>
+        /// Requests the UI to show a Python-engine-upgrade toast on the canvas.
+        /// This is UI-agnostic; the View decides when/where to render.
+        /// </summary>
+        public void ShowPythonEngineUpgradeCanvasToast(string message, bool stayOpen = true)
+        {
+            PythonEngineUpgradeToastRequested?.Invoke(message, stayOpen);
         }
 
         /// <summary>
@@ -2546,7 +2581,7 @@ namespace Dynamo.ViewModels
 
                     if (HomeSpace.RunSettings.RunType != RunType.Manual)
                     {
-                        MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.InsertGraphRunModeNotificationText);
+                        ToastManager.CreateRealTimeInfoWindow(Properties.Resources.InsertGraphRunModeNotificationText);
                         HomeSpace.RunSettings.RunType = RunType.Manual;
                     }
                 }
@@ -3036,8 +3071,17 @@ namespace Dynamo.ViewModels
         public void ShowSaveDialogIfNeededAndSaveResult(object parameter)
         {
             var vm = this;
+            var currentWorkspace = vm.Model.CurrentWorkspace;
 
-            if (string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName) || vm.Model.CurrentWorkspace.IsTemplate)
+            // First-time CPython notice when saving a *new, unsaved* Home workspace
+            if (currentWorkspace.ShowCPythonNotifications
+                && !currentWorkspace.HasShownCPythonNotification)
+            {
+                var cancel = RaiseRequestPythonEngineChangeNotice();
+                if (cancel) return;
+            }
+
+            if (string.IsNullOrEmpty(currentWorkspace.FileName) || currentWorkspace.IsTemplate)
             {
                 if (CanShowSaveDialogAndSaveResult(parameter))
                 {
@@ -3495,7 +3539,7 @@ namespace Dynamo.ViewModels
 
             string message = String.Concat(WpfResources.ExportWorkspaceAsImage, parameters.ToString());
 
-            MainGuideManager?.CreateRealTimeInfoWindow(message, true);
+            ToastManager?.CreateRealTimeInfoWindow(message, true);
 
             Dynamo.Logging.Analytics.TrackTaskCommandEvent("ImageCapture",
                 "NodeCount", CurrentSpace.Nodes.Count());
@@ -3508,7 +3552,7 @@ namespace Dynamo.ViewModels
 
             string message = String.Concat(WpfResources.ExportWorkspaceAs3DImage, parameters.ToString());
 
-            MainGuideManager?.CreateRealTimeInfoWindow(message, true);
+            ToastManager?.CreateRealTimeInfoWindow(message, true);
         }
 
         internal bool CanSaveImage(object parameters)
@@ -4367,7 +4411,7 @@ namespace Dynamo.ViewModels
             sw.Close();
 
             //alert user to new file location
-            MainGuideManager.CreateRealTimeInfoWindow(string.Format(Resources.NodeIconDataIsDumped, nodesWithoutIconsFullFileName), true);
+            ToastManager.CreateRealTimeInfoWindow(string.Format(Resources.NodeIconDataIsDumped, nodesWithoutIconsFullFileName), true);
         }
 
         private FileInfo GetMatchingDocFromDirectory(string nodeName, string hash, List<string> suffix, DirectoryInfo dir)
@@ -4497,7 +4541,7 @@ namespace Dynamo.ViewModels
             {
                 wsvm.Dispose();
             }
-            MainGuideManager?.CloseRealTimeInfoWindow();
+            ToastManager?.CloseRealTimeInfoWindow();
 
             model.ShutDown(shutdownParams.ShutdownHost);
             UsageReportingManager.DestroyInstance();

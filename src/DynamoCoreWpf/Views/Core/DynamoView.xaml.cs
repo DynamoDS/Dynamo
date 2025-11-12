@@ -30,12 +30,14 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.UI.Controls;
+using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Views;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Authentication;
 using Dynamo.Wpf.Extensions;
+using Dynamo.Wpf.UI;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.Views;
@@ -392,11 +394,11 @@ namespace Dynamo.Controls
             }
             else if (isCurrentWorkSpaceValidForImage == WorkspaceView.ExportImageResult.EmptyDrawing)
             {
-                dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.CantExportWorkspaceAsImageEmptyMessage, true);
+                dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(Res.CantExportWorkspaceAsImageEmptyMessage, true);
             }
             else if (isCurrentWorkSpaceValidForImage == WorkspaceView.ExportImageResult.NotValidAsImage)
             {
-                dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.CantExportWorkspaceAsImageNotValidMessage, true);
+                dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(Res.CantExportWorkspaceAsImageNotValidMessage, true);
             }
         }
 
@@ -404,7 +406,7 @@ namespace Dynamo.Controls
         {
             if (PreferencesWindow != null && PreferencesWindow.IsLoaded)
             {
-                dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.PreferencesMustBeClosedMessage, true);
+                dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(Res.PreferencesMustBeClosedMessage, true);
             }
         }
 
@@ -480,6 +482,23 @@ namespace Dynamo.Controls
             {
                 DynamoModel.RaiseIExtensionStorageAccessWorkspaceSaving(hws, extension, saveContext, dynamoViewModel.Model.Logger);
             }
+        }
+
+        private void OnPythonEngineUpgradeToastRequested(string msg, bool stayOpen)
+        {
+            Dispatcher.BeginInvoke(
+                System.Windows.Threading.DispatcherPriority.ContextIdle,
+                new Action(() =>
+                {
+                    dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(
+                        msg,
+                        stayOpen,
+                        showHeader: true,
+                        headerText: Res.CPython3EngineNotificationMessageBoxHeader,
+                        showHyperlink: true,
+                        hyperlinkText: Res.LearnMore,
+                        hyperlinkUri: new Uri(Res.CPython3EngineUpgradeLearnMoreUri));
+                }));
         }
 
         /// <summary>
@@ -1151,8 +1170,8 @@ namespace Dynamo.Controls
             dynamoViewModel.Model.PreferenceSettings.WindowY = Top;
 
             //When the Dynamo window is moved to another place we need to update the Steps location
-            if(dynamoViewModel.MainGuideManager != null)
-                dynamoViewModel.MainGuideManager.UpdateGuideStepsLocation();
+            dynamoViewModel.MainGuideManager?.UpdateGuideStepsLocation();
+            dynamoViewModel.ToastManager?.UpdateLocation();
 
             if (fileTrustWarningPopup != null && fileTrustWarningPopup.IsOpen)
             {
@@ -1414,7 +1433,13 @@ namespace Dynamo.Controls
 
             // Initialize Guide Manager as a member on Dynamo ViewModel so other than guided tour,
             // other part of application can also leverage it.
+            dynamoViewModel.ToastManager = new ToastManager(_this);
             dynamoViewModel.MainGuideManager = new GuidesManager(_this, dynamoViewModel);
+
+            // Subscribes to Python-engine-upgrade toast requests from the ViewModel and
+            // forwards them to GuidesManager on the UI thread
+            dynamoViewModel.PythonEngineUpgradeToastRequested += OnPythonEngineUpgradeToastRequested;
+
             GuideFlowEvents.GuidedTourStart += GuideFlowEvents_GuidedTourStart;
             _timer.Stop();
             dynamoViewModel.Model.Logger.Log(String.Format(Wpf.Properties.Resources.MessageLoadingTime,
@@ -1459,6 +1484,8 @@ namespace Dynamo.Controls
             DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;
 
             dynamoViewModel.RequestUserSaveWorkflow += DynamoViewModelRequestUserSaveWorkflow;
+
+            dynamoViewModel.RequestPythonEngineChangeNotice += DynamoViewModel_RequestPythonEngineChangeNotice;
 
             dynamoViewModel.Model.ClipBoard.CollectionChanged += ClipBoard_CollectionChanged;
 
@@ -1722,6 +1749,18 @@ namespace Dynamo.Controls
                 }
             }
 
+            // Show the one-time Python Engine Change notification for the workspace
+            var ws = dynamoViewModel.Model.CurrentWorkspace;
+            if (!ws.HasShownCPythonNotification && ws.ShowCPythonNotifications)
+            {
+                var cancelFirstDialogBox = ShowPythonEngineChangeNoticeAndMarkIfProceed();
+                if (cancelFirstDialogBox)
+                {
+                    e.Success = false;
+                    return;
+                }
+            }
+
             var buttons = e.AllowCancel ? MessageBoxButton.YesNoCancel : MessageBoxButton.YesNo;
             var result = MessageBoxService.Show(this, dialogText,
                 Dynamo.Wpf.Properties.Resources.UnsavedChangesMessageBoxTitle,
@@ -1744,6 +1783,46 @@ namespace Dynamo.Controls
             {
                 e.Success = false;
             }
+        }
+
+        private void DynamoViewModel_RequestPythonEngineChangeNotice(object sender, CancelEventArgs e)
+        {
+            e.Cancel = ShowPythonEngineChangeNoticeAndMarkIfProceed();
+        }
+
+        private bool ShowPythonEngineChangeNoticeAndMarkIfProceed()
+        {
+            var ws = dynamoViewModel.Model.CurrentWorkspace;
+            if (!(ws is HomeWorkspaceModel) && !(string.IsNullOrEmpty(ws?.FileName)) && ws.HasShownCPythonNotification) return false;
+
+            bool dontShowAgain;
+
+            var result = DynamoMessageBox.ShowWithCheckbox(
+                owner: this,
+                messageBoxText: Res.CPython3EngineNotificationMessageBoxText,
+                caption: Res.CPython3EngineNotificationMessageBoxHeader,
+                button: MessageBoxButton.YesNo,
+                buttonNames: new[] { Res.GenericTaskDialogOptionOK, Res.LearnMore },
+                icon: MessageBoxImage.Information,
+                checkboxText: Res.MessageBoxDontShowAgainLabel,
+                isChecked: out dontShowAgain);
+
+            // Update preference to not show again if checked
+            dynamoViewModel.Model.PreferenceSettings.HideCPython3Notifications = dontShowAgain;
+
+            // First button (Yes) is "OK"
+            if (result == MessageBoxResult.Yes)
+            {
+                ws.HasShownCPythonNotification = true;
+                return false;
+            }
+            // Second button (No) is "Learn more"
+            else if (result == MessageBoxResult.No)
+            {
+                Process.Start(new ProcessStartInfo(Res.CPython3EngineUpgradeLearnMoreUri) { UseShellExecute = true });
+                return true;
+            }
+            return false;
         }
 
         private void Selection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
