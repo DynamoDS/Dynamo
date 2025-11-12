@@ -521,6 +521,8 @@ namespace Dynamo.PythonMigration
                     LoadedParams.StartupParams.PathManager.BackupDirectory);
 
                 saveBackup = true;
+
+                CurrentWorkspace.ShowCPythonNotifications = !preferenceSettings.HideCPython3Notifications;
             }
         }
 
@@ -553,7 +555,6 @@ namespace Dynamo.PythonMigration
 
         private void TryShowPythonEngineUpgradeToast(int cpythonNodeCount, int customDefCount, string backupPath = "")
         {
-            CurrentWorkspace.ShowCPythonNotifications = true;
             ShowPythonEngineUpgradeToast(cpythonNodeCount, customDefCount, backupPath);
         }
 
