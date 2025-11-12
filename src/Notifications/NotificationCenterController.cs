@@ -315,7 +315,7 @@ namespace Dynamo.Notifications
             }
             else
             {
-                this.dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.NotificationCenterDisabledMsg);
+                this.dynamoViewModel.ToastManager.CreateRealTimeInfoWindow(Properties.Resources.NotificationCenterDisabledMsg);
             }
         }
 

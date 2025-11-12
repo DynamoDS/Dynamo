@@ -146,6 +146,7 @@ namespace Dynamo.PythonServices
         /// CPython Engine name
         /// </summary>
         internal static readonly string CPython3EngineName = "CPython3";
+        internal static readonly string PythonNet3EngineName = "PythonNet3";
 
         internal static readonly string PythonNodeNamespace = "PythonNodeModels.PythonNode";
 
@@ -163,6 +164,7 @@ namespace Dynamo.PythonServices
 
         internal static string IronPythonAssemblyName = "DSIronPython";
         internal static string CPythonAssemblyName = "DSCPython";
+        internal static string PythonNet3AssemblyName = "DSPythonNet3";
 
         internal static string IronPythonTypeName = IronPythonAssemblyName + "." + IronPythonEvaluatorClass;
         internal static string CPythonTypeName = CPythonAssemblyName + "." + CPythonEvaluatorClass;
@@ -183,31 +185,6 @@ namespace Dynamo.PythonServices
             dynCorePaths = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.GetFiles("*.dll", SearchOption.AllDirectories).Select(x => x.FullName);
 
             AvailableEngines = new ObservableCollection<PythonEngine>();
-
-            // We check only for the default python engine because it is the only one loaded by static references.
-            // Other engines can only be loaded through package manager
-            LoadDefaultPythonEngine(AppDomain.CurrentDomain.GetAssemblies().
-               FirstOrDefault(a => a != null && a.GetName().Name == CPythonAssemblyName));
-
-            AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler((object sender, AssemblyLoadEventArgs args) => LoadDefaultPythonEngine(args.LoadedAssembly));
-        }
-
-        internal void LoadDefaultPythonEngine(Assembly a)
-        {
-            if (a == null ||
-                a.GetName().Name != CPythonAssemblyName)
-            {
-                return;
-            }
-
-            try
-            {
-                LoadPythonEngine(a);
-            }
-            catch (Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine($"Failed to load {CPythonAssemblyName} with error: {e.Message}");
-            }
         }
 
         private PythonEngine GetEngine(string name)
@@ -703,8 +680,24 @@ namespace Dynamo.PythonServices
                 string statement = "";
                 var previousTries = 0;
 
-                if (name != "*" && (ScopeHasVariable(name) || ImportedTypes.ContainsKey(name)))
+                if (name != "*" && ImportedTypes.ContainsKey(name))
                 {
+                    continue;
+                }
+
+                // If already in scope, just track it without re-importing
+                if (name != "*" && ScopeHasVariable(name))
+                {
+                    try
+                    {
+                        string typeName = module == null ? memberName : String.Format("{0}.{1}", module, memberName);
+                        var type = Type.GetType(typeName);
+                        ImportedTypes.Add(name, type);
+                    }
+                    catch(Exception ex)
+                    {
+                        LogError(ex.ToString());
+                    }
                     continue;
                 }
 

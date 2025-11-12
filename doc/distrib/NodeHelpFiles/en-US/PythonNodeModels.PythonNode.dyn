@@ -49,8 +49,8 @@
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "Code": "import clr\nclr.AddReference('ProtoGeometry')\nfrom Autodesk.DesignScript.Geometry import *\nfrom System.Reflection import *\nimport System\nfrom System import Array\nfrom System.Collections.Generic import *\n\n#The inputs to this node will be stored as a list in the IN variables.\nsolid = IN[0]\nseed = IN[1]\nxCount = IN[2]\nyCount = IN[3]\n\nsolids = []\ncrvs = []\n\nedges = solid.Edges\nfor edge in edges:\n\tcrvs.append(edge.CurveGeometry)\n\t\nbbox = BoundingBox.ByGeometry(crvs)\nyDist = bbox.MaxPoint.Y-bbox.MinPoint.Y\nxDist = bbox.MaxPoint.X-bbox.MinPoint.X\n\nxRange = list(range(xCount))\nyRange = list(range(yCount))\n\nfromCoord = solid.ContextCoordinateSystem\n \n#Loop through X and Y\nfor i in xRange:\n\tfor j in yRange:\n\t\t#Rotate and translate the coordinate system\n\t\ttoCoord = fromCoord.Rotate(solid.ContextCoordinateSystem.Origin,Vector.ByCoordinates(0,0,1),(90*(i+j%seed)))\n\t\t#Creating an Array type in .NET\n\t\tarrayObj = Array[System.Object]\n\t\t#Instantiating an object of that type with Length 1 \n\t\tarray1 = arrayObj.CreateInstance(System.Object, 1)\n\t\t#Creating our Vector to put into the array\n\t\tvec = Vector.ByCoordinates((xDist*i),(yDist*j),0)\n\t\t#Adding our vector to the array at index zero\n\t\tarray1[0] = vec\n\t\t#Letting .NET figure out what function to call instead of PythonNET - Note: Problems exist today in PythonNET 2\n\t\ttoCoord = toCoord.GetType().InvokeMember(\"Translate\", BindingFlags.InvokeMethod, None, toCoord, array1)\n\t\t#Transform the solid from the source coordinate system to the target coordinate system and append to the list\n\t\tsolids.append(solid.Transform(fromCoord,toCoord))\n\n\n#Assign your output to the OUT variable.\nOUT = solids\n",
-      "Engine": "CPython3",
-      "EngineName": "CPython3",
+      "Engine": "PythonNet3",
+      "EngineName": "PythonNet3",
       "VariableInputPorts": true,
       "Id": "42d5ff37f86e44f4bad38cc80a511874",
       "NodeType": "PythonScriptNode",

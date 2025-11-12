@@ -41,7 +41,7 @@ namespace DynamoCoreWpfTests.PackageManager
         {
 
             Assert.That(Model.ExtensionManager.Extensions.Select(x => x.Name),
-                Is.EquivalentTo(new List<string> { "DynamoPackageManager", "DynamoMLDataPipelineExtension", "testExtension" }));
+                Is.EquivalentTo(new List<string> { "DynamoPackageManager", "DynamoMLDataPipelineExtension", "testExtension", "DSPythonNet3Extension" }));
         }
         [Test]
         public void PackageManagerLoadsExtensionAndItWorks()
