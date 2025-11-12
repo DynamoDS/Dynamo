@@ -868,45 +868,6 @@
       "Description": "Extrudes a Curve in the specified direction, by the length of the input Vector. Curve must be closed.\n\nCurve.ExtrudeAsSolid (direction: Vector = Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1)): Solid"
     },
     {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "e341efd416d041d4a14a4e998501da4f",
-      "NodeType": "FunctionNode",
-      "Inputs": [
-        {
-          "Id": "d3323e841f184989aa64977d1dd95d9b",
-          "Name": "curves",
-          "Description": "Curves to join into polycurve\n\nCurve[]",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "5f5c792ce9dc435bb42e5b62a98f5b1b",
-          "Name": "joinTolerance",
-          "Description": "Tolerance to determine size of gap allowed between curves to be joined\n\ndouble\nDefault value : 0.001",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "683b2513e05842c993025eb1da193775",
-          "Name": "PolyCurve",
-          "Description": "Polycurve created by joined curves",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves@Autodesk.DesignScript.Geometry.Curve[],double",
-      "Replication": "Auto",
-      "Description": "Make PolyCurve by joining curves. Flips curve as needed for connectivity. Choose a preferred join tolerance between 1e-6 and 1e-3 units.\n\nPolyCurve.ByJoinedCurves (curves: Curve[], joinTolerance: double = 0.001): PolyCurve"
-    },
-    {
       "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
       "VariableInputPorts": true,
       "Id": "904b0ecf896442aeb7e967d5ad6b10da",
@@ -1100,6 +1061,63 @@
       "FunctionSignature": "DSCore.List.Flatten@var[]..[],int",
       "Replication": "Auto",
       "Description": "Flattens a nested list of lists by a certain amount.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "fc460b5104b141959c2cd7531f201e1d",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "5bda77e139974a7089727d63aa5ae07f",
+          "Name": "curves",
+          "Description": "Curves to join into polycurve\n\nCurve[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4aefcd3cd9fe4eed8d1e6a1be083aa1e",
+          "Name": "joinTolerance",
+          "Description": "Tolerance to determine size of gap allowed between curves to be joined\n\ndouble\nDefault value : 0.001",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "518db6206113476e85d9be09053b2a8a",
+          "Name": "trimCurves",
+          "Description": "bool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7f0c2f0997c14c33b82435c52f8c0536",
+          "Name": "trimLength",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e0aacc3f64914f29a3a02361473a2784",
+          "Name": "PolyCurve",
+          "Description": "Polycurve created by joined curves",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves@Autodesk.DesignScript.Geometry.Curve[],double,bool,double",
+      "Replication": "Auto",
+      "Description": "Make PolyCurve by joining curves. Flips curve as needed for connectivity. Choose a preferred join tolerance between 1e-6 and 1e-3 units.\n\nPolyCurve.ByJoinedCurves (curves: Curve[], joinTolerance: double = 0.001, trimCurves: bool = false, trimLength: double = 0): PolyCurve"
     }
   ],
   "Connectors": [
@@ -1326,15 +1344,9 @@
       "IsHidden": "False"
     },
     {
-      "Start": "683b2513e05842c993025eb1da193775",
-      "End": "4a3d3fe68cb547e4a1465542eb085ba4",
-      "Id": "d5aa7aa6ef82457da7eaff938a59ad16",
-      "IsHidden": "False"
-    },
-    {
       "Start": "beb27f9b5d2c484dabc5b1f8b8430724",
-      "End": "d3323e841f184989aa64977d1dd95d9b",
-      "Id": "8dc488a27fae42d1ac7a1e8b654062e6",
+      "End": "5bda77e139974a7089727d63aa5ae07f",
+      "Id": "1959f78f9b4b4528b0c8a043f5618576",
       "IsHidden": "False"
     },
     {
@@ -1353,6 +1365,12 @@
       "Start": "29cdb3a63a2a441189abc44b2f5a562f",
       "End": "66853b9cdf8e4ea29b608b1635c70a40",
       "Id": "a479bf2903a44ab7a5f0c37a67958c39",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e0aacc3f64914f29a3a02361473a2784",
+      "End": "4a3d3fe68cb547e4a1465542eb085ba4",
+      "Id": "2a7fbdc9144147b0887c5ad7bae74835",
       "IsHidden": "False"
     }
   ],
@@ -1611,16 +1629,6 @@
         "Y": 1129.587053292059
       },
       {
-        "Id": "e341efd416d041d4a14a4e998501da4f",
-        "Name": "PolyCurve.ByJoinedCurves",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": false,
-        "X": 1484.52164849185,
-        "Y": 1409.22991731399
-      },
-      {
         "Id": "904b0ecf896442aeb7e967d5ad6b10da",
         "Name": "List.Create",
         "IsSetAsInput": false,
@@ -1669,11 +1677,21 @@
         "ShowGeometry": false,
         "X": 2562.9472951887888,
         "Y": 1097.0169146264984
+      },
+      {
+        "Id": "fc460b5104b141959c2cd7531f201e1d",
+        "Name": "PolyCurve.ByJoinedCurves",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1520.0181136877527,
+        "Y": 1402.1411309815967
       }
     ],
     "Annotations": [],
-    "X": -1023.6115762583695,
-    "Y": -373.7018789238887,
+    "X": -619.2115762583696,
+    "Y": -482.5018789238887,
     "Zoom": 0.7118412382818751
   }
 }

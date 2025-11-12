@@ -267,10 +267,10 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(14, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-            Assert.AreEqual(17, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(15, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(19, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
-            var curves = "0503d40e-812b-47ae-8198-d4ed0ee91c91";
+            var curves = "da51f880-f22e-409b-82e8-545ae5caad6a";
             AssertPreviewCount(curves, 41);
 
             // output will be 41 Curves, so putting verification 
