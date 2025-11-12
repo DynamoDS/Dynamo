@@ -358,9 +358,9 @@ namespace Dynamo.Wpf.Views
             }
         }
 
-        private void ReloadCPython_Click(object sender, RoutedEventArgs e)
+        private void ReloadPythonNet3_Click(object sender, RoutedEventArgs e)
         {
-            dynViewModel.Model.OnRequestPythonReset(PythonServices.PythonEngineManager.CPython3EngineName);
+            dynViewModel.Model.OnRequestPythonReset(PythonServices.PythonEngineManager.PythonNet3EngineName);
         }
 
         private void InstalledPackagesExpander_OnExpanded(object sender, RoutedEventArgs e)
@@ -640,7 +640,7 @@ namespace Dynamo.Wpf.Views
         {
             if (!viewModel.IsMLAutocompleteTOUApproved)
             {
-                dynViewModel.MainGuideManager.CreateRealTimeInfoWindow(Res.NotificationToAgreeMLNodeautocompleteTOU);
+                dynViewModel.ToastManager.CreateRealTimeInfoWindow(Res.NotificationToAgreeMLNodeautocompleteTOU);
                 // Reset back to object type recommendations
                 RecommendedNodesRadioButton.IsChecked = false;
                 ObjectTypeRadioButton.IsChecked = true;

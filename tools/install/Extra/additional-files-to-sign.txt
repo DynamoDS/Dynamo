@@ -8,9 +8,9 @@ Analytics.Net.ADP.dll
 Analytics.NET.Core.dll
 ProtoGeometry.customization.dll
 .\en-US\ProtoGeometry.resources.dll
-Python.Included.dll
-Python.Included.SciPy.dll
-Python.Runtime.dll
+.\Built-In Packages\packages\PythonNet3Engine\extra\Python.Included.dll
+.\Built-In Packages\packages\PythonNet3Engine\extra\Python.Deployment.dll
+.\Built-In Packages\packages\PythonNet3Engine\extra\Python.Runtime.dll
 Dynamo.Microsoft.Xaml.Behaviors.dll
 ## DynamoServices.dll is multi-targeted, we sign the binaries for the nuget package separately.
 ..\..\NodeServices\obj\netstandard2.0\DynamoServices.dll
