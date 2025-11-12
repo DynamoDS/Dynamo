@@ -72,7 +72,7 @@
     <oldName>Autodesk.DesignScript.Geometry.Curve.ParameterTrimSegments</oldName>
     <newName>Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter</newName>
   </priorNameHint>
-    <priorNameHint>
+  <priorNameHint>
     <oldName>Autodesk.DesignScript.Geometry.Surface.ByLoft@Autodesk.DesignScript.Geometry.Curve[],Autodesk.DesignScript.Geometry.Curve</oldName>
     <newName>Autodesk.DesignScript.Geometry.Surface.ByLoft@Autodesk.DesignScript.Geometry.Curve[],Autodesk.DesignScript.Geometry.Curve[]</newName>
   </priorNameHint>
@@ -87,5 +87,17 @@
   <priorNameHint>
     <oldName>Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.Unweld@Autodesk.DesignScript.Geometry.TSpline.TSplineVertex[]</oldName>
     <newName>Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.UnweldVertices@Autodesk.DesignScript.Geometry.TSpline.TSplineVertex[]</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch@Autodesk.DesignScript.Geometry.TSpline.TSplineEdge[],Autodesk.DesignScript.Geometry.Curve[],int,bool,bool,int,double,bool,double,double,double,bool</oldName>
+    <newName>Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch@Autodesk.DesignScript.Geometry.TSpline.TSplineEdge[],Autodesk.DesignScript.Geometry.Curve[],int,bool,bool,int,double,bool,double,double,bool</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch@Autodesk.DesignScript.Geometry.TSpline.TSplineEdge[],Autodesk.DesignScript.Geometry.Edge[],int,bool,bool,int,double,bool,double,double,double,bool</oldName>
+    <newName>Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch@Autodesk.DesignScript.Geometry.TSpline.TSplineEdge[],Autodesk.DesignScript.Geometry.Edge[],int,bool,bool,int,double,bool,double,double,bool</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes@Autodesk.DesignScript.Geometry.Curve[],double,double,int[],double[],double[],double[],bool</oldName>
+    <newName>Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes@Autodesk.DesignScript.Geometry.Curve[],double,double,int[],bool,bool,double[],double[],double[],double[],double[],double[],bool</newName>
   </priorNameHint>
 </migrations>
