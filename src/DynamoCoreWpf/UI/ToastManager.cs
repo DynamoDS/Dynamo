@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Views.GuidedTour;
+using System.Windows.Threading;
 
 namespace Dynamo.Wpf.UI
 {
@@ -14,9 +15,11 @@ namespace Dynamo.Wpf.UI
         private const double VerticalOffset = 10;
         //The HorizontalOffset is used to move horizontally the popup (using as a reference the statusBarPanel position)
         private const double HorizontalOffset = 110;
+        internal const int AutoCloseSeconds = 3;
 
         private RealTimeInfoWindow toastPopup;
         private UIElement mainRootElement;
+        private DispatcherTimer closeTimer;
 
         public ToastManager(UIElement rootElement)
         {
@@ -48,8 +51,9 @@ namespace Dynamo.Wpf.UI
 
             // When popup already exist, replace it
             CloseRealTimeInfoWindow();
-            // Otherwise creates the RealTimeInfoWindow popup and set up all the needed values
-            // to show the popup over the Dynamo workspace
+            StopAutoCloseTimer();
+
+            // Create the popup
             toastPopup = new RealTimeInfoWindow()
             {
                 VerticalOffset = VerticalOffset,
@@ -67,6 +71,7 @@ namespace Dynamo.Wpf.UI
             if (hostUIElement != null)
                 toastPopup.PlacementTarget = hostUIElement;
             toastPopup.IsOpen = true;
+            StartAutoCloseTimer(AutoCloseSeconds);
         }
 
         /// <summary>
@@ -74,6 +79,8 @@ namespace Dynamo.Wpf.UI
         /// </summary>
         public void CloseRealTimeInfoWindow()
         {
+            StopAutoCloseTimer();
+
             if (toastPopup != null && toastPopup.IsOpen)
             {
                 toastPopup.IsOpen = false;
@@ -99,6 +106,28 @@ namespace Dynamo.Wpf.UI
             {
                 return toastPopup != null && toastPopup.IsOpen;
             }
+        }
+
+        private void AutoCloseTimer_Tick(object sender, EventArgs e)
+        {
+            CloseRealTimeInfoWindow();
+        }
+
+        private void StartAutoCloseTimer(int seconds)
+        {
+            if (seconds <= 0) return;
+            StopAutoCloseTimer();
+            closeTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(seconds) };
+            closeTimer.Tick += AutoCloseTimer_Tick;
+            closeTimer.Start();
+        }
+
+        private void StopAutoCloseTimer()
+        {
+            if (closeTimer == null) return;
+            closeTimer.Stop();
+            closeTimer.Tick -= AutoCloseTimer_Tick;
+            closeTimer = null;
         }
     }
 }
