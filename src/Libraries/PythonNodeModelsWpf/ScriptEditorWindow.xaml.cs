@@ -186,6 +186,7 @@ namespace PythonNodeModelsWpf
             NodeModel.PropertyChanged += OnNodeModelPropertyChanged;
 
             UpdatePythonUpgradeBar();
+            UpdateMigrationAssistantButtonEnabled();
         }
 
         private void UpdatePythonUpgradeBar()
