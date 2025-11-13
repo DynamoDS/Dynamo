@@ -9,7 +9,7 @@ function createNpmrcFile {
         [Parameter(Mandatory = $true)][string]$registry
     )
     Write-Host "Creating .npmrc file with registry=$registry" -ForegroundColor Blue
-    New-Item -Path . -Name ".npmrc" -ItemType "file" -Value "registry=$registry" -Force
+    New-Item -Path . -Name .npmrc -ItemType File -Value "registry=$registry`n" -Force
 }
 
 try {
@@ -19,6 +19,7 @@ try {
     if ($response.StatusCode -eq 200) {
         Write-Host "adsk npm registry is reachable" -ForegroundColor Green
         createNpmrcFile -registry $adskNpmRegistry
+        Write-Output "//npm.autodesk.com/artifactory/api/npm/:_authToken=\`${NPM_TOKEN}" | Out-File -Append -FilePath .npmrc
     }
     else {
         Write-Host "adsk npm registry is not reachable" -ForegroundColor Red
