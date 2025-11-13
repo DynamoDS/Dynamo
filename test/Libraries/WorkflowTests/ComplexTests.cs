@@ -973,8 +973,8 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             //check the number of nodes and connectors
-            Assert.AreEqual(40, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(25, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(42, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(27, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //check Cylinder.ByPointsRadius
             var lineID = "c8aaaf1b-975a-4075-99e0-fb0092a232fb";
@@ -988,7 +988,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(cbnValue.ToString(), "Point(X = 10.000, Y = -19.972, Z = 33.511)");
             
             // check Solid.UnionAll
-            var solidId = "0150d478-21a8-472d-a444-6976a3f1079b";
+            var solidId = "168a4baa-5708-49e4-af30-baf1a73261b8";
             var solidValue = GetPreviewValue(solidId) as Solid;
             Assert.IsNotNull(solidValue);
             Assert.AreEqual(solidValue.ToString(), "Solid");
