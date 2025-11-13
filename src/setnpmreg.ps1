@@ -19,7 +19,7 @@ try {
     if ($response.StatusCode -eq 200) {
         Write-Host "adsk npm registry is reachable" -ForegroundColor Green
         createNpmrcFile -registry $adskNpmRegistry
-        Write-Output "//npm.autodesk.com/artifactory/api/npm/:_authToken=\`${NPM_TOKEN}" | Out-File -Append -FilePath .npmrc
+        Write-Output "//npm.autodesk.com/artifactory/api/npm/:_authToken=`${NPM_TOKEN}" | Out-File -Append -FilePath .npmrc
     }
     else {
         Write-Host "adsk npm registry is not reachable" -ForegroundColor Red
