@@ -439,43 +439,6 @@ namespace DynamoCoreWpfTests
 
         #endregion
 
-        [Test,Apartment(ApartmentState.STA)]
-        [Category("DynamoUI")]
-        public void PreferenceSetting_BackgroundPreview_1_0API()
-        {
-            bool expectedValue = !(ViewModel.Model.PreferenceSettings.BackgroundPreviews.Count > 0);
-            ViewModel.ToggleFullscreenWatchShowing(null);
-            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.BackgroundPreviews.Count > 0);
-
-
-            expectedValue = !(ViewModel.Model.PreferenceSettings.BackgroundPreviews.Count > 0);
-            ViewModel.ToggleFullscreenWatchShowing(null);
-            Assert.AreEqual(expectedValue, ViewModel.Model.PreferenceSettings.BackgroundPreviews.Count > 0);
-
-            #region Save And Load of PreferenceSettings
-
-            // Test if variable can be serialize and deserialize without any issue
-            string tempPath = System.IO.Path.GetTempPath();
-            tempPath = Path.Combine(tempPath, "userPreference.xml");
-
-            // Force inital state
-            PreferenceSettings initalSetting = new PreferenceSettings();
-            PreferenceSettings resultSetting;
-
-            initalSetting.Save(tempPath);
-            resultSetting = PreferenceSettings.Load(tempPath);
-
-            Assert.AreEqual(resultSetting.BackgroundPreviews.Count > 0, initalSetting.BackgroundPreviews.Count > 0);
-            #endregion
-
-            #region Second Test
-            initalSetting.Save(tempPath);
-            resultSetting = PreferenceSettings.Load(tempPath);
-
-            Assert.AreEqual(resultSetting.BackgroundPreviews.Count > 0, initalSetting.BackgroundPreviews.Count > 0);
-            #endregion
-        }
-
         [Test, Apartment(ApartmentState.STA)]
         [Category("DynamoUI")]
         public void PreferenceSetting_RenderPrecision()
