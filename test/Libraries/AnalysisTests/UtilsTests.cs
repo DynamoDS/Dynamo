@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Analysis;
 using Autodesk.DesignScript.Geometry;
@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace AnalysisTests
 {
     [TestFixture]
-    class UtilsTests
+    class UtilsTests : TestServices.GeometricTestBase
     {
         
         /// <summary>
