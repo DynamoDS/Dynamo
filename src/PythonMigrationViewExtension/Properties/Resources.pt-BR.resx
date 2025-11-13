@@ -221,4 +221,16 @@ Ao clicar em “Continuar”, você está concordando em implementar as alteraç
   <data name="SwitchViewButton" xml:space="preserve">
     <value>Alternar vista</value>
   </data>
+  <data name="CPython3NotificationDetailedMessage" xml:space="preserve">
+    <value>Esse gráfico atualmente contém nós Python que estão usando o antigo mecanismo CPython, que se tornou obsoleto. Considere atualizar esses nós para usar o novo mecanismo PythonNet3.</value>
+  </data>
+  <data name="CPython3NotificationShortMessage" xml:space="preserve">
+    <value>Esse gráfico atualmente contém nós que estão usando o antigo mecanismo CPython3, que se tornou obsoleto. Um novo PythonNet3 foi implementado e está acessível no editor Python.</value>
+  </data>
+  <data name="CPythonUpgradeToastMessagePlural" xml:space="preserve">
+    <value>{0} nós CPython foram convertidos automaticamente em PythonNet3 para serem executados no Dynamo 4.0. O CPython não é mais suportado.</value>
+  </data>
+  <data name="CPythonUpgradeToastMessageSingular" xml:space="preserve">
+    <value>1 nó CPython foi convertido automaticamente em PythonNet3 para ser executado no Dynamo 4.0. O CPython não é mais suportado.</value>
+  </data>
 </root>

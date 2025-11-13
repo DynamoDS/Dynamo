@@ -221,4 +221,16 @@ En cliquant sur "Continuer", vous acceptez d'appliquer les modifications de synt
   <data name="SwitchViewButton" xml:space="preserve">
     <value>Changer de vue</value>
   </data>
+  <data name="CPython3NotificationDetailedMessage" xml:space="preserve">
+    <value>Ce graphique contient actuellement des noeuds Python qui utilisent l'ancien moteur CPython, désormais obsolète. Envisagez de mettre à jour ces noeuds de sorte à utiliser le nouveau moteur PythonNet3.</value>
+  </data>
+  <data name="CPython3NotificationShortMessage" xml:space="preserve">
+    <value>Ce graphique contient actuellement des nœuds qui utilisent l'ancien moteur CPython3, désormais obsolète. Un nouveau PythonNet3 a été implémenté et est accessible à l'intérieur de l'éditeur Python.</value>
+  </data>
+  <data name="CPythonUpgradeToastMessagePlural" xml:space="preserve">
+    <value>{0} noeuds CPython ont été automatiquement convertis à PythonNet3 pour s'exécuter dans Dynamo 4.0. CPython n'est plus pris en charge.</value>
+  </data>
+  <data name="CPythonUpgradeToastMessageSingular" xml:space="preserve">
+    <value>1 noeud CPython a été automatiquement converti à PythonNet3 pour s'exécuter dans Dynamo 4.0. CPython n'est plus pris en charge.</value>
+  </data>
 </root>

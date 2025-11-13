@@ -221,4 +221,16 @@ Durch Klicken auf Weiter erklären Sie sich damit einverstanden, die Syntaxände
   <data name="SwitchViewButton" xml:space="preserve">
     <value>Ansicht wechseln</value>
   </data>
+  <data name="CPython3NotificationDetailedMessage" xml:space="preserve">
+    <value>Dieses Diagramm enthält aktuell Python-Blöcke, die die alte CPython-Engine verwenden, die nicht mehr unterstützt wird. Aktualisieren Sie diese Blöcke, um die neue PythonNet3-Engine zu verwenden.</value>
+  </data>
+  <data name="CPython3NotificationShortMessage" xml:space="preserve">
+    <value>Dieses Diagramm enthält aktuell Blöcke, die die alte CPython3-Engine verwenden, die nicht mehr unterstützt wird. Ein neues PythonNet3 wurde implementiert und ist im Python-Editor verfügbar.</value>
+  </data>
+  <data name="CPythonUpgradeToastMessagePlural" xml:space="preserve">
+    <value>{0} CPython-Blöcke wurden automatisch in PythonNet3 konvertiert, um in Dynamo 4.0 ausgeführt zu werden. CPython wird nicht mehr unterstützt.</value>
+  </data>
+  <data name="CPythonUpgradeToastMessageSingular" xml:space="preserve">
+    <value>1 CPython-Block wurde automatisch in PythonNet3 konvertiert, um in Dynamo 4.0 ausgeführt zu werden. CPython wird nicht mehr unterstützt.</value>
+  </data>
 </root>

@@ -221,4 +221,16 @@ Kliknutím na tlačítko Pokračovat souhlasíte s implementací změn syntaxe z
   <data name="SwitchViewButton" xml:space="preserve">
     <value>Přepnout pohled</value>
   </data>
+  <data name="CPython3NotificationDetailedMessage" xml:space="preserve">
+    <value>Tento graf aktuálně obsahuje uzly jazyka Python, které používají starý vyřazený modul CPython. Zvažte aktualizaci těchto uzlů tak, aby používaly nový modul PythonNet3.</value>
+  </data>
+  <data name="CPython3NotificationShortMessage" xml:space="preserve">
+    <value>Tento graf aktuálně obsahuje uzly, které používají starý vyřazený modul CPython3. Byl implementován nový skript PythonNet3, který je přístupný v editoru jazyka Python.</value>
+  </data>
+  <data name="CPythonUpgradeToastMessagePlural" xml:space="preserve">
+    <value>{0} uzlů CPython bylo automaticky převedeno na PythonNet3, aby je bylo možné spustit ve verzi Dynamo 4.0. CPython již není podporován.</value>
+  </data>
+  <data name="CPythonUpgradeToastMessageSingular" xml:space="preserve">
+    <value>1 uzel CPython byl automaticky převeden na PythonNet3, aby jej bylo možné spustit v aplikaci Dynamo 4.0. CPython již není podporován.</value>
+  </data>
 </root>

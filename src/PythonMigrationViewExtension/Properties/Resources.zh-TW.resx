@@ -221,4 +221,16 @@
   <data name="SwitchViewButton" xml:space="preserve">
     <value>切換視圖</value>
   </data>
+  <data name="CPython3NotificationDetailedMessage" xml:space="preserve">
+    <value>此圖表目前包含的 Python 節點使用已棄用的舊版 CPython 引擎。請考慮更新這些節點，以使用新的 PythonNet3 引擎。</value>
+  </data>
+  <data name="CPython3NotificationShortMessage" xml:space="preserve">
+    <value>此圖表目前包含的節點使用已棄用的舊版 CPython3 引擎。我們已導入新的 PythonNet3，您可以在 Python 編輯器中存取。</value>
+  </data>
+  <data name="CPythonUpgradeToastMessagePlural" xml:space="preserve">
+    <value>{0} 個 CPython 節點已自動轉換為 PythonNet3 才能在 Dynamo 4.0 中執行。不再支援 CPython。</value>
+  </data>
+  <data name="CPythonUpgradeToastMessageSingular" xml:space="preserve">
+    <value>1 個 CPython 節點已自動轉換為 PythonNet3 才能在 Dynamo 4.0 中執行。不再支援 CPython。</value>
+  </data>
 </root>
