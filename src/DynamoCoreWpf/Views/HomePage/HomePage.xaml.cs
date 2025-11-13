@@ -170,9 +170,20 @@ namespace Dynamo.UI.Views
                 this.dynWebView.CoreWebView2.Settings.AreDevToolsEnabled = true;
                 this.dynWebView.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
 
-                // Load the embedded resources
                 var assembly = Assembly.GetExecutingAssembly();
+                var assemblyName = assembly.GetName().Name;
 
+                // Set up Referer header for YouTube requests to fix Error 153
+                // According to YouTube API terms, embedded players must provide identification via HTTP Referer
+                // See: https://developers.google.com/youtube/terms/required-minimum-functionality#embedded-player-api-client-identity
+                // Use a valid HTTPS URL as required by YouTube API terms.
+                // See: https://developers.google.com/youtube/terms/required-minimum-functionality#embedded-player-api-client-identity
+                // Using the official Dynamo website as the referer domain.
+                // Filter for YouTube requests and add Referer header
+                this.dynWebView.CoreWebView2.AddWebResourceRequestedFilter("*youtube.com*", CoreWebView2WebResourceContext.All);
+                this.dynWebView.CoreWebView2.WebResourceRequested += CoreWebView2_WebResourceRequested;
+
+                // Load the embedded resources
                 htmlString = PathHelper.LoadEmbeddedResourceAsString(htmlEmbeddedFile, assembly);
                 jsonString = PathHelper.LoadEmbeddedResourceAsString(jsEmbeddedFile, assembly);
 
@@ -218,6 +229,15 @@ namespace Dynamo.UI.Views
         {
             e.Handled = true;
             ProcessUri(e.Uri);
+        }
+
+        private void CoreWebView2_WebResourceRequested(object sender, CoreWebView2WebResourceRequestedEventArgs args)
+        {
+            var uri = args.Request.Uri;
+            // Set the Referer header as required by YouTube API terms
+            // Using the official Dynamo website as the referer domain.
+            var refererUrl = "https://dynamobim.org";
+            args.Request.Headers.SetHeader("Referer", refererUrl);
         }
 
         internal bool ProcessUri(string uri)
@@ -711,6 +731,7 @@ namespace Dynamo.UI.Views
                     if (this.dynWebView != null && this.dynWebView.CoreWebView2 != null)
                     {
                         this.dynWebView.CoreWebView2.NewWindowRequested -= CoreWebView2_NewWindowRequested;
+                        this.dynWebView.CoreWebView2.WebResourceRequested -= CoreWebView2_WebResourceRequested;
                     }
 
                     // Delete font file if it exists
