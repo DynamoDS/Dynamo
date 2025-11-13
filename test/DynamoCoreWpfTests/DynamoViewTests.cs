@@ -18,6 +18,7 @@ using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views;
 using NUnit.Framework;
 using DynamoMLDataPipeline;
+using Dynamo.Wpf.UI;
 
 
 namespace DynamoCoreWpfTests
@@ -230,6 +231,34 @@ namespace DynamoCoreWpfTests
             ViewModel.CloseHomeWorkspaceCommand.Execute(null);
 
             Assert.IsTrue(ViewModel.MLDataPipelineExtension.DynamoMLDataPipeline.isWorkspaceSharedWithML);
+        }
+
+        [Test]
+        public void TestToastAutoCloses()
+        {
+            // Create a toast
+            ViewModel.UIDispatcher.Invoke(() =>
+            {
+                ViewModel.ToastManager.CreateRealTimeInfoWindow(
+                    content: "Test sticky toast",
+                    stayOpen: true);
+            });
+
+            // It should be visible immediately
+            Assert.IsTrue(ViewModel.ToastManager.PopupIsVisible, "Toast should be visible right after showing.");
+
+            // Pump the dispatcher for a little longer than the set auto-close time
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            var waitTime = TimeSpan.FromSeconds(ToastManager.AutoCloseSeconds + 2);
+
+            while (sw.Elapsed < waitTime)
+            {
+                ViewModel.UIDispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.Background);
+                System.Threading.Thread.Sleep(10);
+            }
+
+            // Toast should have auto-closed
+            Assert.IsFalse(ViewModel.ToastManager.PopupIsVisible, "Toast should auto-close.");
         }
     }
 }
