@@ -95,51 +95,6 @@ namespace Dynamo.PythonMigration.Properties {
                 return ResourceManager.GetString("CPython3NotificationShortMessage", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to {0} CPython nodes have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported..
-        /// </summary>
-        public static string CPythonUpgradeToastMessagePlural {
-            get {
-                return ResourceManager.GetString("CPythonUpgradeToastMessagePlural", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to 1 CPython node has been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported..
-        /// </summary>
-        public static string CPythonUpgradeToastMessageSingular {
-            get {
-                return ResourceManager.GetString("CPythonUpgradeToastMessageSingular", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to and.
-        /// </summary>
-        public static string AndConjunction {
-            get {
-                return ResourceManager.GetString("AndConjunction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported..
-        /// </summary>
-        public static string CombinedUpgradeToastSuffix {
-            get {
-                return ResourceManager.GetString("CombinedUpgradeToastSuffix", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to CPython.
-        /// </summary>
-        public static string CPythonMigrationBackupExtension {
-            get {
-                return ResourceManager.GetString("CPythonMigrationBackupExtension", resourceCulture);
-            }
-        }
         
         /// <summary>
         ///   Looks up a localized string similar to Before updating, a backup file has been saved .
