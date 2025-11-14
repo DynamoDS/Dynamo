@@ -64,6 +64,23 @@ namespace Dynamo.Models.Migration.Python
         }
 
         /// <summary>
+        /// Attempts to retrieve the custom node workspace associated with the specified function identifier from the
+        /// given Dynamo model.
+        /// </summary/>
+        internal ICustomNodeWorkspaceModel TryGetFunctionWorkspace(DynamoModel dynamoModel, Guid guid)
+        {
+            ICustomNodeWorkspaceModel ws;
+            var cnm = dynamoModel?.CustomNodeManager;
+
+            if (cnm != null && cnm.TryGetFunctionWorkspace(guid, DynamoModel.IsTestMode, out ws))
+            {
+                return ws;
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Scan the workspace for python usage (direct) and one level of custom nodes.
         /// </summary>
         public Usage DetectPythonUsage(WorkspaceModel workspace, Func<NodeModel, bool> isPythonNode)
@@ -261,14 +278,8 @@ namespace Dynamo.Models.Migration.Python
         {
             if (dynamoModel?.CustomNodeManager == null) return false;
 
-            CustomNodeWorkspaceModel ws;
-            if (dynamoModel.CustomNodeManager.TryGetFunctionWorkspace(defId, DynamoModel.IsTestMode, out ws) && ws != null)
-            {
-                return ws.Nodes?.Any(isPythonNode) == true;
-            }
-
-            return false;
+            var cws = this.TryGetFunctionWorkspace(dynamoModel, defId) as CustomNodeWorkspaceModel;
+            return cws?.Nodes != null && cws.Nodes.Any(isPythonNode) == true;
         }
-
     }
 }

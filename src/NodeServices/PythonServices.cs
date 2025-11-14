@@ -278,6 +278,19 @@ namespace Dynamo.PythonServices
                 mlc?.Dispose();
             }
         }
+
+        /// <summary>
+        /// Helper to check if a python engine with the given name is loaded
+        /// </summary>
+        internal bool HasEngine(string engineName)
+        {
+            if (string.IsNullOrEmpty(engineName) || AvailableEngines == null)
+            {
+                return false;
+            }
+
+            return AvailableEngines.Any(e => e != null && e.Name == engineName);
+        }
     }
 
     /// <summary>
