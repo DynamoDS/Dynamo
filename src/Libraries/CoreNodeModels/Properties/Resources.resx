@@ -548,6 +548,13 @@
   <data name="FilePathSearchTags" xml:space="preserve">
     <value>filepath;</value>
   </data>
+  <data name="TestSelectModelElementDescription" xml:space="preserve">
+    <value>Test node for selecting model elements (similar to Revit select element node)</value>
+    <comment>Description for Test Select Model Element</comment>
+  </data>
+  <data name="TestSelectModelElementSearchTags" xml:space="preserve">
+    <value>test;select;element;model;selection;</value>
+  </data>
   <data name="IntegerSliderSearchTags" xml:space="preserve">
     <value>integerslider;</value>
   </data>
