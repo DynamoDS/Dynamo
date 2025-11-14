@@ -127,8 +127,8 @@
     <value>サイドバイサイドとインラインのどちらかのビューで差分を表示します。</value>
   </data>
   <data name="IronPythonDialogDescription" xml:space="preserve">
-    <value>Dynamo のエンジンは、旧来の IronPython2 (Python 2)から新しい CPython3 (Python 3)に移行されました。
-IronPython エンジンも 1 つのパッケージとして Dynamo Package Manager から引き続きご利用いただけますが、サポートされるのは CPython3 のみとなります。</value>
+    <value>Dynamo has moved away from the old IronPython2 engine towards a new PythonNet3 engine. 
+The IronPython engine is still available as a package from the Dynamo package manager, but only the PythonNet3 engine will be supported.</value>
   </data>
   <data name="IronPythonDialogSummary" xml:space="preserve">
     <value>このグラフには、古い Python エンジンを参照するノードが含まれています。</value>
@@ -140,10 +140,10 @@ IronPython エンジンも 1 つのパッケージとして Dynamo Package Manag
     <value>次回からこのダイアログを表示しない</value>
   </data>
   <data name="IronPythonNotificationDetailedMessage" xml:space="preserve">
-    <value>現在このグラフには、廃止された旧式の IronPython エンジンを使用する Python ノードが含まれています。このノードを更新し、新しい CPython 3.7 エンジンを使用することをご検討ください。</value>
+    <value>This graph currently contains python nodes that are using the old IronPython Engine which has been deprecated. Consider updating these nodes to use the new PythonNet3 Engine.</value>
   </data>
   <data name="IronPythonNotificationShortMessage" xml:space="preserve">
-    <value>現在このグラフには、廃止された旧式の IronPython2 (Python 2)エンジンを使用したノードが含まれています。新しい CPython3 (Python 3)が実装されており、Python エディタ内で利用可能です。</value>
+    <value>This graph currently contains nodes that are using the old IronPython2 engine which has been deprecated. A new PythonNet3 has been implemented and is accessible inside the Python editor.</value>
   </data>
   <data name="MigrationAssistantDisclaimerContinueButtonContent" xml:space="preserve">
     <value>続行</value>
@@ -158,8 +158,8 @@ IronPython エンジンも 1 つのパッケージとして Dynamo Package Manag
     <value>Python コードを変更しようとしています</value>
   </data>
   <data name="MigrationAssistantDisclaimerMessage" xml:space="preserve">
-    <value>マイグレーション アシスタントを使用すると、Python 2 から Python 3 にスクリプトを更新できます。
-[続行]をクリックすると、マイグレーション アシスタントによって推奨されたソース コードへの構文変更の適用に同意したものとみなされます。マイグレーション アシスタントはオープン ソース Dynamo のコンポーネントであり、Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0)の条件の下でユーザにライセンスされます。Apache License 2.0、Dynamo、およびマイグレーション アシスタントは「現状有姿」で提供されます。</value>
+    <value>The Migration Assistant helps users to update scripts from IronPython2 to PythonNet3.
+By clicking “Continue”, you are agreeing to implement the syntax changes to your source code as suggested by the Migration Assistant. The Migration Assistant is a component of open source Dynamo, and as such it is licensed to you under the terms of the Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0 ). Under the terms of the Apache License 2.0, Dynamo and the Migration Assistant are provided to you on an “AS IS” basis.</value>
   </data>
   <data name="MigrationAssistantDisclaimerWindowTitle" xml:space="preserve">
     <value>マイグレーション アシスタントの免責条項</value>
@@ -168,7 +168,7 @@ IronPython エンジンも 1 つのパッケージとして Dynamo Package Manag
     <value>ここに表示するものはありません</value>
   </data>
   <data name="MigrationAssistantNoChangesStateMessage" xml:space="preserve">
-    <value>Python 3 エンジンを使用してコードを実行する準備が整いました。[適用]をクリックすると、Python 3 エンジンに切り替わります。</value>
+    <value>Your code is ready to run with the PythonNet3 engine. Click accept and we'll switch to the PythonNet3 engine for you.</value>
   </data>
   <data name="MigrationAssistantErrorStateHeader" xml:space="preserve">
     <value>コードの中にエラーがあります!</value>
@@ -220,5 +220,17 @@ IronPython エンジンも 1 つのパッケージとして Dynamo Package Manag
   </data>
   <data name="SwitchViewButton" xml:space="preserve">
     <value>ビューを切り替え</value>
+  </data>
+  <data name="CPython3NotificationDetailedMessage" xml:space="preserve">
+    <value>現在このグラフには、廃止された旧式の CPython エンジンを使用する Python ノードが含まれています。このノードを更新し、新しい PythonNet3 エンジンを使用することを検討してください。</value>
+  </data>
+  <data name="CPython3NotificationShortMessage" xml:space="preserve">
+    <value>現在このグラフには、廃止された旧式の CPython3 エンジンを使用するノードが含まれています。新しい PythonNet3 が実装されており、Python エディタ内で利用可能です。</value>
+  </data>
+  <data name="CPythonUpgradeToastMessagePlural" xml:space="preserve">
+    <value>{0} 個の CPython ノードは、Dynamo 4.0 で動作するように PythonNet3 に自動的に変換されています。CPython はサポートされなくなりました。</value>
+  </data>
+  <data name="CPythonUpgradeToastMessageSingular" xml:space="preserve">
+    <value>1 個の CPython ノードは、Dynamo 4.0 で動作するように PythonNet3 に自動的に変換されています。CPython はサポートされなくなりました。</value>
   </data>
 </root>

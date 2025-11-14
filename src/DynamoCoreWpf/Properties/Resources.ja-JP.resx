@@ -2283,11 +2283,11 @@ Dynamo を再起動してアンインストールを完了します。
   <data name="AddStyleButton" xml:space="preserve">
     <value>スタイルを追加</value>
   </data>
-  <data name="ResetCPythonButtonText" xml:space="preserve">
-    <value>CPython をリセット</value>
+  <data name="ResetPythonNet3ButtonText" xml:space="preserve">
+    <value>PythonNet3 をリセット</value>
   </data>
-  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
-    <value>モジュールを再ロードして CPython 環境をリセットします。</value>
+  <data name="ResetPythonNet3ButtonToolTip" xml:space="preserve">
+    <value>モジュールを再ロードして PythonNet3 環境をリセットします。</value>
   </data>
   <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
     <value>キャンセルして問題を表示</value>
@@ -3848,11 +3848,30 @@ Dynamo を再起動してアンインストールを完了します。
   <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
     <value>既定で未接続の出力ポートを非表示</value>
   </data>
+  <data name="PreferencesViewHidePythonEngineChangeNotifications" xml:space="preserve">
+    <value>Python エンジンの変更通知を非表示</value>
+  </data>
+  <data name="PreferencesViewHidePythonEngineChangeNotificationsTooltip" xml:space="preserve">
+    <value>CPython は Dynamo 4.0 以降ではサポートされなくなったため、新しい既定のエンジン PythonNet3 に変換されます。エンジンの変更に関するすべての通知を非表示にするには、スイッチを無効にします。</value>
+  </data>
+  <data name="MessageBoxDontShowAgainLabel" xml:space="preserve">
+    <value>今後この画面を表示しない</value>
+  </data>
+  <data name="CPython3EngineNotificationMessageBoxHeader" xml:space="preserve">
+    <value>Python エンジンの変更</value>
+  </data>
+  <data name="CPython3EngineNotificationMessageBoxText" xml:space="preserve">
+    <value>このグラフには、Dynamo 4.0 でサポートされなくなった CPython ノードが含まれています。保存すると、新しい既定のエンジンである PythonNet3 に変換されます。
+このグラフを Dynamo 3.3 ～ 3.6.x で開くには、Package Manager から PythonNet パッケージをインストールします。</value>
+  </data>
+  <data name="CPython3EngineUpgradeLearnMoreUri" xml:space="preserve">
+    <value>https://dynamobim.org/pythonnet3-a-new-dynamo-python-to-fix-everything/</value>
+  </data>
   <data name="OnlineStatusTooltip" xml:space="preserve">
-    <value>Connected to the internet.</value>
+    <value>インターネットに接続されています。</value>
   </data>
   <data name="OfflineStatusTooltip" xml:space="preserve">
-    <value>Not connected to the internet.</value>
+    <value>インターネットに接続されていません。</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
