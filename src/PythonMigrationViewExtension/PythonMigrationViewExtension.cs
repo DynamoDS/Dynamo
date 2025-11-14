@@ -238,7 +238,7 @@ namespace Dynamo.PythonMigration
                     {
                         upgradeService.TouchedCustomWorkspaces.Remove(workspace);
                         upgradeService.CustomToastShownDef.Remove(defId);
-                    }                    
+                    }
                 }
             }
         }
@@ -438,7 +438,7 @@ namespace Dynamo.PythonMigration
         #region Recompute Notifications        
 
         /// <summary>
-        /// Detects CPython3 usage in the current workspace, migratesthose nodes in memory
+        /// Detects CPython3 usage in the current workspace, migrates those nodes in memory
         /// to PythonNet3, updates CPython notification UI, and returns true if any nodes were upgraded.
         /// </summary>
         private bool MigrateCPythonNodesForWorkspace()
@@ -483,7 +483,7 @@ namespace Dynamo.PythonMigration
             {
                 var workspace = upgradeService.TryGetFunctionWorkspace(DynamoViewModel.Model, defId) as WorkspaceModel;
                 if (workspace != null)
-                {                    
+                {
                     var inner = upgradeService.DetectPythonUsage(workspace, IsCPythonNode);
 
                     if (inner.DirectPythonNodes.Any())

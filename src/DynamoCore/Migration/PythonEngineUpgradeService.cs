@@ -20,7 +20,7 @@ namespace Dynamo.Models.Migration.Python
         private readonly DynamoModel dynamoModel;
         private readonly IPathManager pathManager;
 
-        public PythonEngineUpgradeService( DynamoModel dynamoModel, IPathManager pathManager)
+        public PythonEngineUpgradeService(DynamoModel dynamoModel, IPathManager pathManager)
         {
             this.dynamoModel = dynamoModel;
             this.pathManager = pathManager;
@@ -66,7 +66,7 @@ namespace Dynamo.Models.Migration.Python
         /// <summary>
         /// Attempts to retrieve the custom node workspace associated with the specified function identifier from the
         /// given Dynamo model.
-        /// </summary/>
+        /// </summary>
         internal ICustomNodeWorkspaceModel TryGetFunctionWorkspace(DynamoModel dynamoModel, Guid guid)
         {
             ICustomNodeWorkspaceModel ws;
@@ -104,7 +104,7 @@ namespace Dynamo.Models.Migration.Python
                 }
             }
 
-            return new Usage( workspace, directNodes, customDefIds.ToList());
+            return new Usage(workspace, directNodes, customDefIds.ToList());
         }
 
         /// <summary>
