@@ -2876,10 +2876,10 @@ Dynamo.ViewModels.PreferencesViewModel.Filters.get -> System.Collections.ObjectM
 Dynamo.ViewModels.PreferencesViewModel.GroupStyleFontSizeList.get -> System.Collections.ObjectModel.ObservableCollection<int>
 Dynamo.ViewModels.PreferencesViewModel.GroupStyleFontSizeList.set -> void
 Dynamo.ViewModels.PreferencesViewModel.HideAutocompleteMethodOptions.get -> bool
-Dynamo.ViewModels.PreferencesViewModel.HideCPythonNotificationIsChecked.get -> bool
-Dynamo.ViewModels.PreferencesViewModel.HideCPythonNotificationIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.HideNodesBelowSpecificConfidenceLevelIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.HideNodesBelowSpecificConfidenceLevelIsChecked.set -> void
+Dynamo.ViewModels.PreferencesViewModel.HidePythonAutoMigrationNotificationIsChecked.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.HidePythonAutoMigrationNotificationIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.HostGenericScaleUnits.get -> string
 Dynamo.ViewModels.PreferencesViewModel.importSettings(string filePath) -> bool
 Dynamo.ViewModels.PreferencesViewModel.importSettingsContent(string content) -> bool

@@ -252,7 +252,7 @@ namespace Dynamo.PythonMigration
             SubscribeToWorkspaceEvents();
 
             // Fresh per-workspace notification state
-            CurrentWorkspace.HasShownCPythonNotification = false;
+            CurrentWorkspace.HasShownPythonAutoMigrationNotification = false;
 
             // Close any upgrade toast when switching tabs/workspaces.
             DynamoViewModel.ToastManager?.CloseRealTimeInfoWindow();
@@ -357,7 +357,7 @@ namespace Dynamo.PythonMigration
             upgradeService.CommitCustomNodeMigrationsOnSave(CurrentWorkspace);
 
             // Show the notification only once
-            CurrentWorkspace.HasShownCPythonNotification = true;
+            CurrentWorkspace.HasShownPythonAutoMigrationNotification = true;
         }
 
         private void SubscribeToDynamoEvents()
@@ -446,7 +446,7 @@ namespace Dynamo.PythonMigration
             {
                 if (PythonEngineManager.Instance.HasEngine(PythonEngineManager.PythonNet3EngineName))
                 {
-                    CurrentWorkspace.ShowCPythonNotifications = false;
+                    CurrentWorkspace.ShowPythonAutoMigrationNotifications = false;
                     return false;
                 }                
             }
@@ -504,7 +504,7 @@ namespace Dynamo.PythonMigration
                     customCount,
                     LoadedParams.StartupParams.PathManager.BackupDirectory);
 
-                CurrentWorkspace.ShowCPythonNotifications = !preferenceSettings.HideCPython3Notifications;
+                CurrentWorkspace.ShowPythonAutoMigrationNotifications = preferenceSettings.ShowPythonAutoMigrationNotifications;
             }
 
             return workspaceModified;

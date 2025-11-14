@@ -695,12 +695,11 @@ namespace Dynamo.Configuration
         /// Controls whether Dynamo shows upgrade notifications for legacy CPython nodes
         /// when opening a graph. These notices appear when a graph contains CPython-engine
         /// Python nodes that are automatically upgraded to PythonNet3:
-        ///  • toast on graph open
         ///  • save/close confirmation dialog
         ///  • banner inside the Python Script Editor
         /// NOTE: This setting is not related to the historical IronPython2 → CPython3 migration.
         /// </summary>
-        public bool HideCPython3Notifications { get; set; } = false;
+        public bool ShowPythonAutoMigrationNotifications { get; set; } = true;
 
         /// <summary>
         /// This defines if user wants to see the enabled node Auto Complete feature for port interaction.

@@ -787,7 +787,7 @@
                                                       Width="{StaticResource ToggleButtonWidth}"
                                                       Height="{StaticResource ToggleButtonHeight}"
                                                       VerticalAlignment="Center"
-                                                      IsChecked="{Binding Path=HideCPythonNotificationIsChecked}"
+                                                      IsChecked="{Binding Path=HidePythonAutoMigrationNotificationIsChecked}"
                                                       Style="{StaticResource EllipseToggleButton1}"/>
                                         <Label Content="{x:Static p:Resources.PreferencesViewHidePythonEngineChangeNotifications}"
                                                VerticalAlignment="Center"
