@@ -5,16 +5,6 @@ using System.Linq;
 
 namespace DynamoShapeManager
 {
-    [Obsolete("Please use system.version instead of this enum to specify geometry library versions to load")]
-    public enum LibraryVersion
-    {
-        None,
-        Version224 = 224,
-        Version223 = 223,
-        Version222 = 222,
-        Version221 = 221
-    };
-
     /// <summary>
     /// Shape manager preloader class that helps with preloading Autodesk Shape 
     /// Manager (ASM) binaries through geometry library (LibG). This class being
@@ -32,8 +22,6 @@ namespace DynamoShapeManager
         /// more than one ASM gets preloaded in the same address space.
         /// </summary>
         private static string preloadedShapeManagerPath = string.Empty;
-        [Obsolete("Please use the Version2 Property instead.")]
-        public LibraryVersion Version { get { return (LibraryVersion)Version2.Major; } }
         public Version Version2 { get; }
 
         public string ShapeManagerPath { get; set; }
