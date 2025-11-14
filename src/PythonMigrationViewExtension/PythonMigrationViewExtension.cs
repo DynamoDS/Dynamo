@@ -182,7 +182,6 @@ namespace Dynamo.PythonMigration
                         {
                             // Track this def as temp-migrated for the session
                             upgradeService.TempMigratedCustomDefs.Add(defId);
-                            upgradeService.TouchedCustomWorkspaces.Add(workspace);
 
                             var count = upgradeService.UpgradeNodesInMemory(
                                 usageInside.DirectPythonNodes,
@@ -234,9 +233,8 @@ namespace Dynamo.PythonMigration
                 if (!anyRemaining)
                 {
                     var workspace = upgradeService.TryGetFunctionWorkspace(DynamoViewModel.Model, defId) as WorkspaceModel;
-                    if (workspace != null)
+                    if (workspace == null) return;
                     {
-                        upgradeService.TouchedCustomWorkspaces.Remove(workspace);
                         upgradeService.CustomToastShownDef.Remove(defId);
                     }                    
                 }
@@ -352,16 +350,14 @@ namespace Dynamo.PythonMigration
             // If we are in a Custom Node workspace, remove this definition from tracking
             if (CurrentWorkspace is CustomNodeWorkspaceModel cws)
             {
-                upgradeService.TouchedCustomWorkspaces.Remove(cws);
                 upgradeService.TempMigratedCustomDefs.Remove(cws.CustomNodeId);
                 return;
             }
 
-            upgradeService.CommitCustomNodeMigrationsOnSave();
+            upgradeService.CommitCustomNodeMigrationsOnSave(CurrentWorkspace);
 
             // Show the notification only once
             CurrentWorkspace.HasShownCPythonNotification = true;
-            upgradeService.TouchedCustomWorkspaces.Clear();
         }
 
         private void SubscribeToDynamoEvents()
@@ -489,8 +485,6 @@ namespace Dynamo.PythonMigration
                     if (inner.DirectPythonNodes.Any())
                     {
                         upgradeService.TempMigratedCustomDefs.Add(defId);
-                        upgradeService.TouchedCustomWorkspaces.Add(workspace);
-
                         upgradeService.UpgradeNodesInMemory(
                         inner.DirectPythonNodes,
                         workspace,
