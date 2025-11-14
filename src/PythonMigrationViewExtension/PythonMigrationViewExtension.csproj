@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <UILib>true</UILib>
     </PropertyGroup>
@@ -15,7 +15,7 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="DiffPlex" Version="1.6.3" CopyMetaData="true" />        
-        <PackageReference Include="DynamoVisualProgramming.PythonEngine.PythonNet3" Version="1.4.4">
+        <PackageReference Include="DynamoVisualProgramming.PythonEngine.PythonNet3" Version="1.4.5">
             <ExcludeAssets>runtime;native;contentFiles;build;buildTransitive;analyzers</ExcludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>        
