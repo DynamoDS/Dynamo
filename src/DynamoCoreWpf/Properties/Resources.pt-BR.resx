@@ -2283,11 +2283,11 @@ Deseja desinstalar o {1}? Reinicie o {2} para concluir a desinstalação e tente
   <data name="AddStyleButton" xml:space="preserve">
     <value>Adic estilo</value>
   </data>
-  <data name="ResetCPythonButtonText" xml:space="preserve">
-    <value>Redefinir CPython</value>
+  <data name="ResetPythonNet3ButtonText" xml:space="preserve">
+    <value>Redefinir PythonNet3</value>
   </data>
-  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
-    <value>Redefine o ambiente CPython recarregando os módulos.</value>
+  <data name="ResetPythonNet3ButtonToolTip" xml:space="preserve">
+    <value>Redefine o ambiente PythonNet3 recarregando os módulos.</value>
   </data>
   <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
     <value>Cancelar e mostrar problemas</value>
@@ -3848,11 +3848,30 @@ Para transformar este arquivo em um novo modelo, salve-o em uma pasta diferente 
   <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
     <value>Ocultar portas de saída não conectadas por padrão</value>
   </data>
+  <data name="PreferencesViewHidePythonEngineChangeNotifications" xml:space="preserve">
+    <value>Ocultar notificações de alterações do mecanismo Python</value>
+  </data>
+  <data name="PreferencesViewHidePythonEngineChangeNotificationsTooltip" xml:space="preserve">
+    <value>O CPython não é mais suportado no Dynamo 4.0 ou superior e será convertido no novo mecanismo padrão PythonNet3. Desative a opção para ocultar todas as notificações sobre as alterações do mecanismo.</value>
+  </data>
+  <data name="MessageBoxDontShowAgainLabel" xml:space="preserve">
+    <value>Não mostrar novamente</value>
+  </data>
+  <data name="CPython3EngineNotificationMessageBoxHeader" xml:space="preserve">
+    <value>Alteração do mecanismo Python</value>
+  </data>
+  <data name="CPython3EngineNotificationMessageBoxText" xml:space="preserve">
+    <value>Esse gráfico inclui nós CPython, que não são mais suportados no Dynamo 4.0. Salvar os converterá no PythonNet3, o novo mecanismo padrão.
+Para abrir esse gráfico no Dynamo 3.3–3.6.x: instale o pacote PythonNet do Package Manager.</value>
+  </data>
+  <data name="CPython3EngineUpgradeLearnMoreUri" xml:space="preserve">
+    <value>https://dynamobim.org/pythonnet3-a-new-dynamo-python-to-fix-everything/</value>
+  </data>
   <data name="OnlineStatusTooltip" xml:space="preserve">
-    <value>Connected to the internet.</value>
+    <value>Conectada à Internet.</value>
   </data>
   <data name="OfflineStatusTooltip" xml:space="preserve">
-    <value>Not connected to the internet.</value>
+    <value>Não conectada à Internet.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

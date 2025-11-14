@@ -127,8 +127,8 @@
     <value>Altere entre vista Lado a lado e Em linha.</value>
   </data>
   <data name="IronPythonDialogDescription" xml:space="preserve">
-    <value>O Dynamo migrou do antigo mecanismo IronPython2 (Python 2) para um novo mecanismo CPython3 (Python 3). 
-O mecanismo IronPython ainda está disponível como um pacote no gestor de pacotes do Dynamo, mas somente o mecanismo CPython3 será suportado.</value>
+    <value>Dynamo has moved away from the old IronPython2 engine towards a new PythonNet3 engine. 
+The IronPython engine is still available as a package from the Dynamo package manager, but only the PythonNet3 engine will be supported.</value>
   </data>
   <data name="IronPythonDialogSummary" xml:space="preserve">
     <value>Este gráfico contém nós que referenciam um mecanismo Python desatualizado.</value>
@@ -140,10 +140,10 @@ O mecanismo IronPython ainda está disponível como um pacote no gestor de pacot
     <value>Não mostrar novamente.</value>
   </data>
   <data name="IronPythonNotificationDetailedMessage" xml:space="preserve">
-    <value>Esse gráfico atualmente contém nós Python que estão usando o antigo mecanismo IronPython, que se tornou obsoleto. Considere atualizar esses nós para usar o novo mecanismo CPython 3.7.</value>
+    <value>This graph currently contains python nodes that are using the old IronPython Engine which has been deprecated. Consider updating these nodes to use the new PythonNet3 Engine.</value>
   </data>
   <data name="IronPythonNotificationShortMessage" xml:space="preserve">
-    <value>Esse gráfico atualmente contém nós que estão usando o antigo mecanismo IronPython2 (Python 2), que se tornou obsoleto. Um novo CPython3 (Python 3) foi implementado e está acessível dentro do editor do Python.</value>
+    <value>This graph currently contains nodes that are using the old IronPython2 engine which has been deprecated. A new PythonNet3 has been implemented and is accessible inside the Python editor.</value>
   </data>
   <data name="MigrationAssistantDisclaimerContinueButtonContent" xml:space="preserve">
     <value>Continuar</value>
@@ -158,8 +158,8 @@ O mecanismo IronPython ainda está disponível como um pacote no gestor de pacot
     <value>Você está prestes a fazer alterações no código Python</value>
   </data>
   <data name="MigrationAssistantDisclaimerMessage" xml:space="preserve">
-    <value>O Assistente de migração ajuda os usuários a atualizar os scripts do Python 2 para o Python 3.
-Ao clicar em “Continuar”, você está concordando em implementar as alterações de sintaxe para o código de origem como sugerido pelo Assistente de migração. O Assistente de migração é um componente do Dynamode de código aberto e, como tal, é licenciado nos termos da Licença do Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0). Nos termos da Licença do Apache 2.0, o Dynamo e o Assistente de migração são fornecidos “como estão”.</value>
+    <value>The Migration Assistant helps users to update scripts from IronPython2 to PythonNet3.
+By clicking “Continue”, you are agreeing to implement the syntax changes to your source code as suggested by the Migration Assistant. The Migration Assistant is a component of open source Dynamo, and as such it is licensed to you under the terms of the Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0 ). Under the terms of the Apache License 2.0, Dynamo and the Migration Assistant are provided to you on an “AS IS” basis.</value>
   </data>
   <data name="MigrationAssistantDisclaimerWindowTitle" xml:space="preserve">
     <value>Aviso de isenção de responsabilidade do Assistente de migração</value>
@@ -168,7 +168,7 @@ Ao clicar em “Continuar”, você está concordando em implementar as alteraç
     <value>Nada para ver aqui.</value>
   </data>
   <data name="MigrationAssistantNoChangesStateMessage" xml:space="preserve">
-    <value>O código está pronto para ser executado com o mecanismo Python 3. Clique em Aceitar para alternarmos para o mecanismo Python 3 por você.</value>
+    <value>Your code is ready to run with the PythonNet3 engine. Click accept and we'll switch to the PythonNet3 engine for you.</value>
   </data>
   <data name="MigrationAssistantErrorStateHeader" xml:space="preserve">
     <value>Existe um erro no código.</value>
@@ -220,5 +220,17 @@ Ao clicar em “Continuar”, você está concordando em implementar as alteraç
   </data>
   <data name="SwitchViewButton" xml:space="preserve">
     <value>Alternar vista</value>
+  </data>
+  <data name="CPython3NotificationDetailedMessage" xml:space="preserve">
+    <value>Esse gráfico atualmente contém nós Python que estão usando o antigo mecanismo CPython, que se tornou obsoleto. Considere atualizar esses nós para usar o novo mecanismo PythonNet3.</value>
+  </data>
+  <data name="CPython3NotificationShortMessage" xml:space="preserve">
+    <value>Esse gráfico atualmente contém nós que estão usando o antigo mecanismo CPython3, que se tornou obsoleto. Um novo PythonNet3 foi implementado e está acessível no editor Python.</value>
+  </data>
+  <data name="CPythonUpgradeToastMessagePlural" xml:space="preserve">
+    <value>{0} nós CPython foram convertidos automaticamente em PythonNet3 para serem executados no Dynamo 4.0. O CPython não é mais suportado.</value>
+  </data>
+  <data name="CPythonUpgradeToastMessageSingular" xml:space="preserve">
+    <value>1 nó CPython foi convertido automaticamente em PythonNet3 para ser executado no Dynamo 4.0. O CPython não é mais suportado.</value>
   </data>
 </root>

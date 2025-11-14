@@ -2283,11 +2283,11 @@
   <data name="AddStyleButton" xml:space="preserve">
     <value>Доб. стиль</value>
   </data>
-  <data name="ResetCPythonButtonText" xml:space="preserve">
-    <value>Сбросить CPython</value>
+  <data name="ResetPythonNet3ButtonText" xml:space="preserve">
+    <value>Сбросить PythonNet3</value>
   </data>
-  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
-    <value>Сброс среды CPython путем перезагрузки модулей.</value>
+  <data name="ResetPythonNet3ButtonToolTip" xml:space="preserve">
+    <value>Сброс среды PythonNet3 путем повторной загрузки модулей.</value>
   </data>
   <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
     <value>Отменить и показать проблемы</value>
@@ -3848,11 +3848,30 @@
   <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
     <value>Скрытие несоединенных портов вывода по умолчанию</value>
   </data>
+  <data name="PreferencesViewHidePythonEngineChangeNotifications" xml:space="preserve">
+    <value>Скрыть уведомления об изменениях в модуле Python</value>
+  </data>
+  <data name="PreferencesViewHidePythonEngineChangeNotificationsTooltip" xml:space="preserve">
+    <value>CPython больше не поддерживается в Dynamo 4.0 или более поздних версиях и будет преобразован в новый компонент PythonNet3, используемый по умолчанию. Отключите переключатель, чтобы скрыть все уведомления о замене компонента.</value>
+  </data>
+  <data name="MessageBoxDontShowAgainLabel" xml:space="preserve">
+    <value>Больше не показывать</value>
+  </data>
+  <data name="CPython3EngineNotificationMessageBoxHeader" xml:space="preserve">
+    <value>Изменение компонента Python</value>
+  </data>
+  <data name="CPython3EngineNotificationMessageBoxText" xml:space="preserve">
+    <value>Этот график содержит узлы CPython, которые больше не поддерживаются в Dynamo 4.0. При сохранении они будут преобразованы в PythonNet3, новый компонент по умолчанию.
+Чтобы открыть этот график в Dynamo версии 3.3–3.6.x, установите пакет PythonNet из Package Manager.</value>
+  </data>
+  <data name="CPython3EngineUpgradeLearnMoreUri" xml:space="preserve">
+    <value>https://dynamobim.org/pythonnet3-a-new-dynamo-python-to-fix-everything/</value>
+  </data>
   <data name="OnlineStatusTooltip" xml:space="preserve">
-    <value>Connected to the internet.</value>
+    <value>Выполнено подключение к интернету.</value>
   </data>
   <data name="OfflineStatusTooltip" xml:space="preserve">
-    <value>Not connected to the internet.</value>
+    <value>Отсутствует подключение к интернету.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

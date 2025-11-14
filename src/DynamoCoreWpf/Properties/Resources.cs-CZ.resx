@@ -2282,11 +2282,11 @@ Chcete {1} odinstalovat? Restartujte {2}, aby se dokončila odinstalace, a zkust
   <data name="AddStyleButton" xml:space="preserve">
     <value>Přidat styl</value>
   </data>
-  <data name="ResetCPythonButtonText" xml:space="preserve">
-    <value>Obnovit CPython</value>
+  <data name="ResetPythonNet3ButtonText" xml:space="preserve">
+    <value>Obnovit PythonNet3</value>
   </data>
-  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
-    <value>Obnoví prostředí CPython opakovaným načtením modulů.</value>
+  <data name="ResetPythonNet3ButtonToolTip" xml:space="preserve">
+    <value>Obnoví prostředí PythonNet3 opětovným načtením modulů.</value>
   </data>
   <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
     <value>Zrušit a zobrazit problémy</value>
@@ -3847,11 +3847,30 @@ Chcete-li vytvořit z tohoto souboru novou šablonu, uložte ho do jiné složky
   <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
     <value>Ve výchozím nastavení skrýt nepřipojené výstupní porty</value>
   </data>
+  <data name="PreferencesViewHidePythonEngineChangeNotifications" xml:space="preserve">
+    <value>Skrýt oznámení o změnách modulu Python</value>
+  </data>
+  <data name="PreferencesViewHidePythonEngineChangeNotificationsTooltip" xml:space="preserve">
+    <value>Funkce CPython již není podporována v aplikaci Dynamo 4.0 nebo vyšší a bude převedena na nový výchozí modul PythonNet3. Vypnutím přepínače skryjete všechna oznámení o změnách modulu.</value>
+  </data>
+  <data name="MessageBoxDontShowAgainLabel" xml:space="preserve">
+    <value>Toto oznámení již nezobrazovat</value>
+  </data>
+  <data name="CPython3EngineNotificationMessageBoxHeader" xml:space="preserve">
+    <value>Změna jádra jazyka Python</value>
+  </data>
+  <data name="CPython3EngineNotificationMessageBoxText" xml:space="preserve">
+    <value>Tento graf obsahuje uzly CPython, které již nejsou v aplikaci Dynamo 4.0 podporovány. Uložením je převedete na nový výchozí modul PythonNet3.
+Otevření tohoto grafu v aplikaci Dynamo 3.3–3.6.x: Ze správce balíčků nainstalujte balíček PythonNet.</value>
+  </data>
+  <data name="CPython3EngineUpgradeLearnMoreUri" xml:space="preserve">
+    <value>https://dynamobim.org/pythonnet3-a-new-dynamo-python-to-fix-everything/</value>
+  </data>
   <data name="OnlineStatusTooltip" xml:space="preserve">
-    <value>Connected to the internet.</value>
+    <value>Připojeno k internetu.</value>
   </data>
   <data name="OfflineStatusTooltip" xml:space="preserve">
-    <value>Not connected to the internet.</value>
+    <value>Není připojeno k internetu.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
