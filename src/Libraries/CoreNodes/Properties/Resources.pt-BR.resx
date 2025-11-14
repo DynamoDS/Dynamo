@@ -156,6 +156,9 @@
   <data name="Exception_Serialize_Unsupported_Type" xml:space="preserve">
     <value>Não é possível armazenar dados do tipo {0}.</value>
   </data>
+  <data name="FactorialNegativeInt" xml:space="preserve">
+    <value>O valor de entrada Math.Factorial não pode ser negativo.</value>
+  </data>
   <data name="FactorialOverflow" xml:space="preserve">
     <value>O valor de retorno de Math.Factorial está fora do intervalo.</value>
   </data>

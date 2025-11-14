@@ -2283,11 +2283,11 @@ Möchten Sie {1} deinstallieren? Starten Sie {2} neu, um die Deinstallation abzu
   <data name="AddStyleButton" xml:space="preserve">
     <value>Neuer Stil</value>
   </data>
-  <data name="ResetCPythonButtonText" xml:space="preserve">
-    <value>CPython zurücksetzen</value>
+  <data name="ResetPythonNet3ButtonText" xml:space="preserve">
+    <value>PythonNet3 zurücksetzen</value>
   </data>
-  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
-    <value>Setzt die CPython-Umgebung durch erneutes Laden von Modulen zurück.</value>
+  <data name="ResetPythonNet3ButtonToolTip" xml:space="preserve">
+    <value>Setzt die PythonNet3-Umgebung durch Neuladen von Modulen zurück.</value>
   </data>
   <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
     <value>Abbrechen und Probleme anzeigen</value>
@@ -3846,11 +3846,30 @@ Führen Sie #Download und Installation=https://www.autodesk.com/support/technica
   <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
     <value>Nicht verbundene Ausgabeanschlüsse vorgabemäßig ausblenden</value>
   </data>
+  <data name="PreferencesViewHidePythonEngineChangeNotifications" xml:space="preserve">
+    <value>Benachrichtigungen für Python-Engine-Änderungen ausblenden</value>
+  </data>
+  <data name="PreferencesViewHidePythonEngineChangeNotificationsTooltip" xml:space="preserve">
+    <value>CPython wird in Dynamo 4.0 oder höher nicht mehr unterstützt und in die neue Vorgabe-Engine PythonNet3 konvertiert. Deaktivieren Sie den Schalter, um alle Benachrichtigungen über Engine-Änderungen auszublenden.</value>
+  </data>
+  <data name="MessageBoxDontShowAgainLabel" xml:space="preserve">
+    <value>Diesen Meldung nicht mehr anzeigen</value>
+  </data>
+  <data name="CPython3EngineNotificationMessageBoxHeader" xml:space="preserve">
+    <value>Änderung der Python-Engine</value>
+  </data>
+  <data name="CPython3EngineNotificationMessageBoxText" xml:space="preserve">
+    <value>Dieses Diagramm enthält CPython-Blöcke, die in Dynamo 4.0 nicht mehr unterstützt werden. Durch das Speichern werden sie in PythonNet3, die neue Vorgabe-Engine, konvertiert.
+Installieren Sie das PythonNet-Paket aus dem Package Manager, um dieses Diagramm in Dynamo 3.3 bis 3.6.x zu öffnen.</value>
+  </data>
+  <data name="CPython3EngineUpgradeLearnMoreUri" xml:space="preserve">
+    <value>https://dynamobim.org/pythonnet3-a-new-dynamo-python-to-fix-everything/</value>
+  </data>
   <data name="OnlineStatusTooltip" xml:space="preserve">
-    <value>Connected to the internet.</value>
+    <value>Internetzugriff.</value>
   </data>
   <data name="OfflineStatusTooltip" xml:space="preserve">
-    <value>Not connected to the internet.</value>
+    <value>Kein Internetzugriff.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

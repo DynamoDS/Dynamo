@@ -127,8 +127,8 @@
     <value>나란히 뷰 및 인라인 뷰 간에 변경합니다.</value>
   </data>
   <data name="IronPythonDialogDescription" xml:space="preserve">
-    <value>Dynamo가 이전 IronPython2(Python 2) 엔진에서 새로운 CPython3(Python 3) 엔진으로 바뀌었습니다. 
-IronPython 엔진은 여전히 Dynamo Package Manager를 통해 패키지로 제공되지만, 앞으로는 CPython3 엔진만 지원됩니다.</value>
+    <value>Dynamo has moved away from the old IronPython2 engine towards a new PythonNet3 engine. 
+The IronPython engine is still available as a package from the Dynamo package manager, but only the PythonNet3 engine will be supported.</value>
   </data>
   <data name="IronPythonDialogSummary" xml:space="preserve">
     <value>이 그래프에는 오래된 Python 엔진을 참조하는 노드가 포함되어 있습니다.</value>
@@ -140,10 +140,10 @@ IronPython 엔진은 여전히 Dynamo Package Manager를 통해 패키지로 제
     <value>다시 표시하지 않습니다.</value>
   </data>
   <data name="IronPythonNotificationDetailedMessage" xml:space="preserve">
-    <value>이 그래프에는 현재 사용되지 않는 이전 IronPython 엔진을 사용하는 Python 노드가 포함되어 있습니다. 이러한 노드를 업데이트하여 새 CPython 3.7 엔진을 사용해 보십시오.</value>
+    <value>This graph currently contains python nodes that are using the old IronPython Engine which has been deprecated. Consider updating these nodes to use the new PythonNet3 Engine.</value>
   </data>
   <data name="IronPythonNotificationShortMessage" xml:space="preserve">
-    <value>이 그래프에는 현재 사용되지 않는 이전 IronPython2(Python 2) 엔진을 사용하는 노드가 포함되어 있습니다. 새 CPython3(Python 3)이 구현되었으며 Python 편집기 내에서 액세스 가능합니다.</value>
+    <value>This graph currently contains nodes that are using the old IronPython2 engine which has been deprecated. A new PythonNet3 has been implemented and is accessible inside the Python editor.</value>
   </data>
   <data name="MigrationAssistantDisclaimerContinueButtonContent" xml:space="preserve">
     <value>계속</value>
@@ -158,8 +158,8 @@ IronPython 엔진은 여전히 Dynamo Package Manager를 통해 패키지로 제
     <value>Python 코드를 변경하려고 함</value>
   </data>
   <data name="MigrationAssistantDisclaimerMessage" xml:space="preserve">
-    <value>마이그레이션 보조 도구를 사용하면 사용자가 Python 2에서 Python 3으로 스크립트를 업데이트할 수 있습니다.
-"계속"을 클릭하면 마이그레이션 보조 도구에서 제안한 대로 소스 코드에 구문 변경 사항을 구현하는 데 동의하게 됩니다. 마이그레이션 보조 도구는 오픈 소스 Dynamo의 구성요소입니다. 따라서 Apache License 2.0(https://www.apache.org/licenses/LICENSE-2.0)의 약관에 따라 사용자에게 라이센스가 부여됩니다. Apache License 2.0의 약관에 따라 Dynamo 및 마이그레이션 보조 도구는 "그대로" 제공됩니다.</value>
+    <value>The Migration Assistant helps users to update scripts from IronPython2 to PythonNet3.
+By clicking “Continue”, you are agreeing to implement the syntax changes to your source code as suggested by the Migration Assistant. The Migration Assistant is a component of open source Dynamo, and as such it is licensed to you under the terms of the Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0 ). Under the terms of the Apache License 2.0, Dynamo and the Migration Assistant are provided to you on an “AS IS” basis.</value>
   </data>
   <data name="MigrationAssistantDisclaimerWindowTitle" xml:space="preserve">
     <value>마이그레이션 보조 도구 고지 사항</value>
@@ -168,7 +168,7 @@ IronPython 엔진은 여전히 Dynamo Package Manager를 통해 패키지로 제
     <value>여기에 표시되는 항목이 없음</value>
   </data>
   <data name="MigrationAssistantNoChangesStateMessage" xml:space="preserve">
-    <value>코드가 Python 3 엔진에서 실행될 준비가 되었습니다. 동의를 클릭하면 Python 3 엔진으로 전환됩니다.</value>
+    <value>Your code is ready to run with the PythonNet3 engine. Click accept and we'll switch to the PythonNet3 engine for you.</value>
   </data>
   <data name="MigrationAssistantErrorStateHeader" xml:space="preserve">
     <value>코드에 오류가 있습니다!</value>
@@ -220,5 +220,17 @@ IronPython 엔진은 여전히 Dynamo Package Manager를 통해 패키지로 제
   </data>
   <data name="SwitchViewButton" xml:space="preserve">
     <value>뷰 전환</value>
+  </data>
+  <data name="CPython3NotificationDetailedMessage" xml:space="preserve">
+    <value>이 그래프에는 더 이상 사용되지 않는 이전 CPython 엔진을 사용하는 Python 노드가 포함되어 있습니다. 새 PythonNet3 엔진을 사용하려면 이러한 노드를 업데이트해 보십시오.</value>
+  </data>
+  <data name="CPython3NotificationShortMessage" xml:space="preserve">
+    <value>이 그래프에는 더 이상 사용되지 않는 이전 CPython3 엔진을 사용하는 노드가 포함되어 있습니다. 새로운 PythonNet3가 구현되어 Python 편집기 내에서 액세스할 수 있습니다.</value>
+  </data>
+  <data name="CPythonUpgradeToastMessagePlural" xml:space="preserve">
+    <value>{0}개의 CPython 노드가 Dynamo 4.0에서 실행되도록 PythonNet3으로 자동 변환되었습니다. CPython은 더 이상 지원되지 않습니다.</value>
+  </data>
+  <data name="CPythonUpgradeToastMessageSingular" xml:space="preserve">
+    <value>1개의 CPython 노드가 Dynamo 4.0에서 실행되도록 PythonNet3으로 자동 변환되었습니다. CPython은 더 이상 지원되지 않습니다.</value>
   </data>
 </root>

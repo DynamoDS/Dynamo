@@ -133,7 +133,7 @@
     <value>Versão do mecanismo Python</value>
   </data>
   <data name="PythonNodeContextMenuEngineVersionThree" xml:space="preserve">
-    <value>CPython3</value>
+    <value>PythonNet3</value>
   </data>
   <data name="PythonNodeContextMenuEngineVersionTwo" xml:space="preserve">
     <value>IronPython2</value>
@@ -202,15 +202,27 @@
     <value>Converter tabulações de indentação em espaços...</value>
   </data>
   <data name="PythonScriptEditorMigrationAssistantButtonTooltip" xml:space="preserve">
-    <value>Converter o script em Python 3...</value>
+    <value>Convert script to {0}...</value>
   </data>
   <data name="PythonSearchTags" xml:space="preserve">
-    <value>IronPython;CPython;</value>
+    <value>IronPython;PythonNet3;</value>
   </data>
   <data name="PythonScriptUnsavedChangesPromptText" xml:space="preserve">
     <value>Parece que você ainda está trabalhando nisso. Você poderá perder todas as alterações não salvas se sair agora</value>
   </data>
   <data name="PythonScriptUnsavedChangesPromptTitle" xml:space="preserve">
     <value>Tem certeza de que deseja sair?</value>
+  </data>
+  <data name="PythonNodeContextMenuEngineVersionNetThree" xml:space="preserve">
+    <value>PythonNet3</value>
+  </data>
+  <data name="PythonScriptEditorEngineAutoUpdatedBarText" xml:space="preserve">
+    <value>Mecanismo Python atualizado automaticamente para PythonNet3</value>
+  </data>
+  <data name="PythonScriptEditorEngineRequestToUpdatedBarText" xml:space="preserve">
+    <value>Atualize o mecanismo Python para PythonNet3</value>
+  </data>
+  <data name="PythonScriptEditorMigrationAssistantButtonDisabledTooltip" xml:space="preserve">
+    <value>Python engine has been updated to {0}. No conversion should be necessary. If the script shows errors from old IronPython2 syntax, switch the engine back to IronPython2 to re-enable the converter.</value>
   </data>
 </root>
