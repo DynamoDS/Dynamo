@@ -4238,4 +4238,7 @@ To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the
   <data name="OfflineStatusTooltip" xml:space="preserve">
     <value>Not connected to the internet.</value>
   </data>
+  <data name="ToastHyperlinkPathText" xml:space="preserve">
+    <value>here</value>
+  </data>
 </root>

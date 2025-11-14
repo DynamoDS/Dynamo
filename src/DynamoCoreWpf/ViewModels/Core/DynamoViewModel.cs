@@ -2454,15 +2454,15 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Raised when a toast should be shown to inform about a CPython to PythonNet3 engine upgrade
         /// </summary>
-        public event Action<string, bool> PythonEngineUpgradeToastRequested;
+        public event Action<string, bool, string> PythonEngineUpgradeToastRequested;
 
         /// <summary>
         /// Requests the UI to show a Python-engine-upgrade toast on the canvas.
         /// This is UI-agnostic; the View decides when/where to render.
         /// </summary>
-        public void ShowPythonEngineUpgradeCanvasToast(string message, bool stayOpen = true)
+        public void ShowPythonEngineUpgradeCanvasToast(string message, bool stayOpen = true, string filePath = null)
         {
-            PythonEngineUpgradeToastRequested?.Invoke(message, stayOpen);
+            PythonEngineUpgradeToastRequested?.Invoke(message, stayOpen, filePath);
         }
 
         /// <summary>
@@ -3508,6 +3508,9 @@ namespace Dynamo.ViewModels
             // otherwise overwrite the home workspace with new workspace
             if (!HomeSpace.HasUnsavedChanges || AskUserToSaveWorkspaceOrCancel(HomeSpace))
             {
+                // Reset the one-time CPython notification flag
+                HomeSpace.HasShownCPythonNotification = false;
+
                 Model.CurrentWorkspace = HomeSpace;
 
                 model.ClearCurrentWorkspace();

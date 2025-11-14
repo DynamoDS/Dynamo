@@ -95,22 +95,22 @@ namespace Dynamo.PythonMigration.Properties {
                 return ResourceManager.GetString("CPython3NotificationShortMessage", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to {0} CPython nodes have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported..
+        ///   Looks up a localized string similar to Before updating, a backup file has been saved .
         /// </summary>
-        public static string CPythonUpgradeToastMessagePlural {
+        public static string CPythonMigrationBackupFileCreatedMessage {
             get {
-                return ResourceManager.GetString("CPythonUpgradeToastMessagePlural", resourceCulture);
+                return ResourceManager.GetString("CPythonMigrationBackupFileCreatedMessage", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to 1 CPython node has been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported..
+        ///   Looks up a localized string similar to {0} CPython node(s) and {1} custom node definition(s) have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported..
         /// </summary>
-        public static string CPythonUpgradeToastMessageSingular {
+        public static string CPythonUpgradeToastMessage {
             get {
-                return ResourceManager.GetString("CPythonUpgradeToastMessageSingular", resourceCulture);
+                return ResourceManager.GetString("CPythonUpgradeToastMessage", resourceCulture);
             }
         }
         
@@ -347,6 +347,15 @@ namespace Dynamo.PythonMigration.Properties {
         public static string PythonMigrationBackupExtension {
             get {
                 return ResourceManager.GetString("PythonMigrationBackupExtension", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backup graph has been saved.
+        /// </summary>
+        public static string PythonMigrationBackupFileCreatedHeader {
+            get {
+                return ResourceManager.GetString("PythonMigrationBackupFileCreatedHeader", resourceCulture);
             }
         }
         
