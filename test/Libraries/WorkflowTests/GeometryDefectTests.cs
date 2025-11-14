@@ -639,11 +639,11 @@ namespace Dynamo.Tests
             Assert.AreEqual(55, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             // check Curve.SweepAsSolid
-            var solid1 = "df601349-3c41-4223-8c4d-e9fa043d1663";
+            var solid1 = "ceda65ffdae3498697c99d5403816e2d";
             var obj = GetPreviewValue(solid1);
             Assert.IsTrue(obj is Solid);
 
-            AssertPreviewValue("7b4c927a-685e-43dc-8f43-527e21d59786", 2.5531);
+            AssertPreviewValue("7b4c927a-685e-43dc-8f43-527e21d59786", 2.7603308);
         }
 
         #region Test Node Changes
