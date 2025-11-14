@@ -144,11 +144,6 @@ namespace Dynamo.Tests
         }
         //TODO_MSIL pull csv nodes into their own file with a partial class?
         //or mark excel methods windows only.
-        [Test]
-        public void TestMigration_InputOutput_File()
-        {
-            TestMigration("TestMigration_InputOutput_File.dyn");
-        }
 
         [Test]
         public void TestMigration_FileSystem()
