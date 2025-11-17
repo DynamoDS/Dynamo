@@ -230,7 +230,11 @@ namespace CoreNodeModels
             }
             else
             {
-                var tempIndex = Convert.ToInt32(index);
+                if (!int.TryParse(index, out int tempIndex))
+                {
+                    return selectedIndex;
+                }
+
                 selectedIndex = tempIndex > (items.Count - 1) ?
                     -1 :
                     tempIndex;
