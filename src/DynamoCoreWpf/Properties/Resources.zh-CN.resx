@@ -2282,11 +2282,11 @@
   <data name="AddStyleButton" xml:space="preserve">
     <value>添加样式</value>
   </data>
-  <data name="ResetCPythonButtonText" xml:space="preserve">
-    <value>重置 CPython</value>
+  <data name="ResetPythonNet3ButtonText" xml:space="preserve">
+    <value>重置 PythonNet3</value>
   </data>
-  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
-    <value>通过重新加载模块重置 CPython 环境。</value>
+  <data name="ResetPythonNet3ButtonToolTip" xml:space="preserve">
+    <value>通过重新加载模块重置 PythonNet3 环境。</value>
   </data>
   <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
     <value>取消并显示问题</value>
@@ -3846,11 +3846,30 @@
   <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
     <value>默认情况下隐藏未连接的输出端口</value>
   </data>
+  <data name="PreferencesViewHidePythonEngineChangeNotifications" xml:space="preserve">
+    <value>隐藏 Python 引擎更改通知</value>
+  </data>
+  <data name="PreferencesViewHidePythonEngineChangeNotificationsTooltip" xml:space="preserve">
+    <value>Dynamo 4.0 或更高版本不再支持 CPython，它将被转换为新的默认引擎 PythonNet3。禁用切换开关可隐藏有关引擎更改的所有通知。</value>
+  </data>
+  <data name="MessageBoxDontShowAgainLabel" xml:space="preserve">
+    <value>不再显示此屏幕</value>
+  </data>
+  <data name="CPython3EngineNotificationMessageBoxHeader" xml:space="preserve">
+    <value>Python 引擎更改</value>
+  </data>
+  <data name="CPython3EngineNotificationMessageBoxText" xml:space="preserve">
+    <value>此图形包括 Dynamo 4.0 中不再支持的 CPython 节点。保存会将它们转化为新的默认引擎 PythonNet3。
+要在 Dynamo 3.3–3.6.x 中打开此图形，请从 Package Manager 安装 PythonNet 软件包。</value>
+  </data>
+  <data name="CPython3EngineUpgradeLearnMoreUri" xml:space="preserve">
+    <value>https://dynamobim.org/pythonnet3-a-new-dynamo-python-to-fix-everything/</value>
+  </data>
   <data name="OnlineStatusTooltip" xml:space="preserve">
-    <value>Connected to the internet.</value>
+    <value>已连接到 Internet。</value>
   </data>
   <data name="OfflineStatusTooltip" xml:space="preserve">
-    <value>Not connected to the internet.</value>
+    <value>未连接到 Internet。</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

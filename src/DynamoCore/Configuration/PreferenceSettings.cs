@@ -1069,7 +1069,7 @@ namespace Dynamo.Configuration
             ShowTabsAndSpacesInScriptEditor = false;
             EnableNodeAutoComplete = true;
             EnableNewNodeAutoCompleteUI = true;
-            DefaultEnableLegacyPolyCurveBehavior = true;
+            DefaultEnableLegacyPolyCurveBehavior = false;
             HideNodesBelowSpecificConfidenceLevel = false;
             MLRecommendationConfidenceLevel = 10;
             MLRecommendationNumberOfResults = 10;

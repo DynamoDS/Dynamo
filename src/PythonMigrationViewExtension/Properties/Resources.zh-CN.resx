@@ -127,8 +127,8 @@
     <value>在“并排”和“内嵌”视图之间切换。</value>
   </data>
   <data name="IronPythonDialogDescription" xml:space="preserve">
-    <value>Dynamo 已从旧的 IronPython2 (Python 2) 引擎移动到新的 CPython3 (Python 3) 引擎。
-IronPython 引擎仍然作为 Dynamo Package Manager 的一个软件包进行提供，但将仅支持 CPython3 引擎。</value>
+    <value>Dynamo has moved away from the old IronPython2 engine towards a new PythonNet3 engine. 
+The IronPython engine is still available as a package from the Dynamo package manager, but only the PythonNet3 engine will be supported.</value>
   </data>
   <data name="IronPythonDialogSummary" xml:space="preserve">
     <value>此图形包含引用过期 Python 引擎的节点。</value>
@@ -140,10 +140,10 @@ IronPython 引擎仍然作为 Dynamo Package Manager 的一个软件包进行提
     <value>不再显示。</value>
   </data>
   <data name="IronPythonNotificationDetailedMessage" xml:space="preserve">
-    <value>此图形当前包含正在使用已弃用的旧版 IronPython 引擎的 Python 节点。请考虑更新这些节点，以使用新的 CPython 3.7 引擎。</value>
+    <value>This graph currently contains python nodes that are using the old IronPython Engine which has been deprecated. Consider updating these nodes to use the new PythonNet3 Engine.</value>
   </data>
   <data name="IronPythonNotificationShortMessage" xml:space="preserve">
-    <value>此图形当前包含正在使用已弃用的旧版 IronPython2 (Python 2) 引擎的节点。已实现新的 CPython3 (Python 3)，并可在 Python 编辑器内访问。</value>
+    <value>This graph currently contains nodes that are using the old IronPython2 engine which has been deprecated. A new PythonNet3 has been implemented and is accessible inside the Python editor.</value>
   </data>
   <data name="MigrationAssistantDisclaimerContinueButtonContent" xml:space="preserve">
     <value>继续</value>
@@ -158,8 +158,8 @@ IronPython 引擎仍然作为 Dynamo Package Manager 的一个软件包进行提
     <value>您即将更改 Python 代码</value>
   </data>
   <data name="MigrationAssistantDisclaimerMessage" xml:space="preserve">
-    <value>“移植助手”会帮助用户将代码从 Python 2 更新到 Python 3。
-单击“继续”，即表示您同意按照“移植助手”的建议对源代码实施语法更改。“移植助手”是开源 Dynamo 的一个组件，因此，它根据 Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0)的条款许可您使用。根据 Apache License 2.0 的条款，Dynamo 和“移植助手”将“原样”提供您使用。</value>
+    <value>The Migration Assistant helps users to update scripts from IronPython2 to PythonNet3.
+By clicking “Continue”, you are agreeing to implement the syntax changes to your source code as suggested by the Migration Assistant. The Migration Assistant is a component of open source Dynamo, and as such it is licensed to you under the terms of the Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0 ). Under the terms of the Apache License 2.0, Dynamo and the Migration Assistant are provided to you on an “AS IS” basis.</value>
   </data>
   <data name="MigrationAssistantDisclaimerWindowTitle" xml:space="preserve">
     <value>移植助手免责声明</value>
@@ -168,7 +168,7 @@ IronPython 引擎仍然作为 Dynamo Package Manager 的一个软件包进行提
     <value>此处没有可供查看的内容！</value>
   </data>
   <data name="MigrationAssistantNoChangesStateMessage" xml:space="preserve">
-    <value>您的代码已准备就绪，可以使用 Python 3 引擎运行。单击“接受”，我们会为您切换到 Python 3 引擎。</value>
+    <value>Your code is ready to run with the PythonNet3 engine. Click accept and we'll switch to the PythonNet3 engine for you.</value>
   </data>
   <data name="MigrationAssistantErrorStateHeader" xml:space="preserve">
     <value>您的代码中存在错误！</value>
@@ -220,5 +220,17 @@ IronPython 引擎仍然作为 Dynamo Package Manager 的一个软件包进行提
   </data>
   <data name="SwitchViewButton" xml:space="preserve">
     <value>切换视图</value>
+  </data>
+  <data name="CPython3NotificationDetailedMessage" xml:space="preserve">
+    <value>此图形当前包含使用已弃用的旧 CPython 引擎的 Python 节点。请考虑更新这些节点以使用新的 PythonNet3 引擎。</value>
+  </data>
+  <data name="CPython3NotificationShortMessage" xml:space="preserve">
+    <value>此图形当前包含使用已弃用的旧 CPython3 引擎的节点。新的 PythonNet3 已实现，并可在 Python 编辑器内访问。</value>
+  </data>
+  <data name="CPythonUpgradeToastMessagePlural" xml:space="preserve">
+    <value>{0} CPython 节点已自动转换为 PythonNet3，可在 Dynamo 4.0 中运行。CPython 不再受支持。</value>
+  </data>
+  <data name="CPythonUpgradeToastMessageSingular" xml:space="preserve">
+    <value>1 个 CPython 节点已自动转换为 PythonNet3，可在 Dynamo 4.0 中运行。CPython 不再受支持。</value>
   </data>
 </root>
