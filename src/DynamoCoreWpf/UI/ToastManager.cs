@@ -33,21 +33,15 @@ namespace Dynamo.Wpf.UI
         /// <param name="content">The target content to display.</param>
         /// <param name="stayOpen">boolean indicates if the popup will stay open until user dismiss it.</param>
         /// <param name="headerText">The header text to display.</param>
-        /// <param name="showHeader">boolean indicates if the header will be shown.</param>
-        /// <param name="showHyperlink">boolean indicates if the hyperlink will be shown.</param>
         /// <param name="hyperlinkText">The hyperlink text to display.</param>
         /// <param name="hyperlinkUri">The hyperlink uri to navigate to.</param>
-        /// <param name="showFileLink">boolean indicates if the file link will be shown.</param>
         /// <param name="fileLinkUri">The file link uri to navigate to.</param>
         public void CreateRealTimeInfoWindow(
             string content,
             bool stayOpen = false,
-            bool showHeader = false,
             string headerText = "",
-            bool showHyperlink = false,
             string hyperlinkText = "",
             Uri hyperlinkUri = null,
-            bool showFileLink = false,
             Uri fileLinkUri = null)
         {
             //Search a UIElement with the Name "statusBarPanel" inside the Dynamo VisualTree
@@ -64,16 +58,15 @@ namespace Dynamo.Wpf.UI
                 HorizontalOffset = HorizontalOffset,
                 Placement = PlacementMode.Left,
                 StaysOpen = stayOpen,
-                ShowHeader = showHeader,
                 HeaderContent = headerText,
-                ShowHyperlink = showHyperlink,
                 HyperlinkText = hyperlinkText,
                 HyperlinkUri = hyperlinkUri,
-                ShowFileLink = showFileLink,
                 FileLinkUri = fileLinkUri
             };
 
+            var showFileLink = !string.IsNullOrEmpty(fileLinkUri?.ToString());
             toastPopup.SetToastMessage(content, showFileLink, fileLinkUri);
+            toastPopup.UpdateVisulaState();
 
             if (hostUIElement != null)
                 toastPopup.PlacementTarget = hostUIElement;

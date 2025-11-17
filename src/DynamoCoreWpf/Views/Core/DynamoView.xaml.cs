@@ -498,12 +498,9 @@ namespace Dynamo.Controls
                     dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(
                         msg,
                         stayOpen,
-                        showHeader: true,
                         headerText: Res.CPython3EngineNotificationMessageBoxHeader,
-                        showHyperlink: true,
                         hyperlinkText: Res.LearnMore,
                         hyperlinkUri: new Uri(Res.CPython3EngineUpgradeLearnMoreUri),
-                        showFileLink: hasFile,
                         fileLinkUri: hasFile ? fileUri : null);
                 }));
         }
