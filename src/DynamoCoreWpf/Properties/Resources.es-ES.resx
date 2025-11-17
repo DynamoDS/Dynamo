@@ -2283,11 +2283,11 @@ Puede intentar desactivar la carga de paquetes desde las rutas de paquetes integ
   <data name="AddStyleButton" xml:space="preserve">
     <value>Añadir estilo</value>
   </data>
-  <data name="ResetCPythonButtonText" xml:space="preserve">
-    <value>Restablecer CPython</value>
+  <data name="ResetPythonNet3ButtonText" xml:space="preserve">
+    <value>Restablecer PythonNet3</value>
   </data>
-  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
-    <value>Restablece el entorno de CPython mediante la recarga de los módulos.</value>
+  <data name="ResetPythonNet3ButtonToolTip" xml:space="preserve">
+    <value>Restablece el entorno de PythonNet3 mediante la recarga de los módulos.</value>
   </data>
   <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
     <value>Cancelar y mostrar incidencias</value>
@@ -3848,11 +3848,30 @@ Para convertir este archivo en una nueva plantilla, guárdelo en una carpeta dif
   <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
     <value>Ocultar puertos de salida no conectados por defecto</value>
   </data>
+  <data name="PreferencesViewHidePythonEngineChangeNotifications" xml:space="preserve">
+    <value>Ocultar notificaciones de cambios en el motor de Python</value>
+  </data>
+  <data name="PreferencesViewHidePythonEngineChangeNotificationsTooltip" xml:space="preserve">
+    <value>CPython ya no es compatible con Dynamo 4.0 o versiones posteriores y se convertirá al nuevo motor por defecto PythonNet3. Desactive el conmutador para ocultar todas las notificaciones sobre los cambios del motor.</value>
+  </data>
+  <data name="MessageBoxDontShowAgainLabel" xml:space="preserve">
+    <value>No volver a mostrar</value>
+  </data>
+  <data name="CPython3EngineNotificationMessageBoxHeader" xml:space="preserve">
+    <value>Cambio del motor de Python</value>
+  </data>
+  <data name="CPython3EngineNotificationMessageBoxText" xml:space="preserve">
+    <value>Este gráfico incluye nodos CPython, que ya no se admiten en Dynamo 4.0. Al guardar, se convertirán a PythonNet3, el nuevo motor por defecto.
+Para abrir este gráfico en Dynamo 3.3–3.6.x, instale el paquete PythonNet desde Package Manager.</value>
+  </data>
+  <data name="CPython3EngineUpgradeLearnMoreUri" xml:space="preserve">
+    <value>https://dynamobim.org/pythonnet3-a-new-dynamo-python-to-fix-everything/</value>
+  </data>
   <data name="OnlineStatusTooltip" xml:space="preserve">
-    <value>Connected to the internet.</value>
+    <value>Con conexión a Internet.</value>
   </data>
   <data name="OfflineStatusTooltip" xml:space="preserve">
-    <value>Not connected to the internet.</value>
+    <value>Sin conexión a Internet.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

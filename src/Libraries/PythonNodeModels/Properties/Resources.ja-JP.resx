@@ -133,7 +133,7 @@
     <value>Python エンジン バージョン</value>
   </data>
   <data name="PythonNodeContextMenuEngineVersionThree" xml:space="preserve">
-    <value>CPython3</value>
+    <value>PythonNet3</value>
   </data>
   <data name="PythonNodeContextMenuEngineVersionTwo" xml:space="preserve">
     <value>IronPython2</value>
@@ -202,15 +202,27 @@
     <value>インデント タブをスペースに変換...</value>
   </data>
   <data name="PythonScriptEditorMigrationAssistantButtonTooltip" xml:space="preserve">
-    <value>スクリプトを Python 3 に変換します...</value>
+    <value>Convert script to {0}...</value>
   </data>
   <data name="PythonSearchTags" xml:space="preserve">
-    <value>IronPython;CPython;</value>
+    <value>IronPython;PythonNet3;</value>
   </data>
   <data name="PythonScriptUnsavedChangesPromptText" xml:space="preserve">
     <value>作業が続いているようです。今すぐ終了すると、保存されていない変更が失われる可能性があります。</value>
   </data>
   <data name="PythonScriptUnsavedChangesPromptTitle" xml:space="preserve">
     <value>終了してもよろしいですか?</value>
+  </data>
+  <data name="PythonNodeContextMenuEngineVersionNetThree" xml:space="preserve">
+    <value>PythonNet3</value>
+  </data>
+  <data name="PythonScriptEditorEngineAutoUpdatedBarText" xml:space="preserve">
+    <value>Python エンジンは PythonNet3 に自動的に更新されました</value>
+  </data>
+  <data name="PythonScriptEditorEngineRequestToUpdatedBarText" xml:space="preserve">
+    <value>Python エンジンを PythonNet3 に更新してください</value>
+  </data>
+  <data name="PythonScriptEditorMigrationAssistantButtonDisabledTooltip" xml:space="preserve">
+    <value>Python engine has been updated to {0}. No conversion should be necessary. If the script shows errors from old IronPython2 syntax, switch the engine back to IronPython2 to re-enable the converter.</value>
   </data>
 </root>

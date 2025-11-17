@@ -2283,11 +2283,11 @@ Czy chcesz odinstalować {1}? Uruchom ponownie {2}, aby zakończyć dezinstalacj
   <data name="AddStyleButton" xml:space="preserve">
     <value>Dodaj styl</value>
   </data>
-  <data name="ResetCPythonButtonText" xml:space="preserve">
-    <value>Resetuj środowisko CPython</value>
+  <data name="ResetPythonNet3ButtonText" xml:space="preserve">
+    <value>Resetuj aparat PythonNet3</value>
   </data>
-  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
-    <value>Resetuje środowisko CPython przez ponowne wczytanie modułów.</value>
+  <data name="ResetPythonNet3ButtonToolTip" xml:space="preserve">
+    <value>Resetuje środowisko PythonNet3 przez ponowne wczytanie modułów.</value>
   </data>
   <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
     <value>Anuluj i pokaż problemy</value>
@@ -3848,11 +3848,30 @@ Aby ustawić ten plik jako nowy szablon, zapisz go w innym folderze, a następni
   <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
     <value>Domyślnie ukryj niepołączone porty wyjściowe</value>
   </data>
+  <data name="PreferencesViewHidePythonEngineChangeNotifications" xml:space="preserve">
+    <value>Ukryj powiadomienia o zmianach aparatu języka Python</value>
+  </data>
+  <data name="PreferencesViewHidePythonEngineChangeNotificationsTooltip" xml:space="preserve">
+    <value>Węzeł CPython nie jest obsługiwany w dodatku Dynamo od wersji 4.0 wzwyż. Nastąpi przekształcenie pod kątem nowego domyślnego aparatu PythonNet3. Wyłączając ten przełącznik, możesz ukryć wszystkie powiadomienia o zmianach aparatu.</value>
+  </data>
+  <data name="MessageBoxDontShowAgainLabel" xml:space="preserve">
+    <value>Nie pokazuj ponownie</value>
+  </data>
+  <data name="CPython3EngineNotificationMessageBoxHeader" xml:space="preserve">
+    <value>Zmiana aparatu języka Python</value>
+  </data>
+  <data name="CPython3EngineNotificationMessageBoxText" xml:space="preserve">
+    <value>Ten wykres zawiera węzły CPython, które nie są już obsługiwane w dodatku Dynamo 4.0. Zapisanie spowoduje przekształcenie ich do nowego aparatu domyślnego: PythonNet3.
+Aby otworzyć ten wykres w dodatku Dynamo w wersji od 3.3 do 3.6.x, zainstaluj pakiet PythonNet z poziomu Menedżera pakietów.</value>
+  </data>
+  <data name="CPython3EngineUpgradeLearnMoreUri" xml:space="preserve">
+    <value>https://dynamobim.org/pythonnet3-a-new-dynamo-python-to-fix-everything/</value>
+  </data>
   <data name="OnlineStatusTooltip" xml:space="preserve">
-    <value>Connected to the internet.</value>
+    <value>Połączono z Internetem.</value>
   </data>
   <data name="OfflineStatusTooltip" xml:space="preserve">
-    <value>Not connected to the internet.</value>
+    <value>Brak połączenia z Internetem.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
