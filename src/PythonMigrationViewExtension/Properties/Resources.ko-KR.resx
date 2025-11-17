@@ -200,6 +200,9 @@ By clicking “Continue”, you are agreeing to implement the syntax changes to 
   <data name="PythonMigrationBackupFileCreatedMessage" xml:space="preserve">
     <value>Python 코드 마이그레이션을 적용하기 전에 구성된 백업 위치({0})에 이 그래프의 백업을 저장했습니다.</value>
   </data>
+  <data name="CPythonMigrationBackupFileCreatedMessage" xml:space="preserve">
+    <value>Before updating, a backup file has been saved </value>
+  </data>
   <data name="RejectButtonTooltip" xml:space="preserve">
     <value>현재 코드 변경 사항을 거부합니다.</value>
   </data>
@@ -227,10 +230,10 @@ By clicking “Continue”, you are agreeing to implement the syntax changes to 
   <data name="CPython3NotificationShortMessage" xml:space="preserve">
     <value>이 그래프에는 더 이상 사용되지 않는 이전 CPython3 엔진을 사용하는 노드가 포함되어 있습니다. 새로운 PythonNet3가 구현되어 Python 편집기 내에서 액세스할 수 있습니다.</value>
   </data>
-  <data name="CPythonUpgradeToastMessagePlural" xml:space="preserve">
-    <value>{0}개의 CPython 노드가 Dynamo 4.0에서 실행되도록 PythonNet3으로 자동 변환되었습니다. CPython은 더 이상 지원되지 않습니다.</value>
+  <data name="PythonMigrationBackupFileCreatedHeader" xml:space="preserve">
+    <value>Backup graph has been saved</value>
   </data>
-  <data name="CPythonUpgradeToastMessageSingular" xml:space="preserve">
-    <value>1개의 CPython 노드가 Dynamo 4.0에서 실행되도록 PythonNet3으로 자동 변환되었습니다. CPython은 더 이상 지원되지 않습니다.</value>
+  <data name="CPythonUpgradeToastMessage" xml:space="preserve">
+    <value>{0} CPython node(s) and {1} custom node definition(s) have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported.</value>
   </data>
 </root>

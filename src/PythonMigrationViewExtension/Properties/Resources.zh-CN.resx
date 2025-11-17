@@ -200,6 +200,9 @@ By clicking “Continue”, you are agreeing to implement the syntax changes to 
   <data name="PythonMigrationBackupFileCreatedMessage" xml:space="preserve">
     <value>在应用 Python 代码移植之前，此图形的备份已保存到配置的备份位置: {0}</value>
   </data>
+  <data name="CPythonMigrationBackupFileCreatedMessage" xml:space="preserve">
+    <value>Before updating, a backup file has been saved </value>
+  </data>
   <data name="RejectButtonTooltip" xml:space="preserve">
     <value>拒绝当前代码更改。</value>
   </data>
@@ -227,10 +230,10 @@ By clicking “Continue”, you are agreeing to implement the syntax changes to 
   <data name="CPython3NotificationShortMessage" xml:space="preserve">
     <value>此图形当前包含使用已弃用的旧 CPython3 引擎的节点。新的 PythonNet3 已实现，并可在 Python 编辑器内访问。</value>
   </data>
-  <data name="CPythonUpgradeToastMessagePlural" xml:space="preserve">
-    <value>{0} CPython 节点已自动转换为 PythonNet3，可在 Dynamo 4.0 中运行。CPython 不再受支持。</value>
+  <data name="PythonMigrationBackupFileCreatedHeader" xml:space="preserve">
+    <value>Backup graph has been saved</value>
   </data>
-  <data name="CPythonUpgradeToastMessageSingular" xml:space="preserve">
-    <value>1 个 CPython 节点已自动转换为 PythonNet3，可在 Dynamo 4.0 中运行。CPython 不再受支持。</value>
+  <data name="CPythonUpgradeToastMessage" xml:space="preserve">
+    <value>{0} CPython node(s) and {1} custom node definition(s) have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported.</value>
   </data>
 </root>

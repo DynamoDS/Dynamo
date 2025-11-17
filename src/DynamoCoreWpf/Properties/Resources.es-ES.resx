@@ -3873,6 +3873,9 @@ Para abrir este gráfico en Dynamo 3.3–3.6.x, instale el paquete PythonNet des
   <data name="OfflineStatusTooltip" xml:space="preserve">
     <value>Sin conexión a Internet.</value>
   </data>
+  <data name="ToastHyperlinkPathText" xml:space="preserve">
+    <value>aquí</value>
+  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\ViewModels\Watch3D\compiledShaders\psDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
