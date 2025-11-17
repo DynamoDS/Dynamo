@@ -117,7 +117,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
             }
         }
 
-        internal void UpdateVisulaState()
+        internal void UpdateVisualState()
         {
             HeaderTextBlock.Visibility =
                 string.IsNullOrWhiteSpace(HeaderContent)
