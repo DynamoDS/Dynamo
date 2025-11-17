@@ -200,6 +200,9 @@ By clicking “Continue”, you are agreeing to implement the syntax changes to 
   <data name="PythonMigrationBackupFileCreatedMessage" xml:space="preserve">
     <value>Python コードのマイグレーションを適用する前の、このグラフのバックアップが、設定済みのバックアップ場所 {0} に保存されました。</value>
   </data>
+  <data name="CPythonMigrationBackupFileCreatedMessage" xml:space="preserve">
+    <value>Before updating, a backup file has been saved </value>
+  </data>
   <data name="RejectButtonTooltip" xml:space="preserve">
     <value>現在のコードの変更を拒否します。</value>
   </data>
@@ -227,10 +230,10 @@ By clicking “Continue”, you are agreeing to implement the syntax changes to 
   <data name="CPython3NotificationShortMessage" xml:space="preserve">
     <value>現在このグラフには、廃止された旧式の CPython3 エンジンを使用するノードが含まれています。新しい PythonNet3 が実装されており、Python エディタ内で利用可能です。</value>
   </data>
-  <data name="CPythonUpgradeToastMessagePlural" xml:space="preserve">
-    <value>{0} 個の CPython ノードは、Dynamo 4.0 で動作するように PythonNet3 に自動的に変換されています。CPython はサポートされなくなりました。</value>
+  <data name="PythonMigrationBackupFileCreatedHeader" xml:space="preserve">
+    <value>Backup graph has been saved</value>
   </data>
-  <data name="CPythonUpgradeToastMessageSingular" xml:space="preserve">
-    <value>1 個の CPython ノードは、Dynamo 4.0 で動作するように PythonNet3 に自動的に変換されています。CPython はサポートされなくなりました。</value>
+  <data name="CPythonUpgradeToastMessage" xml:space="preserve">
+    <value>{0} CPython node(s) and {1} custom node definition(s) have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported.</value>
   </data>
 </root>
