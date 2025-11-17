@@ -251,10 +251,7 @@ namespace Dynamo.PythonMigration
 
             SubscribeToWorkspaceEvents();
 
-            // Fresh per-workspace notification state
             CurrentWorkspace.HasShownPythonAutoMigrationNotification = false;
-
-            // Close any upgrade toast when switching tabs/workspaces.
             DynamoViewModel.ToastManager?.CloseRealTimeInfoWindow();
 
             if (previous != null)
@@ -266,18 +263,22 @@ namespace Dynamo.PythonMigration
             bool workspaceModified = false;
             if (CurrentWorkspace is HomeWorkspaceModel hws)
             {
-                if (lastWorkspaceGuid != hws.Guid)
+                if (DynamoModel.IsTestMode)
                 {
-                    // Track last home workspace to avoid duplicate work on the same one
+                    // In test mode, do not toggle RunType to avoid breaking auto-run expectations
+                    workspaceModified = MigrateCPythonNodesForWorkspace();
+                }
+                else if (lastWorkspaceGuid != hws.Guid)
+                {
                     lastWorkspaceGuid = hws.Guid;
 
-                    // Always switch to Manual before upgrading to avoid mutating during eval
+                    // Temporarily switch to Manual to avoid mutating during evaluation
                     var oldRunType = hws.RunSettings.RunType;                   
                     hws.RunSettings.RunType = RunType.Manual;
 
                     workspaceModified = MigrateCPythonNodesForWorkspace();
 
-                    System.Windows.Application.Current.Dispatcher.BeginInvoke(
+                    Dispatcher.BeginInvoke(
                         () => hws.RunSettings.RunType = oldRunType,
                         System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                 }
@@ -434,8 +435,8 @@ namespace Dynamo.PythonMigration
         #region Recompute Notifications        
 
         /// <summary>
-        /// Detects CPython3 usage in the current workspace, migratesthose nodes in memory
-        /// to PythonNet3, updates CPython notification UI, and returns true if any nodes were upgraded.
+        /// Scans the current workspace and any referenced custom nodes for CPython3 usage.
+        /// Upgrades matching nodes in-memory to PythonNet3. Returns true if any changes were made.
         /// </summary>
         private bool MigrateCPythonNodesForWorkspace()
         {
@@ -451,8 +452,7 @@ namespace Dynamo.PythonMigration
                 }                
             }
 
-            // If we are inside a custom node and it is already PythonNet3,
-            // clear any stale auto-upgrade banners left from a cached definition
+            // When opening a custom node workspace that is already PythonNet3, clear stale banners
             if (CurrentWorkspace is CustomNodeWorkspaceModel)
             {
                 foreach (var py in CurrentWorkspace.Nodes.OfType<PythonNode>()
@@ -462,7 +462,6 @@ namespace Dynamo.PythonMigration
                 }
             }
 
-            // Detect any direct CPythonNodes and custom node definitions with CPython nodes
             var usage = upgradeService.DetectPythonUsage(CurrentWorkspace, IsCPythonNode);
 
             // Migrate the direct CPython nodes in memory
