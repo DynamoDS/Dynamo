@@ -73,7 +73,7 @@
                         Orientation="Vertical"
                         Margin="0,5,0,5"
                         VerticalAlignment="Center">
-                <TextBlock x:Name ="HeaderTextBlock"
+                <TextBlock x:Name="HeaderTextBlock"
                            Text="{Binding HeaderContent}"
                            FontFamily="Artifakt Element"
                            FontSize="12"
@@ -90,7 +90,7 @@
                            VerticalAlignment="Center"
                            MaxWidth="200"
                            Foreground="White"/>
-                <TextBlock x:Name ="HyperlinkTextBlock"
+                <TextBlock x:Name="HyperlinkTextBlock"
                            FontFamily="Artifakt Element"
                            FontSize="12"
                            TextWrapping="WrapWithOverflow"
