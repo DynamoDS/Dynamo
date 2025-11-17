@@ -268,18 +268,22 @@ namespace Dynamo.PythonMigration
             bool workspaceModified = false;
             if (CurrentWorkspace is HomeWorkspaceModel hws)
             {
-                if (lastWorkspaceGuid != hws.Guid)
+                if (DynamoModel.IsTestMode)
                 {
-                    // Track last home workspace to avoid duplicate work on the same one
+                    // In test mode, do not toggle RunType or we’ll break auto-run expectations
+                    workspaceModified = MigrateCPythonNodesForWorkspace();
+                }
+                else if (lastWorkspaceGuid != hws.Guid)
+                {
                     lastWorkspaceGuid = hws.Guid;
 
                     // Always switch to Manual before upgrading to avoid mutating during eval
-                    var oldRunType = hws.RunSettings.RunType;                   
+                    var oldRunType = hws.RunSettings.RunType;
                     hws.RunSettings.RunType = RunType.Manual;
 
                     workspaceModified = MigrateCPythonNodesForWorkspace();
 
-                    System.Windows.Application.Current.Dispatcher.BeginInvoke(
+                    Dispatcher.BeginInvoke(
                         () => hws.RunSettings.RunType = oldRunType,
                         System.Windows.Threading.DispatcherPriority.ApplicationIdle);
                 }
