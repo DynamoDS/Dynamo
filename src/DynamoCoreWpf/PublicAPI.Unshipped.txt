@@ -3826,7 +3826,7 @@ Dynamo.Wpf.UI.MouseBehaviour.MouseY.get -> double
 Dynamo.Wpf.UI.MouseBehaviour.MouseY.set -> void
 Dynamo.Wpf.UI.ToastManager
 Dynamo.Wpf.UI.ToastManager.CloseRealTimeInfoWindow() -> void
-Dynamo.Wpf.UI.ToastManager.CreateRealTimeInfoWindow(string content, bool stayOpen = false, string headerText = "", string hyperlinkText = "", System.Uri hyperlinkUri = null, bool showFileLink = false, System.Uri fileLinkUri = null) -> void
+Dynamo.Wpf.UI.ToastManager.CreateRealTimeInfoWindow(string content, bool stayOpen = false, string headerText = "", string hyperlinkText = "", System.Uri hyperlinkUri = null, System.Uri fileLinkUri = null) -> void
 Dynamo.Wpf.UI.ToastManager.ToastManager(System.Windows.UIElement rootElement) -> void
 Dynamo.Wpf.UI.VisualConfigurations
 Dynamo.Wpf.Utilities.CompactBubbleHandler
@@ -4330,12 +4330,6 @@ Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkUri.get -> System.Uri
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkUri.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.InitializeComponent() -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.RealTimeInfoWindow() -> void
-Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowFileLink.get -> bool
-Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowFileLink.set -> void
-Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHeader.get -> bool
-Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHeader.set -> void
-Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHyperlink.get -> bool
-Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHyperlink.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.TextContent.get -> string
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.TextContent.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.UpdateLocation() -> void
