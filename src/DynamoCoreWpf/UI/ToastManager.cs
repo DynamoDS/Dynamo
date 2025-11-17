@@ -66,7 +66,7 @@ namespace Dynamo.Wpf.UI
 
             var showFileLink = !string.IsNullOrEmpty(fileLinkUri?.ToString());
             toastPopup.SetToastMessage(content, showFileLink, fileLinkUri);
-            toastPopup.UpdateVisulaState();
+            toastPopup.UpdateVisualState();
 
             if (hostUIElement != null)
                 toastPopup.PlacementTarget = hostUIElement;

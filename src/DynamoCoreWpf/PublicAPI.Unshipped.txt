@@ -3826,7 +3826,7 @@ Dynamo.Wpf.UI.MouseBehaviour.MouseY.get -> double
 Dynamo.Wpf.UI.MouseBehaviour.MouseY.set -> void
 Dynamo.Wpf.UI.ToastManager
 Dynamo.Wpf.UI.ToastManager.CloseRealTimeInfoWindow() -> void
-Dynamo.Wpf.UI.ToastManager.CreateRealTimeInfoWindow(string content, bool stayOpen = false, string headerText = "", string hyperlinkText = "", System.Uri hyperlinkUri = null, bool showFileLink = false, System.Uri fileLinkUri = null) -> void
+Dynamo.Wpf.UI.ToastManager.CreateRealTimeInfoWindow(string content, bool stayOpen = false, string headerText = "", string hyperlinkText = "", System.Uri hyperlinkUri = null, System.Uri fileLinkUri = null) -> void
 Dynamo.Wpf.UI.ToastManager.ToastManager(System.Windows.UIElement rootElement) -> void
 Dynamo.Wpf.UI.VisualConfigurations
 Dynamo.Wpf.Utilities.CompactBubbleHandler
