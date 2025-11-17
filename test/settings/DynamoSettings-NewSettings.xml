@@ -79,7 +79,7 @@
   <ShowTabsAndSpacesInScriptEditor>true</ShowTabsAndSpacesInScriptEditor>
   <EnableNodeAutoComplete>false</EnableNodeAutoComplete>
   <EnableNewNodeAutoCompleteUI>false</EnableNewNodeAutoCompleteUI>
-  <DefaultEnableLegacyPolyCurveBehavior>false</DefaultEnableLegacyPolyCurveBehavior>
+  <DefaultEnableLegacyPolyCurveBehavior>true</DefaultEnableLegacyPolyCurveBehavior>
   <HideNodesBelowSpecificConfidenceLevel>true</HideNodesBelowSpecificConfidenceLevel>
   <MLRecommendationConfidenceLevel>99</MLRecommendationConfidenceLevel>
   <MLRecommendationNumberOfResults>5</MLRecommendationNumberOfResults>
