@@ -197,6 +197,15 @@ namespace PythonNodeModelsWpf
             PythonUpgradeBar.Visibility = showForThisNode ? Visibility.Visible : Visibility.Collapsed;
         }
 
+        private void DismissPythonUpgradeBar()
+        {
+            if (NodeModel.ShowAutoUpgradedBar && NodeModel.EngineName != PythonEngineManager.PythonNet3EngineName)
+            {
+                NodeModel.ShowAutoUpgradedBar = false;
+                UpdatePythonUpgradeBar();
+            }
+        }
+
         private void PreferenceSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(PreferenceSettings.HideCPython3Notifications))
@@ -485,6 +494,7 @@ namespace PythonNodeModelsWpf
                 Dynamo.Logging.Actions.Save,
                 Dynamo.Logging.Categories.PythonOperations);
             IsSaved = true;
+            DismissPythonUpgradeBar();
         }
 
         private void OnRevertClicked(object sender, RoutedEventArgs e)
@@ -518,6 +528,7 @@ namespace PythonNodeModelsWpf
             {
                 dynamoViewModel.HomeSpace.Run();
             }
+            DismissPythonUpgradeBar();
 
             Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Run,

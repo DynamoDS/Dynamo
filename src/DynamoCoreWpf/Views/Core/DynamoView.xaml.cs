@@ -484,12 +484,15 @@ namespace Dynamo.Controls
             }
         }
 
-        private void OnPythonEngineUpgradeToastRequested(string msg, bool stayOpen)
+        private void OnPythonEngineUpgradeToastRequested(string msg, bool stayOpen, string filePath)
         {
             Dispatcher.BeginInvoke(
                 System.Windows.Threading.DispatcherPriority.ContextIdle,
                 new Action(() =>
                 {
+                    Uri fileUri = null;
+                    var hasFile = !string.IsNullOrWhiteSpace(filePath) && Uri.TryCreate(filePath, UriKind.Absolute, out fileUri);
+
                     dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(
                         msg,
                         stayOpen,
@@ -497,7 +500,9 @@ namespace Dynamo.Controls
                         headerText: Res.CPython3EngineNotificationMessageBoxHeader,
                         showHyperlink: true,
                         hyperlinkText: Res.LearnMore,
-                        hyperlinkUri: new Uri(Res.CPython3EngineUpgradeLearnMoreUri));
+                        hyperlinkUri: new Uri(Res.CPython3EngineUpgradeLearnMoreUri),
+                        showFileLink: hasFile,
+                        fileLinkUri: hasFile ? fileUri : null);
                 }));
         }
 
@@ -2208,6 +2213,9 @@ namespace Dynamo.Controls
             dynamoViewModel.RequestUserSaveWorkflow -= DynamoViewModelRequestUserSaveWorkflow;
             GuideFlowEvents.GuidedTourStart -= GuideFlowEvents_GuidedTourStart;
 
+            dynamoViewModel.RequestPythonEngineChangeNotice -= DynamoViewModel_RequestPythonEngineChangeNotice;
+            dynamoViewModel.PythonEngineUpgradeToastRequested -= OnPythonEngineUpgradeToastRequested;
+            
             if (graphPropsExtensionMenuItem != null)
             {
                 graphPropsExtensionMenuItem.Checked -= OnGraphMetadataChecked;
