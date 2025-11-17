@@ -140,6 +140,11 @@ namespace UI.Prompts
         // Upon inspection, both windows are direct children of the Dynamo process with no visual tree relationship
         private DynamoView GetDynamoView()
         {
+            if (Application.Current == null)
+            {
+                return null;
+            }
+
             foreach (Window window in Application.Current.Windows)
             {
                 if (window is DynamoView dynamoView)
