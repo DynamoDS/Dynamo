@@ -332,7 +332,7 @@ namespace PythonNodeModelsWpf
                     PythonEngineManager.PythonNet3EngineName)
                 : String.Format(
                     PythonNodeModels.Properties.Resources.PythonScriptEditorMigrationAssistantButtonDisabledTooltip,
-                    PythonEngineManager.CPython3EngineName);
+                    PythonEngineManager.PythonNet3EngineName);
             tooltip.Content = message;
         }
 
