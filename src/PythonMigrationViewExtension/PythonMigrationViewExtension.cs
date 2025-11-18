@@ -277,10 +277,13 @@ namespace Dynamo.PythonMigration
                 return;
             }
 
-            upgradeService.SaveMigrationBackup(
-                CurrentWorkspace,
-                CurrentWorkspace.FileName,
-                PythonEngineManager.CPython3EngineName);
+            if (!string.IsNullOrEmpty(CurrentWorkspace.FileName))
+            {
+                upgradeService.SaveMigrationBackup(
+                    CurrentWorkspace,
+                    CurrentWorkspace.FileName,
+                    PythonEngineManager.CPython3EngineName);
+            }            
 
             if (CurrentWorkspace is HomeWorkspaceModel hws)
             {
