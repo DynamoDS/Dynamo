@@ -81,8 +81,8 @@
                            MaxWidth="200"
                            Foreground="White"
                            Visibility="{Binding ShowHeader, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Collapse}"/>
-                <TextBlock SizeChanged="TextBlock_SizeChanged"
-                           Text="{Binding TextContent}"
+                <TextBlock x:Name="MessageTextBlock"
+                           SizeChanged="TextBlock_SizeChanged"
                            FontFamily="Artifakt Element"
                            FontSize="12"
                            TextWrapping="WrapWithOverflow"

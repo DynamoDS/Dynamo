@@ -2171,7 +2171,7 @@ Dynamo.ViewModels.DynamoViewModel.PublishNewPackageCommand.get -> Dynamo.UI.Comm
 Dynamo.ViewModels.DynamoViewModel.PublishNewPackageCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.PublishSelectedNodesCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.PublishSelectedNodesCommand.set -> void
-Dynamo.ViewModels.DynamoViewModel.PythonEngineUpgradeToastRequested -> System.Action<string, bool>
+Dynamo.ViewModels.DynamoViewModel.PythonEngineUpgradeToastRequested -> System.Action<string, bool, string>
 Dynamo.ViewModels.DynamoViewModel.RecentFiles.get -> System.Collections.ObjectModel.ObservableCollection<string>
 Dynamo.ViewModels.DynamoViewModel.RecentFiles.set -> void
 Dynamo.ViewModels.DynamoViewModel.RedoCommand.get -> Dynamo.UI.Commands.DelegateCommand
@@ -2210,11 +2210,11 @@ Dynamo.ViewModels.DynamoViewModel.ScaleFactorLog.set -> void
 Dynamo.ViewModels.DynamoViewModel.SelectAll(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.SelectAllCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.SelectAllCommand.set -> void
-Dynamo.ViewModels.DynamoViewModel.ShowPythonEngineUpgradeCanvasToast(string message, bool stayOpen = true) -> void
 Dynamo.ViewModels.DynamoViewModel.ShowGraphPropertiesCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.ShowGraphPropertiesCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.ToastManager.get -> Dynamo.Wpf.UI.ToastManager
 Dynamo.ViewModels.DynamoViewModel.ToastManager.set -> void
+Dynamo.ViewModels.DynamoViewModel.ShowPythonEngineUpgradeCanvasToast(string message, bool stayOpen = true, string filePath = null) -> void
 Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubbles(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubblesCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubblesCommand.set -> void
@@ -3826,7 +3826,7 @@ Dynamo.Wpf.UI.MouseBehaviour.MouseY.get -> double
 Dynamo.Wpf.UI.MouseBehaviour.MouseY.set -> void
 Dynamo.Wpf.UI.ToastManager
 Dynamo.Wpf.UI.ToastManager.CloseRealTimeInfoWindow() -> void
-Dynamo.Wpf.UI.ToastManager.CreateRealTimeInfoWindow(string content, bool stayOpen = false, bool showHeader = false, string headerText = "", bool showHyperlink = false, string hyperlinkText = "", System.Uri hyperlinkUri = null) -> void
+Dynamo.Wpf.UI.ToastManager.CreateRealTimeInfoWindow(string content, bool stayOpen = false, bool showHeader = false, string headerText = "", bool showHyperlink = false, string hyperlinkText = "", System.Uri hyperlinkUri = null, bool showFileLink = false, System.Uri fileLinkUri = null) -> void
 Dynamo.Wpf.UI.ToastManager.ToastManager(System.Windows.UIElement rootElement) -> void
 Dynamo.Wpf.UI.VisualConfigurations
 Dynamo.Wpf.Utilities.CompactBubbleHandler
@@ -4320,6 +4320,8 @@ Dynamo.Wpf.Views.GuidedTour.RatingControl.RatingControl() -> void
 Dynamo.Wpf.Views.GuidedTour.RatingControl.Value.get -> int
 Dynamo.Wpf.Views.GuidedTour.RatingControl.Value.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.FileLinkUri.get -> System.Uri
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.FileLinkUri.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HeaderContent.get -> string
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HeaderContent.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkText.get -> string
@@ -4328,6 +4330,8 @@ Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkUri.get -> System.Uri
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkUri.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.InitializeComponent() -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.RealTimeInfoWindow() -> void
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowFileLink.get -> bool
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowFileLink.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHeader.get -> bool
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHeader.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHyperlink.get -> bool
@@ -5744,6 +5748,7 @@ static Dynamo.Wpf.Properties.Resources.TermsOfUseDeclineButton.get -> string
 static Dynamo.Wpf.Properties.Resources.TermsOfUseViewTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.TitleFileInUse.get -> string
 static Dynamo.Wpf.Properties.Resources.TitlePackageTargetOtherHost.get -> string
+static Dynamo.Wpf.Properties.Resources.ToastHyperlinkPathText.get -> string
 static Dynamo.Wpf.Properties.Resources.TooltipCurrentIndex.get -> string
 static Dynamo.Wpf.Properties.Resources.TourLabelProgressText.get -> string
 static Dynamo.Wpf.Properties.Resources.TrustedLocationNotAccessible.get -> string
