@@ -202,7 +202,7 @@
     <value>インデント タブをスペースに変換...</value>
   </data>
   <data name="PythonScriptEditorMigrationAssistantButtonTooltip" xml:space="preserve">
-    <value>Convert script to {0}...</value>
+    <value>スクリプトを {0} に変換します...</value>
   </data>
   <data name="PythonSearchTags" xml:space="preserve">
     <value>IronPython;PythonNet3;</value>
@@ -223,6 +223,6 @@
     <value>Python エンジンを PythonNet3 に更新してください</value>
   </data>
   <data name="PythonScriptEditorMigrationAssistantButtonDisabledTooltip" xml:space="preserve">
-    <value>Python engine has been updated to {0}. No conversion should be necessary. If the script shows errors from old IronPython2 syntax, switch the engine back to IronPython2 to re-enable the converter.</value>
+    <value>Python エンジンは {0} に更新されました。変換は必要ありません。スクリプトに旧式の IronPython2 構文のエラーが表示される場合は、エンジンを IronPython2 に戻してコンバータを再度有効にしてください。</value>
   </data>
 </root>

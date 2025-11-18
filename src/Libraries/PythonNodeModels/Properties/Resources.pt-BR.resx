@@ -202,7 +202,7 @@
     <value>Converter tabulações de indentação em espaços...</value>
   </data>
   <data name="PythonScriptEditorMigrationAssistantButtonTooltip" xml:space="preserve">
-    <value>Convert script to {0}...</value>
+    <value>Converter script em {0}...</value>
   </data>
   <data name="PythonSearchTags" xml:space="preserve">
     <value>IronPython;PythonNet3;</value>
@@ -223,6 +223,6 @@
     <value>Atualize o mecanismo Python para PythonNet3</value>
   </data>
   <data name="PythonScriptEditorMigrationAssistantButtonDisabledTooltip" xml:space="preserve">
-    <value>Python engine has been updated to {0}. No conversion should be necessary. If the script shows errors from old IronPython2 syntax, switch the engine back to IronPython2 to re-enable the converter.</value>
+    <value>O mecanismo Python foi atualizado para {0}. Nenhuma conversão necessária. Se o script mostrar erros da sintaxe antiga do IronPython2, mude o mecanismo de volta para o IronPython2 para reativar o conversor.</value>
   </data>
 </root>
