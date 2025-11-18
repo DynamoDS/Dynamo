@@ -286,14 +286,21 @@ namespace Dynamo.GraphNodeManager
         internal void NodeSelect(object obj)
         {
             var nodeViewModel = obj as GridNodeViewModel;
-            if (nodeViewModel == null) return;
+            if (nodeViewModel == null || nodeViewModel.NodeModel == null) return;
 
-            // Select
-            var command = new DynamoModel.SelectModelCommand(nodeViewModel.NodeModel.GUID, ModifierKeys.None);  
-            commandExecutive.ExecuteCommand(command, uniqueId, "GraphNodeManager");
+            try
+            {
+                // Select
+                var command = new DynamoModel.SelectModelCommand(nodeViewModel.NodeModel.GUID, ModifierKeys.None);
+                commandExecutive.ExecuteCommand(command, uniqueId, "GraphNodeManager");
 
-            // Focus on selected
-            viewModelCommandExecutive.FocusNodeCommand(nodeViewModel.NodeModel.GUID.ToString());
+                // Focus on selected
+                viewModelCommandExecutive.FocusNodeCommand(nodeViewModel.NodeModel.GUID.ToString());
+            }
+            catch
+            {
+                return;
+            }
         }
 
         /// <summary>
