@@ -202,7 +202,7 @@
     <value>Przekształć znaki tabulacji w spacje...</value>
   </data>
   <data name="PythonScriptEditorMigrationAssistantButtonTooltip" xml:space="preserve">
-    <value>Convert script to {0}...</value>
+    <value>Przekonwertuj skrypt na język {0}...</value>
   </data>
   <data name="PythonSearchTags" xml:space="preserve">
     <value>IronPython;PythonNet3;</value>
@@ -223,6 +223,6 @@
     <value>Zaktualizuj aparat języka Python do wersji PythonNet3</value>
   </data>
   <data name="PythonScriptEditorMigrationAssistantButtonDisabledTooltip" xml:space="preserve">
-    <value>Python engine has been updated to {0}. No conversion should be necessary. If the script shows errors from old IronPython2 syntax, switch the engine back to IronPython2 to re-enable the converter.</value>
+    <value>Aparat języka Python został zaktualizowany do wersji {0}. Nie trzeba nic przekształcać. Jeśli w skrypcie występują błędy starej składni IronPython2, przełącz aparat z powrotem na tę wersję, aby ponownie włączyć konwerter.</value>
   </data>
 </root>

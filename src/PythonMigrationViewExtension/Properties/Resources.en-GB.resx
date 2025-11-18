@@ -200,6 +200,9 @@ By clicking “Continue”, you are agreeing to implement the syntax changes to 
   <data name="PythonMigrationBackupFileCreatedMessage" xml:space="preserve">
     <value>Before applying the Python code migration, a backup of this graph has been saved to the configured backup location : {0}</value>
   </data>
+  <data name="CPythonMigrationBackupFileCreatedMessage" xml:space="preserve">
+    <value>Before updating, a backup file has been saved </value>
+  </data>
   <data name="RejectButtonTooltip" xml:space="preserve">
     <value>Reject the current code changes.</value>
   </data>
@@ -227,10 +230,10 @@ By clicking “Continue”, you are agreeing to implement the syntax changes to 
   <data name="CPython3NotificationShortMessage" xml:space="preserve">
     <value>This graph currently contains nodes that are using the old CPython3 engine which has been deprecated. A new PythonNet3 has been implemented and is accessible inside the Python editor.</value>
   </data>
-  <data name="CPythonUpgradeToastMessagePlural" xml:space="preserve">
-    <value>{0} CPython nodes have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported.</value>
+  <data name="PythonMigrationBackupFileCreatedHeader" xml:space="preserve">
+    <value>Backup graph has been saved</value>
   </data>
-  <data name="CPythonUpgradeToastMessageSingular" xml:space="preserve">
-    <value>1 CPython node has been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported.</value>
+  <data name="CPythonUpgradeToastMessage" xml:space="preserve">
+    <value>{0} CPython node(s) and {1} custom node definition(s) have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported.</value>
   </data>
 </root>
