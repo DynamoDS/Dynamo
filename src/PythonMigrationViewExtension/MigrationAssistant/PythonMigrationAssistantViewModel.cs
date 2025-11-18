@@ -116,7 +116,8 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             if (File.Exists(path))
                 return;
 
-            this.workspace.Save(path, true);
+            var json = workspace.GetStringRepOfWorkspace();
+            File.WriteAllText(path, json);
 
             // notify user a backup file has been created
             if (!Models.DynamoModel.IsTestMode)

@@ -136,7 +136,7 @@ namespace Dynamo.Models.Migration.Python
                 {
                     if (!TryGetCustomIdAndPath(workspace, out var defId, out var dyfPath) || string.IsNullOrEmpty(dyfPath)) continue;
 
-                    SaveCustomNodeBackup(workspace, dyfPath, PythonServices.PythonEngineManager.CPython3EngineName);
+                    SaveMigrationBackup(workspace, dyfPath, PythonServices.PythonEngineManager.CPython3EngineName);
 
                     var upgraded = SwitchDyfPythonEngineInPlace(
                         dyfPath,
@@ -159,7 +159,7 @@ namespace Dynamo.Models.Migration.Python
         /// <summary>
         /// Build a backup file path for a .dyn or .dyf backup
         /// </summary>
-        public string BuildDynBackupFilePath(WorkspaceModel workspace, string token)
+        public string BuildBackupFilePath(WorkspaceModel workspace, string token)
         {
             if (workspace == null || pathManager == null) return null;
             if (DynamoModel.IsTestMode) return null;
@@ -177,31 +177,11 @@ namespace Dynamo.Models.Migration.Python
         }
 
         /// <summary>
-        /// Save a .dyn backup of the given workspace with the given token.
-        /// </summary>
-        public string SaveGraphBackup(WorkspaceModel workspace, string token)
-        {
-            var path = BuildDynBackupFilePath(workspace, token);
-            if (string.IsNullOrEmpty(path)) return null;
-
-            try
-            {
-                workspace.Save(path, true);
-                return path;
-            }
-            catch (Exception ex)
-            {
-                this.dynamoModel?.Logger?.Log(ex);
-                return null;
-            }
-        }
-
-        /// <summary>
         /// Save a .dyf backup of the given custom node workspace before engine upgrade.
         /// </summary>
-        private string SaveCustomNodeBackup(WorkspaceModel workspace, string sourcePath, string token) 
+        internal string SaveMigrationBackup(WorkspaceModel workspace, string sourcePath, string token) 
         {
-            var backupPath = BuildDynBackupFilePath(workspace, token);
+            var backupPath = BuildBackupFilePath(workspace, token);
             if (string.IsNullOrEmpty(backupPath)) return null;
 
             try
