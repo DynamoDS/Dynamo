@@ -179,20 +179,24 @@ namespace Dynamo.Models.Migration.Python
         /// <summary>
         /// Save a .dyf backup of the given custom node workspace before engine upgrade.
         /// </summary>
-        internal string SaveMigrationBackup(WorkspaceModel workspace, string sourcePath, string token) 
+        internal void SaveMigrationBackup(WorkspaceModel workspace, string sourcePath, string token) 
         {
             var backupPath = BuildBackupFilePath(workspace, token);
-            if (string.IsNullOrEmpty(backupPath)) return null;
+            if (string.IsNullOrEmpty(backupPath)) return;
 
             try
             {
+                var dir = Path.GetDirectoryName(backupPath);
+                if (!string.IsNullOrEmpty(dir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
+
                 File.Copy(sourcePath, backupPath);
-                return backupPath;
             }
             catch (Exception ex)
             {
                 this.dynamoModel?.Logger?.Log(ex);
-                return null;
             }
         }
 

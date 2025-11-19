@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using DiffPlex.DiffBuilder;
 using DiffPlex.DiffBuilder.Model;
@@ -117,7 +118,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
                 return;
 
             var json = workspace.GetStringRepOfWorkspace();
-            File.WriteAllText(path, json);
+            _ = Task.Run(() => File.WriteAllText(path, json));
 
             // notify user a backup file has been created
             if (!Models.DynamoModel.IsTestMode)
