@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows;
 using DiffPlex.DiffBuilder;
 using DiffPlex.DiffBuilder.Model;
@@ -114,11 +113,16 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         {
             // only create a backup file the first time a migration is performed on this graph/custom node file
             var path = GetPythonMigrationBackupPath();
-            if (File.Exists(path))
-                return;
+            if (File.Exists(path)) return;
+
+            var dir = Path.GetDirectoryName(path);
+            if (!string.IsNullOrEmpty(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
 
             var json = workspace.GetStringRepOfWorkspace();
-            _ = Task.Run(() => File.WriteAllText(path, json));
+            File.WriteAllText(path, json);
 
             // notify user a backup file has been created
             if (!Models.DynamoModel.IsTestMode)
