@@ -21,21 +21,6 @@ namespace Dynamo.Wpf.Views.GuidedTour
         public string TextContent { get; set; }
 
         /// <summary>
-        /// This property indicates if the Hyperlink will be shown in the RealTimeInfo window
-        /// </summary>
-        public bool ShowHyperlink { get; set; }
-
-        /// <summary>
-        /// This property indicates if the file link will be shown in the RealTimeInfo window
-        /// </summary>
-        public bool ShowFileLink { get; set; }
-
-        /// <summary>
-        /// This property indicates if the Header will be shown in the RealTimeInfo window
-        /// </summary>
-        public bool ShowHeader { get; set; }
-
-        /// <summary>
         /// This property contains the text that will be shown in the Hyperlink
         /// </summary>
         public string HyperlinkText { get; set; }
@@ -91,7 +76,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
         }
         private void TextBlock_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-                BorderLine.Y2 = PopupGrid.ActualHeight /*+ ((TextBlock)sender).Margin.Bottom*/;
+            BorderLine.Y2 = PopupGrid.ActualHeight /*+ ((TextBlock)sender).Margin.Bottom*/;
         }
 
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
@@ -130,6 +115,19 @@ namespace Dynamo.Wpf.Views.GuidedTour
                 MessageTextBlock.Inlines.Add(fileLink);
                 MessageTextBlock.Inlines.Add(new Run("."));
             }
+        }
+
+        internal void UpdateVisualState()
+        {
+            HeaderTextBlock.Visibility =
+                string.IsNullOrWhiteSpace(HeaderContent)
+                ? Visibility.Collapsed
+                : Visibility.Visible;
+
+            HyperlinkTextBlock.Visibility =
+                string.IsNullOrWhiteSpace(HyperlinkText)
+                ? Visibility.Collapsed
+                : Visibility.Visible;
         }
     }
 }

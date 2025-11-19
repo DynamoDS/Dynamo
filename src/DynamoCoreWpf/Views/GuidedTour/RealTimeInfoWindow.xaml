@@ -73,14 +73,15 @@
                         Orientation="Vertical"
                         Margin="0,5,0,5"
                         VerticalAlignment="Center">
-                <TextBlock Text="{Binding HeaderContent}"
+                <TextBlock x:Name="HeaderTextBlock"
+                           Text="{Binding HeaderContent}"
                            FontFamily="Artifakt Element"
                            FontSize="12"
                            FontWeight="Bold"
                            TextWrapping="WrapWithOverflow"
                            MaxWidth="200"
                            Foreground="White"
-                           Visibility="{Binding ShowHeader, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Collapse}"/>
+                           Visibility="Collapsed"/>
                 <TextBlock x:Name="MessageTextBlock"
                            SizeChanged="TextBlock_SizeChanged"
                            FontFamily="Artifakt Element"
@@ -89,12 +90,13 @@
                            VerticalAlignment="Center"
                            MaxWidth="200"
                            Foreground="White"/>
-                <TextBlock FontFamily="Artifakt Element"
+                <TextBlock x:Name="HyperlinkTextBlock"
+                           FontFamily="Artifakt Element"
                            FontSize="12"
                            TextWrapping="WrapWithOverflow"
                            VerticalAlignment="Center"
                            MaxWidth="200"
-                           Visibility="{Binding ShowHyperlink, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Collapse}" >
+                           Visibility="Collapsed" >
                     <Hyperlink NavigateUri="{Binding HyperlinkUri}"
                                RequestNavigate="Hyperlink_RequestNavigate"
                                Foreground="{StaticResource TextBlockLinkForegroundColor}"
