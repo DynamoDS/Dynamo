@@ -113,10 +113,16 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         {
             // only create a backup file the first time a migration is performed on this graph/custom node file
             var path = GetPythonMigrationBackupPath();
-            if (File.Exists(path))
-                return;
+            if (File.Exists(path)) return;
 
-            this.workspace.Save(path, true);
+            var dir = Path.GetDirectoryName(path);
+            if (!string.IsNullOrEmpty(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
+            var json = workspace.GetStringRepOfWorkspace();
+            File.WriteAllText(path, json);
 
             // notify user a backup file has been created
             if (!Models.DynamoModel.IsTestMode)
