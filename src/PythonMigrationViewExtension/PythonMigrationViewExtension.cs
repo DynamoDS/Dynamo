@@ -236,7 +236,7 @@ namespace Dynamo.PythonMigration
                     if (workspace == null) return;
                     {
                         upgradeService.CustomToastShownDef.Remove(defId);
-                    }                    
+                    }
                 }
             }
         }
@@ -273,7 +273,7 @@ namespace Dynamo.PythonMigration
                     lastWorkspaceGuid = hws.Guid;
 
                     // Temporarily switch to Manual to avoid mutating during evaluation
-                    var oldRunType = hws.RunSettings.RunType;                   
+                    var oldRunType = hws.RunSettings.RunType;
                     hws.RunSettings.RunType = RunType.Manual;
 
                     workspaceModified = MigrateCPythonNodesForWorkspace();
@@ -432,7 +432,7 @@ namespace Dynamo.PythonMigration
 
         #endregion
 
-        #region Recompute Notifications        
+        #region Recompute Notifications
 
         /// <summary>
         /// Scans the current workspace and any referenced custom nodes for CPython3 usage.
@@ -449,7 +449,7 @@ namespace Dynamo.PythonMigration
                 {
                     CurrentWorkspace.ShowPythonAutoMigrationNotifications = false;
                     return false;
-                }                
+                }
             }
 
             // When opening a custom node workspace that is already PythonNet3, clear stale banners
@@ -478,7 +478,7 @@ namespace Dynamo.PythonMigration
             {
                 var workspace = upgradeService.TryGetFunctionWorkspace(DynamoViewModel.Model, defId) as WorkspaceModel;
                 if (workspace != null)
-                {                    
+                {
                     var inner = upgradeService.DetectPythonUsage(workspace, IsCPythonNode);
 
                     if (inner.DirectPythonNodes.Any())

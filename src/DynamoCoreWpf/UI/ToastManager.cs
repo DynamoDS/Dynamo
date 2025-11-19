@@ -31,7 +31,9 @@ namespace Dynamo.Wpf.UI
         /// and display message passed as param
         /// </summary>
         /// <param name="content">The target content to display.</param>
-        /// <param name="stayOpen">boolean indicates if the popup will stay open until user dismiss it.</param>
+        /// <param name="stayOpen">
+        /// boolean indicates if the popup will stay open until user dismiss it
+        /// note: all toasts are still auto-closed after a certain duration.</param>
         /// <param name="headerText">The header text to display.</param>
         /// <param name="hyperlinkText">The hyperlink text to display.</param>
         /// <param name="hyperlinkUri">The hyperlink uri to navigate to.</param>
