@@ -191,8 +191,8 @@ namespace PythonNodeModelsWpf
 
         private void UpdatePythonUpgradeBar()
         {
-            var hide = dynamoViewModel.PreferenceSettings.HideCPython3Notifications == true;
-            var showForThisNode = NodeModel.ShowAutoUpgradedBar && !hide;
+            var showForThisNode = NodeModel.ShowAutoUpgradedBar
+                && dynamoViewModel.PreferenceSettings.ShowPythonAutoMigrationNotifications;
 
             PythonUpgradeBar.Visibility = showForThisNode ? Visibility.Visible : Visibility.Collapsed;
         }
@@ -208,7 +208,7 @@ namespace PythonNodeModelsWpf
 
         private void PreferenceSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(PreferenceSettings.HideCPython3Notifications))
+            if (e.PropertyName == nameof(PreferenceSettings.ShowPythonAutoMigrationNotifications))
             {
                 UpdatePythonUpgradeBar();
             }
