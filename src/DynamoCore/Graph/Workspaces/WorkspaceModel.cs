@@ -307,7 +307,7 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         /// Flag to indicate whether the CPython notification has been shown once.
         /// </summary>
-        internal bool HasShownCPythonNotification;
+        internal bool HasShownPythonAutoMigrationNotification;
 
         /// <summary>
         /// Whether or not to delay graph execution.
@@ -1395,7 +1395,7 @@ namespace Dynamo.Graph.Workspaces
         /// on save/close. Runtime-only (not serialized) and reset on workspace switch.
         /// </summary>
         [JsonIgnore]
-        public bool ShowCPythonNotifications { get; internal set; }
+        public bool ShowPythonAutoMigrationNotifications { get; internal set; }
 
         #endregion
 
