@@ -3128,8 +3128,8 @@ namespace Dynamo.ViewModels
             var currentWorkspace = vm.Model.CurrentWorkspace;
 
             // First-time CPython notice when saving a *new, unsaved* Home workspace
-            if (currentWorkspace.ShowCPythonNotifications
-                && !currentWorkspace.HasShownCPythonNotification)
+            if (currentWorkspace.ShowPythonAutoMigrationNotifications
+                && !currentWorkspace.HasShownPythonAutoMigrationNotification)
             {
                 var cancel = RaiseRequestPythonEngineChangeNotice();
                 if (cancel) return;
@@ -3509,7 +3509,7 @@ namespace Dynamo.ViewModels
             if (!HomeSpace.HasUnsavedChanges || AskUserToSaveWorkspaceOrCancel(HomeSpace))
             {
                 // Reset the one-time CPython notification flag
-                HomeSpace.HasShownCPythonNotification = false;
+                HomeSpace.HasShownPythonAutoMigrationNotification = false;
 
                 Model.CurrentWorkspace = HomeSpace;
 

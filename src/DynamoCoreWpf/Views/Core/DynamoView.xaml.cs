@@ -498,12 +498,9 @@ namespace Dynamo.Controls
                     dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(
                         msg,
                         stayOpen,
-                        showHeader: true,
                         headerText: Res.CPython3EngineNotificationMessageBoxHeader,
-                        showHyperlink: true,
                         hyperlinkText: Res.LearnMore,
                         hyperlinkUri: new Uri(Res.CPython3EngineUpgradeLearnMoreUri),
-                        showFileLink: hasFile,
                         fileLinkUri: hasFile ? fileUri : null);
                 }));
         }
@@ -1758,7 +1755,7 @@ namespace Dynamo.Controls
 
             // Show the one-time Python Engine Change notification for the workspace
             var ws = dynamoViewModel.Model.CurrentWorkspace;
-            if (!ws.HasShownCPythonNotification && ws.ShowCPythonNotifications)
+            if (!ws.HasShownPythonAutoMigrationNotification && ws.ShowPythonAutoMigrationNotifications)
             {
                 var cancelFirstDialogBox = ShowPythonEngineChangeNoticeAndMarkIfProceed();
                 if (cancelFirstDialogBox)
@@ -1800,7 +1797,7 @@ namespace Dynamo.Controls
         private bool ShowPythonEngineChangeNoticeAndMarkIfProceed()
         {
             var ws = dynamoViewModel.Model.CurrentWorkspace;
-            if (!(ws is HomeWorkspaceModel) && !(string.IsNullOrEmpty(ws?.FileName)) && ws.HasShownCPythonNotification) return false;
+            if (!(ws is HomeWorkspaceModel) && !(string.IsNullOrEmpty(ws?.FileName)) && ws.HasShownPythonAutoMigrationNotification) return false;
 
             bool dontShowAgain;
 
@@ -1815,12 +1812,12 @@ namespace Dynamo.Controls
                 isChecked: out dontShowAgain);
 
             // Update preference to not show again if checked
-            dynamoViewModel.Model.PreferenceSettings.HideCPython3Notifications = dontShowAgain;
+            dynamoViewModel.Model.PreferenceSettings.ShowPythonAutoMigrationNotifications = !dontShowAgain;
 
             // First button (Yes) is "OK"
             if (result == MessageBoxResult.Yes)
             {
-                ws.HasShownCPythonNotification = true;
+                ws.HasShownPythonAutoMigrationNotification = true;
                 return false;
             }
             // Second button (No) is "Learn more"

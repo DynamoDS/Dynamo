@@ -2876,10 +2876,10 @@ Dynamo.ViewModels.PreferencesViewModel.Filters.get -> System.Collections.ObjectM
 Dynamo.ViewModels.PreferencesViewModel.GroupStyleFontSizeList.get -> System.Collections.ObjectModel.ObservableCollection<int>
 Dynamo.ViewModels.PreferencesViewModel.GroupStyleFontSizeList.set -> void
 Dynamo.ViewModels.PreferencesViewModel.HideAutocompleteMethodOptions.get -> bool
-Dynamo.ViewModels.PreferencesViewModel.HideCPythonNotificationIsChecked.get -> bool
-Dynamo.ViewModels.PreferencesViewModel.HideCPythonNotificationIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.HideNodesBelowSpecificConfidenceLevelIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.HideNodesBelowSpecificConfidenceLevelIsChecked.set -> void
+Dynamo.ViewModels.PreferencesViewModel.HidePythonAutoMigrationNotificationIsChecked.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.HidePythonAutoMigrationNotificationIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.HostGenericScaleUnits.get -> string
 Dynamo.ViewModels.PreferencesViewModel.importSettings(string filePath) -> bool
 Dynamo.ViewModels.PreferencesViewModel.importSettingsContent(string content) -> bool
@@ -3826,7 +3826,7 @@ Dynamo.Wpf.UI.MouseBehaviour.MouseY.get -> double
 Dynamo.Wpf.UI.MouseBehaviour.MouseY.set -> void
 Dynamo.Wpf.UI.ToastManager
 Dynamo.Wpf.UI.ToastManager.CloseRealTimeInfoWindow() -> void
-Dynamo.Wpf.UI.ToastManager.CreateRealTimeInfoWindow(string content, bool stayOpen = false, bool showHeader = false, string headerText = "", bool showHyperlink = false, string hyperlinkText = "", System.Uri hyperlinkUri = null, bool showFileLink = false, System.Uri fileLinkUri = null) -> void
+Dynamo.Wpf.UI.ToastManager.CreateRealTimeInfoWindow(string content, bool stayOpen = false, string headerText = "", string hyperlinkText = "", System.Uri hyperlinkUri = null, System.Uri fileLinkUri = null) -> void
 Dynamo.Wpf.UI.ToastManager.ToastManager(System.Windows.UIElement rootElement) -> void
 Dynamo.Wpf.UI.VisualConfigurations
 Dynamo.Wpf.Utilities.CompactBubbleHandler
@@ -4330,12 +4330,6 @@ Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkUri.get -> System.Uri
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkUri.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.InitializeComponent() -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.RealTimeInfoWindow() -> void
-Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowFileLink.get -> bool
-Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowFileLink.set -> void
-Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHeader.get -> bool
-Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHeader.set -> void
-Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHyperlink.get -> bool
-Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.ShowHyperlink.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.TextContent.get -> string
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.TextContent.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.UpdateLocation() -> void
