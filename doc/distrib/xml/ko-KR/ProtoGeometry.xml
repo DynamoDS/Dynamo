@@ -482,669 +482,6 @@
         <member name="P:Autodesk.DesignScript.Geometry.Cuboid.Height">
             <summary>높이 거리를 반환합니다.                         주: 이 함수는 실제 표준 공간 치수가 아니라 직육면체의 입력 치수를 반환합니다. 다시 말해, 폭(X축) 길이가 10인 직육면체를 만들어 X 축척을 두 배로 하여 CoordinateSystem으로 변환해도 폭은 여전히 10입니다. ASM에서는 예측 가능한 순서로 본체의 정점을 추출할 수 없으므로 변환 후 치수를 결정할 수 없습니다.</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ToString">
-            <summary>Curve의 문자열 표현을 가져옵니다</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByParameterLineOnSurface(Autodesk.DesignScript.Geometry.Surface,Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
-            <summary>uv 공간에서 표면의 선으로 곡선을 만듭니다</summary>
-            <param name="baseSurface">사용할 표면</param>
-            <param name="startParams">곡선이 시작되는 시작 UV</param>
-            <param name="endParams">곡선이 종료되는 끝 UV</param>
-            <returns>표면의 시작 및 끝 매개변수에 있는 곡선</returns>
-            <search>
-            isocurve,curvebyuv,lines,uvs
-            </search>
-            <weights>
-            0.5,0.5,0.4,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByBlendBetweenCurves(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean,System.Boolean,System.Boolean)">
-            <summary>두 곡선 사이에서 혼합되는 곡선을 만듭니다.</summary>
-            <param name="curve1">혼합할 첫 번째 곡선</param>
-            <param name="curve2">혼합할 두 번째 곡선</param>
-            <param name="endOrStart1">혼합할 곡선 1의 끝을 나타내는 플래그</param>
-            <param name="endOrStart2">혼합할 곡선 2의 끝을 나타내는 플래그</param>
-            <param name="isG2Continuous">결과 곡선이 G1 연속성인지 또는 G2 연속성인지를 나타내는 플래그</param>
-            <returns>두 곡선을 혼합하여 생성된 곡선</returns>
-            <search>
-            blend,make continuous,connect
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByIsoCurveOnSurface(Autodesk.DesignScript.Geometry.Surface,System.Int32,System.Double)">
-            <summary>표면의 등치선으로 곡선을 만듭니다</summary>
-            <param name="baseSurface">기준 표면</param>
-            <param name="direction">0 등각선이 U 방향인 경우, 1 등각선이 V 방향인 경우</param>
-            <param name="parameter">기타 표면 매개변수의 곡선 값에 대해 고정</param>
-            <returns>표면에 Iso 곡선</returns>
-            <search>
-            isocurve,curvebydir,lines
-            </search>
-            <weights>
-            0.5,0.5,0.4
-            </weights>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.Length">
-            <summary>곡선의 총 호 길이를 반환</summary>
-            <search>
-            distance
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.IsPlanar">
-            <summary>곡선이 평면형이면 True, 아니면 False를 반환합니다.</summary>
-            <search>
-            flat,liesinplane
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.IsClosed">
-            <summary>곡선이 닫혀 있으면 True, 아니면 False를 반환합니다.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.StartPoint">
-            <summary>곡선을 따라 시작점을 가져옵니다</summary>
-            <search>
-            begin,curvestart,startpt
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.EndPoint">
-            <summary>곡선을 따라 끝점을 가져옵니다</summary>
-            <search>
-            end,curveend,endpt
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.Normal">
-            <summary>곡선이 있는 평면에 대한 법선. 평면형 곡선의 경우에만 유효합니다.</summary>
-            <search>
-            perpendicular
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtParameter(System.Double)">
-            <summary>StartParameter() 및 EndParameter() 사이의 지정된 매개변수에서 곡선상의 점을 가져옵니다</summary>
-            <param name="param">매개변수 평가 위치</param>
-            <returns>점</returns>
-            <search>
-            pointoncurve,curvepoint
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TangentAtParameter(System.Double)">
-            <summary>StartParameter() 및 EndParameter() 사이의 지정된 매개변수에서 곡선에 접하는 벡터를 가져옵니다</summary>
-            <param name="param">매개변수 평가 위치</param>
-            <returns>매개변수에서 곡선과 평행한 벡터</returns>
-            <search>
-            tangentoncurve,curvetan
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double)">
-            <summary>StartParameter() 및 EndParameter() 사이의 지정된 매개변수에서 곡선에 수직인 벡터를 가져옵니다</summary>
-            <param name="param">매개변수 평가 위치</param>
-            <returns>매개변수에서 곡선과 수직인 벡터</returns>
-            <search>
-            normaloncurve,curvenorm
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double,System.Boolean)">
-            <summary>StartParameter()와 EndParameter() 사이의 지정된 매개변수에서 곡선에 수직인 벡터를 가져옵니다. 곡선은 평면형이어야 합니다. 결과 법선은 곡선의 전체 곡률에서 일관됩니다.</summary>
-            <param name="param">매개변수 평가 위치</param>
-            <param name="side">'side'가 false로 설정되면 법선이 곡선의 오른쪽을 가리킵니다(시작점에서 곡선의 끝점으로 이동). 'side'가 true이면 법선이 곡선의 왼쪽을 가리킵니다.</param>
-            <returns>매개변수에서 곡선과 수직인 벡터</returns>
-            <search>
-            normaloncurve,curvenorm
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtParameter(System.Double)">
-            <summary>지정된 매개변수 위치의 점이 원점인 CoordinateSystem을 가져옵니다. XAxis는 곡선 법선에 정렬되고, YAxis는 이 점에서 접하는 곡선에 정렬되고, ZAxis는 이 점의 위쪽 벡터 또는 종법선에 정렬됩니다.</summary>
-            <param name="param">매개변수 평가 위치</param>
-            <returns>곡선의 매개변수에 있는 CoordinateSystem</returns>
-            <search>
-            coordoncurve,curvecoord,derivatives
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.HorizontalFrameAtParameter(System.Double)">
-            <summary>지정된 매개변수 위치의 점이 원점인 CoordinateSystem을 가져옵니다</summary>
-            <param name="param">매개변수 평가 위치</param>
-            <returns>점에서 축 기준으로 정렬된 좌표계</returns>
-            <search>
-            frame,axisaligned,aa,coordcurve,framecurve,curveframe,coordoncurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtParameter(System.Double)">
-            <summary>법선이 곡선의 접선에 정렬되는 평면을 반환합니다. 매개변수는 0이 항상 시작점, 1이 항상 끝점이 되도록 조정됩니다.</summary>
-            <param name="param"/>
-            <returns/>
-            <search>
-            planeoncurve,planecurve,tangentplane
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtSegmentLength(System.Double)">
-            <summary>곡선을 따라 특정 호 길이의 점을 가져옵니다</summary>
-            <param name="segmentLength">평가할 곡선을 기준으로 하는 거리</param>
-            <returns>지정된 호 길이에 있는 점</returns>
-            <search>
-            pointoncurve,curvepoint,pointalongcurve,distanceoncurve,distancepoint,distpoint,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtDistance(System.Double)">
-            <summary>곡선을 따라 특정 호 길이의 점을 가져옵니다.</summary>
-            <param name="segmentLength">평가할 곡선을 기준으로 하는 거리</param>
-            <returns>지정된 호 길이에 있는 점</returns>
-            <search>
-            pointoncurve,curvepoint,pointalongcurve,distanceoncurve,distancepoint,distpoint,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualSegmentLength(System.Int32)">
-            <summary>분할 입력 수를 기준으로 곡선 길이를 따라 균등한 간격으로 있는 점을 반환합니다.</summary>
-            <param name="divisions">분할 수</param>
-            <returns>곡선 길이를 따라 균등한 간격으로 있는 점</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualChordLength(System.Int32)">
-            <summary>분할 입력 수를 기준으로 곡선을 딸 균등한 현 길이 간격으로 있는 점을 반환합니다.</summary>
-            <param name="divisions">분할 수</param>
-            <returns>곡선에 있는 점 리스트</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtChordLength(System.Double,System.Double,System.Boolean)">
-            <summary>지정된 매개변수 위치를 기준으로 곡선의 특정 현 길이에 있는 점을 가져옵니다.</summary>
-            <param name="chordLength">현 길이 평가 위치</param>
-            <param name="parameterLocation">측정할 곡선의 매개변수</param>
-            <param name="forward">곡선을 따라 앞으로 이동할 경우 True</param>
-            <returns>곡선에 있는 점</returns>
-            <search>
-            measure from,measure to,parameteratdist
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtSegmentLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>지정된 점으로부터 지정된 세그먼트 길이의 곡선을 따라 균등한 간격으로 있는 점을 반환합니다.</summary>
-            <param name="point">측정할 위치에 있는 참조 점</param>
-            <param name="segmentLength">평가할 곡선을 기준으로 하는 거리</param>
-            <returns>지정된 점을 포함하여 곡선의 방향을 따르는 곡선에 있는 점 리스트.</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtChordLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>지정된 점으로부터 지정된 현 길이의 곡선에 균등한 간격으로 있는 점을 반환합니다.</summary>
-            <param name="point">측정할 위치에 있는 참조 점</param>
-            <param name="chordLength">현 길이</param>
-            <returns>지정된 점을 포함하여 곡선의 방향을 따르는 곡선에 있는 점 리스트.</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtSegmentLength(System.Double)">
-            <summary>곡선 시작점에서 지정된 거리에 있는 CoordinateSystem을 반환합니다. Y축은 곡선에 접하며 X축은 곡률입니다.</summary>
-            <param name="segmentLength">평가할 곡선을 기준으로 하는 거리</param>
-            <returns>곡선의 좌표계</returns>
-            <search>
-            coordoncurve,curvecoord,derivatives
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtDistance(System.Double)">
-            <summary>곡선 시작점에서 지정된 거리에 있는 좌표계를 반환합니다. Y축은 곡선에 접하며 X축은 곡률입니다.</summary>
-            <param name="segmentLength">평가할 곡선을 기준으로 하는 거리</param>
-            <returns>곡선의 좌표계</returns>
-            <search>
-            coordoncurve,curvecoord,derivatives
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtSegmentLength(System.Double)">
-            <summary>시작점에서 곡선을 따라 지정된 거리에 있는 평면을 반환합니다. 평면의 법선은 곡선의 접선에 정렬됩니다.</summary>
-            <param name="segmentLength">평가할 곡선을 기준으로 하는 거리</param>
-            <returns>곡선에 있는 평면</returns>
-            <search>
-            planeoncurve,planecurve,tangentplane
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtDistance(System.Double)">
-            <summary>시작점에서 곡선을 따라 지정된 거리에 있는 평면을 반환합니다. 평면의 법선은 곡선의 접선에 정렬됩니다.</summary>
-            <param name="segmentLength">평가할 곡선을 기준으로 하는 거리</param>
-            <returns>곡선에 있는 평면</returns>
-            <search>
-            planeoncurve,planecurve,tangentplane
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SegmentLengthAtParameter(System.Double)">
-            <summary>곡선의 시작점에서 지정된 매개변수까지 측정된 세그먼트 길이를 가져옵니다.</summary>
-            <param name="parameter">0~1 사이의 값</param>
-            <returns>세그먼트 길이</returns>
-            <search>
-            lengthatparameter,dist along,lengthatpoint,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DistanceAtParameter(System.Double)">
-            <summary>곡선의 시작점에서 지정된 매개변수까지 측정된 세그먼트 길이를 가져옵니다.</summary>
-            <param name="param">0~1 사이의 값</param>
-            <returns>세그먼트 길이</returns>
-            <search>
-            lengthatparameter,dist along,lengthatpoint,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtSegmentLength(System.Double)">
-            <summary>곡선을 따라 특정 호 길이의 매개변수를 가져옵니다.</summary>
-            <param name="segmentLength">평가할 곡선으로 기준으로 하는 거리</param>
-            <returns>매개변수</returns>
-            <search>
-            parameteratlen,param along,paramatlen,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtDistance(System.Double)">
-            <summary>곡선을 따라 특정 호 길이의 매개변수를 가져옵니다.</summary>
-            <param name="segmentLength">평가할 곡선을 기준으로 하는 거리</param>
-            <returns>매개변수</returns>
-            <search>
-            parameteratlen,param along,paramatlen,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtChordLength(System.Double,System.Double,System.Boolean)">
-            <summary>지정된 위치에서 곡선을 따라 특정 현 길이의 매개변수를 가져옵니다.</summary>
-            <param name="chordLength">현 길이 평가 위치</param>
-            <param name="parameter">측정할 곡선의 매개변수</param>
-            <param name="forward">곡선을 따라 앞으로 이동할 경우 True</param>
-            <returns>매개변수</returns>
-            <search>
-            measure from,measure to,parameteratdist
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.StartParameter">
-            <summary>곡선의 시작점에서 매개변수를 가져옵니다.</summary>
-            <returns>매개변수 값</returns>
-            <search>
-            start domain,curvestart
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.EndParameter">
-            <summary>곡선의 끝점에서 매개변수를 가져옵니다.</summary>
-            <returns>매개변수 값</returns>
-            <search>
-            end domain,curveend
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SegmentLengthBetweenParameters(System.Double,System.Double)">
-            <summary>곡선의 두 매개변수 사이의 세그먼트 길이를 가져옵니다.</summary>
-            <param name="startParam">0~1 사이의 값</param>
-            <param name="endParam">0~1 사이의 값</param>
-            <returns>세그먼트 길이</returns>
-            <search>
-            measure,distance,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.LengthBetweenParameters(System.Double,System.Double)">
-            <summary>곡선의 두 매개변수 점 사이의 호 길이를 가져옵니다.</summary>
-            <param name="startParam">도메인 시작 위치</param>
-            <param name="endParam">도메인 끝 위치</param>
-            <returns>두 매개변수 간의 호 길이</returns>
-            <search>
-            measure,distance,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
-            <summary>곡선을 따라 지정된 점에서 매개변수를 가져옵니다. 점이 곡선에 없으면 ParameterAtPoint는 곡선의 가까운 점에 해당하는 값을 반환하지만 이 점은 일반적으로 가장 가까운 점이 아닙니다.</summary>
-            <param name="point">곡선을 따라 있는 점 또는 곡선 근처에 있는 점</param>
-            <returns>지정된 점에 대한 곡선의 매개변수.</returns>
-            <search>
-            projectpoint,closestparam,curveparam
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Reverse">
-            <summary>곡선의 방향을 바꿉니다</summary>
-            <returns>반대 방향의 새 곡선</returns>
-            <search>
-            flip
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Offset(System.Double)">
-            <summary>곡선의 간격을 지정된 양만큼 띄웁니다. 곡선은 평면형이어야 합니다.</summary>
-            <param name="distance">간격띄우기할 양수 또는 음수 거리</param>
-            <returns>새 간격띄우기 곡선</returns>
-            <search>
-            thicken,lines
-            </search>
-            <weights>
-            0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.OffsetMany(System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>평면 법선으로 정의된 평면에서 지정된 거리만큼 평면형 곡선을 간격띄우기하여 하나 이상의 곡선을 작성합니다. 간격띄우기 구성요소 곡선 사이에 간격이 있으면 해당 간격은 간격띄우기 곡선을 확장하여 채워집니다. "planeNormal" 입력 인수는 기본적으로 곡선을 포함하는 평면의 법선으로 지정되지만, 원래 곡선 법선에 평행인 명시적 법선이 간격띄우기 방향을 보다 잘 제어할 수 있도록 제공될 수 있습니다. 예를 들어, 동일한 평면을 공유하는 여러 곡선에 대해 일정한 방향으로 간격띄우기를 해야 하는 경우 "planeNormal"을 사용하여 각각의 곡선 법선을 재지정하고 모든 곡선을 동일한 방향으로 강제로 간격띄우기할 수 있습니다. 법선을 반전하면 간격띄우기의 방향이 반대가 됩니다.</summary>
-            <param name="signedDistance">양수 간격띄우기 거리는 곡선의 접선과 평면의 법선 벡터 사이의 외적 방향으로 적용되는 반면 음수 간격띄우기는 반대 방향으로 적용됩니다.</param>
-            <param name="planeNormal">곡선의 평면 법선. 기본값은 입력 곡선의 평면 법선입니다.</param>
-            <returns>하나 이상의 간격띄우기 곡선</returns>
-            <search>
-            thicken,lines
-            </search>
-            <weights>
-            0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoPlane(Autodesk.DesignScript.Geometry.Plane)">
-            <summary>평면으로 당겨 곡선을 만듭니다</summary>
-            <param name="plane">곡선을 당기는 평면 위치</param>
-            <returns>평면에 있는 곡선</returns>
-            <search>
-            projectcurve,toplane
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoSurface(Autodesk.DesignScript.Geometry.Surface)">
-            <summary>이 곡선을 입력 표면에 표면 법선 방향으로 당깁니다.</summary>
-            <param name="surface"/>
-            <returns/>
-            <search>
-            projectcurve,tosurf
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideEqually(System.Int32)">
-            <summary>곡선을 길이가 같은 지정된 수의 곡선으로 분할합니다</summary>
-            <param name="divisions">분할 수</param>
-            <returns>분할 후 곡선 배열</returns>
-            <search>
-            chopcurve,segment,slices
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideByDistance(System.Int32)">
-            <summary>곡선을 각 곡선의 시작과 끝 사이(현)의 거리가 같은 지정된 수의 곡선으로 분할합니다.</summary>
-            <param name="divisions">분할 수</param>
-            <returns>분할 후 곡선 배열</returns>
-            <search>
-            divide by chordlength,chord,segment,chopcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideByLengthFromParameter(System.Double,System.Double)">
-            <summary>곡선을 지정된 매개변수 위치에서 측정되어 지정된 길이의 곡선으로 분할합니다.</summary>
-            <param name="length">분할 후 곡선 길이</param>
-            <param name="parameter">측정 기준에 대한 매개변수 위치</param>
-            <returns>분할 후 곡선 배열</returns>
-            <search>
-            divide by chordlength,chord,segment,chopcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideByDistanceFromParameter(System.Double,System.Double)">
-            <summary>곡선을 지정된 매개변수 위치에서 측정되어 지정된 현 길이의 곡선으로 분할합니다.</summary>
-            <param name="distance">분할에서 가져온 각 곡선의 현 길이</param>
-            <param name="parameter">측정 기준에 대한 매개변수 위치</param>
-            <returns>분할 후 곡선 배열</returns>
-            <search>
-            divide by chordlength,chord,segment,chopcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByStartParameter(System.Double)">
-            <summary>지정된 매개변수에서 곡선의 시작 부분을 제거합니다</summary>
-            <param name="startParameter">자르기를 시작할 매개변수 위치</param>
-            <returns>시작이 제거된 새 곡선</returns>
-            <search>
-            rem,remstart,removestart,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimStart(System.Double)">
-            <summary>지정된 매개변수에서 곡선의 시작 부분을 제거합니다.</summary>
-            <param name="startParameter">자르기를 시작할 매개변수 위치</param>
-            <returns>시작이 제거된 새 곡선</returns>
-            <search>
-            rem,remstart,removestart,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByEndParameter(System.Double)">
-            <summary>지정된 매개변수에서 곡선의 끝 부분을 제거합니다</summary>
-            <param name="endParameter">자르기를 시작할 매개변수 위치</param>
-            <returns>끝이 제거된 새 곡선</returns>
-            <search>
-            rem,remend,removeend,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimEnd(System.Double)">
-            <summary>지정된 매개변수에서 곡선의 끝 부분을 제거합니다.</summary>
-            <param name="endParameter">자르기를 시작할 매개변수 위치</param>
-            <returns>끝이 제거된 새 곡선</returns>
-            <search>
-            rem,remend,removeend,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByParameter(System.Double,System.Double)">
-            <summary>지정된 매개변수에서 곡선의 시작과 끝 부분을 제거합니다.</summary>
-            <param name="startParameter">자르기를 시작할 매개변수 위치</param>
-            <param name="endParameter">자르기를 시작할 매개변수 위치</param>
-            <returns>외부 세그먼트가 제거된 새 곡선</returns>
-            <search>
-            rem,remend,remstart,remove,trimcurve,removeends
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrim(System.Double,System.Double)">
-            <summary>지정된 매개변수에서 곡선의 시작과 끝 부분을 제거합니다.</summary>
-            <param name="startParameter">자르기를 시작할 매개변수 위치</param>
-            <param name="endParameter">자르기를 시작할 매개변수 위치</param>
-            <returns>외부 세그먼트가 제거된 새 곡선</returns>
-            <search>
-            rem,remend,remstart,remove,trimcurve,removeends
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimInteriorByParameter(System.Double,System.Double)">
-            <summary>지정된 매개변수에서 곡선의 안쪽 부분을 제거합니다</summary>
-            <param name="startParameter">자르기를 시작할 매개변수 위치</param>
-            <param name="endParameter">자르기를 시작할 매개변수 위치</param>
-            <returns>내부 세그먼트가 제거된 새 곡선</returns>
-            <search>
-            rem,removemiddle,middle,remmiddle,cutout,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimInterior(System.Double,System.Double)">
-            <summary>지정된 매개변수에서 곡선의 안쪽 부분을 제거합니다</summary>
-            <param name="startParameter">자르기를 시작할 매개변수 위치</param>
-            <param name="endParameter">자르기를 시작할 매개변수 위치</param>
-            <returns>내부 세그먼트가 제거된 새 곡선</returns>
-            <search>
-            rem,removemiddle,middle,remmiddle,cutout,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(System.Double[])">
-            <summary>곡선의 여러 세그먼트(첫 번째, 세 번째, 다섯 번째... 세그먼트 취소)를 제거합니다</summary>
-            <param name="parameters">곡선을 분할할 매개변수 위치 리스트</param>
-            <returns>첫 번째, 세 번째, 다섯 번째 ... 세그먼트를 무시하는 곡선 배열</returns>
-            <search>
-            rem,removeparts,remparts,cutout,trimcurv,interior,odd
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimSegments(System.Double[])">
-            <summary>곡선의 여러 세그먼트(첫 번째, 세 번째, 다섯 번째... 세그먼트 취소)를 제거합니다.</summary>
-            <param name="parameters">곡선을 분할할 매개변수 위치 리스트</param>
-            <returns>첫 번째, 세 번째, 다섯 번째 ... 세그먼트를 무시하는 곡선 배열</returns>
-            <search>
-            rem,removeparts,remparts,cutout,trimcurv,interior,odd
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(System.Double[],System.Boolean)">
-            <summary>'discardEvenSegments' 플래그가 각각 true 또는 false인지에 따라 지정된 매개변수에서 곡선 분할의 짝수 또는 홀수 세그먼트를 제거합니다.</summary>
-            <param name="parameters">곡선을 분할할 매개변수 위치 리스트</param>
-            <param name="discardEvenSegments">세그먼트 무시 전환</param>
-            <returns>짝수 또는 홀수 곡선 세그먼트를 버리고 남은 곡선의 리스트.</returns>
-            <search>
-            rem,removeparts,remparts,cutout,trimcurv,interior,even
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByParameter(System.Double)">
-            <summary>지정된 매개변수에서 곡선을 두 조각으로 분할합니다</summary>
-            <param name="parameter">분할할 매개변수 위치</param>
-            <returns>분할 후 남은 두 개의 곡선</returns>
-            <search>
-            cutinto,divide,curve2curves,cut
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterSplit(System.Double)">
-            <summary>지정된 매개변수에서 곡선을 두 조각으로 분할합니다.</summary>
-            <param name="parameter">분할할 매개변수 위치</param>
-            <returns>분할 후 남은 두 개의 곡선</returns>
-            <search>
-            cutinto,divide,curve2curves,cut
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByParameter(System.Double[])">
-            <summary>지정된 매개변수에서 곡선을 여러 조각으로 분할합니다</summary>
-            <param name="parameters">곡선을 분할할 매개변수 위치 리스트</param>
-            <returns>분할로 인해 작성된 곡선</returns>
-            <search>
-            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterSplit(System.Double[])">
-            <summary>지정된 매개변수에서 곡선을 여러 조각으로 분할합니다.</summary>
-            <param name="parameters">곡선을 분할할 매개변수 위치 리스트</param>
-            <returns>분할로 인해 작성된 곡선</returns>
-            <search>
-            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>곡선을 지정된 점에 여러 개 조각으로 분할합니다.</summary>
-            <param name="points">분할할 곡선에 있는 점</param>
-            <returns>분할로 인해 작성된 곡선</returns>
-            <search>
-            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>여러 개의 곡선을 polycurve 끝에 결합합니다. 연결을 보장하기 위해 곡선을 반전합니다.</summary>
-            <param name="curves">다른 곡선 또는 polycurve에 결합할 곡선</param>
-            <returns>곡선에서 작성된 Polycurve</returns>
-            <search>
-            convertcurves,curves2polycurve,joincurves,concat,joinall,joinmany
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Join(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>원래 곡선을 정확히 유지하면서 이 곡선과 입력 곡선을 새 PolyCurve로 결합합니다.</summary>
-            <param name="curve">결합 대상 곡선</param>
-            <returns>두 개의 곡선으로 구성된 PolyCurve</returns>
-            <search>
-            convertcurve,curve2polycurve,joincurve,concat
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(System.Double)">
-            <summary>곡선을 법선 벡터 방향으로 돌출시킵니다</summary>
-            <param name="distance">곡선을 돌출할 거리</param>
-            <returns>돌출된 표면</returns>
-            <search>
-            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>곡선을 지정된 방향으로 입력 벡터의 길이만큼 돌출시킵니다</summary>
-            <param name="direction">돌출할 벡터 방향</param>
-            <returns>돌출된 표면</returns>
-            <search>
-            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>곡선을 지정된 방향으로 지정된 거리만큼 돌출시킵니다</summary>
-            <param name="direction">돌출할 벡터 방향</param>
-            <param name="distance">돌출할 거리</param>
-            <returns>돌출된 표면</returns>
-            <search>
-            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(System.Double)">
-            <summary>곡선을 법선 방향으로 지정된 거리만큼 돌출시킵니다. 곡선은 닫혀 있어야 합니다.</summary>
-            <param name="distance">돌출할 거리</param>
-            <returns>돌출된 솔리드</returns>
-            <search>
-            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>곡선을 지정된 방향으로 입력 벡터의 길이만큼 돌출시킵니다. 곡선은 닫혀 있어야 합니다.</summary>
-            <param name="direction">돌출할 벡터 방향</param>
-            <returns>돌출된 솔리드</returns>
-            <search>
-            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>곡선을 지정된 방향으로 지정된 거리만큼 돌출시킵니다. 곡선은 닫혀 있어야 합니다.</summary>
-            <param name="direction">돌출할 벡터 방향</param>
-            <param name="distance">돌출할 거리</param>
-            <returns>돌출된 솔리드</returns>
-            <search>
-            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extend(System.Double,Autodesk.DesignScript.Geometry.Point)">
-            <summary>곡선을 선택점에 의해 지정된 끝 부분에서 지정된 거리만큼 연장합니다. 선택된 쪽이 연장됩니다. 원 및 타원과 같이 닫힌 곡선은 연장할 수 없습니다. 연장되는 곡선이 선형인 경우 연장되는 부분도 선형이 됩니다.</summary>
-            <param name="distance">연장할 거리</param>
-            <param name="pickSide">연장한 끝에 있는 점</param>
-            <returns>연장된 곡선</returns>
-            <search>
-            makelonger,stretch,extendside
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtendStart(System.Double)">
-            <summary>곡선을 시작 부분에서 지정된 거리만큼 연장합니다. 원 및 타원과 같이 닫힌 곡선은 연장할 수 없습니다. 연장되는 곡선이 선형인 경우 연장되는 부분도 선형이 됩니다.</summary>
-            <param name="distance">연장할 거리</param>
-            <returns>연장된 곡선</returns>
-            <search>
-            makelonger,stretch
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtendEnd(System.Double)">
-            <summary>곡선을 끝 부분에서 지정된 거리만큼 연장합니다. 원 및 타원과 같이 닫힌 곡선은 연장할 수 없습니다. 연장되는 곡선이 선형인 경우 연장되는 부분도 선형이 됩니다.</summary>
-            <param name="distance">연장할 거리</param>
-            <returns>연장된 곡선</returns>
-            <search>
-            makelonger,stretch
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ApproximateWithArcAndLineSegments">
-            <summary>호와 선 모음으로 곡선을 근사합니다</summary>
-            <returns>곡선에 가까운 호 및 선의 배열</returns>
-            <search>
-            rationalizecurve,fitarcs,fitlines,arcs,lines
-            </search>
-            <weights>
-            0.5,0.5,0.5,0.4,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ToNurbsCurve">
-            <summary>곡선을 NurbsCurve 근사치로 변환합니다</summary>
-            <returns>곡선에 가까운 NurbsCurve</returns>
-            <search>
-            curve2spline,convertcurve,tospline,lines
-            </search>
-            <weights>
-            0.5,0.5,0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Patch">
-            <summary>닫힌 곡선을 패치합니다</summary>
-            <returns>곡선 내부 표면</returns>
-            <search>
-            fill,profiletosurf,loop,loop2surf,edgesurf
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Project(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>지정된 투영 방향을 따라 입력 곡선을 지정된 베이스 형상에 투영합니다.</summary>
-            <param name="baseGeometry">투영할 형상</param>
-            <param name="projectionDirection">벡터</param>
-            <returns>베이스 형상으로 투영된 형상의 리스트</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSurface(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>이 곡선을 경로 곡선을 따라 스윕하여 표면을 만듭니다</summary>
-            <param name="path"/>
-            <returns/>
-            <search>
-            sweep1,curve2surf
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>이 닫힌 곡선을 경로 곡선을 따라 스윕하여 솔리드를 만듭니다</summary>
-            <param name="path"/>
-            <returns/>
-            <search>
-            sweep1,curve2solid,loop2solid,profile2solid,curvetosolid,looptosolid,profiletosolid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
-            <summary>이 닫힌 곡선을 경로 곡선을 따라 스윕하여 솔리드를 만듭니다.</summary>
-            <param name="path">스윕 경로를 나타내는 경로</param>
-            <param name="cutEndOff">스윕의 끝을 잘라내어 경로에 수직으로 만듭니다.</param>
-            <returns>경로 곡선을 따라 이 닫힌 곡선을 스윕하는 솔리드</returns>
-            <search>
-            sweep1,curve2solid,loop2solid,profile2solid,curvetosolid,looptosolid,profiletosolid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Simplify(System.Double)">
-            <summary>제공된 공차를 사용하여 근사된 새 곡선을 반환합니다</summary>
-            <param name="tolerance"/>
-            <returns/>
-            <search>
-            fitcurve,reducecurve,simplecurve,approximate
-            </search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cylinder.ToString">
             <summary>Cylinder의 문자열 표현을 가져옵니다</summary>
         </member>
@@ -1264,18 +601,6 @@
             <param name="startAngle">입력 평면의 양수 X축에서 측정된 호의 시작 각도</param>
             <param name="sweepAngle">시작 각도 기준 스윕 각도(도)</param>
             <returns>평면 반지름 및 각도로 작성된 타원 호</returns>
-            <search>
-            ellipsearc,arcs
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.EllipseArc.ByPlaneRadiiStartAngleSweepAngle(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double,System.Double,System.Double)">
-            <summary>X 및 Y축을 따라 지정된 반지름 및 스윕 각도로 평면에 EllipseArc를 만듭니다.</summary>
-            <param name="plane">EllipseArc가 포함된 평면</param>
-            <param name="xRadius">평면의 X방향에 있는 EllipseArc의 반지름</param>
-            <param name="yRadius">평면의 Y방향에 있는 EllipseArc의 반지름</param>
-            <param name="startAngle">입력 평면의 양수 X축에서 측정된 호의 시작 각도</param>
-            <param name="sweepAngle">시작 각도 기준 스윕 각도(도)</param>
-            <returns/>
             <search>
             ellipsearc,arcs
             </search>
@@ -1944,209 +1269,6 @@
             <param name="projectionDirection"/>
             <returns/>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ToString">
-            <summary>PolyCurve의 문자열 표현을 가져옵니다</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>곡선을 결합하여 PolyCurve를 작성합니다. 연결이 필요한 경우 곡선을 반전합니다. 1e-6 ~ 1e-3 유닛 사이에서 기본 결합 공차를 선택합니다.</summary>
-            <param name="curves">PolyCurve에 결합할 곡선</param>
-            <param name="joinTolerance">결합할 곡선 간에 허용되는 간격 크기를 결정하는 공차</param>
-            <returns>결합된 곡선으로 작성된 Polycurve</returns>
-            <search>
-            segments,joincurves
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>곡선을 결합하여 PolyCurve를 작성합니다. 연결이 필요한 경우 곡선을 반전합니다. 1e-6 ~ 1e-3 유닛 사이에서 기본 결합 공차를 선택합니다.</summary>
-            <param name="curves">PolyCurve에 결합할 곡선</param>
-            <param name="joinTolerance">결합할 곡선 간에 허용되는 간격 크기를 결정하는 공차</param>
-            <param name="trimCurves">입력 곡선이 서로 교차하거나 겹치고 PolyCurve를 작성하기 전에 끝 세그먼트를 잘라내야 하면 True로 설정합니다. 기본적으로 False로 설정되어 있습니다.</param>
-            <param name="trimLength">trimLength가 0보다 크면 trimLength보다 긴 끝 세그먼트는 잘리지 않습니다.</param>
-            <returns>결합된 곡선으로 작성된 Polycurve</returns>
-            <search>
-            segments,joincurves
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>연결된 곡선을 그룹화하여 하나 이상의 polycurve를 만듭니다. 1e-6과 1e-3 단위 사이의 기본 결합 공차를 선택하십시오.</summary>
-            <param name="curves">하나 이상의 PolyCurves를 만들기 위해 함께 그룹화할 곡선</param>
-            <param name="joinTolerance">결합할 곡선 간에 허용되는 간격 크기를 결정하는 공차</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>연결된 곡선을 그룹화하여 하나 이상의 polycurve를 만듭니다. 1e-6과 1e-3 단위 사이의 기본 결합 공차를 선택하십시오.</summary>
-            <param name="curves">하나 이상의 PolyCurves를 만들기 위해 함께 그룹화할 곡선</param>
-            <param name="joinTolerance">결합할 곡선 간에 허용되는 간격 크기를 결정하는 공차</param>
-            <param name="trimCurves">입력 곡선이 서로 교차하거나 겹치고 PolyCurve를 작성하기 전에 끝 세그먼트를 잘라내야 하면 True로 설정합니다. 기본적으로 False로 설정되어 있습니다.</param>
-            <param name="trimLength">trimLength가 0보다 크면 trimLength보다 긴 끝 세그먼트는 잘리지 않습니다.</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
-            <summary>점을 연결하여 PolyCurve를 만듭니다. 'connectLastToFirst' 입력을 True로 설정하고 PolyCurve를 닫습니다.</summary>
-            <param name="points">PolyCurve를 만들 점</param>
-            <param name="connectLastToFirst">마지막 점을 첫 번째 점을 연결하려면 True, 열린 상태로 유지하려면 false</param>
-            <returns>점으로 작성된 Polycurve</returns>
-            <search>
-            segments,joincurves,lines
-            </search>
-            <weights>
-            0.5,0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>곡선을 두껍게 하여 PolyCurve를 만듭니다.</summary>
-            <param name="curve">두껍게 할 곡선</param>
-            <param name="thickness">두께</param>
-            <param name="nor">두껍게 하기 방향에 수직인 법선</param>
-            <returns/>
-            <search>
-            offset
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurveNormal(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>입력 법선으로 지정된 평면을 따라 곡선을 두껍게 하여 PolyCurve를 만듭니다.</summary>
-            <param name="curve">두껍게 할 곡선</param>
-            <param name="thickness">두께</param>
-            <param name="normal">두껍게 하기 방향에 수직인 법선입니다. 법선이 제공되지 않은 경우(Null인 경우) 곡선 법선이 기본적으로 사용됩니다.</param>
-            <returns/>
-            <search>
-            offset,thicken
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.Points">
-            <summary>첫 번째 구성요소의 시작점과 모든 구성요소 곡선의 끝점을 반환합니다. 닫힌 polycurve의 경우 시작점과 끝점이 동일하므로 끝점이 제외됩니다.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.NumberOfCurves">
-            <summary>polycurve의 곡선 수</summary>
-            <search>
-            curvecount,subcurvecount,numbersubcurves
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Curves">
-            <summary>polycurve의 곡선을 반환합니다</summary>
-            <returns/>
-            <search>
-            subcurves,polycurvesplit
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CurveAtIndex(System.Int32,System.Boolean)">
-            <summary>인덱스를 기준으로 polycurve의 곡선을 반환합니다</summary>
-            <param name="index">점 찾기 길이</param>
-            <param name="endOrStart">PolyCurve의 끝부터 개수를 세려면 True, PolyCurve의 시작부터 개수를 세려면 false</param>
-            <returns>색인에 있는 곡선</returns>
-            <search>
-            subcurveatindex,getsubcurve,getcurvebyindex
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.BasePlane">
-            <summary>평면형 polycurve의 평면을 반환합니다</summary>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithEllipse(System.Double,System.Double,System.Double,System.Double,System.Boolean)">
-            <summary>접하는 타원으로 polycurve를 연장합니다</summary>
-            <param name="length">연장 타원 길이</param>
-            <param name="radius1">타원 매개변수</param>
-            <param name="radius2">타원 매개변수</param>
-            <param name="endEllipseParameter">타원 매개변수</param>
-            <param name="endOrStart">PolyCurve의 끝 또는 시작 연장</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithArc(System.Double,System.Double,System.Boolean)">
-            <summary>접하는 호로 polycurve를 연장합니다.</summary>
-            <param name="length">연장 호 길이</param>
-            <param name="radius">호 반지름</param>
-            <param name="endOrStart">PolyCurve의 끝 또는 시작 연장</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLine">
-            <summary>시작점과 끝점을 연결하는 선으로 polycurve 닫기</summary>
-            <returns/>
-            <search>
-            lines
-            </search>
-            <weights>
-            0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLineAndTangentArcs(System.Double,System.Double)">
-            <summary>접하는 호, 선 및 호의 체인으로 polycurve 닫기</summary>
-            <param name="radiusAtStart">PolyCurve 시작에 있는 호의 반지름</param>
-            <param name="radiusAtEnd">PolyCurve 끝에 있는 호의 반지름</param>
-            <returns/>
-            <search>
-            lines
-            </search>
-            <weights>
-            0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Offset(System.Double,System.Boolean)">
-            <summary>해당 평면에서 polycurve의 간격을 띄웁니다.</summary>
-            <param name="signedDistance">간격띄우기 크기</param>
-            <param name="extendCircular">모서리를 원형으로 만들려면 전환</param>
-            <returns>간격 띄우기한 Polycurve</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.OffsetMany(System.Double,System.Boolean,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>평면 법선으로 정의된 평면에서 지정된 거리만큼 평면형 polycurve를 간격띄우기하여 하나 이상의 Polycurve를 작성합니다. "planeNormal" 입력 인수는 기본적으로 곡선을 포함하는 평면의 법선으로 지정되지만, 원래 곡선 법선에 평행한 명시적 법선이 간격띄우기 방향을 보다 잘 제어할 수 있도록 제공될 수 있습니다. 예를 들어 동일한 평면을 공유하는 여러 곡선에 대해 일관된 방향으로 간격띄우기를 해야 하는 경우, 'planeNormal'을 사용하여 각각의 곡선 법선을 재지정하고 모든 곡선을 동일한 방향으로 강제로 간격띄우기할 수 있습니다. 법선을 반전하면 간격띄우기의 방향이 반대가 됩니다.</summary>
-            <param name="signedDistance">양수 간격띄우기 거리는 polycurve의 접선과 평면의 법선 벡터 사이의 외적 방향으로 적용되는 반면 음수 간격띄우기는 반대 방향으로 적용됩니다.</param>
-            <param name="extendCircular">간격띄우기 구성요소 곡선 사이에 간격이 있으면 간격 마무리 설정에 따라 원형 호로 부드러운 구석을 만들거나(true 값) 간격띄우기 곡선을 연장하여(false 값) 간격을 채울 수 있습니다.</param>
-            <param name="planeNormal">곡선의 평면 법선. 기본값은 입력 곡선의 평면 법선입니다.</param>
-            <returns>하나 이상의 간격띄우기 polycurve</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Fillet(System.Double,System.Boolean)">
-            <summary>평면형 polycurve의 모깎기 코너.</summary>
-            <param name="radius">모깎기 반지름</param>
-            <param name="clockwise_corners">모깎기해야 할 코너를 나타냅니다. True인 경우 두 번째 구성요소 시작 지점의 접선이 (곡선 법선을 기준으로) 첫 번째 구성요소 끝의 접선에서 시계 방향으로 있는 코너가 모깎기됩니다. False인 경우 시계 반대 방향으로 있는 코너가 모깎기됩니다.</param>
-            <returns>모깎기한 Polycurve</returns>
-            <search>
-            round,smooth,radius
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Heal(System.Double)">
-            <summary>겹치는 세그먼트 길이가 trimLength보다 작거나 같은 경우 자체 교차하지 않는 새 PolyCurve를 반환하여 자체 교차하는 PolyCurve를 수정합니다.</summary>
-            <param name="trimLength">trimLength가 0보다 크면 trimLength보다 긴 끝 세그먼트는 잘리지 않습니다.</param>
-            <returns>자체 교차하지 않고 겹치지 않는 PolyCurve</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ToString">
-            <summary>Polygon의 문자열 표현을 가져옵니다</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>점을 연결하여 다각형 곡선을 구성합니다.</summary>
-            <param name="points"/>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.RegularPolygon(Autodesk.DesignScript.Geometry.Circle,System.Int32)">
-            <summary>원 안에 내접 다각형 곡선을 구성합니다.</summary>
-            <param name="circle"/>
-            <param name="numberSides"/>
-            <returns/>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Polygon.Points">
-            <summary>모든 세그먼트 시작점/끝점을 반환합니다.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Polygon.PlaneDeviation">
-            <summary>다각형의 평균 평면으로부터의 최대 편차를 반환합니다.</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.Corners">
-            <summary>다각형의 모서리를 반환합니다</summary>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.Center">
-            <summary>다각형 모서리의 평균 점을 반환합니다</summary>
-            <returns/>
-            <search>
-            centroid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.SelfIntersections">
-            <summary>다각형 변 사이의 자체 교차점을 반환합니다.</summary>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ContainmentTest(Autodesk.DesignScript.Geometry.Point)">
-            <summary>입력 점이 다각형 내에 포함되어 있는지 여부를 반환합니다. 다각형이 평면형이 아닌 경우 해당 점이 최적 맞춤 평면에 투영되고 최적 맞춤 평면에 대한 다각형 투영을 사용하여 제약이 계산됩니다. 다각형이 자체 교차하는 경우 실패 상태가 반환됩니다.</summary>
-            <param name="point"/>
-            <returns/>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ToString">
             <summary>PolySurface의 문자열 표현을 가져옵니다</summary>
         </member>
@@ -2196,15 +1318,6 @@
             <returns/>
             <search>
             sweep,rail,guide,sweep1
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
-            <summary>난간을 따라 곡선을 스윕하여 Polysurface를 만듭니다.</summary>
-            <param name="rail">스윕할 곡선 방향</param>
-            <param name="profile">스윕 프로파일</param>
-            <returns/>
-            <search>
-            sweep,rail,guide,sweep1,sweepprofile,profile
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.Surfaces">
@@ -2354,15 +1467,6 @@
             Brep,brep
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Solid.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},Autodesk.DesignScript.Geometry.Curve)">
-            <summary>안내 곡선을 사용하여 입력 횡단면 닫힌 곡선 사이에서 로프트하여 솔리드를 만듭니다. 안내 곡선은 모든 횡단면 곡선과 교차해야 합니다.</summary>
-            <param name="crossSections"/>
-            <param name="guideCurve"/>
-            <returns/>
-            <search>
-            Brep,brep,guide,loft
-            </search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
             <summary>안내 곡선을 사용하여 입력 횡단면 닫힌 곡선 사이에서 로프트하여 솔리드를 만듭니다. 안내 곡선은 모든 횡단면 곡선과 교차해야 합니다.</summary>
             <param name="crossSections"/>
@@ -2449,14 +1553,6 @@
             <returns/>
             <search>
             addition,merge,combine
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Solid.UnionAll(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Solid})">
-            <summary>솔리드의 리스트를 이 솔리드와 결합합니다.</summary>
-            <param name="solids"/>
-            <returns/>
-            <search>
-            addition,merge,combine,unionmany,union multi
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.Difference(Autodesk.DesignScript.Geometry.Solid)">
@@ -2552,341 +1648,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Sphere.Radius">
             <summary>구의 반지름을 반환합니다.</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToString">
-            <summary>Surface의 문자열 표현을 가져옵니다</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByUnion(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>표면 모음을 하나의 표면에 결합합니다. 이 방법을 사용하면 결과 결합이 비복합 또는 다중 면인 경우 polySurface가 되돌려질 수 있습니다.</summary>
-            <param name="surfaces">표면의 모음입니다.</param>
-            <returns>표면의 결합</returns>
-            <search>
-            merge,join,boolean,addition
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>입력 횡단면 곡선 사이에서 로프트하여 표면을 만듭니다.</summary>
-            <param name="crossSections">로프트할 곡선</param>
-            <returns>로프트로 작성된 표면</returns>
-            <search>
-            loft
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRuledLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Line})">
-            <summary>입력 횡단면 선 사이에서 로프트하여 표면을 만듭니다. Surface.ByLoft보다 약간 더 빠르고 덜 매끄러운 결과를 생성합니다.</summary>
-            <param name="crossSections"/>
-            <returns/>
-            <search>
-            ruledsurface,lines
-            </search>
-            <weights>
-            0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},Autodesk.DesignScript.Geometry.Curve)">
-            <summary>지정된 안내 곡선(난간이라고도 함)을 사용하여 횡단면을 통해 표면을 로프트합니다. 안내 곡선은 모든 횡단면 곡선과 교차해야 합니다.</summary>
-            <param name="crossSections"/>
-            <param name="guideCurve"/>
-            <returns/>
-            <search>
-            loftbyrail
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>지정된 안내 곡선(난간이라고도 함)을 사용하여 횡단면을 통해 표면을 로프트합니다. 안내 곡선은 모든 횡단면 곡선과 교차해야 합니다.</summary>
-            <param name="crossSections">로프트할 곡선</param>
-            <param name="guideCurves">로프트를 안내하는 곡선</param>
-            <returns>로프트로 작성된 표면</returns>
-            <search>
-            loftbyrails,loft rails,guides
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
-            <summary>경로를 따라 종단 곡선을 스윕하여 표면을 작성합니다.</summary>
-            <param name="profile">스윕할 곡선</param>
-            <param name="path">스윕에 사용된 경로 곡선</param>
-            <returns>경로를 따라 프로파일을 스윕하여 작성된 표면</returns>
-            <search>
-            sweep,rail,guide,sweep1
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
-            <summary>경로를 따라 종단 곡선을 스윕하여 표면을 작성합니다.</summary>
-            <param name="profile">스윕할 곡선</param>
-            <param name="path">스윕에 사용된 경로 곡선</param>
-            <param name="cutEndOff">스윕의 끝을 잘라내어 경로에 수직으로 만듭니다.</param>
-            <returns>경로를 따라 종단을 스윕하여 작성된 표면</returns>
-            <search>
-            sweep,rail,guide,sweep1
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPerimeterPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>닫힌 다각형의 입력 점을 연결하고 패칭하는 다각형 표면을 만듭니다.</summary>
-            <param name="points">둘레 점 리스트</param>
-            <returns>둘레 점에서 작성된 표면</returns>
-            <search>
-            patch,surfacebypolygon
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep2Rails(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
-            <summary>횡단면 곡선을 두 개의 난간으로 표시되는 경로를 따라 스윕합니다</summary>
-            <param name="path">스윕할 입력 경로입니다.</param>
-            <param name="guideRail">스윕 방향을 안내하는 레일입니다.</param>
-            <param name="profile">경로를 따라 스윕할 종단 곡선입니다.</param>
-            <returns>두 난간을 스윕하여 작성된 표면</returns>
-            <search>
-            sweep2,guides
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double)">
-            <summary>원점에 의해 형성된 광선 축 주위로 종단 곡선을 벡터 축 방향으로 스윕(start_angle(도)에서 시작하고, sweep_angle(도) 스윕)하여 표면을 만듭니다.</summary>
-            <param name="profile">회전할 종단 곡선</param>
-            <param name="axisOrigin">회전 축 원점</param>
-            <param name="axisDirection">회전 축 방향</param>
-            <param name="startAngle">시작 각도(도)</param>
-            <param name="sweepAngle">스윕 각도(도)</param>
-            <returns>프로파일을 회전하여 만든 표면</returns>
-            <search>
-            lathe
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPatch(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>입력 곡선에 의해 정의된 닫힌 경계의 내부를 채워 표면을 만듭니다.</summary>
-            <param name="closedCurve">서피스 경계로 사용된 닫힌 곡선</param>
-            <returns>패치로 작성된 표면</returns>
-            <search>
-            edgesrf,edgesurface,patch,fill
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.Area">
-            <summary>총 표면적을 반환합니다.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.Perimeter">
-            <summary>표면의 모든 경계 모서리 길이의 합을 반환합니다.</summary>
-            <search>
-            circumference
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.ClosedInU">
-            <summary>표면이 U 방향으로 닫혀 있는 경우 True, 아닌 경우 false를 반환합니다.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.ClosedInV">
-            <summary>표면이 V 방향으로 닫혀 있는 경우 True, 아닌 경우 false를 반환합니다.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.Closed">
-            <summary>표면이 U 또는 V 방향으로 닫혀 있는 경우 True, 아닌 경우 false를 반환합니다.</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.SubtractFrom(Autodesk.DesignScript.Geometry.Solid)">
-            <summary>이 표면에서 입력 도구를 뺍니다.</summary>
-            <param name="trimmingEntity"/>
-            <returns/>
-            <search>
-            difference,trim,removefrom,cut
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Difference(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>이 표면 및 입력 표면 결합의 부울 차이입니다. 이 방법을 사용하면 결과 부울이 비복합 또는 다중 면인 경우 polySurface가 되돌려질 수 있습니다.</summary>
-            <param name="others">뺄 다른 표면</param>
-            <returns>결과 부울 표면 또는 PolySurface</returns>
-            <search>
-            subtract,differencemany,diffall,diff multi
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.UVParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
-            <summary>입력 점의 UV 매개변수 쌍을 반환합니다. 이는 Point at 매개변수의 역수입니다.</summary>
-            <param name="point"/>
-            <returns/>
-            <search>
-            evaluateatpoint,surfaceatpoint,uvatpoint,uvs
-            </search>
-            <weights>
-            0.5,0.5,0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve})">
-            <summary>하나 이상의 닫힌 PolyCurves 모음을 사용하여 표면을 자릅니다. 루프 중 하나는 입력 표면의 경계 루프여야 합니다. 또한 구멍에 대해 하나 이상의 내부 루프를 추가해야 합니다.</summary>
-            <param name="loops"/>
-            <returns/>
-            <search>
-            trim multiple,removeloops,cutloops
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve},System.Double)">
-            <summary>지정된 공차 내에서 모두 표면에 있어야 하는 하나 이상의 닫힌 PolyCurve 모음을 사용하여 표면을 자릅니다. 입력 표면에서 하나 이상의 구멍을 잘라내야 하는 경우 표면의 경계에 대해 하나의 외부 루프를 지정하고 각 구멍에 대해 하나의 내부 루프를 지정해야 합니다. 표면 경계와 구멍 사이의 영역을 잘라야 하는 경우 각 구멍에 대한 루프만 제공해야 합니다. 구형 표면과 같은 외부 루프가 없는 주기 표면의 경우 잘린 영역은 루프 곡선의 방향을 반전하여 제어할 수 있습니다.</summary>
-            <param name="loops">입력에서 임의의 순서로 있을 수 있는 하나 이상의 닫힌 PolyCurve입니다. 이러한 루프는 서로 교차하면 안 됩니다.</param>
-            <param name="tolerance">곡선 끝이 일치하는지 여부와 곡선과 표면이 일치하는지를 확인할 때 사용되는 공차입니다. 제공된 공차는 입력 polycurve 작성에 사용된 공차보다 작을 수 없습니다. 기본값 0.0은 입력 polycurve 작성에 사용된 최대 공차가 사용된다는 것을 의미합니다.</param>
-            <returns>닫힌 루프에 의해 잘린 표면.</returns>
-            <search>
-            trim multiple,removeloops,cutloops
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.NormalAtPoint(Autodesk.DesignScript.Geometry.Point)">
-            <summary>표면의 입력 점에서 표면 법선을 반환합니다.</summary>
-            <param name="point">표면 법선을 평가할 점</param>
-            <returns>점의 법선</returns>
-            <search>
-            perpendicular
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface">
-            <summary>표면의 Nurbs 표현을 가져옵니다. 이 방법은 특정 상황에서 표면과 거의 비슷할 수도 있습니다.</summary>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface(System.Boolean)">
-            <summary>표면의 Nurbs 표현을 가져옵니다. 이 메서드는 특정 상황에서 표면을 근사치로 계산할 수 있습니다.</summary>
-            <param name="limitSurface">변환하기 전에 표면을 원래 매개변수 범위로 복원해야 하는지 여부를 결정합니다. 표면의 매개변수 범위가 제한될 수 있습니다(예: 자르기 작업 후).</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ApproximateWithTolerance(System.Double)">
-            <summary>지정된 공차 내에서 표면의 Nurbs 표현을 가져옵니다. 이 방법은 특정 상황에서 표면과 거의 비슷할 수도 있습니다.</summary>
-            <param name="tolerance">지정된 공차</param>
-            <returns>표면의 Nurbs 표면 표현</returns>
-            <search>
-            tonurbs
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double)">
-            <summary>표면을 두껍게 하여 솔리드로 만들고, 표면의 양쪽에서 표면 법선 방향으로 돌출합니다.</summary>
-            <param name="thickness">두껍게 할 양</param>
-            <returns>솔리드로 두껍게 한 표면</returns>
-            <search>
-            offset,tosolid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double,System.Boolean)">
-            <summary>표면을 두껍게 하여 솔리드로 만들고 표면 법선 방향으로 돌출합니다. both_sides 매개변수가 true인 경우 표면이 양쪽에서 두꺼워집니다.</summary>
-            <param name="thickness">두껍게 할 양</param>
-            <param name="both_sides">양쪽에서 두껍게 하려면 True, 한쪽에서 두껍게 하려면 False</param>
-            <returns>솔리드로 두껍게 한 표면</returns>
-            <search>
-            offset,bothsides,tosolid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Offset(System.Double)">
-            <summary>표면의 간격을 표면 법선 방향으로 지정된 거리만큼 띄웁니다.</summary>
-            <param name="distance">간격 띄우기 크기</param>
-            <returns>간격 띄우기된 표면</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.CurvatureAtParameter(System.Double,System.Double)">
-            <summary>반환된 좌표계에서는 xAxis, yAxis 및 zAxis를 사용하여 uDir, vDir 및 법선을 표현합니다. xAxis, yAxis의 길이가 곡률을 나타냅니다.</summary>
-            <param name="u">매개변수의 U 구성요소</param>
-            <param name="v">매개변수의 V 구성요소</param>
-            <returns>표면의 UV 위치에서 법선, U 방향 및 V 방향을 기준으로 한 좌표계</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.CoordinateSystemAtParameter(System.Double,System.Double)">
-            <summary>주 곡률 방향으로 정렬된 CoordinateSystem을 반환합니다.</summary>
-            <param name="u">매개변수의 U 구성요소</param>
-            <param name="v">매개변수의 V 구성요소</param>
-            <returns>주 곡률 방향으로 정렬된 CoordinateSystem</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.TangentAtUParameter(System.Double,System.Double)">
-            <summary>지정된 U 및 V 매개변수에서 U 접선 벡터를 반환합니다.</summary>
-            <param name="u">매개변수의 U 구성요소</param>
-            <param name="v">매개변수의 V 구성요소</param>
-            <returns>U 접선 벡터</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.TangentAtVParameter(System.Double,System.Double)">
-            <summary>지정된 U 및 V 매개변수에서 V 접선 벡터를 반환합니다.</summary>
-            <param name="u">매개변수의 U 구성요소</param>
-            <param name="v">매개변수의 V 구성요소</param>
-            <returns>V 접선 벡터</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.NormalAtParameter(System.Double,System.Double)">
-            <summary>지정된 U 및 V 매개변수에서 법선 벡터를 반환합니다.</summary>
-            <param name="u">매개변수의 U 구성요소</param>
-            <param name="v">매개변수의 V 구성요소</param>
-            <returns>매개변수의 법선</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.DerivativesAtParameter(System.Double,System.Double)">
-            <summary>입력 U 및 V 좌표에서 도함수를 반환합니다.</summary>
-            <param name="u">매개변수의 U 구성요소</param>
-            <param name="v">매개변수의 V 구성요소</param>
-            <returns>표면의 U 및 V 파생</returns>
-            <search>
-            tangent,normal
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.GaussianCurvatureAtParameter(System.Double,System.Double)">
-            <summary>U 및 V 매개변수에서 가우스 곡률을 반환합니다.</summary>
-            <param name="u"/>
-            <param name="v"/>
-            <returns/>
-            <search>
-            developable
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.PrincipalCurvaturesAtParameter(System.Double,System.Double)">
-            <summary>U 및 V 매개변수에서 주 곡률을 반환합니다.</summary>
-            <param name="u"/>
-            <param name="v"/>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.PrincipalDirectionsAtParameter(System.Double,System.Double)">
-            <summary>U 및 V 매개변수에서 주 방향 벡터를 반환합니다.</summary>
-            <param name="u">매개변수의 U 구성요소</param>
-            <param name="v">매개변수의 V 구성요소</param>
-            <returns>U 및 V 접선 벡터</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.PointAtParameter(System.Double,System.Double)">
-            <summary>지정된 U 및 V 매개변수에서 점을 반환합니다.</summary>
-            <param name="u"/>
-            <param name="v"/>
-            <returns/>
-            <search>
-            surfacepoint
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.PerimeterCurves">
-            <summary>표면의 모든 경계 곡선을 반환합니다.</summary>
-            <returns/>
-            <search>
-            edges
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.GetIsoline(System.Int32,System.Double)">
-            <summary>지정된 표면에서 매개변수 선 곡선을 만듭니다. 표면의 u 또는 v 매개변수 선을 나타내는 곡선을 만듭니다. 매개변수 선은 일정한 반대 u 또는 v 매개변수에서 u 또는 v 매개변수가 증가하는 방향으로 이어집니다. 결과 곡선은 표면 매개변수화와 일치하며 표면 매개변수 범위에 의해 범위의 경계가 설정됩니다. 반환되는 곡선의 유형은 표면 유형에 따라 다릅니다.</summary>
-            <param name="isoDirection">방향 == 0인 경우 U 매개변수 선을 작성하고, 방향 == 1인 경우 V 매개변수 선을 작성합니다.</param>
-            <param name="parameter"/>
-            <returns/>
-            <search>
-            lines
-            </search>
-            <weights>
-            0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.FlipNormalDirection">
-            <summary>법선이 반전된 새 표면을 반환합니다. 이 표면은 변경되지 않습니다.</summary>
-            <returns>입력 표면과 동일하지만 반전된 법선이 있는 표면</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Join(Autodesk.DesignScript.Geometry.Surface)">
-            <summary>이 표면과 입력 표면을 PolySurface로 결합합니다</summary>
-            <param name="otherSurface"/>
-            <returns/>
-            <search>
-            topolysurface
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>이 표면과 입력 표면을 PolySurface로 결합합니다</summary>
-            <param name="otherSurfaces"/>
-            <returns/>
-            <search>
-            join multiple,joinmany,joinall,topolysurface
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>입력 형상을 입력 벡터 방향으로 이 표면에 투영합니다.  !!이 투영 방법은 현재 점 또는 곡선만 지원합니다!!</summary>
-            <param name="geometryToProject"/>
-            <param name="projectionDirection"/>
-            <returns/>
-            <search>
-            projecttosurface,projectonto
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Repair">
-            <summary>표면 복구를 시도합니다.</summary>
-            <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Topology.ToString">
             <summary>Topology의 문자열 표현을 가져옵니다</summary>
@@ -3533,20 +2294,6 @@
             <param name="inSmoothMode">상자 또는 부드러운 시각화로 T-Spline 표면 보기</param>
             <search>tspline,line,build</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Double,System.Collections.Generic.IEnumerable{System.Int32},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Boolean)">
-            <summary>곡선 또는 선의 네트워크를 사용하여 T-spline 파이프 표면을 만듭니다.
-            부드러운 접합이 각 곡선 교차점에 작성됩니다.
-            일부 매개변수는 단일 값 또는 리스트를 사용할 수 있으며 각 곡선은 두 개의 값을 포함합니다.</summary>
-            <param name="curves">파이프를 작성하는 곡선의 리스트</param>
-            <param name="defaultRadius">작성된 파이프의 기본 반지름</param>
-            <param name="snappingTolerance">곡선 교차점을 탐지하는 데 사용되는 공차</param>
-            <param name="segmentsCount">각 파이프의 세그먼트 수입니다. 곡선 개수보다 2배 더 긴 단일 값 또는 리스트가 허용됩니다.</param>
-            <param name="endRotations">각 파이프의 끝 회전 값(도)입니다. 곡선 개수보다 2배 더 긴 단일 값 또는 리스트가 허용됩니다.</param>
-            <param name="endRadii">각 파이프의 끝 반지름 값입니다. 곡선 개수보다 2배 더 긴 단일 값 또는 리스트가 허용됩니다.</param>
-            <param name="endPercentage">각 입력 곡선의 끝에서 파이프 메쉬의 시작까지의 값입니다. 곡선 개수보다 2배 더 긴 단일 값 또는 리스트가 허용됩니다.</param>
-            <param name="inSmoothMode">상자 또는 부드러운 시각화로 T-Spline 표면 보기</param>
-            <search>tspline,create,pipe,curve</search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Double,System.Collections.Generic.IEnumerable{System.Int32},System.Boolean,System.Boolean,System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Boolean)">
             <summary>곡선 또는 선의 네트워크를 사용하여 T-Spline 파이프 표면을 만듭니다.
             부드러운 접합이 각 곡선 교차점에 작성됩니다.
@@ -3687,23 +2434,6 @@
             <returns>용접 해제된 정점이 있는 TSpline 표면</returns>
             <search>tspline,unweld,vertex</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Double,System.Boolean)">
-            <summary>T-Spline 및 곡선의 닫힌 루프와 일치하게 만듭니다.</summary>
-            <param name="tsEdges">일치하게 만드는 닫힌 T-Spline 모서리 루프</param>
-            <param name="curves">일치하게 만드는 닫힌 곡선 루프</param>
-            <param name="continuity">G0, G1, G2와 일치하게 만드는 형상 연속성</param>
-            <param name="useArclength">일치하게 만드는 동안 arcLength 정렬 사용 여부</param>
-            <param name="useRefinement">True이면 추가 제어점이 T-Spline에 추가되어 지정된 공차 이내로 표면을 일치시킵니다.</param>
-            <param name="numRefinementSteps">미세 조정 단계의 최대 수입니다. useRefinement가 False로 설정되어 있으면 무시됩니다.</param>
-            <param name="refinementTolerance">도달할 공차입니다. useRefinement가 False로 설정되어 있으면 무시됩니다.</param>
-            <param name="usePropagation">일치하게 만드는 동안 전파 사용 여부</param>
-            <param name="widthOfPropagation">일치에 영향을 받는 표면의 정도를 결정합니다. usePropagation이 False로 설정되어 있으면 무시됩니다.</param>
-            <param name="tangentScale">접선 축척입니다. 연속성이 G1로 설정되어 있지 않으면 무시됩니다.</param>
-            <param name="curvParamWeight">곡률 매개변수 가중치입니다. 연속성이 G2로 설정되어 있지 않으면 무시됩니다.</param>
-            <param name="flipSourceTargetAlignment">정렬 방향의 반향 여부</param>
-            <returns>지정된 T-Spline 경계 모서리와 곡선 루프 사이에 위치한 T-Spline 표면</returns>
-            <search>tspline,match,curve</search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Boolean)">
             <summary>T-Spline 및 곡선의 닫힌 루프와 일치하게 만듭니다.</summary>
             <param name="tsEdges">일치하게 만드는 닫힌 T-Spline 모서리 루프</param>
@@ -3719,24 +2449,6 @@
             <param name="flipSourceTargetAlignment">정렬 방향의 반향 여부</param>
             <returns>지정된 T-Spline 경계 모서리와 곡선 루프 사이에 위치한 T-Spline 표면</returns>
             <search>tspline,match,curve</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Double,System.Boolean)">
-            <summary>T-Spline 및 BRep 모서리의 닫힌 루프와 일치하게 만듭니다.
-            먼저, 모서리 루프가 곡선 루프로 변환되고 일치가 수행됩니다.</summary>
-            <param name="tsEdges">일치하게 만드는 닫힌 T-Spline 모서리 루프</param>
-            <param name="brepEdges">일치하게 만드는 닫힌 BRep 모서리 루프</param>
-            <param name="continuity">G0, G1, G2와 일치하게 만드는 형상 연속성</param>
-            <param name="useArclength">일치하게 만드는 동안 arcLength 정렬 사용 여부</param>
-            <param name="useRefinement">True이면 추가 제어점이 T-Spline에 추가되어 지정된 공차 이내로 표면을 일치시킵니다.</param>
-            <param name="numRefinementSteps">미세 조정 단계의 최대 수입니다. useRefinement가 False로 설정되어 있으면 무시됩니다.</param>
-            <param name="refinementTolerance">도달할 공차입니다. useRefinement가 False로 설정되어 있으면 무시됩니다.</param>
-            <param name="usePropagation">일치하게 만드는 동안 전파 사용 여부</param>
-            <param name="widthOfPropagation">일치에 영향을 받는 표면의 정도를 결정합니다. usePropagation이 False로 설정되어 있으면 무시됩니다.</param>
-            <param name="tangentScale">접선 축척입니다. 연속성이 G1로 설정되어 있지 않으면 무시됩니다.</param>
-            <param name="curvParamWeight">곡률 매개변수 가중치입니다. 연속성이 G2로 설정되어 있지 않으면 무시됩니다.</param>
-            <param name="flipSourceTargetAlignment">정렬 방향의 반향 여부</param>
-            <returns>지정된 T-Splie 경계 모서리와 BRep 모서리 루프 사이에 위치한 T-Spline 표면</returns>
-            <search>tspline,match,brep</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Boolean)">
             <summary>T-Spline 및 BRep 모서리의 닫힌 루프와 일치하게 만듭니다.
@@ -4191,14 +2903,6 @@
             <summary>이 유형에 대한 hashcode를 가져옵니다</summary>
             <returns>이 객체 전용 hashcode</returns>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry(Autodesk.DesignScript.Geometry.Geometry)">
-            <summary>입력 형상 주위로 축에 정렬되는 BoundingBox를 만듭니다.</summary>
-            <param name="geom"/>
-            <returns/>
-            <search>
-            bounding,bound
-            </search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
             <summary>입력 형상 주위로 축에 정렬되는 BoundingBox를 만듭니다.</summary>
             <param name="geom">경계 상자를 결정하는 형상</param>
@@ -4529,6 +3233,512 @@
             <summary>CoordinateSystem을 autodesk.math:matrix44d-1.0.0 스키마로 형식이 지정된 JSON 객체로 변환합니다.</summary>
             <returns>결과 JSON 문자열</returns>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ToString">
+            <summary>Curve의 문자열 표현을 가져옵니다</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByParameterLineOnSurface(Autodesk.DesignScript.Geometry.Surface,Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
+            <summary>uv 공간에서 표면의 선으로 곡선을 만듭니다</summary>
+            <param name="baseSurface">사용할 표면</param>
+            <param name="startParams">곡선이 시작되는 시작 UV</param>
+            <param name="endParams">곡선이 종료되는 끝 UV</param>
+            <returns>표면의 시작 및 끝 매개변수에 있는 곡선</returns>
+            <search>
+            isocurve,curvebyuv,lines,uvs
+            </search>
+            <weights>
+            0.5,0.5,0.4,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByBlendBetweenCurves(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>두 곡선 사이에서 혼합되는 곡선을 만듭니다.</summary>
+            <param name="curve1">혼합할 첫 번째 곡선</param>
+            <param name="curve2">혼합할 두 번째 곡선</param>
+            <param name="endOrStart1">혼합할 곡선 1의 끝을 나타내는 플래그</param>
+            <param name="endOrStart2">혼합할 곡선 2의 끝을 나타내는 플래그</param>
+            <param name="isG2Continuous">결과 곡선이 G1 연속성인지 또는 G2 연속성인지를 나타내는 플래그</param>
+            <returns>두 곡선을 혼합하여 생성된 곡선</returns>
+            <search>
+            blend,make continuous,connect
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByIsoCurveOnSurface(Autodesk.DesignScript.Geometry.Surface,System.Int32,System.Double)">
+            <summary>표면의 등치선으로 곡선을 만듭니다</summary>
+            <param name="baseSurface">기준 표면</param>
+            <param name="direction">0 등각선이 U 방향인 경우, 1 등각선이 V 방향인 경우</param>
+            <param name="parameter">기타 표면 매개변수의 곡선 값에 대해 고정</param>
+            <returns>표면에 Iso 곡선</returns>
+            <search>
+            isocurve,curvebydir,lines
+            </search>
+            <weights>
+            0.5,0.5,0.4
+            </weights>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.Length">
+            <summary>곡선의 총 호 길이를 반환</summary>
+            <search>
+            distance
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.IsPlanar">
+            <summary>곡선이 평면형이면 True, 아니면 False를 반환합니다.</summary>
+            <search>
+            flat,liesinplane
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.IsClosed">
+            <summary>곡선이 닫혀 있으면 True, 아니면 False를 반환합니다.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.StartPoint">
+            <summary>곡선을 따라 시작점을 가져옵니다</summary>
+            <search>
+            begin,curvestart,startpt
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.EndPoint">
+            <summary>곡선을 따라 끝점을 가져옵니다</summary>
+            <search>
+            end,curveend,endpt
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.Normal">
+            <summary>곡선이 있는 평면에 대한 법선. 평면형 곡선의 경우에만 유효합니다.</summary>
+            <search>
+            perpendicular
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtParameter(System.Double)">
+            <summary>StartParameter() 및 EndParameter() 사이의 지정된 매개변수에서 곡선상의 점을 가져옵니다</summary>
+            <param name="param">매개변수 평가 위치</param>
+            <returns>점</returns>
+            <search>
+            pointoncurve,curvepoint
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TangentAtParameter(System.Double)">
+            <summary>StartParameter() 및 EndParameter() 사이의 지정된 매개변수에서 곡선에 접하는 벡터를 가져옵니다</summary>
+            <param name="param">매개변수 평가 위치</param>
+            <returns>매개변수에서 곡선과 평행한 벡터</returns>
+            <search>
+            tangentoncurve,curvetan
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double)">
+            <summary>StartParameter() 및 EndParameter() 사이의 지정된 매개변수에서 곡선에 수직인 벡터를 가져옵니다</summary>
+            <param name="param">매개변수 평가 위치</param>
+            <returns>매개변수에서 곡선과 수직인 벡터</returns>
+            <search>
+            normaloncurve,curvenorm
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double,System.Boolean)">
+            <summary>StartParameter()와 EndParameter() 사이의 지정된 매개변수에서 곡선에 수직인 벡터를 가져옵니다. 곡선은 평면형이어야 합니다. 결과 법선은 곡선의 전체 곡률에서 일관됩니다.</summary>
+            <param name="param">매개변수 평가 위치</param>
+            <param name="side">'side'가 false로 설정되면 법선이 곡선의 오른쪽을 가리킵니다(시작점에서 곡선의 끝점으로 이동). 'side'가 true이면 법선이 곡선의 왼쪽을 가리킵니다.</param>
+            <returns>매개변수에서 곡선과 수직인 벡터</returns>
+            <search>
+            normaloncurve,curvenorm
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtParameter(System.Double)">
+            <summary>지정된 매개변수 위치의 점이 원점인 CoordinateSystem을 가져옵니다. XAxis는 곡선 법선에 정렬되고, YAxis는 이 점에서 접하는 곡선에 정렬되고, ZAxis는 이 점의 위쪽 벡터 또는 종법선에 정렬됩니다.</summary>
+            <param name="param">매개변수 평가 위치</param>
+            <returns>곡선의 매개변수에 있는 CoordinateSystem</returns>
+            <search>
+            coordoncurve,curvecoord,derivatives
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.HorizontalFrameAtParameter(System.Double)">
+            <summary>지정된 매개변수 위치의 점이 원점인 CoordinateSystem을 가져옵니다</summary>
+            <param name="param">매개변수 평가 위치</param>
+            <returns>점에서 축 기준으로 정렬된 좌표계</returns>
+            <search>
+            frame,axisaligned,aa,coordcurve,framecurve,curveframe,coordoncurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtParameter(System.Double)">
+            <summary>법선이 곡선의 접선에 정렬되는 평면을 반환합니다. 매개변수는 0이 항상 시작점, 1이 항상 끝점이 되도록 조정됩니다.</summary>
+            <param name="param"/>
+            <returns/>
+            <search>
+            planeoncurve,planecurve,tangentplane
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtSegmentLength(System.Double)">
+            <summary>곡선을 따라 특정 호 길이의 점을 가져옵니다</summary>
+            <param name="segmentLength">평가할 곡선을 기준으로 하는 거리</param>
+            <returns>지정된 호 길이에 있는 점</returns>
+            <search>
+            pointoncurve,curvepoint,pointalongcurve,distanceoncurve,distancepoint,distpoint,arclength
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualSegmentLength(System.Int32)">
+            <summary>분할 입력 수를 기준으로 곡선 길이를 따라 균등한 간격으로 있는 점을 반환합니다.</summary>
+            <param name="divisions">분할 수</param>
+            <returns>곡선 길이를 따라 균등한 간격으로 있는 점</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualChordLength(System.Int32)">
+            <summary>분할 입력 수를 기준으로 곡선을 딸 균등한 현 길이 간격으로 있는 점을 반환합니다.</summary>
+            <param name="divisions">분할 수</param>
+            <returns>곡선에 있는 점 리스트</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtChordLength(System.Double,System.Double,System.Boolean)">
+            <summary>지정된 매개변수 위치를 기준으로 곡선의 특정 현 길이에 있는 점을 가져옵니다.</summary>
+            <param name="chordLength">현 길이 평가 위치</param>
+            <param name="parameterLocation">측정할 곡선의 매개변수</param>
+            <param name="forward">곡선을 따라 앞으로 이동할 경우 True</param>
+            <returns>곡선에 있는 점</returns>
+            <search>
+            measure from,measure to,parameteratdist
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtSegmentLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
+            <summary>지정된 점으로부터 지정된 세그먼트 길이의 곡선을 따라 균등한 간격으로 있는 점을 반환합니다.</summary>
+            <param name="point">측정할 위치에 있는 참조 점</param>
+            <param name="segmentLength">평가할 곡선을 기준으로 하는 거리</param>
+            <returns>지정된 점을 포함하여 곡선의 방향을 따르는 곡선에 있는 점 리스트.</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtChordLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
+            <summary>지정된 점으로부터 지정된 현 길이의 곡선에 균등한 간격으로 있는 점을 반환합니다.</summary>
+            <param name="point">측정할 위치에 있는 참조 점</param>
+            <param name="chordLength">현 길이</param>
+            <returns>지정된 점을 포함하여 곡선의 방향을 따르는 곡선에 있는 점 리스트.</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtSegmentLength(System.Double)">
+            <summary>곡선 시작점에서 지정된 거리에 있는 CoordinateSystem을 반환합니다. Y축은 곡선에 접하며 X축은 곡률입니다.</summary>
+            <param name="segmentLength">평가할 곡선을 기준으로 하는 거리</param>
+            <returns>곡선의 좌표계</returns>
+            <search>
+            coordoncurve,curvecoord,derivatives
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtSegmentLength(System.Double)">
+            <summary>시작점에서 곡선을 따라 지정된 거리에 있는 평면을 반환합니다. 평면의 법선은 곡선의 접선에 정렬됩니다.</summary>
+            <param name="segmentLength">평가할 곡선을 기준으로 하는 거리</param>
+            <returns>곡선에 있는 평면</returns>
+            <search>
+            planeoncurve,planecurve,tangentplane
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SegmentLengthAtParameter(System.Double)">
+            <summary>곡선의 시작점에서 지정된 매개변수까지 측정된 세그먼트 길이를 가져옵니다.</summary>
+            <param name="parameter">0~1 사이의 값</param>
+            <returns>세그먼트 길이</returns>
+            <search>
+            lengthatparameter,dist along,lengthatpoint,arclength
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtSegmentLength(System.Double)">
+            <summary>곡선을 따라 특정 호 길이의 매개변수를 가져옵니다.</summary>
+            <param name="segmentLength">평가할 곡선으로 기준으로 하는 거리</param>
+            <returns>매개변수</returns>
+            <search>
+            parameteratlen,param along,paramatlen,arclength
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtChordLength(System.Double,System.Double,System.Boolean)">
+            <summary>지정된 위치에서 곡선을 따라 특정 현 길이의 매개변수를 가져옵니다.</summary>
+            <param name="chordLength">현 길이 평가 위치</param>
+            <param name="parameter">측정할 곡선의 매개변수</param>
+            <param name="forward">곡선을 따라 앞으로 이동할 경우 True</param>
+            <returns>매개변수</returns>
+            <search>
+            measure from,measure to,parameteratdist
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.StartParameter">
+            <summary>곡선의 시작점에서 매개변수를 가져옵니다.</summary>
+            <returns>매개변수 값</returns>
+            <search>
+            start domain,curvestart
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.EndParameter">
+            <summary>곡선의 끝점에서 매개변수를 가져옵니다.</summary>
+            <returns>매개변수 값</returns>
+            <search>
+            end domain,curveend
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SegmentLengthBetweenParameters(System.Double,System.Double)">
+            <summary>곡선의 두 매개변수 사이의 세그먼트 길이를 가져옵니다.</summary>
+            <param name="startParam">0~1 사이의 값</param>
+            <param name="endParam">0~1 사이의 값</param>
+            <returns>세그먼트 길이</returns>
+            <search>
+            measure,distance,arclength
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
+            <summary>곡선을 따라 지정된 점에서 매개변수를 가져옵니다. 점이 곡선에 없으면 ParameterAtPoint는 곡선의 가까운 점에 해당하는 값을 반환하지만 이 점은 일반적으로 가장 가까운 점이 아닙니다.</summary>
+            <param name="point">곡선을 따라 있는 점 또는 곡선 근처에 있는 점</param>
+            <returns>지정된 점에 대한 곡선의 매개변수.</returns>
+            <search>
+            projectpoint,closestparam,curveparam
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Reverse">
+            <summary>곡선의 방향을 바꿉니다</summary>
+            <returns>반대 방향의 새 곡선</returns>
+            <search>
+            flip
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Offset(System.Double)">
+            <summary>곡선의 간격을 지정된 양만큼 띄웁니다. 곡선은 평면형이어야 합니다.</summary>
+            <param name="distance">간격띄우기할 양수 또는 음수 거리</param>
+            <returns>새 간격띄우기 곡선</returns>
+            <search>
+            thicken,lines
+            </search>
+            <weights>
+            0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.OffsetMany(System.Double,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>평면 법선으로 정의된 평면에서 지정된 거리만큼 평면형 곡선을 간격띄우기하여 하나 이상의 곡선을 작성합니다. 간격띄우기 구성요소 곡선 사이에 간격이 있으면 해당 간격은 간격띄우기 곡선을 확장하여 채워집니다. "planeNormal" 입력 인수는 기본적으로 곡선을 포함하는 평면의 법선으로 지정되지만, 원래 곡선 법선에 평행인 명시적 법선이 간격띄우기 방향을 보다 잘 제어할 수 있도록 제공될 수 있습니다. 예를 들어, 동일한 평면을 공유하는 여러 곡선에 대해 일정한 방향으로 간격띄우기를 해야 하는 경우 "planeNormal"을 사용하여 각각의 곡선 법선을 재지정하고 모든 곡선을 동일한 방향으로 강제로 간격띄우기할 수 있습니다. 법선을 반전하면 간격띄우기의 방향이 반대가 됩니다.</summary>
+            <param name="signedDistance">양수 간격띄우기 거리는 곡선의 접선과 평면의 법선 벡터 사이의 외적 방향으로 적용되는 반면 음수 간격띄우기는 반대 방향으로 적용됩니다.</param>
+            <param name="planeNormal">곡선의 평면 법선. 기본값은 입력 곡선의 평면 법선입니다.</param>
+            <returns>하나 이상의 간격띄우기 곡선</returns>
+            <search>
+            thicken,lines
+            </search>
+            <weights>
+            0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoPlane(Autodesk.DesignScript.Geometry.Plane)">
+            <summary>평면으로 당겨 곡선을 만듭니다</summary>
+            <param name="plane">곡선을 당기는 평면 위치</param>
+            <returns>평면에 있는 곡선</returns>
+            <search>
+            projectcurve,toplane
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoSurface(Autodesk.DesignScript.Geometry.Surface)">
+            <summary>이 곡선을 입력 표면에 표면 법선 방향으로 당깁니다.</summary>
+            <param name="surface"/>
+            <returns/>
+            <search>
+            projectcurve,tosurf
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByStartParameter(System.Double)">
+            <summary>지정된 매개변수에서 곡선의 시작 부분을 제거합니다</summary>
+            <param name="startParameter">자르기를 시작할 매개변수 위치</param>
+            <returns>시작이 제거된 새 곡선</returns>
+            <search>
+            rem,remstart,removestart,trimcurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByEndParameter(System.Double)">
+            <summary>지정된 매개변수에서 곡선의 끝 부분을 제거합니다</summary>
+            <param name="endParameter">자르기를 시작할 매개변수 위치</param>
+            <returns>끝이 제거된 새 곡선</returns>
+            <search>
+            rem,remend,removeend,trimcurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByParameter(System.Double,System.Double)">
+            <summary>지정된 매개변수에서 곡선의 시작과 끝 부분을 제거합니다.</summary>
+            <param name="startParameter">자르기를 시작할 매개변수 위치</param>
+            <param name="endParameter">자르기를 시작할 매개변수 위치</param>
+            <returns>외부 세그먼트가 제거된 새 곡선</returns>
+            <search>
+            rem,remend,remstart,remove,trimcurve,removeends
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimInteriorByParameter(System.Double,System.Double)">
+            <summary>지정된 매개변수에서 곡선의 안쪽 부분을 제거합니다</summary>
+            <param name="startParameter">자르기를 시작할 매개변수 위치</param>
+            <param name="endParameter">자르기를 시작할 매개변수 위치</param>
+            <returns>내부 세그먼트가 제거된 새 곡선</returns>
+            <search>
+            rem,removemiddle,middle,remmiddle,cutout,trimcurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(System.Double[])">
+            <summary>곡선의 여러 세그먼트(첫 번째, 세 번째, 다섯 번째... 세그먼트 취소)를 제거합니다</summary>
+            <param name="parameters">곡선을 분할할 매개변수 위치 리스트</param>
+            <returns>첫 번째, 세 번째, 다섯 번째 ... 세그먼트를 무시하는 곡선 배열</returns>
+            <search>
+            rem,removeparts,remparts,cutout,trimcurv,interior,odd
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(System.Double[],System.Boolean)">
+            <summary>'discardEvenSegments' 플래그가 각각 true 또는 false인지에 따라 지정된 매개변수에서 곡선 분할의 짝수 또는 홀수 세그먼트를 제거합니다.</summary>
+            <param name="parameters">곡선을 분할할 매개변수 위치 리스트</param>
+            <param name="discardEvenSegments">세그먼트 무시 전환</param>
+            <returns>짝수 또는 홀수 곡선 세그먼트를 버리고 남은 곡선의 리스트.</returns>
+            <search>
+            rem,removeparts,remparts,cutout,trimcurv,interior,even
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByParameter(System.Double[])">
+            <summary>지정된 매개변수에서 곡선을 여러 조각으로 분할합니다</summary>
+            <param name="parameters">곡선을 분할할 매개변수 위치 리스트</param>
+            <returns>분할로 인해 작성된 곡선</returns>
+            <search>
+            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>곡선을 지정된 점에 여러 개 조각으로 분할합니다.</summary>
+            <param name="points">분할할 곡선에 있는 점</param>
+            <returns>분할로 인해 작성된 곡선</returns>
+            <search>
+            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
+            <summary>여러 개의 곡선을 polycurve 끝에 결합합니다. 연결을 보장하기 위해 곡선을 반전합니다.</summary>
+            <param name="curves">다른 곡선 또는 polycurve에 결합할 곡선</param>
+            <returns>곡선에서 작성된 Polycurve</returns>
+            <search>
+            convertcurves,curves2polycurve,joincurves,concat,joinall,joinmany
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(System.Double)">
+            <summary>곡선을 법선 벡터 방향으로 돌출시킵니다</summary>
+            <param name="distance">곡선을 돌출할 거리</param>
+            <returns>돌출된 표면</returns>
+            <search>
+            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(Autodesk.DesignScript.Geometry.Vector)">
+            <summary>곡선을 지정된 방향으로 입력 벡터의 길이만큼 돌출시킵니다</summary>
+            <param name="direction">돌출할 벡터 방향</param>
+            <returns>돌출된 표면</returns>
+            <search>
+            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(Autodesk.DesignScript.Geometry.Vector,System.Double)">
+            <summary>곡선을 지정된 방향으로 지정된 거리만큼 돌출시킵니다</summary>
+            <param name="direction">돌출할 벡터 방향</param>
+            <param name="distance">돌출할 거리</param>
+            <returns>돌출된 표면</returns>
+            <search>
+            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(System.Double)">
+            <summary>곡선을 법선 방향으로 지정된 거리만큼 돌출시킵니다. 곡선은 닫혀 있어야 합니다.</summary>
+            <param name="distance">돌출할 거리</param>
+            <returns>돌출된 솔리드</returns>
+            <search>
+            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(Autodesk.DesignScript.Geometry.Vector)">
+            <summary>곡선을 지정된 방향으로 입력 벡터의 길이만큼 돌출시킵니다. 곡선은 닫혀 있어야 합니다.</summary>
+            <param name="direction">돌출할 벡터 방향</param>
+            <returns>돌출된 솔리드</returns>
+            <search>
+            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(Autodesk.DesignScript.Geometry.Vector,System.Double)">
+            <summary>곡선을 지정된 방향으로 지정된 거리만큼 돌출시킵니다. 곡선은 닫혀 있어야 합니다.</summary>
+            <param name="direction">돌출할 벡터 방향</param>
+            <param name="distance">돌출할 거리</param>
+            <returns>돌출된 솔리드</returns>
+            <search>
+            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extend(System.Double,Autodesk.DesignScript.Geometry.Point)">
+            <summary>곡선을 선택점에 의해 지정된 끝 부분에서 지정된 거리만큼 연장합니다. 선택된 쪽이 연장됩니다. 원 및 타원과 같이 닫힌 곡선은 연장할 수 없습니다. 연장되는 곡선이 선형인 경우 연장되는 부분도 선형이 됩니다.</summary>
+            <param name="distance">연장할 거리</param>
+            <param name="pickSide">연장한 끝에 있는 점</param>
+            <returns>연장된 곡선</returns>
+            <search>
+            makelonger,stretch,extendside
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtendStart(System.Double)">
+            <summary>곡선을 시작 부분에서 지정된 거리만큼 연장합니다. 원 및 타원과 같이 닫힌 곡선은 연장할 수 없습니다. 연장되는 곡선이 선형인 경우 연장되는 부분도 선형이 됩니다.</summary>
+            <param name="distance">연장할 거리</param>
+            <returns>연장된 곡선</returns>
+            <search>
+            makelonger,stretch
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtendEnd(System.Double)">
+            <summary>곡선을 끝 부분에서 지정된 거리만큼 연장합니다. 원 및 타원과 같이 닫힌 곡선은 연장할 수 없습니다. 연장되는 곡선이 선형인 경우 연장되는 부분도 선형이 됩니다.</summary>
+            <param name="distance">연장할 거리</param>
+            <returns>연장된 곡선</returns>
+            <search>
+            makelonger,stretch
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ApproximateWithArcAndLineSegments">
+            <summary>호와 선 모음으로 곡선을 근사합니다</summary>
+            <returns>곡선에 가까운 호 및 선의 배열</returns>
+            <search>
+            rationalizecurve,fitarcs,fitlines,arcs,lines
+            </search>
+            <weights>
+            0.5,0.5,0.5,0.4,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ToNurbsCurve">
+            <summary>곡선을 NurbsCurve 근사치로 변환합니다</summary>
+            <returns>곡선에 가까운 NurbsCurve</returns>
+            <search>
+            curve2spline,convertcurve,tospline,lines
+            </search>
+            <weights>
+            0.5,0.5,0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Patch">
+            <summary>닫힌 곡선을 패치합니다</summary>
+            <returns>곡선 내부 표면</returns>
+            <search>
+            fill,profiletosurf,loop,loop2surf,edgesurf
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Project(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>지정된 투영 방향을 따라 입력 곡선을 지정된 베이스 형상에 투영합니다.</summary>
+            <param name="baseGeometry">투영할 형상</param>
+            <param name="projectionDirection">벡터</param>
+            <returns>베이스 형상으로 투영된 형상의 리스트</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSurface(Autodesk.DesignScript.Geometry.Curve)">
+            <summary>이 곡선을 경로 곡선을 따라 스윕하여 표면을 만듭니다</summary>
+            <param name="path"/>
+            <returns/>
+            <search>
+            sweep1,curve2surf
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve)">
+            <summary>이 닫힌 곡선을 경로 곡선을 따라 스윕하여 솔리드를 만듭니다</summary>
+            <param name="path"/>
+            <returns/>
+            <search>
+            sweep1,curve2solid,loop2solid,profile2solid,curvetosolid,looptosolid,profiletosolid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
+            <summary>이 닫힌 곡선을 경로 곡선을 따라 스윕하여 솔리드를 만듭니다.</summary>
+            <param name="path">스윕 경로를 나타내는 경로</param>
+            <param name="cutEndOff">스윕의 끝을 잘라내어 경로에 수직으로 만듭니다.</param>
+            <returns>경로 곡선을 따라 이 닫힌 곡선을 스윕하는 솔리드</returns>
+            <search>
+            sweep1,curve2solid,loop2solid,profile2solid,curvetosolid,looptosolid,profiletosolid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Simplify(System.Double)">
+            <summary>제공된 공차를 사용하여 근사된 새 곡선을 반환합니다</summary>
+            <param name="tolerance"/>
+            <returns/>
+            <search>
+            fitcurve,reducecurve,simplecurve,approximate
+            </search>
+        </member>
         <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.constructorThreadId">
             <summary>이 구성자를 호출한 스레드의 관리되는 스레드 ID를 저장합니다.
             발생할 수 있는 여러 스레드 문제를 사용자에게 알리는 데 사용됩니다.</summary>
@@ -4542,9 +3752,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.Dispose">
             <notranslation>true</notranslation>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.DisposeDisplayable">
-            <summary>이 메서드는 표시 가능 항목이 더 이상 필요하지 않을 때 호출됩니다.</summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.GetHashCode">
             <notranslation>true</notranslation>
         </member>
@@ -4557,7 +3764,7 @@
         <member name="F:Autodesk.DesignScript.Geometry.Geometry.mGeometryContructors">
             <summary>IGeometryEntity 유형과 호스트를 사용하는 Geometry 구성자 사이의 맵.</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.RegisterHostType(System.Type,System.Func{Autodesk.DesignScript.Interfaces.IGeometryEntity,System.Boolean,Autodesk.DesignScript.Geometry.Geometry})">
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.RegisterHostType(System.Type,System.Func{Autodesk.DesignScript.Interfaces.IGeometryEntity,Autodesk.DesignScript.Geometry.Geometry})">
             <summary>Geometry Type 등록 메커니즘.</summary>
             <param name="hostType">IGeometryEntity 파생 인터페이스 유형.</param>
             <param name="contructor">Geometry를 구성하기 위한 대리자.</param>
@@ -4742,17 +3949,6 @@
             <param name="json">구문 분석할 JSON 문자열</param>
             <returns>형상 객체</returns>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.String)">
-            <summary>지정된 형상을 지정된 SAT 파일 경로로 내보냅니다</summary>
-            <param name="filePath">형상을 내보낼 파일의 이름</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.String,System.Double)">
-            <summary>지정된 형상을 지정된 SAT 파일 경로로 내보냅니다</summary>
-            <param name="filePath">형상을 내보낼 파일의 이름</param>
-            <param name="unitsMM">사용할 단위</param>
-            <returns/>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},System.String)">
             <summary>지정된 형상의 리스트를 지정된 SAT 파일 경로로 내보냅니다</summary>
             <param name="geometry"/>
@@ -4760,7 +3956,7 @@
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},System.String,System.Double)">
-            <summary>지정된 형상의 리스트를 지정된 SAT 파일 경로로 내보냅니다</summary>
+            <summary>Exports a list of specified geometry to the given SAT file path.</summary>
             <param name="geometry"/>
             <param name="filePath"/>
             <param name="unitsMM"/>
@@ -4771,10 +3967,6 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ToNativePointer(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
             <summary>이 방법은 내부 전용입니다.</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB">
-            <summary>지정된 형상을 표준 ACIS 바이너리(SAB) 형식으로 직렬화하고 직렬화된 바이너리 스트림 데이터를 반환합니다</summary>
-            <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
             <summary>지정된 형상의 리스트를 표준 ACIS 바이너리(SAB) 형식으로 직렬화하고 직렬화된 바이너리 스트림 데이터를 반환합니다</summary>
@@ -5266,6 +4458,531 @@
             <param name="panelIndices">다각형을 구성하는 데 사용되는 패널 색인입니다. 기본값 null은 표면의 모든 패널을 나타냅니다.</param>
             <returns/>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ToString">
+            <summary>PolyCurve의 문자열 표현을 가져옵니다</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
+            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
+            PolyCurve direction is based on the first curve in the input array.
+            Choose a preferred join tolerance between 1e-6 and 1e-3 units.</summary>
+            <param name="curves">Curves to join into a polycurve</param>
+            <param name="joinTolerance">결합할 곡선 간에 허용되는 간격 크기를 결정하는 공차</param>
+            <returns>결합된 곡선으로 작성된 Polycurve</returns>
+            <search>
+            segments,joincurves
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
+            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
+            PolyCurve direction is based on the first curve in the input array.
+            Choose a preferred join tolerance between 1e-6 and 1e-3 units.</summary>
+            <param name="curves">Curves to join into a polycurve</param>
+            <param name="joinTolerance">결합할 곡선 간에 허용되는 간격 크기를 결정하는 공차</param>
+            <param name="trimCurves">입력 곡선이 서로 교차하거나 겹치고 PolyCurve를 작성하기 전에 끝 세그먼트를 잘라내야 하면 True로 설정합니다. 기본적으로 False로 설정되어 있습니다.</param>
+            <param name="trimLength">trimLength가 0보다 크면 trimLength보다 긴 끝 세그먼트는 잘리지 않습니다.</param>
+            <returns>결합된 곡선으로 작성된 Polycurve</returns>
+            <search>
+            segments,joincurves
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
+            <summary>연결된 곡선을 그룹화하여 하나 이상의 polycurve를 만듭니다. 1e-6과 1e-3 단위 사이의 기본 결합 공차를 선택하십시오.</summary>
+            <param name="curves">하나 이상의 PolyCurves를 만들기 위해 함께 그룹화할 곡선</param>
+            <param name="joinTolerance">결합할 곡선 간에 허용되는 간격 크기를 결정하는 공차</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
+            <summary>연결된 곡선을 그룹화하여 하나 이상의 polycurve를 만듭니다. 1e-6과 1e-3 단위 사이의 기본 결합 공차를 선택하십시오.</summary>
+            <param name="curves">하나 이상의 PolyCurves를 만들기 위해 함께 그룹화할 곡선</param>
+            <param name="joinTolerance">결합할 곡선 간에 허용되는 간격 크기를 결정하는 공차</param>
+            <param name="trimCurves">입력 곡선이 서로 교차하거나 겹치고 PolyCurve를 작성하기 전에 끝 세그먼트를 잘라내야 하면 True로 설정합니다. 기본적으로 False로 설정되어 있습니다.</param>
+            <param name="trimLength">trimLength가 0보다 크면 trimLength보다 긴 끝 세그먼트는 잘리지 않습니다.</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
+            <summary>점을 연결하여 PolyCurve를 만듭니다. 'connectLastToFirst' 입력을 True로 설정하고 PolyCurve를 닫습니다.</summary>
+            <param name="points">PolyCurve를 만들 점</param>
+            <param name="connectLastToFirst">마지막 점을 첫 번째 점을 연결하려면 True, 열린 상태로 유지하려면 false</param>
+            <returns>점으로 작성된 Polycurve</returns>
+            <search>
+            segments,joincurves,lines
+            </search>
+            <weights>
+            0.5,0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>곡선을 두껍게 하여 PolyCurve를 만듭니다.</summary>
+            <param name="curve">두껍게 할 곡선</param>
+            <param name="thickness">두께</param>
+            <param name="nor">두껍게 하기 방향에 수직인 법선</param>
+            <returns/>
+            <search>
+            offset
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurveNormal(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>입력 법선으로 지정된 평면을 따라 곡선을 두껍게 하여 PolyCurve를 만듭니다.</summary>
+            <param name="curve">두껍게 할 곡선</param>
+            <param name="thickness">두께</param>
+            <param name="normal">두껍게 하기 방향에 수직인 법선입니다. 법선이 제공되지 않은 경우(Null인 경우) 곡선 법선이 기본적으로 사용됩니다.</param>
+            <returns/>
+            <search>
+            offset,thicken
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.Points">
+            <summary>첫 번째 구성요소의 시작점과 모든 구성요소 곡선의 끝점을 반환합니다. 닫힌 polycurve의 경우 시작점과 끝점이 동일하므로 끝점이 제외됩니다.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.NumberOfCurves">
+            <summary>polycurve의 곡선 수</summary>
+            <search>
+            curvecount,subcurvecount,numbersubcurves
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Curves">
+            <summary>polycurve의 곡선을 반환합니다</summary>
+            <returns/>
+            <search>
+            subcurves,polycurvesplit
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CurveAtIndex(System.Int32,System.Boolean)">
+            <summary>인덱스를 기준으로 polycurve의 곡선을 반환합니다</summary>
+            <param name="index">점 찾기 길이</param>
+            <param name="endOrStart">PolyCurve의 끝부터 개수를 세려면 True, PolyCurve의 시작부터 개수를 세려면 false</param>
+            <returns>색인에 있는 곡선</returns>
+            <search>
+            subcurveatindex,getsubcurve,getcurvebyindex
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.BasePlane">
+            <summary>평면형 polycurve의 평면을 반환합니다</summary>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithEllipse(System.Double,System.Double,System.Double,System.Double,System.Boolean)">
+            <summary>접하는 타원으로 polycurve를 연장합니다</summary>
+            <param name="length">연장 타원 길이</param>
+            <param name="radius1">타원 매개변수</param>
+            <param name="radius2">타원 매개변수</param>
+            <param name="endEllipseParameter">타원 매개변수</param>
+            <param name="endOrStart">PolyCurve의 끝 또는 시작 연장</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithArc(System.Double,System.Double,System.Boolean)">
+            <summary>접하는 호로 polycurve를 연장합니다.</summary>
+            <param name="length">연장 호 길이</param>
+            <param name="radius">호 반지름</param>
+            <param name="endOrStart">PolyCurve의 끝 또는 시작 연장</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLine">
+            <summary>시작점과 끝점을 연결하는 선으로 polycurve 닫기</summary>
+            <returns/>
+            <search>
+            lines
+            </search>
+            <weights>
+            0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLineAndTangentArcs(System.Double,System.Double)">
+            <summary>접하는 호, 선 및 호의 체인으로 polycurve 닫기</summary>
+            <param name="radiusAtStart">PolyCurve 시작에 있는 호의 반지름</param>
+            <param name="radiusAtEnd">PolyCurve 끝에 있는 호의 반지름</param>
+            <returns/>
+            <search>
+            lines
+            </search>
+            <weights>
+            0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Offset(System.Double,System.Boolean)">
+            <summary>해당 평면에서 polycurve의 간격을 띄웁니다.</summary>
+            <param name="signedDistance">간격띄우기 크기</param>
+            <param name="extendCircular">모서리를 원형으로 만들려면 전환</param>
+            <returns>간격 띄우기한 Polycurve</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.OffsetMany(System.Double,System.Boolean,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>평면 법선으로 정의된 평면에서 지정된 거리만큼 평면형 polycurve를 간격띄우기하여 하나 이상의 Polycurve를 작성합니다. "planeNormal" 입력 인수는 기본적으로 곡선을 포함하는 평면의 법선으로 지정되지만, 원래 곡선 법선에 평행한 명시적 법선이 간격띄우기 방향을 보다 잘 제어할 수 있도록 제공될 수 있습니다. 예를 들어 동일한 평면을 공유하는 여러 곡선에 대해 일관된 방향으로 간격띄우기를 해야 하는 경우, 'planeNormal'을 사용하여 각각의 곡선 법선을 재지정하고 모든 곡선을 동일한 방향으로 강제로 간격띄우기할 수 있습니다. 법선을 반전하면 간격띄우기의 방향이 반대가 됩니다.</summary>
+            <param name="signedDistance">양수 간격띄우기 거리는 polycurve의 접선과 평면의 법선 벡터 사이의 외적 방향으로 적용되는 반면 음수 간격띄우기는 반대 방향으로 적용됩니다.</param>
+            <param name="extendCircular">간격띄우기 구성요소 곡선 사이에 간격이 있으면 간격 마무리 설정에 따라 원형 호로 부드러운 구석을 만들거나(true 값) 간격띄우기 곡선을 연장하여(false 값) 간격을 채울 수 있습니다.</param>
+            <param name="planeNormal">곡선의 평면 법선. 기본값은 입력 곡선의 평면 법선입니다.</param>
+            <returns>하나 이상의 간격띄우기 polycurve</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Fillet(System.Double,System.Boolean)">
+            <summary>평면형 polycurve의 모깎기 코너.</summary>
+            <param name="radius">모깎기 반지름</param>
+            <param name="clockwise_corners">모깎기해야 할 코너를 나타냅니다. True인 경우 두 번째 구성요소 시작 지점의 접선이 (곡선 법선을 기준으로) 첫 번째 구성요소 끝의 접선에서 시계 방향으로 있는 코너가 모깎기됩니다. False인 경우 시계 반대 방향으로 있는 코너가 모깎기됩니다.</param>
+            <returns>모깎기한 Polycurve</returns>
+            <search>
+            round,smooth,radius
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Heal(System.Double)">
+            <summary>겹치는 세그먼트 길이가 trimLength보다 작거나 같은 경우 자체 교차하지 않는 새 PolyCurve를 반환하여 자체 교차하는 PolyCurve를 수정합니다.</summary>
+            <param name="trimLength">trimLength가 0보다 크면 trimLength보다 긴 끝 세그먼트는 잘리지 않습니다.</param>
+            <returns>자체 교차하지 않고 겹치지 않는 PolyCurve</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ToString">
+            <summary>Polygon의 문자열 표현을 가져옵니다</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>점을 연결하여 다각형 곡선을 구성합니다.</summary>
+            <param name="points"/>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.RegularPolygon(Autodesk.DesignScript.Geometry.Circle,System.Int32)">
+            <summary>원 안에 내접 다각형 곡선을 구성합니다.</summary>
+            <param name="circle"/>
+            <param name="numberSides"/>
+            <returns/>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Polygon.Points">
+            <summary>모든 세그먼트 시작점/끝점을 반환합니다.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Polygon.PlaneDeviation">
+            <summary>다각형의 평균 평면으로부터의 최대 편차를 반환합니다.</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.Corners">
+            <summary>다각형의 모서리를 반환합니다</summary>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.Center">
+            <summary>다각형 모서리의 평균 점을 반환합니다</summary>
+            <returns/>
+            <search>
+            centroid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.SelfIntersections">
+            <summary>다각형 변 사이의 자체 교차점을 반환합니다.</summary>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ContainmentTest(Autodesk.DesignScript.Geometry.Point)">
+            <summary>입력 점이 다각형 내에 포함되어 있는지 여부를 반환합니다. 다각형이 평면형이 아닌 경우 해당 점이 최적 맞춤 평면에 투영되고 최적 맞춤 평면에 대한 다각형 투영을 사용하여 제약이 계산됩니다. 다각형이 자체 교차하는 경우 실패 상태가 반환됩니다.</summary>
+            <param name="point"/>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToString">
+            <summary>Surface의 문자열 표현을 가져옵니다</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByUnion(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
+            <summary>표면 모음을 하나의 표면에 결합합니다. 이 방법을 사용하면 결과 결합이 비복합 또는 다중 면인 경우 polySurface가 되돌려질 수 있습니다.</summary>
+            <param name="surfaces">표면의 모음입니다.</param>
+            <returns>표면의 결합</returns>
+            <search>
+            merge,join,boolean,addition
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
+            <summary>입력 횡단면 곡선 사이에서 로프트하여 표면을 만듭니다.</summary>
+            <param name="crossSections">로프트할 곡선</param>
+            <returns>로프트로 작성된 표면</returns>
+            <search>
+            loft
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRuledLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Line})">
+            <summary>입력 횡단면 선 사이에서 로프트하여 표면을 만듭니다. Surface.ByLoft보다 약간 더 빠르고 덜 매끄러운 결과를 생성합니다.</summary>
+            <param name="crossSections"/>
+            <returns/>
+            <search>
+            ruledsurface,lines
+            </search>
+            <weights>
+            0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
+            <summary>지정된 안내 곡선(난간이라고도 함)을 사용하여 횡단면을 통해 표면을 로프트합니다. 안내 곡선은 모든 횡단면 곡선과 교차해야 합니다.</summary>
+            <param name="crossSections">로프트할 곡선</param>
+            <param name="guideCurves">로프트를 안내하는 곡선</param>
+            <returns>로프트로 작성된 표면</returns>
+            <search>
+            loftbyrails,loft rails,guides
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
+            <summary>경로를 따라 종단 곡선을 스윕하여 표면을 작성합니다.</summary>
+            <param name="profile">스윕할 곡선</param>
+            <param name="path">스윕에 사용된 경로 곡선</param>
+            <returns>경로를 따라 프로파일을 스윕하여 작성된 표면</returns>
+            <search>
+            sweep,rail,guide,sweep1
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
+            <summary>경로를 따라 종단 곡선을 스윕하여 표면을 작성합니다.</summary>
+            <param name="profile">스윕할 곡선</param>
+            <param name="path">스윕에 사용된 경로 곡선</param>
+            <param name="cutEndOff">스윕의 끝을 잘라내어 경로에 수직으로 만듭니다.</param>
+            <returns>경로를 따라 종단을 스윕하여 작성된 표면</returns>
+            <search>
+            sweep,rail,guide,sweep1
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPerimeterPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>닫힌 다각형의 입력 점을 연결하고 패칭하는 다각형 표면을 만듭니다.</summary>
+            <param name="points">둘레 점 리스트</param>
+            <returns>둘레 점에서 작성된 표면</returns>
+            <search>
+            patch,surfacebypolygon
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep2Rails(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
+            <summary>횡단면 곡선을 두 개의 난간으로 표시되는 경로를 따라 스윕합니다</summary>
+            <param name="path">스윕할 입력 경로입니다.</param>
+            <param name="guideRail">스윕 방향을 안내하는 레일입니다.</param>
+            <param name="profile">경로를 따라 스윕할 종단 곡선입니다.</param>
+            <returns>두 난간을 스윕하여 작성된 표면</returns>
+            <search>
+            sweep2,guides
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double)">
+            <summary>원점에 의해 형성된 광선 축 주위로 종단 곡선을 벡터 축 방향으로 스윕(start_angle(도)에서 시작하고, sweep_angle(도) 스윕)하여 표면을 만듭니다.</summary>
+            <param name="profile">회전할 종단 곡선</param>
+            <param name="axisOrigin">회전 축 원점</param>
+            <param name="axisDirection">회전 축 방향</param>
+            <param name="startAngle">시작 각도(도)</param>
+            <param name="sweepAngle">스윕 각도(도)</param>
+            <returns>프로파일을 회전하여 만든 표면</returns>
+            <search>
+            lathe
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPatch(Autodesk.DesignScript.Geometry.Curve)">
+            <summary>입력 곡선에 의해 정의된 닫힌 경계의 내부를 채워 표면을 만듭니다.</summary>
+            <param name="closedCurve">서피스 경계로 사용된 닫힌 곡선</param>
+            <returns>패치로 작성된 표면</returns>
+            <search>
+            edgesrf,edgesurface,patch,fill
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.Area">
+            <summary>총 표면적을 반환합니다.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.Perimeter">
+            <summary>표면의 모든 경계 모서리 길이의 합을 반환합니다.</summary>
+            <search>
+            circumference
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.ClosedInU">
+            <summary>표면이 U 방향으로 닫혀 있는 경우 True, 아닌 경우 false를 반환합니다.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.ClosedInV">
+            <summary>표면이 V 방향으로 닫혀 있는 경우 True, 아닌 경우 false를 반환합니다.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.Closed">
+            <summary>표면이 U 또는 V 방향으로 닫혀 있는 경우 True, 아닌 경우 false를 반환합니다.</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.SubtractFrom(Autodesk.DesignScript.Geometry.Solid)">
+            <summary>이 표면에서 입력 도구를 뺍니다.</summary>
+            <param name="trimmingEntity"/>
+            <returns/>
+            <search>
+            difference,trim,removefrom,cut
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Difference(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
+            <summary>이 표면 및 입력 표면 결합의 부울 차이입니다. 이 방법을 사용하면 결과 부울이 비복합 또는 다중 면인 경우 polySurface가 되돌려질 수 있습니다.</summary>
+            <param name="others">뺄 다른 표면</param>
+            <returns>결과 부울 표면 또는 PolySurface</returns>
+            <search>
+            subtract,differencemany,diffall,diff multi
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.UVParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
+            <summary>입력 점의 UV 매개변수 쌍을 반환합니다. 이는 Point at 매개변수의 역수입니다.</summary>
+            <param name="point"/>
+            <returns/>
+            <search>
+            evaluateatpoint,surfaceatpoint,uvatpoint,uvs
+            </search>
+            <weights>
+            0.5,0.5,0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve})">
+            <summary>하나 이상의 닫힌 PolyCurves 모음을 사용하여 표면을 자릅니다. 루프 중 하나는 입력 표면의 경계 루프여야 합니다. 또한 구멍에 대해 하나 이상의 내부 루프를 추가해야 합니다.</summary>
+            <param name="loops"/>
+            <returns/>
+            <search>
+            trim multiple,removeloops,cutloops
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve},System.Double)">
+            <summary>지정된 공차 내에서 모두 표면에 있어야 하는 하나 이상의 닫힌 PolyCurve 모음을 사용하여 표면을 자릅니다. 입력 표면에서 하나 이상의 구멍을 잘라내야 하는 경우 표면의 경계에 대해 하나의 외부 루프를 지정하고 각 구멍에 대해 하나의 내부 루프를 지정해야 합니다. 표면 경계와 구멍 사이의 영역을 잘라야 하는 경우 각 구멍에 대한 루프만 제공해야 합니다. 구형 표면과 같은 외부 루프가 없는 주기 표면의 경우 잘린 영역은 루프 곡선의 방향을 반전하여 제어할 수 있습니다.</summary>
+            <param name="loops">입력에서 임의의 순서로 있을 수 있는 하나 이상의 닫힌 PolyCurve입니다. 이러한 루프는 서로 교차하면 안 됩니다.</param>
+            <param name="tolerance">곡선 끝이 일치하는지 여부와 곡선과 표면이 일치하는지를 확인할 때 사용되는 공차입니다. 제공된 공차는 입력 polycurve 작성에 사용된 공차보다 작을 수 없습니다. 기본값 0.0은 입력 polycurve 작성에 사용된 최대 공차가 사용된다는 것을 의미합니다.</param>
+            <returns>닫힌 루프에 의해 잘린 표면.</returns>
+            <search>
+            trim multiple,removeloops,cutloops
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.NormalAtPoint(Autodesk.DesignScript.Geometry.Point)">
+            <summary>표면의 입력 점에서 표면 법선을 반환합니다.</summary>
+            <param name="point">표면 법선을 평가할 점</param>
+            <returns>점의 법선</returns>
+            <search>
+            perpendicular
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface">
+            <summary>표면의 Nurbs 표현을 가져옵니다. 이 방법은 특정 상황에서 표면과 거의 비슷할 수도 있습니다.</summary>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface(System.Boolean)">
+            <summary>표면의 Nurbs 표현을 가져옵니다. 이 메서드는 특정 상황에서 표면을 근사치로 계산할 수 있습니다.</summary>
+            <param name="limitSurface">변환하기 전에 표면을 원래 매개변수 범위로 복원해야 하는지 여부를 결정합니다. 표면의 매개변수 범위가 제한될 수 있습니다(예: 자르기 작업 후).</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ApproximateWithTolerance(System.Double)">
+            <summary>지정된 공차 내에서 표면의 Nurbs 표현을 가져옵니다. 이 방법은 특정 상황에서 표면과 거의 비슷할 수도 있습니다.</summary>
+            <param name="tolerance">지정된 공차</param>
+            <returns>표면의 Nurbs 표면 표현</returns>
+            <search>
+            tonurbs
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double)">
+            <summary>표면을 두껍게 하여 솔리드로 만들고, 표면의 양쪽에서 표면 법선 방향으로 돌출합니다.</summary>
+            <param name="thickness">두껍게 할 양</param>
+            <returns>솔리드로 두껍게 한 표면</returns>
+            <search>
+            offset,tosolid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double,System.Boolean)">
+            <summary>표면을 두껍게 하여 솔리드로 만들고 표면 법선 방향으로 돌출합니다. both_sides 매개변수가 true인 경우 표면이 양쪽에서 두꺼워집니다.</summary>
+            <param name="thickness">두껍게 할 양</param>
+            <param name="both_sides">양쪽에서 두껍게 하려면 True, 한쪽에서 두껍게 하려면 False</param>
+            <returns>솔리드로 두껍게 한 표면</returns>
+            <search>
+            offset,bothsides,tosolid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Offset(System.Double)">
+            <summary>표면의 간격을 표면 법선 방향으로 지정된 거리만큼 띄웁니다.</summary>
+            <param name="distance">간격 띄우기 크기</param>
+            <returns>간격 띄우기된 표면</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.CurvatureAtParameter(System.Double,System.Double)">
+            <summary>반환된 좌표계에서는 xAxis, yAxis 및 zAxis를 사용하여 uDir, vDir 및 법선을 표현합니다. xAxis, yAxis의 길이가 곡률을 나타냅니다.</summary>
+            <param name="u">매개변수의 U 구성요소</param>
+            <param name="v">매개변수의 V 구성요소</param>
+            <returns>표면의 UV 위치에서 법선, U 방향 및 V 방향을 기준으로 한 좌표계</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.CoordinateSystemAtParameter(System.Double,System.Double)">
+            <summary>주 곡률 방향으로 정렬된 CoordinateSystem을 반환합니다.</summary>
+            <param name="u">매개변수의 U 구성요소</param>
+            <param name="v">매개변수의 V 구성요소</param>
+            <returns>주 곡률 방향으로 정렬된 CoordinateSystem</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.TangentAtUParameter(System.Double,System.Double)">
+            <summary>지정된 U 및 V 매개변수에서 U 접선 벡터를 반환합니다.</summary>
+            <param name="u">매개변수의 U 구성요소</param>
+            <param name="v">매개변수의 V 구성요소</param>
+            <returns>U 접선 벡터</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.TangentAtVParameter(System.Double,System.Double)">
+            <summary>지정된 U 및 V 매개변수에서 V 접선 벡터를 반환합니다.</summary>
+            <param name="u">매개변수의 U 구성요소</param>
+            <param name="v">매개변수의 V 구성요소</param>
+            <returns>V 접선 벡터</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.NormalAtParameter(System.Double,System.Double)">
+            <summary>지정된 U 및 V 매개변수에서 법선 벡터를 반환합니다.</summary>
+            <param name="u">매개변수의 U 구성요소</param>
+            <param name="v">매개변수의 V 구성요소</param>
+            <returns>매개변수의 법선</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.DerivativesAtParameter(System.Double,System.Double)">
+            <summary>입력 U 및 V 좌표에서 도함수를 반환합니다.</summary>
+            <param name="u">매개변수의 U 구성요소</param>
+            <param name="v">매개변수의 V 구성요소</param>
+            <returns>표면의 U 및 V 파생</returns>
+            <search>
+            tangent,normal
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.GaussianCurvatureAtParameter(System.Double,System.Double)">
+            <summary>U 및 V 매개변수에서 가우스 곡률을 반환합니다.</summary>
+            <param name="u"/>
+            <param name="v"/>
+            <returns/>
+            <search>
+            developable
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.PrincipalCurvaturesAtParameter(System.Double,System.Double)">
+            <summary>U 및 V 매개변수에서 주 곡률을 반환합니다.</summary>
+            <param name="u"/>
+            <param name="v"/>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.PrincipalDirectionsAtParameter(System.Double,System.Double)">
+            <summary>U 및 V 매개변수에서 주 방향 벡터를 반환합니다.</summary>
+            <param name="u">매개변수의 U 구성요소</param>
+            <param name="v">매개변수의 V 구성요소</param>
+            <returns>U 및 V 접선 벡터</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.PointAtParameter(System.Double,System.Double)">
+            <summary>지정된 U 및 V 매개변수에서 점을 반환합니다.</summary>
+            <param name="u"/>
+            <param name="v"/>
+            <returns/>
+            <search>
+            surfacepoint
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.PerimeterCurves">
+            <summary>표면의 모든 경계 곡선을 반환합니다.</summary>
+            <returns/>
+            <search>
+            edges
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.GetIsoline(System.Int32,System.Double)">
+            <summary>지정된 표면에서 매개변수 선 곡선을 만듭니다. 표면의 u 또는 v 매개변수 선을 나타내는 곡선을 만듭니다. 매개변수 선은 일정한 반대 u 또는 v 매개변수에서 u 또는 v 매개변수가 증가하는 방향으로 이어집니다. 결과 곡선은 표면 매개변수화와 일치하며 표면 매개변수 범위에 의해 범위의 경계가 설정됩니다. 반환되는 곡선의 유형은 표면 유형에 따라 다릅니다.</summary>
+            <param name="isoDirection">방향 == 0인 경우 U 매개변수 선을 작성하고, 방향 == 1인 경우 V 매개변수 선을 작성합니다.</param>
+            <param name="parameter"/>
+            <returns/>
+            <search>
+            lines
+            </search>
+            <weights>
+            0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.FlipNormalDirection">
+            <summary>법선이 반전된 새 표면을 반환합니다. 이 표면은 변경되지 않습니다.</summary>
+            <returns>입력 표면과 동일하지만 반전된 법선이 있는 표면</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
+            <summary>이 표면과 입력 표면을 PolySurface로 결합합니다</summary>
+            <param name="otherSurfaces"/>
+            <returns/>
+            <search>
+            join multiple,joinmany,joinall,topolysurface
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>입력 형상을 입력 벡터 방향으로 이 표면에 투영합니다.  !!이 투영 방법은 현재 점 또는 곡선만 지원합니다!!</summary>
+            <param name="geometryToProject"/>
+            <param name="projectionDirection"/>
+            <returns/>
+            <search>
+            projecttosurface,projectonto
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Repair">
+            <summary>표면 복구를 시도합니다.</summary>
+            <returns/>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.ToString">
             <summary>Vector의 문자열 표현을 가져옵니다</summary>
         </member>
@@ -5450,29 +5167,13 @@
             <returns>제공된 벡터 사이의 각도를 0에서 180도 단위로 반환합니다.</returns>
             <search>rotation angle,</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleBetween(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>두 벡터 사이의 각도를 [0, 180]도 범위에서 반환합니다.</summary>
-            <param name="otherVector"/>
-            <returns/>
-            <search>
-            rotation angle
-            </search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleAboutAxis(Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>두 벡터 사이의 각도를 [0, 180]도 범위에서 반환합니다.</summary>
             <summary>두 벡터 사이의 각도를 0~360도로 반환합니다. 회전 축을 사용하여 각도 방향을 결정합니다.</summary>
             <param name="otherVector">기타 벡터</param>
             <param name="rotationAxis">회전 축</param>
             <returns>제공된 벡터 사이의 각도를 0에서 360도 단위로 반환합니다.</returns>
             <search>rotation angle,</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleBetween(Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>두 벡터 사이의 각도를 [0, 360]도 범위에서 반환합니다. 회전 축을 사용하여 각도 방향을 결정합니다.</summary>
-            <param name="otherVector"/>
-            <param name="rotationAxis"/>
-            <returns/>
-            <search>
-            rotation angle
-            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.FromJson(System.String)">
             <summary>autodesk.math:vector3d-1.0.0 스키마로 형식이 지정된 수신 JSON 문자열을 구문 분석합니다.</summary>
@@ -5504,18 +5205,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_distanceatparameter_deprecated">
             <summary>유사한 현지화된 문자열을 조회합니다. 이 메서드는 더 이상 사용되지 않으며 이후 버전의 Dynamo에서 제거될 예정입니다. 대신 SegmentLengthAtParameter를 사용하십시오.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_dividebydistance_deprecated">
-            <summary>유사한 현지화된 문자열을 조회합니다. 이 메서드는 더 이상 사용되지 않으며 이후 버전의 Dynamo에서 제거될 예정입니다. 대신 'PointsAtEqualChordLength' 및 'SplitByPoints'를 사용하십시오.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_dividebydistancefromparam_deprecated">
-            <summary>유사한 현지화된 문자열을 조회합니다. 이 메서드는 더 이상 사용되지 않으며 이후 버전의 Dynamo에서 제거될 예정입니다. 대신 'PointsAtChordLengthFromPoint' 및 'SplitByPoints'를 사용하십시오.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_dividebylengthfromparams_deprecated">
-            <summary>유사한 현지화된 문자열을 조회합니다. 이 메서드는 더 이상 사용되지 않으며 이후 버전의 Dynamo에서 제거될 예정입니다. 대신 'PointsAtSegmentLengthFromPoint' 및 'SplitByPoints'를 사용하십시오.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_divideequally_deprecated">
-            <summary>유사한 현지화된 문자열을 조회합니다. 이 메서드는 더 이상 사용되지 않으며 이후 버전의 Dynamo에서 제거될 예정입니다. 대신 'PointsAtEqualSegmentLength' 및 'SplitByPoints'를 사용하십시오.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_lengthbetweenparams_deprecated">
             <summary>유사한 현지화된 문자열을 조회합니다. 이 메서드는 더 이상 사용되지 않으며 이후 버전의 Dynamo에서 제거될 예정입니다. 대신 SegmentLengthBetweenParameters를 사용하십시오.</summary>
@@ -5549,9 +5238,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.geometry_deserializefromsab_deprecated">
             <summary>유사한 현지화된 문자열을 조회합니다. 이 메서드는 더 이상 사용되지 않으며 이후 버전의 Dynamo에서 제거될 예정입니다. mmPerUnit 전달을 허용하는 오버로드를 사용하십시오.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.geometry_exporttosat_deprecated">
-            <summary>유사한 현지화된 문자열을 조회합니다. 이 메서드는 더 이상 사용되지 않으며 이후 버전의 Dynamo에서 제거될 예정입니다. 대신 ExportToSAT UI 노드를 사용하십시오.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.geometry_importfromsat_deprecated">
             <summary>유사한 현지화된 문자열을 조회합니다. 이 메서드는 더 이상 사용되지 않으며 이후 버전의 Dynamo에서 제거될 예정입니다. 단위당 mm를 지정하는 오버로드를 사용하십시오.</summary>
@@ -5614,7 +5300,7 @@
             <summary>'메시 노드는 32비트 정밀도(소수점 이하 7자리)를 사용하므로 숫자가 크거나 소수점 이하 7자리를 초과하는 숫자에서는 반올림 오류가 발생할 수 있습니다. 더 높은 정밀도(64비트, 소수점 이하 15자리)를 사용하려면 형상 라이브러리의 노드를 사용하십시오.'와 유사한 현지화된 문자열을 조회합니다.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ModelerExtentsExceeded">
-            <summary>'허용되는 모델링 범위를 초과했습니다. 더 작은 값을 선택해 보십시오.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+            <summary>Looks up a localized string similar to You have exceeded the allowable modeling extents, consider choosing smaller values as inputs.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.NoImplementationException">
             <summary>'IGeometryFactory 구현을 찾을 수 없습니다. ProtoGeometry.config가 올바르게 구성되어 있는지 확인하십시오.'와 유사한 현지화된 문자열을 조회합니다.</summary>
@@ -5667,6 +5353,9 @@
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.polycurve_offset_deprecated">
             <summary>유사한 현지화된 문자열을 조회합니다. 이 메서드는 더 이상 사용되지 않으며 이후 버전의 Dynamo에서 제거될 예정입니다. 대신 PolyCurve.OffsetMany를 사용하십시오.</summary>
         </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.PolyCurveDirectionalityInfoMessage">
+            <summary>Looks up a localized string similar to PolyCurve direction has been updated for consistency. This change may break this node in pre-4.0 graphs. To retain legacy behavior, set DefaultEnableLegacyPolyCurveBehavior to true in DynamoPreferences.xml..</summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.polygon_points_deprecated">
             <summary>유사한 현지화된 문자열을 조회합니다. 이 특성은 더 이상 사용되지 않으며 이후 버전의 Dynamo에서 제거될 예정입니다. 대신 PolyCurve.Points를 사용하십시오.</summary>
         </member>
@@ -5681,9 +5370,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.solid_bysweep_deprecated">
             <summary>유사한 현지화된 문자열을 조회합니다. 이 메서드는 더 이상 사용되지 않으며 이후 버전의 Dynamo에서 제거될 예정입니다. 대신 SolidBySweep(ICurveEntity profile, ICurveEntity path, bool cutEndOff)을 사용하십시오.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.solid_unionall_deprecated">
-            <summary>유사한 현지화된 문자열을 조회합니다. 이 메서드는 더 이상 사용되지 않으며 이후 버전의 Dynamo에서 제거될 예정입니다. 대신 Solid.ByUnion을 사용하십시오.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.surface_bysweep_deprecated">
             <summary>유사한 현지화된 문자열을 조회합니다. 이 메서드는 더 이상 사용되지 않으며 이후 버전의 Dynamo에서 제거될 예정입니다. 대신 SurfaceBySweep(ICurveEntity profile, ICurveEntity path, bool cutEndOff)을 사용하십시오.</summary>
