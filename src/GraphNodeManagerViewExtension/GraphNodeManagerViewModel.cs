@@ -299,6 +299,12 @@ namespace Dynamo.GraphNodeManager
             }
             catch
             {
+                // Suppress exceptions from selection or focus commands.
+                // Known failure scenarios include:
+                // - Node not found (invalid GUID)
+                // - UI not ready to process focus command
+                // - Transient UI errors during command execution
+                // These are intentionally ignored to prevent UI crashes or interruptions.
                 return;
             }
         }
