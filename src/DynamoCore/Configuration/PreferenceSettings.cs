@@ -1395,11 +1395,17 @@ namespace Dynamo.Configuration
         internal void AddDefaultTrustedLocations()
         {
             if (!IsFirstRun) return;
-            string ProgramData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            AddTrustedLocation(Path.Combine(ProgramData, Configurations.AutodeskAsString));
 
             string ProgramFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
             AddTrustedLocation(Path.Combine(ProgramFiles, Configurations.AutodeskAsString));
+
+            //Adding Samples path to trusted folders
+            if(!string.IsNullOrEmpty(PathManager.Instance.SamplesDirectory))
+                AddTrustedLocation(PathManager.Instance.SamplesDirectory);
+
+            //Adding Templates path to trusted folders
+            if (!string.IsNullOrEmpty(PathManager.Instance.DefaultTemplatesDirectory))
+                AddTrustedLocation(PathManager.Instance.DefaultTemplatesDirectory);
         }
 
         /// <summary>
