@@ -1,4 +1,4 @@
-﻿
+
 using System.Collections.Generic;
 using ProtoCore.DSASM;
 using ProtoCore.Lang.Replication;
@@ -138,7 +138,7 @@ namespace ProtoCore.Lang
                 }
                 else
                 {
-                    svRet = interpreter.Run(runtimeCore.RunningBlock, activation.pc, Language.NotSpecified, runtimeCore.Breakpoints);
+                    svRet = interpreter.Run(runtimeCore.RunningBlock, activation.pc, Language.NotSpecified);
                     runtimeCore.RunningBlock = origRunningBlock;
                 }
 
