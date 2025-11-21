@@ -1755,7 +1755,11 @@ namespace Dynamo.Controls
 
             // Show the one-time Python Engine Change notification for the workspace
             var ws = dynamoViewModel.Model.CurrentWorkspace;
-            if (!ws.HasShownPythonAutoMigrationNotification && ws.ShowPythonAutoMigrationNotifications)
+            var prefSettings = dynamoViewModel.Model.PreferenceSettings;
+
+            if (!ws.HasShownPythonAutoMigrationNotification
+                && ws.ShowPythonAutoMigrationNotifications
+                && prefSettings.ShowPythonAutoMigrationNotifications)
             {
                 var cancelFirstDialogBox = ShowPythonEngineChangeNoticeAndMarkIfProceed();
                 if (cancelFirstDialogBox)
