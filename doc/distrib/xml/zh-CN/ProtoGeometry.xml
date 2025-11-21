@@ -482,669 +482,6 @@
         <member name="P:Autodesk.DesignScript.Geometry.Cuboid.Height">
             <summary>返回高度距离。                       注意: 这样将返回立方体的输入维数，而不是实际世界空间维数。换言之，如果创建宽度 (X 轴)为 10 的长方体，并将其变换到 X 轴缩放 2 倍的坐标系，宽度将仍为 10。ASM 不允许以任何可预测阶数提取实体的顶点，因该无法确定变换之后的维数。</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ToString">
-            <summary>获取 Curve 的字符串表示</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByParameterLineOnSurface(Autodesk.DesignScript.Geometry.Surface,Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
-            <summary>通过 UV 空间中曲面的线创建曲线</summary>
-            <param name="baseSurface">要使用的曲面</param>
-            <param name="startParams">曲线将开始的起点 uv</param>
-            <param name="endParams">曲线将结束的终点 UV</param>
-            <returns>曲面开始和结束参数处的曲线</returns>
-            <search>
-            isocurve,curvebyuv,lines,uvs
-            </search>
-            <weights>
-            0.5,0.5,0.4,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByBlendBetweenCurves(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean,System.Boolean,System.Boolean)">
-            <summary>创建混合了两条曲线的曲线</summary>
-            <param name="curve1">要混合的第一条曲线</param>
-            <param name="curve2">要混合的第二条曲线</param>
-            <param name="endOrStart1">用于指示要混合的曲线 1 的端点的标志</param>
-            <param name="endOrStart2">用于指示要混合的曲线 2 的端点的标志</param>
-            <param name="isG2Continuous">标志，用于指示生成的曲线是 G1 连续还是 G2 连续</param>
-            <returns>通过混合两条曲线生成的曲线</returns>
-            <search>
-            blend,make continuous,connect
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByIsoCurveOnSurface(Autodesk.DesignScript.Geometry.Surface,System.Int32,System.Double)">
-            <summary>通过曲面等值线创建曲线</summary>
-            <param name="baseSurface">基础曲面</param>
-            <param name="direction">若为 0，则等值线将沿 U 方向，若为 1，则沿 V 方向</param>
-            <param name="parameter">固定用于其他曲面参数的曲线值</param>
-            <returns>曲面上的等参曲线</returns>
-            <search>
-            isocurve,curvebydir,lines
-            </search>
-            <weights>
-            0.5,0.5,0.4
-            </weights>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.Length">
-            <summary>返回曲线的圆弧总长</summary>
-            <search>
-            distance
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.IsPlanar">
-            <summary>如果曲线为平面曲线，则返回 True；否则返回 False。</summary>
-            <search>
-            flat,liesinplane
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.IsClosed">
-            <summary>如果曲线闭合，则返回 True；否则返回 False。</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.StartPoint">
-            <summary>沿曲线获取起点</summary>
-            <search>
-            begin,curvestart,startpt
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.EndPoint">
-            <summary>沿曲线获取终点</summary>
-            <search>
-            end,curveend,endpt
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.Normal">
-            <summary>曲线所在平面的法线。仅对平面曲线有效。</summary>
-            <search>
-            perpendicular
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtParameter(System.Double)">
-            <summary>获取 StartParameter() 和 EndParameter() 之间指定参数处曲线上的点</summary>
-            <param name="param">要计算的位置的参数</param>
-            <returns>点</returns>
-            <search>
-            pointoncurve,curvepoint
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TangentAtParameter(System.Double)">
-            <summary>获取 StartParameter() 和 EndParameter() 之间指定参数处曲线的切向量</summary>
-            <param name="param">要计算的位置的参数</param>
-            <returns>在参数处平行于曲线的向量</returns>
-            <search>
-            tangentoncurve,curvetan
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double)">
-            <summary>获取 StartParameter() 和 EndParameter() 之间指定参数处曲线的垂直向量</summary>
-            <param name="param">要计算的位置的参数</param>
-            <returns>在参数处垂直于曲线的向量</returns>
-            <search>
-            normaloncurve,curvenorm
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double,System.Boolean)">
-            <summary>按 StartParameter() 和 EndParameter() 之间的指定参数获取垂直于曲线的向量。曲线必须是平面的。生成的法线将在曲线的整个曲率上保持一致。</summary>
-            <param name="param">要计算的位置的参数</param>
-            <param name="side">如果“side”设置为 false，则法线将指向曲线的右侧(从曲线的起点移动到曲线的终点)。如果“side”设置为 true，则法线将指向曲线的左侧。</param>
-            <returns>在参数处垂直于曲线的向量</returns>
-            <search>
-            normaloncurve,curvenorm
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtParameter(System.Double)">
-            <summary>获取以给定参数处的点为原点的 CoordinateSystem。XAxis 与曲线法线对齐，YAxis 与该点处的曲线切线对齐，而 ZAxis 与该点处的向上向量或次发现对齐</summary>
-            <param name="param">要计算的位置的参数</param>
-            <returns>曲线参数处的坐标系</returns>
-            <search>
-            coordoncurve,curvecoord,derivatives
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.HorizontalFrameAtParameter(System.Double)">
-            <summary>获取以给定参数处的点为原点的 CoordinateSystem</summary>
-            <param name="param">要计算的位置的参数</param>
-            <returns>此点处轴对齐的 CoordinateSystem</returns>
-            <search>
-            frame,axisaligned,aa,coordcurve,framecurve,curveframe,coordoncurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtParameter(System.Double)">
-            <summary>返回一个平面，其法线与曲线切线对齐。调整参数以使 0 始终为起点和 1 始终为终点。</summary>
-            <param name="param"/>
-            <returns/>
-            <search>
-            planeoncurve,planecurve,tangentplane
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtSegmentLength(System.Double)">
-            <summary>沿曲线获取特定弧长处的点</summary>
-            <param name="segmentLength">沿曲线要计算的距离</param>
-            <returns>给定弧长处的点</returns>
-            <search>
-            pointoncurve,curvepoint,pointalongcurve,distanceoncurve,distancepoint,distpoint,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtDistance(System.Double)">
-            <summary>沿曲线获取特定弧长处的点</summary>
-            <param name="segmentLength">沿曲线要计算的距离</param>
-            <returns>给定弧长处的点</returns>
-            <search>
-            pointoncurve,curvepoint,pointalongcurve,distanceoncurve,distancepoint,distpoint,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualSegmentLength(System.Int32)">
-            <summary>返回基于输入的分段数沿曲线长度均匀分布的点</summary>
-            <param name="divisions">分割数</param>
-            <returns>沿曲线长度均匀分布的点</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualChordLength(System.Int32)">
-            <summary>返回基于输入的分段数沿曲线以相等弧长分布的点</summary>
-            <param name="divisions">分割数</param>
-            <returns>曲线上点的列表</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtChordLength(System.Double,System.Double,System.Boolean)">
-            <summary>从给定参数位置获取曲线上特定弦长处的点。</summary>
-            <param name="chordLength">要计算的位置处的弦度</param>
-            <param name="parameterLocation">要进行测量的曲线上的参数</param>
-            <param name="forward">若沿曲线向前移动，则为 True</param>
-            <returns>曲线上的点</returns>
-            <search>
-            measure from,measure to,parameteratdist
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtSegmentLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>返回从给定点开始以给定线段长度沿曲线等距分布的点</summary>
-            <param name="point">参照点(测量起点)</param>
-            <param name="segmentLength">沿曲线要计算的距离</param>
-            <returns>曲线上的点列表，包括给定点和沿曲线方向的点。</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtChordLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>返回从给定点开始以给定弦长度沿曲线等距分布的点</summary>
-            <param name="point">参照点(测量起点)</param>
-            <param name="chordLength">弦长</param>
-            <returns>曲线上的点列表，包括给定点和沿曲线方向的点。</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtSegmentLength(System.Double)">
-            <summary>返回与曲线起点相距指定距离的 CoordinateSystem。Y 轴与曲线相切，X 轴为曲率。</summary>
-            <param name="segmentLength">沿曲线要计算的距离</param>
-            <returns>曲线上的 CoordinateSystem</returns>
-            <search>
-            coordoncurve,curvecoord,derivatives
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtDistance(System.Double)">
-            <summary>返回与曲线起点相距指定距离的 CoordinateSystem。Y 轴与曲线相切，X 轴为曲率。</summary>
-            <param name="segmentLength">沿曲线要计算的距离</param>
-            <returns>曲线上的 CoordinateSystem</returns>
-            <search>
-            coordoncurve,curvecoord,derivatives
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtSegmentLength(System.Double)">
-            <summary>返回沿曲线距起点指定距离的平面。平面法线与曲线切线对齐。</summary>
-            <param name="segmentLength">沿曲线要计算的距离</param>
-            <returns>曲线上的面</returns>
-            <search>
-            planeoncurve,planecurve,tangentplane
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtDistance(System.Double)">
-            <summary>返回沿曲线距起点指定距离的平面。平面法线与曲线切线对齐。</summary>
-            <param name="segmentLength">沿曲线要计算的距离</param>
-            <returns>曲线上的面</returns>
-            <search>
-            planeoncurve,planecurve,tangentplane
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SegmentLengthAtParameter(System.Double)">
-            <summary>获取从曲线起点到给定参数测得的线段长度。</summary>
-            <param name="parameter">值介于 0 到 1 之间</param>
-            <returns>线段长度</returns>
-            <search>
-            lengthatparameter,dist along,lengthatpoint,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DistanceAtParameter(System.Double)">
-            <summary>获取从曲线起点到给定参数测得的线段长度。</summary>
-            <param name="param">值介于 0 到 1 之间</param>
-            <returns>线段长度</returns>
-            <search>
-            lengthatparameter,dist along,lengthatpoint,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtSegmentLength(System.Double)">
-            <summary>沿曲线获取特定弧长处的参数。</summary>
-            <param name="segmentLength">沿曲线要计算的距离</param>
-            <returns>参数</returns>
-            <search>
-            parameteratlen,param along,paramatlen,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtDistance(System.Double)">
-            <summary>沿曲线获取特定弧长处的参数。</summary>
-            <param name="segmentLength">沿曲线要计算的距离</param>
-            <returns>参数</returns>
-            <search>
-            parameteratlen,param along,paramatlen,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtChordLength(System.Double,System.Double,System.Boolean)">
-            <summary>沿给定位置的曲线获取特定弧长处的参数。</summary>
-            <param name="chordLength">要计算的位置处的弦度</param>
-            <param name="parameter">要进行测量的曲线上的参数</param>
-            <param name="forward">若沿曲线向前移动，则为 True</param>
-            <returns>参数</returns>
-            <search>
-            measure from,measure to,parameteratdist
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.StartParameter">
-            <summary>获取曲线起点处的参数</summary>
-            <returns>参数值</returns>
-            <search>
-            start domain,curvestart
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.EndParameter">
-            <summary>获取曲线终点处的参数</summary>
-            <returns>参数值</returns>
-            <search>
-            end domain,curveend
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SegmentLengthBetweenParameters(System.Double,System.Double)">
-            <summary>获取曲线上两个参数之间的线段长度</summary>
-            <param name="startParam">值介于 0 到 1 之间</param>
-            <param name="endParam">值介于 0 到 1 之间</param>
-            <returns>线段长度</returns>
-            <search>
-            measure,distance,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.LengthBetweenParameters(System.Double,System.Double)">
-            <summary>获取曲线上两个参数点之间的圆弧长度</summary>
-            <param name="startParam">域的起点</param>
-            <param name="endParam">域的终点</param>
-            <returns>两个参数之间的圆弧长度</returns>
-            <search>
-            measure,distance,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
-            <summary>获取曲线上给定点处的参数。如果该点不在曲线上，则 ParameterAtPoint 仍会返回一个值，该值将与曲线上的邻近点相对应，但该点通常不是最近点。</summary>
-            <param name="point">曲线上或曲线附近的点</param>
-            <returns>曲线上给定点的参数。</returns>
-            <search>
-            projectpoint,closestparam,curveparam
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Reverse">
-            <summary>反转曲线的方向</summary>
-            <returns>具有相反方向的新曲线</returns>
-            <search>
-            flip
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Offset(System.Double)">
-            <summary>按指定量偏移曲线。曲线必须为平面曲线。</summary>
-            <param name="distance">正的或负的偏移距离</param>
-            <returns>新的偏移曲线</returns>
-            <search>
-            thicken,lines
-            </search>
-            <weights>
-            0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.OffsetMany(System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>通过在由平面法线定义的平面中将平面曲线偏移给定距离来创建一条或多条曲线。如果偏移分量曲线之间存在间隙，则通过延伸偏移曲线来填充它们。“planeNormal”输入参数默认为包含曲线的平面的法线，但可以提供平行于原始曲线法线的显式法线以更好地控制偏移的方向。例如，如果共享同一平面的多条曲线需要一致的偏移方向，则“planeNormal”可用于替代各个曲线法线并强制所有曲线在同一方向上偏移。反转法线会反转偏移的方向。</summary>
-            <param name="signedDistance">正偏移距离适用于曲线切线和平面法向量之间的叉积方向，而负偏移则适用于相反方向。</param>
-            <param name="planeNormal">曲线的平面法线。默认为输入曲线的平面法线</param>
-            <returns>一条或多条偏移曲线</returns>
-            <search>
-            thicken,lines
-            </search>
-            <weights>
-            0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoPlane(Autodesk.DesignScript.Geometry.Plane)">
-            <summary>通过拉伸到平面创建曲线</summary>
-            <param name="plane">曲线拉伸所处的平面</param>
-            <returns>平面上的曲线</returns>
-            <search>
-            projectcurve,toplane
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoSurface(Autodesk.DesignScript.Geometry.Surface)">
-            <summary>按曲面法线方向将该曲线拉伸到输入曲面上。</summary>
-            <param name="surface"/>
-            <returns/>
-            <search>
-            projectcurve,tosurf
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideEqually(System.Int32)">
-            <summary>将曲线分割为给定数量的长度相等的曲线</summary>
-            <param name="divisions">分割数</param>
-            <returns>分割后的一组曲线</returns>
-            <search>
-            chopcurve,segment,slices
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideByDistance(System.Int32)">
-            <summary>将曲线分割为给定数量的曲线，每条曲线起点和终点之间距离相等(弦相等)。</summary>
-            <param name="divisions">分割数</param>
-            <returns>分割后的一组曲线</returns>
-            <search>
-            divide by chordlength,chord,segment,chopcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideByLengthFromParameter(System.Double,System.Double)">
-            <summary>将曲线分割为给定长度(从给定参数位置测量)的曲线</summary>
-            <param name="length">分割后的曲线长度</param>
-            <param name="parameter">用于测量的参数位置的起点</param>
-            <returns>分割后的曲线数组</returns>
-            <search>
-            divide by chordlength,chord,segment,chopcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideByDistanceFromParameter(System.Double,System.Double)">
-            <summary>将曲线分割为给定长度(从给定参数位置测量)的曲线</summary>
-            <param name="distance">每条曲线从分割获得的弦长</param>
-            <param name="parameter">用于测量的参数位置的起点</param>
-            <returns>分割后的一组曲线</returns>
-            <search>
-            divide by chordlength,chord,segment,chopcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByStartParameter(System.Double)">
-            <summary>删除指定参数处曲线的起点</summary>
-            <param name="startParameter">修剪起点的参数</param>
-            <returns>起点删除后的新曲线</returns>
-            <search>
-            rem,remstart,removestart,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimStart(System.Double)">
-            <summary>删除指定参数处曲线的起点</summary>
-            <param name="startParameter">修剪起点的参数</param>
-            <returns>起点删除后的新曲线</returns>
-            <search>
-            rem,remstart,removestart,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByEndParameter(System.Double)">
-            <summary>删除指定参数处曲线的终点</summary>
-            <param name="endParameter">修剪起点的参数</param>
-            <returns>终点删除后的新曲线</returns>
-            <search>
-            rem,remend,removeend,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimEnd(System.Double)">
-            <summary>删除指定参数处曲线的终点</summary>
-            <param name="endParameter">修剪起点的参数</param>
-            <returns>终点删除后的新曲线</returns>
-            <search>
-            rem,remend,removeend,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByParameter(System.Double,System.Double)">
-            <summary>删除指定参数处曲线的起点和终点</summary>
-            <param name="startParameter">修剪起点的参数</param>
-            <param name="endParameter">修剪起点的参数</param>
-            <returns>外部线段删除后的新曲线</returns>
-            <search>
-            rem,remend,remstart,remove,trimcurve,removeends
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrim(System.Double,System.Double)">
-            <summary>删除指定参数处曲线的起点和终点</summary>
-            <param name="startParameter">修剪起点的参数</param>
-            <param name="endParameter">修剪起点的参数</param>
-            <returns>外部线段删除后的新曲线</returns>
-            <search>
-            rem,remend,remstart,remove,trimcurve,removeends
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimInteriorByParameter(System.Double,System.Double)">
-            <summary>删除指定参数处曲线的内部部分</summary>
-            <param name="startParameter">修剪起点的参数</param>
-            <param name="endParameter">修剪起点的参数</param>
-            <returns>内部线段删除后的新曲线</returns>
-            <search>
-            rem,removemiddle,middle,remmiddle,cutout,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimInterior(System.Double,System.Double)">
-            <summary>删除指定参数处曲线的内部部分</summary>
-            <param name="startParameter">修剪起点的参数</param>
-            <param name="endParameter">修剪起点的参数</param>
-            <returns>内部线段删除后的新曲线</returns>
-            <search>
-            rem,removemiddle,middle,remmiddle,cutout,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(System.Double[])">
-            <summary>删除曲线的多个分段，放弃第 1、第 3、第 5... 段</summary>
-            <param name="parameters">分割曲线的各位置的参数的列表</param>
-            <returns>丢弃第 1、3、5...段后的一组曲线</returns>
-            <search>
-            rem,removeparts,remparts,cutout,trimcurv,interior,odd
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimSegments(System.Double[])">
-            <summary>删除曲线的多个分段，放弃第 1、第 3、第 5... 段</summary>
-            <param name="parameters">分割曲线的各位置的参数的列表</param>
-            <returns>丢弃第 1、3、5...段后的一组曲线</returns>
-            <search>
-            rem,removeparts,remparts,cutout,trimcurv,interior,odd
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(System.Double[],System.Boolean)">
-            <summary>根据“discardEvenSegments”标志分别为 true 或 false，删除在给定参数处分割的曲线的偶数段或奇数段。</summary>
-            <param name="parameters">分割曲线的各位置的参数的列表</param>
-            <param name="discardEvenSegments">切换为放弃偶数段</param>
-            <returns>丢弃偶数或奇数曲线段后剩余的曲线列表。</returns>
-            <search>
-            rem,removeparts,remparts,cutout,trimcurv,interior,even
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByParameter(System.Double)">
-            <summary>在给定参数处将曲线分割为两个线段</summary>
-            <param name="parameter">执行分割的位置的参数</param>
-            <returns>分割后剩余的两条曲线</returns>
-            <search>
-            cutinto,divide,curve2curves,cut
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterSplit(System.Double)">
-            <summary>在给定参数处将曲线分割为两个线段</summary>
-            <param name="parameter">执行分割的位置的参数</param>
-            <returns>分割后剩余的两条曲线</returns>
-            <search>
-            cutinto,divide,curve2curves,cut
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByParameter(System.Double[])">
-            <summary>在给定参数处将曲线分割为多个线段</summary>
-            <param name="parameters">分割曲线的各位置的参数的列表</param>
-            <returns>由分割创建的曲线</returns>
-            <search>
-            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterSplit(System.Double[])">
-            <summary>在给定参数处将曲线分割为多个线段</summary>
-            <param name="parameters">分割曲线的各位置的参数的列表</param>
-            <returns>由分割创建的曲线</returns>
-            <search>
-            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>在给定点处将曲线分割为多个线段</summary>
-            <param name="points">曲线上用于分割曲线的点</param>
-            <returns>由分割创建的曲线</returns>
-            <search>
-            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>将曲线集连接至复合线终点。翻转曲线以确保连接。</summary>
-            <param name="curves">要连接到复合线的其他曲线</param>
-            <returns>由曲线构成的复合线</returns>
-            <search>
-            convertcurves,curves2polycurve,joincurves,concat,joinall,joinmany
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Join(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>将该曲线和输入曲线连接到新的 PolyCurve，同时正确地保持原始曲线。</summary>
-            <param name="curve">要连接的曲线</param>
-            <returns>由这两条曲线组成的复合线</returns>
-            <search>
-            convertcurve,curve2polycurve,joincurve,concat
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(System.Double)">
-            <summary>朝法向量方向拉伸曲线</summary>
-            <param name="distance">曲线的拉伸距离</param>
-            <returns>拉伸的曲面</returns>
-            <search>
-            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>朝指定方向按输入向量长度拉伸曲线</summary>
-            <param name="direction">拉伸路径向量</param>
-            <returns>拉伸的曲面</returns>
-            <search>
-            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>朝指定方向按指定距离拉伸曲线</summary>
-            <param name="direction">拉伸路径向量</param>
-            <param name="distance">拉伸距离</param>
-            <returns>拉伸的曲面</returns>
-            <search>
-            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(System.Double)">
-            <summary>朝法线方向按指定距离拉伸曲线。曲线必须闭合。</summary>
-            <param name="distance">拉伸距离</param>
-            <returns>拉伸的实体</returns>
-            <search>
-            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>朝指定方向按输入向量长度拉伸曲线。曲线必须闭合。</summary>
-            <param name="direction">拉伸路径向量</param>
-            <returns>拉伸的实体</returns>
-            <search>
-            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>朝指定方向按指定距离拉伸曲线。曲线必须闭合。</summary>
-            <param name="direction">拉伸路径向量</param>
-            <param name="distance">拉伸距离</param>
-            <returns>拉伸的实体</returns>
-            <search>
-            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extend(System.Double,Autodesk.DesignScript.Geometry.Point)">
-            <summary>在由拾取点确定的特定终点处按给定距离延伸曲线。拾取侧将被延伸。圆和椭圆等闭合曲线无法延伸。如果被延伸的曲线是线性的，则延伸也将是线性的。</summary>
-            <param name="distance">延伸距离</param>
-            <param name="pickSide">要延伸端的点</param>
-            <returns>延伸的曲线</returns>
-            <search>
-            makelonger,stretch,extendside
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtendStart(System.Double)">
-            <summary>在曲线的起点侧按给定距离延伸曲线。圆和椭圆等闭合曲线无法延伸。如果被延伸的曲线是线性的，则延伸也将是线性的。</summary>
-            <param name="distance">延伸距离</param>
-            <returns>延伸的曲线</returns>
-            <search>
-            makelonger,stretch
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtendEnd(System.Double)">
-            <summary>在曲线终点处按给定距离延伸曲线。圆和椭圆等闭合曲线无法延伸。如果被延伸的曲线是线性的，则延伸也将是线性的。</summary>
-            <param name="distance">延伸距离</param>
-            <returns>延伸的曲线</returns>
-            <search>
-            makelonger,stretch
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ApproximateWithArcAndLineSegments">
-            <summary>通过圆弧和直线集逼近曲线</summary>
-            <returns>接近曲线的一组圆弧和直线</returns>
-            <search>
-            rationalizecurve,fitarcs,fitlines,arcs,lines
-            </search>
-            <weights>
-            0.5,0.5,0.5,0.4,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ToNurbsCurve">
-            <summary>将曲线转化为 NurbsCurve 逼近</summary>
-            <returns>NurbsCurve 逼近曲线</returns>
-            <search>
-            curve2spline,convertcurve,tospline,lines
-            </search>
-            <weights>
-            0.5,0.5,0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Patch">
-            <summary>修补闭合曲线</summary>
-            <returns>曲线内部的曲面</returns>
-            <search>
-            fill,profiletosurf,loop,loop2surf,edgesurf
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Project(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>沿给定投影方向将输入曲线投影到指定的基础几何图形上。</summary>
-            <param name="baseGeometry">要投影到的几何图形</param>
-            <param name="projectionDirection">向量</param>
-            <returns>已投影到基础几何图形的几何图形列表</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSurface(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>沿路径曲线扫掠该曲线，以创建曲面</summary>
-            <param name="path"/>
-            <returns/>
-            <search>
-            sweep1,curve2surf
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>沿路径曲线扫掠该闭合曲线，以创建实体</summary>
-            <param name="path"/>
-            <returns/>
-            <search>
-            sweep1,curve2solid,loop2solid,profile2solid,curvetosolid,looptosolid,profiletosolid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
-            <summary>沿路径曲线扫掠该闭合曲线，以创建实体</summary>
-            <param name="path">表示扫掠路径的路径</param>
-            <param name="cutEndOff">剪切扫掠的端点，使其与路径垂直</param>
-            <returns>沿路径曲线扫掠此闭合曲线的实体</returns>
-            <search>
-            sweep1,curve2solid,loop2solid,profile2solid,curvetosolid,looptosolid,profiletosolid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Simplify(System.Double)">
-            <summary>返回与提供的公差逼近的新曲线</summary>
-            <param name="tolerance"/>
-            <returns/>
-            <search>
-            fitcurve,reducecurve,simplecurve,approximate
-            </search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cylinder.ToString">
             <summary>获取 Cylinder 的字符串表示</summary>
         </member>
@@ -1264,18 +601,6 @@
             <param name="startAngle">从输入平面 X 正轴开始测量时圆弧的起始角</param>
             <param name="sweepAngle">从起始角开始扫掠的角度(度)</param>
             <returns>由平面半径和角度创建的椭圆弧</returns>
-            <search>
-            ellipsearc,arcs
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.EllipseArc.ByPlaneRadiiStartAngleSweepAngle(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double,System.Double,System.Double)">
-            <summary>以给定半径沿 X 和 Y 轴并扫掠通过角度在平面内创建 EllipseArc</summary>
-            <param name="plane">包含 EllipseArc 的平面</param>
-            <param name="xRadius">平面 X 轴方向 EllipseArc 的半径</param>
-            <param name="yRadius">平面 Y 轴方向 EllipseArc 的半径</param>
-            <param name="startAngle">从输入平面 X 正轴开始测量时圆弧的起始角</param>
-            <param name="sweepAngle">从起始角开始扫掠的角度(度)</param>
-            <returns/>
             <search>
             ellipsearc,arcs
             </search>
@@ -1944,209 +1269,6 @@
             <param name="projectionDirection"/>
             <returns/>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ToString">
-            <summary>获取 PolyCurve 的字符串表示</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>通过连接曲线生成 PolyCurve。根据需要翻转曲线以供连接。在 1e-6 到 1e-3 单位之间选择首选的连接公差。</summary>
-            <param name="curves">连接到复合线的曲线</param>
-            <param name="joinTolerance">确定要连接的曲线之间允许的间隙尺寸的公差</param>
-            <returns>由连接曲线创建的复合线</returns>
-            <search>
-            segments,joincurves
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>通过连接曲线生成 PolyCurve。根据需要翻转曲线以供连接。在 1e-6 到 1e-3 单位之间选择首选的连接公差。</summary>
-            <param name="curves">连接到复合线的曲线</param>
-            <param name="joinTolerance">确定要连接的曲线之间允许的间隙尺寸的公差</param>
-            <param name="trimCurves">如果输入曲线彼此相交/重叠，并且需要在创建复合线之前修剪掉其末端段，则设置为 True。默认情况下，它设置为 False。</param>
-            <param name="trimLength">如果 trimLength 大于 0，则不会修剪比 trimLength 长的末端段。</param>
-            <returns>由连接曲线创建的复合线</returns>
-            <search>
-            segments,joincurves
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>通过对连接的曲线进行分组，从而生成一条或多条复合线。选择一个介于 1e-6 和 1e-3 单位之间的首选连接公差。</summary>
-            <param name="curves">分组在一起以创建一条或多条复合线的曲线</param>
-            <param name="joinTolerance">确定要连接的曲线之间允许的间隙尺寸的公差</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>通过对连接的曲线进行分组，从而生成一条或多条复合线。选择一个介于 1e-6 和 1e-3 单位之间的首选连接公差。</summary>
-            <param name="curves">分组在一起以创建一条或多条复合线的曲线</param>
-            <param name="joinTolerance">确定要连接的曲线之间允许的间隙尺寸的公差</param>
-            <param name="trimCurves">如果输入曲线彼此相交/重叠，并且需要在创建复合线之前修剪掉其末端段，则设置为 True。默认情况下，它设置为 False。</param>
-            <param name="trimLength">如果 trimLength 大于 0，则不会修剪比 trimLength 长的末端段。</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
-            <summary>通过连接点生成 PolyCurve。将“connectLastToFirst”输入设置为 True 以闭合 PolyCurve。</summary>
-            <param name="points">用于生成复合线的点</param>
-            <param name="connectLastToFirst">True 表示将最后一个点连接到第一个点；False 表示保持张开状态</param>
-            <returns>由点创建的复合线</returns>
-            <search>
-            segments,joincurves,lines
-            </search>
-            <weights>
-            0.5,0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>通过加厚曲线生成 PolyCurve。</summary>
-            <param name="curve">要加厚的曲线</param>
-            <param name="thickness">厚度</param>
-            <param name="nor">垂直于加厚方向的法线</param>
-            <returns/>
-            <search>
-            offset
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurveNormal(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>通过沿输入法线指定的平面加厚曲线，生成 PolyCurve。</summary>
-            <param name="curve">要加厚的曲线</param>
-            <param name="thickness">厚度</param>
-            <param name="normal">垂直于加厚方向的法线。如果未提供法线(为空)，则默认情况下将使用曲线法线。</param>
-            <returns/>
-            <search>
-            offset,thicken
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.Points">
-            <summary>返回第一个分量的起点和每个分量曲线的终点。对于闭合的复合线，由于起点和终点相同，因此不会包括终点。</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.NumberOfCurves">
-            <summary>复合线的曲线数</summary>
-            <search>
-            curvecount,subcurvecount,numbersubcurves
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Curves">
-            <summary>返回复合线的各曲线</summary>
-            <returns/>
-            <search>
-            subcurves,polycurvesplit
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CurveAtIndex(System.Int32,System.Boolean)">
-            <summary>按索引返回复合线的曲线</summary>
-            <param name="index">用于定位点的长度</param>
-            <param name="endOrStart">True 表示从复合线的终点开始计数；False 表示从复合线的起点开始计数</param>
-            <returns>索引处的曲线</returns>
-            <search>
-            subcurveatindex,getsubcurve,getcurvebyindex
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.BasePlane">
-            <summary>返回平面复合线的平面</summary>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithEllipse(System.Double,System.Double,System.Double,System.Double,System.Boolean)">
-            <summary>通过切线椭圆延伸复合线</summary>
-            <param name="length">延伸椭圆的长度</param>
-            <param name="radius1">椭圆的参数</param>
-            <param name="radius2">椭圆的参数</param>
-            <param name="endEllipseParameter">椭圆的参数</param>
-            <param name="endOrStart">复合线延伸终点或起点</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithArc(System.Double,System.Double,System.Boolean)">
-            <summary>通过切线圆弧延伸复合线。</summary>
-            <param name="length">延伸圆弧的长度</param>
-            <param name="radius">圆弧的半径</param>
-            <param name="endOrStart">复合线延伸终点或起点</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLine">
-            <summary>通过连接起点和终点的直线闭合复合线</summary>
-            <returns/>
-            <search>
-            lines
-            </search>
-            <weights>
-            0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLineAndTangentArcs(System.Double,System.Double)">
-            <summary>通过圆弧相切链、直线和圆弧闭合复合线</summary>
-            <param name="radiusAtStart">复合线起点处的圆弧半径</param>
-            <param name="radiusAtEnd">复合线终点处的圆弧半径</param>
-            <returns/>
-            <search>
-            lines
-            </search>
-            <weights>
-            0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Offset(System.Double,System.Boolean)">
-            <summary>在其平面偏移复合线。</summary>
-            <param name="signedDistance">偏移量</param>
-            <param name="extendCircular">切换为使角变圆</param>
-            <returns>偏移的复合线</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.OffsetMany(System.Double,System.Boolean,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>通过在由平面法线定义的平面中将平面曲线偏移给定距离来创建一条或多条复合线。“planeNormal”输入参数默认为包含曲线的平面的法线，但可以提供平行于原始曲线法线的显式法线以更好地控制偏移的方向。例如，如果共享同一平面的多条曲线需要一致的偏移方向，则“planeNormal”可用于替代各个曲线法线并强制所有曲线在同一方向上偏移。反转法线会反转偏移的方向。</summary>
-            <param name="signedDistance">正偏移距离适用于复合线切线和平面法向量之间的叉积方向，而负偏移则适用于相反方向。</param>
-            <param name="extendCircular">如果偏移分量曲线之间存在间隙，则根据间隙闭合设置，可以通过圆弧(true 值)填充它们以提供平滑角点，也可以通过延伸(false 值)偏移曲线来填充它们。</param>
-            <param name="planeNormal">曲线的平面法线。默认为输入曲线的平面法线</param>
-            <returns>一条或多条偏移复合线</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Fillet(System.Double,System.Boolean)">
-            <summary>将平面复合线的角点圆角化。</summary>
-            <param name="radius">圆角半径</param>
-            <param name="clockwise_corners">指示应圆角化的角点，如果为 true，则第二个分量开始处的切线从第一个分量结束处的切线顺时针方向(相对于曲线法线)的角点将被圆角化。如果为 false，则逆时针的角点将被圆角化。</param>
-            <returns>圆角的复合线</returns>
-            <search>
-            round,smooth,radius
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Heal(System.Double)">
-            <summary>如果重叠段长度小于或等于 trimLength，则会通过返回非自相交的新复合线来修复自相交的复合线。</summary>
-            <param name="trimLength">如果 trimLength 大于 0，则不会修剪比 trimLength 长的末端段。</param>
-            <returns>非自相交、非重叠复合线</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ToString">
-            <summary>获取 Polygon 的字符串表示</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>通过连接点构造多边曲线。</summary>
-            <param name="points"/>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.RegularPolygon(Autodesk.DesignScript.Geometry.Circle,System.Int32)">
-            <summary>创建圆内接多边形。</summary>
-            <param name="circle"/>
-            <param name="numberSides"/>
-            <returns/>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Polygon.Points">
-            <summary>返回所有线段的起点/终点。</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Polygon.PlaneDeviation">
-            <summary>返回多边形平均平面的最大偏差。</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.Corners">
-            <summary>返回多边形各角</summary>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.Center">
-            <summary>返回多边形各角的平均值</summary>
-            <returns/>
-            <search>
-            centroid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.SelfIntersections">
-            <summary>返回多边形各边的自交点。</summary>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ContainmentTest(Autodesk.DesignScript.Geometry.Point)">
-            <summary>返回输入点是否包含在多边形内。如果多边形不是平面的，则该点将被投影到最佳拟合平面，并通过将多边形投影到最佳拟合平面来计算包含。如果多边形自相交，则此操作将返回失败状态。</summary>
-            <param name="point"/>
-            <returns/>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ToString">
             <summary>获取 PolySurface 的字符串表示</summary>
         </member>
@@ -2196,15 +1318,6 @@
             <returns/>
             <search>
             sweep,rail,guide,sweep1
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
-            <summary>通过沿轨线扫掠曲线创建 Polysurface。</summary>
-            <param name="rail">扫掠路径曲线</param>
-            <param name="profile">扫掠轮廓</param>
-            <returns/>
-            <search>
-            sweep,rail,guide,sweep1,sweepprofile,profile
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.Surfaces">
@@ -2354,15 +1467,6 @@
             Brep,brep
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Solid.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},Autodesk.DesignScript.Geometry.Curve)">
-            <summary>以导向曲线为辅助，通过在输入横截面闭合曲线之间放样来创建实体。导向曲线必须与所有横截面曲线相交。</summary>
-            <param name="crossSections"/>
-            <param name="guideCurve"/>
-            <returns/>
-            <search>
-            Brep,brep,guide,loft
-            </search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
             <summary>以导向曲线为辅助，通过在输入横截面闭合曲线之间放样来创建实体。导向曲线必须与所有横截面曲线相交。</summary>
             <param name="crossSections"/>
@@ -2449,14 +1553,6 @@
             <returns/>
             <search>
             addition,merge,combine
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Solid.UnionAll(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Solid})">
-            <summary>将一列实体与该实体合并。</summary>
-            <param name="solids"/>
-            <returns/>
-            <search>
-            addition,merge,combine,unionmany,union multi
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.Difference(Autodesk.DesignScript.Geometry.Solid)">
@@ -2552,341 +1648,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Sphere.Radius">
             <summary>返回球体半径。</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToString">
-            <summary>获取 Surface 的字符串表示</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByUnion(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>将一组曲面合成为一个曲面。如果生成的并集为非流形或多面，则此方法可能会返回一个多重曲面。</summary>
-            <param name="surfaces">一组曲面。</param>
-            <returns>曲面并集</returns>
-            <search>
-            merge,join,boolean,addition
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>通过在输入横截面曲线之间放样来创建实体。</summary>
-            <param name="crossSections">要通过其放样的曲线</param>
-            <returns>由放样创建的曲面</returns>
-            <search>
-            loft
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRuledLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Line})">
-            <summary>通过在输入横截面直线之间放样来创建实体。这比 Surface。ByLoft 速度稍快，但生成的结果较不平滑。</summary>
-            <param name="crossSections"/>
-            <returns/>
-            <search>
-            ruledsurface,lines
-            </search>
-            <weights>
-            0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},Autodesk.DesignScript.Geometry.Curve)">
-            <summary>使用一条指定导向曲线(也称为轨线)通过横截面放样曲面。导向曲线必须与所有横截面曲线相交。</summary>
-            <param name="crossSections"/>
-            <param name="guideCurve"/>
-            <returns/>
-            <search>
-            loftbyrail
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>使用多条指定导向曲线(也称为轨线)通过横截面放样曲面。各导向曲线必须与所有横截面曲线相交。</summary>
-            <param name="crossSections">要通过其放样的曲线</param>
-            <param name="guideCurves">要通过其引导放样的曲线</param>
-            <returns>由放样创建的曲面</returns>
-            <search>
-            loftbyrails,loft rails,guides
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
-            <summary>通过沿路径扫掠轮廓曲线来创建曲面。</summary>
-            <param name="profile">要扫掠的曲线</param>
-            <param name="path">用于沿其扫掠的路径曲线</param>
-            <returns>通过沿路径扫掠轮廓创建的曲面</returns>
-            <search>
-            sweep,rail,guide,sweep1
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
-            <summary>通过沿路径扫掠轮廓曲线来创建曲面。</summary>
-            <param name="profile">要扫掠的曲线</param>
-            <param name="path">用于沿其扫掠的路径曲线</param>
-            <param name="cutEndOff">剪切扫掠的端点，使其与路径垂直</param>
-            <returns>通过沿路径扫掠轮廓创建的曲面</returns>
-            <search>
-            sweep,rail,guide,sweep1
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPerimeterPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>创建多边形曲面，连接闭合多边形内的输入点并修补。</summary>
-            <param name="points">周界点列表</param>
-            <returns>基于周界点创建的曲面</returns>
-            <search>
-            patch,surfacebypolygon
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep2Rails(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
-            <summary>沿由两条轨线引导的路径扫掠横截面曲线</summary>
-            <param name="path">要沿途扫掠的输入路径。</param>
-            <param name="guideRail">用于引导扫掠方向的轨道。</param>
-            <param name="profile">要沿路径扫掠的轮廓曲线。</param>
-            <returns>通过扫掠两条轨道创建的曲面</returns>
-            <search>
-            sweep2,guides
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double)">
-            <summary>绕由原点形成的轴向量方向的轴射线扫掠轮廓曲线，从起点角(度)起，扫掠掠角(度)，创建曲面。</summary>
-            <param name="profile">要旋转的轮廓曲线</param>
-            <param name="axisOrigin">旋转轴原点</param>
-            <param name="axisDirection">旋转轴方向</param>
-            <param name="startAngle">起始角度(以度为单位)</param>
-            <param name="sweepAngle">扫掠角度(以度为单位)</param>
-            <returns>通过旋转轮廓创建的曲面</returns>
-            <search>
-            lathe
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPatch(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>通过在由输入曲线确定的闭合边界内填充来创建曲面。</summary>
-            <param name="closedCurve">用作曲面边界的闭合曲线</param>
-            <returns>由面片创建的曲面</returns>
-            <search>
-            edgesrf,edgesurface,patch,fill
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.Area">
-            <summary>返回总曲面面积。</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.Perimeter">
-            <summary>返回曲面所有边界边的长度总和。</summary>
-            <search>
-            circumference
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.ClosedInU">
-            <summary>如果曲面在 U 方向上闭合，则返回 True；否则返回 False。</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.ClosedInV">
-            <summary>如果曲面在 V 方向上闭合，则返回 True；否则返回 False。</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.Closed">
-            <summary>如果曲面在 U 或 V 方向上闭合，则返回 True；否则返回 False。</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.SubtractFrom(Autodesk.DesignScript.Geometry.Solid)">
-            <summary>从该曲面减去输入工具。</summary>
-            <param name="trimmingEntity"/>
-            <returns/>
-            <search>
-            difference,trim,removefrom,cut
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Difference(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>此曲面的布尔差集和输入曲面的并集。如果生成的布尔为非流形或多面，则此方法可能会返回一个多重曲面。</summary>
-            <param name="others">要减去的其他曲面</param>
-            <returns>生成的布尔曲面或多重曲面</returns>
-            <search>
-            subtract,differencemany,diffall,diff multi
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.UVParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
-            <summary>在输入点返回 UV 参数对。这是参数处的反向点。</summary>
-            <param name="point"/>
-            <returns/>
-            <search>
-            evaluateatpoint,surfaceatpoint,uvatpoint,uvs
-            </search>
-            <weights>
-            0.5,0.5,0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve})">
-            <summary>使用一个或多个闭合复合线集修剪曲面。其中一个回路需要是输入曲面的边界回路。此外，还需要为孔添加一个或多个内回路。</summary>
-            <param name="loops"/>
-            <returns/>
-            <search>
-            trim multiple,removeloops,cutloops
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve},System.Double)">
-            <summary>使用一个或多个闭合的复合线集修剪曲面，这些复合线必须全部位于指定公差内的曲面上。如果需要从输入曲面修剪一个或多个孔，则必须为曲面边界指定一个外回路，为每个孔指定一个内回路。如果需要修剪曲面边界和孔之间的区域，则应仅提供每个孔的回路。对于没有外回路的周期曲面(例如，球形曲面)，则可以通过反转回路曲线的方向来控制修剪区域。</summary>
-            <param name="loops">一个或多个闭合复合线，可以按任意顺序输入。这些回路不应彼此相交。</param>
-            <param name="tolerance">确定曲线端点是否重合以及曲线和曲面是否重合时使用的公差。提供的公差不能小于创建输入复合线时使用的任何公差。默认值 0.0 表示将使用创建输入复合线时使用的最大公差。</param>
-            <returns>由闭合回路修剪的曲面。</returns>
-            <search>
-            trim multiple,removeloops,cutloops
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.NormalAtPoint(Autodesk.DesignScript.Geometry.Point)">
-            <summary>在曲面上输入点处返回曲面法线。</summary>
-            <param name="point">要计算其曲面法线的点</param>
-            <returns>点处的法线</returns>
-            <search>
-            perpendicular
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface">
-            <summary>获取曲面的 NURBS 表示。在某些情况该方法可粗略逼近曲面。</summary>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface(System.Boolean)">
-            <summary>获取曲面的 Nurbs 表示。在某些情况下，此方法可能粗略逼近曲面。</summary>
-            <param name="limitSurface">确定在转换之前是否应将曲面恢复到其原始参数范围。例如，在执行“修剪”操作之后，曲面的参数范围受限制。</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ApproximateWithTolerance(System.Double)">
-            <summary>在指定公差范围内获取曲面的 NURBS 表示。在某些情况该方法可粗略逼近曲面。</summary>
-            <param name="tolerance">指定的公差</param>
-            <returns>曲面的 NURBS 曲面表示</returns>
-            <search>
-            tonurbs
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double)">
-            <summary>加厚曲面到实体，朝曲面法线方向在曲面两侧进行拉伸。</summary>
-            <param name="thickness">加厚量</param>
-            <returns>加厚曲面作为实体</returns>
-            <search>
-            offset,tosolid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double,System.Boolean)">
-            <summary>加厚曲面到实体，朝曲面法线方向拉伸。如果 both_sides (两侧)参数为“True”，则在两侧加厚曲面。</summary>
-            <param name="thickness">加厚量</param>
-            <param name="both_sides">为 true 时，两侧加厚；为 false 时，一侧加厚</param>
-            <returns>加厚曲面作为实体</returns>
-            <search>
-            offset,bothsides,tosolid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Offset(System.Double)">
-            <summary>在曲面法线方向按指定距离偏移曲面。</summary>
-            <param name="distance">偏移量</param>
-            <returns>偏移的曲面</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.CurvatureAtParameter(System.Double,System.Double)">
-            <summary>返回的坐标系统使用 xAxis、yAxis 和 zAxis 表示 uDir、vDir 和法线。xAxis 和 yAxis 长度表示曲率。</summary>
-            <param name="u">参数的 U 分量</param>
-            <param name="v">参数的 V 分量</param>
-            <returns>基于曲面上 UV 位置处的法线、U 方向和 V 方向的坐标系</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.CoordinateSystemAtParameter(System.Double,System.Double)">
-            <summary>返回一个与主曲率方向对齐的 CoordinateSystem。</summary>
-            <param name="u">参数的 U 分量</param>
-            <param name="v">参数的 V 分量</param>
-            <returns>与主曲率方向对齐的坐标系</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.TangentAtUParameter(System.Double,System.Double)">
-            <summary>返回指定 U 和 V 参数处的 U 切向量。</summary>
-            <param name="u">参数的 U 分量</param>
-            <param name="v">参数的 V 分量</param>
-            <returns>U 向切线向量</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.TangentAtVParameter(System.Double,System.Double)">
-            <summary>返回指定 U 和 V 参数处的 V 切向量。</summary>
-            <param name="u">参数的 U 分量</param>
-            <param name="v">参数的 V 分量</param>
-            <returns>V 向切线向量</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.NormalAtParameter(System.Double,System.Double)">
-            <summary>返回指定 U 和 V 参数处的法向量。</summary>
-            <param name="u">参数的 U 分量</param>
-            <param name="v">参数的 V 分量</param>
-            <returns>参数处的法线</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.DerivativesAtParameter(System.Double,System.Double)">
-            <summary>返回输入 U 和 V 坐标处的导数。</summary>
-            <param name="u">参数的 U 分量</param>
-            <param name="v">参数的 V 分量</param>
-            <returns>曲面的 U 和 V 导数</returns>
-            <search>
-            tangent,normal
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.GaussianCurvatureAtParameter(System.Double,System.Double)">
-            <summary>返回 U 和 V 参数处的高斯曲率。</summary>
-            <param name="u"/>
-            <param name="v"/>
-            <returns/>
-            <search>
-            developable
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.PrincipalCurvaturesAtParameter(System.Double,System.Double)">
-            <summary>返回 U 和 V 参数处的主曲率。</summary>
-            <param name="u"/>
-            <param name="v"/>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.PrincipalDirectionsAtParameter(System.Double,System.Double)">
-            <summary>返回 U 和 V 参数处的主方向向量。</summary>
-            <param name="u">参数的 U 分量</param>
-            <param name="v">参数的 V 分量</param>
-            <returns>U 向和 V 向切线向量</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.PointAtParameter(System.Double,System.Double)">
-            <summary>返回指定 U 和 V 参数处的点。</summary>
-            <param name="u"/>
-            <param name="v"/>
-            <returns/>
-            <search>
-            surfacepoint
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.PerimeterCurves">
-            <summary>返回曲面的所有边界曲线。</summary>
-            <returns/>
-            <search>
-            edges
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.GetIsoline(System.Int32,System.Double)">
-            <summary>在给定曲面上创建参数线曲线。创建一条表示曲面上 U 或 V 参数线的曲线。参数线以恒定相反的 U 或 V 参数朝 U 或 V 参数不断增加的方向延伸。所生成的曲线将与曲面参数匹配，其范围将由曲面参数范围限制。返回的曲线类型将取决于曲面类型。</summary>
-            <param name="isoDirection">若方向 == 0，则创建 U 参数线，若方向 == 1，则创建 V 参数线。</param>
-            <param name="parameter"/>
-            <returns/>
-            <search>
-            lines
-            </search>
-            <weights>
-            0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.FlipNormalDirection">
-            <summary>返回法线翻转的新曲面。保留该曲面不变。</summary>
-            <returns>与输入曲面相同但法线翻转的曲面</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Join(Autodesk.DesignScript.Geometry.Surface)">
-            <summary>将该曲面和输入曲面合并为 PolySurface</summary>
-            <param name="otherSurface"/>
-            <returns/>
-            <search>
-            topolysurface
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>将该曲面和输入曲面合并为 PolySurface</summary>
-            <param name="otherSurfaces"/>
-            <returns/>
-            <search>
-            join multiple,joinmany,joinall,topolysurface
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>按输入向量方向将输入几何图形投射到该曲面上。!!该投射方法当前仅支持点或曲线!!</summary>
-            <param name="geometryToProject"/>
-            <param name="projectionDirection"/>
-            <returns/>
-            <search>
-            projecttosurface,projectonto
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Repair">
-            <summary>尝试修复曲面。</summary>
-            <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Topology.ToString">
             <summary>获取 Topology 的字符串表示</summary>
@@ -3534,20 +2295,6 @@
             <param name="inSmoothMode">以方框还是平滑可视化显示 T 样条曲线曲面</param>
             <search>tspline,line,build</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Double,System.Collections.Generic.IEnumerable{System.Int32},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Boolean)">
-            <summary>使用曲线或直线网络创建 T 样条曲线管道曲面。
-            在每个曲线交点处创建平滑连接。
-            有些参数获取单一值或列表，每条曲线两个值。</summary>
-            <param name="curves">曲线列表，所用来创建的管道来自</param>
-            <param name="defaultRadius">已创建管道的默认半径</param>
-            <param name="snappingTolerance">用于检测曲线交点的公差</param>
-            <param name="segmentsCount">每根管道的分段数。单一值或列表，允许是曲线数的两倍</param>
-            <param name="endRotations">每根管道的端部旋转值(度)。单一值或列表，允许是曲线数的两倍</param>
-            <param name="endRadii">每根管道的端部半径值(度)。单一值或列表，允许是曲线数的两倍</param>
-            <param name="endPercentage">从每条输入曲线的终点到管网起点的值(0 到 1)。单一值或列表，允许是曲线数的两倍</param>
-            <param name="inSmoothMode">以方框还是平滑可视化显示 T 样条曲线曲面</param>
-            <search>tspline,create,pipe,curve</search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Double,System.Collections.Generic.IEnumerable{System.Int32},System.Boolean,System.Boolean,System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Boolean)">
             <summary>使用曲线或直线网络创建 T 样条曲线管道曲面。
             在每个曲线交点处创建平滑连接。
@@ -3688,23 +2435,6 @@
             <returns>各顶点未焊接的 T 样条曲线曲面</returns>
             <search>tspline,unweld,vertex</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Double,System.Boolean)">
-            <summary>创建与 T 样条曲线和曲线闭合环的匹配</summary>
-            <param name="tsEdges">要创建匹配的 T 样条曲线边闭合环</param>
-            <param name="curves">要创建匹配的曲线闭合环</param>
-            <param name="continuity">要尝试匹配的几何连续性：G0、G1、G2</param>
-            <param name="useArclength">构建匹配时是否要使用 arcLength 对齐</param>
-            <param name="useRefinement">若为 True，则会将额外控制点添加到 T 样条曲线以在给定公差范围内匹配曲面。</param>
-            <param name="numRefinementSteps">最大优化步数。若 useRefinement 设置为 False，则忽略</param>
-            <param name="refinementTolerance">要达到的公差。若 useRefinement 设置为 False，则忽略</param>
-            <param name="usePropagation">构建匹配时是否要使用传播</param>
-            <param name="widthOfPropagation">确定有多少曲面受此匹配影响。若 usePropagation 设置为 False，则忽略</param>
-            <param name="tangentScale">切线比例。若连续性未设置为 G1，则忽略</param>
-            <param name="curvParamWeight">曲率参数权重。若连续性未设置为 G2，则忽略</param>
-            <param name="flipSourceTargetAlignment">是否要反转路线方向</param>
-            <returns>位于给定 T 样条曲线边界边和曲线环之间的 T 样条曲线曲面</returns>
-            <search>tspline,match,curve</search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Boolean)">
             <summary>创建与 T 样条曲线和曲线闭合环的匹配</summary>
             <param name="tsEdges">要创建匹配的 T 样条曲线边闭合环</param>
@@ -3720,24 +2450,6 @@
             <param name="flipSourceTargetAlignment">是否要反转路线方向</param>
             <returns>位于给定 T 样条曲线边界边和曲线环之间的 T 样条曲线曲面</returns>
             <search>tspline,match,curve</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Double,System.Boolean)">
-            <summary>创建与 T 样条曲线和 BRep 边闭合环的匹配。首先，
-            边环将被转换为曲线环，然后执行匹配。</summary>
-            <param name="tsEdges">要创建匹配的 T 样条曲线边闭合环</param>
-            <param name="brepEdges">要创建匹配的 BRep 边闭合环</param>
-            <param name="continuity">要尝试匹配的几何连续性：G0、G1、G2</param>
-            <param name="useArclength">构建匹配时是否要使用 arcLength 对齐</param>
-            <param name="useRefinement">若为 True，则会将额外控制点添加到 T 样条曲线以在给定公差范围内匹配曲面。</param>
-            <param name="numRefinementSteps">最大优化步数。若 useRefinement 设置为 False，则忽略</param>
-            <param name="refinementTolerance">要达到的公差。若 useRefinement 设置为 False，则忽略</param>
-            <param name="usePropagation">构建匹配时是否要使用传播</param>
-            <param name="widthOfPropagation">确定有多少曲面受此匹配影响。若 usePropagation 设置为 False，则忽略</param>
-            <param name="tangentScale">切线比例。若连续性未设置为 G1，则忽略</param>
-            <param name="curvParamWeight">曲率参数权重。若连续性未设置为 G2，则忽略</param>
-            <param name="flipSourceTargetAlignment">是否要反转路线方向</param>
-            <returns>位于给定 T 样条曲线边界边和 BRep 边环之间的 T 样条曲线曲面</returns>
-            <search>tspline,match,brep</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Boolean)">
             <summary>创建与 T 样条曲线和 BRep 边闭合环的匹配。首先，
@@ -4192,14 +2904,6 @@
             <summary>获取此类型的哈希代码</summary>
             <returns>此对象的唯一哈希代码</returns>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry(Autodesk.DesignScript.Geometry.Geometry)">
-            <summary>围绕输入几何图形创建与轴对齐的 BoundingBox。</summary>
-            <param name="geom"/>
-            <returns/>
-            <search>
-            bounding,bound
-            </search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
             <summary>围绕多个输入几何图形创建与轴对齐的 BoundingBox。</summary>
             <param name="geom">要确定边界框的几何图形</param>
@@ -4532,6 +3236,512 @@
             <summary>将 CoordinateSystem 转换为使用 autodesk.math:matrix44d-1.0.0 模式格式化的 JSON 对象。</summary>
             <returns>生成的 JSON 字符串</returns>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ToString">
+            <summary>获取 Curve 的字符串表示</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByParameterLineOnSurface(Autodesk.DesignScript.Geometry.Surface,Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
+            <summary>通过 UV 空间中曲面的线创建曲线</summary>
+            <param name="baseSurface">要使用的曲面</param>
+            <param name="startParams">曲线将开始的起点 uv</param>
+            <param name="endParams">曲线将结束的终点 UV</param>
+            <returns>曲面开始和结束参数处的曲线</returns>
+            <search>
+            isocurve,curvebyuv,lines,uvs
+            </search>
+            <weights>
+            0.5,0.5,0.4,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByBlendBetweenCurves(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>创建混合了两条曲线的曲线</summary>
+            <param name="curve1">要混合的第一条曲线</param>
+            <param name="curve2">要混合的第二条曲线</param>
+            <param name="endOrStart1">用于指示要混合的曲线 1 的端点的标志</param>
+            <param name="endOrStart2">用于指示要混合的曲线 2 的端点的标志</param>
+            <param name="isG2Continuous">标志，用于指示生成的曲线是 G1 连续还是 G2 连续</param>
+            <returns>通过混合两条曲线生成的曲线</returns>
+            <search>
+            blend,make continuous,connect
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByIsoCurveOnSurface(Autodesk.DesignScript.Geometry.Surface,System.Int32,System.Double)">
+            <summary>通过曲面等值线创建曲线</summary>
+            <param name="baseSurface">基础曲面</param>
+            <param name="direction">若为 0，则等值线将沿 U 方向，若为 1，则沿 V 方向</param>
+            <param name="parameter">固定用于其他曲面参数的曲线值</param>
+            <returns>曲面上的等参曲线</returns>
+            <search>
+            isocurve,curvebydir,lines
+            </search>
+            <weights>
+            0.5,0.5,0.4
+            </weights>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.Length">
+            <summary>返回曲线的圆弧总长</summary>
+            <search>
+            distance
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.IsPlanar">
+            <summary>如果曲线为平面曲线，则返回 True；否则返回 False。</summary>
+            <search>
+            flat,liesinplane
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.IsClosed">
+            <summary>如果曲线闭合，则返回 True；否则返回 False。</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.StartPoint">
+            <summary>沿曲线获取起点</summary>
+            <search>
+            begin,curvestart,startpt
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.EndPoint">
+            <summary>沿曲线获取终点</summary>
+            <search>
+            end,curveend,endpt
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.Normal">
+            <summary>曲线所在平面的法线。仅对平面曲线有效。</summary>
+            <search>
+            perpendicular
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtParameter(System.Double)">
+            <summary>获取 StartParameter() 和 EndParameter() 之间指定参数处曲线上的点</summary>
+            <param name="param">要计算的位置的参数</param>
+            <returns>点</returns>
+            <search>
+            pointoncurve,curvepoint
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TangentAtParameter(System.Double)">
+            <summary>获取 StartParameter() 和 EndParameter() 之间指定参数处曲线的切向量</summary>
+            <param name="param">要计算的位置的参数</param>
+            <returns>在参数处平行于曲线的向量</returns>
+            <search>
+            tangentoncurve,curvetan
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double)">
+            <summary>获取 StartParameter() 和 EndParameter() 之间指定参数处曲线的垂直向量</summary>
+            <param name="param">要计算的位置的参数</param>
+            <returns>在参数处垂直于曲线的向量</returns>
+            <search>
+            normaloncurve,curvenorm
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double,System.Boolean)">
+            <summary>按 StartParameter() 和 EndParameter() 之间的指定参数获取垂直于曲线的向量。曲线必须是平面的。生成的法线将在曲线的整个曲率上保持一致。</summary>
+            <param name="param">要计算的位置的参数</param>
+            <param name="side">如果“side”设置为 false，则法线将指向曲线的右侧(从曲线的起点移动到曲线的终点)。如果“side”设置为 true，则法线将指向曲线的左侧。</param>
+            <returns>在参数处垂直于曲线的向量</returns>
+            <search>
+            normaloncurve,curvenorm
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtParameter(System.Double)">
+            <summary>获取以给定参数处的点为原点的 CoordinateSystem。XAxis 与曲线法线对齐，YAxis 与该点处的曲线切线对齐，而 ZAxis 与该点处的向上向量或次发现对齐</summary>
+            <param name="param">要计算的位置的参数</param>
+            <returns>曲线参数处的坐标系</returns>
+            <search>
+            coordoncurve,curvecoord,derivatives
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.HorizontalFrameAtParameter(System.Double)">
+            <summary>获取以给定参数处的点为原点的 CoordinateSystem</summary>
+            <param name="param">要计算的位置的参数</param>
+            <returns>此点处轴对齐的 CoordinateSystem</returns>
+            <search>
+            frame,axisaligned,aa,coordcurve,framecurve,curveframe,coordoncurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtParameter(System.Double)">
+            <summary>返回一个平面，其法线与曲线切线对齐。调整参数以使 0 始终为起点和 1 始终为终点。</summary>
+            <param name="param"/>
+            <returns/>
+            <search>
+            planeoncurve,planecurve,tangentplane
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtSegmentLength(System.Double)">
+            <summary>沿曲线获取特定弧长处的点</summary>
+            <param name="segmentLength">沿曲线要计算的距离</param>
+            <returns>给定弧长处的点</returns>
+            <search>
+            pointoncurve,curvepoint,pointalongcurve,distanceoncurve,distancepoint,distpoint,arclength
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualSegmentLength(System.Int32)">
+            <summary>返回基于输入的分段数沿曲线长度均匀分布的点</summary>
+            <param name="divisions">分割数</param>
+            <returns>沿曲线长度均匀分布的点</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualChordLength(System.Int32)">
+            <summary>返回基于输入的分段数沿曲线以相等弧长分布的点</summary>
+            <param name="divisions">分割数</param>
+            <returns>曲线上点的列表</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtChordLength(System.Double,System.Double,System.Boolean)">
+            <summary>从给定参数位置获取曲线上特定弦长处的点。</summary>
+            <param name="chordLength">要计算的位置处的弦度</param>
+            <param name="parameterLocation">要进行测量的曲线上的参数</param>
+            <param name="forward">若沿曲线向前移动，则为 True</param>
+            <returns>曲线上的点</returns>
+            <search>
+            measure from,measure to,parameteratdist
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtSegmentLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
+            <summary>返回从给定点开始以给定线段长度沿曲线等距分布的点</summary>
+            <param name="point">参照点(测量起点)</param>
+            <param name="segmentLength">沿曲线要计算的距离</param>
+            <returns>曲线上的点列表，包括给定点和沿曲线方向的点。</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtChordLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
+            <summary>返回从给定点开始以给定弦长度沿曲线等距分布的点</summary>
+            <param name="point">参照点(测量起点)</param>
+            <param name="chordLength">弦长</param>
+            <returns>曲线上的点列表，包括给定点和沿曲线方向的点。</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtSegmentLength(System.Double)">
+            <summary>返回与曲线起点相距指定距离的 CoordinateSystem。Y 轴与曲线相切，X 轴为曲率。</summary>
+            <param name="segmentLength">沿曲线要计算的距离</param>
+            <returns>曲线上的 CoordinateSystem</returns>
+            <search>
+            coordoncurve,curvecoord,derivatives
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtSegmentLength(System.Double)">
+            <summary>返回沿曲线距起点指定距离的平面。平面法线与曲线切线对齐。</summary>
+            <param name="segmentLength">沿曲线要计算的距离</param>
+            <returns>曲线上的面</returns>
+            <search>
+            planeoncurve,planecurve,tangentplane
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SegmentLengthAtParameter(System.Double)">
+            <summary>获取从曲线起点到给定参数测得的线段长度。</summary>
+            <param name="parameter">值介于 0 到 1 之间</param>
+            <returns>线段长度</returns>
+            <search>
+            lengthatparameter,dist along,lengthatpoint,arclength
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtSegmentLength(System.Double)">
+            <summary>沿曲线获取特定弧长处的参数。</summary>
+            <param name="segmentLength">沿曲线要计算的距离</param>
+            <returns>参数</returns>
+            <search>
+            parameteratlen,param along,paramatlen,arclength
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtChordLength(System.Double,System.Double,System.Boolean)">
+            <summary>沿给定位置的曲线获取特定弧长处的参数。</summary>
+            <param name="chordLength">要计算的位置处的弦度</param>
+            <param name="parameter">要进行测量的曲线上的参数</param>
+            <param name="forward">若沿曲线向前移动，则为 True</param>
+            <returns>参数</returns>
+            <search>
+            measure from,measure to,parameteratdist
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.StartParameter">
+            <summary>获取曲线起点处的参数</summary>
+            <returns>参数值</returns>
+            <search>
+            start domain,curvestart
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.EndParameter">
+            <summary>获取曲线终点处的参数</summary>
+            <returns>参数值</returns>
+            <search>
+            end domain,curveend
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SegmentLengthBetweenParameters(System.Double,System.Double)">
+            <summary>获取曲线上两个参数之间的线段长度</summary>
+            <param name="startParam">值介于 0 到 1 之间</param>
+            <param name="endParam">值介于 0 到 1 之间</param>
+            <returns>线段长度</returns>
+            <search>
+            measure,distance,arclength
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
+            <summary>获取曲线上给定点处的参数。如果该点不在曲线上，则 ParameterAtPoint 仍会返回一个值，该值将与曲线上的邻近点相对应，但该点通常不是最近点。</summary>
+            <param name="point">曲线上或曲线附近的点</param>
+            <returns>曲线上给定点的参数。</returns>
+            <search>
+            projectpoint,closestparam,curveparam
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Reverse">
+            <summary>反转曲线的方向</summary>
+            <returns>具有相反方向的新曲线</returns>
+            <search>
+            flip
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Offset(System.Double)">
+            <summary>按指定量偏移曲线。曲线必须为平面曲线。</summary>
+            <param name="distance">正的或负的偏移距离</param>
+            <returns>新的偏移曲线</returns>
+            <search>
+            thicken,lines
+            </search>
+            <weights>
+            0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.OffsetMany(System.Double,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>通过在由平面法线定义的平面中将平面曲线偏移给定距离来创建一条或多条曲线。如果偏移分量曲线之间存在间隙，则通过延伸偏移曲线来填充它们。“planeNormal”输入参数默认为包含曲线的平面的法线，但可以提供平行于原始曲线法线的显式法线以更好地控制偏移的方向。例如，如果共享同一平面的多条曲线需要一致的偏移方向，则“planeNormal”可用于替代各个曲线法线并强制所有曲线在同一方向上偏移。反转法线会反转偏移的方向。</summary>
+            <param name="signedDistance">正偏移距离适用于曲线切线和平面法向量之间的叉积方向，而负偏移则适用于相反方向。</param>
+            <param name="planeNormal">曲线的平面法线。默认为输入曲线的平面法线</param>
+            <returns>一条或多条偏移曲线</returns>
+            <search>
+            thicken,lines
+            </search>
+            <weights>
+            0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoPlane(Autodesk.DesignScript.Geometry.Plane)">
+            <summary>通过拉伸到平面创建曲线</summary>
+            <param name="plane">曲线拉伸所处的平面</param>
+            <returns>平面上的曲线</returns>
+            <search>
+            projectcurve,toplane
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoSurface(Autodesk.DesignScript.Geometry.Surface)">
+            <summary>按曲面法线方向将该曲线拉伸到输入曲面上。</summary>
+            <param name="surface"/>
+            <returns/>
+            <search>
+            projectcurve,tosurf
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByStartParameter(System.Double)">
+            <summary>删除指定参数处曲线的起点</summary>
+            <param name="startParameter">修剪起点的参数</param>
+            <returns>起点删除后的新曲线</returns>
+            <search>
+            rem,remstart,removestart,trimcurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByEndParameter(System.Double)">
+            <summary>删除指定参数处曲线的终点</summary>
+            <param name="endParameter">修剪起点的参数</param>
+            <returns>终点删除后的新曲线</returns>
+            <search>
+            rem,remend,removeend,trimcurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByParameter(System.Double,System.Double)">
+            <summary>删除指定参数处曲线的起点和终点</summary>
+            <param name="startParameter">修剪起点的参数</param>
+            <param name="endParameter">修剪起点的参数</param>
+            <returns>外部线段删除后的新曲线</returns>
+            <search>
+            rem,remend,remstart,remove,trimcurve,removeends
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimInteriorByParameter(System.Double,System.Double)">
+            <summary>删除指定参数处曲线的内部部分</summary>
+            <param name="startParameter">修剪起点的参数</param>
+            <param name="endParameter">修剪起点的参数</param>
+            <returns>内部线段删除后的新曲线</returns>
+            <search>
+            rem,removemiddle,middle,remmiddle,cutout,trimcurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(System.Double[])">
+            <summary>删除曲线的多个分段，放弃第 1、第 3、第 5... 段</summary>
+            <param name="parameters">分割曲线的各位置的参数的列表</param>
+            <returns>丢弃第 1、3、5...段后的一组曲线</returns>
+            <search>
+            rem,removeparts,remparts,cutout,trimcurv,interior,odd
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(System.Double[],System.Boolean)">
+            <summary>根据“discardEvenSegments”标志分别为 true 或 false，删除在给定参数处分割的曲线的偶数段或奇数段。</summary>
+            <param name="parameters">分割曲线的各位置的参数的列表</param>
+            <param name="discardEvenSegments">切换为放弃偶数段</param>
+            <returns>丢弃偶数或奇数曲线段后剩余的曲线列表。</returns>
+            <search>
+            rem,removeparts,remparts,cutout,trimcurv,interior,even
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByParameter(System.Double[])">
+            <summary>在给定参数处将曲线分割为多个线段</summary>
+            <param name="parameters">分割曲线的各位置的参数的列表</param>
+            <returns>由分割创建的曲线</returns>
+            <search>
+            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>在给定点处将曲线分割为多个线段</summary>
+            <param name="points">曲线上用于分割曲线的点</param>
+            <returns>由分割创建的曲线</returns>
+            <search>
+            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
+            <summary>将曲线集连接至复合线终点。翻转曲线以确保连接。</summary>
+            <param name="curves">要连接到复合线的其他曲线</param>
+            <returns>由曲线构成的复合线</returns>
+            <search>
+            convertcurves,curves2polycurve,joincurves,concat,joinall,joinmany
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(System.Double)">
+            <summary>朝法向量方向拉伸曲线</summary>
+            <param name="distance">曲线的拉伸距离</param>
+            <returns>拉伸的曲面</returns>
+            <search>
+            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(Autodesk.DesignScript.Geometry.Vector)">
+            <summary>朝指定方向按输入向量长度拉伸曲线</summary>
+            <param name="direction">拉伸路径向量</param>
+            <returns>拉伸的曲面</returns>
+            <search>
+            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(Autodesk.DesignScript.Geometry.Vector,System.Double)">
+            <summary>朝指定方向按指定距离拉伸曲线</summary>
+            <param name="direction">拉伸路径向量</param>
+            <param name="distance">拉伸距离</param>
+            <returns>拉伸的曲面</returns>
+            <search>
+            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(System.Double)">
+            <summary>朝法线方向按指定距离拉伸曲线。曲线必须闭合。</summary>
+            <param name="distance">拉伸距离</param>
+            <returns>拉伸的实体</returns>
+            <search>
+            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(Autodesk.DesignScript.Geometry.Vector)">
+            <summary>朝指定方向按输入向量长度拉伸曲线。曲线必须闭合。</summary>
+            <param name="direction">拉伸路径向量</param>
+            <returns>拉伸的实体</returns>
+            <search>
+            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(Autodesk.DesignScript.Geometry.Vector,System.Double)">
+            <summary>朝指定方向按指定距离拉伸曲线。曲线必须闭合。</summary>
+            <param name="direction">拉伸路径向量</param>
+            <param name="distance">拉伸距离</param>
+            <returns>拉伸的实体</returns>
+            <search>
+            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extend(System.Double,Autodesk.DesignScript.Geometry.Point)">
+            <summary>在由拾取点确定的特定终点处按给定距离延伸曲线。拾取侧将被延伸。圆和椭圆等闭合曲线无法延伸。如果被延伸的曲线是线性的，则延伸也将是线性的。</summary>
+            <param name="distance">延伸距离</param>
+            <param name="pickSide">要延伸端的点</param>
+            <returns>延伸的曲线</returns>
+            <search>
+            makelonger,stretch,extendside
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtendStart(System.Double)">
+            <summary>在曲线的起点侧按给定距离延伸曲线。圆和椭圆等闭合曲线无法延伸。如果被延伸的曲线是线性的，则延伸也将是线性的。</summary>
+            <param name="distance">延伸距离</param>
+            <returns>延伸的曲线</returns>
+            <search>
+            makelonger,stretch
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtendEnd(System.Double)">
+            <summary>在曲线终点处按给定距离延伸曲线。圆和椭圆等闭合曲线无法延伸。如果被延伸的曲线是线性的，则延伸也将是线性的。</summary>
+            <param name="distance">延伸距离</param>
+            <returns>延伸的曲线</returns>
+            <search>
+            makelonger,stretch
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ApproximateWithArcAndLineSegments">
+            <summary>通过圆弧和直线集逼近曲线</summary>
+            <returns>接近曲线的一组圆弧和直线</returns>
+            <search>
+            rationalizecurve,fitarcs,fitlines,arcs,lines
+            </search>
+            <weights>
+            0.5,0.5,0.5,0.4,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ToNurbsCurve">
+            <summary>将曲线转化为 NurbsCurve 逼近</summary>
+            <returns>NurbsCurve 逼近曲线</returns>
+            <search>
+            curve2spline,convertcurve,tospline,lines
+            </search>
+            <weights>
+            0.5,0.5,0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Patch">
+            <summary>修补闭合曲线</summary>
+            <returns>曲线内部的曲面</returns>
+            <search>
+            fill,profiletosurf,loop,loop2surf,edgesurf
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Project(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>沿给定投影方向将输入曲线投影到指定的基础几何图形上。</summary>
+            <param name="baseGeometry">要投影到的几何图形</param>
+            <param name="projectionDirection">向量</param>
+            <returns>已投影到基础几何图形的几何图形列表</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSurface(Autodesk.DesignScript.Geometry.Curve)">
+            <summary>沿路径曲线扫掠该曲线，以创建曲面</summary>
+            <param name="path"/>
+            <returns/>
+            <search>
+            sweep1,curve2surf
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve)">
+            <summary>沿路径曲线扫掠该闭合曲线，以创建实体</summary>
+            <param name="path"/>
+            <returns/>
+            <search>
+            sweep1,curve2solid,loop2solid,profile2solid,curvetosolid,looptosolid,profiletosolid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
+            <summary>沿路径曲线扫掠该闭合曲线，以创建实体</summary>
+            <param name="path">表示扫掠路径的路径</param>
+            <param name="cutEndOff">剪切扫掠的端点，使其与路径垂直</param>
+            <returns>沿路径曲线扫掠此闭合曲线的实体</returns>
+            <search>
+            sweep1,curve2solid,loop2solid,profile2solid,curvetosolid,looptosolid,profiletosolid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Simplify(System.Double)">
+            <summary>返回与提供的公差逼近的新曲线</summary>
+            <param name="tolerance"/>
+            <returns/>
+            <search>
+            fitcurve,reducecurve,simplecurve,approximate
+            </search>
+        </member>
         <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.constructorThreadId">
             <summary>存储调用此构造函数的线程的托管线程 ID。
             用于提醒用户潜在的多线程问题。</summary>
@@ -4545,9 +3755,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.Dispose">
             <notranslation>true</notranslation>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.DisposeDisplayable">
-            <summary>不再需要可显示内容时，调用此方法。</summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.GetHashCode">
             <notranslation>true</notranslation>
         </member>
@@ -4560,7 +3767,7 @@
         <member name="F:Autodesk.DesignScript.Geometry.Geometry.mGeometryContructors">
             <summary>使用主体的 IGeometryEntity 类型和几何图形构造函数之间的贴图。</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.RegisterHostType(System.Type,System.Func{Autodesk.DesignScript.Interfaces.IGeometryEntity,System.Boolean,Autodesk.DesignScript.Geometry.Geometry})">
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.RegisterHostType(System.Type,System.Func{Autodesk.DesignScript.Interfaces.IGeometryEntity,Autodesk.DesignScript.Geometry.Geometry})">
             <summary>几何图形类型注册机制。</summary>
             <param name="hostType">IGeometryEntity 衍生接口的类型。</param>
             <param name="contructor">构造几何图形的代理。</param>
@@ -4749,17 +3956,6 @@
             <param name="json">要解析的 JSON 字符串</param>
             <returns>几何图形对象</returns>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.String)">
-            <summary>将指定几何图形导出至给定 SAT 文件路径</summary>
-            <param name="filePath">接收导出几何图形的文件的名称</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.String,System.Double)">
-            <summary>将指定几何图形导出至给定 SAT 文件路径</summary>
-            <param name="filePath">接收导出几何图形的文件的名称</param>
-            <param name="unitsMM">要使用的单位</param>
-            <returns/>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},System.String)">
             <summary>将指定几何图形列表导出至给定 SAT 文件路径</summary>
             <param name="geometry"/>
@@ -4767,7 +3963,7 @@
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},System.String,System.Double)">
-            <summary>将指定几何图形列表导出至给定 SAT 文件路径</summary>
+            <summary>Exports a list of specified geometry to the given SAT file path.</summary>
             <param name="geometry"/>
             <param name="filePath"/>
             <param name="unitsMM"/>
@@ -4778,10 +3974,6 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ToNativePointer(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
             <summary>该方法仅供内部使用。</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB">
-            <summary>将指定几何图形序列化为标准 ACIS 二进制 (SAB) 格式，并返回序列化二进制流数据</summary>
-            <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
             <summary>将指定几何图形列表序列化为标准 ACIS 二进制 (SAB) 格式，并返回序列化二进制流数据</summary>
@@ -5273,6 +4465,531 @@
             <param name="panelIndices">用于构造多边形的面板索引。默认值 null 表示曲面中的所有面板。</param>
             <returns/>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ToString">
+            <summary>获取 PolyCurve 的字符串表示</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
+            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
+            PolyCurve direction is based on the first curve in the input array.
+            Choose a preferred join tolerance between 1e-6 and 1e-3 units.</summary>
+            <param name="curves">Curves to join into a polycurve</param>
+            <param name="joinTolerance">确定要连接的曲线之间允许的间隙尺寸的公差</param>
+            <returns>由连接曲线创建的复合线</returns>
+            <search>
+            segments,joincurves
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
+            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
+            PolyCurve direction is based on the first curve in the input array.
+            Choose a preferred join tolerance between 1e-6 and 1e-3 units.</summary>
+            <param name="curves">Curves to join into a polycurve</param>
+            <param name="joinTolerance">确定要连接的曲线之间允许的间隙尺寸的公差</param>
+            <param name="trimCurves">如果输入曲线彼此相交/重叠，并且需要在创建复合线之前修剪掉其末端段，则设置为 True。默认情况下，它设置为 False。</param>
+            <param name="trimLength">如果 trimLength 大于 0，则不会修剪比 trimLength 长的末端段。</param>
+            <returns>由连接曲线创建的复合线</returns>
+            <search>
+            segments,joincurves
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
+            <summary>通过对连接的曲线进行分组，从而生成一条或多条复合线。选择一个介于 1e-6 和 1e-3 单位之间的首选连接公差。</summary>
+            <param name="curves">分组在一起以创建一条或多条复合线的曲线</param>
+            <param name="joinTolerance">确定要连接的曲线之间允许的间隙尺寸的公差</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
+            <summary>通过对连接的曲线进行分组，从而生成一条或多条复合线。选择一个介于 1e-6 和 1e-3 单位之间的首选连接公差。</summary>
+            <param name="curves">分组在一起以创建一条或多条复合线的曲线</param>
+            <param name="joinTolerance">确定要连接的曲线之间允许的间隙尺寸的公差</param>
+            <param name="trimCurves">如果输入曲线彼此相交/重叠，并且需要在创建复合线之前修剪掉其末端段，则设置为 True。默认情况下，它设置为 False。</param>
+            <param name="trimLength">如果 trimLength 大于 0，则不会修剪比 trimLength 长的末端段。</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
+            <summary>通过连接点生成 PolyCurve。将“connectLastToFirst”输入设置为 True 以闭合 PolyCurve。</summary>
+            <param name="points">用于生成复合线的点</param>
+            <param name="connectLastToFirst">True 表示将最后一个点连接到第一个点；False 表示保持张开状态</param>
+            <returns>由点创建的复合线</returns>
+            <search>
+            segments,joincurves,lines
+            </search>
+            <weights>
+            0.5,0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>通过加厚曲线生成 PolyCurve。</summary>
+            <param name="curve">要加厚的曲线</param>
+            <param name="thickness">厚度</param>
+            <param name="nor">垂直于加厚方向的法线</param>
+            <returns/>
+            <search>
+            offset
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurveNormal(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>通过沿输入法线指定的平面加厚曲线，生成 PolyCurve。</summary>
+            <param name="curve">要加厚的曲线</param>
+            <param name="thickness">厚度</param>
+            <param name="normal">垂直于加厚方向的法线。如果未提供法线(为空)，则默认情况下将使用曲线法线。</param>
+            <returns/>
+            <search>
+            offset,thicken
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.Points">
+            <summary>返回第一个分量的起点和每个分量曲线的终点。对于闭合的复合线，由于起点和终点相同，因此不会包括终点。</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.NumberOfCurves">
+            <summary>复合线的曲线数</summary>
+            <search>
+            curvecount,subcurvecount,numbersubcurves
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Curves">
+            <summary>返回复合线的各曲线</summary>
+            <returns/>
+            <search>
+            subcurves,polycurvesplit
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CurveAtIndex(System.Int32,System.Boolean)">
+            <summary>按索引返回复合线的曲线</summary>
+            <param name="index">用于定位点的长度</param>
+            <param name="endOrStart">True 表示从复合线的终点开始计数；False 表示从复合线的起点开始计数</param>
+            <returns>索引处的曲线</returns>
+            <search>
+            subcurveatindex,getsubcurve,getcurvebyindex
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.BasePlane">
+            <summary>返回平面复合线的平面</summary>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithEllipse(System.Double,System.Double,System.Double,System.Double,System.Boolean)">
+            <summary>通过切线椭圆延伸复合线</summary>
+            <param name="length">延伸椭圆的长度</param>
+            <param name="radius1">椭圆的参数</param>
+            <param name="radius2">椭圆的参数</param>
+            <param name="endEllipseParameter">椭圆的参数</param>
+            <param name="endOrStart">复合线延伸终点或起点</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithArc(System.Double,System.Double,System.Boolean)">
+            <summary>通过切线圆弧延伸复合线。</summary>
+            <param name="length">延伸圆弧的长度</param>
+            <param name="radius">圆弧的半径</param>
+            <param name="endOrStart">复合线延伸终点或起点</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLine">
+            <summary>通过连接起点和终点的直线闭合复合线</summary>
+            <returns/>
+            <search>
+            lines
+            </search>
+            <weights>
+            0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLineAndTangentArcs(System.Double,System.Double)">
+            <summary>通过圆弧相切链、直线和圆弧闭合复合线</summary>
+            <param name="radiusAtStart">复合线起点处的圆弧半径</param>
+            <param name="radiusAtEnd">复合线终点处的圆弧半径</param>
+            <returns/>
+            <search>
+            lines
+            </search>
+            <weights>
+            0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Offset(System.Double,System.Boolean)">
+            <summary>在其平面偏移复合线。</summary>
+            <param name="signedDistance">偏移量</param>
+            <param name="extendCircular">切换为使角变圆</param>
+            <returns>偏移的复合线</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.OffsetMany(System.Double,System.Boolean,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>通过在由平面法线定义的平面中将平面曲线偏移给定距离来创建一条或多条复合线。“planeNormal”输入参数默认为包含曲线的平面的法线，但可以提供平行于原始曲线法线的显式法线以更好地控制偏移的方向。例如，如果共享同一平面的多条曲线需要一致的偏移方向，则“planeNormal”可用于替代各个曲线法线并强制所有曲线在同一方向上偏移。反转法线会反转偏移的方向。</summary>
+            <param name="signedDistance">正偏移距离适用于复合线切线和平面法向量之间的叉积方向，而负偏移则适用于相反方向。</param>
+            <param name="extendCircular">如果偏移分量曲线之间存在间隙，则根据间隙闭合设置，可以通过圆弧(true 值)填充它们以提供平滑角点，也可以通过延伸(false 值)偏移曲线来填充它们。</param>
+            <param name="planeNormal">曲线的平面法线。默认为输入曲线的平面法线</param>
+            <returns>一条或多条偏移复合线</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Fillet(System.Double,System.Boolean)">
+            <summary>将平面复合线的角点圆角化。</summary>
+            <param name="radius">圆角半径</param>
+            <param name="clockwise_corners">指示应圆角化的角点，如果为 true，则第二个分量开始处的切线从第一个分量结束处的切线顺时针方向(相对于曲线法线)的角点将被圆角化。如果为 false，则逆时针的角点将被圆角化。</param>
+            <returns>圆角的复合线</returns>
+            <search>
+            round,smooth,radius
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Heal(System.Double)">
+            <summary>如果重叠段长度小于或等于 trimLength，则会通过返回非自相交的新复合线来修复自相交的复合线。</summary>
+            <param name="trimLength">如果 trimLength 大于 0，则不会修剪比 trimLength 长的末端段。</param>
+            <returns>非自相交、非重叠复合线</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ToString">
+            <summary>获取 Polygon 的字符串表示</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>通过连接点构造多边曲线。</summary>
+            <param name="points"/>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.RegularPolygon(Autodesk.DesignScript.Geometry.Circle,System.Int32)">
+            <summary>创建圆内接多边形。</summary>
+            <param name="circle"/>
+            <param name="numberSides"/>
+            <returns/>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Polygon.Points">
+            <summary>返回所有线段的起点/终点。</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Polygon.PlaneDeviation">
+            <summary>返回多边形平均平面的最大偏差。</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.Corners">
+            <summary>返回多边形各角</summary>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.Center">
+            <summary>返回多边形各角的平均值</summary>
+            <returns/>
+            <search>
+            centroid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.SelfIntersections">
+            <summary>返回多边形各边的自交点。</summary>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ContainmentTest(Autodesk.DesignScript.Geometry.Point)">
+            <summary>返回输入点是否包含在多边形内。如果多边形不是平面的，则该点将被投影到最佳拟合平面，并通过将多边形投影到最佳拟合平面来计算包含。如果多边形自相交，则此操作将返回失败状态。</summary>
+            <param name="point"/>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToString">
+            <summary>获取 Surface 的字符串表示</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByUnion(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
+            <summary>将一组曲面合成为一个曲面。如果生成的并集为非流形或多面，则此方法可能会返回一个多重曲面。</summary>
+            <param name="surfaces">一组曲面。</param>
+            <returns>曲面并集</returns>
+            <search>
+            merge,join,boolean,addition
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
+            <summary>通过在输入横截面曲线之间放样来创建实体。</summary>
+            <param name="crossSections">要通过其放样的曲线</param>
+            <returns>由放样创建的曲面</returns>
+            <search>
+            loft
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRuledLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Line})">
+            <summary>通过在输入横截面直线之间放样来创建实体。这比 Surface。ByLoft 速度稍快，但生成的结果较不平滑。</summary>
+            <param name="crossSections"/>
+            <returns/>
+            <search>
+            ruledsurface,lines
+            </search>
+            <weights>
+            0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
+            <summary>使用多条指定导向曲线(也称为轨线)通过横截面放样曲面。各导向曲线必须与所有横截面曲线相交。</summary>
+            <param name="crossSections">要通过其放样的曲线</param>
+            <param name="guideCurves">要通过其引导放样的曲线</param>
+            <returns>由放样创建的曲面</returns>
+            <search>
+            loftbyrails,loft rails,guides
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
+            <summary>通过沿路径扫掠轮廓曲线来创建曲面。</summary>
+            <param name="profile">要扫掠的曲线</param>
+            <param name="path">用于沿其扫掠的路径曲线</param>
+            <returns>通过沿路径扫掠轮廓创建的曲面</returns>
+            <search>
+            sweep,rail,guide,sweep1
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
+            <summary>通过沿路径扫掠轮廓曲线来创建曲面。</summary>
+            <param name="profile">要扫掠的曲线</param>
+            <param name="path">用于沿其扫掠的路径曲线</param>
+            <param name="cutEndOff">剪切扫掠的端点，使其与路径垂直</param>
+            <returns>通过沿路径扫掠轮廓创建的曲面</returns>
+            <search>
+            sweep,rail,guide,sweep1
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPerimeterPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>创建多边形曲面，连接闭合多边形内的输入点并修补。</summary>
+            <param name="points">周界点列表</param>
+            <returns>基于周界点创建的曲面</returns>
+            <search>
+            patch,surfacebypolygon
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep2Rails(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
+            <summary>沿由两条轨线引导的路径扫掠横截面曲线</summary>
+            <param name="path">要沿途扫掠的输入路径。</param>
+            <param name="guideRail">用于引导扫掠方向的轨道。</param>
+            <param name="profile">要沿路径扫掠的轮廓曲线。</param>
+            <returns>通过扫掠两条轨道创建的曲面</returns>
+            <search>
+            sweep2,guides
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double)">
+            <summary>绕由原点形成的轴向量方向的轴射线扫掠轮廓曲线，从起点角(度)起，扫掠掠角(度)，创建曲面。</summary>
+            <param name="profile">要旋转的轮廓曲线</param>
+            <param name="axisOrigin">旋转轴原点</param>
+            <param name="axisDirection">旋转轴方向</param>
+            <param name="startAngle">起始角度(以度为单位)</param>
+            <param name="sweepAngle">扫掠角度(以度为单位)</param>
+            <returns>通过旋转轮廓创建的曲面</returns>
+            <search>
+            lathe
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPatch(Autodesk.DesignScript.Geometry.Curve)">
+            <summary>通过在由输入曲线确定的闭合边界内填充来创建曲面。</summary>
+            <param name="closedCurve">用作曲面边界的闭合曲线</param>
+            <returns>由面片创建的曲面</returns>
+            <search>
+            edgesrf,edgesurface,patch,fill
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.Area">
+            <summary>返回总曲面面积。</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.Perimeter">
+            <summary>返回曲面所有边界边的长度总和。</summary>
+            <search>
+            circumference
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.ClosedInU">
+            <summary>如果曲面在 U 方向上闭合，则返回 True；否则返回 False。</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.ClosedInV">
+            <summary>如果曲面在 V 方向上闭合，则返回 True；否则返回 False。</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.Closed">
+            <summary>如果曲面在 U 或 V 方向上闭合，则返回 True；否则返回 False。</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.SubtractFrom(Autodesk.DesignScript.Geometry.Solid)">
+            <summary>从该曲面减去输入工具。</summary>
+            <param name="trimmingEntity"/>
+            <returns/>
+            <search>
+            difference,trim,removefrom,cut
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Difference(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
+            <summary>此曲面的布尔差集和输入曲面的并集。如果生成的布尔为非流形或多面，则此方法可能会返回一个多重曲面。</summary>
+            <param name="others">要减去的其他曲面</param>
+            <returns>生成的布尔曲面或多重曲面</returns>
+            <search>
+            subtract,differencemany,diffall,diff multi
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.UVParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
+            <summary>在输入点返回 UV 参数对。这是参数处的反向点。</summary>
+            <param name="point"/>
+            <returns/>
+            <search>
+            evaluateatpoint,surfaceatpoint,uvatpoint,uvs
+            </search>
+            <weights>
+            0.5,0.5,0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve})">
+            <summary>使用一个或多个闭合复合线集修剪曲面。其中一个回路需要是输入曲面的边界回路。此外，还需要为孔添加一个或多个内回路。</summary>
+            <param name="loops"/>
+            <returns/>
+            <search>
+            trim multiple,removeloops,cutloops
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve},System.Double)">
+            <summary>使用一个或多个闭合的复合线集修剪曲面，这些复合线必须全部位于指定公差内的曲面上。如果需要从输入曲面修剪一个或多个孔，则必须为曲面边界指定一个外回路，为每个孔指定一个内回路。如果需要修剪曲面边界和孔之间的区域，则应仅提供每个孔的回路。对于没有外回路的周期曲面(例如，球形曲面)，则可以通过反转回路曲线的方向来控制修剪区域。</summary>
+            <param name="loops">一个或多个闭合复合线，可以按任意顺序输入。这些回路不应彼此相交。</param>
+            <param name="tolerance">确定曲线端点是否重合以及曲线和曲面是否重合时使用的公差。提供的公差不能小于创建输入复合线时使用的任何公差。默认值 0.0 表示将使用创建输入复合线时使用的最大公差。</param>
+            <returns>由闭合回路修剪的曲面。</returns>
+            <search>
+            trim multiple,removeloops,cutloops
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.NormalAtPoint(Autodesk.DesignScript.Geometry.Point)">
+            <summary>在曲面上输入点处返回曲面法线。</summary>
+            <param name="point">要计算其曲面法线的点</param>
+            <returns>点处的法线</returns>
+            <search>
+            perpendicular
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface">
+            <summary>获取曲面的 NURBS 表示。在某些情况该方法可粗略逼近曲面。</summary>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface(System.Boolean)">
+            <summary>获取曲面的 Nurbs 表示。在某些情况下，此方法可能粗略逼近曲面。</summary>
+            <param name="limitSurface">确定在转换之前是否应将曲面恢复到其原始参数范围。例如，在执行“修剪”操作之后，曲面的参数范围受限制。</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ApproximateWithTolerance(System.Double)">
+            <summary>在指定公差范围内获取曲面的 NURBS 表示。在某些情况该方法可粗略逼近曲面。</summary>
+            <param name="tolerance">指定的公差</param>
+            <returns>曲面的 NURBS 曲面表示</returns>
+            <search>
+            tonurbs
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double)">
+            <summary>加厚曲面到实体，朝曲面法线方向在曲面两侧进行拉伸。</summary>
+            <param name="thickness">加厚量</param>
+            <returns>加厚曲面作为实体</returns>
+            <search>
+            offset,tosolid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double,System.Boolean)">
+            <summary>加厚曲面到实体，朝曲面法线方向拉伸。如果 both_sides (两侧)参数为“True”，则在两侧加厚曲面。</summary>
+            <param name="thickness">加厚量</param>
+            <param name="both_sides">为 true 时，两侧加厚；为 false 时，一侧加厚</param>
+            <returns>加厚曲面作为实体</returns>
+            <search>
+            offset,bothsides,tosolid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Offset(System.Double)">
+            <summary>在曲面法线方向按指定距离偏移曲面。</summary>
+            <param name="distance">偏移量</param>
+            <returns>偏移的曲面</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.CurvatureAtParameter(System.Double,System.Double)">
+            <summary>返回的坐标系统使用 xAxis、yAxis 和 zAxis 表示 uDir、vDir 和法线。xAxis 和 yAxis 长度表示曲率。</summary>
+            <param name="u">参数的 U 分量</param>
+            <param name="v">参数的 V 分量</param>
+            <returns>基于曲面上 UV 位置处的法线、U 方向和 V 方向的坐标系</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.CoordinateSystemAtParameter(System.Double,System.Double)">
+            <summary>返回一个与主曲率方向对齐的 CoordinateSystem。</summary>
+            <param name="u">参数的 U 分量</param>
+            <param name="v">参数的 V 分量</param>
+            <returns>与主曲率方向对齐的坐标系</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.TangentAtUParameter(System.Double,System.Double)">
+            <summary>返回指定 U 和 V 参数处的 U 切向量。</summary>
+            <param name="u">参数的 U 分量</param>
+            <param name="v">参数的 V 分量</param>
+            <returns>U 向切线向量</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.TangentAtVParameter(System.Double,System.Double)">
+            <summary>返回指定 U 和 V 参数处的 V 切向量。</summary>
+            <param name="u">参数的 U 分量</param>
+            <param name="v">参数的 V 分量</param>
+            <returns>V 向切线向量</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.NormalAtParameter(System.Double,System.Double)">
+            <summary>返回指定 U 和 V 参数处的法向量。</summary>
+            <param name="u">参数的 U 分量</param>
+            <param name="v">参数的 V 分量</param>
+            <returns>参数处的法线</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.DerivativesAtParameter(System.Double,System.Double)">
+            <summary>返回输入 U 和 V 坐标处的导数。</summary>
+            <param name="u">参数的 U 分量</param>
+            <param name="v">参数的 V 分量</param>
+            <returns>曲面的 U 和 V 导数</returns>
+            <search>
+            tangent,normal
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.GaussianCurvatureAtParameter(System.Double,System.Double)">
+            <summary>返回 U 和 V 参数处的高斯曲率。</summary>
+            <param name="u"/>
+            <param name="v"/>
+            <returns/>
+            <search>
+            developable
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.PrincipalCurvaturesAtParameter(System.Double,System.Double)">
+            <summary>返回 U 和 V 参数处的主曲率。</summary>
+            <param name="u"/>
+            <param name="v"/>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.PrincipalDirectionsAtParameter(System.Double,System.Double)">
+            <summary>返回 U 和 V 参数处的主方向向量。</summary>
+            <param name="u">参数的 U 分量</param>
+            <param name="v">参数的 V 分量</param>
+            <returns>U 向和 V 向切线向量</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.PointAtParameter(System.Double,System.Double)">
+            <summary>返回指定 U 和 V 参数处的点。</summary>
+            <param name="u"/>
+            <param name="v"/>
+            <returns/>
+            <search>
+            surfacepoint
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.PerimeterCurves">
+            <summary>返回曲面的所有边界曲线。</summary>
+            <returns/>
+            <search>
+            edges
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.GetIsoline(System.Int32,System.Double)">
+            <summary>在给定曲面上创建参数线曲线。创建一条表示曲面上 U 或 V 参数线的曲线。参数线以恒定相反的 U 或 V 参数朝 U 或 V 参数不断增加的方向延伸。所生成的曲线将与曲面参数匹配，其范围将由曲面参数范围限制。返回的曲线类型将取决于曲面类型。</summary>
+            <param name="isoDirection">若方向 == 0，则创建 U 参数线，若方向 == 1，则创建 V 参数线。</param>
+            <param name="parameter"/>
+            <returns/>
+            <search>
+            lines
+            </search>
+            <weights>
+            0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.FlipNormalDirection">
+            <summary>返回法线翻转的新曲面。保留该曲面不变。</summary>
+            <returns>与输入曲面相同但法线翻转的曲面</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
+            <summary>将该曲面和输入曲面合并为 PolySurface</summary>
+            <param name="otherSurfaces"/>
+            <returns/>
+            <search>
+            join multiple,joinmany,joinall,topolysurface
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>按输入向量方向将输入几何图形投射到该曲面上。!!该投射方法当前仅支持点或曲线!!</summary>
+            <param name="geometryToProject"/>
+            <param name="projectionDirection"/>
+            <returns/>
+            <search>
+            projecttosurface,projectonto
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Repair">
+            <summary>尝试修复曲面。</summary>
+            <returns/>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.ToString">
             <summary>获取 Vector 的字符串表示</summary>
         </member>
@@ -5457,29 +5174,13 @@
             <returns>返回提供的向量之间的角度(以度为单位，范围从 0 到 180)。</returns>
             <search>rotation angle,</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleBetween(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>返回两个向量之间的角度，范围为 [0, 180] 度。</summary>
-            <param name="otherVector"/>
-            <returns/>
-            <search>
-            rotation angle
-            </search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleAboutAxis(Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>返回两个向量之间的角度，范围为 [0, 180] 度。</summary>
             <summary>返回两个向量之间的角度(以度为单位，从 0 到 360)。它使用旋转轴来确定角度方向。</summary>
             <param name="otherVector">其他向量</param>
             <param name="rotationAxis">旋转轴</param>
             <returns>返回提供的向量之间的角度(以度为单位，范围从 0 到 360)</returns>
             <search>rotation angle,</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleBetween(Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>返回两个向量之间的角度，范围为 [0, 360] 度。它使用旋转轴以确定角度方向。</summary>
-            <param name="otherVector"/>
-            <param name="rotationAxis"/>
-            <returns/>
-            <search>
-            rotation angle
-            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.FromJson(System.String)">
             <summary>解析使用 autodesk.math:vector3d-1.0.0 模式格式化的传入 JSON 字符串。</summary>
@@ -5511,18 +5212,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_distanceatparameter_deprecated">
             <summary>查找类似“此方法已弃用，将在未来版本的 Dynamo 中删除。请改用‘SegmentLengthAtParameter’。”的本地化字符串。</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_dividebydistance_deprecated">
-            <summary>查找类似“此方法已弃用，将在未来版本的 Dynamo 中删除。请改用‘PointsAtEqualChordLength’和‘SplitByPoints’。”的本地化字符串。</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_dividebydistancefromparam_deprecated">
-            <summary>查找类似“此方法已弃用，将在未来版本的 Dynamo 中删除。请改用‘PointsAtChordLengthFromPoint’和‘SplitByPoints’。”的本地化字符串。</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_dividebylengthfromparams_deprecated">
-            <summary>查找类似“此方法已弃用，将在未来版本的 Dynamo 中删除。请改用‘PointsAtSegmentLengthFromPoint’和‘SplitByPoints’。”的本地化字符串。</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_divideequally_deprecated">
-            <summary>查找类似“此方法已弃用，将在未来版本的 Dynamo 中删除。请改用‘PointsAtEqualSegmentLength’和‘SplitByPoints’。”的本地化字符串。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_lengthbetweenparams_deprecated">
             <summary>查找类似“此方法已弃用，将在未来版本的 Dynamo 中删除。请改用‘SegmentLengthBetweenParameters’。”的本地化字符串。</summary>
@@ -5556,9 +5245,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.geometry_deserializefromsab_deprecated">
             <summary>查找类似“此方法已弃用，将在未来版本的 Dynamo 中删除。请使用允许传递‘mmPerUnit’的重载。”的本地化字符串。</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.geometry_exporttosat_deprecated">
-            <summary>查找类似“此方法已弃用，将在未来版本的 Dynamo 中删除。请改用‘ExportToSAT UI’节点。”的本地化字符串。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.geometry_importfromsat_deprecated">
             <summary>查找类似“此方法已弃用，将在未来版本的 Dynamo 中删除。请使用指定每单位毫米数的重载。”的本地化字符串。</summary>
@@ -5621,7 +5307,7 @@
             <summary>查找类似“网格节点使用 32 位精度(7 位小数)，对于非常大的数值或超过 7 位小数的数值，可能导致舍入错误。对于更高的精度(64 位，15 位小数)，请使用几何图形库中的节点。”的本地化字符串。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ModelerExtentsExceeded">
-            <summary>查找类似“已超出允许的建模范围，请考虑选择较小值”的本地化字符串。</summary>
+            <summary>Looks up a localized string similar to You have exceeded the allowable modeling extents, consider choosing smaller values as inputs.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.NoImplementationException">
             <summary>查找类似“未找到 IGeometryFactory 的执行。确保 ProtoGeometry.config 配置正确。”的本地化字符串。</summary>
@@ -5674,6 +5360,9 @@
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.polycurve_offset_deprecated">
             <summary>查找类似“此方法已弃用，将在未来版本的 Dynamo 中删除。请改用‘PolyCurve.OffsetMany’。”的本地化字符串。</summary>
         </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.PolyCurveDirectionalityInfoMessage">
+            <summary>Looks up a localized string similar to PolyCurve direction has been updated for consistency. This change may break this node in pre-4.0 graphs. To retain legacy behavior, set DefaultEnableLegacyPolyCurveBehavior to true in DynamoPreferences.xml..</summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.polygon_points_deprecated">
             <summary>查找类似“此特性已弃用，将在未来版本的 Dynamo 中删除。请改用‘PolyCurve.Points’。”的本地化字符串。</summary>
         </member>
@@ -5688,9 +5377,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.solid_bysweep_deprecated">
             <summary>查找类似“此方法已弃用，将在未来版本的 Dynamo 中删除。请改用‘SolidBySweep(ICurveEntity profile, ICurveEntity path, bool cutEndOff)’。”的本地化字符串。</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.solid_unionall_deprecated">
-            <summary>查找类似“此方法已弃用，将在未来版本的 Dynamo 中删除。请改用‘Solid.ByUnion’。”的本地化字符串。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.surface_bysweep_deprecated">
             <summary>查找类似“此方法已弃用，将在未来版本的 Dynamo 中删除。请改用‘SurfaceBySweep(ICurveEntity profile, ICurveEntity path, bool cutEndOff)’。”的本地化字符串。</summary>
