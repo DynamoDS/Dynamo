@@ -343,6 +343,7 @@ namespace Dynamo.PythonMigration
             // Close the CPython toast notification when workspace is cleared/closed
             DynamoViewModel.ToastManager?.CloseRealTimeInfoWindow();
             lastWorkspaceGuid = Guid.Empty;
+            CurrentWorkspace.ShowPythonAutoMigrationNotifications = false;
         }
 
         private void OnWorkspaceRemoveStarted(IWorkspaceModel workspace)
@@ -515,7 +516,7 @@ namespace Dynamo.PythonMigration
                     customCount,
                     LoadedParams.StartupParams.PathManager.BackupDirectory);
 
-                CurrentWorkspace.ShowPythonAutoMigrationNotifications = preferenceSettings.ShowPythonAutoMigrationNotifications;
+                CurrentWorkspace.ShowPythonAutoMigrationNotifications = true;
             }
         }
 
