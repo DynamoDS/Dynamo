@@ -115,12 +115,18 @@ namespace Dynamo.Notifications
 
             //If TrustedLocations contain paths pointing to ProgramData, log a warning notification.
             string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            var unsafeLocations = new System.Collections.Generic.List<string>();
             foreach (var location in viewModel.Model.PreferenceSettings.TrustedLocations)
             {
                 if (location.StartsWith(programDataPath))
                 {
-                    Notifications.Add(new NotificationMessage("Preference Settings", Properties.Resources.UnsafePathDetectedTitle, Properties.Resources.UnsafePathDetectedDetail + "\n" + location));
+                    unsafeLocations.Add(location);
                 }
+            }
+            if (unsafeLocations.Count > 0)
+            {
+                string detail = Properties.Resources.UnsafePathDetectedDetail + "\n" + string.Join("\n", unsafeLocations);
+                Notifications.Add(new NotificationMessage("Preference Settings", Properties.Resources.UnsafePathDetectedTitle, detail));
             }
             notificationsMenuItem.NotificationsChangeHandler.Invoke(this, null);
         }
