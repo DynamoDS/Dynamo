@@ -9,6 +9,7 @@ using Dynamo.Logging;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Utilities;
+using System.IO;
 
 namespace Dynamo.Notifications
 {
@@ -118,17 +119,21 @@ namespace Dynamo.Notifications
             var unsafeLocations = new System.Collections.Generic.List<string>();
             foreach (var location in viewModel.Model.PreferenceSettings.TrustedLocations)
             {
-                if (location.StartsWith(programDataPath))
+                var fullChildPath = Path.GetFullPath(location);
+                if (fullChildPath.StartsWith(programDataPath, StringComparison.OrdinalIgnoreCase))
                 {
                     unsafeLocations.Add(location);
                 }
             }
             if (unsafeLocations.Count > 0)
             {
-                string detail = Properties.Resources.UnsafePathDetectedDetail + "\n" + string.Join("\n", unsafeLocations);
-                Notifications.Add(new NotificationMessage("Preference Settings", Properties.Resources.UnsafePathDetectedTitle, detail));
+                foreach (var unsafePath in unsafeLocations)
+                {
+                    string detail = Properties.Resources.UnsafePathDetectedDetail + "\n" + unsafePath;
+                    Notifications.Add(new NotificationMessage("Preference Settings", Properties.Resources.UnsafePathDetectedTitle, detail));
+                }
+                notificationsMenuItem.NotificationsChangeHandler.Invoke(this, null);
             }
-            notificationsMenuItem.NotificationsChangeHandler.Invoke(this, null);
         }
 
         private void LoadNotificationCenter()
