@@ -201,7 +201,7 @@ En cliquant sur "Continuer", vous acceptez d'appliquer les modifications de synt
     <value>Avant d'appliquer la migration du code Python, une sauvegarde de ce graphique a été enregistrée à l'emplacement de sauvegarde configuré: {0}</value>
   </data>
   <data name="CPythonMigrationBackupFileCreatedMessage" xml:space="preserve">
-    <value>Before updating, a backup file has been saved </value>
+    <value>Avant la mise à jour, un fichier de sauvegarde a été enregistré </value>
   </data>
   <data name="RejectButtonTooltip" xml:space="preserve">
     <value>Refuser les modifications de code actuelles.</value>
@@ -231,9 +231,9 @@ En cliquant sur "Continuer", vous acceptez d'appliquer les modifications de synt
     <value>Ce graphique contient actuellement des nœuds qui utilisent l'ancien moteur CPython3, désormais obsolète. Un nouveau PythonNet3 a été implémenté et est accessible à l'intérieur de l'éditeur Python.</value>
   </data>
   <data name="PythonMigrationBackupFileCreatedHeader" xml:space="preserve">
-    <value>Backup graph has been saved</value>
+    <value>Le graphique de sauvegarde a été enregistré</value>
   </data>
   <data name="CPythonUpgradeToastMessage" xml:space="preserve">
-    <value>{0} CPython node(s) and {1} custom node definition(s) have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported.</value>
+    <value>{0} noeud(s) CPython et {1} définition(s) de noeuds personnalisés ont été automatiquement convertis à PythonNet3 pour s'exécuter dans Dynamo 4.0. CPython n'est plus pris en charge.</value>
   </data>
 </root>

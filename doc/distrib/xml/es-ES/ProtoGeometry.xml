@@ -3961,7 +3961,7 @@ Se utiliza para ajustar la escala de la geometría importada desde el espacio de
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},System.String,System.Double)">
-            <summary>Exports a list of specified geometry to the given SAT file path.</summary>
+            <summary>Exporta la lista de geometría especificada a la ruta de archivo SAT indicada.</summary>
             <param name="geometry"/>
             <param name="filePath"/>
             <param name="unitsMM"/>
@@ -4467,10 +4467,10 @@ Básicamente, la malla está llena de innumerables cuadros diminutos y se crea u
             <summary>Permite obtener una representación de cadena de la PolyCurve.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
-            PolyCurve direction is based on the first curve in the input array.
-            Choose a preferred join tolerance between 1e-6 and 1e-3 units.</summary>
-            <param name="curves">Curves to join into a polycurve</param>
+            <summary>Cree una PolyCurve mediante la unión de curvas. No es necesario especificar las curvas de entrada por orden de conectividad.
+            La dirección de PolyCurve se basa en la primera curva de la matriz de entrada.
+            Elija una tolerancia de unión preferida entre 1e-6 y 1e-3 unidades.</summary>
+            <param name="curves">Curvas para unir en una PolyCurve</param>
             <param name="joinTolerance">Tolerancia para determinar el tamaño de hueco permitido entre las curvas que se van a unir.</param>
             <returns>PolyCurve creada por curvas unidas</returns>
             <search>
@@ -4478,10 +4478,10 @@ Básicamente, la malla está llena de innumerables cuadros diminutos y se crea u
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
-            PolyCurve direction is based on the first curve in the input array.
-            Choose a preferred join tolerance between 1e-6 and 1e-3 units.</summary>
-            <param name="curves">Curves to join into a polycurve</param>
+            <summary>Cree una PolyCurve mediante la unión de curvas. No es necesario especificar las curvas de entrada por orden de conectividad.
+            La dirección de PolyCurve se basa en la primera curva de la matriz de entrada.
+            Elija una tolerancia de unión preferida entre 1e-6 y 1e-3 unidades.</summary>
+            <param name="curves">Curvas para unir en una PolyCurve</param>
             <param name="joinTolerance">Tolerancia para determinar el tamaño de hueco permitido entre las curvas que se van a unir.</param>
             <param name="trimCurves">Se establece en "True" (verdadero) si las curvas de entrada se intersecan o se solapan entre sí y es necesario recortar sus segmentos finales antes de la creación de la PolyCurve. Se establece en "False" (falso) por defecto.</param>
             <param name="trimLength">Si trimLength es superior a 0, no se recortarán los segmentos finales con un valor de longitud superior a trimLength.</param>
@@ -5306,7 +5306,7 @@ Básicamente, la malla está llena de innumerables cuadros diminutos y se crea u
             <summary>Busca una cadena localizada similar a Los nodos de malla utilizan una precisión de 32 bits (7 decimales), lo que puede provocar errores de redondeo con números grandes o con números con más de 7 decimales. Para obtener una mayor precisión (64 bits, 15 decimales), utilice nodos de la biblioteca de geometría.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ModelerExtentsExceeded">
-            <summary>Looks up a localized string similar to You have exceeded the allowable modeling extents, consider choosing smaller values as inputs.</summary>
+            <summary>Busca una cadena localizada similar a Se ha superado la extensión de modelado permitida; considere la posibilidad de elegir valores de entrada más pequeños.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.NoImplementationException">
             <summary>Busca una cadena localizada similar a No se ha encontrado implementación de IGeometryFactory. Asegúrese de que ProtoGeometry.config se haya configurado correctamente.</summary>
@@ -5360,7 +5360,7 @@ Básicamente, la malla está llena de innumerables cuadros diminutos y se crea u
             <summary>Busca una cadena localizada similar a Este método se ha dejado de usar y se eliminará en una versión futura de Dynamo. Utilice PolyCurve.OffsetMany en su lugar.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.PolyCurveDirectionalityInfoMessage">
-            <summary>Looks up a localized string similar to PolyCurve direction has been updated for consistency. This change may break this node in pre-4.0 graphs. To retain legacy behavior, set DefaultEnableLegacyPolyCurveBehavior to true in DynamoPreferences.xml..</summary>
+            <summary>Busca una cadena localizada similar a Se ha actualizado la dirección de la PolyCurve para garantizar la coherencia. Este cambio puede afectar al funcionamiento de este nodo en gráficos anteriores a la versión 4.0. Para mantener el comportamiento anterior, establezca DefaultEnableLegacyPolyCurveBehavior en "true" (verdadero) en DynamoPreferences.xml.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.polygon_points_deprecated">
             <summary>Busca una cadena localizada similar a Esta propiedad se ha dejado de usar y se eliminará en una versión futura de Dynamo. Utilice PolyCurve.Points en su lugar.</summary>

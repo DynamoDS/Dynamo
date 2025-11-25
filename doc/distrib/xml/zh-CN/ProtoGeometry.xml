@@ -3963,7 +3963,7 @@
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},System.String,System.Double)">
-            <summary>Exports a list of specified geometry to the given SAT file path.</summary>
+            <summary>将指定几何图形列表导出至给定 SAT 文件路径。</summary>
             <param name="geometry"/>
             <param name="filePath"/>
             <param name="unitsMM"/>
@@ -4469,10 +4469,10 @@
             <summary>获取 PolyCurve 的字符串表示</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
-            PolyCurve direction is based on the first curve in the input array.
-            Choose a preferred join tolerance between 1e-6 and 1e-3 units.</summary>
-            <param name="curves">Curves to join into a polycurve</param>
+            <summary>通过连接曲线生成复合线。不需要按连接顺序指定输入曲线。
+            复合线方向基于输入阵列中的第一个曲线。
+            在 1e-6 到 1e-3 单位之间选择首选的连接公差。</summary>
+            <param name="curves">连接到复合线的曲线</param>
             <param name="joinTolerance">确定要连接的曲线之间允许的间隙尺寸的公差</param>
             <returns>由连接曲线创建的复合线</returns>
             <search>
@@ -4480,10 +4480,10 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
-            PolyCurve direction is based on the first curve in the input array.
-            Choose a preferred join tolerance between 1e-6 and 1e-3 units.</summary>
-            <param name="curves">Curves to join into a polycurve</param>
+            <summary>通过连接曲线生成复合线。不需要按连接顺序指定输入曲线。
+            复合线方向基于输入阵列中的第一个曲线。
+            在 1e-6 到 1e-3 单位之间选择首选的连接公差。</summary>
+            <param name="curves">连接到复合线的曲线</param>
             <param name="joinTolerance">确定要连接的曲线之间允许的间隙尺寸的公差</param>
             <param name="trimCurves">如果输入曲线彼此相交/重叠，并且需要在创建复合线之前修剪掉其末端段，则设置为 True。默认情况下，它设置为 False。</param>
             <param name="trimLength">如果 trimLength 大于 0，则不会修剪比 trimLength 长的末端段。</param>
@@ -5307,7 +5307,7 @@
             <summary>查找类似“网格节点使用 32 位精度(7 位小数)，对于非常大的数值或超过 7 位小数的数值，可能导致舍入错误。对于更高的精度(64 位，15 位小数)，请使用几何图形库中的节点。”的本地化字符串。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ModelerExtentsExceeded">
-            <summary>Looks up a localized string similar to You have exceeded the allowable modeling extents, consider choosing smaller values as inputs.</summary>
+            <summary>查找类似“已超出允许的建模范围，请考虑选择较小值作为输入”的本地化字符串。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.NoImplementationException">
             <summary>查找类似“未找到 IGeometryFactory 的执行。确保 ProtoGeometry.config 配置正确。”的本地化字符串。</summary>
@@ -5361,7 +5361,7 @@
             <summary>查找类似“此方法已弃用，将在未来版本的 Dynamo 中删除。请改用‘PolyCurve.OffsetMany’。”的本地化字符串。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.PolyCurveDirectionalityInfoMessage">
-            <summary>Looks up a localized string similar to PolyCurve direction has been updated for consistency. This change may break this node in pre-4.0 graphs. To retain legacy behavior, set DefaultEnableLegacyPolyCurveBehavior to true in DynamoPreferences.xml..</summary>
+            <summary>查找类似“已更新 PolyCurve 方向以保持一致性”的本地化字符串。此更改可能会在 4.0 之前的图表中破坏此节点。若要保留旧版行为，请在 DynamoPreferences.xml 中将 DefaultEnableLegacyPolyCurveBehavior 设置为 true。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.polygon_points_deprecated">
             <summary>查找类似“此特性已弃用，将在未来版本的 Dynamo 中删除。请改用‘PolyCurve.Points’。”的本地化字符串。</summary>
