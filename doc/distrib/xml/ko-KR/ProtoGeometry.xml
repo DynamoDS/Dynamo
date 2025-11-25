@@ -3765,9 +3765,9 @@
             <summary>IGeometryEntity 유형과 호스트를 사용하는 Geometry 구성자 사이의 맵.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.RegisterHostType(System.Type,System.Func{Autodesk.DesignScript.Interfaces.IGeometryEntity,Autodesk.DesignScript.Geometry.Geometry})">
-            <summary>Geometry Type 등록 메커니즘.</summary>
+            <summary>형상 유형 등록 메커니즘.</summary>
             <param name="hostType">IGeometryEntity 파생 인터페이스 유형.</param>
-            <param name="contructor">Geometry를 구성하기 위한 대리자.</param>
+            <param name="contructor">형상을 구성하기 위한 대리자.</param>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.FromObject(System.Int64)">
             <notranslation>true</notranslation>
@@ -3956,7 +3956,7 @@
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},System.String,System.Double)">
-            <summary>Exports a list of specified geometry to the given SAT file path.</summary>
+            <summary>지정된 형상의 리스트를 지정된 SAT 파일 경로로 내보냅니다.</summary>
             <param name="geometry"/>
             <param name="filePath"/>
             <param name="unitsMM"/>
@@ -4462,10 +4462,10 @@
             <summary>PolyCurve의 문자열 표현을 가져옵니다</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
-            PolyCurve direction is based on the first curve in the input array.
-            Choose a preferred join tolerance between 1e-6 and 1e-3 units.</summary>
-            <param name="curves">Curves to join into a polycurve</param>
+            <summary>곡선을 결합하여 PolyCurve를 작성합니다. 입력 곡선은 연결 순서대로 지정할 필요가 없습니다.
+            PolyCurve 방향은 입력 배열의 첫 번째 곡선을 기준으로 합니다.
+            1e-6에서 1e-3 단위 사이에서 선호하는 결합 공차를 선택하십시오.</summary>
+            <param name="curves">PolyCurve에 결합할 원곡선</param>
             <param name="joinTolerance">결합할 곡선 간에 허용되는 간격 크기를 결정하는 공차</param>
             <returns>결합된 곡선으로 작성된 Polycurve</returns>
             <search>
@@ -4473,10 +4473,10 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
-            PolyCurve direction is based on the first curve in the input array.
-            Choose a preferred join tolerance between 1e-6 and 1e-3 units.</summary>
-            <param name="curves">Curves to join into a polycurve</param>
+            <summary>곡선을 결합하여 PolyCurve를 작성합니다. 입력 곡선은 연결 순서대로 지정할 필요가 없습니다.
+            PolyCurve 방향은 입력 배열의 첫 번째 곡선을 기준으로 합니다.
+            1e-6에서 1e-3 단위 사이에서 선호하는 결합 공차를 선택하십시오.</summary>
+            <param name="curves">PolyCurve에 결합할 원곡선</param>
             <param name="joinTolerance">결합할 곡선 간에 허용되는 간격 크기를 결정하는 공차</param>
             <param name="trimCurves">입력 곡선이 서로 교차하거나 겹치고 PolyCurve를 작성하기 전에 끝 세그먼트를 잘라내야 하면 True로 설정합니다. 기본적으로 False로 설정되어 있습니다.</param>
             <param name="trimLength">trimLength가 0보다 크면 trimLength보다 긴 끝 세그먼트는 잘리지 않습니다.</param>
@@ -5300,7 +5300,7 @@
             <summary>'메시 노드는 32비트 정밀도(소수점 이하 7자리)를 사용하므로 숫자가 크거나 소수점 이하 7자리를 초과하는 숫자에서는 반올림 오류가 발생할 수 있습니다. 더 높은 정밀도(64비트, 소수점 이하 15자리)를 사용하려면 형상 라이브러리의 노드를 사용하십시오.'와 유사한 현지화된 문자열을 조회합니다.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ModelerExtentsExceeded">
-            <summary>Looks up a localized string similar to You have exceeded the allowable modeling extents, consider choosing smaller values as inputs.</summary>
+            <summary>'허용되는 모델링 범위를 초과했습니다. 더 작은 값을 선택해 보십시오.'와 유사한 지역화된 문자열을 조회합니다.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.NoImplementationException">
             <summary>'IGeometryFactory 구현을 찾을 수 없습니다. ProtoGeometry.config가 올바르게 구성되어 있는지 확인하십시오.'와 유사한 현지화된 문자열을 조회합니다.</summary>
@@ -5354,7 +5354,7 @@
             <summary>유사한 현지화된 문자열을 조회합니다. 이 메서드는 더 이상 사용되지 않으며 이후 버전의 Dynamo에서 제거될 예정입니다. 대신 PolyCurve.OffsetMany를 사용하십시오.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.PolyCurveDirectionalityInfoMessage">
-            <summary>Looks up a localized string similar to PolyCurve direction has been updated for consistency. This change may break this node in pre-4.0 graphs. To retain legacy behavior, set DefaultEnableLegacyPolyCurveBehavior to true in DynamoPreferences.xml..</summary>
+            <summary>'일관성을 위해 PolyCurve 방향이 업데이트되었습니다. 이 변경 사항으로 인해 4.0 이전 그래프에서 이 노드가 손상될 수 있습니다. 기존 동작을 유지하려면 DynamoPreferences.xml에서 DefaultEnableLegacyPolyCurveBehavior를 true로 설정합니다.'와 유사한 지역화된 문자열을 조회합니다.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.polygon_points_deprecated">
             <summary>유사한 현지화된 문자열을 조회합니다. 이 특성은 더 이상 사용되지 않으며 이후 버전의 Dynamo에서 제거될 예정입니다. 대신 PolyCurve.Points를 사용하십시오.</summary>

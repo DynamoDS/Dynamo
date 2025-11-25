@@ -201,7 +201,7 @@ Kliknutím na tlačítko „Pokračovat“ souhlasíte s implementací změn syn
     <value>Před použitím migrace kódu jazyka Python byla záloha tohoto grafu uložena do nakonfigurovaného záložního místa: {0}</value>
   </data>
   <data name="CPythonMigrationBackupFileCreatedMessage" xml:space="preserve">
-    <value>Before updating, a backup file has been saved </value>
+    <value>Před aktualizací byl uložen záložní soubor </value>
   </data>
   <data name="RejectButtonTooltip" xml:space="preserve">
     <value>Zamítnout změny v aktuálním kódu.</value>
@@ -231,9 +231,9 @@ Kliknutím na tlačítko „Pokračovat“ souhlasíte s implementací změn syn
     <value>Tento graf aktuálně obsahuje uzly, které používají starý vyřazený modul CPython3. Byl implementován nový skript PythonNet3, který je přístupný v editoru jazyka Python.</value>
   </data>
   <data name="PythonMigrationBackupFileCreatedHeader" xml:space="preserve">
-    <value>Backup graph has been saved</value>
+    <value>Záložní graf byl uložen</value>
   </data>
   <data name="CPythonUpgradeToastMessage" xml:space="preserve">
-    <value>{0} CPython node(s) and {1} custom node definition(s) have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported.</value>
+    <value>{0} uzlů CPython a {1} definic vlastních uzlů byly automaticky převedeny na PythonNet3, aby je bylo možné spustit ve verzi aplikace Dynamo 4.0. CPython již není podporováno.</value>
   </data>
 </root>

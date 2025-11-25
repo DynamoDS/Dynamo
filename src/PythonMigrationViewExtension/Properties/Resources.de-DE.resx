@@ -201,7 +201,7 @@ Durch Klicken auf Weiter erklären Sie sich damit einverstanden, die Syntaxände
     <value>Vor dem Anwenden der Python-Codemigration wurde eine Sicherungskopie dieses Diagramms im konfigurierten Verzeichnis für Sicherungskopien gespeichert: {0}</value>
   </data>
   <data name="CPythonMigrationBackupFileCreatedMessage" xml:space="preserve">
-    <value>Before updating, a backup file has been saved </value>
+    <value>Vor dem Aktualisieren wurde eine Sicherungsdatei gespeichert </value>
   </data>
   <data name="RejectButtonTooltip" xml:space="preserve">
     <value>Lehnt die aktuellen Codeänderungen ab.</value>
@@ -231,9 +231,9 @@ Durch Klicken auf Weiter erklären Sie sich damit einverstanden, die Syntaxände
     <value>Dieses Diagramm enthält aktuell Blöcke, die die alte CPython3-Engine verwenden, die nicht mehr unterstützt wird. Ein neues PythonNet3 wurde implementiert und ist im Python-Editor verfügbar.</value>
   </data>
   <data name="PythonMigrationBackupFileCreatedHeader" xml:space="preserve">
-    <value>Backup graph has been saved</value>
+    <value>Sicherungsdiagramm wurde gespeichert</value>
   </data>
   <data name="CPythonUpgradeToastMessage" xml:space="preserve">
-    <value>{0} CPython node(s) and {1} custom node definition(s) have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported.</value>
+    <value>{0} CPython-Block/Blöcke und {1} benutzerdefinierte Blockdefinition(en) wurden automatisch in PythonNet3 konvertiert, um in Dynamo 4.0 ausgeführt zu werden. CPython wird nicht mehr unterstützt.</value>
   </data>
 </root>

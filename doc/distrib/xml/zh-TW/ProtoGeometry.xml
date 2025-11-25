@@ -3954,7 +3954,7 @@
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},System.String,System.Double)">
-            <summary>Exports a list of specified geometry to the given SAT file path.</summary>
+            <summary>將指定的幾何圖形清單匯出至給定的 SAT 檔案路徑。</summary>
             <param name="geometry"/>
             <param name="filePath"/>
             <param name="unitsMM"/>
@@ -4460,10 +4460,10 @@
             <summary>取得 PolyCurve 的字串表現法</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
-            PolyCurve direction is based on the first curve in the input array.
-            Choose a preferred join tolerance between 1e-6 and 1e-3 units.</summary>
-            <param name="curves">Curves to join into a polycurve</param>
+            <summary>透過接合曲線製作 PolyCurve。指定輸入曲線時不需按照連接順序。
+            PolyCurve 方向是根據輸入陣列中的第一條曲線。
+            在 1e-6 與 1e-3 個單位之間選擇您偏好的接合公差。</summary>
+            <param name="curves">接合至 polycurve 的曲線</param>
             <param name="joinTolerance">決定要接合的曲線之間所允許的間隙大小的公差</param>
             <returns>透過接合的曲線建立的 PolyCurve</returns>
             <search>
@@ -4471,10 +4471,10 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
-            PolyCurve direction is based on the first curve in the input array.
-            Choose a preferred join tolerance between 1e-6 and 1e-3 units.</summary>
-            <param name="curves">Curves to join into a polycurve</param>
+            <summary>透過接合曲線製作 PolyCurve。指定輸入曲線時不需按照連接順序。
+            PolyCurve 方向是根據輸入陣列中的第一條曲線。
+            在 1e-6 與 1e-3 個單位之間選擇您偏好的接合公差。</summary>
+            <param name="curves">接合至 polycurve 的曲線</param>
             <param name="joinTolerance">決定要接合的曲線之間所允許的間隙大小的公差</param>
             <param name="trimCurves">如果輸入曲線彼此相交/重疊，並且需要在建立 PolyCurve 之前修剪其端點線段，則設定為 True。預設設定為 False。</param>
             <param name="trimLength">如果 trimLength 大於 0，則不修剪比 trimLength 長的端點線段。</param>
@@ -5167,7 +5167,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleAboutAxis(Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
             <summary>傳回兩個向量之間的夾角，範圍為 [0, 180] 度。</summary>
-            <summary>傳回兩個向量之間的夾角，範圍從 0 到 360 度。它使用旋轉軸來決定角度的方向。</summary>
+            <summary>傳回兩個向量之間的夾角，範圍從 0 到 360 度。使用旋轉軸來決定角度的方向。</summary>
             <param name="otherVector">其他向量</param>
             <param name="rotationAxis">旋轉軸</param>
             <returns>傳回提供的向量之間的角度 (以 0 到 360 的度數表示)</returns>
@@ -5298,7 +5298,7 @@
             <summary>查找類似於「Mesh 節點使用 32 位元的精確度 (7 位小數)，很大或超過 7 位小數的數字可能會產生捨入誤差。如果需要較高精確度 (64 位元，15 位小數)，請使用 Geometry 資源庫的節點。」的本土化字串。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ModelerExtentsExceeded">
-            <summary>Looks up a localized string similar to You have exceeded the allowable modeling extents, consider choosing smaller values as inputs.</summary>
+            <summary>查找類似於「已超出允許的模型範圍，請考慮選擇較小的輸入值」的本土化字串。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.NoImplementationException">
             <summary>查找類似於「找不到 IGeometryFactory 的實施」的本土化字串。請確定 ProtoGeometry.config 已適當地規劃。</summary>
@@ -5352,7 +5352,7 @@
             <summary>查找類似於「此方法已棄用，未來版本的 Dynamo 將移除。請改用 PolyCurve.OffsetMany。」的本土化字串。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.PolyCurveDirectionalityInfoMessage">
-            <summary>Looks up a localized string similar to PolyCurve direction has been updated for consistency. This change may break this node in pre-4.0 graphs. To retain legacy behavior, set DefaultEnableLegacyPolyCurveBehavior to true in DynamoPreferences.xml..</summary>
+            <summary>查找類似於「為維持一致，已更新 PolyCurve 方向。此變更可能會讓 4.0 之前版本的圖表中的此節點中斷。若要保留舊式行為，請在 DynamoPreferences.xml 中將 DefaultEnableLegacyPolyCurveBehavior 設定為 true。」的本土化字串。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.polygon_points_deprecated">
             <summary>查找類似於「此性質已棄用，未來版本的 Dynamo 將移除。請改用 PolyCurve.Points。」的本土化字串。</summary>
