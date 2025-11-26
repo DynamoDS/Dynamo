@@ -242,6 +242,7 @@ namespace PythonNodeModelsWpf
                 editor.IsModified = !IsSaved;
 
                 dynamoView.DockWindowInSideBar(this, NodeModel, titleBar);
+                WindowResizeHandle.Visibility = Visibility.Collapsed;
 
                 Analytics.TrackEvent(
                                Actions.Dock,
@@ -689,11 +690,13 @@ namespace PythonNodeModelsWpf
             {
                 this.MaximizeButton.Visibility = Visibility.Collapsed;
                 this.NormalizeButton.Visibility = Visibility.Visible;
+                this.WindowResizeHandle.Visibility = Visibility.Collapsed;
             }
             else
             {
                 this.MaximizeButton.Visibility = Visibility.Visible;
                 this.NormalizeButton.Visibility = Visibility.Collapsed;
+                this.WindowResizeHandle.Visibility = Visibility.Visible;
             }
         }
 
@@ -811,7 +814,7 @@ namespace PythonNodeModelsWpf
         }
 
         // Handles clicks on the custom resize grip and forwards them as a Win32 bottom-right resize command
-        private void WindowResizeGrip_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void WindowResizeHandle_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (WindowState != WindowState.Normal)
                 return;
