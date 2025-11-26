@@ -1397,9 +1397,15 @@ namespace ProtoFFI
     /// <summary>
     /// This class compares two CLR objects using reference equality. It is used in CLRObjectMap
     /// to map CLR object instances to their marshaled StackValue representations. Uses
-    /// RuntimeHelpers.GetHashCode to get the object's identity hash code, which ensures
-    /// well-distributed hash codes even when objects have value-based hash codes that collide
-    /// (e.g., Point objects with identical coordinates).
+    /// <see cref="RuntimeHelpers.GetHashCode"/> to get the object's identity hash code, which
+    /// ensures well-distributed hash codes even when objects have value-based hash codes that
+    /// collide (e.g., Point objects with identical coordinates).
+    /// <para>
+    /// <b>Note:</b> The hash code computation is intentionally aligned with the reference
+    /// equality behavior used by <see cref="object.ReferenceEquals"/>. This ensures consistent
+    /// semantics between equality comparison and hash code generation, which is a requirement
+    /// for proper <see cref="IEqualityComparer{T}"/> implementation.
+    /// </para>
     /// </summary>
     public class ReferenceEqualityComparer: IEqualityComparer<object>
     {
