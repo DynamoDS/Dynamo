@@ -13,7 +13,7 @@
                          Width="600"
                          MinWidth="500"
                          MinHeight="450"
-                         ResizeMode="CanResizeWithGrip"
+                         ResizeMode="CanResize"
                          Style="{DynamicResource DynamoWindowStyle}"
                          AllowsTransparency="True"
                          Background="Transparent"
@@ -457,6 +457,12 @@
                         </Grid>
                     </Border>
                 </Grid>
+                <ResizeGrip  x:Name="WindowResizeGrip"
+                            Grid.Row="4"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            Margin="0 0 2 2"
+                            Cursor="SizeNWSE" PreviewMouseLeftButtonDown="WindowResizeGrip_OnPreviewMouseLeftButtonDown" />                
             </Grid>
         </Border>
     </Grid>

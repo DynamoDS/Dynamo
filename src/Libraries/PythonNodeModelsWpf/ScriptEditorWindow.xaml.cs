@@ -3,9 +3,11 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Xml;
 using Dynamo.Configuration;
@@ -50,6 +52,12 @@ namespace PythonNodeModelsWpf
         // Reasonable max and min font size values for zooming limits
         private const double FONT_MAX_SIZE = 60d;
         private const double FONT_MIN_SIZE = 5d;
+        private const int WM_SYSCOMMAND = 0x0112;
+        private const int SC_SIZE = 0xF000;
+        private const int HTBOTTOMRIGHT = 0x0008;
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
         private const double pythonZoomScalingSliderMaximum = 300d;
         private const double pythonZoomScalingSliderMinimum = 25d;
@@ -798,5 +806,15 @@ namespace PythonNodeModelsWpf
             }
         }
         #endregion
+
+        private void WindowResizeGrip_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (WindowState != WindowState.Normal)
+                return;
+
+            var helper = new WindowInteropHelper(this);
+            SendMessage(helper.Handle, WM_SYSCOMMAND, (IntPtr)(SC_SIZE + HTBOTTOMRIGHT), IntPtr.Zero);
+            e.Handled = true;
+        }
     }
 }
