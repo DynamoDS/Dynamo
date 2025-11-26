@@ -272,17 +272,22 @@ namespace Dynamo.PythonMigration
                 return;
             }
 
-            var backupDir = LoadedParams.StartupParams.PathManager.BackupDirectory;
             var filePath = CurrentWorkspace.FileName;
-
-            if (!string.IsNullOrEmpty(filePath)
-                && !filePath.StartsWith(backupDir, StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(filePath))
             {
-                upgradeService.SaveMigrationBackup(
+                var backupDir = LoadedParams.StartupParams.PathManager.BackupDirectory;
+                var workspaceDir = System.IO.Path.GetDirectoryName(filePath);
+
+                if (!string.IsNullOrEmpty(backupDir)
+                    && !string.IsNullOrEmpty(workspaceDir)
+                    && !backupDir.Equals(workspaceDir, StringComparison.OrdinalIgnoreCase))
+                {
+                    upgradeService.SaveMigrationBackup(
                     CurrentWorkspace,
                     filePath,
                     PythonEngineManager.CPython3EngineName);
-            }            
+                }
+            }
 
             if (CurrentWorkspace is HomeWorkspaceModel hws)
             {
