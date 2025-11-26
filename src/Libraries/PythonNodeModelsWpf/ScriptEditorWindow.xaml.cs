@@ -52,10 +52,14 @@ namespace PythonNodeModelsWpf
         // Reasonable max and min font size values for zooming limits
         private const double FONT_MAX_SIZE = 60d;
         private const double FONT_MIN_SIZE = 5d;
+        // Win32 system command and hit-test constants used for resizing
         private const int WM_SYSCOMMAND = 0x0112;
         private const int SC_SIZE = 0xF000;
         private const int HTBOTTOMRIGHT = 0x0008;
 
+        /// <summary>
+        /// Sends a Win32 message to forward a system resize command when the custom resize grip is clicked
+        /// </summary>
         [DllImport("user32.dll")]
         private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
@@ -807,6 +811,9 @@ namespace PythonNodeModelsWpf
         }
         #endregion
 
+        /// <summary>
+        /// Handles clicks on the custom resize grip and forwards them as a Win32 bottom-right resize command
+        /// </summary>
         private void WindowResizeGrip_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (WindowState != WindowState.Normal)
