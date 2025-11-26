@@ -322,18 +322,17 @@ namespace PythonNodeModelsWpf
         private void UpdateMigrationAssistantButtonEnabled()
         {
             var enable = CachedEngine == PythonEngineManager.IronPython2EngineName;
-
             MigrationAssistantButton.IsEnabled = enable;
 
             var tooltip = MigrationAssistantButton.ToolTip as System.Windows.Controls.ToolTip;
-            var message = enable
-                ? String.Format(
+            if (tooltip != null)
+            {
+                tooltip.Content = string.Format(
                     PythonNodeModels.Properties.Resources.PythonScriptEditorMigrationAssistantButtonTooltip,
-                    PythonEngineManager.PythonNet3EngineName)
-                : String.Format(
-                    PythonNodeModels.Properties.Resources.PythonScriptEditorMigrationAssistantButtonDisabledTooltip,
                     PythonEngineManager.PythonNet3EngineName);
-            tooltip.Content = message;
+            }
+
+            System.Windows.Controls.ToolTipService.SetIsEnabled(MigrationAssistantButton, enable);
         }
 
         #region Text Zoom in Python Editor

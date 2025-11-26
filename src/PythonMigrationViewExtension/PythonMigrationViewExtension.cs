@@ -272,11 +272,15 @@ namespace Dynamo.PythonMigration
                 return;
             }
 
-            if (!string.IsNullOrEmpty(CurrentWorkspace.FileName))
+            var backupDir = LoadedParams.StartupParams.PathManager.BackupDirectory;
+            var filePath = CurrentWorkspace.FileName;
+
+            if (!string.IsNullOrEmpty(filePath)
+                && !filePath.StartsWith(backupDir, StringComparison.OrdinalIgnoreCase))
             {
                 upgradeService.SaveMigrationBackup(
                     CurrentWorkspace,
-                    CurrentWorkspace.FileName,
+                    filePath,
                     PythonEngineManager.CPython3EngineName);
             }            
 
