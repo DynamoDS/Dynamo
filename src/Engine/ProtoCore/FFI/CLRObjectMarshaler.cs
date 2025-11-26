@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using DesignScript.Builtin;
@@ -1394,8 +1395,11 @@ namespace ProtoFFI
     }
 
     /// <summary>
-    /// This class compares two CLR objects. It is used in CLRObjectMap to 
-    /// avoid hash collision. 
+    /// This class compares two CLR objects using reference equality. It is used in CLRObjectMap
+    /// to map CLR object instances to their marshaled StackValue representations. Uses
+    /// RuntimeHelpers.GetHashCode to get the object's identity hash code, which ensures
+    /// well-distributed hash codes even when objects have value-based hash codes that collide
+    /// (e.g., Point objects with identical coordinates).
     /// </summary>
     public class ReferenceEqualityComparer: IEqualityComparer<object>
     {
@@ -1406,7 +1410,7 @@ namespace ProtoFFI
 
         public int GetHashCode(object obj)
         {
-            return obj.GetHashCode();
+            return RuntimeHelpers.GetHashCode(obj);
         }
     }
 
