@@ -159,6 +159,15 @@ namespace PythonNodeModelsWpf
             editText.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(elem), HighlightingManager.Instance);
 
+            // Set migrator tooltip
+            var tooltip = MigrationAssistantButton.ToolTip as System.Windows.Controls.ToolTip;
+            if (tooltip != null)
+            {
+                tooltip.Content = string.Format(
+                PythonNodeModels.Properties.Resources.PythonScriptEditorMigrationAssistantButtonTooltip,
+                PythonEngineManager.PythonNet3EngineName);
+            }            
+
             // Add custom highlighting rules consistent with DesignScript
             CodeHighlightingRuleFactory.AddCommonHighlighingRules(editText, dynamoViewModel.EngineController);
 
@@ -323,15 +332,6 @@ namespace PythonNodeModelsWpf
         {
             var enable = CachedEngine == PythonEngineManager.IronPython2EngineName;
             MigrationAssistantButton.IsEnabled = enable;
-
-            var tooltip = MigrationAssistantButton.ToolTip as System.Windows.Controls.ToolTip;
-            if (tooltip != null)
-            {
-                tooltip.Content = string.Format(
-                    PythonNodeModels.Properties.Resources.PythonScriptEditorMigrationAssistantButtonTooltip,
-                    PythonEngineManager.PythonNet3EngineName);
-            }
-
             System.Windows.Controls.ToolTipService.SetIsEnabled(MigrationAssistantButton, enable);
         }
 

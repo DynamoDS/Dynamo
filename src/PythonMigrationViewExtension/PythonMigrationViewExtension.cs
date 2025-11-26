@@ -272,21 +272,12 @@ namespace Dynamo.PythonMigration
                 return;
             }
 
-            var filePath = CurrentWorkspace.FileName;
-            if (!string.IsNullOrEmpty(filePath))
+            if (IsWorkspaceEligibleForBackup(CurrentWorkspace))
             {
-                var backupDir = LoadedParams.StartupParams.PathManager.BackupDirectory;
-                var workspaceDir = System.IO.Path.GetDirectoryName(filePath);
-
-                if (!string.IsNullOrEmpty(backupDir)
-                    && !string.IsNullOrEmpty(workspaceDir)
-                    && !backupDir.Equals(workspaceDir, StringComparison.OrdinalIgnoreCase))
-                {
-                    upgradeService.SaveMigrationBackup(
+                upgradeService.SaveMigrationBackup(
                     CurrentWorkspace,
-                    filePath,
+                    CurrentWorkspace.FileName,
                     PythonEngineManager.CPython3EngineName);
-                }
             }
 
             if (CurrentWorkspace is HomeWorkspaceModel hws)
@@ -610,6 +601,22 @@ namespace Dynamo.PythonMigration
         {
             hasCPython3Engine = PythonEngineManager.Instance.AvailableEngines
                 .Any(e => e.Name == PythonEngineManager.CPython3EngineName);
+        }
+
+        private bool IsWorkspaceEligibleForBackup(WorkspaceModel workspace)
+        {
+            if ( workspace == null) return false;
+
+            var filePath = workspace.FileName;
+            if (string.IsNullOrWhiteSpace(filePath)) return false;
+
+            var backupDir = LoadedParams?.StartupParams?.PathManager?.BackupDirectory;
+            if (backupDir == null) return false;
+
+            var workspaceDir = System.IO.Path.GetDirectoryName(filePath);
+            if (workspaceDir == null) return false;
+
+            return !backupDir.Equals(workspaceDir, StringComparison.OrdinalIgnoreCase);
         }
     }
 }
