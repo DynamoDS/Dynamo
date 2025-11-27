@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using NUnit.Framework;
@@ -17,6 +18,8 @@ namespace ProtoFFITests
             public double X { get; set; }
             public double Y { get; set; }
             public double Z { get; set; }
+
+            private const double Epsilon = 1e-10;
 
             public TestPoint(double x, double y, double z)
             {
@@ -41,7 +44,9 @@ namespace ProtoFFITests
                     return false;
 
                 var other = (TestPoint)obj;
-                return X == other.X && Y == other.Y && Z == other.Z;
+                return Math.Abs(X - other.X) < Epsilon
+                    && Math.Abs(Y - other.Y) < Epsilon
+                    && Math.Abs(Z - other.Z) < Epsilon;
             }
         }
 
