@@ -47,6 +47,7 @@ using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using Dynamo.Wpf.ViewModels.ProxyServer;
 using DynamoMLDataPipeline;
 using DynamoServices;
 using DynamoUtilities;
@@ -76,6 +77,8 @@ namespace Dynamo.ViewModels
         private const string dynamoMLDataFileName = "DynamoMLDataPipeline.json";
 
         private bool onlineAccess = true;
+
+        private DynamoProxyServer? proxyServer;
 
         // Can the user run the graph
         private bool CanRunGraph => HomeSpace.RunSettings.RunEnabled && !HomeSpace.GraphRunInProgress;
@@ -848,6 +851,18 @@ namespace Dynamo.ViewModels
 
             this.HideReportOptions = startConfiguration.HideReportOptions || model.NoNetworkMode;
             UsageReportingManager.Instance.InitializeCore(this);
+            
+            // Initialize proxy server early, before workspace creation, so it's ready for WebView2 components
+            // The server will enumerate view DLLs and be available for web content communication
+            proxyServer = new DynamoProxyServer();
+            _ = proxyServer.StartAsync().ContinueWith(task =>
+            {
+                if (task.IsFaulted)
+                {
+                    Trace.WriteLine($"[DynamoViewModel] Failed to start proxy server: {task.Exception?.GetBaseException().Message}");
+                }
+            });
+            
             this.WatchHandler = startConfiguration.WatchHandler;
             var pmExtension = model.GetPackageManagerExtension();
 
@@ -4602,6 +4617,13 @@ namespace Dynamo.ViewModels
                 wsvm.Dispose();
             }
             ToastManager?.CloseRealTimeInfoWindow();
+
+            // Stop proxy server
+            if (proxyServer != null)
+            {
+                proxyServer.Dispose();
+                proxyServer = null;
+            }
 
             model.ShutDown(shutdownParams.ShutdownHost);
             UsageReportingManager.DestroyInstance();

@@ -21,6 +21,10 @@
     <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672;CA1416</NoWarn>
   </PropertyGroup>
 
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
   <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
       <PropertyGroup>
           <PackageVersion>1.0.30</PackageVersion>
@@ -896,6 +900,8 @@
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="ViewModels\Core\ConnectorViewModel.cs" />
     <Compile Include="ViewModels\Core\DynamoViewModel.cs" />
+    <Compile Include="ViewModels\ProxyServer\DynamoProxyServer.cs" />
+    <Compile Include="ViewModels\ProxyServer\DynamoProxyServerDiagnostics.cs" />
     <Compile Include="ViewModels\Core\DynamoViewModelDelegateCommands.cs" />
     <Compile Include="ViewModels\Core\DynamoViewModelDelegates.cs" />
     <Compile Include="ViewModels\Core\DynamoViewModelEventArgs.cs" />
