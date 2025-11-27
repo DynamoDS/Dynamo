@@ -902,7 +902,7 @@
     <Compile Include="ViewModels\Core\DynamoViewModel.cs" />
     <Compile Include="ViewModels\ProxyServer\DynamoProxyServer.cs" />
     <Compile Include="ViewModels\ProxyServer\DynamoProxyServerDiagnostics.cs" />
-    <Compile Include="ViewModels\ProxyServer\IWebServiceEntryPoint.cs" />
+    <Compile Include="ViewModels\ProxyServer\IWebComponentEntryPoint.cs" />
     <Compile Include="ViewModels\ProxyServer\InitializationParams.cs" />
     <Compile Include="ViewModels\Core\DynamoViewModelDelegateCommands.cs" />
     <Compile Include="ViewModels\Core\DynamoViewModelDelegates.cs" />
