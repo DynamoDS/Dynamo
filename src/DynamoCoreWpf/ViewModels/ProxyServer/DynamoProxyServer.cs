@@ -13,6 +13,7 @@ namespace Dynamo.Wpf.ViewModels.ProxyServer
     internal class DynamoProxyServer : IDisposable
     {
         private WebApplication? app;
+        private WebComponentLoader? componentLoader;
         private int port;
         private bool disposed = false;
 
@@ -23,13 +24,25 @@ namespace Dynamo.Wpf.ViewModels.ProxyServer
             // Find an available port by letting the OS assign one, then releasing it
             this.port = FindAvailablePort();
             var builder = WebApplication.CreateBuilder();
+
+            // Discover and register web component DLLs
+            this.componentLoader = new WebComponentLoader();
+            await this.componentLoader.LoadAndRegisterComponentsAsync(builder);
+
+            // Build the application after registering all components
             var webApp = builder.Build();
+
+            // Configure static file serving for all loaded web components
+            this.componentLoader.ConfigureStaticFiles(webApp);
+
+            // Map controllers
+            webApp.MapControllers();
 
             // Diagnostics endpoint that returns JSON with version information
             // Diagnostics class is only instantiated when requested to avoid startup overhead
             webApp.MapGet("/", async (HttpContext context) =>
             {
-                var diagnostics = new DynamoProxyServerDiagnostics(this.port);
+                var diagnostics = new DynamoProxyServerDiagnostics(this.port, this.componentLoader);
                 context.Response.ContentType = "application/json";
                 await context.Response.WriteAsync(diagnostics.ToJson());
             });
@@ -40,19 +53,16 @@ namespace Dynamo.Wpf.ViewModels.ProxyServer
 
             this.app = webApp;
 
-            var serverUrl = $"http://localhost:{this.port}";
-            Trace.WriteLine($"[DynamoProxyServer] Server starting on {serverUrl}");
-
             await this.app.StartAsync();
 
-            Trace.WriteLine($"[DynamoProxyServer] Server started successfully on {serverUrl}");
+            var serverUrl = $"http://localhost:{this.port}";
+            this.Log($"Server started successfully on {serverUrl}");
         }
 
         public async Task StopAsync()
         {
             if (this.app != null && !this.disposed)
             {
-                Trace.WriteLine($"[DynamoProxyServer] Stopping server on port {this.port}");
                 try
                 {
                     await this.app.StopAsync();
@@ -60,11 +70,33 @@ namespace Dynamo.Wpf.ViewModels.ProxyServer
                 }
                 catch (Exception ex)
                 {
-                    Trace.WriteLine($"[DynamoProxyServer] Error stopping server: {ex.Message}");
+                    this.Log($"Error stopping server: {ex.Message}");
                 }
                 finally
                 {
                     this.app = null;
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            if (!this.disposed)
+            {
+                this.disposed = true;
+
+                // Stop asynchronously with a timeout to avoid blocking shutdown
+                try
+                {
+                    var stopTask = StopAsync();
+                    if (!stopTask.Wait(TimeSpan.FromSeconds(5)))
+                    {
+                        this.Log("StopAsync timed out after 5 seconds");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    this.Log($"Error during Dispose: {ex.Message}");
                 }
             }
         }
@@ -85,27 +117,9 @@ namespace Dynamo.Wpf.ViewModels.ProxyServer
             return assignedPort;
         }
 
-        public void Dispose()
+        private void Log(string message)
         {
-            if (!this.disposed)
-            {
-                this.disposed = true;
-
-                // Stop asynchronously with a timeout to avoid blocking shutdown
-                try
-                {
-                    var stopTask = StopAsync();
-                    if (!stopTask.Wait(TimeSpan.FromSeconds(5)))
-                    {
-                        Trace.WriteLine($"[DynamoProxyServer] StopAsync timed out after 5 seconds");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Trace.WriteLine($"[DynamoProxyServer] Error during Dispose: {ex.Message}");
-                }
-            }
+            Trace.WriteLine($"[DynamoProxyServer] {message}");
         }
     }
 }
-

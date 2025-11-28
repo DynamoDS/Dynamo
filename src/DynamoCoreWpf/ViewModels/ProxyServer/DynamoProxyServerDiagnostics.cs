@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 
@@ -11,10 +13,12 @@ namespace Dynamo.Wpf.ViewModels.ProxyServer
     internal class DynamoProxyServerDiagnostics
     {
         private readonly int port;
+        private readonly WebComponentLoader? componentLoader;
 
-        public DynamoProxyServerDiagnostics(int port)
+        public DynamoProxyServerDiagnostics(int port, WebComponentLoader? componentLoader = null)
         {
             this.port = port;
+            this.componentLoader = componentLoader;
         }
 
         public object GetDiagnostics()
@@ -33,10 +37,23 @@ namespace Dynamo.Wpf.ViewModels.ProxyServer
                     dynamoCoreWpf = GetDynamoCoreWpfVersion(),
                     os = Environment.OSVersion.ToString(),
                     machineName = Environment.MachineName
-                }
+                },
+                webComponents = GetLoadedWebComponents()
             };
 
             return diagnostics;
+        }
+
+        private IList<string> GetLoadedWebComponents()
+        {
+            if (this.componentLoader == null)
+            {
+                return Array.Empty<string>();
+            }
+
+            return this.componentLoader.LoadedEntryPoints
+                .Select(ep => ep.Assembly.Location)
+                .ToList();
         }
 
         public string ToJson()
