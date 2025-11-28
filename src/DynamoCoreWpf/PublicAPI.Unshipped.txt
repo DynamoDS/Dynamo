@@ -3842,6 +3842,13 @@ Dynamo.Wpf.Utilities.WebView2Utilities
 Dynamo.Wpf.VariableInputNodeViewCustomization
 Dynamo.Wpf.VariableInputNodeViewCustomization.Dispose() -> void
 Dynamo.Wpf.VariableInputNodeViewCustomization.VariableInputNodeViewCustomization() -> void
+Dynamo.Wpf.ViewModels.ProxyServer.IWebComponentEntryPoint
+abstract Dynamo.Wpf.ViewModels.ProxyServer.IWebComponentEntryPoint.Assembly.get -> System.Reflection.Assembly
+abstract Dynamo.Wpf.ViewModels.ProxyServer.IWebComponentEntryPoint.Initialize(Dynamo.Wpf.ViewModels.ProxyServer.InitializationParams initializationParams) -> void
+abstract Dynamo.Wpf.ViewModels.ProxyServer.IWebComponentEntryPoint.ConfigureStaticFiles(Microsoft.AspNetCore.Builder.WebApplication app, string wwwrootPath) -> void
+Dynamo.Wpf.ViewModels.ProxyServer.InitializationParams
+Dynamo.Wpf.ViewModels.ProxyServer.InitializationParams.InitializationParams(Microsoft.Extensions.DependencyInjection.IServiceCollection services) -> void
+Dynamo.Wpf.ViewModels.ProxyServer.InitializationParams.Services.get -> Microsoft.Extensions.DependencyInjection.IServiceCollection
 Dynamo.Wpf.ViewModels.BrowserInternalElementViewModel
 Dynamo.Wpf.ViewModels.BrowserInternalElementViewModel.BrowserInternalElementViewModel(Dynamo.Search.BrowserInternalElement model) -> void
 Dynamo.Wpf.ViewModels.BrowserItemViewModel
