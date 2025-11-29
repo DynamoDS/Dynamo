@@ -5,121 +5,120 @@ using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace Dynamo.Wpf.ViewModels.ProxyServer
+namespace Dynamo.Wpf.ViewModels.ProxyServer;
+
+/// <summary>
+/// Embedded ASP.NET Core proxy server for WebView2 communication.
+/// </summary>
+internal class DynamoProxyServer : IDisposable
 {
-    /// <summary>
-    /// Embedded ASP.NET Core proxy server for WebView2 communication.
-    /// </summary>
-    internal class DynamoProxyServer : IDisposable
+    private WebApplication? app;
+    private WebComponentLoader? componentLoader;
+    private int port;
+    private bool disposed = false;
+
+    public int Port => this.port;
+
+    public async Task StartAsync()
     {
-        private WebApplication? app;
-        private WebComponentLoader? componentLoader;
-        private int port;
-        private bool disposed = false;
+        // Find an available port by letting the OS assign one, then releasing it
+        this.port = FindAvailablePort();
+        var builder = WebApplication.CreateBuilder();
 
-        public int Port => this.port;
+        // Discover and register web component DLLs
+        this.componentLoader = new WebComponentLoader();
+        await this.componentLoader.LoadAndRegisterComponentsAsync(builder);
 
-        public async Task StartAsync()
+        // Build the application after registering all components
+        var webApp = builder.Build();
+
+        // Configure static file serving for all loaded web components
+        this.componentLoader.ConfigureStaticFiles(webApp);
+
+        // Map controllers
+        webApp.MapControllers();
+
+        // Diagnostics endpoint that returns JSON with version information
+        // Diagnostics class is only instantiated when requested to avoid startup overhead
+        webApp.MapGet("/", async (HttpContext context) =>
         {
-            // Find an available port by letting the OS assign one, then releasing it
-            this.port = FindAvailablePort();
-            var builder = WebApplication.CreateBuilder();
+            var diagnostics = new DynamoProxyServerDiagnostics(this.port, this.componentLoader);
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync(diagnostics.ToJson());
+        });
 
-            // Discover and register web component DLLs
-            this.componentLoader = new WebComponentLoader();
-            await this.componentLoader.LoadAndRegisterComponentsAsync(builder);
+        // Configure the server to listen on the discovered port
+        webApp.Urls.Clear();
+        webApp.Urls.Add($"http://localhost:{this.port}");
 
-            // Build the application after registering all components
-            var webApp = builder.Build();
+        this.app = webApp;
 
-            // Configure static file serving for all loaded web components
-            this.componentLoader.ConfigureStaticFiles(webApp);
+        await this.app.StartAsync();
 
-            // Map controllers
-            webApp.MapControllers();
+        var serverUrl = $"http://localhost:{this.port}";
+        this.Log($"Server started successfully on {serverUrl}");
+    }
 
-            // Diagnostics endpoint that returns JSON with version information
-            // Diagnostics class is only instantiated when requested to avoid startup overhead
-            webApp.MapGet("/", async (HttpContext context) =>
-            {
-                var diagnostics = new DynamoProxyServerDiagnostics(this.port, this.componentLoader);
-                context.Response.ContentType = "application/json";
-                await context.Response.WriteAsync(diagnostics.ToJson());
-            });
-
-            // Configure the server to listen on the discovered port
-            webApp.Urls.Clear();
-            webApp.Urls.Add($"http://localhost:{this.port}");
-
-            this.app = webApp;
-
-            await this.app.StartAsync();
-
-            var serverUrl = $"http://localhost:{this.port}";
-            this.Log($"Server started successfully on {serverUrl}");
-        }
-
-        public async Task StopAsync()
+    public async Task StopAsync()
+    {
+        if (this.app != null && !this.disposed)
         {
-            if (this.app != null && !this.disposed)
+            try
             {
-                try
-                {
-                    await this.app.StopAsync();
-                    await this.app.DisposeAsync();
-                }
-                catch (Exception ex)
-                {
-                    this.Log($"Error stopping server: {ex.Message}");
-                }
-                finally
-                {
-                    this.app = null;
-                }
+                await this.app.StopAsync();
+                await this.app.DisposeAsync();
+            }
+            catch (Exception ex)
+            {
+                this.Log($"Error stopping server: {ex.Message}");
+            }
+            finally
+            {
+                this.app = null;
             }
         }
+    }
 
-        public void Dispose()
+    public void Dispose()
+    {
+        if (!this.disposed)
         {
-            if (!this.disposed)
-            {
-                this.disposed = true;
+            this.disposed = true;
 
-                // Stop asynchronously with a timeout to avoid blocking shutdown
-                try
+            // Stop asynchronously with a timeout to avoid blocking shutdown
+            try
+            {
+                var stopTask = StopAsync();
+                if (!stopTask.Wait(TimeSpan.FromSeconds(5)))
                 {
-                    var stopTask = StopAsync();
-                    if (!stopTask.Wait(TimeSpan.FromSeconds(5)))
-                    {
-                        this.Log("StopAsync timed out after 5 seconds");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    this.Log($"Error during Dispose: {ex.Message}");
+                    this.Log("StopAsync timed out after 5 seconds");
                 }
             }
+            catch (Exception ex)
+            {
+                this.Log($"Error during Dispose: {ex.Message}");
+            }
         }
+    }
 
-        private int FindAvailablePort()
-        {
-            // Use port 0 to let the OS automatically assign an available port
-            var listener = new System.Net.Sockets.TcpListener(IPAddress.Loopback, 0);
-            listener.Start();
+    private int FindAvailablePort()
+    {
+        // Use port 0 to let the OS automatically assign an available port
+        var listener = new System.Net.Sockets.TcpListener(IPAddress.Loopback, 0);
+        listener.Start();
 
-            // Get the assigned port number
-            var endpoint = (System.Net.IPEndPoint)listener.LocalEndpoint;
-            int assignedPort = endpoint.Port;
+        // Get the assigned port number
+        var endpoint = (System.Net.IPEndPoint)listener.LocalEndpoint;
+        int assignedPort = endpoint.Port;
 
-            // Release the port so we can use it
-            listener.Stop();
+        // Release the port so we can use it
+        listener.Stop();
 
-            return assignedPort;
-        }
+        return assignedPort;
+    }
 
-        private void Log(string message)
-        {
-            Trace.WriteLine($"[DynamoProxyServer] {message}");
-        }
+    private void Log(string message)
+    {
+        Trace.WriteLine($"[DynamoProxyServer] {message}");
     }
 }

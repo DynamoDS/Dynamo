@@ -8,152 +8,151 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Dynamo.Wpf.ViewModels.ProxyServer
+namespace Dynamo.Wpf.ViewModels.ProxyServer;
+
+/// <summary>
+/// Discovers and registers web component DLLs that implement <see cref="IWebComponentEntryPoint"/>.
+/// Loads DLLs and registers their controllers, services, and static files with the proxy server.
+/// </summary>
+internal class WebComponentLoader
 {
+    private readonly List<IWebComponentEntryPoint> loadedEntryPoints = new List<IWebComponentEntryPoint>();
+
     /// <summary>
-    /// Discovers and registers web component DLLs that implement <see cref="IWebComponentEntryPoint"/>.
-    /// Loads DLLs and registers their controllers, services, and static files with the proxy server.
+    /// Gets the list of successfully loaded web component entry points.
     /// </summary>
-    internal class WebComponentLoader
+    public IReadOnlyList<IWebComponentEntryPoint> LoadedEntryPoints => loadedEntryPoints;
+
+    /// <summary>
+    /// Discovers and loads web component DLLs, registering their controllers and services
+    /// with the web application builder. DLLs are loaded from the web-components directory
+    /// alongside DynamoCoreWpf.dll.
+    /// </summary>
+    /// <param name="builder">The web application builder to register controllers and services with.</param>
+    /// <returns>A task representing the asynchronous loading operation.</returns>
+    public async Task LoadAndRegisterComponentsAsync(WebApplicationBuilder builder)
     {
-        private readonly List<IWebComponentEntryPoint> loadedEntryPoints = new List<IWebComponentEntryPoint>();
+        var webComponentsDirectory = GetWebComponentsDirectory();
 
-        /// <summary>
-        /// Gets the list of successfully loaded web component entry points.
-        /// </summary>
-        public IReadOnlyList<IWebComponentEntryPoint> LoadedEntryPoints => loadedEntryPoints;
-
-        /// <summary>
-        /// Discovers and loads web component DLLs, registering their controllers and services
-        /// with the web application builder. DLLs are loaded from the web-components directory
-        /// alongside DynamoCoreWpf.dll.
-        /// </summary>
-        /// <param name="builder">The web application builder to register controllers and services with.</param>
-        /// <returns>A task representing the asynchronous loading operation.</returns>
-        public async Task LoadAndRegisterComponentsAsync(WebApplicationBuilder builder)
+        if (!Directory.Exists(webComponentsDirectory))
         {
-            var webComponentsDirectory = GetWebComponentsDirectory();
-
-            if (!Directory.Exists(webComponentsDirectory))
-            {
-                this.Log($"Web components directory does not exist: '{webComponentsDirectory}'");
-                return;
-            }
-
-            var dllPaths = Directory.GetFiles(webComponentsDirectory, "*.dll", SearchOption.TopDirectoryOnly);
-
-            if (dllPaths.Length == 0)
-            {
-                this.Log($"No DLLs found in '{webComponentsDirectory}'");
-                return;
-            }
-
-            var mvcBuilder = builder.Services.AddControllers();
-            var initializationParams = new InitializationParams(builder.Services);
-
-            // Load and register components sequentially
-            foreach (var dllPath in dllPaths)
-            {
-                var entryPoint = await LoadComponentAsync(dllPath);
-                if (entryPoint != null)
-                {
-                    // Register controllers from this assembly and its services
-                    mvcBuilder.AddApplicationPart(entryPoint.Assembly);
-                    entryPoint.Initialize(initializationParams);
-                    loadedEntryPoints.Add(entryPoint);
-                }
-            }
+            this.Log($"Web components directory does not exist: '{webComponentsDirectory}'");
+            return;
         }
 
-        /// <summary>
-        /// Configures static file serving for all loaded web components.
-        /// Static files are served from the wwwroot directory under the web-components directory.
-        /// </summary>
-        /// <param name="app">The web application to configure static files for.</param>
-        public void ConfigureStaticFiles(WebApplication app)
+        var dllPaths = Directory.GetFiles(webComponentsDirectory, "*.dll", SearchOption.TopDirectoryOnly);
+
+        if (dllPaths.Length == 0)
         {
-            var wwwrootPath = GetWwwRootPath();
-
-            if (!Directory.Exists(wwwrootPath))
-            {
-                this.Log($"wwwroot directory does not exist: '{wwwrootPath}'");
-                return;
-            }
-
-            foreach (var entryPoint in loadedEntryPoints)
-            {
-                try
-                {
-                    var componentName = entryPoint.GetType().Assembly.GetName().Name;
-                    entryPoint.ConfigureStaticFiles(app, wwwrootPath);
-                }
-                catch (Exception ex)
-                {
-                    var componentName = entryPoint.GetType().Assembly.GetName().Name;
-                    this.Log($"Error configuring static files for {componentName}: {ex.Message}");
-                }
-            }
+            this.Log($"No DLLs found in '{webComponentsDirectory}'");
+            return;
         }
 
-        private async Task<IWebComponentEntryPoint?> LoadComponentAsync(string dllPath)
+        var mvcBuilder = builder.Services.AddControllers();
+        var initializationParams = new InitializationParams(builder.Services);
+
+        // Load and register components sequentially
+        foreach (var dllPath in dllPaths)
         {
-            // Offload I/O and reflection work to thread pool
-            return await Task.Run(() =>
+            var entryPoint = await LoadComponentAsync(dllPath);
+            if (entryPoint != null)
             {
-                var fileName = Path.GetFileName(dllPath);
+                // Register controllers from this assembly and its services
+                mvcBuilder.AddApplicationPart(entryPoint.Assembly);
+                entryPoint.Initialize(initializationParams);
+                loadedEntryPoints.Add(entryPoint);
+            }
+        }
+    }
 
-                try
+    /// <summary>
+    /// Configures static file serving for all loaded web components.
+    /// Static files are served from the wwwroot directory under the web-components directory.
+    /// </summary>
+    /// <param name="app">The web application to configure static files for.</param>
+    public void ConfigureStaticFiles(WebApplication app)
+    {
+        var wwwrootPath = GetWwwRootPath();
+
+        if (!Directory.Exists(wwwrootPath))
+        {
+            this.Log($"wwwroot directory does not exist: '{wwwrootPath}'");
+            return;
+        }
+
+        foreach (var entryPoint in loadedEntryPoints)
+        {
+            try
+            {
+                var componentName = entryPoint.GetType().Assembly.GetName().Name;
+                entryPoint.ConfigureStaticFiles(app, wwwrootPath);
+            }
+            catch (Exception ex)
+            {
+                var componentName = entryPoint.GetType().Assembly.GetName().Name;
+                this.Log($"Error configuring static files for {componentName}: {ex.Message}");
+            }
+        }
+    }
+
+    private async Task<IWebComponentEntryPoint?> LoadComponentAsync(string dllPath)
+    {
+        // Offload I/O and reflection work to thread pool
+        return await Task.Run(() =>
+        {
+            var fileName = Path.GetFileName(dllPath);
+
+            try
+            {
+                // Load the assembly
+                var assembly = Assembly.LoadFrom(dllPath);
+
+                // Find the entry point type
+                var entryPointType = assembly.GetTypes()
+                    .FirstOrDefault(t => typeof(IWebComponentEntryPoint).IsAssignableFrom(t)
+                                       && !t.IsInterface
+                                       && !t.IsAbstract);
+
+                if (entryPointType == null)
                 {
-                    // Load the assembly
-                    var assembly = Assembly.LoadFrom(dllPath);
-
-                    // Find the entry point type
-                    var entryPointType = assembly.GetTypes()
-                        .FirstOrDefault(t => typeof(IWebComponentEntryPoint).IsAssignableFrom(t)
-                                           && !t.IsInterface
-                                           && !t.IsAbstract);
-
-                    if (entryPointType == null)
-                    {
-                        return null;
-                    }
-
-                    // Instantiate the entry point
-                    var entryPoint = Activator.CreateInstance(entryPointType) as IWebComponentEntryPoint;
-                    if (entryPoint == null)
-                    {
-                        this.Log($"Failed to create entry point instance from {fileName}");
-                        return null;
-                    }
-
-                    return entryPoint;
-                }
-                catch (Exception ex)
-                {
-                    this.Log($"Error loading {fileName}: {ex.Message}");
                     return null;
                 }
-            });
-        }
 
-        private string GetWebComponentsDirectory()
-        {
-            // Web components DLLs are deployed alongside DynamoCoreWpf.dll
-            var assemblyLocation = Assembly.GetExecutingAssembly().Location;
-            var baseDirectory = Path.GetDirectoryName(assemblyLocation);
-            return Path.Combine(baseDirectory ?? string.Empty, "web-components");
-        }
+                // Instantiate the entry point
+                var entryPoint = Activator.CreateInstance(entryPointType) as IWebComponentEntryPoint;
+                if (entryPoint == null)
+                {
+                    this.Log($"Failed to create entry point instance from {fileName}");
+                    return null;
+                }
 
-        private string GetWwwRootPath()
-        {
-            // Static files are in wwwroot directory under the web-components directory
-            var webComponentsDirectory = GetWebComponentsDirectory();
-            return Path.Combine(webComponentsDirectory, "wwwroot");
-        }
+                return entryPoint;
+            }
+            catch (Exception ex)
+            {
+                this.Log($"Error loading {fileName}: {ex.Message}");
+                return null;
+            }
+        });
+    }
 
-        private void Log(string message)
-        {
-            Trace.WriteLine($"[WebComponentLoader] {message}");
-        }
+    private string GetWebComponentsDirectory()
+    {
+        // Web components DLLs are deployed alongside DynamoCoreWpf.dll
+        var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+        var baseDirectory = Path.GetDirectoryName(assemblyLocation);
+        return Path.Combine(baseDirectory ?? string.Empty, "web-components");
+    }
+
+    private string GetWwwRootPath()
+    {
+        // Static files are in wwwroot directory under the web-components directory
+        var webComponentsDirectory = GetWebComponentsDirectory();
+        return Path.Combine(webComponentsDirectory, "wwwroot");
+    }
+
+    private void Log(string message)
+    {
+        Trace.WriteLine($"[WebComponentLoader] {message}");
     }
 }
