@@ -3847,10 +3847,10 @@ Dynamo.Wpf.ViewModels.ProxyServer.DynamoWebControllerBase
 Dynamo.Wpf.ViewModels.ProxyServer.DynamoWebControllerBase.ApiRoute.get -> string
 Dynamo.Wpf.ViewModels.ProxyServer.DynamoWebControllerBase.DynamoWebControllerBase() -> void
 Dynamo.Wpf.ViewModels.ProxyServer.DynamoWebControllerBase.UiRoute.get -> string
-Dynamo.Wpf.ViewModels.ProxyServer.IWebComponentEntryPoint
-abstract Dynamo.Wpf.ViewModels.ProxyServer.IWebComponentEntryPoint.Assembly.get -> System.Reflection.Assembly
-abstract Dynamo.Wpf.ViewModels.ProxyServer.IWebComponentEntryPoint.Initialize(Dynamo.Wpf.ViewModels.ProxyServer.InitializationParams initializationParams) -> void
-abstract Dynamo.Wpf.ViewModels.ProxyServer.IWebComponentEntryPoint.ConfigureStaticFiles(Microsoft.AspNetCore.Builder.WebApplication app, string wwwrootPath) -> void
+Dynamo.Wpf.ViewModels.ProxyServer.WebComponentEntryPoint
+abstract Dynamo.Wpf.ViewModels.ProxyServer.WebComponentEntryPoint.Assembly.get -> System.Reflection.Assembly
+abstract Dynamo.Wpf.ViewModels.ProxyServer.WebComponentEntryPoint.Initialize(Dynamo.Wpf.ViewModels.ProxyServer.InitializationParams initializationParams) -> void
+Dynamo.Wpf.ViewModels.ProxyServer.WebComponentEntryPoint.ConfigureStaticFiles(Microsoft.AspNetCore.Builder.WebApplication app, string wwwrootPath) -> void
 Dynamo.Wpf.ViewModels.ProxyServer.InitializationParams
 Dynamo.Wpf.ViewModels.ProxyServer.InitializationParams.InitializationParams(Microsoft.Extensions.DependencyInjection.IServiceCollection services) -> void
 Dynamo.Wpf.ViewModels.ProxyServer.InitializationParams.Services.get -> Microsoft.Extensions.DependencyInjection.IServiceCollection

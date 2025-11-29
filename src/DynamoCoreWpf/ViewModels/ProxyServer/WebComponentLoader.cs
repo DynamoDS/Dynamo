@@ -11,17 +11,17 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Dynamo.Wpf.ViewModels.ProxyServer;
 
 /// <summary>
-/// Discovers and registers web component DLLs that implement <see cref="IWebComponentEntryPoint"/>.
+/// Discovers and registers web component DLLs that implement <see cref="WebComponentEntryPoint"/>.
 /// Loads DLLs and registers their controllers, services, and static files with the proxy server.
 /// </summary>
 internal class WebComponentLoader
 {
-    private readonly List<IWebComponentEntryPoint> loadedEntryPoints = new List<IWebComponentEntryPoint>();
+    private readonly List<WebComponentEntryPoint> loadedEntryPoints = new List<WebComponentEntryPoint>();
 
     /// <summary>
     /// Gets the list of successfully loaded web component entry points.
     /// </summary>
-    public IReadOnlyList<IWebComponentEntryPoint> LoadedEntryPoints => loadedEntryPoints;
+    public IReadOnlyList<WebComponentEntryPoint> LoadedEntryPoints => loadedEntryPoints;
 
     /// <summary>
     /// Discovers and loads web component DLLs, registering their controllers and services
@@ -95,7 +95,7 @@ internal class WebComponentLoader
         }
     }
 
-    private async Task<IWebComponentEntryPoint?> LoadComponentAsync(string dllPath)
+    private async Task<WebComponentEntryPoint?> LoadComponentAsync(string dllPath)
     {
         // Offload I/O and reflection work to thread pool
         return await Task.Run(() =>
@@ -109,7 +109,7 @@ internal class WebComponentLoader
 
                 // Find the entry point type
                 var entryPointType = assembly.GetTypes()
-                    .FirstOrDefault(t => typeof(IWebComponentEntryPoint).IsAssignableFrom(t)
+                    .FirstOrDefault(t => typeof(WebComponentEntryPoint).IsAssignableFrom(t)
                                        && !t.IsInterface
                                        && !t.IsAbstract);
 
@@ -119,7 +119,7 @@ internal class WebComponentLoader
                 }
 
                 // Instantiate the entry point
-                var entryPoint = Activator.CreateInstance(entryPointType) as IWebComponentEntryPoint;
+                var entryPoint = Activator.CreateInstance(entryPointType) as WebComponentEntryPoint;
                 if (entryPoint == null)
                 {
                     this.Log($"Failed to create entry point instance from {fileName}");
