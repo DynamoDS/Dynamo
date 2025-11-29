@@ -735,6 +735,7 @@
     <Compile Include="ViewModels\Preview\CompactBubbleViewModel.cs" />
     <Compile Include="ViewModels\Preview\ConnectorAnchorViewModel.cs" />
     <Compile Include="ViewModels\Preview\ConnectorContextMenuViewModel.cs" />
+    <Compile Include="ViewModels\ProxyServer\DynamoWebControllerBase.cs" />
     <Compile Include="ViewModels\ProxyServer\WebComponentLoader.cs" />
     <Compile Include="ViewModels\RunSettingsViewModel.cs" />
     <Compile Include="Utilities\ActionDebouncer.cs" />

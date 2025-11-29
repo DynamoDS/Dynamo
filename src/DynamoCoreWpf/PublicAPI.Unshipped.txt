@@ -3,6 +3,7 @@ abstract Dynamo.PackageManager.UI.PackageItemViewModel.Items.set -> void
 abstract Dynamo.Wpf.Extensions.ViewExtensionBase.Dispose() -> void
 abstract Dynamo.Wpf.Extensions.ViewExtensionBase.Name.get -> string
 abstract Dynamo.Wpf.Extensions.ViewExtensionBase.UniqueId.get -> string
+abstract Dynamo.Wpf.ViewModels.ProxyServer.DynamoWebControllerBase.ComponentName.get -> string
 const Dynamo.Controls.DynamoView.BackgroundPreviewName = "BackgroundPreview" -> string
 const Dynamo.Controls.NullToPinWidthConverter.PIN_WIDTH = 4 -> double
 const Dynamo.Utilities.ResourceUtilities.DPISCRIPT = "<script> function getDPIScale()\r\n        {\r\n            var dpi = 96.0;\r\n            if (window.screen.deviceXDPI != undefined)\r\n            {\r\n                dpi = window.screen.deviceXDPI;\r\n            }\r\n            else\r\n            {\r\n                var tmpNode = document.createElement('DIV');\r\n                tmpNode.style.cssText = 'width:1in;height:1in;position:absolute;left:0px;top:0px;z-index:99;visibility:hidden';\r\n                document.body.appendChild(tmpNode);\r\n                dpi = parseInt(tmpNode.offsetWidth);\r\n                tmpNode.parentNode.removeChild(tmpNode);\r\n            }\r\n\r\n            return dpi / 96.0;\r\n        }\r\n\r\n        function adaptDPI()\r\n        {\r\n            var dpiScale = getDPIScale();\r\n            document.body.style.zoom = dpiScale;\r\n\r\n            var widthPercentage = ((100.0 / dpiScale)-2).toString() + '%';\r\n            document.body.style.width = widthPercentage;\r\n        }\r\n        adaptDPI() \r\n        </script>" -> string
@@ -3842,6 +3843,10 @@ Dynamo.Wpf.Utilities.WebView2Utilities
 Dynamo.Wpf.VariableInputNodeViewCustomization
 Dynamo.Wpf.VariableInputNodeViewCustomization.Dispose() -> void
 Dynamo.Wpf.VariableInputNodeViewCustomization.VariableInputNodeViewCustomization() -> void
+Dynamo.Wpf.ViewModels.ProxyServer.DynamoWebControllerBase
+Dynamo.Wpf.ViewModels.ProxyServer.DynamoWebControllerBase.ApiRoute.get -> string
+Dynamo.Wpf.ViewModels.ProxyServer.DynamoWebControllerBase.DynamoWebControllerBase() -> void
+Dynamo.Wpf.ViewModels.ProxyServer.DynamoWebControllerBase.UiRoute.get -> string
 Dynamo.Wpf.ViewModels.ProxyServer.IWebComponentEntryPoint
 abstract Dynamo.Wpf.ViewModels.ProxyServer.IWebComponentEntryPoint.Assembly.get -> System.Reflection.Assembly
 abstract Dynamo.Wpf.ViewModels.ProxyServer.IWebComponentEntryPoint.Initialize(Dynamo.Wpf.ViewModels.ProxyServer.InitializationParams initializationParams) -> void
@@ -6007,6 +6012,7 @@ virtual Dynamo.Wpf.ViewModels.NodeSearchElementViewModel.CreateAndConnectToPort(
 virtual Dynamo.Wpf.ViewModels.NodeSearchElementViewModel.GetIcon(string fullNameOfIcon) -> System.Windows.Media.ImageSource
 virtual Dynamo.Wpf.ViewModels.NodeSearchElementViewModel.LoadDefaultIcon(Dynamo.Wpf.ViewModels.NodeSearchElementViewModel.ResourceType resourceType) -> System.Windows.Media.ImageSource
 virtual Dynamo.Wpf.ViewModels.NodeSearchElementViewModel.OnClicked() -> void
+virtual Dynamo.Wpf.ViewModels.ProxyServer.DynamoWebControllerBase.Get() -> Microsoft.AspNetCore.Mvc.IActionResult
 virtual Dynamo.Wpf.ViewModels.RunSettingsViewModel.RunInDebug.get -> bool
 virtual Dynamo.Wpf.ViewModels.RunSettingsViewModel.RunInDebug.set -> void
 virtual Dynamo.Wpf.ViewModels.Watch3D.DefaultWatch3DViewModel.Active.get -> bool
