@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
 using System.Reflection;
 
 namespace Dynamo.Wpf.ViewModels.ProxyServer;
@@ -35,15 +36,19 @@ public abstract class DynamoWebControllerBase : ControllerBase
     [HttpGet]
     public virtual IActionResult Get()
     {
-        var assembly = Assembly.GetExecutingAssembly();
+        var assembly = GetType().Assembly; // The derived controller's assembly
         var assemblyName = assembly.GetName();
+
+        var assemblyFileName = !string.IsNullOrEmpty(assembly.Location)
+            ? Path.GetFileName(assembly.Location)
+            : assemblyName.Name;
 
         return Ok(new
         {
             name = ComponentName,
             version = assemblyName.Version?.ToString() ?? "1.0.0",
             status = "active",
-            assembly = assemblyName.Name,
+            assembly = assemblyFileName,
             endpoints = new
             {
                 ui = UiRoute,
