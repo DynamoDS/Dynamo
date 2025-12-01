@@ -55,7 +55,7 @@ public abstract class WebComponentEntryPoint
         {
             FileProvider = fileProvider,
             RequestPath = requestPath,
-            DefaultFileNames = new List<string> { "index.html" }
+            DefaultFileNames = ["index.html"]
         };
 
         app.UseDefaultFiles(defaultFilesOptions);

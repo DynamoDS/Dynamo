@@ -15,19 +15,9 @@ namespace Dynamo.Wpf.ViewModels.ProxyServer;
 /// Discovers and registers web component DLLs that implement <see cref="WebComponentEntryPoint"/>.
 /// Loads DLLs and registers their controllers, services, and static files with the proxy server.
 /// </summary>
-internal class WebComponentLoader
+internal class WebComponentLoader(DynamoViewModel dynamoViewModel)
 {
-    private readonly DynamoViewModel dynamoViewModel;
-    private readonly List<WebComponentEntryPoint> loadedEntryPoints = new List<WebComponentEntryPoint>();
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="WebComponentLoader"/> class.
-    /// </summary>
-    /// <param name="dynamoViewModel">The DynamoViewModel instance to pass to web components.</param>
-    public WebComponentLoader(DynamoViewModel dynamoViewModel)
-    {
-        this.dynamoViewModel = dynamoViewModel;
-    }
+    private readonly List<WebComponentEntryPoint> loadedEntryPoints = [];
 
     /// <summary>
     /// Gets the list of successfully loaded web component entry points.
@@ -48,7 +38,7 @@ internal class WebComponentLoader
 
         if (!Directory.Exists(webComponentsDirectory))
         {
-            this.Log($"Web components directory does not exist: '{webComponentsDirectory}'");
+            Log($"Web components directory does not exist: '{webComponentsDirectory}'");
             return;
         }
 
@@ -56,19 +46,19 @@ internal class WebComponentLoader
 
         if (dllPaths.Length == 0)
         {
-            this.Log($"No DLLs found in '{webComponentsDirectory}'");
+            Log($"No DLLs found in '{webComponentsDirectory}'");
             return;
         }
 
         // Create callback for publishing events
-        Func<string, string, ValueTask> publishEventCallback = (n, d) => notificationService.PublishAsync(n, d);
+        ValueTask PublishEventCallback(string eventName, string eventData) => notificationService.PublishAsync(eventName, eventData);
 
         var mvcBuilder = builder.Services.AddControllers();
         var initializationParams = new InitializationParams
         {
             Services = builder.Services,
-            DynamoViewModel = this.dynamoViewModel,
-            PublishEventAsync = publishEventCallback
+            DynamoViewModel = dynamoViewModel,
+            PublishEventAsync = PublishEventCallback
         };
 
         // Load and register components sequentially
@@ -99,7 +89,7 @@ internal class WebComponentLoader
             catch (Exception ex)
             {
                 var componentName = entryPoint.GetType().Assembly.GetName().Name;
-                this.Log($"Error shutting down {componentName}: {ex.Message}");
+                Log($"Error shutting down {componentName}: {ex.Message}");
             }
         }
     }
@@ -115,7 +105,7 @@ internal class WebComponentLoader
 
         if (!Directory.Exists(wwwrootPath))
         {
-            this.Log($"wwwroot directory does not exist: '{wwwrootPath}'");
+            Log($"wwwroot directory does not exist: '{wwwrootPath}'");
             return;
         }
 
@@ -129,12 +119,12 @@ internal class WebComponentLoader
             catch (Exception ex)
             {
                 var componentName = entryPoint.GetType().Assembly.GetName().Name;
-                this.Log($"Error configuring static files for {componentName}: {ex.Message}");
+                Log($"Error configuring static files for {componentName}: {ex.Message}");
             }
         }
     }
 
-    private async Task<WebComponentEntryPoint?> LoadComponentAsync(string dllPath)
+    private static async Task<WebComponentEntryPoint?> LoadComponentAsync(string dllPath)
     {
         // Offload I/O and reflection work to thread pool
         return await Task.Run(() =>
@@ -158,10 +148,9 @@ internal class WebComponentLoader
                 }
 
                 // Instantiate the entry point
-                var entryPoint = Activator.CreateInstance(entryPointType) as WebComponentEntryPoint;
-                if (entryPoint == null)
+                if (Activator.CreateInstance(entryPointType) is not WebComponentEntryPoint entryPoint)
                 {
-                    this.Log($"Failed to create entry point instance from {fileName}");
+                    Log($"Failed to create entry point instance from {fileName}");
                     return null;
                 }
 
@@ -169,13 +158,13 @@ internal class WebComponentLoader
             }
             catch (Exception ex)
             {
-                this.Log($"Error loading {fileName}: {ex.Message}");
+                Log($"Error loading {fileName}: {ex.Message}");
                 return null;
             }
         });
     }
 
-    private string GetWebComponentsDirectory()
+    private static string GetWebComponentsDirectory()
     {
         // Web components DLLs are deployed alongside DynamoCoreWpf.dll
         var assemblyLocation = Assembly.GetExecutingAssembly().Location;
@@ -183,14 +172,14 @@ internal class WebComponentLoader
         return Path.Combine(baseDirectory ?? string.Empty, "web-components");
     }
 
-    private string GetWwwRootPath()
+    private static string GetWwwRootPath()
     {
         // Static files are in wwwroot directory under the web-components directory
         var webComponentsDirectory = GetWebComponentsDirectory();
         return Path.Combine(webComponentsDirectory, "wwwroot");
     }
 
-    private void Log(string message)
+    private static void Log(string message)
     {
         Trace.WriteLine($"[WebComponentLoader] {message}");
     }

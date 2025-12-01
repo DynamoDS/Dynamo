@@ -10,24 +10,15 @@ namespace Dynamo.Wpf.ViewModels.ProxyServer;
 /// Provides diagnostics information for the proxy server. This class is only
 /// instantiated when diagnostics are requested to avoid startup overhead.
 /// </summary>
-internal class DynamoProxyServerDiagnostics
+internal class DynamoProxyServerDiagnostics(int port, WebComponentLoader componentLoader)
 {
-    private readonly int port;
-    private readonly WebComponentLoader? componentLoader;
-
-    public DynamoProxyServerDiagnostics(int port, WebComponentLoader? componentLoader = null)
-    {
-        this.port = port;
-        this.componentLoader = componentLoader;
-    }
-
     public object GetDiagnostics()
     {
         var diagnostics = new
         {
             status = "running",
             serverTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
-            serverUrl = $"http://localhost:{this.port}",
+            serverUrl = $"http://localhost:{port}",
             versions = new
             {
                 dotNet = Environment.Version.ToString(),
@@ -44,25 +35,22 @@ internal class DynamoProxyServerDiagnostics
         return diagnostics;
     }
 
-    private IList<string> GetLoadedWebComponents()
+    private List<string> GetLoadedWebComponents()
     {
-        if (this.componentLoader == null)
-        {
-            return Array.Empty<string>();
-        }
-
-        return this.componentLoader.LoadedEntryPoints
+        return componentLoader.LoadedEntryPoints
             .Select(ep => ep.Assembly.Location)
             .ToList();
     }
 
+    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
+
     public string ToJson()
     {
         var diagnostics = GetDiagnostics();
-        return JsonSerializer.Serialize(diagnostics, new JsonSerializerOptions { WriteIndented = true });
+        return JsonSerializer.Serialize(diagnostics, JsonOptions);
     }
 
-    private string GetDotNetFrameworkVersion()
+    private static string GetDotNetFrameworkVersion()
     {
         try
         {
@@ -74,7 +62,7 @@ internal class DynamoProxyServerDiagnostics
         }
     }
 
-    private string GetAspNetCoreVersion()
+    private static string GetAspNetCoreVersion()
     {
         try
         {
@@ -98,7 +86,7 @@ internal class DynamoProxyServerDiagnostics
         }
     }
 
-    private string GetDynamoCoreVersion()
+    private static string GetDynamoCoreVersion()
     {
         try
         {
@@ -112,7 +100,7 @@ internal class DynamoProxyServerDiagnostics
         }
     }
 
-    private string GetDynamoCoreWpfVersion()
+    private static string GetDynamoCoreWpfVersion()
     {
         try
         {

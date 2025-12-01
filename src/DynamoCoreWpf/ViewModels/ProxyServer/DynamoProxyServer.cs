@@ -47,7 +47,7 @@ internal class DynamoProxyServer : IDisposable
 
         // Map SSE endpoint for real-time communication from C# to JavaScript
         // Set up early as it's core infrastructure for event broadcasting
-        notificationService.MapSseEndpoint(webApp);
+        WebNotificationService.MapSseEndpoint(webApp);
 
         // Configure static file serving for all loaded web components
         this.componentLoader.ConfigureStaticFiles(webApp);
@@ -67,7 +67,7 @@ internal class DynamoProxyServer : IDisposable
         await this.app.StartAsync();
 
         var serverUrl = $"http://localhost:{this.port}";
-        this.Log($"Server started successfully on {serverUrl}");
+        Log($"Server started successfully on {serverUrl}");
     }
 
     public void Shutdown()
@@ -89,7 +89,7 @@ internal class DynamoProxyServer : IDisposable
             }
             catch (Exception ex)
             {
-                this.Log($"Error stopping server: {ex.Message}");
+                Log($"Error stopping server: {ex.Message}");
             }
             finally
             {
@@ -110,17 +110,17 @@ internal class DynamoProxyServer : IDisposable
                 var stopTask = StopAsync();
                 if (!stopTask.Wait(TimeSpan.FromSeconds(5)))
                 {
-                    this.Log("StopAsync timed out after 5 seconds");
+                    Log("StopAsync timed out after 5 seconds");
                 }
             }
             catch (Exception ex)
             {
-                this.Log($"Error during Dispose: {ex.Message}");
+                Log($"Error during Dispose: {ex.Message}");
             }
         }
     }
 
-    private int FindAvailablePort()
+    private static int FindAvailablePort()
     {
         // Use port 0 to let the OS automatically assign an available port
         var listener = new System.Net.Sockets.TcpListener(IPAddress.Loopback, 0);
@@ -142,15 +142,18 @@ internal class DynamoProxyServer : IDisposable
     /// </summary>
     private void MapDiagnosticsEndpoint(WebApplication app)
     {
-        app.MapGet("/", async (HttpContext context) =>
+        var port = this.port;
+        var componentLoader = this.componentLoader!; // Always set before this method is called
+
+        app.MapGet("/", async context =>
         {
-            var diagnostics = new DynamoProxyServerDiagnostics(this.port, this.componentLoader);
+            var diagnostics = new DynamoProxyServerDiagnostics(port, componentLoader);
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsync(diagnostics.ToJson());
         });
     }
 
-    private void Log(string message)
+    private static void Log(string message)
     {
         Trace.WriteLine($"[DynamoProxyServer] {message}");
     }

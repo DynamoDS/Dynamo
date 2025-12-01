@@ -43,13 +43,13 @@ internal class WebNotificationService
     /// for real-time communication from C# controllers to JavaScript clients.
     /// </summary>
     /// <param name="app">The web application to map the endpoint to.</param>
-    public void MapSseEndpoint(WebApplication app)
+    public static void MapSseEndpoint(WebApplication app)
     {
         app.MapGet("/sse", async (HttpContext context, WebNotificationService notifications) =>
         {
-            context.Response.Headers["Content-Type"] = "text/event-stream";
-            context.Response.Headers["Cache-Control"] = "no-cache";
-            context.Response.Headers["Connection"] = "keep-alive";
+            context.Response.ContentType = "text/event-stream";
+            context.Response.Headers.CacheControl = "no-cache";
+            context.Response.Headers.Connection = "keep-alive";
 
             var ct = context.RequestAborted;
 
@@ -79,7 +79,7 @@ internal class WebNotificationService
         });
     }
 
-    private void Log(string message)
+    private static void Log(string message)
     {
         Trace.WriteLine($"[WebNotificationService] {message}");
     }
