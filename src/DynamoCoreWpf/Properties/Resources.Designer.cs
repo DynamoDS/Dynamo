@@ -1004,7 +1004,7 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("CopyToClipboardTooltip", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Python Engine Change.
         /// </summary>
@@ -1013,7 +1013,7 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("CPython3EngineNotificationMessageBoxHeader", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to This graph includes CPython nodes, which are no longer supported in Dynamo 4.0. Saving will convert them to PythonNet3, the new default engine.
         ///To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the Package Manager..
@@ -1023,7 +1023,7 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("CPython3EngineNotificationMessageBoxText", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to https://dynamobim.org/pythonnet3-a-new-dynamo-python-to-fix-everything/.
         /// </summary>
@@ -1457,6 +1457,24 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoShowFileTrustWarning {
             get {
                 return ResourceManager.GetString("DynamoShowFileTrustWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo Splash Screen.
+        /// </summary>
+        public static string DynamoSplashScreen {
+            get {
+                return ResourceManager.GetString("DynamoSplashScreen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load splash content.
+        /// </summary>
+        public static string DynamoSplashScreenFailed {
+            get {
+                return ResourceManager.GetString("DynamoSplashScreenFailed", resourceCulture);
             }
         }
         
@@ -4490,7 +4508,7 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("MessageAlreadyInstallDynamo", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Don&apos;t show this again.
         /// </summary>
@@ -8360,8 +8378,8 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("PreferencesViewHidePythonEngineChangeNotifications", resourceCulture);
             }
         }
-
-         /// <summary>
+        
+        /// <summary>
         ///   Looks up a localized string similar to CPython is no longer supported in Dynamo 4.0 or above and will be converted to the new default engine PythonNet3. Disable the toggle to hide all notifications about engine changes..
         /// </summary>
         public static string PreferencesViewHidePythonEngineChangeNotificationsTooltip {
