@@ -854,7 +854,7 @@ namespace Dynamo.ViewModels
             
             // Initialize proxy server early, before workspace creation, so it's ready for WebView2 components
             // The server will enumerate view DLLs and be available for web content communication
-            proxyServer = new DynamoProxyServer();
+            proxyServer = new DynamoProxyServer(this);
             _ = proxyServer.StartAsync().ContinueWith(task =>
             {
                 if (task.IsFaulted)
@@ -1223,6 +1223,11 @@ namespace Dynamo.ViewModels
             UnsubscribeLoggerEvents();
             UnsubscribeModelCleaningUpEvent();
             UnsubscribeModelBackupFileSaveEvent();
+
+            if (proxyServer != null)
+            {
+                proxyServer.Shutdown(); // Clean up the proxy server and web components
+            }
 
             model.WorkspaceAdded -= WorkspaceAdded;
             model.WorkspaceRemoved -= WorkspaceRemoved;

@@ -1,3 +1,4 @@
+using Dynamo.ViewModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -12,12 +13,18 @@ namespace Dynamo.Wpf.ViewModels.ProxyServer;
 /// </summary>
 internal class DynamoProxyServer : IDisposable
 {
+    private readonly DynamoViewModel dynamoViewModel;
     private WebApplication? app;
     private WebComponentLoader? componentLoader;
     private int port;
     private bool disposed = false;
 
     public int Port => this.port;
+
+    public DynamoProxyServer(DynamoViewModel dynamoViewModel)
+    {
+        this.dynamoViewModel = dynamoViewModel;
+    }
 
     public async Task StartAsync()
     {
@@ -26,7 +33,7 @@ internal class DynamoProxyServer : IDisposable
         var builder = WebApplication.CreateBuilder();
 
         // Discover and register web component DLLs
-        this.componentLoader = new WebComponentLoader();
+        this.componentLoader = new WebComponentLoader(this.dynamoViewModel);
         await this.componentLoader.LoadAndRegisterComponentsAsync(builder);
 
         // Build the application after registering all components
@@ -57,6 +64,14 @@ internal class DynamoProxyServer : IDisposable
 
         var serverUrl = $"http://localhost:{this.port}";
         this.Log($"Server started successfully on {serverUrl}");
+    }
+
+    public void Shutdown()
+    {
+        if (this.componentLoader != null && !this.disposed)
+        {
+            this.componentLoader.Shutdown();
+        }
     }
 
     public async Task StopAsync()

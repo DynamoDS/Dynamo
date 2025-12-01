@@ -30,6 +30,13 @@ public abstract class WebComponentEntryPoint
     public abstract void Initialize(InitializationParams initializationParams);
 
     /// <summary>
+    /// Called when Dynamo is shutting down, allowing the web component to perform cleanup.
+    /// </summary>
+    public virtual void Shutdown()
+    {
+    }
+
+    /// <summary>
     /// Configures static file serving for this web component's web assets.
     /// Default implementation serves files from wwwroot/{component-name}/ at /{component-name}/.
     /// Override this method to customize static file serving behavior.

@@ -1,3 +1,4 @@
+using Dynamo.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,7 +17,17 @@ namespace Dynamo.Wpf.ViewModels.ProxyServer;
 /// </summary>
 internal class WebComponentLoader
 {
+    private readonly DynamoViewModel dynamoViewModel;
     private readonly List<WebComponentEntryPoint> loadedEntryPoints = new List<WebComponentEntryPoint>();
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WebComponentLoader"/> class.
+    /// </summary>
+    /// <param name="dynamoViewModel">The DynamoViewModel instance to pass to web components.</param>
+    public WebComponentLoader(DynamoViewModel dynamoViewModel)
+    {
+        this.dynamoViewModel = dynamoViewModel;
+    }
 
     /// <summary>
     /// Gets the list of successfully loaded web component entry points.
@@ -49,7 +60,7 @@ internal class WebComponentLoader
         }
 
         var mvcBuilder = builder.Services.AddControllers();
-        var initializationParams = new InitializationParams(builder.Services);
+        var initializationParams = new InitializationParams(builder.Services, this.dynamoViewModel);
 
         // Load and register components sequentially
         foreach (var dllPath in dllPaths)
@@ -61,6 +72,25 @@ internal class WebComponentLoader
                 mvcBuilder.AddApplicationPart(entryPoint.Assembly);
                 entryPoint.Initialize(initializationParams);
                 loadedEntryPoints.Add(entryPoint);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Notifies all loaded web component entry points that Dynamo is shutting down.
+    /// </summary>
+    public void Shutdown()
+    {
+        foreach (var entryPoint in loadedEntryPoints)
+        {
+            try
+            {
+                entryPoint.Shutdown();
+            }
+            catch (Exception ex)
+            {
+                var componentName = entryPoint.GetType().Assembly.GetName().Name;
+                this.Log($"Error shutting down {componentName}: {ex.Message}");
             }
         }
     }
