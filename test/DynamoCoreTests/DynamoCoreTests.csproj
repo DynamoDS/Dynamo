@@ -138,6 +138,15 @@
   <ItemGroup>
     <Folder Include="NodesJsonDatasets\" />
   </ItemGroup>
+  <Target Name="UnpackEngineTestPackage" AfterTargets="Build">
+    <PropertyGroup>
+        <PkgTestsRoot>$([System.IO.Path]::GetFullPath('$(SolutionDir)..\test\core\packageDependencyTests\'))</PkgTestsRoot>
+        <ZipPath>$(PkgTestsRoot)PythonEnginePackage.zip</ZipPath>
+        <DestRoot>$(PkgTestsRoot)PythonEnginePackage\</DestRoot>
+    </PropertyGroup>
+    <RemoveDir Directories="$(DestRoot)" Condition="Exists('$(DestRoot)')" />
+    <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -Command &quot;Add-Type -AssemblyName 'System.IO.Compression.FileSystem'; [System.IO.Compression.ZipFile]::ExtractToDirectory('$(ZipPath)','$(DestRoot)')&quot;" />
+  </Target>
   <Target Name="MoveSomeTestDepsOutOfBin" AfterTargets="Build">
     <!--moq + deps-->
     <Copy SourceFiles="$(PkgCastle_Core)\lib\netstandard2.0\Castle.Core.dll" DestinationFolder="$(TestDependenciesPath)" />
