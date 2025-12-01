@@ -738,6 +738,7 @@
     <Compile Include="ViewModels\ProxyServer\DynamoWebControllerBase.cs" />
     <Compile Include="ViewModels\ProxyServer\WebComponentEntryPoint.cs" />
     <Compile Include="ViewModels\ProxyServer\WebComponentLoader.cs" />
+    <Compile Include="ViewModels\ProxyServer\WebNotificationService.cs" />
     <Compile Include="ViewModels\RunSettingsViewModel.cs" />
     <Compile Include="Utilities\ActionDebouncer.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
