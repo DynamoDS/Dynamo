@@ -3848,14 +3848,20 @@ Dynamo.Wpf.ViewModels.ProxyServer.DynamoWebControllerBase.ApiRoute.get -> string
 Dynamo.Wpf.ViewModels.ProxyServer.DynamoWebControllerBase.DynamoWebControllerBase() -> void
 Dynamo.Wpf.ViewModels.ProxyServer.DynamoWebControllerBase.UiRoute.get -> string
 Dynamo.Wpf.ViewModels.ProxyServer.WebComponentEntryPoint
+Dynamo.Wpf.ViewModels.ProxyServer.WebComponentEntryPoint.WebComponentEntryPoint() -> void
 abstract Dynamo.Wpf.ViewModels.ProxyServer.WebComponentEntryPoint.Assembly.get -> System.Reflection.Assembly
+protected abstract Dynamo.Wpf.ViewModels.ProxyServer.WebComponentEntryPoint.ComponentName.get -> string
 abstract Dynamo.Wpf.ViewModels.ProxyServer.WebComponentEntryPoint.Initialize(Dynamo.Wpf.ViewModels.ProxyServer.InitializationParams initializationParams) -> void
 virtual Dynamo.Wpf.ViewModels.ProxyServer.WebComponentEntryPoint.Shutdown() -> void
-Dynamo.Wpf.ViewModels.ProxyServer.WebComponentEntryPoint.ConfigureStaticFiles(Microsoft.AspNetCore.Builder.WebApplication app, string wwwrootPath) -> void
+virtual Dynamo.Wpf.ViewModels.ProxyServer.WebComponentEntryPoint.ConfigureStaticFiles(Microsoft.AspNetCore.Builder.WebApplication app, string wwwrootPath) -> void
 Dynamo.Wpf.ViewModels.ProxyServer.InitializationParams
-Dynamo.Wpf.ViewModels.ProxyServer.InitializationParams.InitializationParams(Microsoft.Extensions.DependencyInjection.IServiceCollection services, Dynamo.ViewModels.DynamoViewModel dynamoViewModel) -> void
+Dynamo.Wpf.ViewModels.ProxyServer.InitializationParams.InitializationParams() -> void
 Dynamo.Wpf.ViewModels.ProxyServer.InitializationParams.DynamoViewModel.get -> Dynamo.ViewModels.DynamoViewModel
+Dynamo.Wpf.ViewModels.ProxyServer.InitializationParams.DynamoViewModel.set -> void
+Dynamo.Wpf.ViewModels.ProxyServer.InitializationParams.PublishEventAsync.get -> System.Func<System.String, System.String, System.Threading.Tasks.ValueTask>
+Dynamo.Wpf.ViewModels.ProxyServer.InitializationParams.PublishEventAsync.set -> void
 Dynamo.Wpf.ViewModels.ProxyServer.InitializationParams.Services.get -> Microsoft.Extensions.DependencyInjection.IServiceCollection
+Dynamo.Wpf.ViewModels.ProxyServer.InitializationParams.Services.set -> void
 Dynamo.Wpf.ViewModels.BrowserInternalElementViewModel
 Dynamo.Wpf.ViewModels.BrowserInternalElementViewModel.BrowserInternalElementViewModel(Dynamo.Search.BrowserInternalElement model) -> void
 Dynamo.Wpf.ViewModels.BrowserItemViewModel
