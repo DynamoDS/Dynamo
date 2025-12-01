@@ -1,6 +1,7 @@
 using Dynamo.ViewModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Diagnostics;
 using System.Net;
@@ -32,12 +33,21 @@ internal class DynamoProxyServer : IDisposable
         this.port = FindAvailablePort();
         var builder = WebApplication.CreateBuilder();
 
+        // Register WebNotificationService as singleton for SSE event broadcasting
+        // Create instance directly so we can use it for the callback without building a service provider
+        var notificationService = new WebNotificationService();
+        builder.Services.AddSingleton(notificationService);
+
         // Discover and register web component DLLs
         this.componentLoader = new WebComponentLoader(this.dynamoViewModel);
-        await this.componentLoader.LoadAndRegisterComponentsAsync(builder);
+        await this.componentLoader.LoadAndRegisterComponentsAsync(builder, notificationService);
 
         // Build the application after registering all components
         var webApp = builder.Build();
+
+        // Map SSE endpoint for real-time communication from C# to JavaScript
+        // Set up early as it's core infrastructure for event broadcasting
+        notificationService.MapSseEndpoint(webApp);
 
         // Configure static file serving for all loaded web components
         this.componentLoader.ConfigureStaticFiles(webApp);
@@ -45,14 +55,8 @@ internal class DynamoProxyServer : IDisposable
         // Map controllers
         webApp.MapControllers();
 
-        // Diagnostics endpoint that returns JSON with version information
-        // Diagnostics class is only instantiated when requested to avoid startup overhead
-        webApp.MapGet("/", async (HttpContext context) =>
-        {
-            var diagnostics = new DynamoProxyServerDiagnostics(this.port, this.componentLoader);
-            context.Response.ContentType = "application/json";
-            await context.Response.WriteAsync(diagnostics.ToJson());
-        });
+        // Map diagnostics endpoint
+        MapDiagnosticsEndpoint(webApp);
 
         // Configure the server to listen on the discovered port
         webApp.Urls.Clear();
@@ -130,6 +134,20 @@ internal class DynamoProxyServer : IDisposable
         listener.Stop();
 
         return assignedPort;
+    }
+
+    /// <summary>
+    /// Maps the diagnostics endpoint that returns JSON with version information.
+    /// Diagnostics class is only instantiated when requested to avoid startup overhead.
+    /// </summary>
+    private void MapDiagnosticsEndpoint(WebApplication app)
+    {
+        app.MapGet("/", async (HttpContext context) =>
+        {
+            var diagnostics = new DynamoProxyServerDiagnostics(this.port, this.componentLoader);
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync(diagnostics.ToJson());
+        });
     }
 
     private void Log(string message)

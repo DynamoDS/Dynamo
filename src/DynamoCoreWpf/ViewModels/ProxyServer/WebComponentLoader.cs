@@ -40,8 +40,9 @@ internal class WebComponentLoader
     /// alongside DynamoCoreWpf.dll.
     /// </summary>
     /// <param name="builder">The web application builder to register controllers and services with.</param>
+    /// <param name="notificationService">The notification service instance for publishing events.</param>
     /// <returns>A task representing the asynchronous loading operation.</returns>
-    public async Task LoadAndRegisterComponentsAsync(WebApplicationBuilder builder)
+    public async Task LoadAndRegisterComponentsAsync(WebApplicationBuilder builder, WebNotificationService notificationService)
     {
         var webComponentsDirectory = GetWebComponentsDirectory();
 
@@ -59,8 +60,16 @@ internal class WebComponentLoader
             return;
         }
 
+        // Create callback for publishing events
+        Func<string, string, ValueTask> publishEventCallback = (n, d) => notificationService.PublishAsync(n, d);
+
         var mvcBuilder = builder.Services.AddControllers();
-        var initializationParams = new InitializationParams(builder.Services, this.dynamoViewModel);
+        var initializationParams = new InitializationParams
+        {
+            Services = builder.Services,
+            DynamoViewModel = this.dynamoViewModel,
+            PublishEventAsync = publishEventCallback
+        };
 
         // Load and register components sequentially
         foreach (var dllPath in dllPaths)
