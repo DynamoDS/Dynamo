@@ -132,6 +132,7 @@ namespace Dynamo.Notifications
                     string detail = Properties.Resources.UnsafePathDetectedDetail + "\n" + unsafePath;
                     Notifications.Add(new NotificationMessage("Preference Settings", Properties.Resources.UnsafePathDetectedTitle, detail));
                 }
+
                 notificationsMenuItem.NotificationsChangeHandler.Invoke(this, null);
             }
         }
