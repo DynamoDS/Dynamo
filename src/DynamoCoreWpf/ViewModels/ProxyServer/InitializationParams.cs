@@ -1,5 +1,7 @@
 using Dynamo.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Threading.Tasks;
 
 namespace Dynamo.Wpf.ViewModels.ProxyServer;
 
@@ -10,23 +12,18 @@ namespace Dynamo.Wpf.ViewModels.ProxyServer;
 public class InitializationParams
 {
     /// <summary>
-    /// Gets the service collection for registering services with dependency injection.
+    /// Gets or sets the service collection for registering services with dependency injection.
     /// </summary>
-    public IServiceCollection Services { get; }
+    public IServiceCollection Services { get; set; } = null!;
 
     /// <summary>
-    /// Gets the DynamoViewModel instance, providing access to the view model and model.
+    /// Gets or sets the DynamoViewModel instance, providing access to the view model and model.
     /// </summary>
-    public DynamoViewModel DynamoViewModel { get; }
+    public DynamoViewModel DynamoViewModel { get; set; } = null!;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="InitializationParams"/> class.
+    /// Gets or sets the callback for publishing events to connected WebView2 instances
+    /// via SSE. Controllers can use this to notify frontend components of state changes.
     /// </summary>
-    /// <param name="services">The service collection to register services with.</param>
-    /// <param name="dynamoViewModel">The DynamoViewModel instance.</param>
-    public InitializationParams(IServiceCollection services, DynamoViewModel dynamoViewModel)
-    {
-        Services = services;
-        DynamoViewModel = dynamoViewModel;
-    }
+    public Func<string, string, ValueTask> PublishEventAsync { get; set; } = null!;
 }
