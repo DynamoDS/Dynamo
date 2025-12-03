@@ -1470,7 +1470,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to load splash content.
+        ///   Looks up a localized string similar to Failed to load Dynamo SplashScreen, please re-launch Dynamo.
         /// </summary>
         public static string DynamoSplashScreenFailed {
             get {
@@ -5598,6 +5598,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Not connected to the internet..
+        /// </summary>
+        public static string OfflineStatusTooltip {
+            get {
+                return ResourceManager.GetString("OfflineStatusTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OK.
         /// </summary>
         public static string OKButton {
@@ -5771,6 +5780,15 @@ namespace Dynamo.Wpf.Properties {
         public static string OneAssemblyWasLoadedSeveralTimesErrorMessage {
             get {
                 return ResourceManager.GetString("OneAssemblyWasLoadedSeveralTimesErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connected to the internet..
+        /// </summary>
+        public static string OnlineStatusTooltip {
+            get {
+                return ResourceManager.GetString("OnlineStatusTooltip", resourceCulture);
             }
         }
         
@@ -11171,24 +11189,6 @@ namespace Dynamo.Wpf.Properties {
         public static string ZoomLevel {
             get {
                 return ResourceManager.GetString("ZoomLevel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Connected to the internet..
-        /// </summary>
-        public static string OnlineStatusTooltip {
-            get {
-                return ResourceManager.GetString("OnlineStatusTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Not connected to the internet..
-        /// </summary>
-        public static string OfflineStatusTooltip {
-            get {
-                return ResourceManager.GetString("OfflineStatusTooltip", resourceCulture);
             }
         }
     }

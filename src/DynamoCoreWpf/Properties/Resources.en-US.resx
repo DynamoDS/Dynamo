@@ -4245,6 +4245,6 @@ To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the
     <value>Dynamo Splash Screen</value>
   </data>
   <data name="DynamoSplashScreenFailed" xml:space="preserve">
-    <value>Failed to load splash content</value>
+    <value>Failed to load Dynamo SplashScreen, please re-launch Dynamo</value>
   </data>
 </root>
