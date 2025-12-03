@@ -44,14 +44,7 @@ OUT = sum
             }
         }
 
-        /// <summary>
-        /// PythonNet3 vs DesignScript list interop issue:
-        /// DSCore list ops expect DS lists; PythonNet passes .NET lists, causing wrong overloads/comparers.
-        /// Quarantined until parity fix.
-        /// </summary>
         [Test]
-        [Category("Failure")]
-        [Category("TechDebt")]
         public void TestListDecoding()
         {
             string code = @"
@@ -341,6 +334,36 @@ OUT = dic
                 Assert.IsTrue(dsCore["IO"] is IList);
                 var dsCoreIO = dsCore["IO"] as IList;
                 CollectionAssert.Contains(dsCoreIO, "Image", "class in nested namespace not found");
+            }
+        }
+
+        [Test]
+        public void TryDecode_ConvertsNestedPythonListsToClrLists()
+        {
+            string code = @"
+import clr
+clr.AddReference('DSCoreNodes')
+from DSCore import List
+
+data = [[1, 2, 3], [4, 5, 6]]
+OUT = data, List.Flatten(data, -1)
+";
+            var empty = new ArrayList();
+            var expected = new ArrayList
+            {
+                new ArrayList
+                {
+                    new ArrayList { 1, 2, 3 },
+                    new ArrayList { 4, 5, 6 }
+                },
+                new ArrayList { 1, 2, 3, 4, 5, 6 }
+            };
+
+            foreach (var pythonEvaluator in Evaluators)
+            {
+                var result = pythonEvaluator(code, empty, empty);
+                Assert.That(result, Is.InstanceOf<IEnumerable>());
+                CollectionAssert.AreEqual(expected, result as IEnumerable);
             }
         }
 
