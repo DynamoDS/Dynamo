@@ -232,15 +232,6 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Python engine has been updated to {0}. No conversion should be necessary. If the script shows errors from old IronPython2 syntax, switch the engine back to IronPython2 to re-enable the converter..
-        /// </summary>
-        public static string PythonScriptEditorMigrationAssistantButtonDisabledTooltip {
-            get {
-                return ResourceManager.GetString("PythonScriptEditorMigrationAssistantButtonDisabledTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Convert script to {0}....
         /// </summary>
         public static string PythonScriptEditorMigrationAssistantButtonTooltip {

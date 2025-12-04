@@ -272,13 +272,13 @@ namespace Dynamo.PythonMigration
                 return;
             }
 
-            if (!string.IsNullOrEmpty(CurrentWorkspace.FileName))
+            if (IsWorkspaceEligibleForBackup(CurrentWorkspace))
             {
                 upgradeService.SaveMigrationBackup(
                     CurrentWorkspace,
                     CurrentWorkspace.FileName,
                     PythonEngineManager.CPython3EngineName);
-            }            
+            }
 
             if (CurrentWorkspace is HomeWorkspaceModel hws)
             {
@@ -601,6 +601,22 @@ namespace Dynamo.PythonMigration
         {
             hasCPython3Engine = PythonEngineManager.Instance.AvailableEngines
                 .Any(e => e.Name == PythonEngineManager.CPython3EngineName);
+        }
+
+        private bool IsWorkspaceEligibleForBackup(WorkspaceModel workspace)
+        {
+            if ( workspace == null) return false;
+
+            var filePath = workspace.FileName;
+            if (string.IsNullOrWhiteSpace(filePath)) return false;
+
+            var backupDir = LoadedParams?.StartupParams?.PathManager?.BackupDirectory;
+            if (backupDir == null) return false;
+
+            var workspaceDir = System.IO.Path.GetDirectoryName(filePath);
+            if (workspaceDir == null) return false;
+
+            return !backupDir.Equals(workspaceDir, StringComparison.OrdinalIgnoreCase);
         }
     }
 }
