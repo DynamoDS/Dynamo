@@ -202,7 +202,7 @@
     <value>Converti tabulazioni di rientro in spazi...</value>
   </data>
   <data name="PythonScriptEditorMigrationAssistantButtonTooltip" xml:space="preserve">
-    <value>Convert script to {0}...</value>
+    <value>Converti script in {0}...</value>
   </data>
   <data name="PythonSearchTags" xml:space="preserve">
     <value>IronPython;PythonNet3;</value>
@@ -223,6 +223,6 @@
     <value>Aggiornare il motore Python a PythonNet3</value>
   </data>
   <data name="PythonScriptEditorMigrationAssistantButtonDisabledTooltip" xml:space="preserve">
-    <value>Python engine has been updated to {0}. No conversion should be necessary. If the script shows errors from old IronPython2 syntax, switch the engine back to IronPython2 to re-enable the converter.</value>
+    <value>Il motore Python è stato aggiornato a {0}. Non dovrebbe essere necessaria alcuna conversione. Se lo script mostra errori dovuti alla vecchia sintassi IronPython2, passare nuovamente al motore IronPython2 per riattivare il convertitore.</value>
   </data>
 </root>
