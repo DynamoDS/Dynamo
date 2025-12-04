@@ -144,8 +144,8 @@ namespace Dynamo.UI.Views
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning
                         );
+                    this.Close();
                 });
-                this.Close();
             }
             StaticSplashScreenReady?.Invoke();
         }
