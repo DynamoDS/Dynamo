@@ -110,28 +110,40 @@ namespace Dynamo.Models.Migration.Python
             HashSet<Guid> visitedDefIds,
             HashSet<Guid> customDefIds)
         {
-            if (defId == Guid.Empty) return;
-            if (!visitedDefIds.Add(defId)) return;
-            if (dynamoModel?.CustomNodeManager == null) return;
+            foreach (var (currentDefId, cws) in EnumerateCustomNodeGraph(defId, visitedDefIds))
+            {
+                if (cws.Nodes.Any(isPythonNode) || TempMigratedCustomDefs.Contains(currentDefId))
+                {
+                    customDefIds.Add(currentDefId);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Depth-first enumeration of all custom node workspaces reachable from the given definition ID.
+        /// Yields each definition ID and its associated workspace.
+        /// </summary>
+        private IEnumerable<(Guid defId, CustomNodeWorkspaceModel workspace)> EnumerateCustomNodeGraph(Guid defId, HashSet<Guid> visitedDefIds)
+        {
+            if (defId == Guid.Empty) yield break;
+            if (!visitedDefIds.Add(defId)) yield break;
+            if (dynamoModel?.CustomNodeManager == null) yield break;
 
             var cws = this.TryGetFunctionWorkspace(dynamoModel, defId) as CustomNodeWorkspaceModel;
-            if (cws?.Nodes == null) return;
+            if (cws?.Nodes == null) yield break;
 
-            if (cws.Nodes.Any(isPythonNode) || TempMigratedCustomDefs.Contains(defId))
-            {
-                customDefIds.Add(defId);
-            }
+            // Yield this definition
+            yield return (defId, cws);
 
             foreach (var func in cws.Nodes.OfType<Dynamo.Graph.Nodes.CustomNodes.Function>())
             {
                 var childDefId = func.Definition?.FunctionId ?? Guid.Empty;
                 if (childDefId == Guid.Empty) continue;
 
-                CollectCustomDefinitionsWithPythonRecursive(
-                    childDefId,
-                    isPythonNode,
-                    visitedDefIds,
-                    customDefIds);
+                foreach (var item in EnumerateCustomNodeGraph(childDefId, visitedDefIds))
+                {
+                    yield return item;
+                }
             }
         }
 
@@ -160,7 +172,7 @@ namespace Dynamo.Models.Migration.Python
         {
             if (hostWorkspace == null) return;
 
-            var activeDefIds = GetCustomDefsWithPythonInWorkspaceRecursive(hostWorkspace).Distinct().ToList();
+            var activeDefIds = GetCustomDefinitionsInWorkspaceRecursive(hostWorkspace).Distinct().ToList();
             if (activeDefIds.Count == 0) return;
 
             var defToCommit = TempMigratedCustomDefs
@@ -202,7 +214,7 @@ namespace Dynamo.Models.Migration.Python
             }
         }
 
-        private IEnumerable<Guid> GetCustomDefsWithPythonInWorkspaceRecursive(WorkspaceModel workspace)
+        private IEnumerable<Guid> GetCustomDefinitionsInWorkspaceRecursive(WorkspaceModel workspace)
         {
             if (workspace == null) yield break;
             var visitedDefIds = new HashSet<Guid>();
@@ -212,34 +224,9 @@ namespace Dynamo.Models.Migration.Python
                 var defId = func.Definition?.FunctionId ?? Guid.Empty;
                 if (defId == Guid.Empty) continue;
 
-                foreach (var id in GetCustomDefsWithPythonInWorkspaceRecursiveInternal(defId, visitedDefIds))
+                foreach (var (currentDefId, _) in EnumerateCustomNodeGraph(defId, visitedDefIds))
                 {
-                    yield return id;
-                }
-            }
-        }
-
-        private IEnumerable<Guid> GetCustomDefsWithPythonInWorkspaceRecursiveInternal(
-            Guid defId,
-            HashSet<Guid> visitedDefIds)
-        {
-            if (defId == Guid.Empty) yield break;
-            if (!visitedDefIds.Add(defId)) yield break;
-
-            // This definition is reachable from the host workspace
-            yield return defId;
-
-            var cws = this.TryGetFunctionWorkspace(dynamoModel, defId) as CustomNodeWorkspaceModel;
-            if (cws?.Nodes == null) yield break;
-
-            foreach (var func in cws.Nodes.OfType<Dynamo.Graph.Nodes.CustomNodes.Function>())
-            {
-                var childDefId = func.Definition?.FunctionId ?? Guid.Empty;
-                if (childDefId == Guid.Empty) continue;
-
-                foreach (var id in GetCustomDefsWithPythonInWorkspaceRecursiveInternal(childDefId, visitedDefIds))
-                {
-                    yield return id;
+                    yield return currentDefId;
                 }
             }
         }
