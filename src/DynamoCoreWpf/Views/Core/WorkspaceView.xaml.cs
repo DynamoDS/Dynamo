@@ -111,6 +111,8 @@ namespace Dynamo.Views
             Loaded += WorkspaceView_Loaded;
             Unloaded += WorkspaceView_Unloaded;
 
+            LostFocus += WorkspaceView_LostFocus;
+
             DataContextChanged += OnWorkspaceViewDataContextChanged;
 
             // view of items to drag
@@ -120,6 +122,11 @@ namespace Dynamo.Views
             // let draggedSelectionTemplate know about views of node, note, annotation, connector
             dictionaries.Add(SharedDictionaryManager.ConnectorsDictionary);
             dictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
+        }
+
+        private void WorkspaceView_LostFocus(object sender, RoutedEventArgs e)
+        {
+            DestroyPortContextMenu();
         }
 
         void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -948,7 +955,7 @@ namespace Dynamo.Views
         /// <summary>
         /// Closes the port's context menu and sets its references to null.
         /// </summary>
-        private void DestroyPortContextMenu() => PortContextMenu.IsOpen = false;
+        internal void DestroyPortContextMenu() => PortContextMenu.IsOpen = false;
 
         private void OnMouseRelease(object sender, MouseButtonEventArgs e)
         {
@@ -1294,7 +1301,7 @@ namespace Dynamo.Views
 
             Loaded -= WorkspaceView_Loaded;
             Unloaded -= WorkspaceView_Unloaded;
-
+            LostFocus -= WorkspaceView_LostFocus;
             DataContextChanged -= OnWorkspaceViewDataContextChanged;
         }
     }
