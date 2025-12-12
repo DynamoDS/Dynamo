@@ -88,18 +88,84 @@ namespace Dynamo.Models.Migration.Python
 
             // Custom nodes that contain python
             var customDefIds = new HashSet<Guid>();
+            var visitedDefIds = new HashSet<Guid>();
             foreach (var func in workspace.Nodes.OfType<Dynamo.Graph.Nodes.CustomNodes.Function>())
             {
                 var defId = func.Definition?.FunctionId ?? Guid.Empty;
                 if (defId == Guid.Empty) continue;
 
-                if (CustomNodeHasPython(defId, isPythonNode) || TempMigratedCustomDefs.Contains(defId))
-                {
-                    customDefIds.Add(defId);
-                }
+                CollectPythonCustomNodeDefinitions(
+                    defId,
+                    isPythonNode,
+                    visitedDefIds,
+                    customDefIds);
             }
 
             return new Usage(workspace, directNodes, customDefIds.ToList());
+        }
+
+        /// <summary>
+        /// Traverses all nested custom node definitions reachable from the given root
+        /// and adds those that contain Python nodes (or are already temporarily migrated)
+        /// to the provided <paramref name="customDefIds"/> set.
+        /// </summary>
+        /// <param name="defId">The root custom node definition id to start from.</param>
+        /// <param name="isPythonNode">Predicate used to detect Python nodes in a workspace.</param>
+        /// <param name="visitedDefIds">
+        /// Tracks visited definition ids to avoid cycles while traversing nested custom nodes.
+        /// </param>
+        /// <param name="customDefIds">
+        /// Output collection that will be populated with definition ids that use Python,
+        /// directly or through temporary migration.
+        /// </param>
+        private void CollectPythonCustomNodeDefinitions(
+            Guid defId,
+            Func<NodeModel, bool> isPythonNode,
+            HashSet<Guid> visitedDefIds,
+            HashSet<Guid> customDefIds)
+        {
+            foreach (var (currentDefId, cws) in TraverseCustomNodeGraph(defId, visitedDefIds))
+            {
+                if (cws.Nodes.Any(isPythonNode) || TempMigratedCustomDefs.Contains(currentDefId))
+                {
+                    customDefIds.Add(currentDefId);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Performs a depth-first traversal of the custom node graph starting from
+        /// the specified root definition id, yielding each reachable definition and
+        /// its custom node workspace.
+        /// </summary>
+        /// <param name="defId"> The root custom node definition id to start traversal from.</param>
+        /// <param name="visitedDefIds"> Tracks visited definition ids to prevent infinite loops in cyclic graphs. </param>
+        /// <returns>
+        /// A sequence of pairs containing each reachable definition id and its
+        /// corresponding <see cref="CustomNodeWorkspaceModel"/>.
+        /// </returns>
+        private IEnumerable<(Guid defId, CustomNodeWorkspaceModel workspace)> TraverseCustomNodeGraph(Guid defId, HashSet<Guid> visitedDefIds)
+        {
+            if (defId == Guid.Empty) yield break;
+            if (!visitedDefIds.Add(defId)) yield break;
+            if (dynamoModel?.CustomNodeManager == null) yield break;
+
+            var cws = this.TryGetFunctionWorkspace(dynamoModel, defId) as CustomNodeWorkspaceModel;
+            if (cws?.Nodes == null) yield break;
+
+            // Yield this definition
+            yield return (defId, cws);
+
+            foreach (var func in cws.Nodes.OfType<Dynamo.Graph.Nodes.CustomNodes.Function>())
+            {
+                var childDefId = func.Definition?.FunctionId ?? Guid.Empty;
+                if (childDefId == Guid.Empty) continue;
+
+                foreach (var item in TraverseCustomNodeGraph(childDefId, visitedDefIds))
+                {
+                    yield return item;
+                }
+            }
         }
 
         /// <summary>
@@ -127,12 +193,7 @@ namespace Dynamo.Models.Migration.Python
         {
             if (hostWorkspace == null) return;
 
-            var activeDefIds = hostWorkspace.Nodes
-                .OfType<Dynamo.Graph.Nodes.CustomNodes.Function>()
-                .Select(f => f.Definition?.FunctionId ?? Guid.Empty)
-                .Where(id => id != Guid.Empty)
-                .ToList();
-
+            var activeDefIds = GetReachableCustomNodeDefinitionsInWorkspace(hostWorkspace).Distinct().ToList();
             if (activeDefIds.Count == 0) return;
 
             var defToCommit = TempMigratedCustomDefs
@@ -170,6 +231,29 @@ namespace Dynamo.Models.Migration.Python
                 catch (Exception ex)
                 {
                     this.dynamoModel?.Logger?.Log(ex);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns all custom node definition ids that are reachable from the given
+        /// host workspace, including nested custom node dependencies.
+        /// </summary>
+        /// <param name="workspace"> The host workspace whose custom node dependencies should be analyzed. </param>
+        /// <returns> A sequence of custom node definition ids reachable from the workspace. </returns>
+        private IEnumerable<Guid> GetReachableCustomNodeDefinitionsInWorkspace(WorkspaceModel workspace)
+        {
+            if (workspace == null) yield break;
+            var visitedDefIds = new HashSet<Guid>();
+
+            foreach (var func in workspace.Nodes.OfType<Dynamo.Graph.Nodes.CustomNodes.Function>())
+            {
+                var defId = func.Definition?.FunctionId ?? Guid.Empty;
+                if (defId == Guid.Empty) continue;
+
+                foreach (var (currentDefId, _) in TraverseCustomNodeGraph(defId, visitedDefIds))
+                {
+                    yield return currentDefId;
                 }
             }
         }
@@ -274,14 +358,6 @@ namespace Dynamo.Models.Migration.Python
         {
             var invalid = Path.GetInvalidFileNameChars();
             return new string(name.Select(ch => invalid.Contains(ch) ? '_' : ch).ToArray());
-        }
-
-        private bool CustomNodeHasPython(Guid defId, Func<NodeModel, bool> isPythonNode)
-        {
-            if (dynamoModel?.CustomNodeManager == null) return false;
-
-            var cws = this.TryGetFunctionWorkspace(dynamoModel, defId) as CustomNodeWorkspaceModel;
-            return cws?.Nodes != null && cws.Nodes.Any(isPythonNode) == true;
         }
     }
 }
