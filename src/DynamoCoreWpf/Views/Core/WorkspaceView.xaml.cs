@@ -108,6 +108,11 @@ namespace Dynamo.Views
 
             InitializeComponent();
 
+            Loaded += WorkspaceView_Loaded;
+            Unloaded += WorkspaceView_Unloaded;
+
+            LostFocus += WorkspaceView_LostFocus;
+
             DataContextChanged += OnWorkspaceViewDataContextChanged;
 
             // view of items to drag
@@ -117,6 +122,11 @@ namespace Dynamo.Views
             // let draggedSelectionTemplate know about views of node, note, annotation, connector
             dictionaries.Add(SharedDictionaryManager.ConnectorsDictionary);
             dictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
+        }
+
+        private void WorkspaceView_LostFocus(object sender, RoutedEventArgs e)
+        {
+            DestroyPortContextMenu();
         }
 
         void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -906,8 +916,8 @@ namespace Dynamo.Views
             InCanvasSearchBar.IsOpen = false;
             if (GeoScalingPopup != null)
                 GeoScalingPopup.IsOpen = false;
-            
-            if(PortContextMenu.IsOpen) DestroyPortContextMenu();
+
+            if (PortContextMenu.IsOpen) DestroyPortContextMenu();
 
             if (!ViewModel.IsConnecting && !ViewModel.IsPanning && e.MiddleButton == MouseButtonState.Pressed)
             {
@@ -915,11 +925,38 @@ namespace Dynamo.Views
             }
         }
 
+        private void WorkspaceView_Loaded(object sender, RoutedEventArgs e)
+        {
+            var ownerWindow = Window.GetWindow(this);
+            if (ownerWindow != null)
+            {
+                ownerWindow.Deactivated += OwnerWindow_Deactivated;
+            }
+        }
+
+        private void WorkspaceView_Unloaded(object sender, RoutedEventArgs e)
+        {
+            var ownerWindow = Window.GetWindow(this);
+            if (ownerWindow != null)
+            {
+                ownerWindow.Deactivated -= OwnerWindow_Deactivated;
+            }
+        }
+
+        /// <summary>
+        /// When the Dynamo/Revit window loses focus, close the port context menu
+        /// so it doesn't float above other windows.
+        /// </summary>
+        private void OwnerWindow_Deactivated(object sender, EventArgs e)
+        {
+            DestroyPortContextMenu();
+        }
+
         /// <summary>
         /// Closes the port's context menu and sets its references to null.
         /// </summary>
-        private void DestroyPortContextMenu() => PortContextMenu.IsOpen = false;
-        
+        internal void DestroyPortContextMenu() => PortContextMenu.IsOpen = false;
+
         private void OnMouseRelease(object sender, MouseButtonEventArgs e)
         {
             if (e == null) return; // in certain bizarre cases, e can be null
@@ -1261,6 +1298,10 @@ namespace Dynamo.Views
         public void Dispose()
         {
             RemoveViewModelsubscriptions(ViewModel);
+
+            Loaded -= WorkspaceView_Loaded;
+            Unloaded -= WorkspaceView_Unloaded;
+            LostFocus -= WorkspaceView_LostFocus;
             DataContextChanged -= OnWorkspaceViewDataContextChanged;
         }
     }
