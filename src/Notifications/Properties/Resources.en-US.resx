@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -149,5 +149,11 @@
   </data>
   <data name="NotificationsCenterTitle" xml:space="preserve">
     <value>Notifications</value>
+  </data>
+  <data name="UnsafePathDetectedDetail" xml:space="preserve">
+    <value>An unsafe path has been detected in Trusted Locations:</value>
+  </data>
+  <data name="UnsafePathDetectedTitle" xml:space="preserve">
+    <value>Unsafe path detected</value>
   </data>
 </root>
