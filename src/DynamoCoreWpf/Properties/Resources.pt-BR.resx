@@ -3861,17 +3861,17 @@ Para transformar este arquivo em um novo modelo, salve-o em uma pasta diferente 
     <value>Alteração do mecanismo Python</value>
   </data>
   <data name="CPython3EngineNotificationMessageBoxText" xml:space="preserve">
-    <value>Esse gráfico inclui nós CPython, que não são mais suportados no Dynamo 4.0. Salvar os converterá no PythonNet3, o novo mecanismo padrão.
-Para abrir esse gráfico no Dynamo 3.3–3.6.x: instale o pacote PythonNet do Package Manager.</value>
+    <value>Esse gráfico inclui nós CPython, que não são mais suportados no Dynamo 4.0. Salvar os converterá em PythonNet3, o novo mecanismo padrão.
+Para abrir esse gráfico no Dynamo 3.3–3.6.x: instale o pacote PythonNet do Package Manager.</value>
   </data>
   <data name="CPython3EngineUpgradeLearnMoreUri" xml:space="preserve">
     <value>https://dynamobim.org/pythonnet3-a-new-dynamo-python-to-fix-everything/</value>
   </data>
   <data name="OnlineStatusTooltip" xml:space="preserve">
-    <value>Conectada à Internet.</value>
+    <value>Connected to the internet.</value>
   </data>
   <data name="OfflineStatusTooltip" xml:space="preserve">
-    <value>Não conectada à Internet.</value>
+    <value>Not connected to the internet.</value>
   </data>
   <data name="ToastHyperlinkPathText" xml:space="preserve">
     <value>aqui</value>

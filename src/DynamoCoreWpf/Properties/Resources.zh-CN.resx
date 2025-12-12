@@ -3866,10 +3866,10 @@
     <value>https://dynamobim.org/pythonnet3-a-new-dynamo-python-to-fix-everything/</value>
   </data>
   <data name="OnlineStatusTooltip" xml:space="preserve">
-    <value>已连接到 Internet。</value>
+    <value>Connected to the internet.</value>
   </data>
   <data name="OfflineStatusTooltip" xml:space="preserve">
-    <value>未连接到 Internet。</value>
+    <value>Not connected to the internet.</value>
   </data>
   <data name="ToastHyperlinkPathText" xml:space="preserve">
     <value>此处</value>

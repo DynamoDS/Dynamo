@@ -202,7 +202,7 @@
     <value>Převést tabulátory odsazení na mezery...</value>
   </data>
   <data name="PythonScriptEditorMigrationAssistantButtonTooltip" xml:space="preserve">
-    <value>Convert script to {0}...</value>
+    <value>Převést skript na {0}…</value>
   </data>
   <data name="PythonSearchTags" xml:space="preserve">
     <value>IronPython;PythonNet3;</value>
@@ -223,6 +223,6 @@
     <value>Aktualizujte modul jazyka Python na PythonNet3</value>
   </data>
   <data name="PythonScriptEditorMigrationAssistantButtonDisabledTooltip" xml:space="preserve">
-    <value>Python engine has been updated to {0}. No conversion should be necessary. If the script shows errors from old IronPython2 syntax, switch the engine back to IronPython2 to re-enable the converter.</value>
+    <value>Modul Python byl automaticky aktualizován na to {0}. Není nutná žádná konverze. Pokud skript zobrazuje chyby ze staré syntaxe IronPython2, přepněte modul zpět na IronPython2, abyste znovu povolili převodník.</value>
   </data>
 </root>
