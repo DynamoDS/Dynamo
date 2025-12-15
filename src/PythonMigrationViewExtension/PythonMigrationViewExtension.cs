@@ -27,7 +27,7 @@ namespace Dynamo.PythonMigration
         private const string EXTENSION_GUID = "1f8146d0-58b1-4b3c-82b7-34a3fab5ac5d";
         private bool hasCPython3Engine;
         private bool enginesSubscribed;
-        private WorkspaceModel lastWorkspaceModel;
+        private WorkspaceModel previousWorkspaceModel;
         private PythonEngineUpgradeService upgradeService;
 
         internal ViewLoadedParams LoadedParams { get; set; }
@@ -245,7 +245,7 @@ namespace Dynamo.PythonMigration
         {
             UnSubscribeWorkspaceEvents();
 
-            lastWorkspaceModel = CurrentWorkspace;
+            previousWorkspaceModel = CurrentWorkspace;
             CurrentWorkspace = workspace as WorkspaceModel;
             PythonDependencies.UpdateWorkspace(CurrentWorkspace);
 
@@ -254,9 +254,9 @@ namespace Dynamo.PythonMigration
             CurrentWorkspace.HasShownPythonAutoMigrationNotification = false;
             DynamoViewModel.ToastManager?.CloseRealTimeInfoWindow();
 
-            if (lastWorkspaceModel != null)
+            if (previousWorkspaceModel != null)
             {
-                NotificationTracker.Remove(lastWorkspaceModel.Guid);
+                NotificationTracker.Remove(previousWorkspaceModel.Guid);
             }
             GraphPythonDependencies.CustomNodePythonDependencyMap.Clear();
 
@@ -287,9 +287,9 @@ namespace Dynamo.PythonMigration
                     // In test mode, do not toggle RunType or we’ll break auto-run expectations
                     MigrateCPythonNodesForWorkspace();
                 }
-                else if (!ReferenceEquals(lastWorkspaceModel, hws))
+                else if (!ReferenceEquals(previousWorkspaceModel, hws))
                 {
-                    lastWorkspaceModel = hws;
+                    previousWorkspaceModel = hws;
 
                     // Temporarily switch to Manual to avoid mutating during evaluation
                     var oldRunType = hws.RunSettings.RunType;
@@ -342,7 +342,7 @@ namespace Dynamo.PythonMigration
         {
             // Close the CPython toast notification when workspace is cleared/closed
             DynamoViewModel.ToastManager?.CloseRealTimeInfoWindow();
-            lastWorkspaceModel = null;
+            previousWorkspaceModel = null;
             CurrentWorkspace.ShowPythonAutoMigrationNotifications = false;
         }
 
