@@ -1,124 +1,80 @@
-using Dynamo.Graph.Nodes;
 using Dynamo.PythonServices;
+using Dynamo.Tests;
 using Dynamo.Utilities;
-using Dynamo.Wpf.Extensions;
-using DynamoCoreWpfTests.Utility;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using PythonNodeModels;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 
 namespace DynamoCoreWpfTests
 {
     [TestFixture]
     public class PythonMigrationViewExtensionTests : DynamoTestUIBase
     {
-        protected override void GetLibrariesToPreload(List<string> libraries)
-        {
-            libraries.Add("ProtoGeometry.dll");
-            libraries.Add("DesignScriptBuiltin.dll");
-            libraries.Add("DSCoreNodes.dll");
-            libraries.Add("DSCPython.dll");
-            base.GetLibrariesToPreload(libraries);
-        }
-
         [Test]
         public void OpeningSecondGraphWithSameWorkspaceGuidStillMigratesCPythonToPythonNet3()
         {
-            // Ensure view extensions have been Loaded() (matches other ViewExtension tests).
-            RaiseLoadedEvent(View);
+            // Ensure that the Python auto migration notifications are disabled for this test
+            Model.PreferenceSettings?.ShowPythonAutoMigrationNotifications = false;
 
-            EnsurePythonMigrationViewExtensionLoaded();
+            Assert.IsTrue(
+               View.viewExtensionManager.ViewExtensions.Any(e => e != null && e.Name == "Python Migration"),
+               "Python Migration view extension is not loaded.");
 
-            // NOTE: These two files already share the same top-level "Uuid" in test data.
-            OpenAndWait(@"core\python\PythonGeometry.dyn");
-            AssertCurrentWorkspaceHasNoCPython3Nodes();
+            var testDirectory = Path.GetFullPath(Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\python"));
+            var firstGraphPath = Path.Combine(testDirectory, "WithCPython_DuplicateGuid_1.dyn");
+            var secondGraphPath = Path.Combine(testDirectory, "WithCPython_DuplicateGuid_2.dyn");
 
-            OpenAndWait(@"core\python\python_check_output.dyn");
-            AssertCurrentWorkspaceHasNoCPython3Nodes();
+            // Assert that both test graphs contain CPython nodes before opening
+            AssertDyfContainsPythonNodesWithEngine(firstGraphPath, PythonEngineManager.CPython3EngineName);
+            AssertDyfContainsPythonNodesWithEngine(secondGraphPath, PythonEngineManager.CPython3EngineName);
+
+            Open(firstGraphPath);
+
+            var firstGraphGuid = Model.CurrentWorkspace.Guid;
+            var firstGraphFullName = Model.CurrentWorkspace.FileName;
+            var pyNode = Model.CurrentWorkspace.NodeFromWorkspace<PythonNode>("14a86cf8-1219-4c0c-b636-cf9b3896984a");
+
+            // Assert that the Python node has been migrated to PythonNet3
+            Assert.IsNotNull(pyNode);
+            Assert.AreEqual(pyNode.EngineName, PythonEngineManager.PythonNet3EngineName);
+
+            // Ensure the Unsaved Changes notification does not block opening the second graph 
+            Model.CurrentWorkspace.HasUnsavedChanges = false;
+
+            Open(secondGraphPath);
+
+            var secondGraphGuid = Model.CurrentWorkspace.Guid;
+            var secondGraphFullName = Model.CurrentWorkspace.FileName;
+            pyNode = Model.CurrentWorkspace.NodeFromWorkspace<PythonNode>("5b70c276-b7db-4164-9931-74971c57d32c");
+
+            // Assert that the Python node has been migrated to PythonNet3
+            Assert.IsNotNull(pyNode);
+            Assert.AreEqual(pyNode.EngineName, PythonEngineManager.PythonNet3EngineName);
+
+            // Assert that both graphs have the same Guid but have different files
+            Assert.AreEqual(firstGraphGuid, secondGraphGuid, "Test graphs do not share the same Workspace Guid as expected");
+            Assert.AreNotEqual(firstGraphFullName, secondGraphFullName, "Test graphs do not have different file paths as expected");
         }
 
-        private void OpenAndWait(string pathInTestsDir)
+        private static void AssertDyfContainsPythonNodesWithEngine(string dyfPath, string expectedEngine)
         {
-            var fullPath = Path.GetFullPath(Path.Combine(GetTestDirectory(ExecutingDirectory), pathInTestsDir));
+            Assert.IsTrue(File.Exists(dyfPath), "Missing .dyf file: " + dyfPath);
 
-            ViewModel.OpenCommand.Execute(fullPath);
+            var root = JObject.Parse(File.ReadAllText(dyfPath));
+            var nodes = root["Nodes"] as JArray;
+            Assert.IsNotNull(nodes, "Invalid .dyf JSON: missing 'Nodes' array in " + dyfPath);
 
-            DispatcherUtil.DoEventsLoop(() =>
-            {
-                var current = Model?.CurrentWorkspace?.FileName;
-                if (string.IsNullOrWhiteSpace(current)) return false;
+            bool match = nodes
+                .OfType<JObject>()
+                .Where(n => (n.Value<string>("ConcreteType") ?? string.Empty)
+                .StartsWith("PythonNodeModels", StringComparison.Ordinal))
+                .Select(n => n.Value<string>("Engine") ?? n.Value<string>("EngineName"))
+                .Any(engine => string.Equals(engine, expectedEngine, StringComparison.Ordinal));
 
-                try
-                {
-                    current = Path.GetFullPath(current);
-                }
-                catch
-                {
-                    // ignore path normalization failures, just compare raw
-                }
-
-                return string.Equals(current, fullPath, StringComparison.OrdinalIgnoreCase);
-            });
-
-            DispatcherUtil.DoEvents();
-        }
-
-        private void AssertCurrentWorkspaceHasNoCPython3Nodes()
-        {
-            var pythonNodes = Model.CurrentWorkspace.Nodes.OfType<PythonNodeBase>().ToList();
-            Assert.That(pythonNodes.Count, Is.GreaterThan(0), "Expected at least one Python node in the test graph.");
-
-            Assert.That(
-                pythonNodes.Any(n => n.EngineName == PythonEngineManager.PythonNet3EngineName),
-                Is.True,
-                $"Expected at least one Python node to be migrated to {PythonEngineManager.PythonNet3EngineName}.");
-
-            Assert.That(
-                pythonNodes.Any(n => n.EngineName == PythonEngineManager.CPython3EngineName),
-                Is.False,
-                $"Expected no Python nodes to remain on {PythonEngineManager.CPython3EngineName} after migration.");
-        }
-
-        private void EnsurePythonMigrationViewExtensionLoaded()
-        {
-            var extensionManager = View.viewExtensionManager;
-
-            // First try: it may already be loaded as a built-in view extension.
-            var existing = extensionManager.ViewExtensions.FirstOrDefault(x =>
-                string.Equals(x.Name, "Python Migration", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(x.GetType().FullName, "Dynamo.PythonMigration.PythonMigrationViewExtension", StringComparison.Ordinal));
-
-            if (existing != null) return;
-
-            // Fallback: load it from the test bin folder via a minimal manifest.
-            var asmPath = Path.Combine(ExecutingDirectory, "PythonMigrationViewExtension.dll");
-            if (!File.Exists(asmPath))
-            {
-                Assert.Inconclusive($"PythonMigrationViewExtension.dll was not found at '{asmPath}'. " +
-                                    "The test runner output folder may not contain this view extension.");
-                return;
-            }
-
-            var manifestPath = Path.Combine(TempFolder, "PythonMigration_ViewExtensionDefinition.xml");
-            var manifestXml =
-                $@"<ViewExtensionDefinition>
-  <AssemblyPath>{asmPath}</AssemblyPath>
-  <TypeName>Dynamo.PythonMigration.PythonMigrationViewExtension</TypeName>
-</ViewExtensionDefinition>";
-
-            File.WriteAllText(manifestPath, manifestXml);
-
-            var loaded = extensionManager.ExtensionLoader.Load(manifestPath);
-            Assert.IsNotNull(loaded, "Failed to load Python Migration view extension from manifest.");
-
-            extensionManager.Add(loaded);
-
-            // Let any Loaded()/subscriptions complete.
-            DispatcherUtil.DoEvents();
+            Assert.IsTrue(match, $"Expected at least one Python node with engine '{expectedEngine}' in '{Path.GetFileName(dyfPath)}'.");
         }
     }
 }
