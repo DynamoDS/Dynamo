@@ -3959,7 +3959,7 @@
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},System.String,System.Double)">
-            <summary>Exports a list of specified geometry to the given SAT file path.</summary>
+            <summary>指定したジオメトリのリストを指定した SAT ファイル パスに書き出します。</summary>
             <param name="geometry"/>
             <param name="filePath"/>
             <param name="unitsMM"/>
@@ -4465,10 +4465,10 @@
             <summary>ポリカーブの文字列表現を取得します</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
-            PolyCurve direction is based on the first curve in the input array.
-            Choose a preferred join tolerance between 1e-6 and 1e-3 units.</summary>
-            <param name="curves">Curves to join into a polycurve</param>
+            <summary>曲線を結合してポリカーブを作成します。入力曲線を、接続順に指定する必要はありません。
+           ポリカーブの方向は、入力された配列の最初の曲線を基準にします。
+            優先される結合の許容値を 1e-6 から 1e-3 までの単位で選択します。</summary>
+            <param name="curves">ポリカーブに結合する曲線</param>
             <param name="joinTolerance">結合する曲線間で使用できるギャップのサイズを判断するための許容値</param>
             <returns>結合された曲線によって作成されたポリカーブ</returns>
             <search>
@@ -4476,10 +4476,10 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
-            PolyCurve direction is based on the first curve in the input array.
-            Choose a preferred join tolerance between 1e-6 and 1e-3 units.</summary>
-            <param name="curves">Curves to join into a polycurve</param>
+            <summary>曲線を結合してポリカーブを作成します。入力曲線を、接続順に指定する必要はありません。
+           ポリカーブの方向は、入力された配列の最初の曲線を基準にします。
+            優先される結合の許容値を 1e-6 から 1e-3 までの単位で選択します。</summary>
+            <param name="curves">ポリカーブに結合する曲線</param>
             <param name="joinTolerance">結合する曲線間で使用できるギャップのサイズを判断するための許容値</param>
             <param name="trimCurves">入力された曲線が互いに交差または重複しており、ポリカーブを作成する前に終端セグメントをトリムする必要がある場合は、True に設定します。既定では False に設定されています。</param>
             <param name="trimLength">trimLength が 0 より大きい場合、trimLength より長い終端セグメントはトリムされません。</param>
@@ -5303,7 +5303,7 @@
             <summary>「メッシュ ノードは 32 ビット精度(小数点以下 7 桁)を使用するため、大きな数値や小数点以下 7 桁を超える数値では、丸めエラーが発生する可能性があります。より高い精度(64 ビット、小数点以下 15 桁)を必要とする場合は、Geometry ライブラリのノードを使用してください。」に類似するローカライズされた文字列を検索します。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ModelerExtentsExceeded">
-            <summary>Looks up a localized string similar to You have exceeded the allowable modeling extents, consider choosing smaller values as inputs.</summary>
+            <summary>「使用可能なモデリング範囲を超えました。入力として、より小さな値を選択してください」に類似するローカライズされた文字列を検索します。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.NoImplementationException">
             <summary>「IGeometryFactory の実装が見つかりませんでした。ProtoGeometry.config が正しく構成されていることを確認してください。」に類似するローカライズされた文字列を検索します。</summary>
@@ -5357,7 +5357,7 @@
             <summary>「このメソッドは廃止され、Dynamo の今後のバージョンで削除される予定です。代わりに PolyCurve.OffsetMany を使用してください」に類似するローカライズされた文字列を検索します。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.PolyCurveDirectionalityInfoMessage">
-            <summary>Looks up a localized string similar to PolyCurve direction has been updated for consistency. This change may break this node in pre-4.0 graphs. To retain legacy behavior, set DefaultEnableLegacyPolyCurveBehavior to true in DynamoPreferences.xml..</summary>
+            <summary>「ポリカーブの方向は一貫性を保つために更新されました。この変更により、4.0 より前のグラフでは、このノードが壊れる可能性があります。従来の動作を保持するには、DynamoPreferences.xml で DefaultEnableLegacyPolyCurveBehavior を true に設定します」に類似するローカライズされた文字列を検索します。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.polygon_points_deprecated">
             <summary>「このプロパティは廃止され、Dynamo の今後のバージョンで削除される予定です。代わりに PolyCurve.Points を使用してください」に類似するローカライズされた文字列を検索します。</summary>

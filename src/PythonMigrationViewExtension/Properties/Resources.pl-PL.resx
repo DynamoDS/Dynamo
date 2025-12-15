@@ -201,7 +201,7 @@ Kliknięcie przycisku Kontynuuj oznacza zaakceptowanie wprowadzenia zmian w skł
     <value>Przed zastosowaniem migracji kodu języka Python zapisano kopię zapasową tego wykresu w skonfigurowanej lokalizacji kopii zapasowej: {0}</value>
   </data>
   <data name="CPythonMigrationBackupFileCreatedMessage" xml:space="preserve">
-    <value>Before updating, a backup file has been saved </value>
+    <value>Przed aktualizacją zapisano plik kopii zapasowej </value>
   </data>
   <data name="RejectButtonTooltip" xml:space="preserve">
     <value>Odrzuć bieżące zmiany kodu.</value>
@@ -231,9 +231,9 @@ Kliknięcie przycisku Kontynuuj oznacza zaakceptowanie wprowadzenia zmian w skł
     <value>Ten wykres zawiera obecnie węzły korzystające ze starego, wycofanego aparatu CPython3. Zaimplementowano nowy aparat PythonNet3, który jest dostępny w edytorze języka Python.</value>
   </data>
   <data name="PythonMigrationBackupFileCreatedHeader" xml:space="preserve">
-    <value>Backup graph has been saved</value>
+    <value>Zapisano wykres kopii zapasowej</value>
   </data>
   <data name="CPythonUpgradeToastMessage" xml:space="preserve">
-    <value>{0} CPython node(s) and {1} custom node definition(s) have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported.</value>
+    <value>Węzły CPython ({0}) i definicje węzłów niestandardowych ({1}) zostały automatycznie przekonwertowane na język PythonNet3, aby działały w dodatku Dynamo 4.0. Język CPython nie jest już obsługiwany.</value>
   </data>
 </root>

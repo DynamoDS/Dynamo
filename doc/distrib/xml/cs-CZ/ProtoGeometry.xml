@@ -3768,9 +3768,9 @@
             <summary>Mapa mezi typy entity IGeometryEntity a konstruktory geometrie používajícími hostitele</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.RegisterHostType(System.Type,System.Func{Autodesk.DesignScript.Interfaces.IGeometryEntity,Autodesk.DesignScript.Geometry.Geometry})">
-            <summary>Mechanismus registrace typu geometrie</summary>
-            <param name="hostType">Typ rozhraní odvozených od entity IGeometryEntity</param>
-            <param name="contructor">Delegát pro sestavení geometrie</param>
+            <summary>Mechanismus registrace typu geometrie.</summary>
+            <param name="hostType">Typ rozhraní odvozených od entity IGeometryEntity.</param>
+            <param name="contructor">Delegát pro sestavení geometrie.</param>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.FromObject(System.Int64)">
             <notranslation>true</notranslation>
@@ -3958,7 +3958,7 @@
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},System.String,System.Double)">
-            <summary>Exports a list of specified geometry to the given SAT file path.</summary>
+            <summary>Exportuje seznam vybrané geometrie do zadané cesty souboru SAT.</summary>
             <param name="geometry"/>
             <param name="filePath"/>
             <param name="unitsMM"/>
@@ -4463,10 +4463,10 @@
             <summary>Získat řetězcovou reprezentaci prvku PolyCurve</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
-            PolyCurve direction is based on the first curve in the input array.
-            Choose a preferred join tolerance between 1e-6 and 1e-3 units.</summary>
-            <param name="curves">Curves to join into a polycurve</param>
+            <summary>Vytvořte objekt PolyCurve spojením křivek. Vstupní křivky nemusí být zadány v pořadí propojení. 
+            Směr objektu PolyCurve je určen první křivkou ve vstupním poli.
+            Vyberte preferovanou toleranci spojení od 1e-6 do 1e-3 jednotek.</summary>
+            <param name="curves">Křivky ke spojení do objektu PolyCurve</param>
             <param name="joinTolerance">Tolerance, která určuje velikost povolené mezery mezi spojovanými křivkami</param>
             <returns>Objekt Polycurve vytvořený podle spojených křivek</returns>
             <search>
@@ -4474,10 +4474,10 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
-            PolyCurve direction is based on the first curve in the input array.
-            Choose a preferred join tolerance between 1e-6 and 1e-3 units.</summary>
-            <param name="curves">Curves to join into a polycurve</param>
+            <summary>Vytvořte objekt PolyCurve spojením křivek. Vstupní křivky nemusí být zadány v pořadí propojení. 
+            Směr objektu PolyCurve je určen první křivkou ve vstupním poli.
+            Vyberte preferovanou toleranci spojení od 1e-6 do 1e-3 jednotek.</summary>
+            <param name="curves">Křivky ke spojení do objektu PolyCurve</param>
             <param name="joinTolerance">Tolerance, která určuje velikost povolené mezery mezi spojovanými křivkami</param>
             <param name="trimCurves">Nastavte na hodnotu True, pokud se vstupní křivky protínají nebo překrývají a je nutné oříznout jejich koncové úseky před vytvořením objektu PolyCurve. Ve výchozím nastavení je tato možnost nastavena na hodnotu False.</param>
             <param name="trimLength">Pokud je hodnota trimLength větší než 0, pak koncové úseky delší než hodnota trimLength nebudou oříznuty.</param>
@@ -5301,7 +5301,7 @@
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci Uzly sítě používají 32bitovou přesnost (7 desetinných míst), což může vést k chybám zaokrouhlení u velkých čísel nebo čísel se více než 7 desetinnými místy. Za účelem dosažení vyšší přesnosti (64 bitů, 15 desetinných míst) použijte uzly z knihovny Geometrie.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ModelerExtentsExceeded">
-            <summary>Looks up a localized string similar to You have exceeded the allowable modeling extents, consider choosing smaller values as inputs.</summary>
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Byl překročen povolený rozsah modelu, zvažte výběr menších vstupních hodnot.“</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.NoImplementationException">
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Nebyla nalezena žádná implementace objektu IGeometryFactory. Ujistěte se, že je objekt ProtoGeometry.config správně nakonfigurován.“.</summary>
@@ -5355,7 +5355,7 @@
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato metoda je vyřazena a bude odebrána v budoucí verzi aplikace Dynamo. Použijte místo ní metodu PolyCurve.OffsetMany.“.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.PolyCurveDirectionalityInfoMessage">
-            <summary>Looks up a localized string similar to PolyCurve direction has been updated for consistency. This change may break this node in pre-4.0 graphs. To retain legacy behavior, set DefaultEnableLegacyPolyCurveBehavior to true in DynamoPreferences.xml..</summary>
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Směr objektu PolyCurve byl kvůli konzistenci aktualizován.“. Tato změna může tento uzel v grafech starších než 4.0 rozložit. Chcete-li zachovat starší chování, nastavte vlastnost DefaultEnableLegacyPolyCurveBehavior v souboru DynamoPreferences.xml na hodnotu true.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.polygon_points_deprecated">
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato vlastnost je vyřazena a bude odebrána v budoucí verzi aplikace Dynamo. Použijte místo ní vlastnost PolyCurve.Points.“.</summary>
