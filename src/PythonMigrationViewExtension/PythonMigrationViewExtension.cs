@@ -245,7 +245,7 @@ namespace Dynamo.PythonMigration
         {
             UnSubscribeWorkspaceEvents();
 
-            previousWorkspaceModel = CurrentWorkspace;
+            var previous = CurrentWorkspace;
             CurrentWorkspace = workspace as WorkspaceModel;
             PythonDependencies.UpdateWorkspace(CurrentWorkspace);
 
@@ -254,9 +254,9 @@ namespace Dynamo.PythonMigration
             CurrentWorkspace.HasShownPythonAutoMigrationNotification = false;
             DynamoViewModel.ToastManager?.CloseRealTimeInfoWindow();
 
-            if (previousWorkspaceModel != null)
+            if (previous != null)
             {
-                NotificationTracker.Remove(previousWorkspaceModel.Guid);
+                NotificationTracker.Remove(previous.Guid);
             }
             GraphPythonDependencies.CustomNodePythonDependencyMap.Clear();
 
