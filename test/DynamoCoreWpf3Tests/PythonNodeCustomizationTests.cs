@@ -1,3 +1,11 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using Autodesk.DesignScript.Runtime;
 using CoreNodeModels;
 using Dynamo.Controls;
@@ -9,19 +17,9 @@ using Dynamo.Tests;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
 using ICSharpCode.AvalonEdit.Document;
-using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using PythonNodeModels;
 using PythonNodeModelsWpf;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Input;
 
 namespace DynamoCoreWpfTests
 {
