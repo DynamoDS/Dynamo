@@ -17,7 +17,8 @@ namespace DynamoCoreWpfTests
         public void OpeningSecondGraphWithSameWorkspaceGuidStillMigratesCPythonToPythonNet3()
         {
             // Ensure that the Python auto migration notifications are disabled for this test
-            Model.PreferenceSettings?.ShowPythonAutoMigrationNotifications = false;
+            Assert.IsNotNull(Model.PreferenceSettings, "Model.PreferenceSettings must be initialized before running this test.");
+            Model.PreferenceSettings.ShowPythonAutoMigrationNotifications = false;
 
             Assert.IsTrue(
                View.viewExtensionManager.ViewExtensions.Any(e => e != null && e.Name == "Python Migration"),
