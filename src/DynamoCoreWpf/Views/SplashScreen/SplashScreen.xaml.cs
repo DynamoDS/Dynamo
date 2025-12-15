@@ -10,6 +10,7 @@ using Autodesk.DesignScript.Runtime;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Core;
+using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -36,6 +37,10 @@ namespace Dynamo.UI.Views
         /// This is useful for knowing if Dynamo is already started or not.
         /// </summary>
         public bool CloseWasExplicit { get; private set; }
+
+        internal HostAnalyticsInfo? hostAnalyticsInfo { get; private set; }
+
+        internal string userDataFolder { get; private set; }
 
         // Indicates if the SplashScren close button was hit.
         // Used to ensure that OnClosing is called only once.
@@ -144,9 +149,19 @@ namespace Dynamo.UI.Views
         /// Splash Screen Constructor. 
         /// <paramref name="enableSignInButton"/> Indicates if the SignIn Button will be enabled(default) or not.
         /// </summary>
-        public SplashScreen(bool enableSignInButton = true)
+        public SplashScreen(bool enableSignInButton = true, HostAnalyticsInfo? hostInfo = null, string userDataFolder = "")
         {
             InitializeComponent();
+
+            if(hostInfo != null)
+            {
+                hostAnalyticsInfo = hostInfo.Value;
+            }
+            if(!string.IsNullOrEmpty(userDataFolder))
+            {
+                this.userDataFolder = userDataFolder;
+            }
+
 
             loadingTimer = new Stopwatch();
             loadingTimer.Start();
@@ -327,11 +342,23 @@ namespace Dynamo.UI.Views
         /// <returns></returns>
         private string GetUserDirectory()
         {
-            var version = AssemblyHelper.GetDynamoVersion();
+            if (!string.IsNullOrEmpty(userDataFolder) && hostAnalyticsInfo != null)
+            {
+                var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                var version = hostAnalyticsInfo.Value.HostVersion;
 
-            var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(Path.Combine(folder, Configurations.DynamoAsString, "Dynamo Core"),
-                            String.Format("{0}.{1}", version.Major, version.Minor));
+                return Path.Combine(userDataFolder,
+                                String.Format("{0}.{1}", version.Major, version.Minor));
+            }
+            else
+            {
+                var version = AssemblyHelper.GetDynamoVersion();
+
+                var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                return Path.Combine(Path.Combine(folder, Configurations.DynamoAsString, "Dynamo Core"),
+                                String.Format("{0}.{1}", version.Major, version.Minor));
+            }
+            
         }
 
         protected override async void OnContentRendered(EventArgs e)
