@@ -15,6 +15,7 @@ using Autodesk.DesignScript.Runtime;
 using Dynamo.Models;
 using Dynamo.UI.Controls;
 using Dynamo.Utilities;
+using Dynamo.Wpf.UI;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
@@ -137,11 +138,7 @@ namespace Dynamo.UI.Views
         /// <returns></returns>
         private static string GetUserDirectory()
         {
-            var version = AssemblyHelper.GetDynamoVersion();
-
-            var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(Path.Combine(folder, "Dynamo", "Dynamo Core"),
-                            String.Format("{0}.{1}", version.Major, version.Minor));
+            return HostStartup.GetUserDirectory();
         }
 
         private async void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)

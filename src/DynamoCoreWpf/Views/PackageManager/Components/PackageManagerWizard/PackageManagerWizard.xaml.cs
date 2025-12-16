@@ -1,29 +1,30 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using Dynamo.Utilities;
-using Dynamo.Wpf.Utilities;
-using DynamoUtilities;
-using Microsoft.Web.WebView2.Core;
-using Microsoft.Web.WebView2.Wpf;
 using Autodesk.DesignScript.Runtime;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
-using Newtonsoft.Json;
-using JsonSerializer = System.Text.Json.JsonSerializer;
+using Dynamo.Utilities;
+using Dynamo.Wpf.UI;
+using Dynamo.Wpf.Utilities;
+using DynamoUtilities;
 using Greg.Requests;
+using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.Wpf;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Dynamo.Models;
-using System.Globalization;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Dynamo.UI.Views
 {
@@ -1007,11 +1008,7 @@ namespace Dynamo.UI.Views
         /// <returns></returns>
         private static string GetUserDirectory()
         {
-            var version = AssemblyHelper.GetDynamoVersion();
-
-            var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(Path.Combine(folder, "Dynamo", "Dynamo Core"),
-                            String.Format("{0}.{1}", version.Major, version.Minor));
+            return HostStartup.GetUserDirectory();
         }
 
         /// <summary>
