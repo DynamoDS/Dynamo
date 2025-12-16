@@ -1,5 +1,5 @@
 ## Informacje szczegółowe
-Węzeł Python Script zwraca wynik dla danych wejściowych węzła przetworzonych za pomocą osadzonego skryptu IronPython. W poniższym przykładzie sześcian utworzony za pomocą węzła Cuboid.ByCorners zostaje umieszczony w tablicy i przekształcony przez skrypt w języku Python z pętlami obejmującymi współrzędne X i Y. Kliknięcie dwukrotne węzła spowoduje wyświetlenie edytora skryptu.
+Python Script will return the result of the node's inputs passed through an embedded python script. In the example below, a cube created from Cuboid.ByCorners is arrayed and translated by a Python script that loops through both X and Y. Double clicking the node will bring up an editor for the script.
 ___
 ## Plik przykładowy
 

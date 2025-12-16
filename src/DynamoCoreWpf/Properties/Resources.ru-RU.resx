@@ -3198,7 +3198,7 @@
     <value>Перейти к предшествующему</value>
   </data>
   <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
-    <value>Перейти к следующему</value>
+    <value>Перейти к последующему</value>
   </data>
   <data name="ContextMenuNodeConnections" xml:space="preserve">
     <value>Соединения узлов</value>

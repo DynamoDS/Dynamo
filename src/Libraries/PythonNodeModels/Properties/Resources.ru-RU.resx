@@ -222,7 +222,4 @@
   <data name="PythonScriptEditorEngineRequestToUpdatedBarText" xml:space="preserve">
     <value>Обновите компонент Python до PythonNet3</value>
   </data>
-  <data name="PythonScriptEditorMigrationAssistantButtonDisabledTooltip" xml:space="preserve">
-    <value>Механизм Python обновлен до версии {0}. Преобразование не должно потребоваться. Если в сценарии отображаются ошибки из старого синтаксиса IronPython2, переключитесь обратно на механизм IronPython2, чтобы повторно активировать преобразователь.</value>
-  </data>
 </root>

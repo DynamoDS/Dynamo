@@ -3198,7 +3198,7 @@ Można tym zarządzać w obszarze Preferencje -&gt; Zabezpieczenia.</value>
     <value>Przejdź w górę</value>
   </data>
   <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
-    <value>Nawiguj w dół</value>
+    <value>Przejdź w dół</value>
   </data>
   <data name="ContextMenuNodeConnections" xml:space="preserve">
     <value>Połączenia węzłów</value>

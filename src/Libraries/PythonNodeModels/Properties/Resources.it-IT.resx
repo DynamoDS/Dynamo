@@ -222,7 +222,4 @@
   <data name="PythonScriptEditorEngineRequestToUpdatedBarText" xml:space="preserve">
     <value>Aggiornare il motore Python a PythonNet3</value>
   </data>
-  <data name="PythonScriptEditorMigrationAssistantButtonDisabledTooltip" xml:space="preserve">
-    <value>Il motore Python è stato aggiornato a {0}. Non dovrebbe essere necessaria alcuna conversione. Se lo script mostra errori dovuti alla vecchia sintassi IronPython2, passare nuovamente al motore IronPython2 per riattivare il convertitore.</value>
-  </data>
 </root>
