@@ -3198,7 +3198,7 @@ Puede administrar esto en Preferencias - &gt; Seguridad.</value>
     <value>Desplazarse hacia arriba</value>
   </data>
   <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
-    <value>Navegar hacia abajo</value>
+    <value>Desplazarse hacia abajo</value>
   </data>
   <data name="ContextMenuNodeConnections" xml:space="preserve">
     <value>Conexiones de nodos</value>

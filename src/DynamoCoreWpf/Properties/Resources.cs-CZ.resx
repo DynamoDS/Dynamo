@@ -3197,7 +3197,7 @@ Tato umístění můžete spravovat v části Předvolby -&gt; Zabezpečení.</v
     <value>Přejít proti proudu</value>
   </data>
   <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
-    <value>Navigovat dolů</value>
+    <value>Přejít po proudu</value>
   </data>
   <data name="ContextMenuNodeConnections" xml:space="preserve">
     <value>Uzlová připojení</value>

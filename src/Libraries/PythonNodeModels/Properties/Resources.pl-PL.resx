@@ -222,7 +222,4 @@
   <data name="PythonScriptEditorEngineRequestToUpdatedBarText" xml:space="preserve">
     <value>Zaktualizuj aparat języka Python do wersji PythonNet3</value>
   </data>
-  <data name="PythonScriptEditorMigrationAssistantButtonDisabledTooltip" xml:space="preserve">
-    <value>Aparat języka Python został zaktualizowany do wersji {0}. Nie trzeba nic przekształcać. Jeśli w skrypcie występują błędy starej składni IronPython2, przełącz aparat z powrotem na tę wersję, aby ponownie włączyć konwerter.</value>
-  </data>
 </root>

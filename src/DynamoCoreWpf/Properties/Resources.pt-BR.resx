@@ -3198,7 +3198,7 @@ Tente colocar o nó **ByOrigin** realçado.</value>
     <value>Navegar para nível superior</value>
   </data>
   <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
-    <value>Navegar a jusante</value>
+    <value>Navegar para nível inferior</value>
   </data>
   <data name="ContextMenuNodeConnections" xml:space="preserve">
     <value>Conexões de nó</value>

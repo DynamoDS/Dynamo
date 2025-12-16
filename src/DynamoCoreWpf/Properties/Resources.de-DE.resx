@@ -3196,7 +3196,7 @@ Sie können dies unter Voreinstellungen -&gt; Sicherheit verwalten.</value>
     <value>In vorgelagerten navigieren</value>
   </data>
   <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
-    <value>Abwärts navigieren</value>
+    <value>In nachgelagerten navigieren</value>
   </data>
   <data name="ContextMenuNodeConnections" xml:space="preserve">
     <value>Blockverbindungen</value>

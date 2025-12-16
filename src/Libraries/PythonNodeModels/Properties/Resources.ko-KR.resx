@@ -222,7 +222,4 @@
   <data name="PythonScriptEditorEngineRequestToUpdatedBarText" xml:space="preserve">
     <value>Python 엔진을 PythonNet3으로 업데이트하십시오.</value>
   </data>
-  <data name="PythonScriptEditorMigrationAssistantButtonDisabledTooltip" xml:space="preserve">
-    <value>Python 엔진이 자동으로 {0}(으)로 업데이트되었습니다. 변환이 필요하지 않습니다. 스크립트가 이전 IronPython2 구문의 오류를 표시하는 경우 엔진을 IronPython2로 다시 전환하여 컨버터를 다시 사용하도록 설정하십시오.</value>
-  </data>
 </root>
