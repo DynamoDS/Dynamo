@@ -3197,7 +3197,7 @@ Tato umístění můžete spravovat v části Předvolby -&gt; Zabezpečení.</v
     <value>Přejít proti proudu</value>
   </data>
   <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
-    <value>Navigovat dolů</value>
+    <value>Přejít po proudu</value>
   </data>
   <data name="ContextMenuNodeConnections" xml:space="preserve">
     <value>Uzlová připojení</value>
@@ -3851,10 +3851,10 @@ Chcete-li vytvořit z tohoto souboru novou šablonu, uložte ho do jiné složky
     <value>Skrýt oznámení o změnách modulu Python</value>
   </data>
   <data name="PreferencesViewHidePythonEngineChangeNotificationsTooltip" xml:space="preserve">
-    <value>Funkce CPython již není podporována v aplikaci Dynamo 4.0 nebo vyšší a bude převedena na nový výchozí modul PythonNet3. Vypnutím přepínače skryjete všechna oznámení o změnách modulu.</value>
+    <value>Funkce CPython již není podporována v aplikaci Dynamo 4.0 nebo vyšší a bude převedena na nový výchozí modul PythonNet3. Vypnutím přepínače skryjete všechna oznámení ozměnách modulu.</value>
   </data>
   <data name="MessageBoxDontShowAgainLabel" xml:space="preserve">
-    <value>Toto oznámení již nezobrazovat</value>
+    <value>Tuto informaci již nezobrazovat</value>
   </data>
   <data name="CPython3EngineNotificationMessageBoxHeader" xml:space="preserve">
     <value>Změna jádra jazyka Python</value>
@@ -3867,10 +3867,10 @@ Otevření tohoto grafu v aplikaci Dynamo 3.3–3.6.x: Ze správce balíčků na
     <value>https://dynamobim.org/pythonnet3-a-new-dynamo-python-to-fix-everything/</value>
   </data>
   <data name="OnlineStatusTooltip" xml:space="preserve">
-    <value>Připojeno k internetu.</value>
+    <value>Connected to the internet.</value>
   </data>
   <data name="OfflineStatusTooltip" xml:space="preserve">
-    <value>Není připojeno k internetu.</value>
+    <value>Not connected to the internet.</value>
   </data>
   <data name="ToastHyperlinkPathText" xml:space="preserve">
     <value>sem</value>

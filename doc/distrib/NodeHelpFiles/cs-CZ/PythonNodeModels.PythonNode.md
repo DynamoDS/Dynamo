@@ -1,5 +1,5 @@
 ## Podrobnosti
-Uzel Python Script vrátí výsledek vstupů uzlu procházejících vloženým skriptem jazyka IronPython. V níže uvedeném příkladu se krychle vytvořená uzlem Cuboid.ByCorners umístí do pole a přesune se pomocí skriptu jazyka Python, který ve smyčce prochází jak hodnoty X, tak hodnoty Y. Dvojitým kliknutím na uzel spustíte aplikaci editoru pro skript.
+Python Script will return the result of the node's inputs passed through an embedded python script. In the example below, a cube created from Cuboid.ByCorners is arrayed and translated by a Python script that loops through both X and Y. Double clicking the node will bring up an editor for the script.
 ___
 ## Vzorový soubor
 
