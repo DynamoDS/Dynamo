@@ -4741,6 +4741,8 @@ static Dynamo.Wpf.Properties.Resources.DownloadWarningMessageBoxTitle.get -> str
 static Dynamo.Wpf.Properties.Resources.DuplicateFilesInPublishWarningMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.DuplicateFilesInPublishWarningTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoShowFileTrustWarning.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoSplashScreenFailed.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoSplashScreen.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoUpdateAvailableToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewCancelButtonTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewContextMenuClearLog.get -> string
