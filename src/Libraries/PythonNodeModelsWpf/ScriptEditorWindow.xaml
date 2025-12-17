@@ -301,9 +301,7 @@
                     </ComboBox>
                     <Button Style="{StaticResource IconButton}"
                             Name="MigrationAssistantButton"
-                            Click="OnMigrationAssistantClicked"
-                            ToolTipService.ShowOnDisabled="True"
-                            ToolTipService.IsEnabled="True">
+                            Click="OnMigrationAssistantClicked">
                         <Button.ToolTip>
                             <ToolTip Style="{StaticResource GenericToolTipLight}"/>
                         </Button.ToolTip>
