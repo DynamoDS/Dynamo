@@ -1,12 +1,14 @@
-using CoreNodeModels;
-using Dynamo.Tests;
-using Dynamo.Utilities;
-using Newtonsoft.Json.Linq;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CoreNodeModels;
+using Dynamo.PythonServices;
+using Dynamo.Tests;
+using Dynamo.Utilities;
+using Newtonsoft.Json.Linq;
+using NUnit.Framework;
+using PythonNodeModels;
 
 namespace DynamoCoreWpfTests
 {
@@ -59,6 +61,53 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(expectedValue, watch.CachedValue?.ToString());
         }
 
+        [Test]
+        public void OpeningSecondGraphWithSameWorkspaceGuidStillMigratesCPythonToPythonNet3()
+        {
+            // Ensure that the Python auto migration notifications are disabled for this test
+            Assert.IsNotNull(Model.PreferenceSettings, "Model.PreferenceSettings must be initialized before running this test.");
+            Model.PreferenceSettings.ShowPythonAutoMigrationNotifications = false;
+
+            Assert.IsTrue(
+               View.viewExtensionManager.ViewExtensions.Any(e => e != null && e.Name == "Python Migration"),
+               "Python Migration view extension is not loaded.");
+
+            var testDirectory = Path.GetFullPath(Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\python"));
+            var firstGraphPath = Path.Combine(testDirectory, "WithCPython_DuplicateGuid_1.dyn");
+            var secondGraphPath = Path.Combine(testDirectory, "WithCPython_DuplicateGuid_2.dyn");
+
+            // Assert that both test graphs contain CPython nodes before opening
+            AssertDyfContainsPythonNodesWithEngine(firstGraphPath, PythonEngineManager.CPython3EngineName);
+            AssertDyfContainsPythonNodesWithEngine(secondGraphPath, PythonEngineManager.CPython3EngineName);
+
+            Open(firstGraphPath);
+
+            var firstGraphGuid = Model.CurrentWorkspace.Guid;
+            var firstGraphFullName = Model.CurrentWorkspace.FileName;
+            var pyNode = Model.CurrentWorkspace.NodeFromWorkspace<PythonNode>("14a86cf8-1219-4c0c-b636-cf9b3896984a");
+
+            // Assert that the Python node has been migrated to PythonNet3
+            Assert.IsNotNull(pyNode);
+            Assert.AreEqual(pyNode.EngineName, PythonEngineManager.PythonNet3EngineName);
+
+            // Ensure the Unsaved Changes notification does not block opening the second graph 
+            Model.CurrentWorkspace.HasUnsavedChanges = false;
+
+            Open(secondGraphPath);
+
+            var secondGraphGuid = Model.CurrentWorkspace.Guid;
+            var secondGraphFullName = Model.CurrentWorkspace.FileName;
+            pyNode = Model.CurrentWorkspace.NodeFromWorkspace<PythonNode>("5b70c276-b7db-4164-9931-74971c57d32c");
+
+            // Assert that the Python node has been migrated to PythonNet3
+            Assert.IsNotNull(pyNode);
+            Assert.AreEqual(pyNode.EngineName, PythonEngineManager.PythonNet3EngineName);
+
+            // Assert that both graphs have the same Guid but have different files
+            Assert.AreEqual(firstGraphGuid, secondGraphGuid, "Test graphs do not share the same Workspace Guid as expected");
+            Assert.AreNotEqual(firstGraphFullName, secondGraphFullName, "Test graphs do not have different file paths as expected");
+        }
+
         /// <summary>
         /// Helper method to assert that a .dyf file contains at least one Python node of a given engine type.
         /// </summary>
@@ -81,4 +130,3 @@ namespace DynamoCoreWpfTests
         }
     }
 }
-

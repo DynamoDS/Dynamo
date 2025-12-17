@@ -27,7 +27,7 @@ namespace Dynamo.PythonMigration
         private const string EXTENSION_GUID = "1f8146d0-58b1-4b3c-82b7-34a3fab5ac5d";
         private bool hasCPython3Engine;
         private bool enginesSubscribed;
-        private Guid lastWorkspaceGuid = Guid.Empty;
+        private WorkspaceModel lastProcessedWorkspace;
         private PythonEngineUpgradeService upgradeService;
 
         internal ViewLoadedParams LoadedParams { get; set; }
@@ -287,9 +287,9 @@ namespace Dynamo.PythonMigration
                     // In test mode, do not toggle RunType or we’ll break auto-run expectations
                     MigrateCPythonNodesForWorkspace();
                 }
-                else if (lastWorkspaceGuid != hws.Guid)
+                else if (!ReferenceEquals(lastProcessedWorkspace, hws))
                 {
-                    lastWorkspaceGuid = hws.Guid;
+                    lastProcessedWorkspace = hws;
 
                     // Temporarily switch to Manual to avoid mutating during evaluation
                     var oldRunType = hws.RunSettings.RunType;
@@ -342,7 +342,7 @@ namespace Dynamo.PythonMigration
         {
             // Close the CPython toast notification when workspace is cleared/closed
             DynamoViewModel.ToastManager?.CloseRealTimeInfoWindow();
-            lastWorkspaceGuid = Guid.Empty;
+            lastProcessedWorkspace = null;
             CurrentWorkspace.ShowPythonAutoMigrationNotifications = false;
         }
 
