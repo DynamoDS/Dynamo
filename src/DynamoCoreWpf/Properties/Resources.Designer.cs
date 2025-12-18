@@ -8389,24 +8389,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hide Python Engine change notifications.
-        /// </summary>
-        public static string PreferencesViewHidePythonEngineChangeNotifications {
-            get {
-                return ResourceManager.GetString("PreferencesViewHidePythonEngineChangeNotifications", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to CPython is no longer supported in Dynamo 4.0 or above and will be converted to the new default engine PythonNet3. Disable the toggle to hide all notifications about engine changes..
-        /// </summary>
-        public static string PreferencesViewHidePythonEngineChangeNotificationsTooltip {
-            get {
-                return ResourceManager.GetString("PreferencesViewHidePythonEngineChangeNotificationsTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to When toggled on, file names of exported images include date and time of export..
         /// </summary>
         public static string PreferencesViewIncludeTimestampExportPathTooltip {
@@ -8565,6 +8547,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewShowPreviewBubbles {
             get {
                 return ResourceManager.GetString("PreferencesViewShowPreviewBubbles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Python Engine change notifications.
+        /// </summary>
+        public static string PreferencesViewShowPythonEngineChangeNotifications {
+            get {
+                return ResourceManager.GetString("PreferencesViewShowPythonEngineChangeNotifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CPython is no longer supported in Dynamo 4.0 or above and will be converted to the new default engine PythonNet3. Disable the toggle to hide all notifications about engine changes..
+        /// </summary>
+        public static string PreferencesViewShowPythonEngineChangeNotificationsTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesViewShowPythonEngineChangeNotificationsTooltip", resourceCulture);
             }
         }
         

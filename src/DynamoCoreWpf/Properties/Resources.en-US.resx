@@ -4213,10 +4213,10 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
     <value>Hide unconnected output ports by default</value>
   </data>
-  <data name="PreferencesViewHidePythonEngineChangeNotifications" xml:space="preserve">
-    <value>Hide Python Engine change notifications</value>
+  <data name="PreferencesViewShowPythonEngineChangeNotifications" xml:space="preserve">
+    <value>Show Python Engine change notifications</value>
   </data>
-  <data name="PreferencesViewHidePythonEngineChangeNotificationsTooltip" xml:space="preserve">
+  <data name="PreferencesViewShowPythonEngineChangeNotificationsTooltip" xml:space="preserve">
     <value>CPython is no longer supported in Dynamo 4.0 or above and will be converted to the new default engine PythonNet3. Disable the toggle to hide all notifications about engine changes.</value>
   </data>
   <data name="MessageBoxDontShowAgainLabel" xml:space="preserve">
