@@ -21,7 +21,7 @@ namespace Dynamo.Wpf.UI
         /// <param name="userDataFolder">The path to the user data folder. If <see langword="null"/>, an empty string is used.</param>
         public SplashScreenStartupContext(HostAnalyticsInfo ?hostInfo, string userDataFolder)
         {
-            HostInfo = hostInfo != null? hostInfo:null;
+            HostInfo = hostInfo;
             UserDataFolder = userDataFolder ?? string.Empty;
         }
 
