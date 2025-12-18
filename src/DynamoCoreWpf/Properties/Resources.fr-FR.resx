@@ -3849,7 +3849,7 @@ Pour transformer ce fichier en nouveau gabarit, enregistrez-le dans un autre dos
     <value>CPython n'est plus pris en charge dans Dynamo 4.0 ou versions ultérieures et sera converti au nouveau moteur par défaut PythonNet3. Désactivez le bouton pour masquer toutes les notifications concernant les changements de moteur.</value>
   </data>
   <data name="MessageBoxDontShowAgainLabel" xml:space="preserve">
-    <value>Ne plus afficher ceci</value>
+    <value>Ne plus afficher</value>
   </data>
   <data name="CPython3EngineNotificationMessageBoxHeader" xml:space="preserve">
     <value>Changement de moteur Python</value>
@@ -3862,10 +3862,10 @@ Pour ouvrir ce graphique dans Dynamo 3.3–3.6.x: installez le package PythonNet
     <value>https://dynamobim.org/pythonnet3-a-new-dynamo-python-to-fix-everything/</value>
   </data>
   <data name="OnlineStatusTooltip" xml:space="preserve">
-    <value>Connecté à Internet.</value>
+    <value>Connected to the internet.</value>
   </data>
   <data name="OfflineStatusTooltip" xml:space="preserve">
-    <value>Non connecté à Internet.</value>
+    <value>Not connected to the internet.</value>
   </data>
   <data name="ToastHyperlinkPathText" xml:space="preserve">
     <value>ici</value>

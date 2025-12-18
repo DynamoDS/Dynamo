@@ -3198,7 +3198,7 @@ You can manage this in Preferences -&gt; Security.</value>
     <value>Navigate Upstream</value>
   </data>
   <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
-    <value>Navigate Downtream</value>
+    <value>Navigate Downstream</value>
   </data>
   <data name="ContextMenuNodeConnections" xml:space="preserve">
     <value>Node Connections</value>

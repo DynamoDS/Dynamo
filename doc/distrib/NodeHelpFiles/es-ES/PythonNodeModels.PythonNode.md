@@ -1,5 +1,5 @@
 ## En detalle:
-Python Script devolverá el resultado de las entradas del nodo transferidas a través de una secuencia de comandos de IronPython incrustada. En el siguiente ejemplo, un cubo creado a partir de Cuboid.ByCorners se crea en una matriz y se traslada mediante una secuencia de comandos de Python con un bucle a través de X e Y. Al hacer doble clic en el nodo, se mostrará un editor para la secuencia de comandos.
+Python Script will return the result of the node's inputs passed through an embedded python script. In the example below, a cube created from Cuboid.ByCorners is arrayed and translated by a Python script that loops through both X and Y. Double clicking the node will bring up an editor for the script.
 ___
 ## Archivo de ejemplo
 
