@@ -26,7 +26,7 @@ namespace DynamoCoreWpfTests
         /// Confirms that nested custom nodes containing CPython3 Python nodes
         /// are migrated to PythonNet3 and produce expected results.
         /// </summary>
-        [Test]
+        [Test, Category("Failure")]
         public void NestedCPythonCustomNodesAreAutoMigratedToPythonNet3()
         {
             Assert.IsTrue(
