@@ -62,16 +62,14 @@ namespace Dynamo.Wpf.UI
             {
                 var version = Current.HostInfo.Value.HostVersion;
 
-                return Path.Combine(Current.UserDataFolder,
-                                String.Format("{0}.{1}", version.Major, version.Minor));
+                return Path.Combine(Current.UserDataFolder,$"{version.Major}.{version.Minor}");
             }
             else
             {
                 var version = AssemblyHelper.GetDynamoVersion();
 
                 var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                return Path.Combine(Path.Combine(folder, Configurations.DynamoAsString, "Dynamo Core"),
-                                String.Format("{0}.{1}", version.Major, version.Minor));
+                return Path.Combine(Path.Combine(folder, Configurations.DynamoAsString, "Dynamo Core"), $"{version.Major}.{version.Minor}");
             }
 
         }
