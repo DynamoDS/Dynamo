@@ -3198,7 +3198,7 @@
     <value>Перейти к предшествующему</value>
   </data>
   <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
-    <value>Перейти к следующему</value>
+    <value>Перейти к последующему</value>
   </data>
   <data name="ContextMenuNodeConnections" xml:space="preserve">
     <value>Соединения узлов</value>
@@ -3868,10 +3868,10 @@
     <value>https://dynamobim.org/pythonnet3-a-new-dynamo-python-to-fix-everything/</value>
   </data>
   <data name="OnlineStatusTooltip" xml:space="preserve">
-    <value>Выполнено подключение к интернету.</value>
+    <value>Connected to the internet.</value>
   </data>
   <data name="OfflineStatusTooltip" xml:space="preserve">
-    <value>Отсутствует подключение к интернету.</value>
+    <value>Not connected to the internet.</value>
   </data>
   <data name="ToastHyperlinkPathText" xml:space="preserve">
     <value>здесь</value>

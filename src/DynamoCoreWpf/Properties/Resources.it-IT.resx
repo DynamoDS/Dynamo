@@ -2279,7 +2279,7 @@ Disinstallare {1}? Riavviare {2} per completare la disinstallazione e provare a 
     <value>Reimposta PythonNet3</value>
   </data>
   <data name="ResetPythonNet3ButtonToolTip" xml:space="preserve">
-    <value>Reimposta l'ambiente PythonNet3 ricaricando i moduli.</value>
+    <value>Ripristina l'ambiente PythonNet3 ricaricando i moduli.</value>
   </data>
   <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
     <value>Annulla e mostra problemi</value>
@@ -3850,10 +3850,10 @@ Per aprire questo grafico in Dynamo 3.3-3.6.x: installare il pacchetto PythonNet
     <value>https://dynamobim.org/pythonnet3-a-new-dynamo-python-to-fix-everything/</value>
   </data>
   <data name="OnlineStatusTooltip" xml:space="preserve">
-    <value>Connessione ad Internet.</value>
+    <value>Connected to the internet.</value>
   </data>
   <data name="OfflineStatusTooltip" xml:space="preserve">
-    <value>Nessuna connessione ad Internet.</value>
+    <value>Not connected to the internet.</value>
   </data>
   <data name="ToastHyperlinkPathText" xml:space="preserve">
     <value>qui</value>

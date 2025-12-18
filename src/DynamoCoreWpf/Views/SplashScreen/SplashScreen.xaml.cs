@@ -13,6 +13,7 @@ using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
+using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.UI;
@@ -134,6 +135,20 @@ namespace Dynamo.UI.Views
         /// </summary>
         public void OnRequestStaticSplashScreen()
         {
+            if (viewModel == null)
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    DynamoMessageBox.Show(
+                        owner: this,
+                        messageBoxText: Wpf.Properties.Resources.DynamoSplashScreenFailed,
+                        caption: Wpf.Properties.Resources.DynamoSplashScreen,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning
+                        );
+                    this.Close();
+                });
+            }
             StaticSplashScreenReady?.Invoke();
         }
 

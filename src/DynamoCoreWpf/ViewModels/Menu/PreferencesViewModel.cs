@@ -1080,13 +1080,13 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Controls the IsChecked property in the "Hide CPython notifications" toggle button
         /// </summary>
-        public bool HidePythonAutoMigrationNotificationIsChecked
+        public bool ShowPythonAutoMigrationNotificationIsChecked
         {
-            get => !preferenceSettings.ShowPythonAutoMigrationNotifications;
+            get => preferenceSettings.ShowPythonAutoMigrationNotifications;
             set
             {
-                preferenceSettings.ShowPythonAutoMigrationNotifications = !value;
-                RaisePropertyChanged(nameof(HidePythonAutoMigrationNotificationIsChecked));
+                preferenceSettings.ShowPythonAutoMigrationNotifications = value;
+                RaisePropertyChanged(nameof(ShowPythonAutoMigrationNotificationIsChecked));
             }
         }
 
@@ -1900,8 +1900,8 @@ namespace Dynamo.ViewModels
                 case nameof(ShowWhitespaceIsChecked):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowWhitespaceInPythonEditor), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
-                case nameof(HidePythonAutoMigrationNotificationIsChecked):
-                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewHidePythonEngineChangeNotifications), System.Globalization.CultureInfo.InvariantCulture);
+                case nameof(ShowPythonAutoMigrationNotificationIsChecked):
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowPythonEngineChangeNotifications), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(NodeAutocompleteIsChecked):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewEnableNodeAutoComplete), System.Globalization.CultureInfo.InvariantCulture);
