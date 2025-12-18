@@ -1,5 +1,5 @@
 ## In profondità
-PythonNode restituirà il risultato degli input del nodo passati attraverso uno script IronPython incorporato. Nell'esempio seguente, viene creata la matrice di un cubo generato da Cuboid.ByCorners che è poi traslato da uno script Python in loop sia su X che Y. Facendo doppio clic sul nodo verrà visualizzato un editor per lo script.
+Python Script will return the result of the node's inputs passed through an embedded python script. In the example below, a cube created from Cuboid.ByCorners is arrayed and translated by a Python script that loops through both X and Y. Double clicking the node will bring up an editor for the script.
 ___
 ## File di esempio
 

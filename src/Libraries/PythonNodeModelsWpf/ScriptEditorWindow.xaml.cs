@@ -3,9 +3,11 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Xml;
 using Dynamo.Configuration;
@@ -50,6 +52,16 @@ namespace PythonNodeModelsWpf
         // Reasonable max and min font size values for zooming limits
         private const double FONT_MAX_SIZE = 60d;
         private const double FONT_MIN_SIZE = 5d;
+        // Win32 system command and hit-test constants used for resizing
+        private const int WM_SYSCOMMAND = 0x0112;
+        private const int SC_SIZE = 0xF000;
+        private const int HTBOTTOMRIGHT = 0x0008;
+
+        /// <summary>
+        /// Sends a Win32 message to forward a system resize command when the custom resize grip is clicked
+        /// </summary>
+        [DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
         private const double pythonZoomScalingSliderMaximum = 300d;
         private const double pythonZoomScalingSliderMinimum = 25d;
@@ -159,6 +171,15 @@ namespace PythonNodeModelsWpf
             editText.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(elem), HighlightingManager.Instance);
 
+            // Set migrator tooltip
+            var tooltip = MigrationAssistantButton.ToolTip as System.Windows.Controls.ToolTip;
+            if (tooltip != null)
+            {
+                tooltip.Content = string.Format(
+                PythonNodeModels.Properties.Resources.PythonScriptEditorMigrationAssistantButtonTooltip,
+                PythonEngineManager.PythonNet3EngineName);
+            }            
+
             // Add custom highlighting rules consistent with DesignScript
             CodeHighlightingRuleFactory.AddCommonHighlighingRules(editText, dynamoViewModel.EngineController);
 
@@ -230,6 +251,7 @@ namespace PythonNodeModelsWpf
                 editor.IsModified = !IsSaved;
 
                 dynamoView.DockWindowInSideBar(this, NodeModel, titleBar);
+                WindowResizeHandle.Visibility = Visibility.Collapsed;
 
                 Analytics.TrackEvent(
                                Actions.Dock,
@@ -322,18 +344,8 @@ namespace PythonNodeModelsWpf
         private void UpdateMigrationAssistantButtonEnabled()
         {
             var enable = CachedEngine == PythonEngineManager.IronPython2EngineName;
-
             MigrationAssistantButton.IsEnabled = enable;
-
-            var tooltip = MigrationAssistantButton.ToolTip as System.Windows.Controls.ToolTip;
-            var message = enable
-                ? String.Format(
-                    PythonNodeModels.Properties.Resources.PythonScriptEditorMigrationAssistantButtonTooltip,
-                    PythonEngineManager.PythonNet3EngineName)
-                : String.Format(
-                    PythonNodeModels.Properties.Resources.PythonScriptEditorMigrationAssistantButtonDisabledTooltip,
-                    PythonEngineManager.PythonNet3EngineName);
-            tooltip.Content = message;
+            System.Windows.Controls.ToolTipService.SetIsEnabled(MigrationAssistantButton, enable);
         }
 
         #region Text Zoom in Python Editor
@@ -677,11 +689,13 @@ namespace PythonNodeModelsWpf
             {
                 this.MaximizeButton.Visibility = Visibility.Collapsed;
                 this.NormalizeButton.Visibility = Visibility.Visible;
+                this.WindowResizeHandle.Visibility = Visibility.Collapsed;
             }
             else
             {
                 this.MaximizeButton.Visibility = Visibility.Visible;
                 this.NormalizeButton.Visibility = Visibility.Collapsed;
+                this.WindowResizeHandle.Visibility = Visibility.Visible;
             }
         }
 
@@ -797,6 +811,17 @@ namespace PythonNodeModelsWpf
                 IsEnterHit = false;
             }
         }
-        #endregion
+
+        // Handles clicks on the custom resize grip and forwards them as a Win32 bottom-right resize command
+        private void WindowResizeHandle_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (WindowState != WindowState.Normal)
+                return;
+
+            var helper = new WindowInteropHelper(this);
+            SendMessage(helper.Handle, WM_SYSCOMMAND, (IntPtr)(SC_SIZE + HTBOTTOMRIGHT), IntPtr.Zero);
+            e.Handled = true;
+        }
+        #endregion        
     }
 }
