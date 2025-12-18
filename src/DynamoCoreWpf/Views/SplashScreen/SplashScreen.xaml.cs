@@ -179,7 +179,7 @@ namespace Dynamo.UI.Views
         public SplashScreen(SplashScreenStartupContext context, bool enableSignInButton = true)
             :this(enableSignInButton)
         {
-            StartupContext = context; 
+            StartupContext = context;
         }
 
         protected override void OnClosing(CancelEventArgs e)
