@@ -57,7 +57,7 @@ namespace Dynamo.Wpf.UI
         /// may not exist and may need to be created by the caller.</returns>
         public static string GetUserDirectory()
         {
-            //we need to use userDataFolder and hostAnalyticsInfo just in SplashScreen due that PathManager/PathResolver are not created yet when SplashScreen is launched from a host
+            // we need to use userDataFolder and hostAnalyticsInfo just in SplashScreen because PathManager/PathResolver are not created yet when SplashScreen is launched from a host
             if (Current != null && !string.IsNullOrEmpty(Current.UserDataFolder) && Current.HostInfo != null)
             {
                 var version = Current.HostInfo.Value.HostVersion;
