@@ -10,11 +10,13 @@ using Autodesk.DesignScript.Runtime;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Core;
+using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.UI;
 using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
 using Greg.AuthProviders;
@@ -150,6 +152,8 @@ namespace Dynamo.UI.Views
             StaticSplashScreenReady?.Invoke();
         }
 
+        internal SplashScreenStartupContext StartupContext { get; }
+
         /// <summary>
         /// Stores the value that indicates if the SignIn Button will be enabled(default) or not
         /// </summary>
@@ -180,6 +184,17 @@ namespace Dynamo.UI.Views
             RequestSignOut = SignOut;
             this.enableSignInButton = enableSignInButton;
             currentCloseMode = CloseMode.ByOther;
+        }
+
+        /// <summary>
+        /// Overloaded Splash Screen Constructor to receive SplashScreenStartupContext information
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="enableSignInButton"></param>
+        public SplashScreen(SplashScreenStartupContext context, bool enableSignInButton = true)
+            :this(enableSignInButton)
+        {
+            StartupContext = context;
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -342,11 +357,8 @@ namespace Dynamo.UI.Views
         /// <returns></returns>
         private string GetUserDirectory()
         {
-            var version = AssemblyHelper.GetDynamoVersion();
-
-            var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(Path.Combine(folder, Configurations.DynamoAsString, "Dynamo Core"),
-                            String.Format("{0}.{1}", version.Major, version.Minor));
+            return HostStartup.GetUserDirectory();
+            
         }
 
         protected override async void OnContentRendered(EventArgs e)

@@ -1753,6 +1753,7 @@ Dynamo.UI.Views.SplashScreen.OnRequestDynamicSplashScreen() -> void
 Dynamo.UI.Views.SplashScreen.OnRequestStaticSplashScreen() -> void
 Dynamo.UI.Views.SplashScreen.RequestLaunchDynamo -> System.Action<bool>
 Dynamo.UI.Views.SplashScreen.SplashScreen(bool enableSignInButton = true) -> void
+Dynamo.UI.Views.SplashScreen.SplashScreen(Dynamo.Wpf.UI.SplashScreenStartupContext context, bool enableSignInButton = true) -> void
 Dynamo.UI.Views.SplashScreen.totalLoadingTime -> long
 Dynamo.Utilities.MouseClickManager
 Dynamo.Utilities.MouseClickManager.Click -> System.Windows.Input.MouseButtonEventHandler
@@ -3818,12 +3819,21 @@ Dynamo.Wpf.UI.GuidedTour.UpdateLibraryInteractionsEventHandler
 Dynamo.Wpf.UI.GuidedTour.UpdatePopupLocationEventHandler
 Dynamo.Wpf.UI.GuidedTour.Welcome
 Dynamo.Wpf.UI.GuidedTour.Welcome.Welcome(Dynamo.Wpf.UI.GuidedTour.HostControlInfo host, double width, double height) -> void
+Dynamo.Wpf.UI.HostStartup
+static Dynamo.Wpf.UI.HostStartup.Current.get -> Dynamo.Wpf.UI.SplashScreenStartupContext
+static Dynamo.Wpf.UI.HostStartup.TryInitialize(Dynamo.Wpf.UI.SplashScreenStartupContext context) -> bool
+static Dynamo.Wpf.UI.HostStartup.Reset() -> void
+static Dynamo.Wpf.UI.HostStartup.GetUserDirectory() -> string
 Dynamo.Wpf.UI.MouseBehaviour
 Dynamo.Wpf.UI.MouseBehaviour.MouseBehaviour() -> void
 Dynamo.Wpf.UI.MouseBehaviour.MouseX.get -> double
 Dynamo.Wpf.UI.MouseBehaviour.MouseX.set -> void
 Dynamo.Wpf.UI.MouseBehaviour.MouseY.get -> double
 Dynamo.Wpf.UI.MouseBehaviour.MouseY.set -> void
+Dynamo.Wpf.UI.SplashScreenStartupContext
+Dynamo.Wpf.UI.SplashScreenStartupContext.SplashScreenStartupContext(Dynamo.Models.HostAnalyticsInfo? hostInfo, string userDataFolder) -> void
+Dynamo.Wpf.UI.SplashScreenStartupContext.HostInfo.get -> Dynamo.Models.HostAnalyticsInfo?
+Dynamo.Wpf.UI.SplashScreenStartupContext.UserDataFolder.get -> string
 Dynamo.Wpf.UI.ToastManager
 Dynamo.Wpf.UI.ToastManager.CloseRealTimeInfoWindow() -> void
 Dynamo.Wpf.UI.ToastManager.CreateRealTimeInfoWindow(string content, bool stayOpen = false, string headerText = "", string hyperlinkText = "", System.Uri hyperlinkUri = null, System.Uri fileLinkUri = null) -> void
