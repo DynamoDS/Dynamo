@@ -1,5 +1,5 @@
 ## 詳細
-Python Script は、埋め込み IronPython スクリプトに渡されたノードの入力の結果を返します。次の例では、Cuboid.ByCorners から作成された立方体が、X 方向と Y 方向の両方でループする Python スクリプトによって配列および変換されています。ノードをダブルクリックすると、スクリプトのエディタが表示されます。
+Python Script will return the result of the node's inputs passed through an embedded python script. In the example below, a cube created from Cuboid.ByCorners is arrayed and translated by a Python script that loops through both X and Y. Double clicking the node will bring up an editor for the script.
 ___
 ## サンプル ファイル
 

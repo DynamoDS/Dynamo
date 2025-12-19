@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -3196,7 +3196,7 @@
     <value>向上浏览</value>
   </data>
   <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
-    <value>导航 Downstream</value>
+    <value>向下浏览</value>
   </data>
   <data name="ContextMenuNodeConnections" xml:space="preserve">
     <value>节点连接</value>
@@ -3867,6 +3867,12 @@
   </data>
   <data name="ToastHyperlinkPathText" xml:space="preserve">
     <value>此处</value>
+  </data>
+  <data name="DynamoSplashScreen" xml:space="preserve">
+    <value>Dynamo Splash Screen</value>
+  </data>
+  <data name="DynamoSplashScreenFailed" xml:space="preserve">
+    <value>Failed to load Dynamo SplashScreen, please re-launch Dynamo</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

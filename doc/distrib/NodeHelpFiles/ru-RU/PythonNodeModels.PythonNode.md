@@ -1,5 +1,5 @@
 ## Подробности
-PythonScript возвращает результат передачи входных элементов узла во встроенный сценарий IronPython. В примере ниже куб, созданный с помощью узла Cuboid.ByCorners, преобразуется в массив сценарием Python, который циклически проходит и через X, и через Y. Дважды щелкните узел, чтобы открыть редактор сценариев.
+Python Script will return the result of the node's inputs passed through an embedded python script. In the example below, a cube created from Cuboid.ByCorners is arrayed and translated by a Python script that loops through both X and Y. Double clicking the node will bring up an editor for the script.
 ___
 ## Файл примера
 
