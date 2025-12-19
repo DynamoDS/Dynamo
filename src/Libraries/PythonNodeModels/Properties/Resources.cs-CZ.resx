@@ -222,7 +222,4 @@
   <data name="PythonScriptEditorEngineRequestToUpdatedBarText" xml:space="preserve">
     <value>Aktualizujte modul jazyka Python na PythonNet3</value>
   </data>
-  <data name="PythonScriptEditorMigrationAssistantButtonDisabledTooltip" xml:space="preserve">
-    <value>Modul Python byl automaticky aktualizován na to {0}. Není nutná žádná konverze. Pokud skript zobrazuje chyby ze staré syntaxe IronPython2, přepněte modul zpět na IronPython2, abyste znovu povolili převodník.</value>
-  </data>
 </root>

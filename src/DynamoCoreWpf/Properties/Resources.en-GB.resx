@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -3869,6 +3869,12 @@ To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the
   </data>
   <data name="ToastHyperlinkPathText" xml:space="preserve">
     <value>here</value>
+  </data>
+  <data name="DynamoSplashScreen" xml:space="preserve">
+    <value>Dynamo Splash Screen</value>
+  </data>
+  <data name="DynamoSplashScreenFailed" xml:space="preserve">
+    <value>Failed to load Dynamo SplashScreen, please re-launch Dynamo</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

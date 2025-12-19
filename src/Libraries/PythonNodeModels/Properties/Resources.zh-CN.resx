@@ -222,7 +222,4 @@
   <data name="PythonScriptEditorEngineRequestToUpdatedBarText" xml:space="preserve">
     <value>请将 Python 引擎更新为 PythonNet3</value>
   </data>
-  <data name="PythonScriptEditorMigrationAssistantButtonDisabledTooltip" xml:space="preserve">
-    <value>Python 引擎已更新为 {0}。无需转换。如果脚本显示来自旧 IronPython2 语法的错误，则将引擎切换回 IronPython2 以重新启用转换器。</value>
-  </data>
 </root>
