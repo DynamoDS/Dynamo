@@ -482,669 +482,6 @@
         <member name="P:Autodesk.DesignScript.Geometry.Cuboid.Height">
             <summary>Vrací vzdálenost výšky. Poznámka: Tento příkaz vrátí vstupní kóty kvádru, NIKOLI skutečné kóty globálního prostoru. Jinými slovy, pokud vytvoříte kvádr, šířka (osa X), délka 10 a transformujete jej do systému CoordinateSystem se změnou měřítka 2x v ose X, šířka bude stále 10. ASM vám neumožňuje extrahovat vrcholy tělesa v libovolném předvídatelném pořadí, takže není možné určit kóty po transformaci.</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Curve</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByParameterLineOnSurface(Autodesk.DesignScript.Geometry.Surface,Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
-            <summary>Vytvořit křivku pomocí čáry povrchu v prostoru UV</summary>
-            <param name="baseSurface">Povrch k použití</param>
-            <param name="startParams">Počáteční parametr UV, ve kterém bude počátek křivky</param>
-            <param name="endParams">Koncový parametr UV, ve kterém bude konec křivky</param>
-            <returns>Křivka na parametrech začátku a konce povrchu</returns>
-            <search>
-            isocurve,curvebyuv,lines,uvs
-            </search>
-            <weights>
-            0.5,0.5,0.4,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByBlendBetweenCurves(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean,System.Boolean,System.Boolean)">
-            <summary>Vytvořit křivku, která přechází mezi dvěma křivkami</summary>
-            <param name="curve1">První křivka k přechodu</param>
-            <param name="curve2">Druhá křivka k přechodu</param>
-            <param name="endOrStart1">příznak, který určuje, který konec křivky1 se má použít k přechodu</param>
-            <param name="endOrStart2">příznak, který určuje, který konec křivky2 se má použít k přechodu</param>
-            <param name="isG2Continuous">příznak, který určuje, zda je typem výsledné křivky spojitost G1 nebo G2</param>
-            <returns>Výsledná křivka z přechodu dvou křivek</returns>
-            <search>
-            blend,make continuous,connect
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByIsoCurveOnSurface(Autodesk.DesignScript.Geometry.Surface,System.Int32,System.Double)">
-            <summary>Vytvořit křivku pomocí izočáry povrchu</summary>
-            <param name="baseSurface">Základní povrch</param>
-            <param name="direction">pokud je izočára 0 podél směru U, pokud je 1 podél směru V</param>
-            <param name="parameter">pevná pro hodnotu křivky jiného parametru povrchu</param>
-            <returns>Izokřivka na povrchu</returns>
-            <search>
-            isocurve,curvebydir,lines
-            </search>
-            <weights>
-            0.5,0.5,0.4
-            </weights>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.Length">
-            <summary>Vrací celkovou délku oblouku křivky</summary>
-            <search>
-            distance
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.IsPlanar">
-            <summary>Vrací hodnotu True, pokud je křivka rovinná, v jiném případě vrací False.</summary>
-            <search>
-            flat,liesinplane
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.IsClosed">
-            <summary>Vrací hodnotu True, pokud je křivka uzavřená, v jiném případě vrací False.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.StartPoint">
-            <summary>Získat počáteční bod podél křivky</summary>
-            <search>
-            begin,curvestart,startpt
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.EndPoint">
-            <summary>Získat koncový bod podél křivky</summary>
-            <search>
-            end,curveend,endpt
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.Normal">
-            <summary>Normála k rovině, ve které leží křivka. Platné pouze pro rovinné křivky.</summary>
-            <search>
-            perpendicular
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtParameter(System.Double)">
-            <summary>Získat bod na křivce v určeném parametru mezi objekty StartParameter() a EndParameter()</summary>
-            <param name="param">Parametr, ve kterém vyhodnocovat</param>
-            <returns>Bod</returns>
-            <search>
-            pointoncurve,curvepoint
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TangentAtParameter(System.Double)">
-            <summary>Získat vektorovou tečnu na křivku v určeném parametru mezi objekty StartParameter() a EndParameter()</summary>
-            <param name="param">Parametr, ve kterém vyhodnocovat</param>
-            <returns>Vektor rovnoběžný s křivkou v parametru</returns>
-            <search>
-            tangentoncurve,curvetan
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double)">
-            <summary>Získat vektorovou kolmici na křivku v určeném parametru mezi objekty StartParameter() a EndParameter()</summary>
-            <param name="param">Parametr, ve kterém vyhodnocovat</param>
-            <returns>Vektor kolmý ke křivce v parametru</returns>
-            <search>
-            normaloncurve,curvenorm
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double,System.Boolean)">
-            <summary>Získejte vektor kolmý ke křivce v zadaném parametru mezi objekty StartParameter() a EndParameter() Křivka musí být rovinná. Výsledná normála bude konzistentní napříč celým zakřivením křivky.</summary>
-            <param name="param">Parametr, ve kterém vyhodnocovat</param>
-            <param name="side">Pokud je možnost 'strana' nastavena na hodnotu false, normála bude ukazovat směrem doprava od křivky (posun od počátečního bodu ke koncovému bodu křivky). Pokud je možnost 'strana' nastavena na hodnotu true, normála bude ukazovat směrem doleva od křivky.</param>
-            <returns>Vektor kolmý ke křivce v parametru</returns>
-            <search>
-            normaloncurve,curvenorm
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtParameter(System.Double)">
-            <summary>Získá systém CoordinateSystem s počátkem v bodě v zadaném parametru. Osa XAsis je zarovnána s normálou křivky, osa YAxis je zarovnána s tečnou křivky v tomto bodě a osa ZAxis je zarovnána s vektorem UP nebo binormálou v tomto bodě.</summary>
-            <param name="param">Parametr, ve kterém vyhodnocovat</param>
-            <returns>Objekt CoordinateSystem v parametru křivky</returns>
-            <search>
-            coordoncurve,curvecoord,derivatives
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.HorizontalFrameAtParameter(System.Double)">
-            <summary>Získat systém CoordinateSystem s počátkem v bodě v zadaném parametru</summary>
-            <param name="param">Parametr, ve kterém vyhodnocovat</param>
-            <returns>Osově souměrný systém CoordinateSystem v bodu</returns>
-            <search>
-            frame,axisaligned,aa,coordcurve,framecurve,curveframe,coordoncurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtParameter(System.Double)">
-            <summary>Vrací rovinu, jejíž normála je zarovnána s tečnou křivky. Parametry jsou upraveny tak, aby bod 0 vždy byl počátečním bodem a bod 1 vždy byl koncovým bodem.</summary>
-            <param name="param"/>
-            <returns/>
-            <search>
-            planeoncurve,planecurve,tangentplane
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtSegmentLength(System.Double)">
-            <summary>Načíst bod v určité délce oblouku podél křivky</summary>
-            <param name="segmentLength">Vzdálenost podél křivky, ve které má být provedeno vyhodnocení</param>
-            <returns>Bod v dané délce oblouku</returns>
-            <search>
-            pointoncurve,curvepoint,pointalongcurve,distanceoncurve,distancepoint,distpoint,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtDistance(System.Double)">
-            <summary>Načíst bod v určité délce oblouku podél křivky</summary>
-            <param name="segmentLength">Vzdálenost podél křivky, ve které má být provedeno vyhodnocení</param>
-            <returns>Bod v dané délce oblouku</returns>
-            <search>
-            pointoncurve,curvepoint,pointalongcurve,distanceoncurve,distancepoint,distpoint,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualSegmentLength(System.Int32)">
-            <summary>Vrátí body rovnoměrně rozmístěné podél délky křivky na základě vstupního počtu dělení.</summary>
-            <param name="divisions">Počet dělení</param>
-            <returns>Body rovnoměrně rozmístěné podél délky křivky</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualChordLength(System.Int32)">
-            <summary>Vrátí body rozmístěné podél křivky ve stejné délce tětivy na základě vstupního počtu dělení.</summary>
-            <param name="divisions">Počet dělení</param>
-            <returns>Seznam bodů na křivce</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtChordLength(System.Double,System.Double,System.Boolean)">
-            <summary>Získejte bod v určité délce tětivy křivky z daného umístění parametru.</summary>
-            <param name="chordLength">Délka tětivy, ve které vyhodnocovat</param>
-            <param name="parameterLocation">Parametr na křivce pro počátek měření</param>
-            <param name="forward">hodnota true v případě posunu vpřed podél křivky</param>
-            <returns>Bod na křivce</returns>
-            <search>
-            measure from,measure to,parameteratdist
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtSegmentLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>Vrátí body rovnoměrně rozmístěné podél křivky v dané délce úseku od daného bodu.</summary>
-            <param name="point">Referenční bod, od kterého měřit</param>
-            <param name="segmentLength">Vzdálenost podél křivky, ve které má být provedeno vyhodnocení</param>
-            <returns>Seznam bodů na křivce včetně daného bodu a směru křivky.</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtChordLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>Vrátí body rovnoměrně rozmístěné na křivce v dané délce tětivy od daného bodu.</summary>
-            <param name="point">Referenční bod, od kterého měřit</param>
-            <param name="chordLength">Délka tětivy</param>
-            <returns>Seznam bodů na křivce včetně daného bodu a směru křivky.</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtSegmentLength(System.Double)">
-            <summary>Vrací prvek CoordinateSystem v zadané vzdálenosti od počátečního bodu křivky. Osa Y leží tečně ke křivce, osa X je zakřivení.</summary>
-            <param name="segmentLength">Vzdálenost podél křivky, ve které má být provedeno vyhodnocení</param>
-            <returns>Systém CoordinateSystem na křivce</returns>
-            <search>
-            coordoncurve,curvecoord,derivatives
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtDistance(System.Double)">
-            <summary>Vrací prvek CoordinateSystem v zadané vzdálenosti od počátečního bodu křivky. Osa Y leží tečně ke křivce, osa X je zakřivení.</summary>
-            <param name="segmentLength">Vzdálenost podél křivky, ve které má být provedeno vyhodnocení</param>
-            <returns>Systém CoordinateSystem na křivce</returns>
-            <search>
-            coordoncurve,curvecoord,derivatives
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtSegmentLength(System.Double)">
-            <summary>Vrací rovinu v zadané vzdálenosti podél křivky od počátečního bodu. Normála roviny je zarovnána s tečnou křivky.</summary>
-            <param name="segmentLength">Vzdálenost podél křivky, ve které má být provedeno vyhodnocení</param>
-            <returns>Rovina na křivce</returns>
-            <search>
-            planeoncurve,planecurve,tangentplane
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtDistance(System.Double)">
-            <summary>Vrací rovinu v zadané vzdálenosti podél křivky od počátečního bodu. Normála roviny je zarovnána s tečnou křivky.</summary>
-            <param name="segmentLength">Vzdálenost podél křivky, ve které má být provedeno vyhodnocení</param>
-            <returns>Rovina na křivce</returns>
-            <search>
-            planeoncurve,planecurve,tangentplane
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SegmentLengthAtParameter(System.Double)">
-            <summary>Získat délku segmentu měřenou od počátečního bodu křivky k danému parametru.</summary>
-            <param name="parameter">Hodnota mezi 0 a 1</param>
-            <returns>Délka segmentu</returns>
-            <search>
-            lengthatparameter,dist along,lengthatpoint,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DistanceAtParameter(System.Double)">
-            <summary>Získat délku segmentu měřenou od počátečního bodu křivky k danému parametru.</summary>
-            <param name="param">Hodnota mezi 0 a 1</param>
-            <returns>Délka segmentu</returns>
-            <search>
-            lengthatparameter,dist along,lengthatpoint,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtSegmentLength(System.Double)">
-            <summary>Získejte parametr v určité délce oblouku podél křivky.</summary>
-            <param name="segmentLength">Vzdálenost podél křivky, ve které má být provedeno vyhodnocení</param>
-            <returns>Parametr</returns>
-            <search>
-            parameteratlen,param along,paramatlen,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtDistance(System.Double)">
-            <summary>Získejte parametr v určité délce oblouku podél křivky.</summary>
-            <param name="segmentLength">Vzdálenost podél křivky, ve které má být provedeno vyhodnocení</param>
-            <returns>Parametr</returns>
-            <search>
-            parameteratlen,param along,paramatlen,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtChordLength(System.Double,System.Double,System.Boolean)">
-            <summary>Získejte parametr v určité délce tětivy podél křivky z daného umístění.</summary>
-            <param name="chordLength">Délka tětivy, ve které vyhodnocovat</param>
-            <param name="parameter">Parametr na křivce pro počátek měření</param>
-            <param name="forward">hodnota true v případě posunu vpřed podél křivky</param>
-            <returns>Parametr</returns>
-            <search>
-            measure from,measure to,parameteratdist
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.StartParameter">
-            <summary>Získat parametr v počátečním bodu křivky</summary>
-            <returns>Hodnota parametru</returns>
-            <search>
-            start domain,curvestart
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.EndParameter">
-            <summary>Získat parametr v koncovém bodu křivky</summary>
-            <returns>Hodnota parametru</returns>
-            <search>
-            end domain,curveend
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SegmentLengthBetweenParameters(System.Double,System.Double)">
-            <summary>Načíst délku segmentu mezi dvěma parametry na křivce</summary>
-            <param name="startParam">Hodnota mezi 0 a 1</param>
-            <param name="endParam">Hodnota mezi 0 a 1</param>
-            <returns>Délka segmentu</returns>
-            <search>
-            measure,distance,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.LengthBetweenParameters(System.Double,System.Double)">
-            <summary>Načíst délku oblouku mezi dvěma body parametru na křivce</summary>
-            <param name="startParam">Počátek domény</param>
-            <param name="endParam">Konec domény</param>
-            <returns>Délka oblouku mezi dvěma parametry</returns>
-            <search>
-            measure,distance,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
-            <summary>Získejte parametr v daném bodě podél křivky. Pokud bod není na křivce, objekt ParameterAtPoint bude stále vracet hodnotu, která bude odpovídat blízkému bodu na křivce, bod však obecně není nejbližším bodem.</summary>
-            <param name="point">Bod podél nebo poblíž křivky</param>
-            <returns>Parametr na křivce pro daný bod.</returns>
-            <search>
-            projectpoint,closestparam,curveparam
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Reverse">
-            <summary>Obrátit směr křivky</summary>
-            <returns>Nová křivka v opačném směru</returns>
-            <search>
-            flip
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Offset(System.Double)">
-            <summary>Odsaďte křivku o zadanou hodnotu. Křivka musí být rovinná.</summary>
-            <param name="distance">Kladná nebo záporná vzdálenost k odsazení</param>
-            <returns>nové odsazené křivky</returns>
-            <search>
-            thicken,lines
-            </search>
-            <weights>
-            0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.OffsetMany(System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Vytvořte jednu nebo více křivek odsazením rovinné křivky o zadanou vzdálenost v rovině definované normálou roviny. Pokud mezi odsazenými křivkami komponenty existují mezery, budou vyplněny prodloužením křivek odsazení. Vstupní argument „planeNormal“ má jako výchozí hodnotu normálu roviny obsahující křivku, je však možné určit explicitní normálu rovnoběžnou s původní normálou křivky za účelem lepšího řízení směru odsazení. Pokud je například požadován konzistentní směr odsazení u více křivek sdílejících stejnou rovinu, je možné pomocí hodnoty „planeNormal“ přepsat jednotlivé normály křivky a vynutit stejný směr odsazení u všech křivek. Obrácení normály obrází směr odsazení.</summary>
-            <param name="signedDistance">Kladná vzdálenost odsazení se použije ve směru vektorového součinu vektoru tečny křivky a normálového vektoru roviny, zatímco záporné odsazení se použije v opačném směru.</param>
-            <param name="planeNormal">Normála roviny křivky. Výchozí hodnotou je normála roviny vstupní křivky</param>
-            <returns>Jedna nebo více odsazených křivek</returns>
-            <search>
-            thicken,lines
-            </search>
-            <weights>
-            0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoPlane(Autodesk.DesignScript.Geometry.Plane)">
-            <summary>Vytvořit oblouk pomocí roztažení na rovinu</summary>
-            <param name="plane">Rovina, na které táhnout křivku</param>
-            <returns>Křivka v rovině</returns>
-            <search>
-            projectcurve,toplane
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoSurface(Autodesk.DesignScript.Geometry.Surface)">
-            <summary>Vytáhněte tuto křivku na vstupní povrch, ve směru normál povrchu.</summary>
-            <param name="surface"/>
-            <returns/>
-            <search>
-            projectcurve,tosurf
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideEqually(System.Int32)">
-            <summary>Rozdělí křivku na zadaný počet křivek stejné délky.</summary>
-            <param name="divisions">Počet dělení</param>
-            <returns>Pole křivek po rozdělení</returns>
-            <search>
-            chopcurve,segment,slices
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideByDistance(System.Int32)">
-            <summary>Rozdělí křivky na zadaný počet křivek se stejnými vzdálenostmi mezi počátkem a koncem každé křivky (stejné tětivy).</summary>
-            <param name="divisions">Počet dělení</param>
-            <returns>Pole křivek po rozdělení</returns>
-            <search>
-            divide by chordlength,chord,segment,chopcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideByLengthFromParameter(System.Double,System.Double)">
-            <summary>Rozdělí křivku na křivky dané délky změřené od daného umístění parametru.</summary>
-            <param name="length">Délka křivek po rozdělení</param>
-            <param name="parameter">Umístění parametru pro počátek měření</param>
-            <returns>Pole křivek po rozdělení</returns>
-            <search>
-            divide by chordlength,chord,segment,chopcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideByDistanceFromParameter(System.Double,System.Double)">
-            <summary>Rozdělí křivku na křivky dané délky tětivy změřené od daného umístění parametru.</summary>
-            <param name="distance">Délka tětivy každé křivky získané z rozdělení</param>
-            <param name="parameter">Umístění parametru pro počátek měření</param>
-            <returns>Pole křivek po rozdělení</returns>
-            <search>
-            divide by chordlength,chord,segment,chopcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByStartParameter(System.Double)">
-            <summary>Odebere počátek křivky v zadaném parametru.</summary>
-            <param name="startParameter">Parametr, ve kterém začít ořezávat</param>
-            <returns>Nová křivka s odebraným počátkem</returns>
-            <search>
-            rem,remstart,removestart,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimStart(System.Double)">
-            <summary>Odebere počátek křivky v zadaném parametru.</summary>
-            <param name="startParameter">Parametr, ve kterém začít ořezávat</param>
-            <returns>Nová křivka s odebraným počátkem</returns>
-            <search>
-            rem,remstart,removestart,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByEndParameter(System.Double)">
-            <summary>Odstraní konec křivky v zadaném parametru.</summary>
-            <param name="endParameter">Parametr, ve kterém začít ořezávat</param>
-            <returns>Nová křivka s odstraněným koncem</returns>
-            <search>
-            rem,remend,removeend,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimEnd(System.Double)">
-            <summary>Odstraní konec křivky v zadaném parametru.</summary>
-            <param name="endParameter">Parametr, ve kterém začít ořezávat</param>
-            <returns>Nová křivka s odstraněným koncem</returns>
-            <search>
-            rem,remend,removeend,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByParameter(System.Double,System.Double)">
-            <summary>Odebere začátek a konec křivky v zadaných parametrech.</summary>
-            <param name="startParameter">Parametr, ve kterém začít ořezávat</param>
-            <param name="endParameter">Parametr, ve kterém začít ořezávat</param>
-            <returns>Nová křivka s odstraněnými vnějšími segmenty</returns>
-            <search>
-            rem,remend,remstart,remove,trimcurve,removeends
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrim(System.Double,System.Double)">
-            <summary>Odebere začátek a konec křivky v zadaných parametrech.</summary>
-            <param name="startParameter">Parametr, ve kterém začít ořezávat</param>
-            <param name="endParameter">Parametr, ve kterém začít ořezávat</param>
-            <returns>Nová křivka s odstraněnými vnějšími segmenty</returns>
-            <search>
-            rem,remend,remstart,remove,trimcurve,removeends
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimInteriorByParameter(System.Double,System.Double)">
-            <summary>Odstraní vnitřní část křivky v zadaných parametrech.</summary>
-            <param name="startParameter">Parametr, ve kterém začít ořezávat</param>
-            <param name="endParameter">Parametr, ve kterém začít ořezávat</param>
-            <returns>Nová křivka s odstraněným vnitřním segmentem</returns>
-            <search>
-            rem,removemiddle,middle,remmiddle,cutout,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimInterior(System.Double,System.Double)">
-            <summary>Odstraní vnitřní část křivky v zadaných parametrech.</summary>
-            <param name="startParameter">Parametr, ve kterém začít ořezávat</param>
-            <param name="endParameter">Parametr, ve kterém začít ořezávat</param>
-            <returns>Nová křivka s odstraněným vnitřním segmentem</returns>
-            <search>
-            rem,removemiddle,middle,remmiddle,cutout,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(System.Double[])">
-            <summary>Odstraní několik segmentů křivky, přičemž vyřadí první, třetí, pátý... segment.</summary>
-            <param name="parameters">Seznam parametrů, ve kterých rozdělit křivku</param>
-            <returns>Pole křivek s vyřazeným prvním, třetím, pátým... segmentem</returns>
-            <search>
-            rem,removeparts,remparts,cutout,trimcurv,interior,odd
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimSegments(System.Double[])">
-            <summary>Odstraní několik segmentů křivky, přičemž vyřadí první, třetí, pátý... segment.</summary>
-            <param name="parameters">Seznam parametrů, ve kterých rozdělit křivku</param>
-            <returns>Pole křivek s vyřazeným prvním, třetím, pátým... segmentem</returns>
-            <search>
-            rem,removeparts,remparts,cutout,trimcurv,interior,odd
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(System.Double[],System.Boolean)">
-            <summary>Odebere sudé nebo liché úseky křivky rozdělené v daných parametrech podle toho, zda má příznak „discardEvenSegments“ hodnotu true nebo false.</summary>
-            <param name="parameters">Seznam parametrů, ve kterých rozdělit křivku</param>
-            <param name="discardEvenSegments">Přepínač k odstranění sudých segmentů</param>
-            <returns>Seznam křivek zbývajících po zrušení sudých nebo lichých úseků křivek.</returns>
-            <search>
-            rem,removeparts,remparts,cutout,trimcurv,interior,even
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByParameter(System.Double)">
-            <summary>Rozdělí křivku na dvě části v zadaném parametru.</summary>
-            <param name="parameter">Parametr, ve kterém provést rozdělení</param>
-            <returns>Dvě křivky zbývající po rozdělení</returns>
-            <search>
-            cutinto,divide,curve2curves,cut
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterSplit(System.Double)">
-            <summary>Rozdělí křivku na dvě části v zadaném parametru.</summary>
-            <param name="parameter">Parametr, ve kterém provést rozdělení</param>
-            <returns>Dvě křivky zbývající po rozdělení</returns>
-            <search>
-            cutinto,divide,curve2curves,cut
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByParameter(System.Double[])">
-            <summary>Rozdělit křivku na více částí v zadaných parametrech</summary>
-            <param name="parameters">Seznam parametrů, ve kterých rozdělit křivku</param>
-            <returns>Křivky vytvořené z rozdělení</returns>
-            <search>
-            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterSplit(System.Double[])">
-            <summary>Rozdělit křivku na více částí v zadaných parametrech</summary>
-            <param name="parameters">Seznam parametrů, ve kterých rozdělit křivku</param>
-            <returns>Křivky vytvořené z rozdělení</returns>
-            <search>
-            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>Rozdělí křivku na více částí v daných bodech.</summary>
-            <param name="points">Body na křivce, ve kterých rozdělit křivku</param>
-            <returns>Křivky vytvořené z rozdělení</returns>
-            <search>
-            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>Připojit sadu křivek ke konci objektu polycurve. Převrátí křivky kvůli zajištění konektivity.</summary>
-            <param name="curves">Jiné křivky nebo křivky k připojení k objektu PolyCurve</param>
-            <returns>Objekt PolyCurve vytvořený z křivek</returns>
-            <search>
-            convertcurves,curves2polycurve,joincurves,concat,joinall,joinmany
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Join(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>Spojte tuto křivku a vstupní křivku do nového objektu PolyCurve, přičemž přesně zachovejte původní křivky.</summary>
-            <param name="curve">Křivka, se kterou má být vytvořeno spojení</param>
-            <returns>Objekt PolyCurve tvořený dvěma křivkami</returns>
-            <search>
-            convertcurve,curve2polycurve,joincurve,concat
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(System.Double)">
-            <summary>Vysune křivku ve směru normálového vektoru.</summary>
-            <param name="distance">Vzdálenost vysunutí křivky</param>
-            <returns>Vysunutý povrch</returns>
-            <search>
-            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Vysune křivku v určeném směru o délku vstupního vektoru.</summary>
-            <param name="direction">Vektor, podél kterého se má provést vysunutí</param>
-            <returns>Vysunutý povrch</returns>
-            <search>
-            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Vysune křivku v určeném směru o zadanou vzdálenost.</summary>
-            <param name="direction">Vektor, podél kterého se má provést vysunutí</param>
-            <param name="distance">Vzdálenost vysunutí</param>
-            <returns>Vysunutý povrch</returns>
-            <search>
-            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(System.Double)">
-            <summary>Vysune křivku ve směru normály o zadanou vzdálenost. Křivka musí být uzavřená.</summary>
-            <param name="distance">Vzdálenost vysunutí</param>
-            <returns>Vysunuté těleso</returns>
-            <search>
-            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Vysune křivku v určeném směru o délku vstupního vektoru. Křivka musí být uzavřená.</summary>
-            <param name="direction">Vektor, podél kterého se má provést vysunutí</param>
-            <returns>Vysunuté těleso</returns>
-            <search>
-            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Vysune křivku v určeném směru o zadanou vzdálenost. Křivka musí být uzavřená.</summary>
-            <param name="direction">Vektor, podél kterého se má provést vysunutí</param>
-            <param name="distance">Vzdálenost vysunutí</param>
-            <returns>Vysunuté těleso</returns>
-            <search>
-            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extend(System.Double,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Prodlužte křivku o zadanou vzdálenost v určitém konci určeném vybraným bodem. Vybraná strana se prodlouží. Uzavřené křivky, jako jsou kružnice a elipsy, nelze prodloužit. Pokud je prodlužovaná křivka lineární, bude prodloužení také lineární.</summary>
-            <param name="distance">Vzdálenost prodloužení</param>
-            <param name="pickSide">Bod na konci, který má být prodloužen</param>
-            <returns>Prodloužená křivka</returns>
-            <search>
-            makelonger,stretch,extendside
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtendStart(System.Double)">
-            <summary>Prodlužte křivku o zadanou vzdálenost na jejím počátku. Uzavřené křivky, jako jsou kružnice a elipsy, nelze prodloužit. Pokud je prodlužovaná křivka lineární, bude prodloužení také lineární.</summary>
-            <param name="distance">Vzdálenost prodloužení</param>
-            <returns>Prodloužená křivka</returns>
-            <search>
-            makelonger,stretch
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtendEnd(System.Double)">
-            <summary>Prodlužte křivku o zadanou vzdálenost na jejím konci. Uzavřené křivky, jako jsou kružnice a elipsy, nelze prodloužit. Pokud je prodlužovaná křivka lineární, bude prodloužení také lineární.</summary>
-            <param name="distance">Vzdálenost prodloužení</param>
-            <returns>Prodloužená křivka</returns>
-            <search>
-            makelonger,stretch
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ApproximateWithArcAndLineSegments">
-            <summary>Aproximujte křivku pomocí kolekce oblouků a čar.</summary>
-            <returns>Pole oblouků a čar přibližujících se křivce</returns>
-            <search>
-            rationalizecurve,fitarcs,fitlines,arcs,lines
-            </search>
-            <weights>
-            0.5,0.5,0.5,0.4,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ToNurbsCurve">
-            <summary>Převede křivku na aproximaci objektu NurbsCurve.</summary>
-            <returns>Objekt NurbsCurve přibližující se křivce</returns>
-            <search>
-            curve2spline,convertcurve,tospline,lines
-            </search>
-            <weights>
-            0.5,0.5,0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Patch">
-            <summary>Opravit uzavřenou křivku</summary>
-            <returns>Povrch na vnitřní straně křivky</returns>
-            <search>
-            fill,profiletosurf,loop,loop2surf,edgesurf
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Project(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Promítne vstupní křivku podél daného směru promítnutí na určenou základní geometrii.</summary>
-            <param name="baseGeometry">Geometrie, na kterou se má promítat</param>
-            <param name="projectionDirection">Vektor</param>
-            <returns>Seznam geometrií promítnutých na základní geometrii</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSurface(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>Táhne tuto křivku podél křivky trajektorie, přičemž vytváří povrch.</summary>
-            <param name="path"/>
-            <returns/>
-            <search>
-            sweep1,curve2surf
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>Táhne tuto uzavřenou křivku podél křivky trajektorie, přičemž vytvoří těleso.</summary>
-            <param name="path"/>
-            <returns/>
-            <search>
-            sweep1,curve2solid,loop2solid,profile2solid,curvetosolid,looptosolid,profiletosolid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
-            <summary>Táhne tuto uzavřenou křivku podél křivky trajektorie, přičemž vytvoří těleso.</summary>
-            <param name="path">Trajektorie, která reprezentuje trajektorii tažení</param>
-            <param name="cutEndOff">Odřízněte konec tažení a nastavte jej kolmo k trajektorii.</param>
-            <returns>Těleso, které táhne tuto uzavřenou křivku podél křivky trajektorie</returns>
-            <search>
-            sweep1,curve2solid,loop2solid,profile2solid,curvetosolid,looptosolid,profiletosolid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Simplify(System.Double)">
-            <summary>Vrátí novou křivku aproximovanou se zadanou tolerancí.</summary>
-            <param name="tolerance"/>
-            <returns/>
-            <search>
-            fitcurve,reducecurve,simplecurve,approximate
-            </search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cylinder.ToString">
             <summary>Získat řetězcovou reprezentaci prvku Cylinder</summary>
         </member>
@@ -1264,18 +601,6 @@
             <param name="startAngle">Počáteční úhel oblouku podle měření od kladné osy X vstupní roviny</param>
             <param name="sweepAngle">Úhel tažení od počátečního úhlu ve stupních</param>
             <returns>Oblouk elipsy vytvořený pomocí poloměrů a úhlů roviny</returns>
-            <search>
-            ellipsearc,arcs
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.EllipseArc.ByPlaneRadiiStartAngleSweepAngle(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double,System.Double,System.Double)">
-            <summary>Vytvořit objekt EllipseArc v rovině pomocí daných poloměrů podél os X a Y a úhlů tažení</summary>
-            <param name="plane">Rovina, ve které je obsažen objekt EllipseArc</param>
-            <param name="xRadius">Poloměr objektu EllipseArc ve směru osy X roviny</param>
-            <param name="yRadius">Poloměr objektu EllipseArc ve směru osy Y roviny</param>
-            <param name="startAngle">Počáteční úhel oblouku podle měření od kladné osy X vstupní roviny</param>
-            <param name="sweepAngle">Úhel tažení od počátečního úhlu ve stupních</param>
-            <returns/>
             <search>
             ellipsearc,arcs
             </search>
@@ -1944,209 +1269,6 @@
             <param name="projectionDirection"/>
             <returns/>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku PolyCurve</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Vytvořte objekt PolyCurve spojením křivek. Obrátí křivku podle potřeby připojení. Vyberte preferovanou toleranci spojení od 1e-6 do 1e-3 jednotek.</summary>
-            <param name="curves">Křivky ke spojení do objektu PolyCurve</param>
-            <param name="joinTolerance">Tolerance, která určuje velikost povolené mezery mezi spojovanými křivkami</param>
-            <returns>Objekt Polycurve vytvořený podle spojených křivek</returns>
-            <search>
-            segments,joincurves
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Vytvořte objekt PolyCurve spojením křivek. Obrátí křivku podle potřeby připojení. Vyberte preferovanou toleranci spojení od 1e-6 do 1e-3 jednotek.</summary>
-            <param name="curves">Křivky ke spojení do objektu PolyCurve</param>
-            <param name="joinTolerance">Tolerance, která určuje velikost povolené mezery mezi spojovanými křivkami</param>
-            <param name="trimCurves">Nastavte na hodnotu True, pokud se vstupní křivky protínají nebo překrývají a je nutné oříznout jejich koncové úseky před vytvořením objektu PolyCurve. Ve výchozím nastavení je tato možnost nastavena na hodnotu False.</param>
-            <param name="trimLength">Pokud je hodnota trimLength větší než 0, pak koncové úseky delší než hodnota trimLength nebudou oříznuty.</param>
-            <returns>Objekt Polycurve vytvořený podle spojených křivek</returns>
-            <search>
-            segments,joincurves
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Vytvořte jeden nebo více objektů PolyCurve seskupením spojených křivek. Vyberte preferovanou toleranci spojení mezi 1e-6 a 1e-3 jednotkami.</summary>
-            <param name="curves">Křivky, které chcete seskupit dohromady, aby se vytvořil jeden nebo více objektů PolyCurve</param>
-            <param name="joinTolerance">Tolerance, která určuje velikost povolené mezery mezi spojovanými křivkami</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Vytvořte jeden nebo více objektů PolyCurve seskupením spojených křivek. Vyberte preferovanou toleranci spojení mezi 1e-6 a 1e-3 jednotkami.</summary>
-            <param name="curves">Křivky, které chcete seskupit dohromady, aby se vytvořil jeden nebo více objektů PolyCurve</param>
-            <param name="joinTolerance">Tolerance, která určuje velikost povolené mezery mezi spojovanými křivkami</param>
-            <param name="trimCurves">Nastavte na hodnotu True, pokud se vstupní křivky protínají nebo překrývají a je nutné oříznout jejich koncové úseky před vytvořením objektu PolyCurve. Ve výchozím nastavení je tato možnost nastavena na hodnotu False.</param>
-            <param name="trimLength">Pokud je hodnota trimLength větší než 0, pak koncové úseky delší než hodnota trimLength nebudou oříznuty.</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
-            <summary>Vytvořte objekt PolyCurve spojením bodů. Chcete-li objekt PolyCurve uzavřít, nastavte vstup 'connectLastToFirst' na hodnotu true.</summary>
-            <param name="points">Body, které mají vytvořit objekt PolyCurve</param>
-            <param name="connectLastToFirst">Hodnota True k propojení posledního bodu s prvním bodem, hodnota false k ponechání otevřeným.</param>
-            <returns>Objekt PolyCurve vytvořený pomocí bodů</returns>
-            <search>
-            segments,joincurves,lines
-            </search>
-            <weights>
-            0.5,0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Vytvořte objekt PolyCurve pomocí zesílení křivky.</summary>
-            <param name="curve">křivka k zesílení</param>
-            <param name="thickness">tloušťka</param>
-            <param name="nor">normála kolmá ke směru zesílení</param>
-            <returns/>
-            <search>
-            offset
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurveNormal(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Vytvořte objekt PolyCurve zesílením křivky podél roviny určené vstupní normálou.</summary>
-            <param name="curve">křivka k zesílení</param>
-            <param name="thickness">tloušťka</param>
-            <param name="normal">normála kolmá ke směru zesílení. Pokud normála není zadána (má parametr null), bude ve výchozím nastavení použita normála křivky.</param>
-            <returns/>
-            <search>
-            offset,thicken
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.Points">
-            <summary>Vrací počáteční bod první komponenty a koncové body každé křivky komponenty. U uzavřeného objektu PolyCurve je koncový bod vynechán, protože počáteční a koncový bod jsou stejné.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.NumberOfCurves">
-            <summary>Počet křivek objektu PolyCurve</summary>
-            <search>
-            curvecount,subcurvecount,numbersubcurves
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Curves">
-            <summary>Vrací křivky objektu PolyCurve.</summary>
-            <returns/>
-            <search>
-            subcurves,polycurvesplit
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CurveAtIndex(System.Int32,System.Boolean)">
-            <summary>Vrací křivku objektu PolyCurve pomocí indexu.</summary>
-            <param name="index">Délka pro umístění bodu</param>
-            <param name="endOrStart">Hodnota True znamená počítání od konce objektu polycurve, hodnota false označuje počítání od začátku objektu polycurve</param>
-            <returns>Křivka na indexu</returns>
-            <search>
-            subcurveatindex,getsubcurve,getcurvebyindex
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.BasePlane">
-            <summary>Vrací rovinu rovinných objektů PolyCurve.</summary>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithEllipse(System.Double,System.Double,System.Double,System.Double,System.Boolean)">
-            <summary>Prodlouží objekt PolyCurve pomocí tečné elipsy.</summary>
-            <param name="length">Délka elipsy prodloužení</param>
-            <param name="radius1">Parametr elipsy</param>
-            <param name="radius2">Parametr elipsy</param>
-            <param name="endEllipseParameter">Parametr elipsy</param>
-            <param name="endOrStart">prodloužení konce nebo počátku objektu PolyCurve</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithArc(System.Double,System.Double,System.Boolean)">
-            <summary>Prodlouží objekt PolyCurve pomocí tečného oblouku.</summary>
-            <param name="length">Délka vynášecího oblouku</param>
-            <param name="radius">Poloměr oblouku</param>
-            <param name="endOrStart">prodloužení konce nebo počátku objektu PolyCurve</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLine">
-            <summary>Zavřít objekt PolyCurve podle čáry spojující počáteční a koncové body</summary>
-            <returns/>
-            <search>
-            lines
-            </search>
-            <weights>
-            0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLineAndTangentArcs(System.Double,System.Double)">
-            <summary>Zavřít objekt PolyCurve podle řetězce tečen oblouku, čáry a oblouku</summary>
-            <param name="radiusAtStart">Poloměr oblouku na počátku objektu PolyCurve</param>
-            <param name="radiusAtEnd">Poloměr oblouku na konci objektu PolyCurve</param>
-            <returns/>
-            <search>
-            lines
-            </search>
-            <weights>
-            0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Offset(System.Double,System.Boolean)">
-            <summary>Objekt PolyCurve odsazení v jeho rovině</summary>
-            <param name="signedDistance">Velikost odsazení</param>
-            <param name="extendCircular">Přepínač k nastavení rohů na kruhové</param>
-            <returns>Odsazený objekt PolyCurve</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.OffsetMany(System.Double,System.Boolean,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Vytvořte jeden nebo více objektů PolyCurve odsazením rovinného objektu PolyCurve o zadanou vzdálenost v rovině definované normálou roviny. Vstupní argument „planeNormal“ má jako výchozí hodnotu normálu roviny obsahující křivku, je však možné určit explicitní normálu rovnoběžnou s původní normálou křivky za účelem lepšího řízení směru odsazení. Pokud je například požadován konzistentní směr odsazení u více křivek sdílejících stejnou rovinu, je možné pomocí hodnoty „planeNormal“ přepsat jednotlivé normály křivky a vynutit stejný směr odsazení u všech křivek. Obrácení normály obrází směr odsazení.</summary>
-            <param name="signedDistance">Kladná vzdálenost odsazení se použije ve směru vektorového součinu vektoru tečny objektu PolyCurve a normálového vektoru roviny, zatímco záporné odsazení se použije v opačném směru.</param>
-            <param name="extendCircular">Pokud mezi odsazenými křivkami komponenty existují mezery, mohou být vyplněny buď kruhovými oblouky (hodnota true), které vytvoří vyhlazené rohy, nebo prodloužením (hodnota false) křivek odsazení.</param>
-            <param name="planeNormal">Normála roviny křivky. Výchozí hodnotou je normála roviny vstupní křivky</param>
-            <returns>Jeden nebo více odsazených objektů PolyCurve</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Fillet(System.Double,System.Boolean)">
-            <summary>Zaoblete rohy rovinného objektu PolyCurve.</summary>
-            <param name="radius">Poloměr zaoblení</param>
-            <param name="clockwise_corners">Označuje, které rohy by měly být zaobleny, pokud má možnost hodnotu true, pak budou zaobleny rohy, kde je tečna na začátku druhé komponenty po směru hodinových ručiček vzhledem k tečně na konci první komponenty (vzhledem k normále křivky). Pokud má možnost hodnotu false, budou zaobleny rohy proti směru hodinových ručiček.</param>
-            <returns>Zaoblený objekt PolyCurve</returns>
-            <search>
-            round,smooth,radius
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Heal(System.Double)">
-            <summary>Opraví objekt PolyCurve, který protíná sám sebe, vrácením nového objektu, který neprotíná sám sebe, pokud je délka překrývajícího úseku menší nebo rovna hodnotě trimLength.</summary>
-            <param name="trimLength">Pokud je hodnota trimLength větší než 0, pak koncové úseky delší než hodnota trimLength nebudou oříznuty.</param>
-            <returns>Objekt PolyCurve, který neprotíná sebe sama a s ničím se nepřekrývá</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Polygon</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>Sestavte křivku mnohoúhelníku propojením bodů.</summary>
-            <param name="points"/>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.RegularPolygon(Autodesk.DesignScript.Geometry.Circle,System.Int32)">
-            <summary>Sestaví křivku vepsaného mnohoúhelníku v kružnici.</summary>
-            <param name="circle"/>
-            <param name="numberSides"/>
-            <returns/>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Polygon.Points">
-            <summary>Vrací všechny počáteční/koncové body segmentu.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Polygon.PlaneDeviation">
-            <summary>Vrací maximální odchylku od průměrné roviny mnohoúhelníku.</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.Corners">
-            <summary>Vrátí rohy mnohoúhelníku.</summary>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.Center">
-            <summary>Vrací průměrný bod rohů mnohoúhelníku.</summary>
-            <returns/>
-            <search>
-            centroid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.SelfIntersections">
-            <summary>Vrací vlastní průsečíky mezi stranami mnohoúhelníku.</summary>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ContainmentTest(Autodesk.DesignScript.Geometry.Point)">
-            <summary>Vrátí hodnotu, která určuje, zda je v polygonu obsažen vstupní bod. Pokud není polygon rovinný, bod se promítne na přizpůsobenou rovinu a obsažení se vypočítá pomocí promítání polygonu na přizpůsobenou rovinu. Pokud polygon protíná sebe sama, tato možnost vrátí stav chyby.</summary>
-            <param name="point"/>
-            <returns/>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ToString">
             <summary>Získat řetězcovou reprezentaci prvku PolySurface</summary>
         </member>
@@ -2196,15 +1318,6 @@
             <returns/>
             <search>
             sweep,rail,guide,sweep1
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
-            <summary>Vytvořte objekt Polysurface tažením křivek podél trajektorie.</summary>
-            <param name="rail">Křivka, podél které se má provést tažení</param>
-            <param name="profile">Profil tažení</param>
-            <returns/>
-            <search>
-            sweep,rail,guide,sweep1,sweepprofile,profile
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.Surfaces">
@@ -2354,15 +1467,6 @@
             Brep,brep
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Solid.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},Autodesk.DesignScript.Geometry.Curve)">
-            <summary>Vytvořte těleso pomocí šablonování mezi uzavřenými křivkami vstupního příčného řezu, a to s pomocí vodicí křivky. Vodicí křivka musí protínat všechny křivky průřezů.</summary>
-            <param name="crossSections"/>
-            <param name="guideCurve"/>
-            <returns/>
-            <search>
-            Brep,brep,guide,loft
-            </search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
             <summary>Vytvořte těleso pomocí šablonování mezi uzavřenými křivkami vstupního příčného řezu, a to s pomocí vodicí křivky. Vodicí křivka musí protínat všechny křivky průřezů.</summary>
             <param name="crossSections"/>
@@ -2449,14 +1553,6 @@
             <returns/>
             <search>
             addition,merge,combine
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Solid.UnionAll(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Solid})">
-            <summary>Sjednocení seznamu těles s tímto tělesem</summary>
-            <param name="solids"/>
-            <returns/>
-            <search>
-            addition,merge,combine,unionmany,union multi
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.Difference(Autodesk.DesignScript.Geometry.Solid)">
@@ -2552,341 +1648,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Sphere.Radius">
             <summary>Vraťte poloměr koule.</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Surface</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByUnion(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>Sjednocení kolekce povrchů do jednoho povrchu. Tato metoda může vrátit objekt PolySurface v případě, že výsledné sjednocení je nerozložené nebo se skládá z více ploch.</summary>
-            <param name="surfaces">Kolekce povrchů.</param>
-            <returns>Sjednocení povrchů</returns>
-            <search>
-            merge,join,boolean,addition
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>Vytvořte povrch pomocí šablonování mezi křivkami vstupního příčného řezu.</summary>
-            <param name="crossSections">Křivky, kterými se má šablonovat</param>
-            <returns>Povrch vytvořený šablonováním</returns>
-            <search>
-            loft
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRuledLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Line})">
-            <summary>Vytvořte povrch šablonováním mezi čarami vstupního příčného řezu. To je mírně rychlejší a vytváří méně hladký výsledek než operace Surface.ByLoft.</summary>
-            <param name="crossSections"/>
-            <returns/>
-            <search>
-            ruledsurface,lines
-            </search>
-            <weights>
-            0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},Autodesk.DesignScript.Geometry.Curve)">
-            <summary>Šablonujte povrch prostřednictvím průřezů s určenou vodicí křivkou (neboli trajektorií). Vodicí křivka musí protínat všechny křivky průřezů.</summary>
-            <param name="crossSections"/>
-            <param name="guideCurve"/>
-            <returns/>
-            <search>
-            loftbyrail
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>Šablonujte povrch prostřednictvím průřezů s určenými vodicími křivkami (neboli trajektoriemi). Vodicí křivka musí protínat všechny křivky průřezů.</summary>
-            <param name="crossSections">Křivky, kterými se má šablonovat</param>
-            <param name="guideCurves">Křivky, kterými bude šablonování vedeno</param>
-            <returns>Povrch vytvořený šablonováním</returns>
-            <search>
-            loftbyrails,loft rails,guides
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
-            <summary>Vytvořte povrch tažením křivky průřezu podél trajektorie.</summary>
-            <param name="profile">Křivka k tažení</param>
-            <param name="path">Křivka trajektorie použitá k tažení podél</param>
-            <returns>Povrch vytvořený tažením profilu podél trajektorie</returns>
-            <search>
-            sweep,rail,guide,sweep1
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
-            <summary>Vytvořte povrch tažením křivky průřezu podél trajektorie.</summary>
-            <param name="profile">Křivka k tažení</param>
-            <param name="path">Křivka trajektorie použitá k tažení</param>
-            <param name="cutEndOff">Odřízněte konec tažení a nastavte jej kolmo k trajektorii.</param>
-            <returns>Povrch vytvořený tažením profilu podél trajektorie</returns>
-            <search>
-            sweep,rail,guide,sweep1
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPerimeterPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>Vytvořte povrch mnohoúhelníku spojující vstupní body v uzavřeném polygonu a opravující jej.</summary>
-            <param name="points">Seznam bodů obvodu</param>
-            <returns>Povrch vytvořený z bodů obvodu</returns>
-            <search>
-            patch,surfacebypolygon
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep2Rails(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
-            <summary>Táhnout křivku příčného řezu podél trajektorie vedené dvěma kolejemi</summary>
-            <param name="path">Vstup k tažení podél trajektorie</param>
-            <param name="guideRail">Trajektorie, podle které se řídí orientace tažení</param>
-            <param name="profile">Křivka profilu, která se má táhnout podél trajektorie.</param>
-            <returns>Povrch vytvořený tažením dvou tyčí</returns>
-            <search>
-            sweep2,guides
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double)">
-            <summary>Vytvořte povrch tažením křivky profilu kolem paprsku osy vytvořeného pomocí bodu počátku ve směru vektoru osy, počínaje objektem start_angle ve stupních a pokračujíce tažením objektu sweep_angle ve stupních.</summary>
-            <param name="profile">Křivka profilu k rotaci</param>
-            <param name="axisOrigin">Počátek osy rotace</param>
-            <param name="axisDirection">Směr osy rotace</param>
-            <param name="startAngle">Počáteční úhel ve stupních</param>
-            <param name="sweepAngle">Úhel tažení ve stupních</param>
-            <returns>Povrch vytvořený rotací profilu</returns>
-            <search>
-            lathe
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPatch(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>Vytvořte povrch vyplněním vnitřní části uzavřené hranice definované vstupními křivkami.</summary>
-            <param name="closedCurve">Uzavřená křivka použitá jako hranice povrchu</param>
-            <returns>Povrch vytvořený záplatou</returns>
-            <search>
-            edgesrf,edgesurface,patch,fill
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.Area">
-            <summary>Vrací celkovou plochu povrchu.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.Perimeter">
-            <summary>Vrací součet délek všech hraničních hran povrchu.</summary>
-            <search>
-            circumference
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.ClosedInU">
-            <summary>Vrací hodnotu True, pokud je povrch uzavřený ve směru U, jinak vrací hodnotu false.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.ClosedInV">
-            <summary>Vrací hodnotu True, pokud je povrch uzavřený ve směru V, jinak vrací hodnotu false.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.Closed">
-            <summary>Vrací hodnotu True, pokud je povrch uzavřený ve směru U nebo V, nebo vrací hodnotu false, pokud není uzavřen ani v jednom.</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.SubtractFrom(Autodesk.DesignScript.Geometry.Solid)">
-            <summary>Odečtěte vstupní nástroje z tohoto povrchu.</summary>
-            <param name="trimmingEntity"/>
-            <returns/>
-            <search>
-            difference,trim,removefrom,cut
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Difference(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>Logický rozdíl tohoto povrchu a sjednocení vstupních povrchů. Tato metoda může vrátit objekt PolySurface v případě, že výsledný Booleovský objekt je nerozložený nebo se skládá z více ploch.</summary>
-            <param name="others">Další povrchy k odečtení</param>
-            <returns>Výsledný booleovský povrch nebo objekt polySurface</returns>
-            <search>
-            subtract,differencemany,diffall,diff multi
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.UVParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
-            <summary>Vraťte pár parametrů UV na vstupním bodu. Toto je opak k bodu v parametru.</summary>
-            <param name="point"/>
-            <returns/>
-            <search>
-            evaluateatpoint,surfaceatpoint,uvatpoint,uvs
-            </search>
-            <weights>
-            0.5,0.5,0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve})">
-            <summary>Ořízne povrch pomocí kolekce jednoho nebo více uzavřených objektů PolyCurve. Jedna ze smyček musí být hraniční smyčka vstupního povrchu. Navíc je nutné přidat jednu nebo více vnitřních smyček pro díry.</summary>
-            <param name="loops"/>
-            <returns/>
-            <search>
-            trim multiple,removeloops,cutloops
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve},System.Double)">
-            <summary>Ořízne povrch pomocí kolekce jednoho nebo více uzavřených objektů PolyCurve, které musí všechny ležet na povrchu v rámci zadané tolerance. Pokud je třeba jednu nebo více děr oříznout od vstupního povrchu, musí být pro každou díru určena jedna vnější smyčka pro hranici povrchu a jedna vnitřní smyčka. Pokud je třeba oříznout oblast mezi hranicí povrchu a dírami, je nutné určit pouze smyčku pro každou díru. U periodického povrchu bez vnější smyčky, například kulový povrch, je možné ovládat oříznutou oblast obrácením směru křivky smyčky.</summary>
-            <param name="loops">Jeden nebo více uzavřených objektů PolyCurve, které mohou být na vstupu v libovolném pořadí. Tyto smyčky by se neměly vzájemně protínat.</param>
-            <param name="tolerance">Tolerance použitá při rozhodování, zda jsou konce křivky totožné a zda jsou křivka a povrch totožné. Zadaná tolerance nemůže být menší než libovolná tolerance použitá při tvorbě vstupních objektů PolyCurve. Výchozí hodnota 0.0 znamená, že se použije největší tolerance z tolerancí použitých při tvorbě vstupních objektů PolyCurve.</param>
-            <returns>Povrch oříznutý uzavřenými smyčkami.</returns>
-            <search>
-            trim multiple,removeloops,cutloops
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.NormalAtPoint(Autodesk.DesignScript.Geometry.Point)">
-            <summary>Vraťte normálu povrchu ve vstupním bodu na povrchu.</summary>
-            <param name="point">Bod, ve kterém se vyhodnotí normála povrchu</param>
-            <returns>Normála v bodu</returns>
-            <search>
-            perpendicular
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface">
-            <summary>Zobrazí se reprezentace NURBS povrchu. Tato metoda může v určitých případech aproximovat povrch.</summary>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface(System.Boolean)">
-            <summary>Zobrazí se reprezentace NURBS povrchu. Tato metoda může v určitých případech aproximovat povrch.</summary>
-            <param name="limitSurface">Určuje, zda má být povrch před převodem obnoven do původního rozsahu parametrů. Příkladem toho, kdy je rozsah parametrů povrchu omezen, je operace oříznutí.</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ApproximateWithTolerance(System.Double)">
-            <summary>Zobrazí se reprezentace NURBS povrchu s určenou tolerancí. Tato metoda může v určitých případech aproximovat povrch.</summary>
-            <param name="tolerance">Zadaná tolerance</param>
-            <returns>Reprezentace povrchu pomocí nurbs povrchu</returns>
-            <search>
-            tonurbs
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double)">
-            <summary>Zesilte plochu na těleso tím, že ji vysunete ve směru normály povrchu na obou stranách povrchu.</summary>
-            <param name="thickness">Množství k zesílení</param>
-            <returns>Zesílený povrch jako těleso</returns>
-            <search>
-            offset,tosolid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double,System.Boolean)">
-            <summary>Zesilte plochu na těleso tím, že ji vysunete ve směru normál povrchu. Pokud má parametr both_sides hodnotu true, povrch se zesílí na obou stranách.</summary>
-            <param name="thickness">Množství k zesílení</param>
-            <param name="both_sides">Vrací hodnotu true pro zesílení na obou stranách, false pro zesílení na jedné straně</param>
-            <returns>Zesílený povrch jako těleso</returns>
-            <search>
-            offset,bothsides,tosolid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Offset(System.Double)">
-            <summary>Odsaďte povrch ve směru normály povrchu podle zadané vzdálenosti.</summary>
-            <param name="distance">Velikost odsazení</param>
-            <returns>Odsazený povrch</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.CurvatureAtParameter(System.Double,System.Double)">
-            <summary>Vrácený souřadnicový systému využívá osy xAxis, yAxis a zAxis a pomocí nich reprezentuje uDir, vDir a normálu. Délka os xAxis, yAxis představuje zakřivení.</summary>
-            <param name="u">Komponenta U parametru</param>
-            <param name="v">Komponenta V parametru</param>
-            <returns>Souřadnicový systém založený na normále, směru U a směru V na pozici UV na povrchu</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.CoordinateSystemAtParameter(System.Double,System.Double)">
-            <summary>Vraťte objekt CoordinateSystem zarovnaný s hlavními směry křivosti.</summary>
-            <param name="u">Komponenta U parametru</param>
-            <param name="v">Komponenta V parametru</param>
-            <returns>Souřadnicový systém zarovnaný se směry hlavního zakřivení</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.TangentAtUParameter(System.Double,System.Double)">
-            <summary>Vraťte tečný vektor U v zadaných parametrech U a V.</summary>
-            <param name="u">Komponenta U parametru</param>
-            <param name="v">Komponenta V parametru</param>
-            <returns>Vektor tečny U</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.TangentAtVParameter(System.Double,System.Double)">
-            <summary>Vraťte tečný vektor V v zadaných parametrech U a V.</summary>
-            <param name="u">Komponenta U parametru</param>
-            <param name="v">Komponenta V parametru</param>
-            <returns>Vektor tečny V</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.NormalAtParameter(System.Double,System.Double)">
-            <summary>Vraťte normálový vektor v zadaných parametrech U a V.</summary>
-            <param name="u">Komponenta U parametru</param>
-            <param name="v">Komponenta V parametru</param>
-            <returns>Normála v parametru</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.DerivativesAtParameter(System.Double,System.Double)">
-            <summary>Vraťte odvozeniny při vstupních souřadnicích U a V.</summary>
-            <param name="u">Komponenta U parametru</param>
-            <param name="v">Komponenta V parametru</param>
-            <returns>Derivace U a V povrchu</returns>
-            <search>
-            tangent,normal
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.GaussianCurvatureAtParameter(System.Double,System.Double)">
-            <summary>Vrací Gaussovo zakřivení v parametrech U a V.</summary>
-            <param name="u"/>
-            <param name="v"/>
-            <returns/>
-            <search>
-            developable
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.PrincipalCurvaturesAtParameter(System.Double,System.Double)">
-            <summary>Vrací hlavní zakřivení v parametrech U a V.</summary>
-            <param name="u"/>
-            <param name="v"/>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.PrincipalDirectionsAtParameter(System.Double,System.Double)">
-            <summary>Vrací hlavní směrové vektory v parametrech U a V.</summary>
-            <param name="u">Komponenta U parametru</param>
-            <param name="v">Komponenta V parametru</param>
-            <returns>Vektory tečen U a V</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.PointAtParameter(System.Double,System.Double)">
-            <summary>Vraťte bod v zadaných parametrech U a V.</summary>
-            <param name="u"/>
-            <param name="v"/>
-            <returns/>
-            <search>
-            surfacepoint
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.PerimeterCurves">
-            <summary>Vraťte všechny hraniční křivky povrchu.</summary>
-            <returns/>
-            <search>
-            edges
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.GetIsoline(System.Int32,System.Double)">
-            <summary>Vytvořte křivku čáry parametru na zadaném povrchu. Vytvořte křivku, která představuje čáru parametru U nebo V na povrchu. Čára parametru vede ve směru vzrůstajícího parametru U nebo V v konstantním protějším parametru U nebo V. Výsledná křivka bude odpovídat parametrizaci povrchu a jeho rozsah bude ohraničen rozsahem parametru povrchu. Vrácený typ křivky závisí na typu povrchu.</summary>
-            <param name="isoDirection">Pokud směr == 0, vytvoří čáru parametru U, pokud směr == 1, vytvoří čáru parametru V.</param>
-            <param name="parameter"/>
-            <returns/>
-            <search>
-            lines
-            </search>
-            <weights>
-            0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.FlipNormalDirection">
-            <summary>Vrací nový povrch s převrácenými normálami. Tento povrch ponechá beze změny.</summary>
-            <returns>Povrch, který je stejný jako vstupní povrch, ale má obrácené normály</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Join(Autodesk.DesignScript.Geometry.Surface)">
-            <summary>Kombinuje tento povrch a vstupní povrch do objektu PolySurface.</summary>
-            <param name="otherSurface"/>
-            <returns/>
-            <search>
-            topolysurface
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>Kombinuje tento povrch a vstupní povrch do objektu PolySurface.</summary>
-            <param name="otherSurfaces"/>
-            <returns/>
-            <search>
-            join multiple,joinmany,joinall,topolysurface
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Promítne vstupní geometrii na tento povrch ve směru vstupního vektoru. !!Tato metoda promítání aktuálně podporuje pouze body nebo křivky!!</summary>
-            <param name="geometryToProject"/>
-            <param name="projectionDirection"/>
-            <returns/>
-            <search>
-            projecttosurface,projectonto
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Repair">
-            <summary>Pokusí se opravit povrch.</summary>
-            <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Topology.ToString">
             <summary>Získat řetězcovou reprezentaci prvku Topology</summary>
@@ -3534,20 +2295,6 @@
             <param name="inSmoothMode">Zobrazit povrch T-Spline v kvádrové nebo hladké vizualizaci</param>
             <search>tspline,line,build</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Double,System.Collections.Generic.IEnumerable{System.Int32},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Boolean)">
-            <summary>Vytvoří potrubní povrch T-spline pomocí sítě křivek nebo čar.
-            V každém průsečíku křivek je vytvořen vyhlazený spoj.
-            Některé parametry přebírají jednu hodnotu nebo seznam hodnot – dvě hodnoty na křivku.</summary>
-            <param name="curves">Seznam křivek, kterých mají být vytvořena potrubí</param>
-            <param name="defaultRadius">Výchozí poloměr pro vytvořené potrubí</param>
-            <param name="snappingTolerance">Tolerance použitá ke zjištění průsečíků křivek</param>
-            <param name="segmentsCount">Počet segmentů v každém potrubí. Je povolena jedna hodnota nebo seznam, a to dvakrát delší než počet křivek.</param>
-            <param name="endRotations">Hodnoty koncových otočení každého potrubí (ve stupních). Je povolena jedna hodnota nebo seznam, a to dvakrát delší než počet křivek.</param>
-            <param name="endRadii">Hodnoty koncových poloměrů každého potrubí. Je povolena jedna hodnota nebo seznam, a to dvakrát delší než počet křivek.</param>
-            <param name="endPercentage">Hodnoty (0 až 1) od konce každé vstupní křivky po začátek potrubní sítě. Je povolena jedna hodnota nebo seznam, a to dvakrát delší než počet křivek.</param>
-            <param name="inSmoothMode">Zobrazit povrch T-Spline v kvádrové nebo hladké vizualizaci</param>
-            <search>tspline,create,pipe,curve</search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Double,System.Collections.Generic.IEnumerable{System.Int32},System.Boolean,System.Boolean,System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Boolean)">
             <summary>Vytvoří potrubní povrch T-spline pomocí sítě křivek nebo čar.
             V každém průsečíku křivek se vytvoří vyhlazený spoj.
@@ -3688,23 +2435,6 @@
             <returns>Povrch TSpline s vrcholy se zrušenými svary</returns>
             <search>tspline,unweld,vertex</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Double,System.Boolean)">
-            <summary>Umožňuje vytvořit porovnání povrchu T-spline s uzavřenou smyčkou křivek</summary>
-            <param name="tsEdges">Uzavřená smyčka hrany T-Spline, se kterou má být vytvořena shoda</param>
-            <param name="curves">Uzavřená smyčka křivky, se kterou má být vytvořena shoda</param>
-            <param name="continuity">Kontinuita geometrie, se kterou má být proveden pokus o shodu: G0, G1, G2</param>
-            <param name="useArclength">Zda použít zarovnání objektu arcLength při vytváření shody</param>
-            <param name="useRefinement">Pokud je hodnota true, ke křivce T-spline budou přidány další řídicí body, aby se shodovala s povrchy v dané toleranci.</param>
-            <param name="numRefinementSteps">Maximální počet kroků upřesnění. Ignorováno, pokud je možnost useRefinement nastavena na hodnotu false.</param>
-            <param name="refinementTolerance">Tolerance, které je třeba dosáhnout. Ignorováno, pokud je možnost useRefinement nastavena na hodnotu false.</param>
-            <param name="usePropagation">Zda použít rozšíření při vytváření shody</param>
-            <param name="widthOfPropagation">Určuje, jak velká část povrchu je ovlivněna shodou. Ignorováno, pokud je možnost usePropagation nastavena na hodnotu false.</param>
-            <param name="tangentScale">Měřítko tečny. Ignorováno, pokud není kontinuita nastavena na hodnotu G1.</param>
-            <param name="curvParamWeight">Váha parametru zakřivení. Ignorováno, pokud není kontinuita nastavena na hodnotu G2.</param>
-            <param name="flipSourceTargetAlignment">Zda obrátit směr zarovnání</param>
-            <returns>Povrch T-Spline umístěný mezi danými hraničními hranami křivky T-Spline a smyčkou křivky</returns>
-            <search>tspline,match,curve</search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Boolean)">
             <summary>Umožňuje vytvořit porovnání povrchu T-spline s uzavřenou smyčkou křivek</summary>
             <param name="tsEdges">Uzavřená smyčka hrany T-Spline, se kterou má být vytvořena shoda</param>
@@ -3720,24 +2450,6 @@
             <param name="flipSourceTargetAlignment">Zda obrátit směr zarovnání</param>
             <returns>Povrch T-Spline umístěný mezi danými hraničními hranami křivky T-Spline a smyčkou křivky</returns>
             <search>tspline,match,curve</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Double,System.Boolean)">
-            <summary>Vytvoří porovnání povrchu T-spline s uzavřenou smyčkou hran BRep. Nejprve
-            je smyčka hran převedena na smyčku křivek a poté je provedeno porovnání.</summary>
-            <param name="tsEdges">Uzavřená smyčka hrany T-Spline, se kterou má být vytvořena shoda</param>
-            <param name="brepEdges">Uzavřená smyčka hrany BRep, se kterou má být vytvořena shoda</param>
-            <param name="continuity">Kontinuita geometrie, se kterou má být proveden pokus o shodu: G0, G1, G2</param>
-            <param name="useArclength">Zda použít zarovnání objektu arcLength při vytváření shody</param>
-            <param name="useRefinement">Pokud je hodnota true, ke křivce T-spline budou přidány další řídicí body, aby se shodovala s povrchy v dané toleranci.</param>
-            <param name="numRefinementSteps">Maximální počet kroků upřesnění. Ignorováno, pokud je možnost useRefinement nastavena na hodnotu false.</param>
-            <param name="refinementTolerance">Tolerance, které je třeba dosáhnout. Ignorováno, pokud je možnost useRefinement nastavena na hodnotu false.</param>
-            <param name="usePropagation">Zda použít rozšíření při vytváření shody</param>
-            <param name="widthOfPropagation">Určuje, jak velká část povrchu je ovlivněna shodou. Ignorováno, pokud je možnost usePropagation nastavena na hodnotu false.</param>
-            <param name="tangentScale">Měřítko tečny. Ignorováno, pokud není kontinuita nastavena na hodnotu G1.</param>
-            <param name="curvParamWeight">Váha parametru zakřivení. Ignorováno, pokud není kontinuita nastavena na hodnotu G2.</param>
-            <param name="flipSourceTargetAlignment">Zda obrátit směr zarovnání</param>
-            <returns>Povrch T-Spline umístěný mezi danými hraničními hranami křivky T-Spline a smyčkou hrany BRep</returns>
-            <search>tspline,match,brep</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Boolean)">
             <summary>Vytvoří porovnání povrchu T-spline s uzavřenou smyčkou hran BRep. Nejprve
@@ -4192,14 +2904,6 @@
             <summary>Umožňuje získat pro tento typ hodnotu hash.</summary>
             <returns>Jedinečná hodnota hash pro tento objekt</returns>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry(Autodesk.DesignScript.Geometry.Geometry)">
-            <summary>Vytvořte osově souměrný objekt BoundingBox kolem vstupní geometrie.</summary>
-            <param name="geom"/>
-            <returns/>
-            <search>
-            bounding,bound
-            </search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
             <summary>Vytvořte osově souměrný objekt BoundingBox kolem vstupních geometrií.</summary>
             <param name="geom">Geometrie určující hraniční obdélník</param>
@@ -4532,6 +3236,512 @@
             <summary>Převeďte souřadnicový systém na objekt JSON naformátovaný pomocí schématu autodesk.math:matrix44d-1.0.0.</summary>
             <returns>Výsledný řetězec JSON</returns>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ToString">
+            <summary>Získat řetězcovou reprezentaci prvku Curve</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByParameterLineOnSurface(Autodesk.DesignScript.Geometry.Surface,Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
+            <summary>Vytvořit křivku pomocí čáry povrchu v prostoru UV</summary>
+            <param name="baseSurface">Povrch k použití</param>
+            <param name="startParams">Počáteční parametr UV, ve kterém bude počátek křivky</param>
+            <param name="endParams">Koncový parametr UV, ve kterém bude konec křivky</param>
+            <returns>Křivka na parametrech začátku a konce povrchu</returns>
+            <search>
+            isocurve,curvebyuv,lines,uvs
+            </search>
+            <weights>
+            0.5,0.5,0.4,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByBlendBetweenCurves(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>Vytvořit křivku, která přechází mezi dvěma křivkami</summary>
+            <param name="curve1">První křivka k přechodu</param>
+            <param name="curve2">Druhá křivka k přechodu</param>
+            <param name="endOrStart1">příznak, který určuje, který konec křivky1 se má použít k přechodu</param>
+            <param name="endOrStart2">příznak, který určuje, který konec křivky2 se má použít k přechodu</param>
+            <param name="isG2Continuous">příznak, který určuje, zda je typem výsledné křivky spojitost G1 nebo G2</param>
+            <returns>Výsledná křivka z přechodu dvou křivek</returns>
+            <search>
+            blend,make continuous,connect
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByIsoCurveOnSurface(Autodesk.DesignScript.Geometry.Surface,System.Int32,System.Double)">
+            <summary>Vytvořit křivku pomocí izočáry povrchu</summary>
+            <param name="baseSurface">Základní povrch</param>
+            <param name="direction">pokud je izočára 0 podél směru U, pokud je 1 podél směru V</param>
+            <param name="parameter">pevná pro hodnotu křivky jiného parametru povrchu</param>
+            <returns>Izokřivka na povrchu</returns>
+            <search>
+            isocurve,curvebydir,lines
+            </search>
+            <weights>
+            0.5,0.5,0.4
+            </weights>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.Length">
+            <summary>Vrací celkovou délku oblouku křivky</summary>
+            <search>
+            distance
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.IsPlanar">
+            <summary>Vrací hodnotu True, pokud je křivka rovinná, v jiném případě vrací False.</summary>
+            <search>
+            flat,liesinplane
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.IsClosed">
+            <summary>Vrací hodnotu True, pokud je křivka uzavřená, v jiném případě vrací False.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.StartPoint">
+            <summary>Získat počáteční bod podél křivky</summary>
+            <search>
+            begin,curvestart,startpt
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.EndPoint">
+            <summary>Získat koncový bod podél křivky</summary>
+            <search>
+            end,curveend,endpt
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.Normal">
+            <summary>Normála k rovině, ve které leží křivka. Platné pouze pro rovinné křivky.</summary>
+            <search>
+            perpendicular
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtParameter(System.Double)">
+            <summary>Získat bod na křivce v určeném parametru mezi objekty StartParameter() a EndParameter()</summary>
+            <param name="param">Parametr, ve kterém vyhodnocovat</param>
+            <returns>Bod</returns>
+            <search>
+            pointoncurve,curvepoint
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TangentAtParameter(System.Double)">
+            <summary>Získat vektorovou tečnu na křivku v určeném parametru mezi objekty StartParameter() a EndParameter()</summary>
+            <param name="param">Parametr, ve kterém vyhodnocovat</param>
+            <returns>Vektor rovnoběžný s křivkou v parametru</returns>
+            <search>
+            tangentoncurve,curvetan
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double)">
+            <summary>Získat vektorovou kolmici na křivku v určeném parametru mezi objekty StartParameter() a EndParameter()</summary>
+            <param name="param">Parametr, ve kterém vyhodnocovat</param>
+            <returns>Vektor kolmý ke křivce v parametru</returns>
+            <search>
+            normaloncurve,curvenorm
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double,System.Boolean)">
+            <summary>Získejte vektor kolmý ke křivce v zadaném parametru mezi objekty StartParameter() a EndParameter() Křivka musí být rovinná. Výsledná normála bude konzistentní napříč celým zakřivením křivky.</summary>
+            <param name="param">Parametr, ve kterém vyhodnocovat</param>
+            <param name="side">Pokud je možnost 'strana' nastavena na hodnotu false, normála bude ukazovat směrem doprava od křivky (posun od počátečního bodu ke koncovému bodu křivky). Pokud je možnost 'strana' nastavena na hodnotu true, normála bude ukazovat směrem doleva od křivky.</param>
+            <returns>Vektor kolmý ke křivce v parametru</returns>
+            <search>
+            normaloncurve,curvenorm
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtParameter(System.Double)">
+            <summary>Získá systém CoordinateSystem s počátkem v bodě v zadaném parametru. Osa XAsis je zarovnána s normálou křivky, osa YAxis je zarovnána s tečnou křivky v tomto bodě a osa ZAxis je zarovnána s vektorem UP nebo binormálou v tomto bodě.</summary>
+            <param name="param">Parametr, ve kterém vyhodnocovat</param>
+            <returns>Objekt CoordinateSystem v parametru křivky</returns>
+            <search>
+            coordoncurve,curvecoord,derivatives
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.HorizontalFrameAtParameter(System.Double)">
+            <summary>Získat systém CoordinateSystem s počátkem v bodě v zadaném parametru</summary>
+            <param name="param">Parametr, ve kterém vyhodnocovat</param>
+            <returns>Osově souměrný systém CoordinateSystem v bodu</returns>
+            <search>
+            frame,axisaligned,aa,coordcurve,framecurve,curveframe,coordoncurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtParameter(System.Double)">
+            <summary>Vrací rovinu, jejíž normála je zarovnána s tečnou křivky. Parametry jsou upraveny tak, aby bod 0 vždy byl počátečním bodem a bod 1 vždy byl koncovým bodem.</summary>
+            <param name="param"/>
+            <returns/>
+            <search>
+            planeoncurve,planecurve,tangentplane
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtSegmentLength(System.Double)">
+            <summary>Načíst bod v určité délce oblouku podél křivky</summary>
+            <param name="segmentLength">Vzdálenost podél křivky, ve které má být provedeno vyhodnocení</param>
+            <returns>Bod v dané délce oblouku</returns>
+            <search>
+            pointoncurve,curvepoint,pointalongcurve,distanceoncurve,distancepoint,distpoint,arclength
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualSegmentLength(System.Int32)">
+            <summary>Vrátí body rovnoměrně rozmístěné podél délky křivky na základě vstupního počtu dělení.</summary>
+            <param name="divisions">Počet dělení</param>
+            <returns>Body rovnoměrně rozmístěné podél délky křivky</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualChordLength(System.Int32)">
+            <summary>Vrátí body rozmístěné podél křivky ve stejné délce tětivy na základě vstupního počtu dělení.</summary>
+            <param name="divisions">Počet dělení</param>
+            <returns>Seznam bodů na křivce</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtChordLength(System.Double,System.Double,System.Boolean)">
+            <summary>Získejte bod v určité délce tětivy křivky z daného umístění parametru.</summary>
+            <param name="chordLength">Délka tětivy, ve které vyhodnocovat</param>
+            <param name="parameterLocation">Parametr na křivce pro počátek měření</param>
+            <param name="forward">hodnota true v případě posunu vpřed podél křivky</param>
+            <returns>Bod na křivce</returns>
+            <search>
+            measure from,measure to,parameteratdist
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtSegmentLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
+            <summary>Vrátí body rovnoměrně rozmístěné podél křivky v dané délce úseku od daného bodu.</summary>
+            <param name="point">Referenční bod, od kterého měřit</param>
+            <param name="segmentLength">Vzdálenost podél křivky, ve které má být provedeno vyhodnocení</param>
+            <returns>Seznam bodů na křivce včetně daného bodu a směru křivky.</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtChordLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
+            <summary>Vrátí body rovnoměrně rozmístěné na křivce v dané délce tětivy od daného bodu.</summary>
+            <param name="point">Referenční bod, od kterého měřit</param>
+            <param name="chordLength">Délka tětivy</param>
+            <returns>Seznam bodů na křivce včetně daného bodu a směru křivky.</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtSegmentLength(System.Double)">
+            <summary>Vrací prvek CoordinateSystem v zadané vzdálenosti od počátečního bodu křivky. Osa Y leží tečně ke křivce, osa X je zakřivení.</summary>
+            <param name="segmentLength">Vzdálenost podél křivky, ve které má být provedeno vyhodnocení</param>
+            <returns>Systém CoordinateSystem na křivce</returns>
+            <search>
+            coordoncurve,curvecoord,derivatives
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtSegmentLength(System.Double)">
+            <summary>Vrací rovinu v zadané vzdálenosti podél křivky od počátečního bodu. Normála roviny je zarovnána s tečnou křivky.</summary>
+            <param name="segmentLength">Vzdálenost podél křivky, ve které má být provedeno vyhodnocení</param>
+            <returns>Rovina na křivce</returns>
+            <search>
+            planeoncurve,planecurve,tangentplane
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SegmentLengthAtParameter(System.Double)">
+            <summary>Získat délku segmentu měřenou od počátečního bodu křivky k danému parametru.</summary>
+            <param name="parameter">Hodnota mezi 0 a 1</param>
+            <returns>Délka segmentu</returns>
+            <search>
+            lengthatparameter,dist along,lengthatpoint,arclength
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtSegmentLength(System.Double)">
+            <summary>Získejte parametr v určité délce oblouku podél křivky.</summary>
+            <param name="segmentLength">Vzdálenost podél křivky, ve které má být provedeno vyhodnocení</param>
+            <returns>Parametr</returns>
+            <search>
+            parameteratlen,param along,paramatlen,arclength
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtChordLength(System.Double,System.Double,System.Boolean)">
+            <summary>Získejte parametr v určité délce tětivy podél křivky z daného umístění.</summary>
+            <param name="chordLength">Délka tětivy, ve které vyhodnocovat</param>
+            <param name="parameter">Parametr na křivce pro počátek měření</param>
+            <param name="forward">hodnota true v případě posunu vpřed podél křivky</param>
+            <returns>Parametr</returns>
+            <search>
+            measure from,measure to,parameteratdist
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.StartParameter">
+            <summary>Získat parametr v počátečním bodu křivky</summary>
+            <returns>Hodnota parametru</returns>
+            <search>
+            start domain,curvestart
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.EndParameter">
+            <summary>Získat parametr v koncovém bodu křivky</summary>
+            <returns>Hodnota parametru</returns>
+            <search>
+            end domain,curveend
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SegmentLengthBetweenParameters(System.Double,System.Double)">
+            <summary>Načíst délku segmentu mezi dvěma parametry na křivce</summary>
+            <param name="startParam">Hodnota mezi 0 a 1</param>
+            <param name="endParam">Hodnota mezi 0 a 1</param>
+            <returns>Délka segmentu</returns>
+            <search>
+            measure,distance,arclength
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
+            <summary>Získejte parametr v daném bodě podél křivky. Pokud bod není na křivce, objekt ParameterAtPoint bude stále vracet hodnotu, která bude odpovídat blízkému bodu na křivce, bod však obecně není nejbližším bodem.</summary>
+            <param name="point">Bod podél nebo poblíž křivky</param>
+            <returns>Parametr na křivce pro daný bod.</returns>
+            <search>
+            projectpoint,closestparam,curveparam
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Reverse">
+            <summary>Obrátit směr křivky</summary>
+            <returns>Nová křivka v opačném směru</returns>
+            <search>
+            flip
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Offset(System.Double)">
+            <summary>Odsaďte křivku o zadanou hodnotu. Křivka musí být rovinná.</summary>
+            <param name="distance">Kladná nebo záporná vzdálenost k odsazení</param>
+            <returns>nové odsazené křivky</returns>
+            <search>
+            thicken,lines
+            </search>
+            <weights>
+            0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.OffsetMany(System.Double,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Vytvořte jednu nebo více křivek odsazením rovinné křivky o zadanou vzdálenost v rovině definované normálou roviny. Pokud mezi odsazenými křivkami komponenty existují mezery, budou vyplněny prodloužením křivek odsazení. Vstupní argument „planeNormal“ má jako výchozí hodnotu normálu roviny obsahující křivku, je však možné určit explicitní normálu rovnoběžnou s původní normálou křivky za účelem lepšího řízení směru odsazení. Pokud je například požadován konzistentní směr odsazení u více křivek sdílejících stejnou rovinu, je možné pomocí hodnoty „planeNormal“ přepsat jednotlivé normály křivky a vynutit stejný směr odsazení u všech křivek. Obrácení normály obrází směr odsazení.</summary>
+            <param name="signedDistance">Kladná vzdálenost odsazení se použije ve směru vektorového součinu vektoru tečny křivky a normálového vektoru roviny, zatímco záporné odsazení se použije v opačném směru.</param>
+            <param name="planeNormal">Normála roviny křivky. Výchozí hodnotou je normála roviny vstupní křivky</param>
+            <returns>Jedna nebo více odsazených křivek</returns>
+            <search>
+            thicken,lines
+            </search>
+            <weights>
+            0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoPlane(Autodesk.DesignScript.Geometry.Plane)">
+            <summary>Vytvořit oblouk pomocí roztažení na rovinu</summary>
+            <param name="plane">Rovina, na které táhnout křivku</param>
+            <returns>Křivka v rovině</returns>
+            <search>
+            projectcurve,toplane
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoSurface(Autodesk.DesignScript.Geometry.Surface)">
+            <summary>Vytáhněte tuto křivku na vstupní povrch, ve směru normál povrchu.</summary>
+            <param name="surface"/>
+            <returns/>
+            <search>
+            projectcurve,tosurf
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByStartParameter(System.Double)">
+            <summary>Odebere počátek křivky v zadaném parametru.</summary>
+            <param name="startParameter">Parametr, ve kterém začít ořezávat</param>
+            <returns>Nová křivka s odebraným počátkem</returns>
+            <search>
+            rem,remstart,removestart,trimcurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByEndParameter(System.Double)">
+            <summary>Odstraní konec křivky v zadaném parametru.</summary>
+            <param name="endParameter">Parametr, ve kterém začít ořezávat</param>
+            <returns>Nová křivka s odstraněným koncem</returns>
+            <search>
+            rem,remend,removeend,trimcurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByParameter(System.Double,System.Double)">
+            <summary>Odebere začátek a konec křivky v zadaných parametrech.</summary>
+            <param name="startParameter">Parametr, ve kterém začít ořezávat</param>
+            <param name="endParameter">Parametr, ve kterém začít ořezávat</param>
+            <returns>Nová křivka s odstraněnými vnějšími segmenty</returns>
+            <search>
+            rem,remend,remstart,remove,trimcurve,removeends
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimInteriorByParameter(System.Double,System.Double)">
+            <summary>Odstraní vnitřní část křivky v zadaných parametrech.</summary>
+            <param name="startParameter">Parametr, ve kterém začít ořezávat</param>
+            <param name="endParameter">Parametr, ve kterém začít ořezávat</param>
+            <returns>Nová křivka s odstraněným vnitřním segmentem</returns>
+            <search>
+            rem,removemiddle,middle,remmiddle,cutout,trimcurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(System.Double[])">
+            <summary>Odstraní několik segmentů křivky, přičemž vyřadí první, třetí, pátý... segment.</summary>
+            <param name="parameters">Seznam parametrů, ve kterých rozdělit křivku</param>
+            <returns>Pole křivek s vyřazeným prvním, třetím, pátým... segmentem</returns>
+            <search>
+            rem,removeparts,remparts,cutout,trimcurv,interior,odd
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(System.Double[],System.Boolean)">
+            <summary>Odebere sudé nebo liché úseky křivky rozdělené v daných parametrech podle toho, zda má příznak „discardEvenSegments“ hodnotu true nebo false.</summary>
+            <param name="parameters">Seznam parametrů, ve kterých rozdělit křivku</param>
+            <param name="discardEvenSegments">Přepínač k odstranění sudých segmentů</param>
+            <returns>Seznam křivek zbývajících po zrušení sudých nebo lichých úseků křivek.</returns>
+            <search>
+            rem,removeparts,remparts,cutout,trimcurv,interior,even
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByParameter(System.Double[])">
+            <summary>Rozdělit křivku na více částí v zadaných parametrech</summary>
+            <param name="parameters">Seznam parametrů, ve kterých rozdělit křivku</param>
+            <returns>Křivky vytvořené z rozdělení</returns>
+            <search>
+            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>Rozdělí křivku na více částí v daných bodech.</summary>
+            <param name="points">Body na křivce, ve kterých rozdělit křivku</param>
+            <returns>Křivky vytvořené z rozdělení</returns>
+            <search>
+            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
+            <summary>Připojit sadu křivek ke konci objektu polycurve. Převrátí křivky kvůli zajištění konektivity.</summary>
+            <param name="curves">Jiné křivky nebo křivky k připojení k objektu PolyCurve</param>
+            <returns>Objekt PolyCurve vytvořený z křivek</returns>
+            <search>
+            convertcurves,curves2polycurve,joincurves,concat,joinall,joinmany
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(System.Double)">
+            <summary>Vysune křivku ve směru normálového vektoru.</summary>
+            <param name="distance">Vzdálenost vysunutí křivky</param>
+            <returns>Vysunutý povrch</returns>
+            <search>
+            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Vysune křivku v určeném směru o délku vstupního vektoru.</summary>
+            <param name="direction">Vektor, podél kterého se má provést vysunutí</param>
+            <returns>Vysunutý povrch</returns>
+            <search>
+            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(Autodesk.DesignScript.Geometry.Vector,System.Double)">
+            <summary>Vysune křivku v určeném směru o zadanou vzdálenost.</summary>
+            <param name="direction">Vektor, podél kterého se má provést vysunutí</param>
+            <param name="distance">Vzdálenost vysunutí</param>
+            <returns>Vysunutý povrch</returns>
+            <search>
+            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(System.Double)">
+            <summary>Vysune křivku ve směru normály o zadanou vzdálenost. Křivka musí být uzavřená.</summary>
+            <param name="distance">Vzdálenost vysunutí</param>
+            <returns>Vysunuté těleso</returns>
+            <search>
+            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Vysune křivku v určeném směru o délku vstupního vektoru. Křivka musí být uzavřená.</summary>
+            <param name="direction">Vektor, podél kterého se má provést vysunutí</param>
+            <returns>Vysunuté těleso</returns>
+            <search>
+            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(Autodesk.DesignScript.Geometry.Vector,System.Double)">
+            <summary>Vysune křivku v určeném směru o zadanou vzdálenost. Křivka musí být uzavřená.</summary>
+            <param name="direction">Vektor, podél kterého se má provést vysunutí</param>
+            <param name="distance">Vzdálenost vysunutí</param>
+            <returns>Vysunuté těleso</returns>
+            <search>
+            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extend(System.Double,Autodesk.DesignScript.Geometry.Point)">
+            <summary>Prodlužte křivku o zadanou vzdálenost v určitém konci určeném vybraným bodem. Vybraná strana se prodlouží. Uzavřené křivky, jako jsou kružnice a elipsy, nelze prodloužit. Pokud je prodlužovaná křivka lineární, bude prodloužení také lineární.</summary>
+            <param name="distance">Vzdálenost prodloužení</param>
+            <param name="pickSide">Bod na konci, který má být prodloužen</param>
+            <returns>Prodloužená křivka</returns>
+            <search>
+            makelonger,stretch,extendside
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtendStart(System.Double)">
+            <summary>Prodlužte křivku o zadanou vzdálenost na jejím počátku. Uzavřené křivky, jako jsou kružnice a elipsy, nelze prodloužit. Pokud je prodlužovaná křivka lineární, bude prodloužení také lineární.</summary>
+            <param name="distance">Vzdálenost prodloužení</param>
+            <returns>Prodloužená křivka</returns>
+            <search>
+            makelonger,stretch
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtendEnd(System.Double)">
+            <summary>Prodlužte křivku o zadanou vzdálenost na jejím konci. Uzavřené křivky, jako jsou kružnice a elipsy, nelze prodloužit. Pokud je prodlužovaná křivka lineární, bude prodloužení také lineární.</summary>
+            <param name="distance">Vzdálenost prodloužení</param>
+            <returns>Prodloužená křivka</returns>
+            <search>
+            makelonger,stretch
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ApproximateWithArcAndLineSegments">
+            <summary>Aproximujte křivku pomocí kolekce oblouků a čar.</summary>
+            <returns>Pole oblouků a čar přibližujících se křivce</returns>
+            <search>
+            rationalizecurve,fitarcs,fitlines,arcs,lines
+            </search>
+            <weights>
+            0.5,0.5,0.5,0.4,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ToNurbsCurve">
+            <summary>Převede křivku na aproximaci objektu NurbsCurve.</summary>
+            <returns>Objekt NurbsCurve přibližující se křivce</returns>
+            <search>
+            curve2spline,convertcurve,tospline,lines
+            </search>
+            <weights>
+            0.5,0.5,0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Patch">
+            <summary>Opravit uzavřenou křivku</summary>
+            <returns>Povrch na vnitřní straně křivky</returns>
+            <search>
+            fill,profiletosurf,loop,loop2surf,edgesurf
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Project(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Promítne vstupní křivku podél daného směru promítnutí na určenou základní geometrii.</summary>
+            <param name="baseGeometry">Geometrie, na kterou se má promítat</param>
+            <param name="projectionDirection">Vektor</param>
+            <returns>Seznam geometrií promítnutých na základní geometrii</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSurface(Autodesk.DesignScript.Geometry.Curve)">
+            <summary>Táhne tuto křivku podél křivky trajektorie, přičemž vytváří povrch.</summary>
+            <param name="path"/>
+            <returns/>
+            <search>
+            sweep1,curve2surf
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve)">
+            <summary>Táhne tuto uzavřenou křivku podél křivky trajektorie, přičemž vytvoří těleso.</summary>
+            <param name="path"/>
+            <returns/>
+            <search>
+            sweep1,curve2solid,loop2solid,profile2solid,curvetosolid,looptosolid,profiletosolid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
+            <summary>Táhne tuto uzavřenou křivku podél křivky trajektorie, přičemž vytvoří těleso.</summary>
+            <param name="path">Trajektorie, která reprezentuje trajektorii tažení</param>
+            <param name="cutEndOff">Odřízněte konec tažení a nastavte jej kolmo k trajektorii.</param>
+            <returns>Těleso, které táhne tuto uzavřenou křivku podél křivky trajektorie</returns>
+            <search>
+            sweep1,curve2solid,loop2solid,profile2solid,curvetosolid,looptosolid,profiletosolid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Simplify(System.Double)">
+            <summary>Vrátí novou křivku aproximovanou se zadanou tolerancí.</summary>
+            <param name="tolerance"/>
+            <returns/>
+            <search>
+            fitcurve,reducecurve,simplecurve,approximate
+            </search>
+        </member>
         <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.constructorThreadId">
             <summary>uchovává id spravovaného vlákna, které zavolalo tento konstruktor.
             Používá se k upozornění uživatele na potenciální problémy s více vlákny.</summary>
@@ -4545,9 +3755,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.Dispose">
             <notranslation>true</notranslation>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.DisposeDisplayable">
-            <summary>Tato metoda je volána v případě, že zobrazitelná položka již není potřebná.</summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.GetHashCode">
             <notranslation>true</notranslation>
         </member>
@@ -4560,10 +3767,10 @@
         <member name="F:Autodesk.DesignScript.Geometry.Geometry.mGeometryContructors">
             <summary>Mapa mezi typy entity IGeometryEntity a konstruktory geometrie používajícími hostitele</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.RegisterHostType(System.Type,System.Func{Autodesk.DesignScript.Interfaces.IGeometryEntity,System.Boolean,Autodesk.DesignScript.Geometry.Geometry})">
-            <summary>Mechanismus registrace typu geometrie</summary>
-            <param name="hostType">Typ rozhraní odvozených od entity IGeometryEntity</param>
-            <param name="contructor">Delegát pro sestavení geometrie</param>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.RegisterHostType(System.Type,System.Func{Autodesk.DesignScript.Interfaces.IGeometryEntity,Autodesk.DesignScript.Geometry.Geometry})">
+            <summary>Mechanismus registrace typu geometrie.</summary>
+            <param name="hostType">Typ rozhraní odvozených od entity IGeometryEntity.</param>
+            <param name="contructor">Delegát pro sestavení geometrie.</param>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.FromObject(System.Int64)">
             <notranslation>true</notranslation>
@@ -4744,17 +3951,6 @@
             <param name="json">Řetězec JSON, který chcete analyzovat</param>
             <returns>Objekt geometrie</returns>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.String)">
-            <summary>Exportuje vybranou geometrii do zadané cesty k souboru SAT.</summary>
-            <param name="filePath">Název souboru, do kterého chcete exportovat geometrii</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.String,System.Double)">
-            <summary>Exportuje vybranou geometrii do zadané cesty k souboru SAT.</summary>
-            <param name="filePath">Název souboru, do kterého chcete exportovat geometrii</param>
-            <param name="unitsMM">Jednotky, které mají být použity</param>
-            <returns/>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},System.String)">
             <summary>Exportuje seznam vybrané geometrie do zadané cesty k souboru SAT.</summary>
             <param name="geometry"/>
@@ -4762,7 +3958,7 @@
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},System.String,System.Double)">
-            <summary>Exportuje seznam vybrané geometrie do zadané cesty k souboru SAT.</summary>
+            <summary>Exportuje seznam vybrané geometrie do zadané cesty souboru SAT.</summary>
             <param name="geometry"/>
             <param name="filePath"/>
             <param name="unitsMM"/>
@@ -4773,10 +3969,6 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ToNativePointer(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
             <summary>Tento postup je určen pouze k internímu použití.</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB">
-            <summary>Serializuje určenou geometrii do formátu SAB (Standard ACIS Binary) a vrací data serializovaného binárního toku.</summary>
-            <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
             <summary>Serializuje seznam určené geometrie do formátu SAB (Standard ACIS Binary) a vrací data serializovaného binárního toku.</summary>
@@ -5267,6 +4459,531 @@
             <param name="panelIndices">Indexy panelů používané ke konstrukci polygonů. Výchozí hodnota null označuje všechny panely v povrchu.</param>
             <returns/>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ToString">
+            <summary>Získat řetězcovou reprezentaci prvku PolyCurve</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
+            <summary>Vytvořte objekt PolyCurve spojením křivek. Vstupní křivky nemusí být zadány v pořadí propojení. 
+            Směr objektu PolyCurve je určen první křivkou ve vstupním poli.
+            Vyberte preferovanou toleranci spojení od 1e-6 do 1e-3 jednotek.</summary>
+            <param name="curves">Křivky ke spojení do objektu PolyCurve</param>
+            <param name="joinTolerance">Tolerance, která určuje velikost povolené mezery mezi spojovanými křivkami</param>
+            <returns>Objekt Polycurve vytvořený podle spojených křivek</returns>
+            <search>
+            segments,joincurves
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
+            <summary>Vytvořte objekt PolyCurve spojením křivek. Vstupní křivky nemusí být zadány v pořadí propojení. 
+            Směr objektu PolyCurve je určen první křivkou ve vstupním poli.
+            Vyberte preferovanou toleranci spojení od 1e-6 do 1e-3 jednotek.</summary>
+            <param name="curves">Křivky ke spojení do objektu PolyCurve</param>
+            <param name="joinTolerance">Tolerance, která určuje velikost povolené mezery mezi spojovanými křivkami</param>
+            <param name="trimCurves">Nastavte na hodnotu True, pokud se vstupní křivky protínají nebo překrývají a je nutné oříznout jejich koncové úseky před vytvořením objektu PolyCurve. Ve výchozím nastavení je tato možnost nastavena na hodnotu False.</param>
+            <param name="trimLength">Pokud je hodnota trimLength větší než 0, pak koncové úseky delší než hodnota trimLength nebudou oříznuty.</param>
+            <returns>Objekt Polycurve vytvořený podle spojených křivek</returns>
+            <search>
+            segments,joincurves
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
+            <summary>Vytvořte jeden nebo více objektů PolyCurve seskupením spojených křivek. Vyberte preferovanou toleranci spojení mezi 1e-6 a 1e-3 jednotkami.</summary>
+            <param name="curves">Křivky, které chcete seskupit dohromady, aby se vytvořil jeden nebo více objektů PolyCurve</param>
+            <param name="joinTolerance">Tolerance, která určuje velikost povolené mezery mezi spojovanými křivkami</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
+            <summary>Vytvořte jeden nebo více objektů PolyCurve seskupením spojených křivek. Vyberte preferovanou toleranci spojení mezi 1e-6 a 1e-3 jednotkami.</summary>
+            <param name="curves">Křivky, které chcete seskupit dohromady, aby se vytvořil jeden nebo více objektů PolyCurve</param>
+            <param name="joinTolerance">Tolerance, která určuje velikost povolené mezery mezi spojovanými křivkami</param>
+            <param name="trimCurves">Nastavte na hodnotu True, pokud se vstupní křivky protínají nebo překrývají a je nutné oříznout jejich koncové úseky před vytvořením objektu PolyCurve. Ve výchozím nastavení je tato možnost nastavena na hodnotu False.</param>
+            <param name="trimLength">Pokud je hodnota trimLength větší než 0, pak koncové úseky delší než hodnota trimLength nebudou oříznuty.</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
+            <summary>Vytvořte objekt PolyCurve spojením bodů. Chcete-li objekt PolyCurve uzavřít, nastavte vstup 'connectLastToFirst' na hodnotu true.</summary>
+            <param name="points">Body, které mají vytvořit objekt PolyCurve</param>
+            <param name="connectLastToFirst">Hodnota True k propojení posledního bodu s prvním bodem, hodnota false k ponechání otevřeným.</param>
+            <returns>Objekt PolyCurve vytvořený pomocí bodů</returns>
+            <search>
+            segments,joincurves,lines
+            </search>
+            <weights>
+            0.5,0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Vytvořte objekt PolyCurve pomocí zesílení křivky.</summary>
+            <param name="curve">křivka k zesílení</param>
+            <param name="thickness">tloušťka</param>
+            <param name="nor">normála kolmá ke směru zesílení</param>
+            <returns/>
+            <search>
+            offset
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurveNormal(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Vytvořte objekt PolyCurve zesílením křivky podél roviny určené vstupní normálou.</summary>
+            <param name="curve">křivka k zesílení</param>
+            <param name="thickness">tloušťka</param>
+            <param name="normal">normála kolmá ke směru zesílení. Pokud normála není zadána (má parametr null), bude ve výchozím nastavení použita normála křivky.</param>
+            <returns/>
+            <search>
+            offset,thicken
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.Points">
+            <summary>Vrací počáteční bod první komponenty a koncové body každé křivky komponenty. U uzavřeného objektu PolyCurve je koncový bod vynechán, protože počáteční a koncový bod jsou stejné.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.NumberOfCurves">
+            <summary>Počet křivek objektu PolyCurve</summary>
+            <search>
+            curvecount,subcurvecount,numbersubcurves
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Curves">
+            <summary>Vrací křivky objektu PolyCurve.</summary>
+            <returns/>
+            <search>
+            subcurves,polycurvesplit
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CurveAtIndex(System.Int32,System.Boolean)">
+            <summary>Vrací křivku objektu PolyCurve pomocí indexu.</summary>
+            <param name="index">Délka pro umístění bodu</param>
+            <param name="endOrStart">Hodnota True znamená počítání od konce objektu polycurve, hodnota false označuje počítání od začátku objektu polycurve</param>
+            <returns>Křivka na indexu</returns>
+            <search>
+            subcurveatindex,getsubcurve,getcurvebyindex
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.BasePlane">
+            <summary>Vrací rovinu rovinných objektů PolyCurve.</summary>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithEllipse(System.Double,System.Double,System.Double,System.Double,System.Boolean)">
+            <summary>Prodlouží objekt PolyCurve pomocí tečné elipsy.</summary>
+            <param name="length">Délka elipsy prodloužení</param>
+            <param name="radius1">Parametr elipsy</param>
+            <param name="radius2">Parametr elipsy</param>
+            <param name="endEllipseParameter">Parametr elipsy</param>
+            <param name="endOrStart">prodloužení konce nebo počátku objektu PolyCurve</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithArc(System.Double,System.Double,System.Boolean)">
+            <summary>Prodlouží objekt PolyCurve pomocí tečného oblouku.</summary>
+            <param name="length">Délka vynášecího oblouku</param>
+            <param name="radius">Poloměr oblouku</param>
+            <param name="endOrStart">prodloužení konce nebo počátku objektu PolyCurve</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLine">
+            <summary>Zavřít objekt PolyCurve podle čáry spojující počáteční a koncové body</summary>
+            <returns/>
+            <search>
+            lines
+            </search>
+            <weights>
+            0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLineAndTangentArcs(System.Double,System.Double)">
+            <summary>Zavřít objekt PolyCurve podle řetězce tečen oblouku, čáry a oblouku</summary>
+            <param name="radiusAtStart">Poloměr oblouku na počátku objektu PolyCurve</param>
+            <param name="radiusAtEnd">Poloměr oblouku na konci objektu PolyCurve</param>
+            <returns/>
+            <search>
+            lines
+            </search>
+            <weights>
+            0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Offset(System.Double,System.Boolean)">
+            <summary>Objekt PolyCurve odsazení v jeho rovině</summary>
+            <param name="signedDistance">Velikost odsazení</param>
+            <param name="extendCircular">Přepínač k nastavení rohů na kruhové</param>
+            <returns>Odsazený objekt PolyCurve</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.OffsetMany(System.Double,System.Boolean,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Vytvořte jeden nebo více objektů PolyCurve odsazením rovinného objektu PolyCurve o zadanou vzdálenost v rovině definované normálou roviny. Vstupní argument „planeNormal“ má jako výchozí hodnotu normálu roviny obsahující křivku, je však možné určit explicitní normálu rovnoběžnou s původní normálou křivky za účelem lepšího řízení směru odsazení. Pokud je například požadován konzistentní směr odsazení u více křivek sdílejících stejnou rovinu, je možné pomocí hodnoty „planeNormal“ přepsat jednotlivé normály křivky a vynutit stejný směr odsazení u všech křivek. Obrácení normály obrází směr odsazení.</summary>
+            <param name="signedDistance">Kladná vzdálenost odsazení se použije ve směru vektorového součinu vektoru tečny objektu PolyCurve a normálového vektoru roviny, zatímco záporné odsazení se použije v opačném směru.</param>
+            <param name="extendCircular">Pokud mezi odsazenými křivkami komponenty existují mezery, mohou být vyplněny buď kruhovými oblouky (hodnota true), které vytvoří vyhlazené rohy, nebo prodloužením (hodnota false) křivek odsazení.</param>
+            <param name="planeNormal">Normála roviny křivky. Výchozí hodnotou je normála roviny vstupní křivky</param>
+            <returns>Jeden nebo více odsazených objektů PolyCurve</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Fillet(System.Double,System.Boolean)">
+            <summary>Zaoblete rohy rovinného objektu PolyCurve.</summary>
+            <param name="radius">Poloměr zaoblení</param>
+            <param name="clockwise_corners">Označuje, které rohy by měly být zaobleny, pokud má možnost hodnotu true, pak budou zaobleny rohy, kde je tečna na začátku druhé komponenty po směru hodinových ručiček vzhledem k tečně na konci první komponenty (vzhledem k normále křivky). Pokud má možnost hodnotu false, budou zaobleny rohy proti směru hodinových ručiček.</param>
+            <returns>Zaoblený objekt PolyCurve</returns>
+            <search>
+            round,smooth,radius
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Heal(System.Double)">
+            <summary>Opraví objekt PolyCurve, který protíná sám sebe, vrácením nového objektu, který neprotíná sám sebe, pokud je délka překrývajícího úseku menší nebo rovna hodnotě trimLength.</summary>
+            <param name="trimLength">Pokud je hodnota trimLength větší než 0, pak koncové úseky delší než hodnota trimLength nebudou oříznuty.</param>
+            <returns>Objekt PolyCurve, který neprotíná sebe sama a s ničím se nepřekrývá</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ToString">
+            <summary>Získat řetězcovou reprezentaci prvku Polygon</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>Sestavte křivku mnohoúhelníku propojením bodů.</summary>
+            <param name="points"/>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.RegularPolygon(Autodesk.DesignScript.Geometry.Circle,System.Int32)">
+            <summary>Sestaví křivku vepsaného mnohoúhelníku v kružnici.</summary>
+            <param name="circle"/>
+            <param name="numberSides"/>
+            <returns/>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Polygon.Points">
+            <summary>Vrací všechny počáteční/koncové body segmentu.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Polygon.PlaneDeviation">
+            <summary>Vrací maximální odchylku od průměrné roviny mnohoúhelníku.</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.Corners">
+            <summary>Vrátí rohy mnohoúhelníku.</summary>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.Center">
+            <summary>Vrací průměrný bod rohů mnohoúhelníku.</summary>
+            <returns/>
+            <search>
+            centroid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.SelfIntersections">
+            <summary>Vrací vlastní průsečíky mezi stranami mnohoúhelníku.</summary>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ContainmentTest(Autodesk.DesignScript.Geometry.Point)">
+            <summary>Vrátí hodnotu, která určuje, zda je v polygonu obsažen vstupní bod. Pokud není polygon rovinný, bod se promítne na přizpůsobenou rovinu a obsažení se vypočítá pomocí promítání polygonu na přizpůsobenou rovinu. Pokud polygon protíná sebe sama, tato možnost vrátí stav chyby.</summary>
+            <param name="point"/>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToString">
+            <summary>Získat řetězcovou reprezentaci prvku Surface</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByUnion(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
+            <summary>Sjednocení kolekce povrchů do jednoho povrchu. Tato metoda může vrátit objekt PolySurface v případě, že výsledné sjednocení je nerozložené nebo se skládá z více ploch.</summary>
+            <param name="surfaces">Kolekce povrchů.</param>
+            <returns>Sjednocení povrchů</returns>
+            <search>
+            merge,join,boolean,addition
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
+            <summary>Vytvořte povrch pomocí šablonování mezi křivkami vstupního příčného řezu.</summary>
+            <param name="crossSections">Křivky, kterými se má šablonovat</param>
+            <returns>Povrch vytvořený šablonováním</returns>
+            <search>
+            loft
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRuledLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Line})">
+            <summary>Vytvořte povrch šablonováním mezi čarami vstupního příčného řezu. To je mírně rychlejší a vytváří méně hladký výsledek než operace Surface.ByLoft.</summary>
+            <param name="crossSections"/>
+            <returns/>
+            <search>
+            ruledsurface,lines
+            </search>
+            <weights>
+            0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
+            <summary>Šablonujte povrch prostřednictvím průřezů s určenými vodicími křivkami (neboli trajektoriemi). Vodicí křivka musí protínat všechny křivky průřezů.</summary>
+            <param name="crossSections">Křivky, kterými se má šablonovat</param>
+            <param name="guideCurves">Křivky, kterými bude šablonování vedeno</param>
+            <returns>Povrch vytvořený šablonováním</returns>
+            <search>
+            loftbyrails,loft rails,guides
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
+            <summary>Vytvořte povrch tažením křivky průřezu podél trajektorie.</summary>
+            <param name="profile">Křivka k tažení</param>
+            <param name="path">Křivka trajektorie použitá k tažení podél</param>
+            <returns>Povrch vytvořený tažením profilu podél trajektorie</returns>
+            <search>
+            sweep,rail,guide,sweep1
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
+            <summary>Vytvořte povrch tažením křivky průřezu podél trajektorie.</summary>
+            <param name="profile">Křivka k tažení</param>
+            <param name="path">Křivka trajektorie použitá k tažení</param>
+            <param name="cutEndOff">Odřízněte konec tažení a nastavte jej kolmo k trajektorii.</param>
+            <returns>Povrch vytvořený tažením profilu podél trajektorie</returns>
+            <search>
+            sweep,rail,guide,sweep1
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPerimeterPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>Vytvořte povrch mnohoúhelníku spojující vstupní body v uzavřeném polygonu a opravující jej.</summary>
+            <param name="points">Seznam bodů obvodu</param>
+            <returns>Povrch vytvořený z bodů obvodu</returns>
+            <search>
+            patch,surfacebypolygon
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep2Rails(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
+            <summary>Táhnout křivku příčného řezu podél trajektorie vedené dvěma kolejemi</summary>
+            <param name="path">Vstup k tažení podél trajektorie</param>
+            <param name="guideRail">Trajektorie, podle které se řídí orientace tažení</param>
+            <param name="profile">Křivka profilu, která se má táhnout podél trajektorie.</param>
+            <returns>Povrch vytvořený tažením dvou tyčí</returns>
+            <search>
+            sweep2,guides
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double)">
+            <summary>Vytvořte povrch tažením křivky profilu kolem paprsku osy vytvořeného pomocí bodu počátku ve směru vektoru osy, počínaje objektem start_angle ve stupních a pokračujíce tažením objektu sweep_angle ve stupních.</summary>
+            <param name="profile">Křivka profilu k rotaci</param>
+            <param name="axisOrigin">Počátek osy rotace</param>
+            <param name="axisDirection">Směr osy rotace</param>
+            <param name="startAngle">Počáteční úhel ve stupních</param>
+            <param name="sweepAngle">Úhel tažení ve stupních</param>
+            <returns>Povrch vytvořený rotací profilu</returns>
+            <search>
+            lathe
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPatch(Autodesk.DesignScript.Geometry.Curve)">
+            <summary>Vytvořte povrch vyplněním vnitřní části uzavřené hranice definované vstupními křivkami.</summary>
+            <param name="closedCurve">Uzavřená křivka použitá jako hranice povrchu</param>
+            <returns>Povrch vytvořený záplatou</returns>
+            <search>
+            edgesrf,edgesurface,patch,fill
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.Area">
+            <summary>Vrací celkovou plochu povrchu.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.Perimeter">
+            <summary>Vrací součet délek všech hraničních hran povrchu.</summary>
+            <search>
+            circumference
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.ClosedInU">
+            <summary>Vrací hodnotu True, pokud je povrch uzavřený ve směru U, jinak vrací hodnotu false.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.ClosedInV">
+            <summary>Vrací hodnotu True, pokud je povrch uzavřený ve směru V, jinak vrací hodnotu false.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.Closed">
+            <summary>Vrací hodnotu True, pokud je povrch uzavřený ve směru U nebo V, nebo vrací hodnotu false, pokud není uzavřen ani v jednom.</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.SubtractFrom(Autodesk.DesignScript.Geometry.Solid)">
+            <summary>Odečtěte vstupní nástroje z tohoto povrchu.</summary>
+            <param name="trimmingEntity"/>
+            <returns/>
+            <search>
+            difference,trim,removefrom,cut
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Difference(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
+            <summary>Logický rozdíl tohoto povrchu a sjednocení vstupních povrchů. Tato metoda může vrátit objekt PolySurface v případě, že výsledný Booleovský objekt je nerozložený nebo se skládá z více ploch.</summary>
+            <param name="others">Další povrchy k odečtení</param>
+            <returns>Výsledný booleovský povrch nebo objekt polySurface</returns>
+            <search>
+            subtract,differencemany,diffall,diff multi
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.UVParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
+            <summary>Vraťte pár parametrů UV na vstupním bodu. Toto je opak k bodu v parametru.</summary>
+            <param name="point"/>
+            <returns/>
+            <search>
+            evaluateatpoint,surfaceatpoint,uvatpoint,uvs
+            </search>
+            <weights>
+            0.5,0.5,0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve})">
+            <summary>Ořízne povrch pomocí kolekce jednoho nebo více uzavřených objektů PolyCurve. Jedna ze smyček musí být hraniční smyčka vstupního povrchu. Navíc je nutné přidat jednu nebo více vnitřních smyček pro díry.</summary>
+            <param name="loops"/>
+            <returns/>
+            <search>
+            trim multiple,removeloops,cutloops
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve},System.Double)">
+            <summary>Ořízne povrch pomocí kolekce jednoho nebo více uzavřených objektů PolyCurve, které musí všechny ležet na povrchu v rámci zadané tolerance. Pokud je třeba jednu nebo více děr oříznout od vstupního povrchu, musí být pro každou díru určena jedna vnější smyčka pro hranici povrchu a jedna vnitřní smyčka. Pokud je třeba oříznout oblast mezi hranicí povrchu a dírami, je nutné určit pouze smyčku pro každou díru. U periodického povrchu bez vnější smyčky, například kulový povrch, je možné ovládat oříznutou oblast obrácením směru křivky smyčky.</summary>
+            <param name="loops">Jeden nebo více uzavřených objektů PolyCurve, které mohou být na vstupu v libovolném pořadí. Tyto smyčky by se neměly vzájemně protínat.</param>
+            <param name="tolerance">Tolerance použitá při rozhodování, zda jsou konce křivky totožné a zda jsou křivka a povrch totožné. Zadaná tolerance nemůže být menší než libovolná tolerance použitá při tvorbě vstupních objektů PolyCurve. Výchozí hodnota 0.0 znamená, že se použije největší tolerance z tolerancí použitých při tvorbě vstupních objektů PolyCurve.</param>
+            <returns>Povrch oříznutý uzavřenými smyčkami.</returns>
+            <search>
+            trim multiple,removeloops,cutloops
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.NormalAtPoint(Autodesk.DesignScript.Geometry.Point)">
+            <summary>Vraťte normálu povrchu ve vstupním bodu na povrchu.</summary>
+            <param name="point">Bod, ve kterém se vyhodnotí normála povrchu</param>
+            <returns>Normála v bodu</returns>
+            <search>
+            perpendicular
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface">
+            <summary>Zobrazí se reprezentace NURBS povrchu. Tato metoda může v určitých případech aproximovat povrch.</summary>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface(System.Boolean)">
+            <summary>Zobrazí se reprezentace NURBS povrchu. Tato metoda může v určitých případech aproximovat povrch.</summary>
+            <param name="limitSurface">Určuje, zda má být povrch před převodem obnoven do původního rozsahu parametrů. Příkladem toho, kdy je rozsah parametrů povrchu omezen, je operace oříznutí.</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ApproximateWithTolerance(System.Double)">
+            <summary>Zobrazí se reprezentace NURBS povrchu s určenou tolerancí. Tato metoda může v určitých případech aproximovat povrch.</summary>
+            <param name="tolerance">Zadaná tolerance</param>
+            <returns>Reprezentace povrchu pomocí nurbs povrchu</returns>
+            <search>
+            tonurbs
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double)">
+            <summary>Zesilte plochu na těleso tím, že ji vysunete ve směru normály povrchu na obou stranách povrchu.</summary>
+            <param name="thickness">Množství k zesílení</param>
+            <returns>Zesílený povrch jako těleso</returns>
+            <search>
+            offset,tosolid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double,System.Boolean)">
+            <summary>Zesilte plochu na těleso tím, že ji vysunete ve směru normál povrchu. Pokud má parametr both_sides hodnotu true, povrch se zesílí na obou stranách.</summary>
+            <param name="thickness">Množství k zesílení</param>
+            <param name="both_sides">Vrací hodnotu true pro zesílení na obou stranách, false pro zesílení na jedné straně</param>
+            <returns>Zesílený povrch jako těleso</returns>
+            <search>
+            offset,bothsides,tosolid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Offset(System.Double)">
+            <summary>Odsaďte povrch ve směru normály povrchu podle zadané vzdálenosti.</summary>
+            <param name="distance">Velikost odsazení</param>
+            <returns>Odsazený povrch</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.CurvatureAtParameter(System.Double,System.Double)">
+            <summary>Vrácený souřadnicový systému využívá osy xAxis, yAxis a zAxis a pomocí nich reprezentuje uDir, vDir a normálu. Délka os xAxis, yAxis představuje zakřivení.</summary>
+            <param name="u">Komponenta U parametru</param>
+            <param name="v">Komponenta V parametru</param>
+            <returns>Souřadnicový systém založený na normále, směru U a směru V na pozici UV na povrchu</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.CoordinateSystemAtParameter(System.Double,System.Double)">
+            <summary>Vraťte objekt CoordinateSystem zarovnaný s hlavními směry křivosti.</summary>
+            <param name="u">Komponenta U parametru</param>
+            <param name="v">Komponenta V parametru</param>
+            <returns>Souřadnicový systém zarovnaný se směry hlavního zakřivení</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.TangentAtUParameter(System.Double,System.Double)">
+            <summary>Vraťte tečný vektor U v zadaných parametrech U a V.</summary>
+            <param name="u">Komponenta U parametru</param>
+            <param name="v">Komponenta V parametru</param>
+            <returns>Vektor tečny U</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.TangentAtVParameter(System.Double,System.Double)">
+            <summary>Vraťte tečný vektor V v zadaných parametrech U a V.</summary>
+            <param name="u">Komponenta U parametru</param>
+            <param name="v">Komponenta V parametru</param>
+            <returns>Vektor tečny V</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.NormalAtParameter(System.Double,System.Double)">
+            <summary>Vraťte normálový vektor v zadaných parametrech U a V.</summary>
+            <param name="u">Komponenta U parametru</param>
+            <param name="v">Komponenta V parametru</param>
+            <returns>Normála v parametru</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.DerivativesAtParameter(System.Double,System.Double)">
+            <summary>Vraťte odvozeniny při vstupních souřadnicích U a V.</summary>
+            <param name="u">Komponenta U parametru</param>
+            <param name="v">Komponenta V parametru</param>
+            <returns>Derivace U a V povrchu</returns>
+            <search>
+            tangent,normal
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.GaussianCurvatureAtParameter(System.Double,System.Double)">
+            <summary>Vrací Gaussovo zakřivení v parametrech U a V.</summary>
+            <param name="u"/>
+            <param name="v"/>
+            <returns/>
+            <search>
+            developable
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.PrincipalCurvaturesAtParameter(System.Double,System.Double)">
+            <summary>Vrací hlavní zakřivení v parametrech U a V.</summary>
+            <param name="u"/>
+            <param name="v"/>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.PrincipalDirectionsAtParameter(System.Double,System.Double)">
+            <summary>Vrací hlavní směrové vektory v parametrech U a V.</summary>
+            <param name="u">Komponenta U parametru</param>
+            <param name="v">Komponenta V parametru</param>
+            <returns>Vektory tečen U a V</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.PointAtParameter(System.Double,System.Double)">
+            <summary>Vraťte bod v zadaných parametrech U a V.</summary>
+            <param name="u"/>
+            <param name="v"/>
+            <returns/>
+            <search>
+            surfacepoint
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.PerimeterCurves">
+            <summary>Vraťte všechny hraniční křivky povrchu.</summary>
+            <returns/>
+            <search>
+            edges
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.GetIsoline(System.Int32,System.Double)">
+            <summary>Vytvořte křivku čáry parametru na zadaném povrchu. Vytvořte křivku, která představuje čáru parametru U nebo V na povrchu. Čára parametru vede ve směru vzrůstajícího parametru U nebo V v konstantním protějším parametru U nebo V. Výsledná křivka bude odpovídat parametrizaci povrchu a jeho rozsah bude ohraničen rozsahem parametru povrchu. Vrácený typ křivky závisí na typu povrchu.</summary>
+            <param name="isoDirection">Pokud směr == 0, vytvoří čáru parametru U, pokud směr == 1, vytvoří čáru parametru V.</param>
+            <param name="parameter"/>
+            <returns/>
+            <search>
+            lines
+            </search>
+            <weights>
+            0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.FlipNormalDirection">
+            <summary>Vrací nový povrch s převrácenými normálami. Tento povrch ponechá beze změny.</summary>
+            <returns>Povrch, který je stejný jako vstupní povrch, ale má obrácené normály</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
+            <summary>Kombinuje tento povrch a vstupní povrch do objektu PolySurface.</summary>
+            <param name="otherSurfaces"/>
+            <returns/>
+            <search>
+            join multiple,joinmany,joinall,topolysurface
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Promítne vstupní geometrii na tento povrch ve směru vstupního vektoru. !!Tato metoda promítání aktuálně podporuje pouze body nebo křivky!!</summary>
+            <param name="geometryToProject"/>
+            <param name="projectionDirection"/>
+            <returns/>
+            <search>
+            projecttosurface,projectonto
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Repair">
+            <summary>Pokusí se opravit povrch.</summary>
+            <returns/>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.ToString">
             <summary>Získat řetězcovou reprezentaci prvku Vector</summary>
         </member>
@@ -5451,29 +5168,13 @@
             <returns>Vrací úhel mezi zadanými vektory ve stupních od 0 do 180.</returns>
             <search>rotation angle,</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleBetween(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Vrací úhel mezi dvěma vektory v rozsahu [0, 180] stupňů.</summary>
-            <param name="otherVector"/>
-            <returns/>
-            <search>
-            rotation angle
-            </search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleAboutAxis(Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Vrací úhel mezi dvěma vektory v rozsahu [0, 180] stupňů.</summary>
             <summary>Vrací úhel mezi dvěma vektory ve stupních od 0 do 360. Prostřednictvím osy otáčení určuje směr úhlu.</summary>
             <param name="otherVector">Jiný vektor</param>
             <param name="rotationAxis">Osa rotace</param>
             <returns>Vrací úhel mezi zadanými vektory ve stupních od 0 do 360</returns>
             <search>rotation angle,</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleBetween(Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Vrací úhel mezi dvěma vektory v rozsahu [0, 360] stupňů. Používá osu rotace k určení směru úhlu.</summary>
-            <param name="otherVector"/>
-            <param name="rotationAxis"/>
-            <returns/>
-            <search>
-            rotation angle
-            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.FromJson(System.String)">
             <summary>Analyzujte vstupní řetězec JSON naformátovaný pomocí schématu autodesk.math:vector3d-1.0.0.</summary>
@@ -5505,18 +5206,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_distanceatparameter_deprecated">
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato metoda je vyřazena a bude odebrána v budoucí verzi aplikace Dynamo. Použijte místo ní metodu SegmentLengthAtParameter“.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_dividebydistance_deprecated">
-            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato metoda je vyřazena a bude odebrána v budoucí verzi aplikace Dynamo. Použijte místo ní metody „PointsAtEqualChordLength“ a „SplitByPoints“.“.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_dividebydistancefromparam_deprecated">
-            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato metoda je vyřazena a bude odebrána v budoucí verzi aplikace Dynamo. Použijte místo ní metody „PointsAtChordLengthFromPoint“ a „SplitByPoints“.“.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_dividebylengthfromparams_deprecated">
-            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato metoda je vyřazena a bude odebrána v budoucí verzi aplikace Dynamo. Použijte místo ní metody „PointsAtSegmentLengthFromPoint“ a „SplitByPoints“.“.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_divideequally_deprecated">
-            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato metoda je vyřazena a bude odebrána v budoucí verzi aplikace Dynamo. Použijte místo ní metody „PointsAtEqualSegmentLength“ a „SplitByPoints“.“.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_lengthbetweenparams_deprecated">
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato metoda je vyřazena a bude odebrána v budoucí verzi aplikace Dynamo. Použijte místo ní metodu SegmentLengthBetweenParameters.“.</summary>
@@ -5550,9 +5239,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.geometry_deserializefromsab_deprecated">
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato metoda je vyřazena a bude odebrána v budoucí verzi aplikace Dynamo. Použijte přetížení, které umožňuje zadání položky mmPerUnit.“.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.geometry_exporttosat_deprecated">
-            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato metoda je vyřazena a bude odebrána v budoucí verzi aplikace Dynamo. Použijte místo ní uzel UI ExportToSAT.“.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.geometry_importfromsat_deprecated">
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato metoda je vyřazena a bude odebrána v budoucí verzi aplikace Dynamo. Použijte přetíženou metodu, která určuje mm jako jednotku.“.</summary>
@@ -5615,7 +5301,7 @@
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci Uzly sítě používají 32bitovou přesnost (7 desetinných míst), což může vést k chybám zaokrouhlení u velkých čísel nebo čísel se více než 7 desetinnými místy. Za účelem dosažení vyšší přesnosti (64 bitů, 15 desetinných míst) použijte uzly z knihovny Geometrie.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ModelerExtentsExceeded">
-            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Byl překročen povolený rozsah modelu, zvažte výběr menších hodnot.“</summary>
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Byl překročen povolený rozsah modelu, zvažte výběr menších vstupních hodnot.“</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.NoImplementationException">
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Nebyla nalezena žádná implementace objektu IGeometryFactory. Ujistěte se, že je objekt ProtoGeometry.config správně nakonfigurován.“.</summary>
@@ -5668,6 +5354,9 @@
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.polycurve_offset_deprecated">
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato metoda je vyřazena a bude odebrána v budoucí verzi aplikace Dynamo. Použijte místo ní metodu PolyCurve.OffsetMany.“.</summary>
         </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.PolyCurveDirectionalityInfoMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Směr objektu PolyCurve byl kvůli konzistenci aktualizován.“. Tato změna může tento uzel v grafech starších než 4.0 rozložit. Chcete-li zachovat starší chování, nastavte vlastnost DefaultEnableLegacyPolyCurveBehavior v souboru DynamoPreferences.xml na hodnotu true.</summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.polygon_points_deprecated">
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato vlastnost je vyřazena a bude odebrána v budoucí verzi aplikace Dynamo. Použijte místo ní vlastnost PolyCurve.Points.“.</summary>
         </member>
@@ -5682,9 +5371,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.solid_bysweep_deprecated">
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato metoda je vyřazena a bude odebrána v budoucí verzi aplikace Dynamo. Použijte místo ní metodu SolidBySweep(ICurveEntity profile, ICurveEntity path, bool cutEndOff).“.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.solid_unionall_deprecated">
-            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato metoda je vyřazena a bude odebrána v budoucí verzi aplikace Dynamo. Použijte místo ní metodu Solid.ByUnion.“.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.surface_bysweep_deprecated">
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato metoda je vyřazena a bude odebrána v budoucí verzi aplikace Dynamo. Použijte místo ní metodu SurfaceBySweep(ICurveEntity profile, ICurveEntity path, bool cutEndOff).“.</summary>

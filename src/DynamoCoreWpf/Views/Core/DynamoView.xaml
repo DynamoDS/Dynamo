@@ -365,7 +365,7 @@
                                       Header="{x:Static p:Resources.DynamoViewFileMenuGraphPropertiesGeneral}" />
                             <!-- Host properties panel to be implemented in Dynamo C4D later -->
                             <!--<MenuItem Name="advanced"
-                                      Header="{x:Static p:Resources.DynamoViewFileMenuGraphPropertiesAdvanced}" />-->                            
+                                      Header="{x:Static p:Resources.DynamoViewFileMenuGraphPropertiesAdvanced}" />-->
                         </MenuItem>
                         <Separator />
                         <MenuItem Name="exportMenu"
@@ -660,13 +660,7 @@
                     <MenuItem Name="ExtensionsMenu"
                               Focusable="False"
                               Header="{x:Static p:Resources.DynamoViewExtensionsMenu}"
-                              IsEnabled="True"
-                              Style="{StaticResource ExtensionsStyle}">
-                        <MenuItem.Icon>
-                            <Image Width="14"
-                                   Height="14"
-                                   Source="/DynamoCoreWpf;component/UI/Images/pin.png" />
-                        </MenuItem.Icon>
+                              IsEnabled="True">
                     </MenuItem>
 
                     <MenuItem Focusable="False"
@@ -1310,7 +1304,7 @@
                                                     </MultiDataTrigger.Conditions>
                                                     <!--  The value of the unsaved Workspace tab text field  -->
                                                     <Setter Property="Text" Value="Workspace" />
-                                                </MultiDataTrigger> 
+                                                </MultiDataTrigger>
                                                 <MultiDataTrigger>
                                                     <MultiDataTrigger.Conditions>
                                                         <Condition Binding="{Binding Converter={StaticResource WorkspaceTypeConverter}}" Value="{x:Type workspaces:CustomNodeWorkspaceModel}" />
