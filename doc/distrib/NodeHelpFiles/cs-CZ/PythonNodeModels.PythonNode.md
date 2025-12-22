@@ -1,5 +1,5 @@
 ## Podrobnosti
-Python Script will return the result of the node's inputs passed through an embedded python script. In the example below, a cube created from Cuboid.ByCorners is arrayed and translated by a Python script that loops through both X and Y. Double clicking the node will bring up an editor for the script.
+Skript jazyka Python vrátí výsledek vstupů uzlu procházejících vloženým skriptem jazyka Python. V níže uvedeném příkladu se krychle vytvořená uzlem Cuboid.ByCorners umístí do pole a přesune se pomocí skriptu jazyka Python, který ve smyčce prochází jak hodnoty X, tak hodnoty Y. Dvojitým kliknutím na uzel spustíte aplikaci editoru pro skript.
 ___
 ## Vzorový soubor
 

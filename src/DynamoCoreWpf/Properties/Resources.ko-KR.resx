@@ -3196,7 +3196,7 @@
     <value>업스트림 탐색</value>
   </data>
   <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
-    <value>다운스트림 탐색</value>
+    <value>수전 탐색</value>
   </data>
   <data name="ContextMenuNodeConnections" xml:space="preserve">
     <value>노드 연결</value>
