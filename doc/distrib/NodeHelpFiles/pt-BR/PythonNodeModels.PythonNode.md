@@ -1,5 +1,5 @@
 ## Em profundidade
-Python Script will return the result of the node's inputs passed through an embedded python script. In the example below, a cube created from Cuboid.ByCorners is arrayed and translated by a Python script that loops through both X and Y. Double clicking the node will bring up an editor for the script.
+O script Python retornará o resultado das entradas do nó passadas por um script Python integrado. No exemplo abaixo, um cubo criado com base em Cuboid.ByCorners é colocado em matriz e convertido por um script Python que efetua o loop através de X e Y. Clicar duas vezes no nó abrirá um editor para o script.
 ___
 ## Arquivo de exemplo
 

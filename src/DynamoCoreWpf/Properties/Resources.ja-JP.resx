@@ -3321,7 +3321,7 @@ Dynamo を再起動してアンインストールを完了します。
     <value>スプラッシュ画面を一時停止</value>
   </data>
   <data name="PreferencesViewShowStaticSplashScreenTooltip" xml:space="preserve">
-    <value>ロードの完了時にスプラッシュ画面を一時停止します。これにより、Dynamo の手動での起動、Autodesk Account へのサイン イン、または設定の読み込みを実行できます。</value>
+    <value>ロードの完了時にスプラッシュ画面を一時停止します。これにより、Dynamo の手動での起動、オートデスク アカウントへのサインイン、または設定の読み込みを実行できます。</value>
   </data>
   <data name="LogoutMenuItemText" xml:space="preserve">
     <value>サインアウト</value>
@@ -3767,7 +3767,7 @@ Dynamo を再起動してアンインストールを完了します。
     <value>このバージョンとお使いの設定の互換性は検証されていません。想定どおりに機能しない可能性があります。</value>
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
-    <value>Autodesk Identity Manager がシステムに設定されていないようです。すべての機能に完全にアクセスするには、Autodesk Identity Manager を使用して Autodesk Account にサインインしてください。
+    <value>Autodesk Identity Manager がシステムに設定されていないようです。すべての機能に完全にアクセスするには、Autodesk Identity Manager を使用してオートデスク アカウントにサインインしてください。
 #ダウンロードとインストール=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html をここで行うか、Autodesk Access からサインインしてください。</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
