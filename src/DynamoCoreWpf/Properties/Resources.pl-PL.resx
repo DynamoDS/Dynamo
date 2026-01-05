@@ -3877,10 +3877,10 @@ Aby otworzyć ten wykres w dodatku Dynamo w wersji od 3.3 do 3.6.x, zainstaluj p
     <value>tutaj</value>
   </data>
   <data name="DynamoSplashScreen" xml:space="preserve">
-    <value>Dynamo Splash Screen</value>
+    <value>Ekran powitalny dodatku Dynamo</value>
   </data>
   <data name="DynamoSplashScreenFailed" xml:space="preserve">
-    <value>Failed to load Dynamo SplashScreen, please re-launch Dynamo</value>
+    <value>Nie można wczytać ekranu powitalnego dodatku Dynamo. Uruchom dodatek ponownie.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

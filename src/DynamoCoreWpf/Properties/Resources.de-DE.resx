@@ -3875,10 +3875,10 @@ Installieren Sie das PythonNet-Paket aus dem Package Manager, um dieses Diagramm
     <value>hier</value>
   </data>
   <data name="DynamoSplashScreen" xml:space="preserve">
-    <value>Dynamo Splash Screen</value>
+    <value>Dynamo-Startbildschirm</value>
   </data>
   <data name="DynamoSplashScreenFailed" xml:space="preserve">
-    <value>Failed to load Dynamo SplashScreen, please re-launch Dynamo</value>
+    <value>Fehler beim Laden des Dynamo-Startbildschirms. Starten Sie Dynamo neu</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
