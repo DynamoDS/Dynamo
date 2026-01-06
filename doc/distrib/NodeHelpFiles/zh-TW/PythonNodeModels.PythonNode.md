@@ -1,5 +1,5 @@
 ## 深入資訊
-Python Script will return the result of the node's inputs passed through an embedded python script. In the example below, a cube created from Cuboid.ByCorners is arrayed and translated by a Python script that loops through both X and Y. Double clicking the node will bring up an editor for the script.
+Python Script 會傳回節點的輸入通過嵌入的 Python 指令碼後的結果。在以下範例中，使用循環顯示 X 和 Y 的 Python 指令碼將從 Cuboid.ByCorners 建立的立方體排成陣列並平移。按兩下節點會顯示指令碼的編輯器。
 ___
 ## 範例檔案
 
