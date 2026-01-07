@@ -177,10 +177,8 @@ Python Script: reloading importlib.util";
             RunCurrentModel();
             CurrentDynamoModel.OnRequestPythonReset(PythonEngineManager.PythonNet3EngineName);
             
-            // Wait for all scheduler tasks to complete to ensure Python reset logging is finished
-            while (CurrentDynamoModel.Scheduler.ProcessNextTask(false))
-            {
-            }
+            // Run the model again after reset to trigger Python engine reload and logging
+            RunCurrentModel();
             
             foreach(var line in expectedOutput.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
