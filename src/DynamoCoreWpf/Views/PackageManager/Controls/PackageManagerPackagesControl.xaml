@@ -523,14 +523,11 @@
                                     </TextBlock>
                                       <!--DynamoTeam badge icon -->  
                                     <Image Grid.Column="1"
-                                           Width="18"
-                                           Height="18"
-                                           Margin="6,0,0,4"
+                                           Width="16"
+                                           Height="16"
+                                           Margin="6,0,0,3"
                                            VerticalAlignment="Center"
-                                           Source="/DynamoCoreWpf;component/UI/Images/default-node-icon.png"
-                                           RenderOptions.BitmapScalingMode="HighQuality"
-                                           SnapsToDevicePixels="True"
-                                           UseLayoutRounding="True"
+                                           Source="/DynamoCoreWpf;component/UI/Images/adsk-logo-16px.png"
                                            Visibility="{Binding IsPublishedByDynamoTeam, Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
                                     </Image>
                                 </Grid>
