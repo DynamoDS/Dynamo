@@ -173,8 +173,8 @@ Python Script: reloading importlib.util";
             var pythonNode = new PythonNode();
             CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(pythonNode);
             pythonNode.EngineName = PythonEngineManager.PythonNet3EngineName;
-            // Set a simple script so the Python engine actually executes
-            pythonNode.Script = "OUT = 1";
+            // Set a script that imports clr to ensure Python engine is fully initialized
+            pythonNode.Script = "import clr\nOUT = 1";
           
             RunCurrentModel();
             CurrentDynamoModel.OnRequestPythonReset(PythonEngineManager.PythonNet3EngineName);
