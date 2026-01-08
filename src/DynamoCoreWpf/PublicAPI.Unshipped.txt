@@ -1369,6 +1369,7 @@ Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.Hosts.get 
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsDeprecated.get -> bool
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsEnabledForInstall.get -> bool
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsOnwer.get -> bool
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsPublishedByDynamoTeam.get -> bool
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsSelectedVersionCompatible.get -> bool?
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsSelectedVersionCompatible.set -> void
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.LatestVersion.get -> string

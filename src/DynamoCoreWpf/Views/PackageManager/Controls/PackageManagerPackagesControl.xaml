@@ -485,37 +485,56 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <!--  Package Name  -->
-                                <TextBlock Name="packageName"
-                                           Grid.Column="0"
+                                <!--  Package Name + DynamoTeam badge-->                                
+                                <Grid x:Name="packageNameArea" Grid.Column="0" HorizontalAlignment="Stretch">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                      <!--Package Name-->  
+                                    <TextBlock Name="packageName"
+                                               Grid.Column="0"
+                                               VerticalAlignment="Center"
+                                               FontFamily="{StaticResource ArtifaktElementRegular}"
+                                               FontSize="14"
+                                               FontWeight="SemiBold"
+                                               MouseDown="PackageName_MouseDown"
+                                               Text="{Binding Path=Name}"
+                                               TextTrimming="CharacterEllipsis"
+                                               TextWrapping="NoWrap">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=IsDeprecated}" Value="True">
+                                                        <Setter Property="Foreground" Value="#999999" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Path=IsDeprecated}" Value="False">
+                                                        <Setter Property="Foreground" Value="{StaticResource PMForegroundColorBrush}" />
+                                                    </DataTrigger>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="TextDecorations" Value="Underline" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                        <TextBlock.ToolTip>
+                                            <ToolTip Content="{Binding Path=Name}" Style="{StaticResource GenericToolTipLight}" />
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                      <!--DynamoTeam badge icon -->  
+                                    <Image Grid.Column="1"
+                                           Width="18"
+                                           Height="18"
+                                           Margin="6,0,0,4"
                                            VerticalAlignment="Center"
-                                           FontFamily="{StaticResource ArtifaktElementRegular}"
-                                           FontSize="14"
-                                           FontWeight="SemiBold"
-                                           MouseDown="PackageName_MouseDown"
-                                           Text="{Binding Path=Name}"
-                                           TextTrimming="CharacterEllipsis"
-                                           TextWrapping="NoWrap">
-                                    <TextBlock.Style>
-                                        <Style TargetType="TextBlock">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Path=IsDeprecated}" Value="True">
-                                                    <Setter Property="Foreground" Value="#999999" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Path=IsDeprecated}" Value="False">
-                                                    <Setter Property="Foreground" Value="{StaticResource PMForegroundColorBrush}" />
-                                                </DataTrigger>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="TextDecorations" Value="Underline" />
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                    <TextBlock.ToolTip>
-                                        <ToolTip Content="{Binding Path=Name}" Style="{StaticResource GenericToolTipLight}" />
-                                    </TextBlock.ToolTip>
-                                </TextBlock>
-
+                                           Source="/DynamoCoreWpf;component/UI/Images/default-node-icon.png"
+                                           RenderOptions.BitmapScalingMode="HighQuality"
+                                           SnapsToDevicePixels="True"
+                                           UseLayoutRounding="True"
+                                           Visibility="{Binding IsPublishedByDynamoTeam, Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
+                                    </Image>
+                                </Grid>
+                                
                                 <!--  Tag Bubble  -->
                                 <Border Name="newPackageLabel"
                                         Grid.Column="1"
