@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -102,6 +103,14 @@ namespace Dynamo.Wpf.Utilities
                                        MessageBoxImage.Error);
                 return false;
             }
+        }
+
+        public static string GetUserDirectory()
+        {
+            return System.IO.Path.Combine(
+                Path.GetTempPath(),
+                "Dynamo",
+                "WebView2");
         }
     }
 }
