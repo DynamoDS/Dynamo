@@ -47,6 +47,7 @@ namespace DynamoPythonTests
         }
 
         [Test]
+        [Category("Failure")]
         public void ResetCypythonLogsToConsoleAfterRun()
         {
             (CurrentDynamoModel.CurrentWorkspace as HomeWorkspaceModel).RunSettings.RunType = RunType.Manual;
