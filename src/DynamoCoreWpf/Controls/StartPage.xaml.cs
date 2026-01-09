@@ -227,7 +227,7 @@ namespace Dynamo.UI.Controls
                 {
                     foreach (System.IO.DirectoryInfo directory in directories)
                     {
-                        //Make sure the folder's name is not "backup" and doesn't end with ".dependencies"
+                        // Make sure that the folder name is not "backup" and that it doesn't end with ".dependencies".
                         if (!directory.Name.Equals(Configurations.BackupFolderName) && !directory.Name.EndsWith(".dependencies", StringComparison.OrdinalIgnoreCase))
                         {
                             // Recursive call for each subdirectory.
@@ -235,7 +235,7 @@ namespace Dynamo.UI.Controls
                                 new SampleFileEntry(directory.Name, directory.FullName);
                             WalkDirectoryTree(directory, sampleFileEntry);
                             // Only add the directory entry if it contains .dyn files (either directly or in subdirectories)
-                            if (sampleFileEntry.Children != null && sampleFileEntry.Children.Any())
+                            if (sampleFileEntry.Children?.Any() == true)
                             {
                                 rootProperty.AddChildSampleFile(sampleFileEntry);
                             }
