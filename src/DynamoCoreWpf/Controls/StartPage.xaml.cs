@@ -16,6 +16,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NotificationObject = Dynamo.Core.NotificationObject;
 
 namespace Dynamo.UI.Controls
@@ -250,6 +251,12 @@ namespace Dynamo.UI.Controls
                 {
                     foreach (System.IO.FileInfo file in dynamoFiles)
                     {
+                        // Skip files that have Generative Design as the active linter
+                        if (IsGenerativeDesignFile(file.FullName))
+                        {
+                            continue;
+                        }
+
                         if (sampleFolderPath == null)
                         {
                             sampleFolderPath = Path.GetDirectoryName(file.FullName);
@@ -591,6 +598,84 @@ namespace Dynamo.UI.Controls
         private void HandleExternalUrl(StartPageListItem item)
         {
             System.Diagnostics.Process.Start(new ProcessStartInfo(item.ContextData) { UseShellExecute = true });
+        }
+
+        /// <summary>
+        /// Checks if a .dyn file has Generative Design as the active linter
+        /// </summary>
+        /// <param name="filePath">The file path to the dynamo file</param>
+        /// <returns>True if the file has Generative Design as the active linter, false otherwise</returns>
+        private bool IsGenerativeDesignFile(string filePath)
+        {
+            if (!filePath.ToLower().EndsWith(".dyn") && !filePath.ToLower().EndsWith(".dyf"))
+                return false;
+
+            try
+            {
+                var jsonObject = DeserializeJsonFile(filePath);
+                if (jsonObject == null)
+                    return false;
+
+                // Check if the file has a "Linting" property (case-insensitive)
+                object lintingObj = null;
+                foreach (var key in jsonObject.Keys)
+                {
+                    if (string.Equals(key, "Linting", StringComparison.OrdinalIgnoreCase))
+                    {
+                        lintingObj = jsonObject[key];
+                        break;
+                    }
+                }
+
+                if (lintingObj == null)
+                    return false;
+
+                // Handle both JObject (from Newtonsoft.Json) and Dictionary<string, object>
+                string activeLinter = null;
+                if (lintingObj is JObject lintingJObject)
+                {
+                    // JObject case - access properties directly
+                    var activeLinterToken = lintingJObject["activeLinter"];
+                    if (activeLinterToken != null)
+                    {
+                        activeLinter = activeLinterToken.ToString();
+                    }
+                }
+                else if (lintingObj is Dictionary<string, object> lintingDict)
+                {
+                    // Dictionary case
+                    if (lintingDict.TryGetValue("activeLinter", out object activeLinterObj))
+                    {
+                        activeLinter = activeLinterObj?.ToString();
+                    }
+                }
+                else
+                {
+                    // Try to convert to string and parse as JObject
+                    try
+                    {
+                        var lintingJObj = JObject.Parse(lintingObj.ToString());
+                        var activeLinterToken = lintingJObj["activeLinter"];
+                        if (activeLinterToken != null)
+                        {
+                            activeLinter = activeLinterToken.ToString();
+                        }
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                }
+
+                // Check if the active linter is "Generative Design"
+                return string.Equals(activeLinter, "Generative Design", StringComparison.OrdinalIgnoreCase);
+            }
+            catch (Exception ex)
+            {
+                // If we can't parse the file, assume it's not a Generative Design file
+                DynamoViewModel.Model.Logger.Log("Error checking linter in dynamo graph file: " + ex.Message);
+                return false;
+            }
         }
 
         /// <summary>
