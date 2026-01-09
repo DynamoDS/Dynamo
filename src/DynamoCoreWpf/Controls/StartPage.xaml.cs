@@ -226,14 +226,18 @@ namespace Dynamo.UI.Controls
                 {
                     foreach (System.IO.DirectoryInfo directory in directories)
                     {
-                        //Make sure the folder's name is not "backup"
-                        if (!directory.Name.Equals(Configurations.BackupFolderName))
+                        //Make sure the folder's name is not "backup" and doesn't end with ".dependencies"
+                        if (!directory.Name.Equals(Configurations.BackupFolderName) && !directory.Name.EndsWith(".dependencies", StringComparison.OrdinalIgnoreCase))
                         {
                             // Recursive call for each subdirectory.
                             SampleFileEntry sampleFileEntry =
                                 new SampleFileEntry(directory.Name, directory.FullName);
                             WalkDirectoryTree(directory, sampleFileEntry);
-                            rootProperty.AddChildSampleFile(sampleFileEntry);
+                            // Only add the directory entry if it contains .dyn files (either directly or in subdirectories)
+                            if (sampleFileEntry.Children != null && sampleFileEntry.Children.Any())
+                            {
+                                rootProperty.AddChildSampleFile(sampleFileEntry);
+                            }
                         }
                     }
                 }
