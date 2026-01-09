@@ -174,9 +174,15 @@ Python Script: reloading importlib.util";
             var pythonNode = new PythonNode();
             CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(pythonNode);
             pythonNode.EngineName = PythonEngineManager.PythonNet3EngineName;
+            // Set a script that imports clr to ensure Python engine is fully initialized
+            pythonNode.Script = "import clr\nOUT = 1";
           
             RunCurrentModel();
             CurrentDynamoModel.OnRequestPythonReset(PythonEngineManager.PythonNet3EngineName);
+            
+            // Run the model again after reset to trigger Python engine reload and logging
+            RunCurrentModel();
+            
             foreach(var line in expectedOutput.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
                 StringAssert.Contains(line, CurrentDynamoModel.Logger.LogText);
