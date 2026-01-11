@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -102,6 +103,18 @@ namespace Dynamo.Wpf.Utilities
                                        MessageBoxImage.Error);
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Returns the user data folder path for WebView2 (used in SplashScreen, HomePage, PackageManagerWizard)
+        /// </summary>
+        /// <returns>user data folder path for WebView2</returns>
+        internal static string GetUserDirectory()
+        {
+            return Path.Combine(
+                Path.GetTempPath(),
+                "Dynamo",
+                "WebView2");
         }
     }
 }
