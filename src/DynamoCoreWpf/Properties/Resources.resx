@@ -4200,10 +4200,10 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="PreferencesViewHideOutportsDescription" xml:space="preserve">
     <value>Hide unconnected output ports by default</value>
   </data>
-  <data name="PreferencesViewHidePythonEngineChangeNotifications" xml:space="preserve">
-    <value>Hide Python Engine change notifications</value>
+  <data name="PreferencesViewShowPythonEngineChangeNotifications" xml:space="preserve">
+    <value>Show Python Engine change notifications</value>
   </data>
-  <data name="PreferencesViewHidePythonEngineChangeNotificationsTooltip" xml:space="preserve">
+  <data name="PreferencesViewShowPythonEngineChangeNotificationsTooltip" xml:space="preserve">
     <value>CPython is no longer supported in Dynamo 4.0 or above and will be converted to the new default engine PythonNet3. Disable the toggle to hide all notifications about engine changes.</value>
   </data>
   <data name="MessageBoxDontShowAgainLabel" xml:space="preserve">
@@ -4227,5 +4227,11 @@ To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the
   </data>
   <data name="ToastHyperlinkPathText" xml:space="preserve">
     <value>here</value>
+  </data>
+  <data name="DynamoSplashScreen" xml:space="preserve">
+    <value>Dynamo Splash Screen</value>
+  </data>
+  <data name="DynamoSplashScreenFailed" xml:space="preserve">
+    <value>Failed to load Dynamo SplashScreen, please re-launch Dynamo</value>
   </data>
 </root>
