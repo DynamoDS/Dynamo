@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -135,7 +136,7 @@ namespace Dynamo.Models
         private readonly PathManager pathManager;
         private WorkspaceModel currentWorkspace;
         private Timer backupFilesTimer;
-        private Dictionary<Guid, string> backupFilesDict = new Dictionary<Guid, string>();
+        private ConcurrentDictionary<Guid, string> backupFilesDict = new ConcurrentDictionary<Guid, string>();
         internal readonly Stopwatch stopwatch = Stopwatch.StartNew();
 
         /// <summary>
@@ -2685,12 +2686,16 @@ namespace Dynamo.Models
 
             OnRequestDispatcherBeginInvoke(() =>
             {
-                // tempDict stores the list of backup files and their corresponding workspaces IDs
-                // when the last auto-save operation happens. Now the IDs will be used to know
-                // whether some workspaces have already been backed up. If so, those workspaces won't be
-                // backed up again.
-                var tempDict = new Dictionary<Guid, string>(backupFilesDict);
-                backupFilesDict.Clear();
+                // Get the current set of workspace GUIDs that need to be tracked
+                var currentWorkspaceGuids = new HashSet<Guid>(Workspaces.Select(w => w.Guid));
+                
+                // Remove entries for workspaces that no longer exist
+                var guidsToRemove = backupFilesDict.Keys.Where(guid => !currentWorkspaceGuids.Contains(guid)).ToList();
+                foreach (var guid in guidsToRemove)
+                {
+                    backupFilesDict.TryRemove(guid, out _);
+                }
+                
                 PreferenceSettings.BackupFiles.Clear();
                 foreach (var workspace in Workspaces)
                 {
@@ -2700,9 +2705,9 @@ namespace Dynamo.Models
                             !workspace.Notes.Any())
                             continue;
 
-                        if (tempDict.ContainsKey(workspace.Guid))
+                        if (backupFilesDict.ContainsKey(workspace.Guid))
                         {
-                            backupFilesDict.Add(workspace.Guid, tempDict[workspace.Guid]);
+                            // Workspace hasn't changed, reuse existing backup path
                             continue;
                         }
                     }
