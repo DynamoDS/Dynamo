@@ -114,7 +114,8 @@ namespace Dynamo.Wpf.Utilities
             return Path.Combine(
                 Path.GetTempPath(),
                 "Dynamo",
-                "WebView2");
+                "WebView2",
+                Guid.NewGuid().ToString("N"));
         }
     }
 }
