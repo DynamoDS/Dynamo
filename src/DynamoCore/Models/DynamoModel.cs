@@ -2689,7 +2689,9 @@ namespace Dynamo.Models
                 // Get the current set of workspace GUIDs that need to be tracked
                 var currentWorkspaceGuids = new HashSet<Guid>(Workspaces.Select(w => w.Guid));
                 
-                // Remove entries for workspaces that no longer exist
+                // Remove entries for workspaces that no longer exist.
+                // ToArray() is used to materialize the collection before removal to avoid
+                // potential issues with collection modification during enumeration.
                 var guidsToRemove = backupFilesDict.Keys.Where(guid => !currentWorkspaceGuids.Contains(guid)).ToArray();
                 foreach (var guid in guidsToRemove)
                 {
