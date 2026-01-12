@@ -39,7 +39,7 @@ jobs:
             Write-Error "DynamoCLI.exe was not found!"
           }
       - name: Cache Current Build
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: |
             ${{ github.workspace }}\Dynamo\bin\AnyCPU\Release
@@ -77,7 +77,7 @@ jobs:
             Write-Error "DynamoCLI.exe was not found!"
           }
       - name: Cache Master Build
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: ${{ github.workspace }}\master\bin\AnyCPU\Release
           key: ${{ github.run_id }}-${{ github.run_attempt }}-master
@@ -87,7 +87,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Restore Current Build
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           fail-on-cache-miss: true
           path: |
@@ -95,7 +95,7 @@ jobs:
             ${{ github.workspace }}\Dynamo\.github\scripts
           key: ${{ github.run_id }}-${{ github.run_attempt }}-current
       - name: Restore Master Build
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           fail-on-cache-miss: true
           path: ${{ github.workspace }}\master\bin\AnyCPU\Release
@@ -108,7 +108,7 @@ jobs:
           .\bin_diff.ps1 ${{ github.workspace }}\master\bin\AnyCPU\Release, ${{ github.workspace }}\Dynamo\bin\AnyCPU\Release -src ${{ github.job }}
           Get-Content -Path result.txt | ? { $_ -ne "" } | Out-File -Path result.txt
       - name: Upload Binary Diff Result
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: bin_diff_result
           path: ${{ github.workspace }}\Dynamo\.github\scripts\result.txt
@@ -121,7 +121,7 @@ jobs:
           mkdir -p ${{ github.workspace }}/pr
           echo ${{ github.event.number }} > ${{ github.workspace }}/pr/pr_number.txt
       - name: Upload PR Data
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: pr_data
           path: ${{ github.workspace }}/pr

@@ -83,7 +83,7 @@
         {
           "Id": "30ec0136279d47edacf06a1f0ae3d56a",
           "Name": "range",
-          "Description": "Od 0 do 10",
+          "Description": "0..10",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -346,7 +346,7 @@
         {
           "Id": "59d88e24f9a74bff9929b2d9143d29c8",
           "Name": "function",
-          "Description": "DesignScript.Builtin.Get.ValueAtIndex(wyjście, 0)",
+          "Description": "DesignScript.Builtin.Get.ValueAtIndex(output, 0)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -355,7 +355,7 @@
         {
           "Id": "0ab66368430d41f2a3854c7b4ff9da7a",
           "Name": "function",
-          "Description": "DesignScript.Builtin.Get.ValueAtIndex(wyjście, 1)",
+          "Description": "DesignScript.Builtin.Get.ValueAtIndex(output, 1)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -364,7 +364,7 @@
         {
           "Id": "6a006dc2cf674e36a423c6ef2d9aba6c",
           "Name": "function",
-          "Description": "DesignScript.Builtin.Get.ValueAtIndex(wyjście, 2)",
+          "Description": "DesignScript.Builtin.Get.ValueAtIndex(output, 2)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
