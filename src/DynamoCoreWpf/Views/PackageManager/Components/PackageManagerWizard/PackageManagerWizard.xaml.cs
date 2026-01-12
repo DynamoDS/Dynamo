@@ -542,12 +542,58 @@ namespace Dynamo.UI.Views
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
 
-            string jsonPayload = JsonSerializer.Serialize(payload, options);
+            var jsonPayload = JsonSerializer.Serialize(payload, options);
+
+            // Include payload.versions[*].compatibility_matrix for the "Copy from" dropdown.
+            try
+            {
+                var header = await TryGetPackageHeaderAsync(vm);
+                if (header != null)
+                {
+                    var rootObj = JObject.Parse(jsonPayload);
+                    if (rootObj["payload"] is JObject payloadObj)
+                    {                        
+                        payloadObj["versions"] = header.versions != null ? JToken.FromObject(header.versions) : new JArray();
+                    }
+
+                    jsonPayload = rootObj.ToString(Newtonsoft.Json.Formatting.None);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage(ex);
+            }
+
 
             if (dynWebView?.CoreWebView2 != null)   
             {
                 await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveUpdatedPackageDetails({jsonPayload});");
             }
+        }
+
+        private async Task<Greg.Responses.PackageHeader> TryGetPackageHeaderAsync(PublishPackageViewModel vm)
+        {
+            var pmClientVm = vm?.DynamoViewModel?.PackageManagerClientViewModel;
+            var pkgName = vm?.Package?.Name ?? vm?.Name;
+            if (string.IsNullOrWhiteSpace(pkgName) || pmClientVm == null) return null;
+
+            var cachedHeader = pmClientVm.CachedPackageList?.FirstOrDefault(x => x.Name == pkgName)?.Header;
+            if (cachedHeader != null) return cachedHeader;
+
+            if (pmClientVm.Model != null && !pmClientVm.Model.NoNetworkMode)
+            {
+                try
+                {
+                    await Task.Run(() => pmClientVm.ListAll());
+                    return pmClientVm.CachedPackageList?.FirstOrDefault(x => x.Name == pkgName)?.Header;
+                }
+                catch
+                {
+                    // ignore
+                }
+            }
+
+            return null;
         }
 
         private async void UpdateRetainFolderStructureFlag(bool flag)
