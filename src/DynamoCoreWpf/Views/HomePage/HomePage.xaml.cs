@@ -137,7 +137,7 @@ namespace Dynamo.UI.Views
         /// <returns></returns>
         private static string GetUserDirectory()
         {
-            return WebView2Utilities.GetUserDirectory();
+            return WebView2Utilities.GetTempDirectory();
         }
 
         private async void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)

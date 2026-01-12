@@ -342,7 +342,7 @@ namespace Dynamo.UI.Views
         /// <returns></returns>
         private string GetUserDirectory()
         {
-            return WebView2Utilities.GetUserDirectory();
+            return WebView2Utilities.GetTempDirectory();
         }
 
         protected override async void OnContentRendered(EventArgs e)

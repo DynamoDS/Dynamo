@@ -109,7 +109,7 @@ namespace Dynamo.Wpf.Utilities
         /// Returns the user data folder path for WebView2 (used in SplashScreen, HomePage, PackageManagerWizard)
         /// </summary>
         /// <returns>user data folder path for WebView2</returns>
-        internal static string GetUserDirectory()
+        internal static string GetTempDirectory()
         {
             return Path.Combine(
                 Path.GetTempPath(),

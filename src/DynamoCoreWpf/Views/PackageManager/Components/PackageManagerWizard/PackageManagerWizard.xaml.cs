@@ -1007,7 +1007,7 @@ namespace Dynamo.UI.Views
         /// <returns></returns>
         private static string GetUserDirectory()
         {
-            return WebView2Utilities.GetUserDirectory();
+            return WebView2Utilities.GetTempDirectory();
         }
 
         /// <summary>
