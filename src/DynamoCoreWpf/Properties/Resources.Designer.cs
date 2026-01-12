@@ -1004,7 +1004,7 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("CopyToClipboardTooltip", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Python Engine Change.
         /// </summary>
@@ -1013,7 +1013,7 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("CPython3EngineNotificationMessageBoxHeader", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to This graph includes CPython nodes, which are no longer supported in Dynamo 4.0. Saving will convert them to PythonNet3, the new default engine.
         ///To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the Package Manager..
@@ -1023,7 +1023,7 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("CPython3EngineNotificationMessageBoxText", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to https://dynamobim.org/pythonnet3-a-new-dynamo-python-to-fix-everything/.
         /// </summary>
@@ -1457,6 +1457,24 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoShowFileTrustWarning {
             get {
                 return ResourceManager.GetString("DynamoShowFileTrustWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo Splash Screen.
+        /// </summary>
+        public static string DynamoSplashScreen {
+            get {
+                return ResourceManager.GetString("DynamoSplashScreen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load Dynamo SplashScreen, please re-launch Dynamo.
+        /// </summary>
+        public static string DynamoSplashScreenFailed {
+            get {
+                return ResourceManager.GetString("DynamoSplashScreenFailed", resourceCulture);
             }
         }
         
@@ -4490,7 +4508,7 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("MessageAlreadyInstallDynamo", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Don&apos;t show this again.
         /// </summary>
@@ -5580,6 +5598,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Not connected to the internet..
+        /// </summary>
+        public static string OfflineStatusTooltip {
+            get {
+                return ResourceManager.GetString("OfflineStatusTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OK.
         /// </summary>
         public static string OKButton {
@@ -5753,6 +5780,15 @@ namespace Dynamo.Wpf.Properties {
         public static string OneAssemblyWasLoadedSeveralTimesErrorMessage {
             get {
                 return ResourceManager.GetString("OneAssemblyWasLoadedSeveralTimesErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connected to the internet..
+        /// </summary>
+        public static string OnlineStatusTooltip {
+            get {
+                return ResourceManager.GetString("OnlineStatusTooltip", resourceCulture);
             }
         }
         
@@ -8353,24 +8389,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hide Python Engine change notifications.
-        /// </summary>
-        public static string PreferencesViewHidePythonEngineChangeNotifications {
-            get {
-                return ResourceManager.GetString("PreferencesViewHidePythonEngineChangeNotifications", resourceCulture);
-            }
-        }
-
-         /// <summary>
-        ///   Looks up a localized string similar to CPython is no longer supported in Dynamo 4.0 or above and will be converted to the new default engine PythonNet3. Disable the toggle to hide all notifications about engine changes..
-        /// </summary>
-        public static string PreferencesViewHidePythonEngineChangeNotificationsTooltip {
-            get {
-                return ResourceManager.GetString("PreferencesViewHidePythonEngineChangeNotificationsTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to When toggled on, file names of exported images include date and time of export..
         /// </summary>
         public static string PreferencesViewIncludeTimestampExportPathTooltip {
@@ -8529,6 +8547,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewShowPreviewBubbles {
             get {
                 return ResourceManager.GetString("PreferencesViewShowPreviewBubbles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Python Engine change notifications.
+        /// </summary>
+        public static string PreferencesViewShowPythonEngineChangeNotifications {
+            get {
+                return ResourceManager.GetString("PreferencesViewShowPythonEngineChangeNotifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CPython is no longer supported in Dynamo 4.0 or above and will be converted to the new default engine PythonNet3. Disable the toggle to hide all notifications about engine changes..
+        /// </summary>
+        public static string PreferencesViewShowPythonEngineChangeNotificationsTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesViewShowPythonEngineChangeNotificationsTooltip", resourceCulture);
             }
         }
         
@@ -11153,24 +11189,6 @@ namespace Dynamo.Wpf.Properties {
         public static string ZoomLevel {
             get {
                 return ResourceManager.GetString("ZoomLevel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Connected to the internet..
-        /// </summary>
-        public static string OnlineStatusTooltip {
-            get {
-                return ResourceManager.GetString("OnlineStatusTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Not connected to the internet..
-        /// </summary>
-        public static string OfflineStatusTooltip {
-            get {
-                return ResourceManager.GetString("OfflineStatusTooltip", resourceCulture);
             }
         }
     }

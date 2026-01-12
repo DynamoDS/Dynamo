@@ -2878,8 +2878,6 @@ Dynamo.ViewModels.PreferencesViewModel.GroupStyleFontSizeList.set -> void
 Dynamo.ViewModels.PreferencesViewModel.HideAutocompleteMethodOptions.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.HideNodesBelowSpecificConfidenceLevelIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.HideNodesBelowSpecificConfidenceLevelIsChecked.set -> void
-Dynamo.ViewModels.PreferencesViewModel.HidePythonAutoMigrationNotificationIsChecked.get -> bool
-Dynamo.ViewModels.PreferencesViewModel.HidePythonAutoMigrationNotificationIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.HostGenericScaleUnits.get -> string
 Dynamo.ViewModels.PreferencesViewModel.importSettings(string filePath) -> bool
 Dynamo.ViewModels.PreferencesViewModel.importSettingsContent(string content) -> bool
@@ -2963,6 +2961,8 @@ Dynamo.ViewModels.PreferencesViewModel.ShowDefaultGroupDescription.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowDefaultGroupDescription.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowEdges.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowEdges.set -> void
+Dynamo.ViewModels.PreferencesViewModel.ShowPythonAutoMigrationNotificationIsChecked.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.ShowPythonAutoMigrationNotificationIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.UnconnectedOutputsCollapsed.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.UnconnectedOutputsCollapsed.set -> void
 Dynamo.ViewModels.PreferencesViewModel.UseRenderInstancing.get -> bool
@@ -4741,6 +4741,8 @@ static Dynamo.Wpf.Properties.Resources.DownloadWarningMessageBoxTitle.get -> str
 static Dynamo.Wpf.Properties.Resources.DuplicateFilesInPublishWarningMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.DuplicateFilesInPublishWarningTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoShowFileTrustWarning.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoSplashScreenFailed.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoSplashScreen.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoUpdateAvailableToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewCancelButtonTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewContextMenuClearLog.get -> string
@@ -5500,8 +5502,8 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralTab.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGroupStylesHeader.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewHideInportsDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewHideOutportsDescription.get -> string
-static Dynamo.Wpf.Properties.Resources.PreferencesViewHidePythonEngineChangeNotifications.get -> string
-static Dynamo.Wpf.Properties.Resources.PreferencesViewHidePythonEngineChangeNotificationsTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewShowPythonEngineChangeNotifications.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewShowPythonEngineChangeNotificationsTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewIncludeTimestampExportPathTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewLanguageLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewLanguageSwitchHelp.get -> string

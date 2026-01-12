@@ -787,9 +787,9 @@
                                                       Width="{StaticResource ToggleButtonWidth}"
                                                       Height="{StaticResource ToggleButtonHeight}"
                                                       VerticalAlignment="Center"
-                                                      IsChecked="{Binding Path=HidePythonAutoMigrationNotificationIsChecked}"
+                                                      IsChecked="{Binding Path=ShowPythonAutoMigrationNotificationIsChecked}"
                                                       Style="{StaticResource EllipseToggleButton1}"/>
-                                        <Label Content="{x:Static p:Resources.PreferencesViewHidePythonEngineChangeNotifications}"
+                                        <Label Content="{x:Static p:Resources.PreferencesViewShowPythonEngineChangeNotifications}"
                                                VerticalAlignment="Center"
                                                Margin="10,0,0,0"
                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
@@ -803,7 +803,7 @@
                                                    Style="{StaticResource QuestionIconClickable}"
                                                    ToolTipService.ShowDuration="30000">
                                                 <Image.ToolTip>
-                                                    <ToolTip Content="{x:Static p:Resources.PreferencesViewHidePythonEngineChangeNotificationsTooltip}"
+                                                    <ToolTip Content="{x:Static p:Resources.PreferencesViewShowPythonEngineChangeNotificationsTooltip}"
                                                              Style="{StaticResource GenericToolTipLight}"/>
                                                 </Image.ToolTip>
                                             </Image>
