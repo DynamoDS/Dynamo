@@ -2690,15 +2690,15 @@ namespace Dynamo.Models
                 var currentWorkspaceGuids = new HashSet<Guid>(Workspaces.Select(w => w.Guid));
                 
                 // Remove entries for workspaces that no longer exist
-                var guidsToRemove = backupFilesDict.Keys.Where(guid => !currentWorkspaceGuids.Contains(guid)).ToList();
+                var guidsToRemove = backupFilesDict.Keys.Where(guid => !currentWorkspaceGuids.Contains(guid)).ToArray();
                 foreach (var guid in guidsToRemove)
                 {
                     backupFilesDict.TryRemove(guid, out _);
                 }
                 
-                PreferenceSettings.BackupFiles.Clear();
                 foreach (var workspace in Workspaces)
                 {
+                    // Skip workspaces that don't need backup
                     if (!workspace.HasUnsavedChanges)
                     {
                         if (workspace.Nodes.Any() &&
@@ -2707,16 +2707,20 @@ namespace Dynamo.Models
 
                         if (backupFilesDict.ContainsKey(workspace.Guid))
                         {
-                            // Workspace hasn't changed, reuse existing backup path
+                            // Workspace hasn't changed and already has a backup, skip saving
                             continue;
                         }
                     }
 
+                    // Create new backup for this workspace
                     var savePath = pathManager.GetBackupFilePath(workspace);
                     OnRequestWorkspaceBackUpSave(savePath, true);
                     backupFilesDict[workspace.Guid] = savePath;
                     Logger.Log(Resources.BackupSavedMsg + ": " + savePath);
                 }
+                
+                // Update PreferenceSettings with all current backup files
+                PreferenceSettings.BackupFiles.Clear();
                 PreferenceSettings.BackupFiles.AddRange(backupFilesDict.Values);
             });
         }
