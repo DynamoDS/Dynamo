@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -111,11 +112,15 @@ namespace Dynamo.Wpf.Utilities
         /// <returns>user data folder path for WebView2</returns>
         internal static string GetTempDirectory()
         {
-            return Path.Combine(
+            // Create a temp folder unique to this Dynamo instance based on process id
+            string instanceId = Process.GetCurrentProcess().Id.ToString();
+            string tmpDataFolder = Path.Combine(
                 Path.GetTempPath(),
                 "Dynamo",
                 "WebView2",
-                Guid.NewGuid().ToString("N"));
+                $"instance_{instanceId}"
+            );
+            return tmpDataFolder;
         }
     }
 }
