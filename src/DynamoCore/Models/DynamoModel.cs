@@ -136,7 +136,7 @@ namespace Dynamo.Models
         private readonly PathManager pathManager;
         private WorkspaceModel currentWorkspace;
         private Timer backupFilesTimer;
-        private ConcurrentDictionary<Guid, string> backupFilesDict = new ConcurrentDictionary<Guid, string>();
+        private readonly ConcurrentDictionary<Guid, string> backupFilesDict = new ConcurrentDictionary<Guid, string>();
         internal readonly Stopwatch stopwatch = Stopwatch.StartNew();
 
         /// <summary>
