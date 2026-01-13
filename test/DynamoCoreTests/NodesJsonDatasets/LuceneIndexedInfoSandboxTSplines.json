@@ -12678,17 +12678,17 @@
     "Group": 3,
     "SearchKeywords": []
   },
-  {
-    "Name": "QuantitiesContainingUnit",
-    "Parameters": "",
-    "FullName": "DynamoUnits.DynamoUnits.Unit.QuantitiesContainingUnit",
-    "FullCategoryName": "Core.Unit",
-    "CreationName": "DynamoUnits.Unit.QuantitiesContainingUnit",
-    "Description": "///",
-    "ElementType": 65537,
-    "Group": 3,
-    "SearchKeywords": []
-  },
+    {
+        "Name": "QuantitiesContainingUnit",
+        "Parameters": "",
+        "FullName": "DynamoUnits.DynamoUnits.Unit.QuantitiesContainingUnit",
+        "FullCategoryName": "Core.Unit",
+        "CreationName": "DynamoUnits.Unit.QuantitiesContainingUnit",
+        "Description": "Gets all the Quantity objects which contain a Unit.",
+        "ElementType": 65537,
+        "Group": 3,
+        "SearchKeywords": []
+    },
   {
     "Name": "ByTypeID",
     "Parameters": "",
