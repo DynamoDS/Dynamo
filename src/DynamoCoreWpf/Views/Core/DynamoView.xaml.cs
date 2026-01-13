@@ -1589,7 +1589,11 @@ namespace Dynamo.Controls
         {
             var workspace = this.ChildOfType<WorkspaceView>();
             if (workspace != null)
+            {
                 workspace.HideAllPopUp(obj);
+                workspace.DestroyPortContextMenu();
+            }
+
         }
 
         private void TrackStartupAnalytics()
