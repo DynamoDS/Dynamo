@@ -43,9 +43,9 @@ namespace DynamoUnits
         }
 
         /// <summary>
-        /// Gets all Quantity objects which contain a Unit. 
+        /// Gets all the Quantity objects which contain a Unit. 
         /// </summary>
-        /// /// <returns name="Quantity[]">List of Quantities</returns>
+        /// <returns name="Quantity[]">List of Quantities</returns>
         public IEnumerable<Quantity> QuantitiesContainingUnit
         {
             get

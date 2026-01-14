@@ -3871,10 +3871,10 @@ Pour ouvrir ce graphique dans Dynamo 3.3–3.6.x: installez le package PythonNet
     <value>ici</value>
   </data>
   <data name="DynamoSplashScreen" xml:space="preserve">
-    <value>Dynamo Splash Screen</value>
+    <value>Écran de démarrage Dynamo</value>
   </data>
   <data name="DynamoSplashScreenFailed" xml:space="preserve">
-    <value>Failed to load Dynamo SplashScreen, please re-launch Dynamo</value>
+    <value>Échec du chargement de l'écran de démarrage de Dynamo, veuillez relancer Dynamo</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
