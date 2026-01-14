@@ -587,9 +587,9 @@ namespace Dynamo.UI.Views
                     await Task.Run(() => pmClientVm.ListAll());
                     return pmClientVm.CachedPackageList?.FirstOrDefault(x => x.Name == pkgName)?.Header;
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // ignore
+                    LogMessage(ex);
                 }
             }
 
