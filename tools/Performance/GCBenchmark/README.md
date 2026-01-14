@@ -87,7 +87,7 @@ The `CLRContainerTraversal` and `ToggleScenario` tests are specifically designed
 
 - Tests dictionary access with FFI objects
 - Tests nested container traversal
-- Tests the True→False→True toggle pattern
+- Tests the True->False->True toggle pattern
 
 After implementing the fix for DYN-8717, these tests should show:
 - No significant performance regression for most scenarios (typically < 5% slowdown)
