@@ -90,5 +90,6 @@ The `CLRContainerTraversal` and `ToggleScenario` tests are specifically designed
 - Tests the True→False→True toggle pattern
 
 After implementing the fix for DYN-8717, these tests should show:
-- No significant performance regression (< 5% slowdown)
+- No significant performance regression for most scenarios (typically < 5% slowdown)
+- For CLR-backed container traversal scenarios (for example, `CLRContainerTraversal`), an increased overhead of approximately 12–18% slowdown is expected and acceptable due to the additional GC work introduced by the fix
 - Consistent execution times (low StdDev)
