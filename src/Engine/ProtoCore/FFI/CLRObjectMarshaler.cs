@@ -1383,7 +1383,8 @@ namespace ProtoFFI
             else if (obj.GetType().FullName == "DesignScript.Builtin.Dictionary")
             {
                 // Use reflection to get the internal ImmutableDictionary
-                var dField = obj.GetType().GetField("D", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                const string dictionaryInternalFieldName = "D";
+                var dField = obj.GetType().GetField(dictionaryInternalFieldName, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 if (dField != null)
                 {
                     var innerDict = dField.GetValue(obj);
