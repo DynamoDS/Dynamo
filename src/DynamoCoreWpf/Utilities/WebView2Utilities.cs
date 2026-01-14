@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Dynamo.Configuration;
 using Dynamo.Models;
 using Dynamo.Wpf.Properties;
 using DynamoUtilities;
@@ -113,13 +114,12 @@ namespace Dynamo.Wpf.Utilities
         internal static string GetTempDirectory()
         {
             // Create a temp folder unique to this Dynamo instance based on process id
-            string instanceId = Process.GetCurrentProcess().Id.ToString();
+            string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             string tmpDataFolder = Path.Combine(
-                Path.GetTempPath(),
-                "Dynamo",
-                "WebView2",
-                $"instance_{instanceId}"
-            );
+                localAppData,
+                "Temp",
+                Configurations.DynamoAsString,
+                "WebView2");
             return tmpDataFolder;
         }
     }
