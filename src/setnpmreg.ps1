@@ -15,15 +15,15 @@ function createNpmrcFile {
 function Test-UrlReachable {
     param ([string]$url)
     try {
-        $webClient = New-Object System.Net.WebClient
-        $webClient.DownloadString($url) | Out-Null
+        $request = [System.Net.WebRequest]::Create($url)
+        $request.Method = "HEAD"
+        $request.Timeout = 5000  # 5 seconds
+        $response = $request.GetResponse()
+        $response.Close()
         return $true
     }
     catch {
         return $false
-    }
-    finally {
-        if ($webClient) { $webClient.Dispose() }
     }
 }
 
