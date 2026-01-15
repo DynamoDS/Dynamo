@@ -1,7 +1,10 @@
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Dynamo.Configuration;
 using Dynamo.Models;
 using Dynamo.Wpf.Properties;
 using DynamoUtilities;
@@ -102,6 +105,22 @@ namespace Dynamo.Wpf.Utilities
                                        MessageBoxImage.Error);
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Returns the user data folder path for WebView2 (used in SplashScreen, HomePage, PackageManagerWizard)
+        /// </summary>
+        /// <returns>user data folder path for WebView2</returns>
+        internal static string GetTempDirectory()
+        {
+            // Create a temp folder unique to this Dynamo instance based on process id
+            string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string tmpDataFolder = Path.Combine(
+                localAppData,
+                "Temp",
+                Configurations.DynamoAsString,
+                "WebView2");
+            return tmpDataFolder;
         }
     }
 }
