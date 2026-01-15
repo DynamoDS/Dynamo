@@ -23,7 +23,6 @@ function Test-UrlReachable {
         return $true
     }
     catch {
-        Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Yellow
         return $false
     }
     finally {
@@ -31,20 +30,14 @@ function Test-UrlReachable {
     }
 }
 
-try {
-    Write-Host "Checking if adsk npm registry is reachable..." -ForegroundColor Blue
-    
-    if (Test-UrlReachable -url $adskNpmRegistry) {
-        Write-Host "adsk npm registry is reachable" -ForegroundColor Green
-        createNpmrcFile -registry $adskNpmRegistry
-        Write-Output "//npm.autodesk.com/artifactory/api/npm/:_authToken=`${NPM_TOKEN}" | Out-File -FilePath .npmrc -Encoding UTF8 -Append
-    }
-    else {
-        Write-Host "adsk npm registry is not reachable" -ForegroundColor Red
-        createNpmrcFile -registry $npmRegistry
-    }
+Write-Host "Checking if adsk npm registry is reachable..." -ForegroundColor Blue
+
+if (Test-UrlReachable -url $adskNpmRegistry) {
+    Write-Host "adsk npm registry is reachable" -ForegroundColor Green
+    createNpmrcFile -registry $adskNpmRegistry
+    Write-Output "//npm.autodesk.com/artifactory/api/npm/:_authToken=`${NPM_TOKEN}" | Out-File -FilePath .npmrc -Encoding UTF8 -Append
 }
-catch {
+else {
     Write-Host "adsk npm registry is not reachable" -ForegroundColor Red
     createNpmrcFile -registry $npmRegistry
 }
