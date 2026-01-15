@@ -14,16 +14,20 @@ function createNpmrcFile {
 
 function Test-UrlReachable {
     param ([string]$url)
+    $response = $null
     try {
         $request = [System.Net.WebRequest]::Create($url)
         $request.Method = "HEAD"
-        $request.Timeout = 5000  # 5 seconds
+        $request.Timeout = 20000  # 20 seconds
         $response = $request.GetResponse()
-        $response.Close()
         return $true
     }
     catch {
+        Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Yellow
         return $false
+    }
+    finally {
+        if ($response) { $response.Dispose() }
     }
 }
 
@@ -42,6 +46,5 @@ try {
 }
 catch {
     Write-Host "adsk npm registry is not reachable" -ForegroundColor Red
-    Write-Host "Error: $($_.Exception.Message)" -ForegroundColor Yellow
     createNpmrcFile -registry $npmRegistry
 }
