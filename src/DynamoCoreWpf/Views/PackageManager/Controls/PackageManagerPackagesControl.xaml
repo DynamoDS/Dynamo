@@ -529,6 +529,9 @@
                                            VerticalAlignment="Center"
                                            Source="/DynamoCoreWpf;component/UI/Images/adsk-logo-16px.png"
                                            Visibility="{Binding IsPublishedByDynamoTeam, Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
+                                        <Image.ToolTip>
+                                            <ToolTip Content="{x:Static p:Resources.PackageDetailsPackageApprovedTooltip}" Style="{StaticResource GenericToolTipLight}" />
+                                        </Image.ToolTip>
                                     </Image>
                                 </Grid>
                                 
