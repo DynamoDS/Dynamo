@@ -19,6 +19,7 @@ using System.Text.Json.Serialization;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Greg.Requests;
 using Newtonsoft.Json.Linq;
@@ -537,12 +538,12 @@ namespace Dynamo.UI.Views
             };
 
             var payload = new { payload = packageDetails };
-            var options = new JsonSerializerOptions
+            var jsonSerializerSettings = new JsonSerializerSettings
             {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
-
-            var jsonPayload = JsonSerializer.Serialize(payload, options);
+            var jsonSerializer = Newtonsoft.Json.JsonSerializer.Create(jsonSerializerSettings);
+            var rootObj = JObject.FromObject(payload, jsonSerializer);
 
             // Include payload.versions[*].compatibility_matrix for the "Copy from" dropdown.
             try
@@ -550,13 +551,12 @@ namespace Dynamo.UI.Views
                 var header = await TryGetPackageHeaderAsync(vm);
                 if (header != null)
                 {
-                    var rootObj = JObject.Parse(jsonPayload);
                     if (rootObj["payload"] is JObject payloadObj)
-                    {                        
-                        payloadObj["versions"] = header.versions != null ? JToken.FromObject(header.versions) : new JArray();
+                    {
+                        payloadObj["versions"] = header.versions != null
+                            ? JToken.FromObject(header.versions, jsonSerializer)
+                            : new JArray();
                     }
-
-                    jsonPayload = rootObj.ToString(Newtonsoft.Json.Formatting.None);
                 }
             }
             catch (Exception ex)
@@ -564,6 +564,7 @@ namespace Dynamo.UI.Views
                 LogMessage(ex);
             }
 
+            var jsonPayload = rootObj.ToString(Newtonsoft.Json.Formatting.None);
 
             if (dynWebView?.CoreWebView2 != null)   
             {
