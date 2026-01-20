@@ -19,6 +19,7 @@ using DynamoServices;
 using Dynamo.Wpf.Properties;
 using Xceed.Wpf.Toolkit;
 using Dynamo.Graph.Connectors;
+using Newtonsoft.Json;
 using Dynamo.ViewModels;
 
 namespace CoreNodeModelsWpf.Charts

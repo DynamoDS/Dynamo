@@ -19,6 +19,7 @@ using DynamoServices;
 using Dynamo.Wpf.Properties;
 using ProtoCore.DesignScriptParser;
 using Dynamo.Graph.Connectors;
+using Newtonsoft.Json;
 using Dynamo.ViewModels;
 
 namespace CoreNodeModelsWpf.Charts

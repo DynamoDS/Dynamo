@@ -16,6 +16,7 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Properties;
 using LiveChartsCore.SkiaSharpView.Painting;
+using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using SkiaSharp.Views.WPF;
 

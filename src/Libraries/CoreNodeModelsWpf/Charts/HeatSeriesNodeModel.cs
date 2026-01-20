@@ -18,6 +18,7 @@ using ProtoCore.AST.AssociativeAST;
 using DynamoServices;
 using Dynamo.Wpf.Properties;
 using Dynamo.Graph.Connectors;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Dynamo.ViewModels;
 

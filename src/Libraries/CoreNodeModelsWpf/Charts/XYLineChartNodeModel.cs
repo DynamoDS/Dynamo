@@ -19,6 +19,7 @@ using Dynamo.Wpf;
 using ProtoCore.AST.AssociativeAST;
 using DynamoServices;
 using Dynamo.Wpf.Properties;
+using Newtonsoft.Json;
 
 namespace CoreNodeModelsWpf.Charts
 {
