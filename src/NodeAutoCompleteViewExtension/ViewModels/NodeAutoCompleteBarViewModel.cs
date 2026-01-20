@@ -676,7 +676,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     throw new Exception("IDSDK missing or failed initialization.");
                 }
 
-                if (authProvider is IOAuth2AuthProvider oauth2AuthProvider && authProvider is IOAuth2AccessTokenProvider tokenprovider)
+                if (authProvider is IOAuth2AccessTokenProvider tokenprovider)
                 {
                     try
                     {
@@ -689,19 +689,23 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
 
                         var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(dynamoCoreWpfAssembly, endpoint);
-                        var client = new RestClient(uri);
-                        var request = new RestRequest(string.Empty, Method.Post);
                         var tkn = tokenprovider?.GetAccessToken();
                         if (string.IsNullOrEmpty(tkn))
                         {
                             throw new Exception("Authentication required.");
                         }
-                        request.AddHeader("Authorization", $"Bearer {tkn}");
-                        request = request.AddJsonBody(jsonRequest);
-                        request.RequestFormat = DataFormat.Json;
-                        RestResponse response = client.Execute(request);
 
-                        results = JsonConvert.DeserializeObject<T>(response.Content);
+                        using (var client = new HttpClient())
+                        {
+                            client.BaseAddress = new Uri(uri);
+                            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tkn);
+                            
+                            var content = new StringContent(jsonRequest, System.Text.Encoding.UTF8, "application/json");
+                            var response = client.PostAsync(string.Empty, content).Result;
+                            
+                            var responseContent = response.Content.ReadAsStringAsync().Result;
+                            results = JsonConvert.DeserializeObject<T>(responseContent);
+                        }
                     }
                     catch (Exception ex)
                     {

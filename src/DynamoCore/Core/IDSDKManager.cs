@@ -11,7 +11,7 @@ namespace Dynamo.Core
     /// <summary>
     /// The class to provide auth APIs for IDSDK related methods.
     /// </summary>
-    public class IDSDKManager : IOAuth2AuthProvider, IOAuth2AccessTokenProvider, IOAuth2UserIDProvider, IDisposable
+    public class IDSDKManager : IOAuth2AccessTokenProvider, IOAuth2UserIDProvider, IDisposable
     {
         /// <summary>
         /// Used by the auth provider to request authentication.
@@ -101,26 +101,9 @@ namespace Dynamo.Core
             }
         }
 
-        /// <summary>
-        /// Used by the auth provider to sign request with the authorized token.
-        /// </summary>
-        [Obsolete("This method is obsolete and will be removed in a future version. Use GetAccessToken() instead.")]
-        public void SignRequest(ref object m, object client)
-        {
-            throw new NotImplementedException("SignRequest method has been deprecated. Please use GetAccessToken() to get the bearer token.");
-        }
         public string GetAccessToken()
         {
             return IDSDK_GetToken();
-        }
-
-        /// <summary>
-        /// Checks if the user is logged in and adds the token to request header.
-        /// </summary>
-        [Obsolete("This method is obsolete and will be removed in a future version. Use GetAccessToken() instead.")]
-        internal void LoginRequest(ref object m, object client)
-        {
-            throw new NotImplementedException("LoginRequest method has been deprecated. Please use GetAccessToken() to get the bearer token.");
         }
 
         private void OnLoginStateChanged(LoginState state)

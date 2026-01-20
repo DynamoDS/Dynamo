@@ -508,7 +508,7 @@ namespace Dynamo.ViewModels
                     throw new Exception("IDSDK missing or failed initialization.");
                 }
 
-                if (authProvider is IOAuth2AuthProvider oauth2AuthProvider && authProvider is IOAuth2AccessTokenProvider tokenprovider)
+                if (authProvider is IOAuth2AccessTokenProvider tokenprovider)
                 {
                     var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, nodeAutocompleteMLEndpoint);
                     
