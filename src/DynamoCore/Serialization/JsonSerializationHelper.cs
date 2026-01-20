@@ -26,8 +26,8 @@ namespace Dynamo.Serialization
                 PropertyNameCaseInsensitive = false,
                 AllowTrailingCommas = true,
                 ReadCommentHandling = JsonCommentHandling.Skip,
-                // Use invariant culture for consistent serialization
-                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+                // Note: Using default encoder for security. If special characters need to be unescaped,
+                // evaluate security implications before changing to UnsafeRelaxedJsonEscaping.
             };
 
             // Add custom converters
@@ -164,8 +164,17 @@ namespace Dynamo.Serialization
         /// Parses a JSON string and returns a JsonDocument.
         /// The caller is responsible for disposing the returned JsonDocument.
         /// </summary>
+        /// <param name="json">The JSON string to parse</param>
+        /// <returns>A JsonDocument representing the parsed JSON</returns>
+        /// <exception cref="JsonException">Thrown when the JSON is malformed</exception>
+        /// <exception cref="ArgumentException">Thrown when json parameter is null or empty</exception>
         public static JsonDocument ParseJson(string json)
         {
+            if (string.IsNullOrEmpty(json))
+            {
+                throw new ArgumentException("JSON string cannot be null or empty", nameof(json));
+            }
+            
             return JsonDocument.Parse(json);
         }
 
