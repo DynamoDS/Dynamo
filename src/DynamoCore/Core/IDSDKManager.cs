@@ -5,7 +5,6 @@ using Dynamo.Configuration;
 using DynamoServices;
 using Greg;
 using Greg.AuthProviders;
-using RestSharp;
 
 namespace Dynamo.Core
 {
@@ -105,13 +104,10 @@ namespace Dynamo.Core
         /// <summary>
         /// Used by the auth provider to sign request with the authorized token.
         /// </summary>
-        public void SignRequest(ref RestRequest m, RestClient client)
+        [Obsolete("This method is obsolete and will be removed in a future version. Use GetAccessToken() instead.")]
+        public void SignRequest(ref object m, object client)
         {
-            if (LoginState == LoginState.LoggedOut && !Login())
-            {
-                throw new Exception("You must be logged in, to use the Package Manager.");
-            }
-            m.AddHeader("Authorization", $"Bearer {IDSDK_GetToken()}");
+            throw new NotImplementedException("SignRequest method has been deprecated. Please use GetAccessToken() to get the bearer token.");
         }
         public string GetAccessToken()
         {
@@ -121,15 +117,10 @@ namespace Dynamo.Core
         /// <summary>
         /// Checks if the user is logged in and adds the token to request header.
         /// </summary>
-        internal void LoginRequest(ref RestRequest m, RestClient client)
+        [Obsolete("This method is obsolete and will be removed in a future version. Use GetAccessToken() instead.")]
+        internal void LoginRequest(ref object m, object client)
         {
-            if (LoginState == LoginState.LoggedIn)
-            {
-                m.AddHeader("Authorization", $"Bearer {IDSDK_GetToken()}");          
-            }
-            else {
-                throw new Exception("You must be logged in, to use this service.");
-            }
+            throw new NotImplementedException("LoginRequest method has been deprecated. Please use GetAccessToken() to get the bearer token.");
         }
 
         private void OnLoginStateChanged(LoginState state)
