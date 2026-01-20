@@ -93,7 +93,8 @@ namespace DynamoPackagesAnalyzer.PackageSource
             var response = await httpClient.GetAsync($"download/{package._id}/{version.name}");
             ValidateResponse(response);
 
-            string output = Path.Combine(WorkspaceHelper.GetWorkspace().FullName, Path.GetFileName(response.RequestMessage.RequestUri.AbsolutePath));
+            string output = Path.Combine(WorkspaceHelper.GetWorkspace().FullName, 
+                response.RequestMessage?.RequestUri != null ? Path.GetFileName(response.RequestMessage.RequestUri.AbsolutePath) : $"package_{package._id}_{version.name}.zip");
             using (FileStream fileStream = new FileStream(output, FileMode.Create))
             {
                 var bytes = await response.Content.ReadAsByteArrayAsync();
