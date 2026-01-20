@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Controls;
@@ -12,7 +13,6 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels.GuidedTour;
 using Dynamo.Wpf.Views.GuidedTour;
-using Newtonsoft.Json;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.Wpf.UI.GuidedTour
@@ -305,7 +305,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
 
             //Deserialize all the information read from the json file
-            return JsonConvert.DeserializeObject<List<Guide>>(jsonString);
+            return JsonSerializer.Deserialize<List<Guide>>(jsonString);
         }
 
         /// <summary>
