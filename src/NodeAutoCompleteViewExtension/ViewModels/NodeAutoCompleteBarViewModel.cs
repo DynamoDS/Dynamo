@@ -34,7 +34,6 @@ using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using ProtoCore.Utils;
-using RestSharp;
 
 namespace Dynamo.NodeAutoComplete.ViewModels
 {

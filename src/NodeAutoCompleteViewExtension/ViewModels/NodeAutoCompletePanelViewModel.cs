@@ -19,7 +19,6 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
 using Greg;
 using Newtonsoft.Json;
-using RestSharp;
 using System.Windows;
 
 namespace Dynamo.NodeAutoComplete.ViewModels
