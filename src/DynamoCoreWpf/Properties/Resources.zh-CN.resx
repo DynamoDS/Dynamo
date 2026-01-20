@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -129,81 +129,6 @@
   <data name="AboutWindowUpToDate" xml:space="preserve">
     <value>(最新)</value>
   </data>
-  <data name="ActionMember" xml:space="preserve">
-    <value>操作</value>
-  </data>
-  <data name="AddButton" xml:space="preserve">
-    <value>添加</value>
-  </data>
-  <data name="AddCustomFileToPackageDialogTitle" xml:space="preserve">
-    <value>将自定义节点、库或 XML 添加至软件包...</value>
-  </data>
-  <data name="AddFileToPackageDialogTitle" xml:space="preserve">
-    <value>将文件添加到软件包...</value>
-  </data>
-  <data name="AddToLibraryButton" xml:space="preserve">
-    <value>添加</value>
-  </data>
-  <data name="SignInButtonContentToolTip" xml:space="preserve">
-    <value>登录以访问与桌面软件集成的联机服务。</value>
-  </data>
-  <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
-    <value>启用网络模式以便能够登录。</value>
-  </data>
-  <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
-    <value>Autodesk A360</value>
-  </data>
-  <data name="AutodeskSignIn" xml:space="preserve">
-    <value>Autodesk 登录</value>
-  </data>
-  <data name="Automatic" xml:space="preserve">
-    <value>自动</value>
-  </data>
-  <data name="BackgroundPreviewCreationFailureMessage" xml:space="preserve">
-    <value>在  Dynamo 中创建背景预览时出错。这可能是由于您的计算机上缺少图形资源。请参见日志了解详细信息。</value>
-  </data>
-  <data name="BackgroundPreviewDefaultName" xml:space="preserve">
-    <value>默认背景预览</value>
-  </data>
-  <data name="BackgroundPreviewName" xml:space="preserve">
-    <value>背景预览(_B)</value>
-  </data>
-  <data name="BrowserNodeButtonLabel" xml:space="preserve">
-    <value>浏览...</value>
-  </data>
-  <data name="BrowserNodeNoFileSelected" xml:space="preserve">
-    <value>未选择文件。</value>
-  </data>
-  <data name="BrowserWindowLoading" xml:space="preserve">
-    <value>正在加载...</value>
-  </data>
-  <data name="BuildVersionNonNegative" xml:space="preserve">
-    <value>您必须提供一个内部版本作为非负整数。</value>
-  </data>
-  <data name="CameraDataLoadError" xml:space="preserve">
-    <value>无法从文件加载相机位置信息。</value>
-  </data>
-  <data name="CameraDataSaveError" xml:space="preserve">
-    <value>无法保存相机位置信息。</value>
-  </data>
-  <data name="CancelButton" xml:space="preserve">
-    <value>取消</value>
-  </data>
-  <data name="CannotDownloadPackageMessageBoxTitle" xml:space="preserve">
-    <value>无法下载软件包</value>
-  </data>
-  <data name="BuiltInPackageConflictMessageBoxTitle" xml:space="preserve">
-    <value>软件包与一个或多个内置软件包冲突。</value>
-  </data>
-  <data name="PackagesInUseConflictMessageBoxTitle" xml:space="preserve">
-    <value>软件包与一个或多个正在使用的软件包冲突。</value>
-  </data>
-  <data name="LoadedPackagesConflictMessageBoxTitle" xml:space="preserve">
-    <value>软件包与一个或多个已加载的软件包冲突。</value>
-  </data>
-  <data name="CannotSubmitPackage" xml:space="preserve">
-    <value>该版本 {0} 无法提交软件包。若要提交软件包，您需要 Revit 等主体应用程序。</value>
-  </data>
   <data name="ChangeScaleFactorPromptCaptionText" xml:space="preserve">
     <value>为确保精确的几何图形渲染和计算，请选择要使用的几何图形大小范围:</value>
   </data>
@@ -237,24 +162,6 @@
   <data name="ChangeScaleFactorPromptWindowTitle" xml:space="preserve">
     <value>几何图形工作范围</value>
   </data>
-  <data name="CompactLayoutTitle" xml:space="preserve">
-    <value>精简</value>
-  </data>
-  <data name="ConsentFormADPAnalyticsCheckBoxContent" xml:space="preserve">
-    <value>我同意收集桌面产品数据以用于 Autodesk 分析计划。</value>
-  </data>
-  <data name="ContextAddGroupFromSelection" xml:space="preserve">
-    <value>将节点添加到组</value>
-  </data>
-  <data name="ContextCreateGroupFromSelection" xml:space="preserve">
-    <value>创建组</value>
-  </data>
-  <data name="ContextMenuCopy" xml:space="preserve">
-    <value>复制内容</value>
-  </data>
-  <data name="ContextMenuDelete" xml:space="preserve">
-    <value>删除</value>
-  </data>
   <data name="ContextMenuEditCustomNode" xml:space="preserve">
     <value>编辑自定义节点...</value>
   </data>
@@ -267,32 +174,14 @@
   <data name="ContextMenuGeometryView" xml:space="preserve">
     <value>切换到几何图形视图(_V)</value>
   </data>
-  <data name="ContextMenuHideGeometry" xml:space="preserve">
-    <value>隐藏几何体预览</value>
+  <data name="ContextCreateGroupFromSelection" xml:space="preserve">
+    <value>创建组</value>
   </data>
-  <data name="ContextMenuHideAllTextBubble" xml:space="preserve">
-    <value>隐藏所有文字数字</value>
+  <data name="ContextUnGroupFromSelection" xml:space="preserve">
+    <value>从组中删除</value>
   </data>
-  <data name="ContextMenuInsertCodeBlock" xml:space="preserve">
-    <value>插入代码块</value>
-  </data>
-  <data name="ContextMenuLacing" xml:space="preserve">
-    <value>连缀</value>
-  </data>
-  <data name="ContextMenuLacingAuto" xml:space="preserve">
-    <value>自动</value>
-  </data>
-  <data name="ContextMenuLacingCrossProduct" xml:space="preserve">
-    <value>叉积</value>
-  </data>
-  <data name="ContextMenuLacingFirst" xml:space="preserve">
-    <value>首先</value>
-  </data>
-  <data name="ContextMenuLacingLongest" xml:space="preserve">
-    <value>最长</value>
-  </data>
-  <data name="ContextMenuLacingShortest" xml:space="preserve">
-    <value>最短</value>
+  <data name="ContextAddGroupFromSelection" xml:space="preserve">
+    <value>将节点添加到组</value>
   </data>
   <data name="ContextMenuNodesFromGeometry" xml:space="preserve">
     <value>来自几何图形的节点(_S)</value>
@@ -306,118 +195,11 @@
   <data name="ContextMenuPan" xml:space="preserve">
     <value>平移(_N)</value>
   </data>
-  <data name="ContextMenuPaste" xml:space="preserve">
-    <value>粘贴</value>
-  </data>
   <data name="ContextMenuPublishCustomNode" xml:space="preserve">
     <value>发布该自定义节点...</value>
   </data>
-  <data name="ContextMenuShowGeometry" xml:space="preserve">
-    <value>显示几何图形预览</value>
-  </data>
-  <data name="ContextMenuShowAllTextBubble" xml:space="preserve">
-    <value>显示所有气泡文字</value>
-  </data>
-  <data name="ContextUnGroupFromSelection" xml:space="preserve">
-    <value>从组中删除</value>
-  </data>
-  <data name="ContinueButton" xml:space="preserve">
-    <value>继续</value>
-  </data>
-  <data name="ConverterMessageCurrentOffset" xml:space="preserve">
-    <value>当前偏移 X: {0}, Y: {1}</value>
-  </data>
-  <data name="ConverterMessageTransformOrigin" xml:space="preserve">
-    <value>变换原点 X: {0}, Y: {1}</value>
-  </data>
-  <data name="ConverterMessageZoom" xml:space="preserve">
-    <value>缩放: {0}</value>
-  </data>
-  <data name="CrashPromptDialogCopyButton" xml:space="preserve">
-    <value>复制</value>
-  </data>
-  <data name="CrashPromptDialogCrashMessage" xml:space="preserve">
-    <value>出现错误，Dynamo 已意外关闭。
-
-不用担心，可以选择保存工作。</value>
-  </data>
-  <data name="CrashPromptDialogDetailButton" xml:space="preserve">
-    <value>详细信息</value>
-  </data>
-  <data name="CrashPromptDialogOpenFolderButton" xml:space="preserve">
-    <value>打开文件夹</value>
-  </data>
-  <data name="CrashPromptDialogSubmitBugButton" xml:space="preserve">
-    <value>向 GitHub 提交错误</value>
-  </data>
-  <data name="CrashPromptDialogTitle" xml:space="preserve">
-    <value>{0} 已意外关闭</value>
-  </data>
-  <data name="CreateMember" xml:space="preserve">
-    <value>创建</value>
-  </data>
-  <data name="CustomNodePromptDescriptionTooltip" xml:space="preserve">
-    <value>用于帮助用户了解节点用途的相关说明。</value>
-  </data>
-  <data name="CustomNodePromptNameTooltip" xml:space="preserve">
-    <value>节点的唯一名称。</value>
-  </data>
-  <data name="CustomNodePropertyErrorMessageBoxTitle" xml:space="preserve">
-    <value>自定义节点特性时出错</value>
-  </data>
-  <data name="CustomNodePropertyWindowCategory" xml:space="preserve">
-    <value>附加模块类别</value>
-  </data>
-  <data name="CustomNodePropertyWindowDescription" xml:space="preserve">
-    <value>说明</value>
-  </data>
-  <data name="CustomNodePropertyWindowDescriptionHint" xml:space="preserve">
-    <value>自定义节点说明</value>
-  </data>
-  <data name="CustomNodePropertyWindowName" xml:space="preserve">
-    <value>名称</value>
-  </data>
-  <data name="CustomNodePropertyWindowNameHint" xml:space="preserve">
-    <value>自定义节点的名称</value>
-  </data>
-  <data name="CustomNodePropertyWindowLocationNote" xml:space="preserve">
-    <value>自定义节点将放置在库的“附加模块”部分中。</value>
-  </data>
-  <data name="CustomNodePropertyWindowTitle" xml:space="preserve">
-    <value>自定义节点特性</value>
-  </data>
-  <data name="CustomNodeTypeShortString" xml:space="preserve">
-    <value>DS</value>
-  </data>
-  <data name="DeprecatingPackageMessageBoxTitle" xml:space="preserve">
-    <value>弃用软件包</value>
-  </data>
-  <data name="DescriptionNeedMoreCharacters" xml:space="preserve">
-    <value>说明必须超过 10 个字符。</value>
-  </data>
-  <data name="DetailedLayoutTitle" xml:space="preserve">
-    <value>详细</value>
-  </data>
-  <data name="DirectoryNotFound" xml:space="preserve">
-    <value>未找到目录</value>
-  </data>
-  <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
-    <value>下载警告</value>
-  </data>
-  <data name="CopyToClipboardTooltip" xml:space="preserve">
-    <value>复制到剪贴板</value>
-  </data>
-  <data name="CopyToClipboardFailedMessage" xml:space="preserve">
-    <value>复制到剪贴板失败</value>
-  </data>
-  <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
-    <value>Dynamo 的更新可用，单击以安装。</value>
-  </data>
   <data name="DynamoViewCancelButtonTooltip" xml:space="preserve">
     <value>取消运行 (Shift + F5)</value>
-  </data>
-  <data name="DynamoViewContextMenuClearLog" xml:space="preserve">
-    <value>清除</value>
   </data>
   <data name="DynamoViewDebugMenu" xml:space="preserve">
     <value>调试(_B)</value>
@@ -485,17 +267,11 @@
   <data name="DynamoViewEditMenuCreateCustomNode" xml:space="preserve">
     <value>创建自定义节点(_T)</value>
   </data>
-  <data name="DynamoViewEditMenuCreateGroup" xml:space="preserve">
-    <value>创建组(_G)</value>
-  </data>
   <data name="DynamoViewEditMenuCreateNote" xml:space="preserve">
     <value>创建注释(_N)</value>
   </data>
-  <data name="DynamoViewEditMenuCreatePreset" xml:space="preserve">
-    <value>从所选项创建预设</value>
-  </data>
-  <data name="DynamoViewEditMenuDeletePreset" xml:space="preserve">
-    <value>删除预设</value>
+  <data name="DynamoViewEditMenuCreateGroup" xml:space="preserve">
+    <value>创建组(_G)</value>
   </data>
   <data name="DynamoViewEditMenuDeleteSelected" xml:space="preserve">
     <value>删除所选内容(_D)</value>
@@ -503,23 +279,14 @@
   <data name="DynamoViewEditMenuPaste" xml:space="preserve">
     <value>粘贴(_P)</value>
   </data>
-  <data name="DynamoViewEditMenuPresetsMenu" xml:space="preserve">
-    <value>预设</value>
-  </data>
   <data name="DynamoViewEditMenuRedo" xml:space="preserve">
     <value>恢复(_R)</value>
-  </data>
-  <data name="DynamoViewEditMenuRestorePreset" xml:space="preserve">
-    <value>恢复预设</value>
   </data>
   <data name="DynamoViewEditMenuSelectAll" xml:space="preserve">
     <value>全部选择(_S)</value>
   </data>
   <data name="DynamoViewEditMenuUnpinAllPreviewBubbles" xml:space="preserve">
     <value>取消固定所有预览气泡(_U)</value>
-  </data>
-  <data name="DynamoViewEditMenuSelectNeighbours" xml:space="preserve">
-    <value>选择相邻区域(_S)</value>
   </data>
   <data name="DynamoViewEditMenuUndo" xml:space="preserve">
     <value>撤销(_U)</value>
@@ -529,9 +296,6 @@
   </data>
   <data name="DynamoViewFileMenu" xml:space="preserve">
     <value>文件(F)</value>
-  </data>
-  <data name="DynamoViewFileMenuExport3DAsImage" xml:space="preserve">
-    <value>将背景三维预览输出为图像(_B)...</value>
   </data>
   <data name="DynamoViewFileMenuExportAsImage" xml:space="preserve">
     <value>将工作空间输出为图像(_W)...</value>
@@ -563,11 +327,11 @@
   <data name="DynamoViewFileMenuSaveAs" xml:space="preserve">
     <value>另存为(_A)...</value>
   </data>
-  <data name="DynamoViewHelpDictionary" xml:space="preserve">
-    <value>Dynamo 词典(_C)</value>
-  </data>
   <data name="DynamoViewHelpMenu" xml:space="preserve">
     <value>帮助(_H)</value>
+  </data>
+  <data name="DynamoViewDynamoMenuAbout" xml:space="preserve">
+    <value>关于(_A)</value>
   </data>
   <data name="DynamoViewHelpMenuDisplayStartPage" xml:space="preserve">
     <value>显示开始页面(_D)</value>
@@ -583,9 +347,6 @@
   </data>
   <data name="DynamoViewHelpMenuReportBug" xml:space="preserve">
     <value>报告错误(_R)</value>
-  </data>
-  <data name="DynamoViewHelpMenuShowInFolder" xml:space="preserve">
-    <value>在文件夹中显示</value>
   </data>
   <data name="DynamoViewHepMenuSamples" xml:space="preserve">
     <value>样例(_S)</value>
@@ -616,18 +377,6 @@
   </data>
   <data name="DynamoViewRunButtonTooltip" xml:space="preserve">
     <value>运行工作流程 (F5)</value>
-  </data>
-  <data name="DynamoViewRunButtonToolTipDisabled" xml:space="preserve">
-    <value>自动或者定期运行时运行不可用。</value>
-  </data>
-  <data name="DynamoViewSamplesMenuShowInFolder" xml:space="preserve">
-    <value>在文件夹中显示</value>
-  </data>
-  <data name="PreferencesViewEnableTSplineNodes" xml:space="preserve">
-    <value>启用 T 样条曲线节点</value>
-  </data>
-  <data name="PreferencesViewExperimentalLabel" xml:space="preserve">
-    <value>实验</value>
   </data>
   <data name="DynamoViewSettingMenu" xml:space="preserve">
     <value>设置(_S)</value>
@@ -662,6 +411,15 @@
   <data name="DynamoViewSettingMenuShowDataReportingDialog" xml:space="preserve">
     <value>数据收集协议(_D)</value>
   </data>
+  <data name="DynamoViewSettingShowRunPreview" xml:space="preserve">
+    <value>显示梯段预览</value>
+  </data>
+  <data name="ShowRunPreviewEnableToolTip" xml:space="preserve">
+    <value>自动运行时执行预览不可用</value>
+  </data>
+  <data name="ShowRunPreviewDisableToolTip" xml:space="preserve">
+    <value>预览图形执行状态。计划用于执行的节点将在图形中亮显</value>
+  </data>
   <data name="DynamoViewSettingMenuFractionalFoot" xml:space="preserve">
     <value>分数英尺</value>
   </data>
@@ -676,9 +434,6 @@
   </data>
   <data name="DynamoViewSettingMenuLowRenderPrecision" xml:space="preserve">
     <value>低</value>
-  </data>
-  <data name="DynamoViewSettingMenuManagePackagePath" xml:space="preserve">
-    <value>管理节点和软件包路径...</value>
   </data>
   <data name="DynamoViewSettingMenuMeter" xml:space="preserve">
     <value>米</value>
@@ -731,17 +486,11 @@
   <data name="DynamoViewSettingMenuVolumeUnits" xml:space="preserve">
     <value>体积显示单位</value>
   </data>
-  <data name="DynamoViewSettingShowRunPreview" xml:space="preserve">
-    <value>显示梯段预览</value>
+  <data name="PreferencesViewExperimentalLabel" xml:space="preserve">
+    <value>实验</value>
   </data>
-  <data name="DynamoViewSettingsMenuChangeScaleFactor" xml:space="preserve">
-    <value>几何图形缩放...</value>
-  </data>
-  <data name="DynamoViewSettingsMenuVisualizationSettings" xml:space="preserve">
-    <value>可视化设置</value>
-  </data>
-  <data name="DynamoViewToolbarExport3DButtonTooltip" xml:space="preserve">
-    <value>将背景预览导出为图像</value>
+  <data name="PreferencesViewEnableTSplineNodes" xml:space="preserve">
+    <value>启用 T 样条曲线节点</value>
   </data>
   <data name="DynamoViewToolbarExportButtonTooltip" xml:space="preserve">
     <value>将工作空间另存为图像</value>
@@ -769,9 +518,6 @@
   </data>
   <data name="DynamoViewViewMenuAlternateContextGeometry" xml:space="preserve">
     <value>在 {0} 中显示几何图形</value>
-  </data>
-  <data name="DynamoViewViewMenuAvailablePreviews" xml:space="preserve">
-    <value>可用预览(_A)</value>
   </data>
   <data name="DynamoViewViewMenuConnector" xml:space="preserve">
     <value>连接件(_C)</value>
@@ -806,6 +552,9 @@
   <data name="DynamoViewViewMenuPreviewNavigate" xml:space="preserve">
     <value>导航背景三维预览(_N)</value>
   </data>
+  <data name="DynamoViewViewMenuShowGrid" xml:space="preserve">
+    <value>显示帮助程序(_S)</value>
+  </data>
   <data name="DynamoViewViewMenuShowBackground3DPreview" xml:space="preserve">
     <value>正在显示背景三维预览</value>
   </data>
@@ -814,9 +563,6 @@
   </data>
   <data name="DynamoViewViewMenuShowConsole" xml:space="preserve">
     <value>显示控制台(_S)</value>
-  </data>
-  <data name="DynamoViewViewMenuShowGrid" xml:space="preserve">
-    <value>显示帮助程序(_S)</value>
   </data>
   <data name="DynamoViewViewMenuZoom" xml:space="preserve">
     <value>缩放(_Z)</value>
@@ -827,74 +573,390 @@
   <data name="DynamoViewViewMenuZoomOut" xml:space="preserve">
     <value>缩小(鼠标滚轮向上滚动)</value>
   </data>
-  <data name="EditAnnotationTitle" xml:space="preserve">
-    <value>编辑组标题</value>
+  <data name="ContextMenuDelete" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="NodeContextMenuHelp" xml:space="preserve">
+    <value>帮助...</value>
+  </data>
+  <data name="ContextMenuGroups" xml:space="preserve">
+    <value>组</value>
+  </data>
+  <data name="ContextMenu" xml:space="preserve">
+    <value>节点选项</value>
+  </data>
+  <data name="NodeAutocomplete" xml:space="preserve">
+    <value>结果排序依据</value>
+  </data>
+  <data name="ContextMenuLacing" xml:space="preserve">
+    <value>连缀</value>
+  </data>
+  <data name="ContextMenuLacingCrossProduct" xml:space="preserve">
+    <value>叉积</value>
+  </data>
+  <data name="ContextMenuLacingFirst" xml:space="preserve">
+    <value>首先</value>
+  </data>
+  <data name="ContextMenuLacingLongest" xml:space="preserve">
+    <value>最长</value>
+  </data>
+  <data name="ContextMenuLacingShortest" xml:space="preserve">
+    <value>最短</value>
+  </data>
+  <data name="NodeContextMenuPreview" xml:space="preserve">
+    <value>预览几何图形</value>
+  </data>
+  <data name="NodeContextMenuRenameNode" xml:space="preserve">
+    <value>重命名</value>
+  </data>
+  <data name="NodeContextMenuShowLabels" xml:space="preserve">
+    <value>显示标签</value>
+  </data>
+  <data name="NodeHelpWindowNodeCategory" xml:space="preserve">
+    <value>类别</value>
+  </data>
+  <data name="NodeHelpWindowNodeDescription" xml:space="preserve">
+    <value>说明</value>
+  </data>
+  <data name="NodeHelpWindowNodeInput" xml:space="preserve">
+    <value>输入</value>
+  </data>
+  <data name="NodeHelpWindowNodeOutput" xml:space="preserve">
+    <value>输出</value>
+  </data>
+  <data name="NodeHelpWindowNodeType" xml:space="preserve">
+    <value>节点类型</value>
+  </data>
+  <data name="StartPageAsk" xml:space="preserve">
+    <value>询问</value>
+  </data>
+  <data name="StartPageCode" xml:space="preserve">
+    <value>代码</value>
+  </data>
+  <data name="StartPageBackupOnCrash" xml:space="preserve">
+    <value>恢复备份</value>
+  </data>
+  <data name="StartPageBackupNoCrash" xml:space="preserve">
+    <value>备份</value>
+  </data>
+  <data name="StartPageBackupLocation" xml:space="preserve">
+    <value>备份位置</value>
+  </data>
+  <data name="StartPageDiscussionForum" xml:space="preserve">
+    <value>讨论论坛</value>
+  </data>
+  <data name="StartPageDynamoDictionary" xml:space="preserve">
+    <value>Dynamo 词典</value>
+  </data>
+  <data name="StartPageFiles" xml:space="preserve">
+    <value>文件</value>
+  </data>
+  <data name="StartPageGithubRepository" xml:space="preserve">
+    <value>Github 储存库</value>
+  </data>
+  <data name="StartPageMoreSamples" xml:space="preserve">
+    <value>多个样例</value>
+  </data>
+  <data name="StartPageDynamoPrimer" xml:space="preserve">
+    <value>Dynamo Primer</value>
+  </data>
+  <data name="StartPageNewCustomNode" xml:space="preserve">
+    <value>自定义节点</value>
+  </data>
+  <data name="StartPageNewFile" xml:space="preserve">
+    <value>新建</value>
+  </data>
+  <data name="StartPageOpenFile" xml:space="preserve">
+    <value>打开</value>
+  </data>
+  <data name="StartPageRecent" xml:space="preserve">
+    <value>最近使用的文件</value>
+  </data>
+  <data name="StartPageReference" xml:space="preserve">
+    <value>参照</value>
+  </data>
+  <data name="StartPageSamples" xml:space="preserve">
+    <value>样例</value>
+  </data>
+  <data name="StartPageSendIssues" xml:space="preserve">
+    <value>发送问题</value>
+  </data>
+  <data name="StartPageShowSamples" xml:space="preserve">
+    <value>显示文件夹中的样例</value>
+  </data>
+  <data name="StartPageVideoTutorials" xml:space="preserve">
+    <value>视频教程</value>
+  </data>
+  <data name="StartPageVisitWebsite" xml:space="preserve">
+    <value>{0} 网站</value>
+  </data>
+  <data name="StartPageAdvancedTutorials" xml:space="preserve">
+    <value>高级教程</value>
+  </data>
+  <data name="AddFileToPackageDialogTitle" xml:space="preserve">
+    <value>将文件添加到软件包...</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="CannotDownloadPackageMessageBoxTitle" xml:space="preserve">
+    <value>无法下载软件包</value>
+  </data>
+  <data name="BuiltInPackageConflictMessageBoxTitle" xml:space="preserve">
+    <value>软件包与一个或多个内置软件包冲突。</value>
+  </data>
+  <data name="PackagesInUseConflictMessageBoxTitle" xml:space="preserve">
+    <value>软件包与一个或多个正在使用的软件包冲突。</value>
+  </data>
+  <data name="LoadedPackagesConflictMessageBoxTitle" xml:space="preserve">
+    <value>软件包与一个或多个已加载的软件包冲突。</value>
+  </data>
+  <data name="CustomNodePropertyErrorMessageBoxTitle" xml:space="preserve">
+    <value>自定义节点特性时出错</value>
+  </data>
+  <data name="CustomNodePropertyWindowCategory" xml:space="preserve">
+    <value>附加模块类别</value>
+  </data>
+  <data name="CustomNodePropertyWindowDescription" xml:space="preserve">
+    <value>说明</value>
+  </data>
+  <data name="CustomNodePropertyWindowDescriptionHint" xml:space="preserve">
+    <value>自定义节点说明</value>
+  </data>
+  <data name="CustomNodePropertyWindowName" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="CustomNodePropertyWindowNameHint" xml:space="preserve">
+    <value>自定义节点的名称</value>
+  </data>
+  <data name="CustomNodePropertyWindowTitle" xml:space="preserve">
+    <value>自定义节点特性</value>
+  </data>
+  <data name="DeprecatingPackageMessageBoxTitle" xml:space="preserve">
+    <value>弃用软件包</value>
+  </data>
+  <data name="DynamoViewHelpMenuShowInFolder" xml:space="preserve">
+    <value>在文件夹中显示</value>
+  </data>
+  <data name="ImportLibraryDialogTitle" xml:space="preserve">
+    <value>导入库</value>
+  </data>
+  <data name="MessageAlreadyInstallDynamo" xml:space="preserve">
+    <value>软件包 {1} 已安装。
+
+{0} 将在安装 {2} 之前尝试卸载此软件包。</value>
+  </data>
+  <data name="MessageConfirmToInstallPackage" xml:space="preserve">
+    <value>是否确实要安装 {0} {1}？</value>
+  </data>
+  <data name="MessageConfirmToInstallPackageToFolder" xml:space="preserve">
+    <value>是否确实要将 {0} {1} 安装到 {2}？</value>
+  </data>
+  <data name="MessageConfirmToSaveCustomNode" xml:space="preserve">
+    <value>对自定义节点工作空间的更改未保存: "{0}"。
+
+是否要保存更改？</value>
+  </data>
+  <data name="MessageConfirmToSaveHomeWorkSpace" xml:space="preserve">
+    <value>对主工作空间的更改未保存。
+
+是否要保存更改？</value>
+  </data>
+  <data name="MessageFileInUseByApplication" xml:space="preserve">
+    <value>文件当前正由其他应用程序使用。
+	
+请先关闭文件，然后再尝试将其覆盖。</value>
+  </data>
+  <data name="TitleFileInUse" xml:space="preserve">
+    <value>文件正在使用中</value>
+  </data>
+  <data name="MessageConfirmToSaveNamedHomeWorkSpace" xml:space="preserve">
+    <value>对 {0} 的更改未保存。
+
+是否要保存更改？</value>
+  </data>
+  <data name="MessageConfirmToDeletePackage" xml:space="preserve">
+    <value>是否确定要删除 {0}？这将删除软件包根目录。
+
+始终可以重新下载软件包。</value>
+  </data>
+  <data name="MessageExcessiveLoadTime" xml:space="preserve">
+    <value>加载软件包所花费的时间超过预期。您要执行什么操作？</value>
+  </data>
+  <data name="MessageExcessiveLoadTimeTitle" xml:space="preserve">
+    <value>仍在加载</value>
+  </data>
+  <data name="MessageCustomNodeNameExist" xml:space="preserve">
+    <value>给定名称的内置节点已存在。</value>
+  </data>
+  <data name="MessageCustomNodeNeedNewCategory" xml:space="preserve">
+    <value>您必须输入新类别或从现有类别中选择一个。</value>
+  </data>
+  <data name="MessageCustomNodeNoName" xml:space="preserve">
+    <value>必须提供名称。</value>
+  </data>
+  <data name="MessageCustomNodeNameInvalid" xml:space="preserve">
+    <value>自定义节点名称中不能包含以下任何特殊字符:
+    # % * ? \ : 或任何不可打印字符。</value>
+  </data>
+  <data name="MessageFailedToDownloadPackage" xml:space="preserve">
+    <value>无法下载 ID 为 {0} 的软件包。如仍有问题，请重试和报告软件包。</value>
+  </data>
+  <data name="MessageInvalidPackage" xml:space="preserve">
+    <value>无法加载无效的软件包。</value>
+  </data>
+  <data name="MessageFailedToDelete" xml:space="preserve">
+    <value>{0} 无法删除软件包。可能需要手动删除软件包的根目录。</value>
+  </data>
+  <data name="MessageFailToUninstallPackage" xml:space="preserve">
+    <value>{0} 无法卸载软件包: {1}。可能需要手动重新安装此软件包。</value>
+  </data>
+  <data name="MessageUnkownErrorOpeningFile" xml:space="preserve">
+    <value>打开文件时出现未知错误: {0}</value>
+  </data>
+  <data name="MessageGettingNodeError" xml:space="preserve">
+    <value>从工作空间获取节点时出错。</value>
+  </data>
+  <data name="MessageNeedToRestartAfterDelete" xml:space="preserve">
+    <value>{0} 及其宿主应用程序必须重新启动，删除才会生效。</value>
+  </data>
+  <data name="MessagePackageContainPythonScript" xml:space="preserve">
+    <value>软件包或其相关项之一包含 Python 脚本或二进制文件。是否要继续？</value>
+  </data>
+  <data name="MessagePackageNewerDynamo" xml:space="preserve">
+    <value>此软件包或其依赖项之一是为较高版本的 Dynamo 创建的。它可能在此版本中无法使用。是否要继续？</value>
+  </data>
+  <data name="MessageSelectAtLeastOneNode" xml:space="preserve">
+    <value>必须至少选择一个自定义节点。</value>
+  </data>
+  <data name="MessageSelectSymbolNotFound" xml:space="preserve">
+    <value>在工作空间未找到选定符号</value>
+  </data>
+  <data name="MessageSubmitSameNamePackage" xml:space="preserve">
+    <value>节点是名为“{1}”的 {0} 软件包的一部分 - 是否要提交该软件包的新版本？
+
+如果不提交，则该节点将被移动到您正在创建的新软件包。</value>
+  </data>
+  <data name="MessageToDeprecatePackage" xml:space="preserve">
+    <value>是否确实要弃用 {0}？如果您不是该软件包的维护人员，则该请求将被拒绝。这表示您将不再支持该软件包，尽管在明确搜索时该软件包仍将显示。
+
+您始终可以取消弃用该软件包。</value>
+  </data>
+  <data name="MessageToUndeprecatePackage" xml:space="preserve">
+    <value>是否确实要取消弃用 {0}？如果您不是该软件包的维护人员，则该请求将被拒绝。这表示您将继续支持该软件包，当用户正在浏览软件包时该软件包会出现。
+
+您始终可以再次弃用该软件包。</value>
+  </data>
+  <data name="MessageForceInstallOrUninstallToContinue" xml:space="preserve">
+    <value>软件包 {0} 的一个或多个依存关系与工作空间中使用的以下软件包冲突: {1}. 依存关系冲突可能会导致发生意外行为。
+    
+是否要在保留已安装的软件包的情况下继续安装它？
+
+如果不是，{2}需要卸载 {1} 才能继续，但在它们正在使用的情况下无法卸载。请尝试重新启动 {2}，然后再次下载 {0}。</value>
+  </data>
+  <data name="MessageForceInstallOrUninstallUponRestart" xml:space="preserve">
+    <value>软件包 {0} 的一个或多个依存关系与以下软件包冲突:
+
+{1}
+
+如果继续安装软件包，可能会发生意外行为。
+
+要避免发生意外行为，请卸载冲突的已加载软件包、重新启动 Dynamo 并再次下载 {0}。</value>
+  </data>
+  <data name="OKButton" xml:space="preserve">
+    <value>确定</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
+    <value>打开 {0} 定义...</value>
+  </data>
+  <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
+    <value>软件包下载确认</value>
+  </data>
+  <data name="PackageDownloadErrorMessageBoxTitle" xml:space="preserve">
+    <value>软件包下载错误</value>
+  </data>
+  <data name="PackageDownloadMessageBoxTitle" xml:space="preserve">
+    <value>软件包下载</value>
+  </data>
+  <data name="PackageUseNewerDynamoMessageBoxTitle" xml:space="preserve">
+    <value>软件包可能在此版本的 {0} 中无法使用！</value>
+  </data>
+  <data name="PackageWarningMessageBoxTitle" xml:space="preserve">
+    <value>软件包警告</value>
+  </data>
+  <data name="PackageManagerClearAllButtonText" xml:space="preserve">
+    <value>全部清除</value>
+  </data>
+  <data name="UnsavedChangesMessageBoxTitle" xml:space="preserve">
+    <value>未保存的更改</value>
+  </data>
+  <data name="SaveModelToSTLDialogTitle" xml:space="preserve">
+    <value>将模型保存为 STL 格式。</value>
+  </data>
+  <data name="SaveWorkbenToImageDialogTitle" xml:space="preserve">
+    <value>将工作台保存至图像</value>
+  </data>
+  <data name="SelectionErrorMessageBoxTitle" xml:space="preserve">
+    <value>选择错误</value>
+  </data>
+  <data name="UndeprecatingPackageMessageBoxTitle" xml:space="preserve">
+    <value>删除软件包弃用</value>
+  </data>
+  <data name="DeleteFailureMessageBoxTitle" xml:space="preserve">
+    <value>删除失败</value>
+  </data>
+  <data name="MessageNeedToRestartAfterDeleteTitle" xml:space="preserve">
+    <value>正在删除软件包</value>
+  </data>
+  <data name="ContinueButton" xml:space="preserve">
+    <value>继续</value>
+  </data>
+  <data name="CrashPromptDialogCopyButton" xml:space="preserve">
+    <value>复制</value>
+  </data>
+  <data name="CrashPromptDialogCrashMessage" xml:space="preserve">
+    <value>出现错误，Dynamo 已意外关闭。
+
+不用担心，可以选择保存工作。</value>
+  </data>
+  <data name="CrashPromptDialogDetailButton" xml:space="preserve">
+    <value>详细信息</value>
+  </data>
+  <data name="CrashPromptDialogOpenFolderButton" xml:space="preserve">
+    <value>打开文件夹</value>
+  </data>
+  <data name="CrashPromptDialogSubmitBugButton" xml:space="preserve">
+    <value>向 GitHub 提交错误</value>
+  </data>
+  <data name="CrashPromptDialogTitle" xml:space="preserve">
+    <value>{0} 已意外关闭</value>
+  </data>
+  <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
+    <value>下载警告</value>
+  </data>
+  <data name="CopyToClipboardTooltip" xml:space="preserve">
+    <value>复制到剪贴板</value>
+  </data>
+  <data name="CopyToClipboardFailedMessage" xml:space="preserve">
+    <value>复制到剪贴板失败</value>
+  </data>
+  <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
+    <value>Dynamo 的更新可用，单击以安装。</value>
   </data>
   <data name="EditNodeWindowTitle" xml:space="preserve">
     <value>编辑节点名称</value>
+  </data>
+  <data name="EditAnnotationTitle" xml:space="preserve">
+    <value>编辑组标题</value>
   </data>
   <data name="EditWindowAcceptButton" xml:space="preserve">
     <value>接受</value>
   </data>
   <data name="EditWindowTitle" xml:space="preserve">
     <value>设置值...</value>
-  </data>
-  <data name="FileDialogAllFiles" xml:space="preserve">
-    <value>所有文件 ({0})|{0}</value>
-  </data>
-  <data name="FileDialogAssemblyFiles" xml:space="preserve">
-    <value>部件库文件 ({0})|{0}</value>
-  </data>
-  <data name="FileDialogCustomNodeDLLXML" xml:space="preserve">
-    <value>自定义节点、DLL、XML ({0})|{0}</value>
-  </data>
-  <data name="FileDialogDefaultPNGName" xml:space="preserve">
-    <value>Capture.png</value>
-  </data>
-  <data name="FileDialogDefaultSTLModelName" xml:space="preserve">
-    <value>model.stl</value>
-  </data>
-  <data name="FileDialogDesignScriptFiles" xml:space="preserve">
-    <value>DesignScript 文件 ({0})|{0}</value>
-  </data>
-  <data name="FileDialogDynamoCustomNode" xml:space="preserve">
-    <value>{0} 自定义节点 ({1})|{1}</value>
-  </data>
-  <data name="FileDialogDynamoDefinitions" xml:space="preserve">
-    <value>{0} 定义 ({1})|{1}</value>
-  </data>
-  <data name="FileDialogDynamoWorkspace" xml:space="preserve">
-    <value>{0} 工作空间 ({1})|{1}</value>
-  </data>
-  <data name="FileDialogLibraryFiles" xml:space="preserve">
-    <value>库文件 ({0})|{0}</value>
-  </data>
-  <data name="FileDialogManualMode" xml:space="preserve">
-    <value>以手动执行模式打开</value>
-  </data>
-  <data name="FileDialogPNGFiles" xml:space="preserve">
-    <value>PNG 图像|{0}</value>
-  </data>
-  <data name="FileDialogSTLModels" xml:space="preserve">
-    <value>STL 模型|{0}</value>
-  </data>
-  <data name="FileNotPublishCaption" xml:space="preserve">
-    <value>发布失败！</value>
-  </data>
-  <data name="FileNotPublishMessage" xml:space="preserve">
-    <value>未找到文件或文件包含在某个软件包中。请仅添加软件包外的文件。
-
-无法发布文件: 
-{0}</value>
-  </data>
-  <data name="FilePathConverterNoFileSelected" xml:space="preserve">
-    <value>未选择文件。</value>
-  </data>
-  <data name="FilterIconTooltip" xml:space="preserve">
-    <value>过滤结果</value>
-  </data>
-  <data name="FolderNotWritableError" xml:space="preserve">
-    <value>对于 {0}，您没有写入权限。</value>
   </data>
   <data name="GenericTaskDialogSampleLeftButton" xml:space="preserve">
     <value>样例左键</value>
@@ -905,53 +967,35 @@
   <data name="GenericTaskDialogTitle" xml:space="preserve">
     <value>常规任务对话框</value>
   </data>
-  <data name="GroupContextMenuBackground" xml:space="preserve">
-    <value>选择背景</value>
+  <data name="GenericTaskDialogOptionYes" xml:space="preserve">
+    <value>是</value>
   </data>
-  <data name="GroupContextMenuDeleteGroup" xml:space="preserve">
-    <value>删除组</value>
+  <data name="GenericTaskDialogOptionNo" xml:space="preserve">
+    <value>否</value>
   </data>
-  <data name="GroupContextMenuFont" xml:space="preserve">
-    <value>字体大小</value>
+  <data name="GenericTaskDialogOptionOK" xml:space="preserve">
+    <value>确定</value>
   </data>
-  <data name="GroupContextMenuGraphLayout" xml:space="preserve">
-    <value>清理节点布局</value>
+  <data name="GenericTaskDialogOptionCancel" xml:space="preserve">
+    <value>取消</value>
   </data>
-  <data name="GroupContextMenuUngroup" xml:space="preserve">
-    <value>解组(_O)</value>
+  <data name="UsageReportPromptDialogTitle" xml:space="preserve">
+    <value>数据收集协议</value>
+  </data>
+  <data name="AgreeToMLAutocompleteTOUText" xml:space="preserve">
+    <value>我愿意参与机器学习计划的数据收集</value>
+  </data>
+  <data name="DynamoViewContextMenuClearLog" xml:space="preserve">
+    <value>清除</value>
+  </data>
+  <data name="DynamoViewEditMenuSelectNeighbours" xml:space="preserve">
+    <value>选择相邻区域(_S)</value>
+  </data>
+  <data name="FilePathConverterNoFileSelected" xml:space="preserve">
+    <value>未选择文件。</value>
   </data>
   <data name="HideClassicNodeLibrary" xml:space="preserve">
     <value>隐藏典型节点库</value>
-  </data>
-  <data name="ImportLibraryDialogTitle" xml:space="preserve">
-    <value>导入库</value>
-  </data>
-  <data name="InCanvasFitViewButtonToolTip" xml:space="preserve">
-    <value>缩放到合适大小</value>
-  </data>
-  <data name="InCanvasGeomButtonToolTip" xml:space="preserve">
-    <value>启用背景三维预览导航 (Ctrl + B)</value>
-  </data>
-  <data name="InCanvasNodeButtonToolTip" xml:space="preserve">
-    <value>启用图表视图导航 (Ctrl + B)</value>
-  </data>
-  <data name="InCanvasOrbitButtonToolTip" xml:space="preserve">
-    <value>动态观察</value>
-  </data>
-  <data name="InCanvasPanButtonToolTip" xml:space="preserve">
-    <value>平移</value>
-  </data>
-  <data name="InCanvasZoomInButtonToolTip" xml:space="preserve">
-    <value>放大</value>
-  </data>
-  <data name="InCanvasZoomOutButtonToolTip" xml:space="preserve">
-    <value>缩小</value>
-  </data>
-  <data name="InfoBubbleError" xml:space="preserve">
-    <value>错误: </value>
-  </data>
-  <data name="InfoBubbleWarning" xml:space="preserve">
-    <value>警告: </value>
   </data>
   <data name="InstalledPackageViewAdditionalFileLabel" xml:space="preserve">
     <value>其他文件</value>
@@ -1013,18 +1057,6 @@
   <data name="InstalledPackagePartialHyperlinkMessage" xml:space="preserve">
     <value>Package Manager</value>
   </data>
-  <data name="InstallMessageCaption" xml:space="preserve">
-    <value>安装 Dynamo</value>
-  </data>
-  <data name="InvalidLoginUrl" xml:space="preserve">
-    <value>登录页面 URL 无效！</value>
-  </data>
-  <data name="InvalidTimeZoneMessage" xml:space="preserve">
-    <value>此时无法登录。请检查日期、时间和时区设置，然后再次尝试登录。</value>
-  </data>
-  <data name="LacingAutoToolTip" xml:space="preserve">
-    <value>将不会添加任何复制导向。</value>
-  </data>
   <data name="LacingCrossProductToolTip" xml:space="preserve">
     <value>对于两个列表 [a,b,c][1,2,3] 返回 [a1,a2,a3][b1,b2,b3][c1,c2,c3]。</value>
   </data>
@@ -1040,12 +1072,6 @@
   <data name="LacingShortestToolTip" xml:space="preserve">
     <value>对于两个列表 [a,b,c][1,2] 返回 [a1,b2]。</value>
   </data>
-  <data name="LayoutIconTooltip" xml:space="preserve">
-    <value>查看布局</value>
-  </data>
-  <data name="LearnMore" xml:space="preserve">
-    <value>了解详细信息</value>
-  </data>
   <data name="LibraryViewContextMenuEditNode" xml:space="preserve">
     <value>编辑...</value>
   </data>
@@ -1058,184 +1084,487 @@
   <data name="LibraryViewTitle" xml:space="preserve">
     <value>库</value>
   </data>
+  <data name="NoteViewContextMenuDelete" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="NoteViewContextMenuEdit" xml:space="preserve">
+    <value>编辑...</value>
+  </data>
+  <data name="PackageManagerInstall" xml:space="preserve">
+    <value>安装</value>
+  </data>
+  <data name="PackageManagerPackageUpdated" xml:space="preserve">
+    <value>已更新</value>
+  </data>
+  <data name="PackageManagerPackageNew" xml:space="preserve">
+    <value>新建</value>
+  </data>
+  <data name="PackageManagerMyPackagesControlName" xml:space="preserve">
+    <value>packageManagerMyPackages</value>
+  </data>
+  <data name="PackageManagerSearchTab" xml:space="preserve">
+    <value>搜索软件包</value>
+  </data>
+  <data name="PackageManagerPublishTab" xml:space="preserve">
+    <value>发布软件包</value>
+  </data>
+  <data name="PackageManagerPublishOnlineFinishedMessage" xml:space="preserve">
+    <value>正在进行病毒扫描。您的软件包将在几分钟内可搜索。</value>
+  </data>
+  <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
+    <value>已安装的软件包</value>
+  </data>
+  <data name="PackageManagerMyPackagesTab" xml:space="preserve">
+    <value>我的软件包</value>
+  </data>
+  <data name="PackageManagerPackageSettingsTab" xml:space="preserve">
+    <value>软件包设置</value>
+  </data>
+  <data name="PackageManagerTitle" xml:space="preserve">
+    <value>Package Manager</value>
+  </data>
+  <data name="PackageManagerLoadingTimedOutWarningMessage" xml:space="preserve">
+    <value>加载软件包所花费的时间超过预期。请等待，或重新启动 Package Manager。</value>
+  </data>
+  <data name="PackagerManageNoInstalledPackagesMessage" xml:space="preserve">
+    <value>您尚未安装任何软件包。</value>
+  </data>
+  <data name="PackageManagerNoInstalledPackagesSubMessage" xml:space="preserve">
+    <value>在安装软件包后，可以在此处找到它。</value>
+  </data>
+  <data name="PackagerManageUserNotSignedPackagesMessage" xml:space="preserve">
+    <value>登录到 Dynamo 帐户以查看已发布的软件包。</value>
+  </data>
+  <data name="PackageManagerUserNotSignedPackagesSubMessage" xml:space="preserve">
+    <value>登录后，您可以在此处找到已发布的软件包。</value>
+  </data>
+  <data name="PackageManagerSearchPackagesButton" xml:space="preserve">
+    <value>搜索软件包</value>
+  </data>
+  <data name="PackagerManageNoPublishedPackagesMessage" xml:space="preserve">
+    <value>您尚未发布任何软件包。</value>
+  </data>
+  <data name="PackagerManageNoPublishedPackagesSubMessage" xml:space="preserve">
+    <value>在发布软件包后，可以在此处找到它。</value>
+  </data>
+  <data name="PackageManagerPublishPackageButton" xml:space="preserve">
+    <value>发布软件包</value>
+  </data>
+  <data name="PackageManagerSettingsRunPrefix" xml:space="preserve">
+    <value>在以下位置编辑软件包设置</value>
+  </data>
+  <data name="PackageManagerSettingsHyperlink" xml:space="preserve">
+    <value>首选项</value>
+  </data>
+  <data name="PackageDetailsDescription" xml:space="preserve">
+    <value>说明</value>
+  </data>
+  <data name="PackageDetailsLicense" xml:space="preserve">
+    <value>最新软件包的许可</value>
+  </data>
+  <data name="PackageDetailsVersionsAndPackageRequirements" xml:space="preserve">
+    <value>版本和软件包要求</value>
+  </data>
+  <data name="PackageDetailsVersions" xml:space="preserve">
+    <value>版本</value>
+  </data>
+  <data name="PackageDetailsHost" xml:space="preserve">
+    <value>主体</value>
+  </data>
+  <data name="PackageDetailsPython" xml:space="preserve">
+    <value>Python</value>
+  </data>
+  <data name="PackageDetailsCopyRightHolder" xml:space="preserve">
+    <value>版权所有者</value>
+  </data>
+  <data name="PackageDetailsCopyRightYear" xml:space="preserve">
+    <value>版权年份</value>
+  </data>
+  <data name="PackageDetailsPackage" xml:space="preserve">
+    <value>软件包</value>
+  </data>
+  <data name="PackageDownloadStateDownloaded" xml:space="preserve">
+    <value>已下载</value>
+  </data>
+  <data name="PackageDownloadStateDownloading" xml:space="preserve">
+    <value>下载</value>
+  </data>
+  <data name="PackageDownloadStateError" xml:space="preserve">
+    <value>错误</value>
+  </data>
+  <data name="PackageDownloadStateInstalled" xml:space="preserve">
+    <value>已安装</value>
+  </data>
+  <data name="PackageDownloadStateInstalling" xml:space="preserve">
+    <value>安装</value>
+  </data>
+  <data name="PackageDownloadStateStarting" xml:space="preserve">
+    <value>开始</value>
+  </data>
+  <data name="PackageSearchStateNoResult" xml:space="preserve">
+    <value>搜索未返回任何结果！</value>
+  </data>
+  <data name="PackageSearchStateSearching" xml:space="preserve">
+    <value>正在搜索...</value>
+  </data>
+  <data name="PackageSearchStateSyncingWithServer" xml:space="preserve">
+    <value>正在与服务器同步...</value>
+  </data>
+  <data name="PackageSearchViewClearButton" xml:space="preserve">
+    <value>清除</value>
+  </data>
+  <data name="PackageSearchViewClearButtonTooltip" xml:space="preserve">
+    <value>清除下载</value>
+  </data>
+  <data name="PackageSearchViewContextMenuOrderAscending" xml:space="preserve">
+    <value>升序</value>
+  </data>
+  <data name="PackageSearchViewContextMenuOrderDescending" xml:space="preserve">
+    <value>降序</value>
+  </data>
+  <data name="PackageSearchViewContextMenuSortByAuthor" xml:space="preserve">
+    <value>作者</value>
+  </data>
+  <data name="PackageSearchViewContextMenuSortByDownloads" xml:space="preserve">
+    <value>下载项</value>
+  </data>
+  <data name="PackageSearchSortBy" xml:space="preserve">
+    <value>排序方式</value>
+  </data>
+  <data name="PackageSearchOrder" xml:space="preserve">
+    <value>顺序</value>
+  </data>
+  <data name="PackageSearchViewContextMenuSortByName" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="PackageSearchHeader" xml:space="preserve">
+    <value>搜索软件包</value>
+  </data>
+  <data name="DisablePackageInstallIconTooltip" xml:space="preserve">
+    <value>所有自定义软件包路径已在“首选项”中禁用。除非重新启用这些软件包，否则无法安装它们。</value>
+  </data>
+  <data name="DisableBuiltInPackageToggleInfo" xml:space="preserve">
+    <value>如果开关打开，则内置软件包将不会在重新启动时加载。当前已加载的内置软件包将在重新启动时卸载。
+如果开关关闭，则尚未加载的内置软件包将在“首选项”对话框关闭后加载。</value>
+  </data>
+  <data name="DisableCustomPackageToggleInfo" xml:space="preserve">
+    <value>如果开关打开，则自定义软件包将不会在重新启动时加载。当前已加载的自定义软件包将在重新启动时卸载。
+如果开关关闭，则尚未加载的自定义软件包将在“首选项”对话框关闭后加载。</value>
+  </data>
+  <data name="PackageSearchViewContextMenuSortByVotes" xml:space="preserve">
+    <value>投票</value>
+  </data>
+  <data name="PackageSearchViewContextMenuSortyByUpdate" xml:space="preserve">
+    <value>最新更新</value>
+  </data>
+  <data name="PackageManagerPackageDeprecated" xml:space="preserve">
+    <value>已弃用</value>
+  </data>
+  <data name="PackageSearchViewDeprecatedTooltip" xml:space="preserve">
+    <value>该软件包的维护人员已表示，他们将不再对此软件包进行更新。使用时责任自负！</value>
+  </data>
+  <data name="PackageSearchViewDescription" xml:space="preserve">
+    <value>说明</value>
+  </data>
+  <data name="PackageSearchViewInstallButton" xml:space="preserve">
+    <value>⇓ 安装</value>
+  </data>
+  <data name="PackageSearchViewInstallLatestVersion" xml:space="preserve">
+    <value>安装最新版本</value>
+  </data>
+  <data name="PackageSearchViewInstallLatestVersionTo" xml:space="preserve">
+    <value>安装到文件夹...</value>
+  </data>
+  <data name="PackageSearchViewInstallThisVersion" xml:space="preserve">
+    <value>安装该版本</value>
+  </data>
+  <data name="PackageSearchViewInstallThisVersionTo" xml:space="preserve">
+    <value>将该版本安装到文件夹...</value>
+  </data>
+  <data name="PackageSearchViewKeywords" xml:space="preserve">
+    <value>关键字</value>
+  </data>
+  <data name="PackageSearchViewSearchTextBox" xml:space="preserve">
+    <value>搜索...</value>
+  </data>
+  <data name="PackageSearchViewSortByButton" xml:space="preserve">
+    <value>排序方式</value>
+  </data>
+  <data name="PackageSearchResultViewDetails" xml:space="preserve">
+    <value>信息</value>
+  </data>
+  <data name="PackageSearchResultRequirements" xml:space="preserve">
+    <value>要求</value>
+  </data>
+  <data name="PackageSearchViewTitle" xml:space="preserve">
+    <value>联机搜索软件包</value>
+  </data>
+  <data name="PackageSearchViewUpvoteButtonTooltip" xml:space="preserve">
+    <value>支持该软件包的投票</value>
+  </data>
+  <data name="PackageSearchViewVersions" xml:space="preserve">
+    <value>版本</value>
+  </data>
+  <data name="PackageSearchViewVisitRepositoryBuutton" xml:space="preserve">
+    <value>访问软件包储存库</value>
+  </data>
+  <data name="PackageSearchViewVisitWebSiteButton" xml:space="preserve">
+    <value>访问软件包网站</value>
+  </data>
+  <data name="PackageStateUnknown" xml:space="preserve">
+    <value>未知</value>
+  </data>
+  <data name="PackageUploadStateCompressing" xml:space="preserve">
+    <value>正在压缩...</value>
+  </data>
+  <data name="PackageUploadStateCopying" xml:space="preserve">
+    <value>正在复制...</value>
+  </data>
+  <data name="PackageUploadStateError" xml:space="preserve">
+    <value>错误！</value>
+  </data>
+  <data name="PackageUploadStateReady" xml:space="preserve">
+    <value>就绪</value>
+  </data>
+  <data name="PackageUploadStateUploaded" xml:space="preserve">
+    <value>已上传</value>
+  </data>
+  <data name="PackageUploadStateUploading" xml:space="preserve">
+    <value>正在上传...</value>
+  </data>
+  <data name="PackageFilterByHost" xml:space="preserve">
+    <value>主体</value>
+  </data>
+  <data name="PackageFilterByStatus" xml:space="preserve">
+    <value>状态</value>
+  </data>
+  <data name="PackageFilterNewTooltip" xml:space="preserve">
+    <value>最近 30 天发布</value>
+  </data>
+  <data name="PackageFilterUpdatedTooltip" xml:space="preserve">
+    <value>最近 30 天更新</value>
+  </data>
+  <data name="PackageFilterDeprecatedTooltip" xml:space="preserve">
+    <value>已停用的软件包</value>
+  </data>
+  <data name="PackageFilterHasDependenciesTooltip" xml:space="preserve">
+    <value>需要安装其他软件包的软件包</value>
+  </data>
+  <data name="PackageFilterHasNoDependenciesTooltip" xml:space="preserve">
+    <value>单机版软件包</value>
+  </data>
+  <data name="PackageFilterByDependency" xml:space="preserve">
+    <value>依存关系</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterActive" xml:space="preserve">
+    <value>活动</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterDeprecated" xml:space="preserve">
+    <value>已弃用</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterDependencies" xml:space="preserve">
+    <value>有依存关系</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterNoDependencies" xml:space="preserve">
+    <value>没有依存关系</value>
+  </data>
+  <data name="PortViewContextMenuUserDefaultValue" xml:space="preserve">
+    <value>使用默认值</value>
+  </data>
+  <data name="PublishPackageExternalPackageDependencies" xml:space="preserve">
+    <value>外部软件包从属关系</value>
+  </data>
+  <data name="PublishPackagePackageContent" xml:space="preserve">
+    <value>软件包内容</value>
+  </data>
+  <data name="PublishPackageViewAddFileButton" xml:space="preserve">
+    <value>添加文件</value>
+  </data>
+  <data name="PublishPackageViewAddDirectoryButton" xml:space="preserve">
+    <value>添加目录</value>
+  </data>
+  <data name="PublishPackageViewResetMarkdownDirectoryButton" xml:space="preserve">
+    <value>重设</value>
+  </data>
+  <data name="PublishPackageViewResetMarkdownDirectoryButtonToolTip" xml:space="preserve">
+    <value>清除此软件包的 Markdown 目录。</value>
+  </data>
+  <data name="PublishPackageViewAddFileButtonTooltip" xml:space="preserve">
+    <value>添加文件</value>
+  </data>
+  <data name="PublishPackageRemoveFromPacakgeTooltip" xml:space="preserve">
+    <value>从软件包中删除</value>
+  </data>
+  <data name="PublishPackageViewAddDirectoryButtonTooltip" xml:space="preserve">
+    <value>添加文件夹</value>
+  </data>
+  <data name="PublishPackageViewContextMenuIsNodeLibrary" xml:space="preserve">
+    <value>为节点库</value>
+  </data>
+  <data name="PublishPackageViewLicense" xml:space="preserve">
+    <value>许可证(可选)</value>
+  </data>
+  <data name="PublishPackageViewLicenseSubLabel" xml:space="preserve">
+    <value>适用于最新的软件包版本。如果为空，则该软件包将获得许可，基于 </value>
+  </data>
+  <data name="PublishPackageViewLicenseWatermark" xml:space="preserve">
+    <value>许可证</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolder" xml:space="preserve">
+    <value>版权所有者(可选)</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolderWatermark" xml:space="preserve">
+    <value>作者姓名</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolderSubLabel" xml:space="preserve">
+    <value>如果为空，则默认为用户名</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYear" xml:space="preserve">
+    <value>版权年份(可选)</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYearWatermark" xml:space="preserve">
+    <value>发布年份</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYearSubLabel" xml:space="preserve">
+    <value>如果为空，则默认为发布年份</value>
+  </data>
+  <data name="PublishPackageViewPackageDependencies" xml:space="preserve">
+    <value>相关项</value>
+  </data>
+  <data name="PublishPackageViewPackageDescription" xml:space="preserve">
+    <value>说明</value>
+  </data>
+  <data name="PublishPackageViewPackageGroup" xml:space="preserve">
+    <value>组(可选)</value>
+  </data>
+  <data name="PublishPackageViewPackageGroupTooltip" xml:space="preserve">
+    <value>有助于对该软件包进行分类的组。对与公司、学校等有关的软件包集合可能有用。</value>
+  </data>
+  <data name="PublishPackageViewPackageKeywords" xml:space="preserve">
+    <value>关键字(可选)</value>
+  </data>
+  <data name="PublishPackageViewPackageKeywordsTooltip" xml:space="preserve">
+    <value>关键字有助于查找数据库中的软件包。通过空格分隔不同关键字。</value>
+  </data>
+  <data name="PublishPackageViewPackageName" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="PublishPackageViewFilePath" xml:space="preserve">
+    <value>文件路径</value>
+  </data>
+  <data name="PublishPackageViewPackageVersion" xml:space="preserve">
+    <value>版本</value>
+  </data>
+  <data name="PublishPackageViewMajorPackageVersionLabel" xml:space="preserve">
+    <value>主版本</value>
+  </data>
+  <data name="PublishPackageViewMinorPackageVersionLabel" xml:space="preserve">
+    <value>次版本</value>
+  </data>
+  <data name="PublishPackageViewBuildPackageVersionLabel" xml:space="preserve">
+    <value>内部版本</value>
+  </data>
+  <data name="PublishPackageViewPackageVersionTooltip" xml:space="preserve">
+    <value>版本名有助于提交程序跟踪软件包的更新。当添加了软件包的新版本时，版本号必须增大。</value>
+  </data>
+  <data name="PublishPackageViewPublisherWebsiteTooltip" xml:space="preserve">
+    <value>软件包的网站链接。</value>
+  </data>
+  <data name="PublishPackageViewGithubLinkTooltip" xml:space="preserve">
+    <value>软件包的 GitHub 库链接。</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolderTooltip" xml:space="preserve">
+    <value>软件包的版权所有者。</value>
+  </data>
+  <data name="PublishPackageViewLicenceTooltip" xml:space="preserve">
+    <value>软件包的许可。</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYearTooltip" xml:space="preserve">
+    <value>软件包的版权年份。</value>
+  </data>
+  <data name="PublishPackageVersionMajorWatermark" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="PublishPackageVersionMinorWatermark" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="PublishPackageVersionBuildWatermark" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="PublishPackageGroupWatermark" xml:space="preserve">
+    <value>组</value>
+  </data>
+  <data name="PublishPackageKeywordsWatermark" xml:space="preserve">
+    <value>关键字</value>
+  </data>
+  <data name="PublishPackageViewPublish" xml:space="preserve">
+    <value>发布软件包</value>
+  </data>
+  <data name="PublishPackageViewPublisherWebSite" xml:space="preserve">
+    <value>网站 Url (可选)</value>
+  </data>
+  <data name="PublishPackageViewPublisherURLWatermark" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="PublishPackageViewRepositoryUrl" xml:space="preserve">
+    <value>储存库 Url (可选)</value>
+  </data>
+  <data name="PublishPackageViewTitle" xml:space="preserve">
+    <value>发布 {0} 软件包</value>
+  </data>
+  <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
+    <value>Markdown 文件路径(可选)</value>
+  </data>
+  <data name="PublishPackageViewMarkdownFilesDirectoryToolTip" xml:space="preserve">
+    <value>用于以 Markdown 格式记录软件包的可选位置。</value>
+  </data>
+  <data name="PublishPackageViewRemoveItemToolTip" xml:space="preserve">
+    <value>从软件包内容列表中删除此项目。</value>
+  </data>
+  <data name="PublishPackageViewNodeLibrary" xml:space="preserve">
+    <value>节点库</value>
+  </data>
+  <data name="PublishPackageRetainFolderStructureTooltip" xml:space="preserve">
+    <value>启用此设置后，将保留已上载文件的文件夹结构。否则，文件将放置到预定义的文件夹中。
+
+注意: 不正确的文件夹结构可能会影响依赖正确文件组织的软件包的功能。如有疑问，请禁用此设置。
+    </value>
+  </data>
+  <data name="PublishPackageNodeLibraryTooltip" xml:space="preserve">
+    <value>DLL 文件，其中包含 Dynamo 作为节点导入的类型和方法。标记 ZeroTouch、NodeModel 或 NodeViewCustomization DLL 和要作为节点库导入到 Dynamo 中的类型。</value>
+  </data>
+  <data name="ShowClassicNodeLibrary" xml:space="preserve">
+    <value>显示典型节点库</value>
+  </data>
+  <data name="UnknowDateFormat" xml:space="preserve">
+    <value>未知日期格式</value>
+  </data>
+  <data name="Watch3DViewContextMenuPan" xml:space="preserve">
+    <value>平移(_P)</value>
+  </data>
+  <data name="Watch3DViewContextMenuRotate" xml:space="preserve">
+    <value>旋转(_R)</value>
+  </data>
+  <data name="Watch3DViewContextMenuSwitchView" xml:space="preserve">
+    <value>切换到节点视图(_V)</value>
+  </data>
+  <data name="Watch3DViewContextMenuZoomToFit" xml:space="preserve">
+    <value>缩放到合适大小(_Z)</value>
+  </data>
+  <data name="BuildVersionNonNegative" xml:space="preserve">
+    <value>您必须提供一个内部版本作为非负整数。</value>
+  </data>
+  <data name="CannotSubmitPackage" xml:space="preserve">
+    <value>该版本 {0} 无法提交软件包。若要提交软件包，您需要 Revit 等主体应用程序。</value>
+  </data>
+  <data name="DescriptionNeedMoreCharacters" xml:space="preserve">
+    <value>说明必须超过 10 个字符。</value>
+  </data>
   <data name="MajorVersionNonNegative" xml:space="preserve">
     <value>提供主版本号、次版本号和内部版本号。</value>
   </data>
-  <data name="Manual" xml:space="preserve">
-    <value>手动</value>
-  </data>
-  <data name="MessageAlreadyInstallDynamo" xml:space="preserve">
-    <value>软件包 {1} 已安装。
-
-{0} 将在安装 {2} 之前尝试卸载此软件包。</value>
-  </data>
-  <data name="MessageConfirmToInstallPackage" xml:space="preserve">
-    <value>是否确实要安装 {0} {1}？</value>
-  </data>
-  <data name="MessageConfirmToInstallPackageToFolder" xml:space="preserve">
-    <value>是否确实要将 {0} {1} 安装到 {2}？</value>
-  </data>
-  <data name="MessageConfirmToSaveCustomNode" xml:space="preserve">
-    <value>对自定义节点工作空间的更改未保存: "{0}"。
-
-是否要保存更改？</value>
-  </data>
-  <data name="MessageConfirmToSaveHomeWorkSpace" xml:space="preserve">
-    <value>对主工作空间的更改未保存。
-
-是否要保存更改？</value>
-  </data>
-  <data name="MessageFileInUseByApplication" xml:space="preserve">
-    <value>文件当前正由其他应用程序使用。
-	
-请先关闭文件，然后再尝试将其覆盖。</value>
-  </data>
-  <data name="TitleFileInUse" xml:space="preserve">
-    <value>文件正在使用中</value>
-  </data>
-  <data name="MessageConfirmToSaveNamedHomeWorkSpace" xml:space="preserve">
-    <value>对 {0} 的更改未保存。
-
-是否要保存更改？</value>
-  </data>
-  <data name="MessageConfirmToSaveReadOnlyCustomNode" xml:space="preserve">
-    <value>我们无法保存“{0}”，因为此文件是“只读”文件或者包含未解析或无效的节点。为了保留更改，是否希望使用其他名称或路径执行“另存为...”？</value>
-  </data>
-  <data name="MessageConfirmToDeletePackage" xml:space="preserve">
-    <value>是否确定要删除 {0}？这将删除软件包根目录。
-
-始终可以重新下载软件包。</value>
-  </data>
-  <data name="MessageExcessiveLoadTime" xml:space="preserve">
-    <value>加载软件包所花费的时间超过预期。您要执行什么操作？</value>
-  </data>
-  <data name="MessageExcessiveLoadTimeTitle" xml:space="preserve">
-    <value>仍在加载</value>
-  </data>
-  <data name="MessageCustomNodeNameExist" xml:space="preserve">
-    <value>给定名称的内置节点已存在。</value>
-  </data>
-  <data name="MessageCustomNodeNeedNewCategory" xml:space="preserve">
-    <value>您必须输入新类别或从现有类别中选择一个。</value>
-  </data>
-  <data name="MessageCustomNodeNoName" xml:space="preserve">
-    <value>必须提供名称。</value>
-  </data>
-  <data name="MessageCustomNodeNameInvalid" xml:space="preserve">
-    <value>自定义节点名称中不能包含以下任何特殊字符:
-    # % * ? \ : 或任何不可打印字符。</value>
-  </data>
-  <data name="MessageErrorOpeningFileGeneral" xml:space="preserve">
-    <value>打开文件时出错</value>
-  </data>
-  <data name="MessageFailedToAddFile" xml:space="preserve">
-    <value>无法添加文件: {0}</value>
-  </data>
-  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
-    <value>无法添加以下文件:\n\n {0}</value>
-  </data>
-  <data name="MessageFailedToApplyCustomization" xml:space="preserve">
-    <value>无法为 {0} 应用 NodeViewCustomization</value>
-  </data>
-  <data name="MessageFailedToAttachToRowColumn" xml:space="preserve">
-    <value>“AttachmentToRowColumnConverter”期望“ConverterParameter”值为“Row”或“Column”</value>
-  </data>
-  <data name="MessageFailedToDownloadPackage" xml:space="preserve">
-    <value>无法下载 ID 为 {0} 的软件包。如仍有问题，请重试和报告软件包。</value>
-  </data>
-  <data name="MessageInvalidPackage" xml:space="preserve">
-    <value>无法加载无效的软件包。</value>
-  </data>
-  <data name="MessageFailedToFindNodeById" xml:space="preserve">
-    <value>找不到具有该 ID 的任何节点。</value>
-  </data>
-  <data name="MessageFailedToFindGroupById" xml:space="preserve">
-    <value>找不到具有该 ID 的组。</value>
-  </data>
-  <data name="MessageFailedToOpenCorruptedFile" xml:space="preserve">
-    <value>打开已损坏文件时出错: {0}</value>
-  </data>
-  <data name="MessageFailedToSaveAsImage" xml:space="preserve">
-    <value>无法将工作空间另存为图像。</value>
-  </data>
-  <data name="MessageFailedToDelete" xml:space="preserve">
-    <value>{0} 无法删除软件包。可能需要手动删除软件包的根目录。</value>
-  </data>
-  <data name="MessageFailToUninstallPackage" xml:space="preserve">
-    <value>{0} 无法卸载软件包: {1}。可能需要手动重新安装此软件包。</value>
-  </data>
-  <data name="MessageGettingNodeError" xml:space="preserve">
-    <value>从工作空间获取节点时出错。</value>
-  </data>
-  <data name="MessageLoadingTime" xml:space="preserve">
-    <value>加载 {1} 主窗口已用时间 {0}。</value>
-  </data>
-  <data name="MessageNeedToRestartAfterDelete" xml:space="preserve">
-    <value>{0} 及其宿主应用程序必须重新启动，删除才会生效。</value>
-  </data>
-  <data name="MessageNodeWithNullFunction" xml:space="preserve">
-    <value>该节点有一个空函数定义。</value>
-  </data>
-  <data name="MessageNoNodeDescription" xml:space="preserve">
-    <value>未提供说明</value>
-  </data>
-  <data name="MessagePackageContainPythonScript" xml:space="preserve">
-    <value>软件包或其相关项之一包含 Python 脚本或二进制文件。是否要继续？</value>
-  </data>
-  <data name="MessagePackageNewerDynamo" xml:space="preserve">
-    <value>此软件包或其依赖项之一是为较高版本的 Dynamo 创建的。它可能在此版本中无法使用。是否要继续？</value>
-  </data>
-  <data name="MessageSelectAtLeastOneNode" xml:space="preserve">
-    <value>必须至少选择一个自定义节点。</value>
-  </data>
-  <data name="MessageSelectSymbolNotFound" xml:space="preserve">
-    <value>在工作空间未找到选定符号</value>
-  </data>
-  <data name="MessageSubmitSameNamePackage" xml:space="preserve">
-    <value>节点是名为“{1}”的 {0} 软件包的一部分 - 是否要提交该软件包的新版本？
-
-如果不提交，则该节点将被移动到您正在创建的新软件包。</value>
-  </data>
-  <data name="MessageToDeprecatePackage" xml:space="preserve">
-    <value>是否确实要弃用 {0}？如果您不是该软件包的维护人员，则该请求将被拒绝。这表示您将不再支持该软件包，尽管在明确搜索时该软件包仍将显示。
-
-您始终可以取消弃用该软件包。</value>
-  </data>
-  <data name="MessageToUndeprecatePackage" xml:space="preserve">
-    <value>是否确实要取消弃用 {0}？如果您不是该软件包的维护人员，则该请求将被拒绝。这表示您将继续支持该软件包，当用户正在浏览软件包时该软件包会出现。
-
-您始终可以再次弃用该软件包。</value>
-  </data>
-  <data name="MessageForceInstallOrUninstallToContinue" xml:space="preserve">
-    <value>软件包 {0} 的一个或多个依存关系与工作空间中使用的以下软件包冲突: {1}. 依存关系冲突可能会导致发生意外行为。
-    
-是否要在保留已安装的软件包的情况下继续安装它？
-
-如果不是，{2}需要卸载 {1} 才能继续，但在它们正在使用的情况下无法卸载。请尝试重新启动 {2}，然后再次下载 {0}。</value>
-  </data>
-  <data name="MessageForceInstallOrUninstallUponRestart" xml:space="preserve">
-    <value>软件包 {0} 的一个或多个依存关系与以下软件包冲突:
-
-{1}
-
-如果继续安装软件包，可能会发生意外行为。
-
-要避免发生意外行为，请卸载冲突的已加载软件包、重新启动 Dynamo 并再次下载 {0}。</value>
-  </data>
-  <data name="MessageUnkownErrorOpeningFile" xml:space="preserve">
-    <value>打开文件时出现未知错误: {0}</value>
-  </data>
-  <data name="MessageUnsavedChanges0" xml:space="preserve">
-    <value>以下工作空间尚未保存:</value>
-  </data>
-  <data name="MessageUnsavedChanges1" xml:space="preserve">
-    <value>。 请先保存，然后重试。</value>
-  </data>
   <data name="MinorVersionNonNegative" xml:space="preserve">
     <value>必须提供一个次版本作为非负整数。</value>
-  </data>
-  <data name="MoreButton" xml:space="preserve">
-    <value>更多</value>
   </data>
   <data name="NameNeedMoreCharacters" xml:space="preserve">
     <value>必须至少包含 3 个字符</value>
@@ -1258,103 +1587,214 @@
   <data name="PackageManagerProvideFiles" xml:space="preserve">
     <value>提供文件</value>
   </data>
-  <data name="NodeContextMenuEnablePeriodicUpdate" xml:space="preserve">
-    <value>启用定期更新</value>
+  <data name="PackageNameCannotContainTheseCharacters" xml:space="preserve">
+    <value>软件包的名称不能包含</value>
   </data>
-  <data name="NodeContextMenuHelp" xml:space="preserve">
-    <value>帮助...</value>
+  <data name="PackageNeedAtLeastOneFile" xml:space="preserve">
+    <value>您的软件包必须至少包含一个文件。</value>
   </data>
-  <data name="NodeContextMenuIsInput" xml:space="preserve">
-    <value>是输入</value>
+  <data name="PackageCompatibilityMatrixMissing" xml:space="preserve">
+    <value>提供软件包的兼容性信息...</value>
   </data>
-  <data name="NodeContextMenuIsOutput" xml:space="preserve">
-    <value>为输出</value>
+  <data name="UpdateMessage" xml:space="preserve">
+    <value>Dynamo 有更新可用。
+安装最新更新需要关闭 Dynamo 和任何主机应用程序。
+是否要安装最新的 Dynamo更新？</value>
   </data>
-  <data name="NodeContextMenuPreview" xml:space="preserve">
-    <value>预览几何图形</value>
+  <data name="VersionValueGreaterThan0" xml:space="preserve">
+    <value>至少一个版本值必须大于 0。</value>
   </data>
-  <data name="NodeContextMenuRenameNode" xml:space="preserve">
-    <value>重命名</value>
+  <data name="InstallMessageCaption" xml:space="preserve">
+    <value>安装 Dynamo</value>
   </data>
-  <data name="NodeContextMenuShowLabels" xml:space="preserve">
-    <value>显示标签</value>
+  <data name="InCanvasGeomButtonToolTip" xml:space="preserve">
+    <value>启用背景三维预览导航 (Ctrl + B)</value>
   </data>
-  <data name="NodeHelpWindowNodeCategory" xml:space="preserve">
-    <value>类别</value>
+  <data name="InCanvasNodeButtonToolTip" xml:space="preserve">
+    <value>启用图表视图导航 (Ctrl + B)</value>
   </data>
-  <data name="NodeHelpWindowNodeDescription" xml:space="preserve">
-    <value>说明</value>
+  <data name="AddCustomFileToPackageDialogTitle" xml:space="preserve">
+    <value>将自定义节点、库或 XML 添加至软件包...</value>
   </data>
-  <data name="NodeHelpWindowNodeInput" xml:space="preserve">
-    <value>输入</value>
+  <data name="ConverterMessageCurrentOffset" xml:space="preserve">
+    <value>当前偏移 X: {0}, Y: {1}</value>
   </data>
-  <data name="NodeHelpWindowNodeOutput" xml:space="preserve">
-    <value>输出</value>
+  <data name="ConverterMessageTransformOrigin" xml:space="preserve">
+    <value>变换原点 X: {0}, Y: {1}</value>
   </data>
-  <data name="NodeHelpWindowNodeType" xml:space="preserve">
-    <value>节点类型</value>
+  <data name="ConverterMessageZoom" xml:space="preserve">
+    <value>缩放: {0}</value>
   </data>
-  <data name="NodesRunStatus" xml:space="preserve">
-    <value>冻结</value>
+  <data name="DynamoViewSamplesMenuShowInFolder" xml:space="preserve">
+    <value>在文件夹中显示</value>
   </data>
-  <data name="NodeViewCustomizationFindErrorMessage" xml:space="preserve">
-    <value>查找 {0} 的节点视图自定义时出错。请联系创建者以了解详细信息。</value>
+  <data name="FileDialogAllFiles" xml:space="preserve">
+    <value>所有文件 ({0})|{0}</value>
+  </data>
+  <data name="FileDialogAssemblyFiles" xml:space="preserve">
+    <value>部件库文件 ({0})|{0}</value>
+  </data>
+  <data name="FileDialogCustomNodeDLLXML" xml:space="preserve">
+    <value>自定义节点、DLL、XML ({0})|{0}</value>
+  </data>
+  <data name="FileDialogDefaultPNGName" xml:space="preserve">
+    <value>Capture.png</value>
+  </data>
+  <data name="FileDialogDefaultSTLModelName" xml:space="preserve">
+    <value>model.stl</value>
+  </data>
+  <data name="FileDialogDesignScriptFiles" xml:space="preserve">
+    <value>DesignScript 文件 ({0})|{0}</value>
+  </data>
+  <data name="FileDialogDynamoCustomNode" xml:space="preserve">
+    <value>{0} 自定义节点 ({1})|{1}</value>
+  </data>
+  <data name="FileDialogDynamoDefinitions" xml:space="preserve">
+    <value>{0} 定义 ({1})|{1}</value>
+  </data>
+  <data name="FileDialogDynamoWorkspace" xml:space="preserve">
+    <value>{0} 工作空间 ({1})|{1}</value>
+  </data>
+  <data name="FileDialogLibraryFiles" xml:space="preserve">
+    <value>库文件 ({0})|{0}</value>
+  </data>
+  <data name="FileDialogPNGFiles" xml:space="preserve">
+    <value>PNG 图像|{0}</value>
+  </data>
+  <data name="FileDialogSTLModels" xml:space="preserve">
+    <value>STL 模型|{0}</value>
+  </data>
+  <data name="InfoBubbleError" xml:space="preserve">
+    <value>错误: </value>
+  </data>
+  <data name="InfoBubbleWarning" xml:space="preserve">
+    <value>警告: </value>
+  </data>
+  <data name="InfoBubbleInfo" xml:space="preserve">
+    <value>信息</value>
+  </data>
+  <data name="MessageFailedToApplyCustomization" xml:space="preserve">
+    <value>无法为 {0} 应用 NodeViewCustomization</value>
+  </data>
+  <data name="MessageFailedToAttachToRowColumn" xml:space="preserve">
+    <value>“AttachmentToRowColumnConverter”期望“ConverterParameter”值为“Row”或“Column”</value>
+  </data>
+  <data name="MessageFailedToFindNodeById" xml:space="preserve">
+    <value>找不到具有该 ID 的任何节点。</value>
+  </data>
+  <data name="MessageFailedToFindGroupById" xml:space="preserve">
+    <value>找不到具有该 ID 的组。</value>
+  </data>
+  <data name="MessageFailedToOpenCorruptedFile" xml:space="preserve">
+    <value>打开已损坏文件时出错: {0}</value>
+  </data>
+  <data name="MessageFailedToSaveAsImage" xml:space="preserve">
+    <value>无法将工作空间另存为图像。</value>
+  </data>
+  <data name="MessageLoadingTime" xml:space="preserve">
+    <value>加载 {1} 主窗口已用时间 {0}。</value>
+  </data>
+  <data name="MessageNodeWithNullFunction" xml:space="preserve">
+    <value>该节点有一个空函数定义。</value>
+  </data>
+  <data name="MessageNoNodeDescription" xml:space="preserve">
+    <value>未提供说明</value>
+  </data>
+  <data name="MessageUnsavedChanges0" xml:space="preserve">
+    <value>以下工作空间尚未保存:</value>
+  </data>
+  <data name="MessageUnsavedChanges1" xml:space="preserve">
+    <value>。 请先保存，然后重试。</value>
+  </data>
+  <data name="WorkspaceTabSavingUnnecessary" xml:space="preserve">
+    <value>无需保存！</value>
+  </data>
+  <data name="WorkspaceTabSavingNecessary" xml:space="preserve">
+    <value>您需要保存对此文件的更新。</value>
+  </data>
+  <data name="WorkspaceTabSavingBrandNewFile" xml:space="preserve">
+    <value>这是一个全新文件。</value>
+  </data>
+  <data name="WorkspaceTabNotSavedYet" xml:space="preserve">
+    <value>您尚未保存此文件。</value>
+  </data>
+  <data name="SearchViewTopResult" xml:space="preserve">
+    <value>热门搜索结果</value>
+  </data>
+  <data name="TooltipCurrentIndex" xml:space="preserve">
+    <value>{0} / {1}</value>
+  </data>
+  <data name="AutodeskSignIn" xml:space="preserve">
+    <value>Autodesk 登录</value>
+  </data>
+  <data name="BrowserWindowLoading" xml:space="preserve">
+    <value>正在加载...</value>
+  </data>
+  <data name="InvalidLoginUrl" xml:space="preserve">
+    <value>登录页面 URL 无效！</value>
   </data>
   <data name="NoneString" xml:space="preserve">
     <value>无</value>
   </data>
-  <data name="NoteViewContextMenuDelete" xml:space="preserve">
-    <value>删除</value>
+  <data name="PresetsWindowDescription" xml:space="preserve">
+    <value>说明</value>
   </data>
-  <data name="NoteViewContextMenuEdit" xml:space="preserve">
-    <value>编辑...</value>
+  <data name="PresetsWindowDescriptionHint" xml:space="preserve">
+    <value>输入该预设的说明</value>
   </data>
-  <data name="NullString" xml:space="preserve">
-    <value>null</value>
+  <data name="PresetsWindowName" xml:space="preserve">
+    <value>名称</value>
   </data>
-  <data name="OKButton" xml:space="preserve">
-    <value>确定</value>
+  <data name="PresetsWindowTitle" xml:space="preserve">
+    <value>预设状态特性</value>
   </data>
-  <data name="OneAssemblyWasLoadedSeveralTimesErrorMessage" xml:space="preserve">
-    <value>请一次性加载部件。
-后续部件会分几次加载:
-</value>
+  <data name="DynamoViewRunButtonToolTipDisabled" xml:space="preserve">
+    <value>自动或者定期运行时运行不可用。</value>
   </data>
-  <data name="PackageManagerNoValidationErrors" xml:space="preserve">
-    <value>无验证错误</value>
+  <data name="RunTypeToolTipAutomatically" xml:space="preserve">
+    <value>图形更改会实时执行。最适合较小的图形、已知图形和 Dynamo Sandbox。</value>
   </data>
-  <data name="OnlyTitle" xml:space="preserve">
-    <value>仅</value>
+  <data name="RunTypeToolTipManually" xml:space="preserve">
+    <value>图形更改会在您单击“运行”时执行。在处理大型图形、不熟悉的图形或主机应用程序时，请使用此模式。</value>
   </data>
-  <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
-    <value>打开 {0} 定义...</value>
+  <data name="RunTypeToolTipPeriodicallyDisabled" xml:space="preserve">
+    <value>在图形中没有节点为定期运行提供支持时，定期运行将禁用。</value>
   </data>
-  <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
-    <value>软件包下载确认</value>
+  <data name="RunTypeToolTipPeriodicallyEnabled" xml:space="preserve">
+    <value>图形更改会以指定的间隔执行。仅当图形包含特定节点(如 DateTime.Now 或 WebRequest)时才可用。</value>
   </data>
-  <data name="PackageDownloadErrorMessageBoxTitle" xml:space="preserve">
-    <value>软件包下载错误</value>
+  <data name="RunCompletedMessage" xml:space="preserve">
+    <value>运行完成。</value>
   </data>
-  <data name="PackageDownloadMessageBoxTitle" xml:space="preserve">
-    <value>软件包下载</value>
+  <data name="RunCompletedWithScaleChangeMessage" xml:space="preserve">
+    <value>运行完成，包含新的工作范围。</value>
   </data>
-  <data name="PackageDownloadStateDownloaded" xml:space="preserve">
-    <value>已下载</value>
+  <data name="RunCompletedWithWarningsMessage" xml:space="preserve">
+    <value>运行已完成，但出现警告。</value>
   </data>
-  <data name="PackageDownloadStateDownloading" xml:space="preserve">
-    <value>下载</value>
+  <data name="RunCompletedWithScaleChangeAndWarningsMessage" xml:space="preserve">
+    <value>运行完成，包含设置新工作范围的警告。</value>
   </data>
-  <data name="PackageDownloadStateError" xml:space="preserve">
-    <value>错误</value>
+  <data name="RunStartedMessage" xml:space="preserve">
+    <value>运行已开始...</value>
   </data>
-  <data name="PackageDownloadStateInstalled" xml:space="preserve">
-    <value>已安装</value>
+  <data name="RunStartedWithScaleChangeMessage" xml:space="preserve">
+    <value>已通过新工作范围启动运行...</value>
   </data>
-  <data name="PackageDownloadStateInstalling" xml:space="preserve">
-    <value>安装</value>
+  <data name="GroupDefaultText" xml:space="preserve">
+    <value>说明 &lt;双击此处编辑组说明&gt;</value>
   </data>
-  <data name="PackageDownloadStateStarting" xml:space="preserve">
-    <value>开始</value>
+  <data name="GroupContextMenuBackground" xml:space="preserve">
+    <value>选择背景</value>
+  </data>
+  <data name="GroupContextMenuFont" xml:space="preserve">
+    <value>字体大小</value>
+  </data>
+  <data name="GroupContextMenuUngroup" xml:space="preserve">
+    <value>解组(_O)</value>
+  </data>
+  <data name="GroupContextMenuGraphLayout" xml:space="preserve">
+    <value>清理节点布局</value>
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
     <value>由于 .NET Framework 的限制，软件包组件虽已加载但却无法更新。请在 {0} 未运行时更新部件，然后重试。</value>
@@ -1365,20 +1805,215 @@
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
     <value>无法更新部件</value>
   </data>
-  <data name="PackageFolderNotAccessible" xml:space="preserve">
-    <value>尝试安装软件包时发生问题。Dynamo 无法获得 {0} 的读/写访问权限</value>
+  <data name="Automatic" xml:space="preserve">
+    <value>自动</value>
   </data>
-  <data name="PackageNameCannotContainTheseCharacters" xml:space="preserve">
-    <value>软件包的名称不能包含</value>
+  <data name="Manual" xml:space="preserve">
+    <value>手动</value>
   </data>
-  <data name="PackageNeedAtLeastOneFile" xml:space="preserve">
-    <value>您的软件包必须至少包含一个文件。</value>
+  <data name="Periodic" xml:space="preserve">
+    <value>周期性</value>
   </data>
-  <data name="PackageCompatibilityMatrixMissing" xml:space="preserve">
-    <value>提供软件包的兼容性信息...</value>
+  <data name="ContextMenuCopy" xml:space="preserve">
+    <value>复制内容</value>
   </data>
-  <data name="PackageNotExisted" xml:space="preserve">
-    <value>软件包的根目录不存在。请尝试重新安装该软件包。</value>
+  <data name="ContextMenuHideGeometry" xml:space="preserve">
+    <value>隐藏几何体预览</value>
+  </data>
+  <data name="ContextMenuHideAllTextBubble" xml:space="preserve">
+    <value>隐藏所有文字数字</value>
+  </data>
+  <data name="ContextMenuInsertCodeBlock" xml:space="preserve">
+    <value>插入代码块</value>
+  </data>
+  <data name="ContextMenuPaste" xml:space="preserve">
+    <value>粘贴</value>
+  </data>
+  <data name="ContextMenuShowGeometry" xml:space="preserve">
+    <value>显示几何图形预览</value>
+  </data>
+  <data name="ContextMenuShowAllTextBubble" xml:space="preserve">
+    <value>显示所有气泡文字</value>
+  </data>
+  <data name="MoreButton" xml:space="preserve">
+    <value>更多</value>
+  </data>
+  <data name="StartPageWhatsNew" xml:space="preserve">
+    <value>快速入门</value>
+  </data>
+  <data name="TermsOfUseAcceptButton" xml:space="preserve">
+    <value>我接受</value>
+  </data>
+  <data name="TermsOfUseDeclineButton" xml:space="preserve">
+    <value>我拒绝</value>
+  </data>
+  <data name="TermsOfUseViewTitle" xml:space="preserve">
+    <value>Package Manager 使用条款</value>
+  </data>
+  <data name="LearnMore" xml:space="preserve">
+    <value>了解详细信息</value>
+  </data>
+  <data name="SignInButtonContentToolTip" xml:space="preserve">
+    <value>登录以访问与桌面软件集成的联机服务。</value>
+  </data>
+  <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
+    <value>启用网络模式以便能够登录。</value>
+  </data>
+  <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
+    <value>Autodesk A360</value>
+  </data>
+  <data name="ConsentFormADPAnalyticsCheckBoxContent" xml:space="preserve">
+    <value>我同意收集桌面产品数据以用于 Autodesk 分析计划。</value>
+  </data>
+  <data name="GroupContextMenuDeleteGroup" xml:space="preserve">
+    <value>删除组</value>
+  </data>
+  <data name="CustomNodeTypeShortString" xml:space="preserve">
+    <value>DS</value>
+  </data>
+  <data name="PackageTypeShortString" xml:space="preserve">
+    <value>资料包</value>
+  </data>
+  <data name="ZeroTouchTypeShortString" xml:space="preserve">
+    <value>DLL</value>
+  </data>
+  <data name="DynamoViewEditMenuCreatePreset" xml:space="preserve">
+    <value>从所选项创建预设</value>
+  </data>
+  <data name="DynamoViewEditMenuDeletePreset" xml:space="preserve">
+    <value>删除预设</value>
+  </data>
+  <data name="DynamoViewEditMenuRestorePreset" xml:space="preserve">
+    <value>恢复预设</value>
+  </data>
+  <data name="DynamoViewEditMenuPresetsMenu" xml:space="preserve">
+    <value>预设</value>
+  </data>
+  <data name="DynamoViewSettingsMenuVisualizationSettings" xml:space="preserve">
+    <value>可视化设置</value>
+  </data>
+  <data name="FileDialogManualMode" xml:space="preserve">
+    <value>以手动执行模式打开</value>
+  </data>
+  <data name="BrowserNodeButtonLabel" xml:space="preserve">
+    <value>浏览...</value>
+  </data>
+  <data name="BrowserNodeNoFileSelected" xml:space="preserve">
+    <value>未选择文件。</value>
+  </data>
+  <data name="StringInputNodeEditMenu" xml:space="preserve">
+    <value>编辑...</value>
+  </data>
+  <data name="WatchNodeRawDataMenu" xml:space="preserve">
+    <value>显示原始数据</value>
+  </data>
+  <data name="NodeContextMenuEnablePeriodicUpdate" xml:space="preserve">
+    <value>启用定期更新</value>
+  </data>
+  <data name="PackageUploadNoDependency" xml:space="preserve">
+    <value>无</value>
+  </data>
+  <data name="PublishPackageViewPackageDescriptionTooltip" xml:space="preserve">
+    <value>用于帮助用户了解软件包用途的相关说明。</value>
+  </data>
+  <data name="PublishPackageViewPackageNameTooltip" xml:space="preserve">
+    <value>软件包的唯一名称。</value>
+  </data>
+  <data name="PublishPackageViewPackageNameWatermark" xml:space="preserve">
+    <value>软件包名称</value>
+  </data>
+  <data name="UnitAcres" xml:space="preserve">
+    <value>英亩</value>
+  </data>
+  <data name="UnitCentimeters" xml:space="preserve">
+    <value>厘米</value>
+  </data>
+  <data name="UnitCubicCentimeter" xml:space="preserve">
+    <value>立方厘米</value>
+  </data>
+  <data name="UnitCubicFoot" xml:space="preserve">
+    <value>立方英尺</value>
+  </data>
+  <data name="UnitCubicInches" xml:space="preserve">
+    <value>立方英寸</value>
+  </data>
+  <data name="UnitCubicMeters" xml:space="preserve">
+    <value>立方米</value>
+  </data>
+  <data name="UnitCubicMillimeter" xml:space="preserve">
+    <value>立方毫米</value>
+  </data>
+  <data name="UnitCubicYards" xml:space="preserve">
+    <value>立方码</value>
+  </data>
+  <data name="UnitDecimeters" xml:space="preserve">
+    <value>分米</value>
+  </data>
+  <data name="UnitFeet" xml:space="preserve">
+    <value>英尺</value>
+  </data>
+  <data name="UnitHectares" xml:space="preserve">
+    <value>公顷</value>
+  </data>
+  <data name="UnitInches" xml:space="preserve">
+    <value>英寸</value>
+  </data>
+  <data name="UnitLitres" xml:space="preserve">
+    <value>升</value>
+  </data>
+  <data name="UnitMeters" xml:space="preserve">
+    <value>米</value>
+  </data>
+  <data name="UnitMillimeters" xml:space="preserve">
+    <value>毫米</value>
+  </data>
+  <data name="UnitSquareCentimeter" xml:space="preserve">
+    <value>平方厘米</value>
+  </data>
+  <data name="UnitSquareFoot" xml:space="preserve">
+    <value>平方英尺</value>
+  </data>
+  <data name="UnitSquareInch" xml:space="preserve">
+    <value>平方英寸</value>
+  </data>
+  <data name="UnitSquareMeter" xml:space="preserve">
+    <value>平方米</value>
+  </data>
+  <data name="UnitSquareMillimeter" xml:space="preserve">
+    <value>平方毫米</value>
+  </data>
+  <data name="UnitUSGallons" xml:space="preserve">
+    <value>USGallons</value>
+  </data>
+  <data name="CustomNodePromptDescriptionTooltip" xml:space="preserve">
+    <value>用于帮助用户了解节点用途的相关说明。</value>
+  </data>
+  <data name="CustomNodePromptNameTooltip" xml:space="preserve">
+    <value>节点的唯一名称。</value>
+  </data>
+  <data name="PresetPromptDescriptionTooltip" xml:space="preserve">
+    <value>预设状态的说明。</value>
+  </data>
+  <data name="PresetPromptNameTooltip" xml:space="preserve">
+    <value>预设的唯一名称。</value>
+  </data>
+  <data name="SelectNodeButtonChange" xml:space="preserve">
+    <value>更改</value>
+  </data>
+  <data name="SelectNodeButtonSelect" xml:space="preserve">
+    <value>选择</value>
+  </data>
+  <data name="PresetTextRemaining" xml:space="preserve">
+    <value>剩余字符数</value>
+  </data>
+  <data name="PresetOverwrite" xml:space="preserve">
+    <value>使用此名称的预设已存在，是否要覆盖？?</value>
+  </data>
+  <data name="AddButton" xml:space="preserve">
+    <value>添加</value>
+  </data>
+  <data name="DynamoViewSettingMenuManagePackagePath" xml:space="preserve">
+    <value>管理节点和软件包路径...</value>
   </data>
   <data name="PackagePathViewAccept" xml:space="preserve">
     <value>接受更改</value>
@@ -1422,209 +2057,32 @@
   <data name="PackagePathAutoAddNotificationDetailedDescription" xml:space="preserve">
     <value>导入路径 “{0}” 已添加到 “节点和软件包路径”。如果要更新或删除此路径，请打开“Dynamo”&gt;“首选项”&gt;“Package Manager”&gt;“节点和软件包路径...”</value>
   </data>
-  <data name="PackageSearchStateNoResult" xml:space="preserve">
-    <value>搜索未返回任何结果！</value>
+  <data name="NodeContextMenuIsInput" xml:space="preserve">
+    <value>是输入</value>
   </data>
-  <data name="PackageSearchStateSearching" xml:space="preserve">
-    <value>正在搜索...</value>
+  <data name="NodeContextMenuIsOutput" xml:space="preserve">
+    <value>为输出</value>
   </data>
-  <data name="PackageSearchStateSyncingWithServer" xml:space="preserve">
-    <value>正在与服务器同步...</value>
-  </data>
-  <data name="PackageSearchViewClearButton" xml:space="preserve">
-    <value>清除</value>
-  </data>
-  <data name="PackageSearchViewClearButtonTooltip" xml:space="preserve">
-    <value>清除下载</value>
-  </data>
-  <data name="PackageSearchViewContextMenuOrderAscending" xml:space="preserve">
-    <value>升序</value>
-  </data>
-  <data name="PackageSearchViewContextMenuOrderDescending" xml:space="preserve">
-    <value>降序</value>
-  </data>
-  <data name="PackageSearchViewContextMenuSortByAuthor" xml:space="preserve">
-    <value>作者</value>
-  </data>
-  <data name="PackageSearchViewContextMenuSortByDownloads" xml:space="preserve">
-    <value>下载项</value>
-  </data>
-  <data name="PackageSearchViewContextMenuSortByName" xml:space="preserve">
-    <value>名称</value>
-  </data>
-  <data name="PackageSearchViewContextMenuSortByVotes" xml:space="preserve">
-    <value>投票</value>
-  </data>
-  <data name="PackageSearchViewContextMenuSortyByUpdate" xml:space="preserve">
-    <value>最新更新</value>
-  </data>
-  <data name="PackageManagerPackageDeprecated" xml:space="preserve">
-    <value>已弃用</value>
-  </data>
-  <data name="PackageSearchViewDeprecatedTooltip" xml:space="preserve">
-    <value>该软件包的维护人员已表示，他们将不再对此软件包进行更新。使用时责任自负！</value>
-  </data>
-  <data name="PackageSearchViewDescription" xml:space="preserve">
-    <value>说明</value>
-  </data>
-  <data name="PackageSearchViewInstallButton" xml:space="preserve">
-    <value>⇓ 安装</value>
-  </data>
-  <data name="PackageSearchViewInstallLatestVersion" xml:space="preserve">
-    <value>安装最新版本</value>
-  </data>
-  <data name="PackageSearchViewInstallLatestVersionTo" xml:space="preserve">
-    <value>安装到文件夹...</value>
-  </data>
-  <data name="PackageSearchViewInstallThisVersion" xml:space="preserve">
-    <value>安装该版本</value>
-  </data>
-  <data name="PackageSearchViewInstallThisVersionTo" xml:space="preserve">
-    <value>将该版本安装到文件夹...</value>
-  </data>
-  <data name="PackageSearchViewKeywords" xml:space="preserve">
-    <value>关键字</value>
-  </data>
-  <data name="PackageSearchViewSearchTextBox" xml:space="preserve">
-    <value>搜索...</value>
-  </data>
-  <data name="PackageSearchViewSortByButton" xml:space="preserve">
-    <value>排序方式</value>
-  </data>
-  <data name="PackageSearchViewTitle" xml:space="preserve">
-    <value>联机搜索软件包</value>
-  </data>
-  <data name="PackageSearchViewUpvoteButtonTooltip" xml:space="preserve">
-    <value>支持该软件包的投票</value>
-  </data>
-  <data name="PackageSearchViewVersions" xml:space="preserve">
-    <value>版本</value>
-  </data>
-  <data name="PackageSearchViewVisitRepositoryBuutton" xml:space="preserve">
-    <value>访问软件包储存库</value>
-  </data>
-  <data name="PackageSearchViewVisitWebSiteButton" xml:space="preserve">
-    <value>访问软件包网站</value>
-  </data>
-  <data name="PackageStateUnknown" xml:space="preserve">
-    <value>未知</value>
-  </data>
-  <data name="PackageTypeShortString" xml:space="preserve">
-    <value>资料包</value>
-  </data>
-  <data name="PackageUploadNoDependency" xml:space="preserve">
-    <value>无</value>
-  </data>
-  <data name="PackageUploadStateCompressing" xml:space="preserve">
-    <value>正在压缩...</value>
-  </data>
-  <data name="PackageUploadStateCopying" xml:space="preserve">
-    <value>正在复制...</value>
-  </data>
-  <data name="PackageUploadStateError" xml:space="preserve">
-    <value>错误！</value>
-  </data>
-  <data name="PackageUploadStateReady" xml:space="preserve">
-    <value>就绪</value>
-  </data>
-  <data name="PackageUploadStateUploaded" xml:space="preserve">
-    <value>已上传</value>
-  </data>
-  <data name="PackageUploadStateUploading" xml:space="preserve">
-    <value>正在上传...</value>
-  </data>
-  <data name="PackageFilterByHost" xml:space="preserve">
-    <value>主体</value>
-  </data>
-  <data name="PackageFilterByStatus" xml:space="preserve">
-    <value>状态</value>
-  </data>
-  <data name="PackageFilterNewTooltip" xml:space="preserve">
-    <value>最近 30 天发布</value>
-  </data>
-  <data name="PackageFilterUpdatedTooltip" xml:space="preserve">
-    <value>最近 30 天更新</value>
-  </data>
-  <data name="PackageFilterDeprecatedTooltip" xml:space="preserve">
-    <value>已停用的软件包</value>
-  </data>
-  <data name="PackageFilterByDependency" xml:space="preserve">
-    <value>依存关系</value>
-  </data>
-  <data name="PackageFilterHasDependenciesTooltip" xml:space="preserve">
-    <value>需要安装其他软件包的软件包</value>
-  </data>
-  <data name="PackageFilterHasNoDependenciesTooltip" xml:space="preserve">
-    <value>单机版软件包</value>
-  </data>
-  <data name="PackageSearchViewContextMenuFilterActive" xml:space="preserve">
-    <value>活动</value>
-  </data>
-  <data name="PackageSearchViewContextMenuFilterDeprecated" xml:space="preserve">
-    <value>已弃用</value>
-  </data>
-  <data name="PackageSearchViewContextMenuFilterDependencies" xml:space="preserve">
-    <value>有依存关系</value>
-  </data>
-  <data name="PackageSearchViewContextMenuFilterNoDependencies" xml:space="preserve">
-    <value>没有依存关系</value>
-  </data>
-  <data name="PackageUseNewerDynamoMessageBoxTitle" xml:space="preserve">
-    <value>软件包可能在此版本的 {0} 中无法使用！</value>
-  </data>
-  <data name="PackageWarningMessageBoxTitle" xml:space="preserve">
-    <value>软件包警告</value>
-  </data>
-  <data name="PackageManagerClearAllButtonText" xml:space="preserve">
-    <value>全部清除</value>
-  </data>
-  <data name="Periodic" xml:space="preserve">
-    <value>周期性</value>
-  </data>
-  <data name="PortViewContextMenuUserDefaultValue" xml:space="preserve">
-    <value>使用默认值</value>
-  </data>
-  <data name="PresetOverwrite" xml:space="preserve">
-    <value>使用此名称的预设已存在，是否要覆盖？?</value>
-  </data>
-  <data name="PresetPromptDescriptionTooltip" xml:space="preserve">
-    <value>预设状态的说明。</value>
-  </data>
-  <data name="PresetPromptNameTooltip" xml:space="preserve">
-    <value>预设的唯一名称。</value>
-  </data>
-  <data name="PresetsWindowDescription" xml:space="preserve">
-    <value>说明</value>
-  </data>
-  <data name="PresetsWindowDescriptionHint" xml:space="preserve">
-    <value>输入该预设的说明</value>
-  </data>
-  <data name="PresetsWindowName" xml:space="preserve">
-    <value>名称</value>
-  </data>
-  <data name="PresetsWindowTitle" xml:space="preserve">
-    <value>预设状态特性</value>
-  </data>
-  <data name="PresetTextRemaining" xml:space="preserve">
-    <value>剩余字符数</value>
+  <data name="DynamoViewViewMenuAvailablePreviews" xml:space="preserve">
+    <value>可用预览(_A)</value>
   </data>
   <data name="PresetWarningMessage" xml:space="preserve">
     <value>未选择输入节点。至少选择一个输入节点以创建预设。</value>
   </data>
-  <data name="PreviewListLabel" xml:space="preserve">
-    <value>列表</value>
+  <data name="UnitArea" xml:space="preserve">
+    <value>区域</value>
+  </data>
+  <data name="UnitLength" xml:space="preserve">
+    <value>长度</value>
+  </data>
+  <data name="UnitVolume" xml:space="preserve">
+    <value>体积</value>
+  </data>
+  <data name="Units" xml:space="preserve">
+    <value>单位:</value>
   </data>
   <data name="PublishPackage" xml:space="preserve">
     <value>联机发布</value>
-  </data>
-  <data name="PublishPackageDialogCaption" xml:space="preserve">
-    <value>发布成功</value>
-  </data>
-  <data name="PublishPackageSelectPackageContentsMessage" xml:space="preserve">
-    <value>选择软件包内容</value>
-  </data>
-  <data name="PublishPackagePreviewPackageContentsMessage" xml:space="preserve">
-    <value>预览软件包内容(只读)</value>
   </data>
   <data name="PublishPackageLocally" xml:space="preserve">
     <value>本地发布</value>
@@ -1632,374 +2090,124 @@
   <data name="PublishPackageResetButton" xml:space="preserve">
     <value>重置</value>
   </data>
-  <data name="PublishPackageMessage" xml:space="preserve">
-    <value>软件包发布成功。 
-要发布其他软件包吗？</value>
+  <data name="PublishPackageSelectPackageContentsMessage" xml:space="preserve">
+    <value>选择软件包内容</value>
   </data>
-  <data name="PublishPackagePackageContent" xml:space="preserve">
-    <value>软件包内容</value>
+  <data name="PublishPackagePreviewPackageContentsMessage" xml:space="preserve">
+    <value>预览软件包内容(只读)</value>
   </data>
-  <data name="PublishPackageViewAddFileButton" xml:space="preserve">
-    <value>添加文件</value>
+  <data name="BackgroundPreviewName" xml:space="preserve">
+    <value>背景预览(_B)</value>
   </data>
-  <data name="PublishPackageViewAddFileButtonTooltip" xml:space="preserve">
-    <value>添加文件</value>
+  <data name="CameraDataLoadError" xml:space="preserve">
+    <value>无法从文件加载相机位置信息。</value>
   </data>
-  <data name="PublishPackageRemoveFromPacakgeTooltip" xml:space="preserve">
-    <value>从软件包中删除</value>
+  <data name="CameraDataSaveError" xml:space="preserve">
+    <value>无法保存相机位置信息。</value>
   </data>
-  <data name="PublishPackageViewContextMenuIsNodeLibrary" xml:space="preserve">
-    <value>为节点库</value>
+  <data name="FolderNotWritableError" xml:space="preserve">
+    <value>对于 {0}，您没有写入权限。</value>
   </data>
-  <data name="PublishPackageViewLicense" xml:space="preserve">
-    <value>许可证(可选)</value>
+  <data name="ActionMember" xml:space="preserve">
+    <value>操作</value>
   </data>
-  <data name="PublishPackageViewPackageDependencies" xml:space="preserve">
-    <value>相关项</value>
-  </data>
-  <data name="PublishPackageViewPackageDescriptionTooltip" xml:space="preserve">
-    <value>用于帮助用户了解软件包用途的相关说明。</value>
-  </data>
-  <data name="PublishPackageViewPackageGroup" xml:space="preserve">
-    <value>组(可选)</value>
-  </data>
-  <data name="PublishPackageViewPackageGroupTooltip" xml:space="preserve">
-    <value>有助于对该软件包进行分类的组。对与公司、学校等有关的软件包集合可能有用。</value>
-  </data>
-  <data name="PublishPackageViewPackageKeywords" xml:space="preserve">
-    <value>关键字(可选)</value>
-  </data>
-  <data name="PublishPackageViewPackageKeywordsTooltip" xml:space="preserve">
-    <value>关键字有助于查找数据库中的软件包。通过空格分隔不同关键字。</value>
-  </data>
-  <data name="PublishPackageViewPackageName" xml:space="preserve">
-    <value>名称</value>
-  </data>
-  <data name="PublishPackageViewPackageNameTooltip" xml:space="preserve">
-    <value>软件包的唯一名称。</value>
-  </data>
-  <data name="PublishPackageViewPackageVersion" xml:space="preserve">
-    <value>版本</value>
-  </data>
-  <data name="PublishPackageViewMajorPackageVersionLabel" xml:space="preserve">
-    <value>主版本</value>
-  </data>
-  <data name="PublishPackageViewMinorPackageVersionLabel" xml:space="preserve">
-    <value>次版本</value>
-  </data>
-  <data name="PublishPackageViewBuildPackageVersionLabel" xml:space="preserve">
-    <value>内部版本</value>
-  </data>
-  <data name="PublishPackageViewPackageVersionTooltip" xml:space="preserve">
-    <value>版本名有助于提交程序跟踪软件包的更新。当添加了软件包的新版本时，版本号必须增大。</value>
-  </data>
-  <data name="PublishPackageViewPublisherWebsiteTooltip" xml:space="preserve">
-    <value>软件包的网站链接。</value>
-  </data>
-  <data name="PublishPackageViewGithubLinkTooltip" xml:space="preserve">
-    <value>软件包的 GitHub 库链接。</value>
-  </data>
-  <data name="PublishPackageViewLicenceTooltip" xml:space="preserve">
-    <value>软件包的许可。</value>
-  </data>
-  <data name="PublishPackageViewCopyrightHolderTooltip" xml:space="preserve">
-    <value>软件包的版权所有者。</value>
-  </data>
-  <data name="PublishPackageViewCopyrightYearTooltip" xml:space="preserve">
-    <value>软件包的版权年份。</value>
-  </data>
-  <data name="PublishPackageViewPublish" xml:space="preserve">
-    <value>发布软件包</value>
-  </data>
-  <data name="PublishPackageViewPublisherWebiSite" xml:space="preserve">
-    <value>网站 Url (可选)</value>
-  </data>
-  <data name="PublishPackageViewRepositoryUrl" xml:space="preserve">
-    <value>储存库 Url (可选)</value>
-  </data>
-  <data name="PublishPackageViewTitle" xml:space="preserve">
-    <value>发布 {0} 软件包</value>
+  <data name="CreateMember" xml:space="preserve">
+    <value>创建</value>
   </data>
   <data name="QueryMember" xml:space="preserve">
     <value>查询</value>
   </data>
-  <data name="RerunButton" xml:space="preserve">
-    <value>应用更改</value>
+  <data name="AddToLibraryButton" xml:space="preserve">
+    <value>添加</value>
   </data>
-  <data name="RunCompletedMessage" xml:space="preserve">
-    <value>运行完成。</value>
+  <data name="BackgroundPreviewDefaultName" xml:space="preserve">
+    <value>默认背景预览</value>
   </data>
-  <data name="RunCompletedWithScaleChangeAndWarningsMessage" xml:space="preserve">
-    <value>运行完成，包含设置新工作范围的警告。</value>
+  <data name="BackgroundPreviewCreationFailureMessage" xml:space="preserve">
+    <value>在  Dynamo 中创建背景预览时出错。这可能是由于您的计算机上缺少图形资源。请参见日志了解详细信息。</value>
   </data>
-  <data name="RunCompletedWithScaleChangeMessage" xml:space="preserve">
-    <value>运行完成，包含新的工作范围。</value>
+  <data name="NodesRunStatus" xml:space="preserve">
+    <value>冻结</value>
   </data>
-  <data name="RunCompletedWithWarningsMessage" xml:space="preserve">
-    <value>运行已完成，但出现警告。</value>
+  <data name="CompactLayoutTitle" xml:space="preserve">
+    <value>精简</value>
   </data>
-  <data name="RunStartedMessage" xml:space="preserve">
-    <value>运行已开始...</value>
+  <data name="DetailedLayoutTitle" xml:space="preserve">
+    <value>详细</value>
   </data>
-  <data name="RunStartedWithScaleChangeMessage" xml:space="preserve">
-    <value>已通过新工作范围启动运行...</value>
+  <data name="FilterIconTooltip" xml:space="preserve">
+    <value>过滤结果</value>
   </data>
-  <data name="RunTypeToolTipAutomatically" xml:space="preserve">
-    <value>图形更改会实时执行。最适合较小的图形、已知图形和 Dynamo Sandbox。</value>
-  </data>
-  <data name="RunTypeToolTipManually" xml:space="preserve">
-    <value>图形更改会在您单击“运行”时执行。在处理大型图形、不熟悉的图形或主机应用程序时，请使用此模式。</value>
-  </data>
-  <data name="RunTypeToolTipPeriodicallyDisabled" xml:space="preserve">
-    <value>在图形中没有节点为定期运行提供支持时，定期运行将禁用。</value>
-  </data>
-  <data name="RunTypeToolTipPeriodicallyEnabled" xml:space="preserve">
-    <value>图形更改会以指定的间隔执行。仅当图形包含特定节点(如 DateTime.Now 或 WebRequest)时才可用。</value>
-  </data>
-  <data name="UnsavedChangesMessageBoxTitle" xml:space="preserve">
-    <value>未保存的更改</value>
-  </data>
-  <data name="SaveModelToSTLDialogTitle" xml:space="preserve">
-    <value>将模型保存为 STL 格式。</value>
-  </data>
-  <data name="SaveWorkbenToImageDialogTitle" xml:space="preserve">
-    <value>将工作台保存至图像</value>
-  </data>
-  <data name="ScalingExtraLargeButton" xml:space="preserve">
-    <value>特大</value>
-  </data>
-  <data name="ScalingLargeButton" xml:space="preserve">
-    <value>大</value>
-  </data>
-  <data name="ScalingMediumButton" xml:space="preserve">
-    <value>中</value>
-  </data>
-  <data name="ScalingSmallButton" xml:space="preserve">
-    <value>小</value>
-  </data>
-  <data name="ScreenShotFrom3DParameter" xml:space="preserve">
-    <value>screenshot_3D</value>
-  </data>
-  <data name="ScreenShotFrom3DShortcutParameter" xml:space="preserve">
-    <value>screenshot_3D_shortcut</value>
-  </data>
-  <data name="SearchViewTopResult" xml:space="preserve">
-    <value>热门搜索结果</value>
-  </data>
-  <data name="SelectAllTitle" xml:space="preserve">
-    <value>全部选择</value>
-  </data>
-  <data name="SelectionErrorMessageBoxTitle" xml:space="preserve">
-    <value>选择错误</value>
-  </data>
-  <data name="SelectNodeButtonChange" xml:space="preserve">
-    <value>更改</value>
-  </data>
-  <data name="SelectNodeButtonSelect" xml:space="preserve">
-    <value>选择</value>
-  </data>
-  <data name="ShowClassicNodeLibrary" xml:space="preserve">
-    <value>显示典型节点库</value>
+  <data name="LayoutIconTooltip" xml:space="preserve">
+    <value>查看布局</value>
   </data>
   <data name="ShowHideLibraryIconTooltip" xml:space="preserve">
     <value>显示/隐藏</value>
   </data>
-  <data name="ShowRunPreviewDisableToolTip" xml:space="preserve">
-    <value>预览图形执行状态。计划用于执行的节点将在图形中亮显</value>
+  <data name="OnlyTitle" xml:space="preserve">
+    <value>仅</value>
   </data>
-  <data name="ShowRunPreviewEnableToolTip" xml:space="preserve">
-    <value>自动运行时执行预览不可用</value>
+  <data name="SelectAllTitle" xml:space="preserve">
+    <value>全部选择</value>
   </data>
-  <data name="SolutionToFolderNotWritatbleError" xml:space="preserve">
-    <value>请更新权限或转到“首选项”&gt;“节点和软件包路径...”以更改默认目录。</value>
+  <data name="NodeViewCustomizationFindErrorMessage" xml:space="preserve">
+    <value>查找 {0} 的节点视图自定义时出错。请联系创建者以了解详细信息。</value>
   </data>
-  <data name="StartPageAdvancedTutorials" xml:space="preserve">
-    <value>高级教程</value>
+  <data name="PreviewListLabel" xml:space="preserve">
+    <value>列表</value>
   </data>
-  <data name="StartPageAsk" xml:space="preserve">
-    <value>询问</value>
+  <data name="NullString" xml:space="preserve">
+    <value>null</value>
   </data>
-  <data name="StartPageBackupLocation" xml:space="preserve">
-    <value>备份位置</value>
+  <data name="InvalidTimeZoneMessage" xml:space="preserve">
+    <value>此时无法登录。请检查日期、时间和时区设置，然后再次尝试登录。</value>
   </data>
-  <data name="StartPageBackupNoCrash" xml:space="preserve">
-    <value>备份</value>
+  <data name="OneAssemblyWasLoadedSeveralTimesErrorMessage" xml:space="preserve">
+    <value>请一次性加载部件。
+后续部件会分几次加载:
+</value>
   </data>
-  <data name="StartPageBackupOnCrash" xml:space="preserve">
-    <value>恢复备份</value>
+  <data name="PackageManagerNoValidationErrors" xml:space="preserve">
+    <value>无验证错误</value>
   </data>
-  <data name="StartPageCode" xml:space="preserve">
-    <value>代码</value>
+  <data name="MessageFailedToAddFile" xml:space="preserve">
+    <value>无法添加文件: {0}</value>
   </data>
-  <data name="StartPageDiscussionForum" xml:space="preserve">
-    <value>讨论论坛</value>
+  <data name="MessageFailedToAddMultipleFiles" xml:space="preserve">
+    <value>无法添加以下文件:\n\n {0}</value>
   </data>
-  <data name="StartPageDynamoDictionary" xml:space="preserve">
-    <value>Dynamo 词典</value>
-  </data>
-  <data name="StartPageDynamoPrimer" xml:space="preserve">
-    <value>Dynamo Primer</value>
-  </data>
-  <data name="StartPageFiles" xml:space="preserve">
-    <value>文件</value>
-  </data>
-  <data name="StartPageGithubRepository" xml:space="preserve">
-    <value>Github 储存库</value>
-  </data>
-  <data name="StartPageMoreSamples" xml:space="preserve">
-    <value>多个样例</value>
-  </data>
-  <data name="StartPageNewCustomNode" xml:space="preserve">
-    <value>自定义节点</value>
-  </data>
-  <data name="StartPageNewFile" xml:space="preserve">
-    <value>新建</value>
-  </data>
-  <data name="StartPageOpenFile" xml:space="preserve">
-    <value>打开</value>
-  </data>
-  <data name="StartPageRecent" xml:space="preserve">
-    <value>最近使用的文件</value>
-  </data>
-  <data name="StartPageReference" xml:space="preserve">
-    <value>参照</value>
-  </data>
-  <data name="StartPageSamples" xml:space="preserve">
-    <value>样例</value>
-  </data>
-  <data name="StartPageSendIssues" xml:space="preserve">
-    <value>发送问题</value>
-  </data>
-  <data name="StartPageShowSamples" xml:space="preserve">
-    <value>显示文件夹中的样例</value>
-  </data>
-  <data name="StartPageVideoTutorials" xml:space="preserve">
-    <value>视频教程</value>
-  </data>
-  <data name="StartPageVisitWebsite" xml:space="preserve">
-    <value>{0} 网站</value>
-  </data>
-  <data name="StartPageWhatsNew" xml:space="preserve">
-    <value>快速入门</value>
-  </data>
-  <data name="StringInputNodeEditMenu" xml:space="preserve">
-    <value>编辑...</value>
+  <data name="MessageConfirmToSaveReadOnlyCustomNode" xml:space="preserve">
+    <value>我们无法保存“{0}”，因为此文件是“只读”文件或者包含未解析或无效的节点。为了保留更改，是否希望使用其他名称或路径执行“另存为...”？</value>
   </data>
   <data name="TabFileNameReadOnlyPrefix" xml:space="preserve">
     <value>[只读]</value>
   </data>
-  <data name="TermsOfUseAcceptButton" xml:space="preserve">
-    <value>我接受</value>
+  <data name="InCanvasFitViewButtonToolTip" xml:space="preserve">
+    <value>缩放到合适大小</value>
   </data>
-  <data name="TermsOfUseDeclineButton" xml:space="preserve">
-    <value>我拒绝</value>
+  <data name="InCanvasOrbitButtonToolTip" xml:space="preserve">
+    <value>动态观察</value>
   </data>
-  <data name="TermsOfUseViewTitle" xml:space="preserve">
-    <value>Package Manager 使用条款</value>
+  <data name="InCanvasPanButtonToolTip" xml:space="preserve">
+    <value>平移</value>
   </data>
-  <data name="TooltipCurrentIndex" xml:space="preserve">
-    <value>{0} / {1}</value>
+  <data name="InCanvasZoomInButtonToolTip" xml:space="preserve">
+    <value>放大</value>
   </data>
-  <data name="UnableToAccessPackageDirectory" xml:space="preserve">
-    <value>无法访问软件包目录</value>
+  <data name="InCanvasZoomOutButtonToolTip" xml:space="preserve">
+    <value>缩小</value>
   </data>
-  <data name="UndeprecatingPackageMessageBoxTitle" xml:space="preserve">
-    <value>删除软件包弃用</value>
+  <data name="MessageErrorOpeningFileGeneral" xml:space="preserve">
+    <value>打开文件时出错</value>
   </data>
-  <data name="DeleteFailureMessageBoxTitle" xml:space="preserve">
-    <value>删除失败</value>
+  <data name="DynamoViewSettingsMenuChangeScaleFactor" xml:space="preserve">
+    <value>几何图形缩放...</value>
   </data>
-  <data name="MessageNeedToRestartAfterDeleteTitle" xml:space="preserve">
-    <value>正在删除软件包</value>
+  <data name="ContextMenuLacingAuto" xml:space="preserve">
+    <value>自动</value>
   </data>
-  <data name="UnitAcres" xml:space="preserve">
-    <value>英亩</value>
-  </data>
-  <data name="UnitArea" xml:space="preserve">
-    <value>区域</value>
-  </data>
-  <data name="UnitCentimeters" xml:space="preserve">
-    <value>厘米</value>
-  </data>
-  <data name="UnitCubicCentimeter" xml:space="preserve">
-    <value>立方厘米</value>
-  </data>
-  <data name="UnitCubicFoot" xml:space="preserve">
-    <value>立方英尺</value>
-  </data>
-  <data name="UnitCubicInches" xml:space="preserve">
-    <value>立方英寸</value>
-  </data>
-  <data name="UnitCubicMeters" xml:space="preserve">
-    <value>立方米</value>
-  </data>
-  <data name="UnitCubicMillimeter" xml:space="preserve">
-    <value>立方毫米</value>
-  </data>
-  <data name="UnitCubicYards" xml:space="preserve">
-    <value>立方码</value>
-  </data>
-  <data name="UnitDecimeters" xml:space="preserve">
-    <value>分米</value>
-  </data>
-  <data name="UnitFeet" xml:space="preserve">
-    <value>英尺</value>
-  </data>
-  <data name="UnitHectares" xml:space="preserve">
-    <value>公顷</value>
-  </data>
-  <data name="UnitInches" xml:space="preserve">
-    <value>英寸</value>
-  </data>
-  <data name="UnitLength" xml:space="preserve">
-    <value>长度</value>
-  </data>
-  <data name="UnitLitres" xml:space="preserve">
-    <value>升</value>
-  </data>
-  <data name="UnitMeters" xml:space="preserve">
-    <value>米</value>
-  </data>
-  <data name="UnitMillimeters" xml:space="preserve">
-    <value>毫米</value>
-  </data>
-  <data name="Units" xml:space="preserve">
-    <value>单位:</value>
-  </data>
-  <data name="UnitSquareCentimeter" xml:space="preserve">
-    <value>平方厘米</value>
-  </data>
-  <data name="UnitSquareFoot" xml:space="preserve">
-    <value>平方英尺</value>
-  </data>
-  <data name="UnitSquareInch" xml:space="preserve">
-    <value>平方英寸</value>
-  </data>
-  <data name="UnitSquareMeter" xml:space="preserve">
-    <value>平方米</value>
-  </data>
-  <data name="UnitSquareMillimeter" xml:space="preserve">
-    <value>平方毫米</value>
-  </data>
-  <data name="UnitUSGallons" xml:space="preserve">
-    <value>USGallons</value>
-  </data>
-  <data name="UnitVolume" xml:space="preserve">
-    <value>体积</value>
-  </data>
-  <data name="UnknowDateFormat" xml:space="preserve">
-    <value>未知日期格式</value>
-  </data>
-  <data name="UpdateMessage" xml:space="preserve">
-    <value>Dynamo 有更新可用。
-安装最新更新需要关闭 Dynamo 和任何主机应用程序。
-是否要安装最新的 Dynamo更新？</value>
-  </data>
-  <data name="UsageReportPromptDialogTitle" xml:space="preserve">
-    <value>数据收集协议</value>
-  </data>
-  <data name="AgreeToMLAutocompleteTOUText" xml:space="preserve">
-    <value>我愿意参与机器学习计划的数据收集</value>
+  <data name="LacingAutoToolTip" xml:space="preserve">
+    <value>将不会添加任何复制导向。</value>
   </data>
   <data name="UseLevelKeepListStructureHint" xml:space="preserve">
     <value>保持 1 个输入列表的嵌套</value>
@@ -2010,29 +2218,84 @@
   <data name="UseLevelPopupMenuItem" xml:space="preserve">
     <value>使用级别</value>
   </data>
-  <data name="VersionValueGreaterThan0" xml:space="preserve">
-    <value>至少一个版本值必须大于 0。</value>
+  <data name="BreakConnectionsPopupMenuItem" xml:space="preserve">
+    <value>断开连接</value>
   </data>
-  <data name="Watch3DViewContextMenuPan" xml:space="preserve">
-    <value>平移(_P)</value>
+  <data name="RenamePortPopupMenuItem" xml:space="preserve">
+    <value>编辑端口特性</value>
   </data>
-  <data name="Watch3DViewContextMenuRotate" xml:space="preserve">
-    <value>旋转(_R)</value>
+  <data name="HideWiresPopupMenuItem" xml:space="preserve">
+    <value>隐藏导线</value>
   </data>
-  <data name="Watch3DViewContextMenuSwitchView" xml:space="preserve">
-    <value>切换到节点视图(_V)</value>
+  <data name="ShowWiresPopupMenuItem" xml:space="preserve">
+    <value>显示导线</value>
   </data>
-  <data name="Watch3DViewContextMenuZoomToFit" xml:space="preserve">
-    <value>缩放到合适大小(_Z)</value>
+  <data name="DirectoryNotFound" xml:space="preserve">
+    <value>未找到目录</value>
   </data>
-  <data name="WatchNodeRawDataMenu" xml:space="preserve">
-    <value>显示原始数据</value>
+  <data name="PackageFolderNotAccessible" xml:space="preserve">
+    <value>尝试安装软件包时发生问题。Dynamo 无法获得 {0} 的读/写访问权限</value>
   </data>
-  <data name="ZeroTouchTypeShortString" xml:space="preserve">
-    <value>DLL</value>
+  <data name="PackageNotExisted" xml:space="preserve">
+    <value>软件包的根目录不存在。请尝试重新安装该软件包。</value>
+  </data>
+  <data name="UnableToAccessPackageDirectory" xml:space="preserve">
+    <value>无法访问软件包目录</value>
+  </data>
+  <data name="DynamoViewFileMenuExport3DAsImage" xml:space="preserve">
+    <value>将背景三维预览输出为图像(_B)...</value>
+  </data>
+  <data name="DynamoViewToolbarExport3DButtonTooltip" xml:space="preserve">
+    <value>将背景预览导出为图像</value>
+  </data>
+  <data name="ScreenShotFrom3DParameter" xml:space="preserve">
+    <value>screenshot_3D</value>
+  </data>
+  <data name="ScreenShotFrom3DShortcutParameter" xml:space="preserve">
+    <value>screenshot_3D_shortcut</value>
+  </data>
+  <data name="FileNotPublishCaption" xml:space="preserve">
+    <value>发布失败！</value>
+  </data>
+  <data name="FileNotPublishMessage" xml:space="preserve">
+    <value>未找到文件或文件包含在某个软件包中。请仅添加软件包外的文件。
+
+无法发布文件: 
+{0}</value>
+  </data>
+  <data name="PublishPackageDialogCaption" xml:space="preserve">
+    <value>发布成功</value>
+  </data>
+  <data name="PublishPackageMessage" xml:space="preserve">
+    <value>软件包发布成功。 
+要发布其他软件包吗？</value>
+  </data>
+  <data name="SolutionToFolderNotWritatbleError" xml:space="preserve">
+    <value>请更新权限或转到“首选项”&gt;“节点和软件包路径...”以更改默认目录。</value>
+  </data>
+  <data name="DynamoViewHelpDictionary" xml:space="preserve">
+    <value>Dynamo 词典(_C)</value>
+  </data>
+  <data name="RerunButton" xml:space="preserve">
+    <value>应用更改</value>
+  </data>
+  <data name="ScalingLargeButton" xml:space="preserve">
+    <value>大</value>
+  </data>
+  <data name="ScalingMediumButton" xml:space="preserve">
+    <value>中</value>
+  </data>
+  <data name="ScalingExtraLargeButton" xml:space="preserve">
+    <value>特大</value>
+  </data>
+  <data name="ScalingSmallButton" xml:space="preserve">
+    <value>小</value>
   </data>
   <data name="RerunButtonToolTip" xml:space="preserve">
     <value>重新运行图形。</value>
+  </data>
+  <data name="CustomNodePropertyWindowLocationNote" xml:space="preserve">
+    <value>自定义节点将放置在库的“附加模块”部分中。</value>
   </data>
   <data name="PackageSearchViewSearchTextBoxSyncing" xml:space="preserve">
     <value>请稍候...</value>
@@ -2066,6 +2329,9 @@
   <data name="PackageHostDependencyFilter" xml:space="preserve">
     <value>过滤依赖 Dynamo 之外的应用程序的软件包。此功能当前仅可以过滤已在发布期间由软件包作者手动标记的软件包。</value>
   </data>
+  <data name="PackageSortToolTip" xml:space="preserve">
+    <value>对软件包排序。</value>
+  </data>
   <data name="PackageHostDependencyFilterContextItem" xml:space="preserve">
     <value>依赖选定外部应用程序的软件包</value>
   </data>
@@ -2090,6 +2356,13 @@
   <data name="PackageSearchViewFilterByButton" xml:space="preserve">
     <value>过滤依据</value>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\psDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="vsDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\vsDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="PreferencesViewShowCodeBlockNodeLineNumber" xml:space="preserve">
     <value>显示 CodeBlockNode 线号</value>
   </data>
@@ -2111,6 +2384,15 @@
   <data name="RenderingMemoryOutageSummary" xml:space="preserve">
     <value>Dynamo 在尝试渲染几何图形时内存不足。几何图形预览已被禁用。</value>
   </data>
+  <data name="vsDynamoPointLine" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\vsDynamoPointLine;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="psDynamoLine" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\psDynamoLine;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="psDynamoPoint" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\psDynamoPoint;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="PreferencesViewShowWhitespaceInPythonEditor" xml:space="preserve">
     <value>在 Python 编辑器中显示空格</value>
   </data>
@@ -2129,6 +2411,9 @@
   <data name="PreferencesViewEnableNodeAutoComplete" xml:space="preserve">
     <value>启用“节点自动完成”</value>
   </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
+    <value>启用浮动工具栏</value>
+  </data>
   <data name="ErrorLoadingIcon" xml:space="preserve">
     <value>加载应用程序图标时出错: {0}</value>
   </data>
@@ -2140,9 +2425,6 @@
   </data>
   <data name="DynamoViewDynamoMenu" xml:space="preserve">
     <value>Dynamo(_D)</value>
-  </data>
-  <data name="DynamoViewDynamoMenuAbout" xml:space="preserve">
-    <value>关于(_A)</value>
   </data>
   <data name="DynamoViewDynamoMenuPreferences" xml:space="preserve">
     <value>首选项(_P)…</value>
@@ -2270,6 +2552,9 @@
   <data name="PreferencesViewSavedChangesTooltip" xml:space="preserve">
     <value>上次保存时间:</value>
   </data>
+  <data name="PreferencesViewMarkdownDirectoryTooltip" xml:space="preserve">
+    <value>Markdown 文档可以添加到软件包中，这将利用文档浏览器逐节点显示作者生成的信息。</value>
+  </data>
   <data name="NodeAutocompleteDocumentationUriString" xml:space="preserve">
     <value>DynamoCoreWpf;NodeAutocompleteDocumentation.html</value>
   </data>
@@ -2278,6 +2563,9 @@
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteTooltipText" xml:space="preserve">
     <value>了解有关“节点自动完成”功能的详细信息。</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
+    <value>启用浮动工具栏以获取节点建议，以实现更简化的工作流。关闭可返回到传统的弹出对话框。</value>
   </data>
   <data name="AddStyleButton" xml:space="preserve">
     <value>添加样式</value>
@@ -2336,6 +2624,33 @@
   <data name="NodeRenamedLabel" xml:space="preserve">
     <value>已重命名</value>
   </data>
+  <data name="NodeInformationalStateDismiss" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="NodeInfoDismissButtonToolTip" xml:space="preserve">
+    <value>关闭此节点上的信息消息。要在图形出现故障的情况下设计时使用，或者信息消息将在图形执行期间并不相关。</value>
+  </data>
+  <data name="NodeWarningDismissButtonToolTip" xml:space="preserve">
+    <value>关闭此节点上的警告消息。要在图形出现故障的情况下设计时使用，或者警告消息将在图形执行期间并不相关。</value>
+  </data>
+  <data name="NodeInformationalStateDismissAll" xml:space="preserve">
+    <value>全部关闭</value>
+  </data>
+  <data name="NodeInformationalStateDismissedAlerts" xml:space="preserve">
+    <value>已关闭的警告</value>
+  </data>
+  <data name="NodeInformationalStateShowAllInfo" xml:space="preserve">
+    <value>显示所有信息</value>
+  </data>
+  <data name="NodeInformationalStateShowAllWarnings" xml:space="preserve">
+    <value>显示所有警告</value>
+  </data>
+  <data name="NodeInformationalStateShowAllErrors" xml:space="preserve">
+    <value>显示所有错误</value>
+  </data>
+  <data name="NodeInformationalStateShowLess" xml:space="preserve">
+    <value>显示更少</value>
+  </data>
   <data name="PackagePathProtected" xml:space="preserve">
     <value>此路径是内置路径，无法修改。</value>
   </data>
@@ -2345,6 +2660,9 @@
   <data name="GetStartedGuide" xml:space="preserve">
     <value>用户界面导览(_U)</value>
   </data>
+  <data name="InteractiveGuides" xml:space="preserve">
+    <value>互动指南(_I)</value>
+  </data>
   <data name="GetStartedGuideDescription" xml:space="preserve">
     <value>通过此简短指南开始可视化编程之旅。在此，您将了解有关 Dynamo 界面和功能的一些基础知识。</value>
   </data>
@@ -2353,9 +2671,6 @@
   </data>
   <data name="PackagesGuideDescription" xml:space="preserve">
     <value>软件包是一个实用程序工具包，除了核心功能外，还可让您使用 Dynamo 完成更多操作。本手册介绍如何查找、安装和使用软件包。它将安装样例 Autodesk 软件包以供您浏览。</value>
-  </data>
-  <data name="InteractiveGuides" xml:space="preserve">
-    <value>互动指南(_I)</value>
   </data>
   <data name="GetStartedGuideLibraryText" xml:space="preserve">
     <value>该库包含所有默认的 Dynamo 功能 #(节点)=https://primer2.dynamobim.org/v/zh-cn/4_nodes_and_wires ，以及可能已载入的自定义节点。\n\n要查找节点，请搜索库或浏览其类别。</value>
@@ -2393,9 +2708,6 @@
   <data name="GetStartedGuideWelcomeTitle" xml:space="preserve">
     <value>欢迎使用 Dynamo</value>
   </data>
-  <data name="ContextMenuGroups" xml:space="preserve">
-    <value>组</value>
-  </data>
   <data name="ContextPinToNode" xml:space="preserve">
     <value>固定到节点</value>
   </data>
@@ -2408,56 +2720,14 @@
   <data name="GetStartedGuideSurveyTitle" xml:space="preserve">
     <value>已完成</value>
   </data>
-  <data name="GroupDefaultText" xml:space="preserve">
-    <value>说明 &lt;双击此处编辑组说明&gt;</value>
-  </data>
   <data name="GroupNameDefaultText" xml:space="preserve">
     <value>标题 &lt;单击此处编辑组标题&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
     <value>将组添加到此组</value>
   </data>
-  <data name="NodeInformationalStateDismiss" xml:space="preserve">
-    <value>关闭</value>
-  </data>
-  <data name="NodeInformationalStateShowAllInfo" xml:space="preserve">
-    <value>显示所有信息</value>
-  </data>
-  <data name="NodeInformationalStateShowAllWarnings" xml:space="preserve">
-    <value>显示所有警告</value>
-  </data>
-  <data name="NodeInformationalStateShowAllErrors" xml:space="preserve">
-    <value>显示所有错误</value>
-  </data>
-  <data name="NodeInformationalStateShowLess" xml:space="preserve">
-    <value>显示更少</value>
-  </data>
-  <data name="NodeInformationalStateDismissAll" xml:space="preserve">
-    <value>全部关闭</value>
-  </data>
-  <data name="NodeInfoDismissButtonToolTip" xml:space="preserve">
-    <value>关闭此节点上的信息消息。要在图形出现故障的情况下设计时使用，或者信息消息将在图形执行期间并不相关。</value>
-  </data>
-  <data name="NodeWarningDismissButtonToolTip" xml:space="preserve">
-    <value>关闭此节点上的警告消息。要在图形出现故障的情况下设计时使用，或者警告消息将在图形执行期间并不相关。</value>
-  </data>
-  <data name="BreakConnectionsPopupMenuItem" xml:space="preserve">
-    <value>断开连接</value>
-  </data>
-  <data name="RenamePortPopupMenuItem" xml:space="preserve">
-    <value>编辑端口特性</value>
-  </data>
-  <data name="HideWiresPopupMenuItem" xml:space="preserve">
-    <value>隐藏导线</value>
-  </data>
-  <data name="ShowWiresPopupMenuItem" xml:space="preserve">
-    <value>显示导线</value>
-  </data>
   <data name="ExitTourWindowContent" xml:space="preserve">
     <value>可以以后从“帮助”菜单返回本指南。</value>
-  </data>
-  <data name="PackageStatePendingUnload" xml:space="preserve">
-    <value>已计划卸载</value>
   </data>
   <data name="PackageStateError" xml:space="preserve">
     <value>错误</value>
@@ -2486,6 +2756,10 @@
   <data name="PackageStateUnloadedTooltip" xml:space="preserve">
     <value>已卸载。
 此软件包已标记为“已卸载”。</value>
+  </data>
+  <data name="PackageStateScheduledForUnloadTooltip" xml:space="preserve">
+    <value>已计划卸载。
+此软件包将在下次重新启动 Dynamo 后卸载。</value>
   </data>
   <data name="PackageStateScheduledForDeletionTooltip" xml:space="preserve">
     <value>已计划删除。
@@ -2560,43 +2834,8 @@
   <data name="DynamoViewViewMenuConnectorShowTooltip" xml:space="preserve">
     <value>显示工具提示(_T)</value>
   </data>
-  <data name="NodeInformationalStateDismissedAlerts" xml:space="preserve">
-    <value>已关闭的警告</value>
-  </data>
-  <data name="ContextMenu" xml:space="preserve">
-    <value>节点选项</value>
-  </data>
-  <data name="NodeAutocomplete" xml:space="preserve">
-    <value>结果排序依据</value>
-  </data>
   <data name="PackageFilter_Name_All" xml:space="preserve">
     <value>全部</value>
-  </data>
-  <data name="PackageSearchHeader" xml:space="preserve">
-    <value>搜索软件包</value>
-  </data>
-  <data name="DisablePackageInstallIconTooltip" xml:space="preserve">
-    <value>所有自定义软件包路径已在“首选项”中禁用。除非重新启用这些软件包，否则无法安装它们。</value>
-  </data>
-  <data name="DisableBuiltInPackageToggleInfo" xml:space="preserve">
-    <value>如果开关打开，则内置软件包将不会在重新启动时加载。当前已加载的内置软件包将在重新启动时卸载。
-如果开关关闭，则尚未加载的内置软件包将在“首选项”对话框关闭后加载。</value>
-  </data>
-  <data name="DisableCustomPackageToggleInfo" xml:space="preserve">
-    <value>如果开关打开，则自定义软件包将不会在重新启动时加载。当前已加载的自定义软件包将在重新启动时卸载。
-如果开关关闭，则尚未加载的自定义软件包将在“首选项”对话框关闭后加载。</value>
-  </data>
-  <data name="PackageSearchSortBy" xml:space="preserve">
-    <value>排序方式</value>
-  </data>
-  <data name="PackageSearchResultViewDetails" xml:space="preserve">
-    <value>信息</value>
-  </data>
-  <data name="PackageSearchResultRequirements" xml:space="preserve">
-    <value>要求</value>
-  </data>
-  <data name="PackageSearchOrder" xml:space="preserve">
-    <value>顺序</value>
   </data>
   <data name="PreferencesViewShowPreviewBubbles" xml:space="preserve">
     <value>显示预览气泡</value>
@@ -2607,94 +2846,6 @@
   <data name="PreferencesUseHostScaleUnitsToolTip" xml:space="preserve">
     <value>启用后，当前主体文档单位将用于缩放背景图形辅助对象(网格、轴)。否则，“图形图元比例”下拉列表将确定比例。</value>
   </data>
-  <data name="PublishPackageVersionMajorWatermark" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="PublishPackageVersionMinorWatermark" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="PublishPackageVersionBuildWatermark" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="PublishPackageViewPackageDescription" xml:space="preserve">
-    <value>说明</value>
-  </data>
-  <data name="PublishPackageViewPackageNameWatermark" xml:space="preserve">
-    <value>软件包名称</value>
-  </data>
-  <data name="PackageStateScheduledForUnloadTooltip" xml:space="preserve">
-    <value>已计划卸载。
-此软件包将在下次重新启动 Dynamo 后卸载。</value>
-  </data>
-  <data name="PublishPackageGroupWatermark" xml:space="preserve">
-    <value>组</value>
-  </data>
-  <data name="PublishPackageKeywordsWatermark" xml:space="preserve">
-    <value>关键字</value>
-  </data>
-  <data name="PublishPackageViewLicenseSubLabel" xml:space="preserve">
-    <value>适用于最新的软件包版本。如果为空，则该软件包将获得许可，基于 </value>
-  </data>
-  <data name="PublishPackageViewLicenseWatermark" xml:space="preserve">
-    <value>许可证</value>
-  </data>
-  <data name="PublishPackageViewCopyrightHolder" xml:space="preserve">
-    <value>版权所有者(可选)</value>
-  </data>
-  <data name="PublishPackageViewCopyrightHolderWatermark" xml:space="preserve">
-    <value>作者姓名</value>
-  </data>
-  <data name="PublishPackageViewCopyrightHolderSubLabel" xml:space="preserve">
-    <value>如果为空，则默认为用户名</value>
-  </data>
-  <data name="PublishPackageViewCopyrightYear" xml:space="preserve">
-    <value>版权年份(可选)</value>
-  </data>
-  <data name="PublishPackageViewCopyrightYearWatermark" xml:space="preserve">
-    <value>发布年份</value>
-  </data>
-  <data name="PublishPackageViewCopyrightYearSubLabel" xml:space="preserve">
-    <value>如果为空，则默认为发布年份</value>
-  </data>
-  <data name="PublishPackageViewRepositoryUrlWatermark" xml:space="preserve">
-    <value>URL</value>
-  </data>
-  <data name="PublishPackageViewPublisherWebSite" xml:space="preserve">
-    <value>网站 Url (可选)</value>
-  </data>
-  <data name="PublishPackageViewPublisherWebSiteWatermark" xml:space="preserve">
-    <value>URL</value>
-  </data>
-  <data name="PublishPackageViewAddDirectoryButton" xml:space="preserve">
-    <value>添加目录</value>
-  </data>
-  <data name="PublishPackageViewAddDirectoryButtonTooltip" xml:space="preserve">
-    <value>添加文件夹</value>
-  </data>
-  <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
-    <value>Markdown 文件路径(可选)</value>
-  </data>
-  <data name="PublishPackageViewMarkdownFilesDirectoryToolTip" xml:space="preserve">
-    <value>用于以 Markdown 格式记录软件包的可选位置。</value>
-  </data>
-  <data name="PublishPackageViewResetMarkdownDirectoryButton" xml:space="preserve">
-    <value>重设</value>
-  </data>
-  <data name="PublishPackageViewResetMarkdownDirectoryButtonToolTip" xml:space="preserve">
-    <value>清除此软件包的 Markdown 目录。</value>
-  </data>
-  <data name="PublishPackageViewRemoveItemToolTip" xml:space="preserve">
-    <value>从软件包内容列表中删除此项目。</value>
-  </data>
-  <data name="PublishPackageExternalPackageDependencies" xml:space="preserve">
-    <value>外部软件包从属关系</value>
-  </data>
-  <data name="PreferencesViewMarkdownDirectoryTooltip" xml:space="preserve">
-    <value>Markdown 文档可以添加到软件包中，这将利用文档浏览器逐节点显示作者生成的信息。</value>
-  </data>
-  <data name="PublishPackageViewPublisherURLWatermark" xml:space="preserve">
-    <value>URL</value>
-  </data>
   <data name="PackagesGuide" xml:space="preserve">
     <value>软件包(_P)</value>
   </data>
@@ -2703,102 +2854,6 @@
   </data>
   <data name="NodeAutoCompleteNotAvailableForCollapsedGroups" xml:space="preserve">
     <value>节点自动完成在属于收拢组的端口上不可用。</value>
-  </data>
-  <data name="PackageManagerInstall" xml:space="preserve">
-    <value>安装</value>
-  </data>
-  <data name="PackageManagerPackageUpdated" xml:space="preserve">
-    <value>已更新</value>
-  </data>
-  <data name="PackageManagerPackageNew" xml:space="preserve">
-    <value>新建</value>
-  </data>
-  <data name="PackageManagerMyPackagesControlName" xml:space="preserve">
-    <value>packageManagerMyPackages</value>
-  </data>
-  <data name="PackageManagerSearchTab" xml:space="preserve">
-    <value>搜索软件包</value>
-  </data>
-  <data name="PackageManagerPublishTab" xml:space="preserve">
-    <value>发布软件包</value>
-  </data>
-  <data name="PackageManagerPublishOnlineFinishedMessage" xml:space="preserve">
-    <value>正在进行病毒扫描。您的软件包将在几分钟内可搜索。</value>
-  </data>
-  <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
-    <value>已安装的软件包</value>
-  </data>
-  <data name="PackageManagerMyPackagesTab" xml:space="preserve">
-    <value>我的软件包</value>
-  </data>
-  <data name="PackageManagerPackageSettingsTab" xml:space="preserve">
-    <value>软件包设置</value>
-  </data>
-  <data name="PackageManagerTitle" xml:space="preserve">
-    <value>Package Manager</value>
-  </data>
-  <data name="PackageManagerLoadingTimedOutWarningMessage" xml:space="preserve">
-    <value>加载软件包所花费的时间超过预期。请等待，或重新启动 Package Manager。</value>
-  </data>
-  <data name="PackagerManageNoInstalledPackagesMessage" xml:space="preserve">
-    <value>您尚未安装任何软件包。</value>
-  </data>
-  <data name="PackageManagerNoInstalledPackagesSubMessage" xml:space="preserve">
-    <value>在安装软件包后，可以在此处找到它。</value>
-  </data>
-  <data name="PackagerManageUserNotSignedPackagesMessage" xml:space="preserve">
-    <value>登录到 Dynamo 帐户以查看已发布的软件包。</value>
-  </data>
-  <data name="PackageManagerUserNotSignedPackagesSubMessage" xml:space="preserve">
-    <value>登录后，您可以在此处找到已发布的软件包。</value>
-  </data>
-  <data name="PackageManagerSearchPackagesButton" xml:space="preserve">
-    <value>搜索软件包</value>
-  </data>
-  <data name="PackagerManageNoPublishedPackagesMessage" xml:space="preserve">
-    <value>您尚未发布任何软件包。</value>
-  </data>
-  <data name="PackagerManageNoPublishedPackagesSubMessage" xml:space="preserve">
-    <value>在发布软件包后，可以在此处找到它。</value>
-  </data>
-  <data name="PackageManagerPublishPackageButton" xml:space="preserve">
-    <value>发布软件包</value>
-  </data>
-  <data name="PackageManagerSettingsRunPrefix" xml:space="preserve">
-    <value>在以下位置编辑软件包设置</value>
-  </data>
-  <data name="PackageManagerSettingsHyperlink" xml:space="preserve">
-    <value>首选项</value>
-  </data>
-  <data name="PackageDetailsDescription" xml:space="preserve">
-    <value>说明</value>
-  </data>
-  <data name="PackageDetailsLicense" xml:space="preserve">
-    <value>最新软件包的许可</value>
-  </data>
-  <data name="PackageDetailsVersionsAndPackageRequirements" xml:space="preserve">
-    <value>版本和软件包要求</value>
-  </data>
-  <data name="PackageDetailsVersions" xml:space="preserve">
-    <value>版本</value>
-  </data>
-  <data name="PackageDetailsHost" xml:space="preserve">
-    <value>主体</value>
-  </data>
-  <data name="PackageDetailsPython" xml:space="preserve">
-    <value>Python</value>
-  </data>
-  <data name="PackageDetailsCopyRightHolder" xml:space="preserve">
-    <value>版权所有者</value>
-  </data>
-  <data name="PackageDetailsCopyRightYear" xml:space="preserve">
-    <value>版权年份</value>
-  </data>
-  <data name="PackageDetailsPackage" xml:space="preserve">
-    <value>软件包</value>
-  </data>
-  <data name="PackageSortToolTip" xml:space="preserve">
-    <value>对软件包排序。</value>
   </data>
   <data name="ConnectorContextMenuHeaderHideConnector" xml:space="preserve">
     <value>隐藏导线</value>
@@ -2827,30 +2882,6 @@
   <data name="PackagesGuideThirdPartyTitle" xml:space="preserve">
     <value>第三方软件包</value>
   </data>
-  <data name="GenericTaskDialogOptionYes" xml:space="preserve">
-    <value>是</value>
-  </data>
-  <data name="GenericTaskDialogOptionNo" xml:space="preserve">
-    <value>否</value>
-  </data>
-  <data name="GenericTaskDialogOptionOK" xml:space="preserve">
-    <value>确定</value>
-  </data>
-  <data name="GenericTaskDialogOptionCancel" xml:space="preserve">
-    <value>取消</value>
-  </data>
-  <data name="WorkspaceTabSavingUnnecessary" xml:space="preserve">
-    <value>无需保存！</value>
-  </data>
-  <data name="WorkspaceTabSavingNecessary" xml:space="preserve">
-    <value>您需要保存对此文件的更新。</value>
-  </data>
-  <data name="WorkspaceTabSavingBrandNewFile" xml:space="preserve">
-    <value>这是一个全新文件。</value>
-  </data>
-  <data name="WorkspaceTabNotSavedYet" xml:space="preserve">
-    <value>您尚未保存此文件。</value>
-  </data>
   <data name="ScriptTagsRemovalWarning" xml:space="preserve">
     <value>在帮助文档中检测到的脚本标记已被删除。</value>
   </data>
@@ -2875,22 +2906,8 @@
   <data name="PackagesGuideExitTitle" xml:space="preserve">
     <value>是否要退出本指南？</value>
   </data>
-  <data name="InfoBubbleInfo" xml:space="preserve">
-    <value>信息</value>
-  </data>
-  <data name="Save" xml:space="preserve">
-    <value>保存</value>
-  </data>
-  <data name="PackagesGuideInstallAPackageText" xml:space="preserve">
-    <value>软件包安装通常很快，具体取决于其大小和其他因素。\n\n**单击“安装”** 以安装最新版本的样例 Autodesk 软件包，然后继续使用本手册。</value>
-  </data>
-  <data name="PackagesGuideInstallAPackageTitle" xml:space="preserve">
-    <value>安装软件包</value>
-  </data>
-  <data name="PackagesGuideInstalledPackageText" xml:space="preserve">
-    <value>软件包安装通常较快，具体取决于其大小和其他因素。\n
-要安装最新版本的软件包，请单击“安装”。\n
-%./UI/Images/alert.png% 样例 Autodesk 软件包已安装在计算机上。</value>
+  <data name="PackagesGuideSearchResultsText" xml:space="preserve">
+    <value>\n搜索结果显示每个软件包的摘要信息: -作者- -喜好和下载- -最新版本的日期- \n**单击“查看详细信息”** ，可查看有关软件包的更多信息。</value>
   </data>
   <data name="PackagesGuideDependenciesText" xml:space="preserve">
     <value>\n如果您需要其他软件或工具来使用此软件包，它们会在“版本和软件包要求”下列出。</value>
@@ -2898,11 +2915,10 @@
   <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
     <value>软件包依存关系</value>
   </data>
-  <data name="PackagesGuideSearchResultsText" xml:space="preserve">
-    <value>\n搜索结果显示每个软件包的摘要信息: -作者- -喜好和下载- -最新版本的日期- \n**单击“查看详细信息”** ，可查看有关软件包的更多信息。</value>
-  </data>
-  <data name="PackagesGuideSearchResultsTitle" xml:space="preserve">
-    <value>搜索结果</value>
+  <data name="PackagesGuideInstalledPackageText" xml:space="preserve">
+    <value>软件包安装通常较快，具体取决于其大小和其他因素。\n
+要安装最新版本的软件包，请单击“安装”。\n
+%./UI/Images/alert.png% 样例 Autodesk 软件包已安装在计算机上。</value>
   </data>
   <data name="PackageContextMenuDeletePackageCustomNodesInUseTooltip" xml:space="preserve">
     <value>该软件包包含已在使用的自定义节点。在可以删除软件包之前，需要先删除这些自定义节点或关闭图形。</value>
@@ -2925,6 +2941,9 @@
   <data name="PackagesGuideUsePackageTitle" xml:space="preserve">
     <value>使用软件包节点</value>
   </data>
+  <data name="PackagesGuideInstallAPackageText" xml:space="preserve">
+    <value>软件包安装通常很快，具体取决于其大小和其他因素。\n\n**单击“安装”** 以安装最新版本的样例 Autodesk 软件包，然后继续使用本手册。</value>
+  </data>
   <data name="ConfigureADPButtonText" xml:space="preserve">
     <value>配置 Autodesk 分析计划</value>
   </data>
@@ -2940,21 +2959,6 @@
   <data name="PackagesGuidePackagesNodeTitle" xml:space="preserve">
     <value>使用软件包节点</value>
   </data>
-  <data name="PublishPackageViewFilePath" xml:space="preserve">
-    <value>文件路径</value>
-  </data>
-  <data name="PublishPackageViewNodeLibrary" xml:space="preserve">
-    <value>节点库</value>
-  </data>
-  <data name="PublishPackageRetainFolderStructureTooltip" xml:space="preserve">
-    <value>启用此设置后，将保留已上载文件的文件夹结构。否则，文件将放置到预定义的文件夹中。
-
-注意: 不正确的文件夹结构可能会影响依赖正确文件组织的软件包的功能。如有疑问，请禁用此设置。
-    </value>
-  </data>
-  <data name="PublishPackageNodeLibraryTooltip" xml:space="preserve">
-    <value>DLL 文件，其中包含 Dynamo 作为节点导入的类型和方法。标记 ZeroTouch、NodeModel 或 NodeViewCustomization DLL 和要作为节点库导入到 Dynamo 中的类型。</value>
-  </data>
   <data name="NodeTooltipRenamed" xml:space="preserve">
     <value>已从 {0} 重命名</value>
   </data>
@@ -2964,6 +2968,9 @@
   <data name="TourLabelProgressText" xml:space="preserve">
     <value>/</value>
   </data>
+  <data name="PackagesGuideSearchResultsTitle" xml:space="preserve">
+    <value>搜索结果</value>
+  </data>
   <data name="StartTourButtonText" xml:space="preserve">
     <value>开始导览</value>
   </data>
@@ -2972,6 +2979,9 @@
   </data>
   <data name="UnpinNodeTooltip" xml:space="preserve">
     <value>从节点取消固定此注释</value>
+  </data>
+  <data name="PackagesGuideInstallAPackageTitle" xml:space="preserve">
+    <value>安装软件包</value>
   </data>
   <data name="PreferencesViewVisualSettingsGroupStyleInput" xml:space="preserve">
     <value>样式名称</value>
@@ -3110,11 +3120,11 @@
   <data name="FileTrustWarningPopupYes" xml:space="preserve">
     <value>是</value>
   </data>
-  <data name="DynamoViewRunButtonToolTipDisabledFileTrust" xml:space="preserve">
-    <value>在解决警告之前图形执行处于暂停状态</value>
-  </data>
   <data name="DynamoShowFileTrustWarning" xml:space="preserve">
     <value>显示文件信任警告</value>
+  </data>
+  <data name="DynamoViewRunButtonToolTipDisabledFileTrust" xml:space="preserve">
+    <value>在解决警告之前图形执行处于暂停状态</value>
   </data>
   <data name="DynamoViewRunTypesComboBoxToolTipDisabled" xml:space="preserve">
     <value>在解决警告之前无法更改运行模式</value>
@@ -3411,9 +3421,6 @@
   </data>
   <data name="PreferencesWindowShowPreviewBubblesTooltip" xml:space="preserve">
     <value>启用后，当将光标悬停在节点底部时，将显示节点输出的预览。</value>
-  </data>
-  <data name="PreferencesViewBetaTag" xml:space="preserve">
-    <value>Beta</value>
   </data>
   <data name="SplashScreenSigningIn" xml:space="preserve">
     <value>正在登录</value>
@@ -3807,12 +3814,6 @@
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
     <value>此组已冻结。单击以取消冻结。</value>
   </data>
-  <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>启用浮动工具栏</value>
-  </data>
-  <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
-    <value>启用浮动工具栏以获取节点建议，以实现更简化的工作流。关闭可返回到传统的弹出对话框。</value>
-  </data>
   <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
     <value>转储节点图标数据(D)</value>
   </data>
@@ -3880,20 +3881,25 @@
   <data name="DynamoSplashScreenFailed" xml:space="preserve">
     <value>无法加载 Dynamo 启动屏幕，请重新启动 Dynamo</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\ViewModels\Watch3D\compiledShaders\psDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="PublishPackageViewPublisherWebiSite" xml:space="preserve">
+    <value>网站 Url (可选)</value>
   </data>
-  <data name="vsDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\ViewModels\Watch3D\compiledShaders\vsDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="PackageStatePendingUnload" xml:space="preserve">
+    <value>已计划卸载</value>
   </data>
-  <data name="vsDynamoPointLine" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\ViewModels\Watch3D\compiledShaders\vsDynamoPointLine;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="PublishPackageViewRepositoryUrlWatermark" xml:space="preserve">
+    <value>URL</value>
   </data>
-  <data name="psDynamoLine" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\ViewModels\Watch3D\compiledShaders\psDynamoLine;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="PublishPackageViewPublisherWebSiteWatermark" xml:space="preserve">
+    <value>URL</value>
   </data>
-  <data name="psDynamoPoint" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\ViewModels\Watch3D\compiledShaders\psDynamoPoint;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="PreferencesViewBetaTag" xml:space="preserve">
+    <value>Beta</value>
+  </data>
+  <data name="DocumentationBrowserPreferences" xml:space="preserve">
+    <value>文档浏览器</value>
+  </data>
+  <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
+    <value>自动同步节点选择。</value>
   </data>
 </root>

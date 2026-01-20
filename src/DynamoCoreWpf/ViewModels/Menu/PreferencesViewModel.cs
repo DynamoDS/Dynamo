@@ -1122,6 +1122,22 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(PersistExtensionsIsChecked));
             }
         }
+        /// <summary>
+        /// Controls the IsChecked property of "Auto‑sync with node selection." option in "Documentation Browser" preferences.
+        /// The default value is true.
+        /// </summary>
+        public bool AutoSyncDocumentBrowserIsChecked
+        {
+            get
+            {
+                return preferenceSettings.IsAutoSyncDocumentBrowser;
+            }
+            set
+            {
+                preferenceSettings.IsAutoSyncDocumentBrowser = value;
+                RaisePropertyChanged(nameof(AutoSyncDocumentBrowserIsChecked));
+            }
+        }
 
         #region [ Node Autocomplete ]
 
