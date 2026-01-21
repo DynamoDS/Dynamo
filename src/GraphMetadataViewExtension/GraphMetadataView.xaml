@@ -263,7 +263,7 @@
 
             <ListView Grid.Row="1" 
                       Margin="0px 5px"
-                      HorizontalContentAlignment="Left"
+                      HorizontalContentAlignment="Stretch"
                       Background="Transparent"
                       BorderBrush="Transparent"
                       ItemsSource="{Binding CustomProperties}"
