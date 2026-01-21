@@ -68,7 +68,7 @@ namespace Dynamo.ViewModels
         private bool isHidden;
         private Wpf.Utilities.ActionDebouncer delayDocumentBrowserRefresh
            = new Wpf.Utilities.ActionDebouncer(null);
-        private int delayDocumentBrowserTime = 300;
+        private int delayDocumentBrowserRefreshTime = 300;
         #endregion
 
         #region public members
@@ -1256,7 +1256,7 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("IsSelected");
                     RaisePropertyChanged("PreviewState");
                     if (IsSelected)
-                        delayDocumentBrowserRefresh?.Debounce(delayDocumentBrowserTime, HandleDocumentationBrowserRefresh);
+                        delayDocumentBrowserRefresh?.Debounce(delayDocumentBrowserRefreshTime, HandleDocumentationBrowserRefresh);
                     else
                         delayDocumentBrowserRefresh?.Cancel();
                     break;
