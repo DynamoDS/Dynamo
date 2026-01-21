@@ -73,7 +73,7 @@
                  Foreground="{StaticResource NestedMemberTextColor}"
                  Margin="0,5"
                  Padding="0,5"
-                 TextWrapping="Wrap"
+                 TextWrapping="WrapWithOverflow"
                  AcceptsReturn="True"
                  Text="{Binding PropertyValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
     </Grid>
