@@ -73,6 +73,8 @@
                  Foreground="{StaticResource NestedMemberTextColor}"
                  Margin="0,5"
                  Padding="0,5"
+                 TextWrapping="Wrap"
+                 AcceptsReturn="True"
                  Text="{Binding PropertyValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
     </Grid>
 </UserControl>
