@@ -45,6 +45,8 @@ namespace Dynamo.Manipulation
         private string warning = string.Empty;
         private Point originBeforeMove;// The manipulator position before the user moves the gizmo
         private Point originAfterMove;// The manipulator position after the user moves the gizmo
+        private bool hasUpdatedInputNodesDuringDrag;
+        private readonly HashSet<NodeModel> inputNodesUpdatedDuringDrag = new HashSet<NodeModel>();
         protected const double gizmoScale = 1.2;
         protected readonly int ROUND_UP_PARAM = 3;
         protected readonly double MIN_OFFSET_VAL = 0.001;
@@ -185,6 +187,22 @@ namespace Dynamo.Manipulation
         {
             if (!IsValidNode) return;
 
+            // Skip processing if user is panning or orbiting the camera.
+            // This prevents the manipulator from capturing mouse events intended for camera navigation,
+            // including cases where pan/orbit tools use the left mouse button.
+            if (BackgroundPreviewViewModel is DefaultWatch3DViewModel viewModel)
+            {
+                if (viewModel.IsPanning || viewModel.IsOrbiting)
+                    return;
+            }
+
+            // Only process left mouse button presses for gizmo manipulation
+            // Right/middle button presses are for camera navigation (pan/orbit)
+            if (mouseButtonEventArgs.ChangedButton != MouseButton.Left)
+            {
+                return;
+            }
+
             active = UpdatePosition();
             if (Origin != null )
             {
@@ -209,6 +227,8 @@ namespace Dynamo.Manipulation
                     if (item.HitTest(originPt, dirVec, out hitObject))
                     {
                         GizmoInAction = item;
+                        hasUpdatedInputNodesDuringDrag = false;
+                        inputNodesUpdatedDuringDrag.Clear();
 
                         var nodes = OnGizmoClick(item, hitObject).ToList();
                         if (nodes.Any())
@@ -228,19 +248,42 @@ namespace Dynamo.Manipulation
         /// <param name="e"></param>
         protected virtual void MouseUp(object sender, MouseButtonEventArgs e)
         {
+            // Skip processing if user is panning or orbiting the camera.
+            // This prevents the manipulator from capturing mouse events intended for camera navigation,
+            // including cases where pan/orbit tools use the left mouse button.
+            if (BackgroundPreviewViewModel is DefaultWatch3DViewModel viewModel)
+            {
+                if (viewModel.IsPanning || viewModel.IsOrbiting)
+                    return;
+            }
+
+            // Only process left mouse button releases for gizmo manipulation
+            // Right/middle button releases are for camera navigation (pan/orbit)
+            if (e.ChangedButton != MouseButton.Left)
+            {
+                return;
+            }
+
             GizmoInAction = null;
 
             if (originBeforeMove != null && originAfterMove != null)
             {
-                var inputNodesToManipulate = InputNodesToUpdateAfterMove(Vector.ByTwoPoints(originBeforeMove, originAfterMove));
-                foreach (var (inputNode, amount) in inputNodesToManipulate)
+                if (hasUpdatedInputNodesDuringDrag)
                 {
-                    if (inputNode == null) continue;
+                    FinalizeInputNodesAfterDrag();
+                }
+                else
+                {
+                    var inputNodesToManipulate = InputNodesToUpdateAfterMove(Vector.ByTwoPoints(originBeforeMove, originAfterMove));
+                    foreach (var (inputNode, amount) in inputNodesToManipulate)
+                    {
+                        if (inputNode == null) continue;
 
-                    if (Math.Abs(amount) < MIN_OFFSET_VAL) continue;
+                        if (Math.Abs(amount) < MIN_OFFSET_VAL) continue;
 
-                    dynamic uiNode = inputNode;
-                    uiNode.Value = Math.Round(amount, ROUND_UP_PARAM);
+                        dynamic uiNode = inputNode;
+                        uiNode.Value = Math.Round(amount, ROUND_UP_PARAM);
+                    }
                 }
             }
 
@@ -249,7 +292,15 @@ namespace Dynamo.Manipulation
             foreach (var gizmo in gizmos)
             {
                 gizmo.UpdateGizmoGraphics();
+
+                // Clear hit state to prevent drift during subsequent camera operations
+                // This ensures stale axis/plane hit data doesn't affect pan/orbit movements
+                if (gizmo is TranslationGizmo translationGizmo)
+                {
+                    translationGizmo.ClearHitState();
+                }
             }
+
         }
 
         /// <summary>
@@ -284,9 +335,11 @@ namespace Dynamo.Manipulation
             // Doing this triggers a graph update on scheduler thread
             OnGizmoMoved(GizmoInAction, offset);
 
+            UpdateInputNodesDuringDrag(offset);
+
             // redraw manipulator at new position synchronously
             var packages = BuildRenderPackage();
-            BackgroundPreviewViewModel.AddGeometryForRenderPackages(packages);
+            BackgroundPreviewViewModel.AddGeometryForRenderPackages(packages, true);
         }
 
         /// <summary>
@@ -382,6 +435,35 @@ namespace Dynamo.Manipulation
         protected virtual List<(NodeModel inputNode, double amount)> InputNodesToUpdateAfterMove(Vector offset)
         {
             return new List<(NodeModel, double)>();
+        }
+
+        private void UpdateInputNodesDuringDrag(Vector offset)
+        {
+            var inputNodesToManipulate = InputNodesToUpdateAfterMove(offset);
+            foreach (var (inputNode, amount) in inputNodesToManipulate)
+            {
+                if (inputNode == null) continue;
+                if (Math.Abs(amount) < MIN_OFFSET_VAL) continue;
+
+                dynamic uiNode = inputNode;
+                uiNode.Value = amount;
+                inputNodesUpdatedDuringDrag.Add(inputNode);
+                hasUpdatedInputNodesDuringDrag = true;
+            }
+        }
+
+        private void FinalizeInputNodesAfterDrag()
+        {
+            foreach (var inputNode in inputNodesUpdatedDuringDrag)
+            {
+                if (inputNode == null) continue;
+
+                dynamic uiNode = inputNode;
+                uiNode.Value = Math.Round((double)uiNode.Value, ROUND_UP_PARAM);
+            }
+
+            inputNodesUpdatedDuringDrag.Clear();
+            hasUpdatedInputNodesDuringDrag = false;
         }
 
         /// <summary>

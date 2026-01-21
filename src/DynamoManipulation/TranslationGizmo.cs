@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
@@ -274,6 +274,16 @@ namespace Dynamo.Manipulation
         /// Reference coordinate system for the Gizmo
         /// </summary>
         public CoordinateSystem ReferenceCoordinateSystem { get; set; }
+
+        /// <summary>
+        /// Clears the cached hit axis and plane after manipulation is complete.
+        /// This prevents stale hit state from affecting subsequent camera operations.
+        /// </summary>
+        public void ClearHitState()
+        {
+            hitAxis = null;
+            hitPlane = null;
+        }
 
         /// <summary>
         /// Performs hit test on Gizmo to find out hit object. The returned 
