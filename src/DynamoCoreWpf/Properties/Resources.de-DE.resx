@@ -3847,7 +3847,7 @@ Führen Sie #Download und Installation=https://www.autodesk.com/support/technica
     <value>Nicht verbundene Ausgabeanschlüsse vorgabemäßig ausblenden</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotifications" xml:space="preserve">
-    <value>Show Python Engine change notifications</value>
+    <value>Änderungsbenachrichtigungen für Python-Engine anzeigen</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotificationsTooltip" xml:space="preserve">
     <value>CPython wird in Dynamo 4.0 oder höher nicht mehr unterstützt und in die neue Vorgabe-Engine PythonNet3 konvertiert. Deaktivieren Sie den Schalter, um alle Benachrichtigungen über Engine-Änderungen auszublenden.</value>

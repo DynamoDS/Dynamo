@@ -3849,7 +3849,7 @@ Aby ustawić ten plik jako nowy szablon, zapisz go w innym folderze, a następni
     <value>Domyślnie ukryj niepołączone porty wyjściowe</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotifications" xml:space="preserve">
-    <value>Show Python Engine change notifications</value>
+    <value>Pokaż powiadomienia o zmianach aparatu języka Python</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotificationsTooltip" xml:space="preserve">
     <value>Węzeł CPython nie jest obsługiwany w dodatku Dynamo od wersji 4.0 wzwyż. Nastąpi przekształcenie pod kątem nowego domyślnego aparatu PythonNet3. Wyłączając ten przełącznik, możesz ukryć wszystkie powiadomienia o zmianach aparatu.</value>

@@ -3831,7 +3831,7 @@ Per trasformare questo file in un nuovo modello, salvarlo in un'altra cartella e
     <value>Nasconde le porte di output non connesse per default</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotifications" xml:space="preserve">
-    <value>Show Python Engine change notifications</value>
+    <value>Mostra notifiche di modifica del motore Python</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotificationsTooltip" xml:space="preserve">
     <value>CPython non è più supportato in Dynamo 4.0 o versioni successive e verrà convertito nel nuovo motore di default PythonNet3. Disattivare il pulsante di commutazione per nascondere tutte le notifiche relative alle modifiche del motore.</value>
