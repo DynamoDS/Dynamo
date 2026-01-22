@@ -3849,7 +3849,7 @@
     <value>Скрытие несоединенных портов вывода по умолчанию</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotifications" xml:space="preserve">
-    <value>Show Python Engine change notifications</value>
+    <value>Показывать уведомления об изменениях в компоненте Python</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotificationsTooltip" xml:space="preserve">
     <value>CPython больше не поддерживается в Dynamo 4.0 или более поздних версиях и будет преобразован в новый компонент PythonNet3, используемый по умолчанию. Отключите переключатель, чтобы скрыть все уведомления о замене компонента.</value>
