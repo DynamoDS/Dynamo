@@ -3848,7 +3848,7 @@
     <value>默认情况下隐藏未连接的输出端口</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotifications" xml:space="preserve">
-    <value>Show Python Engine change notifications</value>
+    <value>显示 Python 引擎更改通知</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotificationsTooltip" xml:space="preserve">
     <value>Dynamo 4.0 或更高版本不再支持 CPython，它将被转换为新的默认引擎 PythonNet3。禁用切换开关可隐藏有关引擎更改的所有通知。</value>

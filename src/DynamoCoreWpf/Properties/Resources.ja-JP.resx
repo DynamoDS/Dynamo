@@ -3850,7 +3850,7 @@ Dynamo を再起動してアンインストールを完了します。
     <value>既定で未接続の出力ポートを非表示</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotifications" xml:space="preserve">
-    <value>Show Python Engine change notifications</value>
+    <value>Python エンジンの変更通知を表示</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotificationsTooltip" xml:space="preserve">
     <value>CPython は Dynamo 4.0 以降ではサポートされなくなったため、新しい既定のエンジン PythonNet3 に変換されます。エンジンの変更に関するすべての通知を非表示にするには、トグルを無効にします。</value>
