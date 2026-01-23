@@ -1364,8 +1364,12 @@ Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.DownloadLa
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.DownloadLatestToCustomPathCommand.set -> void
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.Downloads.get -> int
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.Equals(Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel other) -> bool
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.HasUpdateAvailable.get -> bool
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.HasUpdateAvailable.set -> void
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.HasUpvote.get -> bool
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.Hosts.get -> System.Collections.Generic.List<string>
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.InstallActionCommand.get -> System.Windows.Input.ICommand
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.InstallActionText.get -> string
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsDeprecated.get -> bool
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsEnabledForInstall.get -> bool
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsOnwer.get -> bool
@@ -5160,6 +5164,9 @@ static Dynamo.Wpf.Properties.Resources.NodeAutoCompleteToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.OfflineStatusTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.OnlineStatusTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDuplicateAssembliesFoundMessage.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageManagerPackageUpdateAvailable.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageManagerUninstall.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageManagerUpdate.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoCompleteNewUI.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoCompleteNewUITooltipText.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeContextMenuEnablePeriodicUpdate.get -> string
