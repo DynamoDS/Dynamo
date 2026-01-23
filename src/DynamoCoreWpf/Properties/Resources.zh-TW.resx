@@ -3848,10 +3848,10 @@
     <value>預設隱藏未連線的輸出埠</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotifications" xml:space="preserve">
-    <value>Show Python Engine change notifications</value>
+    <value>展示 Python 引擎變更通知</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotificationsTooltip" xml:space="preserve">
-    <value>Dynamo 4.0 或更高版本不再支援 CPython，CPython 將轉換為新的預設引擎 PythonNet3。停用開關可隱藏有關引擎變更的所有通知。</value>
+    <value>Dynamo 4.0 或更高版本不再支援 CPython，CPython 將轉換為新的預設引擎 PythonNet3。關閉開關可隱藏有關引擎變更的所有通知。</value>
   </data>
   <data name="MessageBoxDontShowAgainLabel" xml:space="preserve">
     <value>不再顯示此畫面</value>

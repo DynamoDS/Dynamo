@@ -3846,7 +3846,7 @@
     <value>기본적으로 연결되지 않은 출력 포트 숨기기</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotifications" xml:space="preserve">
-    <value>Show Python Engine change notifications</value>
+    <value>Python 엔진 변경 알림 표시</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotificationsTooltip" xml:space="preserve">
     <value>CPython은 Dynamo 4.0 이상에서 더 이상 지원되지 않으며, 새로운 기본 엔진인 PythonNet3로 변환됩니다. 엔진 변경에 대한 모든 알림을 숨기려면 토글을 비활성화합니다.</value>
