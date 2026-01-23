@@ -185,6 +185,21 @@ namespace Dynamo.Manipulation
         {
             if (!IsValidNode) return;
 
+            // Skip processing if user is panning or orbiting the camera.
+            // This prevents the manipulator from capturing mouse events intended for camera navigation.
+            if (BackgroundPreviewViewModel is DefaultWatch3DViewModel viewModel)
+            {
+                if (viewModel.IsPanning || viewModel.IsOrbiting)
+                    return;
+            }
+
+            // Only process left mouse button presses for gizmo manipulation
+            // Right/middle button presses are for camera navigation (pan/orbit)
+            if (mouseButtonEventArgs.ChangedButton != MouseButton.Left)
+            {
+                return;
+            }
+
             active = UpdatePosition();
             if (Origin != null )
             {
@@ -228,6 +243,21 @@ namespace Dynamo.Manipulation
         /// <param name="e"></param>
         protected virtual void MouseUp(object sender, MouseButtonEventArgs e)
         {
+            // Skip processing if user is panning or orbiting the camera.
+            // This prevents the manipulator from capturing mouse events intended for camera navigation.
+            if (BackgroundPreviewViewModel is DefaultWatch3DViewModel viewModel)
+            {
+                if (viewModel.IsPanning || viewModel.IsOrbiting)
+                    return;
+            }
+
+            // Only process left mouse button releases for gizmo manipulation
+            // Right/middle button releases are for camera navigation (pan/orbit)
+            if (e.ChangedButton != MouseButton.Left)
+            {
+                return;
+            }
+
             GizmoInAction = null;
 
             if (originBeforeMove != null && originAfterMove != null)
@@ -249,6 +279,13 @@ namespace Dynamo.Manipulation
             foreach (var gizmo in gizmos)
             {
                 gizmo.UpdateGizmoGraphics();
+
+                // Clear hit state to prevent drift during subsequent camera operations
+                // This ensures stale axis/plane hit data doesn't affect pan/orbit movements
+                if (gizmo is TranslationGizmo translationGizmo)
+                {
+                    translationGizmo.ClearHitState();
+                }
             }
         }
 
@@ -286,7 +323,7 @@ namespace Dynamo.Manipulation
 
             // redraw manipulator at new position synchronously
             var packages = BuildRenderPackage();
-            BackgroundPreviewViewModel.AddGeometryForRenderPackages(packages);
+            BackgroundPreviewViewModel.AddGeometryForRenderPackages(packages, true);
         }
 
         /// <summary>
