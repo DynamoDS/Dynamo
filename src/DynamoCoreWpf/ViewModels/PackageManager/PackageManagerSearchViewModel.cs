@@ -917,10 +917,8 @@ namespace Dynamo.PackageManager
                 var p = GetSearchElementViewModel(pkg, true);
 
                 p.RequestDownload += this.PackageOnExecuted;
+                p.RequestUninstall += SearchElementViewModelOnRequestUninstall;
                 p.IsOnwer = true;
-
-                UpdateInstallState(p);
-                p.PropertyChanged += SearchElementViewModelOnPropertyChanged;
 
                 myPackages.Add(p);
             }
@@ -936,6 +934,7 @@ namespace Dynamo.PackageManager
                 ele.RequestDownload -= PackageOnExecuted;
                 ele.RequestShowFileDialog -= OnRequestShowFileDialog;
                 ele.PropertyChanged -= SearchElementViewModelOnPropertyChanged;
+                ele.RequestUninstall -= SearchElementViewModelOnRequestUninstall;
             }
 
             this.SearchMyResults = null;
@@ -1437,6 +1436,7 @@ namespace Dynamo.PackageManager
             element.RequestDownload += this.PackageOnExecuted;
             element.RequestShowFileDialog += this.OnRequestShowFileDialog;
             element.PropertyChanged += SearchElementViewModelOnPropertyChanged;
+            element.RequestUninstall += SearchElementViewModelOnRequestUninstall;
 
             this.SearchResults.Add(element);
         }
@@ -1449,10 +1449,15 @@ namespace Dynamo.PackageManager
                 ele.RequestDownload -= PackageOnExecuted;
                 ele.RequestShowFileDialog -= OnRequestShowFileDialog;
                 ele.PropertyChanged -= SearchElementViewModelOnPropertyChanged;
+                ele.RequestUninstall -= SearchElementViewModelOnRequestUninstall;
 
                 ele?.Dispose();
             }
             this.SearchResults.Clear();
+        }
+        private void SearchElementViewModelOnRequestUninstall(PackageManagerSearchElementViewModel element)
+        {
+            UninstallPackage(element);
         }
 
         private void SearchElementViewModelOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -1862,9 +1867,7 @@ namespace Dynamo.PackageManager
                 CanInstallPackage(package.Name),
                 isEnabledForInstall);
 
-            viewModel.UninstallCommand = new DelegateCommand(
-                () => UninstallPackage(viewModel),
-                () => CanUninstallPackage(viewModel));
+            viewModel.CanUninstall = () => CanUninstallPackage(viewModel);
             UpdateInstallState(viewModel, true);
 
             return viewModel;

@@ -359,6 +359,9 @@
                                                                                 <DataTrigger Binding="{Binding InstallActionText}" Value="{x:Static p:Resources.PackageManagerUninstall}">
                                                                                     <Setter Property="Visibility" Value="Collapsed" />
                                                                                 </DataTrigger>
+                                                                                <DataTrigger Binding="{Binding InstallActionText}" Value="{x:Static p:Resources.PackageDownloadStateInstalled}">
+                                                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                                                </DataTrigger>
                                                                             </Style.Triggers>
                                                                         </Style>
                                                                     </Button.Style>
@@ -411,6 +414,14 @@
                                                                                         </Setter.Value>
                                                                                     </Setter>
                                                                                 </MultiDataTrigger>
+                                                                                <DataTrigger Binding="{Binding Path=InstallActionText}" Value="{x:Static p:Resources.PackageDownloadStateInstalled}">
+                                                                                    <Setter Property="Fill">
+                                                                                        <Setter.Value>
+                                                                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/checkmark - grey.png" />
+                                                                                        </Setter.Value>
+                                                                                    </Setter>
+                                                                                    <Setter Property="Opacity" Value="1" />
+                                                                                </DataTrigger>
                                                                             </Style.Triggers>
                                                                         </Style>
                                                                     </Rectangle.Style>
@@ -442,6 +453,10 @@
                                                             <Setter Property="TextBlock.Opacity" Value="1" />
                                                             <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
                                                         </MultiDataTrigger>
+                                                        <DataTrigger Binding="{Binding InstallActionText}" Value="{x:Static p:Resources.PackageDownloadStateInstalled}">
+                                                            <Setter Property="TextBlock.Foreground" Value="#999999" />
+                                                            <Setter Property="TextBlock.Opacity" Value="1" />
+                                                        </DataTrigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </Setter.Value>
