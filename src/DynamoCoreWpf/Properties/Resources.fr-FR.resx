@@ -3844,7 +3844,7 @@ Pour transformer ce fichier en nouveau gabarit, enregistrez-le dans un autre dos
     <value>Masquer les ports de sortie non connectés par défaut</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotifications" xml:space="preserve">
-    <value>Show Python Engine change notifications</value>
+    <value>Afficher les notifications de changement de moteur Python</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotificationsTooltip" xml:space="preserve">
     <value>CPython n'est plus pris en charge dans Dynamo 4.0 ou versions ultérieures et sera converti au nouveau moteur par défaut PythonNet3. Désactivez le bouton pour masquer toutes les notifications concernant les changements de moteur.</value>

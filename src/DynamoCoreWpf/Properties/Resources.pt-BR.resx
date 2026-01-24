@@ -3850,7 +3850,7 @@ Para transformar este arquivo em um novo modelo, salve-o em uma pasta diferente 
     <value>Ocultar portas de saída não conectadas por padrão</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotifications" xml:space="preserve">
-    <value>Show Python Engine change notifications</value>
+    <value>Mostrar notificações de alterações do mecanismo Python</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotificationsTooltip" xml:space="preserve">
     <value>O CPython não é mais suportado no Dynamo 4.0 ou superior e será convertido no novo mecanismo padrão PythonNet3. Desative a opção para ocultar todas as notificações sobre as alterações do mecanismo.</value>

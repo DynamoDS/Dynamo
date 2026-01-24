@@ -3849,10 +3849,10 @@ Chcete-li vytvořit z tohoto souboru novou šablonu, uložte ho do jiné složky
     <value>Ve výchozím nastavení skrýt nepřipojené výstupní porty</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotifications" xml:space="preserve">
-    <value>Show Python Engine change notifications</value>
+    <value>Zobrazovat oznámení o změnách modulu Python</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotificationsTooltip" xml:space="preserve">
-    <value>Funkce CPython již není podporována v aplikaci Dynamo 4.0 nebo vyšší a bude převedena na nový výchozí modul PythonNet3. Vypnutím přepínače skryjete všechna oznámení ozměnách modulu.</value>
+    <value>Funkce CPython již není podporována v aplikaci Dynamo 4.0 nebo vyšší a bude převedena na nový výchozí modul PythonNet3. Vypnutím přepínače skryjete všechna oznámení o změnách modulu.</value>
   </data>
   <data name="MessageBoxDontShowAgainLabel" xml:space="preserve">
     <value>Tuto informaci již nezobrazovat</value>

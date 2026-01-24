@@ -151,9 +151,9 @@
     <value>알림</value>
   </data>
   <data name="UnsafePathDetectedDetail" xml:space="preserve">
-    <value>An unsafe path has been detected in Trusted Locations:</value>
+    <value>신뢰할 수 있는 위치에서 안전하지 않은 경로가 발견되었습니다.</value>
   </data>
   <data name="UnsafePathDetectedTitle" xml:space="preserve">
-    <value>Unsafe path detected</value>
+    <value>안전하지 않은 경로가 탐지되었습니다</value>
   </data>
 </root>
