@@ -933,7 +933,6 @@ namespace Dynamo.PackageManager
             {
                 ele.RequestDownload -= PackageOnExecuted;
                 ele.RequestShowFileDialog -= OnRequestShowFileDialog;
-                ele.PropertyChanged -= SearchElementViewModelOnPropertyChanged;
                 ele.RequestUninstall -= SearchElementViewModelOnRequestUninstall;
             }
 
@@ -1435,7 +1434,6 @@ namespace Dynamo.PackageManager
         {
             element.RequestDownload += this.PackageOnExecuted;
             element.RequestShowFileDialog += this.OnRequestShowFileDialog;
-            element.PropertyChanged += SearchElementViewModelOnPropertyChanged;
             element.RequestUninstall += SearchElementViewModelOnRequestUninstall;
 
             this.SearchResults.Add(element);
@@ -1448,7 +1446,6 @@ namespace Dynamo.PackageManager
             {
                 ele.RequestDownload -= PackageOnExecuted;
                 ele.RequestShowFileDialog -= OnRequestShowFileDialog;
-                ele.PropertyChanged -= SearchElementViewModelOnPropertyChanged;
                 ele.RequestUninstall -= SearchElementViewModelOnRequestUninstall;
 
                 ele?.Dispose();
@@ -1458,15 +1455,6 @@ namespace Dynamo.PackageManager
         private void SearchElementViewModelOnRequestUninstall(PackageManagerSearchElementViewModel element)
         {
             UninstallPackage(element);
-        }
-
-        private void SearchElementViewModelOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (sender is PackageManagerSearchElementViewModel element &&
-                e.PropertyName == nameof(PackageManagerSearchElementViewModel.SelectedVersion))
-            {
-                UpdateInstallState(element);
-            }
         }
 
         internal void PackageOnExecuted(PackageManagerSearchElement element, PackageVersion version, string downloadPath)
