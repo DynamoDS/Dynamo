@@ -79,9 +79,19 @@ namespace Dynamo.PackageManager.ViewModels
         private readonly DelegateCommand uninstallCommand;
         private Func<bool> canUninstall;
         private bool HasInstalledVersion => !string.IsNullOrEmpty(installedVersion);
-        private bool IsInstalledVersionSelected => SelectedVersion?.IsInstalled == true;
-        private bool IsUninstallActionAvailable => canUninstall != null;
-        private bool IsInstalledFallback => IsInstalledVersionSelected && !IsUninstallActionAvailable;
+
+        /// <summary>
+        /// True when the selected version is installed.
+        /// </summary>
+        public bool IsInstalledVersionSelected => SelectedVersion?.IsInstalled == true;
+        /// <summary>
+        /// True when the selected installed version cannot be uninstalled.
+        /// </summary>
+        public bool IsInstalledFallback => IsInstalledVersionSelected && canUninstall == null;
+        /// <summary>
+        /// True when the selected installed version can be uninstalled.
+        /// </summary>
+        public bool IsUninstallState => IsInstalledVersionSelected && canUninstall != null;
 
         public bool? IsSelectedVersionCompatible
         {
@@ -115,6 +125,8 @@ namespace Dynamo.PackageManager.ViewModels
                     RaisePropertyChanged(nameof(InstallActionText));
                     RaisePropertyChanged(nameof(InstallActionCommand));
                     RaisePropertyChanged(nameof(IsInstalledVersionSelected));
+                    RaisePropertyChanged(nameof(IsInstalledFallback));
+                    RaisePropertyChanged(nameof(IsUninstallState));
                     RefreshUninstallCommandCanExecute();
                 }
             }
@@ -169,6 +181,8 @@ namespace Dynamo.PackageManager.ViewModels
                 {
                     canUninstall = value;
                     RaisePropertyChanged(nameof(InstallActionText));
+                    RaisePropertyChanged(nameof(IsInstalledFallback));
+                    RaisePropertyChanged(nameof(IsUninstallState));
                     RefreshUninstallCommandCanExecute();
                 }
             }
@@ -367,6 +381,8 @@ namespace Dynamo.PackageManager.ViewModels
             RaisePropertyChanged(nameof(InstallActionText));
             RaisePropertyChanged(nameof(InstallActionCommand));
             RaisePropertyChanged(nameof(IsInstalledVersionSelected));
+            RaisePropertyChanged(nameof(IsInstalledFallback));
+            RaisePropertyChanged(nameof(IsUninstallState));
             RefreshUninstallCommandCanExecute();
         }
 

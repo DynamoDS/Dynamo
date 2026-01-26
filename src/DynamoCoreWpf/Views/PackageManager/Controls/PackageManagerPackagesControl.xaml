@@ -356,10 +356,7 @@
                                                                     <Button.Style>
                                                                         <Style BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" TargetType="Button">
                                                                             <Style.Triggers>
-                                                                                <DataTrigger Binding="{Binding InstallActionText}" Value="{x:Static p:Resources.PackageManagerUninstall}">
-                                                                                    <Setter Property="Visibility" Value="Collapsed" />
-                                                                                </DataTrigger>
-                                                                                <DataTrigger Binding="{Binding InstallActionText}" Value="{x:Static p:Resources.PackageDownloadStateInstalled}">
+                                                                                <DataTrigger Binding="{Binding IsInstalledVersionSelected}" Value="True">
                                                                                     <Setter Property="Visibility" Value="Collapsed" />
                                                                                 </DataTrigger>
                                                                             </Style.Triggers>
@@ -384,7 +381,7 @@
                                                                     <Rectangle.Style>
                                                                         <Style TargetType="Rectangle">
                                                                             <Style.Triggers>
-                                                                                <DataTrigger Binding="{Binding Path=InstallActionText}" Value="{x:Static p:Resources.PackageManagerUninstall}">
+                                                                                <DataTrigger Binding="{Binding IsUninstallState}" Value="True">
                                                                                     <Setter Property="Visibility" Value="Collapsed" />
                                                                                 </DataTrigger>
                                                                                 <DataTrigger Binding="{Binding Path=IsDeprecated}" Value="True">
@@ -414,7 +411,7 @@
                                                                                         </Setter.Value>
                                                                                     </Setter>
                                                                                 </MultiDataTrigger>
-                                                                                <DataTrigger Binding="{Binding Path=InstallActionText}" Value="{x:Static p:Resources.PackageDownloadStateInstalled}">
+                                                                                <DataTrigger Binding="{Binding IsInstalledFallback}" Value="True">
                                                                                     <Setter Property="Fill">
                                                                                         <Setter.Value>
                                                                                             <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/checkmark - grey.png" />
@@ -453,7 +450,7 @@
                                                             <Setter Property="TextBlock.Opacity" Value="1" />
                                                             <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
                                                         </MultiDataTrigger>
-                                                        <DataTrigger Binding="{Binding InstallActionText}" Value="{x:Static p:Resources.PackageDownloadStateInstalled}">
+                                                        <DataTrigger Binding="{Binding IsInstalledFallback}" Value="True">
                                                             <Setter Property="TextBlock.Foreground" Value="#999999" />
                                                             <Setter Property="TextBlock.Opacity" Value="1" />
                                                         </DataTrigger>
