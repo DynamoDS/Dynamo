@@ -175,7 +175,7 @@ namespace Dynamo.DocumentationBrowser
 
                     // Apply standard WebView2 settings with zoom and DevTools enabled for documentation browsing
                     documentationBrowser.ConfigureSettings(enableZoomControl: true, enableDevTools: true);
-     
+
                     this.documentationBrowser.CoreWebView2.WebMessageReceived += CoreWebView2OnWebMessageReceived;
                     comScriptingObject = new ScriptingObject(this.viewModel);
                     //register the interop object into the browser.
