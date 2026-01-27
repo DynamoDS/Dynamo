@@ -172,14 +172,14 @@ namespace Dynamo.DocumentationBrowser
                 {
                     //Initialize the CoreWebView2 component otherwise we can't navigate to a web page
                     await documentationBrowser.Initialize(Log);
+
+                    // Apply standard WebView2 settings with zoom and DevTools enabled for documentation browsing
+                    documentationBrowser.ConfigureSettings(enableZoomControl: true, enableDevTools: true);
      
                     this.documentationBrowser.CoreWebView2.WebMessageReceived += CoreWebView2OnWebMessageReceived;
                     comScriptingObject = new ScriptingObject(this.viewModel);
                     //register the interop object into the browser.
                     this.documentationBrowser.CoreWebView2.AddHostObjectToScript("bridge", comScriptingObject);
-
-                    this.documentationBrowser.CoreWebView2.Settings.IsZoomControlEnabled = true;
-                    this.documentationBrowser.CoreWebView2.Settings.AreDevToolsEnabled = true;
 
                     initState = AsyncMethodState.Done;
                 }
