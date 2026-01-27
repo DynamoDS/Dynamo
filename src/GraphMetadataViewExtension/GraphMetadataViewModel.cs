@@ -209,19 +209,19 @@ namespace Dynamo.GraphMetadata
         private void OnWorkspacePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             // Use WorkspaceModel.Description since that's where the property is defined
-            if (e.PropertyName == nameof(WorkspaceModel.Description) || e.PropertyName == "Description")
+            if (e.PropertyName == nameof(WorkspaceModel.Description))
             {
                 RaisePropertyChanged(nameof(GraphDescription));
             }
-            else if (e.PropertyName == nameof(WorkspaceModel.Author) || e.PropertyName == "Author")
+            else if (e.PropertyName == nameof(WorkspaceModel.Author))
             {
                 RaisePropertyChanged(nameof(GraphAuthor));
             }
-            else if (e.PropertyName == nameof(HomeWorkspaceModel.GraphDocumentationURL) || e.PropertyName == "GraphDocumentationURL")
+            else if (e.PropertyName == nameof(HomeWorkspaceModel.GraphDocumentationURL))
             {
                 RaisePropertyChanged(nameof(HelpLink));
             }
-            else if (e.PropertyName == nameof(HomeWorkspaceModel.Thumbnail) || e.PropertyName == "Thumbnail")
+            else if (e.PropertyName == nameof(HomeWorkspaceModel.Thumbnail))
             {
                 RaisePropertyChanged(nameof(Thumbnail));
             }
