@@ -193,7 +193,6 @@ namespace Dynamo.GraphMetadata
                 RaisePropertyChanged(nameof(HelpLink));
                 RaisePropertyChanged(nameof(Thumbnail));
             }
-    
             //Clear custom properties for cases one and two.
             CustomProperties.Clear();
         }
@@ -343,6 +342,7 @@ namespace Dynamo.GraphMetadata
             {
                 linterManager.PropertyChanged -= OnLinterManagerPropertyChange;
             }
+
             // Unsubscribe from workspace PropertyChanged
             if (currentWorkspace != null)
             {
