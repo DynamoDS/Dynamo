@@ -35,7 +35,7 @@ namespace DynamoCoreWpfTests.ViewExtensions
         }
 
         [OneTimeTearDown]
-        public void TearDown()
+        public void OneTimeTearDown()
         {
             DispatcherUtil.DoEventsLoop(() => DispatcherOpsCounter == 0);
         }
@@ -50,7 +50,6 @@ namespace DynamoCoreWpfTests.ViewExtensions
 
         /// <summary>
         /// Verifies that ClearHitState method exists and properly clears hitAxis and hitPlane fields.
-        /// This is the core fix for Issue 2 (camera drift prevention).
         /// </summary>
         [Test]
         public void TranslationGizmo_ClearHitState_ShouldClearHitFields()
@@ -169,25 +168,15 @@ namespace DynamoCoreWpfTests.ViewExtensions
             var mouseUpMethod = typeof(NodeManipulator).GetMethod("MouseUp",
                 BindingFlags.NonPublic | BindingFlags.Instance);
 
-            // Set up a flag to detect if MouseUp processing occurred
-            var originBeforeMoveField = typeof(NodeManipulator).GetField("originBeforeMove",
-                BindingFlags.NonPublic | BindingFlags.Instance);
+            // Act - Call MouseUp with right button (should be ignored)
+            var rightButtonArgs = CreateMouseButtonEventArgs(MouseButton.Right);
+            Assert.DoesNotThrow(() => mouseUpMethod.Invoke(manipulator, new object[] { null, rightButtonArgs }),
+                "MouseUp should not throw when right button is released");
 
-            // Set originBeforeMove to non-null to test if MouseUp processes it
-            using (var testPoint = Point.ByCoordinates(1, 1, 1))
-            {
-                originBeforeMoveField.SetValue(manipulator, testPoint);
-
-                // Act - Call MouseUp with right button (should be ignored)
-                var rightButtonArgs = CreateMouseButtonEventArgs(MouseButton.Right);
-                Assert.DoesNotThrow(() => mouseUpMethod.Invoke(manipulator, new object[] { null, rightButtonArgs }),
-                    "MouseUp should not throw when right button is released");
-
-                // Act - Call MouseUp with middle button (should be ignored)
-                var middleButtonArgs = CreateMouseButtonEventArgs(MouseButton.Middle);
-                Assert.DoesNotThrow(() => mouseUpMethod.Invoke(manipulator, new object[] { null, middleButtonArgs }),
-                    "MouseUp should not throw when middle button is released");
-            }
+            // Act - Call MouseUp with middle button (should be ignored)
+            var middleButtonArgs = CreateMouseButtonEventArgs(MouseButton.Middle);
+            Assert.DoesNotThrow(() => mouseUpMethod.Invoke(manipulator, new object[] { null, middleButtonArgs }),
+                "MouseUp should not throw when middle button is released");
 
             manipulator.Dispose();
         }
@@ -384,6 +373,9 @@ namespace DynamoCoreWpfTests.ViewExtensions
                 }
                 catch
                 {
+                    // This is a test helper that uses reflection against internal APIs.
+                    // Any failure to retrieve gizmos should be treated as "no TranslationGizmo available"
+                    // rather than causing the test to throw, so we return null here.
                     return null;
                 }
             }

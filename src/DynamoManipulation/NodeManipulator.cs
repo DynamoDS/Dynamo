@@ -323,7 +323,7 @@ namespace Dynamo.Manipulation
 
             // redraw manipulator at new position synchronously
             var packages = BuildRenderPackage();
-            BackgroundPreviewViewModel.AddGeometryForRenderPackages(packages, true);
+            BackgroundPreviewViewModel.AddGeometryForRenderPackages(packages);
         }
 
         /// <summary>

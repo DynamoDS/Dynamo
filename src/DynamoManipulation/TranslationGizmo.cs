@@ -278,6 +278,9 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Clears the cached hit axis and plane after manipulation is complete.
         /// This prevents stale hit state from affecting subsequent camera operations.
+        /// This method is called automatically by <c>NodeManipulator.MouseUp</c> when a
+        /// manipulation operation finishes; it typically does not need to be invoked
+        /// directly except in custom manipulation workflows.
         /// </summary>
         public void ClearHitState()
         {
