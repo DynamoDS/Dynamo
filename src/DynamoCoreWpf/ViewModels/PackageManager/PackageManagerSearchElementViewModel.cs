@@ -465,7 +465,7 @@ namespace Dynamo.PackageManager.ViewModels
         private void OnRequestDownload(bool downloadToCustomPath)
         {
             var version = this.SearchElementModel?.Header?.versions
-                ?.First(x => x.version.Equals(SelectedVersion.Version));
+                ?.FirstOrDefault(x => x.version.Equals(SelectedVersion.Version));
             if (version == null) return;
 
             string downloadPath = String.Empty;

@@ -572,10 +572,14 @@ namespace Dynamo.PackageManager
                     PackageManagerClientViewModel.PackageManagerExtension.PackageLoader,
                     dynamoViewModel.Model.PreferenceSettings);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                var baseMessage = string.Format(Resources.MessageFailedToDelete,
+                    dynamoViewModel.BrandingResourceProvider.ProductName);
+                var detailedMessage = baseMessage + Environment.NewLine + ex.Message;
+
                 MessageBoxService.Show(dynamoViewModel.Owner,
-                    string.Format(Resources.MessageFailedToDelete, dynamoViewModel.BrandingResourceProvider.ProductName),
+                    detailedMessage,
                     Resources.DeleteFailureMessageBoxTitle,
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }

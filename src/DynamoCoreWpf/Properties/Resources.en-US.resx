@@ -3048,6 +3048,7 @@ This package will be unloaded after the next Dynamo restart.</value>
   </data>
   <data name="PackageManagerPackageUpdateAvailable" xml:space="preserve">
     <value>New version available</value>
+      <comment>Displays next to the package name in the Package Search window if a newer version of the package is available.</comment>
   </data>
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>New</value>
