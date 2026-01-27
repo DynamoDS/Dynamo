@@ -2492,6 +2492,11 @@ namespace Dynamo.Models
                 this.LinterManager);
 
             workspace.FileName = string.IsNullOrEmpty(filePath)? string.Empty : filePath;
+            // Update workspace.Name when opening a file (not just on Save)
+            if (!string.IsNullOrEmpty(filePath) && workspace is HomeWorkspaceModel)
+            {
+                workspace.setNameBasedOnFileName(filePath, isBackup: false);
+            }
             workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : string.Empty;
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
             workspace.IsTemplate = isTemplate;
@@ -2618,6 +2623,11 @@ namespace Dynamo.Models
                 new PointEventArgs(new Point2D(workspaceInfo.X, workspaceInfo.Y)));
 
             workspace.ScaleFactor = workspaceInfo.ScaleFactor;
+            // Update workspace.Name based on filename when opening a file
+            if (!string.IsNullOrEmpty(workspaceInfo.FileName) && workspace is HomeWorkspaceModel)
+            {
+                workspace.setNameBasedOnFileName(workspaceInfo.FileName, isBackup: false);
+            }
             return result;
         }
 
@@ -3421,6 +3431,16 @@ namespace Dynamo.Models
             //don't save the file path
             CurrentWorkspace.FileName = "";
             CurrentWorkspace.HasUnsavedChanges = false;
+            // Clear workspace metadata properties when creating new workspace
+            if (CurrentWorkspace is HomeWorkspaceModel homeWorkspace)
+            {
+                homeWorkspace.Description = "";
+                homeWorkspace.Author = "";
+                homeWorkspace.Name = "";
+                homeWorkspace.GraphDocumentationURL = null;
+                homeWorkspace.Thumbnail = "";
+                homeWorkspace.ExtensionData?.Clear();
+            }
             EngineController.CurrentWorkspaceVersion = AssemblyHelper.GetDynamoVersion();
 
             this.LinterManager?.SetDefaultLinter();

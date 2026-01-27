@@ -1066,7 +1066,7 @@ namespace Dynamo.Graph.Workspaces
             set
             {
                 description = value;
-                RaisePropertyChanged("Description");
+                RaisePropertyChanged(nameof(Description));
             }
         }
 
