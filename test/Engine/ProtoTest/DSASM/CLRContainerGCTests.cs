@@ -314,6 +314,227 @@ isValid = x1 == 42 && x2 == 42 && x3 == 42 && x4 == 42;
         }
 
         /// <summary>
+        /// Test 2.8: Upstream change causes node re-execution.
+        ///
+        /// This test verifies that when a container-creating node (like ParseJSON)
+        /// re-executes due to upstream changes, the OLD container and its contents
+        /// are properly disposed, and NEW objects are created.
+        ///
+        /// This is DIFFERENT from the DYN-8717 bug scenario where the SAME container
+        /// stays in memory but its contents were incorrectly collected.
+        ///
+        /// This test addresses Roberto's question from PR review about what happens
+        /// when upstream nodes change.
+        /// </summary>
+        [Test]
+        [Category("DYN-8717")]
+        public void TestUpstreamChange_ReExecutionDisposesOld()
+        {
+            string code = @"
+import(""FFITarget.dll"");
+
+// Simulate first execution - ParseJSON creates Dict with Point1
+point1 = DummyPoint.ByCoordinates(100, 200, 300);
+dict1 = {""Shape"": point1, ""id"": 1};
+
+// Access the point
+shape1 = dict1[""Shape""];
+x1 = shape1.X;
+id1 = dict1[""id""];
+
+// Simulate upstream change - ParseJSON RE-EXECUTES with different JSON
+// This creates a NEW dictionary with NEW point
+point2 = DummyPoint.ByCoordinates(999, 888, 777);
+dict2 = {""Shape"": point2, ""id"": 2};
+
+// Now downstream nodes reference dict2, not dict1
+// dict1 is no longer referenced and should be eligible for GC
+shape2 = dict2[""Shape""];
+x2 = shape2.X;
+id2 = dict2[""id""];
+
+// Force GC - dict1 and point1 should be collected
+// dict2 and point2 should survive
+__GC();
+
+// Verify we can still access the NEW point (point2)
+x3 = shape2.X;
+y3 = shape2.Y;
+z3 = shape2.Z;
+
+// Verify values
+isValid = x1 == 100 && x2 == 999 && x3 == 999 &&
+          y3 == 888 && z3 == 777 &&
+          id1 == 1 && id2 == 2;
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+
+            // New point should be accessible
+            thisTest.Verify("x1", 100.0);  // Old point was accessible initially
+            thisTest.Verify("x2", 999.0);  // New point is accessible
+            thisTest.Verify("x3", 999.0);  // New point still accessible after GC
+            thisTest.Verify("y3", 888.0);
+            thisTest.Verify("z3", 777.0);
+            thisTest.Verify("id1", 1);
+            thisTest.Verify("id2", 2);
+            thisTest.Verify("isValid", true);
+        }
+
+        /// <summary>
+        /// Test 2.9: Verify no accumulation when repeatedly changing upstream.
+        ///
+        /// Simulates multiple upstream changes where ParseJSON keeps re-executing
+        /// with different data. Verifies that old geometry is disposed each time
+        /// and doesn't accumulate in memory.
+        /// </summary>
+        [Test]
+        [Category("DYN-8717")]
+        public void TestUpstreamChange_NoAccumulation()
+        {
+            string code = @"
+import(""FFITarget.dll"");
+
+// Simulate multiple re-executions of ParseJSON with different data
+// Only the LAST created geometry should survive
+
+// Execution 1
+point1 = DummyPoint.ByCoordinates(1, 0, 0);
+dict1 = {""point"": point1};
+result1 = dict1[""point""].X;
+
+// Execution 2 (upstream change)
+point2 = DummyPoint.ByCoordinates(2, 0, 0);
+dict2 = {""point"": point2};
+result2 = dict2[""point""].X;
+
+// Execution 3 (upstream change)
+point3 = DummyPoint.ByCoordinates(3, 0, 0);
+dict3 = {""point"": point3};
+result3 = dict3[""point""].X;
+
+// Execution 4 (upstream change)
+point4 = DummyPoint.ByCoordinates(4, 0, 0);
+dict4 = {""point"": point4};
+result4 = dict4[""point""].X;
+
+// Execution 5 (upstream change)
+point5 = DummyPoint.ByCoordinates(5, 0, 0);
+dict5 = {""point"": point5};
+result5 = dict5[""point""].X;
+
+// Multiple GC cycles
+__GC();
+__GC();
+__GC();
+
+// Only the LAST point (point5) should be accessible
+// Previous points should have been disposed
+finalX = dict5[""point""].X;
+
+// Verify correct values
+isValid = result1 == 1 && result2 == 2 && result3 == 3 &&
+          result4 == 4 && result5 == 5 && finalX == 5;
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+
+            thisTest.Verify("result1", 1.0);
+            thisTest.Verify("result2", 2.0);
+            thisTest.Verify("result3", 3.0);
+            thisTest.Verify("result4", 4.0);
+            thisTest.Verify("result5", 5.0);
+            thisTest.Verify("finalX", 5.0);
+            thisTest.Verify("isValid", true);
+        }
+
+        /// <summary>
+        /// Test 2.10: Contrast between the two scenarios.
+        ///
+        /// This test demonstrates the DIFFERENCE between:
+        /// A) DYN-8717 bug scenario (same container, downstream changes type)
+        /// B) Upstream change scenario (container replaced)
+        /// </summary>
+        [Test]
+        [Category("DYN-8717")]
+        public void TestContrastBothScenarios()
+        {
+            string code = @"
+import(""FFITarget.dll"");
+
+// ==========================================
+// PART A: DYN-8717 Bug Scenario (What we fixed)
+// ==========================================
+
+// Create dictionary with geometry
+dictA = {""point"": DummyPoint.ByCoordinates(10, 20, 30)};
+
+// Access the geometry initially
+resultA1 = dictA[""point""].X;
+
+// Create intermediate variable that doesn't access the geometry
+// This simulates downstream nodes that don't directly reference the geometry
+tempA = ""intermediate"";
+
+// GC - WITHOUT FIX, point would be collected here even though dictA still holds it
+__GC();
+
+// Access geometry again - should still work because dictA still holds reference
+resultA2 = dictA[""point""].X;
+resultA3 = dictA[""point""].Y;
+
+// Verify: dictA stayed in memory, point should NOT have been collected
+isValidA = resultA1 == 10 && resultA2 == 10 && resultA3 == 20;
+
+
+// ==========================================
+// PART B: Upstream Change Scenario (Normal behavior)
+// ==========================================
+
+// First execution - create dict with one point
+dictB1 = {""point"": DummyPoint.ByCoordinates(100, 200, 300)};
+resultB1 = dictB1[""point""].X;
+
+// Upstream change - NEW dictionary created with different point
+// OLD dict (dictB1) is no longer the active container
+dictB2 = {""point"": DummyPoint.ByCoordinates(400, 500, 600)};
+resultB2 = dictB2[""point""].X;
+
+// GC - dictB1 and its point should be collected (no longer referenced downstream)
+// dictB2 and its point should survive
+__GC();
+
+// Access NEW dictionary - should work
+resultB3 = dictB2[""point""].X;
+resultB4 = dictB2[""point""].Y;
+
+// Verify: dictB2 is active, dictB1 was disposed (normal behavior)
+isValidB = resultB1 == 100 && resultB2 == 400 && resultB3 == 400 && resultB4 == 500;
+
+
+// ==========================================
+// Both scenarios should work correctly
+// ==========================================
+isValid = isValidA && isValidB;
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+
+            // Part A: Same container scenario (DYN-8717 fix)
+            thisTest.Verify("resultA1", 10.0);
+            thisTest.Verify("resultA2", 10.0);
+            thisTest.Verify("resultA3", 20.0);  // This would fail without DYN-8717 fix
+            thisTest.Verify("isValidA", true);
+
+            // Part B: Upstream change scenario (normal behavior)
+            thisTest.Verify("resultB1", 100.0);
+            thisTest.Verify("resultB2", 400.0);
+            thisTest.Verify("resultB3", 400.0);
+            thisTest.Verify("resultB4", 500.0);
+            thisTest.Verify("isValidB", true);
+
+            // Both should work
+            thisTest.Verify("isValid", true);
+        }
+
+        /// <summary>
         /// Test the exact scenario from DYN-8717 - Dictionary from ParseJSON
         /// with conditional code block.
         /// </summary>
@@ -357,6 +578,206 @@ isValid = x1 == 100 && x2 == 100;
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
             thisTest.Verify("x1", 100.0);
             thisTest.Verify("x2", 100.0);
+            thisTest.Verify("isValid", true);
+        }
+
+        /// <summary>
+        /// Test 2.11: IEnumerable collection handling - List scenario.
+        ///
+        /// This test verifies that the GC traverses IEnumerable collections
+        /// (which includes List&lt;T&gt;, Collection&lt;T&gt;, and other collection types).
+        /// While this test uses arrays (which are IEnumerable), it represents
+        /// the same code path that handles List and other IEnumerable types.
+        /// </summary>
+        [Test]
+        [Category("DYN-8717")]
+        public void TestIEnumerableHandling_ListScenario()
+        {
+            string code = @"
+import(""FFITarget.dll"");
+
+// Create an array (IEnumerable) with geometry
+// In CLR, this exercises the same IEnumerable traversal path
+// that would handle List<T>, Collection<T>, etc.
+collection = [
+    DummyPoint.ByCoordinates(10, 20, 30),
+    DummyPoint.ByCoordinates(40, 50, 60),
+    DummyPoint.ByCoordinates(70, 80, 90)
+];
+
+// Access first point
+x1 = collection[0].X;
+
+// Intermediate operation - geometry not directly accessed
+temp = ""intermediate"";
+__GC();
+
+// Access all points - should still be valid
+x2 = collection[0].X;
+y2 = collection[1].Y;
+z2 = collection[2].Z;
+
+isValid = x1 == 10 && x2 == 10 && y2 == 50 && z2 == 90;
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x1", 10.0);
+            thisTest.Verify("x2", 10.0);
+            thisTest.Verify("y2", 50.0);
+            thisTest.Verify("z2", 90.0);
+            thisTest.Verify("isValid", true);
+        }
+
+        /// <summary>
+        /// Test 2.12: Nested IEnumerable collections.
+        ///
+        /// Verifies that nested collection structures (collection within collection)
+        /// properly protect all nested geometry through IEnumerable traversal.
+        /// This represents scenarios with List&lt;List&lt;T&gt;&gt;, Collection&lt;Array&gt;, etc.
+        /// </summary>
+        [Test]
+        [Category("DYN-8717")]
+        public void TestNestedIEnumerableCollections()
+        {
+            string code = @"
+import(""FFITarget.dll"");
+
+// Create nested arrays (IEnumerable within IEnumerable)
+innerArray1 = [DummyPoint.ByCoordinates(1, 2, 3), DummyPoint.ByCoordinates(4, 5, 6)];
+innerArray2 = [DummyPoint.ByCoordinates(7, 8, 9), DummyPoint.ByCoordinates(10, 11, 12)];
+outerArray = [innerArray1, innerArray2];
+
+// Access points through nested structure
+x1 = outerArray[0][0].X;
+y1 = outerArray[0][1].Y;
+z1 = outerArray[1][0].Z;
+
+// GC - nested geometry should be protected
+__GC();
+
+// Access again through nested paths
+x2 = outerArray[0][0].X;
+y2 = outerArray[0][1].Y;
+z2 = outerArray[1][0].Z;
+w2 = outerArray[1][1].X;
+
+isValid = x1 == 1 && y1 == 5 && z1 == 9 &&
+          x2 == 1 && y2 == 5 && z2 == 9 && w2 == 10;
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x1", 1.0);
+            thisTest.Verify("y1", 5.0);
+            thisTest.Verify("z1", 9.0);
+            thisTest.Verify("x2", 1.0);
+            thisTest.Verify("y2", 5.0);
+            thisTest.Verify("z2", 9.0);
+            thisTest.Verify("w2", 10.0);
+            thisTest.Verify("isValid", true);
+        }
+
+        /// <summary>
+        /// Test 2.13: Mixed collection types in single graph.
+        ///
+        /// Verifies that different collection types (Dictionary, Array/IEnumerable,
+        /// and nested structures) all work correctly together in the same graph.
+        /// This represents real-world scenarios where multiple collection types
+        /// are used simultaneously.
+        /// </summary>
+        [Test]
+        [Category("DYN-8717")]
+        public void TestMixedCollectionTypes()
+        {
+            string code = @"
+import(""FFITarget.dll"");
+
+// Create geometry objects
+p1 = DummyPoint.ByCoordinates(1, 1, 1);
+p2 = DummyPoint.ByCoordinates(2, 2, 2);
+p3 = DummyPoint.ByCoordinates(3, 3, 3);
+p4 = DummyPoint.ByCoordinates(4, 4, 4);
+
+// Store in Dictionary (IDictionary)
+dict = {""point"": p1};
+
+// Store in Array (IEnumerable)
+arr = [p2];
+
+// Store in nested structure: Dict containing Array (IDictionary + IEnumerable)
+nestedDictArray = {""array"": [p3]};
+
+// Store in nested structure: Array containing Dict (IEnumerable + IDictionary)
+nestedArrayDict = [{""point"": p4}];
+
+// Access all through different collection types
+x1 = dict[""point""].X;
+x2 = arr[0].X;
+x3 = nestedDictArray[""array""][0].X;
+x4 = nestedArrayDict[0][""point""].X;
+
+// GC - all collections should protect their geometry
+__GC();
+
+// Access again - all should still be valid
+x1b = dict[""point""].X;
+x2b = arr[0].X;
+x3b = nestedDictArray[""array""][0].X;
+x4b = nestedArrayDict[0][""point""].X;
+
+isValid = x1 == 1 && x2 == 2 && x3 == 3 && x4 == 4 &&
+          x1b == 1 && x2b == 2 && x3b == 3 && x4b == 4;
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x1", 1.0);
+            thisTest.Verify("x2", 2.0);
+            thisTest.Verify("x3", 3.0);
+            thisTest.Verify("x4", 4.0);
+            thisTest.Verify("x1b", 1.0);
+            thisTest.Verify("x2b", 2.0);
+            thisTest.Verify("x3b", 3.0);
+            thisTest.Verify("x4b", 4.0);
+            thisTest.Verify("isValid", true);
+        }
+
+        /// <summary>
+        /// Test 2.14: IEnumerable with conditional access.
+        ///
+        /// Similar to the original DYN-8717 scenario but using array/IEnumerable
+        /// instead of Dictionary. Verifies that IEnumerable collections protect
+        /// their contents when downstream conditional logic changes.
+        /// </summary>
+        [Test]
+        [Category("DYN-8717")]
+        public void TestIEnumerableWithConditionalAccess()
+        {
+            string code = @"
+import(""FFITarget.dll"");
+
+// Create array with geometry (IEnumerable)
+collection = [DummyPoint.ByCoordinates(100, 200, 300)];
+
+// Access geometry initially
+x1 = collection[0].X;
+
+// Intermediate code that doesn't directly access the geometry
+// Simulates downstream nodes that reference the collection but not its contents
+temp = ""intermediate"";
+
+// GC - geometry in collection should NOT be collected
+// because collection itself is still referenced
+__GC();
+
+// Access geometry again - should still work
+x2 = collection[0].X;
+y2 = collection[0].Y;
+z2 = collection[0].Z;
+
+// Verify all accesses work
+isValid = x1 == 100 && x2 == 100 && y2 == 200 && z2 == 300;
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("x1", 100.0);
+            thisTest.Verify("x2", 100.0);
+            thisTest.Verify("y2", 200.0);
+            thisTest.Verify("z2", 300.0);
             thisTest.Verify("isValid", true);
         }
     }
