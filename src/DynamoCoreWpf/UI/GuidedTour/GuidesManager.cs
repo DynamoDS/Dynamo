@@ -304,8 +304,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 jsonString = r.ReadToEnd();
             }
 
+            // Use case-insensitive deserialization to match JSON property names
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                AllowTrailingCommas = true,
+                ReadCommentHandling = JsonCommentHandling.Skip
+            };
+
             //Deserialize all the information read from the json file
-            return JsonSerializer.Deserialize<List<Guide>>(jsonString);
+            return JsonSerializer.Deserialize<List<Guide>>(jsonString, options);
         }
 
         /// <summary>

@@ -154,6 +154,9 @@ namespace Dynamo.Serialization
         /// <summary>
         /// Deserializes a JsonElement to a specific type using the provided options.
         /// </summary>
+        /// <param name="element">The JsonElement to deserialize</param>
+        /// <param name="options">Optional serializer options</param>
+        /// <returns>The deserialized object, which may be null for reference types</returns>
         public static T Deserialize<T>(JsonElement element, JsonSerializerOptions options = null)
         {
             var json = element.GetRawText();

@@ -163,7 +163,15 @@ namespace Dynamo.Notifications
             using (StreamReader reader = new StreamReader(stream))
             {
                 jsonStringFile = reader.ReadToEnd();
-                notificationsModel = JsonSerializer.Deserialize<NotificationsModel>(jsonStringFile);
+                
+                // Use case-insensitive deserialization to match JSON property names
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    AllowTrailingCommas = true
+                };
+                
+                notificationsModel = JsonSerializer.Deserialize<NotificationsModel>(jsonStringFile, options);
 
                 //We are adding a limit of months to grab the notifications
                 var limitDate = DateTime.Now.AddMonths(-limitOfMonthsFilterNotifications);

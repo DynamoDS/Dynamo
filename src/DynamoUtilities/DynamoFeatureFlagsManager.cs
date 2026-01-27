@@ -71,6 +71,14 @@ namespace DynamoUtilities
                 // System.Text.Json deserializes numbers as JsonElement by default for Dictionary<string, object>
                 // We need to convert them to the appropriate types
                 var rawCache = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(dataFromCLI);
+                
+                if (rawCache == null)
+                {
+                    // No flags could be deserialized; keep cache empty and return.
+                    RaiseMessageLogged("Failed to deserialize feature flags - received null result");
+                    return;
+                }
+                
                 AllFlagsCache = new Dictionary<string, object>();
                 
                 foreach (var kvp in rawCache)
