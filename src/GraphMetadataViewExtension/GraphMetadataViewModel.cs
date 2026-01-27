@@ -162,15 +162,15 @@ namespace Dynamo.GraphMetadata
             if (!hwm.IsTemplate && string.IsNullOrEmpty(hwm.FileName) )
             {
                 currentWorkspace = hwm; // Update currentWorkspace to new workspace
-                // Subscribe BEFORE making changes so PropertyChanged events are caught
-                if (currentWorkspace != null)
-                {
-                    currentWorkspace.PropertyChanged += OnWorkspacePropertyChanged;
-                }
                 GraphDescription = string.Empty;
                 GraphAuthor = string.Empty;
                 HelpLink = null;
                 Thumbnail = null;
+                // Subscribe AFTER making changes to avoid unnecessary event handling during initialization
+                if (currentWorkspace != null)
+                {
+                    currentWorkspace.PropertyChanged += OnWorkspacePropertyChanged;
+                }
             }
             //Second is switching between an open workspace and open custom node and no state changes are required.
             //This case can also be true if you close an open workspace while focused on a custom node.
