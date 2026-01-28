@@ -136,7 +136,7 @@ For each new node, provide in `doc/distrib/NodeHelpFiles/`:
 ### File Size Limits
 
 - Code changes should contain no files larger than 50 MB
-- Use the check_file_size.yml workflow validates this
+- The check_file_size.yml workflow validates this
 
 ### Build Requirements Updates
 
