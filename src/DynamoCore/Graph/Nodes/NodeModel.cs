@@ -3003,12 +3003,19 @@ namespace Dynamo.Graph.Nodes
             {
                 DisposePort(port, nodeDisposing: true);
             }
+            InPorts.Clear();
 
             OutPorts.CollectionChanged -= PortsCollectionChanged;
             foreach(var port in OutPorts)
             {
                 DisposePort(port, nodeDisposing: true);
             }
+            OutPorts.Clear();
+
+            // Clear additional collections to prevent memory leaks
+            DismissedAlerts?.Clear();
+            inputNodes.Clear();
+            outputNodes.Clear();
         }
     }
 
