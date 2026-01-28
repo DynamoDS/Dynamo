@@ -66,6 +66,16 @@ Tests are located in the `test/` directory. Use Visual Studio Test Explorer or d
 - Warning-as-error is enabled for specific analyzers (RS0016, RS0017)
 - Security analyzers are configured with error severity (CA2327, CA2329, CA2330, CA2328)
 
+### Public API Management
+
+- **RS0016 Mitigation**: All new public APIs must be declared in `PublicAPI.Unshipped.txt` files
+- Public API files are located in project directories (e.g., `src/DynamoCore/PublicAPI.Unshipped.txt`)
+- When adding new public types, methods, or properties:
+  1. Add the API signature to the appropriate `PublicAPI.Unshipped.txt` file
+  2. Use the format: `namespace.ClassName.MemberName -> ReturnType`
+  3. Entries in `PublicAPI.Unshipped.txt` are moved to `PublicAPI.Shipped.txt` upon release
+- Existing PublicAPI files: DynamoCore, DynamoUtilities, DynamoCoreWpf
+
 ## Project Structure
 
 ```
