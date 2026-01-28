@@ -44,16 +44,20 @@ namespace Dynamo.Tests.Core
             // Start the timer with a short interval
             pulseMaker.Start(100);
 
-            // Wait to ensure timer is running
-            Thread.Sleep(50);
+            // Wait to ensure timer fires at least once
+            Thread.Sleep(150);
+            
+            // Verify timer was working
+            Assert.IsTrue(eventFired, "Timer should have fired before disposal");
 
             // Act - Dispose should stop the timer
             pulseMaker.Dispose();
 
-            // Reset the flag
-            eventFired = false;
+            // Verify TimerPeriod is 0 after disposal
+            Assert.AreEqual(0, pulseMaker.TimerPeriod, "TimerPeriod should be 0 after disposal");
 
-            // Wait longer than the timer period
+            // Reset the flag and wait longer than the timer period
+            eventFired = false;
             Thread.Sleep(250);
 
             // Assert - Event should not fire after disposal

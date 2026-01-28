@@ -152,17 +152,27 @@ namespace Dynamo.Core
             {
                 if (disposing)
                 {
-                    // Stop the timer before disposing
-                    Stop();
+                    // Thread-safe disposal within the same lock used by timer callbacks
+                    lock (stateMutex)
+                    {
+                        // Stop the timer before disposing
+                        if (TimerPeriod > 0)
+                        {
+                            TimerPeriod = 0;
+                            evaluationRequestPending = false;
+                            evaluationInProgress = false;
+                            internalTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                        }
 
-                    // Dispose managed resources
+                        // Clear event subscribers to prevent memory leaks
+                        RunStarted = null;
+                    }
+
+                    // Dispose managed resources outside the lock (Dispose can block)
                     if (internalTimer != null)
                     {
                         internalTimer.Dispose();
                     }
-
-                    // Clear event subscribers to prevent memory leaks
-                    RunStarted = null;
                 }
 
                 disposed = true;
