@@ -1416,6 +1416,9 @@ Don't worry, you'll have the option to save your work.</value>
   <data name="PackageDownloadStateInstalled" xml:space="preserve">
     <value>Installed</value>
   </data>
+  <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
+    <value> (installed)</value>
+  </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>Installing</value>
   </data>

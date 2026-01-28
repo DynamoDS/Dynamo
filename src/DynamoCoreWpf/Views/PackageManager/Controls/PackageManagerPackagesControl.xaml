@@ -118,7 +118,7 @@
                                Text="{Binding Version}" />
                     <TextBlock VerticalAlignment="Center"
                                Foreground="White"
-                               Text=" (installed)">
+                               Text="{x:Static p:Resources.PackageDropdownInstalledVersionLabel}">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Visibility" Value="Collapsed" />

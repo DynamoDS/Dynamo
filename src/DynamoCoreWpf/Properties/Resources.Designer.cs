@@ -6216,6 +6216,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  (installed).
+        /// </summary>
+        public static string PackageDropdownInstalledVersionLabel {
+            get {
+                return ResourceManager.GetString("PackageDropdownInstalledVersionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to \n\nDuplicate assemblies found: {0}.
         /// </summary>
         public static string PackageDuplicateAssembliesFoundMessage {
