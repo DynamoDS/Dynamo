@@ -619,12 +619,9 @@ namespace Dynamo.Utilities
                 {
                     await webBrowserComponent.Initialize();
 
-                    // Context menu disabled
-                    webBrowserComponent.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+                    // Apply standard WebView2 settings for documentation resource display
+                    webBrowserComponent.ConfigureSettings();
                     webBrowserComponent.NavigateToString(bodyHtmlPage);
-
-                    webBrowserComponent.CoreWebView2.Settings.IsZoomControlEnabled = false;
-                    webBrowserComponent.CoreWebView2.Settings.IsPinchZoomEnabled = false;
                 }
                 catch (ObjectDisposedException ex)
                 {
