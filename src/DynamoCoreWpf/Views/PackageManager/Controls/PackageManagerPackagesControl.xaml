@@ -116,6 +116,25 @@
                     <TextBlock VerticalAlignment="Center"
                                Foreground="White"
                                Text="{Binding Version}" />
+                    <TextBlock VerticalAlignment="Center"
+                               Foreground="White"
+                               Text="{x:Static p:Resources.PackageDropdownInstalledVersionLabel}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsInstalled}" Value="True" />
+                                            <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem}, Path=IsVisible}" Value="True" />
+                                            <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ComboBox}, Path=IsDropDownOpen}" Value="True" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                        </TextBlock>
                 </StackPanel>
             </DataTemplate>
 
@@ -306,13 +325,15 @@
 
                             <!--  Install Button  -->
                             <Button Name="installButton"
-                                    Command="{Binding DownloadLatestCommand}"
-                                    Content="{Binding CanInstall, Converter={StaticResource InstalledButtonTextConverter}}"
+                                    Command="{Binding InstallActionCommand}"
                                     DockPanel.Dock="Right"
                                     IsEnabled="{Binding IsEnabledForInstall}"
                                     Loaded="DropDownInstallButton_Loaded"
                                     ToolTipService.ShowOnDisabled="True"
                                     Unloaded="DropDownInstallButton_Unloaded">
+                                <Button.Content>
+                                    <Binding Path="InstallActionText" />
+                                </Button.Content>
                                 <Button.Style>
                                     <Style TargetType="Button">
                                         <Setter Property="Visibility" Value="Visible" />
@@ -331,9 +352,16 @@
                                                                 <Button Name="dropDownInstallButton"
                                                                         BorderThickness="0"
                                                                         Cursor="Hand"
-                                                                        DockPanel.Dock="Right"
-                                                                        Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
-                                                                        Visibility="{Binding CanInstall, Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
+                                                                        DockPanel.Dock="Right">
+                                                                    <Button.Style>
+                                                                        <Style BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" TargetType="Button">
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding IsInstalledVersionSelected}" Value="True">
+                                                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </Button.Style>
                                                                     <Image Width="7"
                                                                            Height="5"
                                                                            Source=" /DynamoCoreWpf;component/UI/Images/caret_drop_down.png" />
@@ -353,6 +381,9 @@
                                                                     <Rectangle.Style>
                                                                         <Style TargetType="Rectangle">
                                                                             <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding IsUninstallState}" Value="True">
+                                                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                                                </DataTrigger>
                                                                                 <DataTrigger Binding="{Binding Path=IsDeprecated}" Value="True">
                                                                                     <Setter Property="Fill">
                                                                                         <Setter.Value>
@@ -360,14 +391,6 @@
                                                                                         </Setter.Value>
                                                                                     </Setter>
                                                                                     <Setter Property="Opacity" Value="0.5" />
-                                                                                </DataTrigger>
-                                                                                <DataTrigger Binding="{Binding Path=CanInstall}" Value="False">
-                                                                                    <Setter Property="Fill">
-                                                                                        <Setter.Value>
-                                                                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/checkmark - grey.png" />
-                                                                                        </Setter.Value>
-                                                                                    </Setter>
-                                                                                    <Setter Property="Opacity" Value="1" />
                                                                                 </DataTrigger>
                                                                                 <DataTrigger Binding="{Binding Path=IsEnabledForInstall}" Value="False">
                                                                                     <Setter Property="Fill">
@@ -380,7 +403,6 @@
                                                                                 <MultiDataTrigger>
                                                                                     <MultiDataTrigger.Conditions>
                                                                                         <Condition Binding="{Binding Path=IsDeprecated}" Value="False" />
-                                                                                        <Condition Binding="{Binding Path=CanInstall}" Value="True" />
                                                                                         <Condition Binding="{Binding Path=IsEnabledForInstall}" Value="True" />
                                                                                     </MultiDataTrigger.Conditions>
                                                                                     <Setter Property="Fill">
@@ -389,6 +411,14 @@
                                                                                         </Setter.Value>
                                                                                     </Setter>
                                                                                 </MultiDataTrigger>
+                                                                                <DataTrigger Binding="{Binding IsInstalledFallback}" Value="True">
+                                                                                    <Setter Property="Fill">
+                                                                                        <Setter.Value>
+                                                                                            <ImageBrush ImageSource="/DynamoCoreWpf;component/UI/Images/checkmark - grey.png" />
+                                                                                        </Setter.Value>
+                                                                                    </Setter>
+                                                                                    <Setter Property="Opacity" Value="1" />
+                                                                                </DataTrigger>
                                                                             </Style.Triggers>
                                                                         </Style>
                                                                     </Rectangle.Style>
@@ -408,10 +438,6 @@
                                                             <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
                                                             <Setter Property="ToolTip" Value="{x:Static p:Resources.PackageDeprecatedTooltip}" />
                                                         </DataTrigger>
-                                                        <DataTrigger Binding="{Binding CanInstall}" Value="False">
-                                                            <Setter Property="TextBlock.Foreground" Value="#999999" />
-                                                            <Setter Property="Opacity" Value="1" />
-                                                        </DataTrigger>
                                                         <DataTrigger Binding="{Binding IsEnabledForInstall}" Value="False">
                                                             <Setter Property="TextBlock.Foreground" Value="#999999" />
                                                             <Setter Property="TextBlock.Opacity" Value="1" />
@@ -419,19 +445,15 @@
                                                         <MultiDataTrigger>
                                                             <MultiDataTrigger.Conditions>
                                                                 <Condition Binding="{Binding Path=IsDeprecated}" Value="False" />
-                                                                <Condition Binding="{Binding Path=CanInstall}" Value="True" />
                                                                 <Condition Binding="{Binding Path=IsEnabledForInstall}" Value="True" />
                                                             </MultiDataTrigger.Conditions>
                                                             <Setter Property="TextBlock.Opacity" Value="1" />
                                                             <Setter Property="TextBlock.Foreground" Value="#84D7CE" />
                                                         </MultiDataTrigger>
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding Path=CanInstall}" Value="False" />
-                                                                <Condition Binding="{Binding Path=IsOnwer}" Value="True" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter Property="Visibility" Value="Collapsed" />
-                                                        </MultiDataTrigger>
+                                                        <DataTrigger Binding="{Binding IsInstalledFallback}" Value="True">
+                                                            <Setter Property="TextBlock.Foreground" Value="#999999" />
+                                                            <Setter Property="TextBlock.Opacity" Value="1" />
+                                                        </DataTrigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </Setter.Value>
@@ -517,34 +539,59 @@
                                 </TextBlock>
 
                                 <!--  Tag Bubble  -->
-                                <Border Name="newPackageLabel"
-                                        Grid.Column="1"
-                                        Width="Auto"
-                                        Height="20"
-                                        Margin="7,-3,7,0"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Center"
-                                        Background="Transparent"
-                                        BorderBrush="{StaticResource PMBorderColorBrush}"
-                                        BorderThickness="1"
-                                        CornerRadius="3"
-                                        SnapsToDevicePixels="True"
-                                        UseLayoutRounding="True"
-                                        Visibility="{Binding Path=Model, Converter={StaticResource DateToVisibilityCollapsedConverter}}">
-                                    <TextBlock Margin="3,0"
+                                <StackPanel Grid.Column="1"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            Orientation="Horizontal">
+                                    <Border Name="newPackageLabel"
+                                            Width="Auto"
+                                            Height="20"
+                                            Margin="7,-3,4,0"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            Background="Transparent"
+                                            BorderBrush="{StaticResource PMBorderColorBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="3"
+                                            SnapsToDevicePixels="True"
+                                            UseLayoutRounding="True"
+                                            Visibility="{Binding Path=Model, Converter={StaticResource DateToVisibilityCollapsedConverter}}">
+                                        <TextBlock Margin="3,0"
+                                                   Padding="0,1,0,0"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                   FontSize="11"
+                                                   Foreground="{StaticResource PMForegroundColorBrush}"
+                                                   Text="{Binding Path=Model, Converter={StaticResource DateToPackageLabelTextConverter}}">
+                                            <TextBlock.ToolTip>
+                                                <ToolTip Content="{Binding Path=Model, Converter={StaticResource DateToPackageLabelTooltipConverter}}" Style="{StaticResource GenericToolTipLight}" />
+                                            </TextBlock.ToolTip>
+                                        </TextBlock>
+                                    </Border>
+                                    <Border Name="updateAvailableLabel"
+                                            Width="Auto"
+                                            Height="20"
+                                            Margin="3,-3,7,0"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            Background="Transparent"
+                                            BorderBrush="{StaticResource PMBorderColorBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="3"
+                                            SnapsToDevicePixels="True"
+                                            UseLayoutRounding="True"
+                                            Visibility="{Binding HasUpdateAvailable, Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
+                                        <TextBlock Margin="3,0"
                                                Padding="0,1,0,0"
                                                HorizontalAlignment="Center"
                                                VerticalAlignment="Center"
                                                FontFamily="{StaticResource ArtifaktElementRegular}"
                                                FontSize="11"
                                                Foreground="{StaticResource PMForegroundColorBrush}"
-                                               Text="{Binding Path=Model, Converter={StaticResource DateToPackageLabelTextConverter}}">
-                                        <TextBlock.ToolTip>
-                                            <ToolTip Content="{Binding Path=Model, Converter={StaticResource DateToPackageLabelTooltipConverter}}" Style="{StaticResource GenericToolTipLight}" />
-                                        </TextBlock.ToolTip>
-                                    </TextBlock>
-                                </Border>
-
+                                               Text="{x:Static p:Resources.PackageManagerPackageUpdateAvailable}" />
+                                    </Border>
+                                </StackPanel>
                             </Grid>
                         </DockPanel>
 
