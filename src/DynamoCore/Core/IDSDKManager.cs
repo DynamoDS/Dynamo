@@ -284,8 +284,13 @@ namespace Dynamo.Core
         }
         public void Dispose()
         {
+            // Unsubscribe from IDSDK client events
             Client.LoginCompleteEvent -= AuthCompleteEventHandler;
             Client.LogoutCompleteEvent -= AuthCompleteEventHandler;
+            
+            // Clear public event subscribers to prevent memory leaks
+            RequestLogin = null;
+            LoginStateChanged = null;
         }
         private bool GetClientIDAndServer(out idsdk_server server, out string client_id)
         {
