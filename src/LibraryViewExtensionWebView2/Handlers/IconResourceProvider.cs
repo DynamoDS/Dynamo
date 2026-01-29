@@ -62,6 +62,7 @@ namespace Dynamo.LibraryViewExtensionWebView2.Handlers
             this.embeddedDllResourceProvider = dllResourceProvider;
         }
 
+        private static readonly Regex base64DataRegex = new Regex(@"data:(?<type>.+?);base64,(?<data>.+)", RegexOptions.Compiled);
 
         /// <summary>
         /// Retrieves the resource for a given url as a base64 encoded string.
@@ -92,7 +93,7 @@ namespace Dynamo.LibraryViewExtensionWebView2.Handlers
             //if thats the case, no need to look them up again from disk, just return the string.
             if (!String.IsNullOrEmpty(url) && url.Contains("data:image/"))
             {
-                var match = Regex.Match(url, @"data:(?<type>.+?);base64,(?<data>.+)");
+                var match = base64DataRegex.Match(url);
                 var base64Data = match.Groups["data"].Value;
                 var contentType = match.Groups["type"].Value;
                 //image/png -> png
