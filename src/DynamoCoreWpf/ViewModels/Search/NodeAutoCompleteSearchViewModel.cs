@@ -25,10 +25,12 @@ using Lucene.Net.Documents;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 using Newtonsoft.Json;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
 using ProtoCore.Utils;
-using RestSharp;
+
 
 namespace Dynamo.ViewModels
 {
@@ -506,24 +508,29 @@ namespace Dynamo.ViewModels
                     throw new Exception("IDSDK missing or failed initialization.");
                 }
 
-                if (authProvider is IOAuth2AuthProvider oauth2AuthProvider && authProvider is IOAuth2AccessTokenProvider tokenprovider)
+                if (authProvider is IOAuth2AccessTokenProvider tokenprovider)
                 {
                     var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, nodeAutocompleteMLEndpoint);
-                    var options = new RestClientOptions(uri) { Timeout = new TimeSpan(0, 0, 7) };
-                    var client = new RestClient(options);
-                    var request = new RestRequest(string.Empty,Method.Post);
-
+                    
                     var tkn = tokenprovider?.GetAccessToken();
                     if (string.IsNullOrEmpty(tkn))
                     {
                         throw new Exception("Authentication required.");
                     }
-                    request.AddHeader("Authorization",$"Bearer {tkn}");
-                    request = request.AddJsonBody(requestJSON);
-                    request.RequestFormat = DataFormat.Json;
-                    RestResponse response = client.Execute(request);
-                    //TODO maybe worth moving to system.text json in phases?
-                    results = JsonConvert.DeserializeObject<MLNodeAutoCompletionResponse>(response.Content);
+
+                    using (var client = new HttpClient())
+                    {
+                        client.BaseAddress = new Uri(uri);
+                        client.Timeout = TimeSpan.FromSeconds(7);
+                        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tkn);
+                        
+                        var content = new StringContent(requestJSON, Encoding.UTF8, "application/json");
+                        var response = client.PostAsync(string.Empty, content).Result;
+                        
+                        var responseContent = response.Content.ReadAsStringAsync().Result;
+                        //TODO maybe worth moving to system.text json in phases?
+                        results = JsonConvert.DeserializeObject<MLNodeAutoCompletionResponse>(responseContent);
+                    }
                 }
             }
             catch (Exception ex)
