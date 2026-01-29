@@ -636,9 +636,6 @@ namespace ProtoFFI
         private Type mCachedObjType;
         private int mCachedType;
 
-        // Constants for DYN-8717 GC traversal of CLR containers
-        private const string DS_DICTIONARY_INTERNAL_FIELD = "D";
-
         static CLRObjectMarshaler()
         {
             mPrimitiveMarshalers = new Dictionary<Type, FFIObjectMarshaler>();
@@ -1382,18 +1379,13 @@ namespace ProtoFFI
                     ProcessNestedValue(item, results, visited);
                 }
             }
-            // Handle DesignScript.Builtin.Dictionary specifically - access its internal D field
-            else if (obj is DesignScript.Builtin.Dictionary)
+            // Handle DesignScript.Builtin.Dictionary specifically using public Values property
+            else if (obj is DesignScript.Builtin.Dictionary dsDict)
             {
-                // Use reflection to get the internal ImmutableDictionary
-                var dField = obj.GetType().GetField(DS_DICTIONARY_INTERNAL_FIELD, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                if (dField != null)
+                // Use public Values property instead of reflection
+                foreach (var value in dsDict.Values)
                 {
-                    var innerDict = dField.GetValue(obj);
-                    if (innerDict != null)
-                    {
-                        ExtractNestedReferencesRecursive(innerDict, results, visited);
-                    }
+                    ProcessNestedValue(value, results, visited);
                 }
             }
         }
