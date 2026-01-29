@@ -28,7 +28,7 @@ jobs:
       - name: Install dependencies for windows runtime
         run: dotnet restore ${{ github.workspace }}\Dynamo\src\DynamoCore.sln --runtime=win-x64 -p:Configuration=Release -p:DotNet=net10.0
       - name: Build DynamoCore with MSBuild for Windows
-        run: msbuild ${{ github.workspace }}\Dynamo\src\DynamoCore.sln /p:Configuration=Release
+        run: msbuild ${{ github.workspace }}\Dynamo\src\DynamoCore.sln /p:Configuration=Release /p:RegenerateAssemblyInfo=true
       - name: Look for DynamoCLI.exe
         run: |
           Write-Output "***Locating DynamoCLI.exe!***"
@@ -58,7 +58,7 @@ jobs:
       - name: Install dependencies for linux runtime
         run: dotnet restore ${{ github.workspace }}\Dynamo\src\DynamoCore.sln --runtime=linux-x64 -p:Configuration=Release -p:Platform=NET_Linux -p:DotNet=net10.0
       - name: Build DynamoCore with MSBuild for Linux
-        run: dotnet build ${{ github.workspace }}\Dynamo\src\DynamoCore.sln -c Release /p:Platform=NET_Linux
+        run: dotnet build ${{ github.workspace }}\Dynamo\src\DynamoCore.sln -c Release /p:Platform=NET_Linux /p:RegenerateAssemblyInfo=true
       - name: Look for DynamoCLI
         run: |
           Write-Output "***Locating DynamoCLI for Linux!***"
@@ -85,7 +85,7 @@ jobs:
       - name: Install dependencies for linux runtime
         run: dotnet restore ${{ github.workspace }}/Dynamo/src/DynamoCore.sln --runtime=linux-x64 -p:Configuration=Release -p:Platform=NET_Linux -p:DotNet=net10.0
       - name: Build DynamoCore with dotnet for Linux
-        run: dotnet build ${{ github.workspace }}/Dynamo/src/DynamoCore.sln -c Release /p:Platform=NET_Linux
+        run: dotnet build ${{ github.workspace }}/Dynamo/src/DynamoCore.sln -c Release /p:Platform=NET_Linux /p:RegenerateAssemblyInfo=true
       - name: Look for DynamoCLI.exe
         run: |
           echo "***Locating DynamoCLI for Linux!***"
