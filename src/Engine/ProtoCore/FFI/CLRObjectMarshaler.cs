@@ -636,6 +636,9 @@ namespace ProtoFFI
         private Type mCachedObjType;
         private int mCachedType;
 
+        // Constants for DYN-8717 GC traversal of CLR containers
+        private const string DS_DICTIONARY_INTERNAL_FIELD = "D";
+
         static CLRObjectMarshaler()
         {
             mPrimitiveMarshalers = new Dictionary<Type, FFIObjectMarshaler>();
@@ -1380,11 +1383,10 @@ namespace ProtoFFI
                 }
             }
             // Handle DesignScript.Builtin.Dictionary specifically - access its internal D field
-            else if (obj.GetType().FullName == "DesignScript.Builtin.Dictionary")
+            else if (obj is DesignScript.Builtin.Dictionary)
             {
                 // Use reflection to get the internal ImmutableDictionary
-                const string dictionaryInternalFieldName = "D";
-                var dField = obj.GetType().GetField(dictionaryInternalFieldName, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                var dField = obj.GetType().GetField(DS_DICTIONARY_INTERNAL_FIELD, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 if (dField != null)
                 {
                     var innerDict = dField.GetValue(obj);
