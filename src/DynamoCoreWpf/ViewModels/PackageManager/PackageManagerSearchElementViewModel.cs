@@ -15,6 +15,7 @@ namespace Dynamo.PackageManager.ViewModels
 {
     public class PackageManagerSearchElementViewModel : BrowserItemViewModel, IEquatable<PackageManagerSearchElementViewModel>
     {
+        private const string DynamoTeamPublisherName = "DynamoTeam";
         public ICommand DownloadLatestCommand { get; set; }
         public ICommand UpvoteCommand { get; set; }
         public ICommand VisitSiteCommand { get; set; }
@@ -61,6 +62,17 @@ namespace Dynamo.PackageManager.ViewModels
         /// VM Name Property
         /// </summary>
         public string Name { get { return this.SearchElementModel.Name; } }
+        /// <summary>
+        /// Gets a value indicating whether the publisher is DynamoTeam
+        /// </summary>
+        public bool IsPublishedByDynamoTeam
+        {
+            get
+            {
+                return SearchElementModel?.Header?.maintainers?
+                    .Any(m => string.Equals(m?.username, DynamoTeamPublisherName, StringComparison.OrdinalIgnoreCase)) == true;
+            }
+        }
 
         public PackageManagerSearchElement SearchElementModel { get; internal set; }
 

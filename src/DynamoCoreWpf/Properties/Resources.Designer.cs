@@ -6063,6 +6063,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Created by Autodesk.
+        /// </summary>
+        public static string PackageDetailsPackageApprovedTooltip {
+            get {
+                return ResourceManager.GetString("PackageDetailsPackageApprovedTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Python.
         /// </summary>
         public static string PackageDetailsPython {

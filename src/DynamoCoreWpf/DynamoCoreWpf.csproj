@@ -163,6 +163,7 @@
     <None Remove="Packages\SplashScreen\build\index.html" />
     <None Remove="Packages\DynamoHome\build\index.bundle.js" />
     <None Remove="Packages\DynamoHome\build\index.html" />
+    <None Remove="UI\Images\adsk-logo-16px.png" />
     <None Remove="UI\Images\Annotations\frozen-dark-64px.png" />
     <None Remove="UI\Images\Annotations\frozen-hover-64px.png" />
     <None Remove="UI\Images\Annotations\frozen-light-64px.png" />
@@ -1184,6 +1185,7 @@
     <Resource Include="UI\Images\AboutWindow\logo_about_dark.png">
       <CopyToOutputDirectory></CopyToOutputDirectory>
     </Resource>
+    <Resource Include="UI\Images\adsk-logo-16px.png" />
     <Resource Include="UI\Images\Alignment\align_bottom.png" />
     <Resource Include="UI\Images\Alignment\align_left.png" />
     <Resource Include="UI\Images\Alignment\align_right.png" />
