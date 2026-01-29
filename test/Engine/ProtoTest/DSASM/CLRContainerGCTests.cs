@@ -51,13 +51,16 @@ flag = true;
 x2 = d[""Point""].X;  // BUG: Point may have been disposed!
 
 // Verify the point is still valid
-isValid = x1 == 1 && x2 == 1;
+// Note: When flag changed to true, 'result' should have re-executed via associative update
+isValid = x1 == 1 && x2 == 1 && result == 2;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
             // The point should still be accessible after GC
             thisTest.Verify("x1", 1.0);
             thisTest.Verify("x2", 1.0);
+            // Verify that result updated via associative re-execution when flag changed
+            thisTest.Verify("result", 2.0);
             thisTest.Verify("isValid", true);
         }
 
@@ -784,6 +787,103 @@ isValid = x1 == 100 && x2 == 100 && y2 == 200 && z2 == 300;
             thisTest.Verify("x2", 100.0);
             thisTest.Verify("y2", 200.0);
             thisTest.Verify("z2", 300.0);
+            thisTest.Verify("isValid", true);
+        }
+
+        /// <summary>
+        /// Test 2.15: Associative update with dictionary containing geometry.
+        ///
+        /// Tests that when an upstream variable (point) is updated, all dependent
+        /// objects (dict, shape, coordinates) automatically update via DesignScript's
+        /// associative execution. This simulates upstream node changes in a Dynamo graph
+        /// where changing an input causes downstream nodes to re-execute.
+        ///
+        /// This addresses PR feedback from @aparajit-pratap about testing actual
+        /// associative updates rather than creating independent variables.
+        /// </summary>
+        [Test]
+        [Category("DYN-8717")]
+        public void TestAssociativeUpdateWithDictionary()
+        {
+            string code = @"
+import(""FFITarget.dll"");
+
+// Initial values - simulate first execution
+point = DummyPoint.ByCoordinates(100, 200, 300);
+dict = {""Shape"": point, ""id"": 1};
+shape = dict[""Shape""];
+x = shape.X;
+y = shape.Y;
+id = dict[""id""];
+
+// Update the upstream variable - simulates upstream node change
+// Due to associative execution, dict, shape, x, y should all automatically update
+point = DummyPoint.ByCoordinates(999, 888, 777);
+
+// Force GC after update
+__GC();
+
+// Verify that all dependent variables updated correctly
+xFinal = shape.X;
+yFinal = shape.Y;
+zFinal = shape.Z;
+idFinal = dict[""id""];
+
+// Verify values reflect the updated point
+isValid = xFinal == 999 && yFinal == 888 && zFinal == 777 && idFinal == 1;
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+
+            // All values should reflect the updated point (999, 888, 777)
+            thisTest.Verify("xFinal", 999.0);
+            thisTest.Verify("yFinal", 888.0);
+            thisTest.Verify("zFinal", 777.0);
+            thisTest.Verify("idFinal", 1);
+            thisTest.Verify("isValid", true);
+        }
+
+        /// <summary>
+        /// Test 2.16: Associative update with conditional access pattern.
+        ///
+        /// Tests the pattern where a conditional expression accesses geometry from a dictionary,
+        /// then the condition changes (triggering associative re-execution), and the geometry
+        /// should remain accessible. This mirrors the DYN-8717 bug scenario but with explicit
+        /// upstream variable updates.
+        /// </summary>
+        [Test]
+        [Category("DYN-8717")]
+        public void TestAssociativeUpdateWithConditional()
+        {
+            string code = @"
+import(""FFITarget.dll"");
+
+// Create point and dictionary
+point = DummyPoint.ByCoordinates(100, 200, 300);
+dict = {""point"": point};
+
+// Conditional access - initially flag is false
+flag = false;
+result = flag ? dict[""point""].X : ""no access"";
+
+// Force GC while geometry is in dictionary but not directly accessed
+__GC();
+
+// Change flag - this triggers associative re-execution of result
+flag = true;
+
+// Verify that after flag changed, result now contains the X coordinate
+// and we can still access the geometry
+x = dict[""point""].X;
+y = dict[""point""].Y;
+
+// Verify values
+isValid = x == 100 && y == 200 && result == 100;
+";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+
+            thisTest.Verify("x", 100.0);
+            thisTest.Verify("y", 200.0);
+            thisTest.Verify("result", 100.0);
             thisTest.Verify("isValid", true);
         }
     }
