@@ -366,10 +366,9 @@ namespace Dynamo.UI.Views
             try
             {
                 await webView.Initialize();
-                // Context menu disabled
-                webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
-                // Zoom control disabled
-                webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
+
+                // Apply standard WebView2 settings for splash screen
+                webView.ConfigureSettings();
 
                 var assembly = Assembly.GetExecutingAssembly();
 

@@ -3834,6 +3834,7 @@ Dynamo.Wpf.UI.VisualConfigurations
 Dynamo.Wpf.Utilities.CompactBubbleHandler
 Dynamo.Wpf.Utilities.DynamoWebView2
 Dynamo.Wpf.Utilities.DynamoWebView2.DynamoWebView2() -> void
+Dynamo.Wpf.Utilities.DynamoWebView2.ConfigureSettings(bool enableZoomControl = false, bool enableDevTools = false, bool enableContextMenu = false) -> void
 Dynamo.Wpf.Utilities.GroupStyleItemSelector
 Dynamo.Wpf.Utilities.GroupStyleItemSelector.GroupStyleItemSelector() -> void
 Dynamo.Wpf.Utilities.LibraryDragAndDrop
