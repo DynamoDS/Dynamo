@@ -314,21 +314,20 @@ isValid = x1 == 42 && x2 == 42 && x3 == 42 && x4 == 42;
         }
 
         /// <summary>
-        /// Test 2.8: Upstream change causes node re-execution.
+        /// Test 2.8: Multiple independent dictionaries with geometry.
         ///
-        /// This test verifies that when a container-creating node (like ParseJSON)
-        /// re-executes due to upstream changes, the OLD container and its contents
-        /// are properly disposed, and NEW objects are created.
+        /// This test verifies that creating multiple independent dictionaries with
+        /// different geometry objects works correctly - each dictionary maintains its
+        /// own references and all survive GC when they're still in scope.
         ///
-        /// This is DIFFERENT from the DYN-8717 bug scenario where the SAME container
-        /// stays in memory but its contents were incorrectly collected.
-        ///
-        /// This test addresses Roberto's question from PR review about what happens
-        /// when upstream nodes change.
+        /// Note: This does NOT simulate upstream node changes in a Dynamo graph
+        /// (which would require node re-execution). Instead, it creates independent
+        /// variables similar to having multiple separate nodes. To test actual
+        /// upstream changes, use the manual test: Test-UpstreamChange.dyn
         /// </summary>
         [Test]
         [Category("DYN-8717")]
-        public void TestUpstreamChange_ReExecutionDisposesOld()
+        public void TestMultipleIndependentDictionaries()
         {
             string code = @"
 import(""FFITarget.dll"");
@@ -381,15 +380,18 @@ isValid = x1 == 100 && x2 == 999 && x3 == 999 &&
         }
 
         /// <summary>
-        /// Test 2.9: Verify no accumulation when repeatedly changing upstream.
+        /// Test 2.9: Multiple independent objects don't accumulate.
         ///
-        /// Simulates multiple upstream changes where ParseJSON keeps re-executing
-        /// with different data. Verifies that old geometry is disposed each time
-        /// and doesn't accumulate in memory.
+        /// Verifies that creating multiple independent dictionary and geometry objects
+        /// works correctly without causing memory issues. Each object maintains its own
+        /// references and all survive GC when they're in scope.
+        ///
+        /// Note: This creates independent variables (like separate nodes), not
+        /// associative updates to existing variables (like upstream node changes).
         /// </summary>
         [Test]
         [Category("DYN-8717")]
-        public void TestUpstreamChange_NoAccumulation()
+        public void TestMultipleIndependentObjects()
         {
             string code = @"
 import(""FFITarget.dll"");
@@ -447,15 +449,19 @@ isValid = result1 == 1 && result2 == 2 && result3 == 3 &&
         }
 
         /// <summary>
-        /// Test 2.10: Contrast between the two scenarios.
+        /// Test 2.10: Contrast DYN-8717 bug scenario vs independent objects.
         ///
         /// This test demonstrates the DIFFERENCE between:
-        /// A) DYN-8717 bug scenario (same container, downstream changes type)
-        /// B) Upstream change scenario (container replaced)
+        /// A) DYN-8717 bug scenario - same container stays in memory but geometry
+        ///    inside was incorrectly collected when not directly accessed
+        /// B) Independent objects scenario - multiple dictionaries with different
+        ///    geometry objects, each maintaining their own references
+        ///
+        /// Both scenarios should work correctly with the fix.
         /// </summary>
         [Test]
         [Category("DYN-8717")]
-        public void TestContrastBothScenarios()
+        public void TestBugScenarioVsIndependentObjects()
         {
             string code = @"
 import(""FFITarget.dll"");
