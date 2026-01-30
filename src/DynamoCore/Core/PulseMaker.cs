@@ -156,7 +156,7 @@ namespace Dynamo.Core
                     lock (stateMutex)
                     {
                         // Stop the timer before disposing
-                        if (TimerPeriod > 0)
+                        if (internalTimer != null && TimerPeriod > 0)
                         {
                             TimerPeriod = 0;
                             evaluationRequestPending = false;
