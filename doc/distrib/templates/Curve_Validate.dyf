@@ -1073,7 +1073,7 @@
       ],
       "Replication": "Disabled",
       "Description": "Creates a string",
-      "InputValue": "This document will help you get familiarised with the  creation of Custom node. You cn also right click on the Custom node and check the dyf file. "
+      "InputValue": "This document will help you get familiarised with the creation of Custom node. You can also right click on the Custom node and check the dyf file. "
     },
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
