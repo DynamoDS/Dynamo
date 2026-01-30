@@ -4,7 +4,7 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using NUnit.Framework;
 
-namespace Dynamo.Tests.Graph
+namespace Dynamo.Tests
 {
     /// <summary>
     /// Tests for WorkspaceModel disposal to prevent memory leaks
