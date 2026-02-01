@@ -47,6 +47,39 @@ namespace Dynamo.Wpf.Utilities
             ObjectDisposedException.ThrowIf(disposeCalled, this);
         }
 
+        /// <summary>
+        /// Configures standard security and usability settings for WebView2 instances.
+        /// This method applies recommended settings to standardize WebView2 behavior across the application.
+        /// </summary>
+        /// <param name="enableZoomControl">Enable zoom controls (default: false)</param>
+        /// <param name="enableDevTools">Enable developer tools for debugging (default: false)</param>
+        /// <param name="enableContextMenu">Enable right-click context menu (default: false)</param>
+        public void ConfigureSettings(bool enableZoomControl = false, bool enableDevTools = false, bool enableContextMenu = false)
+        {
+            if (CoreWebView2 == null)
+            {
+                throw new InvalidOperationException("CoreWebView2 is not initialized. Call Initialize() before ConfigureSettings().");
+            }
+
+            var settings = CoreWebView2.Settings;
+
+            // Security: Disable browser accelerator keys (Ctrl+P, Ctrl+F, F5, F12, etc.)
+            settings.AreBrowserAcceleratorKeysEnabled = false;
+
+            // Security: Control context menu access (prevents "View Source", "Inspect", etc.)
+            settings.AreDefaultContextMenusEnabled = enableContextMenu;
+
+            // UI: Disable status bar showing URLs on hover
+            settings.IsStatusBarEnabled = false;
+
+            // UI: Control zoom capabilities
+            settings.IsZoomControlEnabled = enableZoomControl;
+            settings.IsPinchZoomEnabled = false;
+
+            // Development: Control DevTools access
+            settings.AreDevToolsEnabled = enableDevTools;
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposeCalled) return;

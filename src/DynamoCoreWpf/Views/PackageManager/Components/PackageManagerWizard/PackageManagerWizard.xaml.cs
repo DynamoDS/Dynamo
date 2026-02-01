@@ -234,10 +234,8 @@ namespace Dynamo.UI.Views
                 // Initialize the webview asynchroneously 
                 await dynWebView?.Initialize();
 
-                // Set WebView2 settings    
-                this.dynWebView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
-                this.dynWebView.CoreWebView2.Settings.IsZoomControlEnabled = false;
-                this.dynWebView.CoreWebView2.Settings.AreDevToolsEnabled = true;
+                // Apply standard WebView2 settings with DevTools enabled for package manager debugging
+                dynWebView.ConfigureSettings(enableDevTools: true);
                 this.dynWebView.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
 
                 // Embed the font
