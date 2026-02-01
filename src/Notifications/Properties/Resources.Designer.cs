@@ -158,23 +158,5 @@ namespace Dynamo.Notifications.Properties {
                 return ResourceManager.GetString("NotificationsCenterTitle", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to An unsafe path has been detected in Trusted Locations:.
-        /// </summary>
-        public static string UnsafePathDetectedDetail {
-            get {
-                return ResourceManager.GetString("UnsafePathDetectedDetail", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unsafe path detected.
-        /// </summary>
-        public static string UnsafePathDetectedTitle {
-            get {
-                return ResourceManager.GetString("UnsafePathDetectedTitle", resourceCulture);
-            }
-        }
     }
 }
