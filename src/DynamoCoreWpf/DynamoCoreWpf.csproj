@@ -439,38 +439,37 @@
   <ItemGroup>
     <Compile Include="Controls\InPorts.xaml.cs" />
     <Compile Include="Controls\InstalledPackagesControl.xaml.cs">
-      <DependentUpon>InstalledPackagesControl.xaml</DependentUpon>
     </Compile>
+      <DependentUpon>InstalledPackagesControl.xaml</DependentUpon>
     <Compile Include="Commands\ConnectorPinCommands.cs" />
     <Compile Include="Controls\NodeAutoCompleteSearchControl.xaml.cs">
+    </Compile>
       <DependentUpon>NodeAutoCompleteSearchControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\InCanvasSearchControl.xaml.cs">
+    </Compile>
       <DependentUpon>InCanvasSearchControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\InfiniteGridView.xaml.cs">
+    </Compile>
       <DependentUpon>InfiniteGridView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\HeaderStrip.xaml.cs">
+    </Compile>
       <DependentUpon>HeaderStrip.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\NotificationsControl.xaml.cs">
+    </Compile>
       <DependentUpon>NotificationsControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\OutPortContextMenu.xaml.cs">
-      <DependentUpon>OutPortContextMenu.xaml</DependentUpon>
     </Compile>
+      <DependentUpon>OutPortContextMenu.xaml</DependentUpon>
     <Compile Include="Controls\OutPorts.xaml.cs" />
     <Compile Include="Controls\ParentMenuItem.cs" />
     <Compile Include="Controls\RunSettingsControl.xaml.cs">
+    </Compile>
       <DependentUpon>RunSettingsControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ClassInformationView.xaml.cs">
-      <DependentUpon>ClassInformationView.xaml</DependentUpon>
     </Compile>
+      <DependentUpon>ClassInformationView.xaml</DependentUpon>
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
-    </Compile>
     <Compile Include="Controls\UseLevelPopup.cs" />
     <Compile Include="Controls\UseLevelSpinner.cs" />
     <Compile Include="Extensions\IExtensionMenuProvider.cs" />
@@ -512,11 +511,11 @@
     <Compile Include="UI\GuidedTour\Welcome.cs" />
     <Compile Include="UI\MouseBehaviour.cs" />
     <Compile Include="UI\Prompts\DynamoMessageBox.xaml.cs">
+    </Compile>
       <DependentUpon>DynamoMessageBox.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\InPortContextMenu.xaml.cs">
-      <DependentUpon>InPortContextMenu.xaml</DependentUpon>
     </Compile>
+      <DependentUpon>InPortContextMenu.xaml</DependentUpon>
     <Compile Include="UI\Prompts\PortPropertiesEditPrompt.xaml.cs" />
     <Compile Include="Utilities\CerDLL.cs" />
     <Compile Include="Utilities\CompactBubbleHandler.cs" />
@@ -544,11 +543,11 @@
     <Compile Include="UI\LibraryTreeTemplateSelector.cs" />
     <Compile Include="UI\LibraryWrapPanel.cs" />
     <Compile Include="UI\Prompts\PresetOverwritePrompt.xaml.cs">
+    </Compile>
       <DependentUpon>PresetOverwritePrompt.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\Prompts\PresetPrompt.xaml.cs">
-      <DependentUpon>PresetPrompt.xaml</DependentUpon>
     </Compile>
+      <DependentUpon>PresetPrompt.xaml</DependentUpon>
     <Compile Include="UI\VisualConfigurations.cs" />
     <Compile Include="Utilities\CrashReportTool.cs" />
     <Compile Include="Utilities\CrashUtilities.cs" />
@@ -599,11 +598,11 @@
     <Compile Include="Commands\WorkspaceCommands.cs" />
     <Compile Include="Controls\ImageBasedControls.cs" />
     <Compile Include="Controls\ShortcutToolbar.xaml.cs">
+    </Compile>
       <DependentUpon>ShortcutToolbar.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\StartPage.xaml.cs">
-      <DependentUpon>StartPage.xaml</DependentUpon>
     </Compile>
+      <DependentUpon>StartPage.xaml</DependentUpon>
     <Compile Include="UI\Converters.cs" />
     <Compile Include="Controls\DragCanvas.cs" />
     <Compile Include="Controls\DynamoNodeButton.cs" />
@@ -613,20 +612,20 @@
     <Compile Include="Utilities\MouseClickManager.cs" />
     <Compile Include="NodeViewCustomization\NodeViewCustomizations\OutputNodeViewCustomization.cs" />
     <Compile Include="UI\Prompts\CrashPrompt.xaml.cs">
+    </Compile>
       <DependentUpon>CrashPrompt.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\Prompts\EditWindow.xaml.cs">
+    </Compile>
       <DependentUpon>EditWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\Prompts\FunctionNamePrompt.xaml.cs">
+    </Compile>
       <DependentUpon>FunctionNamePrompt.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\Prompts\GenericTaskDialog.xaml.cs">
+    </Compile>
       <DependentUpon>GenericTaskDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\Prompts\UsageReportingAgreementPrompt.xaml.cs">
-      <DependentUpon>UsageReportingAgreementPrompt.xaml</DependentUpon>
     </Compile>
+      <DependentUpon>UsageReportingAgreementPrompt.xaml</DependentUpon>
     <Compile Include="UI\SharedResourceDictionary.cs" />
     <Compile Include="Utilities\PreferencesPanelUtilities.cs" />
     <Compile Include="Utilities\WebView2Utilities.cs" />
@@ -674,107 +673,99 @@
     <Compile Include="ViewModels\Watch3D\IWatch3DViewModel.cs" />
     <Compile Include="ViewModels\Core\ConnectorPinViewModel.cs" />
     <Compile Include="Views\About\AboutWindow.xaml.cs">
-      <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+      <DependentUpon>AboutWindow.xaml</DependentUpon>
     <Compile Include="Views\CodeBlocks\CodeBlockEditor.cs" />
     <Compile Include="Views\Core\ConnectorAnchorView.xaml.cs">
+    </Compile>
       <DependentUpon>ConnectorAnchorView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Core\ConnectorContextMenuView.xaml.cs">
-      <DependentUpon>ConnectorContextMenuView.xaml</DependentUpon>
     </Compile>
+      <DependentUpon>ConnectorContextMenuView.xaml</DependentUpon>
     <Compile Include="Views\Core\CustomColorPicker.xaml.cs" />
     <Compile Include="Views\Debug\UpdateNodeIconsWindow.xaml.cs">
-      <DependentUpon>UpdateNodeIconsWindow.xaml</DependentUpon>
     </Compile>
+      <DependentUpon>UpdateNodeIconsWindow.xaml</DependentUpon>
     <Compile Include="Views\Core\DynamoOpenFileDialog.cs" />
     <Compile Include="Views\Core\ConnectorPinView.xaml.cs">
+    </Compile>
       <DependentUpon>ConnectorPinView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Core\GeometryScalingPopup.xaml.cs">
+    </Compile>
       <DependentUpon>GeometryScalingPopup.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Debug\DebugModesWindow.xaml.cs">
-      <DependentUpon>DebugModesWindow.xaml</DependentUpon>
     </Compile>
+      <DependentUpon>DebugModesWindow.xaml</DependentUpon>
     <Compile Include="Views\FileTrust\FileTrustWarning.xaml.cs" />
     <Compile Include="Views\CodeCompletion\CodeCompletionEditor.xaml.cs">
+    </Compile>
       <DependentUpon>CodeCompletionEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\GuidedTour\ExitGuideWindow.xaml.cs">
+    </Compile>
       <DependentUpon>ExitGuideWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\GuidedTour\RealTimeInfoWindow.xaml.cs">
+    </Compile>
       <DependentUpon>RealTimeInfoWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\GuidedTour\GuideBackground.xaml.cs">
+    </Compile>
       <DependentUpon>GuideBackground.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\GuidedTour\PopupWindow.xaml.cs">
+    </Compile>
       <DependentUpon>PopupWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\GuidedTour\RatingControl.xaml.cs">
+    </Compile>
       <DependentUpon>RatingControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\GuidedTour\SurveyPopupWindow.xaml.cs">
-      <DependentUpon>SurveyPopupWindow.xaml</DependentUpon>
     </Compile>
+      <DependentUpon>SurveyPopupWindow.xaml</DependentUpon>
     <Compile Include="Views\HomePage\HomePage.xaml.cs" />
     <Compile Include="Views\Input\ParameterEditor.cs" />
     <Compile Include="Views\Menu\TrustedPathView.xaml.cs" />
     <Compile Include="Views\Output\OutputEditor.cs" />
-      <DependentUpon>PackagePathView.xaml</DependentUpon>
-    </Compile>
-      <DependentUpon>TermsOfUseView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ViewModels\Watch3D\AttachedProperties.cs" />
     <Compile Include="ViewModels\Watch3D\DynamoEffectsManager.cs" />
     <Compile Include="Views\Menu\PreferencesView.xaml.cs">
-      <DependentUpon>PreferencesView.xaml</DependentUpon>
     </Compile>
+      <DependentUpon>PreferencesView.xaml</DependentUpon>
     <Compile Include="Views\Preview\CameraExtensions.cs" />
     <Compile Include="Views\Preview\PreviewCompactView.xaml.cs">
+    </Compile>
       <DependentUpon>PreviewCompactView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Preview\Watch3DSettingsControl.xaml.cs">
+    </Compile>
       <DependentUpon>Watch3DSettingsControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Windows\BrowserWindow.xaml.cs">
-      <DependentUpon>BrowserWindow.xaml</DependentUpon>
     </Compile>
+      <DependentUpon>BrowserWindow.xaml</DependentUpon>
     <Compile Include="Views\CodeBlocks\CodeBlockCompletionData.cs" />
     <Compile Include="Views\CodeBlocks\CodeBlockMethodInsightWindow.cs" />
     <Compile Include="Views\CodeBlocks\CodeBlockEditorUtils.cs" />
     <Compile Include="Views\Core\AnnotationView.xaml.cs">
+    </Compile>
       <DependentUpon>AnnotationView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Core\DynamoView.xaml.cs">
+    </Compile>
       <DependentUpon>DynamoView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Preview\InfoBubbleView.xaml.cs">
+    </Compile>
       <DependentUpon>InfoBubbleView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Search\LibraryView.xaml.cs">
+    </Compile>
       <DependentUpon>LibraryView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\SplashScreen\SplashScreen.xaml.cs">
+    </Compile>
       <DependentUpon>SplashScreen.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\HomePage\HomePage.xaml.cs">
+    </Compile>
       <DependentUpon>HomePage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Core\NodeView.xaml.cs">
-      <DependentUpon>NodeView.xaml</DependentUpon>
     </Compile>
+      <DependentUpon>NodeView.xaml</DependentUpon>
     <Compile Include="Views\Core\NoteView.xaml.cs">
       <DependentUpon>NoteView.xaml</DependentUpon>
     </Compile>
-      <DependentUpon>PackageManagerSearchView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Preview\PreviewControl.xaml.cs">
       <DependentUpon>PreviewControl.xaml</DependentUpon>
-    </Compile>
-      <DependentUpon>PublishPackageView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\TooltipWindow.xaml.cs">
       <DependentUpon>TooltipWindow.xaml</DependentUpon>
@@ -787,8 +778,6 @@
     </Compile>
     <Compile Include="Views\Core\WorkspaceView.xaml.cs">
       <DependentUpon>WorkspaceView.xaml</DependentUpon>
-    </Compile>
-        <DependentUpon>PackageManagerWizard.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities\WpfUtilities.cs" />
     <Compile Include="Controls\ZoomBorder.cs" />
