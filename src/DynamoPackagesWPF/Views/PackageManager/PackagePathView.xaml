@@ -1,0 +1,169 @@
+﻿<UserControl x:Class="Dynamo.Wpf.Views.PackageManager.PackagePathView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:ViewModels="clr-namespace:Dynamo.ViewModels"
+        mc:Ignorable="d"
+        xmlns:ui="clr-namespace:Dynamo.UI"
+        xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        Background="#535353"
+        d:DataContext="{d:DesignInstance ViewModels:PackagePathViewModel, IsDesignTimeCreatable=False}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+            <ViewModels:PathEnabledConverter x:Key="PathEnabledConverter" />
+
+            <DataTemplate x:Key="packageSearchPathItemTemplate">
+             
+                <Grid>
+                    <Grid.ToolTip>
+                        <ToolTip Content="{Binding}" Style="{StaticResource GenericToolTipLight}"/>
+                    </Grid.ToolTip>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition MaxWidth="250"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <!--the up arrow button-->
+                    <Button
+                         Grid.Column="0"
+                        Margin="7,7,3,7"
+                         x:Name="MovePathUpButton"
+                              Command="{Binding Path=DataContext.MovePathUpCommand,
+          RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                         CommandParameter="{Binding}"
+                        Background="{StaticResource PreferencesWindowBackgroundColor}"
+                        Style="{StaticResource UpButtonStyle}">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PackagePathViewToolTipUp}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Button.ToolTip>
+                    </Button>
+                    <!--the down arrow button-->
+                    <Button
+                         Grid.Column="1"
+                         Margin="3,7,7,7"
+                         x:Name="MovePathDownButton"
+                              Command="{Binding Path=DataContext.MovePathDownCommand,
+          RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                         CommandParameter="{Binding}"
+                         Background="{StaticResource PreferencesWindowBackgroundColor}"
+                         Style="{StaticResource DownButtonStyle}">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PackagePathViewToolTipDown}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Button.ToolTip>
+                    </Button>
+                    <!--the path text-->
+                    <TextBlock x:Name="PathTextBlock" Style="{StaticResource DarkTextBlock}" 
+                                Text="{Binding}"
+                                Grid.Column="2"
+                                Margin="7,4,7,4"
+                                Background="{StaticResource PreferencesWindowItemDarkerBackgroundColor}"
+                                MinHeight="24"
+                                Padding="5,5,5,5"
+                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                    <!--the the edit path button-->
+                    <Button
+                         Grid.Column="3"
+                         Margin="7,7,7,7"
+                         x:Name="UpdatePathButton"
+                        Command="{Binding Path=DataContext.UpdatePathCommand,
+          RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                         CommandParameter="{Binding}"
+                         ToolTipService.ShowOnDisabled="True"
+                         Background="{StaticResource PreferencesWindowBackgroundColor}"
+                         Style="{StaticResource EditFolderButtonStyle}">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PackagePathUpdatePathTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Button.ToolTip>
+                    </Button>
+                    <!--the delete path button-->
+                    <Button x:Name="DeletePathButton"
+                        Grid.Column="4"
+                        Margin="7,7,7,7"
+                        Command="{Binding Path=DataContext.DeletePathCommand,
+                            RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                        CommandParameter="{Binding}"
+                        ToolTipService.ShowOnDisabled="True"
+                        Background="{StaticResource PreferencesWindowBackgroundColor}"
+                        Style="{StaticResource CloseButtonStyle}">
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static p:Resources.PackagePathViewToolTipMinus}" Style="{StaticResource GenericToolTipLight}"/>
+                        </Button.ToolTip>
+                    </Button>
+                </Grid>
+                <!--this trigger fades out paths when they are disabled-->
+                <DataTemplate.Triggers>
+                    <DataTrigger Value="True">
+                        <DataTrigger.Binding>
+                            <MultiBinding Converter="{StaticResource PathEnabledConverter}">
+                                <!--data for the converter-->
+                                <Binding Path="DataContext" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}"/>
+                                <Binding/>
+                                <!--we don't care about this binding's data, but we need to trigger this trigger when new items are added to rootlocations list-->
+                                <Binding Path="DataContext.RootLocations" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}"/>
+                                <Binding Path="DataContext.PreferenceSettings.DisableBuiltinPackages" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}"/>
+                                <Binding Path="DataContext.PreferenceSettings.DisableCustomPackageLocations" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}"/>
+                            </MultiBinding>
+                        </DataTrigger.Binding>
+                        <Setter TargetName="PathTextBlock" Property="Opacity" Value=".5" />
+                    </DataTrigger>
+                    <!--this trigger changes tooltip content when buttons are disabled-->
+                    <DataTrigger Binding="{Binding ElementName=DeletePathButton, Path=IsEnabled}" Value="False">
+                        <Setter TargetName="DeletePathButton" Property="ToolTip">
+                            <Setter.Value>
+                                <ToolTip Content="{x:Static p:Resources.PackagePathProtected}" Style="{StaticResource GenericToolTipLight}"/>
+                            </Setter.Value>
+                        </Setter>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding ElementName=UpdatePathButton, Path=IsEnabled}" Value="False">
+                        <Setter TargetName="UpdatePathButton" Property="ToolTip">
+                            <Setter.Value>
+                                <ToolTip Content="{x:Static p:Resources.PackagePathProtected}" Style="{StaticResource GenericToolTipLight}"/>
+                            </Setter.Value>
+                        </Setter>
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <StackPanel Orientation="Vertical" Margin="0,6,0,0">
+        <Label  Style="{StaticResource PreferenceTitleLabelStyle}"  
+                Content="{x:Static p:Resources.PackagePathPreferencesTitle}" 
+                                        Padding="5,5,5,5"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left">
+        </Label>
+        <Button x:Name="AddPaths"
+                HorizontalAlignment="Left"
+                Margin="0"
+                Content="{x:Static p:Resources.PackagePathAddPathButtonName}"
+                Command="{Binding Path=AddPathCommand}">
+            <Button.ToolTip>
+                <ToolTip Content="{x:Static p:Resources.PackagePathViewToolTipPlus}" Style="{StaticResource GenericToolTipLight}"/>
+            </Button.ToolTip>
+            <Button.Style>
+                <Style BasedOn="{StaticResource SolidButtonStyle}" TargetType="{x:Type Button}">
+                    <Setter Property="IsEnabled" Value="True"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=PreferenceSettings.DisableCustomPackageLocations}" Value="True">
+                            <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <ItemsControl
+            Background="{StaticResource PreferencesWindowVisualSettingsBackground}"
+            ItemsSource="{Binding RootLocations}"
+            ItemTemplate="{StaticResource packageSearchPathItemTemplate}">
+        </ItemsControl>
+    </StackPanel>
+</UserControl>
+    
+    
