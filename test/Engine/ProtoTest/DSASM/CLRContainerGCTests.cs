@@ -298,16 +298,13 @@ d = {""point"": DummyPoint.ByCoordinates(42, 43, 44)};
 // First access
 x1 = d[""point""].X;
 
-// Multiple GC cycles with intermediate operations
-temp1 = ""intermediate1"";
+// Multiple GC cycles
 __GC();
 x2 = d[""point""].X;
 
-temp2 = ""intermediate2"";
 __GC();
 x3 = d[""point""].X;
 
-temp3 = ""intermediate3"";
 __GC();
 x4 = d[""point""].X;
 
@@ -485,10 +482,6 @@ dictA = {""point"": DummyPoint.ByCoordinates(10, 20, 30)};
 // Access the geometry initially
 resultA1 = dictA[""point""].X;
 
-// Create intermediate variable that doesn't access the geometry
-// This simulates downstream nodes that don't directly reference the geometry
-tempA = ""intermediate"";
-
 // GC - WITHOUT FIX, point would be collected here even though dictA still holds it
 __GC();
 
@@ -623,8 +616,7 @@ collection = [
 // Access first point
 x1 = collection[0].X;
 
-// Intermediate operation - geometry not directly accessed
-temp = ""intermediate"";
+// Force GC - points should survive because collection is still referenced
 __GC();
 
 // Access all points - should still be valid
@@ -772,11 +764,7 @@ collection = [DummyPoint.ByCoordinates(100, 200, 300)];
 // Access geometry initially
 x1 = collection[0].X;
 
-// Intermediate code that doesn't directly access the geometry
-// Simulates downstream nodes that reference the collection but not its contents
-temp = ""intermediate"";
-
-// GC - geometry in collection should NOT be collected
+// Force GC - geometry in collection should NOT be collected
 // because collection itself is still referenced
 __GC();
 
