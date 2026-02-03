@@ -5,6 +5,55 @@ using Dynamo.Wpf.UI;
 
 namespace Dynamo.ViewModels
 {
+    /// <summary>
+    /// EventArgs for opening PackageManagerView with a specific tab.
+    /// </summary>
+    public class OpenPackageManagerEventArgs : EventArgs
+    {
+        private string tab;
+
+        /// <summary>
+        /// The tab to open in the PackageManagerView
+        /// </summary>
+        public string Tab { get { return tab; } }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="_Tab">Tab name to open</param>
+        public OpenPackageManagerEventArgs(string _Tab)
+        {
+            tab = _Tab;
+        }
+    }
+
+    /// <summary>
+    /// EventArgs for opening PackageManagerView with specific dimensions.
+    /// </summary>
+    public class PackageManagerSizeEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Width of the PackageManagerView
+        /// </summary>
+        public double Width;
+        
+        /// <summary>
+        /// Height of the PackageManagerView
+        /// </summary>
+        public double Height;
+        
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="width">Width of the window</param>
+        /// <param name="height">Height of the window</param>
+        public PackageManagerSizeEventArgs(double width, double height)
+        {
+            Width = width;
+            Height = height;
+        }
+    }
+
     partial class DynamoViewModel
     {
 

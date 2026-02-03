@@ -24,7 +24,6 @@ using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
-using Dynamo.PackageManager.UI;
 using Dynamo.PythonServices;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
@@ -80,7 +79,6 @@ namespace Dynamo.Controls
         private readonly LoginService loginService;
         private ShortcutToolbar shortcutBar;
         private PreferencesView preferencesWindow;
-        private PackageManagerView packageManagerWindow;
         private bool loaded = false;
         private bool graphMetadataHooked;
         private MenuItem graphPropsGeneralMenuItem;
@@ -1627,9 +1625,6 @@ namespace Dynamo.Controls
             aboutWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             aboutWindow.ShowDialog();
         }
-
-        private PublishPackageView _pubPkgView;
-
 
 
 
