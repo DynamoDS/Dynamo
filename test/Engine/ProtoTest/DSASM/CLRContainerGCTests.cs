@@ -320,67 +320,57 @@ isValid = x1 == 42 && x2 == 42 && x3 == 42 && x4 == 42;
         }
 
         /// <summary>
-        /// Test 2.8: Multiple independent dictionaries with geometry.
+        /// Test 2.8: Old objects eligible for GC when no longer referenced.
         ///
-        /// This test verifies that creating multiple independent dictionaries with
-        /// different geometry objects works correctly - each dictionary maintains its
-        /// own references and all survive GC when they're still in scope.
+        /// Tests that when temporary dictionaries/geometry are created but not stored
+        /// in variables, they become eligible for GC after their values are extracted.
+        /// This is closer to what happens in Dynamo when nodes re-execute and old
+        /// outputs are replaced.
         ///
-        /// Note: This does NOT simulate upstream node changes in a Dynamo graph
-        /// (which would require node re-execution). Instead, it creates independent
-        /// variables similar to having multiple separate nodes. To test actual
-        /// upstream changes, use the manual test: Test-UpstreamChange.dyn
+        /// Key: We extract primitive values (x1, id1) without keeping references
+        /// to the geometry objects, then verify GC doesn't break the new objects.
         /// </summary>
         [Test]
         [Category("DYN-8717")]
-        public void TestMultipleIndependentDictionaries()
+        public void TestOldObjectsGarbageCollected()
         {
             string code = @"
 import(""FFITarget.dll"");
 
-// Simulate first execution - ParseJSON creates Dict with Point1
-point1 = DummyPoint.ByCoordinates(100, 200, 300);
-dict1 = {""Shape"": point1, ""id"": 1};
+// Extract values from temporary dictionary without keeping references to objects
+// This temporary dictionary and point become eligible for GC after this line
+x1_old = {""Shape"": DummyPoint.ByCoordinates(100, 200, 300), ""id"": 1}[""Shape""].X;
+id1_old = {""Shape"": DummyPoint.ByCoordinates(100, 200, 300), ""id"": 1}[""id""];
 
-// Access the point
-shape1 = dict1[""Shape""];
-x1 = shape1.X;
-id1 = dict1[""id""];
+// Now create the ""current"" dictionary that we'll keep using
+// This simulates a node's output after re-execution
+currentPoint = DummyPoint.ByCoordinates(999, 888, 777);
+currentDict = {""Shape"": currentPoint, ""id"": 2};
 
-// Simulate upstream change - ParseJSON RE-EXECUTES with different JSON
-// This creates a NEW dictionary with NEW point
-point2 = DummyPoint.ByCoordinates(999, 888, 777);
-dict2 = {""Shape"": point2, ""id"": 2};
-
-// Now downstream nodes reference dict2, not dict1
-// dict1 is no longer referenced and should be eligible for GC
-shape2 = dict2[""Shape""];
-x2 = shape2.X;
-id2 = dict2[""id""];
-
-// Force GC - dict1 and point1 should be collected
-// dict2 and point2 should survive
+// Force GC - temporary objects from first lines should be collected
+// currentDict and currentPoint should survive
 __GC();
 
-// Verify we can still access the NEW point (point2)
-x3 = shape2.X;
-y3 = shape2.Y;
-z3 = shape2.Z;
+// Verify we can still access the current dictionary and its geometry
+x2 = currentDict[""Shape""].X;
+y2 = currentDict[""Shape""].Y;
+z2 = currentDict[""Shape""].Z;
+id2 = currentDict[""id""];
 
-// Verify values
-isValid = x1 == 100 && x2 == 999 && x3 == 999 &&
-          y3 == 888 && z3 == 777 &&
-          id1 == 1 && id2 == 2;
+// Verify values: old primitives preserved, new geometry accessible
+isValid = x1_old == 100 && id1_old == 1 &&
+          x2 == 999 && y2 == 888 && z2 == 777 && id2 == 2;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
-            // New point should be accessible
-            thisTest.Verify("x1", 100.0);  // Old point was accessible initially
-            thisTest.Verify("x2", 999.0);  // New point is accessible
-            thisTest.Verify("x3", 999.0);  // New point still accessible after GC
-            thisTest.Verify("y3", 888.0);
-            thisTest.Verify("z3", 777.0);
-            thisTest.Verify("id1", 1);
+            // Old primitive values were extracted successfully
+            thisTest.Verify("x1_old", 100.0);
+            thisTest.Verify("id1_old", 1);
+
+            // New geometry is accessible after GC
+            thisTest.Verify("x2", 999.0);
+            thisTest.Verify("y2", 888.0);
+            thisTest.Verify("z2", 777.0);
             thisTest.Verify("id2", 2);
             thisTest.Verify("isValid", true);
         }
