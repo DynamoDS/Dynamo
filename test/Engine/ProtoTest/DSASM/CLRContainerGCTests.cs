@@ -376,60 +376,39 @@ isValid = x1_old == 100 && id1_old == 1 &&
         }
 
         /// <summary>
-        /// Test 2.9: Multiple independent objects don't accumulate.
+        /// Test 2.9: Extracting values from multiple temporary objects.
         ///
-        /// Verifies that creating multiple independent dictionary and geometry objects
-        /// works correctly without causing memory issues. Each object maintains its own
-        /// references and all survive GC when they're in scope.
-        ///
-        /// Note: This creates independent variables (like separate nodes), not
-        /// associative updates to existing variables (like upstream node changes).
+        /// Tests that we can create multiple temporary dictionaries, extract their
+        /// values, and only the current (kept) object survives GC. Temporary objects
+        /// without stored references become eligible for collection.
         /// </summary>
         [Test]
         [Category("DYN-8717")]
-        public void TestMultipleIndependentObjects()
+        public void TestMultipleTemporaryObjects()
         {
             string code = @"
 import(""FFITarget.dll"");
 
-// Simulate multiple re-executions of ParseJSON with different data
-// Only the LAST created geometry should survive
+// Extract values from temporary dictionaries without keeping references
+result1 = {""point"": DummyPoint.ByCoordinates(1, 0, 0)}[""point""].X;
+result2 = {""point"": DummyPoint.ByCoordinates(2, 0, 0)}[""point""].X;
+result3 = {""point"": DummyPoint.ByCoordinates(3, 0, 0)}[""point""].X;
+result4 = {""point"": DummyPoint.ByCoordinates(4, 0, 0)}[""point""].X;
 
-// Execution 1
-point1 = DummyPoint.ByCoordinates(1, 0, 0);
-dict1 = {""point"": point1};
-result1 = dict1[""point""].X;
+// Now create a ""current"" dictionary that we keep using
+currentDict = {""point"": DummyPoint.ByCoordinates(5, 0, 0)};
+result5 = currentDict[""point""].X;
 
-// Execution 2 (upstream change)
-point2 = DummyPoint.ByCoordinates(2, 0, 0);
-dict2 = {""point"": point2};
-result2 = dict2[""point""].X;
-
-// Execution 3 (upstream change)
-point3 = DummyPoint.ByCoordinates(3, 0, 0);
-dict3 = {""point"": point3};
-result3 = dict3[""point""].X;
-
-// Execution 4 (upstream change)
-point4 = DummyPoint.ByCoordinates(4, 0, 0);
-dict4 = {""point"": point4};
-result4 = dict4[""point""].X;
-
-// Execution 5 (upstream change)
-point5 = DummyPoint.ByCoordinates(5, 0, 0);
-dict5 = {""point"": point5};
-result5 = dict5[""point""].X;
-
-// Multiple GC cycles
+// Multiple GC cycles - temporary objects from result1-4 lines eligible for collection
+// currentDict should survive
 __GC();
 __GC();
 __GC();
 
-// Only the LAST point (point5) should be accessible
-// Previous points should have been disposed
-finalX = dict5[""point""].X;
+// Verify current dictionary is still accessible
+finalX = currentDict[""point""].X;
 
-// Verify correct values
+// Verify all extracted values
 isValid = result1 == 1 && result2 == 2 && result3 == 3 &&
           result4 == 4 && result5 == 5 && finalX == 5;
 ";
@@ -445,13 +424,13 @@ isValid = result1 == 1 && result2 == 2 && result3 == 3 &&
         }
 
         /// <summary>
-        /// Test 2.10: Contrast DYN-8717 bug scenario vs independent objects.
+        /// Test 2.10: Contrast DYN-8717 bug scenario vs temporary objects.
         ///
         /// This test demonstrates the DIFFERENCE between:
         /// A) DYN-8717 bug scenario - same container stays in memory but geometry
         ///    inside was incorrectly collected when not directly accessed
-        /// B) Independent objects scenario - multiple dictionaries with different
-        ///    geometry objects, each maintaining their own references
+        /// B) Temporary objects scenario - extracting values from dictionaries
+        ///    without keeping references makes them eligible for GC
         ///
         /// Both scenarios should work correctly with the fix.
         /// </summary>
@@ -484,27 +463,25 @@ isValidA = resultA1 == 10 && resultA2 == 10 && resultA3 == 20;
 
 
 // ==========================================
-// PART B: Upstream Change Scenario (Normal behavior)
+// PART B: Temporary objects without references
 // ==========================================
 
-// First execution - create dict with one point
-dictB1 = {""point"": DummyPoint.ByCoordinates(100, 200, 300)};
-resultB1 = dictB1[""point""].X;
+// Extract value from temporary dictionary without keeping reference
+resultB1 = {""point"": DummyPoint.ByCoordinates(100, 200, 300)}[""point""].X;
 
-// Upstream change - NEW dictionary created with different point
-// OLD dict (dictB1) is no longer the active container
-dictB2 = {""point"": DummyPoint.ByCoordinates(400, 500, 600)};
-resultB2 = dictB2[""point""].X;
+// Create current dictionary that we'll keep using
+currentDictB = {""point"": DummyPoint.ByCoordinates(400, 500, 600)};
+resultB2 = currentDictB[""point""].X;
 
-// GC - dictB1 and its point should be collected (no longer referenced downstream)
-// dictB2 and its point should survive
+// GC - temporary object from resultB1 line is eligible for collection
+// currentDictB should survive
 __GC();
 
-// Access NEW dictionary - should work
-resultB3 = dictB2[""point""].X;
-resultB4 = dictB2[""point""].Y;
+// Access current dictionary - should work
+resultB3 = currentDictB[""point""].X;
+resultB4 = currentDictB[""point""].Y;
 
-// Verify: dictB2 is active, dictB1 was disposed (normal behavior)
+// Verify: temporary object was eligible for GC, current dict survives
 isValidB = resultB1 == 100 && resultB2 == 400 && resultB3 == 400 && resultB4 == 500;
 
 
@@ -521,7 +498,7 @@ isValid = isValidA && isValidB;
             thisTest.Verify("resultA3", 20.0);  // This would fail without DYN-8717 fix
             thisTest.Verify("isValidA", true);
 
-            // Part B: Upstream change scenario (normal behavior)
+            // Part B: Temporary objects scenario
             thisTest.Verify("resultB1", 100.0);
             thisTest.Verify("resultB2", 400.0);
             thisTest.Verify("resultB3", 400.0);
