@@ -104,7 +104,6 @@
     <Compile Include="ViewModels\PackageManager\PackageManagerViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\PackagePathViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\PackageViewModel.cs" />
-    <Compile Include="ViewModels\PackageManager\PublishPackageViewModel.cs" />
     <Compile Include="Views\PackageManager\Components\PackageManagerWizard\PackageManagerWizard.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\CustomBrowserControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\FilterTagControl.xaml.cs" />

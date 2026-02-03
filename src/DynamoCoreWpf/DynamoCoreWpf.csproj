@@ -799,6 +799,7 @@
     <Compile Include="ViewModels\Preview\Watch3DFullscreenViewModel.cs" />
     <Compile Include="ViewModels\Preview\WatchViewModel.cs" />
     <Compile Include="ViewModels\Core\WorkspaceViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PublishPackageViewModel.cs" />
     <Compile Include="Windows\ExtensionWindow.xaml.cs">
       <DependentUpon>ExtensionWindow.xaml</DependentUpon>
     </Compile>
