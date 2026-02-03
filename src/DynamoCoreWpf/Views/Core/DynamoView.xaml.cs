@@ -47,7 +47,6 @@ using Dynamo.Wpf.Views.GuidedTour;
 using Dynamo.Wpf.Windows;
 using HelixToolkit.Wpf.SharpDX;
 using ICSharpCode.AvalonEdit;
-using Lucene.Net.QueryParsers.Ext;
 using PythonNodeModels;
 using Brush = System.Windows.Media.Brush;
 using Exception = System.Exception;
@@ -67,6 +66,7 @@ namespace Dynamo.Controls
     {
         public const string BackgroundPreviewName = "BackgroundPreview";
         private const int SideBarCollapseThreshold = 20;
+        private const int RightSideBarCollapseThreshold = 30;
         private const int navigationInterval = 100;
         private const string GraphMetadataExtensionId = "28992e1d-abb9-417f-8b1b-05e053bee670";
         // This is used to determine whether ESC key is being held down
@@ -83,8 +83,6 @@ namespace Dynamo.Controls
         private PreferencesView preferencesWindow;
         private PackageManagerView packageManagerWindow;
         private bool loaded = false;
-        //This variable is to track user clicks on show/hide extension browser
-        private bool isExtensionBrowserCollapsed = false;
         private bool graphMetadataHooked;
         private MenuItem graphPropsGeneralMenuItem;
         private MenuItem graphPropsExtensionMenuItem;
@@ -2874,6 +2872,8 @@ namespace Dynamo.Controls
 
         // Default side bar width
         private const int defaultSideBarWidth = 200;
+        //By default the extension bar width in px;
+        private const int defaultRightSideBarWidth = 455;
         // By default the extension bar over canvas size ratio is 2/5
         private const int DefaultExtensionBarWidthMultiplier = 2;
 
@@ -2911,7 +2911,7 @@ namespace Dynamo.Controls
                 }
                 else
                 {
-                    extensionsCollapsed = RightExtensionsViewColumn.Width.Value < SideBarCollapseThreshold;
+                    extensionsCollapsed = RightExtensionsViewColumn.Width.Value < RightSideBarCollapseThreshold;
                 }
 
                 return extensionsCollapsed;
@@ -2949,7 +2949,8 @@ namespace Dynamo.Controls
         {
             if (dynamoViewModel.SideBarTabItems.Count == 0)
             {
-                if (RightExtensionsViewColumn.Width.Value != 0)
+                if (RightExtensionsViewColumn.Width.Value != 0
+                    && RightExtensionsViewColumn.ActualWidth > RightSideBarCollapseThreshold)
                 {
                     extensionsColumnWidth = RightExtensionsViewColumn.Width;
                 }
@@ -2962,7 +2963,7 @@ namespace Dynamo.Controls
                 // 1. It allows the resized width to be remembered which is nice to have.
                 // 2. It allows to avoid a slider glitch which sets the panels size in pixel amount but using star,
                 // changing the proportions so that the initial value is counted as pixels after the first resize.
-                if (extensionsColumnWidth == null)
+                if (extensionsColumnWidth == null || extensionsColumnWidth.Value.Value < RightSideBarCollapseThreshold)
                 {
                     RightExtensionsViewColumn.Width = new GridLength(DefaultExtensionBarWidthMultiplier, GridUnitType.Star);
                 }
@@ -2991,7 +2992,6 @@ namespace Dynamo.Controls
 
         private void OnCollapsedRightSidebarClick(object sender, EventArgs e)
         {
-            isExtensionBrowserCollapsed = !isExtensionBrowserCollapsed;
             ToggleExtensionBarCollapseStatus();
         }
 
@@ -3000,13 +3000,15 @@ namespace Dynamo.Controls
         /// </summary>
         internal void ToggleExtensionBarCollapseStatus()
         {
-            if (!isExtensionBrowserCollapsed || RightExtensionsViewColumn.ActualWidth < SideBarCollapseThreshold)
+            if (ExtensionsCollapsed)
             {
-
                 if (extensionsColumnWidth == null)
                     RightExtensionsViewColumn.Width = new GridLength(DefaultExtensionBarWidthMultiplier, GridUnitType.Star);
-                else if (extensionsColumnWidth.Value.Value <= SideBarCollapseThreshold)
-                    RightExtensionsViewColumn.Width = new GridLength(defaultSideBarWidth, GridUnitType.Star);
+                else if (extensionsColumnWidth.Value.Value <= RightSideBarCollapseThreshold &&
+                    !extensionsColumnWidth.Value.Equals(new GridLength(DefaultExtensionBarWidthMultiplier, GridUnitType.Star)))
+                {
+                    RightExtensionsViewColumn.Width = new GridLength(defaultRightSideBarWidth, GridUnitType.Star);
+                }
                 else
                     RightExtensionsViewColumn.Width = extensionsColumnWidth.Value;
             }
@@ -3015,7 +3017,6 @@ namespace Dynamo.Controls
                 extensionsColumnWidth = RightExtensionsViewColumn.Width;
                 RightExtensionsViewColumn.Width = new GridLength(0, GridUnitType.Star);
             }
-            
             // TODO: Maynot need this depending on tab design
             UpdateLibraryCollapseIcon();
         }
@@ -3258,7 +3259,8 @@ namespace Dynamo.Controls
 
         private void RightExtensionSidebar_DragCompleted(object sender, DragCompletedEventArgs e)
         {
-            //Setting the width of right extension after resize to
+            //Setting the width of right extension after resize to only if extension bar widht is greater than threshold value.
+            if (RightExtensionsViewColumn.ActualWidth > defaultRightSideBarWidth)
             extensionsColumnWidth = RightExtensionsViewColumn.Width;
         }
 
