@@ -521,7 +521,8 @@ namespace Dynamo.Tests.Configuration
 
             // Assert - samples path should contain the locale
             Assert.That(samplesPath, Is.Not.Null);
-            Assert.That(samplesPath, Does.EndWith(@"samples\es-ES"));
+            var expectedPathSegment = Path.Combine("samples", "es-ES");
+            Assert.That(samplesPath, Does.EndWith(expectedPathSegment));
         }
     }
 }

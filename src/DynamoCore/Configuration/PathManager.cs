@@ -278,15 +278,21 @@ namespace Dynamo.Core
             {
                 if (samplesDirectory == null)
                 {
-                    var locale = (Preferences as PreferenceSettings)?.Locale ?? CultureInfo.CurrentUICulture.Name;
+                    var preferences = Preferences as PreferenceSettings;
+                    var locale = preferences?.Locale ?? CultureInfo.CurrentUICulture.Name;
 
-                    if (locale == "Default")
+                    if (string.Equals(locale, "Default", StringComparison.OrdinalIgnoreCase))
                     {
-                        locale = string.IsNullOrEmpty(Dynamo.Models.DynamoModel.HostAnalyticsInfo.HostName)
-                            ? Configurations.FallbackUiCulture
-                            : (CultureInfo.DefaultThreadCurrentCulture ?? new CultureInfo(Configurations.FallbackUiCulture)).Name;
-                    }
+                        // When locale is "Default", resolve from process cultures in priority order:
+                        // 1. DefaultThreadCurrentCulture (explicitly set by host/application)
+                        // 2. CurrentUICulture (current thread's UI culture)
+                        // 3. FallbackUiCulture (Dynamo's default: "en-US")
+                        var effectiveCulture = CultureInfo.DefaultThreadCurrentCulture
+                                            ?? CultureInfo.CurrentUICulture
+                                            ?? new CultureInfo(Configurations.FallbackUiCulture);
 
+                        locale = effectiveCulture.Name;
+                    }
                     samplesDirectory = GetSamplesFolder(commonDataDir, locale);
                 }
                 return samplesDirectory;
