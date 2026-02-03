@@ -27,7 +27,9 @@ namespace Dynamo.PackageManager.ViewModels
         }
 
         /// <summary>
-        /// VM IsDeprecated property
+        /// VM IsDeprecated property.
+        /// Indicates the package is deprecated. Used to disable install/update
+        /// actions (DownloadLatestCommand CanExecute), while uninstall remains available.
         /// </summary>
         public bool IsDeprecated { get { return this.SearchElementModel.IsDeprecated; } }
         /// <summary>
@@ -78,18 +80,27 @@ namespace Dynamo.PackageManager.ViewModels
         private bool hasUpdateAvailable;
         private readonly DelegateCommand uninstallCommand;
         private Func<bool> canUninstall;
+
+        /// <summary>
+        /// True when any version of this package is installed locally. Used with
+        /// IsInstalledVersionSelected to drive Install vs Update vs Uninstall UI.
+        /// </summary>
         private bool HasInstalledVersion => !string.IsNullOrEmpty(installedVersion);
 
         /// <summary>
-        /// True when the selected version is installed.
+        /// True when the selected version is installed. Drives whether the install
+        /// button maps to Uninstall versus Install/Update.
         /// </summary>
         public bool IsInstalledVersionSelected => SelectedVersion?.IsInstalled == true;
+
         /// <summary>
         /// True when the selected installed version cannot be uninstalled.
         /// </summary>
         public bool IsInstalledFallback => IsInstalledVersionSelected && canUninstall == null;
+
         /// <summary>
-        /// True when the selected installed version can be uninstalled.
+        /// Compatibility of the currently selected version with the current host.
+        /// This is used for indicators and warnings only; it does not block install/update.
         /// </summary>
         public bool IsUninstallState => IsInstalledVersionSelected && canUninstall != null;
 
@@ -287,8 +298,8 @@ namespace Dynamo.PackageManager.ViewModels
         }
 
         /// <summary>
-        /// True if package is enabled for download if custom package paths are not disabled,
-        /// False if custom package paths are disabled.
+        /// True when install actions are enabled (custom package locations allowed or bypassed).
+        /// Bound to the install button IsEnabled, independent of deprecation or version selection.
         /// </summary>
         public bool IsEnabledForInstall { get; private set; }
 
