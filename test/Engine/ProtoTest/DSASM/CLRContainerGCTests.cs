@@ -82,8 +82,7 @@ outer = {""nested"": inner};
 // Access through nested path
 x1 = outer[""nested""][""point""].X;
 
-// Intermediate step that doesn't access the point
-temp = ""intermediate"";
+// Force GC - point should survive because container is still referenced
 __GC();
 
 // Access again - should still work
@@ -120,8 +119,7 @@ d = {""points"": points};
 // Access first point
 x1 = d[""points""][0].X;
 
-// Intermediate step
-temp = 42;
+// Force GC - all points should survive because container is still referenced
 __GC();
 
 // Access all points - should all still be valid
@@ -238,7 +236,13 @@ isValid = x1 == 1 && x2 == 2 && x3 == 1 && x4 == 2 && x5 == 2 && x6 == 1;
 
         /// <summary>
         /// Test 2.6: Large containers with many geometry objects.
-        /// Uses replication to create multiple points.
+        ///
+        /// Tests that GC can traverse CLR containers with many objects and mark
+        /// all of them, even objects not directly accessed before GC.
+        ///
+        /// Without the fix: Point at index 25 (never accessed before GC) would be
+        /// incorrectly collected even though the dictionary containing it is reachable.
+        /// With the fix: All 50 points survive because GC traverses the container.
         /// </summary>
         [Test]
         [Category("DYN-8717")]
@@ -252,16 +256,18 @@ points = DummyPoint.ByCoordinates(0..49, (0..49) * 2, (0..49) * 3);
 
 d = {""points"": points};
 
-// Access first and last
+// Access first and last (but not middle points)
 x0 = d[""points""][0].X;
 x49 = d[""points""][49].X;
 
-// GC
+// Force GC - middle points (like index 25) were never extracted to stack
+// Without fix: they would be incorrectly collected
+// With fix: they survive because GC traverses the container
 __GC();
 
-// Access again - all should still be valid
+// Access again - all should still be valid, including point 25 (never accessed before)
 x0_after = d[""points""][0].X;
-x25_after = d[""points""][25].X;
+x25_after = d[""points""][25].X;  // This would fail WITHOUT the fix
 x49_after = d[""points""][49].X;
 
 isValid = x0 == 0 && x49 == 49 &&
