@@ -533,20 +533,18 @@ shape1 = bob[""Shape""];
 x1 = shape1.X;
 
 // Simulate second run with alice = false
+// bob will automatically re-execute due to associative update
 alice = false;
-bob = alice == false ? ""test"" : input;
-// bob is now ""test"", not the dictionary
 
 // Force GC - the bug causes Shape to be collected here
 __GC();
 
 // Simulate third run with alice = true again
+// bob will automatically re-execute again
 alice = true;
-bob = alice == false ? ""test"" : input;
 
-// Access shape again - should still work!
-shape2 = bob[""Shape""];
-x2 = shape2.X;
+// Verify shape1 is still accessible (bob updated automatically)
+x2 = shape1.X;
 
 isValid = x1 == 100 && x2 == 100;
 ";
@@ -778,28 +776,21 @@ y = shape.Y;
 id = dict[""id""];
 
 // Update the upstream variable - simulates upstream node change
-// Due to associative execution, dict, shape, x, y should all automatically update
+// Due to associative execution, dict, shape, x, y automatically update
 point = DummyPoint.ByCoordinates(999, 888, 777);
 
 // Force GC after update
 __GC();
 
-// Verify that all dependent variables updated correctly
-xFinal = shape.X;
-yFinal = shape.Y;
-zFinal = shape.Z;
-idFinal = dict[""id""];
-
-// Verify values reflect the updated point
-isValid = xFinal == 999 && yFinal == 888 && zFinal == 777 && idFinal == 1;
+// Verify that all dependent variables updated correctly (no need to create new variables)
+// x, y, shape, dict all automatically have updated values
+isValid = x == 999 && y == 888 && shape.Z == 777 && dict[""id""] == 1;
 ";
             ExecutionMirror mirror = thisTest.RunScriptSource(code);
 
-            // All values should reflect the updated point (999, 888, 777)
-            thisTest.Verify("xFinal", 999.0);
-            thisTest.Verify("yFinal", 888.0);
-            thisTest.Verify("zFinal", 777.0);
-            thisTest.Verify("idFinal", 1);
+            // All variables automatically updated to reflect the new point (999, 888, 777)
+            thisTest.Verify("x", 999.0);
+            thisTest.Verify("y", 888.0);
             thisTest.Verify("isValid", true);
         }
 
