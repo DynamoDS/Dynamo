@@ -181,6 +181,22 @@ namespace ProtoCore.DSASM
         {
             get { return allocated; }
         }
+
+        /// <summary>
+        /// Enqueue all reference-typed elements for garbage collection.
+        /// Note: This is used by the heap manager to trace reachable objects during GC.
+        /// </summary>
+        /// <param name="gcQueue">Queue to enqueue reference-typed stack values</param>
+        public void CollectElementsForGC(Queue<StackValue> gcQueue)
+        {
+            foreach (var item in Values)
+            {
+                if (item.IsReferenceType)
+                {
+                    gcQueue.Enqueue(item);
+                }
+            }
+        }
     }
 
     public class StackValueComparer : IEqualityComparer<StackValue>
@@ -724,11 +740,7 @@ namespace ProtoCore.DSASM
                     releaseSize += obj.MemorySize;
 
                     // Trace DSObject.Values (existing behavior)
-                    foreach (var item in obj.Values)
-                    {
-                        if (item.IsReferenceType)
-                            ptrs.Enqueue(item);
-                    }
+                    obj.CollectElementsForGC(ptrs);
 
                     // DYN-8717 FIX: Check if this DSObject has a CLR backing and
                     // traverse CLR contents to find nested DS references.
