@@ -274,7 +274,23 @@ namespace Dynamo.Core
 
         public string SamplesDirectory
         {
-            get { return samplesDirectory; }
+            get
+            {
+                if (samplesDirectory == null)
+                {
+                    var locale = (Preferences as PreferenceSettings)?.Locale ?? CultureInfo.CurrentUICulture.Name;
+
+                    if (locale == "Default")
+                    {
+                        locale = string.IsNullOrEmpty(Dynamo.Models.DynamoModel.HostAnalyticsInfo.HostName)
+                            ? Configurations.FallbackUiCulture
+                            : (CultureInfo.DefaultThreadCurrentCulture ?? new CultureInfo(Configurations.FallbackUiCulture)).Name;
+                    }
+
+                    samplesDirectory = GetSamplesFolder(commonDataDir, locale);
+                }
+                return samplesDirectory;
+            }
         }
 
         /// <summary>
@@ -628,9 +644,7 @@ namespace Dynamo.Core
             // Common directories.
             commonDataDir = GetCommonDataFolder();
 
-            samplesDirectory = GetSamplesFolder(commonDataDir);
             defaultTemplatesDirectory = GetTemplateFolder(commonDataDir);
-
             rootDirectories = new List<string> { userDataDir };
 
             nodeDirectories = new HashSet<string>
@@ -736,7 +750,7 @@ namespace Dynamo.Core
             return root;
         }
 
-        private static string GetSamplesFolder(string dataRootDirectory)
+        private static string GetSamplesFolder(string dataRootDirectory, string locale)
         {
             var versionedDirectory = dataRootDirectory;
             if (!Directory.Exists(versionedDirectory))
@@ -755,8 +769,7 @@ namespace Dynamo.Core
                 dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
             }
 
-            var uiCulture = CultureInfo.CurrentUICulture.Name;
-            var sampleDirectory = Path.Combine(dataRootDirectory, Configurations.SamplesAsString, uiCulture);
+            var sampleDirectory = Path.Combine(dataRootDirectory, Configurations.SamplesAsString, locale);
 
             // If the localized samples directory does not exist then fall back 
             // to using the en-US samples folder. Do an additional check to see 
@@ -767,9 +780,9 @@ namespace Dynamo.Core
                 !di.GetDirectories().Any() ||
                 !di.GetFiles("*.dyn", SearchOption.AllDirectories).Any())
             {
-                var neturalCommonSamples = Path.Combine(dataRootDirectory, Configurations.SamplesAsString, "en-US");
-                if (Directory.Exists(neturalCommonSamples))
-                    sampleDirectory = neturalCommonSamples;
+                var neutralCommonSamples = Path.Combine(dataRootDirectory, Configurations.SamplesAsString, "en-US");
+                if (Directory.Exists(neutralCommonSamples))
+                    sampleDirectory = neutralCommonSamples;
             }
 
             return sampleDirectory;
