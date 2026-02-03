@@ -16,6 +16,8 @@
   <ItemGroup>
     <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.3217" />
     <PackageReference Include="MIConvexHull" version="1.1.19.1019" CopyPDB="true" />
+    <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.3915"/>
+    <PackageReference Include="MIConvexHull" version="1.1.17.411" CopyPDB="true" />
 	  <PackageReference Include="StarMath" version="2.0.17.1019" CopyPDB="true" />
     <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
   </ItemGroup>
