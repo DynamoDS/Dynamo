@@ -11,7 +11,7 @@ Perform janitorial tasks on C#/.NET codebases. Focus on code cleanup, modernizat
 
 ### Code Modernization
 
-- Update to latest C# language features and syntax patterns
+- Update to modern C# language features and syntax patterns supported by the project's target framework (currently the C# language version for .NET 10)
 - Replace obsolete APIs with modern alternatives
 - Convert to nullable reference types where appropriate
 - Apply pattern matching and switch expressions
@@ -39,7 +39,7 @@ Perform janitorial tasks on C#/.NET codebases. Focus on code cleanup, modernizat
 - Add unit tests for public APIs
 - Create integration tests for critical workflows
 - Apply AAA (Arrange, Act, Assert) pattern consistently
-- Use FluentAssertions for readable assertions
+- Use NUnit assertions consistently and prefer clear, readable assertion messages
 
 ### Documentation
 
