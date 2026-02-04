@@ -76,7 +76,8 @@ namespace Dynamo.ViewModels
         private const string dynamoMLDataFileName = "DynamoMLDataPipeline.json";
 
         private bool onlineAccess = true;
-
+        //2px tolerance range for node filtering during Home and End key press
+        private readonly int tolerance = 2;
         // Can the user run the graph
         private bool CanRunGraph => HomeSpace.RunSettings.RunEnabled && !HomeSpace.GraphRunInProgress;
         private ObservableCollection<DefaultWatch3DViewModel> watch3DViewModels = new ObservableCollection<DefaultWatch3DViewModel>();
@@ -4498,6 +4499,61 @@ namespace Dynamo.ViewModels
         {
             return true;
         }
+
+        #region "DYN-9637 - Home And End key press events in Canvas"
+        /// <summary>
+        /// Enable the shortcut key events when there is no selection.
+        /// </summary>
+        /// <returns></returns>
+        private bool IsHomeAndEndKeyEnabled()
+        {
+            if (BackgroundPreviewViewModel != null &&
+               !CurrentSpaceViewModel.HasSelection)
+            {
+            return true;
+        }
+            else
+                return false;
+        }
+        internal void GotoLeftMostNode(object parameter)
+        {
+            if (CurrentSpaceViewModel.Nodes?.Count > 0)
+            {
+                double minX = CurrentSpaceViewModel.Nodes.Min(x => x.X);
+                var nodes = CurrentSpaceViewModel.Nodes.Where(x => x.X <= minX + tolerance).ToList();
+                var nodeSet = new HashSet<NodeModel>(nodes.Select(nvm => nvm.NodeModel));
+                var groups = CurrentSpaceViewModel.Annotations.Where(a => a.Nodes.Any(n => nodeSet.Contains(n)));
+                nodes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
+                groups.ToList().ForEach((grp) => DynamoSelection.Instance.Selection.Add(grp.AnnotationModel));
+                FitViewCommand.Execute(true);
+                DynamoSelection.Instance.ClearSelection();
+            }
+        }
+
+        internal bool CanGotoLeftMostNode(object obj)
+        {
+            return IsHomeAndEndKeyEnabled();
+        }
+        internal void GotoRightMostNode(object parameter)
+        {
+            if (CurrentSpaceViewModel.Nodes?.Count > 0)
+            {
+                double maxX = CurrentSpaceViewModel.Nodes.Max(x => x.X + x.ActualWidth);
+                var nodes = CurrentSpaceViewModel.Nodes.Where(x => x.X + x.ActualWidth >= maxX - tolerance).ToList();
+                var nodeSet = new HashSet<NodeModel>(nodes.Select(nvm => nvm.NodeModel));
+                var groups = CurrentSpaceViewModel.Annotations.Where(a => a.Nodes.Any(n => nodeSet.Contains(n))).Distinct();
+                nodes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
+                groups.ToList().ForEach((grp) => DynamoSelection.Instance.Selection.Add(grp.AnnotationModel));
+                FitViewCommand.Execute(true);
+                DynamoSelection.Instance.ClearSelection();
+            }
+        }
+        internal bool CanGotoRightMostNode(object obj)
+        {
+            return IsHomeAndEndKeyEnabled();
+        }
+
+        #endregion
 
         #region Shutdown related methods
 
