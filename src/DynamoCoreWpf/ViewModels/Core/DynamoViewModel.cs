@@ -4675,15 +4675,18 @@ namespace Dynamo.ViewModels
                         // Dynamo-white background
                         graphics.Clear(System.Drawing.Color.FromArgb(249, 249, 249));
 
+                        const float BACKGROUND_VERTICAL_OFFSET_RATIO = 0.15f;
+                        const float OVERLAY_VERTICAL_POSITION_RATIO = 0.25f;
+
                         // Draw resized background slightly down (15% from top)
                         using (var resizedBg = new System.Drawing.Bitmap(baseImage, newWidth, newHeight))
                         {
-                            graphics.DrawImage(resizedBg, 0, (int)(newHeight * 0.15f));
+                            graphics.DrawImage(resizedBg, 0, (int)(newHeight * BACKGROUND_VERTICAL_OFFSET_RATIO));
                         }
 
                         // Draw workspace overlay in upper center
                         var offsetX = (newWidth - overlayImage.Width) / 2;
-                        var offsetY = (int)((newHeight - overlayImage.Height) * 0.25f);
+                        var offsetY = (int)((newHeight - overlayImage.Height) * OVERLAY_VERTICAL_POSITION_RATIO);
                         graphics.DrawImage(overlayImage, offsetX, offsetY);
                     }
 
@@ -4699,6 +4702,10 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Generates the markdown help file for a node.
         /// </summary>
+        /// <param name="node">The node model instance for which the help markdown is generated.</param>
+        /// <param name="mqn">The fully qualified node name used in the generated markdown header.</param>
+        /// <param name="outputPath">The full file path where the markdown help file will be written.</param>
+        /// <param name="imgFileName">The image file name referenced from the markdown example section.</param>
         private void GenerateNodeHelpMarkdown(NodeModel node, string mqn,
             string outputPath, string imgFileName)
         {
