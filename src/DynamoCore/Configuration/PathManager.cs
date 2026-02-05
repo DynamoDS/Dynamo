@@ -274,7 +274,29 @@ namespace Dynamo.Core
 
         public string SamplesDirectory
         {
-            get { return samplesDirectory; }
+            get
+            {
+                if (samplesDirectory == null)
+                {
+                    var preferences = Preferences as PreferenceSettings;
+                    var locale = preferences?.Locale ?? CultureInfo.CurrentUICulture.Name;
+
+                    if (string.Equals(locale, "Default", StringComparison.OrdinalIgnoreCase))
+                    {
+                        // When locale is "Default", resolve from process cultures in priority order:
+                        // 1. DefaultThreadCurrentCulture (explicitly set by host/application)
+                        // 2. CurrentUICulture (current thread's UI culture)
+                        // 3. FallbackUiCulture (Dynamo's default: "en-US")
+                        var effectiveCulture = CultureInfo.DefaultThreadCurrentCulture
+                                            ?? CultureInfo.CurrentUICulture
+                                            ?? new CultureInfo(Configurations.FallbackUiCulture);
+
+                        locale = effectiveCulture.Name;
+                    }
+                    samplesDirectory = GetSamplesFolder(commonDataDir, locale);
+                }
+                return samplesDirectory;
+            }
         }
 
         /// <summary>
@@ -628,9 +650,7 @@ namespace Dynamo.Core
             // Common directories.
             commonDataDir = GetCommonDataFolder();
 
-            samplesDirectory = GetSamplesFolder(commonDataDir);
             defaultTemplatesDirectory = GetTemplateFolder(commonDataDir);
-
             rootDirectories = new List<string> { userDataDir };
 
             nodeDirectories = new HashSet<string>
@@ -736,7 +756,7 @@ namespace Dynamo.Core
             return root;
         }
 
-        private static string GetSamplesFolder(string dataRootDirectory)
+        private static string GetSamplesFolder(string dataRootDirectory, string locale)
         {
             var versionedDirectory = dataRootDirectory;
             if (!Directory.Exists(versionedDirectory))
@@ -755,8 +775,7 @@ namespace Dynamo.Core
                 dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
             }
 
-            var uiCulture = CultureInfo.CurrentUICulture.Name;
-            var sampleDirectory = Path.Combine(dataRootDirectory, Configurations.SamplesAsString, uiCulture);
+            var sampleDirectory = Path.Combine(dataRootDirectory, Configurations.SamplesAsString, locale);
 
             // If the localized samples directory does not exist then fall back 
             // to using the en-US samples folder. Do an additional check to see 
@@ -767,9 +786,9 @@ namespace Dynamo.Core
                 !di.GetDirectories().Any() ||
                 !di.GetFiles("*.dyn", SearchOption.AllDirectories).Any())
             {
-                var neturalCommonSamples = Path.Combine(dataRootDirectory, Configurations.SamplesAsString, "en-US");
-                if (Directory.Exists(neturalCommonSamples))
-                    sampleDirectory = neturalCommonSamples;
+                var neutralCommonSamples = Path.Combine(dataRootDirectory, Configurations.SamplesAsString, "en-US");
+                if (Directory.Exists(neutralCommonSamples))
+                    sampleDirectory = neutralCommonSamples;
             }
 
             return sampleDirectory;
