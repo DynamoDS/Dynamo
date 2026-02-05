@@ -4507,13 +4507,17 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         private bool IsHomeAndEndKeyEnabled()
         {
-            if (BackgroundPreviewViewModel != null &&
-               !CurrentSpaceViewModel.HasSelection)
-            {
-            return true;
+            return BackgroundPreviewViewModel != null &&
+                    !CurrentSpaceViewModel.HasSelection;
         }
-            else
-                return false;
+        private void FitCanvasToSelectedNodes(List<NodeViewModel> nodes)
+            {
+            var nodeSet = new HashSet<NodeModel>(nodes.Select(nvm => nvm.NodeModel));
+            var groups = CurrentSpaceViewModel.Annotations.Where(a => a.Nodes.Any(n => nodeSet.Contains(n)));
+            nodes.ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
+            groups?.ToList().ForEach((grp) => DynamoSelection.Instance.Selection.Add(grp.AnnotationModel));
+            FitViewCommand.Execute(true);
+            DynamoSelection.Instance.ClearSelection();
         }
         internal void GotoLeftMostNode(object parameter)
         {
@@ -4521,15 +4525,9 @@ namespace Dynamo.ViewModels
             {
                 double minX = CurrentSpaceViewModel.Nodes.Min(x => x.X);
                 var nodes = CurrentSpaceViewModel.Nodes.Where(x => x.X <= minX + tolerance).ToList();
-                var nodeSet = new HashSet<NodeModel>(nodes.Select(nvm => nvm.NodeModel));
-                var groups = CurrentSpaceViewModel.Annotations.Where(a => a.Nodes.Any(n => nodeSet.Contains(n)));
-                nodes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
-                groups.ToList().ForEach((grp) => DynamoSelection.Instance.Selection.Add(grp.AnnotationModel));
-                FitViewCommand.Execute(true);
-                DynamoSelection.Instance.ClearSelection();
+                FitCanvasToSelectedNodes(nodes);
             }
         }
-
         internal bool CanGotoLeftMostNode(object obj)
         {
             return IsHomeAndEndKeyEnabled();
@@ -4540,19 +4538,13 @@ namespace Dynamo.ViewModels
             {
                 double maxX = CurrentSpaceViewModel.Nodes.Max(x => x.X + x.ActualWidth);
                 var nodes = CurrentSpaceViewModel.Nodes.Where(x => x.X + x.ActualWidth >= maxX - tolerance).ToList();
-                var nodeSet = new HashSet<NodeModel>(nodes.Select(nvm => nvm.NodeModel));
-                var groups = CurrentSpaceViewModel.Annotations.Where(a => a.Nodes.Any(n => nodeSet.Contains(n))).Distinct();
-                nodes.ToList().ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
-                groups.ToList().ForEach((grp) => DynamoSelection.Instance.Selection.Add(grp.AnnotationModel));
-                FitViewCommand.Execute(true);
-                DynamoSelection.Instance.ClearSelection();
+                FitCanvasToSelectedNodes(nodes);         
             }
         }
         internal bool CanGotoRightMostNode(object obj)
         {
             return IsHomeAndEndKeyEnabled();
         }
-
         #endregion
 
         #region Shutdown related methods
