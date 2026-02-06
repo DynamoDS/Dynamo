@@ -1720,7 +1720,8 @@ Dynamo.UI.Views.ScriptHomeObject.StartGuidedTour(string path) -> void
 Dynamo.UI.Views.ScriptObject
 Dynamo.UI.Views.ScriptObject.ImportSettings(string file) -> void
 Dynamo.UI.Views.ScriptObject.LaunchDynamo(bool showScreenAgain) -> void
-Dynamo.UI.Views.ScriptObject.ScriptObject(System.Action<bool> requestLaunchDynamo, System.Action<string> requestImportSettings, System.Func<bool> requestSignIn, System.Func<bool> requestSignOut) -> void
+Dynamo.UI.Views.ScriptObject.ResetSettings() -> void
+Dynamo.UI.Views.ScriptObject.ScriptObject(System.Action<bool> requestLaunchDynamo, System.Action<string> requestImportSettings, System.Func<bool> requestSignIn, System.Func<bool> requestSignOut, System.Action requestResetSettings) -> void
 Dynamo.UI.Views.ScriptObject.SignIn() -> bool
 Dynamo.UI.Views.ScriptObject.SignOut() -> bool
 Dynamo.UI.Views.ScriptWizardObject
@@ -5707,6 +5708,9 @@ static Dynamo.Wpf.Properties.Resources.SplashScreenImportSettingsFailDescription
 static Dynamo.Wpf.Properties.Resources.SplashScreenLaunchingDynamo.get -> string
 static Dynamo.Wpf.Properties.Resources.SplashScreenLaunchTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.SplashScreenLoadingTimeLabel.get -> string
+static Dynamo.Wpf.Properties.Resources.SplashScreenResetSettingsTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.SplashScreenSettingsImportedRestartMessage.get -> string
+static Dynamo.Wpf.Properties.Resources.SplashScreenSettingsResetSuccess.get -> string
 static Dynamo.Wpf.Properties.Resources.SplashScreenShowScreenAgainLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.SplashScreenSignIn.get -> string
 static Dynamo.Wpf.Properties.Resources.SplashScreenSigningIn.get -> string
