@@ -211,7 +211,7 @@ namespace Dynamo.LibraryViewExtensionWebView2.Handlers
             extension = "png";
 
             var path = Path.GetFullPath(icon.Path); //Get full path if it's a relative path.
-            var libraryCustomization = getForAssemblyMethodInfo.Invoke(null,new object[] { path, pathManager, true });
+            var libraryCustomization = getForAssemblyMethodInfo.Invoke(null, new object[] { path, pathManager, true });
             if (libraryCustomization == null)
                 return null;
 
@@ -225,18 +225,9 @@ namespace Dynamo.LibraryViewExtensionWebView2.Handlers
             var assemblyName = String.Join("", temp.Take(temp.Length - 1));
             var rm = new ResourceManager(assemblyName + imagesSuffix, assembly);
 
-            using (var image = (Bitmap)rm.GetObject(icon.Name))
-            {
-                if (image == null) return null;
-
-                var tempstream = new MemoryStream();
-
-                image.Save(tempstream, image.RawFormat);
-                byte[] imageBytes = tempstream.ToArray();
-                tempstream.Dispose();
-                string base64String = Convert.ToBase64String(imageBytes);
-                return base64String;
-            }
+            byte[] imageBytes = rm.GetObject(icon.Name) as byte[];
+            string base64String = Convert.ToBase64String(imageBytes);
+            return base64String;
         }
 
         /// <summary>
