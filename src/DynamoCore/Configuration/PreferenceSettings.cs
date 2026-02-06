@@ -74,6 +74,7 @@ namespace Dynamo.Configuration
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
         private bool isEnablePersistExtensionsEnabled;
+        private bool isAutoSyncDocumentBrowser = true;
         private bool isStaticSplashScreenEnabled;
         private bool isTimeStampIncludedInExportFilePath;
         private bool isCreatedFromValidFile = true;
@@ -783,7 +784,22 @@ namespace Dynamo.Configuration
                 RaisePropertyChanged(nameof(EnablePersistExtensions));
             }
         }
-
+        /// <summary>
+        /// This defines if user wants the Document Browser content to be automatically synced to the selected Node.
+        /// The default value is true.
+        /// </summary>
+        public bool IsAutoSyncDocumentBrowser
+        {
+            get
+            {
+                return isAutoSyncDocumentBrowser;
+            }
+            set
+            {
+                isAutoSyncDocumentBrowser = value;
+                RaisePropertyChanged(nameof(IsAutoSyncDocumentBrowser));
+            }
+        }
 
         /// <summary>
         /// This defines if the user wants to see the static splash screen again

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Configuration;
@@ -65,6 +66,9 @@ namespace Dynamo.ViewModels
         private const string WatchNodeName = "Watch";
         private bool nodeHoveringState;
         private bool isHidden;
+        private Wpf.Utilities.ActionDebouncer delayDocumentBrowserRefresh
+           = new Wpf.Utilities.ActionDebouncer(null);
+        private int delayDocumentBrowserRefreshTime = 300;
         #endregion
 
         #region public members
@@ -686,7 +690,7 @@ namespace Dynamo.ViewModels
                 return NodeModel.IsExperimental && (DynamoModel.FeatureFlags?.CheckFeatureFlag("experimentalGlyphIsVisible", false) ?? false);
             }
         }
-            
+
         /// <summary>
         /// A flag indicating whether the underlying NodeModel's IsFrozen property can be toggled.      
         /// </summary>
@@ -966,7 +970,7 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged(nameof(NodeOverlayVisible));
             RaisePropertyChanged(nameof(NodeOverlayColor));
         }
-        
+
         /// <summary>
         /// Clears the existing messages on a node before it executes and re-evalutes its warnings/errors. 
         /// </summary>
@@ -1071,7 +1075,7 @@ namespace Dynamo.ViewModels
             {
                 DismissedAlerts.Add(infoBubbleDataPacket.Message);
             }
-            
+
             RaisePropertyChanged(nameof(DismissedAlerts));
             RaisePropertyChanged(nameof(NumberOfDismissedAlerts));
 
@@ -1123,6 +1127,8 @@ namespace Dynamo.ViewModels
             if (ErrorBubble != null) DisposeErrorBubble();
 
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
+            delayDocumentBrowserRefresh?.Dispose();
+            delayDocumentBrowserRefresh = null;
             base.Dispose();
         }
 
@@ -1249,6 +1255,10 @@ namespace Dynamo.ViewModels
                 case "IsSelected":
                     RaisePropertyChanged("IsSelected");
                     RaisePropertyChanged("PreviewState");
+                    if (IsSelected)
+                        delayDocumentBrowserRefresh?.Debounce(delayDocumentBrowserRefreshTime, HandleDocumentationBrowserRefresh);
+                    else
+                        delayDocumentBrowserRefresh?.Cancel();
                     break;
                 case "State":
                     RaisePropertyChanged("State");
@@ -1330,6 +1340,30 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// DYN-9600: Automatically synchronize the Documentation Browser to the currently selected node to reduce clicks
+        /// Implementation Scope (When the Node Help Documentation Browser is open and visible):
+        /// - When Single node selected: Change and display that new selected node’s help content automatically.
+        /// - When Multiple nodes or a group selected: Do not change content; retain the last viewed help
+        /// - No selection: Retain the last viewed help.
+        /// - If a selected node is deleted or becomes invalid, retain last help and clear pause state if needed.
+        /// - Switching workspaces or graphs preserves the last help state per workspace session.
+        /// </summary>
+        private void HandleDocumentationBrowserRefresh()
+        {
+            if (DynamoViewModel.PreferenceSettings.IsAutoSyncDocumentBrowser)
+            {
+                TabItem tabitem = DynamoViewModel.SideBarTabItems.OfType<TabItem>()
+                    .SingleOrDefault(n => n.Content.GetType().Name.Equals("DocumentationBrowserView", StringComparison.OrdinalIgnoreCase));
+                if (tabitem != null &&
+                    RequestShowNodeHelp != null &&
+                    DynamoSelection.Instance.Selection.Count == 1)
+                {
+                    RequestShowNodeHelp(this, new NodeDialogEventArgs(this.nodeLogic));
+                }
+            }
+        }
+
+        /// <summary>
         /// Updates the width of the node's Warning/Error bubbles, in case the width of the node changes.
         /// </summary>
         private void UpdateErrorBubbleWidth()
@@ -1358,7 +1392,7 @@ namespace Dynamo.ViewModels
             ErrorBubble.NodeWarningsToDisplay.CollectionChanged += UpdateOverlays;
             ErrorBubble.NodeErrorsToDisplay.CollectionChanged += UpdateOverlays;
             ErrorBubble.PropertyChanged += ErrorBubble_PropertyChanged;
-            
+
             if (DynamoViewModel.UIDispatcher != null)
             {
                 DynamoViewModel.UIDispatcher.Invoke(() =>
@@ -1380,7 +1414,7 @@ namespace Dynamo.ViewModels
         private static SolidColorBrush nodePreviewGeometryColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BBBBBB"));
         private static SolidColorBrush nodeFrozenOverlayColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BCD3EE"));
         private static SolidColorBrush nodeTransientOverlayColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#D5BCF7"));
-        private static SolidColorBrush nodeInfoColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#6AC0E7"));        
+        private static SolidColorBrush nodeInfoColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#6AC0E7"));
 
         /// <summary>
         /// Sets the color of the warning bar, which informs the user that the node is in
@@ -1440,14 +1474,14 @@ namespace Dynamo.ViewModels
                 if (result != null)
                 {
                     ImgGlyphOneSource = previewGeometryGlyph;
-                } 
+                }
             }
 
             if (this.NodeModel.IsCustomFunction || !string.IsNullOrEmpty(this.PackageName))
             {
                 result = nodeCustomColor;
                 if(result != null)
-                {   
+                {
                     if (ImgGlyphOneSource == null)
                     {
                         ImgGlyphOneSource = packageGlyph;
@@ -1468,7 +1502,7 @@ namespace Dynamo.ViewModels
                     if (ImgGlyphOneSource == null)
                     {
                         ImgGlyphOneSource = frozenGlyph;
-                    }   
+                    }
                     else
                     {
                         ImgGlyphOneSource = frozenGlyph;
@@ -1580,7 +1614,7 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            bool hasErrorOrWarning = NodeModel.IsInErrorState || NodeModel.State == ElementState.Warning; 
+            bool hasErrorOrWarning = NodeModel.IsInErrorState || NodeModel.State == ElementState.Warning;
             bool isNodeStateInfo = NodeModel.State == ElementState.Info || NodeModel.State == ElementState.PersistentInfo;
 
             // Persistent warnings should continue to be displayed even if nodes are not involved in an execution as they can include:
@@ -1618,7 +1652,7 @@ namespace Dynamo.ViewModels
                     style = InfoBubbleViewModel.Style.Info;
                     styleRank = 3;
                 }
-                
+
                 if (infoStyle == InfoBubbleViewModel.Style.Warning && styleRank > 2)
                 {
                     style = InfoBubbleViewModel.Style.Warning;
@@ -1663,7 +1697,7 @@ namespace Dynamo.ViewModels
                 }
                 HandleColorOverlayChange();
             }
-            ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);            
+            ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
         }
 
         private void UpdateErrorBubblePosition()
@@ -2100,15 +2134,15 @@ namespace Dynamo.ViewModels
             var selectedGroups = WorkspaceViewModel.Model.Annotations
                 .Where(x => x.IsSelected);
 
-            if (selectedGroups.Any() && 
-                !selectedGroups.All(x => !x.IsExpanded)) 
+            if (selectedGroups.Any() &&
+                !selectedGroups.All(x => !x.IsExpanded))
             {
                 return !(WorkspaceViewModel.Model.Annotations.ContainsModel(NodeLogic.GUID));
             }
             return false;
         }
 
-        
+
 
         private void SelectUpstreamNeighbours(object parameters)
         {
@@ -2122,7 +2156,7 @@ namespace Dynamo.ViewModels
 
             SelectRelatedGroupsToNodes(upstreamNodes);
         }
-        
+
         private void SelectDownstreamNeighbours(object parameters)
         {
             NodeModel.SelectDownstreamNeighbours();
@@ -2139,7 +2173,7 @@ namespace Dynamo.ViewModels
         private void SelectDownstreamAndUpstreamNeighbours(object parameters)
         {
             NodeModel.SelectUpstreamAndDownstreamNeighbours();
-            
+
             var nodesSelected = NodeModel
                 .AllUpstreamNodes(new List<NodeModel>())
                 .ToList();
@@ -2167,7 +2201,7 @@ namespace Dynamo.ViewModels
                     group.AddGroupAndGroupedNodesToSelection();
             }
         }
-        
+
         #region Private Helper Methods
         internal Point GetTopLeft()
         {

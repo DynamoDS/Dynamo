@@ -2925,6 +2925,8 @@ Dynamo.ViewModels.PreferencesViewModel.PackagePathsViewModel.get -> Dynamo.ViewM
 Dynamo.ViewModels.PreferencesViewModel.PackagePathsViewModel.set -> void
 Dynamo.ViewModels.PreferencesViewModel.PersistExtensionsIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.PersistExtensionsIsChecked.set -> void
+Dynamo.ViewModels.PreferencesViewModel.AutoSyncDocumentBrowserIsChecked.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.AutoSyncDocumentBrowserIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.PreferencesTabs.get -> System.Collections.Generic.Dictionary<string, Dynamo.ViewModels.TabSettings>
 Dynamo.ViewModels.PreferencesViewModel.PreferencesTabs.set -> void
 Dynamo.ViewModels.PreferencesViewModel.PreferencesViewModel(Dynamo.ViewModels.DynamoViewModel dynamoViewModel) -> void
@@ -4743,6 +4745,8 @@ static Dynamo.Wpf.Properties.Resources.DuplicateFilesInPublishWarningMessage.get
 static Dynamo.Wpf.Properties.Resources.DuplicateFilesInPublishWarningTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoShowFileTrustWarning.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoSplashScreenFailed.get -> string
+static Dynamo.Wpf.Properties.Resources.DocumentationBrowserAutoSyncLabel.get -> string
+static Dynamo.Wpf.Properties.Resources.DocumentationBrowserPreferences.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoSplashScreen.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoUpdateAvailableToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewCancelButtonTooltip.get -> string
