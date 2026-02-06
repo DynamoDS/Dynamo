@@ -1,11 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
-using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
+
+using Autodesk.GeometryPrimitives.Dynamo.Geometry;
+using Vector = Autodesk.GeometryPrimitives.Dynamo.Math.Vector3d;
+using Matrix = Autodesk.GeometryPrimitives.Dynamo.Math.Matrix3d;
 
 namespace Dynamo.Manipulation
 {
@@ -37,6 +40,11 @@ namespace Dynamo.Manipulation
         }
 
         #region Private members
+        /// <summary>
+        /// Hit tolerance
+        /// </summary>
+        private const double tolerance = 0.15;
+
 
         /// <summary>
         /// An offset distance from the gizmo Origin
@@ -78,7 +86,7 @@ namespace Dynamo.Manipulation
         public TranslationGizmo(NodeManipulator manipulator, Vector axis1, double size)
             : base(manipulator) 
         {
-            ReferenceCoordinateSystem = CoordinateSystem.Identity();
+            ReferenceCoordinateSystem = Matrix.Identity;
             UpdateGeometry(axis1, null, null, size);
         }
 
@@ -92,12 +100,12 @@ namespace Dynamo.Manipulation
         public TranslationGizmo(NodeManipulator manipulator, Vector axis1, Vector axis2, double size)
             : base(manipulator)
         {
-            ReferenceCoordinateSystem = CoordinateSystem.Identity();
+            ReferenceCoordinateSystem = Matrix.Identity;
             UpdateGeometry(axis1, axis2, null, size);
         }
 
         /// <summary>
-        /// Construcs a 3D gizmo, can be manipulated in all three directions.
+        /// Constructs a 3D gizmo, can be manipulated in all three directions.
         /// </summary>
         /// <param name="manipulator"></param>
         /// <param name="axis1">First axis of freedom</param>
@@ -107,12 +115,12 @@ namespace Dynamo.Manipulation
         public TranslationGizmo(NodeManipulator manipulator, Vector axis1, Vector axis2, Vector axis3, double size)
             : base(manipulator)
         {
-            ReferenceCoordinateSystem = CoordinateSystem.Identity();
+            ReferenceCoordinateSystem = Matrix.Identity;
             UpdateGeometry(axis1, axis2, axis3, size);
         }
 
         /// <summary>
-        /// Construcs a 3D gizmo, can be manipulated in all three directions.
+        /// Constructs a 3D gizmo, can be manipulated in all three directions.
         /// </summary>
         /// <param name="axis1">First axis of freedom</param>
         /// <param name="axis2">Second axis of freedom</param>
@@ -120,7 +128,7 @@ namespace Dynamo.Manipulation
         /// <param name="size">Visual size of the Gizmo</param>
         internal void UpdateGeometry(Vector axis1, Vector axis2, Vector axis3, double size)
         {
-            if (axis1 == null) throw new ArgumentNullException("axis1");
+            if (axis1 == null) throw new ArgumentNullException(nameof(axis1));
 
             //Reset the dataset, but don't reset the cached hitAxis or hitPlane.
             //hitAxis and hitPlane are used to compute the offset for a move.
@@ -133,16 +141,16 @@ namespace Dynamo.Manipulation
             if (axis2 != null)
             {
                 axes.Add(axis2);
-                planes.Add(Plane.ByOriginXAxisYAxis(Origin, axis1, axis2));
+                planes.Add(new Plane(Origin.Position, axis1 * axis2, axis1));
             }
             if (axis3 != null)
             {
                 axes.Add(axis3);
                 if (axis2 != null)
                 {
-                    planes.Add(Plane.ByOriginXAxisYAxis(Origin, axis2, axis3));
+                    planes.Add(new Plane(Origin.Position, axis2 * axis3, axis2));
                 }
-                planes.Add(Plane.ByOriginXAxisYAxis(Origin, axis3, axis1));
+                planes.Add(new Plane(Origin.Position, axis3 * axis1, axis3));
             }
 
             if (axes.Count == 1 && hitAxis != null)
@@ -156,7 +164,7 @@ namespace Dynamo.Manipulation
         #region private methods
 
         /// <summary>
-        /// Returs default color for a given axis
+        /// Returns default color for a given axis
         /// </summary>
         /// <param name="axis">Axes</param>
         /// <returns>Color</returns>
@@ -173,8 +181,6 @@ namespace Dynamo.Manipulation
                     return Color.FromRgb(0, 0, col);
                 case Axes.randomAxis:
                     break;
-                default:
-                    break;
             }
             
             const byte colR = 0;
@@ -190,15 +196,86 @@ namespace Dynamo.Manipulation
         /// <returns>Axis</returns>
         private Axes GetAlignedAxis(Vector axis)
         {
-            if (axis.IsParallel(ReferenceCoordinateSystem.XAxis))
+            var tol = 0.0001;
+            var xAxis = new Vector(ReferenceCoordinateSystem[0, 0], ReferenceCoordinateSystem[0, 1], ReferenceCoordinateSystem[0, 2]);
+            if ((axis * xAxis).IsNull(tol))
                 return Axes.xAxis;
-            if (axis.IsParallel(ReferenceCoordinateSystem.YAxis))
+
+            var yAxis = new Vector(ReferenceCoordinateSystem[1, 0], ReferenceCoordinateSystem[1, 1], ReferenceCoordinateSystem[1, 2]);
+            if ((axis * yAxis).IsNull(tol))
                 return Axes.yAxis;
-            if (axis.IsParallel(ReferenceCoordinateSystem.ZAxis))
+
+            var zAxis = new Vector(ReferenceCoordinateSystem[2, 0], ReferenceCoordinateSystem[2, 1], ReferenceCoordinateSystem[2, 2]);
+            if ((axis * zAxis).IsNull(tol))
                 return Axes.zAxis;
 
             return Axes.randomAxis;
         }
+
+        private static double DistanceTo(Line line, Point pt)
+        {
+            var p = pt.Position;
+            var sp = line.Position;
+            var dir = line.Direction;
+
+            // closest_dist = |Vector(p - sp) x dir| / |dir|
+            var num = ((p - sp) * dir).Magnitude;
+            var den = dir.Magnitude;
+            return num/den;
+        }
+
+        private static double DistanceTo(Line line, Line ray)
+        {
+            var a1 = line.Position;
+            var a2 = ray.Position;
+            var b1 = line.Direction;
+            var b2 = ray.Direction;
+
+            // closest_dist = |(a1 - a2) % (b1 * b2) / |b1 * b2||
+            return Math.Abs((a1 - a2) % (b1 * b2).Unit);
+        }
+
+        private static Point Intersect(Line line, Plane plane)
+        {
+            var d = line.Direction;
+            var sp = line.Position;
+            var n = plane.Normal;
+            var p = plane.Origin;
+
+            // intersection point (ip) = sp + t * d
+            // equation of plane: n % (ip - p) = 0
+            // substituting the intersection point into the plane equation:
+            if(n% d == 0) return null; // line is parallel to the plane
+
+            var t = (n % (p - sp)) / (n % d);
+            var ip = sp + d * t;
+
+            return new Point(ip);
+        }
+
+        private Point ClosestPointTo(Line line, Line ray)
+        {
+            var p1 = line.Position;
+            var p2 = ray.Position;
+            var d1 = line.Direction;
+            var d2 = ray.Direction;
+
+            var d1Crossd2 = d1 * d2;
+            var sqrMagnitude = Math.Pow(d1Crossd2.Magnitude, 2);
+
+            var planarFactor = (p2 - p1) % d1Crossd2;
+
+            // Check if the lines are coplanar and not parallel
+            if (Math.Abs(planarFactor) < tolerance && sqrMagnitude > tolerance)
+            {
+                var t1 = ((p2 - p1) * d2) % d1Crossd2 / sqrMagnitude;
+                //var t2 = ((p2 - p1) * d1) % d1Crossd2 / Math.Pow(d1Crossd2.Magnitude, 2);
+
+                return new Point(p1 + d1 * t1);
+            }
+            return Origin;
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -207,48 +284,45 @@ namespace Dynamo.Manipulation
         /// <returns></returns>
         private object HitTest(Point source, Vector direction)
         {
-            double tolerance = 0.15; //Hit tolerance
-            
-            using (var ray = GetRayGeometry(source, direction))
+
+            var ray = GetRayGeometry(source, direction);
+            //First hit test for position
+            if (DistanceTo(ray, Origin) < tolerance)
             {
-                //First hit test for position
-                if (ray.DistanceTo(Origin) < tolerance)
+                if (planes.Any())
                 {
-                    if (planes.Any())
-                    {
-                        return planes.First(); //Xy or first available plane is hit
-                    }
-                    return axes.First(); //xAxis or first axis is hit
+                    return planes.First(); //Xy or first available plane is hit
                 }
+                return axes.First(); //xAxis or first axis is hit
+            }
 
-                foreach (var plane in planes)
+            foreach (var plane in planes)
+            {
+                // plane needs to be up-to-date at this time with the current value of Origin
+                var pt = Intersect(ray, plane);
+                if (pt == null) continue;
+
+                var vec = new Vector(pt.Position.X - Origin.Position.X, pt.Position.Y - Origin.Position.Y,
+                    pt.Position.Z - Origin.Position.Z);
+                var dot1 = plane.UAxis % vec;
+
+                var planeYAxis = plane.Normal * plane.UAxis;
+                var dot2 = planeYAxis % vec;
+                if (dot1 > 0 && dot2 > 0 && dot1 < scale / 2 && dot2 < scale / 2)
                 {
-                    // plane needs to be up-to-date at this time with the current value of Origin
-                    using (var pt = plane.Intersect(ray).FirstOrDefault() as Point)
-                    {
-                        if (pt == null) continue;
-
-                        using (var vec = Vector.ByTwoPoints(Origin, pt))
-                        {
-                            var dot1 = plane.XAxis.Dot(vec);
-                            var dot2 = plane.YAxis.Dot(vec);
-                            if (dot1 > 0 && dot2 > 0 && dot1 < scale/2 && dot2 < scale/2)
-                            {
-                                return plane; //specific plane is hit
-                            }
-                        }
-                    }
+                    return plane; //specific plane is hit
                 }
+            }
 
-                foreach (var axis in axes)
+            foreach (var axis in axes)
+            {
+                var vec = axis.Unit;
+                vec.Scale(scale);
+                var line = new Line(Origin.Position, vec);
+
+                if (DistanceTo(line, ray) < tolerance)
                 {
-                    using (var line = Line.ByStartPointDirectionLength(Origin, axis, scale))
-                    {
-                        if (line.DistanceTo(ray) < tolerance)
-                        {
-                            return axis; //specific axis is hit.
-                        }
-                    }
+                    return axis; //specific axis is hit.
                 }
             }
             return null;
@@ -262,8 +336,10 @@ namespace Dynamo.Manipulation
         /// <returns></returns>
         private Line GetRayGeometry(Point source, Vector direction)
         {
-            double size = ManipulatorOrigin.DistanceTo(source) * 100;
-            return Line.ByStartPointDirectionLength(source, direction, size);
+            double size = (ManipulatorOrigin.Position - source.Position).Magnitude * 100;
+            var vec = direction.Unit;
+            vec.Scale(size);
+            return new Line(source.Position, vec);
         }
 
         #endregion
@@ -273,7 +349,7 @@ namespace Dynamo.Manipulation
         /// <summary>
         /// Reference coordinate system for the Gizmo
         /// </summary>
-        public CoordinateSystem ReferenceCoordinateSystem { get; set; }
+        public Matrix ReferenceCoordinateSystem { get; set; }
 
         /// <summary>
         /// Clears the cached hit axis and plane after manipulation is complete.
@@ -319,29 +395,23 @@ namespace Dynamo.Manipulation
         public override Vector GetOffset(Point newPosition, Vector viewDirection)
         {
             Point hitPoint = Origin;
-            using (var ray = GetRayGeometry(newPosition, viewDirection))
+            var ray = GetRayGeometry(newPosition, viewDirection);
+            if (hitPlane != null)
             {
-                if (hitPlane != null)
-                {
-                    using (var testPlane = Plane.ByOriginXAxisYAxis(ManipulatorOrigin, hitPlane.XAxis, hitPlane.YAxis))
-                    {
-                        hitPoint = testPlane.Intersect(ray).FirstOrDefault() as Point;
-                    }
-                }
-                else if (hitAxis != null)
-                {
-                    using (var axisLine = RayExtensions.ToOriginCenteredLine(ManipulatorOrigin, hitAxis))
-                    {
-                        hitPoint = axisLine.ClosestPointTo(ray);
-                    }
-                }
+                var testPlane = new Plane(ManipulatorOrigin.Position, hitPlane.Normal, hitPlane.UAxis);
+                hitPoint = Intersect(ray, testPlane);
+            }
+            else if (hitAxis != null)
+            {
+                var axisLine = RayExtensions.ToOriginCenteredLine(ManipulatorOrigin, hitAxis);
+                hitPoint = ClosestPointTo(axisLine, ray);
             }
             if (hitPoint == null)
             {
-                return Vector.ByCoordinates(0, 0, 0);
+                return new Vector(0, 0, 0);
             }
 
-            return Vector.ByTwoPoints(ManipulatorOrigin, hitPoint);
+            return new Vector(hitPoint.Position.X - ManipulatorOrigin.Position.X, hitPoint.Position.Y - ManipulatorOrigin.Position.Y, hitPoint.Position.Z - ManipulatorOrigin.Position.Z);
         }
 
         /// <summary>
@@ -374,7 +444,7 @@ namespace Dynamo.Manipulation
         {
             // Update gizmo geometry wrt to current Origin
             var newPlanes = planes.Select(
-                plane => Plane.ByOriginXAxisYAxis(Origin, plane.XAxis, plane.YAxis)).ToList();
+                plane => new Plane(Origin.Position, plane.Normal, plane.UAxis)).ToList();
 
             planes.Clear();
 
@@ -384,7 +454,7 @@ namespace Dynamo.Manipulation
 
         public override void DeleteTransientGraphics()
         {
-            var identifier = string.Format("{0}_{1}", RenderDescriptions.AxisLine, Name);
+            var identifier = $"{RenderDescriptions.AxisLine}_{Name}";
             BackgroundPreviewViewModel.DeleteGeometryForIdentifier(identifier);
         }
 
@@ -408,11 +478,11 @@ namespace Dynamo.Manipulation
             if (null != hitPlane)
             {
                 IRenderPackage package = RenderPackageFactory.CreateRenderPackage();
-                DrawAxisLine(ref package, hitPlane.XAxis, "xAxisLine");
+                DrawAxisLine(ref package, hitPlane.UAxis, "xAxisLine");
                 drawables.Add(package);
 
                 package = RenderPackageFactory.CreateRenderPackage();
-                DrawAxisLine(ref package, hitPlane.YAxis, "yAxisLine");
+                DrawAxisLine(ref package, hitPlane.Normal * hitPlane.UAxis, "yAxisLine");
                 drawables.Add(package);
             }
 
@@ -427,16 +497,16 @@ namespace Dynamo.Manipulation
         /// <param name="name"></param>
         private void DrawAxisLine(ref IRenderPackage package, Vector axis, string name)
         {
-            package.Description = string.Format("{0}_{1}_{2}", RenderDescriptions.AxisLine, Name, name);
-            using (var line = RayExtensions.ToOriginCenteredLine(Origin, axis))
-            {
-                var color = GetAxisColor(GetAlignedAxis(axis));
-                package.AddLineStripVertexCount(2);
-                package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
-                package.AddLineStripVertex(line.StartPoint.X, line.StartPoint.Y, line.StartPoint.Z);
-                package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
-                package.AddLineStripVertex(line.EndPoint.X, line.EndPoint.Y, line.EndPoint.Z);
-            }
+            package.Description = $"{RenderDescriptions.AxisLine}_{Name}_{name}";
+
+            var line = RayExtensions.ToOriginCenteredLine(Origin, axis);
+            var color = GetAxisColor(GetAlignedAxis(axis));
+            package.AddLineStripVertexCount(2);
+            package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
+            package.AddLineStripVertex(line.Position.X, line.Position.Y, line.Position.Z);
+            package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
+            var endPoint = line.Position + line.Direction;
+            package.AddLineStripVertex(endPoint.X, endPoint.Y, endPoint.Z);
         }
 
         /// <summary>
@@ -447,30 +517,29 @@ namespace Dynamo.Manipulation
         /// <param name="name"></param>
         private void DrawPlane(ref IRenderPackage package, Plane plane, Planes name)
         {
-            package.Description = string.Format("{0}_{1}_{2}", RenderDescriptions.ManipulatorPlane, Name, name);
-            using (var vec1 = plane.XAxis.Scale(scale/3))
-            using (var vec2 = plane.YAxis.Scale(scale/3))
-            using (var vec3 = plane.YAxis.Scale(scale/3))
-            {
-                using (var p1 = Origin.Add(vec1))
-                using (var p2 = p1.Add(vec2))
-                using (var p3 = Origin.Add(vec3))
-                {
-                    var axis = plane.Normal;
-                    var color = GetAxisColor(GetAlignedAxis(axis));
+            package.Description = $"{RenderDescriptions.ManipulatorPlane}_{Name}_{name}";
 
-                    package.AddLineStripVertexCount(3);
-                    package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
-                    package.AddLineStripVertex(p1.X, p1.Y, p1.Z);
+            var xAxis = plane.UAxis;
+            xAxis.Scale(scale / 3);
 
-                    package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
-                    package.AddLineStripVertex(p2.X, p2.Y, p2.Z);
+            var yAxis = plane.Normal * plane.UAxis;
+            yAxis.Scale(scale / 3);
 
-                    package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
-                    package.AddLineStripVertex(p3.X, p3.Y, p3.Z);
-                    
-                }
-            }
+            var p1 = Origin.Position + xAxis;
+            var p2 = p1 + yAxis;
+            var p3 = Origin.Position + yAxis;
+            var axis = plane.Normal;
+            var color = GetAxisColor(GetAlignedAxis(axis));
+
+            package.AddLineStripVertexCount(3);
+            package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
+            package.AddLineStripVertex(p1.X, p1.Y, p1.Z);
+
+            package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
+            package.AddLineStripVertex(p2.X, p2.Y, p2.Z);
+
+            package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
+            package.AddLineStripVertex(p3.X, p3.Y, p3.Z);
         }
 
         /// <summary>
@@ -481,30 +550,23 @@ namespace Dynamo.Manipulation
         private void DrawAxis(ref IRenderPackage package, Vector axis)
         {
             var axisType = GetAlignedAxis(axis);
-            package.Description = string.Format("{0}_{1}_{2}", RenderDescriptions.ManipulatorAxis, Name, axisType);
+            package.Description = $"{RenderDescriptions.ManipulatorAxis}_{Name}_{axisType}";
 
-            using (var axisStart = Origin.Add(axis.Scale(axisOriginOffset)))
-            using (var axisEnd = Origin.Add(axis.Scale(scale)))
-            {
-                var color = GetAxisColor(axisType);
-                package.AddLineStripVertexCount(2);
-                package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
-                package.AddLineStripVertex(axisStart.X, axisStart.Y, axisStart.Z);
-                package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
-                package.AddLineStripVertex(axisEnd.X, axisEnd.Y, axisEnd.Z);
-            }
+            var axis1 = new Vector(axis.X, axis.Y, axis.Z);
+            axis1.Scale(axisOriginOffset);
+            var axisStart = Origin.Position + axis1;
+
+            var axis2 = new Vector(axis.X, axis.Y, axis.Z);
+            axis2.Scale(scale);
+            var axisEnd = Origin.Position + axis2;
+            var color = GetAxisColor(axisType);
+            package.AddLineStripVertexCount(2);
+            package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
+            package.AddLineStripVertex(axisStart.X, axisStart.Y, axisStart.Z);
+            package.AddLineStripVertexColor(color.R, color.G, color.B, color.A);
+            package.AddLineStripVertex(axisEnd.X, axisEnd.Y, axisEnd.Z);
         }
 
         #endregion
-
-        protected override void Dispose(bool disposing)
-        {
-            axes.ForEach(x => x.Dispose());
-            planes.ForEach(x => x.Dispose());
-
-            if(ReferenceCoordinateSystem != null) ReferenceCoordinateSystem.Dispose();
-
-            base.Dispose(disposing);
-        }
     }
 }

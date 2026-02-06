@@ -1,4 +1,3 @@
-using Autodesk.DesignScript.Geometry;
 using CoreNodeModels.Input;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
@@ -15,8 +14,8 @@ using System.Linq;
 using System.Threading;
 using System.Windows.Input;
 using System.Windows.Media.Media3D;
-using Point = Autodesk.DesignScript.Geometry.Point;
-using Vector = Autodesk.DesignScript.Geometry.Vector;
+using Autodesk.GeometryPrimitives.Dynamo.Geometry;
+using Vector = Autodesk.GeometryPrimitives.Dynamo.Math.Vector3d;
 
 namespace Dynamo.Manipulation
 {
@@ -51,25 +50,13 @@ namespace Dynamo.Manipulation
 
         #region properties
 
-        protected IWorkspaceModel WorkspaceModel
-        {
-            get { return manipulatorContext.WorkspaceModel; }
-        }
+        protected IWorkspaceModel WorkspaceModel => manipulatorContext.WorkspaceModel;
 
-        protected ICommandExecutive CommandExecutive
-        {
-            get { return manipulatorContext.CommandExecutive; }
-        }
+        protected ICommandExecutive CommandExecutive => manipulatorContext.CommandExecutive;
 
-        protected string UniqueId
-        {
-            get { return manipulatorContext.UniqueId; }
-        }
+        protected string UniqueId => manipulatorContext.UniqueId;
 
-        protected string ExtensionName
-        {
-            get { return manipulatorContext.Name; }
-        }
+        protected string ExtensionName => manipulatorContext.Name;
 
         protected IGizmo GizmoInAction { get; private set; }
 
@@ -81,15 +68,9 @@ namespace Dynamo.Manipulation
         /// </summary>
         internal abstract Point Origin { get; }
 
-        internal IWatch3DViewModel BackgroundPreviewViewModel
-        {
-            get { return manipulatorContext.BackgroundPreviewViewModel; }
-        }
+        internal IWatch3DViewModel BackgroundPreviewViewModel => manipulatorContext.BackgroundPreviewViewModel;
 
-        internal IRenderPackageFactory RenderPackageFactory
-        {
-            get { return manipulatorContext.RenderPackageFactory; }
-        }
+        internal IRenderPackageFactory RenderPackageFactory => manipulatorContext.RenderPackageFactory;
 
         internal Point3D? CameraPosition { get; private set; }
         
@@ -173,7 +154,6 @@ namespace Dynamo.Manipulation
         /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
-            if (Origin != null) Origin.Dispose();
         }
 
         /// <summary>
@@ -203,8 +183,8 @@ namespace Dynamo.Manipulation
             active = UpdatePosition();
             if (Origin != null )
             {
-                originBeforeMove = Point.ByCoordinates(Origin.X, Origin.Y, Origin.Z);
-                originAfterMove = Point.ByCoordinates(Origin.X, Origin.Y, Origin.Z);
+                originBeforeMove = new Point(Origin.Position.X, Origin.Position.Y, Origin.Position.Z);
+                originAfterMove = new Point(Origin.Position.X, Origin.Position.Y, Origin.Position.Z);
             }
 
             GizmoInAction = null; //Reset Drag.
@@ -217,21 +197,18 @@ namespace Dynamo.Manipulation
 
             foreach (var item in gizmos)
             {
-                using(var originPt = ray.GetOriginPoint())
-                using (var dirVec = ray.GetDirectionVector())
+                var originPt = ray.GetOriginPoint();
+                var dirVec = ray.GetDirectionVector();
+                if (item.HitTest(originPt, dirVec, out var hitObject))
                 {
-                    object hitObject;
-                    if (item.HitTest(originPt, dirVec, out hitObject))
-                    {
-                        GizmoInAction = item;
+                    GizmoInAction = item;
 
-                        var nodes = OnGizmoClick(item, hitObject).ToList();
-                        if (nodes.Any())
-                        {
-                            WorkspaceModel.RecordModelsForModification(nodes);
-                        }
-                        return;
+                    var nodes = OnGizmoClick(item, hitObject).ToList();
+                    if (nodes.Count != 0)
+                    {
+                        WorkspaceModel.RecordModelsForModification(nodes);
                     }
+                    return;
                 }
             }
         }
@@ -262,7 +239,8 @@ namespace Dynamo.Manipulation
 
             if (originBeforeMove != null && originAfterMove != null)
             {
-                var inputNodesToManipulate = InputNodesToUpdateAfterMove(Vector.ByTwoPoints(originBeforeMove, originAfterMove));
+                var inputNodesToManipulate = InputNodesToUpdateAfterMove(
+                    originAfterMove.Position - originBeforeMove.Position);
                 foreach (var (inputNode, amount) in inputNodesToManipulate)
                 {
                     if (inputNode == null) continue;
@@ -308,12 +286,11 @@ namespace Dynamo.Manipulation
             }
 
             var offset = GizmoInAction.GetOffset(clickRay.GetOriginPoint(), clickRay.GetDirectionVector());
-            if (offset.Length < 0.01) return;
+            if (offset.Magnitude < 0.01) return;
 
             if (originAfterMove != null)
             {
-                var offsetPos = originAfterMove.Add(offset);
-                originAfterMove.Dispose();
+                var offsetPos = new Point(originAfterMove.Position + offset);
                 originAfterMove = offsetPos;
             }
 
@@ -391,8 +368,7 @@ namespace Dynamo.Manipulation
         {
             bool manipulate = false;
             inputNode = null;
-            Tuple<int, NodeModel> val;
-            if (Node.InputNodes.TryGetValue(inputPortIndex, out val))
+            if (Node.InputNodes.TryGetValue(inputPortIndex, out var val))
             {
                 if (val != null)
                 {
@@ -445,8 +421,10 @@ namespace Dynamo.Manipulation
             if (inputNode != null)
             {
                 // Assign the input slider to the default value of the node's input port
-                var doubleNode = Node.InPorts[inputPortIndex].DefaultValue as DoubleNode;
-                if (doubleNode != null) inputNode.Value = doubleNode.Value;
+                if (Node.InPorts[inputPortIndex].DefaultValue is DoubleNode doubleNode)
+                {
+                    inputNode.Value = doubleNode.Value;
+                }
             }
             return inputNode;
         }
@@ -590,15 +568,12 @@ namespace Dynamo.Manipulation
             {
                 item.UnhighlightGizmo();
 
-                using (var originPt = clickRay.GetOriginPoint())
-                using (var dirVec = clickRay.GetDirectionVector())
+                var originPt = clickRay.GetOriginPoint();
+                var dirVec = clickRay.GetDirectionVector();
+                if (item.HitTest(originPt, dirVec, out _))
                 {
-                    object hitObject;
-                    if (item.HitTest(originPt, dirVec, out hitObject))
-                    {
-                        item.HighlightGizmo();
-                        return;
-                    }
+                    item.HighlightGizmo();
+                    return;
                 }
             }
         }
@@ -630,12 +605,6 @@ namespace Dynamo.Manipulation
             {
                 Node.ClearTransientWarning(warning);
             }
-
-            if (originBeforeMove != null)
-                originBeforeMove.Dispose();
-     
-            if (originAfterMove != null)
-                originAfterMove.Dispose();
 
             DeleteGizmos();
             DetachHandlers();
@@ -707,12 +676,12 @@ namespace Dynamo.Manipulation
     {
         public static Point ToPoint(this Point3D point)
         {
-            return Point.ByCoordinates(point.X, point.Y, point.Z);
+            return new Point(point.X, point.Y, point.Z);
         }
 
         public static Vector ToVector(this Vector3D vec)
         {
-            return Vector.ByCoordinates(vec.X, vec.Y, vec.Z);
+            return new Vector(vec.X, vec.Y, vec.Z);
         }
     }
 
@@ -723,26 +692,32 @@ namespace Dynamo.Manipulation
 
         public static Line ToLine(this IRay ray)
         {
-            using(var origin = ray.Origin.ToPoint())
-            using (var direction = ray.Direction.ToVector())
-            {
-                return Line.ByStartPointEndPoint(origin, origin.Add(direction.Scale(rayScaleFactor)));
-            }
+            var origin = ray.Origin.ToPoint();
+            var direction = ray.Direction.ToVector();
+            direction.Scale(rayScaleFactor);
+            return new Line(origin.Position, direction);
         }
 
         public static Line ToOriginCenteredLine(this IRay ray)
         {
-            using(var origin = ray.Origin.ToPoint())
-            using (var direction = ray.Direction.ToVector())
-            {
-                return ToOriginCenteredLine(origin, direction);
-            }
+            var origin = ray.Origin.ToPoint();
+            var direction = ray.Direction.ToVector();
+            return ToOriginCenteredLine(origin, direction);
         }
 
         public static Line ToOriginCenteredLine(Point origin, Vector axis)
         {
-            return Line.ByStartPointEndPoint(origin.Add(axis.Scale(-axisScaleFactor)),
-                origin.Add(axis.Scale(axisScaleFactor)));
+            var vec1 = new Vector(axis.X, axis.Y, axis.Z);
+            vec1.Scale(-axisScaleFactor);
+
+            var vec2 = new Vector(axis.X, axis.Y, axis.Z);
+            vec2.Scale(axisScaleFactor);
+
+            var startPos = origin.Position + vec1;
+            var endPos = origin.Position + vec2;
+            var dir = endPos - startPos;
+
+            return new Line(startPos, dir);
         }
 
         public static Point GetOriginPoint(this IRay ray)
