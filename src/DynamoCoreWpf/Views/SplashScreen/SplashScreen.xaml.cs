@@ -540,25 +540,6 @@ namespace Dynamo.UI.Views
         }
 
         /// <summary>
-        /// Escape string for JavaScript to prevent injection and handle special characters
-        /// </summary>
-        /// <param name="text">Text to escape</param>
-        /// <returns>Escaped text safe for JavaScript</returns>
-        private string EscapeForJavaScript(string text)
-        {
-            if (string.IsNullOrEmpty(text))
-                return string.Empty;
-
-            return text
-                .Replace("\\", "\\\\")
-                .Replace("\"", "\\\"")
-                .Replace("'", "\\'")
-                .Replace("\n", "\\n")
-                .Replace("\r", "\\r")
-                .Replace("\t", "\\t");
-        }
-
-        /// <summary>
         /// Resets the imported settings to the original settings that were backed up
         /// </summary>
         private void ResetImportedSettings()
