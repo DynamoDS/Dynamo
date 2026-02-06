@@ -29,6 +29,223 @@
   <ItemGroup>
     <Content Include="PackageManagerViewExtension_ViewExtensionDefinition.xml" />
   </ItemGroup>
+
+  <!-- NPM Build Targets for PackageManagerWizard -->
+  <Target Name="NpmRunBuildPMWizard" BeforeTargets="BeforeBuild">
+    <PropertyGroup>
+      <PackageVersion>0.0.24</PackageVersion>
+      <PackageName>PackageManagerWizard</PackageName>
+    </PropertyGroup>
+    <Exec Command="$(PowerShellCommand) -ExecutionPolicy Bypass -File &quot;$(SolutionDir)pkgexist.ps1&quot; &quot;$(PackageName)&quot; &quot;$(PackageVersion)&quot;" ConsoleToMSBuild="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="ShouldInstall" />
+    </Exec>
+    <Message Text="Skipping Install for $(PackageName) $(PackageVersion), package up to date." Condition="!$(ShouldInstall)" Importance="high" />
+    <Exec Command="$(PowerShellCommand) -ExecutionPolicy Bypass -File &quot;$(SolutionDir)setnpmreg.ps1&quot;" Condition="$(ShouldInstall)" />
+    <Exec Command="npm pack @dynamods/dynamo-pm-wizard@$(PackageVersion)" Condition="$(ShouldInstall)" />
+  </Target>
+
+  <Target Name="ExtractTGZFilePMWizard" DependsOnTargets="NpmRunBuildPMWizard" BeforeTargets="BeforeBuild" Condition="$(ShouldInstall)">
+    <ItemGroup>
+      <TGZFiles Include="./dynamods-dynamo-pm-wizard-*.tgz" />
+    </ItemGroup>
+    <PropertyGroup>
+      <Last>%(TGZFiles.Filename)</Last>
+    </PropertyGroup>
+    <MakeDir Directories="Packages/PackageManagerWizard" />
+    <Exec Command="tar -xzf &quot;$(MSBuildProjectDirectory)\$(Last).tgz&quot; --strip-components=1 --directory=&quot;Packages/PackageManagerWizard&quot;" />
+    <Delete Files="$(MSBuildProjectDirectory)\$(Last).tgz" />
+  </Target>
+
+  <!-- Remove items -->
+  <ItemGroup>
+    <None Remove="Packages\PackageManagerWizard\dist\index.html" />
+    <None Remove="ViewModels\PackageManager\Docs\cs-CZ\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\de-DE\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\en-GB\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\en-US\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\es-ES\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\fr-FR\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\it-IT\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\ja-JP\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\ko-KR\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\pl-PL\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\pt-BR\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\ru-RU\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\zh-CN\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\zh-TW\PublishPackageDocumentation.html" />
+    <None Remove="Views\PackageManager\Controls\ControlColorsAndBrushes.xaml" />
+    <None Remove="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\NumericUpDownControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\SearchBoxControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\CustomBrowserControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\FilterTagControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\PackageManagerSearchControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\PackageManagerPublishControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\PackageManagerPublishHost.xaml" />
+    <None Remove="Views\PackageManager\Pages\PublishPackageFinishPage.xaml" />
+    <None Remove="Views\PackageManager\Pages\PublishPackagePreviewPage.xaml" />
+    <None Remove="Views\PackageManager\Pages\PublishPackagePublishPage.xaml" />
+    <None Remove="Views\PackageManager\Pages\PublishPackageSelectPage.xaml" />
+  </ItemGroup>
+
+  <!-- Compile items for ViewModels -->
+  <ItemGroup>
+    <Compile Include="ViewModels\PackageManager\IPackageInstaller.cs" />
+    <Compile Include="ViewModels\PackageManager\InstalledPackagesViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageItemInternalViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageItemLeafViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageItemRootViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageItemViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageManagerClientViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageManagerSearchElementViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageManagerSearchViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageManagerViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackagePathViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PackageViewModel.cs" />
+    <Compile Include="Views\PackageManager\Components\PackageManagerWizard\PackageManagerWizard.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\CustomBrowserControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\FilterTagControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\NumericUpDownControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\PackageManagerPublishControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\PackageManagerPublishHost.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\PackageManagerSearchControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\SearchBoxControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\PackageManagerView.xaml.cs" />
+    <Compile Include="Views\PackageManager\PackagePathView.xaml.cs" />
+    <Compile Include="Views\PackageManager\PackageManagerSearchView.xaml.cs" />
+    <Compile Include="Views\PackageManager\PublishPackageView.xaml.cs" />
+    <Compile Include="Views\PackageManager\TermsOfUseView.xaml.cs" />
+    <Compile Include="Views\PackageManager\Pages\PublishPackageFinishPage.xaml.cs" />
+    <Compile Include="Views\PackageManager\Pages\PublishPackagePreviewPage.xaml.cs" />
+    <Compile Include="Views\PackageManager\Pages\PublishPackagePublishPage.xaml.cs" />
+    <Compile Include="Views\PackageManager\Pages\PublishPackageSelectPage.xaml.cs" />
+  </ItemGroup>
+
+  <!-- Page items for XAML files -->
+  <ItemGroup>
+    <Page Include="Views\PackageManager\Controls\ControlColorsAndBrushes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\NumericUpDownControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\SearchBoxControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\CustomBrowserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\FilterTagControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\PackageManagerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\PackageManagerSearchControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\PackageManagerPublishControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Controls\PackageManagerPublishHost.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Pages\PublishPackageFinishPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Pages\PublishPackagePreviewPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Pages\PublishPackagePublishPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Pages\PublishPackageSelectPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\PackagePathView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\TermsOfUseView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\PackageManagerSearchView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\PublishPackageView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PackageManager\Components\PackageManagerWizard\PackageManagerWizard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <!-- EmbeddedResource items for HTML docs -->
+  <ItemGroup>
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\cs-CZ\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\de-DE\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\en-GB\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\en-US\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\es-ES\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\fr-FR\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\it-IT\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\ja-JP\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\ko-KR\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\pl-PL\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\pt-BR\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\ru-RU\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\zh-CN\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\zh-TW\PublishPackageDocumentation.html" />
+  </ItemGroup>
+
+  <!-- Resource for PackageManagerWizard HTML -->
+  <ItemGroup>
+    <Resource Include="Packages\PackageManagerWizard\dist\index.html" />
+  </ItemGroup>
+
+  <!-- Copy PM Wizard files to output -->
+  <Target Name="CopyPMWizardHtmlFiles" AfterTargets="Build">
+    <ItemGroup>
+      <HtmlAndBundleFiles Include="Packages\PackageManagerWizard\dist\index.html" />
+    </ItemGroup>
+    <Copy SourceFiles="@(HtmlAndBundleFiles)" DestinationFolder="$(OutputPath)\PackageManager\" />
+  </Target>
+
+  <!-- Copy ViewExtension Definition -->
   <Target Name="AfterBuildOps" AfterTargets="Build">
     <ItemGroup>
       <ViewExtensionDefinition Include="PackageManagerViewExtension_ViewExtensionDefinition.xml" />
