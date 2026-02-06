@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ProtoCore.Exceptions;
 using ProtoCore.Utils;
+using ProtoFFI;
 
 namespace ProtoCore.DSASM
 {
@@ -179,6 +180,22 @@ namespace ProtoCore.DSASM
         public virtual int MemorySize
         {
             get { return allocated; }
+        }
+
+        /// <summary>
+        /// Enqueue all reference-typed elements for garbage collection.
+        /// Note: This is used by the heap manager to trace reachable objects during GC.
+        /// </summary>
+        /// <param name="gcQueue">Queue to enqueue reference-typed stack values</param>
+        public void CollectElementsForGC(Queue<StackValue> gcQueue)
+        {
+            foreach (var item in Values)
+            {
+                if (item.IsReferenceType)
+                {
+                    gcQueue.Enqueue(item);
+                }
+            }
         }
     }
 
@@ -693,6 +710,13 @@ namespace ProtoCore.DSASM
             ptrs.Enqueue(root);
             int releaseSize = 0;
 
+            // Get the CLR marshaler for traversing CLR-backed containers (DYN-8717 fix)
+            CLRObjectMarshaler marshaler = null;
+            if (executive?.RuntimeCore != null)
+            {
+                marshaler = CLRObjectMarshaler.GetInstance(executive.RuntimeCore);
+            }
+
             while (ptrs.Any())
             {
                 StackValue value = ptrs.Dequeue();
@@ -715,10 +739,30 @@ namespace ProtoCore.DSASM
                     var obj = ToHeapObject<DSObject>(value);
                     releaseSize += obj.MemorySize;
 
-                    foreach (var item in obj.Values)
+                    // Trace DSObject.Values (existing behavior)
+                    obj.CollectElementsForGC(ptrs);
+
+                    // DYN-8717 FIX: Check if this DSObject has a CLR backing and
+                    // traverse CLR contents to find nested DS references.
+                    // This handles Dictionary, List, and other CLR containers that
+                    // store DS objects but don't expose them through DSObject.Values.
+                    if (marshaler != null)
                     {
-                        if (item.IsReferenceType)
-                            ptrs.Enqueue(item);
+                        var clrObj = marshaler.GetCLRObjectFromPointer(value);
+                        if (clrObj != null)
+                        {
+                            var nestedRefs = marshaler.GetNestedDSReferences(clrObj);
+                            foreach (var nestedRef in nestedRefs)
+                            {
+                                if (nestedRef.IsReferenceType &&
+                                    nestedRef.RawData >= 0 &&
+                                    nestedRef.RawData < heapElements.Count &&
+                                    heapElements[(int)nestedRef.RawData] != null)
+                                {
+                                    ptrs.Enqueue(nestedRef);
+                                }
+                            }
+                        }
                     }
                 }
             }
