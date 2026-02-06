@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -130,21 +131,79 @@ namespace Dynamo.Utilities
         /// <returns>String representation of workspace after all elements' Guids replaced.</returns>
         internal static string UpdateWorkspaceGUIDs(string jsonData)
         {
-            string pattern = @"([a-z0-9]{32})";
-            string updatedJsonData = jsonData;
+            const int numGuidChars = 32;
+            const char quote = '"';
+            const char backslash = '\\';
 
-            // The unique collection of Guids
-            var mc = Regex.Matches(jsonData, pattern)
-                .Cast<Match>()
-                .Select(m => m.Value)
-                .Distinct();
-
-            foreach (var match in mc)
+            var dict = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var jsonBuilder = new StringBuilder(jsonData.Length);
+            var guidBuilder = new StringBuilder(numGuidChars);
+            bool lastWasEscape = false;
+            var totalGuidsInFile = 0;
+            for (int i = 0; i < jsonData.Length; i++)
             {
-                updatedJsonData = updatedJsonData.Replace(match, Guid.NewGuid().ToString("N"));
+                var c = jsonData[i];
+                jsonBuilder.Append(c);
+
+                if (c != quote)
+                {
+                    // check if we have a backslash escape char
+                    lastWasEscape = c == backslash;
+                    continue;
+                }
+
+                // We don't care about \", as these are quotes inside other strings.
+                // This assumes that strings in the serialized json does not contain raw json
+                // with guids, those will be left intact. This might be the wrong assumption.
+                if (lastWasEscape)
+                {
+                    lastWasEscape = false;
+                    continue;
+                }
+
+                var count = 0;
+                // only iterate while we are finding hex letters and numbers (a-F0-9)
+                // as soon as we find anything else, we bail
+                while (i < jsonData.Length - 1)
+                {
+                    c = jsonData[++i];
+                    if (char.IsAsciiHexDigit(c))
+                    {
+                        guidBuilder.Append(c);
+                        count++;
+                    }
+                    else
+                    {
+                        // if this is a quote char we want to reuse it on
+                        // the next iteration of the for loop, so reset i
+                        i--;
+                        break;
+                    }
+                }
+
+                // we have a guid between quotes, replace guidBuilder with a
+                // new guid, either a stored one from the dictionary, or a new one
+                if (c == quote && count == numGuidChars)
+                {
+                    totalGuidsInFile++;
+                    var oldGuid = guidBuilder.ToString();
+                    guidBuilder.Clear();
+                    if (!dict.TryGetValue(oldGuid, out var newGuid))
+                    {
+                        newGuid = Guid.NewGuid().ToString("N");
+                        dict[oldGuid] = newGuid;
+                    }
+                    jsonBuilder.Append(newGuid);
+                }
+                // not a guid, add all guid builder chars to the json file
+                else if (count > 0)
+                {
+                    jsonBuilder.Append(guidBuilder);
+                    guidBuilder.Clear();
+                }
             }
 
-            return updatedJsonData;
+            return jsonBuilder.ToString();
         }
     }
 }
