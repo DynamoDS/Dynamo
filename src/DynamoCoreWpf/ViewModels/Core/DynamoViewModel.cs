@@ -4515,13 +4515,13 @@ namespace Dynamo.ViewModels
             var nodeSet = new HashSet<NodeModel>(nodes.Select(nvm => nvm.NodeModel));
             var groups = CurrentSpaceViewModel.Annotations.Where(a => a.Nodes.Any(n => nodeSet.Contains(n)));
             nodes.ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
-            groups?.ToList().ForEach((grp) => DynamoSelection.Instance.Selection.Add(grp.AnnotationModel));
+            groups.ToList().ForEach((grp) => DynamoSelection.Instance.Selection.Add(grp.AnnotationModel));
             FitViewCommand.Execute(true);
             DynamoSelection.Instance.ClearSelection();
         }
         internal void GotoLeftMostNode(object parameter)
         {
-            if (CurrentSpaceViewModel.Nodes?.Count > 0)
+            if (CurrentSpaceViewModel.Nodes.Count > 0)
             {
                 double minX = CurrentSpaceViewModel.Nodes.Min(x => x.X);
                 var nodes = CurrentSpaceViewModel.Nodes.Where(x => x.X <= minX + tolerance).ToList();
@@ -4534,7 +4534,7 @@ namespace Dynamo.ViewModels
         }
         internal void GotoRightMostNode(object parameter)
         {
-            if (CurrentSpaceViewModel.Nodes?.Count > 0)
+            if (CurrentSpaceViewModel.Nodes.Count > 0)
             {
                 double maxX = CurrentSpaceViewModel.Nodes.Max(x => x.X + x.ActualWidth);
                 var nodes = CurrentSpaceViewModel.Nodes.Where(x => x.X + x.ActualWidth >= maxX - tolerance).ToList();
