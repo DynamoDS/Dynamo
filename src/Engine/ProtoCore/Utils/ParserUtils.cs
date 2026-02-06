@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -87,10 +87,10 @@ namespace ProtoCore.Utils
             return ListCollector.Collect(node);
         }
 
+        private static readonly Regex spaceNormalizationRegex = new Regex(@"([^\S]+)", RegexOptions.Compiled);
+
         public static List<string> GetLHSatAssignment(string line, int equalIndex)
         {
-            var spaceNormalizationRule = new Regex(@"([^\S]+)");
-
             // the line could have multiple program statements separated by ';'
             var programStatements = line.Split(';');
 
@@ -114,7 +114,7 @@ namespace ProtoCore.Utils
                     else if (identifier.Equals("return"))
                         continue;
 
-                    identifier = spaceNormalizationRule.Replace(identifier, string.Empty);
+                    identifier = spaceNormalizationRegex.Replace(identifier, string.Empty);
 
                     // Check if identifier contains ':' and extract the lhs of the ':'
                     identifier = identifier.Split(':')[0];
