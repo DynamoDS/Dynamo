@@ -1313,6 +1313,10 @@ Dynamo.PackageManager.UI.PackageManagerSearchView
 Dynamo.PackageManager.UI.PackageManagerSearchView.InitializeComponent() -> void
 Dynamo.PackageManager.UI.PackageManagerSearchView.PackageManagerSearchView(Dynamo.PackageManager.PackageManagerSearchViewModel pm) -> void
 Dynamo.PackageManager.UI.PackageManagerSearchView.ViewModel.get -> Dynamo.PackageManager.PackageManagerSearchViewModel
+Dynamo.PackageManager.UI.PackageManagerTabControl
+Dynamo.PackageManager.UI.PackageManagerTabControl.PackageManagerTabControl() -> void
+Dynamo.PackageManager.UI.PackageManagerTabControl.SuppressHomeEndNavigation.get -> bool
+Dynamo.PackageManager.UI.PackageManagerTabControl.SuppressHomeEndNavigation.set -> void
 Dynamo.PackageManager.UI.PackageManagerView
 Dynamo.PackageManager.UI.PackageManagerView.InitializeComponent() -> void
 Dynamo.PackageManager.UI.PackageManagerView.IsNewPMPublishWizardEnabled.get -> bool
@@ -4391,6 +4395,7 @@ override Dynamo.PackageManager.UI.PackageItemInternalViewModel.Items.set -> void
 override Dynamo.PackageManager.UI.PackageItemRootViewModel.Items.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.UI.PackageItemViewModel>
 override Dynamo.PackageManager.UI.PackageItemRootViewModel.Items.set -> void
 override Dynamo.PackageManager.UI.PackageManagerSearchView.OnClosing(System.ComponentModel.CancelEventArgs e) -> void
+override Dynamo.PackageManager.UI.PackageManagerTabControl.OnKeyDown(System.Windows.Input.KeyEventArgs e) -> void
 override Dynamo.PackageManager.UI.PackageNameLengthValidationRule.Validate(object value, System.Globalization.CultureInfo cultureInfo) -> System.Windows.Controls.ValidationResult
 override Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.GetHashCode() -> int
 override Dynamo.UI.Controls.CodeBlockEditor.OnCommitChange() -> void

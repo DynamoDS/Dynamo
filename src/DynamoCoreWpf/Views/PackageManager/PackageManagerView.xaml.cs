@@ -69,6 +69,7 @@ namespace Dynamo.PackageManager.UI
             this.PackageManagerViewModel = packageManagerViewModel;
 
             InitializeComponent();
+            UpdatePublishTabKeyNavigation();
 
             if (packageManagerViewModel != null )
             {
@@ -210,6 +211,17 @@ namespace Dynamo.PackageManager.UI
         {
             this.loadingSearchWarningBar.Visibility = Visibility.Collapsed;
             this.loadingMyPackagesWarningBar.Visibility = Visibility.Collapsed;
+        }
+
+        private void ProjectManagerTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdatePublishTabKeyNavigation();
+        }
+
+        private void UpdatePublishTabKeyNavigation()
+        {
+            if (projectManagerTabControl == null) return;
+            projectManagerTabControl.SuppressHomeEndNavigation = IsNewPMPublishWizardEnabled && publishTab?.IsSelected == true;
         }
 
         private void tab_PreviewMouseDown(object sender, MouseButtonEventArgs e)

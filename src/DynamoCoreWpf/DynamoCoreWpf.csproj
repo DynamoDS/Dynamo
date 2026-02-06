@@ -810,6 +810,7 @@
     <Compile Include="Views\PackageManager\Controls\PackageManagerPublishControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\PackageManagerPublishHost.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\PackageManagerSearchControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\PackageManagerTabControl.cs" />
     <Compile Include="Views\PackageManager\Controls\SearchBoxControl.xaml.cs" />
     <Compile Include="Views\PackageManager\PackageManagerView.xaml.cs" />
     <Compile Include="Views\Menu\TrustedPathView.xaml.cs" />

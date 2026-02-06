@@ -164,11 +164,12 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <TabControl x:Name="projectManagerTabControl"
+                    <local:PackageManagerTabControl x:Name="projectManagerTabControl"
                                 Padding="0"
                                 Background="{StaticResource PreferencesWindowBackgroundColor}"
                                 BorderThickness="0"
-                                TabStripPlacement="Left">
+                                TabStripPlacement="Left"
+                                SelectionChanged="ProjectManagerTabControl_SelectionChanged">
 
                         <TabItem Header="{x:Static p:Resources.PackageManagerSearchTab}"
                                  PreviewMouseDown="tab_PreviewMouseDown"
@@ -561,7 +562,7 @@
                             </Border>
                         </TabItem>
 
-                    </TabControl>
+                    </local:PackageManagerTabControl>
                 </Grid>
             </Grid>
 
