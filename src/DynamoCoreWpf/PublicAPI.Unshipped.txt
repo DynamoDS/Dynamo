@@ -2085,6 +2085,10 @@ Dynamo.ViewModels.DynamoViewModel.GoHomeView(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.GoToDictionary(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.GoToDictionaryCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.GoToDictionaryCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.GotoLeftMostNodeCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.GotoLeftMostNodeCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.GotoRightMostNodeCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.GotoRightMostNodeCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.GoToWebsite(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.GoToWebsiteCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.GoToWebsiteCommand.set -> void

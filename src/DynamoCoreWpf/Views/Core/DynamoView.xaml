@@ -183,6 +183,8 @@
                       CommandParameter="{x:Static viewModels:ShowHideFlags.Show}"
                       Gesture="Shift+LeftDoubleClick" />
         <KeyBinding Key="F1" Command="{Binding Path=DataContext.ShowNodeDocumentationCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+        <KeyBinding Key="Home" Command="{Binding DataContext.GotoLeftMostNodeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+        <KeyBinding Key="End" Command="{Binding DataContext.GotoRightMostNodeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
     </Window.InputBindings>
 
     <Grid Name="mainGrid"
