@@ -694,6 +694,9 @@
                             <MenuItem Command="{Binding DumpNodeIconsCommand}"
                                       Header="{x:Static p:Resources.DynamoViewDebugMenuDumpNodeIcons}"
                                       IsEnabled="True" />
+                            <MenuItem Command="{Binding RecordNodeHelpDataCommand}"
+                                      Header="Record Node Help Data"
+                                      IsEnabled="True" />
                         </MenuItem>
                         <MenuItem Name="DebugModes"
                                   Click="OnDebugModesClick"

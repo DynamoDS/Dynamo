@@ -4499,6 +4499,238 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        internal bool CanRecordNodeHelpData(object obj)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Records help documentation for the currently selected node.
+        /// Generates: .md file, _img.jpg screenshot, and .dyn sample graph.
+        /// Debug-only feature for creating node help documentation.
+        /// </summary>
+        internal void RecordNodeHelpData(object parameter)
+        {
+            // 1. Validate selection - need exactly one node selected
+            var selectedNodes = DynamoSelection.Instance.Selection.OfType<NodeModel>().ToList();
+
+            if (selectedNodes.Count == 0)
+            {
+                ToastManager?.CreateRealTimeInfoWindow("Please select a node to record help data.", true);
+                return;
+            }
+
+            if (selectedNodes.Count > 1)
+            {
+                ToastManager?.CreateRealTimeInfoWindow("Please select only one node to record help data.", true);
+                return;
+            }
+
+            var selectedNode = selectedNodes.First();
+
+            // 2. Get minimum qualified name for file naming (no hash)
+            var mqn = GetMinimumQualifiedName(selectedNode);
+
+            // 3. Use node name for display in toast
+            var nodeName = selectedNode.Name;
+
+            // 4. Get output directory - backtrack from bin\AnyCPU\Debug to doc\distrib\NodeHelpFiles\en-US
+            DirectoryInfo nodeHelpDocPath;
+            try
+            {
+                // Get the executing assembly location (bin\AnyCPU\Debug)
+                var assemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                
+                // Backtrack to Dynamo root: go up 3 levels from bin\AnyCPU\Debug
+                var dynamoRoot = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(assemblyLocation)));
+                
+                // Build path to doc\distrib\NodeHelpFiles\en-US
+                var docPath = Path.Combine(dynamoRoot, "doc", "distrib", "NodeHelpFiles", "en-US");
+                nodeHelpDocPath = new DirectoryInfo(docPath);
+                
+                // Create directory if it doesn't exist
+                if (!nodeHelpDocPath.Exists)
+                {
+                    nodeHelpDocPath.Create();
+                }
+            }
+            catch (Exception ex)
+            {
+                ToastManager?.CreateRealTimeInfoWindow($"Failed to create output directory: {ex.Message}", true);
+                return;
+            }
+
+            // 5. Generate file paths using minimum qualified name directly (no hash)
+            var mdFileName = $"{mqn}.md";
+            var imgFileName = $"{mqn}_img.jpg";
+            var dynFileName = $"{mqn}.dyn";
+
+            var mdFilePath = Path.Combine(nodeHelpDocPath.FullName, mdFileName);
+            var imgFilePath = Path.Combine(nodeHelpDocPath.FullName, imgFileName);
+            var dynFilePath = Path.Combine(nodeHelpDocPath.FullName, dynFileName);
+
+            try
+            {
+                // 6. Export workspace image with 3D background overlay
+                ExportWorkspaceImageWithBackground(imgFilePath);
+
+                // 7. Save sample graph (.dyn)
+                SaveAs(dynFilePath, SaveContext.Save, false);
+
+                // 8. Generate markdown file
+                GenerateNodeHelpMarkdown(selectedNode, mqn, mdFilePath, imgFileName);
+
+                // 9. Show success toast with node name
+                var message = $"Node help files created for '{nodeName}':\n" +
+                              $"  {mdFileName}\n" +
+                              $"  {imgFileName}\n" +
+                              $"  {dynFileName}\n" +
+                              $"Location: {nodeHelpDocPath.FullName}";
+                ToastManager?.CreateRealTimeInfoWindow(message, true);
+            }
+            catch (Exception ex)
+            {
+                ToastManager?.CreateRealTimeInfoWindow($"Error recording node help data: {ex.Message}", true);
+            }
+        }
+
+        /// <summary>
+        /// Exports workspace image with 3D background overlay.
+        /// Combines the 3D preview background with the workspace graph view.
+        /// </summary>
+        private void ExportWorkspaceImageWithBackground(string outputPath)
+        {
+            var tempDir = Path.GetTempPath();
+            var backgroundPath = Path.Combine(tempDir, $"bg_{Guid.NewGuid()}.png");
+            var foregroundPath = Path.Combine(tempDir, $"fg_{Guid.NewGuid()}.png");
+
+            try
+            {
+                // Export 3D background
+                BackgroundPreviewViewModel?.ZoomToFitCommand?.Execute(null);
+                var backgroundImageArgs = new ImageSaveEventArgs(backgroundPath);
+                OnRequestSave3DImage(this, backgroundImageArgs);
+
+                // Export workspace (graph view)
+                var foregroundImageArgs = new ImageSaveEventArgs(foregroundPath);
+                OnRequestSaveImage(this, foregroundImageArgs);
+
+                // Combine images if both exist
+                if (File.Exists(backgroundPath) && File.Exists(foregroundPath))
+                {
+                    using (var combined = OverlayWorkspaceImages(backgroundPath, foregroundPath))
+                    {
+                        if (combined != null)
+                        {
+                            combined.Save(outputPath, System.Drawing.Imaging.ImageFormat.Jpeg);
+                        }
+                        else
+                        {
+                            // Fallback: just copy the workspace image
+                            File.Copy(foregroundPath, outputPath, true);
+                        }
+                    }
+                }
+                else if (File.Exists(foregroundPath))
+                {
+                    // Fallback: just use workspace image if 3D background not available
+                    File.Copy(foregroundPath, outputPath, true);
+                }
+            }
+            finally
+            {
+                // Clean up temp files
+                try { if (File.Exists(backgroundPath)) File.Delete(backgroundPath); } catch { }
+                try { if (File.Exists(foregroundPath)) File.Delete(foregroundPath); } catch { }
+            }
+        }
+
+        /// <summary>
+        /// Overlay workspace graph over 3D background.
+        /// </summary>
+        private static System.Drawing.Bitmap OverlayWorkspaceImages(string backgroundPath, string foregroundPath)
+        {
+            try
+            {
+                using (var baseImage = (System.Drawing.Bitmap)System.Drawing.Image.FromFile(backgroundPath))
+                using (var overlayImage = (System.Drawing.Bitmap)System.Drawing.Image.FromFile(foregroundPath))
+                {
+                    // Calculate scale to fit overlay properly
+                    var scale = 1.5;
+                    var scaleFactor = Math.Max(
+                        overlayImage.Width / (float)baseImage.Width,
+                        overlayImage.Height / (float)baseImage.Height);
+                    var newWidth = (int)(baseImage.Width * scaleFactor * scale);
+                    var newHeight = (int)(baseImage.Height * scaleFactor * scale);
+
+                    var finalImage = new System.Drawing.Bitmap(newWidth, newHeight,
+                        System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+                    using (var graphics = System.Drawing.Graphics.FromImage(finalImage))
+                    {
+                        graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
+                        graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                        graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+
+                        // Dynamo-white background
+                        graphics.Clear(System.Drawing.Color.FromArgb(249, 249, 249));
+
+                        const float BACKGROUND_VERTICAL_OFFSET_RATIO = 0.15f;
+                        const float OVERLAY_VERTICAL_POSITION_RATIO = 0.25f;
+
+                        // Draw resized background slightly down (15% from top)
+                        using (var resizedBg = new System.Drawing.Bitmap(baseImage, newWidth, newHeight))
+                        {
+                            graphics.DrawImage(resizedBg, 0, (int)(newHeight * BACKGROUND_VERTICAL_OFFSET_RATIO));
+                        }
+
+                        // Draw workspace overlay in upper center
+                        var offsetX = (newWidth - overlayImage.Width) / 2;
+                        var offsetY = (int)((newHeight - overlayImage.Height) * OVERLAY_VERTICAL_POSITION_RATIO);
+                        graphics.DrawImage(overlayImage, offsetX, offsetY);
+                    }
+
+                    return finalImage;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Generates the markdown help file for a node.
+        /// </summary>
+        /// <param name="node">The node model instance for which the help markdown is generated.</param>
+        /// <param name="mqn">The fully qualified node name used in the generated markdown header.</param>
+        /// <param name="outputPath">The full file path where the markdown help file will be written.</param>
+        /// <param name="imgFileName">The image file name referenced from the markdown example section.</param>
+        private void GenerateNodeHelpMarkdown(NodeModel node, string mqn,
+            string outputPath, string imgFileName)
+        {
+            var sb = new System.Text.StringBuilder();
+
+            // Add HTML comment header with node name (pattern from existing help files)
+            sb.AppendLine($"<!--- {mqn} --->");
+
+            // In Depth section with node description
+            sb.AppendLine("## In Depth");
+            var description = !string.IsNullOrWhiteSpace(node.Description)
+                ? node.Description
+                : $"{node.Name} - [Add description here]";
+            sb.AppendLine(description);
+            sb.AppendLine();
+
+            // Example file section with image
+            sb.AppendLine("___");
+            sb.AppendLine("## Example File");
+            sb.AppendLine();
+            sb.AppendLine($"![{node.Name}](./{imgFileName})");
+
+            File.WriteAllText(outputPath, sb.ToString());
+        }
+
         #region Shutdown related methods
 
         /// <summary>

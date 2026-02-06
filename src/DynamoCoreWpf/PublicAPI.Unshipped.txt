@@ -2053,6 +2053,8 @@ Dynamo.ViewModels.DynamoViewModel.DumpNodeHelpDataCommand.get -> Dynamo.UI.Comma
 Dynamo.ViewModels.DynamoViewModel.DumpNodeHelpDataCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.DumpNodeIconsCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.DumpNodeIconsCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.RecordNodeHelpDataCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.RecordNodeHelpDataCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.DynamoViewModel(Dynamo.ViewModels.DynamoViewModel.StartConfiguration startConfiguration) -> void
 Dynamo.ViewModels.DynamoViewModel.EditName.get -> string
 Dynamo.ViewModels.DynamoViewModel.EditName.set -> void
