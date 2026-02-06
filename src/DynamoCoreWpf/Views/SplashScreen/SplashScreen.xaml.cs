@@ -63,6 +63,11 @@ namespace Dynamo.UI.Views
         internal Func<bool> RequestSignIn;
         internal Func<bool> RequestSignOut;
 
+        // Fields for tracking imported settings and enabling reset functionality
+        private bool settingsWereImported = false;
+        private string originalSettingsContent = null;
+        private string importedSettingsFilePath = null;
+
         /// <summary>
         /// Dynamo auth manager reference
         /// </summary>
@@ -248,16 +253,49 @@ namespace Dynamo.UI.Views
         /// <param name="fileContent"></param>
         private void ImportSettings(string fileContent)
         {
-            bool isImported = viewModel.PreferencesViewModel.importSettingsContent(fileContent);
-            if (isImported)
+            try
             {
-                SetImportStatus(ImportStatus.success);
+                // Get the settings file path
+                var pathManager = viewModel?.Model?.PathManager ?? PathManager.Instance;
+                importedSettingsFilePath = pathManager.PreferenceFilePath;
+
+                // Backup original settings before importing (only if not already backed up)
+                if (!settingsWereImported && System.IO.File.Exists(importedSettingsFilePath))
+                {
+                    originalSettingsContent = System.IO.File.ReadAllText(importedSettingsFilePath);
+                }
+
+                // Validate the imported settings
+                bool isImported = viewModel.PreferencesViewModel.importSettingsContent(fileContent);
+
+                if (isImported)
+                {
+                    // Save the imported settings to disk immediately
+                    System.IO.File.WriteAllText(importedSettingsFilePath, fileContent);
+
+                    // Mark that settings were imported
+                    settingsWereImported = true;
+
+                    // Show success status on splash screen
+                    SetImportStatus(ImportStatus.success);
+
+                    // Show the restart message and reset button
+                    ShowRestartMessage();
+
+                    Analytics.TrackEvent(Actions.Import, Categories.SplashScreenOperations, "true");
+                }
+                else
+                {
+                    SetImportStatus(ImportStatus.error);
+                    Analytics.TrackEvent(Actions.Import, Categories.SplashScreenOperations, "false");
+                }
             }
-            else
+            catch (Exception ex)
             {
+                viewModel?.Model?.Logger?.Log($"Error importing settings: {ex.Message}");
                 SetImportStatus(ImportStatus.error);
+                Analytics.TrackEvent(Actions.Import, Categories.SplashScreenOperations, "false");
             }
-            Analytics.TrackEvent(Actions.Import, Categories.SplashScreenOperations, isImported.ToString());
         }
 
         /// <summary>
@@ -396,7 +434,7 @@ namespace Dynamo.UI.Views
 
                 webView.NavigateToString(htmlString);
                 webView.CoreWebView2.AddHostObjectToScript("scriptObject",
-                   new ScriptObject(RequestLaunchDynamo, RequestImportSettings, RequestSignIn, RequestSignOut));
+                   new ScriptObject(RequestLaunchDynamo, RequestImportSettings, RequestSignIn, RequestSignOut, ResetImportedSettings));
             }
             catch (ObjectDisposedException ex)
             {
@@ -466,6 +504,81 @@ namespace Dynamo.UI.Views
         }
 
         /// <summary>
+        /// Show the restart required message and reset button after settings import
+        /// </summary>
+        internal async void ShowRestartMessage()
+        {
+            try
+            {
+                if (webView?.CoreWebView2 != null)
+                {
+                    await webView.CoreWebView2.ExecuteScriptAsync("window.showRestartMessage()");
+                }
+            }
+            catch (Exception ex)
+            {
+                viewModel?.Model?.Logger?.Log($"Error showing restart message: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Hide the restart required message and reset button
+        /// </summary>
+        internal async void HideRestartMessage()
+        {
+            try
+            {
+                if (webView?.CoreWebView2 != null)
+                {
+                    await webView.CoreWebView2.ExecuteScriptAsync("window.hideRestartMessage()");
+                }
+            }
+            catch (Exception ex)
+            {
+                viewModel?.Model?.Logger?.Log($"Error hiding restart message: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Resets the imported settings to the original settings that were backed up
+        /// </summary>
+        private void ResetImportedSettings()
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(originalSettingsContent) &&
+                    !string.IsNullOrEmpty(importedSettingsFilePath))
+                {
+                    // Restore original settings to disk
+                    System.IO.File.WriteAllText(importedSettingsFilePath, originalSettingsContent);
+
+                    // Reload the original settings into the current session
+                    var restoredPreferences = PreferenceSettings.LoadContent(originalSettingsContent);
+                    if (restoredPreferences.IsCreatedFromValidFile)
+                    {
+                        viewModel.PreferencesViewModel.importSettingsContent(originalSettingsContent);
+                    }
+
+                    // Clear the imported flag and backup
+                    settingsWereImported = false;
+                    originalSettingsContent = null;
+
+                    // Hide the restart message
+                    HideRestartMessage();
+
+                    // Show reset success message briefly
+                    SetImportStatus(ImportStatus.none);
+
+                    viewModel?.Model?.Logger?.Log(Wpf.Properties.Resources.SplashScreenSettingsResetSuccess);
+                }
+            }
+            catch (Exception ex)
+            {
+                viewModel?.Model?.Logger?.Log($"Error resetting settings: {ex.Message}");
+            }
+        }
+
+        /// <summary>
         /// Set the login status on splash screen.
         /// </summary>
         internal async void SetSignInStatus(bool status)
@@ -516,7 +629,9 @@ namespace Dynamo.UI.Views
                    $"signOutTitle: \"{Wpf.Properties.Resources.SplashScreenSignOut}\"," +
                    $"signOutTooltip: \"{Wpf.Properties.Resources.SignOutConfirmationDialogText}\"," +
                    $"signingInTitle: \"{Wpf.Properties.Resources.SplashScreenSigningIn}\"," +
-                   $"importSettingsTooltipDescription: \"{Wpf.Properties.Resources.ImportPreferencesInfo}\"" + "})");
+                   $"importSettingsTooltipDescription: \"{Wpf.Properties.Resources.ImportPreferencesInfo}\"," +
+                   $"restartMessage: \"{Wpf.Properties.Resources.SplashScreenSettingsImportedRestartMessage}\"," +
+                   $"resetTooltip: \"{Wpf.Properties.Resources.SplashScreenResetSettingsTooltip}\"" + "})");
             }
         }
 
@@ -663,17 +778,19 @@ namespace Dynamo.UI.Views
         readonly Action<string> RequestImportSettings;
         readonly Func<bool> RequestSignIn;
         readonly Func<bool> RequestSignOut;
+        readonly Action RequestResetSettings;
 
         /// <summary>
         /// [Obsolete] Constructor for ScriptObject
         /// </summary>
         [Obsolete]
-        public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings, Func< bool> requestSignIn, Func<bool> requestSignOut)
+        public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings, Func< bool> requestSignIn, Func<bool> requestSignOut, Action requestResetSettings)
         {
             RequestLaunchDynamo = requestLaunchDynamo;
             RequestImportSettings = requestImportSettings;
             RequestSignIn = requestSignIn;
             RequestSignOut = requestSignOut;
+            RequestResetSettings = requestResetSettings;
         }
         [DynamoJSInvokable]
         public void LaunchDynamo(bool showScreenAgain)
@@ -695,6 +812,11 @@ namespace Dynamo.UI.Views
         public bool SignOut()
         {
             return RequestSignOut();
+        }
+        [DynamoJSInvokable]
+        public void ResetSettings()
+        {
+            RequestResetSettings();
         }
     }
 }
