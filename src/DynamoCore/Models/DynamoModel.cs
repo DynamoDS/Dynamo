@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -135,7 +136,7 @@ namespace Dynamo.Models
         private readonly PathManager pathManager;
         private WorkspaceModel currentWorkspace;
         private Timer backupFilesTimer;
-        private Dictionary<Guid, string> backupFilesDict = new Dictionary<Guid, string>();
+        private readonly ConcurrentDictionary<Guid, string> backupFilesDict = new ConcurrentDictionary<Guid, string>();
         internal readonly Stopwatch stopwatch = Stopwatch.StartNew();
 
         /// <summary>
@@ -2685,33 +2686,43 @@ namespace Dynamo.Models
 
             OnRequestDispatcherBeginInvoke(() =>
             {
-                // tempDict stores the list of backup files and their corresponding workspaces IDs
-                // when the last auto-save operation happens. Now the IDs will be used to know
-                // whether some workspaces have already been backed up. If so, those workspaces won't be
-                // backed up again.
-                var tempDict = new Dictionary<Guid, string>(backupFilesDict);
-                backupFilesDict.Clear();
-                PreferenceSettings.BackupFiles.Clear();
+                // Get the current set of workspace GUIDs that need to be tracked
+                var currentWorkspaceGuids = new HashSet<Guid>(Workspaces.Select(w => w.Guid));
+                
+                // Remove entries for workspaces that no longer exist.
+                // ToArray() is used to materialize the collection before removal to avoid
+                // potential issues with collection modification during enumeration.
+                var guidsToRemove = backupFilesDict.Keys.Where(guid => !currentWorkspaceGuids.Contains(guid)).ToArray();
+                foreach (var guid in guidsToRemove)
+                {
+                    backupFilesDict.TryRemove(guid, out _);
+                }
+                
                 foreach (var workspace in Workspaces)
                 {
+                    // Skip workspaces that don't need backup
                     if (!workspace.HasUnsavedChanges)
                     {
                         if (workspace.Nodes.Any() &&
                             !workspace.Notes.Any())
                             continue;
 
-                        if (tempDict.ContainsKey(workspace.Guid))
+                        if (backupFilesDict.ContainsKey(workspace.Guid))
                         {
-                            backupFilesDict.Add(workspace.Guid, tempDict[workspace.Guid]);
+                            // Workspace hasn't changed and already has a backup, skip saving
                             continue;
                         }
                     }
 
+                    // Create new backup for this workspace
                     var savePath = pathManager.GetBackupFilePath(workspace);
                     OnRequestWorkspaceBackUpSave(savePath, true);
                     backupFilesDict[workspace.Guid] = savePath;
                     Logger.Log(Resources.BackupSavedMsg + ": " + savePath);
                 }
+                
+                // Update PreferenceSettings with all current backup files
+                PreferenceSettings.BackupFiles.Clear();
                 PreferenceSettings.BackupFiles.AddRange(backupFilesDict.Values);
             });
         }
