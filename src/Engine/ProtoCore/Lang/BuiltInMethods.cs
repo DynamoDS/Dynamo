@@ -59,7 +59,6 @@ namespace ProtoCore.Lang
             Transpose,
             Union,
             InlineConditional,
-            Break,
             GetKeys,
             GetValues,
             RemoveKey,
@@ -124,7 +123,6 @@ namespace ProtoCore.Lang
             "Transpose",                // kTranspose
             "SetUnion",                 // kUnion
             Constants.kInlineConditionalMethodName,
-            "Break",                    // kBreak
             "GetKeys",                  // kGetKeys    
             "GetValues",                // kGetValues    
             "RemoveKey",                // kRemoveKey
@@ -831,14 +829,6 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("formatSpecifier", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String, 0)),
                     }.ToList(),
                     ID = BuiltInMethods.MethodID.ToStringFromArrayAndFormat
-                },
-
-                new BuiltInMethod
-                {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Void, 0),
-                    Parameters = new List<KeyValuePair<string,Type>>(),
-                    ID = BuiltInMethods.MethodID.Break,
-                    MethodAttributes = new MethodAttributes(true),
                 },
 
                 new BuiltInMethod
