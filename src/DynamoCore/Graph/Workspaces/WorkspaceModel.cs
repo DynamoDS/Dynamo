@@ -1512,11 +1512,41 @@ namespace Dynamo.Graph.Workspaces
                 OnConnectorDeleted(connector);
             }
 
+            // Unsubscribe from events to prevent memory leaks
             WorkspaceEvents.WorkspaceAdded -= computeUpstreamNodesWhenWorkspaceAdded;
 
+            // Clear all public event subscribers to prevent memory leaks
             var handler = Disposed;
             if (handler != null) handler();
             Disposed = null;
+            
+            // Clear other event subscribers
+            RequestNodeCentered = null;
+            CurrentOffsetChanged = null;
+            Saved = null;
+            WorkspaceSaving = null;
+            NodeAdded = null;
+            NodeRemoved = null;
+            NodesCleared = null;
+            NoteAdded = null;
+            NoteRemoved = null;
+            NotesCleared = null;
+            AnnotationAdded = null;
+            AnnotationRemoved = null;
+            AnnotationsCleared = null;
+            ConnectorAdded = null;
+            ConnectorDeleted = null;
+            Saving = null;
+            CollectingCustomNodePackageDependencies = null;
+            CollectingNodePackageDependencies = null;
+            PopulateJSONWorkspace = null;
+            RequestPythonEngineMapping = null;
+            MessageLogged = null;
+
+            // Clear collections to help garbage collection
+            nodePackageDictionary?.Clear();
+            localDefinitionsDictionary?.Clear();
+            externalFilesDictionary?.Clear();
         }
 
         #endregion
