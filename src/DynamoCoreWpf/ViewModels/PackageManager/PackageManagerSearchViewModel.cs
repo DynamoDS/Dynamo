@@ -496,6 +496,203 @@ namespace Dynamo.PackageManager
             }
         }
 
+        private void UpdateInstallState(PackageManagerSearchElementViewModel element, bool setDefaultSelection = false)
+        {
+            if (element?.SearchElementModel == null)
+            {
+                return;
+            }
+
+            var installedPackages = PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.LocalPackages
+                .Where(x => (x.Name == element.SearchElementModel.Name) && !x.BuiltInPackage)
+                .ToList();
+
+            var installedVersion = installedPackages.Any() ? GetNewestInstalledVersion(installedPackages) : null;
+            element.UpdateInstalledVersion(installedVersion, setDefaultSelection);
+            element.HasUpdateAvailable = IsUpdateAvailable(installedVersion, element.VersionInformationList);
+
+            var hasBlockingDownload = PackageManagerClientViewModel.Downloads.Any(handle =>
+                handle.Name == element.SearchElementModel.Name &&
+                (handle.DownloadState == PackageDownloadHandle.State.Downloaded ||
+                 handle.DownloadState == PackageDownloadHandle.State.Downloading ||
+                 handle.DownloadState == PackageDownloadHandle.State.Installing));
+            if (hasBlockingDownload)
+            {
+                element.CanInstall = false;
+                return;
+            }
+            if (!installedPackages.Any())
+            {
+                element.CanInstall = true;
+                return;
+            }
+            element.CanInstall = false;
+        }
+
+        private void UninstallPackage(PackageManagerSearchElementViewModel element)
+        {
+            var installedPackage = GetInstalledPackageForSelectedVersion(element);
+            if (installedPackage == null)
+            {
+                return;
+            }
+
+            var dynamoViewModel = PackageManagerClientViewModel?.DynamoViewModel;
+            if (dynamoViewModel == null)
+            {
+                return;
+            }
+
+            if (installedPackage.LoadedAssemblies.Any())
+            {
+                var message = string.Format(Resources.MessageNeedToRestartAfterDelete,
+                    dynamoViewModel.BrandingResourceProvider.ProductName);
+                var title = Resources.MessageNeedToRestartAfterDeleteTitle;
+                var result = MessageBoxService.Show(dynamoViewModel.Owner, message, title,
+                    MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
+                if (result == MessageBoxResult.Cancel || result == MessageBoxResult.None)
+                {
+                    return;
+                }
+            }
+
+            var confirmResult = MessageBoxService.Show(dynamoViewModel.Owner,
+                string.Format(Resources.MessageConfirmToDeletePackage, installedPackage.Name),
+                Resources.MessageNeedToRestartAfterDeleteTitle,
+                MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (confirmResult == MessageBoxResult.No || confirmResult == MessageBoxResult.None)
+            {
+                return;
+            }
+
+            try
+            {
+                installedPackage.UninstallCore(dynamoViewModel.Model.CustomNodeManager,
+                    PackageManagerClientViewModel.PackageManagerExtension.PackageLoader,
+                    dynamoViewModel.Model.PreferenceSettings);
+            }
+            catch (Exception ex)
+            {
+                var baseMessage = string.Format(Resources.MessageFailedToDelete,
+                    dynamoViewModel.BrandingResourceProvider.ProductName);
+                var detailedMessage = baseMessage + Environment.NewLine + ex.Message;
+
+                MessageBoxService.Show(dynamoViewModel.Owner,
+                    detailedMessage,
+                    Resources.DeleteFailureMessageBoxTitle,
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                UpdateInstallState(element);
+            }
+        }
+
+        private bool CanUninstallPackage(PackageManagerSearchElementViewModel element)
+        {
+            var installedPackage = GetInstalledPackageForSelectedVersion(element);
+            if (installedPackage == null)
+            {
+                return false;
+            }
+
+            var dynamoModel = PackageManagerClientViewModel?.DynamoViewModel?.Model;
+            if (dynamoModel == null)
+            {
+                return false;
+            }
+
+            if (!installedPackage.InUse(dynamoModel) || installedPackage.LoadedAssemblies.Any())
+            {
+                return IsLoadedWithNoScheduledOperation(installedPackage);
+            }
+
+            return false;
+        }
+
+        private static bool IsLoadedWithNoScheduledOperation(Package package)
+        {
+            return package.BuiltInPackage
+                ? package.LoadState.State != PackageLoadState.StateTypes.Unloaded &&
+                  package.LoadState.ScheduledState != PackageLoadState.ScheduledTypes.ScheduledForUnload
+                : package.LoadState.ScheduledState != PackageLoadState.ScheduledTypes.ScheduledForDeletion;
+        }
+
+        private Package GetInstalledPackageForSelectedVersion(PackageManagerSearchElementViewModel element)
+        {
+            if (element?.SelectedVersion?.IsInstalled != true || element.SearchElementModel == null)
+            {
+                return null;
+            }
+
+            var installedPackages = PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.LocalPackages
+                .Where(x => x.Name == element.SearchElementModel.Name && !x.BuiltInPackage)
+                .ToList();
+
+            if (!installedPackages.Any())
+            {
+                return null;
+            }
+
+            return installedPackages.FirstOrDefault(pkg =>
+                string.Equals(pkg.VersionName, element.SelectedVersion.Version, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static string GetNewestInstalledVersion(IEnumerable<Package> installedPackages)
+        {
+            if (installedPackages == null)
+            {
+                return null;
+            }
+
+            var parsedVersions = installedPackages
+                .Select(pkg => new { Version = pkg.VersionName, Parsed = VersionUtilities.Parse(pkg.VersionName) })
+                .Where(x => x.Parsed != null)
+                .OrderBy(x => x.Parsed)
+                .LastOrDefault();
+
+            if (parsedVersions != null)
+            {
+                return parsedVersions.Version;
+            }
+
+            return installedPackages.Select(pkg => pkg.VersionName).FirstOrDefault();
+        }
+
+        private static bool IsUpdateAvailable(string installedVersion, IEnumerable<VersionInformation> availableVersions)
+        {
+            if (string.IsNullOrEmpty(installedVersion) || availableVersions == null)
+            {
+                return false;
+            }
+
+            var parsedInstalledVersion = VersionUtilities.Parse(installedVersion);
+            if (parsedInstalledVersion == null)
+            {
+                return false;
+            }
+
+            var newestAvailableVersion = availableVersions
+                .Select(version => VersionUtilities.Parse(version.Version))
+                .Where(parsedVersion => parsedVersion != null)
+                .OrderBy(parsedVersion => parsedVersion)
+                .LastOrDefault();
+
+            if (newestAvailableVersion == null)
+            {
+                return false;
+            }
+
+            return newestAvailableVersion > parsedInstalledVersion;
+        }
+
+        private PackageManagerSearchElementViewModel GetSearchElementViewModelByName(string name)
+        {
+            return SearchResults?.FirstOrDefault(x => x.SearchElementModel.Name == name)
+                ?? SearchMyResults?.FirstOrDefault(x => x.SearchElementModel.Name == name);
+        }
+
         public PackageSearchState _searchState; // TODO: Set private for 3.0.
 
         /// <summary>
@@ -724,6 +921,7 @@ namespace Dynamo.PackageManager
                 var p = GetSearchElementViewModel(pkg, true);
 
                 p.RequestDownload += this.PackageOnExecuted;
+                p.RequestUninstall += SearchElementViewModelOnRequestUninstall;
                 p.IsOnwer = true;
 
                 myPackages.Add(p);
@@ -739,6 +937,8 @@ namespace Dynamo.PackageManager
             {
                 ele.RequestDownload -= PackageOnExecuted;
                 ele.RequestShowFileDialog -= OnRequestShowFileDialog;
+                ele.PropertyChanged -= SearchElementViewModelOnPropertyChanged;
+                ele.RequestUninstall -= SearchElementViewModelOnRequestUninstall;
             }
 
             this.SearchMyResults = null;
@@ -1239,6 +1439,8 @@ namespace Dynamo.PackageManager
         {
             element.RequestDownload += this.PackageOnExecuted;
             element.RequestShowFileDialog += this.OnRequestShowFileDialog;
+            element.PropertyChanged += SearchElementViewModelOnPropertyChanged;
+            element.RequestUninstall += SearchElementViewModelOnRequestUninstall;
 
             this.SearchResults.Add(element);
         }
@@ -1250,9 +1452,25 @@ namespace Dynamo.PackageManager
             {
                 ele.RequestDownload -= PackageOnExecuted;
                 ele.RequestShowFileDialog -= OnRequestShowFileDialog;
+                ele.PropertyChanged -= SearchElementViewModelOnPropertyChanged;
+                ele.RequestUninstall -= SearchElementViewModelOnRequestUninstall;
+
                 ele?.Dispose();
             }
             this.SearchResults.Clear();
+        }
+        private void SearchElementViewModelOnRequestUninstall(PackageManagerSearchElementViewModel element)
+        {
+            UninstallPackage(element);
+        }
+
+        private void SearchElementViewModelOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (sender is PackageManagerSearchElementViewModel element &&
+                e.PropertyName == nameof(PackageManagerSearchElementViewModel.SelectedVersion))
+            {
+                UpdateInstallState(element);
+            }
         }
 
         internal void PackageOnExecuted(PackageManagerSearchElement element, PackageVersion version, string downloadPath)
@@ -1297,10 +1515,9 @@ namespace Dynamo.PackageManager
                 // the Downloads collection before Download/Install begins.
                 if (eArgs.PropertyName == nameof(PackageDownloadHandle.DownloadState))
                 {
-                    PackageManagerSearchElementViewModel sr = SearchResults.FirstOrDefault(x => x.SearchElementModel.Name == handle.Name);
-                    if (sr == null) return;
-
-                    sr.CanInstall = CanInstallPackage(o as PackageDownloadHandle);
+                    var searchElement = GetSearchElementViewModelByName(handle.Name);
+                    if (searchElement == null) return;
+                    UpdateInstallState(searchElement);
                 }
             }
 
@@ -1649,10 +1866,15 @@ namespace Dynamo.PackageManager
         private PackageManagerSearchElementViewModel GetSearchElementViewModel(PackageManagerSearchElement package, bool bypassCustomPackageLocations = false)
         {
             var isEnabledForInstall = bypassCustomPackageLocations || !(Preferences as IDisablePackageLoadingPreferences).DisableCustomPackageLocations;
-            return new PackageManagerSearchElementViewModel(package,
+            var viewModel = new PackageManagerSearchElementViewModel(package,
                 PackageManagerClientViewModel.AuthenticationManager.HasAuthProvider,
                 CanInstallPackage(package.Name),
                 isEnabledForInstall);
+
+            viewModel.CanUninstall = () => CanUninstallPackage(viewModel);
+            UpdateInstallState(viewModel, true);
+
+            return viewModel;
         }
 
         /// <summary>
