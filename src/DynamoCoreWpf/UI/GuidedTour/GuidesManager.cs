@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels.GuidedTour;
 using Dynamo.Wpf.Views.GuidedTour;
@@ -179,17 +180,53 @@ namespace Dynamo.Wpf.UI.GuidedTour
             currentGuide = (from guide in Guides where guide.Name.Equals(args.GuideName) select guide).FirstOrDefault();
             if (currentGuide != null)
             {
+                var dynamoView = (mainRootElement as DynamoView);
+                if (dynamoView == null) return;
+
+                // Close all view extensions before starting the tour
+                CloseAllViewExtensions(dynamoView);
+
                 //Show background overlay
                 guideBackgroundElement.Visibility = Visibility.Visible;
                 currentGuide.GuideBackgroundElement = guideBackgroundElement;
                 currentGuide.MainWindow = mainRootElement;
-                var dynamoView = (mainRootElement as DynamoView);
-                if (dynamoView == null) return;
                 currentGuide.LibraryView = dynamoView.sidebarGrid.Children.OfType<UserControl>().FirstOrDefault();
 
                 currentGuide.Initialize();
                 currentGuide.Play();
                 GuidesValidationMethods.CurrentExecutingGuide = currentGuide;
+            }
+        }
+
+        private void CloseAllViewExtensions(DynamoView dynamoView)
+        {
+            if (dynamoView == null || dynamoViewModel == null) return;
+
+            var tabsToClose = new List<TabItem>();
+
+            foreach (var item in dynamoViewModel.SideBarTabItems.OfType<TabItem>())
+            {
+                if (item.Tag is IViewExtension)
+                {
+                    tabsToClose.Add(item);
+                }
+            }
+
+            // Close each view extension tab
+            foreach (var tab in tabsToClose)
+            {
+                var viewExtension = tab.Tag as IViewExtension;
+                if (viewExtension != null)
+                {
+                    try
+                    {
+                        dynamoView.CloseExtensionControl(viewExtension);
+                    }
+                    catch (Exception ex)
+                    {
+                        dynamoViewModel.Model.Logger.Log($"Error closing view extension {viewExtension.Name}: {ex.Message}");
+                    }
+                }
             }
         }
 
