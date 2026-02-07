@@ -865,7 +865,7 @@ namespace Dynamo.Models
                         if (!string.IsNullOrEmpty(templatePath) && File.Exists(templatePath))
                         {
                             PreferenceSettings.PythonTemplateFilePath = templatePath;
-                        Logger.Log(Resources.PythonTemplateDefinedByHost + " : " + PreferenceSettings.PythonTemplateFilePath);
+                            Logger.Log($"{Resources.PythonTemplateDefinedByHost} : {PreferenceSettings.PythonTemplateFilePath}");
                         }
 
                         // Otherwise fallback to the default
@@ -885,7 +885,7 @@ namespace Dynamo.Models
                 else
                 {
                     // A custom python template path already exists in the DynamoSettings.xml
-                    Logger.Log(Resources.PythonTemplateUserFile + " : " + PreferenceSettings.PythonTemplateFilePath);
+                    Logger.Log($"{Resources.PythonTemplateUserFile} : {PreferenceSettings.PythonTemplateFilePath}");
                 }
             pathManager.Preferences = PreferenceSettings;
             PreferenceSettings.RequestUserDataFolder += pathManager.GetUserDataFolder;
@@ -1040,7 +1040,7 @@ namespace Dynamo.Models
             {
                 if (trustedLoc.StartsWith(programDataPath))
                 {
-                    Logger.Log(("An unsafe path has been detected in Trusted Locations: " + trustedLoc));
+                    Logger.Log($"An unsafe path has been detected in Trusted Locations: {trustedLoc}");
                 }
             }        
         }
@@ -1192,7 +1192,7 @@ namespace Dynamo.Models
             if (!string.IsNullOrEmpty(pathManager.PythonTemplateFilePath) && File.Exists(pathManager.PythonTemplateFilePath))
             {
                 PreferenceSettings.PythonTemplateFilePath = pathManager.PythonTemplateFilePath;
-                Logger.Log(Resources.PythonTemplateAppData + " : " + PreferenceSettings.PythonTemplateFilePath);
+                Logger.Log($"{Resources.PythonTemplateAppData} : {PreferenceSettings.PythonTemplateFilePath}");
             }
 
             // Otherwise the OOTB hard-coded template is applied
@@ -1291,7 +1291,7 @@ namespace Dynamo.Models
             }
             catch (Exception ex)
             {
-                logger.Log(ex.Message + " : " + ex.StackTrace);
+                logger.Log($"{ex.Message} : {ex.StackTrace}");
                 return;
             }
         }
@@ -1309,7 +1309,7 @@ namespace Dynamo.Models
             }
             catch (Exception ex)
             {
-                logger.Log(ex.Message + " : " + ex.StackTrace);
+                logger.Log($"{ex.Message} : {ex.StackTrace}");
                 return;
             }
 
@@ -2707,7 +2707,7 @@ namespace Dynamo.Models
                     var savePath = pathManager.GetBackupFilePath(workspace);
                     OnRequestWorkspaceBackUpSave(savePath, true);
                     backupFilesDict[workspace.Guid] = savePath;
-                    Logger.Log(Resources.BackupSavedMsg + ": " + savePath);
+                    Logger.Log($"{Resources.BackupSavedMsg}: {savePath}");
                 }
                 PreferenceSettings.BackupFiles.AddRange(backupFilesDict.Values);
             });
@@ -3469,7 +3469,7 @@ namespace Dynamo.Models
                              where !displayString.Contains("GetType")
                              select string.IsNullOrEmpty(function.Namespace)
                                 ? ""
-                                : function.Namespace + "." + function.Signature + "\n"));
+                                : $"{function.Namespace}.{function.Signature}\n"));
 
             var sb = string.Join("\n", descriptions);
 
