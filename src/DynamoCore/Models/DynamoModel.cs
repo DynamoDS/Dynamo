@@ -956,8 +956,7 @@ namespace Dynamo.Models
             AddHomeWorkspace();
 
             AuthenticationManager = new AuthenticationManager(config.AuthProvider);
-            Logger.Log(string.Format("Dynamo -- Build {0}",
-                                        Assembly.GetExecutingAssembly().GetName().Version));
+            Logger.Log($"Dynamo -- Build {Assembly.GetExecutingAssembly().GetName().Version}");
 
             DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenLoadNodeLibrary, 50));
             InitializeNodeLibrary();
@@ -1260,8 +1259,7 @@ namespace Dynamo.Models
         {
             ExtensionManager.Remove(ext);
 
-            var logSource = ext as ILogSource;
-            if (logSource != null)
+            if (ext is ILogSource logSource)
                 logSource.MessageLogged -= LogMessage;
         }
 
@@ -1426,16 +1424,15 @@ namespace Dynamo.Models
         ///
         private void OnAsyncTaskStateChanged(DynamoScheduler sender, TaskStateChangedEventArgs e)
         {
-            var updateTask = e.Task as UpdateGraphAsyncTask;
             switch (e.CurrentState)
             {
                 case TaskStateChangedEventArgs.State.ExecutionStarting:
-                    if (updateTask != null)
+                    if (e.Task is UpdateGraphAsyncTask updateTask)
                         ExecutionEvents.OnGraphPreExecution(new ExecutionSession(updateTask, this, geometryFactoryPath));
                     break;
 
                 case TaskStateChangedEventArgs.State.ExecutionCompleted:
-                    if (updateTask != null)
+                    if (e.Task is UpdateGraphAsyncTask updateTask2)
                     {
                         // Record execution time for update graph task.
                         long start = e.Task.ExecutionStartTime.TickCount;
@@ -1445,10 +1442,10 @@ namespace Dynamo.Models
                         //don't attempt to send these events unless GA is active or ADP will actually record these events.
                         if (Logging.Analytics.ReportingAnalytics)
                         {
-                            if (updateTask.ModifiedNodes != null && updateTask.ModifiedNodes.Any())
+                            if (updateTask2.ModifiedNodes != null && updateTask2.ModifiedNodes.Any())
                             {
                                 // Send analytics for each of modified nodes so they are counted individually
-                                foreach (var node in updateTask.ModifiedNodes)
+                                foreach (var node in updateTask2.ModifiedNodes)
                                 {
                                     // Tracking node execution as generic event
                                     // it is distinguished with the legacy aggregated performance event
@@ -1462,7 +1459,7 @@ namespace Dynamo.Models
 
                         Debug.WriteLine(String.Format(Resources.EvaluationCompleted, executionTimeSpan));
 
-                        ExecutionEvents.OnGraphPostExecution(new ExecutionSession(updateTask, this, geometryFactoryPath));
+                        ExecutionEvents.OnGraphPostExecution(new ExecutionSession(updateTask2, this, geometryFactoryPath));
                     }
                     break;
             }
@@ -2444,8 +2441,7 @@ namespace Dynamo.Models
             // The following logic to start periodic evaluation will need to be moved
             // inside of the HomeWorkspaceModel's constructor.  It cannot be there today
             // as it causes an immediate crash due to the above ResetEngine call.
-            var hws = ws as HomeWorkspaceModel;
-            if (hws != null)
+            if (ws is HomeWorkspaceModel hws)
             {
                 // TODO: #4258
                 // Remove this ResetEngine call when multiple home workspaces is supported.
@@ -2492,8 +2488,8 @@ namespace Dynamo.Models
                 CustomNodeManager,
                 this.LinterManager);
 
-            workspace.FileName = string.IsNullOrEmpty(filePath)? string.Empty : filePath;
-            workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : string.Empty;
+            workspace.FileName = string.IsNullOrEmpty(filePath) ? "" : filePath;
+            workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : "";
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
             workspace.IsTemplate = isTemplate;
             if (!IsTestMode && !IsHeadless)
@@ -3109,15 +3105,17 @@ namespace Dynamo.Models
                 if (!(el is NodeModel))
                     continue;
 
-                var node = el as NodeModel;
-                var connectors =
-                    node.InPorts.Concat(node.OutPorts).SelectMany(port => port.Connectors)
-                        .Where(
-                            connector =>
-                                connector.End != null && connector.End.Owner.IsSelected
-                                    && !ClipBoard.Contains(connector));
+                if (el is NodeModel node)
+                {
+                    var connectors =
+                        node.InPorts.Concat(node.OutPorts).SelectMany(port => port.Connectors)
+                            .Where(
+                                connector =>
+                                    connector.End != null && connector.End.Owner.IsSelected
+                                        && !ClipBoard.Contains(connector));
 
-                ClipBoard.AddRange(connectors);
+                    ClipBoard.AddRange(connectors);
+                }
             }
         }
 
@@ -3397,8 +3395,7 @@ namespace Dynamo.Models
         /// <param name="parameters">The object to add to the selection.</param>
         public void AddToSelection(object parameters)
         {
-            var selectable = parameters as ISelectable;
-            if (selectable != null)
+            if (parameters is ISelectable selectable)
             {
                 DynamoSelection.Instance.Selection.AddUnique(selectable);
             }
