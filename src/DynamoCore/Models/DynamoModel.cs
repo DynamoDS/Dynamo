@@ -135,7 +135,7 @@ namespace Dynamo.Models
         private readonly PathManager pathManager;
         private WorkspaceModel currentWorkspace;
         private Timer backupFilesTimer;
-        private Dictionary<Guid, string> backupFilesDict = new Dictionary<Guid, string>();
+        private Dictionary<Guid, string> backupFilesDict = new();
         internal readonly Stopwatch stopwatch = Stopwatch.StartNew();
 
         /// <summary>
@@ -385,7 +385,7 @@ namespace Dynamo.Models
         /// <summary>
         ///     The private collection of visible workspaces in Dynamo
         /// </summary>
-        private readonly List<WorkspaceModel> _workspaces = new List<WorkspaceModel>();
+        private readonly List<WorkspaceModel> _workspaces = new();
 
         /// <summary>
         ///     Returns collection of visible workspaces in Dynamo
@@ -686,7 +686,7 @@ namespace Dynamo.Models
             pathManager = CreatePathManager(config);
 
             // Ensure we have all directories in place.
-            var exceptions = new List<Exception>();
+            List<Exception> exceptions = [];
             pathManager.EnsureDirectoryExistence(exceptions);
 
             Context = config.Context;
@@ -830,7 +830,7 @@ namespace Dynamo.Models
             // is no additional location specified. Otherwise, update pathManager.PackageDirectories to include
             // PackageFolders
             if (PreferenceSettings.CustomPackageFolders.Count == 0)
-                PreferenceSettings.CustomPackageFolders = new List<string> { BuiltInPackagesToken, pathManager.UserDataDirectory };
+                PreferenceSettings.CustomPackageFolders = [BuiltInPackagesToken, pathManager.UserDataDirectory];
 
             if (!PreferenceSettings.CustomPackageFolders.Contains(BuiltInPackagesToken))
             {
@@ -924,7 +924,7 @@ namespace Dynamo.Models
                 if (this.dynamoReady)
                 {
                     DynamoReadyExtensionHandler(new ReadyParams(this),
-                    new List<IExtension>() { extension });
+                    [extension]);
                 };
             };
 
@@ -1032,7 +1032,7 @@ namespace Dynamo.Models
                     LuceneUtility.DisposeWriter();
             }
 
-            GraphChecksumDictionary = new Dictionary<string, List<string>>();
+            GraphChecksumDictionary = new();
             // This event should only be raised at the end of this method.
             DynamoReady(new ReadyParams(this));
 
@@ -1248,7 +1248,7 @@ namespace Dynamo.Models
 
         private IEnumerable<IExtension> LoadExtensions()
         {
-            var extensions = new List<IExtension>();
+            List<IExtension> extensions = [];
             foreach (var dir in pathManager.ExtensionsDirectories)
             {
                 extensions.AddRange(ExtensionManager.ExtensionLoader.LoadDirectory(dir));
@@ -1792,8 +1792,9 @@ namespace Dynamo.Models
                 return;
             }
 
-            var nodes = new List<TypeLoadData>();
-            Loader.LoadNodesFromAssembly(assem, Context, nodes, new List<TypeLoadData>());
+            List<TypeLoadData> nodes = [];
+            List<TypeLoadData> errors = [];
+            Loader.LoadNodesFromAssembly(assem, Context, nodes, errors);
 
             LoadNodeModels(nodes, true);
         }
@@ -2689,7 +2690,7 @@ namespace Dynamo.Models
                 // when the last auto-save operation happens. Now the IDs will be used to know
                 // whether some workspaces have already been backed up. If so, those workspaces won't be
                 // backed up again.
-                var tempDict = new Dictionary<Guid, string>(backupFilesDict);
+                Dictionary<Guid, string> tempDict = new(backupFilesDict);
                 backupFilesDict.Clear();
                 PreferenceSettings.BackupFiles.Clear();
                 foreach (var workspace in Workspaces)
@@ -2801,7 +2802,7 @@ namespace Dynamo.Models
 
         internal void UngroupModel(List<ModelBase> modelsToUngroup)
         {
-            var emptyGroup = new List<ModelBase>();
+            List<ModelBase> emptyGroup = [];
             var annotations = Workspaces.SelectMany(ws => ws.Annotations);
             foreach (var model in modelsToUngroup)
             {
@@ -2880,7 +2881,7 @@ namespace Dynamo.Models
             var selectedGroup = workspaceAnnotations.FirstOrDefault(x => x.GUID == hostGroupGuid);
             if (selectedGroup is null) return;
 
-            var modelsToModify = new List<ModelBase>();
+            List<ModelBase> modelsToModify = [];
             modelsToModify.AddRange(modelsToAdd);
             modelsToModify.Add(selectedGroup);
 
@@ -3159,11 +3160,11 @@ namespace Dynamo.Models
 
             //make a lookup table to store the guids of the
             //old models and the guids of their pasted versions
-            var modelLookup = new Dictionary<Guid, ModelBase>();
+            Dictionary<Guid, ModelBase> modelLookup = [];
 
             //make a list of all newly created models so that their
             //creations can be recorded in the undo recorder.
-            var createdModels = new List<ModelBase>();
+            List<ModelBase> createdModels = [];
 
             var nodes = ClipBoard.OfType<NodeModel>();
             var connectors = ClipBoard.OfType<ConnectorModel>();
@@ -3177,7 +3178,7 @@ namespace Dynamo.Models
             var xmlDoc = new XmlDocument();
 
             // Create the new NodeModel's
-            var newNodeModels = new List<NodeModel>();
+            List<NodeModel> newNodeModels = [];
             using (CurrentWorkspace.BeginDelayedGraphExecution())
             {
                 foreach (var node in nodes)
@@ -3212,7 +3213,7 @@ namespace Dynamo.Models
                 }
 
                 // Create the new NoteModel's
-                var newNoteModels = new List<NoteModel>();
+                List<NoteModel> newNoteModels = [];
                 foreach (var note in notes)
                 {
                     var noteModel = new NoteModel(note.X, note.Y, note.Text, Guid.NewGuid());
@@ -3285,7 +3286,7 @@ namespace Dynamo.Models
                 //Grouping depends on the selected node models.
                 //so adding the group after nodes / notes are added to workspace.
                 //select only those nodes that are part of a group.
-                var newAnnotations = new List<AnnotationModel>();
+                List<AnnotationModel> newAnnotations = [];
                 foreach (var annotation in annotations.OrderByDescending(a => a.HasNestedGroups))
                 {
                     if (modelLookup.ContainsKey(annotation.GUID))
@@ -3341,9 +3342,9 @@ namespace Dynamo.Models
         private AnnotationModel CreateAnnotationModel(
             AnnotationModel model, Dictionary<Guid, ModelBase> modelLookup)
         {
-            var annotationNodeModel = new List<NodeModel>();
-            var annotationNoteModel = new List<NoteModel>();
-            var annotationAnnotationModels = new List<AnnotationModel>();
+            List<NodeModel> annotationNodeModel = [];
+            List<NoteModel> annotationNoteModel = [];
+            List<AnnotationModel> annotationAnnotationModels = [];
             // some models can be deleted after copying them,
             // so they need to be in pasted annotation as well
             var modelsToRestore = model.DeletedModelBases.Intersect(ClipBoard);
@@ -3764,7 +3765,7 @@ namespace Dynamo.Models
 
         private void InsertConnectors(IEnumerable<ConnectorModel> connectors)
         {
-            List<ConnectorModel> newConnectors = new List<ConnectorModel>();
+            List<ConnectorModel> newConnectors = [];
 
             foreach (var connectorModel in connectors)
             {
@@ -3787,7 +3788,7 @@ namespace Dynamo.Models
 
         private List<NoteModel> GetInsertedNotes(IEnumerable<ExtraAnnotationViewInfo> viewInfoAnnotations)
         {
-            List<NoteModel> result = new List<NoteModel>();
+            List<NoteModel> result = [];
 
             foreach (var annotation in viewInfoAnnotations)
             {
@@ -3808,7 +3809,7 @@ namespace Dynamo.Models
 
         internal static void RecordUndoModels(WorkspaceModel workspace, List<ModelBase> undoItems)
         {
-            var userActionDictionary = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
+            Dictionary<ModelBase, UndoRedoRecorder.UserAction> userActionDictionary = [];
             //Add models that were newly created
             foreach (var undoItem in undoItems)
             {
