@@ -315,17 +315,36 @@ namespace Dynamo.Graph.Workspaces
             } // Conclude the deletion.
         }
 
-        private static List<(NodeModel StartNode, int StartIndex, NodeModel EndNode, int EndIndex, List<(double X, double Y)> PinLocations)>
-            CollectInlineWatchRewireData(List<ModelBase> models)
+        private sealed class InlineWatchRewireData
+        {
+            internal InlineWatchRewireData(
+                NodeModel startNode,
+                int startIndex,
+                NodeModel endNode,
+                int endIndex,
+                IReadOnlyList<(double X, double Y)> pinLocations)
+            {
+                StartNode = startNode;
+                StartIndex = startIndex;
+                EndNode = endNode;
+                EndIndex = endIndex;
+                PinLocations = pinLocations ?? Array.Empty<(double X, double Y)>();
+            }
+
+            internal NodeModel StartNode { get; }
+            internal int StartIndex { get; }
+            internal NodeModel EndNode { get; }
+            internal int EndIndex { get; }
+            internal IReadOnlyList<(double X, double Y)> PinLocations { get; }
+
+            internal (Guid StartNode, int StartIndex, Guid EndNode, int EndIndex) Key =>
+                (StartNode.GUID, StartIndex, EndNode.GUID, EndIndex);
+        }
+
+        private static List<InlineWatchRewireData> CollectInlineWatchRewireData(List<ModelBase> models)
         {
             // Capture upstream -> watch -> downstream pairs for later reconnection.
-            var rewires = new List<(
-                NodeModel StartNode,
-                int StartIndex,
-                NodeModel EndNode,
-                int EndIndex,
-                List<(double X, double Y)> PinLocations)>();
-
+            var rewires = new List<InlineWatchRewireData>();
             var nodesToDelete = models.OfType<NodeModel>().ToList();
             if (nodesToDelete.Count == 0) return rewires;
 
@@ -333,15 +352,9 @@ namespace Dynamo.Graph.Workspaces
 
             foreach (var node in nodesToDelete)
             {
-                if (!IsInlineWatchNode(node))
-                {
-                    continue;
-                }
+                if (!IsInlineWatchNode(node)) continue;
 
-                if (node.InPorts.Count == 0 || node.OutPorts.Count == 0)
-                {
-                    continue;
-                }
+                if (node.InPorts.Count == 0 || node.OutPorts.Count == 0) continue;
 
                 var inputPort = node.InPorts[0];
 
@@ -371,8 +384,16 @@ namespace Dynamo.Graph.Workspaces
                     if (startNode.GUID == endNode.GUID) continue;
 
                     var pinLocations = new List<(double X, double Y)>(inputPinLocations);
-                    pinLocations.AddRange(outputConnector.ConnectorPinModels.Select(pin => (pin.Position.X, pin.Position.Y)));
-                    rewires.Add((startNode, startPort.Index, endNode, endPort.Index, pinLocations));
+                    foreach (var pin in outputConnector.ConnectorPinModels)
+                    {
+                        pinLocations.Add((pin.Position.X, pin.Position.Y));
+                    }
+                    rewires.Add(new InlineWatchRewireData(
+                        startNode,
+                        startPort.Index,
+                        endNode,
+                        endPort.Index,
+                        pinLocations.ToList()));
                 }
             }
 
@@ -385,7 +406,7 @@ namespace Dynamo.Graph.Workspaces
             return string.Equals(node.GetOriginalName(), "Watch", StringComparison.Ordinal);
         }
 
-        private void CreateInlineWatchRewireConnectors(IEnumerable<(NodeModel StartNode, int StartIndex, NodeModel EndNode, int EndIndex, List<(double X, double Y)> PinLocations)> rewires)
+        private void CreateInlineWatchRewireConnectors(IEnumerable<InlineWatchRewireData> rewires)
         {
             if (rewires is null || undoRecorder is null) return;
 
