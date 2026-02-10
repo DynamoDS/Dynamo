@@ -203,6 +203,8 @@ namespace Dynamo.Graph.Workspaces
             if (!ShouldProceedWithRecording(models))
                 return; // There's nothing for deletion.
 
+            var inlineWatchRewireData = CollectInlineWatchRewireData(models);
+
             // Gather a list of connectors first before the nodes they connect
             // to are deleted. We will have to delete the connectors first
             // before
@@ -307,7 +309,129 @@ namespace Dynamo.Graph.Workspaces
                         HasUnsavedChanges = true;
                     }
                 }
+
+                CreateInlineWatchRewireConnectors(inlineWatchRewireData);
+
             } // Conclude the deletion.
+        }
+
+        private static List<(NodeModel StartNode, int StartIndex, NodeModel EndNode, int EndIndex, List<(double X, double Y)> PinLocations)>
+            CollectInlineWatchRewireData(List<ModelBase> models)
+        {
+            // Capture upstream -> watch -> downstream pairs for later reconnection.
+            var rewires = new List<(
+                NodeModel StartNode,
+                int StartIndex,
+                NodeModel EndNode,
+                int EndIndex,
+                List<(double X, double Y)> PinLocations)>();
+
+            var nodesToDelete = models.OfType<NodeModel>().ToList();
+            if (nodesToDelete.Count == 0) return rewires;
+
+            var deletedNodeGuids = new HashSet<Guid>(nodesToDelete.Select(node => node.GUID));
+
+            foreach (var node in nodesToDelete)
+            {
+                if (!IsInlineWatchNode(node))
+                {
+                    continue;
+                }
+
+                if (node.InPorts.Count == 0 || node.OutPorts.Count == 0)
+                {
+                    continue;
+                }
+
+                var inputPort = node.InPorts[0];
+
+                // WatchNodes have only a single inputPort
+                if (inputPort.Connectors.Count != 1) continue;
+
+                var inputConnector = inputPort.Connectors[0];
+                var startPort = inputConnector.Start;
+                var startNode = startPort?.Owner;
+                if (startNode is null || deletedNodeGuids.Contains(startNode.GUID)) continue;
+
+                var inputPinLocations = inputConnector.ConnectorPinModels
+                    .Select(pin => (pin.Position.X, pin.Position.Y))
+                    .Distinct()
+                    .ToList();
+
+                var outputPort = node.OutPorts[0];
+                if (outputPort.Connectors.Count == 0) continue;
+
+                // Capture all downstream nodes connected to the output port, and reconnect them to the upstream node
+                foreach (var outputConnector in outputPort.Connectors.ToList())
+                {
+                    var endPort = outputConnector.End;
+                    var endNode = endPort?.Owner;
+                    if (endNode is null || deletedNodeGuids.Contains(endNode.GUID)) continue;
+
+                    if (startNode.GUID == endNode.GUID) continue;
+
+                    var pinLocations = new List<(double X, double Y)>(inputPinLocations);
+                    pinLocations.AddRange(outputConnector.ConnectorPinModels.Select(pin => (pin.Position.X, pin.Position.Y)));
+                    rewires.Add((startNode, startPort.Index, endNode, endPort.Index, pinLocations));
+                }
+            }
+
+            return rewires;
+        }
+
+        private static bool IsInlineWatchNode(NodeModel node)
+        {
+            if (node is null) return false;
+            return string.Equals(node.GetOriginalName(), "Watch", StringComparison.Ordinal);
+        }
+
+        private void CreateInlineWatchRewireConnectors(IEnumerable<(NodeModel StartNode, int StartIndex, NodeModel EndNode, int EndIndex, List<(double X, double Y)> PinLocations)> rewires)
+        {
+            if (rewires is null || undoRecorder is null) return;
+
+            // Avoid duplicate reconnects when multiple Watch nodes map to same ports.
+            var createdKeys = new HashSet<(Guid StartNode, int StartIndex, Guid EndNode, int EndIndex)>();
+
+            foreach (var rewire in rewires)
+            {
+                var startNode = rewire.StartNode;
+                var endNode = rewire.EndNode;
+                if (startNode is null || endNode is null) continue;
+
+                var key = (startNode.GUID, rewire.StartIndex, endNode.GUID, rewire.EndIndex);
+                if (!createdKeys.Add(key)) continue;
+
+                if (rewire.StartIndex < 0 || rewire.EndIndex < 0) continue;
+
+                if (startNode.OutPorts.Count <= rewire.StartIndex || endNode.InPorts.Count <= rewire.EndIndex) continue;
+
+                var startPort = startNode.OutPorts[rewire.StartIndex];
+                var endPort = endNode.InPorts[rewire.EndIndex];
+
+                if (startPort.Connectors.Any(connector => connector.End == endPort)) continue;
+
+                var connector = ConnectorModel.Make(
+                    startNode,
+                    endNode,
+                    rewire.StartIndex,
+                    rewire.EndIndex);
+
+                if (connector is null) continue;
+
+                undoRecorder.RecordCreationForUndo(connector);
+
+                // Recreate pins from both watch connectors on the new connector.
+                foreach (var pinLocation in rewire.PinLocations)
+                {
+                    var connectorPinModel = new ConnectorPinModel(
+                        pinLocation.X,
+                        pinLocation.Y,
+                        Guid.NewGuid(),
+                        connector.GUID);
+                    connector.AddPin(connectorPinModel);
+                    undoRecorder.RecordCreationForUndo(connectorPinModel);
+                }
+            }
         }
 
         internal void DeleteSavedModels()

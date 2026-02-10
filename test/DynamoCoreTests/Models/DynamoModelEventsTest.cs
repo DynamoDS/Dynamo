@@ -221,6 +221,113 @@ namespace Dynamo.Tests.ModelsTest
         }
 
         /// <summary>
+        /// Verifies that deleting an inline Watch node reconnects the ports correctly.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void DeletingInlineWatchReconnectsPorts()
+        {
+            // Arrange
+            var codeBlockNodeA = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNodeA, "1;");
+
+            var codeBlockNodeB = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNodeB, "x + 1;");
+
+            var watch = new Watch();
+            var command = new DynCmd.CreateNodeCommand(
+                watch, 0, 0, true, false);
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            ConnectorModel.Make(codeBlockNodeA, watch, 0, 0);
+            ConnectorModel.Make(watch, codeBlockNodeB, 0, 0);
+
+            // Assert initial connections
+            Assert.AreEqual(3, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(1, codeBlockNodeB.InPorts[0].Connectors.Count);
+            Assert.That(codeBlockNodeB.InPorts[0].Connectors[0].Start.Owner, Is.SameAs(watch));
+
+            // Act - Delete the Watch node
+            CurrentDynamoModel.DeleteModelInternal(new List<ModelBase> { watch });
+
+            // Assert that the Watch node should be deleted and the CodeBlock nodes should be reconnected directly
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.Nodes.Contains(watch));
+            Assert.AreEqual(1, codeBlockNodeB.InPorts[0].Connectors.Count);
+            Assert.That(codeBlockNodeB.InPorts[0].Connectors[0].Start.Owner, Is.SameAs(codeBlockNodeA));
+            Assert.AreEqual(1, codeBlockNodeA.OutPorts[0].Connectors.Count);
+            Assert.That(codeBlockNodeA.OutPorts[0].Connectors[0].End.Owner, Is.SameAs(codeBlockNodeB));
+        }
+
+
+        /// <summary>
+        /// Verifies that deleting an inline Watch node preserves the connector pins on the remaining connectors.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void DeletingInlineWatchPreservesConnectorPins()
+        {
+            // Arrange
+            var codeBlockNodeA = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNodeA, "1;");
+
+            var codeBlockNodeB = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNodeB, "x + 1;");
+
+            var codeBlockNodeC = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNodeC, "x + 2;");
+
+            var watch = new Watch();
+            var command = new DynCmd.CreateNodeCommand(
+                watch, 0, 0, true, false);
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            ConnectorModel.Make(codeBlockNodeA, watch, 0, 0);
+            ConnectorModel.Make(watch, codeBlockNodeB, 0, 0);
+            ConnectorModel.Make(watch, codeBlockNodeC, 0, 0);
+
+            var inputConnector = watch.InPorts[0].Connectors[0];
+            var outputConnectorB = watch.OutPorts[0].Connectors
+                .First(connector => connector.End.Owner == codeBlockNodeB);
+            var outputConnectorC = watch.OutPorts[0].Connectors
+                .First(connector => connector.End.Owner == codeBlockNodeC);
+
+            // Add pins to the connectors
+            inputConnector.ConnectorPinModels.Add(new ConnectorPinModel(10, 20, Guid.NewGuid(), inputConnector.GUID));
+            inputConnector.ConnectorPinModels.Add(new ConnectorPinModel(15, 25, Guid.NewGuid(), inputConnector.GUID));
+            outputConnectorB.ConnectorPinModels.Add(new ConnectorPinModel(30, 40, Guid.NewGuid(), outputConnectorB.GUID));
+
+            // Act - Delete the Watch node
+            CurrentDynamoModel.DeleteModelInternal(new List<ModelBase> { watch });
+
+            // Assert that the Watch node should be deleted and the CodeBlock nodes should be reconnected directly with the same pins
+            var connectorToB = codeBlockNodeB.InPorts[0].Connectors[0];
+            var connectorToC = codeBlockNodeC.InPorts[0].Connectors[0];
+
+            Assert.That(connectorToB.Start.Owner, Is.SameAs(codeBlockNodeA));
+            Assert.That(connectorToC.Start.Owner, Is.SameAs(codeBlockNodeA));
+
+            var expectedPinsToB = new HashSet<(double X, double Y)>
+            {
+                (10, 20),
+                (15, 25),
+                (30, 40)
+            };
+            var expectedPinsToC = new HashSet<(double X, double Y)>
+            {
+                (10, 20),
+                (15, 25),
+                (50, 60)
+            };
+
+            var actualPinsToB = connectorToB.ConnectorPinModels.Select(pin => (pin.Position.X, pin.Position.Y)).ToHashSet();
+            var actualPinsToC = connectorToC.ConnectorPinModels.Select(pin => (pin.Position.X, pin.Position.Y)).ToHashSet();
+
+            CollectionAssert.AreEquivalent(expectedPinsToB, actualPinsToB);
+            CollectionAssert.AreEquivalent(expectedPinsToC, actualPinsToC);
+        }
+
+        /// <summary>
         /// This test method will execute the event OnDeletionComplete
         /// </summary>
         [Test]
