@@ -530,7 +530,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(Res.ExitTourWindowContent);
         }
 
-        private void CloseAllViewExtensions(DynamoView dynamoView)
+        internal void CloseAllViewExtensions(DynamoView dynamoView)
         {
             if (dynamoView == null || dynamoViewModel == null) return;
 

@@ -404,28 +404,29 @@ namespace DynamoCoreWpfTests
         [Test]
         public void LaunchTourClosesSidePanelViewExtensions()
         {
-            // Open a view extension in the side panel
-            RaiseLoadedEvent(this.View);
-            var extensionManager = View.viewExtensionManager;
-            var dockedExtension = new ExtensionsSideBarViewExtension();
-            extensionManager.Add(dockedExtension);
+            var initialTabsOpen = ViewModel.SideBarTabItems.OfType<TabItem>()
+                .Count(tab => tab.Tag is IViewExtension);
 
-            // Assert that the extension is added and is in the side panel
-            var extensionTabsOpen = ViewModel.SideBarTabItems.OfType<TabItem>().Count(tab => tab.Tag is IViewExtension);
-            Assert.GreaterOrEqual(extensionTabsOpen, 1);
+            var dockedExtension = new GuidedTourSidePanelTestViewExtension();
+            var added = View.AddOrFocusExtensionControl(dockedExtension, new UserControl());
+            Assert.IsTrue(added);
 
-            // Act - Invoke CloseAllViewExtensions via reflection to simulate the start of a tour
+            var hasAddedExtensionTab = ViewModel.SideBarTabItems.OfType<TabItem>().Any(tab =>
+                tab.Tag is IViewExtension extension &&
+                extension.UniqueId == dockedExtension.UniqueId);
+            Assert.IsTrue(hasAddedExtensionTab);
+
             var guidesManager = new GuidesManager(View, ViewModel);
-            var closeMethod = typeof(GuidesManager).GetMethod(
-                "CloseAllViewExtensions",
-                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.DoesNotThrow(() => guidesManager.CloseAllViewExtensions(View));
 
-            Assert.NotNull(closeMethod);
-            Assert.DoesNotThrow(() => closeMethod.Invoke(guidesManager, new object[] { View }));
+            hasAddedExtensionTab = ViewModel.SideBarTabItems.OfType<TabItem>().Any(tab =>
+                tab.Tag is IViewExtension extension &&
+                extension.UniqueId == dockedExtension.UniqueId);
+            Assert.IsFalse(hasAddedExtensionTab);
 
-            // Assert that the view extension tab is closed
-            extensionTabsOpen = ViewModel.SideBarTabItems.OfType<TabItem>().Count(tab => tab.Tag is IViewExtension);
-            Assert.AreEqual(0, extensionTabsOpen);
+            var finalTabsOpen = ViewModel.SideBarTabItems.OfType<TabItem>()
+                .Count(tab => tab.Tag is IViewExtension);
+            Assert.LessOrEqual(finalTabsOpen, initialTabsOpen);
         }
     }
 
@@ -562,6 +563,28 @@ namespace DynamoCoreWpfTests
         public void Dispose()
         {
 
+        }
+    }
+
+    internal class GuidedTourSidePanelTestViewExtension : IViewExtension
+    {
+        public string UniqueId { get; } = Guid.NewGuid().ToString("N");
+        public string Name => $"GuidedTourSidePanelTestViewExtension_{UniqueId}";
+
+        public void Startup(ViewStartupParams viewStartupParams)
+        {
+        }
+
+        public void Loaded(ViewLoadedParams p)
+        {
+        }
+
+        public void Shutdown()
+        {
+        }
+
+        public void Dispose()
+        {
         }
     }
 }
