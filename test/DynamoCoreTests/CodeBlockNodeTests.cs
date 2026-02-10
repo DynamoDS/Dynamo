@@ -1489,12 +1489,12 @@ var06 = g;
             Assert.AreEqual(ElementState.Warning, mathFloor.State);
             Assert.IsTrue(mathFloor.Infos.Any(x => x.Message.Equals(expectedWarning)
              && x.State == ElementState.Warning));
-            AssertPreviewValue(mathFloor.AstIdentifierGuid, long.MinValue);
+            AssertPreviewValue(mathFloor.AstIdentifierGuid, long.MaxValue);
 
             Assert.IsNotNull(mathCeiling);
             Assert.AreEqual(ElementState.Warning, mathCeiling.State);
             Assert.IsTrue(mathCeiling.Infos.Any(x => x.Message.Equals(expectedWarning) && x.State == ElementState.Warning));
-            AssertPreviewValue(mathCeiling.AstIdentifierGuid, long.MinValue);
+            AssertPreviewValue(mathCeiling.AstIdentifierGuid, long.MaxValue);
         }
 
         [Test]
