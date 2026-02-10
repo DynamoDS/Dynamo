@@ -198,38 +198,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
             }
         }
 
-        private void CloseAllViewExtensions(DynamoView dynamoView)
-        {
-            if (dynamoView == null || dynamoViewModel == null) return;
-
-            var tabsToClose = new List<TabItem>();
-
-            foreach (var item in dynamoViewModel.SideBarTabItems.OfType<TabItem>())
-            {
-                if (item.Tag is IViewExtension)
-                {
-                    tabsToClose.Add(item);
-                }
-            }
-
-            // Close each view extension tab
-            foreach (var tab in tabsToClose)
-            {
-                var viewExtension = tab.Tag as IViewExtension;
-                if (viewExtension != null)
-                {
-                    try
-                    {
-                        dynamoView.CloseExtensionControl(viewExtension);
-                    }
-                    catch (Exception ex)
-                    {
-                        dynamoViewModel.Model.Logger.Log($"Error closing view extension {viewExtension.Name}: {ex.Message}");
-                    }
-                }
-            }
-        }
-
         /// <summary>
         /// This method will be executed when the OnGuidedTourFinish event is raised
         /// </summary>
@@ -560,6 +528,38 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //The exit tour popup will be shown only when a popup (doesn't apply for survey) is closed or when the tour is closed. 
             if (stepType != Step.StepTypes.SURVEY)
                 dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(Res.ExitTourWindowContent);
+        }
+
+        private void CloseAllViewExtensions(DynamoView dynamoView)
+        {
+            if (dynamoView == null || dynamoViewModel == null) return;
+
+            var tabsToClose = new List<TabItem>();
+
+            foreach (var item in dynamoViewModel.SideBarTabItems.OfType<TabItem>())
+            {
+                if (item.Tag is IViewExtension)
+                {
+                    tabsToClose.Add(item);
+                }
+            }
+
+            // Close each view extension tab
+            foreach (var tab in tabsToClose)
+            {
+                var viewExtension = tab.Tag as IViewExtension;
+                if (viewExtension != null)
+                {
+                    try
+                    {
+                        dynamoView.CloseExtensionControl(viewExtension);
+                    }
+                    catch (Exception ex)
+                    {
+                        dynamoViewModel.Model.Logger.Log($"Error closing view extension {viewExtension.Name}: {ex.Message}");
+                    }
+                }
+            }
         }
     }
 }

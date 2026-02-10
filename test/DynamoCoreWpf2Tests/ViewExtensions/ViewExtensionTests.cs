@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,6 +8,7 @@ using Dynamo.Engine;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Wpf.Extensions;
+using Dynamo.Wpf.UI.GuidedTour;
 using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
@@ -396,6 +398,34 @@ namespace DynamoCoreWpfTests
 
             viewExtension.OnOpenEvaluationStarted -= startedEvent;
             viewExtension.OnOpenEvaluationEnded -= finishedEvent;
+        }
+
+
+        [Test]
+        public void LaunchTourClosesSidePanelViewExtensions()
+        {
+            // Open a view extension in the side panel
+            RaiseLoadedEvent(this.View);
+            var extensionManager = View.viewExtensionManager;
+            var dockedExtension = new ExtensionsSideBarViewExtension();
+            extensionManager.Add(dockedExtension);
+
+            // Assert that the extension is added and is in the side panel
+            var extensionTabsOpen = ViewModel.SideBarTabItems.OfType<TabItem>().Count(tab => tab.Tag is IViewExtension);
+            Assert.GreaterOrEqual(extensionTabsOpen, 1);
+
+            // Act - Invoke CloseAllViewExtensions via reflection to simulate the start of a tour
+            var guidesManager = new GuidesManager(View, ViewModel);
+            var closeMethod = typeof(GuidesManager).GetMethod(
+                "CloseAllViewExtensions",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+
+            Assert.NotNull(closeMethod);
+            Assert.DoesNotThrow(() => closeMethod.Invoke(guidesManager, new object[] { View }));
+
+            // Assert that the view extension tab is closed
+            extensionTabsOpen = ViewModel.SideBarTabItems.OfType<TabItem>().Count(tab => tab.Tag is IViewExtension);
+            Assert.AreEqual(0, extensionTabsOpen);
         }
     }
 
