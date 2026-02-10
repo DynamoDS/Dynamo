@@ -32,7 +32,7 @@
   <ItemGroup Label="Common dependencies">
     <PackageReference Include="Autodesk.IDSDK" Version="1.2.5" />
     <PackageReference Include="Greg" Version="3.0.2.8780" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="4.0.0.3915" GeneratePathProperty="true" ExcludeAssets="all"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="4.0.0.3936" GeneratePathProperty="true" ExcludeAssets="all"/>
     <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.3915" Condition=" '$(Configuration)' == 'Release' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
     <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0_debug" Version="4.0.0.3915" Condition=" '$(Configuration)' == 'Debug' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" CopyXML="true" />

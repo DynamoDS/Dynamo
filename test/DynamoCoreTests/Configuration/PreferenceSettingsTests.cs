@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Dynamo.Configuration;
+using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -499,6 +500,29 @@ namespace Dynamo.Tests.Configuration
             settings = PreferenceSettings.Load(tempPath);
 
             Assert.IsTrue(settings.HomePageSettings.Contains(String.Concat("greeting", "Hello World")));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestPathManagerSamplesDirectoryRespectsLocalePreference()
+        {
+            // Arrange
+            var pathManagerParams = new PathManagerParams
+            {
+                CorePath = Path.GetDirectoryName(typeof(PathManager).Assembly.Location)
+            };
+
+            var pathManager = new PathManager(pathManagerParams);
+            var preferences = new PreferenceSettings { Locale = "es-ES" };
+            pathManager.Preferences = preferences;
+
+            // Act
+            var samplesPath = pathManager.SamplesDirectory;
+
+            // Assert - samples path should contain the locale
+            Assert.That(samplesPath, Is.Not.Null);
+            var expectedPathSegment = Path.Combine("samples", "es-ES");
+            Assert.That(samplesPath, Does.EndWith(expectedPathSegment));
         }
     }
 }
