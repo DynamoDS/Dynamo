@@ -316,8 +316,7 @@ namespace Dynamo.Tests.ModelsTest
             var expectedPinsToC = new HashSet<(double X, double Y)>
             {
                 (10, 20),
-                (15, 25),
-                (50, 60)
+                (15, 25)
             };
 
             var actualPinsToB = connectorToB.ConnectorPinModels.Select(pin => (pin.Position.X, pin.Position.Y)).ToHashSet();

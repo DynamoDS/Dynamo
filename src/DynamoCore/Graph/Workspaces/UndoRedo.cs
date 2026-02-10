@@ -402,8 +402,9 @@ namespace Dynamo.Graph.Workspaces
 
         private static bool IsInlineWatchNode(NodeModel node)
         {
-            if (node is null) return false;
-            return string.Equals(node.GetOriginalName(), "Watch", StringComparison.Ordinal);
+            // DynamoCore cannot reference CoreNodeModels.Watch directly.
+            return string.Equals(node.GetType().FullName, "CoreNodeModels.Watch", StringComparison.Ordinal)
+                || string.Equals(node.GetOriginalName(), "Watch", StringComparison.Ordinal);
         }
 
         private void CreateInlineWatchRewireConnectors(IEnumerable<InlineWatchRewireData> rewires)
