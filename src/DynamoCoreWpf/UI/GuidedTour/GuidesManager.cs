@@ -556,7 +556,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     }
                     catch (Exception ex)
                     {
-                        dynamoViewModel.Model.Logger.Log($"Error closing view extension {viewExtension.Name}: {ex.Message}");
+                        dynamoViewModel.Model.Logger.Log($"Error closing view extension {viewExtension.Name}: {ex}");
                     }
                 }
             }
