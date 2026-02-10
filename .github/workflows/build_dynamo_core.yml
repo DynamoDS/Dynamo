@@ -17,19 +17,19 @@ jobs:
           path: Dynamo
           repository: DynamoDS/Dynamo
       - name: Setup dotnet
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: | 
+            8.0.x
+            10.0.x
       - name: Disable problem matcher
         run: Write-Output "::remove-matcher owner=csc::"
       - name: Setup msbuild
         uses: microsoft/setup-msbuild@v2
       - name: Install dependencies for windows runtime
-        run: |
-          dotnet restore ${{ github.workspace }}\Dynamo\src\DynamoCore.sln /p:Configuration=Release --runtime=win-x64
+        run: dotnet restore ${{ github.workspace }}\Dynamo\src\DynamoCore.sln --runtime=win-x64 -p:Configuration=Release -p:DotNet=net10.0
       - name: Build DynamoCore with MSBuild for Windows
-        run: |
-          msbuild ${{ github.workspace }}\Dynamo\src\DynamoCore.sln /p:Configuration=Release
+        run: msbuild ${{ github.workspace }}\Dynamo\src\DynamoCore.sln /p:Configuration=Release
       - name: Look for DynamoCLI.exe
         run: |
           Write-Output "***Locating DynamoCLI.exe!***"
@@ -48,17 +48,19 @@ jobs:
           path: Dynamo
           repository: DynamoDS/Dynamo
       - name: Setup dotnet
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: | 
+            8.0.x
+            10.0.x
       - name: Disable problem matcher
         run: Write-Output "::remove-matcher owner=csc::"
       - name: Setup msbuild
         uses: microsoft/setup-msbuild@v2
       - name: Install dependencies for linux runtime
-        run: dotnet restore ${{ github.workspace }}\Dynamo\src\DynamoCore.sln -p:Platform=NET_Linux --runtime=linux-x64
+        run: dotnet restore ${{ github.workspace }}\Dynamo\src\DynamoCore.sln --runtime=linux-x64 -p:Configuration=Release -p:Platform=NET_Linux -p:DotNet=net10.0
       - name: Build DynamoCore with MSBuild for Linux
-        run: msbuild ${{ github.workspace }}\Dynamo\src\DynamoCore.sln /p:Configuration=Release /p:Platform=NET_Linux
+        run: dotnet build ${{ github.workspace }}\Dynamo\src\DynamoCore.sln -c Release /p:Platform=NET_Linux
       - name: Look for DynamoCLI
         run: |
           Write-Output "***Locating DynamoCLI for Linux!***"
@@ -76,13 +78,15 @@ jobs:
         with:
           path: Dynamo
       - name: Setup dotnet
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: | 
+            8.0.x
+            10.0.x
       - name: Disable problem matcher
         run: echo "::remove-matcher owner=csc::"
       - name: Install dependencies for linux runtime
-        run: dotnet restore ${{ github.workspace }}/Dynamo/src/DynamoCore.sln -p:Platform=NET_Linux --runtime=linux-x64
+        run: dotnet restore ${{ github.workspace }}/Dynamo/src/DynamoCore.sln --runtime=linux-x64 -p:Configuration=Release -p:Platform=NET_Linux -p:DotNet=net10.0
       - name: Build DynamoCore with dotnet for Linux
         run: dotnet build ${{ github.workspace }}/Dynamo/src/DynamoCore.sln -c Release /p:Platform=NET_Linux
       - name: Look for DynamoCLI.exe
