@@ -1,0 +1,357 @@
+{
+  "Uuid": "a19b2b4a-e4e6-43ab-9b41-f8d218bff28f",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Data.OpenXMLImportExcel",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSOffice.Data.OpenXMLImportExcel@string,string,int,int,bool",
+      "Id": "3c0c88dbb9284137b49a26ddaa57dfea",
+      "Inputs": [
+        {
+          "Id": "10ead2e919064a0ca223965c6a51ea17",
+          "Name": "filePath",
+          "Description": "File representing the Excel workbook\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "fe162e17673f4bf2a17f6bbb60d879a8",
+          "Name": "sheetName",
+          "Description": "Name of the worksheet containing data\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f691d9546a7d499bb86d981a7fa7f3ad",
+          "Name": "startRow",
+          "Description": "Start row for reading data. Enter 0 for Row 1, 1 for Row 2, etc.\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5091aae06fb74c9ab56be93e6baf3f7b",
+          "Name": "startColumn",
+          "Description": "Start column for reading data. Enter 0 for Column A, 1 for Column B, etc.\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1c0212ecc2694cd2aa9e78650cd90f2b",
+          "Name": "readAsString",
+          "Description": "Toggle to read cells as strings\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3d351c732cf941f49bd6139a7fc7f7c3",
+          "Name": "data",
+          "Description": "Rows of data from the Excel worksheet",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Read data from a Microsoft Excel spreadsheet by using the Open XML standard. Data is read by row and returned in a series of lists by row. Rows and columns are zero-indexed; for example, the value in cell A1 will appear in the data list at [0,0].\n\nData.OpenXMLImportExcel (filePath: string, sheetName: string, startRow: int = 0, startColumn: int = 0, readAsString: bool = false): var[][]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "Sheet Numbers",
+      "Id": "882e0dcda0ff4052aba532f3042c310a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "7ba8312ed1764f65a5e81ded47a1983c",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "D:\\Autodesk\\Generative BIM - Dynamo Dictionary\\Data.OpenXMLExportExcel\\DSOffice.Data.OpenXMLExportExcelSample.xlsx",
+      "InputValue": ".\\DSOffice.Data.OpenXMLExportExcelSample.xlsx",
+      "NodeType": "ExtensionNode",
+      "Id": "f54a8654a8704b7696130bbbf0513701",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8fb11dda0b2e4956bc04860a89d3e9a7",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system to get its file path."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "8bd57302fd9a494b8349bab7a42867b0",
+      "Inputs": [
+        {
+          "Id": "4cd34d577f5b4716babda0710e36b31a",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "55087a7730f34c08acea340dde59c13a",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.Transpose@var[]..[]",
+      "Id": "c42a5f9a69b84446a1a37ac024f00887",
+      "Inputs": [
+        {
+          "Id": "04e9e4b667c240bfa15a5e4c8c324e9a",
+          "Name": "lists",
+          "Description": "List of lists to be transposed\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "77288e4c5a894fdcbf1361d9e58d68ae",
+          "Name": "lists",
+          "Description": "List of transposed lists",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Swaps rows and columns in a list of lists. If there are some rows that are shorter than others, null values are inserted as place holders in the resultant array such that it is always rectangular.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "f38f5d91ded3440d8a8c943adeaefadc",
+      "Inputs": [
+        {
+          "Id": "f53f0feb4f404e10accb57e6de70334d",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1c737a62520e40da9666ccf931f7e736",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "3d351c732cf941f49bd6139a7fc7f7c3",
+      "End": "4cd34d577f5b4716babda0710e36b31a",
+      "Id": "557f6e48e3b04e0b95da949f4fd1b399",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "3d351c732cf941f49bd6139a7fc7f7c3",
+      "End": "04e9e4b667c240bfa15a5e4c8c324e9a",
+      "Id": "71a65dfdb2984c94a0edda17bbd19fa9",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "7ba8312ed1764f65a5e81ded47a1983c",
+      "End": "fe162e17673f4bf2a17f6bbb60d879a8",
+      "Id": "72de01f8eed9462bacb22e7399e54299",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8fb11dda0b2e4956bc04860a89d3e9a7",
+      "End": "10ead2e919064a0ca223965c6a51ea17",
+      "Id": "90dce1687c1b48aba569e9556bb5a76f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "77288e4c5a894fdcbf1361d9e58d68ae",
+      "End": "f53f0feb4f404e10accb57e6de70334d",
+      "Id": "a8aa6a9e8ae14525865c082edd295ba4",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "sample.xlsx",
+      "ReferenceType": "External",
+      "Nodes": [
+        "f54a8654a8704b7696130bbbf0513701"
+      ]
+    }
+  ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.14",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.14.0.3835",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Data.OpenXMLImportExcel",
+        "ShowGeometry": true,
+        "Id": "3c0c88dbb9284137b49a26ddaa57dfea",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 769.6,
+        "Y": 366.0
+      },
+      {
+        "Name": "String",
+        "ShowGeometry": true,
+        "Id": "882e0dcda0ff4052aba532f3042c310a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 495.20000000000005,
+        "Y": 462.0
+      },
+      {
+        "Name": "File Path",
+        "ShowGeometry": true,
+        "Id": "f54a8654a8704b7696130bbbf0513701",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 495.20000000000005,
+        "Y": 304.0
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "8bd57302fd9a494b8349bab7a42867b0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1424.8000000000002,
+        "Y": 551.8
+      },
+      {
+        "Name": "List.Transpose",
+        "ShowGeometry": true,
+        "Id": "c42a5f9a69b84446a1a37ac024f00887",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1143.2,
+        "Y": 209.0
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "f38f5d91ded3440d8a8c943adeaefadc",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1422.4,
+        "Y": 209.0
+      }
+    ],
+    "Annotations": [],
+    "X": -366.39999999999975,
+    "Y": -99.200000000000045,
+    "Zoom": 1.0
+  }
+}

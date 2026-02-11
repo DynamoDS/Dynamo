@@ -1,0 +1,361 @@
+{
+  "Uuid": "a2ce429c-eb89-45ae-8018-5f3ae7cf8a4b",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "CoreNodeModels.Input.ColorPalette",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.ColorPalette, CoreNodeModels",
+      "InputValue": {
+        "R": 0,
+        "G": 204,
+        "B": 204,
+        "A": 255
+      },
+      "Id": "2368b3bba4574510b7944d0bee831dbd",
+      "NodeType": "ColorInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a2c97e14e00245949ca74c6cdcf13a71",
+          "Name": "Color",
+          "Description": "Selected Color.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Color from the palette"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "0fdd523c73ef4aa7a350d90c5cda3cf6",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "ea0400311c194b7f80f2bcea0ce39346",
+          "Name": "color",
+          "Description": "A color object\n\nColor",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f6a39c777a81443cb6d3100cb4b14d70",
+          "Name": "alpha",
+          "Description": "Alpha value, int between 0 and 255 inclusive.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ccd4c2423042499096fc2b180e104cb6",
+          "Name": "red",
+          "Description": "Red value for RGB color model, int between 0 and 255 inclusive.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "367d6a1141a94d68bbec036f1c263272",
+          "Name": "green",
+          "Description": "Green value for RGB color model, int between 0 and 255 inclusive.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "763241133ecc46288d63335174ea28cb",
+          "Name": "blue",
+          "Description": "Blue value for RGB color model, int between 0 and 255 inclusive.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.Color.Components@DSCore.Color",
+      "Replication": "Auto",
+      "Description": "Lists the components for the color in the order: alpha, red, green, blue.\n\nColor.Components (color: Color): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 42.5,
+      "WatchHeight": 38.0,
+      "Id": "c5aaffd3f4b64ee694568969d6a95201",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "a3f1b67a242447728b685e679b782400",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4e35c55a605f4ba99b4f7041c73693c4",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 27.5,
+      "WatchHeight": 38.0,
+      "Id": "c9c4441cd7ff4b8e943c86e5f42905ef",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "037c7b14beb24bd09b4e20c507f25e5e",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f7da5c287f7d4cc79ff61649918fc13c",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 42.5,
+      "WatchHeight": 38.0,
+      "Id": "4a45a51fa26542a78436270d63ab41e9",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "fb4465ad8b56477d8e421177d05496eb",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a1c12631922548e7aaa22d1156475f1d",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 42.5,
+      "WatchHeight": 38.0,
+      "Id": "5bc9cf594db3436fbf9ec60ae64fd801",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "40186e8ef02b45df90e3bc01b23f86f7",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c1be6f903f1941ad82d454acce94fb34",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "a2c97e14e00245949ca74c6cdcf13a71",
+      "End": "ea0400311c194b7f80f2bcea0ce39346",
+      "Id": "766c77ef51184ee6a31f993482890ecb",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f6a39c777a81443cb6d3100cb4b14d70",
+      "End": "a3f1b67a242447728b685e679b782400",
+      "Id": "2b1ec511614647e28d4fce5cee890abd",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ccd4c2423042499096fc2b180e104cb6",
+      "End": "037c7b14beb24bd09b4e20c507f25e5e",
+      "Id": "cca5bb9a987042149deb352f3a173077",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "367d6a1141a94d68bbec036f1c263272",
+      "End": "fb4465ad8b56477d8e421177d05496eb",
+      "Id": "95b480397d7e44d0b83421a00cf8b985",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "763241133ecc46288d63335174ea28cb",
+      "End": "40186e8ef02b45df90e3bc01b23f86f7",
+      "Id": "59e4e8b3c1804346968809d5fa70ebac",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": null,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.5",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.5.0.6812",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "2368b3bba4574510b7944d0bee831dbd",
+        "Name": "Color Palette",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 248.5,
+        "Y": 302.0
+      },
+      {
+        "Id": "0fdd523c73ef4aa7a350d90c5cda3cf6",
+        "Name": "Color.Components",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 549.5,
+        "Y": 301.0
+      },
+      {
+        "Id": "c5aaffd3f4b64ee694568969d6a95201",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 857.375,
+        "Y": 291.0
+      },
+      {
+        "Id": "c9c4441cd7ff4b8e943c86e5f42905ef",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 854.875,
+        "Y": 162.0
+      },
+      {
+        "Id": "4a45a51fa26542a78436270d63ab41e9",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 857.875,
+        "Y": 420.5
+      },
+      {
+        "Id": "5bc9cf594db3436fbf9ec60ae64fd801",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 858.875,
+        "Y": 553.5
+      }
+    ],
+    "Annotations": [],
+    "X": -27.0,
+    "Y": -64.5,
+    "Zoom": 1.0
+  }
+}

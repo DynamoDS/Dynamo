@@ -1,0 +1,409 @@
+{
+  "Uuid": "8e601d6f-3a54-4d0c-bbb1-f96ac106f176",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.PolyCurve.Heal",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Line": {
+        "Key": "Autodesk.DesignScript.Geometry.Line",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      },
+      "PolyCurve": {
+        "Key": "Autodesk.DesignScript.Geometry.PolyCurve",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "fea628b9698d48abb9366011a5489be5",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "cae171040f6e456b9a40d2b79e994593",
+          "Name": "",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e2055df5216e4d57a76ed8e783b73d51",
+          "Name": "",
+          "Description": "b",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c5384ee03f764bf98a8a6ffbb884cc9d",
+          "Name": "",
+          "Description": "c",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "94d811b052834ae89821e7f57e3bddfd",
+          "Name": "",
+          "Description": "d",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7d47fccda7a34035b0fb75c7b66b8557",
+          "Name": "",
+          "Description": "t1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "a = Line.ByStartPointEndPoint(Point.ByCoordinates(0, 0, 0), Point.ByCoordinates(1000, 0, 0));\nb = Line.ByStartPointEndPoint(Point.ByCoordinates(1000, 0, 0), Point.ByCoordinates(1000, 1000, 0));\nc = Line.ByStartPointEndPoint(Point.ByCoordinates(1000, 1000, 0), Point.ByCoordinates(0, 1000, 0));\nd = Line.ByStartPointEndPoint(Point.ByCoordinates(0, 1000, 0), Point.ByCoordinates(100, -100, 0));\n\nt1 = [ a, b, c, d ];"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "f98f8afc9189497cacc68f861ef5b880",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [
+        {
+          "Id": "033cbdbd512f4650bff84bdaaadd3e65",
+          "Name": "t1",
+          "Description": "t1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a467d37750d6446488c8dfc4d4c86d06",
+          "Name": "",
+          "Description": "polyCurve1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "polyCurve1 = PolyCurve.ByJoinedCurves(t1, 0.001, false, 0);"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "9ac0e47511c64d07a5faf0a3df5f1642",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "1603a57e3ebf495991e5d2fcaa77d707",
+          "Name": "polyCurve",
+          "Description": "Autodesk.DesignScript.Geometry.PolyCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "38aca096029b4ae18732eefe72bf806c",
+          "Name": "Point[]",
+          "Description": "Point[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.Points",
+      "Replication": "Auto",
+      "Description": "Returns the start point of the first component and the end points of every component curve. For a closed polycurve, as the start and end points are the same, the end point is excluded.\n\nPolyCurve.Points: Point[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "897ad78e9daf458eabcba15f1f9a5c03",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "7449a73b352549e7a93ffeba1d229109",
+          "Name": "polyCurve",
+          "Description": "Autodesk.DesignScript.Geometry.PolyCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "63671c34b5d44cb1ab123950adebda9b",
+          "Name": "trimLength",
+          "Description": "If trimLength is greater than 0 then end segments longer than trimLength will not be trimmed.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c1c4948fb7e94173a7094bef6ad241d2",
+          "Name": "PolyCurve",
+          "Description": "Non-self-intersecting, non-overlapping PolyCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.Heal@double",
+      "Replication": "Auto",
+      "Description": "Heals a self-intersecting PolyCurve by returning a new one that isn't self-intersecting if the overlapping segment length is less than or equal to trimLength.\n\nPolyCurve.Heal (trimLength: double = 0): PolyCurve"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "1c30d89118404504ae845a2e69f5cd64",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e55e18df204f413883aabd5a6bf21604",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "Color.ByARGB(100,255,75,75);"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "0884cd9fd9a94df3b32d290c05e0c1de",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "f09b8deab8e343be9c5dde8cdaf23498",
+          "Name": "geometry",
+          "Description": "The geometry to which you would like to apply color.\n\nGeometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c85f0fffd8564bf9ad78ca81012f2456",
+          "Name": "color",
+          "Description": "The color.\n\nColor",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5298572523dc43a3bb717619d159a185",
+          "Name": "GeometryColor",
+          "Description": "A Display object.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Modifiers.GeometryColor.ByGeometryColor@Autodesk.DesignScript.Geometry.Geometry,DSCore.Color",
+      "Replication": "Auto",
+      "Description": "Display geometry using a color.\n\nGeometryColor.ByGeometryColor (geometry: Geometry, color: Color): GeometryColor"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "7d47fccda7a34035b0fb75c7b66b8557",
+      "End": "033cbdbd512f4650bff84bdaaadd3e65",
+      "Id": "528bace2aa044d02a8c386ba8131d16f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "a467d37750d6446488c8dfc4d4c86d06",
+      "End": "7449a73b352549e7a93ffeba1d229109",
+      "Id": "640c47b1dfec4bd5a04796cda939dda5",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "a467d37750d6446488c8dfc4d4c86d06",
+      "End": "f09b8deab8e343be9c5dde8cdaf23498",
+      "Id": "db02e0118a1e451bb2597cf418ccb072",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c1c4948fb7e94173a7094bef6ad241d2",
+      "End": "1603a57e3ebf495991e5d2fcaa77d707",
+      "Id": "43e0028cdb5c472fa572161bb8d20ae5",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e55e18df204f413883aabd5a6bf21604",
+      "End": "c85f0fffd8564bf9ad78ca81012f2456",
+      "Id": "10fe9a6ecafd42dbabea47e4263ca5cc",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.0",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.0.5874",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": 2412.05712890625,
+      "EyeY": 2370.64111328125,
+      "EyeZ": 410.162353515625,
+      "LookX": -1656.14599609375,
+      "LookY": -2854.080078125,
+      "LookZ": -1060.75390625,
+      "UpX": -0.574835479259491,
+      "UpY": 0.73075836896896362,
+      "UpZ": -0.36817991733551025
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "fea628b9698d48abb9366011a5489be5",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 265.0030442174691,
+        "Y": -92.327868545668224
+      },
+      {
+        "Id": "f98f8afc9189497cacc68f861ef5b880",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 1103.0030442174691,
+        "Y": -10.430368545668216
+      },
+      {
+        "Id": "9ac0e47511c64d07a5faf0a3df5f1642",
+        "Name": "PolyCurve.Points",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2131.5030442174689,
+        "Y": -10.257868545668146
+      },
+      {
+        "Id": "897ad78e9daf458eabcba15f1f9a5c03",
+        "Name": "PolyCurve.Heal",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1779.50304421747,
+        "Y": -10.257868545668202
+      },
+      {
+        "Id": "1c30d89118404504ae845a2e69f5cd64",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1683.5255841936626,
+        "Y": -187.9027767627224
+      },
+      {
+        "Id": "0884cd9fd9a94df3b32d290c05e0c1de",
+        "Name": "GeometryColor.ByGeometryColor",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2034.3341452874968,
+        "Y": -284.50106139311112
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "0838e1e22d53437dab4bbd059baeba27",
+        "Title": "Visualize overlapping PolyCurve",
+        "DescriptionText": " ",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "1c30d89118404504ae845a2e69f5cd64",
+          "0884cd9fd9a94df3b32d290c05e0c1de"
+        ],
+        "HasNestedGroups": false,
+        "Left": 1673.5255841936626,
+        "Top": -357.50106139311112,
+        "Width": 690.808561093834,
+        "Height": 301.59828463038872,
+        "FontSize": 36.0,
+        "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
+        "InitialTop": -284.50106139311112,
+        "InitialHeight": 241.59828463038872,
+        "TextblockHeight": 63.0,
+        "Background": "#FFA4E1FF"
+      }
+    ],
+    "X": -66.552850919195407,
+    "Y": 331.49256042785674,
+    "Zoom": 0.52965074759975439
+  }
+}

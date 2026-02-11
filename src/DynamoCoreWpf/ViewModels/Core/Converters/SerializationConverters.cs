@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
@@ -32,7 +33,7 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
 
             writer.WriteStartObject();
 
-            writer.WritePropertyName("Dynamo");
+            writer.WritePropertyName(Configurations.DynamoAsString);
             serializer.Serialize(writer, workspaceView.DynamoPreferences);
 
             writer.WritePropertyName("Camera");
@@ -51,14 +52,17 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             writer.WriteStartArray();
             foreach (var nodeView in workspaceView.Nodes)
             {
-              serializer.Serialize(writer, nodeView);
+                serializer.Serialize(writer, nodeView);
             }
             writer.WriteEndArray();
 
             writer.WritePropertyName("Annotations");
             writer.WriteStartArray();
             foreach (var annotation in workspaceView.Annotations)
+            {
                 serializer.Serialize(writer, annotation);
+            }
+
             foreach (var note in workspaceView.Notes)
             {
                 AnnotationModel convertedNote = new AnnotationModel(new NodeModel[0], new NoteModel[0]);
@@ -127,6 +131,10 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             writer.WriteValue(anno.WidthAdjustment);
             writer.WritePropertyName(nameof(ExtraAnnotationViewInfo.HeightAdjustment));
             writer.WriteValue(anno.HeightAdjustment);
+            writer.WritePropertyName(nameof(ExtraAnnotationViewInfo.UserSetWidth));
+            writer.WriteValue(anno.UserSetWidth);
+            writer.WritePropertyName(nameof(ExtraAnnotationViewInfo.UserSetHeight));
+            writer.WriteValue(anno.UserSetHeight);
             writer.WritePropertyName("Nodes");
             writer.WriteStartArray();
             foreach (var m in anno.Nodes)
@@ -154,6 +162,14 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             writer.WriteValue(anno.InitialHeight);
             writer.WritePropertyName("TextblockHeight");
             writer.WriteValue(anno.TextBlockHeight);
+            writer.WritePropertyName(nameof(anno.IsOptionalInPortsCollapsed));
+            writer.WriteValue(anno.IsOptionalInPortsCollapsed);
+            writer.WritePropertyName(nameof(anno.IsUnconnectedOutPortsCollapsed));
+            writer.WriteValue(anno.IsUnconnectedOutPortsCollapsed);
+            writer.WritePropertyName(nameof(anno.HasToggledOptionalInPorts));
+            writer.WriteValue(anno.HasToggledOptionalInPorts);
+            writer.WritePropertyName(nameof(anno.HasToggledUnconnectedOutPorts));
+            writer.WriteValue(anno.HasToggledUnconnectedOutPorts);
             writer.WritePropertyName("Background");
             writer.WriteValue(anno.Background != null ? anno.Background : "");            
             if (anno.PinnedNode != null)

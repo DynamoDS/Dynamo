@@ -1,0 +1,80 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>FFITarget</name>
+    </assembly>
+    <members>
+        <member name="T:FFITarget.ClassFunctionality">
+            <summary>Tests für grundlegende Funktionsprüfungen von FFI-Implementierungen</summary>
+        </member>
+        <member name="T:FFITarget.ClassFunctionalityMirror">
+            <summary>Klasse, die das gleiche IntVal-Element wie ClassFunctionality enthält</summary>
+        </member>
+        <member name="T:FFITarget.CodeCompletionClass">
+            <summary>Tests für die Code-Vervollständigung im Codeblock-Block</summary>
+        </member>
+        <member name="T:FFITarget.InstanceableClass">
+            <summary>Testklasse, die mithilfe von Instanzen eine Pyramide erstellt.</summary>
+        </member>
+        <member name="T:FFITarget.InstanceableLineClass">
+            <summary>Testklasse, die mithilfe von Instanzen eine Pyramide erstellt.</summary>
+        </member>
+        <member name="T:FFITarget.InstanceableClass_NoInstanceData">
+            <summary>Diese Klasse ist instanziierbar, gibt jedoch für instanceInfoAvailable False zurück, sodass eine normale Tessellation verwendet wird.</summary>
+        </member>
+        <member name="T:FFITarget.ElementIDLifecycleManager`1">
+            <summary>Klasse für die Verarbeitung der Lebensdauer von Elementen anhand ihrer IDs</summary>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.GetInstance">
+            <summary>Gibt den LifecycleManager für den spezifischen Typ zurück
+            WARNUNG: Dies ist nur ein Singleton für ein angegebenes TypeArg-Objekt</summary>
+            <returns/>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.RegisterAsssociation(`0,System.Object)">
+            <summary>Neue Abhängigkeit zwischen einer Element-ID und einem Wrapper registrieren</summary>
+            <param name="elementID"/>
+            <param name="wrapper"/>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.UnRegisterAssociation(`0,System.Object)">
+            <summary>Verknüpfung entfernen zwischen einer Element-ID und</summary>
+            <param name="elementID"/>
+            <param name="wrapper"/>
+            <returns>Anzahl der verbleibenden Verknüpfungen</returns>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.GetRegisteredCount(`0)">
+            <summary>Gibt die Anzahl der Wrapper zurück, die registriert sind</summary>
+            <param name="id"/>
+            <returns/>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.IsRevitDeleted(`0)">
+            <summary>Überprüft, ob ein Element in Revit gelöscht wurde</summary>
+            <param name="id"/>
+            <returns/>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.NotifyOfRevitDeletion(`0)">
+            <summary>Löschstatus für Revit-Element festlegen</summary>
+            <param name="id">Element, das gelöscht werden muss &gt;</param>
+        </member>
+        <member name="M:FFITarget.IncrementerTracedClass.#ctor(System.Int32)">
+            <summary>Beachten Sie, dass x hier eine Dummy-Variable ist, die zum Erzwingen einer replizierten Ausgabe gedacht ist
+            sie wird nicht wirklich verwendet</summary>
+            <param name="x"/>
+        </member>
+        <member name="M:FFITarget.IncrementerTracedClass.#ctor(System.Int32,System.Boolean)">
+            <summary>Beachten Sie, dass x hier eine Dummy-Variable ist, die zum Erzwingen einer replizierten Ausgabe gedacht ist
+            sie wird nicht wirklich verwendet</summary>
+            <param name="x">Dummy-Variable zum Erzwingen einer replizierten Ausgabe</param>
+            <param name="failWithException">Ausgabe-Fehler mit Ausnahme anstatt</param>
+        </member>
+        <member name="T:FFITarget.OverloadTarget">
+            <summary>Testziel für überlastete Methoden</summary>
+        </member>
+        <member name="M:FFITarget.TestData.ReturnNestedDictionary">
+            <summary>Gibt ein verschachteltes Wörterbuch zurück.</summary>
+            <returns name="col">column</returns>
+            <returns name="dict">dictionary</returns>
+            <returns name="num">number</returns>
+            <returns name="wt">weight</returns>
+            <returns name="ok">okay</returns>
+        </member>
+    </members>
+</doc>

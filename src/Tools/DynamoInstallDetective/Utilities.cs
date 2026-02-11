@@ -94,6 +94,10 @@ namespace DynamoInstallDetective
             using (RegUtils.StartCache())
             {
                 var installs = new InstalledProducts();
+
+                // Look for ASM in installed ASC packages
+                installs.LookUpAndInitProducts(new InstalledAscLookUp(fileSearchPattern));
+
                 // Look up products with ASM installed on user's computer
                 foreach (var productSearchPattern in productSearchPatterns)
                 {

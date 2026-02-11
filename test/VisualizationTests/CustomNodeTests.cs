@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using CoreNodeModels;
 using Dynamo;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
@@ -203,6 +205,68 @@ namespace WpfVisualizationTests
             Assert.AreEqual(0, BackgroundPreviewGeometry.Points().Count(p => p.IsAlive()));
             Assert.AreEqual(0, BackgroundPreviewGeometry.Curves().Count(p => p.IsAlive()));
             Assert.AreEqual(1, BackgroundPreviewGeometry.Meshes().Count(p => p.IsAlive()));
+        }
+    }
+
+
+
+    [TestFixture]
+    public class CustomNodeDefineDataTests : VisualizationTest
+    {
+        [Test]
+        public void TestDefineDataAutoModeType()
+        {
+            var testDirectory = GetTestDirectory(ExecutingDirectory);
+            var openPath = Path.Combine(testDirectory, @"core\defineData\defineDataTest.dyn");
+
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var lockedGUID = "e02596f9-9e1f-43a2-9f61-9909ec58ca34";
+            var unlockedGUID = "ee557143-64bc-4961-981c-2794af48b79f";
+
+            var lockedNode = Model.CurrentWorkspace.Nodes.First(n => n.GUID.ToString() == lockedGUID) as DefineData;
+            var unlockedNode = Model.CurrentWorkspace.Nodes.First(n => n.GUID.ToString() == unlockedGUID) as DefineData;
+
+            RunCurrentModel();
+
+            var nodes = ViewModel.CurrentSpaceViewModel.Nodes;
+
+            Assert.IsFalse(lockedNode.IsAutoMode);
+            Assert.IsTrue(lockedNode.DisplayValue == "Boolean");
+            Assert.IsTrue(lockedNode.Infos.Count == 1);
+
+            RunCurrentModel();
+
+            Assert.IsTrue(unlockedNode.IsAutoMode);
+            Assert.IsTrue(unlockedNode.DisplayValue == "Integer");
+            Assert.IsTrue(unlockedNode.Infos.Count == 0, "The AutoMode node should have found the correct type and have no Errors, but it does .. ");
+        }
+
+        [Test]
+        public void TestDefineDataCorrectInheritanceDisplayedInAutoMode()
+        {
+            var testDirectory = GetTestDirectory(ExecutingDirectory);
+            var openPath = Path.Combine(testDirectory, @"core\defineData\defineDataTest.dyn");
+
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var listGUID = "0cbb9f47-5a28-4898-8d28-575cb15c4455";  // List inputs are 'Line' and 'Rectangle', we expect a 'Curve' as DisplayValue
+            var errorListGUID = "39edfbf6-a83b-4815-9bb0-2d7ebcff39f3"; // List inputs are 'Line', 'Rectangle' and 5 (integer), we expect a '' as DisplayValue
+
+            var listNode = Model.CurrentWorkspace.Nodes.First(n => n.GUID.ToString() == listGUID) as DefineData;
+            var errorListNode = Model.CurrentWorkspace.Nodes.First(n => n.GUID.ToString() == errorListGUID) as DefineData;
+
+            RunCurrentModel();
+
+            var nodes = ViewModel.CurrentSpaceViewModel.Nodes;
+
+            Assert.IsTrue(listNode.IsAutoMode);
+            Assert.IsTrue(listNode.IsList);
+            Assert.AreEqual(listNode.DisplayValue, "Curve", "The correct common ancestor should be Curve, not 'Line' or 'Rectangle'");
+
+            Assert.IsTrue(errorListNode.IsAutoMode);
+            Assert.IsFalse(errorListNode.IsList);
+            Assert.AreEqual(errorListNode.DisplayValue, string.Empty, "The node displays a type value, but it should not.");
         }
     }
 }

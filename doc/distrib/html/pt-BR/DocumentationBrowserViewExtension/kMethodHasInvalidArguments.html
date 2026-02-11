@@ -1,0 +1,36 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>Tem alguns argumentos inválidos</h2>
+<p>Essa mensagem de erro indica que o nó que você está usando está esperando um determinado tipo de dados de entrada, mas recebeu um tipo de entrada que não pode usar. É semelhante ao erro “Espera tipos de argumento, mas foi chamado com” e normalmente exibe informações adicionais que podem ajudar a identificar quais tipos de argumentos você precisa passar para o nó que está usando. </p>
+
+<h4>Como corrigir</h4>
+<p>Em geral, verifique quais tipos de entrada o nó que você está usando espera e tente determinar se (a) o tipo correto de entrada é passado para o nó ou (b) é possível alterar o tipo de entrada para algo que o nó pode usar (por exemplo, alterando a entrada para um tipo diferente, conforme mostrado <a href="https://forum.dynamobim.com/t/springs-number-tostring/35562/2">neste exemplo</a>).</p>
+
+<p>Como exemplo, quando você vê algo como <code>Aviso: Falha na operação do Element.SetParameterByName. A melhor correspondência do método sobrecarregado para “Revit.Elements.InternalUtilities.ElementUtils.SetParameterValue(Autodesk.Revit.DB.Parameter, double)” tem alguns argumentos inválidos</code> as informações adicionais entre parênteses podem ajudá-lo a entender qual é o problema. Nesse caso, <code>SetParameterValue(Autodesk.Revit.DB.Parameter, double)</code> mostra que o nó que você está usando está esperando uma entrada de tipo <code>double</code>, de modo que qualquer outro tipo de entrada não funcionará.</p>
+
+<h4>Mais informações</h4>
+<p>Para saber mais, consulte as <a href="https://forum.dynamobim.com/search?q=has%20some%20invalid%20arguments"><span> publicações no fórum Dynamobim que abordam “<strong>has some invalid arguments</strong>”</span></a>.</p>
+
+</body>

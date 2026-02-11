@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using ProtoCore.AST.AssociativeAST;
 
@@ -21,18 +21,6 @@ namespace Dynamo.Engine.CodeGeneration
         {
             nodeId = node;
             AstNodes = astNodes;
-        }
-
-        /// <summary>
-        /// Guid of node that has been built to AST nodes.
-        /// </summary>
-        [Obsolete("This item is being obsoleted due to the confusing namimg, the new property to use is NodeId")]
-        public Guid Node
-        {
-            get
-            {
-                return nodeId;
-            }
         }
 
         /// <summary>

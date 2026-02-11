@@ -1,0 +1,293 @@
+{
+  "Uuid": "8850209b-6aba-4bf0-8630-80fbc3267081",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Math.Random2",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 1.0,
+      "Id": "d00133fa20514a0ca8b796cb7bbe37f5",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "01f4de21d8f84af187fb6abfbe83a454",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "da5de20928214bd3b5c9bb14f8cb1a4a",
+      "Inputs": [
+        {
+          "Id": "db149e88ff7c43c5a0bd70049ddfd9ea",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4487d4f015bc44958c5034b437ca704f",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 42.1,
+      "Id": "6e5105f488374960a3a7e389d50249fc",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e6bf1c6c483940c5bef5e504372b3882",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.Random@double,double,int",
+      "Id": "d6ef3820ef8c47bf9c0b7b935ee6177b",
+      "Inputs": [
+        {
+          "Id": "c7cd9eb951c64360b72aba6a02756240",
+          "Name": "value1",
+          "Description": "Lower end of the range for the random number.\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1755303c871d4d9e9a54f1f740d32cd3",
+          "Name": "value2",
+          "Description": "Higher end of the range for the random number.\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5b889b1dd7c040c099fdb6b8a7707263",
+          "Name": "seed",
+          "Description": "Seed value for the random number generator.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3707604c680843a0b16c5289780336a2",
+          "Name": "number",
+          "Description": "Random number in the range [lower_number, higher_number).",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Produce a random number in the range [lower_number, higher_number) based on an initial seed value.\n\nMath.Random (value1: double, value2: double, seed: int): double"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 1.0,
+      "Id": "ead74d3e984f43ac8d8b9cbd00a7f9b3",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c36215d317e34b55876253b57b2d1227",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "01f4de21d8f84af187fb6abfbe83a454",
+      "End": "c7cd9eb951c64360b72aba6a02756240",
+      "Id": "902feef3eb6b40f780c263f52c456d14",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e6bf1c6c483940c5bef5e504372b3882",
+      "End": "1755303c871d4d9e9a54f1f740d32cd3",
+      "Id": "7541c758d1c14d6b9174be10c97b2e1a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "3707604c680843a0b16c5289780336a2",
+      "End": "db149e88ff7c43c5a0bd70049ddfd9ea",
+      "Id": "f622a97a694e4865881e1c6f0d1561b8",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c36215d317e34b55876253b57b2d1227",
+      "End": "5b889b1dd7c040c099fdb6b8a7707263",
+      "Id": "bb7204478065454e88216e3fedc073ac",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.14",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "2.0",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.13.1.3887",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Number Slider",
+        "ShowGeometry": true,
+        "Id": "d00133fa20514a0ca8b796cb7bbe37f5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 287.58723501637007,
+        "Y": 361.43107273126418
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "da5de20928214bd3b5c9bb14f8cb1a4a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1024.0443309032,
+        "Y": 474.431072731264
+      },
+      {
+        "Name": "Number Slider",
+        "ShowGeometry": true,
+        "Id": "6e5105f488374960a3a7e389d50249fc",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 287.58723501637007,
+        "Y": 508.43107273126424
+      },
+      {
+        "Name": "Math.Random",
+        "ShowGeometry": true,
+        "Id": "d6ef3820ef8c47bf9c0b7b935ee6177b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 730.78723501637,
+        "Y": 474.431072731264
+      },
+      {
+        "Name": "Number Slider",
+        "ShowGeometry": true,
+        "Id": "ead74d3e984f43ac8d8b9cbd00a7f9b3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 287.58723501637007,
+        "Y": 655.43107273126418
+      }
+    ],
+    "Annotations": [],
+    "X": -412.43317499999989,
+    "Y": -421.99834999999996,
+    "Zoom": 1.33823125
+  }
+}

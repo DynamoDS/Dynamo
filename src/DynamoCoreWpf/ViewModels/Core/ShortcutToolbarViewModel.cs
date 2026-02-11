@@ -1,6 +1,7 @@
 using Dynamo.Core;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
+using System;
 
 namespace Dynamo.Wpf.ViewModels.Core
 {
@@ -15,14 +16,24 @@ namespace Dynamo.Wpf.ViewModels.Core
         private AuthenticationManager authManager;
 
         private int notificationsNumber;
+        private bool showMenuItemText;
+        public readonly DynamoViewModel DynamoViewModel;
 
         public ShortcutToolbarViewModel(DynamoViewModel dynamoViewModel)
         {
+            this.DynamoViewModel = dynamoViewModel;
             NotificationsNumber = 0;
             authManager = dynamoViewModel.Model.AuthenticationManager;
             ValidateWorkSpaceBeforeToExportAsImageCommand = new DelegateCommand(dynamoViewModel.ValidateWorkSpaceBeforeToExportAsImage);
             SignOutCommand = new DelegateCommand(authManager.ToggleLoginState);
             authManager.LoginStateChanged += (o) => { RaisePropertyChanged(nameof(LoginState)); };
+            this.DynamoViewModel.WindowRezised += OnDynamoViewModelWindowRezised;
+            ShowMenuItemText = true;
+        }
+
+        private void OnDynamoViewModelWindowRezised(object sender, System.EventArgs e)
+        {
+            if (sender is Boolean) ShowMenuItemText = !(bool)sender;                
         }
 
         /// <summary>
@@ -69,6 +80,28 @@ namespace Dynamo.Wpf.ViewModels.Core
                 }
                 return true;
             }
+        }
+
+        /// <summary>
+        /// Indicates if a MenuItem display its text or not (only Icon)
+        /// </summary>
+        public bool ShowMenuItemText
+        {
+            get
+            {
+                return showMenuItemText;
+            }
+            set
+            {
+                showMenuItemText = value;
+                RaisePropertyChanged(nameof(ShowMenuItemText));
+            }
+        }
+
+        public override void Dispose()
+        {
+            this.DynamoViewModel.WindowRezised -= OnDynamoViewModelWindowRezised;
+            base.Dispose();
         }
     }
 }

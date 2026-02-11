@@ -7,7 +7,9 @@ using System.Windows;
 using System.Windows.Input;
 using Dynamo.Annotations;
 using Dynamo.Controls;
+using Dynamo.Events;
 using Dynamo.Logging;
+using Dynamo.Session;
 using Dynamo.Utilities;
 
 namespace Dynamo.UI.Prompts
@@ -23,6 +25,7 @@ namespace Dynamo.UI.Prompts
         private string bodyText;
         private MessageBoxButton messageBoxButton;
         private MessageBoxImage messageBoxImage;
+        private bool extraCheckBoxChecked;
         #endregion
 
         #region Public Properties
@@ -88,6 +91,27 @@ namespace Dynamo.UI.Prompts
             }
         }
 
+        /// <summary>
+        /// A tooltip is shown on the message box when this is set to true and if
+        /// Tooltip is non-null and non-empty.  
+        /// </summary>
+        public bool ShowTooltip { get; private set; }
+
+        /// <summary>
+        /// A tooltip is shown on the message box when this is set to a non-empty string
+        /// and ShowTooltip is true.
+        /// </summary>
+        public string Tooltip { get; private set; }
+
+        /// <summary>
+        /// A list of customization options for dialog box
+        /// </summary>
+        public enum DialogFlags
+        {
+            //Enables scrollable text in the message box
+            Scrollable = 0,
+        }
+
         #endregion
 
         /// <summary>
@@ -95,8 +119,19 @@ namespace Dynamo.UI.Prompts
         /// </summary>
         public DynamoMessageBox()
         {
-            InitializeComponent();
-            DataContext = this;
+            // CER: 52164327 - Catching all exceptions to prevent the application from crashing
+            try
+            {
+                InitializeComponent();
+                DataContext = this;
+                ShowTooltip = false;
+                ToolTip = "";
+            }
+            catch (Exception ex)
+            {
+                var dynamoLogger = ExecutionEvents.ActiveSession?.GetParameterValue(ParameterKeys.Logger) as DynamoLogger;
+                dynamoLogger?.Log("Failed to initialize DynamoMessageBox: " + ex.Message, LogLevel.Console);
+            }
         }
 
         /// <summary>
@@ -106,16 +141,19 @@ namespace Dynamo.UI.Prompts
         /// <param name="caption"></param>
         /// <param name="button"></param>
         /// <param name="icon"></param>
+        /// <param name="tooltip"></param>
         /// <returns></returns>
         public static MessageBoxResult Show(string messageBoxText, string caption, MessageBoxButton button,
-            MessageBoxImage icon)
+            MessageBoxImage icon, string tooltip = "")
         {
             var dynamoMessageBox = new DynamoMessageBox
             {
                 BodyText = messageBoxText,
                 TitleText = caption,
                 MessageBoxButton = button,
-                MessageBoxImage = icon
+                MessageBoxImage = icon,
+                ShowTooltip = !string.IsNullOrEmpty(tooltip),
+                Tooltip = tooltip
             };
 
             dynamoMessageBox.ConfigureButtons(button);
@@ -123,6 +161,47 @@ namespace Dynamo.UI.Prompts
             return dynamoMessageBox.CustomDialogResult;
         }
 
+        /// <summary>
+        /// Displays a dialog to the user and returns their choice as a MessageBoxResult.
+        /// </summary>
+        public static MessageBoxResult ShowWithCheckbox(
+            Window owner,
+            string messageBoxText,
+            string caption,
+            MessageBoxButton button,
+            IEnumerable<string> buttonNames,
+            MessageBoxImage icon,
+            string checkboxText,
+            out bool isChecked)
+        {
+            var dynamoMessageBox = new DynamoMessageBox
+            {
+                BodyText = messageBoxText,
+                TitleText = caption,
+                MessageBoxButton = button,
+                MessageBoxImage = icon,
+            };
+
+            SetOwnerWindow(owner, dynamoMessageBox);
+            dynamoMessageBox.ConfigureButtons(button, buttonNames);
+
+            if (string.IsNullOrWhiteSpace(checkboxText))
+            {
+                dynamoMessageBox.ExtraCheckPanel.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                dynamoMessageBox.ExtraCheckPanel.Visibility = Visibility.Visible;
+                dynamoMessageBox.ExtraCheckBoxLabel.Content = checkboxText;
+                dynamoMessageBox.ExtraCheckBox.IsChecked = false;
+            }
+
+            dynamoMessageBox.ShowDialog();
+
+            // Capture the checkbox state
+            isChecked = (dynamoMessageBox.ExtraCheckBox?.IsChecked) ?? false;
+            return dynamoMessageBox.CustomDialogResult;
+        }
 
         /// <summary>
         /// Displays a dialog to the user and returns their choice as a MessageBoxResult.
@@ -156,6 +235,37 @@ namespace Dynamo.UI.Prompts
         /// <summary>
         /// Displays a dialog to the user and returns their choice as a MessageBoxResult.
         /// </summary>
+        /// <param name="owner">owning window of the messagebox</param>
+        /// <param name="messageBoxText">Content of the message</param>
+        /// <param name="caption">MessageBox title</param>
+        /// <param name="showRichTextBox">True if we will be using the RichTextBox instead of the usual one</param>
+        /// <param name="button">OK button shown in the MessageBox</param>
+        /// <param name="icon">Type of message: Warning, Error</param>
+        /// <returns></returns>
+        public static MessageBoxResult Show(Window owner, string messageBoxText, string caption, bool showRichTextBox, MessageBoxButton button,
+           MessageBoxImage icon)
+        {
+            var dynamoMessageBox = new DynamoMessageBox
+            {
+                BodyText = messageBoxText,
+                TitleText = caption,
+                MessageBoxButton = button,
+                MessageBoxImage = icon
+            };
+            SetOwnerWindow(owner, dynamoMessageBox);
+            if (showRichTextBox)
+            {
+                dynamoMessageBox.BodyTextBlock.Visibility = Visibility.Collapsed;
+                dynamoMessageBox.ContentRichTextBox.Visibility = Visibility.Visible;
+            }
+            dynamoMessageBox.ConfigureButtons(button);
+            dynamoMessageBox.ShowDialog();
+            return dynamoMessageBox.CustomDialogResult;
+        }
+
+        /// <summary>
+        /// Displays a dialog to the user and returns their choice as a MessageBoxResult.
+        /// </summary>
         /// <param name="owner">owner window</param>
         /// <param name="messageBoxText"></param>
         /// <param name="caption"></param>
@@ -172,12 +282,38 @@ namespace Dynamo.UI.Prompts
                 MessageBoxButton = button,
                 MessageBoxImage = icon
             };
+            SetOwnerWindow(owner, dynamoMessageBox);
+            dynamoMessageBox.ConfigureButtons(button);
+            dynamoMessageBox.ShowDialog();
+            return dynamoMessageBox.CustomDialogResult;
+        }
 
-            if (owner != null && owner.IsLoaded)
+        /// <summary>
+        /// Displays a dialog to the user and returns their choice as a MessageBoxResult.
+        /// </summary>
+        /// <param name="owner">owning window of the messagebox</param>
+        /// <param name="messageBoxText">Content of the message</param>
+        /// <param name="caption">MessageBox title</param>
+        /// <param name="flags">Provide a list of flags that can be used to customize the dialog box, e.g Scrollable</param>
+        /// <param name="button">Type of button shown in the MessageBox: Ok, OkCancel; etc</param>
+        /// <param name="icon">Type of message: Warning, Error</param>
+        /// <returns></returns>
+        public static MessageBoxResult Show(Window owner, string messageBoxText, string caption, Dictionary<DialogFlags, bool> flags, MessageBoxButton button,
+           MessageBoxImage icon)
+        {
+            var dynamoMessageBox = new DynamoMessageBox
             {
-                dynamoMessageBox.Owner = owner;
+                BodyText = messageBoxText,
+                TitleText = caption,
+                MessageBoxButton = button,
+                MessageBoxImage = icon
+            };
+            SetOwnerWindow(owner, dynamoMessageBox);
+            if (flags.TryGetValue(DialogFlags.Scrollable, out bool scrollable) && scrollable)
+            {
+                dynamoMessageBox.BodyTextBlock.Visibility = Visibility.Collapsed;
+                dynamoMessageBox.ScrollableBodyTextBlock.Visibility = Visibility.Visible;
             }
-
             dynamoMessageBox.ConfigureButtons(button);
             dynamoMessageBox.ShowDialog();
             return dynamoMessageBox.CustomDialogResult;
@@ -253,6 +389,42 @@ namespace Dynamo.UI.Prompts
             dynamoMessageBox.ConfigureButtons(button,buttonNames);
             dynamoMessageBox.ShowDialog();
             return dynamoMessageBox.CustomDialogResult;
+        }
+
+        internal static MessageBoxResult Show(Window owner, string messageBoxText, string caption, MessageBoxButton button, IEnumerable<string> buttonNames,
+            MessageBoxImage icon)
+        {
+            var dynamoMessageBox = new DynamoMessageBox
+            {
+                BodyText = messageBoxText,
+                TitleText = caption,
+                MessageBoxButton = button,
+                MessageBoxImage = icon
+            };
+            SetOwnerWindow(owner, dynamoMessageBox);
+            dynamoMessageBox.ConfigureButtons(button, buttonNames);
+            dynamoMessageBox.ShowDialog();
+            return dynamoMessageBox.CustomDialogResult;
+        }
+
+        /// <summary>
+        /// Set the owner window of the message box and prevent any exceptions that may occur
+        /// </summary>
+        /// <param name="owner">Owner Window</param>
+        /// <param name="dynamoMessageBox">New message box</param>
+        internal static void SetOwnerWindow(Window owner, DynamoMessageBox dynamoMessageBox)
+        {
+            if (owner != null && owner.IsLoaded)
+            {
+                try
+                {
+                    dynamoMessageBox.Owner = owner;
+                }
+                catch (Exception)
+                {
+                    // In this case, we will not set the owner window
+                }
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

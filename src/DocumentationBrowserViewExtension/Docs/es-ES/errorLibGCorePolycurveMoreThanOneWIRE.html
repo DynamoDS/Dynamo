@@ -1,0 +1,36 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>La unión de curvas ha generado más de un CABLE en la PolyCurve. </h2>
+<p>Este mensaje de error indica que las líneas generadas por un nodo de PolyCurve no forman una curva cerrada.</p>
+
+<h4>Cómo solucionar este error</h4>
+<p>Esto puede deberse a que la salida del nodo de PolyCurve contiene valores nulos. Compruebe si, en cada lista generada por el nodo de PolyCurve, las curvas se conectan en una línea continua. Un método consiste en ocultar la vista preliminar de la geometría de todos los nodos (haga clic con el botón derecho en el nodo o la selección de nodos para ocultar la vista preliminar de la geometría) y, a continuación, aplicar <a href="https://dictionary.dynamobim.com/2/#/List/Inspect/Action/GetItemAtIndex"><code>List.GetItemAtIndex</code></a> en una lista cada vez para su visualización. </p>
+
+<p>Además, este error suele aparecer con los contornos de habitación; pruebe a utilizar <a href="https://dictionary.dynamobim.com/2/#/Revit/Elements/Room/Query/CenterBoundary"><code>Room.CenterBoundary</code></a> para extraer las curvas en su lugar.</p>
+
+<h4>Más información</h4>
+<p>Para obtener más información, consulte las <a href="https://forum.dynamobim.com/search?q=curve%20join%20produced%20more%20than%20one%20WIRE%20in%20Polycurve"><span>publicaciones del foro de Dynamobim sobre &quot;<strong>curve join produced more than one wire in polycurve</strong>&quot;</span></a>.</p>
+
+</body>

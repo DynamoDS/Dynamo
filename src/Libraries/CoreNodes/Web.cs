@@ -1,6 +1,9 @@
-﻿using System;
+using System;
 using System.IO;
 using Autodesk.DesignScript.Runtime;
+using Dynamo.Configuration;
+using Dynamo.Events;
+using Dynamo.Session;
 
 namespace DSCore
 {
@@ -9,6 +12,9 @@ namespace DSCore
     {
         public static string WebRequestByUrl(string url)
         {
+            // Prevent the node from executing in no network mode.
+            ExecutionSessionHelper.ThrowIfNoNetworkMode();
+
             if (string.IsNullOrEmpty(url))
             {
                 throw new ArgumentException(Properties.Resources.WebRequestNullUrlMessage);
@@ -30,7 +36,7 @@ namespace DSCore
 
             // Set the User-Agent header required by some APIs
             if (myRequest is System.Net.HttpWebRequest httpRequest)
-                httpRequest.UserAgent = "Dynamo";
+                httpRequest.UserAgent = Configurations.DynamoAsString;
 
             string responseFromServer;
 

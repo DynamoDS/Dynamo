@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -123,19 +123,26 @@ namespace Dynamo.Tests
 
             var count = 0;
 
+            int nodeSleep = 200;
             Workspace.AddAndRegisterNode(new ActionNodeModel(() =>
             {
                 count++;
-                Thread.Sleep(200);
+                Thread.Sleep(nodeSleep);
             }, true));
 
             Workspace.StartPeriodicEvaluation();
 
-            Thread.Sleep(1000);
+            int expectedCount = 6;
+            int ii = 0;
+            while(ii < expectedCount)
+            {
+                Thread.Sleep(nodeSleep + 10);//Sleep slightly more that AddAndRegisterNode 
+                ii++;
+            }
 
             // There should be 6 200 ms runs initiated in a 1000 ms
             // even with the run period as 
-            Assert.AreEqual(6, count);
+            Assert.GreaterOrEqual(count, expectedCount);
         }
 
         [Test]

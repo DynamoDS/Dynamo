@@ -1,0 +1,85 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>DesignScriptBuiltin</name>
+    </assembly>
+    <members>
+        <member name="M:DesignScript.Builtin.Dictionary.CustomKeyComparer.GetHashCode(System.String)">
+            <summary>Этот код скопирован из String.GetHashCode() для платформы .NET Framework 4.8, в которой используется
+            детерминированный алгоритм хеширования. А именно, это функция String.GetLegacyNonRandomizedHashCode(),
+            которую можно найти здесь: https://referencesource.microsoft.com/mscorlib/R/42c2b7ffc7c3111f.html</summary>
+            <param name="obj"/>
+            <returns/>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ByKeysValues(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>Создание словаря с заданными ключами и значениями. Количество записей
+                короче ключей или значений.</summary>
+            <param name="keys">Ключи словаря</param>
+            <param name="values">Значения словаря</param>
+            <returns name="dictionary">Словарь из ключей и значений</returns>
+            <search>map,{},table</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.Components">
+            <summary>Создание компонентов словаря. Обратный порядок Dictionary.ByKeysValues.</summary>
+            <returns name="keys">Ключи словаря</returns>
+            <returns name="values">Значения словаря</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Keys">
+            <summary>Создание ключей словаря.</summary>
+            <returns name="keys">Ключи словаря</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Values">
+            <summary>Создание значений словаря.</summary>
+            <returns name="values">Значения словаря</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Count">
+            <summary>Число ключевых пар значений словаря.</summary> 
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.SetValueAtKeys(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>Создание словаря с новыми значениями списка ключей, которые могут переопределять существующие пары ключевых значений.
+                Приведенные два списка должны быть одной длины. Если нет, то более короткий список ограничивает количество вставок.</summary>
+            <param name="keys">Ключи для настройки в словаре. Если ключ повторяется, значение данного ключа будет изменено.</param>
+            <param name="values">Вставляются соответствующие значения.</param>
+            <returns name="dictionary">Новый словарь со вставленными записями</returns>
+            <search>insert,add</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.RemoveKeys(System.Collections.Generic.IList{System.String})">
+            <summary>Создание нового словаря с удалением заданных ключей.</summary>
+            <param name="keys">Ключ словаря для удаления</param>
+            <returns name="dictionary">Новый словарь с удаленными ключами</returns>
+            <search>drop,delete</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ValueAtKey(System.String)">
+            <summary>Получение значения для указанного ключа</summary>
+            <param name="key">Ключ словаря для получения значения</param>
+            <returns name="value">Значение указанного ключа или ноль, если ничего не задано</returns>
+            <search>lookup,valueatkey,find</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ToString">
+            <summary>Возврат строчного представления словаря.</summary>
+            <returns>Строчное представление словаря.</returns>
+        </member>
+        <member name="T:DesignScript.Builtin.BuiltinNullReferenceException">
+            <summary>Исключение при ссылке на значение NULL, возникающее в отношении встроенных типов пустых объектов DS:
+            списков, словарей и строк.</summary>
+        </member>
+        <member name="T:Builtin.Properties.DesignScriptBuiltin">
+            <summary>Класс ресурса со строгим контролем типа, используемый для поиска локализованных строк и т. п.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.ResourceManager">
+            <summary>Возврат кэшированного экземпляра ResourceManager, используемого в данном классе.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.Culture">
+            <summary>Переопределение свойства CurrentUICulture текущего потока для всех
+               случаев поиска ресурсов при использовании данного класса ресурса со строгим контролем типа.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.IndexOutOfRangeExceptionMessage">
+            <summary>Поиск локализованной строки, подобной строке «Индекс вне диапазона. Если число не отрицательное, оно должно быть меньше размера списка. href=kIndexOutOfRange.html»</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.NullReferenceExceptionMessage">
+            <summary>Поиск локализованной строки, подобной строке «Не удается создать индекс в пустом списке, словаре или строке».</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.StringOverIndexingExceptionMessage">
+            <summary>Поиск локализованной строки, подобной строке «Индекс вне диапазона. Если число не отрицательное, оно должно быть меньше размера строки. href=kIndexOutOfRange.html»</summary>
+        </member>
+    </members>
+</doc>

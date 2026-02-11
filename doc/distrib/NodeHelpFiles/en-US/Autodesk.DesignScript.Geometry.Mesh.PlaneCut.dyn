@@ -1,0 +1,650 @@
+{
+  "Uuid": "15752a3c-895c-470a-b457-7821ae4e526d",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "Autodesk.DesignScript.Geometry.Mesh.PlaneCut(different geometry)",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.Cuboid@Autodesk.DesignScript.Geometry.Point,double,double,double,int,int,int",
+      "Id": "c5f54ce47af943ddab82231a234903a5",
+      "Inputs": [
+        {
+          "Id": "e792204fda5646da8f5370c6ea37d37c",
+          "Name": "origin",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3ae16d349c2a40efaab552ca6cf243aa",
+          "Name": "length",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "515881c92ffc4a7db874d5000332fd39",
+          "Name": "width",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3855e1fc25004a2784ae30af9406f58a",
+          "Name": "height",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0ee63b20b70a4603bfa6187554ff8b22",
+          "Name": "xDivisions",
+          "Description": "int\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2307763b91734c09a4c158a4a2689539",
+          "Name": "yDivisions",
+          "Description": "int\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "57c89e8848c549188690041a6f88d658",
+          "Name": "zDivisions",
+          "Description": "int\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "67beff43c77e46689510809d915c71a6",
+          "Name": "mesh",
+          "Description": "mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a mesh cuboid based on the current settings.\n\nMesh.Cuboid (origin: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), length: double = 1, width: double = 1, height: double = 1, xDivisions: int = 0, yDivisions: int = 0, zDivisions: int = 0): Mesh"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "15;",
+      "Id": "8d7adecae5b64ccb8670bfdf062e8f8b",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b629089b819f422c9eb9cdd35b269288",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.BooleanDifference@Autodesk.DesignScript.Geometry.Mesh",
+      "Id": "7ce8af1f72fc46548274e0d6074455ef",
+      "Inputs": [
+        {
+          "Id": "5b6b032ff745408e9f3b2b1bb1b14628",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5fd93b6d7bed4856811fb3d313a17b35",
+          "Name": "tool",
+          "Description": "Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8a14cff16a8d44dda3d6f8d680ed1526",
+          "Name": "mesh",
+          "Description": "mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns a new mesh subtracting the tool mesh from the original mesh.\n\nMesh.BooleanDifference (tool: Mesh): Mesh"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.PlaneCut@Autodesk.DesignScript.Geometry.Plane,bool",
+      "Id": "77c8cd8b6a654ca688aae812f7f57ee7",
+      "Inputs": [
+        {
+          "Id": "b40d625620de47d2852a33d7331b3671",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "002a329fa98642d698e0b115c62b61f4",
+          "Name": "plane",
+          "Description": "Set plane to use for the cut\n\nPlane",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f315d85764724cccb22e57fea212bd6b",
+          "Name": "makeSolid",
+          "Description": "Attempt to create a minimal fill using the fewest number of triangles.\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "66177147c653485a9a1305ca4e62e7d6",
+          "Name": "mesh",
+          "Description": "mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a precise geometric planar cut which removes portions of the mesh that lie on the side of the plane in the direction of the plane normal.\n\nMesh.PlaneCut (plane: Plane, makeSolid: bool = false): Mesh"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Plane.ByOriginNormal@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector",
+      "Id": "3bf93da524d1436785e893644bbf45de",
+      "Inputs": [
+        {
+          "Id": "15755b3a548748578808c2ff843a5563",
+          "Name": "origin",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a5a3daa8bf1c4a4faa51272f9855afd4",
+          "Name": "normal",
+          "Description": "Vector\nDefault value : Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "dba9dc2e88084e488def166ce6223813",
+          "Name": "Plane",
+          "Description": "Plane",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Plane centered at root Point, with input normal Vector.\n\nPlane.ByOriginNormal (origin: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), normal: Vector = Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1)): Plane"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.ByCoordinates@double,double,double",
+      "Id": "4ef80232ae75410fbb7df4d86202b6df",
+      "Inputs": [
+        {
+          "Id": "4c7350017e124d68b42808eb9c795c82",
+          "Name": "x",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9b902819801143cd8292a3e33df7db15",
+          "Name": "y",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "de9062b9416d4ef0974d6259c6d9fcbd",
+          "Name": "z",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bad8952b85ce4573a9eefd1677027fbf",
+          "Name": "Vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Vector by 3 Euclidean coordinates\n\nVector.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Vector"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "-1;",
+      "Id": "147e948b9856433889571854b9574030",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ff8197202e744b08ba74d7af541c2ac9",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": true,
+      "Id": "5be64460086141b8977fc08bf22f46f9",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a30ec615295b477d8808dce12527a772",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.Cuboid@Autodesk.DesignScript.Geometry.Point,double,double,double,int,int,int",
+      "Id": "14ab04fa43d542d399902c8b3f9668d4",
+      "Inputs": [
+        {
+          "Id": "f46c7037dd9b462190cc77c6182f73e4",
+          "Name": "origin",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2e2d59242d7640d3982704486057509f",
+          "Name": "length",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "17747c12eef24f2f91e20b1492b48366",
+          "Name": "width",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bdc52e8978304eb8b916dba3a42ff2ea",
+          "Name": "height",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7e6c76538b1847dc92ee292701232847",
+          "Name": "xDivisions",
+          "Description": "int\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a062d982ee7842fa93282c2d5ad67124",
+          "Name": "yDivisions",
+          "Description": "int\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "df9b9ba64ff240b7b030ad05e3d78d5c",
+          "Name": "zDivisions",
+          "Description": "int\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9d45d9f8ca134245823171d104de4188",
+          "Name": "mesh",
+          "Description": "mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a mesh cuboid based on the current settings.\n\nMesh.Cuboid (origin: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), length: double = 1, width: double = 1, height: double = 1, xDivisions: int = 0, yDivisions: int = 0, zDivisions: int = 0): Mesh"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "10;",
+      "Id": "7a28d05ffcab4ef08aa545ecef78eed3",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "46203d4c60f64ad183daab7fba06e38a",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "67beff43c77e46689510809d915c71a6",
+      "End": "5b6b032ff745408e9f3b2b1bb1b14628",
+      "Id": "fa9b7cbb19354edb832eb4d7a8e30f6c"
+    },
+    {
+      "Start": "b629089b819f422c9eb9cdd35b269288",
+      "End": "3ae16d349c2a40efaab552ca6cf243aa",
+      "Id": "a77f85db3f9a44dbb6766fdd58f0b2b5"
+    },
+    {
+      "Start": "b629089b819f422c9eb9cdd35b269288",
+      "End": "515881c92ffc4a7db874d5000332fd39",
+      "Id": "2b9a0854daa84d4b93633ed55bdccb56"
+    },
+    {
+      "Start": "b629089b819f422c9eb9cdd35b269288",
+      "End": "3855e1fc25004a2784ae30af9406f58a",
+      "Id": "48d134c737164e9ab09fa4ffc347afd9"
+    },
+    {
+      "Start": "8a14cff16a8d44dda3d6f8d680ed1526",
+      "End": "b40d625620de47d2852a33d7331b3671",
+      "Id": "eef87549a7864ba389f7f3250ad346bb"
+    },
+    {
+      "Start": "dba9dc2e88084e488def166ce6223813",
+      "End": "002a329fa98642d698e0b115c62b61f4",
+      "Id": "c56b6dba9fcb4f7b9b2d69259ce9f81c"
+    },
+    {
+      "Start": "bad8952b85ce4573a9eefd1677027fbf",
+      "End": "a5a3daa8bf1c4a4faa51272f9855afd4",
+      "Id": "4657bb85c4f14559af1989106158719c"
+    },
+    {
+      "Start": "ff8197202e744b08ba74d7af541c2ac9",
+      "End": "9b902819801143cd8292a3e33df7db15",
+      "Id": "a39b6959adaf470995642a1bedbb2441"
+    },
+    {
+      "Start": "ff8197202e744b08ba74d7af541c2ac9",
+      "End": "de9062b9416d4ef0974d6259c6d9fcbd",
+      "Id": "29adb5644f5246baa521385b8bbd5e47"
+    },
+    {
+      "Start": "a30ec615295b477d8808dce12527a772",
+      "End": "f315d85764724cccb22e57fea212bd6b",
+      "Id": "d5b4d6ca5eb249e3884f91f01d3134a7"
+    },
+    {
+      "Start": "9d45d9f8ca134245823171d104de4188",
+      "End": "5fd93b6d7bed4856811fb3d313a17b35",
+      "Id": "7f1c850c77c04b6f98460ed14154fe4a"
+    },
+    {
+      "Start": "46203d4c60f64ad183daab7fba06e38a",
+      "End": "2e2d59242d7640d3982704486057509f",
+      "Id": "af660c75fed84e4b8efad40fd62ca947"
+    },
+    {
+      "Start": "46203d4c60f64ad183daab7fba06e38a",
+      "End": "17747c12eef24f2f91e20b1492b48366",
+      "Id": "46d07aca5c754cc19559dda11748f63b"
+    },
+    {
+      "Start": "46203d4c60f64ad183daab7fba06e38a",
+      "End": "bdc52e8978304eb8b916dba3a42ff2ea",
+      "Id": "14c5615bfb6e45b3ae95e42859415a29"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "MeshToolkit",
+      "Version": "3.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "c5f54ce47af943ddab82231a234903a5",
+        "7ce8af1f72fc46548274e0d6074455ef",
+        "77c8cd8b6a654ca688aae812f7f57ee7",
+        "14ab04fa43d542d399902c8b3f9668d4"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.6.1.8786",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 20.094834623550415,
+      "EyeY": 8.072942092221286,
+      "EyeZ": -17.4835194123789,
+      "LookX": -18.016641175843642,
+      "LookY": -11.040254723360677,
+      "LookZ": 10.532559884382007,
+      "UpX": -0.23070740429697004,
+      "UpY": 0.96363045320867891,
+      "UpZ": 0.13487195131499352
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": false,
+        "Name": "Mesh.Cuboid",
+        "Id": "c5f54ce47af943ddab82231a234903a5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 220.82752319444882,
+        "Y": 1930.6314954037662
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Code Block",
+        "Id": "8d7adecae5b64ccb8670bfdf062e8f8b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 66.510457235474178,
+        "Y": 2003.4255619234737
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Mesh.BooleanDifference",
+        "Id": "7ce8af1f72fc46548274e0d6074455ef",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 552.59517301440144,
+        "Y": 2047.69797138358
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.PlaneCut",
+        "Id": "77c8cd8b6a654ca688aae812f7f57ee7",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1373.954053144266,
+        "Y": 2015.5058128979992
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Plane.ByOriginNormal",
+        "Id": "3bf93da524d1436785e893644bbf45de",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 993.91637364084909,
+        "Y": 2136.1526952800359
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Vector.ByCoordinates",
+        "Id": "4ef80232ae75410fbb7df4d86202b6df",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 724.80536974036113,
+        "Y": 2183.7397576323951
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Code Block",
+        "Id": "147e948b9856433889571854b9574030",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 554.73904653081706,
+        "Y": 2204.3779258363816
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Boolean",
+        "Id": "5be64460086141b8977fc08bf22f46f9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1128.9724257201858,
+        "Y": 2328.5160164908393
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Mesh.Cuboid",
+        "Id": "14ab04fa43d542d399902c8b3f9668d4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 207.12082078273369,
+        "Y": 2194.3381978154807
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "7a28d05ffcab4ef08aa545ecef78eed3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 72.34338120091121,
+        "Y": 2257.3132375981772
+      }
+    ],
+    "Annotations": [],
+    "X": 83.902881923097311,
+    "Y": -1038.4354198110557,
+    "Zoom": 0.69660756678361291
+  }
+}

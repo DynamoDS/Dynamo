@@ -1,0 +1,80 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>FFITarget</name>
+    </assembly>
+    <members>
+        <member name="T:FFITarget.ClassFunctionality">
+            <summary>FFI 実装の基本的な機能を検証するためにテストします</summary>
+        </member>
+        <member name="T:FFITarget.ClassFunctionalityMirror">
+            <summary>ClassFunctionality と同じ IntVal メンバーを含むクラス</summary>
+        </member>
+        <member name="T:FFITarget.CodeCompletionClass">
+            <summary>CodeBlock ノードのコード補完をテストします</summary>
+        </member>
+        <member name="T:FFITarget.InstanceableClass">
+            <summary>インスタンスを使用してピラミッドを作成するテスト クラス。</summary>
+        </member>
+        <member name="T:FFITarget.InstanceableLineClass">
+            <summary>インスタンスを使用してピラミッドを作成するテスト クラス。</summary>
+        </member>
+        <member name="T:FFITarget.InstanceableClass_NoInstanceData">
+            <summary>このクラスはインスタンス化可能ですが、instanceInfoAvailable に対しては false を返すため、通常のテッセレーションが使用されます。</summary>
+        </member>
+        <member name="T:FFITarget.ElementIDLifecycleManager`1">
+            <summary>ID から取得した要素の寿命を扱うクラス</summary>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.GetInstance">
+            <summary>特定のタイプの LifecycleManager を返します
+            警告: これは指定された TypeArg のシングルトンのみです</summary>
+            <returns/>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.RegisterAsssociation(`0,System.Object)">
+            <summary>要素 ID とラッパーの間に新しい依存関係を登録します</summary>
+            <param name="elementID"/>
+            <param name="wrapper"/>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.UnRegisterAssociation(`0,System.Object)">
+            <summary>要素 ID との間の関連付けを削除します</summary>
+            <param name="elementID"/>
+            <param name="wrapper"/>
+            <returns>残りの関連付けの数</returns>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.GetRegisteredCount(`0)">
+            <summary>登録されているラッパーの数を返します</summary>
+            <param name="id"/>
+            <returns/>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.IsRevitDeleted(`0)">
+            <summary>Revit で要素が削除されているかどうかを確認します</summary>
+            <param name="id"/>
+            <returns/>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.NotifyOfRevitDeletion(`0)">
+            <summary>Revit 要素の削除状態を設定</summary>
+            <param name="id">削除する必要がある要素&gt;</param>
+        </member>
+        <member name="M:FFITarget.IncrementerTracedClass.#ctor(System.Int32)">
+            <summary>ここでの x は、複製されたディスパッチを強制するためのダミー変数であることに注意してください
+            実際には使われていません</summary>
+            <param name="x"/>
+        </member>
+        <member name="M:FFITarget.IncrementerTracedClass.#ctor(System.Int32,System.Boolean)">
+            <summary>ここでの x は、複製されたディスパッチを強制するためのダミー変数であることに注意してください
+            実際には使われていません</summary>
+            <param name="x">複製されたディスパッチを強制するために使用されるダミー変数</param>
+            <param name="failWithException">次の代わりに、例外を発生させるディスパッチの失敗:</param>
+        </member>
+        <member name="T:FFITarget.OverloadTarget">
+            <summary>オーバーロードされたメソッドのテスト対象</summary>
+        </member>
+        <member name="M:FFITarget.TestData.ReturnNestedDictionary">
+            <summary>ネストされたディクショナリを返します。</summary>
+            <returns name="col">column</returns>
+            <returns name="dict">dictionary</returns>
+            <returns name="num">number</returns>
+            <returns name="wt">weight</returns>
+            <returns name="ok">okay</returns>
+        </member>
+    </members>
+</doc>

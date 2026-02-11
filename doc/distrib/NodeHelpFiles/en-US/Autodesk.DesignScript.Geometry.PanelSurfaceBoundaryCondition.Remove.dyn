@@ -1,0 +1,595 @@
+{
+  "Uuid": "90a4e73c-6400-4e53-a19f-f1a9a965688e",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "PanelSurfaceBoundaryCondition.Remove",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "63cb55fa35934eb0b31909dce3877b31",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "5b501c3bbff94cd1b31515b1b3dbe64c",
+          "Name": "width",
+          "Description": "Width of rectangle\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1571ea5aa63a4ffcab06e9e7972f0e74",
+          "Name": "length",
+          "Description": "Length of rectangle\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f987ca5257e24fdbb69a600a65a99a5b",
+          "Name": "Rectangle",
+          "Description": "Rectangle created by width and length",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength@double,double",
+      "Replication": "Auto",
+      "Description": "Create a Rectangle centered at the WCS origin in the WCS XY Plane, with specified width (X Axis length), and length (Y Axis length).\n\nRectangle.ByWidthLength (width: double = 1, length: double = 1): Rectangle"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "7b23293a79d54c1199174eca714978b6",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "baf4a3a1d2304f67a02526585df6059b",
+          "Name": "",
+          "Description": "width",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "aeff28d0a656403d97e8ba3c6d8d9e7e",
+          "Name": "",
+          "Description": "length",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "width = 10;\nlength = 20;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "72a890c28ee84b00b6e364d922e604da",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "a0529124f3b14a578581a87fe3d69ed8",
+          "Name": "closedCurve",
+          "Description": "Closed curve used as surface boundary\n\nCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ed6c0615ea9649c799da28bcc3d1fb1d",
+          "Name": "Surface",
+          "Description": "Surface created by patch",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.ByPatch@Autodesk.DesignScript.Geometry.Curve",
+      "Replication": "Auto",
+      "Description": "Create a Surface by filling in the interior of a closed boundary defined by input Curves.\n\nSurface.ByPatch (closedCurve: Curve): Surface"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "256d5a03725f4c088075e17fb966c922",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9b0c6b010ae94184b83191b6f07115f9",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number",
+      "InputValue": 5.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "b1533ea51de046539d8562fc85d8a3e6",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "4e5a6ca5774742d594118184b468c17f",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number",
+      "InputValue": 10.0
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "d5b31fcbeccd4044ac29d88f0b363be0",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "31bb7001a590411591dd47bfa618d321",
+          "Name": "panelSurface",
+          "Description": "Autodesk.DesignScript.Geometry.PanelSurface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f1b22eab28964c958dc4198de8fe7122",
+          "Name": "panelIndices",
+          "Description": "Panel indices used to construct Polygons. The default value of null indicates all panels in the surface.\n\nint[]\nDefault value : null",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a856a51386ef4399887b2e132f170a76",
+          "Name": "Polygon[]..[]",
+          "Description": "Polygon[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PanelSurface.GetPanelPolygon@int[]",
+      "Replication": "Auto",
+      "Description": "Returns the polygonal boundary for each panel in the list of panel indices.\n\nPanelSurface.GetPanelPolygon (panelIndices: int[] = null): Polygon[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "Id": "77a9ec101cac4886a6951ebb335daf29",
+      "NodeType": "BooleanInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "aa39bfd61e624ebc842d6ad399792c89",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enables selection between True and False",
+      "InputValue": true
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "41700470778d4ae99795005281395822",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "fdd6eabc9ac641c2ba557d0b6ce179f5",
+          "Name": "surface",
+          "Description": "Input surface to be paneled\n\nSurface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6c97ad0b20924147a335532b16183c99",
+          "Name": "numU",
+          "Description": "Number of patterns in the U direction\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "28e472d1502445daa26bd1730e678934",
+          "Name": "numV",
+          "Description": "Number of patterns in the V direction\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "17be06f33df54455953d0fc30256433f",
+          "Name": "splitHorizontally",
+          "Description": "When set to true, diamond is split horizontally\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "63eb90e23fa44b1191e492b6e963bcda",
+          "Name": "boundaryCondition",
+          "Description": "Keep, Remove, or RemoveVertices\n\nPanelSurfaceBoundaryCondition\nDefault value : Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.get_Keep()",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6d749c5ee74742109fe4b26aea1de34b",
+          "Name": "PanelSurface",
+          "Description": "PanelSurface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PanelSurface.BySplitDiamonds@Autodesk.DesignScript.Geometry.Surface,int,int,bool,Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition",
+      "Replication": "Auto",
+      "Description": "Panels the input surface in a diamond-shaped pattern, with each diamond split vertically or horizontally into two triangles. By default, each diamond is split vertically.\n\nPanelSurface.BySplitDiamonds (surface: Surface, numU: int, numV: int, splitHorizontally: bool = false, boundaryCondition: PanelSurfaceBoundaryCondition = Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.get_Keep()): PanelSurface"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "4f630df0141e4631859e015c6035fe23",
+      "NodeType": "FunctionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "cd42f59cdd054d108704340639d2401b",
+          "Name": "PanelSurfaceBoundaryCondition",
+          "Description": "PanelSurfaceBoundaryCondition",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Remove",
+      "Replication": "Auto",
+      "Description": "Do not allow panels to overlap the boundary.\n\nPanelSurfaceBoundaryCondition.Remove: PanelSurfaceBoundaryCondition"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "f987ca5257e24fdbb69a600a65a99a5b",
+      "End": "a0529124f3b14a578581a87fe3d69ed8",
+      "Id": "deb482ba6d5840b5b95fbc1a6b1b190b",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "baf4a3a1d2304f67a02526585df6059b",
+      "End": "5b501c3bbff94cd1b31515b1b3dbe64c",
+      "Id": "3e63f44ffaee4b459fb5aa98fc3e99fe",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "aeff28d0a656403d97e8ba3c6d8d9e7e",
+      "End": "1571ea5aa63a4ffcab06e9e7972f0e74",
+      "Id": "4feece1742a746af841b487031707409",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ed6c0615ea9649c799da28bcc3d1fb1d",
+      "End": "fdd6eabc9ac641c2ba557d0b6ce179f5",
+      "Id": "539da9d3aa124aa4bef9f67a7c22897e",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "9b0c6b010ae94184b83191b6f07115f9",
+      "End": "6c97ad0b20924147a335532b16183c99",
+      "Id": "8a28cdfefa5f459fb2c8d157967af289",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4e5a6ca5774742d594118184b468c17f",
+      "End": "28e472d1502445daa26bd1730e678934",
+      "Id": "7639d685b75a4e4c80c5a0c954fe82ab",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "aa39bfd61e624ebc842d6ad399792c89",
+      "End": "17be06f33df54455953d0fc30256433f",
+      "Id": "ca72e1726e464a3a9ef8f8b913f712c9",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "6d749c5ee74742109fe4b26aea1de34b",
+      "End": "31bb7001a590411591dd47bfa618d321",
+      "Id": "b776285f95144d978c2fc2fe74085da6",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "cd42f59cdd054d108704340639d2401b",
+      "End": "63eb90e23fa44b1191e492b6e963bcda",
+      "Id": "e193340cf8f94b379ce5d78703f5717e",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": true,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.0",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "7.1",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.1.0.3411",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -19.304107666015625,
+      "EyeY": 12.031656265258789,
+      "EyeZ": 5.9886932373046875,
+      "LookX": 10.543680191040039,
+      "LookY": -11.25411605834961,
+      "LookZ": -3.4891538619995117,
+      "UpX": 0.5170625448226929,
+      "UpY": 0.838670551776886,
+      "UpZ": -0.17110852897167206
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "63cb55fa35934eb0b31909dce3877b31",
+        "Name": "Rectangle.ByWidthLength",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 448.0,
+        "Y": 405.0
+      },
+      {
+        "Id": "7b23293a79d54c1199174eca714978b6",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 194.0,
+        "Y": 413.655
+      },
+      {
+        "Id": "72a890c28ee84b00b6e364d922e604da",
+        "Name": "Surface.ByPatch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 815.0,
+        "Y": 405.0
+      },
+      {
+        "Id": "256d5a03725f4c088075e17fb966c922",
+        "Name": "U Number",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1369.248165576255,
+        "Y": 530.4120022718439
+      },
+      {
+        "Id": "b1533ea51de046539d8562fc85d8a3e6",
+        "Name": "V Number",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1369.248165576255,
+        "Y": 671.4120022718439
+      },
+      {
+        "Id": "d5b31fcbeccd4044ac29d88f0b363be0",
+        "Name": "PanelSurface.GetPanelPolygon",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2332.662571408657,
+        "Y": 405.0
+      },
+      {
+        "Id": "77a9ec101cac4886a6951ebb335daf29",
+        "Name": "Boolean",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1369.248165576255,
+        "Y": 899.928437561598
+      },
+      {
+        "Id": "41700470778d4ae99795005281395822",
+        "Name": "PanelSurface.BySplitDiamonds",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1721.4786275954812,
+        "Y": 405.0
+      },
+      {
+        "Id": "4f630df0141e4631859e015c6035fe23",
+        "Name": "PanelSurfaceBoundaryCondition.Remove",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1367.4843076456282,
+        "Y": 1043.8578809168603
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "e5fa7825d5724f72ac00aee45891e31b",
+        "Title": "Generate base surface",
+        "DescriptionText": " ",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "63cb55fa35934eb0b31909dce3877b31",
+          "7b23293a79d54c1199174eca714978b6",
+          "72a890c28ee84b00b6e364d922e604da"
+        ],
+        "HasNestedGroups": false,
+        "Left": 184.0,
+        "Top": 331.8,
+        "Width": 885.4000000000001,
+        "Height": 247.8,
+        "FontSize": 36.0,
+        "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
+        "InitialTop": 405.0,
+        "InitialHeight": 153.65499999999997,
+        "TextblockHeight": 63.2,
+        "Background": "#FFFFB8D8"
+      },
+      {
+        "Id": "014c379f79484aff847f833be395fc76",
+        "Title": "Create Panels",
+        "DescriptionText": " ",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "256d5a03725f4c088075e17fb966c922",
+          "b1533ea51de046539d8562fc85d8a3e6",
+          "41700470778d4ae99795005281395822",
+          "77a9ec101cac4886a6951ebb335daf29",
+          "4f630df0141e4631859e015c6035fe23",
+          "1e1e7c5ee03b419c8207ade9c348accb"
+        ],
+        "HasNestedGroups": false,
+        "Left": 1306.8481655762548,
+        "Top": 331.8,
+        "Width": 740.6304620192263,
+        "Height": 844.2578809168604,
+        "FontSize": 36.0,
+        "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
+        "InitialTop": 405.0,
+        "InitialHeight": 783.8578809168603,
+        "TextblockHeight": 63.2,
+        "Background": "#FFB9F9E1"
+      },
+      {
+        "Id": "768fd2e17ebe41fd9c22455230289ac5",
+        "Title": "Convert Panels to Surfaces",
+        "DescriptionText": " ",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "d5b31fcbeccd4044ac29d88f0b363be0"
+        ],
+        "HasNestedGroups": false,
+        "Left": 2322.662571408657,
+        "Top": 288.6,
+        "Width": 323.1999999999998,
+        "Height": 279.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "07655dc1-2d65-4fed-8d6a-37235d3e3a8d",
+        "InitialTop": 405.0,
+        "InitialHeight": 145.0,
+        "TextblockHeight": 106.4,
+        "Background": "#FFFFC999"
+      },
+      {
+        "Id": "1e1e7c5ee03b419c8207ade9c348accb",
+        "Title": "Orient the splitting of the Diamonds either vertically or horizontally",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 1316.8481655762548,
+        "Top": 835.128437561598,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "77a9ec101cac4886a6951ebb335daf29"
+      }
+    ],
+    "X": -34.671849656139045,
+    "Y": 260.87484826258685,
+    "Zoom": 0.4534731751434734
+  }
+}

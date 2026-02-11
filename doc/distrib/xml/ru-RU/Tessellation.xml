@@ -1,0 +1,65 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Tessellation</name>
+    </assembly>
+    <members>
+        <member name="T:Tessellation.Adapters.Cell2">
+            <summary>Ячейка для двумерного мозаичного представления</summary>
+        </member>
+        <member name="T:Tessellation.Adapters.Cell3">
+            <summary>Ячейка для трехмерного мозаичного представления</summary>
+        </member>
+        <member name="T:Tessellation.Adapters.Tetrahedron">
+            <summary>Вершина - это простой класс, в котором хранится положение точки, узла или вершины.</summary>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.GetPosition(System.Int32)">
+            <summary>Вспомогательная функция для получения положения i-ой вершины.</summary>
+            <param name="i"/>
+            <returns>Положение i-ой вершины</returns>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.MakeFace(System.Int32,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>С помощью этой функции добавляются индексы для треугольника, обозначающего грань.
+            Они добавляются против часовой стрелки (ПРЧС) - таким образом обеспечивается правильное направление автоматически вычисленных нормалей.</summary>
+            <param name="i"/>
+            <param name="j"/>
+            <param name="k"/>
+            <param name="center"/>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.MakeFaces">
+            <summary>Создание модели тетраэдра. К цвету применена прозрачность.</summary>
+            <returns>Модель, на которой представлен тетраэдр</returns>
+        </member>
+        <member name="T:Tessellation.Adapters.TriangleFace">
+            <summary>Вершина - это простой класс, в котором хранится положение точки, узла или вершины.</summary>
+        </member>
+        <member name="T:Tessellation.ConvexHull">
+            <summary>Функции для создания выпуклых оболочек.</summary>
+        </member>
+        <member name="M:Tessellation.ConvexHull.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>Создание выпуклой оболочки из набора точек.</summary>
+            <param name="points">Набор точек.</param>
+        </member>
+        <member name="T:Tessellation.Delaunay">
+            <summary>Функции для создания триангуляций Делоне.</summary>
+        </member>
+        <member name="M:Tessellation.Delaunay.ByParametersOnSurface(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},Autodesk.DesignScript.Geometry.Surface)">
+            <summary>Создание триангуляции Делоне для поверхности с использованием заданного набора параметров UV.</summary>
+            <param name="uvs">Набор параметров UV.</param>
+            <param name="face">Поверхность для триангуляции.</param>
+            <search>uvs</search>
+        </member>
+        <member name="M:Tessellation.Delaunay.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>Создание триангуляции Делоне на основе набора точек.</summary>
+            <param name="points">Набор точек.</param>
+        </member>
+        <member name="T:Tessellation.Voronoi">
+            <summary>Функции для создания мозаичных диаграмм Вороного.</summary>
+        </member>
+        <member name="M:Tessellation.Voronoi.ByParametersOnSurface(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},Autodesk.DesignScript.Geometry.Surface)">
+            <summary>Построение мозаичной диаграммы Вороного для поверхности с заданным набором параметров UV.</summary>
+            <param name="uvs">Набор параметров UV.</param>
+            <param name="face">Поверхность для мозаичного представления.</param>
+            <search>uvs</search>
+        </member>
+    </members>
+</doc>

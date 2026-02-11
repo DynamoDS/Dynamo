@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -27,7 +27,7 @@ namespace Dynamo.Scheduler
         /// <returns>An IDisposable representing the event subscription</returns>
         public static IDisposable ThenPost(this AsyncTask task, AsyncTaskCompletedHandler action, SynchronizationContext context = null)
         {
-            if (context == null) context = new SynchronizationContext(); // uses the default
+            if (context == null) context = SynchronizationContext.Current ?? new SynchronizationContext(); // uses the current or a default
             return task.Then((t) => context.Post((_) => action(task), null));
         }
 
@@ -38,7 +38,7 @@ namespace Dynamo.Scheduler
         /// <returns>An IDisposable representing the event subscription</returns>
         public static IDisposable ThenSend(this AsyncTask task, AsyncTaskCompletedHandler action, SynchronizationContext context = null)
         {
-            if (context == null) context = new SynchronizationContext(); // uses the default
+            if (context == null) context = SynchronizationContext.Current ?? new SynchronizationContext(); // uses the current or a default
             return task.Then((t) => context.Send((_) => action(task), null));
         }
 

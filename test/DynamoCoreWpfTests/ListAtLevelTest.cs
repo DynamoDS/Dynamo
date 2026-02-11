@@ -1,13 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Threading;
 using Dynamo.Controls;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 using SystemTestServices;
 
@@ -70,7 +71,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(3, rank);
 
             //find the nodeView that has the same dataContext as the addNode.
-            Utility.DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEvents();
             var nodeViews = WpfUtilities.ChildrenOfType<NodeView>(View);
             var nodeViewModel = ViewModel.CurrentSpaceViewModel.Nodes.Where(x => x.Id == addNode.GUID).FirstOrDefault();
             var matchingNodeView = nodeViews.Where(x => (x.DataContext as NodeViewModel).Id == nodeViewModel.Id).FirstOrDefault();

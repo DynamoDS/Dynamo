@@ -1,0 +1,84 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>DesignScriptBuiltin</name>
+    </assembly>
+    <members>
+        <member name="M:DesignScript.Builtin.Dictionary.CustomKeyComparer.GetHashCode(System.String)">
+            <summary>Este código se ha copiado de String.GetHashCode() para .NET Framework 4.8, que utiliza un
+            algoritmo hash determinista. Más concretamente, se trata de la función String.GetLegacyNonRandomizedHashCode()
+            que se encuentra aquí: https://referencesource.microsoft.com/mscorlib/R/42c2b7ffc7c3111f.html</summary>
+            <param name="obj"/>
+            <returns/>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ByKeysValues(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>Genera un diccionario con las claves y los valores proporcionados. El número de entradas es el más corto de claves o valores.</summary>
+            <param name="keys">Claves del diccionario.</param>
+            <param name="values">Valores del diccionario.</param>
+            <returns name="dictionary">Diccionario de claves y valores.</returns>
+            <search>map,{},table</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.Components">
+            <summary>Genera los componentes de un diccionario; lo contrario de Dictionary.ByKeysValues.</summary>
+            <returns name="keys">Claves del diccionario.</returns>
+            <returns name="values">Valores del diccionario.</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Keys">
+            <summary>Genera las claves de un diccionario.</summary>
+            <returns name="keys">Claves del diccionario.</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Values">
+            <summary>Genera los valores de un diccionario.</summary>
+            <returns name="values">Valores del diccionario.</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Count">
+            <summary>El número de pares de clave-valor de un diccionario.</summary> 
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.SetValueAtKeys(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>Genere un nuevo diccionario con una lista de claves establecidas en los nuevos valores, posiblemente sobrescribiendo pares de clave-valor existentes.
+Se espera que estas dos listas tengan la misma longitud. De lo contrario, la más corta de las dos limita el número de inserciones.</summary>
+            <param name="keys">Las claves del diccionario que se establecerán. Si ya existe la misma clave, se modificará el valor de esa clave.</param>
+            <param name="values">Los valores correspondientes que se insertarán.</param>
+            <returns name="dictionary">Nuevo diccionario con las entradas insertadas.</returns>
+            <search>insert,add</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.RemoveKeys(System.Collections.Generic.IList{System.String})">
+            <summary>Genere un nuevo diccionario con las claves especificadas eliminadas.</summary>
+            <param name="keys">La clave del diccionario que se eliminará.</param>
+            <returns name="dictionary">Nuevo diccionario con las claves eliminadas.</returns>
+            <search>drop,delete</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ValueAtKey(System.String)">
+            <summary>Obtenga el valor en una clave especifica.</summary>
+            <param name="key">La clave del diccionario para la que se obtendrá el valor.</param>
+            <returns name="value">Valor en la clave especificada o un valor nulo si no se ha establecido.</returns>
+            <search>lookup,valueatkey,find</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ToString">
+            <summary>Devuelve una representación de cadena descriptiva del diccionario.</summary>
+            <returns>Representación de cadena del diccionario.</returns>
+        </member>
+        <member name="T:DesignScript.Builtin.BuiltinNullReferenceException">
+            <summary>Se ha generado una excepción de referencia nula con tipos integrados de DS nulos:
+            listas, diccionarios y cadenas.</summary>
+        </member>
+        <member name="T:Builtin.Properties.DesignScriptBuiltin">
+            <summary>Una clase de recurso con tipado fuerte que permite buscar cadenas localizadas, etc.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.ResourceManager">
+            <summary>Devuelve el ejemplar de ResourceManager en caché utilizado por esta clase.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.Culture">
+            <summary>Reemplaza la propiedad CurrentUICulture del hilo actual para todas
+              las búsquedas de recursos que utilizan esta clase de recurso con tipado fuerte.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.IndexOutOfRangeExceptionMessage">
+            <summary>Busca una cadena localizada similar a "El índice se encuentra fuera del intervalo. El valor condicional no negativo debe ser inferior al tamaño de la lista". href=kIndexOutOfRange.html.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.NullReferenceExceptionMessage">
+            <summary>Busca una cadena localizada similar a No se puede indexar en una lista, una cadena o un diccionario nulos.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.StringOverIndexingExceptionMessage">
+            <summary>Busca una cadena localizada similar a "El índice se encuentra fuera del intervalo. El valor condicional no negativo debe ser inferior al tamaño de la cadena". href=kIndexOutOfRange.html.</summary>
+        </member>
+    </members>
+</doc>

@@ -32,12 +32,8 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ItemsControl}">
                         <Border>
-                            <StackPanel Margin="8,4,8,8"
-                                        Name="ContextMenuPanel"
-                                        Height="{Binding ElementName=MenuItems, Path=ActualHeight, 
-                                                     Converter={StaticResource WorkspaceContextMenuHeightConverter}}">
-                                <ui:InCanvasSearchControl DataContext="{Binding InCanvasSearchViewModel}" RequestShowInCanvasSearch="ShowHideContextMenu"
-                                                      Width="{Binding ElementName=ContextMenuPanel, Path=ActualWidth}" />
+                            <StackPanel Margin="8,0,8,8"
+                                        Name="ContextMenuPanel">
                                 <Border BorderThickness="0"
                                     Name="MenuItems"
                                     Background="#666666"
@@ -369,18 +365,10 @@
             <ui:InCanvasSearchControl RequestShowInCanvasSearch="ShowHideInCanvasControl" />
         </Popup>
 
-        <Popup Name="NodeAutoCompleteSearchBar"
-               StaysOpen="True"
-               AllowsTransparency="True"
-               IsOpen="False"
-               Placement="Custom"
-               DataContext="{Binding NodeAutoCompleteSearchViewModel}">
-            <ui:NodeAutoCompleteSearchControl RequestShowNodeAutoCompleteSearch="ShowHideNodeAutoCompleteControl" />
-        </Popup>
-       
         <Popup Name="ContextMenuPopup"
                AllowsTransparency="True"
                Opened="OnContextMenuOpened"
+               Closed="OnContextMenuClosed"
                Placement="MousePoint"
                StaysOpen="True"
                Style="{StaticResource WorkspaceContextMenuStylePopup}">
@@ -530,6 +518,9 @@
                     </Setter>
                 </Style>
             </Popup.Resources>
+            <StackPanel x:Name="ContextMenuStackView">
+            <ui:InCanvasSearchControl Margin="8,4,8,0" DataContext="{Binding InCanvasSearchViewModel}" RequestShowInCanvasSearch="ShowHideContextMenu"
+                                                      Width="{Binding ElementName=ContextMenuPopup, Path=ActualWidth}" />
             <ItemsControl Style="{StaticResource WorkspaceContextMenuStyle}">
                 <ItemsControl.Resources>
                     <Style TargetType="Separator">
@@ -764,6 +755,11 @@
 
                     <Separator />
 
+                    <!--  Switch Python  -->
+                    <controls:ParentMenuItem  x:Name="PythonEngineMenu" Header="{x:Static p:Resources.UpdateAllPythonEngineMainMenuHeader}" Visibility="{Binding Path=CanUpdatePythonEngine, Converter={StaticResource BooleanToVisibilityCollapsedConverter }}">
+
+                    </controls:ParentMenuItem>
+
                     <!--  Switch to Geometry View  -->
                     <MenuItem Command="{Binding DynamoViewModel.BackgroundPreviewViewModel.ToggleCanNavigateBackgroundCommand}"
                               Header="{x:Static p:Resources.ContextMenuGeometryView}"
@@ -781,6 +777,7 @@
 
                 </ItemsControl.Items>
             </ItemsControl>
+            </StackPanel>
         </Popup>
     </Grid>
 </UserControl>

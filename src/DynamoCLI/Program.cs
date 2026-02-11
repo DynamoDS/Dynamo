@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using Dynamo.Applications;
+using Dynamo.Logging;
 using Dynamo.Models;
 
 namespace DynamoCLI
@@ -11,7 +12,7 @@ namespace DynamoCLI
         private static EventWaitHandle suspendEvent = new AutoResetEvent(false);
 
         [STAThread]
-        static internal void Main(string[] args)
+        internal static void Main(string[] args)
         {
             bool useConsole = true;
             
@@ -20,10 +21,8 @@ namespace DynamoCLI
                 var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
                 useConsole = !cmdLineArgs.NoConsole;
                 var locale = StartupUtils.SetLocale(cmdLineArgs);
-                if (cmdLineArgs.DisableAnalytics)
-                {
-                    Dynamo.Logging.Analytics.DisableAnalytics = true;
-                }
+
+                cmdLineArgs.SetDisableAnalytics();
 
                 if (cmdLineArgs.KeepAlive)
                 {
@@ -100,11 +99,7 @@ namespace DynamoCLI
         private static DynamoModel StartupDynamo(StartupUtils.CommandLineArguments cmdLineArgs)
         {
             DynamoModel model;
-            model = Dynamo.Applications.StartupUtils.MakeCLIModel(String.IsNullOrEmpty(cmdLineArgs.ASMPath) ? string.Empty : cmdLineArgs.ASMPath,
-                cmdLineArgs.UserDataFolder,
-                cmdLineArgs.CommonDataFolder,
-                cmdLineArgs.AnalyticsInfo,
-                cmdLineArgs.ServiceMode);
+            model = StartupUtils.MakeCLIModel(cmdLineArgs);
 
             if (!string.IsNullOrEmpty(cmdLineArgs.CERLocation))
             {

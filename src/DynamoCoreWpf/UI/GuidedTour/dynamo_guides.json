@@ -253,12 +253,12 @@
 				"HostPopupInfo": {
 					"PopupPlacement": "right",
 					"HostUIElementString": "PackageManagerMenu",
-					"VerticalPopupOffset": 0,
+					"VerticalPopupOffset": 80,
 					"HorizontalPopupOffset": 10,
 					"HighlightRectArea": {
 						"HighlightColor": "#EF9362",
 						"UIElementTypeString": "MenuItem",
-						"WindowElementNameString": "showPMSearch",
+						"WindowElementNameString": "showPM",
 						"WidthBoxDelta": 0,
 						"HeightBoxDelta": 3
 					},
@@ -367,9 +367,9 @@
 				},
 				"HostPopupInfo": {
 					"PopupPlacement": "right",
-					"WindowName": "PackageSearch",
+					"WindowName": "PackageManagerWindow",
 					"DynamicHostWindow": true,
-					"HostUIElementString": "PackageSearch",
+					"HostUIElementString": "PackageManagerWindow",
 					"VerticalPopupOffset": 150,
 					"HorizontalPopupOffset": 0
 				},
@@ -397,7 +397,7 @@
 						"Action": "execute",
 						"AutomaticHandlers": [
 							{
-								"HandlerElement": "closeButton",
+								"HandlerElement": "CloseButton",
 								"HandlerElementEvent": "Click",
 								"ExecuteMethod": "CloseButton_Click"
 							}
@@ -418,13 +418,13 @@
 					"FormattedText": "PackagesGuideSearchFilterText"
 				},
 				"HostPopupInfo": {
-					"PopupPlacement": "relative",
-					"WindowName": "PackageSearch",
+					"PopupPlacement": "right",
+					"WindowName": "PackageManagerWindow",
 					"DynamicHostWindow": true,
-					"HostUIElementString": "PackageSearch",
+					"HostUIElementString": "PackageManagerWindow",
 					"VerticalPopupOffset": 40,
 					"ElementName": "NextButton",
-					"HorizontalPopupOffset": 470,
+					"HorizontalPopupOffset": 0,
 					"HtmlPage": {
 						"FileName": "searchPackages.html",
 						"Resources": {
@@ -452,7 +452,7 @@
 						"Action": "execute",
 						"AutomaticHandlers": [
 							{
-								"HandlerElement": "closeButton",
+								"HandlerElement": "CloseButton",
 								"HandlerElementEvent": "Click",
 								"ExecuteMethod": "CloseButton_Click"
 							}
@@ -488,15 +488,15 @@
 				},
 				"HostPopupInfo": {
 					"PopupPlacement": "right",
-					"WindowName": "PackageSearch",
+					"WindowName": "PackageManagerWindow",
 					"DynamicHostWindow": true,
-					"HostUIElementString": "PackageSearch",
+					"HostUIElementString": "PackageManagerWindow",
 					"VerticalPopupOffset": 150,
 					"HorizontalPopupOffset": 0,
 					"HighlightRectArea": {
 						"HighlightColor": "#EF9362",
 						"UIElementTypeString": "Button",
-						"WindowName": "PackageSearch",
+						"WindowName": "PackageManagerWindow",
 						"UIElementGridContainer": "viewDetailsGrid",
 						"WindowElementNameString": "viewDetailsButton",
 						"WidthBoxDelta": 0,
@@ -529,7 +529,7 @@
 						"Action": "execute",
 						"AutomaticHandlers": [
 							{
-								"HandlerElement": "closeButton",
+								"HandlerElement": "CloseButton",
 								"HandlerElementEvent": "Click",
 								"ExecuteMethod": "CloseButton_Click"
 							}
@@ -542,7 +542,7 @@
 				"Sequence": 6,
 				"Name": "package-dependencies",
 				"Type": "tooltip",
-				"TooltipPointerDirection": "top_right",
+				"TooltipPointerDirection": "top_left",
 				"Width": 480,
 				"Height": 260,
 				"StepContent": {
@@ -550,16 +550,12 @@
 					"FormattedText": "PackagesGuideDependenciesText"
 				},
 				"HostPopupInfo": {
-					"PopupPlacement": "left",
+					"PopupPlacement": "right",
+					"WindowName": "PackageManagerWindow",
 					"DynamicHostWindow": true,
-					"HostUIElementString": "PackageDetailsWindow",
+					"HostUIElementString": "PackageManagerWindow",
 					"VerticalPopupOffset": 0,
-					"HorizontalPopupOffset": 0,
-					"CutOffRectArea": {
-						"WindowElementNameString": "PackageDetailsWindow",
-						"WidthBoxDelta": 0,
-						"HeightBoxDelta": 3
-					}
+					"HorizontalPopupOffset": 0
 				},
 				"UIAutomation": [
 					{
@@ -578,7 +574,7 @@
 						"Action": "execute",
 						"AutomaticHandlers": [
 							{
-								"HandlerElement": "closeButton",
+								"HandlerElement": "CloseButton",
 								"HandlerElementEvent": "Click",
 								"ExecuteMethod": "CloseButton_Click"
 							}
@@ -616,7 +612,7 @@
 						"Action": "execute",
 						"AutomaticHandlers": [
 							{
-								"HandlerElement": "closeButton",
+								"HandlerElement": "CloseButton",
 								"HandlerElementEvent": "Click",
 								"ExecuteMethod": "CloseButton_Click"
 							}
@@ -625,12 +621,12 @@
 					}
 				],
 				"HostPopupInfo": {
-					"PopupPlacement": "relative",
-					"WindowName": "PackageSearch",
+					"PopupPlacement": "right",
+					"WindowName": "PackageManagerWindow",
 					"DynamicHostWindow": true,
-					"HostUIElementString": "PackageSearch",
+					"HostUIElementString": "PackageManagerWindow",
 					"VerticalPopupOffset": 100,
-					"HorizontalPopupOffset": 480,
+					"HorizontalPopupOffset": 0,
 					"HtmlPage": {
 						"FileName": "installedPackage.html",
 						"Resources": {
@@ -658,7 +654,7 @@
 				},
 				"HostPopupInfo": {
 					"PopupPlacement": "right",
-					"WindowName": "PackageSearch",
+					"WindowName": "PackageManagerWindow",
 					"DynamicHostWindow": true,
 					"HostUIElementString": "installButton",
 					"VerticalPopupOffset": 120,
@@ -666,7 +662,7 @@
 					"HighlightRectArea": {
 						"HighlightColor": "#EF9362",
 						"UIElementTypeString": "Button",
-						"WindowName": "PackageSearch",
+						"WindowName": "PackageManagerWindow",
 						"UIElementGridContainer": "installPackageGrid",
 						"WindowElementNameString": "installButton",
 						"WidthBoxDelta": 0,
@@ -703,7 +699,7 @@
 						"Action": "execute",
 						"AutomaticHandlers": [
 							{
-								"HandlerElement": "closeButton",
+								"HandlerElement": "CloseButton",
 								"HandlerElementEvent": "Click",
 								"ExecuteMethod": "CloseButton_Click"
 							}
@@ -742,10 +738,18 @@
 					{
 						"Sequence": 1,
 						"ControlType": "function",
+						"Name": "CollapsePackageDiv",
+						"JSFunctionName": "collapsePackageDiv",
+						"JSParameters": [ "SampleLibraryUI", "LibraryItemText" ],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 2,
+						"ControlType": "function",
 						"WindowName": "PopupWindow",
 						"Name": "SubscribeNextButtonClickEvent",
 						"Action": "execute",
-						"JSFunctionName": "collapseExpandPackage",
+						"JSFunctionName": "expandPackageDiv",
 						"JSParameters": [ "SampleLibraryUI", "LibraryItemText" ],
 						"AutomaticHandlers": [
 							{
@@ -756,7 +760,7 @@
 						]
 					},
 					{
-						"Sequence": 2,
+						"Sequence": 3,
 						"ControlType": "JSFunction",
 						"Name": "InvokeJSFunction",
 						"JSFunctionName": "setOverlay",
@@ -764,7 +768,7 @@
 						"Action": "execute"
 					},
 					{
-						"Sequence": 3,
+						"Sequence": 4,
 						"ControlType": "JSFunction",
 						"Name": "InvokeJSFunction",
 						"JSFunctionName": "subscribePackageClickedEvent",
@@ -772,7 +776,7 @@
 						"Action": "execute"
 					},
 					{
-						"Sequence": 4,
+						"Sequence": 5,
 						"ControlType": "JSFunction",
 						"Name": "InvokeJSFunction",
 						"JSFunctionName": "getDocumentClientRect",
@@ -780,7 +784,7 @@
 						"Action": "execute"
 					},
 					{
-						"Sequence": 5,
+						"Sequence": 6,
 						"ControlType": "function",
 						"Name": "LibraryScrollToBottom",
 						"JSFunctionName": "scrollToBottom",
@@ -788,7 +792,7 @@
 						"Action": "execute"
 					},
 					{
-						"Sequence": 6,
+						"Sequence": 7,
 						"ControlType": "function",
 						"Name": "CalculateLibraryItemLocation",
 						"JSFunctionName": "getDocumentClientRect",
@@ -825,7 +829,7 @@
 				},
 				"UIAutomation": [
 					{
-						"Sequence": 0,
+						"Sequence": 1,
 						"ControlType": "JSFunction",
 						"Name": "InvokeJSFunction",
 						"JSFunctionName": "setOverlay",
@@ -833,27 +837,19 @@
 						"Action": "execute"
 					},
 					{
-						"Sequence": 1,
-						"ControlType": "JSFunction",
-						"Name": "InvokeJSFunction",
-						"Action": "execute",
-						"JSFunctionName": "collapseExpandPackage",
-						"JSParameters": [ "SampleLibraryUI", "LibraryItemText" ]
-					},
-					{
 						"Sequence": 2,
-						"ControlType": "JSFunction",
-						"Name": "InvokeJSFunction",
-						"Action": "execute",
-						"JSFunctionName": "collapseExpandPackage",
-						"JSParameters": [ "Examples", "LibraryItemGroupText" ]
-					},
-					{
-						"Sequence": 3,
 						"ControlType": "function",
 						"Name": "LibraryScrollToBottom",
 						"JSFunctionName": "scrollToBottom",
 						"JSParameters": [],
+						"Action": "execute"
+					},
+					{
+						"Sequence": 3,
+						"ControlType": "JSFunction",
+						"Name": "InvokeJSFunction",
+						"JSFunctionName": "expandPackageDiv",
+						"JSParameters": [ "Examples", "LibraryItemGroupText" ],
 						"Action": "execute"
 					}
 				]
@@ -1002,7 +998,7 @@
 						"WindowName": "LibraryView",
 						"Name": "InvokeJSFunction",
 						"Action": "execute",
-						"JSFunctionName": "collapseExpandPackage",
+						"JSFunctionName": "expandPackageDiv",
 						"JSParameters": [ "Geometry", "LibraryItemText" ]
 					},
 					{
@@ -1011,7 +1007,7 @@
 						"WindowName": "LibraryView",
 						"Name": "InvokeJSFunction",
 						"Action": "execute",
-						"JSFunctionName": "collapseExpandPackage",
+						"JSFunctionName": "expandPackageDiv",
 						"JSParameters": [ "Abstract", "LibraryItemGroupText" ]
 					},
 					{
@@ -1020,7 +1016,7 @@
 						"WindowName": "LibraryView",
 						"Name": "InvokeJSFunction",
 						"Action": "execute",
-						"JSFunctionName": "collapseExpandPackage",
+						"JSFunctionName": "expandPackageDiv",
 						"JSParameters": [ "CoordinateSystem", "LibraryItemGroupText" ]
 					},
 					{

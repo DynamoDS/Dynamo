@@ -1,5 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.IO;
+using CoreNodeModels;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using NUnit.Framework;
@@ -10,6 +12,17 @@ namespace Dynamo.Tests.Models
     [TestFixture]
     class NodeModelWarningsTest : DynamoModelTestBase
     {
+        // Preload required libraries
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("DesignScriptBuiltin.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("DSCPython.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         /// <summary>
         /// This test case will test adding and removing persistent and transient warnings on a node model
         /// </summary>
@@ -136,6 +149,31 @@ namespace Dynamo.Tests.Models
             cbn.ClearErrorsAndWarnings();
             Assert.AreEqual(ElementState.Active, cbn.State);
             Assert.AreEqual(0, cbn.Infos.Count);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CombinedBuildAndRuntimeWarnings()
+        {
+            // Load test graph
+            string path = Path.Combine(TestDirectory, @"core\warning\CombinedBuildAndRuntimeWarning.dyn");
+            OpenModel(path);
+
+            var guid = "68d59d31924a4bd9ad8bedf6ad3d6ba8";
+            var remember = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<Remember>(
+                Guid.Parse(guid));
+
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.MakeConnectionCommand("fa0a1055b0404964bfb03c0f1b63b03c", 0, PortType.Output,
+                DynamoModel.MakeConnectionCommand.Mode.Begin));
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.MakeConnectionCommand(guid, 0, PortType.Input,
+                    DynamoModel.MakeConnectionCommand.Mode.End));
+
+            RunCurrentModel();
+
+            Assert.IsTrue(remember.Infos.Count == 1);
+
+            Assert.IsTrue(remember.Infos.Any(x => x.Message.Contains("Dereferencing a non-pointer")));
+            Assert.IsTrue(remember.Infos.Any(x => x.Message.Contains("Data.Remember operation failed")));
         }
     }
 }

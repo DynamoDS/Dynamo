@@ -27,7 +27,10 @@ using System.Windows;
 
 [assembly: InternalsVisibleTo("DynamoCoreTests")]
 [assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
+[assembly: InternalsVisibleTo("DynamoCoreWpf2Tests")]
+[assembly: InternalsVisibleTo("DynamoCoreWpf3Tests")]
 [assembly: InternalsVisibleTo("DynamoMSOfficeTests")]
+[assembly: InternalsVisibleTo("PackageManagerSearchElementViewModelTests")]
 [assembly: InternalsVisibleTo("CoreNodeModelsWpf")]
 [assembly: InternalsVisibleTo("DynamoSandbox")]
 [assembly: InternalsVisibleTo("WpfVisualizationTests")]
@@ -50,15 +53,25 @@ using System.Windows;
 [assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
 [assembly: InternalsVisibleTo("IronPythonTests")]
 [assembly: InternalsVisibleTo("DynamoPackagesWPF")]
-[assembly: InternalsVisibleTo("DynamoPlayerExtension")]
 [assembly: InternalsVisibleTo("DynamoPlayer.Extension")]
 [assembly: InternalsVisibleTo("DynamoPlayer.Workflows")]
 [assembly: InternalsVisibleTo("DynamoPlayer.WorkflowsUi")]
+[assembly: InternalsVisibleTo("UnitsUI")]
+[assembly: InternalsVisibleTo("DynamoPlayer")]
+[assembly: InternalsVisibleTo("DynamoConnector")]
+[assembly: InternalsVisibleTo("NodeAutoCompleteViewExtension")]
+// PythonMigrationViewExtension requires access to the following internal APIs:
+// TODO: List specific internal types/methods used by PythonMigrationViewExtension.
+// This friend assembly usage is intentional and tracked. Consider promoting these APIs to a public/extension API if appropriate.
+[assembly: InternalsVisibleTo("PythonMigrationViewExtension")]
 
-
+// Disable PublicAPIAnalyzer errors for this type as they're already added to the public API text file
+#pragma warning disable RS0016 
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutSpecification))]
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutSection))]
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutElement))]
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutElementType))]
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.LayoutIncludeInfo))]
 [assembly: TypeForwardedTo(typeof(Dynamo.Wpf.Interfaces.ILibraryViewCustomization))]
+#pragma warning restore RS0016
+

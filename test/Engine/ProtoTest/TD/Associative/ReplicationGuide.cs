@@ -3364,5 +3364,28 @@ r = foo(xs<1L>, ys<1L>, zs<1L>);
             thisTest.RunScriptSource(code);
             thisTest.Verify("r", new object[] { "1-foo-bar", "2-foo-bar", "3-foo-bar" });
         }
+
+        [Test]
+        [Category("Replication")]
+        public void DYN_9671_Replication_Guide_Function_With_2_Arg_Default()
+        {
+            //run several times to test inconsistency in DYN-9671 was fixed
+            string code =
+            @"
+import(""FFITarget.dll"");
+lst = [[""Width: 2m"", ""Height: 3m""],[""Width: 1m"", ""Glazing: none""],[""Area: 15 sf""]];
+result1 = DefaultArguments.Contains(lst<1>,""Width"");
+result2 = DefaultArguments.Contains(lst<1>,""Width"");
+result3 = DefaultArguments.Contains(lst<1>,""Width"");
+result4 = DefaultArguments.Contains(lst<1>,""Width"");
+result_explicit = DefaultArguments.Contains(lst<1>,""Width"", false);";
+            ExecutionMirror mirror = thisTest.RunScriptSource(code);
+            var expected = new bool[][] { [true, false], [true, false], [false] };
+            thisTest.Verify("result1", expected);
+            thisTest.Verify("result2", expected);
+            thisTest.Verify("result3", expected);
+            thisTest.Verify("result4", expected);
+            thisTest.Verify("result_explicit", expected);
+        }
     }
 }

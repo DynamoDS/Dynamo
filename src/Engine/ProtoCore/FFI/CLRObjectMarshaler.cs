@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using DesignScript.Builtin;
@@ -159,6 +160,11 @@ namespace ProtoFFI
 
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type type)
         {
+            if (double.IsInfinity(dsObject.DoubleValue) || double.IsNaN(dsObject.DoubleValue))
+            {
+                return CastToDouble(dsObject.DoubleValue);
+            }
+
             if (dsObject.DoubleValue > MaxValue || dsObject.DoubleValue < MinValue || double.IsNaN(dsObject.DoubleValue))
             {
                 string message = String.Format(Resources.kFFIInvalidCast, dsObject.DoubleValue, type.Name, MinValue, MaxValue);
@@ -499,12 +505,27 @@ namespace ProtoFFI
 
         internal static bool IsAssignableFromDictionary(Type expectedCLRType)
         {
-            return expectedCLRType == typeof(IDictionary) ||
-                expectedCLRType.GetInterfaces()
-                    .Where(i => i.IsGenericType)
-                    .Select(i => i.GetGenericTypeDefinition())
-                    .Contains(typeof(IDictionary<,>)) ||
-                expectedCLRType.IsAssignableFrom(typeof(DesignScript.Builtin.Dictionary));
+            if (expectedCLRType == typeof(IDictionary))
+                return true;
+
+            // Fast path for common generic IDictionary<,>
+            if (expectedCLRType.IsGenericType && expectedCLRType.GetGenericTypeDefinition() == typeof(IDictionary<,>))
+                return true;
+
+            // Check interfaces without LINQ
+            var interfaces = expectedCLRType.GetInterfaces();
+            for (int i = 0; i < interfaces.Length; i++)
+            {
+                var iface = interfaces[i];
+                if (iface.IsGenericType && iface.GetGenericTypeDefinition() == typeof(IDictionary<,>))
+                    return true;
+            }
+
+            // Check assignability from DesignScript.Builtin.Dictionary
+            if (expectedCLRType.IsAssignableFrom(typeof(DesignScript.Builtin.Dictionary)))
+                return true;
+
+            return false;
         }
 
         private object ToIDictionary(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, System.Type expectedType)
@@ -704,9 +725,9 @@ namespace ProtoFFI
                 return retVal;
 
             //5. If it is a StackValue, simply return it.
-            if (obj is StackValue)
+            if (obj is StackValue sv)
             {
-                return (StackValue)obj;
+                return sv;
             }
 
             //6. Seems like a new object create a new DS object and bind it.
@@ -1286,10 +1307,120 @@ namespace ProtoFFI
             }
         }
 
+        #region CLR_CONTAINER_GC_SUPPORT
+
+        /// <summary>
+        /// Gets the CLR object associated with a DS StackValue pointer, if any.
+        /// Used by the GC to traverse CLR-backed containers.
+        /// </summary>
+        /// <param name="dsPointer">The DesignScript pointer</param>
+        /// <returns>The CLR object, or null if not found</returns>
+        public object GetCLRObjectFromPointer(StackValue dsPointer)
+        {
+            lock (DSObjectMap)
+            {
+                if (DSObjectMap.TryGetValue(dsPointer, out var clrObj))
+                {
+                    return clrObj;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Extracts all nested DesignScript references from a CLR container.
+        /// This enables the GC to trace references stored inside CLR objects
+        /// like Dictionary, which are not visible in DSObject.Values.
+        /// </summary>
+        /// <param name="clrObj">The CLR container object</param>
+        /// <returns>List of StackValues representing nested DS objects</returns>
+        public IEnumerable<StackValue> GetNestedDSReferences(object clrObj)
+        {
+            var results = new List<StackValue>();
+            var visited = new HashSet<object>(new ReferenceEqualityComparer());
+            ExtractNestedReferencesRecursive(clrObj, results, visited);
+            return results;
+        }
+
+        /// <summary>
+        /// Recursively extracts DS references from CLR container objects.
+        /// </summary>
+        private void ExtractNestedReferencesRecursive(
+            object obj,
+            List<StackValue> results,
+            HashSet<object> visited)
+        {
+            if (obj == null || visited.Contains(obj))
+                return;
+
+            visited.Add(obj);
+
+            // Handle Dictionary (most common case for DYN-8717)
+            if (obj is IDictionary dict)
+            {
+                foreach (var value in dict.Values)
+                {
+                    ProcessNestedValue(value, results, visited);
+                }
+            }
+            // Handle IReadOnlyDictionary (includes ImmutableDictionary)
+            else if (obj is IReadOnlyDictionary<string, object> readOnlyDict)
+            {
+                foreach (var value in readOnlyDict.Values)
+                {
+                    ProcessNestedValue(value, results, visited);
+                }
+            }
+            // Handle IEnumerable (but not string)
+            else if (obj is IEnumerable enumerable && !(obj is string))
+            {
+                foreach (var item in enumerable)
+                {
+                    ProcessNestedValue(item, results, visited);
+                }
+            }
+            // Handle DesignScript.Builtin.Dictionary specifically using public Values property
+            else if (obj is DesignScript.Builtin.Dictionary dsDict)
+            {
+                // Use public Values property instead of reflection
+                foreach (var value in dsDict.Values)
+                {
+                    ProcessNestedValue(value, results, visited);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Processes a single nested value, checking if it has a DS mapping
+        /// and recursing into containers.
+        /// </summary>
+        private void ProcessNestedValue(
+            object value,
+            List<StackValue> results,
+            HashSet<object> visited)
+        {
+            if (value == null)
+                return;
+
+            // Check if this value has a DS mapping
+            lock (CLRObjectMap)
+            {
+                if (CLRObjectMap.TryGetValue(value, out var dsPointer))
+                {
+                    results.Add(dsPointer);
+                }
+            }
+
+            // Recurse into containers
+            ExtractNestedReferencesRecursive(value, results, visited);
+        }
+
+        #endregion
+
         #region PRIVATE_SPACE
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="dsobj"></param>
@@ -1374,8 +1505,17 @@ namespace ProtoFFI
     }
 
     /// <summary>
-    /// This class compares two CLR objects. It is used in CLRObjectMap to 
-    /// avoid hash collision. 
+    /// This class compares two CLR objects using reference equality. It is used in CLRObjectMap
+    /// to map CLR object instances to their marshaled StackValue representations. Uses
+    /// <see cref="RuntimeHelpers.GetHashCode"/> to get the object's identity hash code, which
+    /// ensures well-distributed hash codes even when objects have value-based hash codes that
+    /// collide (e.g., Point objects with identical coordinates).
+    /// <para>
+    /// <b>Note:</b> The hash code computation is intentionally aligned with the reference
+    /// equality behavior used by <see cref="object.ReferenceEquals"/>. This ensures consistent
+    /// semantics between equality comparison and hash code generation, which is a requirement
+    /// for proper <see cref="IEqualityComparer{T}"/> implementation.
+    /// </para>
     /// </summary>
     public class ReferenceEqualityComparer: IEqualityComparer<object>
     {
@@ -1386,7 +1526,7 @@ namespace ProtoFFI
 
         public int GetHashCode(object obj)
         {
-            return obj.GetHashCode();
+            return RuntimeHelpers.GetHashCode(obj);
         }
     }
 

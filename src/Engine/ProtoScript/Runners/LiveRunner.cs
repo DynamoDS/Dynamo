@@ -1198,7 +1198,6 @@ namespace ProtoScript.Runners
         #region Synchronous call
         void UpdateGraph(GraphSyncData syncData);
         List<Guid> PreviewGraph(GraphSyncData syncData);
-        void UpdateCmdLineInterpreter(string code);
         ProtoCore.Mirror.RuntimeMirror InspectNodeValue(string nodeName);
 
         void UpdateGraph(AssociativeNode astNode);
@@ -1510,19 +1509,6 @@ namespace ProtoScript.Runners
 
         }
 
-        /// <summary>
-        /// This api needs to be called by a command line REPL for each DS command/expression entered to be executed
-        /// </summary>
-        /// <param name="code"></param>
-        [Obsolete("No longer used. Remove in 3.0")]
-        public void UpdateCmdLineInterpreter(string code)
-        {
-            lock (mutexObject)
-            {
-                SynchronizeInternal(code);
-            }
-        }
-
         #region Internal Implementation
 
         private bool Compile(List<AssociativeNode> astList, Core targetCore)
@@ -1723,6 +1709,9 @@ namespace ProtoScript.Runners
                 // Get AST list that need to be executed
                 var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
 
+                //nodes which will be defined or redefined after compilation and execution
+                var pendingUIDsForDeletion = syncData.DeletedNodeIDs.ToHashSet();
+
                 // Prior to execution, apply state modifications to the VM given the delta AST's
                 bool anyForcedExecutedNodes = changeSetComputer.csData.ForceExecuteASTList.Any();
                 changeSetApplier.Apply(runnerCore, runtimeCore, changeSetComputer.csData);
@@ -1735,6 +1724,14 @@ namespace ProtoScript.Runners
                 var guids = runtimeCore.ExecutedAstGuids.ToList();
                 executedAstGuids[syncData.SessionID] = guids;
                 runtimeCore.RemoveExecutedAstGuids();
+
+                // There should be a CodeBlock in CodeBlockList by now
+                if (runnerCore.CodeBlockList.Any())
+                {
+                    var nodes = runnerCore.CodeBlockList[(int)Language.Associative].instrStream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidPC, Constants.kInvalidPC);
+                    //delete all nodes which were redefined. For those nodes that were defined for the first time, this will be a no-op
+                    nodes.RemoveAll(x=>!x.isActive || pendingUIDsForDeletion.Contains(x.guid));
+                }
             }
         }
 

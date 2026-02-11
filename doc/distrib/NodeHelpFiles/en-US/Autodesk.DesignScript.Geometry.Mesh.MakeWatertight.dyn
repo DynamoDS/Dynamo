@@ -1,0 +1,468 @@
+{
+  "Uuid": "e5c7c696-94bb-41b8-bc9d-c67af70a5fba",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.Mesh.MakeWathertight",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "[Point.ByCoordinates(1, 0, 7),\nPoint.ByCoordinates(0.5, 0, 7),\nPoint.ByCoordinates(5, 0, 0.0),\nPoint.ByCoordinates(0, 0, 0) ];",
+      "Id": "ce34b0cb2c994fc2b35b47b43fbf6d9e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "289e668c27a74927802e25fd5e0bd61c",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints@Autodesk.DesignScript.Geometry.Point[]",
+      "Id": "a8de4ced68a842ec89b23c4147fb2c63",
+      "Inputs": [
+        {
+          "Id": "28dd3f69ca9c4754a5e1e7e9762fe6c4",
+          "Name": "points",
+          "Description": "Point[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8fec7432e062470d85813d26a7c2aa71",
+          "Name": "NurbsCurve",
+          "Description": "NurbsCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a BSplineCurve by using explicit control points. NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems for extrusion, sweep, and other operations. They should be avoided. Use a PolyCurve instead. NOTE 2: If the curve is periodic (closed), then the first and last points MUST be the same.\n\nNurbsCurve.ByControlPoints (points: Point[]): NurbsCurve"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.ByRevolve@Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,double,double",
+      "Id": "54119fc2271b4d8cae8a4b7f3e1ec5fa",
+      "Inputs": [
+        {
+          "Id": "6822081d136b46dc86e424bd6aa9cdaf",
+          "Name": "profile",
+          "Description": "Curve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "45f25b1f0d134d6b89c8cdeb70ab7384",
+          "Name": "axisOrigin",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cff4bf7dc54544c1b365c2c3d5bae0aa",
+          "Name": "axisDirection",
+          "Description": "Vector\nDefault value : Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "351739329aff4969bdb5fd70c42a16fb",
+          "Name": "startAngle",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "52b59f5b0c094913902449dbcc2adfe0",
+          "Name": "sweepAngle",
+          "Description": "double\nDefault value : 180",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f6552be159df423c8fdc576cf2ec8fb6",
+          "Name": "Surface",
+          "Description": "Surface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Surface by sweeping the profile Curve around the axis ray formed by origin Point in the direction of the axis Vector, starting at start_angle in degrees, sweeping sweep_angle in degrees.\n\nSurface.ByRevolve (profile: Curve, axisOrigin: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), axisDirection: Vector = Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1), startAngle: double = 0, sweepAngle: double = 180): Surface"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "360;",
+      "Id": "e5fa5f38eee14f6291057d79035c8d61",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8bcc9257fa8f4c55b8a45c670ffde4af",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.ByGeometry@Autodesk.DesignScript.Geometry.Geometry,double,int",
+      "Id": "17ed0b50f54e45f5acffe8cdfe600192",
+      "Inputs": [
+        {
+          "Id": "c7fe77420cf448b6a81fe1a4b85e1bbb",
+          "Name": "inputGeometry",
+          "Description": "Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0ce22a2f610e45edaa68b261a61a54c6",
+          "Name": "tolerance",
+          "Description": "double\nDefault value : -1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "843fbe6a6f684415a280891539454cf7",
+          "Name": "maxGridLines",
+          "Description": "int\nDefault value : 512",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3d0169d4662c4ba3b32f36da79437fbd",
+          "Name": "Mesh",
+          "Description": "Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Convert a Geometry object such as a Solid or Surface into a Mesh. The resolution of the mesh is determined by the Dynamo render precision\n\nMesh.ByGeometry (inputGeometry: Geometry, tolerance: double = -1, maxGridLines: int = 512): Mesh"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.MakeWatertight",
+      "Id": "808bf28fa7fe4c978e1933f70a0e3867",
+      "Inputs": [
+        {
+          "Id": "c6724fff65884fd38c9c25b3ffa5a72f",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ae532f1a3825448690b4fe36eceae4a5",
+          "Name": "Mesh",
+          "Description": "Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns a new Mesh that is watertight and 3D printable. As a result of making a Mesh watertight, self-intersections, overlaps, and non-manifold geometry is removed from the mesh. The method computes a thin-band distance field and generates a new Mesh using marching cubes but doesn't project back onto the original Mesh. Basically the Mesh is filled with a bunch of tiny boxes, and a new mesh is created around this.\n\nMesh.MakeWatertight ( ): Mesh"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.Translate@double,double,double",
+      "Id": "f55a8c65151c4364bf5b01faf2e4df40",
+      "Inputs": [
+        {
+          "Id": "3108fdc17d434eda8442c6b55b901864",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f9208dbfe0c94e67aa031a43d445f9e3",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "750b2cb22ee941c3a91618ded112def5",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8b884438f9904557b6af6ceec9415361",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "056b9aca19db4ca3b36317d1fd90b9df",
+          "Name": "Mesh",
+          "Description": "Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Translates the Mesh by the input distances\n\nMesh.Translate (x: double = 0, y: double = 0, z: double = 0): Mesh"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "6;",
+      "Id": "209c7a7f1219492e9e761ca2fba6e861",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1bfe6f692cc44f82be72862407466471",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "289e668c27a74927802e25fd5e0bd61c",
+      "End": "28dd3f69ca9c4754a5e1e7e9762fe6c4",
+      "Id": "235ddea7b69e485d92623ba351325ac2"
+    },
+    {
+      "Start": "8fec7432e062470d85813d26a7c2aa71",
+      "End": "6822081d136b46dc86e424bd6aa9cdaf",
+      "Id": "f3da276f2aa740fbac1b85ec7e9927e3"
+    },
+    {
+      "Start": "f6552be159df423c8fdc576cf2ec8fb6",
+      "End": "c7fe77420cf448b6a81fe1a4b85e1bbb",
+      "Id": "8dffa62b727245eebb352164ab3989f1"
+    },
+    {
+      "Start": "8bcc9257fa8f4c55b8a45c670ffde4af",
+      "End": "52b59f5b0c094913902449dbcc2adfe0",
+      "Id": "6df3bfea0c664f3688beb09a364301bf"
+    },
+    {
+      "Start": "3d0169d4662c4ba3b32f36da79437fbd",
+      "End": "c6724fff65884fd38c9c25b3ffa5a72f",
+      "Id": "48012ad543424504879929f1a08507e8"
+    },
+    {
+      "Start": "ae532f1a3825448690b4fe36eceae4a5",
+      "End": "3108fdc17d434eda8442c6b55b901864",
+      "Id": "34387472c4904b02908b7ee1f81d879d"
+    },
+    {
+      "Start": "1bfe6f692cc44f82be72862407466471",
+      "End": "f9208dbfe0c94e67aa031a43d445f9e3",
+      "Id": "c6ea754272f6402e9d4429c4c304936e"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "MeshToolkit",
+      "Version": "3.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "17ed0b50f54e45f5acffe8cdfe600192",
+        "808bf28fa7fe4c978e1933f70a0e3867",
+        "f55a8c65151c4364bf5b01faf2e4df40"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.6.1.8786",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 1.7320926613586991,
+      "EyeY": 14.241636658533945,
+      "EyeZ": 11.909023512500207,
+      "LookX": 2.8830463419125412,
+      "LookY": -6.8606873760256413,
+      "LookZ": -12.206246148854719,
+      "UpX": 0.064513754694399086,
+      "UpY": 0.95980555843340154,
+      "UpZ": -0.27315086748153661
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": false,
+        "Name": "Code Block",
+        "Id": "ce34b0cb2c994fc2b35b47b43fbf6d9e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 640.52677325696266,
+        "Y": 1506.6769410910165
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "NurbsCurve.ByControlPoints",
+        "Id": "a8de4ced68a842ec89b23c4147fb2c63",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1104.6725417533748,
+        "Y": 1506.6769410910165
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Surface.ByRevolve",
+        "Id": "54119fc2271b4d8cae8a4b7f3e1ec5fa",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1492.11430177578,
+        "Y": 1506.67694109102
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "e5fa5f38eee14f6291057d79035c8d61",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1234.7431139786777,
+        "Y": 1643.6179494567518
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.ByGeometry",
+        "Id": "17ed0b50f54e45f5acffe8cdfe600192",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1876.8357102550149,
+        "Y": 1506.6769410910165
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Mesh.MakeWatertight",
+        "Id": "808bf28fa7fe4c978e1933f70a0e3867",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2281.19285362284,
+        "Y": 1506.67694109102
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.Translate",
+        "Id": "f55a8c65151c4364bf5b01faf2e4df40",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2612.0600753774215,
+        "Y": 1506.6769410910165
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "209c7a7f1219492e9e761ca2fba6e861",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2364.39285362284,
+        "Y": 1643.6179494567518
+      }
+    ],
+    "Annotations": [],
+    "X": -1190.2745170119067,
+    "Y": -1083.0773515418055,
+    "Zoom": 0.81803616078824959
+  }
+}

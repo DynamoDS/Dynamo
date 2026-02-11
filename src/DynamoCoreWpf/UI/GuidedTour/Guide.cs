@@ -143,7 +143,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// </summary>
         internal void Initialize()
         {
-            TotalSteps = GuideSteps.Count;
+            //There are guided tours containing repeated Sequences due that we can have different Steps flow (conditional flows)
+            var differentSteps = GuideSteps.Select(step => step.Sequence).Distinct().ToList();
+            TotalSteps = differentSteps.Count;
 
             SetLibraryViewVisible(false);
 

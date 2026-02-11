@@ -75,7 +75,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// </summary>
         public bool HasErrors
         {
-            get { return Model.Nodes.Any(n => n.State == ElementState.Error); }
+            get { return Model.HasErrors; }
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// </summary>
         public bool HasInfos
         {
-            get { return Model.Nodes.Any(n => n.State == ElementState.Info || n.State == ElementState.PersistentInfo); }
+            get { return Model.HasInfos; }
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         /// </summary>
         public bool HasWarnings
         {
-            get { return Model.Nodes.Any(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning); }
+            get { return Model.HasWarnings; }
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -108,6 +108,9 @@ namespace GraphLayout
         /// <param name="endY">The y coordinate of the connector's right end point.</param>
         public void AddEdge(Guid startId, Guid endId, double startX, double startY, double endX, double endY)
         {
+            //Validates that the two nodes that will be used to create the Edge exist
+            if (!Nodes.Where(node => node.Id == startId).Any()  || !Nodes.Where(node => node.Id == endId).Any()) return;
+
             var edge = new Edge(startId, endId, startX, startY, endX, endY, this);
             Edges.Add(edge);
         }
@@ -668,6 +671,11 @@ namespace GraphLayout
         public double X;
 
         /// <summary>
+        /// The initial X coordinate of the node view.
+        /// </summary>
+        public double InitialX { get; private set; }
+
+        /// <summary>
         /// The y coordinate of the node view or the topmost note view linked to this node.
         /// </summary>
         public double Y;
@@ -735,6 +743,7 @@ namespace GraphLayout
             Width = width;
             Height = height;
             X = x;
+            InitialX = x;
             Y = y;
             InitialY = y;
             IsSelected = isSelected;
@@ -831,16 +840,15 @@ namespace GraphLayout
             if(StartNode!= null)
             {
                 StartNode.RightEdges.Add(this);
+                NodeStartOffsetY = startY - StartNode.Y;
             }       
 
             EndNode = OwnerGraph.FindNode(endId);
             if (EndNode != null)
             {
                 EndNode.LeftEdges.Add(this);
+                NodeEndOffsetY = endY - EndNode.Y;
             }
-                
-            NodeStartOffsetY = startY - StartNode.Y;
-            NodeEndOffsetY = endY - EndNode.Y;
         }
     }
 }

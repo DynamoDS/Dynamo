@@ -124,22 +124,7 @@ namespace ProtoFFI
             session.State = e.ExecutionState;
             mApploader.Notify(session);
         }
-
-        /// <summary>
-        /// For nunit-setup
-        /// </summary>
-        internal static void ForceStartUpAllApps()
-        {
-            Instance.mApploader.ForceStartUpAllApps();
-        }
-
-        /// <summary>
-        /// For nunit-teardown
-        /// </summary>
-        internal static void ForceShutDownAllApps()
-        {
-            Instance.mApploader.ForceShutDownAllApps();
-        }
+        
     }
 
     class FFIExecutionSession : IExecutionSession, IConfiguration, IDisposable

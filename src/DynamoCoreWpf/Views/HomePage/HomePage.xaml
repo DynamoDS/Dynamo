@@ -1,0 +1,10 @@
+<UserControl x:Class="Dynamo.UI.Views.HomePage"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Width="Auto"
+        Height="Auto"
+        Background="Transparent"
+        Loaded="UserControl_Loaded">
+    <Grid x:Name="HostGrid" Background="#535353"/>
+
+</UserControl>

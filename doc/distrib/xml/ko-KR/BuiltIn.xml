@@ -1,0 +1,173 @@
+<?xml version="1.0"?><doc>
+  <assembly>
+    <name>BuiltIn</name>
+  </assembly>
+  <members>
+    <member name="List.Rank">
+      <summary>리스트의 가장 깊은 깊이를 반환합니다</summary>
+      <param name="list">순위를 조회할 리스트</param>
+      <returns name="int">리스트의 가장 깊은 깊이</returns>
+      <search>rank,depth,nesting,ranks</search>
+    </member>
+    <member name="List.RemoveIfNot">
+      <summary>지정된 유형의 구성원이 아닌 리스트의 구성원을 제거합니다.</summary>
+      <param name="list">항목을 제거할 리스트</param>
+      <param name="type">요소 유형</param>
+      <returns name="list">지정된 유형을 제외한 모든 항목이 제거된 리스트</returns>
+      <search>remove,not,ofType,filtertype</search>
+    </member>
+    <member name="List.Equals">
+      <summary>두 객체 인스턴스(instance)가 같은지 확인합니다.</summary>
+      <param name="object">첫 번째 객체</param>
+      <param name="otherObject">기타 객체</param>
+      <returns name="bool">객체 인스턴스가 같은 경우 true를 반환하고, 서로 다른 경우 false를 반환합니다.</returns>
+      <search>equals</search>
+    </member>
+    <member name="List.SortByFunction">
+      <summary>함수를 사용하여 리스트 항목을 어떻게 정렬해야 하는지 결정합니다.</summary>
+      <param name="list">값 리스트</param>
+      <param name="sortFunction">리스트를 정렬하는 데 사용된 함수</param>
+      <returns name="sortedList">유형: var[]..[]</returns>
+      <search>sort,order</search>
+    </member>
+    <member name="ToString">
+      <param name="object">일부 객체</param>
+      <search>string</search>
+    </member>
+    <member name="__ToStringFromObject">
+      <param name="object">일부 객체</param>
+      <search>string,from,object</search>
+    </member>
+    <member name="__ToStringFromArray">
+      <param name="list">일부 리스트</param>
+      <search>string,from,array</search>
+    </member>
+    <member name="__Apply">
+      <param name="functionObject"/>
+      <param name="param"/>
+      <search>apply</search>
+    </member>
+    <member name="__ApplyList">
+      <param name="functionObject"/>
+      <param name="param"/>
+      <search>apply,list</search>
+    </member>
+    <member name="__GetOutput">
+      <param name="outputs"/>
+      <param name="key"/>
+      <search>output</search>
+    </member>
+    <member name="__Compose">
+      <param name="funcs"/>
+      <search>compose,functionchain</search>
+    </member>
+    <member name="__ComposeBuffered">
+      <param name="funcs"/>
+      <param name="amt"/>
+      <param name="arg"/>
+      <search>compose,buffered</search>
+    </member>
+    <member name="List.MinimumItemByKey">
+      <summary>키 프로젝터로 제공된 함수에 대해 최솟값을 생성하는 항목을 리스트에서 반환합니다.</summary>
+      <param name="list">값 리스트</param>
+      <param name="keyFunction">리스트 항목에 적용된 함수</param>
+      <returns name="minimumItem">keyFunction을 사용하는 리스트의 최소 항목(유형: var[]..[])</returns>
+      <search>min,item,key</search>
+    </member>
+    <member name="List.MaximumItemByKey">
+      <summary>키 프로젝터로 제공된 함수에 대해 최댓값을 생성하는 항목을 리스트에서 반환합니다.</summary>
+      <param name="list">값 리스트</param>
+      <param name="keyFunction">리스트 항목에 적용된 함수</param>
+      <returns name="maximumItem">keyFunction을 사용하는 리스트의 최대 항목(유형: var[]..[])</returns>
+      <search>max,item,key</search>
+    </member>
+    <member name="__Replace">
+      <param name="list">값 리스트</param>
+      <param name="with"/>
+      <param name="predicate"/>
+      <search>replace</search>
+    </member>
+    <member name="__Filter">
+      <param name="list">값 리스트</param>
+      <param name="predicate"/>
+      <search>filter</search>
+    </member>
+    <member name="__Combine">
+      <param name="func">함수</param>
+      <param name="lists"/>
+      <search>combine</search>
+    </member>
+    <member name="__Map">
+      <param name="func">함수</param>
+      <param name="arg"/>
+      <search>map</search>
+    </member>
+    <member name="__LaceShortest">
+      <param name="func">함수</param>
+      <param name="lists"/>
+      <search>lace,shortest</search>
+    </member>
+    <member name="__LaceLongest">
+      <param name="func">함수</param>
+      <param name="lists"/>
+      <search>lace,longest</search>
+    </member>
+    <member name="__ApplyNested">
+      <param name="fs">함수</param>
+      <param name="xs"/>
+      <param name="amt"/>
+      <search>apply,nested</search>
+    </member>
+    <member name="__CartesianProduct">
+      <param name="func">함수</param>
+      <param name="lists"/>
+      <search>cartesian,product</search>
+    </member>
+    <member name="__Scan">
+      <param name="accumulator"/>
+      <param name="seed"/>
+      <param name="lists"/>
+      <search>scan</search>
+    </member>
+    <member name="__Reduce">
+      <param name="accumulator"/>
+      <param name="seed"/>
+      <param name="lists"/>
+      <search>reduce</search>
+    </member>
+    <member name="List.GroupByFunction">
+      <summary>함수를 사용하여 리스트 항목을 어떻게 그룹화해야 하는지 결정합니다.</summary>
+      <param name="list">값 리스트</param>
+      <param name="groupFunction">리스트를 그룹화하는 함수</param>
+      <returns name="groupedList">임의 순위/레벨의 리스트(유형: var[]..[])</returns>
+      <search>group,function</search>
+    </member>
+    <member name="List.TrueForAll">
+      <summary>지정된 조회 함수를 사용하여 리스트의 모든 항목이 true로 평가되면 true를 반환합니다.</summary>
+      <param name="list">조회 함수별로 항목을 평가할 리스트</param>
+      <param name="queryFunction">평가할 함수 리스트</param>
+      <returns name="bool">지정된 조회 함수를 사용하여 리스트의 모든 항목이 true로 평가되면 true를 반환합니다.</returns>
+      <search>true,all</search>
+    </member>
+    <member name="List.TrueForAny">
+      <summary>리스트에서 하나 이상의 항목이 주어진 조회 함수에서 true로 평가하는 경우 true를 반환합니다.</summary>
+      <param name="list">조회 함수별로 항목을 평가할 리스트</param>
+      <param name="queryFunction">평가할 함수 리스트</param>
+      <returns name="bool">리스트에서 모든 항목이 조회 함수에서 true로 평가하는 경우 true를 반환합니다.</returns>
+      <search>true,any</search>
+    </member>
+    <member name="__ForEach">
+      <param name="functionObject"/>
+      <param name="lists"/>
+      <search>foreach</search>
+    </member>
+    <member name="LoopWhile">
+      <summary>지정된 초기 값, 조건 및 루프 본문으로 while 루프 노드를 구성합니다.</summary>
+      <param name="initialValue">루프의 초기 값</param>
+      <param name="continueWhile">while loop condition</param>
+      <param name="loopBody">while loop body</param>
+      <returns name="result">루프의 결과(유형: var[]..[])</returns>
+      <search>loop,while,repeat</search>
+    </member>
+  </members>
+</doc>

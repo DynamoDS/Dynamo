@@ -1,0 +1,14 @@
+@Library(['PSL@LKG']) _
+ 
+library identifier: 'cBuild_PSL@main', retriever: modernSCM([
+  $class: 'GitSCMSource',
+  remote: 'https://git.autodesk.com/ContinuousLocalization/PSL_cBuild.git',
+  credentialsId: 'L10NCBCI-github-app-psl-ContinuousLocalization',
+])
+ 
+devRepoParameters("DynamoCore_CL")
+ 
+node("cl-prd-azure-dynamic-win-vm") {
+     cleanWs()
+     devRepo()
+}

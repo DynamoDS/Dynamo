@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Xml;
 using Dynamo.Core;
@@ -234,6 +234,11 @@ namespace Dynamo.Graph
         }
 
         /// <summary>
+        /// Has this <see cref="ModelBase"/> been disposed? Gets set when <see cref="Dispose"/> is called.
+        /// </summary>
+        protected bool HasBeenDisposed { get; private set; }
+
+        /// <summary>
         /// Protected constructor.
         /// </summary>
         protected ModelBase()
@@ -286,7 +291,11 @@ namespace Dynamo.Graph
         /// </summary>
         public virtual void Dispose()
         {
-            Disposed?.Invoke(this);
+            if (!HasBeenDisposed)
+            {
+                HasBeenDisposed = true;
+                Disposed?.Invoke(this);
+            }
         }
 
         /// <summary>
@@ -359,8 +368,6 @@ namespace Dynamo.Graph
         /// <param name="xmlDocument">Xml document</param>
         /// <param name="context">Context in which object is saved</param>
         /// <returns>xml node</returns>
-        [Obsolete(@"Use this method only for runtime saving/loading of node state during undo/redo and copy/paste 
-                  - data saved here will not be saved to the .dyn or.dyf file. This method will be removed in the future to use json")]
         public XmlElement Serialize(XmlDocument xmlDocument, SaveContext context)
         {
             var element = CreateElement(xmlDocument, context);
@@ -373,8 +380,6 @@ namespace Dynamo.Graph
         /// </summary>
         /// <param name="element">Xml node</param>
         /// <param name="context">Save context. E.g. save in file, copy node etc.</param>
-        [Obsolete(@"Use this method only for runtime saving/loading of node state during undo/redo and copy/paste 
-                  - data saved here will not be saved to the .dyn or.dyf file. This method will be removed in the future to use json")]
         public void Deserialize(XmlElement element, SaveContext context)
         {
             DeserializeCore(element, context);

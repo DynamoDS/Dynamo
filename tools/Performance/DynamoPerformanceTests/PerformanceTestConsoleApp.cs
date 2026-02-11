@@ -94,11 +94,17 @@ namespace DynamoPerformanceTests
 
                 // Create View comparer
                 Console.WriteLine("\nComparison of View tests: \n");
-                var baseViewPath = Path.Combine(PerformanceTestHelper.GetFullPath(baseResultsPath),viewTestBaseReport );
-                var newViewPath = Path.Combine(PerformanceTestHelper.GetFullPath(newResultsPath), viewTestBaseReport);
-                var viewSavePath = Path.Combine(PerformanceTestHelper.GetFullPath(savePath),viewTestComparison );
-
-                viewComparer = new ResultsComparer(baseViewPath, newViewPath, viewSavePath);
+                var baseViewPath = Path.Combine(PerformanceTestHelper.GetFullPath(baseResultsPath), viewTestBaseReport);
+                if (File.Exists(baseViewPath))
+                {
+                    var newViewPath = Path.Combine(PerformanceTestHelper.GetFullPath(newResultsPath), viewTestBaseReport);
+                    var viewSavePath = Path.Combine(PerformanceTestHelper.GetFullPath(savePath), viewTestComparison);
+                    viewComparer = new ResultsComparer(baseViewPath, newViewPath, viewSavePath);
+                }
+                else
+                {
+                    Console.WriteLine("No baseline view tests found to compare.");
+                }
             }
             //catch here - likely we could not create a view comparer if view comparison did not run.
             catch(Exception e)

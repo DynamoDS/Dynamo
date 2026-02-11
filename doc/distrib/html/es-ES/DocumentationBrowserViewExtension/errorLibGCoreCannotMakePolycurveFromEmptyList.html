@@ -1,0 +1,34 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>No se puede crear una PolyCurve a partir de una lista vacía</h2>
+<p>Esta advertencia se produce cuando se introduce una lista vacía al intentar crear una PolyCurve.</p>
+
+<h4>Cómo solucionar este error</h4>
+<p>El error puede deberse a otros nodos del gráfico. Compruebe los nodos ascendentes para ver si se ejecutan correctamente; es habitual que los nodos ascendentes transfieran listas vacías de forma descendente a un nodo que muestre a continuación este mensaje de error. Comience desde el nodo que provoca esta advertencia y retroceda en el proceso, comprobando la salida de cada nodo hasta que encuentre el nodo que provoca este problema.</p>
+
+<h4>Más información</h4>
+<p>Para obtener más información, consulte las <a href="https://forum.dynamobim.com/search?q=cannot%20make%20a%20polycurve%20from%20an%20empty%20list"><span>publicaciones del foro de Dynamobim sobre &quot;<strong>cannot make a polycurve from an empty list</strong>&quot;</span></a>.</p>
+
+</body>

@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Xml;
@@ -278,7 +279,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             Name = Resources.BackgroundPreviewDefaultName;
             isGridVisible = parameters.Preferences.IsBackgroundGridVisible;
-            active = parameters.Preferences.IsBackgroundPreviewActive;
+            active = parameters.Preferences.BackgroundPreviews.Count > 0;
             logger = parameters.Logger;
             GridScale = parameters.Preferences.GridScaleFactor;
 
@@ -393,12 +394,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var pixelShader4Supported = RenderCapability.IsPixelShaderVersionSupported(4, 0);
             var softwareEffectSupported = RenderCapability.IsShaderEffectSoftwareRenderingSupported;
             var maxTextureSize = RenderCapability.MaxHardwareTextureSize;
+            var renderMode = RenderOptions.ProcessRenderMode;
 
             logger.Log(string.Format("RENDER : Rendering Tier: {0}", renderingTier));
             logger.LogError(string.Format("RENDER : Pixel Shader 3 Supported: {0}", pixelShader3Supported));
             logger.Log(string.Format("RENDER : Pixel Shader 4 Supported: {0}", pixelShader4Supported));
             logger.Log(string.Format("RENDER : Software Effect Rendering Supported: {0}", softwareEffectSupported));
             logger.Log(string.Format("RENDER : Maximum hardware texture size: {0}", maxTextureSize));
+            logger.Log(string.Format("RENDER : ProcessRenderMode: {0}", renderMode == RenderMode.Default ? "Hardware (with Software fallback)" : "Software" ));
         }
 
         private void RegisterModelEventhandlers(IDynamoModel dynamoModel)

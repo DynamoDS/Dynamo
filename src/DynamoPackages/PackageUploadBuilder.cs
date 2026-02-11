@@ -12,8 +12,14 @@ namespace Dynamo.PackageManager
         PackageUpload NewPackageUpload(Package package, string packagesDirectory, IEnumerable<string> files, IEnumerable<string> markdownFiles,
             PackageUploadHandle handle);
 
+        PackageUpload NewPackageRetainUpload(Package package, string packagesDirectory, IEnumerable<string> roots, IEnumerable<IEnumerable<string>> files, IEnumerable<string> markdownFiles,
+            PackageUploadHandle handle);
+
         PackageVersionUpload NewPackageVersionUpload(Package package, string packagesDirectory,
             IEnumerable<string> files, IEnumerable<string> markdownFiles, PackageUploadHandle handle);
+
+        PackageVersionUpload NewPackageVersionRetainUpload(Package package, string packagesDirectory, IEnumerable<string> roots,
+            IEnumerable<IEnumerable<string>> files, IEnumerable<string> markdownFiles, PackageUploadHandle handle);
     }
 
     internal class PackageUploadBuilder : IPackageUploadBuilder
@@ -40,7 +46,7 @@ namespace Dynamo.PackageManager
             this.builder = builder;
             this.fileCompressor = fileCompressor;
         }
-         
+
         #region Public Operational Class Methods
 
         public static PackageUploadRequestBody NewRequestBody(Package package)
@@ -49,11 +55,14 @@ namespace Dynamo.PackageManager
 
             var version = engineVersion ?? Assembly.GetExecutingAssembly().GetName().Version.ToString();
             var engineMetadata = "";
+            var release_notes_url = package.Header == null ? string.Empty : package.Header.release_notes_url;
+            var compatibility_matrix = package.Header == null ? new List<PackageCompatibility>() : package.Header.compatibility_matrix;
 
             return new PackageUploadRequestBody(package.Name, package.VersionName, package.Description, package.Keywords, package.License, package.Contents, PackageManagerClient.PackageEngineName,
                                                          version, engineMetadata, package.Group, package.Dependencies,
-                                                         package.SiteUrl, package.RepositoryUrl, package.ContainsBinaries, 
-                                                         package.NodeLibraries.Select(x => x.FullName), package.HostDependencies, package.CopyrightHolder, package.CopyrightYear);
+                                                         package.SiteUrl, package.RepositoryUrl, package.ContainsBinaries,
+                                                         package.NodeLibraries.Select(x => x.FullName), package.HostDependencies, package.CopyrightHolder, package.CopyrightYear,
+                                                         release_notes_url, compatibility_matrix);
         }
 
         /// <summary>
@@ -67,6 +76,48 @@ namespace Dynamo.PackageManager
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         public PackageUpload NewPackageUpload(Package package, string packagesDirectory, IEnumerable<string> files, IEnumerable<string> markdownFiles, PackageUploadHandle handle)
+        {
+            if (package == null) throw new ArgumentNullException("package");
+            if (packagesDirectory == null) throw new ArgumentNullException("packagesDirectory");
+            if (files == null) throw new ArgumentNullException("files");
+            if (handle == null) throw new ArgumentNullException("handle");
+
+            return new PackageUpload(NewRequestBody(package),
+                BuildAndZip(package, packagesDirectory, files, markdownFiles, handle).Name);
+        }
+
+        /// <summary>
+        /// Build a new package and upload retaining folder structure
+        /// </summary>
+        /// <param name="package"></param>
+        /// <param name="packagesDirectory"></param>
+        /// <param name="files"></param>
+        /// <param name="markdownFiles"></param>
+        /// <param name="handle"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public PackageUpload NewPackageRetainUpload(Package package, string packagesDirectory, IEnumerable<string> roots, IEnumerable<IEnumerable<string>> files, IEnumerable<string> markdownFiles, PackageUploadHandle handle)
+        {
+            if (package == null) throw new ArgumentNullException("package");
+            if (packagesDirectory == null) throw new ArgumentNullException("packagesDirectory");
+            if (files == null) throw new ArgumentNullException("files");
+            if (handle == null) throw new ArgumentNullException("handle");
+
+            return new PackageUpload(NewRequestBody(package),
+                BuildAndZip(package, packagesDirectory, roots, files, markdownFiles, handle).Name);
+        }
+
+        /// <summary>
+        /// [Obsolete] Build a new package and upload retaining folder structure 
+        /// </summary>
+        /// <param name="package"></param>
+        /// <param name="packagesDirectory"></param>
+        /// <param name="files"></param>
+        /// <param name="markdownFiles"></param>
+        /// <param name="handle"></param>
+        /// <returns></returns>
+        [Obsolete]
+        public PackageUpload NewPackageRetainUpload(Package package, string packagesDirectory, IEnumerable<IEnumerable<string>> files, IEnumerable<string> markdownFiles, PackageUploadHandle handle)
         {
             if (package == null) throw new ArgumentNullException("package");
             if (packagesDirectory == null) throw new ArgumentNullException("packagesDirectory");
@@ -97,6 +148,49 @@ namespace Dynamo.PackageManager
             return new PackageVersionUpload(NewRequestBody(package), BuildAndZip(package, packagesDirectory, files, markdownFiles, handle).Name);
         }
 
+        /// <summary>
+        /// Build a new version of the package and upload retaining folder structure
+        /// </summary>
+        /// <param name="package"></param>
+        /// <param name="packagesDirectory"></param>
+        /// <param name="roots"></param>
+        /// <param name="files"></param>
+        /// <param name="markdownFiles"></param>
+        /// <param name="handle"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public PackageVersionUpload NewPackageVersionRetainUpload(Package package, string packagesDirectory, IEnumerable<string> roots, IEnumerable<IEnumerable<string>> files, IEnumerable<string> markdownFiles, PackageUploadHandle handle)
+        {
+            if (package == null) throw new ArgumentNullException("package");
+            if (packagesDirectory == null) throw new ArgumentNullException("packagesDirectory");
+            if (files == null) throw new ArgumentNullException("files");
+            if (handle == null) throw new ArgumentNullException("handle");
+            if (roots == null) throw new ArgumentNullException("roots");
+
+            return new PackageVersionUpload(NewRequestBody(package), BuildAndZip(package, packagesDirectory, roots, files, markdownFiles, handle).Name);
+        }
+
+        /// <summary>
+        /// [Obsolete] Build a new version of the package and upload retaining folder structure
+        /// </summary>
+        /// <param name="package"></param>
+        /// <param name="packagesDirectory"></param>
+        /// <param name="files"></param>
+        /// <param name="markdownFiles"></param>
+        /// <param name="handle"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        [Obsolete]
+        public PackageVersionUpload NewPackageVersionRetainUpload(Package package, string packagesDirectory, IEnumerable<IEnumerable<string>> files, IEnumerable<string> markdownFiles, PackageUploadHandle handle)
+        {
+            if (package == null) throw new ArgumentNullException("package");
+            if (packagesDirectory == null) throw new ArgumentNullException("packagesDirectory");
+            if (files == null) throw new ArgumentNullException("files");
+            if (handle == null) throw new ArgumentNullException("handle");
+
+            return new PackageVersionUpload(NewRequestBody(package), BuildAndZip(package, packagesDirectory, files, markdownFiles, handle).Name);
+        }
+
         #endregion
 
         #region Private Class Methods
@@ -111,6 +205,30 @@ namespace Dynamo.PackageManager
 
             return Zip(dir);
         }
+
+        private IFileInfo BuildAndZip(Package package, string packagesDirectory, IEnumerable<string> roots, IEnumerable<IEnumerable<string>> files, IEnumerable<string> markdownFiles, PackageUploadHandle handle)
+        {
+            handle.UploadState = PackageUploadHandle.State.Copying;
+
+            var dir = builder.BuildRetainDirectory(package, packagesDirectory, roots, files, markdownFiles);
+
+            handle.UploadState = PackageUploadHandle.State.Compressing;
+
+            return Zip(dir);
+        }
+
+        [Obsolete]
+        private IFileInfo BuildAndZip(Package package, string packagesDirectory, IEnumerable<IEnumerable<string>> files, IEnumerable<string> markdownFiles, PackageUploadHandle handle)
+        {
+            handle.UploadState = PackageUploadHandle.State.Copying;
+
+            var dir = builder.BuildRetainDirectory(package, packagesDirectory, files, markdownFiles);
+
+            handle.UploadState = PackageUploadHandle.State.Compressing;
+
+            return Zip(dir);
+        }
+
 
         private IFileInfo Zip(IDirectoryInfo directory)
         {

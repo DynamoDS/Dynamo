@@ -1,0 +1,294 @@
+{
+  "Uuid": "19d0b01d-0a4d-4c15-91d7-4f94c217df33",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Analysis.Label.ByPointAndString",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Analysis.Label.ByPointAndString@Autodesk.DesignScript.Geometry.Point,string",
+      "Id": "9b7178ef19794570966e78611939bba9",
+      "Inputs": [
+        {
+          "Id": "2bae86c836154c19a4f54599c9fe0b31",
+          "Name": "point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d11f5547fc164d1b8eb3ec2d6cb2a024",
+          "Name": "label",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a17901bbce214309afc947207fc924b7",
+          "Name": "Label",
+          "Description": "Label",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns a Label object given a point object and a string label.\n\nLabel.ByPointAndString (point: Point, label: string): Label"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "a007cfedd9e6492281386381a3f2744f",
+      "Inputs": [
+        {
+          "Id": "a40aad49c169455cb99116e694d49b7c",
+          "Name": "x",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "437b4ca986cf4ab98c9fb4902e8f3c21",
+          "Name": "y",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "05e1ab31536d4ffa92c0f104ef400360",
+          "Name": "z",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5ac52ebaf5ca44389aa3ab21bb6b9089",
+          "Name": "Point",
+          "Description": "Point created by coordinates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.FromObject, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "5d69b756d16a4bbfa6ffba24f7b77c5e",
+      "Inputs": [
+        {
+          "Id": "6e9bb6cc2da0404aa45aba4e2bf9874c",
+          "Name": "object",
+          "Description": "Object to be serialized",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9dffdcf7059045dcbcf3472719c44d2b",
+          "Name": "string",
+          "Description": "String representation of the object",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Convert an object to a string representation."
+    },
+    {
+      "ConcreteType": "Watch3DNodeModels.Watch3D, Watch3DNodeModels",
+      "WatchWidth": 517.6,
+      "WatchHeight": 430.4,
+      "WasExecuted": true,
+      "Camera": {
+        "Name": "a884a75c-63ac-4f81-ace1-1e595a65c195 Preview",
+        "EyeX": -23.516941070556641,
+        "EyeY": 64.31915283203125,
+        "EyeZ": 106.51113891601563,
+        "LookX": 23.260440826416016,
+        "LookY": -68.634567260742188,
+        "LookZ": -92.224563598632813,
+        "UpX": 0.09726317971944809,
+        "UpY": 0.91751039028167725,
+        "UpZ": -0.38563534617424011
+      },
+      "NodeType": "ExtensionNode",
+      "Id": "a884a75c63ac4f81ace11e595a65c195",
+      "Inputs": [
+        {
+          "Id": "e7ddc9552e54439fa376cf911296ee2a",
+          "Name": "",
+          "Description": "Incoming geometry objects.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8ba6e1b85bbf4d66af77e59d2594ab9f",
+          "Name": "",
+          "Description": "Incoming geometry objects.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Shows a dynamic preview of geometry."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "a17901bbce214309afc947207fc924b7",
+      "End": "e7ddc9552e54439fa376cf911296ee2a",
+      "Id": "742f01a14efe4d0ca65520629ee7d1df",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "5ac52ebaf5ca44389aa3ab21bb6b9089",
+      "End": "2bae86c836154c19a4f54599c9fe0b31",
+      "Id": "b7d75d1701614c14b700ccabd9159446",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "5ac52ebaf5ca44389aa3ab21bb6b9089",
+      "End": "6e9bb6cc2da0404aa45aba4e2bf9874c",
+      "Id": "24bb046b9bbd47acb49a6644645cac25",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "9dffdcf7059045dcbcf3472719c44d2b",
+      "End": "d11f5547fc164d1b8eb3ec2d6cb2a024",
+      "Id": "108ee8996af24df085e36191b9b8c3c7",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "2.0",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.13.1.3887",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Label.ByPointAndString",
+        "ShowGeometry": true,
+        "Id": "9b7178ef19794570966e78611939bba9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 862.6,
+        "Y": 503.4
+      },
+      {
+        "Name": "Point.ByCoordinates",
+        "ShowGeometry": true,
+        "Id": "a007cfedd9e6492281386381a3f2744f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 236.2,
+        "Y": 503.4
+      },
+      {
+        "Name": "String from Object",
+        "ShowGeometry": true,
+        "Id": "5d69b756d16a4bbfa6ffba24f7b77c5e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 549.80000000000007,
+        "Y": 578.0
+      },
+      {
+        "Name": "Watch 3D",
+        "ShowGeometry": true,
+        "Id": "a884a75c63ac4f81ace11e595a65c195",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1216.8,
+        "Y": 503.4
+      }
+    ],
+    "Annotations": [],
+    "X": 107.94805890207726,
+    "Y": -104.8230144510386,
+    "Zoom": 0.70823125000000009
+  }
+}

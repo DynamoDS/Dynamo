@@ -1,0 +1,35 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>El índice está fuera del intervalo</h2>
+<p>Este mensaje de error indica que la lista no contiene ningún elemento en la posición de índice que se ha proporcionado. Por ejemplo, si la lista es <code>[a, b, c, d]</code>, que tiene elementos en los índices <code>0</code>, <code>1</code>, <code>2</code> y <code>3</code>, e intenta acceder al elemento en el índice <code>5</code>, aparecerá un mensaje de error, ya que solo hay elementos en los índices de <code>0</code> a <code>3</code> de la lista. </p>
+
+<h4>Cómo solucionar este error</h4>
+<p>Asegúrese de que la variable de índice que utiliza para acceder a los elementos de la lista sea mayor o igual que <code>0</code> e inferior al tamaño de la lista. Los índices de lista van desde <code>0</code> hasta el tamaño de la lista menos <code>1</code>. Esto significa que si tiene <code>10</code> elementos en la lista y desea acceder al décimo elemento, ese elemento estará en el índice <code>9</code>.</p>
+
+<h4>Más información</h4>
+<p>Para obtener más información, consulte las <a href="https://forum.dynamobim.com/search?q=index%20out%20of%20range"><span>publicaciones del foro de Dynamobim sobre &quot;<strong>index is out of range</strong>&quot;</span></a>.</p>
+
+
+</body>

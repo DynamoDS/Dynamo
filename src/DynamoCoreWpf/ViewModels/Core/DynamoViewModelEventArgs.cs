@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
 using Dynamo.Graph.Nodes;
@@ -228,7 +227,7 @@ namespace Dynamo.ViewModels
 
             var packageInfo = dynamoViewModel.Model.CurrentWorkspace.GetNodePackage(model);
             PackageName = packageInfo?.Name ?? string.Empty;
-            MinimumQualifiedName = GetMinimumQualifiedName(model, dynamoViewModel);
+            MinimumQualifiedName = dynamoViewModel.GetMinimumQualifiedName(model);
             OriginalName = model.GetOriginalName();
             Type = model.Name;
             Description = model.Description;
@@ -269,90 +268,6 @@ namespace Dynamo.ViewModels
             InputNames = inputNames;
             InputDescriptions = inputDescriptions;
 
-        }
-
-        static private string GetMinimumQualifiedName(NodeModel nodeModel, DynamoViewModel viewModel)
-        {
-            switch (nodeModel)
-            {
-                case Function function:
-                    var category = function.Category;
-                    var name = function.Name;
-                    if (CustomNodeHasCollisons(name, GetMainCategory(nodeModel), viewModel))
-                    {
-                        var inputString = GetInputNames(function);
-                        return $"{category}.{name}({inputString})";
-                    }
-                    return $"{category}.{name}";
-
-                case DSFunctionBase dSFunction:
-                    var descriptor = dSFunction.Controller.Definition;
-                    if (descriptor.IsOverloaded)
-                    {
-                        var inputString = GetInputNames(nodeModel);
-                        return $"{descriptor.QualifiedName}({inputString})";
-                    }
-
-                    return descriptor.QualifiedName;
-
-                case NodeModel node:
-                    var type = node.GetType();
-                    if (NodeModelHasCollisions(type.FullName, viewModel))
-                    {
-                        return $"{type.FullName}({GetInputNames(nodeModel)})";
-                    }
-                    
-                    return type.FullName;
-
-                default:
-                    return string.Empty;
-            }
-        }
-
-        private static bool CustomNodeHasCollisons(string nodeName, string packageName, DynamoViewModel viewModel)
-        {
-            var pmExtension = viewModel.Model.GetPackageManagerExtension();
-            if (pmExtension is null)
-                return false;
-
-            var package = pmExtension.PackageLoader.LocalPackages
-                .Where(x => x.Name == packageName)
-                .FirstOrDefault();
-
-            if (package is null)
-                return false;
-
-            var loadedNodesWithSameName =  package.LoadedCustomNodes
-                .Where(x => x.Name == nodeName)
-                .ToList();
-
-            if (loadedNodesWithSameName.Count == 1)
-                return false;
-            return true;
-        }
-
-        private static bool NodeModelHasCollisions(string typeName, DynamoViewModel viewModel)
-        {     
-            var searchEntries = viewModel.Model.SearchModel.SearchEntries
-                .Where(x => x.CreationName == typeName)
-                .Select(x => x).ToList();
-
-            if (searchEntries.Count() > 1)
-                return true;
-
-            return false;
-        }
-
-        private static string GetMainCategory(NodeModel node)
-        {
-            return node.Category.Split(new char[] { '.' }).FirstOrDefault();
-        }
-
-        private static string GetInputNames(NodeModel node)
-        {
-            var inputNames = node.InPorts.Select(x => x.Name).ToArray();
-            // Match https://github.com/DynamoDS/Dynamo/blame/master/src/DynamoCore/Search/SearchElements/ZeroTouchSearchElement.cs#L51 
-            return string.Join(", ", inputNames);
         }
     }
 

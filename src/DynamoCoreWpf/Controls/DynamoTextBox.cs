@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -343,6 +343,38 @@ namespace Dynamo.UI.Controls
         {
             get { return ((Side)GetValue(AttachmentSideProperty)); }
             set { SetValue(AttachmentSideProperty, value); }
+        }
+
+        private UIElement _target;
+
+        protected override void OnOpened(RoutedEventArgs e)
+        {
+            base.OnOpened(e);
+
+            _target = PlacementTarget;
+            if (_target != null)
+            {
+                _target.IsVisibleChanged += Target_IsVisibleChanged;
+            }
+        }
+
+        protected override void OnClosed(RoutedEventArgs e)
+        {
+            base.OnClosed(e);
+
+            if (_target != null)
+            {
+                _target.IsVisibleChanged -= Target_IsVisibleChanged;
+                _target = null;
+            }
+        }
+
+        private void Target_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (_target != null && !_target.IsVisible)
+            {
+                IsOpen = false;
+            }
         }
     }
 

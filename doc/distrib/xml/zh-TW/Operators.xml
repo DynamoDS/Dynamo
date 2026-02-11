@@ -1,0 +1,104 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Operators</name>
+    </assembly>
+    <members>
+        <member name="%add">
+            <summary>傳回 x 加上 y 的和</summary>
+            <param name="x">整數值、倍精度值或字串</param>
+            <param name="y">整數值、倍精度值或字串</param>
+            <returns name="var">兩個輸入數值的總和，或連接兩個字串</returns>
+            <search>add, plus, addition, +</search>
+        </member>
+		<member name="%sub">
+            <summary>傳回 x 減去 y 的差</summary>
+            <param name="x">整數或倍精度值</param>
+            <param name="y">整數或倍精度值</param>
+            <returns name="number">從 x 輸入減去 y 輸入的結果</returns>
+            <search>sub, subtract, difference, -</search>
+        </member>		
+		<member name="%mul">
+            <summary>傳回 x 乘以 y 的積</summary>
+            <param name="x">整數或倍精度值</param>
+            <param name="y">整數或倍精度值</param>
+            <returns name="number">兩個輸入數值的乘積</returns>
+            <search>mul, multiply, product, times, *, x</search>
+        </member>
+		<member name="%div">
+            <summary>傳回 x 除以 y 的商</summary>
+            <param name="x">整數或倍精度值</param>
+            <param name="y">整數或倍精度值</param>
+            <returns name="double">相除結果</returns>
+            <search>div, divide, product</search>
+        </member>
+		<member name="%eq">
+            <summary>比較 x 是否等於 y</summary>
+            <param name="x">要比較的基本類型物件 (例如 bool、int、double、string 等)</param>
+            <param name="y">要比較的基本類型物件 (例如 bool、int、double、string 等)</param>
+            <returns name="bool">相等檢查的結果</returns>
+            <search>eq, equal, =</search>
+        </member>
+		<member name="%ge">
+            <summary>比較 x 是否大於或等於 y</summary>
+            <param name="x">整數或倍精度值</param>
+            <param name="y">整數或倍精度值</param>
+            <returns name="bool">如果 x 等於或大於 y 則為 true，如果不是則為 false</returns>
+            <search>greater,equal</search>
+        </member>
+		<member name="%gt">
+            <summary>比較 x 是否大於 y</summary>
+            <param name="x">整數或倍精度值</param>
+            <param name="y">整數或倍精度值</param>
+            <returns name="bool">如果 x 大於 y 則為 true，如果不是則為 false</returns>
+            <search>greater</search>
+        </member>
+		<member name="%mod">
+            <summary>模除: 尋找 x/y 的餘數</summary>
+            <param name="x">整數或倍精度值</param>
+            <param name="y">整數或倍精度值</param>
+            <returns name="number">x 輸入被 y 輸入除之後的餘數</returns>
+            <search>mod, modulo, remainder</search>
+        </member>
+		<member name="%le">
+            <summary>比較 x 是否小於或等於 y</summary>
+            <param name="x">整數或倍精度值</param>
+            <param name="y">整數或倍精度值</param>
+            <returns name="bool">檢查結果</returns>
+            <search>less,equal</search>
+        </member>
+		<member name="%lt">
+            <summary>比較 x 是否小於 y</summary>
+            <param name="x">整數或倍精度值</param>
+            <param name="y">整數或倍精度值</param>
+            <returns name="bool">檢查結果</returns>
+            <search>less</search>
+        </member>
+		<member name="%and">
+            <summary>邏輯 AND 運算子</summary>
+            <param name="x">檢查是否為 true 的布林</param>
+            <param name="y">檢查是否為 true 的另一個布林</param>
+            <returns name="bool">檢查結果</returns>
+            <search>and</search>
+        </member>
+		<member name="%or">
+            <summary>邏輯 OR 運算子</summary>
+            <param name="bool">檢查是否為 true 的布林</param>
+            <param name="otherBool">檢查是否為 true 的另一個布林</param>
+            <returns name="bool">如果任何輸入成立則為 true</returns>
+            <search>or</search>
+        </member>
+		<member name="%nq">
+            <summary>如果兩個值不同則傳回 true</summary>
+            <param name="x">整數或倍精度值</param>
+            <param name="y">整數或倍精度值</param>
+            <returns name="bool">檢查結果</returns>
+            <search>equal</search>
+        </member>
+		<member name="%Not">
+		            <summary>否定輸入，例如當輸入為 true 時則傳回 false。</summary>
+            <param name="x">要反轉的布林。</param>
+            <returns name="bool">類型 var[]..[] (已反轉的布林)</returns>
+            <search>not</search>
+        </member>
+    </members>
+</doc>

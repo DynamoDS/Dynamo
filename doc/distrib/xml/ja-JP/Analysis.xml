@@ -1,0 +1,153 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Analysis</name>
+    </assembly>
+    <members>
+        <member name="T:Analysis.AnalysisResources">
+            <summary>ローカライズ文字列などを検索するための、厳密に型指定されたリソース クラス。</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.ResourceManager">
+            <summary>このクラスが使用する、キャッシュされた ResourceManager インスタンスを返します。</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.Culture">
+            <summary>厳密に型指定されたリソース クラスを使用して、すべての
+              リソース検索で現在のスレッドの CurrentUICulture プロパティを上書きします。</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyColorsMessage">
+            <summary>「指定した色がありません。」に類似するローカライズ文字列を検索します。</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyPointsMessage">
+            <summary>「指定した点がありません。」に類似するローカライズ文字列を検索します。</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyUVsMessage">
+            <summary>「指定した UV がありません。」に類似するローカライズ文字列を検索します。</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyValuesMessage">
+            <summary>「指定した値がありません。」に類似するローカライズ文字列を検索します。</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.InputsNotEquivalentMessage">
+            <summary>「点と値の同等数を指定する必要があります。」に類似するローカライズ文字列を検索します。</summary>
+        </member>
+        <member name="P:Analysis.IStructuredData`2.ValueLocations">
+            <summary>計算位置のコレクション。</summary>
+        </member>
+        <member name="P:Analysis.IStructuredData`2.Values">
+            <summary>各位置に対応する値のリスト。</summary>
+        </member>
+        <member name="P:Analysis.ISurfaceData`2.Surface">
+            <summary>解析サーフェス。</summary>
+        </member>
+        <member name="P:Analysis.ICurveData`2.Curve">
+            <summary>解析曲線。</summary>
+        </member>
+        <member name="T:Analysis.IAnalysisModel`2">
+            <summary>解析モデル。</summary>
+            <typeparam name="TLocation">The analysis location type. (i.e. UV, Point)</typeparam>
+            <typeparam name="TValue">The analysis return type. (i.e. double, vector, SIUnit)</typeparam>
+        </member>
+        <member name="M:Analysis.Label.ByPointAndString(Autodesk.DesignScript.Geometry.Point,System.String)">
+            <summary>点オブジェクトと文字列ラベルが指定されたラベル オブジェクトを返します。</summary>
+            <param name="point"/>
+            <param name="label"/>
+            <returns/>
+        </member>
+        <member name="T:Analysis.PointData">
+            <summary>構造点の解析データを格納するためのクラス。</summary>
+        </member>
+        <member name="P:Analysis.PointData.ValueLocations">
+            <summary>点群のリスト。</summary>
+        </member>
+        <member name="P:Analysis.PointData.Values">
+            <summary>倍精度値リストの辞書。</summary>
+        </member>
+        <member name="M:Analysis.PointData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{System.Double})">
+            <summary>PointAnalysisData オブジェクトを作成します。</summary>
+            <param name="points">点群のリスト。</param>
+            <param name="values">倍精度値のリスト。</param>
+        </member>
+        <member name="T:Analysis.Properties.Resources">
+            <summary>ローカライズ文字列などを検索するための、厳密に型指定されたリソース クラス。</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ResourceManager">
+            <summary>このクラスが使用する、キャッシュされた ResourceManager インスタンスを返します。</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.Culture">
+            <summary>厳密に型指定されたリソース クラスを使用して、すべての
+              リソース検索で現在のスレッドの CurrentUICulture プロパティを上書きします。</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ByPointsAndValueObsolete">
+            <summary>「これまでは PointData ノードを使用していたノードへの直接入力として Point ノードと Number ノードを使用します」に類似するローカライズ文字列を検索します。</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.BySurfacePointObsolete">
+            <summary>「これまでは SurfaceData ノードを使用していたノードへの直接入力として Surface ノードと UV ノードを使用します」に類似するローカライズ文字列を検索します。</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.BySurfacePointsAndValues">
+            <summary>「これまでは SurfaceData ノードを使用していたノードへの直接入力として Surface ノード、UV ノード、Number ノードを使用します」に類似するローカライズ文字列を検索します。</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.SurfaceObsolete">
+            <summary>「グラフ内の任意の場所に使用できる Surface を使用します」に類似するローカライズ文字列を検索します。</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueLocationObsolete">
+            <summary>「グラフ内の任意の場所に使用できる Point を使用します」に類似するローカライズ文字列を検索します。</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueLocationsObsolete">
+            <summary>「グラフ内の任意の場所に使用できる UV 位置を使用します。」に類似するローカライズ文字列を検索します。</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValuesObsolete">
+            <summary>「解析を実行するノードによって提供される値を使用します。」に類似するローカライズ文字列を検索します。</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueSurfaceObsolete">
+            <summary>「解析を実行するノードによって提供される値を使用します」に類似するローカライズ文字列を検索します。</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.VectorValueObsolete">
+            <summary>「これまでは VectorData ノードを使用していたノードへの直接入力として Vector ノードと Number ノードを使用します」に類似するローカライズ文字列を検索します。</summary>
+        </member>
+        <member name="T:Analysis.SurfaceData">
+            <summary>構造化されたサーフェス解析データを格納するためのクラス。</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.Surface">
+            <summary>位置を含むサーフェス。</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.ValueLocations">
+            <summary>サーフェス上の UV 位置のリスト。</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.Values">
+            <summary>倍精度浮動小数点のリストの辞書。</summary>
+        </member>
+        <member name="M:Analysis.SurfaceData.BySurfaceAndPoints(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV})">
+            <summary>値を指定せずに SurfaceData オブジェクトを作成します。</summary>
+            <param name="surface">位置を含むサーフェス。</param>
+            <param name="uvs">サーフェス上の UV 位置のリスト。</param>
+            <returns/>
+        </member>
+        <member name="M:Analysis.SurfaceData.BySurfacePointsAndValues(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},System.Collections.Generic.IList{System.Double})">
+            <summary>SurfaceData オブジェクトを作成します。</summary>
+            <param name="surface">位置を含むサーフェス。</param>
+            <param name="uvs">サーフェス上の UV 位置のリスト。</param>
+            <param name="values">倍精度値のリスト。</param>
+        </member>
+        <member name="M:Analysis.AnalysisExtensions.IsAlmostEqualTo(Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
+            <summary>2 つの面(タイプ UV)を取得し、それらの面の差異が 1.0e-6 未満の場合は True を返し、それ以外の場合は False を返します。</summary>
+            <param name="a"/>
+            <param name="b"/>
+            <returns/>
+        </member>
+        <member name="T:Analysis.Utils.ValueLocation`1">
+            <summary>位置の値を格納するためのクラス。</summary>
+        </member>
+        <member name="T:Analysis.VectorData">
+            <summary>構造化されたベクトル解析データを格納するためのクラス。</summary>
+        </member>
+        <member name="P:Analysis.VectorData.ValueLocations">
+            <summary>計算位置のリスト。</summary>
+        </member>
+        <member name="P:Analysis.VectorData.Values">
+            <summary>結果の辞書。</summary>
+        </member>
+        <member name="M:Analysis.VectorData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{Autodesk.DesignScript.Geometry.Vector})">
+            <summary>VectorAnalysisData オブジェクトを作成します。</summary>
+            <param name="points">点群のリスト。</param>
+            <param name="values">Vector 値のリスト。</param>
+        </member>
+    </members>
+</doc>

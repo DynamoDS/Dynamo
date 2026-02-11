@@ -1,0 +1,35 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>索引超出範圍</h2>
+<p>此錯誤訊息表示您的清單在您提供的索引位置並未包含元素。例如，如果清單是 <code>[a, b, c, d]</code> (索引 <code>0</code>、<code>1</code>、<code>2</code>和 <code>3</code> 有元素)，而您嘗試存取索引 <code>5</code> 的元素，則系統會向您顯示錯誤訊息，因為清單中只有索引 <code>0</code> 到 <code>3</code> 有元素。</p>
+
+<h4>如何修正</h4>
+<p>請確保您用來存取清單元素的索引變數大於或等於 <code>0</code>，而且必須小於清單大小。清單索引從 <code>0</code> 到清單大小減 <code> 1</code>。這表示如果您的清單中有 <code>10</code> 個元素，而您想要存取第 10 個元素，該元素將位於索引 <code>9</code>。</p>
+
+<h4>更多資訊</h4>
+<p>如欲瞭解更多資訊，請查看 <a href="https://forum.dynamobim.com/search?q=index%20out%20of%20range"><span>Dynamobim 論壇上討論「<strong>index is out of range</strong>」的貼文</span></a>。</p>
+
+
+</body>

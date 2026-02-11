@@ -1,0 +1,173 @@
+<?xml version="1.0"?><doc>
+  <assembly>
+    <name>BuiltIn</name>
+  </assembly>
+  <members>
+    <member name="List.Rank">
+      <summary>Vrací nejhlubší hloubku seznamu</summary>
+      <param name="list">Seznam, ze kterých bude doraz řady</param>
+      <returns name="int">Nejhlubší hloubka seznamu</returns>
+      <search>rank,depth,nesting,ranks</search>
+    </member>
+    <member name="List.RemoveIfNot">
+      <summary>Odstraní ze seznamu členy, které nejsou členy určeného typu.</summary>
+      <param name="list">Seznam k odebrání položek</param>
+      <param name="type">Typ prvku</param>
+      <returns name="list">Seznam s odstraněným vším kromě určeného typu</returns>
+      <search>remove,not,ofType,filtertype</search>
+    </member>
+    <member name="List.Equals">
+      <summary>Určuje, zda jsou dvě instance objektu shodné.</summary>
+      <param name="object">První objekt</param>
+      <param name="otherObject">Jiný objekt</param>
+      <returns name="bool">Pokud jsou instance objektů shodné, vrátí hodnotu True, hodnota False, pokud jsou rozdílné</returns>
+      <search>equals</search>
+    </member>
+    <member name="List.SortByFunction">
+      <summary>Použijte funkci k určení toho, jak mají být položky seznamu seřazeny.</summary>
+      <param name="list">Seznam hodnot</param>
+      <param name="sortFunction">funkce použitá k řazení seznamu</param>
+      <returns name="sortedList">typ: var[]..[]</returns>
+      <search>sort,order</search>
+    </member>
+    <member name="ToString">
+      <param name="object">Určitý objekt</param>
+      <search>string</search>
+    </member>
+    <member name="__ToStringFromObject">
+      <param name="object">Určitý objekt</param>
+      <search>string,from,object</search>
+    </member>
+    <member name="__ToStringFromArray">
+      <param name="list">Určitý seznam</param>
+      <search>string,from,array</search>
+    </member>
+    <member name="__Apply">
+      <param name="functionObject"/>
+      <param name="param"/>
+      <search>apply</search>
+    </member>
+    <member name="__ApplyList">
+      <param name="functionObject"/>
+      <param name="param"/>
+      <search>apply,list</search>
+    </member>
+    <member name="__GetOutput">
+      <param name="outputs"/>
+      <param name="key"/>
+      <search>output</search>
+    </member>
+    <member name="__Compose">
+      <param name="funcs"/>
+      <search>compose,functionchain</search>
+    </member>
+    <member name="__ComposeBuffered">
+      <param name="funcs"/>
+      <param name="amt"/>
+      <param name="arg"/>
+      <search>compose,buffered</search>
+    </member>
+    <member name="List.MinimumItemByKey">
+      <summary>Vrátí položky v seznamu, které generují minimální hodnoty pro funkce zadané klíčový projektor</summary>
+      <param name="list">Seznam hodnot</param>
+      <param name="keyFunction">funkce použitá na položky seznamu</param>
+      <returns name="minimumItem">Minimální položka v seznamu pomocí funkce keyFunction (typ: var[]..[])</returns>
+      <search>min,item,key</search>
+    </member>
+    <member name="List.MaximumItemByKey">
+      <summary>Vrátí položky v seznamu, které generují maximální hodnoty pro funkci zadanou jako klíčový projektor</summary>
+      <param name="list">Seznam hodnot</param>
+      <param name="keyFunction">funkce použitá na položky seznamu</param>
+      <returns name="maximumItem">Maximální položka v seznamu pomocí funkce keyFunction (typ: var[]..[])</returns>
+      <search>max,item,key</search>
+    </member>
+    <member name="__Replace">
+      <param name="list">Seznam hodnot</param>
+      <param name="with"/>
+      <param name="predicate"/>
+      <search>replace</search>
+    </member>
+    <member name="__Filter">
+      <param name="list">Seznam hodnot</param>
+      <param name="predicate"/>
+      <search>filter</search>
+    </member>
+    <member name="__Combine">
+      <param name="func">Funkce</param>
+      <param name="lists"/>
+      <search>combine</search>
+    </member>
+    <member name="__Map">
+      <param name="func">Funkce</param>
+      <param name="arg"/>
+      <search>map</search>
+    </member>
+    <member name="__LaceShortest">
+      <param name="func">Funkce</param>
+      <param name="lists"/>
+      <search>lace,shortest</search>
+    </member>
+    <member name="__LaceLongest">
+      <param name="func">Funkce</param>
+      <param name="lists"/>
+      <search>lace,longest</search>
+    </member>
+    <member name="__ApplyNested">
+      <param name="fs">Funkce</param>
+      <param name="xs"/>
+      <param name="amt"/>
+      <search>apply,nested</search>
+    </member>
+    <member name="__CartesianProduct">
+      <param name="func">Funkce</param>
+      <param name="lists"/>
+      <search>cartesian,product</search>
+    </member>
+    <member name="__Scan">
+      <param name="accumulator"/>
+      <param name="seed"/>
+      <param name="lists"/>
+      <search>scan</search>
+    </member>
+    <member name="__Reduce">
+      <param name="accumulator"/>
+      <param name="seed"/>
+      <param name="lists"/>
+      <search>reduce</search>
+    </member>
+    <member name="List.GroupByFunction">
+      <summary>Použijte funkci k určení toho, jak mají být položky seznamu seskupeny.</summary>
+      <param name="list">Seznam hodnot</param>
+      <param name="groupFunction">Funkce pro seskupování seznamu</param>
+      <returns name="groupedList">Seznam libovolných úrovní (typ: var[]..[])</returns>
+      <search>group,function</search>
+    </member>
+    <member name="List.TrueForAll">
+      <summary>Vrátí hodnotu True, pokud jsou všechny položky v seznamu vyhodnoceny jako True s danou funkcí dotazu</summary>
+      <param name="list">Seznam, ze kterého se vyhodnotí položky funkcí dotazu</param>
+      <param name="queryFunction">Funkce pro vyhodnocení seznamu</param>
+      <returns name="bool">Vrátí hodnotu True, pokud jsou všechny položky v seznamu vyhodnoceny jako True s danou funkcí dotazu</returns>
+      <search>true,all</search>
+    </member>
+    <member name="List.TrueForAny">
+      <summary>Vrátí hodnotu True, pokud je jedna nebo více položek v seznamu vyhodnocena jako True s danou funkcí dotazu</summary>
+      <param name="list">Seznam, ze kterého se vyhodnotí položky funkcí dotazu</param>
+      <param name="queryFunction">Funkce pro vyhodnocení seznamu</param>
+      <returns name="bool">Vrátí hodnotu True, pokud je jakákoli položka v seznamu vyhodnocena jako True s funkcí dotazu</returns>
+      <search>true,any</search>
+    </member>
+    <member name="__ForEach">
+      <param name="functionObject"/>
+      <param name="lists"/>
+      <search>foreach</search>
+    </member>
+    <member name="LoopWhile">
+      <summary>Vytvoří uzel smyčky while s danou počáteční hodnotou, podmínkou a tělem smyčky.</summary>
+      <param name="initialValue">počáteční hodnota smyčky</param>
+      <param name="continueWhile">while loop condition</param>
+      <param name="loopBody">while loop body</param>
+      <returns name="result">Výsledek ze smyčky (typ: var[]..[])</returns>
+      <search>loop,while,repeat</search>
+    </member>
+  </members>
+</doc>

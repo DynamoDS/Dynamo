@@ -83,7 +83,7 @@ namespace Dynamo.Utilities
 
         public static Version GetDynamoVersion(bool includeRevisionNumber = true)
         {
-            var assembly = Assembly.GetCallingAssembly();
+            var assembly = Assembly.GetExecutingAssembly();
             var version = assembly.GetName().Version;
             return includeRevisionNumber
                 ? version

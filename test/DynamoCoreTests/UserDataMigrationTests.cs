@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -183,25 +183,15 @@ namespace Dynamo
             {
                 Assert.IsTrue(e.ParamName == "rootFolder");
             }
-            
-            try
-            {
-                DynamoMigratorBase.GetInstalledVersions(null);
-            }
-            catch (ArgumentNullException e)
-            {
-                Assert.IsTrue(e.ParamName == "rootFolder");                
-            }
-            
         }
 
         [Test, Category("UnitTests")]
         public void GetSortedInstallVersion_FromDynamoLookUp()
         {
-            var mockLookup = new Mock<IDynamoLookUp>();
-            mockLookup.Setup(x=>x.GetDynamoUserDataLocations()).Returns(MockUserDirectories);
+            var mockLookup = new Mock<IPathManager>();
+            mockLookup.Setup(x=>x.PathResolver.GetDynamoUserDataLocations()).Returns(MockUserDirectories);
 
-            var versionList = DynamoMigratorBase.GetInstalledVersions(null, mockLookup.Object).ToList();
+            var versionList = DynamoMigratorBase.GetInstalledVersions(mockLookup.Object).ToList();
             VerifySortedOrder(versionList);
             Assert.AreEqual(5, versionList.Count);
             Assert.AreEqual(TempFolder, versionList[0].UserDataRoot);
@@ -212,11 +202,11 @@ namespace Dynamo
         [Test, Category("UnitTests")]
         public void GetLatestVersionToMigrate()
         {
-            var mockLookup = new Mock<IDynamoLookUp>();
-            mockLookup.Setup(x => x.GetDynamoUserDataLocations()).Returns(MockUserDirectories);
+            var mockLookup = new Mock<IPathManager>();
+            mockLookup.Setup(x => x.PathResolver.GetDynamoUserDataLocations()).Returns(MockUserDirectories);
 
             var current = new FileVersion(1, 0, Path.Combine(TempFolder, "Test"));
-            var latest = DynamoMigratorBase.GetLatestVersionToMigrate(null, mockLookup.Object, current);
+            var latest = DynamoMigratorBase.GetLatestVersionToMigrate(mockLookup.Object, current);
             Assert.IsTrue(latest.HasValue);
             Assert.AreEqual(1, latest.Value.MajorPart);
             Assert.AreEqual(0, latest.Value.MinorPart);
@@ -226,11 +216,11 @@ namespace Dynamo
         [Test, Category("UnitTests")]
         public void GetLatestVersionToMigrate_10()
         {
-            var mockLookup = new Mock<IDynamoLookUp>();
-            mockLookup.Setup(x => x.GetDynamoUserDataLocations()).Returns(MockUserDirectories);
+            var mockLookup = new Mock<IPathManager>();
+            mockLookup.Setup(x => x.PathResolver.GetDynamoUserDataLocations()).Returns(MockUserDirectories);
 
             var current = new FileVersion(1, 0, TempFolder);
-            var latest = DynamoMigratorBase.GetLatestVersionToMigrate(null, mockLookup.Object, current);
+            var latest = DynamoMigratorBase.GetLatestVersionToMigrate(mockLookup.Object, current);
             Assert.IsTrue(latest.HasValue);
             Assert.AreEqual(1, latest.Value.MajorPart);
             Assert.AreEqual(0, latest.Value.MinorPart);
@@ -241,11 +231,11 @@ namespace Dynamo
         [Test, Category("UnitTests")]
         public void GetLatestVersionToMigrate_PartiallyValidData()
         {
-            var mockLookup = new Mock<IDynamoLookUp>();
-            mockLookup.Setup(x => x.GetDynamoUserDataLocations()).Returns(MockUserDirectories);
+            var mockLookup = new Mock<IPathManager>();
+            mockLookup.Setup(x => x.PathResolver.GetDynamoUserDataLocations()).Returns(MockUserDirectories);
 
             var current = new FileVersion(0, 9, TempFolder);
-            var latest = DynamoMigratorBase.GetLatestVersionToMigrate(null, mockLookup.Object, current);
+            var latest = DynamoMigratorBase.GetLatestVersionToMigrate(mockLookup.Object, current);
             Assert.IsTrue(latest.HasValue);
             Assert.AreEqual(0, latest.Value.MajorPart);
             Assert.AreEqual(8, latest.Value.MinorPart);
@@ -255,11 +245,11 @@ namespace Dynamo
         [Test, Category("UnitTests")]
         public void GetLatestVersionToMigrate_AllInvalidData()
         {
-            var mockLookup = new Mock<IDynamoLookUp>();
-            mockLookup.Setup(x => x.GetDynamoUserDataLocations()).Returns(new[] { "x", "y", "z" });
+            var mockLookup = new Mock<IPathManager>();
+            mockLookup.Setup(x => x.PathResolver.GetDynamoUserDataLocations()).Returns(new[] { "x", "y", "z" });
 
             var current = new FileVersion(1, 0, "a");
-            var latest = DynamoMigratorBase.GetLatestVersionToMigrate(null, mockLookup.Object, current);
+            var latest = DynamoMigratorBase.GetLatestVersionToMigrate(mockLookup.Object, current);
             Assert.IsTrue(!latest.HasValue || latest.Value.UserDataRoot == null);
         }
 
@@ -276,9 +266,10 @@ namespace Dynamo
         {
             var settings = new PreferenceSettings
             {
-                CustomPackageFolders = new List<string>{packageDir},
+                CustomPackageFolders = new List<string> { packageDir },
                 //need to mock this because PreferenceSettings.SelectedPackagePathForInstall uses an event to get UserDataFolder from PathManager
-                SelectedPackagePathForInstall = packageDir
+                SelectedPackagePathForInstall = packageDir,
+                IronPythonResolveTargetVersion = new Version(2,4,0).ToString(),
             };
             settings.Save(filePath);
         }
@@ -392,6 +383,37 @@ namespace Dynamo
             // Assert that new SelectedPackagePath is not equal to the old path.
             Assert.AreNotEqual(sourcePrefs.SelectedPackagePathForInstall,
                 targetMigrator.PreferenceSettings.SelectedPackagePathForInstall);
+        }
+        [Test]
+        [Category("UnitTests")]
+        public void IronPythonVersionIsNotMigrated()
+        {
+            // Create some mock user data folders
+            string userDataDir;
+            CreateMockDirectoriesAndFiles(out userDataDir);
+
+            var sourceVersionDir = Path.Combine(userDataDir, "1.3");
+            var settingsFilePath = Path.Combine(sourceVersionDir, "DynamoSettings.xml");
+
+            CreateMockPreferenceSettingsFile(settingsFilePath, sourceVersionDir);
+
+            // Create mock objects for IPathManager and IPathResolver
+            var mockPathManager = new Mock<IPathManager>();
+
+            var currentVersionDir = Path.Combine(userDataDir, "2.0");
+
+            mockPathManager.Setup(x => x.UserDataDirectory).Returns(() => currentVersionDir);
+
+            
+            // Test MigrateBetweenDynamoVersions
+            var targetMigrator = DynamoMigratorBase.MigrateBetweenDynamoVersions(
+                mockPathManager.Object);
+
+            var sourcePrefs = PreferenceSettings.Load(settingsFilePath);
+            Assert.AreEqual(sourceVersionDir, sourcePrefs.SelectedPackagePathForInstall);
+
+            // Assert that new ironPythonTargetVersion is not equal to the old version.
+            Assert.That(targetMigrator.PreferenceSettings.IronPythonResolveTargetVersion, Is.Not.EqualTo(sourcePrefs.IronPythonResolveTargetVersion));
         }
     }
 }

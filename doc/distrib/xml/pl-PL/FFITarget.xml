@@ -1,0 +1,80 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>FFITarget</name>
+    </assembly>
+    <members>
+        <member name="T:FFITarget.ClassFunctionality">
+            <summary>Testy do podstawowego testowania funkcjonalnego wdrożeń FFI</summary>
+        </member>
+        <member name="T:FFITarget.ClassFunctionalityMirror">
+            <summary>Klasa zawierająca ten sam element IntVal co element ClassFunctionality</summary>
+        </member>
+        <member name="T:FFITarget.CodeCompletionClass">
+            <summary>Testy uzupełniania kodu w węźle Code Block</summary>
+        </member>
+        <member name="T:FFITarget.InstanceableClass">
+            <summary>Klasa testowa, która tworzy stożek przy użyciu tworzenia wystąpienia.</summary>
+        </member>
+        <member name="T:FFITarget.InstanceableLineClass">
+            <summary>Klasa testowa, która tworzy stożek przy użyciu tworzenia wystąpienia.</summary>
+        </member>
+        <member name="T:FFITarget.InstanceableClass_NoInstanceData">
+            <summary>Ta klasa umożliwia tworzenie wystąpień, ale zwraca wartość false dla elementu instanceInfoAvailable, więc użyje zwykłego mozaikowania.</summary>
+        </member>
+        <member name="T:FFITarget.ElementIDLifecycleManager`1">
+            <summary>Klasa do obsługi okresu istnienia elementów na podstawie ich identyfikatorów</summary>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.GetInstance">
+            <summary>Zwraca obiekt LifecycleManager dla określonego typu
+            OSTRZEŻENIE: to jest tylko singleton dla danego TypeArg</summary>
+            <returns/>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.RegisterAsssociation(`0,System.Object)">
+            <summary>Zarejestruj nową zależność między identyfikatorem elementu a opakowaniem</summary>
+            <param name="elementID"/>
+            <param name="wrapper"/>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.UnRegisterAssociation(`0,System.Object)">
+            <summary>Usuń skojarzenie między identyfikatorem elementu a</summary>
+            <param name="elementID"/>
+            <param name="wrapper"/>
+            <returns>Liczba pozostałych skojarzeń</returns>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.GetRegisteredCount(`0)">
+            <summary>Zwraca liczbę zarejestrowanych opakowań</summary>
+            <param name="id"/>
+            <returns/>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.IsRevitDeleted(`0)">
+            <summary>Sprawdza, czy element został usunięty w programie Revit</summary>
+            <param name="id"/>
+            <returns/>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.NotifyOfRevitDeletion(`0)">
+            <summary>Ustaw stan usunięcia elementu programu Revit</summary>
+            <param name="id">Element, który ma zostać usunięty&gt;</param>
+        </member>
+        <member name="M:FFITarget.IncrementerTracedClass.#ctor(System.Int32)">
+            <summary>Uwaga: x jest tutaj fikcyjną zmienną, która ma na celu wymuszenie replikowanego wysłania
+            w rzeczywistości nie jest używana</summary>
+            <param name="x"/>
+        </member>
+        <member name="M:FFITarget.IncrementerTracedClass.#ctor(System.Int32,System.Boolean)">
+            <summary>Uwaga: x jest tutaj fikcyjną zmienną, która ma na celu wymuszenie replikowanego wysłania
+            w rzeczywistości nie jest używana</summary>
+            <param name="x">Fikcyjna zmienna używana do wymuszenia replikowanego wysyłania</param>
+            <param name="failWithException">Niepowodzenie wysyłania ze zwróceniem wyjątku zamiast</param>
+        </member>
+        <member name="T:FFITarget.OverloadTarget">
+            <summary>Testowy obiekt docelowy dla metod przeciążonych</summary>
+        </member>
+        <member name="M:FFITarget.TestData.ReturnNestedDictionary">
+            <summary>Zwróć słownik zagnieżdżony.</summary>
+            <returns name="col">column</returns>
+            <returns name="dict">dictionary</returns>
+            <returns name="num">number</returns>
+            <returns name="wt">weight</returns>
+            <returns name="ok">okay</returns>
+        </member>
+    </members>
+</doc>

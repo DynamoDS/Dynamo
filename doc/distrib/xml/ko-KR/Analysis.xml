@@ -1,0 +1,153 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Analysis</name>
+    </assembly>
+    <members>
+        <member name="T:Analysis.AnalysisResources">
+            <summary>현지화된 문자열 등을 조회하기 위한 강력한 유형의 리소스 클래스</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.ResourceManager">
+            <summary>이 클래스에서 사용하는 캐시된 ResourceManager 인스턴스(instance)를 반환합니다.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.Culture">
+            <summary>이러한 강력한 유형의 리소스 클래스를 사용하여 모든 리소스 
+              조회에 대한 현재 스레드의 CurrentUICulture 특성을 재지정합니다.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyColorsMessage">
+            <summary>'색상이 지정되지 않았습니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyPointsMessage">
+            <summary>'점이 지정되지 않았습니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyUVsMessage">
+            <summary>'UV가 지정되지 않았습니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyValuesMessage">
+            <summary>'값이 지정되지 않았습니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.InputsNotEquivalentMessage">
+            <summary>'동일한 수의 점과 값을 제공해야 합니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:Analysis.IStructuredData`2.ValueLocations">
+            <summary>계산 위치의 모음.</summary>
+        </member>
+        <member name="P:Analysis.IStructuredData`2.Values">
+            <summary>각 위치에 해당하는 값 리스트.</summary>
+        </member>
+        <member name="P:Analysis.ISurfaceData`2.Surface">
+            <summary>해석 표면.</summary>
+        </member>
+        <member name="P:Analysis.ICurveData`2.Curve">
+            <summary>해석 곡선.</summary>
+        </member>
+        <member name="T:Analysis.IAnalysisModel`2">
+            <summary>해석 모델.</summary>
+            <typeparam name="TLocation">The analysis location type. (i.e. UV, Point)</typeparam>
+            <typeparam name="TValue">The analysis return type. (i.e. double, vector, SIUnit)</typeparam>
+        </member>
+        <member name="M:Analysis.Label.ByPointAndString(Autodesk.DesignScript.Geometry.Point,System.String)">
+            <summary>지정된 점 객체의 레이블 객체 및 문자열 레이블을 반환합니다.</summary>
+            <param name="point"/>
+            <param name="label"/>
+            <returns/>
+        </member>
+        <member name="T:Analysis.PointData">
+            <summary>구조 점 해석 데이터를 저장하기 위한 클래스.</summary>
+        </member>
+        <member name="P:Analysis.PointData.ValueLocations">
+            <summary>Points 리스트.</summary>
+        </member>
+        <member name="P:Analysis.PointData.Values">
+            <summary>double 값 리스트 사전.</summary>
+        </member>
+        <member name="M:Analysis.PointData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{System.Double})">
+            <summary>PointAnalysisData 객체를 작성합니다.</summary>
+            <param name="points">Points 리스트.</param>
+            <param name="values">double 값 리스트.</param>
+        </member>
+        <member name="T:Analysis.Properties.Resources">
+            <summary>현지화된 문자열 등을 조회하기 위한 강력한 유형의 리소스 클래스</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ResourceManager">
+            <summary>이 클래스에서 사용하는 캐시된 ResourceManager 인스턴스(instance)를 반환합니다.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.Culture">
+            <summary>이러한 강력한 유형의 리소스 클래스를 사용하여 모든 리소스 
+              조회에 대한 현재 스레드의 CurrentUICulture 특성을 재지정합니다.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ByPointsAndValueObsolete">
+            <summary>'이전에 PointData 노드를 사용한 노드에 대한 직접 입력으로 Point 노드와 Number 노드를 사용합니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.BySurfacePointObsolete">
+            <summary>'이전에 SurfaceData 노드를 사용한 노드에 대한 직접 입력으로 Surface 노드와 UV 노드를 사용합니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.BySurfacePointsAndValues">
+            <summary>'이전에 SurfaceData 노드를 사용한 노드에 대한 직접 입력으로 Surface 노드, UV 노드, Number 노드를 사용합니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.SurfaceObsolete">
+            <summary>'그래프의 모든 위치에서 사용 가능한 Surface를 사용합니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueLocationObsolete">
+            <summary>'그래프의 모든 위치에서 사용 가능한 Points를 사용합니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueLocationsObsolete">
+            <summary>'그래프의 모든 위치에서 사용 가능한 UV 위치를 사용합니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValuesObsolete">
+            <summary>'해석 수행 시 노드에서 제공한 값을 사용합니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueSurfaceObsolete">
+            <summary>'해석 수행 시 노드에서 제공한 값을 사용합니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.VectorValueObsolete">
+            <summary>'이전에 VectorData 노드를 사용한 노드에 대한 직접 입력으로 Vector 노드와 Number 노드를 사용합니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="T:Analysis.SurfaceData">
+            <summary>구조 표면 해석 데이터를 저장하기 위한 클래스.</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.Surface">
+            <summary>위치가 포함된 표면.</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.ValueLocations">
+            <summary>표면의 UV 위치 리스트.</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.Values">
+            <summary>double 값 리스트 사전.</summary>
+        </member>
+        <member name="M:Analysis.SurfaceData.BySurfaceAndPoints(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV})">
+            <summary>값 없이 SurfaceData 객체를 작성합니다.</summary>
+            <param name="surface">위치가 포함된 표면.</param>
+            <param name="uvs">표면의 UV 위치 리스트.</param>
+            <returns/>
+        </member>
+        <member name="M:Analysis.SurfaceData.BySurfacePointsAndValues(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},System.Collections.Generic.IList{System.Double})">
+            <summary>SurfaceData 객체를 작성합니다.</summary>
+            <param name="surface">위치가 포함된 표면.</param>
+            <param name="uvs">표면의 UV 위치 리스트.</param>
+            <param name="values">double 값 리스트.</param>
+        </member>
+        <member name="M:Analysis.AnalysisExtensions.IsAlmostEqualTo(Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
+            <summary>두 개의 평면(UV 유형)을 취하며 두 평면 간의 차이가 1.0e-6보다 작으면 True를 반환하고 그렇지 않으면 False를 반환합니다.</summary>
+            <param name="a"/>
+            <param name="b"/>
+            <returns/>
+        </member>
+        <member name="T:Analysis.Utils.ValueLocation`1">
+            <summary>위치에 값을 저장하기 위한 클래스.</summary>
+        </member>
+        <member name="T:Analysis.VectorData">
+            <summary>구조 벡터 해석 데이터를 저장하기 위한 클래스.</summary>
+        </member>
+        <member name="P:Analysis.VectorData.ValueLocations">
+            <summary>계산 위치 리스트.</summary>
+        </member>
+        <member name="P:Analysis.VectorData.Values">
+            <summary>결과 사전.</summary>
+        </member>
+        <member name="M:Analysis.VectorData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{Autodesk.DesignScript.Geometry.Vector})">
+            <summary>VectorAnalysisData 객체를 작성합니다.</summary>
+            <param name="points">Points 리스트.</param>
+            <param name="values">Vector 값 리스트.</param>
+        </member>
+    </members>
+</doc>

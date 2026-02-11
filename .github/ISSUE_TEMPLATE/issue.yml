@@ -1,0 +1,63 @@
+name: Dynamo Issue
+description: File an issue with Dynamo
+projects: [DynamoDS/4]
+body:
+  - type: textarea
+    id: dynamo_version
+    attributes:
+      label: Dynamo Version
+      description: |
+        Which version of Dynamo are you using?
+        Go to **Dynamo > About** if you are not sure.
+    validations:
+      required: true
+  - type: textarea
+    id: host
+    attributes:
+      label: Host
+      description: Which host are you using?
+    validations:
+      required: false
+  - type: textarea
+    id: os
+    attributes:
+      label: Operating System
+      description: e.g Windows 10, Windows 11
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: What did you do?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: What did you expect to see?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: What did you see instead?
+    validations:
+      required: true
+  - type: textarea
+    id: packages
+    attributes:
+      label: What packages or external references (if any) were used?
+    validations:
+      required: false
+  - type: textarea
+    id: stack_trace
+    attributes:
+      label: Stack Trace
+    validations:
+      required: false
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: |
+        Log? Links? References?
+        _Tip: To attach screenshots/gifs or log files, click this area to highlight it and then drag files into it._
+    validations:
+      required: false

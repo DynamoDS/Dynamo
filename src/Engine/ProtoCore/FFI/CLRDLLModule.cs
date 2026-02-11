@@ -1274,6 +1274,10 @@ namespace ProtoFFI
                 {
                     PreferredShortName = (attr as PreferredShortNameAttribute).PreferredShortName;
                 }
+                else if (attr is System.Diagnostics.CodeAnalysis.ExperimentalAttribute)
+                {
+                    IsExperimental = true;
+                }
             }
         }
     }
@@ -1284,6 +1288,7 @@ namespace ProtoFFI
     public class FFIMethodAttributes : ProtoCore.AST.AssociativeAST.MethodAttributes
     {
         private List<Attribute> attributes;
+        private bool hasIsObsoleteAttribute;
         /// <summary>
         /// FFI method attributes.
         /// </summary>
@@ -1341,10 +1346,6 @@ namespace ProtoFFI
                 if (isObsolete) ObsoleteMessage = message;
             }
         }
-
-        [Obsolete("This method is deprecated and will be removed in Dynamo 3.0. Use FFIMethodAttributes(MethodBase method, Dictionary<MethodInfo, Attribute[]> getterAttributes = null) instead.")]
-        public FFIMethodAttributes(MethodInfo method, Dictionary<MethodInfo, Attribute[]> getterAttributes)
-            : this(method as MethodBase, getterAttributes) { }
 
         public FFIMethodAttributes(MethodBase method, Dictionary<MethodInfo, Attribute[]> getterAttributes = null)
         {
@@ -1409,6 +1410,7 @@ namespace ProtoFFI
                 else if (attr is IsObsoleteAttribute)
                 {
                     HiddenInLibrary = true;
+                    hasIsObsoleteAttribute = true;
                     ObsoleteMessage = (attr as IsObsoleteAttribute).Message;
                     if (string.IsNullOrEmpty(ObsoleteMessage))
                         ObsoleteMessage = "Obsolete";
@@ -1416,9 +1418,16 @@ namespace ProtoFFI
                 else if (attr is ObsoleteAttribute)
                 {
                     HiddenInLibrary = true;
-                    ObsoleteMessage = (attr as ObsoleteAttribute).Message;
-                    if (string.IsNullOrEmpty(ObsoleteMessage))
-                        ObsoleteMessage = "Obsolete";
+                    // Obsolete message in IsObsoleteAttribute is overridden to support localization
+                    // and therefore should always be preferred over the ObsoleteAttribute message.
+                    // The following logic ensures that the ObsoleteAttribute message is only used
+                    // if the IsObsoleteAttribute is not present or its message is empty.
+                    if (!hasIsObsoleteAttribute || string.IsNullOrEmpty(ObsoleteMessage))
+                    {
+                        ObsoleteMessage = (attr as ObsoleteAttribute).Message;
+                        if (string.IsNullOrEmpty(ObsoleteMessage))
+                            ObsoleteMessage = "Obsolete";
+                    }
                 }
                 else if (attr is CanUpdatePeriodicallyAttribute)
                 {
@@ -1435,6 +1444,10 @@ namespace ProtoFFI
                 else if(attr is ArbitraryDimensionArrayImportAttribute)
                 {
                     ArbitraryDimensionArrayImport = true;
+                }
+                else if (attr is System.Diagnostics.CodeAnalysis.ExperimentalAttribute)
+                {
+                    IsExperimental = true;
                 }
             }
         }

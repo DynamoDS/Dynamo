@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -1133,7 +1133,7 @@ namespace Dynamo.Tests
             CurrentDynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName1, "");
             CurrentDynamoModel.CustomNodeManager.CreateCustomNode(nodeName, catName2, "");
 
-            Assert.AreEqual(2, CurrentDynamoModel.SearchModel.SearchEntries.Where(entry => entry.Name == nodeName).Count());
+            Assert.AreEqual(2, CurrentDynamoModel.SearchModel.Entries.Where(entry => entry.Name == nodeName).Count());
         }
 
         [Test]
@@ -1422,6 +1422,14 @@ namespace Dynamo.Tests
             Assert.IsNotNull(nodeInfo.Value);
             Assert.IsFalse(nodeInfo.Value.IsPackageMember);
             Assert.IsNull(nodeInfo.Value.PackageInfo);
+        }
+        [Test]
+        public void InputNodeShouldHaveNameByDefault()
+        {
+            var input = new Symbol();
+            Assert.NotNull(input.Parameter.Name);
+            Assert.IsNotEmpty(input.Parameter.Name);
+            Assert.AreEqual("input",input.Parameter.Name);
         }
     }
 }

@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DesignScriptBuiltin</name>
+    </assembly>
+    <members>
+        <member name="M:DesignScript.Builtin.Dictionary.CustomKeyComparer.GetHashCode(System.String)">
+            <summary>
+            This code has been copied from String.GetHashCode() for .NET framework 4.8, which uses a
+            deterministic hashing algorithm. More specifically, this is the String.GetLegacyNonRandomizedHashCode()
+            function found here: https://referencesource.microsoft.com/mscorlib/R/42c2b7ffc7c3111f.html
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ByKeysValues(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>
+                Produces a Dictionary with the supplied keys and values. The number of entries is 
+                the shorter of keys or values.
+            </summary>
+            <param name="keys">Keys of dictionary</param>
+            <param name="values">Values of dictionary</param>
+            <returns name="dictionary">Dictionary from keys and values</returns>
+            <search>map,{},table</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.Components">
+            <summary>
+                Produces the components of a Dictionary. The reverse of Dictionary.ByKeysValues.
+            </summary>
+            <returns name="keys">Keys of the dictionary</returns>
+            <returns name="values">Values of the dictionary</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Keys">
+            <summary>
+                Produces the keys in a Dictionary.
+            </summary>
+            <returns name="keys">Keys of the Dictionary</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Values">
+            <summary>
+                Produces the values in a Dictionary.
+            </summary>
+            <returns name="values">Values of the dictionary</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Count">
+            <summary>
+                The number of key value pairs in a Dictionary.
+            </summary> 
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.SetValueAtKeys(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>
+                Produce a new Dictionary with a list of keys set to the new values, possibly overwriting existing key-value pairs. 
+                These two lists are expected to be of the same length. If not, the shorter of the two bounds the number of insertions.
+            </summary>
+            <param name="keys">The keys in the Dictionary to set. If the same key already exists, the value at that key will be modified.</param>
+            <param name="values">The corresponding values to insert.</param>
+            <returns name="dictionary">New dictionary with the entries inserted</returns>
+            <search>insert,add</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.RemoveKeys(System.Collections.Generic.IList{System.String})">
+            <summary>
+                Produce a new Dictionary with the given keys removed.
+            </summary>
+            <param name="keys">The key in the Dictionary to remove</param>
+            <returns name="dictionary">New dictionary with keys removed</returns>
+            <search>drop,delete</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ValueAtKey(System.String)">
+            <summary>
+                Obtain the value at a specified key
+            </summary>
+            <param name="key">The key in the Dictionary to obtain value for</param>
+            <returns name="value">Value at the specified key or null if it is not set</returns>
+            <search>lookup,valueatkey,find</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ToString">
+            <summary>
+            Returns a friendly string representation of the dictionary.
+            </summary>
+            <returns>String representation of the dictionary.</returns>
+        </member>
+        <member name="T:DesignScript.Builtin.BuiltinNullReferenceException">
+            <summary>
+            Null reference exception thrown with null DS builtin types:
+            lists, dictionaries and strings.
+            </summary>
+        </member>
+        <member name="T:Builtin.Properties.DesignScriptBuiltin">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.IndexOutOfRangeExceptionMessage">
+            <summary>
+              Looks up a localized string similar to Index was out of range. If non-negative must be less than the size of the list. href=kIndexOutOfRange.html.
+            </summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.NullReferenceExceptionMessage">
+            <summary>
+              Looks up a localized string similar to Cannot index into a null list, dictionary or string..
+            </summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.StringOverIndexingExceptionMessage">
+            <summary>
+              Looks up a localized string similar to Index was out of range. If non-negative must be less than the size of the string. href=kIndexOutOfRange.html.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -2,14 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Dynamo.Configuration;
+using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.PythonServices;
 using Dynamo.Scheduler;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using PythonNodeModels;
 
 namespace Dynamo.Tests
 {
@@ -22,7 +26,15 @@ namespace Dynamo.Tests
             libraries.Add("ProtoGeometry.dll");
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
+            libraries.Add("DSCPython.dll");
             base.GetLibrariesToPreload(libraries);
+        }
+
+        private void UpdatePythonEngineAndRun(PythonNode pythonNode, string pythonEngineVersion)
+        {
+            pythonNode.EngineName = pythonEngineVersion;
+            //to kick off a run node modified must be called
+            pythonNode.OnNodeModified();
         }
 
         private PackageDependencyInfo GetPackageInfo(string packageName)
@@ -95,6 +107,69 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void PythonEnginePackageDependencyIsCollectedAndSerialized()
+        {
+            // Load JSON file graph
+            string path = Path.Combine(TestDirectory, @"core\packageDependencyTests\PythonDependency.dyn");
+
+            // Assert package dependency is not already serialized to .dyn
+            using (StreamReader file = new StreamReader(path))
+            {
+                var data = file.ReadToEnd();
+                var json = (JObject)JsonConvert.DeserializeObject(data);
+                Assert.IsEmpty(json[WorkspaceReadConverter.NodeLibraryDependenciesPropString]);
+            }
+
+            string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\PythonEnginePackage");
+            LoadPackage(packageDirectory);
+
+            OpenModel(path);
+
+            //TO-DO: Force load binaries or mock the python engine instead of loading a package
+            //assert that default python engine was selected, and 2 different engines are loaded
+            var currentws = CurrentDynamoModel.CurrentWorkspace;
+            var pyNode = currentws.Nodes.OfType<PythonNode>().FirstOrDefault();
+            Assert.IsNotNull(pyNode);
+            Assert.AreEqual(pyNode.EngineName, PythonEngineManager.PythonNet3EngineName);
+            Assert.AreEqual(PythonEngineManager.Instance.AvailableEngines.Count, 2);
+
+            currentws.ForceComputeWorkspaceReferences = true;
+            var packageDependencies = currentws.NodeLibraryDependencies;
+            // PythonNet3 is loaded as a default package, ww should have a single package dependency.
+            Assert.AreEqual(1, packageDependencies.Count);
+
+            // Change engine to IronPython2, which is loaded as a package.
+            UpdatePythonEngineAndRun(pyNode, "IronPython2");
+            currentws.ForceComputeWorkspaceReferences = true;
+
+            //assert that python engine imported from a package gets added to NodeLibraryDependencies
+            packageDependencies = currentws.NodeLibraryDependencies;
+            Assert.AreEqual(1, packageDependencies.Count);
+            var package = packageDependencies.First();
+            Assert.AreEqual(new PackageDependencyInfo("DynamoIronPython2.7", new Version("3.2.1")), package);
+            Assert.AreEqual(1, package.Nodes.Count);
+
+            Assert.IsTrue(package.IsLoaded);
+            if (package is PackageDependencyInfo)
+            {
+                var packageDependencyState = ((PackageDependencyInfo)package).State;
+                Assert.AreEqual(PackageDependencyState.Loaded, packageDependencyState);
+            }
+
+            // Assert package dependency is serialized
+            var ToJson = currentws.ToJson(CurrentDynamoModel.EngineController);
+            var JObject = (JObject)JsonConvert.DeserializeObject(ToJson);
+            var deserializedPackageDependencies = JObject[WorkspaceReadConverter.NodeLibraryDependenciesPropString];
+            Assert.AreEqual(1, deserializedPackageDependencies.Count());
+            var name = deserializedPackageDependencies.First()[NodeLibraryDependencyConverter.NamePropString].Value<string>();
+            Assert.AreEqual(package.Name, name);
+            var version = deserializedPackageDependencies.First()[NodeLibraryDependencyConverter.VersionPropString].Value<string>();
+            Assert.AreEqual(package.Version.ToString(), version);
+            var nodes = deserializedPackageDependencies.First()[NodeLibraryDependencyConverter.NodesPropString].Values<string>();
+            Assert.AreEqual(package.Nodes.Select(n => n.ToString("N")), nodes);
+        }
+
+        [Test]
         public void CustomNodePackageDependencyIsCollected()
         {
             // Add "Round Down To Precision" custom node from the "Custom Rounding" package to a new workspace
@@ -138,6 +213,33 @@ namespace Dynamo.Tests
                 var packageDependencyState = ((PackageDependencyInfo)package).State;
                 Assert.AreEqual(PackageDependencyState.Loaded, packageDependencyState);
             }
+        }
+
+
+        /// <summary>
+        /// This test verifies that the PathManager singleton instance is created with the expected properties
+        /// e.g. DefaultPackagesDirectory has a structure like C:\Users\<user>\AppData\Roaming\Dynamo\Dynamo Core\4.0\packages
+        /// </summary>
+        [Test]
+        public void PackageInstallationPathTest()
+        {
+            int CurrentMajorFileVersion = 4;
+            int CurrentMinorFileVersion = 1;
+
+            //The PathManager was already created with empty parameters when PreferenceSettings is created.
+            PathManager singletonPathManager = PathManager.Instance;
+            var dynCorePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+            var commonDataDirectory = dynCorePath;
+            string DynamoVersion = $"{CurrentMajorFileVersion}.{CurrentMinorFileVersion}";
+            var defaultPackagesDirectory = Path.Combine(appDataFolder, "Dynamo", "Dynamo Core", DynamoVersion, "packages");
+
+            //Checking that the properties in PathManager are the expected ones
+            Assert.IsTrue(singletonPathManager.MajorFileVersion == CurrentMajorFileVersion);
+            Assert.IsTrue(singletonPathManager.MinorFileVersion == CurrentMinorFileVersion);
+            Assert.IsTrue(singletonPathManager.CommonDataDirectory.Equals(commonDataDirectory));
+            Assert.IsTrue(singletonPathManager.DefaultPackagesDirectory.Equals(defaultPackagesDirectory));
         }
 
         [Test]

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -246,7 +246,7 @@ namespace Dynamo.Tests
             var libraryLoader = new ExtensionLibraryLoader(model);
             libraryLoader.LoadNodeLibrary(assembly);
 
-            var entries = model.SearchModel.SearchEntries.ToList();
+            var entries = model.SearchModel.Entries.ToList();
             var nodesInLib = entries.Where(x => x.Assembly.Contains("SampleLibraryZeroTouch")).Select(y => y.FullName).ToList();
             Assert.AreEqual(12, nodesInLib.Count());
             Assert.IsTrue(entries.Count(x => x.FullName == "SampleLibraryZeroTouch.Examples.TransformableExample.TransformObject") == 1);

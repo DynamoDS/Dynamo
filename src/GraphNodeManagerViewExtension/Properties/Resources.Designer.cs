@@ -139,14 +139,6 @@ namespace Dynamo.GraphNodeManager.Properties {
             }
         }
         
-        ///   Looks up a localized string similar to Issues.
-        /// </summary>
-        public static string HeaderNameIssues {
-            get {
-                return ResourceManager.GetString("HeaderNameIssues", resourceCulture);
-            }
-        }
-        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -156,12 +148,49 @@ namespace Dynamo.GraphNodeManager.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Issues.
+        /// </summary>
+        public static string HeaderNameIssues {
+            get {
+                return ResourceManager.GetString("HeaderNameIssues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string HeaderNameName {
             get {
                 return ResourceManager.GetString("HeaderNameName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Outputs.
+        /// </summary>
+        public static string HeaderNameOutputs {
+            get {
+                return ResourceManager.GetString("HeaderNameOutputs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to State.
+        /// </summary>
+        public static string HeaderNameState {
+            get {
+                return ResourceManager.GetString("HeaderNameState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string HeaderNameType {
+            get {
+                return ResourceManager.GetString("HeaderNameType", resourceCulture);
             }
         }
         
@@ -172,14 +201,6 @@ namespace Dynamo.GraphNodeManager.Properties {
             get {
                 object obj = ResourceManager.GetObject("Hidden", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-
-        ///   Looks up a localized string similar to Outputs.
-        /// </summary>
-        public static string HeaderNameOutputs {
-            get {
-                return ResourceManager.GetString("HeaderNameOutputs", resourceCulture);
             }
         }
         
@@ -193,14 +214,6 @@ namespace Dynamo.GraphNodeManager.Properties {
             }
         }
         
-        ///   Looks up a localized string similar to State.
-        /// </summary>
-        public static string HeaderNameState {
-            get {
-                return ResourceManager.GetString("HeaderNameState", resourceCulture);
-            }
-        }
-        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -208,14 +221,6 @@ namespace Dynamo.GraphNodeManager.Properties {
             get {
                 object obj = ResourceManager.GetObject("IsInput", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        ///   Looks up a localized string similar to Type.
-        /// </summary>
-        public static string HeaderNameType {
-            get {
-                return ResourceManager.GetString("HeaderNameType", resourceCulture);
             }
         }
         
@@ -229,6 +234,7 @@ namespace Dynamo.GraphNodeManager.Properties {
             }
         }
         
+        /// <summary>
         ///   Looks up a localized string similar to Export as CSV.
         /// </summary>
         public static string MenuItemExportAsCSV {
@@ -358,6 +364,15 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Single item.
+        /// </summary>
+        public static string Title_IsOutputSingleItem {
+            get {
+                return ResourceManager.GetString("Title_IsOutputSingleItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Missing content.
         /// </summary>
         public static string Title_MissingContent {
@@ -376,11 +391,29 @@ namespace Dynamo.GraphNodeManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Package.
+        /// </summary>
+        public static string Title_Package {
+            get {
+                return ResourceManager.GetString("Title_Package", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Preview off.
         /// </summary>
         public static string Title_PreviewOff {
             get {
                 return ResourceManager.GetString("Title_PreviewOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of top level items.
+        /// </summary>
+        public static string Title_TopLevelItemsNumber {
+            get {
+                return ResourceManager.GetString("Title_TopLevelItemsNumber", resourceCulture);
             }
         }
         

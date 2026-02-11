@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -6,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using CoreNodeModelsWpf.Charts.Utilities;
+using Dynamo.Utilities;
 using LiveChartsCore;
 using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
@@ -99,7 +99,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
                     new ColumnSeries<double>
                     {
                         Name = "2019",
-                        Values = ChartStyle.GetRandomList(4),
+                        Values = ChartStyle.GetRandomList(4).ToObservableCollection(),
                         Padding = ChartStyle.COLUMN_GROUP_PADDING,
                         MaxBarWidth = ChartStyle.MAX_COLUMN_WIDTH,
                         Rx = ChartStyle.COLUMN_RADIUS,
@@ -108,7 +108,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
                     new ColumnSeries<double>
                     {
                         Name = "2020",
-                        Values = ChartStyle.GetRandomList(4),
+                        Values = ChartStyle.GetRandomList(4).ToObservableCollection(),
                         Padding = ChartStyle.COLUMN_GROUP_PADDING,
                         MaxBarWidth = ChartStyle.MAX_COLUMN_WIDTH,
                         Rx = ChartStyle.COLUMN_RADIUS,
@@ -117,7 +117,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
                     new ColumnSeries<double>
                     {
                         Name = "2021",
-                        Values = ChartStyle.GetRandomList(4),
+                        Values = ChartStyle.GetRandomList(4).ToObservableCollection(),
                         Padding = ChartStyle.COLUMN_GROUP_PADDING,
                         MaxBarWidth = ChartStyle.MAX_COLUMN_WIDTH,
                         Rx = ChartStyle.COLUMN_RADIUS,

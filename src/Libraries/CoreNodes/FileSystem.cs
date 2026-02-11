@@ -73,6 +73,11 @@ namespace DSCore.IO
         /// <search>read file,text,file</search>
         public static string ReadText(FileInfo file)
         {
+            Analytics.TrackTaskFileOperationEvent(
+                                  file.Name,
+                                  Actions.Read,
+                                  Convert.ToInt32(file.Length));
+
             return System.IO.File.ReadAllText(file.FullName);
         }
 
@@ -97,6 +102,11 @@ namespace DSCore.IO
         /// <returns name="void">Node performs a task, doesn’t produce an output </returns>
         public static void DeleteFile(string path)
         {
+            Analytics.TrackTaskFileOperationEvent(
+                      Path.GetFileName(path),
+                      Actions.Delete,
+                      Convert.ToInt32(path.Length));
+
             System.IO.File.Delete(path);
         }
 
@@ -150,6 +160,11 @@ namespace DSCore.IO
         /// <search>write file,text,file,filepath</search>
         public static void WriteText(string filePath, string text)
         {
+            Analytics.TrackTaskFileOperationEvent(
+                                  Path.GetFileName(filePath),
+                                  Actions.Write,
+                                  Convert.ToInt32(filePath.Length));
+
             var fullpath = AbsolutePath(filePath);
             System.IO.File.WriteAllText(fullpath, text);
         }
@@ -336,52 +351,6 @@ namespace DSCore.IO
             }
         }
         #endregion
-
-        #region Obsolete Methods
-
-#if NET6_0_OR_GREATER
-        [SupportedOSPlatform("windows")]
-#endif
-        [NodeObsolete("ReadImageObsolete", typeof(Properties.Resources))]
-        public static Color[] ReadImage(string path, int xSamples, int ySamples)
-        {
-            var info = FileFromPath(path);
-            var image = Image.ReadFromFile(info);
-            return Image.Pixels(image, xSamples, ySamples).SelectMany(x => x).ToArray();
-        }
-
-#if NET6_0_OR_GREATER
-        [SupportedOSPlatform("windows")]
-#endif
-        [NodeObsolete("LoadImageFromPathObsolete", typeof(Properties.Resources))]
-        public static Bitmap LoadImageFromPath(string path)
-        {
-            return Image.ReadFromFile(FileFromPath(path));
-        }
-
-        [NodeObsolete("ReadTextObsolete", typeof(Properties.Resources))]
-        public static string ReadText(string path)
-        {
-            return ReadText(FileFromPath(path));
-        }
-
-#if NET6_0_OR_GREATER
-        [SupportedOSPlatform("windows")]
-#endif
-        [NodeObsolete("WriteImageObsolete", typeof(Properties.Resources))]
-        public static bool WriteImage(string filePath, string fileName, Bitmap image)
-        {
-            fileName = Path.ChangeExtension(fileName, "png");
-            Image.WriteToFile(Path.Combine(filePath, fileName), image);
-            return true;
-        }
-
-        [NodeObsolete("ExportToCSVObsolete", typeof(Properties.Resources))]
-        public static bool ExportToCSV(string filePath, object[][] data)
-        {
-            return false;
-        }
-        #endregion
     }
 
     /// <summary>
@@ -399,6 +368,11 @@ namespace DSCore.IO
         /// <returns name="image">Image object from file</returns>
         public static Bitmap ReadFromFile(FileInfo file)
         {
+            Analytics.TrackTaskFileOperationEvent(
+                                  file.Name,
+                                  Actions.Read,
+                                  Convert.ToInt32(file.Length));
+
             using (var fs = new FileStream(file.FullName, FileMode.Open))
                 return new Bitmap(System.Drawing.Image.FromStream(fs));
         }
@@ -516,6 +490,11 @@ namespace DSCore.IO
         /// <search>write image,image,file,filepath</search>
         public static Bitmap WriteToFile(string path, Bitmap image)
         {
+            Analytics.TrackTaskFileOperationEvent(
+                                 Path.GetFileName(path),
+                                 Actions.Write,
+                                 Convert.ToInt32(path.Length));
+
             image.Save(FileSystem.AbsolutePath(path));
 
             return image;

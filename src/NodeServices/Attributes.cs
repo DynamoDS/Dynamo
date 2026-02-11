@@ -406,4 +406,15 @@ namespace Autodesk.DesignScript.Runtime
             IsAllowed = isAllowed;
         }
     }
+    /// <summary>
+    /// This attribute is used to mark methods that are called from javascript web components.
+    /// Usually these methods are internal apis with no c# references so developers might inadvertently
+    /// change them and break interop with the js component. We might use this attribute in the future to analyze
+    /// when these methods change.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method)]
+    internal class DynamoJSInvokable : Attribute
+    {
+
+    }
 }

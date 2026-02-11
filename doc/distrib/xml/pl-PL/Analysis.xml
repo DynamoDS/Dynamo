@@ -1,0 +1,151 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Analysis</name>
+    </assembly>
+    <members>
+        <member name="T:Analysis.AnalysisResources">
+            <summary>Silnie typizowana klasa zasobów do wyszukiwania zlokalizowanych ciągów itp.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.ResourceManager">
+            <summary>Zwraca buforowane wystąpienie Menedżera Zasobów używane przez tę klasę.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.Culture">
+            <summary>Nadpisuje właściwość CurrentUICulture bieżącego wątku dla wszystkich wyszukań zasobów, przy użyciu tej silnie typizowanej klasy zasobów.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyColorsMessage">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do Nie wybrano kolorów.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyPointsMessage">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do Nie wybrano punktów.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyUVsMessage">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do Nie wybrano UV.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyValuesMessage">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do Nie wybrano wartości..</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.InputsNotEquivalentMessage">
+            <summary>Wyszukuje zlokalizowany ciąg podobny Należy podać odpowiednią liczbę punktów i wartości.</summary>
+        </member>
+        <member name="P:Analysis.IStructuredData`2.ValueLocations">
+            <summary>Zbieranie położeń obliczeń.</summary>
+        </member>
+        <member name="P:Analysis.IStructuredData`2.Values">
+            <summary>Lista wartości odpowiadających poszczególnym położeniom.</summary>
+        </member>
+        <member name="P:Analysis.ISurfaceData`2.Surface">
+            <summary>Powierzchnia analizy.</summary>
+        </member>
+        <member name="P:Analysis.ICurveData`2.Curve">
+            <summary>Krzywa analizy.</summary>
+        </member>
+        <member name="T:Analysis.IAnalysisModel`2">
+            <summary>Model analizy.</summary>
+            <typeparam name="TLocation">The analysis location type. (i.e. UV, Point)</typeparam>
+            <typeparam name="TValue">The analysis return type. (i.e. double, vector, SIUnit)</typeparam>
+        </member>
+        <member name="M:Analysis.Label.ByPointAndString(Autodesk.DesignScript.Geometry.Point,System.String)">
+            <summary>Zwraca obiekt etykiety danego obiektu punktu i ciąg etykiety.</summary>
+            <param name="point"/>
+            <param name="label"/>
+            <returns/>
+        </member>
+        <member name="T:Analysis.PointData">
+            <summary>Klasa do przechowywania danych analizy punktów konstrukcyjnych.</summary>
+        </member>
+        <member name="P:Analysis.PointData.ValueLocations">
+            <summary>Lista punktów.</summary>
+        </member>
+        <member name="P:Analysis.PointData.Values">
+            <summary>Słownik list wartości podwójnych.</summary>
+        </member>
+        <member name="M:Analysis.PointData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{System.Double})">
+            <summary>Utwórz obiekt PointAnalysisData.</summary>
+            <param name="points">Lista punktów.</param>
+            <param name="values">Lista wartości podwójnych.</param>
+        </member>
+        <member name="T:Analysis.Properties.Resources">
+            <summary>Silnie typizowana klasa zasobów do wyszukiwania zlokalizowanych ciągów itp.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ResourceManager">
+            <summary>Zwraca buforowane wystąpienie Menedżera Zasobów używane przez tą klasę.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.Culture">
+            <summary>Nadpisuje właściwość CurrentUICulture bieżącego wątku dla wszystkich wyszukań zasobów przy użyciu tej silnie typizowanej klasy zasobów.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ByPointsAndValueObsolete">
+            <summary>Wyszukuje zlokalizowany ciąg, podobny do węzłów Use Point i Number jako bezpośrednie dane wejściowe do węzłów, które wcześniej wykorzystywały węzły PointData.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.BySurfacePointObsolete">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do węzłów Use Surface i UV jako bezpośrednie dane wejściowe do węzłów, które wcześniej wykorzystywały węzły SurfaceData.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.BySurfacePointsAndValues">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do węzłów Use Surface, UV i Number jako bezpośrednie dane wejściowe do węzłów, które wcześniej wykorzystywały węzły SurfaceData.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.SurfaceObsolete">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do opcji Użyj powierzchni dostępnej w innym miejscu na wykresie.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueLocationObsolete">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do opcji Użyj punktów dostępnej w innym miejscu na wykresie.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueLocationsObsolete">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do opcji Użyj położeń UV dostępnych w innym miejscu na wykresie.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValuesObsolete">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do opcji Użyj wartości dostarczonych przez węzeł przeprowadzający analizę.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueSurfaceObsolete">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do opcji Użyj wartości dostarczonych przez węzeł przeprowadzający analizę.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.VectorValueObsolete">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do opcji Użyj węzłów wektora i węzłów liczbowych jako bezpośrednie dane wejściowe do węzłów, które wcześniej wykorzystywały węzły Danych wektora.</summary>
+        </member>
+        <member name="T:Analysis.SurfaceData">
+            <summary>Klasa do przechowywania danych analizy powierzchni strukturalnych.</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.Surface">
+            <summary>Powierzchnia, która zawiera położenia.</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.ValueLocations">
+            <summary>Lista położeń UV na powierzchni.</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.Values">
+            <summary>Słownik list wartości podwójnych.</summary>
+        </member>
+        <member name="M:Analysis.SurfaceData.BySurfaceAndPoints(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV})">
+            <summary>Utwórz obiekt SurfaceData bez wartości.</summary>
+            <param name="surface">Powierzchnia, która zawiera położenia.</param>
+            <param name="uvs">Lista położeń UV na powierzchni.</param>
+            <returns/>
+        </member>
+        <member name="M:Analysis.SurfaceData.BySurfacePointsAndValues(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},System.Collections.Generic.IList{System.Double})">
+            <summary>Utwórz obiekt SurfaceData.</summary>
+            <param name="surface">Powierzchnia, która zawiera położenia.</param>
+            <param name="uvs">Lista położeń UV na powierzchni.</param>
+            <param name="values">Lista wartości podwójnych.</param>
+        </member>
+        <member name="M:Analysis.AnalysisExtensions.IsAlmostEqualTo(Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
+            <summary>Wymaga dwóch płaszczyzn (typu UV) i zwraca wartość Prawda, jeśli różnica między dwoma płaszczyznami jest mniejsza niż 1.0e-6, w przeciwnym razie zwraca wartość Fałsz.</summary>
+            <param name="a"/>
+            <param name="b"/>
+            <returns/>
+        </member>
+        <member name="T:Analysis.Utils.ValueLocation`1">
+            <summary>Klasa do przechowywania wartości w lokalizacji.</summary>
+        </member>
+        <member name="T:Analysis.VectorData">
+            <summary>Klasa do przechowywania danych analizy wektorów strukturalnych.</summary>
+        </member>
+        <member name="P:Analysis.VectorData.ValueLocations">
+            <summary>Lista położeń obliczeń.</summary>
+        </member>
+        <member name="P:Analysis.VectorData.Values">
+            <summary>Słownik wyników.</summary>
+        </member>
+        <member name="M:Analysis.VectorData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{Autodesk.DesignScript.Geometry.Vector})">
+            <summary>Utwórz obiekt VectorAnalysisData.</summary>
+            <param name="points">Lista punktów.</param>
+            <param name="values">Lista wartości wektora.</param>
+        </member>
+    </members>
+</doc>

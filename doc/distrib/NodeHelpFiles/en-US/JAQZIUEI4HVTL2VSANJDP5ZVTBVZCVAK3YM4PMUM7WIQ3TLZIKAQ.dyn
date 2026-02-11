@@ -1,0 +1,643 @@
+{
+  "Uuid": "111cf6f6-c4ce-4bdb-8db3-472f0949aaf6",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.Vector.Scale",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "149651b06b454fd6a9c2a0302c1103a9",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "214353ad7009475493f91c6067fdccba",
+          "Name": "x",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bcee67db4a4d4ff1a137f030f5025885",
+          "Name": "y",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4da101597e9546139bb0f3a888a50c28",
+          "Name": "z",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1cb974396497441e84b48cc184f0a3ff",
+          "Name": "Vector",
+          "Description": "Vector created by coordinates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.ByCoordinates@double,double,double",
+      "Replication": "Auto",
+      "Description": "Form a Vector by 3 Euclidean coordinates\n\nVector.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Vector"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "5dd6bf4863824faf91ef85623e357fae",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "52c596de45ae4271a5e19f0bcc69b301",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "1;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "6c8310f38b96449f8f88bd7eb4873744",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "7c8bb65ac6a64583b66fafa08e6ab052",
+          "Name": "vector",
+          "Description": "Autodesk.DesignScript.Geometry.Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bd78dc8a0ac94ea19e3d182be9b72b68",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.Length",
+      "Replication": "Auto",
+      "Description": "Get the length of the vector otherwise known as the Euclidean norm.\n\nVector.Length: double"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 140.0,
+      "WatchHeight": 38.4,
+      "Id": "7b94ac48d72746fa954c0598a31a7c1e",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "29966581515740ae9fe6bea7546fe9b7",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "70aba4282e904901aac869da6bd9088f",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 140.0,
+      "WatchHeight": 38.4,
+      "Id": "7754a3af90b14041b8610c575f9877c5",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "6da3d5411018460bb7595f300431c1c6",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ec601449ab104741bd0f79f4453388ec",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "1a9e6708d97845a4801fa32914c57421",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "ed90e8bab26941e3b9c125740dc9fc03",
+          "Name": "vector",
+          "Description": "Autodesk.DesignScript.Geometry.Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "372ead3b2b7b4553884779ea8b83df92",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.Length",
+      "Replication": "Auto",
+      "Description": "Get the length of the vector otherwise known as the Euclidean norm.\n\nVector.Length: double"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "4eb49fdafed1499ea6f15d6c91361bce",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "4c3988c5d0af44b28d50e3e9b05efee1",
+          "Name": "vector",
+          "Description": "Autodesk.DesignScript.Geometry.Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a2e8d3e7b8d244f7a778bb2feb48c907",
+          "Name": "xScaleFactor",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3837a01fe2314e2d8f50d19a6a8affbf",
+          "Name": "yScaleFactor",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7c823df4e1fa46be8f59feccca31e5b0",
+          "Name": "zScaleFactor",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d53995a012374411aa6451180a5085da",
+          "Name": "Vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.Scale@double,double,double",
+      "Replication": "Auto",
+      "Description": "Scale Vector non-uniformly around the origin\n\nVector.Scale (xScaleFactor: double = 1, yScaleFactor: double = 1, zScaleFactor: double = 1): Vector"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 27.2,
+      "WatchHeight": 38.4,
+      "Id": "ca663badb76449f58b966fdbb1e8669d",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "a7cdb9a7a4d44613810703c18fb1d000",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "fd037518fdf347b4917cd3dda46c9713",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "6ca2b44cbc6c4c069e4781c8eed0496b",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "c9f3605f425142e49b818e97c7ec8051",
+          "Name": "vector",
+          "Description": "Autodesk.DesignScript.Geometry.Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b19fe0d673104996a812f95b98a51041",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.Length",
+      "Replication": "Auto",
+      "Description": "Get the length of the vector otherwise known as the Euclidean norm.\n\nVector.Length: double"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "383a5a5a95164061adcbbd34cf12815b",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "5b4184ae3b7240d58086f98d70097154",
+          "Name": "vector",
+          "Description": "Autodesk.DesignScript.Geometry.Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e2e5e2e5c3d640cd92f9b12dd05484d9",
+          "Name": "xScaleFactor",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "08d43ba84ecd403c9a785c2bff9722b4",
+          "Name": "yScaleFactor",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "34045992774e412c8d21fb0cdc13b550",
+          "Name": "zScaleFactor",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6a9e98ec88ef44c991224050835dcc6b",
+          "Name": "Vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.Scale@double,double,double",
+      "Replication": "Auto",
+      "Description": "Scale Vector non-uniformly around the origin\n\nVector.Scale (xScaleFactor: double = 1, yScaleFactor: double = 1, zScaleFactor: double = 1): Vector"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "c822eaff2c62419ebc4de600f0961087",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "381e0f9e007a4f60af869b1ab8f9c687",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "2;"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "1cb974396497441e84b48cc184f0a3ff",
+      "End": "4c3988c5d0af44b28d50e3e9b05efee1",
+      "Id": "49ce457bca0149aa85c6d6f4ef6d9c16",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "1cb974396497441e84b48cc184f0a3ff",
+      "End": "ed90e8bab26941e3b9c125740dc9fc03",
+      "Id": "f7288872a1db4be399bbe979b86ccc0e",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "1cb974396497441e84b48cc184f0a3ff",
+      "End": "5b4184ae3b7240d58086f98d70097154",
+      "Id": "565ba4224e974a2a81782b91be2d56f7",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "52c596de45ae4271a5e19f0bcc69b301",
+      "End": "214353ad7009475493f91c6067fdccba",
+      "Id": "4498bd859a41434db59bfcf9926f8f44",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "52c596de45ae4271a5e19f0bcc69b301",
+      "End": "bcee67db4a4d4ff1a137f030f5025885",
+      "Id": "160d1f36cbac4bcf88827f0799a95625",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "52c596de45ae4271a5e19f0bcc69b301",
+      "End": "4da101597e9546139bb0f3a888a50c28",
+      "Id": "2acfc2f7a5144239a0aca18fd3354da4",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "bd78dc8a0ac94ea19e3d182be9b72b68",
+      "End": "29966581515740ae9fe6bea7546fe9b7",
+      "Id": "461524f71a3f4f0db760c51ff95a1284",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "372ead3b2b7b4553884779ea8b83df92",
+      "End": "6da3d5411018460bb7595f300431c1c6",
+      "Id": "171a70a2a6ea4b1d8d91193c90db99fb",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d53995a012374411aa6451180a5085da",
+      "End": "7c8bb65ac6a64583b66fafa08e6ab052",
+      "Id": "da435a852a04427a934fd00ec3a30d6f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "b19fe0d673104996a812f95b98a51041",
+      "End": "a7cdb9a7a4d44613810703c18fb1d000",
+      "Id": "4115207f8d944062b76c595023c33d38",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "6a9e98ec88ef44c991224050835dcc6b",
+      "End": "c9f3605f425142e49b818e97c7ec8051",
+      "Id": "9d228ba79ba54bed858f984cc02ea398",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "381e0f9e007a4f60af869b1ab8f9c687",
+      "End": "a2e8d3e7b8d244f7a778bb2feb48c907",
+      "Id": "e021e2d4c0a84d12b2358bac4e338300",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "381e0f9e007a4f60af869b1ab8f9c687",
+      "End": "08d43ba84ecd403c9a785c2bff9722b4",
+      "Id": "a2b745f682d2445d923a5426bc0c0cac",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "381e0f9e007a4f60af869b1ab8f9c687",
+      "End": "34045992774e412c8d21fb0cdc13b550",
+      "Id": "c2567daa2e0644ec8d499b558825cc0e",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.0.5742",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -2.3680846691131592,
+      "EyeY": 3.16054105758667,
+      "EyeZ": -10.044923782348633,
+      "LookX": 3.8618874549865723,
+      "LookY": -0.66080021858215332,
+      "LookZ": 6.5273284912109375,
+      "UpX": -0.06558285653591156,
+      "UpY": 0.99167114496231079,
+      "UpZ": -0.11084761470556259
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "149651b06b454fd6a9c2a0302c1103a9",
+        "Name": "Vector.ByCoordinates",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2394.3275265767497,
+        "Y": 3871.23247073368
+      },
+      {
+        "Id": "5dd6bf4863824faf91ef85623e357fae",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2140.3275265767497,
+        "Y": 3905.05997073368
+      },
+      {
+        "Id": "6c8310f38b96449f8f88bd7eb4873744",
+        "Name": "Vector.Length",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 3068.3275265767497,
+        "Y": 3919.23247073368
+      },
+      {
+        "Id": "7b94ac48d72746fa954c0598a31a7c1e",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 3376.3275265767497,
+        "Y": 3919.23247073368
+      },
+      {
+        "Id": "7754a3af90b14041b8610c575f9877c5",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 3376.3275265767497,
+        "Y": 3768.23247073368
+      },
+      {
+        "Id": "1a9e6708d97845a4801fa32914c57421",
+        "Name": "Vector.Length",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 3068.3275265767497,
+        "Y": 3768.23247073368
+      },
+      {
+        "Id": "4eb49fdafed1499ea6f15d6c91361bce",
+        "Name": "Vector.Scale",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2727.3275265767497,
+        "Y": 3871.23247073368
+      },
+      {
+        "Id": "ca663badb76449f58b966fdbb1e8669d",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 3376.3275265767497,
+        "Y": 4070.23247073368
+      },
+      {
+        "Id": "6ca2b44cbc6c4c069e4781c8eed0496b",
+        "Name": "Vector.Length",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 3068.3275265767497,
+        "Y": 4070.23247073368
+      },
+      {
+        "Id": "383a5a5a95164061adcbbd34cf12815b",
+        "Name": "Vector.Scale",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2727.3275265767497,
+        "Y": 4118.23247073368
+      },
+      {
+        "Id": "c822eaff2c62419ebc4de600f0961087",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2394.3275265767497,
+        "Y": 4186.0599707336805
+      }
+    ],
+    "Annotations": [],
+    "X": -675.85951208778488,
+    "Y": -1526.4036443658533,
+    "Zoom": 0.46370552382733077
+  }
+}

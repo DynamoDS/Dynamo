@@ -1,0 +1,4 @@
+<ExtensionDefinition>
+  <AssemblyPath>..\DynamoMLDataPipeline.dll</AssemblyPath>
+  <TypeName>DynamoMLDataPipeline.DynamoMLDataPipelineExtension</TypeName>
+</ExtensionDefinition>

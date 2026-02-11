@@ -5,6 +5,7 @@ using NUnit.Framework;
 using ProtoCore.AST.ImperativeAST;
 using ProtoCore.SyntaxAnalysis;
 using ProtoCore.Utils;
+using ProtoTestFx.TD;
 
 namespace ProtoTest.UtilsTests
 {
@@ -72,13 +73,13 @@ namespace ProtoTest.UtilsTests
 
         private void TestMapping(string originalCode, string expectedCode)
         {
-            var originalResult = ParserUtils.Parse(originalCode);
+            var originalResult = ParserUtils.ParseWithCore(originalCode, TestFrameWork.TestParserCore()).CodeBlockNode;
             var cbn = GetCodeBlockNode(originalResult);
             var mappedCBN = cbn.Accept(replacer) as CodeBlockNode;
             Assert.IsNotNull(mappedCBN);
             Assert.IsTrue(mappedCBN.Body.Any());
 
-            var expectedResult = ParserUtils.Parse(expectedCode);
+            var expectedResult = ParserUtils.ParseWithCore(expectedCode, TestFrameWork.TestParserCore()).CodeBlockNode;
             var expectedCBN = GetCodeBlockNode(expectedResult);
             Assert.IsNotNull(expectedCBN);
             Assert.IsTrue(expectedCBN.Body.Any());

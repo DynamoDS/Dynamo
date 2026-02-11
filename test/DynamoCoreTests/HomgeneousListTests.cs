@@ -26,11 +26,8 @@ namespace Dynamo.Tests
             libraries.Add("FunctionObject.ds");
             base.GetLibrariesToPreload(libraries);
         }
-#if NET6_0_OR_GREATER
+
         [OneTimeSetUp]
-#elif NETFRAMEWORK
-        [TestFixtureSetUp]
-#endif
         public void FixtureSetup()
         {
             ExecutionEvents.GraphPostExecution += ExecutionEvents_GraphPostExecution;
@@ -66,11 +63,7 @@ namespace Dynamo.Tests
                 });
         }
 
-#if NET6_0_OR_GREATER
         [OneTimeTearDown]
-#elif NETFRAMEWORK
-        [TestFixtureTearDown]
-#endif
         public void TearDown()
         {
             ExecutionEvents.GraphPostExecution -= ExecutionEvents_GraphPostExecution;

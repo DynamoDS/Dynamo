@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Dynamo.Configuration;
@@ -11,6 +11,8 @@ namespace Dynamo.PackageManager.Tests
         [SetUp]
         public override void Setup()
         {
+            // setup temp folder fro the new settings file.
+            // temp folder will be regenerated when calling base.Setup()
             SetupDirectories();
 
             var settings = new PreferenceSettings();
@@ -29,9 +31,9 @@ namespace Dynamo.PackageManager.Tests
             var settingFilePath = Path.Combine(TempFolder, "DynamoSettings.xml");
             settings.Save(settingFilePath);
 
-            var settingsLoadedFromFile = PreferenceSettings.Load(settingFilePath);
+            this.dynamoSettings = PreferenceSettings.Load(settingFilePath);
 
-            StartDynamo(settingsLoadedFromFile);
+            base.Setup();
         }
 
         [Test]

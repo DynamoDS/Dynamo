@@ -9,6 +9,7 @@ using Dynamo.Logging;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Utilities;
+using System.IO;
 
 namespace Dynamo.Notifications
 {
@@ -18,7 +19,7 @@ namespace Dynamo.Notifications
         private Action<Logging.NotificationMessage> notificationHandler;
         private ObservableCollection<Logging.NotificationMessage> notifications;
         private bool disposed;
-        private NotificationCenterController notificationCenterController;
+        internal NotificationCenterController notificationCenterController;
         /// <summary>
         /// Notifications data collection. PropertyChanged event is raised to help dealing WPF bind dispose.
         /// </summary>
@@ -67,6 +68,8 @@ namespace Dynamo.Notifications
                 {
                     BindingOperations.ClearAllBindings(notificationsMenuItem.CountLabel);
                 }
+                notificationCenterController?.Dispose();
+                notificationCenterController = null;
                 notificationsMenuItem = null;
                 disposed = true;
             }
@@ -110,11 +113,39 @@ namespace Dynamo.Notifications
             viewStartupParams.dynamoMenu.Items.Add(notificationsMenuItem.MenuItem);
 
             LoadNotificationCenter();
+
+            //If TrustedLocations contain paths pointing to ProgramData, log a warning notification.
+            string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            var unsafeLocations = new System.Collections.Generic.List<string>();
+            foreach (var location in viewModel.Model.PreferenceSettings.TrustedLocations)
+            {
+                var fullChildPath = Path.GetFullPath(location);
+                if (fullChildPath.StartsWith(programDataPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    unsafeLocations.Add(location);
+                }
+            }
+            if (unsafeLocations.Count > 0)
+            {
+                foreach (var unsafePath in unsafeLocations)
+                {
+                    string detail = Properties.Resources.UnsafePathDetectedDetail + "\n" + unsafePath;
+                    Notifications.Add(new NotificationMessage("Preference Settings", Properties.Resources.UnsafePathDetectedTitle, detail));
+                }
+
+                notificationsMenuItem.NotificationsChangeHandler.Invoke(this, null);
+            }
         }
 
         private void LoadNotificationCenter()
         {
             var dynamoView = viewLoadedParams.DynamoWindow as DynamoView;
+
+            if (notificationCenterController != null)
+            {
+                notificationCenterController.Dispose();
+                notificationCenterController = null;
+            }
             notificationCenterController = new NotificationCenterController(dynamoView, logger);
         }
 

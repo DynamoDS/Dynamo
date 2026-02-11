@@ -1,0 +1,173 @@
+<?xml version="1.0"?><doc>
+  <assembly>
+    <name>BuiltIn</name>
+  </assembly>
+  <members>
+    <member name="List.Rank">
+      <summary>返回最深的列表深度</summary>
+      <param name="list">要查询其中等级的列表</param>
+      <returns name="int">列表的最深深度</returns>
+      <search>rank,depth,nesting,ranks</search>
+    </member>
+    <member name="List.RemoveIfNot">
+      <summary>删除列表中非指定类型的成员。</summary>
+      <param name="list">要删除其中条目的列表</param>
+      <param name="type">图元的类型</param>
+      <returns name="list">已删除指定类型以外的所有项的列表</returns>
+      <search>remove,not,ofType,filtertype</search>
+    </member>
+    <member name="List.Equals">
+      <summary>确定两个对象实例是否相等。</summary>
+      <param name="object">第一个对象</param>
+      <param name="otherObject">其他对象</param>
+      <returns name="bool">如果对象实例相等，则返回 true；如果不同，则返回 false</returns>
+      <search>equals</search>
+    </member>
+    <member name="List.SortByFunction">
+      <summary>使用函数来确定应如何对列表项目进行排序。</summary>
+      <param name="list">值列表</param>
+      <param name="sortFunction">用于对列表进行排序的函数</param>
+      <returns name="sortedList">类型: var[]..[]</returns>
+      <search>sort,order</search>
+    </member>
+    <member name="ToString">
+      <param name="object">某些对象</param>
+      <search>string</search>
+    </member>
+    <member name="__ToStringFromObject">
+      <param name="object">某些对象</param>
+      <search>string,from,object</search>
+    </member>
+    <member name="__ToStringFromArray">
+      <param name="list">某些列表</param>
+      <search>string,from,array</search>
+    </member>
+    <member name="__Apply">
+      <param name="functionObject"/>
+      <param name="param"/>
+      <search>apply</search>
+    </member>
+    <member name="__ApplyList">
+      <param name="functionObject"/>
+      <param name="param"/>
+      <search>apply,list</search>
+    </member>
+    <member name="__GetOutput">
+      <param name="outputs"/>
+      <param name="key"/>
+      <search>output</search>
+    </member>
+    <member name="__Compose">
+      <param name="funcs"/>
+      <search>compose,functionchain</search>
+    </member>
+    <member name="__ComposeBuffered">
+      <param name="funcs"/>
+      <param name="amt"/>
+      <param name="arg"/>
+      <search>compose,buffered</search>
+    </member>
+    <member name="List.MinimumItemByKey">
+      <summary>返回列表中的项目，这些项目为作为关键投影提供的函数生成最小值</summary>
+      <param name="list">值列表</param>
+      <param name="keyFunction">函数已应用于列表项目</param>
+      <returns name="minimumItem">使用 keyFunction 的列表中的最小项目(类型: var[]..[])</returns>
+      <search>min,item,key</search>
+    </member>
+    <member name="List.MaximumItemByKey">
+      <summary>返回列表中的项目，这些项目为作为关键投影提供的函数生成最大值</summary>
+      <param name="list">值列表</param>
+      <param name="keyFunction">函数已应用于列表项目</param>
+      <returns name="maximumItem">使用 keyFunction 的列表中的最大项目(类型: var[]..[])</returns>
+      <search>max,item,key</search>
+    </member>
+    <member name="__Replace">
+      <param name="list">值列表</param>
+      <param name="with"/>
+      <param name="predicate"/>
+      <search>replace</search>
+    </member>
+    <member name="__Filter">
+      <param name="list">值列表</param>
+      <param name="predicate"/>
+      <search>filter</search>
+    </member>
+    <member name="__Combine">
+      <param name="func">函数</param>
+      <param name="lists"/>
+      <search>combine</search>
+    </member>
+    <member name="__Map">
+      <param name="func">函数</param>
+      <param name="arg"/>
+      <search>map</search>
+    </member>
+    <member name="__LaceShortest">
+      <param name="func">函数</param>
+      <param name="lists"/>
+      <search>lace,shortest</search>
+    </member>
+    <member name="__LaceLongest">
+      <param name="func">函数</param>
+      <param name="lists"/>
+      <search>lace,longest</search>
+    </member>
+    <member name="__ApplyNested">
+      <param name="fs">函数</param>
+      <param name="xs"/>
+      <param name="amt"/>
+      <search>apply,nested</search>
+    </member>
+    <member name="__CartesianProduct">
+      <param name="func">函数</param>
+      <param name="lists"/>
+      <search>cartesian,product</search>
+    </member>
+    <member name="__Scan">
+      <param name="accumulator"/>
+      <param name="seed"/>
+      <param name="lists"/>
+      <search>scan</search>
+    </member>
+    <member name="__Reduce">
+      <param name="accumulator"/>
+      <param name="seed"/>
+      <param name="lists"/>
+      <search>reduce</search>
+    </member>
+    <member name="List.GroupByFunction">
+      <summary>使用函数来确定应如何对列表项目进行分组。</summary>
+      <param name="list">值列表</param>
+      <param name="groupFunction">要分组的函数列表</param>
+      <returns name="groupedList">任意等级/级别的列表(类型: var[]..[])</returns>
+      <search>group,function</search>
+    </member>
+    <member name="List.TrueForAll">
+      <summary>如果使用给定函数将列表中的所有项都计算为 true，则返回 true</summary>
+      <param name="list">要由查询函数计算其中各项的列表</param>
+      <param name="queryFunction">要用于计算列表的函数</param>
+      <returns name="bool">如果使用给定查询函数将列表中的所有项都计算为 true，则返回 true</returns>
+      <search>true,all</search>
+    </member>
+    <member name="List.TrueForAny">
+      <summary>如果使用给定函数将列表中的一项或多项计算为 true，则返回 true</summary>
+      <param name="list">要由查询函数计算其中各项的列表</param>
+      <param name="queryFunction">要用于计算列表的函数</param>
+      <returns name="bool">如果使用查询函数将列表中的任何项都计算为 true，则返回 true</returns>
+      <search>true,any</search>
+    </member>
+    <member name="__ForEach">
+      <param name="functionObject"/>
+      <param name="lists"/>
+      <search>foreach</search>
+    </member>
+    <member name="LoopWhile">
+      <summary>给定初始值、条件和循环主体，构建 while 循环节点。</summary>
+      <param name="initialValue">循环的初始值</param>
+      <param name="continueWhile">while loop condition</param>
+      <param name="loopBody">while loop body</param>
+      <returns name="result">循环结果(类型: var[]..[])</returns>
+      <search>loop,while,repeat</search>
+    </member>
+  </members>
+</doc>

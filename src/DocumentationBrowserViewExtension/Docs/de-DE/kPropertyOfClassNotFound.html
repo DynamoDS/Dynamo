@@ -1,0 +1,38 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>Keine Eigenschaft gefunden</h2>
+<p>Diese Fehlermeldung weist darauf hin, dass Sie im verwendeten Block versuchen, auf eine Eigenschaft eines Objekts zuzugreifen, das diese Eigenschaft nicht besitzt. </p>
+
+<p>Eigenschaften sind Werte, die in einem Objekt gespeichert sind. In Dynamo verfügt z. B. ein Punktobjekt über die Eigenschaften X, Y und Z, die die Koordinatenwerte dieses bestimmten Punkts darstellen. Ein Linienobjekt weist unterschiedliche Eigenschaften auf, wie z. B. Länge, die die Länge der gegebenen Linie darstellt. Das Linienobjekt verfügt nicht über die Eigenschaft <code>X</code>, <code>Y</code> und <code>Z</code>, die das Punktobjekt hat, und das Punktobjekt verfügt nicht über die Eigenschaft Länge, die das Linienobjekt hat.</p>
+
+<p>Dieser Fehler tritt daher auf, wenn Sie versuchen, auf eine bestimmte Eigenschaft eines Objekts zuzugreifen, das diese Eigenschaft nicht besitzt. Wenn Sie beispielsweise versuchen, auf die Eigenschaft Länge des Punktobjekts zuzugreifen, wird <code>&quot;No property called Length on Point could be found&quot;</code> angezeigt, da das Punktobjekt die Eigenschaft Länge nicht enthält.  </p>
+
+<h4>So beheben Sie Fehler</h4>
+<p>Stellen Sie sicher, dass das Objekt, das Sie als Eingabe für den Block verwenden, über die Eigenschaft verfügt, auf die Sie zugreifen möchten.</p>
+
+<h4>Weitere Informationen</h4>
+<p>Weitere Informationen finden Sie in den <a href="https://forum.dynamobim.com/search?q=no%20property%20called%20could%20be%20found"><span>Beiträgen im DynamoBIM-Forum zum Thema <strong>no property called could be found</strong></span></a>.</p>
+
+</body>

@@ -1,0 +1,131 @@
+{
+  "Uuid": "6d35f907-e50e-4804-bb3a-e2b3c1ba7504",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.Mesh.ImportFile",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.ImportFile@string",
+      "Id": "4495c3a892c04b94bfa73c929aaf0a0b",
+      "Inputs": [
+        {
+          "Id": "64c27cbc55714d169140498da271f57c",
+          "Name": "fileName",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "095ab47da7bb401e88a7a8df51c7acc1",
+          "Name": "Mesh[]",
+          "Description": "Mesh[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Imports a file, parsing it into a number of Meshes. Currently supported formats are: .mix -- Meshmixer .obj -- Wavefront\n\nMesh.ImportFile (fileName: string): Mesh[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "P:\\Shared\\Archilizer\\Clients\\Autodesk\\Projects\\23 - Q4\\Nodes Documentation\\Mesh Toolkit Graphs\\Example Bunny\\stanford_bunny_tri.obj",
+      "InputValue": "Example Bunny\\stanford_bunny_tri.obj",
+      "NodeType": "ExtensionNode",
+      "Id": "71659746a0fe4f5ca2d0ad22a7cf8f71",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e52a993d961547979d84b9ae778c88bf",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system to get its filename"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "e52a993d961547979d84b9ae778c88bf",
+      "End": "64c27cbc55714d169140498da271f57c",
+      "Id": "12819230aeac4d76a2fa263fe23d4d55"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "MeshToolkit",
+      "Version": "3.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "4495c3a892c04b94bfa73c929aaf0a0b"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.6.1.8786",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -51.230190277099609,
+      "EyeY": 38.097908020019531,
+      "EyeZ": 71.836051940917969,
+      "LookX": 24.509170532226563,
+      "LookY": -19.897937774658203,
+      "LookZ": -97.651985168457031,
+      "UpX": -0.0050980430096387863,
+      "UpY": 0.99978077411651611,
+      "UpZ": 0.020312346518039703
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.ImportFile",
+        "Id": "4495c3a892c04b94bfa73c929aaf0a0b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 627.30342372037967,
+        "Y": -54.482543313806417
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "71659746a0fe4f5ca2d0ad22a7cf8f71",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 171.46401666960219,
+        "Y": -54.279856378595213
+      }
+    ],
+    "Annotations": [],
+    "X": -88.230108583715491,
+    "Y": 191.54521748303785,
+    "Zoom": 0.87188139075056548
+  }
+}

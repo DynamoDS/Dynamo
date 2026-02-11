@@ -1,0 +1,153 @@
+﻿<!--
+    Dynamo: https://github.com/DynamoDS/Dynamo
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; } table { border-collapse: collapse; border: 1px solid white; } th, td { border: 1px solid white; padding-right: 10px; padding-left: 10px; padding-bottom: 10px; padding-top: 10px; } samp { margin-top: 10px; display: block; color: lightgrey; } code .k { color: #dcdcaa; font-weight: bold; } code .s { color: #ce9178; } code .v { color: #b5cea8; } code .o { color: #c586c0; font-weight: bold; } code .i { color: #569cd6; font-weight: bold; } code .b { color: #9cdcfe; font-weight: bold; } code .e { color: #43c9b0; } code > .nl .nl { padding-left: 10px; } code .nl { display: block; } thead { text-align: center; } .hidden-lg { display: none; } .button { background-color: transparent; border-color: #3c3c3c; color: #bbbbbb; } .button:hover { border-color: #656565; background-color: #373737; opacity: 1.0; } @media screen and (max-width: 600px) { table { width: 100%; } table, th, td { border: none; } tr { border: 1px solid white; display: block; } td, th { display: block; } .hidden-lg { display: block; font-weight: bold; text-align: center; border-bottom: 1px solid white; } .hidden-sm { display: none; } .spaced-sm { margin-top: 20px; } tbody tr:first-of-type { border-bottom: none; } }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <h1>Package Manager</h1>
+
+    <p>Der Dynamo Package Manager ist eine zentrale Anlaufstelle für das Durchsuchen, Installieren und Publizieren von Paketen. Sie können über die obere Navigationsleiste unter <b>Pakete > Package Manager</b> darauf zugreifen.</p>
+
+    <h2>Was ist ein Paket?</h2>
+
+    <p>Dynamo bietet eine große Anzahl sofort einsatzbereiter Funktionen und verfügt außerdem über eine umfangreiche Paketbibliothek, mit der sich die Funktionen von Dynamo erheblich erweitern lassen. Ein Paket ist eine Sammlung benutzerdefinierter Blöcke oder zusätzlicher Funktionen. Der Dynamo Package Manager ist ein Portal für die Community zum Herunterladen aller online publizierten Pakete. Diese Toolsets werden sowohl von Drittanbietern als auch vom Dynamo-Team entwickelt, um die Kernfunktionen von Dynamo zu erweitern. Sie stehen für alle Benutzer zur Verfügung und können mit einem Klick auf die Schaltfläche heruntergeladen werden.</p>
+
+    <h2>Installieren von Dynamo-Paketen</h2>
+
+    <p>Sie können Pakete auf der Registerkarte <b>Nach Paketen suchen</b> des Package Manager suchen und installieren. Verwenden Sie das Suchfeld, um nach bestimmten Paketen zu suchen. Sie können auch Filter und eine Sortierung anwenden, um die Liste entsprechend Ihren Kriterien einzugrenzen, z. B. Host-Programm oder Fehlen von Abhängigkeiten.</p>
+
+    <p>Die Versionskompatibilität wird über Symbole auf der Seite Nach Paketen suchen angezeigt:</p>
+
+    <ul>
+        <li>Eine Markierung mit grünem Häkchen bedeutet, dass die Version wahrscheinlich mit Ihrer aktuellen Version von Dynamo und dem Host-Programm, wie z. B. Revit (falls vorhanden), kompatibel ist.</li>
+        <li>Eine Markierung mit einer roten Raute bedeutet, dass die Version wahrscheinlich nicht mit Ihrer aktuellen Version von Dynamo und dem Host (falls vorhanden) kompatibel ist.</li>
+        <li>Eine Markierung mit einem blauen Fragezeichen bedeutet, dass keine Kompatibilitätsinformationen für die Paketversion vorhanden sind. Sie kann möglicherweise mit Ihrem Setup verwendet werden oder auch nicht.</li>
+    </ul>
+
+    <p>Um weitere Informationen zu einem Paket anzuzeigen, klicken Sie auf <b>Info</b> oder auf den Namen des Pakets. Dadurch wird eine Seitenleiste geöffnet, in der Sie eine Beschreibung des Pakets sowie Versions- und Lizenzinformationen und vieles mehr finden.</p>
+
+    <p>Um ein Paket zu installieren, klicken Sie in der Suchansicht auf <b>Installieren</b>. Wenn der Paketautor Kompatibilitätsinformationen zum Paket hinzugefügt hat, wird vorgabemäßig die neueste kompatible Version installiert. Andernfalls wird die neueste Version installiert, es sei denn, Sie wählen eine andere Version aus dem Dropdown-Menü aus. In der Gruppe Paketdetails können Sie oben in einer bestimmten Version im Abschnitt Versionen und Paketanforderungen auf <b>Installieren</b> klicken, um diese Version zu installieren.</p>
+
+    <p>Um den Ordner anzugeben, in dem das Paket installiert wird, klicken Sie auf den Dropdown-Pfeil neben der Schaltfläche Installieren.</p>
+
+    <p>Sie finden eine Liste der Pakete, die Sie installiert haben, auf der Registerkarte <b>Installierte Pakete</b> des Package Manager. Auf dieser Registerkarte können Sie Paketdateien anzeigen, Pakete deinstallieren und vieles mehr.</p>
+
+    <h2>Abstimmung für Pakete</h2>
+
+    <p>Wenn Sie Ihre Wertschätzung für die Arbeit eines Paketautors zum Ausdruck bringen möchten, können Sie für ein Paket abstimmen, das Sie installiert haben. Wechseln Sie zu <b>Nach Paketen suchen > Info</b>, und klicken Sie auf das <b>Herzsymbol</b> oben in den Paketdetails. Dies ist nur für installierte Pakete verfügbar.</p>
+
+    <h2>Publizieren von Dynamo-Paketen</h2>
+
+    <p>Mit dem Package Manager können Sie Pakete in Dynamo publizieren. Öffnen Sie die Registerkarte <b>Paket publizieren</b>, um mit dem Schritt-für-Schritt-Prozess zum Publizieren eines Pakets zu beginnen. Auf der Registerkarte Paket publizieren werden Sie aufgefordert, alle erforderlichen und optionalen Informationen zu dem Paket einzugeben, das Sie publizieren möchten.</p>
+
+    <h3>Schritt 1: Paketdetails</h3>
+
+    <p>Auf dieser Seite können Sie Informationen über das Paket als Ganzes sowie über die jeweilige Version hinzufügen. Nur der Paketname, die Beschreibung und die Versionsnummer sind erforderlich. Alle anderen Felder sind optional, werden aber empfohlen, um Ihren Benutzern zu helfen, den Zweck des Pakets zu erfassen und besser zu verstehen.</p>
+
+    <h4>Paketinformationen</h4>
+
+    <p><b>Name (erforderlich):</b></p>
+    <p>Name des Pakets, das Sie publizieren möchten. Dieser wird in der Bibliothek, in der Paketsuche und auf der Package Manager-Website angezeigt. Paketnamen müssen mindestens 3 Zeichen lang sein.</p>
+
+    <p><b>Beschreibung (erforderlich):</b></p>
+    <p>Die Beschreibung bietet die Gelegenheit, weitere Details zu Ihrem Paket hinzuzufügen, einschließlich der Auflistung von Ausnahmen und Voraussetzungen. Sie kann auch dazu verwendet werden, Benutzern Informationen darüber zu geben, was das Paket bietet und wie es in Arbeitsbereichen verwendet werden kann.</p>
+
+    <p>Für versionsspezifische Informationen ist es effizienter, einen Link zu Versionshinweisen hinzuzufügen. Beachten Sie, dass Kompatibilitätsinformationen im nächsten Schritt hinzugefügt werden, sodass Sie der Paketbeschreibung keine versionsspezifischen Kompatibilitätsinformationen hinzufügen müssen.</p>
+
+    <p><b>Gruppe:</b></p>
+    <p>Dieses Feld kann verwendet werden, um eine Gruppe anzugeben, zu der ein Paket gehört, z. B. die Firma/Organisation.</p>
+
+    <p><b>Schlüsselwörter:</b></p>
+    <p>Schlüsselwörter, die als Tags für Ihr Paket verwendet werden können, z. B. Generatives Design, ML usw. Schlüsselwörter können Benutzern helfen, Ihr Paket über die Suche zu finden. Sie können mehrere Schlüsselwörter gleichzeitig in das Feld eingeben, indem Sie sie durch ein Komma trennen und dann die EINGABETASTE drücken.</p>
+
+    <p><b>Website-Link:</b></p>
+    <p>Link zu einer Website, auf der der Benutzer weitere Informationen zum Paket oder zur Organisation/zum Autor erhält.</p>
+
+    <p><b>Repository-Link:</b></p>
+    <p>Link zum Repository des Pakets, in dem Benutzer die Paketentwicklung einsehen oder dazu beitragen können.</p>
+
+    <p><b>Urheberrechte-Inhaber:</b></p>
+    <p>Name der Person, die das Copyright für das Paket besitzt. Wenn Sie das Feld leer lassen, wird vorgabemäßig Ihr Benutzername verwendet.</p><b>Versionsinformationen</b><p><b>Version (erforderlich):</b></p>
+    <p>Das Versionsfeld ist in drei Abschnitte unterteilt: Hauptversion, Nebenversion und Build. Dadurch können Sie als Paketautor neue Versionen des Pakets hochladen, die der <a href="https://semver.org/">semantischen Versionierung</a> folgen. Paketautoren möchten möglicherweise mehr Versionen für ihre Pakete mit neuen und verbesserten Funktionen publizieren, einige Verbesserungen vornehmen, die in der ersten Version nicht berücksichtigt wurden, oder einen Fehler beheben.</p>
+
+    <p><b>Link zu Versionshinweisen:</b></p>
+    <p>Link zu den Versionshinweisen für diese Version. Sie können jeder Version, die Sie publizieren, einen separaten Link hinzufügen.</p>
+
+    <p><b>Copyright-Jahr:</b></p>
+    <p>Copyright-Jahr für das Paket. Wenn Sie das Feld leer lassen, wird vorgabemäßig das Jahr verwendet, in dem das Paket publiziert wurde.</p>
+
+    <p><b>Lizenz:</b></p>
+    <p>Lizenz, mit der das Paket veröffentlicht wird. Die Lizenz gilt für die neueste Paketversion. Wenn Sie das Feld leer lassen, wird das Paket mit der MIT-Lizenz lizenziert.</p>
+
+    <h2>Schritt 2: Kompatibilität</h2>
+    <p>Fügen Sie Kompatibilitätsinformationen für die Paketversion hinzu. Diese Informationen helfen Benutzern, nur die Versionen Ihres Pakets zu finden und zu installieren, die mit ihrem Setup kompatibel sind. Dies reduziert potenzielle Probleme und Verwirrung. Wenn Versionskompatibilitätsinformationen zugewiesen werden, können Benutzer nach kompatiblen Versionen filtern und werden über Symbole auf der Registerkarte Nach Paketen suchen über den Kompatibilitätsstatus informiert.</p>
+    <p>Um Kompatibilitätsinformationen hinzuzufügen, wählen Sie aus, ob Ihre Paketversion nur in einem Host-Programm wie Revit oder Civil 3D, in einem Host-Programm und in Dynamo Core oder nur in Dynamo Core funktioniert. Nach der Auswahl werden zusätzliche Steuerelemente der Benutzeroberfläche angezeigt, mit denen Sie eine oder mehrere Versionen zu Ihrem Paket zuweisen können.</p>
+    <p>Bei Dynamo Core oder einem Host-Programm können Sie die Dropdown-Menüs <b>Von</b> und <b>Bis</b> verwenden, um einen Bereich auszuwählen oder Versionen einzeln in der Dropdown-Liste <b>Einzelne Versionen hinzufügen</b> hinzuzufügen. In der Dropdown-Liste <b>Bis</b> haben Sie auch die Möglichkeit, ein Platzhalterzeichen auszuwählen, z. B. 2025.x (alle Versionen). Dies bedeutet, dass die Paketversion mit allen Versionen innerhalb der angegebenen Hauptversion kompatibel ist.</p>
+    <p>Wenn Sie Versionen hinzufügen, können Sie diese der Tabelle <b>Alle kompatiblen Versionen</b> auf der rechten Seite hinzufügen, indem Sie in der Mitte auf die Schaltfläche <b>Hinzufügen</b> klicken. Wenn Sie einen Fehler gemacht haben, können Sie Versionen aus dieser Tabelle entfernen, indem Sie auf das X-Symbol in der Versionsbezeichnung klicken.</p>
+    <p>Paketautoren können Kompatibilitätsinformationen für ihre Dynamo-Pakete über die Dynamo Package Manager-Website (<a href="https://www.dynamopackages.com">www.dynamopackages.com</a>) aktualisieren. Melden Sie sich dazu auf der Website an, navigieren Sie zur Registerkarte Meine Pakete, suchen Sie Ihr Paket, und führen Sie die oben beschriebenen Schritte aus.</p>
+
+    <h2>Schritt 3: Dateien auswählen</h2>
+    <h3>Dateien/Verzeichnis hinzufügen:</h3>
+    <p>Wählen Sie alle Dateien aus, die mit Ihrem Paket in Verbindung stehen, und fügen Sie sie hinzu. Im Allgemeinen werden der bin-Ordner, die Binärdateien und die Abhängigkeiten hinzugefügt. Sie können einzelne Dateien oder Ordner hinzufügen.</p>
+
+    <h3>Paketdateien auswählen:</h3>
+    <p>In diesem Abschnitt können Sie den Inhalt des Pakets vor dem Publizieren organisieren. Nachdem Sie Dateien oder Ordner zum Hinzufügen ausgewählt haben, können Sie die Dateien auf der Seite <b>Paketdateien auswählen</b> anzeigen, entfernen oder hinzufügen. Sie können die Ordnerstruktur der ausgewählten Dateien im linken Fensterbereich und den Inhalt der einzelnen Ordner im rechten Fensterbereich anzeigen.</p>
+    <p>Um eine Datei aus dem Paket zu entfernen, klicken Sie darauf und dann auf das Papierkorb-Symbol (Entfernen) in der obersten Zeile. Sie können auf diese Weise auch mehrere Dateien auswählen und entfernen. Um ganze Ordner aus dem Paket zu entfernen, klicken Sie auf den Ordner und dann auf das Papierkorb-Symbol, das daneben angezeigt wird.</p>
+
+    <h3>Blockbibliotheken auswählen:</h3>
+    <p>Geben Sie an, welche der dem Paket hinzugefügten Dateien die Blockbibliotheken sind, indem Sie das Kontrollkästchen in der Spalte <b>Blockbibliothek</b> aktivieren. Blockbibliotheken enthalten die Typen und Methoden, die Dynamo als Blöcke importiert. Im Allgemeinen sollten Sie jede Assembly als Blockbibliothek markieren, die Typen enthält, die Sie in Dynamo importieren möchten. ZeroTouch-, NodeModel- oder NodeViewCustomization-Assemblys sollten als Blockbibliothek markiert werden.</p>
+    <p>Um die Benutzeroberfläche von NodeViewCustomization-Elementen zu laden, müssen diese entweder in derselben Assembly definiert sein, die die entsprechenden NodeModel-Definitionen enthält, ODER in einer separaten Assembly. In beiden Fällen muss die Assembly als Blockbibliothek markiert sein. Derzeit werden bei Assemblys, die als Blockbibliothek markiert sind und die Typen NodeModel oder NodeCustomization enthalten, alle anderen Typen ignoriert. Aus diesem Grund ist es wichtig, NodeModel-/NodeViewCustomization-Typen von den Typen zu trennen, die Sie mit dem ZeroTouch-Import importieren möchten.</p>
+
+    <h3>Ordnerstruktur beibehalten:</h3>
+    <p>Beim Erstellen eines Pakets organisiert Dynamo die Paketdateien automatisch in den Ordnern bin, doc, dyf und extra neu. Fortgeschrittene Paketautoren mit komplexen Paketordnerstrukturen können das Kontrollkästchen <b>Ordnerstruktur beibehalten</b> unter dem Vorschaufenster für die Paketinhalte aktivieren. Wenn diese Option aktiviert ist, nimmt Dynamo keine Änderungen an der Paketordnerstruktur vor, sondern die Paketdateien werden unverändert hochgeladen.</p>
+    <p>Pakete müssen auf eine bestimmte Weise konfiguriert werden, um sicherzustellen, dass sie funktionieren, und um Probleme zu vermeiden. Stellen Sie im Zweifelsfall sicher, dass das Kontrollkästchen deaktiviert ist, damit Dynamo die Ordnerstruktur einrichten kann.</p>
+
+    <h2>Schritt 4: Vorschau der Dateien anzeigen</h2>
+    <p>Wenn Sie mit dem Inhalt des Pakets zufrieden sind, klicken Sie auf Weiter, um eine Vorschau der Konfiguration der Paketdateien nach dem Publizieren anzuzeigen. Diese Seite ist schreibgeschützt. Um weitere Änderungen am Inhalt des Pakets vorzunehmen, gehen Sie zum vorherigen Schritt zurück.</p>
+
+    <h2>Schritt 5: Bestätigen</h2>
+    <p>Mit diesem Schritt haben Sie die Möglichkeit, alle Paketdetails, die Kompatibilität und die Dateien vor dem Publizieren anzuzeigen. Um versehentliche Änderungen zu vermeiden, sind die in den vorherigen Schritten ausgewählten Optionen auf der Seite Bestätigen schreibgeschützt. Um Änderungen daran vorzunehmen, kehren Sie zu den vorherigen Schritten zurück, indem Sie auf die Schaltfläche Zurück klicken oder die Navigationssteuerelemente oben auf der Seite verwenden.</p>
+
+    <p><b>Verzeichnis für Markdown-Datei hinzufügen (optional):</b></p>
+    <p>Im Abschnitt <b>Verzeichnis für Markdown-Dateien</b> können Sie einen Dateipfad angeben, der die Markdown-Dokumentation (.md) für Ihr Paket enthält. Die Block-Dokumentation wird im <b>Dokumentationsbrowser</b> angezeigt, der im oberen Navigationsmenü von Dynamo unter <b>Erweiterungen</b> verfügbar ist. Alternativ können Sie auch mit der rechten Maustaste auf einen Block klicken und <b>Hilfe</b> auswählen.</p>
+
+    <p><b>Externe Paketabhängigkeiten:</b></p>
+    <p>Anhand der in Schritt 3 ausgewählten Dateien erkennt Dynamo externe Paketabhängigkeiten, die hier aufgeführt sind.</p>
+
+    <h2>Publizieren des Pakets</h2>
+    <p>Nachdem Sie alle erforderlichen Informationen eingegeben haben, können Sie das Paket lokal oder online publizieren. Beim lokalen Publizieren wird das Paket im lokalen Stammverzeichnis publiziert. Beim Online-Publizieren wird das Paket in den Package Manager hochgeladen, damit es von anderen Benutzern durchsucht werden kann, sobald der Antivirenscan durchgeführt wurde. Sie finden es außerdem auf der Registerkarte <b>Meine Pakete</b>.</p>
+
+    <h2>Antivirenscans</h2>
+    <p>Um allen Benutzern von Dynamo-Paketen eine sichere Umgebung zu bieten, haben wir Antivirenscans für neue Pakete eingeführt. Wenn ein Benutzer ein Paket hochlädt, wird es auf Viren überprüft und ist nur dann öffentlich verfügbar, wenn es als sicher gekennzeichnet wurde. Der Scan wird während des Hochladevorgangs des Pakets durchgeführt und wirkt sich nicht auf die übliche Dauer von einigen Minuten aus, bis das neue Paket online verfügbar ist.</p>
+    <p>Wenn Ihr Paket als infiziert gekennzeichnet wird, wird auf der Package Manager-Suchseite eine Benachrichtigung angezeigt, dass das hochgeladene Paket als infiziert erkannt wurde und nicht online publiziert wird. Um das Paket öffentlich verfügbar zu machen, überprüfen Sie die im Paket enthaltenen Dateien, und laden Sie eine neue Version über den Package Manager hoch.</p>
+
+    <h2>Verwalten von Paketen</h2>
+    <p>Eine Liste Ihrer publizierten Pakete finden Sie auf der Registerkarte <b>Meine Pakete</b> des Package Manager, wo Sie Pakete als veraltet markieren, eine neue Version publizieren und viele weitere Aktionen durchführen können.</p>
+
+    <h2>Markieren eines Pakets als veraltet</h2>
+    <p>Als Paketeigentümer können Sie ein Paket als veraltet markieren. Dadurch wird das Paket mit einer Markierung versehen, um andere Benutzer darüber zu informieren, dass das Paket eingestellt wurde und nicht mehr aktualisiert wird. Bei der Paketsuche werden vorgabemäßig veraltete Pakete herausgefiltert. Sie können jedoch den Filter Veraltet anwenden, um sie in die Suchergebnisse aufzunehmen.</p>
+    <p>Um ein Paket als veraltet zu markieren, suchen Sie das Paket im Package Manager auf der Registerkarte <b>Installierte Pakete</b> oder <b>Meine Pakete</b>. Klicken Sie auf das Menü Optionen (drei Punkte), und wählen Sie Verwerfen aus.</p>
+
+    <h2>Übertragen der Eigentümerschaft eines Pakets</h2>
+    <p>Derzeit können Sie die Paketeigentümerschaft nicht über den Package Manager übertragen. Sie können das Dynamo-Team bitten, einen zusätzlichen Eigentümer hinzuzufügen. Beachten Sie, dass wir keine bestehenden Eigentümer entfernen, sondern nur weitere Maintainer für das Paket hinzufügen können.</p>
+    <p>Wenn Sie Ihrem vorhandenen Paket ein Eigentümer-Konto hinzufügen möchten, senden Sie eine E-Mail an <a href="mailto:dynamoteam@dynamobim.org">dynamoteam@dynamobim.org</a>. Stellen Sie sicher, dass Sie den Paket- und Kontonamen angeben, die Sie hinzufügen möchten.</p>
+
+    <h2>Löschen eines Pakets</h2>
+    <p>Wenn Sie einen Löschantrag stellen möchten, senden Sie eine E-Mail mit dem Betreff ‘Package Deletion Request’ an <a href="mailto:dynamoteam@dynamobim.org">dynamoteam@dynamobim.org</a> und geben den Paketnamen an. Sobald die Anfrage eingegangen ist, wird eine Bestätigungs-E-Mail an die E-Mail-Adresse des Paketautors gesendet, die mit dem Paket verknüpft ist. Sobald der Autor die Anfrage genehmigt hat, erfolgt die Löschung innerhalb von 30 Tagen. Antwortet der Autor nicht innerhalb von 30 Tagen, ist ein neuer Löschantrag erforderlich.</p>
+    <p>Beachten Sie, dass durch das Löschen eines Pakets der Paketname nicht für die Wiederverwendung durch neue Pakete freigegeben wird.</p>
+
+    <h2>Paketeinstellungen</h2>
+    <p>Sie können die Paketeinstellungen auf der Registerkarte <b>Paketeinstellungen</b> des Package Manager anzeigen, einschließlich der Download-Pfade für neue Pakete und der Paket-/Bibliothekssuchpfade. Zum Bearbeiten Ihrer Einstellungen klicken Sie auf der Registerkarte Paketeinstellungen auf den Link Voreinstellungen, um auf die Gruppe Voreinstellungen zuzugreifen.</p>
+
+</body>

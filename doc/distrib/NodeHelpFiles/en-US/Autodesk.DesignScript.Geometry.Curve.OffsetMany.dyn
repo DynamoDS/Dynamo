@@ -1,0 +1,312 @@
+{
+  "Uuid": "a5bcef2c-d50a-43f2-8d22-6fb0fa718b26",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.Curve.OffsetMany",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "481bcc0f58724f20a72bd6d5fb3f8b23",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "7ed2c1ce289d43028b7ee6edbfd8479d",
+          "Name": "curve",
+          "Description": "Autodesk.DesignScript.Geometry.Curve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "75b7fb62042f44ab9863ac3e2fe27bf4",
+          "Name": "signedDistance",
+          "Description": "A positive offset distance applies in the direction of the cross product between the curve's tangent and the plane's normal vector, while a negative offset applies in the opposite direction.\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a8636b7375424ee8a7fe96ef5ef9d40b",
+          "Name": "planeNormal",
+          "Description": "The curve's plane normal. Defaults to the input curve's plane normal\n\nVector\nDefault value : null",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "72de6c44789b4292887153d6b5a0a1a4",
+          "Name": "Curve[]..[]",
+          "Description": "One or more offset curves",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.OffsetMany@double,Autodesk.DesignScript.Geometry.Vector",
+      "Replication": "Auto",
+      "Description": "Create one or more curves by offsetting a planar curve by the given distance in a plane defined by the plane normal. If there are gaps between the offset component curves then, they are filled by extending the offset curves. The \"planeNormal\" input argument defaults to the normal of the plane containing the curve but an explicit normal parallel to the original curve normal can be provided to better control the direction of the offset. For example, if a consistent offset direction is required for multiple curves sharing the same plane, the \"planeNormal\" can be used to override individual curve normals and force all curves to be offset in the same direction. Reversing the normal reverses the direction of the offset.\n\nCurve.OffsetMany (signedDistance: double = 1, planeNormal: Vector = null): Curve[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "Id": "37c0e74e028842dd9f1598e3a167a37b",
+      "NodeType": "BooleanInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f6a0458ed5c640f28d6f7af213e6f788",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enables selection between True and False",
+      "InputValue": true
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "2aead4d47098431a993640e6f9092d4c",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "912bf95a6a5445b0a1588b7e950993f3",
+          "Name": "points",
+          "Description": "Points to make polycurve\n\nPoint[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "905282a20c4b4e62a939a32150506d11",
+          "Name": "connectLastToFirst",
+          "Description": "True to connect last point to first point, false to leave open\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5e94533409594146842164f27bbeec23",
+          "Name": "PolyCurve",
+          "Description": "Polycurve created by points",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[],bool",
+      "Replication": "Auto",
+      "Description": "Make PolyCurve by connecting points. Set the 'connectLastToFirst' input to true to close the PolyCurve.\n\nPolyCurve.ByPoints (points: Point[], connectLastToFirst: bool = false): PolyCurve"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "fa6f2483b6c04650be00b9b5b208004b",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "7e92eeff59464b87bb3ca23df9819110",
+          "Name": "",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a4669ea385f244fc9dd9f1470abfc059",
+          "Name": "",
+          "Description": "y",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a2cfbd84287149b09fcf6379912ce61f",
+          "Name": "",
+          "Description": "pnts",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "x = [-15, -14, -3, 13, 16];\ny = [-12, 8, 0, 19, -15];\npnts = Point.ByCoordinates(x,y);"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
+      "NumberType": "Integer",
+      "MaximumValue": 8,
+      "MinimumValue": -8,
+      "StepValue": 2,
+      "Id": "8bbbb99ccbe241fc962154609b516783",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d98f5c909c3247dd98589361d579cb5b",
+          "Name": "",
+          "Description": "Int64",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Produces integer values",
+      "InputValue": -6
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "f6a0458ed5c640f28d6f7af213e6f788",
+      "End": "905282a20c4b4e62a939a32150506d11",
+      "Id": "eabc62cd06374fbf95ad6bd7c9ee6bf9",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "5e94533409594146842164f27bbeec23",
+      "End": "7ed2c1ce289d43028b7ee6edbfd8479d",
+      "Id": "2cb2fd79fb0a4747b8b9dae36b43c171",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "a2cfbd84287149b09fcf6379912ce61f",
+      "End": "912bf95a6a5445b0a1588b7e950993f3",
+      "Id": "ec1b857954e849f2830792e678d860c1",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d98f5c909c3247dd98589361d579cb5b",
+      "End": "75b7fb62042f44ab9863ac3e2fe27bf4",
+      "Id": "8ffbb9e9db3a4538af42e19ebbfce407",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 100.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.0.5874",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": 17.317041397094727,
+      "EyeY": 199.76025390625,
+      "EyeZ": 73.5179443359375,
+      "LookX": -22.317041397094727,
+      "LookY": -188.76025390625,
+      "LookZ": -81.5179443359375,
+      "UpX": -0.21225999295711517,
+      "UpY": 0.594822883605957,
+      "UpZ": -0.77532660961151123
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "481bcc0f58724f20a72bd6d5fb3f8b23",
+        "Name": "Curve.OffsetMany",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1680.2615591829515,
+        "Y": 397.4224998145429
+      },
+      {
+        "Id": "37c0e74e028842dd9f1598e3a167a37b",
+        "Name": "Boolean",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 798.26155918295149,
+        "Y": 572.284999814543
+      },
+      {
+        "Id": "2aead4d47098431a993640e6f9092d4c",
+        "Name": "PolyCurve.ByPoints",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1232.2615591829515,
+        "Y": 397.4224998145429
+      },
+      {
+        "Id": "fa6f2483b6c04650be00b9b5b208004b",
+        "Name": "Creating Points",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 798.26155918295149,
+        "Y": 397.4224998145429
+      },
+      {
+        "Id": "8bbbb99ccbe241fc962154609b516783",
+        "Name": "Offset Distance",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1232.2615591829515,
+        "Y": 572.284999814543
+      }
+    ],
+    "Annotations": [],
+    "X": -467.70093067256346,
+    "Y": -204.31140639322629,
+    "Zoom": 0.77765072223539722
+  }
+}

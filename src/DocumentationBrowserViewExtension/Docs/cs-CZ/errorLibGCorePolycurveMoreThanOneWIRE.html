@@ -1,0 +1,36 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>Spojení křivky vytvořilo více než jeden drát v objektu PolyCurve </h2>
+<p>Tato chybová zpráva naznačuje, že úsečky na výstupu uzlu PolyCurve neutvářejí uzavřenou křivku.</p>
+
+<h4>Jak provést opravu</h4>
+<p>K tomu může dojít, pokud výstup uzlu PolyCurve obsahuje hodnoty null. Zkontrolujte u každého seznamu uzlu PolyCurve, zda jsou křivky souvisle propojeny. To lze například provést skrytím náhledu geometrie všech uzlů (náhled skryjete kliknutím pravým tlačítkem na uzel nebo výběr uzlů) a následnou kontrolou jednotlivých seznamů pomocí uzlu <a href="https://dictionary.dynamobim.com/2/#/List/Inspect/Action/GetItemAtIndex"><code>List.GetItemAtIndex</code></a>. </p>
+
+<p>Tato chyba také často vzniká u hranic místnosti – zkuste místo nich získat křivky uzlem <a href="https://dictionary.dynamobim.com/2/#/Revit/Elements/Room/Query/CenterBoundary"><code>Room.CenterBoundary</code></a>.</p>
+
+<h4>Další informace</h4>
+<p>Další informace naleznete v <a href="https://forum.dynamobim.com/search?q=curve%20join%20produced%20more%20than%20one%20WIRE%20in%20Polycurve"><span> příspěvcích na fóru Dynamobim na téma &quot;<strong>curve join produced more than one wire in polycurve</strong>&quot;</span></a>.</p>
+
+</body>

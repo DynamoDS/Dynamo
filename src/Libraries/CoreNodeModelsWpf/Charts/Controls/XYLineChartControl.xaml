@@ -29,7 +29,8 @@
 
         <Thumb Name ="resizeThumb"
                Style="{StaticResource ChartsThumb}"
-               DragDelta="ThumbResizeThumbOnDragDeltaHandler">
+               DragDelta="ThumbResizeThumbOnDragDeltaHandler"
+               Cursor="SizeNWSE">
             <Thumb.ToolTip>
                 <ToolTip Content="{x:Static p:CoreNodeModelWpfResources.ResizeThumbToolTip}" Style="{StaticResource GenericToolTipLight}"/>
             </Thumb.ToolTip>

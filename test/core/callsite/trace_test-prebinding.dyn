@@ -1,0 +1,186 @@
+{
+  "Uuid": "92697b36-63f4-4e89-8814-4b1681342cf0",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "trace_test",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "963b1305492e4741a2639848b37ba25f",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "7d54983d59b2475486dbea82e4cd8234",
+          "Name": "x",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5fa2598e19d6478fb9134f42c2e4eb49",
+          "Name": "IncrementerTracedClass",
+          "Description": "IncrementerTracedClass",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "FFITarget.IncrementerTracedClass.IncrementerTracedClass@int",
+      "Replication": "Auto",
+      "Description": "Note that x is a dummy var here that is intended to force replicated dispatch it's not actually used\n\nIncrementerTracedClass.IncrementerTracedClass (x: int): IncrementerTracedClass"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "72fa79780443493faff475150a26c935",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e63d799074504deb914e70ebb0d492d6",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "12;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "fca7f7004dec4c1aa7383ca0a722d5fa",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "a91e903ed65e44b7b3f8b733d814e918",
+          "Name": "incrementerTracedClass",
+          "Description": "FFITarget.IncrementerTracedClass",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4f7a39b495454181a927247cfc2d045e",
+          "Name": "bool",
+          "Description": "bool",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "FFITarget.IncrementerTracedClass.WasCreatedWithTrace",
+      "Replication": "Auto",
+      "Description": "IncrementerTracedClass.WasCreatedWithTrace ( ): bool"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "5fa2598e19d6478fb9134f42c2e4eb49",
+      "End": "a91e903ed65e44b7b3f8b733d814e918",
+      "Id": "d68582a233564324926bd398c01905df",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e63d799074504deb914e70ebb0d492d6",
+      "End": "7d54983d59b2475486dbea82e4cd8234",
+      "Id": "6884d21efb704658b6902b11fdf87358",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.0.0.6191",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "963b1305492e4741a2639848b37ba25f",
+        "Name": "IncrementerTracedClass.IncrementerTracedClass",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 440.79999999999995,
+        "Y": 204.80000000000007
+      },
+      {
+        "Id": "72fa79780443493faff475150a26c935",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 196.0,
+        "Y": 255.0
+      },
+      {
+        "Id": "fca7f7004dec4c1aa7383ca0a722d5fa",
+        "Name": "IncrementerTracedClass.WasCreatedWithTrace",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 560.0000000000002,
+        "Y": 438.80000000000007
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

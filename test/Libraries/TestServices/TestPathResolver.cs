@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Linq;
 using Dynamo.Interfaces;
 
 namespace TestServices
@@ -80,6 +81,12 @@ namespace TestServices
         public string CommonDataRootFolder
         {
             get { return commonDataRootFolder; }
+        }
+
+        public IEnumerable<string> GetDynamoUserDataLocations()
+        {
+            // Do nothing for now.
+            return Enumerable.Empty<string>();
         }
     }
 }

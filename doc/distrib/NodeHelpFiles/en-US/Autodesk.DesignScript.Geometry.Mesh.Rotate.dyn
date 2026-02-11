@@ -1,0 +1,333 @@
+{
+  "Uuid": "6d35f907-e50e-4804-bb3a-e2b3c1ba7504",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.Mesh.Rotate",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.ImportFile@string",
+      "Id": "4495c3a892c04b94bfa73c929aaf0a0b",
+      "Inputs": [
+        {
+          "Id": "64c27cbc55714d169140498da271f57c",
+          "Name": "fileName",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "095ab47da7bb401e88a7a8df51c7acc1",
+          "Name": "Mesh[]",
+          "Description": "Mesh[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Imports a file, parsing it into a number of Meshes. Currently supported formats are: .mix -- Meshmixer .obj -- Wavefront\n\nMesh.ImportFile (fileName: string): Mesh[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "P:\\Shared\\Archilizer\\Clients\\Autodesk\\Projects\\23 - Q4\\Nodes Documentation\\Mesh Toolkit Graphs\\Example Bunny\\stanford_bunny_tri.obj",
+      "InputValue": "Example Bunny\\stanford_bunny_tri.obj",
+      "NodeType": "ExtensionNode",
+      "Id": "71659746a0fe4f5ca2d0ad22a7cf8f71",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e52a993d961547979d84b9ae778c88bf",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system to get its filename"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.Rotate@Autodesk.DesignScript.Geometry.Vector,double",
+      "Id": "97243c3e937f4d46bb27f5974069aced",
+      "Inputs": [
+        {
+          "Id": "2dace35781b140e7a8edce3f467ffc29",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ff891cbbad2b4b7ea3b30e3b7a957845",
+          "Name": "axis",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "94ba96fb7211457ea99a36db0ca03df2",
+          "Name": "degrees",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9c95094042714bcaa4df435436a2de76",
+          "Name": "Mesh",
+          "Description": "Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Rotate the Mesh around the input axis by input degrees. Rotation is centered at the origin\n\nMesh.Rotate (axis: Vector, degrees: double = 0): Mesh"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "75;",
+      "Id": "b71a5665dd1c4a40ac0f810f7c82790d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1fcb18cf32a0468eb1c0ecccc820fb19",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.ByCoordinates@double,double,double",
+      "Id": "dc75198e1ef8465ca5ff56c01839825a",
+      "Inputs": [
+        {
+          "Id": "3e7be590678a483c93e33047596a538d",
+          "Name": "x",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8a4d2a68575241a7be5811b067f55dd3",
+          "Name": "y",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5d30c0a8ee534e85b31bd4a5e7e56cce",
+          "Name": "z",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8ca167201b4147989df525d4c02ed22a",
+          "Name": "Vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Vector by 3 Euclidean coordinates\n\nVector.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Vector"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "1;",
+      "Id": "897e0d29b8154b02a020cffd2dec209a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0324f6481edb4e198c8c197e85cd402c",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "095ab47da7bb401e88a7a8df51c7acc1",
+      "End": "2dace35781b140e7a8edce3f467ffc29",
+      "Id": "7dbf61d9522e4df790297fb1d9cf3c5d"
+    },
+    {
+      "Start": "e52a993d961547979d84b9ae778c88bf",
+      "End": "64c27cbc55714d169140498da271f57c",
+      "Id": "12819230aeac4d76a2fa263fe23d4d55"
+    },
+    {
+      "Start": "1fcb18cf32a0468eb1c0ecccc820fb19",
+      "End": "94ba96fb7211457ea99a36db0ca03df2",
+      "Id": "7cb11ee66a44495da1b1838c5111feaa"
+    },
+    {
+      "Start": "8ca167201b4147989df525d4c02ed22a",
+      "End": "ff891cbbad2b4b7ea3b30e3b7a957845",
+      "Id": "ad08cd0b229b4722bc194ad1148a4d18"
+    },
+    {
+      "Start": "0324f6481edb4e198c8c197e85cd402c",
+      "End": "5d30c0a8ee534e85b31bd4a5e7e56cce",
+      "Id": "e20176494b294ce085fd63725aedc6f9"
+    },
+    {
+      "Start": "0324f6481edb4e198c8c197e85cd402c",
+      "End": "3e7be590678a483c93e33047596a538d",
+      "Id": "5d993be8717b472da87edca344b37924"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "MeshToolkit",
+      "Version": "3.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "4495c3a892c04b94bfa73c929aaf0a0b",
+        "97243c3e937f4d46bb27f5974069aced"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.6.1.8786",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -161.33816506146417,
+      "EyeY": 85.445400425847666,
+      "EyeZ": -83.205411027280036,
+      "LookX": 134.61714531659112,
+      "LookY": -67.245430180486338,
+      "LookZ": 57.389477799740973,
+      "UpX": 0.19596554988899503,
+      "UpY": 0.9770456431377883,
+      "UpZ": 0.0835433554437585
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": false,
+        "Name": "Mesh.ImportFile",
+        "Id": "4495c3a892c04b94bfa73c929aaf0a0b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 705.29568358666916,
+        "Y": -57.226168532418654
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "71659746a0fe4f5ca2d0ad22a7cf8f71",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 171.46401666960219,
+        "Y": -57.226168532418654
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.Rotate",
+        "Id": "97243c3e937f4d46bb27f5974069aced",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1075.6628620090644,
+        "Y": -55.308494750264032
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "b71a5665dd1c4a40ac0f810f7c82790d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 766.26033602235987,
+        "Y": 245.40536739584479
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Vector.ByCoordinates",
+        "Id": "dc75198e1ef8465ca5ff56c01839825a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 720.41009968364506,
+        "Y": 59.051496942703693
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "897e0d29b8154b02a020cffd2dec209a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 502.75529282960542,
+        "Y": 123.73866447746695
+      }
+    ],
+    "Annotations": [],
+    "X": 44.565184904234,
+    "Y": 117.57951667144789,
+    "Zoom": 0.521465125771521
+  }
+}

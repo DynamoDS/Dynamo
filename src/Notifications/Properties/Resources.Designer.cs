@@ -19,7 +19,7 @@ namespace Dynamo.Notifications.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -115,6 +115,24 @@ namespace Dynamo.Notifications.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You currently have no notifications. New notifications will appear above.
+        /// </summary>
+        public static string NoNotificationsMsg {
+            get {
+                return ResourceManager.GetString("NoNotificationsMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No notifications.
+        /// </summary>
+        public static string NoNotificationsTitle {
+            get {
+                return ResourceManager.GetString("NoNotificationsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Notification Center feature is disabled. Enable it in preference panel to see latest news..
         /// </summary>
         public static string NotificationCenterDisabledMsg {
@@ -138,6 +156,24 @@ namespace Dynamo.Notifications.Properties {
         public static string NotificationsCenterTitle {
             get {
                 return ResourceManager.GetString("NotificationsCenterTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An unsafe path has been detected in Trusted Locations:.
+        /// </summary>
+        public static string UnsafePathDetectedDetail {
+            get {
+                return ResourceManager.GetString("UnsafePathDetectedDetail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unsafe path detected.
+        /// </summary>
+        public static string UnsafePathDetectedTitle {
+            get {
+                return ResourceManager.GetString("UnsafePathDetectedTitle", resourceCulture);
             }
         }
     }

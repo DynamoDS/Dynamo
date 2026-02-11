@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -21,7 +21,8 @@ namespace CoreNodeModels.Input
     [IsDesignScriptCompatible]
     [OutPortNames("Color")]
     [OutPortTypes("DSCore.Color")]
-    [OutPortDescriptions("Selected Color.")]
+    [OutPortDescriptions(typeof(Resources),
+        "ColorPalettePortDataResultToolTip")]
     public class ColorPalette : NodeModel
     {
         private DSColor dscolor = DSColor.ByARGB(255, 0, 0, 0);

@@ -1,0 +1,186 @@
+{
+  "Uuid": "8850209b-6aba-4bf0-8630-80fbc3267081",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Quantity.Units",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "0cc68ddf37894f22be2ee9d625390cdc",
+      "Inputs": [
+        {
+          "Id": "ef37625b12764e8289eb44a613dcb3e1",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4c4df4219d8849469899a1077c0b8131",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    },
+    {
+      "ConcreteType": "UnitsUI.Quantities, UnitsUI",
+      "SelectedIndex": 41,
+      "SelectedString": "Length",
+      "NodeType": "ExtensionNode",
+      "Id": "b2c958fc46b946f0ac80bac91a93d3df",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2d85f43fdc294feab72ab5ef046ae341",
+          "Name": "Quantity",
+          "Description": "The selected Quantity",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Quantity type"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DynamoUnits.Quantity.Units",
+      "Id": "994857d8491447dba9cced06d68fff76",
+      "Inputs": [
+        {
+          "Id": "5a2285ebbe364b708e2bc84b7e1aa84d",
+          "Name": "quantity",
+          "Description": "DynamoUnits.Quantity",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b63b2e794267421c8e2b268db62f1b6a",
+          "Name": "Unit[]",
+          "Description": "Unit[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Quantity.Units: Unit[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "2d85f43fdc294feab72ab5ef046ae341",
+      "End": "5a2285ebbe364b708e2bc84b7e1aa84d",
+      "Id": "d9b73a4c99674be2a921360705f51830",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "b63b2e794267421c8e2b268db62f1b6a",
+      "End": "ef37625b12764e8289eb44a613dcb3e1",
+      "Id": "985c97e12ab34a07b9c9d7010c119350",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.14",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.14.0.3835",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "0cc68ddf37894f22be2ee9d625390cdc",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 606.79999999999984,
+        "Y": 728.30740255245053
+      },
+      {
+        "Name": "Quantities",
+        "ShowGeometry": true,
+        "Id": "b2c958fc46b946f0ac80bac91a93d3df",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -31.600000000000136,
+        "Y": 728.30740255245053
+      },
+      {
+        "Name": "Quantity.Units",
+        "ShowGeometry": true,
+        "Id": "994857d8491447dba9cced06d68fff76",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 297.19999999999987,
+        "Y": 728.30740255245053
+      }
+    ],
+    "Annotations": [],
+    "X": -128.10581931517868,
+    "Y": -1258.108811811818,
+    "Zoom": 2.0566802683342771
+  }
+}

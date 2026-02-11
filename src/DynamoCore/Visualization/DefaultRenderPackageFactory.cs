@@ -545,7 +545,7 @@ namespace Dynamo.Visualization
         /// This flag is used by the UpdateRenderPackageAsyncTask implementation to flag
         /// any third party usage of deprecated color methods in IRenderPackage API
         /// </summary>
-        [Obsolete("Do not use! This will be removed in Dynamo 3.0")]
+        [Obsolete("Do not use! This will be removed in a future version of Dynamo")]
         public bool AllowLegacyColorOperations { get; set; } = true;
 
         #endregion

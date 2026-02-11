@@ -1,0 +1,65 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Tessellation</name>
+    </assembly>
+    <members>
+        <member name="T:Tessellation.Adapters.Cell2">
+            <summary>Une cellule pour un maillage par approximation 2D</summary>
+        </member>
+        <member name="T:Tessellation.Adapters.Cell3">
+            <summary>Une cellule pour un maillage par approximation 3D</summary>
+        </member>
+        <member name="T:Tessellation.Adapters.Tetrahedron">
+            <summary>Un sommet est une simple classe qui stocke la position d'un point, d'un noeud ou d'un sommet.</summary>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.GetPosition(System.Int32)">
+            <summary>Fonction d'assistant pour obtenir la position du sommet i-th.</summary>
+            <param name="i"/>
+            <returns>Position du sommet i-th.</returns>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.MakeFace(System.Int32,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Cette fonction permet d'ajouter des index pour un triangle représentant la face.
+            L'ordre est dans le sens trigonométrique afin que les normales calculées automatiquement pointent dans la bonne direction.</summary>
+            <param name="i"/>
+            <param name="j"/>
+            <param name="k"/>
+            <param name="center"/>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.MakeFaces">
+            <summary>Crée un modèle du tétraèdre. La transparence est appliquée à la couleur.</summary>
+            <returns>Un modèle représentant le tétraèdre</returns>
+        </member>
+        <member name="T:Tessellation.Adapters.TriangleFace">
+            <summary>Un sommet est une simple classe qui stocke la position d'un point, d'un noeud ou d'un sommet.</summary>
+        </member>
+        <member name="T:Tessellation.ConvexHull">
+            <summary>Fonctions de création de coques convexes.</summary>
+        </member>
+        <member name="M:Tessellation.ConvexHull.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>Crée une coque convexe d'un jeu de points.</summary>
+            <param name="points">Jeu de points.</param>
+        </member>
+        <member name="T:Tessellation.Delaunay">
+            <summary>Fonctions de création de triangulations Delaunay.</summary>
+        </member>
+        <member name="M:Tessellation.Delaunay.ByParametersOnSurface(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},Autodesk.DesignScript.Geometry.Surface)">
+            <summary>Crée une triangulation Delaunay d'une surface avec un jeu donné de paramètres UV.</summary>
+            <param name="uvs">Jeu de paramètres UV.</param>
+            <param name="face">Surface à trianguler.</param>
+            <search>uvs</search>
+        </member>
+        <member name="M:Tessellation.Delaunay.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>Crée une triangulation Delaunay d'un jeu de points.</summary>
+            <param name="points">Jeu de points.</param>
+        </member>
+        <member name="T:Tessellation.Voronoi">
+            <summary>Fonctions de création de maillages par approximation de Voronoï.</summary>
+        </member>
+        <member name="M:Tessellation.Voronoi.ByParametersOnSurface(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},Autodesk.DesignScript.Geometry.Surface)">
+            <summary>Crée une partition de Voronoï d'une surface avec un jeu donné de paramètres UV.</summary>
+            <param name="uvs">Jeu de paramètres UV.</param>
+            <param name="face">Surface à partitionner.</param>
+            <search>uvs</search>
+        </member>
+    </members>
+</doc>

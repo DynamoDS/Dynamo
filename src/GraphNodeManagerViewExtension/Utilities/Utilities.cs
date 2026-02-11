@@ -2,8 +2,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Forms;
 using System.Xml;
+using Dynamo.Wpf.Utilities;
+using Dynamo.Wpf.Properties;
 using Newtonsoft.Json;
 
 namespace Dynamo.GraphNodeManager.Utilities
@@ -30,6 +33,17 @@ namespace Dynamo.GraphNodeManager.Utilities
 
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
+                    if (IsFileLocked(new FileInfo(saveFileDialog.FileName)))
+                    {
+                        MessageBoxService.Show(
+                            Resources.MessageFileInUseByApplication,
+                            Resources.TitleFileInUse,
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Warning);
+
+                        return;
+                    }
+
                     string output = JsonConvert.SerializeObject(exportObject);
 
                     var csv = jsonToCSV(output);
@@ -106,6 +120,31 @@ namespace Dynamo.GraphNodeManager.Utilities
 
             lines.AddRange(valueLines);
             return lines;
+        }
+
+        /// <summary>
+        /// Checks if the specified file is locked by another process or application.
+        /// </summary>
+        private static bool IsFileLocked(FileInfo file)
+        {
+            if (!file.Exists) return false;
+
+            FileStream stream = null;
+
+            try
+            {
+                stream = file.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+            }
+            catch (IOException)
+            {
+                return true;
+            }
+            finally
+            {
+                stream?.Close();
+            }
+
+            return false;
         }
     }
 }

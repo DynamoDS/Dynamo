@@ -1,0 +1,86 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>DesignScriptBuiltin</name>
+    </assembly>
+    <members>
+        <member name="M:DesignScript.Builtin.Dictionary.CustomKeyComparer.GetHashCode(System.String)">
+            <summary>Ten kod skopiowano z funkcji String.GetHashCode() dla programu .NET Framework 4.8, w której
+            używany jest deterministyczny algorytm tworzenia skrótu. Dokładniej: jest to funkcja
+            String.GetLegacyNonRandomizedHashCode() znajdująca się tutaj:
+            https://referencesource.microsoft.com/mscorlib/R/42c2b7ffc7c3111f.html</summary>
+            <param name="obj"/>
+            <returns/>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ByKeysValues(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>Tworzy słownik z określonymi kluczami i wartościami. Liczba pozycji odpowiada
+                mniejszej z liczb kluczy i wartości.</summary>
+            <param name="keys">Klucze słownika</param>
+            <param name="values">Wartości słownika</param>
+            <returns name="dictionary">Słownik utworzony z kluczy i wartości</returns>
+            <search>map,{},table</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.Components">
+            <summary>Tworzy komponenty słownika. Odwrotność funkcji Dictionary.ByKeysValues.</summary>
+            <returns name="keys">Klucze słownika</returns>
+            <returns name="values">Wartości słownika</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Keys">
+            <summary>Tworzy klucze w słowniku.</summary>
+            <returns name="keys">Klucze słownika</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Values">
+            <summary>Tworzy wartości w słowniku.</summary>
+            <returns name="values">Wartości słownika</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Count">
+            <summary>Liczba par klucz-wartość w słowniku.</summary> 
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.SetValueAtKeys(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>Utwórz nowy słownik za pomocą listy kluczy z ustawionymi nowymi wartościami i z ewentualnym nadpisaniem istniejących par klucz-wartość. 
+                Te dwie listy powinny mieć tę samą długość. W przeciwnym razie liczba wstawionych elementów będzie zgodna z liczbą pozycji na krótszej z tych list.</summary>
+            <param name="keys">Klucze w słowniku, które mają zostać ustawione. Jeśli dany klucz już istnieje, jego wartość zostanie zmodyfikowana.</param>
+            <param name="values">Odpowiednie wartości do wstawienia.</param>
+            <returns name="dictionary">Nowy słownik ze wstawionymi elementami</returns>
+            <search>insert,add</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.RemoveKeys(System.Collections.Generic.IList{System.String})">
+            <summary>Utwórz nowy słownik z usuniętymi podanymi kluczami.</summary>
+            <param name="keys">Klucz w słowniku do usunięcia</param>
+            <returns name="dictionary">Nowy słownik z usuniętymi kluczami</returns>
+            <search>drop,delete</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ValueAtKey(System.String)">
+            <summary>Pobierz wartość dla określonego klucza</summary>
+            <param name="key">Klucz w słowniku do pobrania wartości</param>
+            <returns name="value">Wartość dla określonego klucza, a jeśli nie jest ustawiona — wartość null</returns>
+            <search>lookup,valueatkey,find</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ToString">
+            <summary>Zwraca łatwą do przeczytania reprezentację słownika w formie ciągu.</summary>
+            <returns>Reprezentacja słownika w formie ciągu.</returns>
+        </member>
+        <member name="T:DesignScript.Builtin.BuiltinNullReferenceException">
+            <summary>Wyjątek odniesienia o wartości null generowany z wbudowanymi typami null DS:
+            listami, słownikami i ciągami.</summary>
+        </member>
+        <member name="T:Builtin.Properties.DesignScriptBuiltin">
+            <summary>Silnie typizowana klasa zasobów do wyszukiwania zlokalizowanych ciągów itp.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.ResourceManager">
+            <summary>Zwraca buforowane wystąpienie obiektu ResourceManager używane przez tą klasę.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.Culture">
+            <summary>Nadpisuje właściwość CurrentUICulture bieżącego wątku dla wszystkich
+              wyszukań zasobów przy użyciu tej silnie typizowanej klasy zasobów.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.IndexOutOfRangeExceptionMessage">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do: Indeks jest poza zakresem. Jeśli wartość jest nieujemna, musi być mniejsza niż rozmiar listy. href=kIndexOutOfRange.html.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.NullReferenceExceptionMessage">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do „Nie można indeksować listy, słownika lub ciągu o wartości null”.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.StringOverIndexingExceptionMessage">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do: Indeks jest poza zakresem. Jeśli wartość jest nieujemna, musi być mniejsza niż rozmiar ciągu. href=kIndexOutOfRange.html.</summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,255 @@
+{
+  "Uuid": "6d35f907-e50e-4804-bb3a-e2b3c1ba7504",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.Mesh.Triangles",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.ImportFile@string",
+      "Id": "4495c3a892c04b94bfa73c929aaf0a0b",
+      "Inputs": [
+        {
+          "Id": "64c27cbc55714d169140498da271f57c",
+          "Name": "fileName",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "095ab47da7bb401e88a7a8df51c7acc1",
+          "Name": "Mesh[]",
+          "Description": "Mesh[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Imports a file, parsing it into a number of Meshes. Currently supported formats are: .mix -- Meshmixer .obj -- Wavefront\n\nMesh.ImportFile (fileName: string): Mesh[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Users\\julit\\Desktop\\Dynamo\\MeshToolkit\\stanford_bunny_tri.obj",
+      "InputValue": "C:\\Users\\julit\\Desktop\\Dynamo\\MeshToolkit\\stanford_bunny_tri.obj",
+      "NodeType": "ExtensionNode",
+      "Id": "71659746a0fe4f5ca2d0ad22a7cf8f71",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e52a993d961547979d84b9ae778c88bf",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system to get its file path."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.Triangles",
+      "Id": "5d7713eef3034527be8ddd9f4f761dd2",
+      "Inputs": [
+        {
+          "Id": "7032d9b9dd4046edb178bcad2d2f8b29",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "959e35cfa06747d0826f74ca64890b19",
+          "Name": "Surface[]",
+          "Description": "Surface[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Converts the Mesh faces to Surface patches, and returns them. Note: this method can generate A LOT of heavy Surfaces, and may slow down Dynamo with large meshes.\n\nMesh.Triangles ( ): Surface[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "cf3335ed088946f581bb300e5bcd822e",
+      "Inputs": [
+        {
+          "Id": "5cc57ddfb0b442c1a0521934578df194",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9949659b55fe415a88be2dff32d0d570",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "095ab47da7bb401e88a7a8df51c7acc1",
+      "End": "7032d9b9dd4046edb178bcad2d2f8b29",
+      "Id": "637e13e29dba49219cbcd0d39342143a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e52a993d961547979d84b9ae778c88bf",
+      "End": "64c27cbc55714d169140498da271f57c",
+      "Id": "12819230aeac4d76a2fa263fe23d4d55",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "959e35cfa06747d0826f74ca64890b19",
+      "End": "5cc57ddfb0b442c1a0521934578df194",
+      "Id": "fec6ed021a18455eb82668af864ffcd6",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "MeshToolkit",
+      "Version": "3.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "4495c3a892c04b94bfa73c929aaf0a0b",
+        "5d7713eef3034527be8ddd9f4f761dd2"
+      ]
+    },
+    {
+      "Name": "stanford_bunny_tri.obj",
+      "ReferenceType": "External",
+      "Nodes": [
+        "71659746a0fe4f5ca2d0ad22a7cf8f71"
+      ]
+    }
+  ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "2.0",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.13.1.3887",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -51.230190277099609,
+      "EyeY": 38.097908020019531,
+      "EyeZ": 71.836051940917969,
+      "LookX": 24.509170532226563,
+      "LookY": -19.897937774658203,
+      "LookZ": -97.651985168457031,
+      "UpX": -0.0050980430096387863,
+      "UpY": 0.99978077411651611,
+      "UpZ": 0.020312346518039703
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Name": "Mesh.ImportFile",
+        "ShowGeometry": false,
+        "Id": "4495c3a892c04b94bfa73c929aaf0a0b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 705.29568358666916,
+        "Y": -57.463728963214152
+      },
+      {
+        "Name": "File Path",
+        "ShowGeometry": true,
+        "Id": "71659746a0fe4f5ca2d0ad22a7cf8f71",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 171.46401666960219,
+        "Y": -57.463728963214152
+      },
+      {
+        "Name": "Mesh.Triangles",
+        "ShowGeometry": true,
+        "Id": "5d7713eef3034527be8ddd9f4f761dd2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1017.2456246091464,
+        "Y": -57.463728963214152
+      },
+      {
+        "Name": "Watch",
+        "ShowGeometry": true,
+        "Id": "cf3335ed088946f581bb300e5bcd822e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1375.8196523635645,
+        "Y": -58.05853972737296
+      }
+    ],
+    "Annotations": [],
+    "X": 10.948226252460472,
+    "Y": 173.41516219028696,
+    "Zoom": 0.413136431932058
+  }
+}

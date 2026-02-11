@@ -61,7 +61,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
 
         private static void RenameFile(string file, string baseName, string shortName)
         {
-            var content = File.ReadAllText(file);
+            var content = HttpUtility.UrlDecode(File.ReadAllText(file));
             content = content.Replace(baseName, shortName);
             var path = Path.GetDirectoryName(file);
             var newFile = Path.Combine(path, shortName + ".md");

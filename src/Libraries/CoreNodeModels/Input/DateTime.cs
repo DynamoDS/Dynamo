@@ -41,8 +41,8 @@ namespace CoreNodeModels.Input
                 {
                     Id = this.GUID,
                     Name = this.Name,
-                    Type = NodeInputData.getNodeInputTypeFromType(typeof(System.DateTime)),
-                    Type2 = NodeInputData.getNodeInputTypeFromType(typeof(System.DateTime)),
+                    Type = NodeInputData.GetNodeInputTypeFromType(typeof(System.DateTime)),
+                    Type2 = NodeInputData.GetNodeInputTypeFromType(typeof(System.DateTime)),
                     Description = this.Description,
                     //format dateTime with swagger spec in mind:  ISO 8601.
                     Value = Value.ToString("o", CultureInfo.InvariantCulture),

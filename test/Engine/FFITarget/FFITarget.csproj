@@ -15,22 +15,6 @@
   <PropertyGroup>
     <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net48'">
-        <PackageReference Include="NUnitTestAdapter" Version="2.3.0" ExcludeAssets="all" />
-        <Reference Include="System" />
-        <Reference Include="System.Core" />
-        <Reference Include="System.Numerics" />
-        <Reference Include="System.Xml.Linq" />
-        <Reference Include="System.Data.DataSetExtensions" />
-        <Reference Include="Microsoft.CSharp" />
-        <Reference Include="System.Data" />
-        <Reference Include="System.Xml" />
-        <Reference Include="$(PkgMicrosoft_Office_Interop_Excel)\lib\net20\Microsoft.Office.Interop.Excel.dll">
-            <EmbedInteropTypes>True</EmbedInteropTypes>
-            <WrapperTool>tlbimp</WrapperTool>
-            <Private>False</Private>
-        </Reference>
-    </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001" GeneratePathProperty="true">
         <ExcludeAssets>all</ExcludeAssets>

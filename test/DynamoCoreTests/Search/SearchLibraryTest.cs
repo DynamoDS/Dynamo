@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Search;
@@ -182,7 +181,7 @@ namespace Dynamo.Tests.Search
 
             //Act
             var root = SearchCategoryUtil.CategorizeSearchEntries(
-                searchLibrary.SearchEntries,
+                searchLibrary.Entries,
                 entry => entry.Categories);
 
             foreach (var category in root.SubCategories)

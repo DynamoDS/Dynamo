@@ -1,0 +1,133 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Operators</name>
+    </assembly>
+    <members>
+        <member name="%add">
+            <summary>
+                Returns addition of x and y
+            </summary>
+            <param name="x">Integer value, double value or string</param>
+            <param name="y">Integer value, double value or string</param>
+            <returns name="var">The sum of two input numbers, or the concatenation of two strings</returns>
+            <search>add, plus, addition, +</search>
+        </member>
+		<member name="%sub">
+            <summary>
+                Returns subtraction of x minus y
+            </summary>
+            <param name="x">Integer or double value</param>
+            <param name="y">Integer or double value</param>
+            <returns name="number">Result of the y input subtracted from the x input</returns>
+            <search>sub, subtract, difference, -</search>
+        </member>		
+		<member name="%mul">
+            <summary>
+                Returns multiplication of x times y
+            </summary>
+            <param name="x">Integer or double value</param>
+            <param name="y">Integer or double value</param>
+            <returns name="number">The product of the two input numbers</returns>
+            <search>mul, multiply, product, times, *, x</search>
+        </member>
+		<member name="%div">
+            <summary>
+                Returns division of x over y
+            </summary>
+            <param name="x">Integer or double value</param>
+            <param name="y">Integer or double value</param>
+            <returns name="double">Result of division</returns>
+            <search>div, divide, product</search>
+        </member>
+		<member name="%eq">
+            <summary>
+                Compares if x and y are equal
+            </summary>
+            <param name="x">Basic type object to compare (e.g. bool, int, double, string, etc.)</param>
+            <param name="y">Basic type object to compare (e.g. bool, int, double, string, etc.)</param>
+            <returns name="bool">Result of equality check</returns>
+            <search>eq, equal, =</search>
+        </member>
+		<member name="%ge">
+            <summary>
+                Compares if x is greater or equals to y
+            </summary>
+            <param name="x">Integer or double value</param>
+            <param name="y">Integer or double value</param>
+            <returns name="bool">True if x is equal or greater than y, false if not</returns>
+            <search>greater,equal</search>
+        </member>
+		<member name="%gt">
+            <summary>
+                Compares if x is greater than y
+            </summary>
+            <param name="x">Integer or double value</param>
+            <param name="y">Integer or double value</param>
+            <returns name="bool">True if x is greater than y, false if not</returns>
+            <search>greater</search>
+        </member>
+		<member name="%mod">
+            <summary>
+               Modulo: Finds the remainder of x/y
+            </summary>
+            <param name="x">Integer or double value</param>
+            <param name="y">Integer or double value</param>
+            <returns name="number">Remainder of the x input after being divided by the y input</returns>
+            <search>mod, modulo, remainder</search>
+        </member>
+		<member name="%le">
+            <summary>
+              Compares if x is lower or equal to y
+            </summary>
+            <param name="x">Integer or double value</param>
+            <param name="y">Integer or double value</param>
+            <returns name="bool">Result of check</returns>
+            <search>less,equal</search>
+        </member>
+		<member name="%lt">
+            <summary>
+              Compares if x is lower to y
+            </summary>
+            <param name="x">Integer or double value</param>
+            <param name="y">Integer or double value</param>
+            <returns name="bool">Result of check</returns>
+            <search>less</search>
+        </member>
+		<member name="%and">
+            <summary>
+                Logical AND operator
+            </summary>
+            <param name="x">A boolean to check if true</param>
+            <param name="y">Another boolean to check if true</param>
+            <returns name="bool">Result of check</returns>
+            <search>and</search>
+        </member>
+		<member name="%or">
+            <summary>
+              Logical OR operator
+            </summary>
+            <param name="bool">Boolean to check if true</param>
+            <param name="otherBool">Other boolean to check if true</param>
+            <returns name="bool">True if any of the inputs are true</returns>
+            <search>or</search>
+        </member>
+		<member name="%nq">
+            <summary>
+              Returns true if the two values are different
+            </summary>
+            <param name="x">Integer or double value</param>
+            <param name="y">Integer or double value</param>
+            <returns name="bool">Result of check</returns>
+            <search>equal</search>
+        </member>
+		<member name="%Not">
+		            <summary>
+                  Negates the input, e.g. returns false when the input is true.
+                </summary>
+            <param name="x">boolean to reverse.</param>
+            <returns name="bool">type var[]..[] (reversed boolean) </returns>
+            <search>not</search>
+        </member>
+    </members>
+</doc>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -110,6 +110,24 @@ namespace Dynamo.Tests
                 }
 
             }
+        }
+        [Test]
+        public void FunctionDescriptorIsMarkedExperimentalByAttr()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!libraryServices.IsLibraryLoaded(libraryPath))
+            {
+                libraryServices.ImportLibrary(libraryPath);
+                Assert.IsTrue(LibraryLoaded);
+            }
+            //get our function descriptor that is marked experimental
+            var functions = libraryServices.GetFunctionGroups(libraryPath).SelectMany(x => x.Functions.Where(x => x.IsExperimental));
+            Assert.AreEqual(2,functions.Count());
+
+            //marked experimental because method is experimental
+            Assert.AreEqual("ExperimentalMethod", functions.ElementAt(0).FunctionName);
+            //implicitly marked experimental because owning class is experimental
+            Assert.AreEqual("Method", functions.ElementAt(1).FunctionName);
         }
 
         [Test]

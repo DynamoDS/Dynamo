@@ -1,0 +1,80 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>FFITarget</name>
+    </assembly>
+    <members>
+        <member name="T:FFITarget.ClassFunctionality">
+            <summary>Testy pro základní funkční testování implementací FFI</summary>
+        </member>
+        <member name="T:FFITarget.ClassFunctionalityMirror">
+            <summary>Třída, která obsahuje stejný člen IntVal jako ClassFunctionality</summary>
+        </member>
+        <member name="T:FFITarget.CodeCompletionClass">
+            <summary>Testuje dokončování kódu v uzlu codeblock</summary>
+        </member>
+        <member name="T:FFITarget.InstanceableClass">
+            <summary>Testovací třída, která vytvoří pyramidu pomocí vytváření instancí.</summary>
+        </member>
+        <member name="T:FFITarget.InstanceableLineClass">
+            <summary>Testovací třída, která vytvoří pyramidu pomocí vytváření instancí.</summary>
+        </member>
+        <member name="T:FFITarget.InstanceableClass_NoInstanceData">
+            <summary>Tato třída podporuje vytváření instancí, ale vrátí hodnotu false pro instanceInfoAvailable, takže použije běžné mozaikování.</summary>
+        </member>
+        <member name="T:FFITarget.ElementIDLifecycleManager`1">
+            <summary>Třída, která má zpracovat životnost prvků z jejich ID</summary>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.GetInstance">
+            <summary>Vrátí Správce životního cyklu pro konkrétní typ.
+            UPOZORNĚNÍ: Toto je pouze jedináček pro daný TypeArg</summary>
+            <returns/>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.RegisterAsssociation(`0,System.Object)">
+            <summary>Registrace nové závislosti mezi ID prvku a obálkou</summary>
+            <param name="elementID"/>
+            <param name="wrapper"/>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.UnRegisterAssociation(`0,System.Object)">
+            <summary>Odebrání asociace mezi ID prvku a</summary>
+            <param name="elementID"/>
+            <param name="wrapper"/>
+            <returns>Počet zbývajících asociací</returns>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.GetRegisteredCount(`0)">
+            <summary>Vrátí počet zaregistrovaných obálek</summary>
+            <param name="id"/>
+            <returns/>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.IsRevitDeleted(`0)">
+            <summary>Zkontroluje, zda byl prvek odstraněn v aplikaci Revit</summary>
+            <param name="id"/>
+            <returns/>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.NotifyOfRevitDeletion(`0)">
+            <summary>Nastavit stav odstranění prvku aplikace Revit</summary>
+            <param name="id">Prvek, který je nutné odstranit&gt;</param>
+        </member>
+        <member name="M:FFITarget.IncrementerTracedClass.#ctor(System.Int32)">
+            <summary>Všimněte si, že x je zde fiktivní proměnná, která má vynutit replikované odeslání
+            ve skutečnosti se nepoužívá</summary>
+            <param name="x"/>
+        </member>
+        <member name="M:FFITarget.IncrementerTracedClass.#ctor(System.Int32,System.Boolean)">
+            <summary>Všimněte si, že x je zde fiktivní proměnná, která má vynutit replikované odeslání
+            ve skutečnosti se nepoužívá</summary>
+            <param name="x">Fiktivní proměnná použitá k vynucení replikovaného odeslání</param>
+            <param name="failWithException">Selhání odeslání s výjimkou místo</param>
+        </member>
+        <member name="T:FFITarget.OverloadTarget">
+            <summary>Testovací cíl přetížených metod</summary>
+        </member>
+        <member name="M:FFITarget.TestData.ReturnNestedDictionary">
+            <summary>Vrátí vnořený slovník.</summary>
+            <returns name="col">column</returns>
+            <returns name="dict">dictionary</returns>
+            <returns name="num">number</returns>
+            <returns name="wt">weight</returns>
+            <returns name="ok">okay</returns>
+        </member>
+    </members>
+</doc>

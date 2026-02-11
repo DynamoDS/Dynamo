@@ -1,15 +1,16 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS_SDK.props" />
   </ImportGroup>
   <PropertyGroup>
     <OutputType>Exe</OutputType>
+	<RollForward>Major</RollForward>
     <OutputPath>$(OutputPath)\DynamoFeatureFlags\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
-    <PackageReference Include="LaunchDarkly.ClientSdk" Version="2.0.1">
+    <PackageReference Include="LaunchDarkly.ClientSdk" Version="5.1.0">
     </PackageReference>
   </ItemGroup>
 </Project>

@@ -348,7 +348,7 @@ namespace ProtoCore
                 }
             }
 
-            // For backword compatibility: old dyn file doesn't have CallSiteID
+            // For backward compatibility: old dyn file doesn't have CallSiteID
             // attribute, so the call site id will be empty string.
             if (callsiteTraceData == null && !string.IsNullOrEmpty(callsiteID))
             {

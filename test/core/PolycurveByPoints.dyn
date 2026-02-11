@@ -1,0 +1,211 @@
+{
+  "Uuid": "6428ace5-0ac3-4878-be0c-9510d6f4e464",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "PolycurveByPoints",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "c730df737ce943c18f9787608fb48e43",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "a03943950a894d6884b1687869f69dc8",
+          "Name": "points",
+          "Description": "Points to make polycurve\n\nPoint[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cc68af652040449daf1b5e44437ea3f6",
+          "Name": "connectLastToFirst",
+          "Description": "True to connect last point to first point, false to leave open\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b2a7c1bc0be6435e96b52b210a5d2b2d",
+          "Name": "PolyCurve",
+          "Description": "Polycurve created by points",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[],bool",
+      "Replication": "Auto",
+      "Description": "Make PolyCurve by connecting points. Set the 'connectLastToFirst' input to true to close the PolyCurve.\n\nPolyCurve.ByPoints (points: Point[], connectLastToFirst: bool = false): PolyCurve"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "0a0737e723c14fb49d378449d5e17012",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3d7bb3ead1c24bb08200ddd2d0eb1009",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "[19000,19001,20000,20001,30000,30001,40000,40002];"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "848f03fc6f9a4da588d8ad6c2f1ef3fb",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "c6b13d804c694c92ad332816cfb701dc",
+          "Name": "x",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8d6613971aab45d9b35b39f5d84e9196",
+          "Name": "y",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "dee700ef98fc4a1f97df1227626dd5c7",
+          "Name": "Point",
+          "Description": "Point created by coordinates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double",
+      "Replication": "Auto",
+      "Description": "Form a Point in the XY plane given two 2 cartesian coordinates. The Z component is 0.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0): Point"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "3d7bb3ead1c24bb08200ddd2d0eb1009",
+      "End": "c6b13d804c694c92ad332816cfb701dc",
+      "Id": "bf6e42efaecd40c3abeabe6e4656125b",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "dee700ef98fc4a1f97df1227626dd5c7",
+      "End": "a03943950a894d6884b1687869f69dc8",
+      "Id": "a1bd46ebf3924c7baf9daea219ae7b96",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": true,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.12",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "1.10",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 10000.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.4.0.6695",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": 26154.3828125,
+      "EyeY": 15402.462890625,
+      "EyeZ": 18332.677734375,
+      "LookX": 3326.181640625,
+      "LookY": -8600.4296875,
+      "LookZ": -21266.34375,
+      "UpX": 0.057335227727890015,
+      "UpY": 0.9286184310913086,
+      "UpZ": -0.36657950282096863
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "c730df737ce943c18f9787608fb48e43",
+        "Name": "PolyCurve.ByPoints",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 959.5999999999996,
+        "Y": 79.59999999999998
+      },
+      {
+        "Id": "0a0737e723c14fb49d378449d5e17012",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 30.0,
+        "Y": 80.19999999999997
+      },
+      {
+        "Id": "848f03fc6f9a4da588d8ad6c2f1ef3fb",
+        "Name": "Point.ByCoordinates",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 619.6000000000001,
+        "Y": 52.0
+      }
+    ],
+    "Annotations": [],
+    "X": -124.0,
+    "Y": -1.1999999999999886,
+    "Zoom": 1.0
+  }
+}

@@ -32,6 +32,8 @@ namespace Dynamo.Search.SearchElements
         /// </summary>
         internal FunctionDescriptor Descriptor => functionDescriptor;
 
+        internal override bool IsExperimental => functionDescriptor.IsExperimental;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ZeroTouchSearchElement"/> class 
         /// with the DesignScript function description

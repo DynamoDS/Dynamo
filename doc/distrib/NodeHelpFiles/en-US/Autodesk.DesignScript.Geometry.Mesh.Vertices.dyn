@@ -1,0 +1,177 @@
+{
+  "Uuid": "6d35f907-e50e-4804-bb3a-e2b3c1ba7504",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.Mesh.Vertices",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.ImportFile@string",
+      "Id": "4495c3a892c04b94bfa73c929aaf0a0b",
+      "Inputs": [
+        {
+          "Id": "64c27cbc55714d169140498da271f57c",
+          "Name": "fileName",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "095ab47da7bb401e88a7a8df51c7acc1",
+          "Name": "Mesh[]",
+          "Description": "Mesh[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Imports a file, parsing it into a number of Meshes. Currently supported formats are: .mix -- Meshmixer .obj -- Wavefront\n\nMesh.ImportFile (fileName: string): Mesh[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "P:\\Shared\\Archilizer\\Clients\\Autodesk\\Projects\\23 - Q4\\Nodes Documentation\\Mesh Toolkit Graphs\\stanford_bunny_tri.obj",
+      "InputValue": ".\\stanford_bunny_tri.obj",
+      "NodeType": "ExtensionNode",
+      "Id": "71659746a0fe4f5ca2d0ad22a7cf8f71",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e52a993d961547979d84b9ae778c88bf",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system to get its filename"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.Vertices",
+      "Id": "4db6cd8b23aa4e1496c0da65e3deb810",
+      "Inputs": [
+        {
+          "Id": "a1efcfe21a234824889bdc47e8f25e4d",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "36e670ba9ff54aa68360c17cfabf71ad",
+          "Name": "Point[]",
+          "Description": "Point[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Converts the Mesh vertices to Points, and returns them\n\nMesh.Vertices ( ): Point[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "095ab47da7bb401e88a7a8df51c7acc1",
+      "End": "a1efcfe21a234824889bdc47e8f25e4d",
+      "Id": "c6459ce027de4b8cb92162adc7f4828f"
+    },
+    {
+      "Start": "e52a993d961547979d84b9ae778c88bf",
+      "End": "64c27cbc55714d169140498da271f57c",
+      "Id": "12819230aeac4d76a2fa263fe23d4d55"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "MeshToolkit",
+      "Version": "3.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "4495c3a892c04b94bfa73c929aaf0a0b",
+        "4db6cd8b23aa4e1496c0da65e3deb810"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.6.1.8786",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 27.839950091979158,
+      "EyeY": 67.008186961864084,
+      "EyeZ": 64.201101160205241,
+      "LookX": 3.3152960204482831,
+      "LookY": -45.286918478842779,
+      "LookZ": -73.309483609710455,
+      "UpX": 0.014931746439321155,
+      "UpY": 0.94380100732941508,
+      "UpZ": -0.33017704231045236
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.ImportFile",
+        "Id": "4495c3a892c04b94bfa73c929aaf0a0b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 705.29568358666916,
+        "Y": -54.279856378595213
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "71659746a0fe4f5ca2d0ad22a7cf8f71",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 401.80607722762693,
+        "Y": -55.846809171506948
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.Vertices",
+        "Id": "4db6cd8b23aa4e1496c0da65e3deb810",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1080.2365648127723,
+        "Y": -53.0630078875769
+      }
+    ],
+    "Annotations": [],
+    "X": -549.1070563199255,
+    "Y": 246.10437525033336,
+    "Zoom": 0.821794995335154
+  }
+}

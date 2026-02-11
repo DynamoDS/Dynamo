@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using CoreNodeModels;
 using NUnit.Framework;
 
@@ -44,7 +45,8 @@ namespace Dynamo.Tests
 
             var errNode = "5d2f36ea-e692-436c-9a3b-f1d15b093c0b";
             node = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace(errNode);
-            Assert.True(node.ToolTipText.Contains(Properties.Resources.FormulaDSConversionFailure));
+            var info = node.NodeInfos.Where(x => x.Message == Properties.Resources.FormulaDSConversionFailure);
+            Assert.NotNull(info);
 
             var numNode = "a418958a-990b-4b9a-998a-bcfc581f4ff4";
             node = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace(numNode);

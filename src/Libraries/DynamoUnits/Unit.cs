@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Autodesk.DesignScript.Runtime;
-#if NET6_0_OR_GREATER
-using ForgeUnitsCLR = Autodesk.ForgeUnits;
-#endif
+using ForgeUnits = Autodesk.ForgeUnits;
 
 namespace DynamoUnits
 {
@@ -12,9 +10,9 @@ namespace DynamoUnits
     /// </summary>
     public class Unit
     {
-        internal readonly ForgeUnitsCLR.Unit forgeUnit;
+        internal readonly ForgeUnits.Unit forgeUnit;
 
-        internal Unit(ForgeUnitsCLR.Unit unit)
+        internal Unit(ForgeUnits.Unit unit)
         {
             this.forgeUnit = unit ?? throw new ArgumentNullException();
         }
@@ -39,15 +37,15 @@ namespace DynamoUnits
         {
             get
             {
-                Dictionary<string, ForgeUnitsCLR.Unit> units = Utilities.ForgeUnitsEngine.getConvertibleUnits(TypeId);
+                Dictionary<string, ForgeUnits.Unit> units = Utilities.ForgeUnitsEngine.getConvertibleUnits(TypeId);
                 return Utilities.ConvertForgeUnitDictionaryToCollection(units);
             }
         }
 
         /// <summary>
-        /// Gets all Quantity objects which contain a Unit. 
+        /// Gets all the Quantity objects which contain a Unit. 
         /// </summary>
-        /// /// <returns name="Quantity[]">List of Quantities</returns>
+        /// <returns name="Quantity[]">List of Quantities</returns>
         public IEnumerable<Quantity> QuantitiesContainingUnit
         {
             get

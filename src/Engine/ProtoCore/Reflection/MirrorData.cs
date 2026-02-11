@@ -72,33 +72,6 @@ namespace ProtoCore
 
 
             /// <summary>
-            ///  Retrieves list of IGraphicItem to get the graphic 
-            ///  representation/preview of this Data.
-            /// </summary>
-            /// <returns>List of IGraphicItem</returns>
-            /// <remarks>This method is marked as obsolete because it's possible
-            /// to get the CLR object from this mirror data and client can handle
-            /// any query to IGraphicItem on the CLR object directly.</remarks>
-            [System.Obsolete("Query IGraphicItem from Data property of this class")]
-            public List<IGraphicItem> GetGraphicsItems()
-            {
-                List<DSASM.StackValue> values = new List<DSASM.StackValue>();
-                GetPointersRecursively(svData, values);
-
-                List<IGraphicItem> graphicItems = new List<IGraphicItem>();
-                foreach (var sv in values)
-                {
-                    List<IGraphicItem> items = dataProvider.GetGraphicItems(sv, this.runtimeCore);
-                    if (items != null && (items.Count > 0))
-                        graphicItems.AddRange(items);
-                }
-                if (graphicItems.Count > 0)
-                    return graphicItems;
-
-                return null;
-            }
-
-            /// <summary>
             /// Recursively finds all Pointers from the stack value
             /// </summary>
             /// <param name="sv">Stack value</param>
@@ -224,11 +197,11 @@ namespace ProtoCore
                     {
                         return "null";
                     }
-                    else if (Data is bool)
+                    if (Data is bool)
                     {
                         return Data.ToString().ToLower();
                     }
-                    else if (Data is IFormattable)
+                    if (Data is IFormattable)
                     {
                         // Object.ToString() by default will use the current 
                         // culture to do formatting. For example, Double.ToString()
@@ -236,6 +209,7 @@ namespace ProtoCore
                         // We should always use invariant culture format for formattable 
                         // object.
 
+                        //!!!!carefully consider the consequences of this change before uncommenting.
                         //TODO: uncomment this once https://jira.autodesk.com/browse/DYN-5101 is complete
                         //if (Data is double)
                         //{
@@ -246,12 +220,8 @@ namespace ProtoCore
                         return (Data as IFormattable).ToString(null, CultureInfo.InvariantCulture);
                         //}
                     }
-                    else
+                    
                     {
-                        if (double.TryParse(Data.ToString(), out double d))
-                        {
-                            return Convert.ToDouble(Data).ToString(PrecisionFormat, CultureInfo.InvariantCulture);
-                        }
                         return Data.ToString();
                     }
                 }

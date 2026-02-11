@@ -55,6 +55,7 @@ namespace Dynamo.PackageDetails
         
         internal void OpenPackageDetails(PackageManagerSearchElement packageManagerSearchElement)
         {
+            PackageDetailsViewModel?.Dispose();
             PackageDetailsViewModel = new PackageDetailsViewModel(this, packageManagerSearchElement);
 
             if (PackageDetailsView == null)
@@ -66,13 +67,7 @@ namespace Dynamo.PackageDetails
             if (PackageDetailsView == null) PackageDetailsView = new PackageDetailsView();
             PackageDetailsView.DataContext = PackageDetailsViewModel;
 
-            if (packageManagerSearchElement.UIParent != null)
-            {
-                HostPackageDetailsExtension(packageManagerSearchElement);
-                return;
-            }
-
-            ViewLoadedParamsReference?.AddToExtensionsSideBar(this, PackageDetailsView);
+            HostPackageDetailsExtension(packageManagerSearchElement);
         }
 
         private void HostPackageDetailsExtension(PackageManagerSearchElement packageManagerSearchElement)
@@ -151,6 +146,7 @@ namespace Dynamo.PackageDetails
 
         public override void Closed()
         {
+            PackageDetailsViewModel?.Dispose();
             PackageDetailsViewModel = null;
             PackageDetailsView = null;
             Grid = null;

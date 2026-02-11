@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -432,7 +432,7 @@ namespace NodeDocumentationMarkdownGenerator
         {
             var fileInfos = new List<MdFileInfo>();
 
-            foreach (var entry in nodeSearchModel.SearchEntries)
+            foreach (var entry in nodeSearchModel.Entries)
             {
                 if (MdFileInfo.TryGetMdFileInfoFromSearchEntry(entry, out MdFileInfo info))
                 {

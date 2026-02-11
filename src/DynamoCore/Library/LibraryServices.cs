@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata.Ecma335;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Core;
@@ -89,13 +90,12 @@ namespace Dynamo.Engine
             this.pathManager = pathManager;
             preferenceSettings = preferences;
 
+            AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
             PreloadLibraries(pathManager.PreloadedLibraries);
             PopulateBuiltIns();
             PopulateOperators();
             PopulatePreloadLibraries();
-            LibraryLoadFailed += new EventHandler<LibraryLoadFailedEventArgs>(LibraryLoadFailureHandler);
-
-            AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
+            LibraryLoadFailed += new EventHandler<LibraryLoadFailedEventArgs>(LibraryLoadFailureHandler);         
         }
 
         private Assembly ResolveAssembly(object sender, ResolveEventArgs args)
@@ -135,7 +135,9 @@ namespace Dynamo.Engine
 
             AppDomain.CurrentDomain.AssemblyResolve -= ResolveAssembly;
         }
-        
+
+        internal PathManager PathManager => pathManager as PathManager;
+
         /// <summary>
         ///     Returns a list of imported libraries.
         /// </summary>
@@ -1081,11 +1083,11 @@ namespace Dynamo.Engine
                 ObsoleteMsg = obsoleteMessage,
                 CanUpdatePeriodically = canUpdatePeriodically,
                 IsBuiltIn = pathManager.PreloadedLibraries.Contains(library)
-                    || library.StartsWith(PathManager.BuiltinPackagesDirectory),
+                    || library.StartsWith(Dynamo.Core.PathManager.BuiltinPackagesDirectory),
                 IsPackageMember = packagedLibraries.Contains(library),
-                IsLacingDisabled = isLacingDisabled
+                IsLacingDisabled = isLacingDisabled,
+                IsExperimental = (methodAttribute?.IsExperimental).GetValueOrDefault()|| (classAttribute?.IsExperimental).GetValueOrDefault()
             });
-
             AddImportedFunctions(library, new[] { function });
         }
 
@@ -1170,21 +1172,10 @@ namespace Dynamo.Engine
 
         public class LibraryLoadedEventArgs : EventArgs
         {
-            // TODO: Remove in 3.0
-            [Obsolete("This constructor is obsolete. Use constructor that accepts collection of library paths instead.")]
-            public LibraryLoadedEventArgs(string libraryPath)
-            {
-                LibraryPath = libraryPath;
-            }
-
             public LibraryLoadedEventArgs(IEnumerable<string> libraryPaths)
             {
                 LibraryPaths = libraryPaths;
             }
-
-            // TODO: Remove in 3.0
-            [Obsolete("This property is obsolete. Use property LibraryPaths that returns collection of paths instead.")]
-            public string LibraryPath { get; }
 
             /// <summary>
             /// Paths to libraries that are loaded. 

@@ -1,0 +1,106 @@
+{
+  "Uuid": "9cb0c7b0-bfa6-40a6-9d21-1fdfb4b329e0",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "ConvertTabsToSpaces",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "Code": "# declare x\r\nx = 7\r\noutcome = \"\"\r\n\r\n# random statements\r\nif x == 5:\r\n\toutcome = \"x is 5\"\r\n\tif x == 9:\r\n\t\tif x ==10:\r\n\t\t\toutcome = \"impossible\"\r\n\telse:\r\n\t\toutcome = \"x is not 5\"\r\n\t\tif x == 1:\r\n\t\t\t# tab\tin\tcomment",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "0894436c129744c3b772a4c9d44c329e",
+      "NodeType": "PythonScriptNode",
+      "Inputs": [
+        {
+          "Id": "8422c558b614406fbbb45f2ba0394149",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f871bd7ad08648a6b6cc660024641eb1",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": true,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.1",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.1.0.3411",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "0894436c129744c3b772a4c9d44c329e",
+        "Name": "Python Script",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 323.0,
+        "Y": 217.0
+      }
+    ],
+    "Annotations": [],
+    "X": -266.0446043165468,
+    "Y": -33.539568345323744,
+    "Zoom": 0.9165467625899281
+  }
+}

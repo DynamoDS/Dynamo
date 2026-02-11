@@ -18,7 +18,7 @@ jobs:
       user_name: "Dynamo-Bot"
     steps:
     - name: checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     #Removes posible conflicting characters on the commit message
     #This is because the content of the message will be passed to a script as a parameter and quotation marks will split the text as if it where multiple parameters.

@@ -1,0 +1,34 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>轉換陣列將導致陣列等級降低</h2>
+<p> 此錯誤訊息表示您使用的清單格式不正確。 例如，使用如 <code>[1,2,3,[4,5,6],7]</code> 的清單 (其中元素位於不同層級) 將會觸發此錯誤，但使用如 <code>[[1,2,3],[4,5,6,7]]</code> 的清單則否，因為它同樣是兩個層級。 </p>
+
+<h4>如何修正</h4>
+<p>若要解決此問題，請確保您傳遞為節點輸入的清單有一致的層級 (亦即可以使用相同的清單層級存取每個元素)。 另一個選項是使用 <a href="https://dictionary.dynamobim.com/2/#/List/Organize/Action/NormalizeDepth"><code>List.ConversionDepth</code></a>，它可以讓清單層級變成一致，但清單格式不一定能符合您的需求。</p>
+
+<h4>更多資訊</h4>
+<p>如欲瞭解更多資訊，請查看 <a href="https://forum.dynamobim.com/search?q=array%20rank%20reduction"><span>Dynamobim 論壇上討論「<strong>array rank reduction</strong>」的貼文</span></a>。</p>
+
+</body>

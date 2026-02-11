@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 
@@ -56,13 +55,13 @@ namespace Dynamo.LibraryViewExtensionWebView2.Handlers
         /// <summary>
         /// Create a LoadedTypeData object for serialization
         /// </summary>
-        /// <param name="searchEntries"></param>
+        /// <param name="entries"></param>
         /// <returns></returns>
-        protected override object CreateObjectForSerialization(IEnumerable<NodeSearchElement> searchEntries)
+        protected override object CreateObjectForSerialization(IEnumerable<NodeSearchElement> entries)
         {
             int w = 0; //represents the weight
             var data = new LoadedTypeData<LoadedTypeItemExtended>();
-            data.loadedTypes = searchEntries
+            data.loadedTypes = entries
                 .Select(e => CreateLoadedTypeItem<LoadedTypeItemExtended>(e).setWeight(w++)).ToList();
             return data;
         }

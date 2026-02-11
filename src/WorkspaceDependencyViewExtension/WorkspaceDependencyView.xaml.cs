@@ -30,12 +30,11 @@ namespace Dynamo.WorkspaceDependency
         /// The hyper link where Dynamo user will be forwarded to for submitting comments.
         /// </summary>
         private readonly string FeedbackLink = "https://forum.dynamobim.com/t/call-for-feedback-on-dynamo-graph-package-dependency-display/37229";
-        private readonly string customNodeExtension = ".dyf";
 
         internal ViewLoadedParams loadedParams;
-        private WorkspaceDependencyViewExtension dependencyViewExtension;
+        private readonly WorkspaceDependencyViewExtension dependencyViewExtension;
 
-        private IPackageInstaller packageInstaller;
+        private readonly IPackageInstaller packageInstaller;
 
         private Boolean hasDependencyIssue = false;
 

@@ -4,11 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
-#if NETFRAMEWORK
-using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
-#else
 using NotificationObject = Dynamo.Core.NotificationObject;
-#endif
 
 namespace Dynamo.PackageManager.UI
 {
@@ -43,6 +39,7 @@ namespace Dynamo.PackageManager.UI
             elem.Parent = this;
             this.Items.Add(elem);
         }
+
 
         /// <summary>
         /// Whether the item is visible or not

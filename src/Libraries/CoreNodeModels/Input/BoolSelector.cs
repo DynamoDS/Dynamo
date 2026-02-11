@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using CoreNodeModels.Properties;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
@@ -50,8 +50,8 @@ namespace CoreNodeModels.Input
                 {
                     Id = this.GUID,
                     Name = this.Name,
-                    Type = NodeInputData.getNodeInputTypeFromType(typeof(System.Boolean)),
-                    Type2 = NodeInputData.getNodeInputTypeFromType(typeof(System.Boolean)),
+                    Type = NodeInputData.GetNodeInputTypeFromType(typeof(System.Boolean)),
+                    Type2 = NodeInputData.GetNodeInputTypeFromType(typeof(System.Boolean)),
                     Description = this.Description,
                     Value = Value.ToString().ToLower(),
                 };

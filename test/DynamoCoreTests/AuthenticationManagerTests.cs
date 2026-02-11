@@ -1,7 +1,10 @@
 using Dynamo.Core;
-
+using Dynamo.Interfaces;
+using Dynamo.Models;
+using Dynamo.Scheduler;
+using DynamoServices;
 using Greg;
-
+using Greg.AuthProviders;
 using Moq;
 
 using NUnit.Framework;
@@ -31,7 +34,7 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(logoutCalled);
         }
-        
+
         #endregion
 
         #region Login
@@ -117,5 +120,40 @@ namespace Dynamo.Tests
         }
 
         #endregion
+    }
+
+    [TestFixture]
+    public class AuthServicesTests : DynamoModelTestBase
+    {
+
+        protected override DynamoModel.IStartConfiguration CreateStartConfiguration(IPreferences settings)
+        {
+            var authProviderMock = new Mock<IAuthProvider>();
+            authProviderMock.Setup(x => x.LoginState).Returns(LoginState.LoggedIn);
+            authProviderMock.As<IOAuth2AccessTokenProvider>().Setup(x => x.GetAccessToken()).Returns("faketoken");
+
+
+            return new DynamoModel.DefaultStartConfiguration()
+            {
+                PathResolver = pathResolver,
+                StartInTestMode = true,
+                GeometryFactoryPath = preloader.GeometryFactoryPath,
+                Preferences = settings,
+                ProcessMode = TaskProcessMode.Synchronous,
+                AuthProvider = authProviderMock.Object
+            };
+        }
+
+        [Test]
+        public void Test_OnRequestAuthProvider_FindsAuthProvider()
+        {
+#pragma warning disable AUTH_SERVICES
+#pragma warning disable REQUEST_AUTHPROVIDER
+            var result = AuthServices.AuthProvider;
+#pragma warning restore REQUEST_AUTHPROVIDER
+#pragma warning restore AUTH_SERVICES
+
+            Assert.AreEqual((result as IOAuth2AccessTokenProvider).GetAccessToken(), "faketoken");
+        }
     }
 }

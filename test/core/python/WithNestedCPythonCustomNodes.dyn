@@ -1,0 +1,227 @@
+{
+  "Uuid": "de5a8e5d-d3be-45d5-af07-c7faa2478b65",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "WithNestedCPythonCustomNodes",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "1b30f752b6a7466891a4ef855a786686",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "cbc61f7cde544467914835bb8062f7a6",
+          "Name": "integer",
+          "Description": "5",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "5;"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 34.666666666666664,
+      "WatchHeight": 200.0,
+      "Id": "8a7664fa676442a1b3edd9e7535819df",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "c2c6b3034e1845c986ec3b9088d8a9c8",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "be10a261451647dda41b1ed58dcd8437",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "868e49a5-6134-4353-908a-a8d944d63d56",
+      "FunctionType": "Graph",
+      "Id": "a2f60b410af541d086f7d3c9e37cce2e",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "6979d16cc9db487bbb7276941b45bee5",
+          "Name": "number",
+          "Description": "double[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e1262a2a8e2543fa8a78eb1448bdaf4b",
+          "Name": "result",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": ""
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "cbc61f7cde544467914835bb8062f7a6",
+      "End": "6979d16cc9db487bbb7276941b45bee5",
+      "Id": "08018729f6ec4c4283024ca92483ddc5",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e1262a2a8e2543fa8a78eb1448bdaf4b",
+      "End": "c2c6b3034e1845c986ec3b9088d8a9c8",
+      "Id": "c42793bfda344d589c6791d5870d9b72",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [
+    "868e49a5-6134-4353-908a-a8d944d63d56"
+  ],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "CNWithCPython_Parent.dyf",
+      "ReferenceType": "DYFFile",
+      "Nodes": [
+        "a2f60b410af541d086f7d3c9e37cce2e"
+      ]
+    }
+  ],
+  "EnableLegacyPolyCurveBehavior": true,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.6",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "9.1",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.6.1.9895",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "1b30f752b6a7466891a4ef855a786686",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 303.0,
+        "Y": 306.0
+      },
+      {
+        "Id": "8a7664fa676442a1b3edd9e7535819df",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 793.3333333333335,
+        "Y": 309.3333333333335
+      },
+      {
+        "Id": "a2f60b410af541d086f7d3c9e37cce2e",
+        "Name": "CNWithCPython_Parent",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 489.33333333333337,
+        "Y": 307.33333333333337
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "008a475315ce469d8ea34368f154c55c",
+        "Title": "Custom node with another custom node placed inside. Each doubles the input value.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 476.33333333333337,
+        "Top": 242.6666666666667,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "a2f60b410af541d086f7d3c9e37cce2e"
+      }
+    ],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

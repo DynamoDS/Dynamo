@@ -17,7 +17,17 @@ namespace ProtoCore.AssociativeEngine
         public static AssociativeGraph.GraphNode GetGraphNodeAtPC(int pc, List<AssociativeGraph.GraphNode> graphNodesInScope)
         {
             Validity.Assert(graphNodesInScope != null);
-            return graphNodesInScope.FirstOrDefault(g => g.isActive && g.isDirty && g.updateBlock.startpc == pc);
+
+            for (int i = 0; i < graphNodesInScope.Count; i++)
+            {
+                var g = graphNodesInScope[i];
+                if (g.isActive && g.isDirty && g.updateBlock.startpc == pc)
+                {
+                    return g;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -29,27 +39,17 @@ namespace ProtoCore.AssociativeEngine
         public static AssociativeGraph.GraphNode GetFirstDirtyGraphNodeFromPC(int pc, List<AssociativeGraph.GraphNode> graphNodesInScope)
         {
             Validity.Assert(graphNodesInScope != null);
-            return graphNodesInScope.FirstOrDefault(g => g.isActive && g.isDirty && g.updateBlock.startpc >= pc);
-        }
 
-        /// <summary>
-        /// Marks all graphnodes ditry within the specified block
-        /// </summary>
-        /// <param name="block"></param>
-        /// <param name="graphNodesInScope"></param>
-        [Obsolete("This method is deprecated and will be removed in a future Dynamo version.")]
-        public static void MarkAllGraphNodesDirty(int block, List<AssociativeGraph.GraphNode> graphNodesInScope)
-        {
-            if (graphNodesInScope != null)
+            for (int i = 0; i < graphNodesInScope.Count; i++)
             {
-                foreach (AssociativeGraph.GraphNode gnode in graphNodesInScope)
+                var g = graphNodesInScope[i];
+                if (g.isActive && g.isDirty && g.updateBlock.startpc >= pc)
                 {
-                    if (gnode.languageBlockId == block)
-                    {
-                        gnode.isDirty = true;
-                    }
+                    return g;
                 }
             }
+
+            return null;
         }
 
         /// <summary>
@@ -77,7 +77,12 @@ namespace ProtoCore.AssociativeEngine
             {
                 return;
             }
-
+            for (int i = 0; i < graphNodesInScope.Count; ++i)
+            {
+                AssociativeGraph.GraphNode currentNode = graphNodesInScope[i];
+                currentNode.ParentNodes.Clear();
+                currentNode.ChildrenNodes.Clear();
+            }
             // Get the current graphnode to check against the list
             //  [a = 10]  -> this one
             //  c = 1
@@ -674,39 +679,39 @@ namespace ProtoCore.AssociativeEngine
             List<AssociativeGraph.GraphNode> redefinedNodes = new List<AssociativeGraph.GraphNode>();
             if (executingGraphNode != null)
             {
-                // Remove this condition when full SSA is enabled
-                bool isssa = (!executingGraphNode.IsSSANode() && executingGraphNode.DependsOnTempSSA());
-
+                bool isssa;
                 if (runtimeCore.Options.ExecuteSSA)
                 {
                     isssa = executingGraphNode.IsSSANode();
                 }
+                else
+                {
+                    // Remove this condition when full SSA is enabled
+                    isssa = (!executingGraphNode.IsSSANode() && executingGraphNode.DependsOnTempSSA());
+                }
+
                 if (!isssa)
                 {
+
+                    SymbolNode symbol = executingGraphNode.updateNodeRefList[0].nodeList[0].symbol;
+                    bool isMember = symbol.classScope != Constants.kInvalidIndex
+                        && symbol.functionIndex == Constants.kInvalidIndex;
+
                     foreach (AssociativeGraph.GraphNode graphNode in nodesInScope)
                     {
-                        bool allowRedefine = true;
-
-                        SymbolNode symbol = executingGraphNode.updateNodeRefList[0].nodeList[0].symbol;
-                        bool isMember = symbol.classScope != Constants.kInvalidIndex
-                            && symbol.functionIndex == Constants.kInvalidIndex;
-
                         if (isMember)
                         {
                             // For member vars, do not allow if not in the same scope
                             if (symbol.classScope != graphNode.classIndex || symbol.functionIndex != graphNode.procIndex)
                             {
-                                allowRedefine = false;
+                                continue;
                             }
                         }
 
-                        if (allowRedefine)
+                        // Check if graphnode was redefined by executingGraphNode
+                        if (AssociativeEngine.Utils.IsGraphNodeRedefined(graphNode, executingGraphNode))
                         {
-                            // Check if graphnode was redefined by executingGraphNode
-                            if (AssociativeEngine.Utils.IsGraphNodeRedefined(graphNode, executingGraphNode))
-                            {
-                                redefinedNodes.Add(graphNode);
-                            }
+                            redefinedNodes.Add(graphNode);
                         }
                     }
                 }
@@ -987,33 +992,31 @@ namespace ProtoCore.AssociativeGraph
             Stack<GraphNode> stack = new Stack<GraphNode>();
             stack.Push(this);
 
-            var visited = graphNodes.ToDictionary(node => node, node => false);
+            var visited = new HashSet<int>();
 
-            var guids = new List<Guid>();
+            var guids = new HashSet<Guid>();
             while(stack.Any())
             {
                 var node = stack.Pop();
-                if (!visited[node])
+                if (visited.Add(node.UID))
                 {
                     guids.Add(node.guid);
                     if (node.isCyclic)
                     {
                         node.isCyclic = false;
                         node.isActive = true;
-
                     }
-                    visited[node] = true;
                 }
 
                 foreach(var cNode in node.ChildrenNodes)
                 {
-                    if (!visited[cNode])
+                    if (!visited.Contains(cNode.UID))
                     {
                         stack.Push(cNode);
                     }
                 }
             }
-            return guids;
+            return guids.ToList();
         }
 
         public void PushDependent(GraphNode dependent)
@@ -1492,8 +1495,13 @@ namespace ProtoCore.AssociativeGraph
                 return false;
             }
 
-            var firstNode = updateNodeRefList.First().nodeList.FirstOrDefault();
-            return firstNode != null && firstNode.nodeType == UpdateNodeType.Symbol && firstNode.symbol.isSSATemp;
+            if (updateNodeRefList[0].nodeList.Count > 0)
+            {
+                var firstNode = updateNodeRefList[0].nodeList[0];
+                return firstNode != null && firstNode.nodeType == UpdateNodeType.Symbol && firstNode.symbol.isSSATemp;
+            }
+
+            return false;
         }
     }
 

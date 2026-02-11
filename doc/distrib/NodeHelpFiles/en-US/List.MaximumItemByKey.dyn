@@ -1,0 +1,525 @@
+{
+  "Uuid": "2523e4be-3126-479e-9d17-09d4e569fdb5",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "List.MaximumItemByKey",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "1deff9adde5a40a8b641573444966dde",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "e0e8ee0d18ba495cafa4006afe7ca8db",
+          "Name": "centerPoint",
+          "Description": "Center point of circle\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d24aa2c1750946bcbee0f4afae18ec2c",
+          "Name": "radius",
+          "Description": "Radius\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e5a2be3971c44b49b3589571371e030d",
+          "Name": "Circle",
+          "Description": "Circle created with center point and radius",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "Replication": "Auto",
+      "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "f7232beb5bad41b186a8b6bdf3605e9a",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "59f93c5a0d4f4a249ce38427a7869f69",
+          "Name": "centerPoint",
+          "Description": "Center point of circle\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1c6b78008ce24a8c8065738b791e85d4",
+          "Name": "radius",
+          "Description": "Radius\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d346db59783240cf9b282e74f4ba20a9",
+          "Name": "Circle",
+          "Description": "Circle created with center point and radius",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "Replication": "Auto",
+      "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "1b7d33f74dde44498454337fc91932bb",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "6c0e3a6dff254ba4988bae135a4289cf",
+          "Name": "centerPoint",
+          "Description": "Center point of circle\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e3268eaf627242d4b72a677c8a803301",
+          "Name": "radius",
+          "Description": "Radius\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "efceaf4193ae4b9cb3279f2b65a5427c",
+          "Name": "Circle",
+          "Description": "Circle created with center point and radius",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "Replication": "Auto",
+      "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "481dd24950a24aa3bfd3610c6837095f",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "67d3c0bbf6844b9e90cf9b407d56f9ba",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ddd57bab537c4285a969855012071b64",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4cc4200f115e40fb923c1e527018ad10",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "Point.ByCoordinates(0,0,0);\nPoint.ByCoordinates(2,0,0);\nPoint.ByCoordinates(5,0,0);"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "affa88d2b3b4456bb7f076e31cc987f5",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "9bd3f590c22d41738e6c09bf26aa4986",
+          "Name": "circle",
+          "Description": "Autodesk.DesignScript.Geometry.Circle",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1ed111c17472441ca6d42772f5172e42",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.Radius",
+      "Replication": "Auto",
+      "Description": "Returns the radius of the circle.\n\nCircle.Radius: double"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "09109438de644647b8aeabddd012dfea",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "33ad37990c5d4086a813afec6fd29e8b",
+          "Name": "list",
+          "Description": "list of values\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "fbf57cbcb6de40d7928a569194bc2f25",
+          "Name": "keyFunction",
+          "Description": "function applied to the list items\n\nFunction",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "154cad19da704a09931d61b0b1cbd18a",
+          "Name": "maximumItem",
+          "Description": "Maximum item in list using keyFunction (type: var[]..[])",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "List.MaximumItemByKey@var[]..[],Function",
+      "Replication": "Auto",
+      "Description": "Returns the items from the list that generate the maximum values for the function supplied as the key projector\n\nList.MaximumItemByKey (list: var[]..[], keyFunction: Function): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "Id": "706d6f41820d4b6db7c04e58a2cce7a4",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "6f1c31f987834387be0be3375ce74d44",
+          "Name": "item0",
+          "Description": "Item Index #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c6f711199557403fb81e6ca76e63b52e",
+          "Name": "item1",
+          "Description": "Item Index #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "912d9ee580944285a08a4d9451776322",
+          "Name": "item2",
+          "Description": "Item Index #2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0f25d4fe59444730a2ef8a70c68e3ed1",
+          "Name": "list",
+          "Description": "A list (type: var[]..[])",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Makes a new list from the given inputs"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "a9b2020a7bc947cdb242fae61e665b80",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "505de6781ea14954a924563e633d699d",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "843f45fa8f4446bea4f662cca44eb625",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6acd969418094a0398b15292ebccd3b8",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "0.5;\n1;\n1.5;"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "e5a2be3971c44b49b3589571371e030d",
+      "End": "6f1c31f987834387be0be3375ce74d44",
+      "Id": "2b8072afbb934252ac6091e3e2c6937f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d346db59783240cf9b282e74f4ba20a9",
+      "End": "c6f711199557403fb81e6ca76e63b52e",
+      "Id": "e3f66489b74b4f2197e65397f70c2fa2",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "efceaf4193ae4b9cb3279f2b65a5427c",
+      "End": "912d9ee580944285a08a4d9451776322",
+      "Id": "b39bdc6f5c32442b8df49120f263efab",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "67d3c0bbf6844b9e90cf9b407d56f9ba",
+      "End": "e0e8ee0d18ba495cafa4006afe7ca8db",
+      "Id": "54c334a290b947ceab82fe402cd49c19",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ddd57bab537c4285a969855012071b64",
+      "End": "59f93c5a0d4f4a249ce38427a7869f69",
+      "Id": "23a7f80c2bbd493c973f0380fb8fd138",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4cc4200f115e40fb923c1e527018ad10",
+      "End": "6c0e3a6dff254ba4988bae135a4289cf",
+      "Id": "885fe5efd6764614ba8b771d2d873c0d",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "1ed111c17472441ca6d42772f5172e42",
+      "End": "fbf57cbcb6de40d7928a569194bc2f25",
+      "Id": "d5ec806dc9e445c3aa2d4d9654b654e4",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "0f25d4fe59444730a2ef8a70c68e3ed1",
+      "End": "33ad37990c5d4086a813afec6fd29e8b",
+      "Id": "54dffa64de684030ab5194c327c732b3",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "505de6781ea14954a924563e633d699d",
+      "End": "d24aa2c1750946bcbee0f4afae18ec2c",
+      "Id": "0f5b2f8eadcc4bfb88da72c59d262853",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "843f45fa8f4446bea4f662cca44eb625",
+      "End": "1c6b78008ce24a8c8065738b791e85d4",
+      "Id": "6e9f41943d1444ae8c71ffe9735a34d6",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "6acd969418094a0398b15292ebccd3b8",
+      "End": "e3268eaf627242d4b72a677c8a803301",
+      "Id": "32d4327aa0454df4bdb70ec4b763b9d4",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.0.5742",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": 1.1602656841278076,
+      "EyeY": 8.9741945266723633,
+      "EyeZ": 1.2702900171279907,
+      "LookX": 0.02100752666592598,
+      "LookY": -8.5661163330078125,
+      "LookZ": -2.4595201015472412,
+      "UpX": 0.0075130779296159744,
+      "UpY": 0.4756242036819458,
+      "UpZ": -0.87961649894714355
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "1deff9adde5a40a8b641573444966dde",
+        "Name": "Circle.ByCenterPointRadius",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 682.2,
+        "Y": 690.8
+      },
+      {
+        "Id": "f7232beb5bad41b186a8b6bdf3605e9a",
+        "Name": "Circle.ByCenterPointRadius",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 682.2,
+        "Y": 868.8
+      },
+      {
+        "Id": "1b7d33f74dde44498454337fc91932bb",
+        "Name": "Circle.ByCenterPointRadius",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 682.2,
+        "Y": 1046.7999999999997
+      },
+      {
+        "Id": "481dd24950a24aa3bfd3610c6837095f",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 286.20000000000005,
+        "Y": 782.28249999999991
+      },
+      {
+        "Id": "affa88d2b3b4456bb7f076e31cc987f5",
+        "Name": "Circle.Radius",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1058.2,
+        "Y": 1060.7999999999997
+      },
+      {
+        "Id": "09109438de644647b8aeabddd012dfea",
+        "Name": "List.MaximumItemByKey",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1360.2,
+        "Y": 930.8
+      },
+      {
+        "Id": "706d6f41820d4b6db7c04e58a2cce7a4",
+        "Name": "List.Create",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 1058.2,
+        "Y": 834.8
+      },
+      {
+        "Id": "a9b2020a7bc947cdb242fae61e665b80",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 286.20000000000005,
+        "Y": 956.28249999999991
+      }
+    ],
+    "Annotations": [],
+    "X": -110.4210889356882,
+    "Y": -651.595904742232,
+    "Zoom": 0.94308467029363308
+  }
+}

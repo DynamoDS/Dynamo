@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -565,7 +565,7 @@ namespace Dynamo.Tests
         public void TestPopFromUndoGroup()
         {
             //Assert that it cannot pop from an empty undostack
-            Assert.Throws<InvalidOperationException>(() => { recorder.PopFromUndoGroup(); });
+            Assert.Throws<InvalidOperationException>(() => { recorder.PopActionGroupFromUndoStack(); });
 
             //Add models
             workspace.AddModel(new DummyModel(1, 10));

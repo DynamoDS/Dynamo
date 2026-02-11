@@ -1,0 +1,36 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>空值不能转换为类型</h2>
+<p>此警告表示您试图使用的节点需要输入特定的数据类型，且该类型不能为空。 Null 只是表示“无对象”，因此该节点会抛出一条警告，提示您试图不向节点输入任何对象，这是不允许的。</p>
+
+<h4>如何修复</h4>
+<p>此错误可能由图形中的其他节点引起。 检查上游节点以查看它们是否正确执行 - 通常上游节点未正确执行，并向下游节点传递空值，然后该节点显示此错误消息。 从导致出现此警告的节点开始，然后向后工作，以便检查每个节点的输出，直到找到导致此问题的节点。</p>
+
+<p>如果错误消息指示某个参数为空，请检查该参数上游路径上的节点以查看它们是否正确执行以及是否向下游传递非空值。</p>
+
+<h4>更多信息</h4>
+<p>要了解更多信息，请查看<a href="https://forum.dynamobim.com/search?q=null%20value%20cannot%20be%20cast%20to"><span>“<strong>空值不能转换为类型</strong>”</span></a>。</p>
+
+</body>

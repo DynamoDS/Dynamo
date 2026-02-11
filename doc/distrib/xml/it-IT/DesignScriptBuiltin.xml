@@ -1,0 +1,85 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>DesignScriptBuiltin</name>
+    </assembly>
+    <members>
+        <member name="M:DesignScript.Builtin.Dictionary.CustomKeyComparer.GetHashCode(System.String)">
+            <summary>Questo codice è stato copiato da String.GetHashCode() per .NET Framework 4.8, che utilizza un
+            algoritmo di hashing deterministico. Più precisamente, si tratta della funzione String.GetLegacyNonRandomizedHashCode()
+            disponibile qui: https://referencesource.microsoft.com/mscorlib/R/42c2b7ffc7c3111f.html</summary>
+            <param name="obj"/>
+            <returns/>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ByKeysValues(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>Produce un dizionario con i valori e le chiavi forniti. Il numero di voci è
+                il minore di valori e chiavi.</summary>
+            <param name="keys">Chiavi del dizionario</param>
+            <param name="values">Valori del dizionario</param>
+            <returns name="dictionary">Dizionario da chiavi e valori</returns>
+            <search>map,{},table</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.Components">
+            <summary>Produce i componenti di un dizionario. L'inverso di Dictionary.ByKeysValues.</summary>
+            <returns name="keys">Chiavi del dizionario</returns>
+            <returns name="values">Valori del dizionario</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Keys">
+            <summary>Produce le chiavi in un dizionario.</summary>
+            <returns name="keys">Chiavi del dizionario</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Values">
+            <summary>Produce i valori in un dizionario.</summary>
+            <returns name="values">Valori del dizionario</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Count">
+            <summary>Il numero di coppie chiave-valore in un dizionario.</summary> 
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.SetValueAtKeys(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>Produce un nuovo dizionario con un elenco di chiavi impostate sui nuovi valori, sovrascrivendo eventualmente le coppie chiave-valore esistenti. 
+                Questi due elenchi devono essere della stessa lunghezza. In caso contrario, il minore dei due limita il numero degli inserimenti.</summary>
+            <param name="keys">Le chiavi nel dizionario da impostare. Se la stessa chiave esiste già, il valore in tale chiave verrà modificato.</param>
+            <param name="values">I valori corrispondenti da inserire.</param>
+            <returns name="dictionary">Nuovo dizionario con le voci inserite</returns>
+            <search>insert,add</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.RemoveKeys(System.Collections.Generic.IList{System.String})">
+            <summary>Produce un nuovo dizionario con le chiave specificate rimosse.</summary>
+            <param name="keys">La chiave nel dizionario da rimuovere</param>
+            <returns name="dictionary">Nuovo dizionario con chiavi rimosse</returns>
+            <search>drop,delete</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ValueAtKey(System.String)">
+            <summary>Ottiene un valore in una chiave specificata.</summary>
+            <param name="key">La chiave nel dizionario per cui ottenere il valore</param>
+            <returns name="value">Valore nella chiave specificata o null se non è impostato</returns>
+            <search>lookup,valueatkey,find</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ToString">
+            <summary>Restituisce una rappresentazione descrittiva sotto forma di stringa del dizionario.</summary>
+            <returns>Rappresentazione sotto forma di stringa del dizionario.</returns>
+        </member>
+        <member name="T:DesignScript.Builtin.BuiltinNullReferenceException">
+            <summary>Eccezione di riferimento nullo generata con tipi incorporati DS nulli:
+            elenchi, dizionari, stringhe.</summary>
+        </member>
+        <member name="T:Builtin.Properties.DesignScriptBuiltin">
+            <summary>Classe di risorse fortemente tipizzata per la ricerca di stringhe localizzate e così via.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.ResourceManager">
+            <summary>Restituisce l'istanza di ResourceManager memorizzata nella cache utilizzata da questa classe.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.Culture">
+            <summary>Sostituisce la proprietà CurrentUICulture del thread corrente per tutte le
+              ricerche di risorse che utilizzano questa classe di risorse fortemente tipizzata.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.IndexOutOfRangeExceptionMessage">
+            <summary>Cerca una stringa localizzata simile a L'indice non rientrava nell'intervallo. Se non negativo deve essere minore della dimensione dell'elenco. href=kIndexOutOfRange.html.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.NullReferenceExceptionMessage">
+            <summary>Cerca una stringa localizzata simile a Impossibile indicizzare in una stringa, un dizionario o un elenco nullo.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.StringOverIndexingExceptionMessage">
+            <summary>Cerca una stringa localizzata simile a L'indice non rientrava nell'intervallo. Se non negativo deve essere minore della dimensione della stringa. href=kIndexOutOfRange.html.</summary>
+        </member>
+    </members>
+</doc>

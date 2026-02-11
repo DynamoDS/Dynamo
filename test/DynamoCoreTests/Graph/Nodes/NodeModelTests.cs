@@ -7,6 +7,7 @@ using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Migration;
 using Dynamo.Selection;
+using Dynamo.Utilities;
 using NUnit.Framework;
 using Revit.Elements;
 
@@ -222,12 +223,12 @@ namespace Dynamo.Tests
         {
             var nodeModel = new NodeModelTestingClass();
 
-            nodeModel.InPorts = new ObservableCollection<PortModel>
+            nodeModel.InPorts.AddRange(new ObservableCollection<PortModel>
             {
                 new PortModel("Port1", "Tooltip1"),
                 new PortModel("Port2", "Tooltip2"),
                 new PortModel("Port3", "Tooltip3")
-            };
+            });
 
             //case "UsingDefaultValue"
             var param = new UpdateValueParams("UsingDefaultValue", "true;true;false");

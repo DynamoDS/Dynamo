@@ -24,6 +24,7 @@ using Dynamo.Linting;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Properties;
+using Dynamo.PythonServices;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -49,6 +50,34 @@ namespace Dynamo.Graph.Workspaces
         public double X;
         public double Y;
         public double Zoom;
+
+        /// <summary>
+        /// Load the extra view information required to fully construct a WorkspaceModel object 
+        /// </summary>
+        /// <param name="json"></param>
+        static internal ExtraWorkspaceViewInfo ExtraWorkspaceViewInfoFromJson(string json)
+        {
+            JsonReader reader = new JsonTextReader(new StringReader(json));
+            var obj = JObject.Load(reader);
+            var viewBlock = obj["View"];
+            if (viewBlock == null)
+                return null;
+
+            var settings = new JsonSerializerSettings
+            {
+                Error = (sender, args) =>
+                {
+                    args.ErrorContext.Handled = true;
+                    Console.WriteLine(args.ErrorContext.Error);
+                },
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.None,
+                Formatting = Newtonsoft.Json.Formatting.Indented,
+                Culture = CultureInfo.InvariantCulture
+            };
+
+            return JsonConvert.DeserializeObject<ExtraWorkspaceViewInfo>(viewBlock.ToString(), settings);
+        }
     }
 
     /// <summary>
@@ -114,6 +143,12 @@ namespace Dynamo.Graph.Workspaces
         public string PinnedNode;
         public double WidthAdjustment;
         public double HeightAdjustment;
+        public double UserSetWidth;
+        public double UserSetHeight;
+        public bool IsOptionalInPortsCollapsed;
+        public bool IsUnconnectedOutPortsCollapsed;
+        public bool hasToggledOptionalInPorts;
+        public bool HasToggledUnconnectedOutPorts;
 
         // TODO, Determine if these are required
         public double Left;
@@ -142,7 +177,13 @@ namespace Dynamo.Graph.Workspaces
                 this.GroupStyleId == other.GroupStyleId &&
                 this.Background == other.Background &&
                 this.WidthAdjustment == other.WidthAdjustment &&
-                this.HeightAdjustment == other.HeightAdjustment;
+                this.HeightAdjustment == other.HeightAdjustment &&
+                this.UserSetWidth == other.UserSetWidth &&
+                this.UserSetHeight == other.UserSetHeight &&
+                this.IsOptionalInPortsCollapsed == other.IsOptionalInPortsCollapsed &&
+                this.IsUnconnectedOutPortsCollapsed == other.IsUnconnectedOutPortsCollapsed &&
+                this.hasToggledOptionalInPorts == other.hasToggledOptionalInPorts &&
+                this.HasToggledUnconnectedOutPorts == other.HasToggledUnconnectedOutPorts;
 
             //TODO try to get rid of these if possible
             //needs investigation if we are okay letting them get 
@@ -204,6 +245,16 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        /// <summary>
+        /// This is true only if the workspace contains legacy SOAP formatted binding data.
+        /// </summary>
+        internal bool ContainsLegacyTraceData { get; set; }
+
+        /// <summary>
+        /// Denotes if the current workspace was created from a template.
+        /// </summary>
+        internal bool IsTemplate { get; set; }
+
         internal bool ScaleFactorChanged = false;
 
         /// <summary>
@@ -252,6 +303,11 @@ namespace Dynamo.Graph.Workspaces
         private Dictionary<Guid, DependencyInfo> localDefinitionsDictionary = new Dictionary<Guid, DependencyInfo>();
         private Dictionary<Guid, DependencyInfo> externalFilesDictionary = new Dictionary<Guid, DependencyInfo>();
         private readonly string customNodeExtension = ".dyf";
+
+        /// <summary>
+        /// Flag to indicate whether the CPython notification has been shown once.
+        /// </summary>
+        internal bool HasShownPythonAutoMigrationNotification;
 
         /// <summary>
         /// Whether or not to delay graph execution.
@@ -634,20 +690,19 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Event requesting subscribers to return additional package dependencies for
-        /// current workspace.
+        /// Event requesting subscribers to return Python engine mapping for the current workspace nodes.
         /// </summary>
-        internal event Func<IEnumerable<INodeLibraryDependencyInfo>> RequestPackageDependencies;
+        internal event Func<Dictionary<Guid, String>> RequestPythonEngineMapping;
 
         /// <summary>
-        /// Raised when the workspace needs to request for additional package dependencies
+        /// Raised when the workspace needs to request for Python engine mapping
         /// that can be returned from other subscribers such as view extensions.
-        /// E.g. The PythonMigrationViewExtension returns additional package dependencies required for Python engines.
+        /// E.g. The PythonMigrationViewExtension computes additional package dependencies required for Python nodes.
         /// </summary>
         /// <returns></returns>
-        internal IEnumerable<INodeLibraryDependencyInfo> OnRequestPackageDependencies()
+        internal Dictionary<Guid, String> OnRequestPythonEngineMapping()
         {
-            return RequestPackageDependencies?.Invoke();
+            return RequestPythonEngineMapping?.Invoke();
         }
 
         /// <summary>
@@ -762,9 +817,43 @@ namespace Dynamo.Graph.Workspaces
         {
             var packageDependencies = new Dictionary<PackageInfo, PackageDependencyInfo>();
 
+            bool computePythonNodeMapping = true;
+            var pythonNodeMapping = new Dictionary<Guid, String>();
+
             foreach (var node in Nodes)
             {
                 var collected = GetNodePackage(node);
+
+                // Handle python nodes explicitly and use the collected node package for those node types.
+                if (node.ToString().Equals(PythonEngineManager.PythonNodeNamespace))
+                {
+                    // Compute the node - python engine mapping for all python workspace nodes at once, when a python node is detected.
+                    if (computePythonNodeMapping)
+                    {
+                        pythonNodeMapping = OnRequestPythonEngineMapping();
+                        computePythonNodeMapping = false;
+                    }
+
+                    var pythonEnginePackage = (pythonNodeMapping != null && pythonNodeMapping.ContainsKey(node.GUID)) ? pythonNodeMapping[node.GUID] : string.Empty;
+
+                    // For inbuilt python engine,package dependency is not set.
+                    if (pythonEnginePackage.Equals("InBuilt"))
+                    {
+                        continue;
+                    }
+                    else if (collected != null)
+                    {
+                        if (!packageDependencies.ContainsKey(collected))
+                        {
+                            packageDependencies[collected] = new PackageDependencyInfo(collected);
+                        }
+                        packageDependencies[collected].AddDependent(node.GUID);
+                        packageDependencies[collected].State = PackageDependencyState.Loaded;
+
+                        nodePackageDictionary[node.GUID] = collected;
+                        continue;
+                    }
+                }
 
                 if (nodePackageDictionary.ContainsKey(node.GUID))
                 {
@@ -1251,9 +1340,6 @@ namespace Dynamo.Graph.Workspaces
             get { return new Rect2D(x, y, width, height); }
         }
 
-        //TODO(Steve): This probably isn't needed inside of WorkspaceModel -- MAGN-5714
-        internal Version WorkspaceVersion { get; set; }
-
         /// <summary>
         /// Implements <see cref="ILocatable.CenterX"/> property.
         /// </summary>
@@ -1304,6 +1390,13 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        /// <summary>
+        /// Flag indicating whether the “Python Engine Change” notice should be shown
+        /// on save/close. Runtime-only (not serialized) and reset on workspace switch.
+        /// </summary>
+        [JsonIgnore]
+        public bool ShowPythonAutoMigrationNotifications { get; internal set; }
+
         #endregion
 
         #region constructors
@@ -1344,7 +1437,6 @@ namespace Dynamo.Graph.Workspaces
             IsReadOnly = DynamoUtilities.PathHelper.IsReadOnlyPath(fileName);
             LastSaved = DateTime.Now;
 
-            WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
             undoRecorder = new UndoRedoRecorder(this);
 
             NodeFactory = factory;
@@ -1454,12 +1546,16 @@ namespace Dynamo.Graph.Workspaces
             // have invalid inputs, so these executions are meaningless and may
             // cause invalid GC. See comments in MAGN-7229.
             foreach (NodeModel node in Nodes)
+            {
                 node.RaisesModificationEvents = false;
+                // Dispose here so that all nodes stop listening to disconnect events before
+                // the connectors are deleted. Otherwise remaining undisposed nodes will react
+                // to delete events when an input connector is deleted.
+                node.Dispose();
+            }
 
             foreach (NodeModel el in Nodes)
             {
-                el.Dispose();
-
                 foreach (PortModel p in el.InPorts)
                 {
                     for (int i = p.Connectors.Count - 1; i >= 0; i--)
@@ -1554,12 +1650,12 @@ namespace Dynamo.Graph.Workspaces
 
             AddNode(node);
 
-            HasUnsavedChanges = true;
-
-            if (node is CodeBlockNodeModel cbn
-                && string.IsNullOrEmpty(cbn.Code)) return;
-
-            RequestRun();
+            if (!node.IsTransient)
+            {
+                HasUnsavedChanges = true;
+                if (node is CodeBlockNodeModel cbn && string.IsNullOrEmpty(cbn.Code)) return;
+                RequestRun();
+            }
         }
 
         protected virtual void RegisterNode(NodeModel node)
@@ -1591,6 +1687,11 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         protected virtual void NodeModified(NodeModel node)
         {
+            if (node.IsTransient)
+            {
+                return;
+            }
+
             HasUnsavedChanges = true;
         }
 
@@ -1610,7 +1711,10 @@ namespace Dynamo.Graph.Workspaces
             OnNodeRemoved(model);
             // Force this change to address the edge case that user deleting the right edge
             // node and do not see unsaved changes, e.g. the watch node at end of the graph
-            HasUnsavedChanges = true;
+            if (!model.IsTransient)
+            {
+                HasUnsavedChanges = true;
+            }
 
             if (dispose)
             {
@@ -1943,6 +2047,53 @@ namespace Dynamo.Graph.Workspaces
             this.currentPasteOffset = (this.currentPasteOffset + PasteOffsetStep) % PasteOffsetMax;
         }
 
+        #region [Nodes Info]
+
+        /// <summary>
+        /// Boolean indicates if the workspace run with warnings
+        /// </summary>
+        internal bool HasWarnings
+        {
+            get { return Nodes.Any(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning); }
+        }
+
+        /// <summary>
+        /// Boolean indicates if the workspace run with warnings with no Geometry
+        /// </summary>
+        internal bool HasNoneGeometryRelatedWarnings
+        {
+            get { return Nodes.Any(n => (n.State == ElementState.Warning || n.State == ElementState.PersistentWarning) && !n.Category.StartsWith("Geometry.")); }
+        }
+
+        /// <summary>
+        /// Boolean indicates if workspace run with errors
+        /// </summary>
+        internal bool HasErrors
+        {
+            get { return Nodes.Any(n => n.State == ElementState.Error); }
+        }
+
+        /// <summary>
+        /// Boolean indicates if home workspace is displayed with infos
+        /// </summary>
+        internal bool HasInfos
+        {
+            get { return Nodes.Any(n => n.State == ElementState.Info || n.State == ElementState.PersistentInfo); }
+        }
+
+        /// <summary>
+        /// Indicates if the workspace is valid for sending to the FDX
+        /// </summary>
+        internal bool IsValidForFDX
+        {
+            get
+            {
+                return Nodes.Count() > 1 && !HasErrors && !HasNoneGeometryRelatedWarnings;
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region private/internal methods
@@ -1963,116 +2114,6 @@ namespace Dynamo.Graph.Workspaces
         internal bool containsInvalidInputSymbols()
         {
             return this.Nodes.OfType<Nodes.CustomNodes.Symbol>().Any(node => !node.Parameter.NameIsValid);
-        }
-
-        [Obsolete("Method will be deprecated in Dynamo 3.0.")]
-        private void SerializeElementResolver(XmlDocument xmlDoc)
-        {
-            Debug.Assert(xmlDoc != null);
-
-            var root = xmlDoc.DocumentElement;
-
-            var mapElement = xmlDoc.CreateElement("NamespaceResolutionMap");
-
-            foreach (var element in ElementResolver.ResolutionMap)
-            {
-                var resolverElement = xmlDoc.CreateElement("ClassMap");
-
-                resolverElement.SetAttribute("partialName", element.Key);
-                resolverElement.SetAttribute("resolvedName", element.Value.Key);
-                resolverElement.SetAttribute("assemblyName", element.Value.Value);
-
-                mapElement.AppendChild(resolverElement);
-            }
-            root.AppendChild(mapElement);
-        }
-
-        [Obsolete("Method will be deprecated in Dynamo 3.0.")]
-        protected virtual bool PopulateXmlDocument(XmlDocument xmlDoc)
-        {
-            try
-            {
-                var root = xmlDoc.DocumentElement;
-                root.SetAttribute("Version", WorkspaceVersion.ToString());
-                root.SetAttribute("X", X.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute("Y", Y.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute("ScaleFactor", ScaleFactor.ToString(CultureInfo.InvariantCulture));
-                root.SetAttribute("Name", Name);
-                root.SetAttribute("Description", Description);
-
-                SerializeElementResolver(xmlDoc);
-
-                var elementList = xmlDoc.CreateElement("Elements");
-                //write the root element
-                root.AppendChild(elementList);
-
-                foreach (var dynEl in Nodes.Select(el => el.Serialize(xmlDoc, SaveContext.Save)))
-                    elementList.AppendChild(dynEl);
-
-                //write only the output connectors
-                var connectorList = xmlDoc.CreateElement("Connectors");
-                //write the root element
-                root.AppendChild(connectorList);
-
-                foreach (var el in Nodes)
-                {
-                    foreach (var port in el.OutPorts)
-                    {
-                        foreach (
-                            var c in
-                                port.Connectors.Where(c => c.Start != null && c.End != null))
-                        {
-                            var connector = xmlDoc.CreateElement(c.GetType().ToString());
-                            connectorList.AppendChild(connector);
-                            connector.SetAttribute("start", c.Start.Owner.GUID.ToString());
-                            connector.SetAttribute("start_index", c.Start.Index.ToString());
-                            connector.SetAttribute("end", c.End.Owner.GUID.ToString());
-                            connector.SetAttribute("end_index", c.End.Index.ToString());
-                            connector.SetAttribute(nameof(ConnectorModel.IsHidden), c.IsHidden.ToString());
-
-                            if (c.End.PortType == PortType.Input)
-                                connector.SetAttribute("portType", "0");
-                        }
-                    }
-                }
-
-                //save the notes
-                var noteList = xmlDoc.CreateElement("Notes"); //write the root element
-                root.AppendChild(noteList);
-                foreach (var n in Notes)
-                {
-                    var note = n.Serialize(xmlDoc, SaveContext.Save);
-                    noteList.AppendChild(note);
-                }
-
-                //save the annotation
-                var annotationList = xmlDoc.CreateElement("Annotations");
-                root.AppendChild(annotationList);
-                foreach (var n in annotations)
-                {
-                    var annotation = n.Serialize(xmlDoc, SaveContext.Save);
-                    annotationList.AppendChild(annotation);
-                }
-
-                //save the presets into the dyn file as a seperate element on the root
-                var presetsElement = xmlDoc.CreateElement("Presets");
-                root.AppendChild(presetsElement);
-                foreach (var preset in Presets)
-                {
-                    var presetState = preset.Serialize(xmlDoc, SaveContext.Save);
-                    presetsElement.AppendChild(presetState);
-                }
-
-                OnSaving(xmlDoc);
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Log(ex.Message);
-                Log(ex.StackTrace);
-                return false;
-            }
         }
 
         internal void SendModelEvent(Guid modelGuid, string eventName, int value)
@@ -2204,7 +2245,7 @@ namespace Dynamo.Graph.Workspaces
                         throw new Exception("There are multiple subscribers to Workspace.CollectingNodePackageDependencies. " +
                             "Only PackageManagerExtension should subscribe to this event.");
                     }
-                    var assemblyName = GetNameOfAssemblyReferencedByNode(node);
+                    var assemblyName = node.GetNameOfAssemblyReferencedByNode();
                     if (assemblyName != null)
                     {
                         return CollectingNodePackageDependencies(assemblyName);
@@ -2319,7 +2360,7 @@ namespace Dynamo.Graph.Workspaces
                     Console.WriteLine(args.ErrorContext.Error);
                 },
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.Auto,
+                TypeNameHandling = TypeNameHandling.None,
                 Formatting = Newtonsoft.Json.Formatting.Indented,
                 Culture = CultureInfo.InvariantCulture,
                 Converters = new List<JsonConverter>{
@@ -2356,7 +2397,7 @@ namespace Dynamo.Graph.Workspaces
                     Console.WriteLine(args.ErrorContext.Error);
                 },
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.Auto,
+                TypeNameHandling = TypeNameHandling.None,
                 Formatting = Newtonsoft.Json.Formatting.Indented,
                 Culture = CultureInfo.InvariantCulture,
                 Converters = new List<JsonConverter>{
@@ -2699,6 +2740,14 @@ namespace Dynamo.Graph.Workspaces
             annotationModel.GUID = annotationGuidValue;
             annotationModel.HeightAdjustment = annotationViewInfo.HeightAdjustment;
             annotationModel.WidthAdjustment = annotationViewInfo.WidthAdjustment;
+            annotationModel.UserSetWidth = annotationViewInfo.UserSetWidth;
+            annotationModel.UserSetHeight = annotationViewInfo.UserSetHeight;
+            annotationModel.IsOptionalInPortsCollapsed = annotationViewInfo.IsOptionalInPortsCollapsed;
+            annotationModel.IsUnconnectedOutPortsCollapsed = annotationViewInfo.IsUnconnectedOutPortsCollapsed;
+            annotationModel.HasToggledOptionalInPorts = annotationViewInfo.hasToggledOptionalInPorts;
+            annotationModel.HasToggledUnconnectedOutPorts = annotationViewInfo.HasToggledUnconnectedOutPorts;
+
+            annotationModel.UpdateGroupFrozenStatus();
 
             annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
             annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;

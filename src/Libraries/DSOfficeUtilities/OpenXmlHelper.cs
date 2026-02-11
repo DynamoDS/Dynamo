@@ -163,17 +163,21 @@ namespace DSOffice
                     }
 
                     Row row;
+                    //This case is when we need to append a new row at the end of the spreadsheet
                     if (rowsIndex >= rows.Count)
                     {
                         // Add a new row to the end
                         row = new Row() { RowIndex = currentRowIndex };
                         sheetData.AppendChild(row);
                     }
+                    //This case is when there are empty rows before or in between the populated rows
                     else if (rows[rowsIndex].RowIndex > currentRowIndex)
                     {
                         // Add a new row before this one
                         row = new Row() { RowIndex = currentRowIndex };
-                        sheetData.InsertBefore(rows[rowsIndex], row);
+
+                        //This is the method definition - InsertBefore(newChild, referenceChild), so we need to pass row as first argument
+                        sheetData.InsertBefore(row, rows[rowsIndex]);
                     }
                     else
                     {
@@ -241,6 +245,17 @@ namespace DSOffice
 
                     currentRowIndex++;
                 }
+
+                // Force re-calculation of formulas on opening the Excel file
+                var workbook = document.WorkbookPart.Workbook;
+                var calcProps = workbook.Elements<CalculationProperties>().FirstOrDefault();
+                if (calcProps == null)
+                {
+                    calcProps = new CalculationProperties();
+                    workbook.AppendChild(calcProps);
+                }
+                calcProps.FullCalculationOnLoad = true;
+
                 return true;
             }
         }
@@ -256,6 +271,10 @@ namespace DSOffice
             foreach (var row in sheetData.Elements<Row>())
             {
                 var lastCell = row.LastChild as Cell;
+
+                //When we have an empty row sometimes the Row.LastChild is null, so this validation will avoid the "Object reference not set to an instance of an object" error.
+                if (lastCell == null) continue;
+
                 var current = GetColumnIndex(lastCell.CellReference);
                 if (current > result)
                 {
@@ -351,7 +370,9 @@ namespace DSOffice
                             {
                                 if (numberFormatId != 0)
                                 {
-                                    var numberingFormat = (NumberingFormat)stylesheet.NumberingFormats.ElementAt(numberFormatId);
+                                    var numberingFormat = (NumberingFormat)stylesheet.NumberingFormats?.ElementAt(numberFormatId);
+                                    if (numberingFormat == null) return value.ToString();
+
                                     var formatted = value.ToString(numberingFormat.FormatCode);
                                     return formatted;
                                 }
@@ -373,7 +394,7 @@ namespace DSOffice
                     {
                         if (cell.CellValue.TryGetInt(out var index))
                         {
-                            return sharedStringTable.ElementAt(index).InnerText;
+                            return GetSharedStringText(sharedStringTable.ElementAt(index));
                         }
                     }
 
@@ -409,6 +430,38 @@ namespace DSOffice
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Extracts text content from an OpenXmlElement (typically a SharedStringItem) while excluding phonetic guides.
+        /// Excel stores phonetic guides (furigana for Japanese, pinyin for Chinese) in PhoneticRun elements,
+        /// which should not be included in the text output as they are pronunciation hints, not actual content.
+        /// </summary>
+        /// <param name="sharedStringItem">The OpenXmlElement to extract text from (typically SharedStringItem from the shared string table)</param>
+        /// <returns>The text content without phonetic annotations</returns>
+        private static string GetSharedStringText(OpenXmlElement sharedStringItem)
+        {
+            if (sharedStringItem == null)
+            {
+                return string.Empty;
+            }
+
+            // Extract text from Text elements, excluding those within PhoneticRun elements
+            var textElements = sharedStringItem.Descendants<Text>().Where(t => !IsInsidePhoneticRun(t));
+
+            return string.Concat(textElements.Select(t => t.Text));
+        }
+
+        /// <summary>
+        /// Checks if a text element is inside a PhoneticRun element.
+        /// PhoneticRun elements contain phonetic guides (furigana) that should be excluded.
+        /// </summary>
+        /// <param name="textElement">The Text element to check</param>
+        /// <returns>True if the text is inside a PhoneticRun, false otherwise</returns>
+        private static bool IsInsidePhoneticRun(Text textElement)
+        {
+            // Check if any ancestor is a PhoneticRun
+            return textElement.Ancestors<PhoneticRun>().Any();
         }
 
         /// <summary>
@@ -604,6 +657,14 @@ namespace DSOffice
                 {
                     // The string is not in the table, so we add it
                     sharedStringTable.AppendChild(new SharedStringItem(new Text((string)value)));
+
+                    //Means that the current (row, column) is probably empty so we should start from 0
+                    if (sharedStringTable.Count == null)
+                    {
+                        sharedStringTable.Count = 0;
+                        sharedStringTable.UniqueCount = 0;
+                    }
+
                     index = (int)sharedStringTable.Count.Value;
                     // Yes, you need to update these manually
                     sharedStringTable.Count++;

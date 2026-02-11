@@ -59,5 +59,41 @@ namespace Dynamo.NodeAutoComplete.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cluster.
+        /// </summary>
+        public static string Cluster {
+            get {
+                return ResourceManager.GetString("Cluster", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node AutoComplete View Extension.
+        /// </summary>
+        public static string ExtensionName {
+            get {
+                return ResourceManager.GetString("ExtensionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node Type Match.
+        /// </summary>
+        public static string NodeTypeMatch {
+            get {
+                return ResourceManager.GetString("NodeTypeMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Single.
+        /// </summary>
+        public static string Single {
+            get {
+                return ResourceManager.GetString("Single", resourceCulture);
+            }
+        }
     }
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<migrations>
+  <priorNameHint>
+    <oldName>Revit.CurveElement.RemoveDuplicates</oldName>
+    <newName>Revit.CurveElement.FindDuplicates</newName>
+  </priorNameHint>
+</migrations>

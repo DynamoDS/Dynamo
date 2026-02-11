@@ -11,17 +11,12 @@ using Dynamo.Search;
 using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
-#if NETFRAMEWORK
-using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
-using Microsoft.Practices.Prism.Commands;
-#else
-using NotificationObject = Dynamo.Core.NotificationObject;
 using Prism.Commands;
-#endif
+using NotificationObject = Dynamo.Core.NotificationObject;
 
 namespace Dynamo.Wpf.ViewModels
 {
-    public abstract class BrowserItemViewModel : NotificationObject
+    public abstract class BrowserItemViewModel : NotificationObject, IDisposable
     {
         public ICommand ToggleIsExpandedCommand { get; protected set; }
         public BrowserItem Model { get; private set; }
@@ -78,6 +73,12 @@ namespace Dynamo.Wpf.ViewModels
         internal static BrowserInternalElementViewModel WrapExplicit(BrowserInternalElement elem)
         {
             return new BrowserInternalElementViewModel(elem);
+        }
+
+        public void Dispose()
+        {
+            if (Model == null || Model.Items == null) return; 
+            Model.Items.CollectionChanged -= ItemsOnCollectionChanged;
         }
 
         #endregion
@@ -369,15 +370,22 @@ namespace Dynamo.Wpf.ViewModels
         /// </summary>
         public override void Dispose()
         {
-            foreach (var category in SubCategories)
-                category.PropertyChanged -= CategoryOnPropertyChanged;
+            if (SubCategories != null)
+            {
+                foreach (var category in SubCategories)
+                    category.PropertyChanged -= CategoryOnPropertyChanged;
+            }
 
-            foreach (var item in Items)
-                item.PropertyChanged -= ItemOnPropertyChanged;
+            if (Items != null)
+            {
+                foreach (var item in Items)
+                    item.PropertyChanged -= ItemOnPropertyChanged;
+                Items.CollectionChanged -= ItemsOnCollectionChanged;    
+            }
 
-            Entries.CollectionChanged -= OnCollectionChanged;
-            SubCategories.CollectionChanged -= SubCategoriesOnCollectionChanged;
-            Items.CollectionChanged -= ItemsOnCollectionChanged;
+            if (Entries != null) Entries.CollectionChanged -= OnCollectionChanged;
+            if (SubCategories != null) SubCategories.CollectionChanged -= SubCategoriesOnCollectionChanged;
+
             base.Dispose();
         }
 
@@ -389,11 +397,17 @@ namespace Dynamo.Wpf.ViewModels
         {
             Dispose();
 
-            foreach (var entry in Entries)
-                entry.Dispose();
+            if (Entries != null)
+            {
+                foreach (var entry in Entries)
+                    entry.Dispose();
+            }
 
-            foreach (var subCategory in SubCategories)
-                subCategory.DisposeTree();
+            if (SubCategories != null)
+            {
+                foreach (var subCategory in SubCategories)
+                    subCategory.DisposeTree();
+            }
         }
 
         private void CategoryOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)

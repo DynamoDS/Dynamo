@@ -1,0 +1,526 @@
+{
+  "Uuid": "45732322-5b7c-4527-a7ff-2181708d3c04",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "TestFormattedStringFromArrayPreview_numericformat",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.FromArray, CoreNodeModels",
+      "Id": "c27d9e0545f74aac8f53a9e485e0f9c0",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "cc0b8d6aed9043de91272235e6ab2e50",
+          "Name": "arr",
+          "Description": "The array of object to be serialized",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5144a5cf722c4b3da19b0708be143915",
+          "Name": "str",
+          "Description": "String representation of the array",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Converts an array to a string representation"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "012e48cbf12d4277a4ee77c990ec7a68",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "480593de671c4fd0a5aba280e2065a8b",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "1..3..#4;"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 298.0,
+      "WatchHeight": 38.0,
+      "Id": "4b6c7485022c4593ad15d280b5e99e8f",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "cc5f61300a9a40b79d66da1579621edc",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f0db4981f30a468bbb33fb9d80199b95",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "b9352a46c1634e65a64bd8062e2a6102",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9eebab252bf0454c826a3fb48016ec02",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "[\"F1\",\"G\",\"B\"];"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.FormattedStringFromArray, CoreNodeModels",
+      "Id": "74f97ab047fa49eaaa8d77271ecb87e0",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "39204eddb5214b8784ef4d0a66415a2e",
+          "Name": "array",
+          "Description": "The array of object to be serialized",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a93226abb9014f848ced0e08e546b696",
+          "Name": "useNumericFormat",
+          "Description": "should the numeric precision format be used when converting doubles (disabled)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9bb562665ed04284adf767976c17b2d2",
+          "Name": "string",
+          "Description": "String representation of the array",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Converts an array to a string representation"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 80.0,
+      "WatchHeight": 38.0,
+      "Id": "c198ae603bba4cc0a7ef17c3444f8156",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "b389674f395a4746b32d7583d975e743",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "929d7e76504340349292c5c432724364",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 298.0,
+      "WatchHeight": 38.0,
+      "Id": "a28fa354113640eab04af51930aaeca2",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "44b3628a3c864218b68753a9552537b3",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f1307dd499c7413587db852a6a66fa42",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 419.0,
+      "WatchHeight": 136.0,
+      "Id": "f690cbe74f4c45e7917e742af16219ad",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "0a76d7cfd50044868dc5996ae88c325f",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "05280f24000e45ada5b1e986d72423e4",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.FormattedStringFromArray, CoreNodeModels",
+      "Id": "96271f95253f4524a95db2d7400c4f52",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "67584c6e3687412ca4c3fca661a85911",
+          "Name": "array",
+          "Description": "The array of object to be serialized",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "56f6b5874d3d4474b9efc9266735b5e4",
+          "Name": "formatSpecifier",
+          "Description": "format specifier for numeric values",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2b5df70c7ac34313813f29f47326e817",
+          "Name": "string",
+          "Description": "String representation of the array",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Converts an array to a string representation"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.FormattedStringFromArray, CoreNodeModels",
+      "Id": "24cdee3feeb04e09bcad4b0078581347",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "1823631337ab41a58bc0b24670d65ae2",
+          "Name": "array",
+          "Description": "The array of object to be serialized",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ea6ed5138ef74182b621508230aaf896",
+          "Name": "formatSpecifier",
+          "Description": "format specifier for numeric values",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2fac04be2c194c2cabf862a710cda54a",
+          "Name": "string",
+          "Description": "String representation of the array",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Converts an array to a string representation"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "5144a5cf722c4b3da19b0708be143915",
+      "End": "cc5f61300a9a40b79d66da1579621edc",
+      "Id": "0c116fd047bc42d4a799794b440ed7f5",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "480593de671c4fd0a5aba280e2065a8b",
+      "End": "cc0b8d6aed9043de91272235e6ab2e50",
+      "Id": "e1f6a2d64a1547dfb384016d5be86549",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "480593de671c4fd0a5aba280e2065a8b",
+      "End": "39204eddb5214b8784ef4d0a66415a2e",
+      "Id": "6d4611a0e5914a12be3763132720005c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "480593de671c4fd0a5aba280e2065a8b",
+      "End": "67584c6e3687412ca4c3fca661a85911",
+      "Id": "4a27e6486b994d3a83828b2339bbfd80",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "480593de671c4fd0a5aba280e2065a8b",
+      "End": "1823631337ab41a58bc0b24670d65ae2",
+      "Id": "58753234ed1f47d49702260243e689c9",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "9eebab252bf0454c826a3fb48016ec02",
+      "End": "ea6ed5138ef74182b621508230aaf896",
+      "Id": "938d461eafdd4ef9806ee339969e12f6",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "9bb562665ed04284adf767976c17b2d2",
+      "End": "b389674f395a4746b32d7583d975e743",
+      "Id": "319e84e8bc714198802388fda8aebca2",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2b5df70c7ac34313813f29f47326e817",
+      "End": "44b3628a3c864218b68753a9552537b3",
+      "Id": "2dd8f3f0b65a43f8b2ac4836724943a1",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2fac04be2c194c2cabf862a710cda54a",
+      "End": "0a76d7cfd50044868dc5996ae88c325f",
+      "Id": "2ff00e8d99de423195bc927856b1d761",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": true,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.0",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.4.0.6676",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "c27d9e0545f74aac8f53a9e485e0f9c0",
+        "Name": "String from Array",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 329.83615590858915,
+        "Y": 264.44863102728914
+      },
+      {
+        "Id": "012e48cbf12d4277a4ee77c990ec7a68",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -3.2945482059884625,
+        "Y": 259.7251911171454
+      },
+      {
+        "Id": "4b6c7485022c4593ad15d280b5e99e8f",
+        "Name": "watch1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 592.9054158830944,
+        "Y": 268.0759595281854
+      },
+      {
+        "Id": "b9352a46c1634e65a64bd8062e2a6102",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -129.38907825891982,
+        "Y": 682.3632653107057
+      },
+      {
+        "Id": "74f97ab047fa49eaaa8d77271ecb87e0",
+        "Name": "String from Array2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 327.4697339717835,
+        "Y": 881.6712841125085
+      },
+      {
+        "Id": "c198ae603bba4cc0a7ef17c3444f8156",
+        "Name": "watch4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 611.7258533738277,
+        "Y": 902.9404607916114
+      },
+      {
+        "Id": "a28fa354113640eab04af51930aaeca2",
+        "Name": "Watch2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 620.7629312816283,
+        "Y": 407.74862501298634
+      },
+      {
+        "Id": "f690cbe74f4c45e7917e742af16219ad",
+        "Name": "Watch3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 692.0084730824933,
+        "Y": 652.511871701363
+      },
+      {
+        "Id": "96271f95253f4524a95db2d7400c4f52",
+        "Name": "String from Array And Format",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 260.57759376051,
+        "Y": 410.86538545620147
+      },
+      {
+        "Id": "24cdee3feeb04e09bcad4b0078581347",
+        "Name": "String from Array And Format",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 305.38333347175626,
+        "Y": 656.9108064199578
+      }
+    ],
+    "Annotations": [],
+    "X": 5.4580877421955165,
+    "Y": -256.1436648704163,
+    "Zoom": 0.6181807073903587
+  }
+}

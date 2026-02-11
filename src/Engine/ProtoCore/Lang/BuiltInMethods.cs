@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
@@ -54,7 +54,6 @@ namespace ProtoCore.Lang
             Reorder,
             RangeExpression,
             Sum,
-            ToString,
             ToStringFromObject,
             ToStringFromArray,
             Transpose,
@@ -69,8 +68,13 @@ namespace ProtoCore.Lang
             NodeAstFailed,
             GC,
             ConditionalIf,
+            ToStringFromObjectAndFormat,
+            ToStringFromArrayAndFormat,
         }
 
+        //this array gets accessed using the MethodID enum
+        //so its order is important... could be a dictionary or attributes on the enums
+        //to avoid confusion, easy to mess this up.
         private static string[] methodNames = new string[]
         {
             "AllFalse",                 // kAllFalse
@@ -115,7 +119,6 @@ namespace ProtoCore.Lang
             "Reorder",                  // kReorder
             Constants.kFunctionRangeExpression, // kGenerateRange
             "Sum",                      // kSum
-            "ToString",                 // kToString               
             "__ToStringFromObject",     // kToStringFromObject
             "__ToStringFromArray",      // kToStringFromArray
             "Transpose",                // kTranspose
@@ -130,6 +133,8 @@ namespace ProtoCore.Lang
             Constants.kNodeAstFailed,   // kNodeAstFailed
             "__GC",                     // kGC
             Constants.kIfConditionalMethodName,
+            "__ToStringFromObjectAndFormat",     // kToStringFromObjectAndFormat
+            "__ToStringFromArrayAndFormat",      // kToStringFromArrayAndFormat
         };
 
         public static string GetMethodName(MethodID id)
@@ -777,17 +782,6 @@ namespace ProtoCore.Lang
                     MethodAttributes = new MethodAttributes(){Description = Resources.Gettypes}
                 },
 
-                new BuiltInMethod
-                {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String, 0),
-
-                    Parameters = new [] 
-                    {
-                        new KeyValuePair<string, Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var)),
-                    }.ToList(),
-                    ID = BuiltInMethods.MethodID.ToString,
-                    MethodAttributes = new MethodAttributes(true, false, "This node is obsolete, please use \"String from Object\""),
-                },
 
                 new BuiltInMethod
                 {
@@ -797,6 +791,7 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0)),
                     },
                     ID = BuiltInMethods.MethodID.ToStringFromObject,
+                    MethodAttributes = new MethodAttributes(true, false, @"This method is obsolete, please use 'ToStringFromObjectAndFormat' "),
                 },
 
                 new BuiltInMethod
@@ -807,7 +802,35 @@ namespace ProtoCore.Lang
                     {
                         new KeyValuePair<string, Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var)),
                     }.ToList(),
-                    ID = BuiltInMethods.MethodID.ToStringFromArray
+                    ID = BuiltInMethods.MethodID.ToStringFromArray,
+                    MethodAttributes = new MethodAttributes(true, false, @"This method is obsolete, please use 'ToStringFromArrayAndFormat' "),
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String, 0),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("formatSpecifier", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String, 0)),
+                        //TODO (MJK)
+                        //if we wanted to support default args for builtins we would need to support these names being parsed as binary expressions instead
+                        //of just identifiers as is done today. We would need to add a new Parameters entry because all of this is public :(
+                        //or we could invoke the parser directly on these strings as is done for custom node symbols...
+                    },
+                    ID = BuiltInMethods.MethodID.ToStringFromObjectAndFormat,
+                },
+
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String, 0),
+
+                    Parameters = new []
+                    {
+                        new KeyValuePair<string, Type>("list", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var)),
+                        new KeyValuePair<string, ProtoCore.Type>("formatSpecifier", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String, 0)),
+                    }.ToList(),
+                    ID = BuiltInMethods.MethodID.ToStringFromArrayAndFormat
                 },
 
                 new BuiltInMethod

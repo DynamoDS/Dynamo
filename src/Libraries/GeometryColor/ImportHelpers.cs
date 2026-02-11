@@ -1,4 +1,4 @@
-﻿using DynamoUnits;
+using DynamoUnits;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -65,17 +65,20 @@ namespace Autodesk.DesignScript.Geometry
         {
             if (dynamoUnit != null)
             {
-                const string millimeters = "autodesk.unit.unit:millimeters";
-                var mm = Unit.ByTypeID($"{millimeters}-1.0.1");
+                var mm = Unit.ByTypeID($"autodesk.unit.unit:millimeters-1.0.1");
 
-                if (!dynamoUnit.ConvertibleUnits.Contains(mm))
+                // Match millimeters `Unit` by name, not type ID, to handle different schema versions (users may
+                // have "millimeters-1.0.1" or "millimeters-2.0.0" in ConvertibleUnits depending on their setup)
+                var convertibleMm = dynamoUnit.ConvertibleUnits.FirstOrDefault(unit => unit.Name == mm.Name);
+                if (convertibleMm == null)
                 {
                     throw new Exception($"{dynamoUnit.Name} was not convertible to mm");
                 }
-                return Utilities.ConvertByUnits(1, dynamoUnit, mm);
+
+                return Utilities.ConvertByUnits(1, dynamoUnit, convertibleMm);
             }
+
             return -1;
         }
-
     }
 }

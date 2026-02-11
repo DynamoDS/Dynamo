@@ -1,0 +1,284 @@
+{
+  "Uuid": "e9ad9db0-00f2-4e95-b50c-e42e1855418d",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "UIGateNode",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Logic.Gate, CoreNodeModels",
+      "InputValue": false,
+      "Id": "0a4e291d93a84260bd9f37fde3158d83",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "0f1887f8f60b455eb25c729b5f619e12",
+          "Name": ">",
+          "Description": "GateInPortToolTip",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "087cdec73a4748009a7cc7be02c5ffd7",
+          "Name": ">",
+          "Description": "GateOutPortToolTip",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Block data passing through this node to downstream nodes. Node returns the input data only if the node value is set to Open.\r\n\r\nIn Generative Design workflows, this node should be used to control and block the behavior of nodes that will place elements in Revit"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "d463c2fca2f5452e99c58dd22ab2a394",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "621f8d2e5ae24c1b91a6991cd796929e",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "1;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "448ad21ed4af42b4ae71c45961a173ff",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "d3178b4aafb24c97a67e769f0278c517",
+          "Name": "object",
+          "Description": "Object to test.\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "049e5b4ac54f4c2d802c08b2b2009dca",
+          "Name": "bool",
+          "Description": "Whether object is null.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.Object.IsNull@var",
+      "Replication": "Auto",
+      "Description": "Determines if the given object is null.\n\nObject.IsNull (object: var): bool"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Logic.Gate, CoreNodeModels",
+      "InputValue": true,
+      "Id": "e323a525bab546199c3635ce33c8c46b",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "a59f1ddbd73f4c9890e8cb2923163b3f",
+          "Name": ">",
+          "Description": "GateInPortToolTip",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "83a18e7d7e164a8fb3ae41056183f817",
+          "Name": ">",
+          "Description": "GateOutPortToolTip",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Block data passing through this node to downstream nodes. Node returns the input data only if the node value is set to Open.\r\n\r\nIn Generative Design workflows, this node should be used to control and block the behavior of nodes that will place elements in Revit"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "414438cdd24f4d74b08e462e0b17ddff",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "d86d0d29d74c4f66a9cc6cafb74449d7",
+          "Name": "object",
+          "Description": "Object to test.\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2f84f1e8426649ec83709678b20e02a3",
+          "Name": "bool",
+          "Description": "Whether object is null.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.Object.IsNull@var",
+      "Replication": "Auto",
+      "Description": "Determines if the given object is null.\n\nObject.IsNull (object: var): bool"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "087cdec73a4748009a7cc7be02c5ffd7",
+      "End": "d3178b4aafb24c97a67e769f0278c517",
+      "Id": "e66a9e01e5784fafa24f40c5f5e891a3",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "621f8d2e5ae24c1b91a6991cd796929e",
+      "End": "0f1887f8f60b455eb25c729b5f619e12",
+      "Id": "ffc85ba6b53b452b802dcd791f3d9612",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "621f8d2e5ae24c1b91a6991cd796929e",
+      "End": "a59f1ddbd73f4c9890e8cb2923163b3f",
+      "Id": "ab382aa0a02f409ca2d4dfe1bd8056b7",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "83a18e7d7e164a8fb3ae41056183f817",
+      "End": "d86d0d29d74c4f66a9cc6cafb74449d7",
+      "Id": "4ef87edee3044cdfaa28680559bd3a96",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.0",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "6.0",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.0.0.5795",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "0a4e291d93a84260bd9f37fde3158d83",
+        "Name": "Gate",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 296.0,
+        "Y": 252.75
+      },
+      {
+        "Id": "d463c2fca2f5452e99c58dd22ab2a394",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 49.78802839937305,
+        "Y": 251.9470070998433
+      },
+      {
+        "Id": "448ad21ed4af42b4ae71c45961a173ff",
+        "Name": "Object.IsNull",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 622.7480758949821,
+        "Y": 252.24250536875752
+      },
+      {
+        "Id": "e323a525bab546199c3635ce33c8c46b",
+        "Name": "Gate",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 293.89968576502383,
+        "Y": 417.7784871033631
+      },
+      {
+        "Id": "414438cdd24f4d74b08e462e0b17ddff",
+        "Name": "Object.IsNull",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 620.6477616600059,
+        "Y": 417.2709924721206
+      }
+    ],
+    "Annotations": [],
+    "X": 30.64969663596358,
+    "Y": 143.65060857084856,
+    "Zoom": 0.6627597805684056
+  }
+}

@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -12,3 +12,4 @@ using System.Runtime.InteropServices;
 [assembly: Guid("7d1c274e-66f1-412b-abf1-c8f98b7cf364")]
 
 [assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
+[assembly: InternalsVisibleTo("DynamoCoreWpf2Tests")]

@@ -39,16 +39,44 @@ namespace Dynamo.Configuration
         public static readonly double IntegerSliderTextBoxWidth = 30.0;
 
         /// <summary>
-        /// Maximum width of Watch Node
+        /// Const string of Autodesk
         /// </summary>
-        [Obsolete("This property is no longer used. Remove in Dynamo 3.0")]
-        public static readonly double MaxWatchNodeWidth = 280.0;
+        public static readonly string AutodeskAsString = "Autodesk";
 
         /// <summary>
-        /// Maximum height of Watch Node
+        /// Const string of Dynamo
         /// </summary>
-        [Obsolete("This property is no longer used. Remove in Dynamo 3.0")]
-        public static readonly double MaxWatchNodeHeight = 310.0;
+        public static readonly string DynamoAsString = "Dynamo";
+
+        /// <summary>
+        /// Const string of Samples folder
+        /// </summary>
+        public static readonly string SamplesAsString = "samples";
+
+        /// <summary>
+        /// Const string of Templates folder
+        /// </summary>
+        public static readonly string TemplatesAsString = "templates";
+
+        /// <summary>
+        /// Const string for Dynamo Node Help Docs
+        /// </summary>
+        public static readonly string DynamoNodeHelpDocs = "NodeHelpSharedDocs";
+
+        /// <summary>
+        /// Const used for zoom-to-fit calculations for nodes and groups in the workspace.
+        /// </summary>
+        public static readonly double ZoomToFitPaddingFactor = 3.5;
+
+        /// <summary>
+        /// Const used to define the interaction or hit area thickness for connectors in the workspace.
+        /// </summary>
+        public static readonly double ConnectorBaseThickness = 3;
+
+        /// <summary>
+        /// Const defining the scaling factor for adjusting connector stroke thickness based on zoom level.
+        /// </summary>
+        public const double ConnectorZoomScalingFactor = 2.0;
 
         #endregion
 
@@ -253,12 +281,6 @@ namespace Dynamo.Configuration
         #region CodeBlockNode
 
         /// <summary>
-        ///     Default height of CodeBlock's port. Now obsolete.
-        ///     Inputs height are set in the normal way, outputs height is set to CodeBlockOutputPortHeightInPixels
-        /// </summary>
-        [Obsolete] public static readonly double CodeBlockPortHeightInPixels = 17.573333333333336;
-
-        /// <summary>
         ///     Code Block outputs have a condensed port height
         /// </summary>
         public static readonly double CodeBlockOutputPortHeightInPixels = 16.345;
@@ -267,6 +289,11 @@ namespace Dynamo.Configuration
         ///     Maximal port name length of CodeBlock
         /// </summary>
         public static readonly int CBNMaxPortNameLength = 24;
+
+        /// <summary>
+        ///     Maximal port tooltip text length of CodeBlock
+        /// </summary>
+        public static readonly int CBNMaxTooltipLength = 500;
 
         /// <summary>
         ///     Highlighting File
@@ -357,12 +384,6 @@ namespace Dynamo.Configuration
 
         #endregion
 
-        #region InCanvasSearch
-
-        internal const double InCanvasSearchTextBoxHeight = 40.0;
-
-        #endregion
-
         #region Backup
 
         /// <summary>
@@ -377,7 +398,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Supported locales as a list
         /// </summary>
-        internal static readonly List<string> SupportedLocaleList = new List<string>() { "en-US", "cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "ja-JP", "ko-KR", "pl-PL", "pt-BR", "ru-RU", "zh-CN", "zh-TW" };
+        internal static readonly List<string> SupportedLocaleList = new List<string>() { "Default", "en-US", "en-GB", "cs-CZ", "de-DE", "es-ES", "fr-FR", "it-IT", "ja-JP", "ko-KR", "pl-PL", "pt-BR", "ru-RU", "zh-CN", "zh-TW" };
 
         /// <summary>
         /// Supported languages and locales as a dictionary in the current thread locale
@@ -428,6 +449,13 @@ namespace Dynamo.Configuration
             }
         }
 
+        #endregion
+
+        #region Notifications Constants
+        /// <summary>
+        /// Request timeOut for notifications service
+        /// </summary>
+        public const int NotificationsDefaultTimeOut = 10000;
         #endregion
     }
 }

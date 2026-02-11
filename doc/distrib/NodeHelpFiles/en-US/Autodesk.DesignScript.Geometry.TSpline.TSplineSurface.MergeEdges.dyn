@@ -1,0 +1,799 @@
+{
+  "Uuid": "733e0635-ea73-445c-bccb-605b222e8843",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.MergeEdges",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      },
+      "List": {
+        "Key": "List",
+        "Value": "BuiltIn.ds"
+      },
+      "NurbsCurve": {
+        "Key": "Autodesk.DesignScript.Geometry.NurbsCurve",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "b5b73281f42c4f8b9e92b1b5d5cccbab",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "2dcc43c4ca9b4266a36c65302f5715d4",
+          "Name": "curve",
+          "Description": "Profile curve\n\nCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5ce535ece64040d3882d9ba559ecf93c",
+          "Name": "direction",
+          "Description": "Extrude vector\n\nVector\nDefault value : Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "06f9478f24e84a3f8c8d4b4f2acae191",
+          "Name": "frontDistance",
+          "Description": "Extrude distance in vector direction\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "56b93680e3514de2a336e72c909ff37e",
+          "Name": "backDistance",
+          "Description": "Extrude distance against vector direction\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d5595ab0566f475981a1934c3bb789bd",
+          "Name": "frontSpans",
+          "Description": "Spans number by vector direction. No extrusion in vector direction will be performed if 0 is passed\n\nint\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "06e030336f9d453aaef878998f425d6a",
+          "Name": "backSpans",
+          "Description": "Spans number against vector direction. No extrusion against vector direction will be performed if 0 is passed\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0ed3bcd6c328473890d103043af655e1",
+          "Name": "profileSpans",
+          "Description": "Spans number in profile direction. Automatically defined if 0 or less\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "995ab23ee2514b659b2953dfd6f94057",
+          "Name": "uniform",
+          "Description": "Use uniform or curvature strategy for spans distribution along profile direction\n\nbool\nDefault value : true",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e677e1707bf943a3afbd1fa3f0f013cd",
+          "Name": "inSmoothMode",
+          "Description": "Show T-Spline Surface in box or smooth visualization\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8ee9f1070e1143a782eaf4290c88392e",
+          "Name": "TSplineSurface",
+          "Description": "TSplineSurface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByExtrude@Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Vector,double,double,int,int,int,bool,bool",
+      "Replication": "Auto",
+      "Description": "Construct a T-Spline by extruding a curve along the given vector.\n\nTSplineSurface.ByExtrude (curve: Curve, direction: Vector = Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1), frontDistance: double = 1, backDistance: double = 1, frontSpans: int = 1, backSpans: int = 0, profileSpans: int = 0, uniform: bool = true, inSmoothMode: bool = false): TSplineSurface"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "5e9afc0ffb6e452cb55218713c9859ce",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "046e48e9e8ad42a79b8a3868d574c2db",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "caabb3ec739941f2b6b2620445c620fd",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f9f5562319934bc38e1141e872d7e60d",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "6;\n4;\n7;"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "Id": "fda1652fa5a548b58797f2aeff9bb95c",
+      "NodeType": "BooleanInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "489a5dd27c64400da2ec7073a659972a",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enables selection between True and False",
+      "InputValue": true
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "88927c3a37a34723909783b1ac0cf440",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5a6fc114ec8b4dc3bcea1ade3a201992",
+          "Name": "",
+          "Description": "point1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "99c8dff09bb345d192ed55fef6896706",
+          "Name": "",
+          "Description": "point2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4daa4ad019a44d2f93ac6d4098e0007a",
+          "Name": "",
+          "Description": "point3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4697fefa766c482bbe8513d78a91421e",
+          "Name": "",
+          "Description": "point4",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1154462892934007bd069fc467633275",
+          "Name": "",
+          "Description": "point5",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c60f19a20310444aad66e89e5d48b2b9",
+          "Name": "",
+          "Description": "t1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9178aeaa679f44b0822d136b45f513af",
+          "Name": "",
+          "Description": "nurbsCurve1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "point1 = Point.ByCoordinates(-5, 0, 0);\npoint2 = Point.ByCoordinates(-3, 5, 0);\npoint3 = Point.ByCoordinates(0, 8, 0);\npoint4 = Point.ByCoordinates(3, 5, 0);\npoint5 = Point.ByCoordinates(5, 0, 0);\nt1 = List.Join([point1, point2, point3, point4, point5]);\nnurbsCurve1 = NurbsCurve.ByPoints(t1);"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "cc40779eb5f6470e9398820c13ce763e",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "d774acd3b90f43f69d99bf816f26da5d",
+          "Name": "tSplineTopology",
+          "Description": "Autodesk.DesignScript.Geometry.TSpline.TSplineTopology",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8354c6c145c447de8e9f425d84f39ec2",
+          "Name": "index",
+          "Description": "Index to get edge at\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1ee6b3d7b4a849b79f8d03617d89c5c6",
+          "Name": "TSplineEdge",
+          "Description": "T-Spline Edge",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.EdgeByIndex@int",
+      "Replication": "Auto",
+      "Description": "Return edge at given index\n\nTSplineTopology.EdgeByIndex (index: int): TSplineEdge"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "57327e735c814cde937692eabe97f5f8",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a28735f4bb7b463c8626a72da07573e3",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "[54,57,59];"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "04c2ece9054046dda51aaedb5836f84a",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "db7e9f92b46a4c19984330dcc8e05fc5",
+          "Name": "tSplineTopology",
+          "Description": "Autodesk.DesignScript.Geometry.TSpline.TSplineTopology",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b940fc97d32448acb77efbc75f1c7573",
+          "Name": "index",
+          "Description": "Index to get edge at\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bbaec6b5655f47dda0f4a1f5883e6fbb",
+          "Name": "TSplineEdge",
+          "Description": "T-Spline Edge",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.EdgeByIndex@int",
+      "Replication": "Auto",
+      "Description": "Return edge at given index\n\nTSplineTopology.EdgeByIndex (index: int): TSplineEdge"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "a146031f09f84c1b94f6ac482c502b95",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "83e6292c40954a2cbab7bd1cfaa600ef",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "[63,65,67];"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "1bcd39be09ee4deb82a5bd42870b4619",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "f303a1bed5964a85b6e919672e9a766d",
+          "Name": "tSplineSurface",
+          "Description": "Autodesk.DesignScript.Geometry.TSpline.TSplineSurface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "896343a0d0f84df28dfb938d0c0509cb",
+          "Name": "firstGroup",
+          "Description": "First set of edges to merge\n\nTSplineEdge[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e86f9a8cd3934742afdb89e725a7e7df",
+          "Name": "secondGroup",
+          "Description": "Second set of edges to merge\n\nTSplineEdge[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "71250b385e84496c806715cecbee3f18",
+          "Name": "insertCreases",
+          "Description": "The surface will match the original surfaces more closely.\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "44711d7151604e67a60200aba6bfc93f",
+          "Name": "TSplineSurface",
+          "Description": "T-Spline surface with merged edges",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.MergeEdges@Autodesk.DesignScript.Geometry.TSpline.TSplineEdge[],Autodesk.DesignScript.Geometry.TSpline.TSplineEdge[],bool",
+      "Replication": "Auto",
+      "Description": "Merge given edges. Edges in each groups should create equal counts of continuous sets. Edges from the first group are considered as edges of this surface. Edges from the second group can be either from this surface or any other surface. In case of different surfaces, combine is performed before merge\n\nTSplineSurface.MergeEdges (firstGroup: TSplineEdge[], secondGroup: TSplineEdge[], insertCreases: bool = false): TSplineSurface"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "2d0e19e84ac743afbb1bf16fcf75bc2f",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "38c7843b045740a48e48565ffc50a06d",
+          "Name": "geometry",
+          "Description": "Autodesk.DesignScript.Geometry.Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9e42a76b49954c7f908540f744c4f4e4",
+          "Name": "xTranslation",
+          "Description": "Displacement along X-axis.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "af05f33f40e544668c0336b4bdd69d24",
+          "Name": "yTranslation",
+          "Description": "Displacement along Y-axis.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7c221a6fe1ac432eb67de93697502c9d",
+          "Name": "zTranslation",
+          "Description": "Displacement along Z-axis.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "409d6b367c8d408687aeabe23ffb03f9",
+          "Name": "Geometry",
+          "Description": "Transformed Geometry.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Translate@double,double,double",
+      "Replication": "Auto",
+      "Description": "Translates any given geometry by the given displacements in the x, y, and z directions defined in WCS respectively.\n\nGeometry.Translate (xTranslation: double = 0, yTranslation: double = 0, zTranslation: double = 0): Geometry"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "342abffd4f4e48e7b6fc151f33f86a78",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "015a947b1dc040eebce0db88881d88cf",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "-12;"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "Id": "1060bb36870348b28f1aa8a42ddf8816",
+      "NodeType": "BooleanInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "112f89171d7741ecb2145862055e043c",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enables selection between True and False",
+      "InputValue": false
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "8ee9f1070e1143a782eaf4290c88392e",
+      "End": "d774acd3b90f43f69d99bf816f26da5d",
+      "Id": "a7c017adba224b928c1ca30ea8fed3b9",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8ee9f1070e1143a782eaf4290c88392e",
+      "End": "db7e9f92b46a4c19984330dcc8e05fc5",
+      "Id": "62cdf123cefc40f49efcc93752ff776b",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8ee9f1070e1143a782eaf4290c88392e",
+      "End": "f303a1bed5964a85b6e919672e9a766d",
+      "Id": "25b0e97e5d784164873ef5c35395ccb6",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "046e48e9e8ad42a79b8a3868d574c2db",
+      "End": "06f9478f24e84a3f8c8d4b4f2acae191",
+      "Id": "a21e20a0cccc48e3a111411d2e1f2277",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "caabb3ec739941f2b6b2620445c620fd",
+      "End": "d5595ab0566f475981a1934c3bb789bd",
+      "Id": "4819306ac59f4fe6b90572b4316cb3e6",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f9f5562319934bc38e1141e872d7e60d",
+      "End": "0ed3bcd6c328473890d103043af655e1",
+      "Id": "3eb8cd16b8bd49029b57df2c3b26d3e5",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "489a5dd27c64400da2ec7073a659972a",
+      "End": "e677e1707bf943a3afbd1fa3f0f013cd",
+      "Id": "7168f663f25447eba6adb112bb1c8e68",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "9178aeaa679f44b0822d136b45f513af",
+      "End": "2dcc43c4ca9b4266a36c65302f5715d4",
+      "Id": "2dddf788b3934644abe3221b3eea1286",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "1ee6b3d7b4a849b79f8d03617d89c5c6",
+      "End": "e86f9a8cd3934742afdb89e725a7e7df",
+      "Id": "7086ddcb42ca451781cb3a2b2e46f95e",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "a28735f4bb7b463c8626a72da07573e3",
+      "End": "8354c6c145c447de8e9f425d84f39ec2",
+      "Id": "ff6b82ec38aa4f8896315989e063b44a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "bbaec6b5655f47dda0f4a1f5883e6fbb",
+      "End": "896343a0d0f84df28dfb938d0c0509cb",
+      "Id": "c67aee55e74f4b0092ab32d873643f74",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "83e6292c40954a2cbab7bd1cfaa600ef",
+      "End": "b940fc97d32448acb77efbc75f1c7573",
+      "Id": "07e129a7469843319217f721c8b05ec4",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "44711d7151604e67a60200aba6bfc93f",
+      "End": "38c7843b045740a48e48565ffc50a06d",
+      "Id": "e72f11bf47924e41b4f6845b3a84a46b",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "015a947b1dc040eebce0db88881d88cf",
+      "End": "9e42a76b49954c7f908540f744c4f4e4",
+      "Id": "5dd900b9c37843cbb6cf024ba6d03dfc",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "112f89171d7741ecb2145862055e043c",
+      "End": "71250b385e84496c806715cecbee3f18",
+      "Id": "56e5065874a549279047428474737c66",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "2.0",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.3.6543",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": 3.6036214828491211,
+      "EyeY": 23.251823425292969,
+      "EyeZ": -28.400051116943359,
+      "LookX": -10.312251091003418,
+      "LookY": -14.454765319824219,
+      "LookZ": 30.660022735595703,
+      "UpX": -0.064629100263118744,
+      "UpY": 0.97922241687774658,
+      "UpZ": 0.19221498072147369
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "b5b73281f42c4f8b9e92b1b5d5cccbab",
+        "Name": "TSplineSurface.ByExtrude",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 822.826485876006,
+        "Y": 1619.82438159732
+      },
+      {
+        "Id": "5e9afc0ffb6e452cb55218713c9859ce",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 565.939980194863,
+        "Y": 1744.2068584399915
+      },
+      {
+        "Id": "fda1652fa5a548b58797f2aeff9bb95c",
+        "Name": "Boolean",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 511.508394203634,
+        "Y": 1928.6911497132139
+      },
+      {
+        "Id": "88927c3a37a34723909783b1ac0cf440",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 198.66286212533851,
+        "Y": 1523.8978499002737
+      },
+      {
+        "Id": "cc40779eb5f6470e9398820c13ce763e",
+        "Name": "TSplineTopology.EdgeByIndex",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1450.5175501087319,
+        "Y": 1731.185893927558
+      },
+      {
+        "Id": "57327e735c814cde937692eabe97f5f8",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1185.2804696390865,
+        "Y": 1785.925899909133
+      },
+      {
+        "Id": "04c2ece9054046dda51aaedb5836f84a",
+        "Name": "TSplineTopology.EdgeByIndex",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1441.7275154671318,
+        "Y": 1948.1184098401231
+      },
+      {
+        "Id": "a146031f09f84c1b94f6ac482c502b95",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1177.9436216754448,
+        "Y": 1997.4652857668282
+      },
+      {
+        "Id": "1bcd39be09ee4deb82a5bd42870b4619",
+        "Name": "TSplineSurface.MergeEdges",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 2038.3356584918452,
+        "Y": 1617.7797627102022
+      },
+      {
+        "Id": "2d0e19e84ac743afbb1bf16fcf75bc2f",
+        "Name": "Geometry.Translate",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2751.59156990209,
+        "Y": 1616.92814337578
+      },
+      {
+        "Id": "342abffd4f4e48e7b6fc151f33f86a78",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2526.8992956167062,
+        "Y": 1740.0875229021642
+      },
+      {
+        "Id": "1060bb36870348b28f1aa8a42ddf8816",
+        "Name": "Boolean",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1840.7083053479491,
+        "Y": 1968.4704333716707
+      }
+    ],
+    "Annotations": [],
+    "X": -43.754471620045251,
+    "Y": -872.390286217915,
+    "Zoom": 0.59668643781957642
+  }
+}

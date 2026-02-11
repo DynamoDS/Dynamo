@@ -1,5 +1,4 @@
-﻿using System;
-using Dynamo.Models;
+using System;
 
 namespace Dynamo.Logging
 {
@@ -7,8 +6,7 @@ namespace Dynamo.Logging
     /// Defines analytics session interface. This interface is defined for
     /// internal use and mocking the tests only.
     /// </summary>
-    [Obsolete("Interface should be Internal, do not use.")]
-    public interface IAnalyticsSession : IDisposable
+    internal interface IAnalyticsSession : IDisposable
     {
         /// <summary>
         /// Get unique user id.
@@ -21,14 +19,9 @@ namespace Dynamo.Logging
         string SessionId { get; }
         
         /// <summary>
-        /// Starts the session for the given DynamoModel. 
+        /// Starts the session.
         /// The Session is closed when Dispose() is called.
         /// </summary>
-        /// <param name="model">DynamoModel</param>
-        void Start(DynamoModel model);
-        /// <summary>
-        /// Returns a logger to record usage.
-        /// </summary>
-        ILogger Logger { get; }
+        void Start();
     }
 }

@@ -181,6 +181,16 @@ namespace Dynamo.UI.Controls
         }
 
         /// <summary>
+        /// Unpins and hides the preview bubbles
+        /// </summary>
+        internal void UnpinPreviewBubble()
+        {
+            StaysOpen = false;
+            nodeViewModel.PreviewPinned = false;
+            this.HidePreviewBubble();
+        }
+
+        /// <summary>
         /// It is possible for a run to complete while the preview display is
         /// in transition.  In these situations, we can store the MirrorData and
         /// set a flag to refresh the display.

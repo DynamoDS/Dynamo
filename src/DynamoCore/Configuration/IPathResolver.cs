@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Dynamo.Interfaces
@@ -58,6 +59,16 @@ namespace Dynamo.Interfaces
         /// as it will be appended by PathManager.
         /// </summary>
         string CommonDataRootFolder { get; }
+
+        /// <summary>
+        /// Returns a list of user data folders on this system.
+        /// </summary>
+        /// <returns>
+        /// The implementation of this interface method should return a list of user 
+        /// data folders, one for each of Dynamo product installed on the system. When 
+        /// there is no Dynamo product installed, this method returns an empty list.
+        /// </returns>
+        IEnumerable<string> GetDynamoUserDataLocations();
     }
 
     /// <summary>
@@ -106,6 +117,7 @@ namespace Dynamo.Interfaces
         /// <summary>
         /// The local directory that contains custom nodes created by all users.
         /// </summary>
+        [Obsolete("This property will be removed in a future version of Dynamo.", false)]
         string CommonDefinitions { get; }
 
         /// <summary>
@@ -147,6 +159,11 @@ namespace Dynamo.Interfaces
         string SamplesDirectory { get; }
 
         /// <summary>
+        /// The root directory where all template files are stored
+        /// </summary>
+        string TemplatesDirectory { get; }
+
+        /// <summary>
         /// The directory where the automatically saved files will be stored.
         /// </summary>
         string BackupDirectory { get; }
@@ -162,12 +179,6 @@ namespace Dynamo.Interfaces
         /// to the current user.
         /// </summary>
         string PythonTemplateFilePath { get; }
-
-        /// <summary>
-        /// Full path to the legacy GalleryContent xml file.
-        /// </summary>
-        [System.Obsolete("This property will be removed in Dynamo 3.0")]
-        string GalleryFilePath { get; }
 
         /// <summary>
         /// Folders in which node assemblies can be located.
@@ -188,6 +199,11 @@ namespace Dynamo.Interfaces
         /// Minor version of assembly file
         /// </summary>
         int MinorFileVersion { get; }
+
+        /// <summary>
+        /// Integration specific PathResolver
+        /// </summary>
+        IPathResolver PathResolver { get; }
 
         /// <summary>
         /// Call this method to add additional path for consideration when path 

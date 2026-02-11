@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using CoreNodeModels.Properties;
 using DSCore;
@@ -9,7 +9,7 @@ using ProtoCore.AST.AssociativeAST;
 namespace CoreNodeModels
 {
     [NodeName("Web Request")]
-    [NodeDescription("WebRequestDescription", typeof(Resources))]
+    [NodeDescription(nameof(Resources.WebRequestDescription), typeof(Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_WEB)]
     [IsDesignScriptCompatible]
     [OutPortTypes("var[]..[]")]

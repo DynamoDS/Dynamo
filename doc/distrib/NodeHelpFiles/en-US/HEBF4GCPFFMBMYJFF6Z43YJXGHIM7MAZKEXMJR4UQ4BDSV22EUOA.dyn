@@ -1,0 +1,499 @@
+{
+  "Uuid": "550396af-4a8b-4aae-80df-a830bdfd639b",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.CoordinateSystem.Translate",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Display": {
+        "Key": "Display.Display",
+        "Value": "Display.dll"
+      }
+    }
+  },
+  "Inputs": [
+    {
+      "Id": "fc9fdedd61f9406aa4973cb27a8b552a",
+      "Name": "X position",
+      "Type": "number",
+      "Type2": "number",
+      "Value": "3.8",
+      "MaximumValue": 5.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "Produces numeric values",
+      "SelectedIndex": 0
+    },
+    {
+      "Id": "b453c863da2c491c99820afc6910373b",
+      "Name": "Y position",
+      "Type": "number",
+      "Type2": "number",
+      "Value": "2.7",
+      "MaximumValue": 5.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "Produces numeric values",
+      "SelectedIndex": 0
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NumberType": "Double",
+      "MaximumValue": 5.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "Id": "fc9fdedd61f9406aa4973cb27a8b552a",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "c8103616f87646659084ee7a39ebedc6",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Produces numeric values",
+      "InputValue": 3.8
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NumberType": "Double",
+      "MaximumValue": 5.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "Id": "b453c863da2c491c99820afc6910373b",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d2a581842670431cb38373d5e1d89dc2",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Produces numeric values",
+      "InputValue": 2.7
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "ba2a03f587ac4894a6625ff7fe01122f",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "afce09c029994e338ca1282909af0cd1",
+          "Name": "coordinateSystem",
+          "Description": "Parent coordinate system\n\nCoordinateSystem\nDefault value : Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c5d098ad3d7949ba8aa94779292976ce",
+          "Name": "radius",
+          "Description": "Radius size\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "62990a642abc49b18040179ddb88b770",
+          "Name": "height",
+          "Description": "Cylinder height\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cf65672584c54b3ebec82cce7fd67689",
+          "Name": "Cylinder",
+          "Description": "Cylinder created from radius and height",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Cylinder.ByRadiusHeight@Autodesk.DesignScript.Geometry.CoordinateSystem,double,double",
+      "Replication": "Auto",
+      "Description": "Construct a Solid Cylinder defined by a parent CoordinateSystem, the radius, and the height of the cylinder\n\nCylinder.ByRadiusHeight (coordinateSystem: CoordinateSystem = Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin(0, 0, 0), radius: double = 1, height: double = 1): Cylinder"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "33768f5d118b4b9194d8d9ab8232f800",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "d0ad55de87d44c8092fee01d378f13b8",
+          "Name": "origin",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7e7724457bd44f439a6bf2ed81409ac2",
+          "Name": "CoordinateSystem",
+          "Description": "CoordinateSystem",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.CoordinateSystem.ByOrigin@Autodesk.DesignScript.Geometry.Point",
+      "Replication": "Auto",
+      "Description": "Create a CoordinateSystem with origin at input Point, with X and Y Axes set as WCS X and Y Axes.\n\nCoordinateSystem.ByOrigin (origin: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)): CoordinateSystem"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "3ccde5adbb5b4290b2ed76589bfcea8f",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "f2403f73b3324af9a9cc6bbae0c540ca",
+          "Name": "coordinateSystem",
+          "Description": "Autodesk.DesignScript.Geometry.CoordinateSystem",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "50fa8d02d27246f195881c831e8be27a",
+          "Name": "direction",
+          "Description": "Vector for translation direction\n\nVector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b917e64b405e4a6aaf53cf3265487280",
+          "Name": "CoordinateSystem",
+          "Description": "Translated coordinate system",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.CoordinateSystem.Translate@Autodesk.DesignScript.Geometry.Vector",
+      "Replication": "Auto",
+      "Description": "Translate the object in the direction and magnitude of input Vector.\n\nCoordinateSystem.Translate (direction: Vector): CoordinateSystem"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "809f211e1de74b8d9dd991a2db16a39e",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "e8a31e6a557d442dac52ad1055a47c4c",
+          "Name": "x",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c0648cac766646b0b73f0b16f4bdb62c",
+          "Name": "y",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e49afdd9498345cca2008824a32946bb",
+          "Name": "z",
+          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3a6db20e03c4428a902adbc13528668c",
+          "Name": "Vector",
+          "Description": "Vector created by coordinates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.ByCoordinates@double,double,double",
+      "Replication": "Auto",
+      "Description": "Form a Vector by 3 Euclidean coordinates\n\nVector.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Vector"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "4273e2a80ff14658846ea7a9d65cdfdb",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "30df178b3f0a4536bf3ea335b0a52077",
+          "Name": "geometry",
+          "Description": "The geometry to which you would like to apply color.\n\nGeometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b16bbb8def9143ae95a6fe8914b136d8",
+          "Name": "color",
+          "Description": "The color.\n\nColor",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "dd7e83d0c738402dab451bf32244c061",
+          "Name": "GeometryColor",
+          "Description": "A Display object.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Modifiers.GeometryColor.ByGeometryColor@Autodesk.DesignScript.Geometry.Geometry,DSCore.Color",
+      "Replication": "Auto",
+      "Description": "Display geometry using a color.\n\nGeometryColor.ByGeometryColor (geometry: Geometry, color: Color): GeometryColor"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.ColorPalette, CoreNodeModels",
+      "InputValue": {
+        "R": 100,
+        "G": 141,
+        "B": 198,
+        "A": 175
+      },
+      "Id": "aaa9b8a583204b298d5df1214113697c",
+      "NodeType": "ColorInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2d599d21486d4fc09559c973c8a3cdac",
+          "Name": "Color",
+          "Description": "Selected Color.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Color from the palette"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "c8103616f87646659084ee7a39ebedc6",
+      "End": "e8a31e6a557d442dac52ad1055a47c4c",
+      "Id": "7f5fe114bf7b4b559268ee36109416b2",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d2a581842670431cb38373d5e1d89dc2",
+      "End": "c0648cac766646b0b73f0b16f4bdb62c",
+      "Id": "9b9a29a50d084a69bc429d1159b01a3b",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "cf65672584c54b3ebec82cce7fd67689",
+      "End": "30df178b3f0a4536bf3ea335b0a52077",
+      "Id": "7cc97dca0641432badf1aff8d0ed3a49",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "7e7724457bd44f439a6bf2ed81409ac2",
+      "End": "f2403f73b3324af9a9cc6bbae0c540ca",
+      "Id": "d16991dab116444d95ce3dd567f7bed1",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "b917e64b405e4a6aaf53cf3265487280",
+      "End": "afce09c029994e338ca1282909af0cd1",
+      "Id": "a6294c3ab81a45b788b254fb7919bc72",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "3a6db20e03c4428a902adbc13528668c",
+      "End": "50fa8d02d27246f195881c831e8be27a",
+      "Id": "1a381b7d1ef44540aab2a607db4049cd",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2d599d21486d4fc09559c973c8a3cdac",
+      "End": "b16bbb8def9143ae95a6fe8914b136d8",
+      "Id": "29b3dfd67e7046d18a6f76633c50c070",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.0.5742",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": 6.4885063171386719,
+      "EyeY": 3.6325163841247559,
+      "EyeZ": 0.49791842699050903,
+      "LookX": -3.8195054531097412,
+      "LookY": -2.4920873641967773,
+      "LookZ": -2.7233574390411377,
+      "UpX": -0.21896074712276459,
+      "UpY": 0.96316248178482056,
+      "UpZ": -0.15612190961837769
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "fc9fdedd61f9406aa4973cb27a8b552a",
+        "Name": "X position",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -675.42871567437044,
+        "Y": 734.592772241338
+      },
+      {
+        "Id": "b453c863da2c491c99820afc6910373b",
+        "Name": "Y position",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -675.42871567437044,
+        "Y": 882.592772241338
+      },
+      {
+        "Id": "ba2a03f587ac4894a6625ff7fe01122f",
+        "Name": "Cylinder.ByRadiusHeight",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 589.57128432562956,
+        "Y": 700.592772241338
+      },
+      {
+        "Id": "33768f5d118b4b9194d8d9ab8232f800",
+        "Name": "CoordinateSystem.ByOrigin",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -227.42871567437044,
+        "Y": 643.592772241338
+      },
+      {
+        "Id": "3ccde5adbb5b4290b2ed76589bfcea8f",
+        "Name": "CoordinateSystem.Translate",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 151.57128432562956,
+        "Y": 700.592772241338
+      },
+      {
+        "Id": "809f211e1de74b8d9dd991a2db16a39e",
+        "Name": "Vector.ByCoordinates",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -227.42871567437044,
+        "Y": 791.592772241338
+      },
+      {
+        "Id": "4273e2a80ff14658846ea7a9d65cdfdb",
+        "Name": "GeometryColor.ByGeometryColor",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 979.57838151721353,
+        "Y": 708.26421730337859
+      },
+      {
+        "Id": "aaa9b8a583204b298d5df1214113697c",
+        "Name": "Color Palette",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 693.1604985954998,
+        "Y": 926.31898413678232
+      }
+    ],
+    "Annotations": [],
+    "X": 640.69089529485484,
+    "Y": -189.89482075318932,
+    "Zoom": 0.5980627875658705
+  }
+}

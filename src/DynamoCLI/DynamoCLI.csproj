@@ -5,6 +5,7 @@
   <PropertyGroup>
     <ProjectGuid>{5F9AE581-6781-4A4C-A262-1B06CD27208B}</ProjectGuid>
     <OutputType>Exe</OutputType>
+	<RollForward>Major</RollForward>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DynamoCLI</RootNamespace>
     <AssemblyName>DynamoCLI</AssemblyName>
@@ -12,10 +13,6 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DynamoApplications\DynamoApplications.csproj">
       <Project>{aa782772-fe61-4226-baa4-eb529fa1646b}</Project>

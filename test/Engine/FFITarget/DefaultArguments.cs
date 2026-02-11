@@ -1,4 +1,4 @@
-﻿namespace FFITarget
+namespace FFITarget
 {
     public class DefaultArguments
     {
@@ -44,6 +44,10 @@
         {
             return true;
         }
-        
+
+        public static bool Contains(string @string, string searchFor, bool ignoreCase = false)
+        {
+            return !ignoreCase ? @string.Contains(searchFor) : @string.ToLowerInvariant().Contains(searchFor.ToLowerInvariant());
+        }
     }
 }

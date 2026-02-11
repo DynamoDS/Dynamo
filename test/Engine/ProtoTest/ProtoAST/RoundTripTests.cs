@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using ProtoCore.DSASM.Mirror;
+using ProtoTestFx.TD;
 
 namespace ProtoTest.ProtoAST
 {
@@ -312,7 +313,7 @@ namespace ProtoTest.ProtoAST
 
             foreach (var stmt in statements)
             {
-                var cbn = ProtoCore.Utils.ParserUtils.Parse(stmt);
+                var cbn = ProtoCore.Utils.ParserUtils.ParseWithCore(stmt, TestFrameWork.TestParserCore()).CodeBlockNode;
                 if (cbn != null)
                 {
                     foreach (var item in cbn.Body)
@@ -328,7 +329,7 @@ namespace ProtoTest.ProtoAST
 
             foreach (var stmt in new_statements)
             {
-                var cbn = ProtoCore.Utils.ParserUtils.Parse(stmt);
+                var cbn = ProtoCore.Utils.ParserUtils.ParseWithCore(stmt, TestFrameWork.TestParserCore()).CodeBlockNode;
                 if (cbn != null)
                 {
                     foreach (var item in cbn.Body)

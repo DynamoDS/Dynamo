@@ -189,7 +189,7 @@
                             MinWidth="180"
                             Width="Auto"
                             Background="{StaticResource NodeContextMenuBackground}"
-                            Style="{StaticResource ContextMenuStyle}">
+                            Style="{StaticResource DarkContextMenuStyle}">
 
                             <!--  Sub-Title 'SORT BY'  -->
                             <Separator>
@@ -315,9 +315,9 @@
                             DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Mode=Self}}"
                             DisplayMemberPath="FilterName"
                             ItemsSource="{Binding HostFilter}"
-                            Style="{StaticResource ContextMenuStyle}">
+                            Style="{StaticResource DarkContextMenuStyle}">
                             <ContextMenu.ItemContainerStyle>
-                                <Style BasedOn="{StaticResource ContextMenuItemStyle}" TargetType="{x:Type MenuItem}">
+                                <Style BasedOn="{StaticResource DarkContextMenuItemStyle}" TargetType="{x:Type MenuItem}">
                                     <Setter Property="IsCheckable" Value="True" />
                                     <Setter Property="Command" Value="{Binding FilterCommand}" />
                                     <Setter Property="CommandParameter" Value="{Binding FilterName}" />

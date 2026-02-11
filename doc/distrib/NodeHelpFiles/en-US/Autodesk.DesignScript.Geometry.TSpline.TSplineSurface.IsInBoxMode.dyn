@@ -1,0 +1,587 @@
+{
+  "Uuid": "0b983ae1-beee-4cd3-b728-e89f20362f0a",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.IsInBoxMode",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "72cad8c0910b44f185a9d94ce29e34d5",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "d1889eb7cd1a465b8c3395b3ab90e06b",
+          "Name": "origin",
+          "Description": "Root point of plane\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b17475afe7444146b174f718bdbd79b8",
+          "Name": "normal",
+          "Description": "Normal of plane\n\nVector\nDefault value : Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2ed97031682147dcb9b8a7492313c359",
+          "Name": "minCorner",
+          "Description": "2D point of minimum corner in coordinates of plane\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "40b6fe06dd7a4c5c80fc25ccdc1d596d",
+          "Name": "maxCorner",
+          "Description": "2D point of maximum corner in coordinates of plane\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(1, 1)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "24f1178cc0f24ba5aaae7bea944fadf5",
+          "Name": "xSpans",
+          "Description": "Number of spans in width\n\nint\nDefault value : 2",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "20144182662e4670a6c6cfbaac775b27",
+          "Name": "ySpans",
+          "Description": "Number of spans in length\n\nint\nDefault value : 2",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ce6dc3a5c0574d52abf70fcebef6c498",
+          "Name": "symmetry",
+          "Description": "Symmetry options of a T-Spline Surface\n\nTSplineInitialSymmetry\nDefault value : Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.ByAxial(false, false, false)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ba07e8167da547e4bab7537fb2f6a0a4",
+          "Name": "inSmoothMode",
+          "Description": "Show T-Spline Surface in box or smooth visualization\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8ea28add2b8d4898975dac2e14b0cd3c",
+          "Name": "TSplineSurface",
+          "Description": "Plane T-Spline Surface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByPlaneOriginNormal@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,int,int,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,bool",
+      "Replication": "Auto",
+      "Description": "Create a T-Spline Plane centered at root Point, with input normal Vector.\n\nTSplineSurface.ByPlaneOriginNormal (origin: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), normal: Vector = Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1), minCorner: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0), maxCorner: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(1, 1), xSpans: int = 2, ySpans: int = 2, symmetry: TSplineInitialSymmetry = Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.ByAxial(false, false, false), inSmoothMode: bool = false): TSplineSurface"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "f4e64d4ec31542efbe1c22eb978e3259",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0da03df620114aaa8b9483512f6426a2",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "3;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "e2acb64ccbf44078a4fdecdac32abd9f",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "ad56006c9a1747e882b49ba37b449620",
+          "Name": "tSplineSurface",
+          "Description": "Autodesk.DesignScript.Geometry.TSpline.TSplineSurface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "82a48260361d4141be82f16451d0ae05",
+          "Name": "faces",
+          "Description": "Face or faces to delete\n\nTSplineFace[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "44215dc6d1d74116b4464c3d11203e75",
+          "Name": "TSplineSurface",
+          "Description": "TSpline surface with deleted faces",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.DeleteFaces@Autodesk.DesignScript.Geometry.TSpline.TSplineFace[]",
+      "Replication": "Auto",
+      "Description": "Remove faces from t-spline topology\n\nTSplineSurface.DeleteFaces (faces: TSplineFace[]): TSplineSurface"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "63b8a1a9c71d4c56ab9a25d4342a7a19",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "214805c9ab3e428383ab67c41873819e",
+          "Name": "tSplineTopology",
+          "Description": "Autodesk.DesignScript.Geometry.TSpline.TSplineTopology",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "481b1f252b6144bb8f39545896de586a",
+          "Name": "index",
+          "Description": "Index to get face at\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4d5f40f0bba94602a364aea88d5cbd75",
+          "Name": "TSplineFace",
+          "Description": "T-Spline Face",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.FaceByIndex@int",
+      "Replication": "Auto",
+      "Description": "Return face at given index\n\nTSplineTopology.FaceByIndex (index: int): TSplineFace"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "2a4b6f11201841aaa3aa981cf8f00e72",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "83eccf07561a41b5a986f1ff18f42c99",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "[0,4];"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "9007ea7a466b4746a62d06720a20750c",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "6830a05f40164440b575bfa9e9ae7912",
+          "Name": "tSplineSurface",
+          "Description": "Autodesk.DesignScript.Geometry.TSpline.TSplineSurface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2d438dab54ba4378af1247bd2f91de7b",
+          "Name": "bool",
+          "Description": "bool",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.IsInBoxMode",
+      "Replication": "Auto",
+      "Description": "Whether t-spline in box or smooth mode\n\nTSplineSurface.IsInBoxMode: bool"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "Id": "61c8b88daac845778705734a6b546b0c",
+      "NodeType": "BooleanInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1e5bbebfa80d482a84fba16a084255fc",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enables selection between True and False",
+      "InputValue": true
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "ebb149e2247b4a828762f572b4321d9e",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "3546fbe5993b492ebc1ead11796382b9",
+          "Name": "x",
+          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "fd3932865ca841b2b9f14477ae9a0c21",
+          "Name": "y",
+          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3cbd8da3e6304c84afa8fd065d7f9066",
+          "Name": "Point",
+          "Description": "Point created by coordinates",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double",
+      "Replication": "Auto",
+      "Description": "Form a Point in the XY plane given two 2 cartesian coordinates. The Z component is 0.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "09cfbacc677c49e9893ed507aec711d0",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "255709b2d946464e91b87ab8ca4b5372",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "20;"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 50.0,
+      "WatchHeight": 38.0,
+      "Id": "d1754f0180ba49a0aab1673c5662306d",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "f393df6454d24d198e53ce7396d5432f",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "aaeca5df26d84e59aa86260939743b6b",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "8ea28add2b8d4898975dac2e14b0cd3c",
+      "End": "ad56006c9a1747e882b49ba37b449620",
+      "Id": "032f3b9a6f6346b1bc915b33b5273a12",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8ea28add2b8d4898975dac2e14b0cd3c",
+      "End": "214805c9ab3e428383ab67c41873819e",
+      "Id": "812c394c5763414790d7ae4b4ed91dbd",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "0da03df620114aaa8b9483512f6426a2",
+      "End": "24f1178cc0f24ba5aaae7bea944fadf5",
+      "Id": "6e787cd1b9164ba69c1aaebac9546491",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "0da03df620114aaa8b9483512f6426a2",
+      "End": "20144182662e4670a6c6cfbaac775b27",
+      "Id": "d112ecd1d4944b3bb86fd83153152cf5",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "44215dc6d1d74116b4464c3d11203e75",
+      "End": "6830a05f40164440b575bfa9e9ae7912",
+      "Id": "4c7ef3facdff406a96e108fe4020ca13",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4d5f40f0bba94602a364aea88d5cbd75",
+      "End": "82a48260361d4141be82f16451d0ae05",
+      "Id": "2a12ca832fbe47c7bb94663610df3137",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "83eccf07561a41b5a986f1ff18f42c99",
+      "End": "481b1f252b6144bb8f39545896de586a",
+      "Id": "5cfb028c230e45be9004bf62550b9826",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2d438dab54ba4378af1247bd2f91de7b",
+      "End": "f393df6454d24d198e53ce7396d5432f",
+      "Id": "d747faa0c02043108175dedb3583b325",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "1e5bbebfa80d482a84fba16a084255fc",
+      "End": "ba07e8167da547e4bab7537fb2f6a0a4",
+      "Id": "573ac30ff84d4255bd109f077b4db1bf",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "3cbd8da3e6304c84afa8fd065d7f9066",
+      "End": "40b6fe06dd7a4c5c80fc25ccdc1d596d",
+      "Id": "0cacef207aea45bc8ab856c7b73d4325",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "255709b2d946464e91b87ab8ca4b5372",
+      "End": "fd3932865ca841b2b9f14477ae9a0c21",
+      "Id": "6d4e4bdab048416dacbd0e9349621c23",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "255709b2d946464e91b87ab8ca4b5372",
+      "End": "3546fbe5993b492ebc1ead11796382b9",
+      "Id": "7bbdae203415467bbebb38d69620097a",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.3.6543",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -4.6482429504394531,
+      "EyeY": 40.894294738769531,
+      "EyeZ": 27.487512588500977,
+      "LookX": 17.418252944946289,
+      "LookY": -30.785984039306641,
+      "LookZ": -39.699851989746094,
+      "UpX": 0.15698717534542084,
+      "UpY": 0.9205048680305481,
+      "UpZ": -0.357806921005249
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "72cad8c0910b44f185a9d94ce29e34d5",
+        "Name": "TSplineSurface.ByPlaneOriginNormal",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": -31.73745330362101,
+        "Y": 327.28568233837314
+      },
+      {
+        "Id": "f4e64d4ec31542efbe1c22eb978e3259",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -241.82873778481388,
+        "Y": 488.04799228215819
+      },
+      {
+        "Id": "e2acb64ccbf44078a4fdecdac32abd9f",
+        "Name": "TSplineSurface.DeleteFaces",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 934.46269082255094,
+        "Y": 322.76874267822865
+      },
+      {
+        "Id": "63b8a1a9c71d4c56ab9a25d4342a7a19",
+        "Name": "TSplineTopology.FaceByIndex",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 594.489522268527,
+        "Y": 457.06438769003245
+      },
+      {
+        "Id": "2a4b6f11201841aaa3aa981cf8f00e72",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 389.87622618392379,
+        "Y": 529.96167800502735
+      },
+      {
+        "Id": "9007ea7a466b4746a62d06720a20750c",
+        "Name": "TSplineSurface.IsInBoxMode",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1310.5035830931258,
+        "Y": 323.81656162836674
+      },
+      {
+        "Id": "61c8b88daac845778705734a6b546b0c",
+        "Name": "Boolean",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -277.43407280893985,
+        "Y": 615.646296860726
+      },
+      {
+        "Id": "ebb149e2247b4a828762f572b4321d9e",
+        "Name": "Point.ByCoordinates",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -301.90151602326443,
+        "Y": 332.45922387048211
+      },
+      {
+        "Id": "09cfbacc677c49e9893ed507aec711d0",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -501.74396807604933,
+        "Y": 347.72278637211184
+      },
+      {
+        "Id": "d1754f0180ba49a0aab1673c5662306d",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1656.603899927127,
+        "Y": 328.33510706535844
+      }
+    ],
+    "Annotations": [],
+    "X": 331.441128369411,
+    "Y": 54.494594236099942,
+    "Zoom": 0.61872418628131354
+  }
+}

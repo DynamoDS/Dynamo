@@ -2907,14 +2907,6 @@ x = Days.Monday;
             thisTest.Verify("x", Days.Monday);
         }
 
-        //Migrate this code into the test framework
-        private Subtree CreateSubTreeFromCode(Guid guid, string code)
-        {
-            var cbn = ProtoCore.Utils.ParserUtils.Parse(code);
-            var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
-            return subtree;
-        }
-
         private void AssertValue(string varname, object value)
         {
             var mirror = astLiveRunner.InspectNodeValue(varname);

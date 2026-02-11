@@ -37,14 +37,19 @@ namespace Dynamo.GraphNodeManager.ViewModels
         private bool isNull = false;
         private int dismissedAlertsCount = 0;
         private bool isDummyNode = false;
+        private bool isPartOfPackage;
+        private bool outputIsSingleItem;
         private int infoCount = 0;
         private string infoIcon = string.Empty;
         private ElementState state;
         private ObservableCollection<NodeInfo> nodeInfos = new ObservableCollection<NodeInfo>();
         private string package;
+        private string originalName = string.Empty;
+        private string topLevelItemsNumber = string.Empty;
         private Guid nodeGuid;
         private bool isRenamed = false;
-        
+        private int topLevelItemsNumberAsInt = 0;
+
         public delegate void EventHandler(object sender, EventArgs args);
         public event EventHandler BubbleUpdate = delegate { };
 
@@ -139,7 +144,7 @@ namespace Dynamo.GraphNodeManager.ViewModels
         }
 
         /// <summary>
-        /// IsFrozen
+        /// IsFunction
         /// </summary>
         public bool StateIsFunction
         {
@@ -153,6 +158,57 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 if (stateIsFunction == value) return;
                 stateIsFunction = value;
                 RaisePropertyChanged(nameof(StateIsFunction));
+            }
+        }
+
+        /// <summary>
+        /// Returns True if the output of the node is a single item
+        /// </summary>
+        public bool IsOutputSingleItem
+        {
+            get
+            {
+                return IsNodeOutputSingeItem(NodeModel.CachedValue);
+            }
+            internal set
+            {
+                if (outputIsSingleItem == value) return;
+                outputIsSingleItem = value;
+                RaisePropertyChanged(nameof(IsOutputSingleItem));
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of top-level items in list
+        /// </summary>
+        public string TopLevelItemsNumber
+        {
+            get
+            {
+                return GetTopLevelItemsNumber(NodeModel.CachedValue);
+            }
+            internal set
+            {
+                if (topLevelItemsNumber == value) return;
+                topLevelItemsNumber = value;
+                RaisePropertyChanged(nameof(TopLevelItemsNumber));
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of top-level items in list
+        /// </summary>
+        public int TopLevelItemsNumberAsInt
+        {
+            get
+            {
+                return GetTopLevelItemsNumberAsInt(NodeModel.CachedValue);
+            }
+            internal set
+            {
+                if (topLevelItemsNumberAsInt == value) return;
+                topLevelItemsNumberAsInt = value;
+                RaisePropertyChanged(nameof(TopLevelItemsNumberAsInt));
             }
         }
 
@@ -323,7 +379,23 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 RaisePropertyChanged(nameof(IsRenamed));
             }
         }
-
+        /// <summary>
+        /// The original name of the node
+        /// </summary>
+        public string OriginalName
+        {
+            get
+            {
+                string originalName = NodeModel.GetOriginalName();
+                return originalName;
+            }
+            internal set
+            {
+                if (originalName == value) return;
+                originalName = value;
+                RaisePropertyChanged(nameof(OriginalName));
+            }
+        }
         /// <summary>
         /// The correct icon for the Info Bubble
         /// </summary>
@@ -419,6 +491,74 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// Returns true if the output of the node is a single item
+        /// </summary>
+        public bool IsNodeOutputSingeItem(MirrorData mirrorData)
+        {
+
+            if (mirrorData == null) return false;
+            if (!mirrorData.IsCollection)
+            {
+                try
+                {
+                    var output = mirrorData.Data;
+
+                    if (output is object) return true;
+                    return false;
+                }
+                catch (Exception)
+                { return false; }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Returns the number of list items in the top level of the node output
+        /// </summary>
+        public string GetTopLevelItemsNumber(MirrorData mirrorData)
+        {
+            if (mirrorData == null) return string.Empty;
+            if (mirrorData.IsCollection)
+            {
+                try
+                {
+                    var list = mirrorData.GetElements();
+                    if (list.ToList().Count() == 1) return "[1]";
+                    else if (list.ToList().Count() == 2) return "[2]";
+                    else if (list.ToList().Count() == 3) return "[3]";
+                    else if (list.ToList().Count() == 4) return "[4]";
+                    else if (list.ToList().Count() == 5) return "[5]";
+                    else if (list.ToList().Count() == 6) return "[6]";
+                    else if (list.ToList().Count() == 7) return "[7]";
+                    else if (list.ToList().Count() == 8) return "[8]";
+                    else if (list.ToList().Count() == 9) return "[9]";
+                    else if (list.ToList().Count() > 9) return "[9+]";
+                    else return string.Empty;
+
+                }
+                catch (Exception) { return string.Empty; }
+            }
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Returns the number of list items in the top level of the node output as integer.
+        /// </summary>
+        public int GetTopLevelItemsNumberAsInt(MirrorData mirrorData)
+        {
+            if (mirrorData == null) return 0;
+            if (mirrorData.IsCollection)
+            {
+                try
+                {
+                    return mirrorData.GetElements().ToList().Count();
+                }
+                catch (Exception) { return 0; }
+            }
+            return 0;
         }
 
         /// <summary>
@@ -599,5 +739,52 @@ namespace Dynamo.GraphNodeManager.ViewModels
 
         #endregion
 
+        #region Sort
+
+        /// <summary>
+        /// Provides sort keys for the Type, State, Issues, and Output columns, calculated based on each column's specific attributes. 
+        /// Each SortKey uses a combination of count (number of relevant attributes) and priority (relative importance).
+        /// </summary>
+        private string CalculateSortKey((bool condition, int priority)[] conditions, int priorityFormatLength)
+        {
+            int count = conditions.Count(c => c.condition);
+            int priority = conditions.Where(c => c.condition).Sum(c => c.priority);
+            return $"{count:D1}-{priority.ToString($"D{priorityFormatLength}")}";
+        }
+
+        public string TypeSortKey => CalculateSortKey(
+            new (bool, int)[]
+            {
+                (StateIsFunction, 100),
+                (StateIsInput, 10),
+                (StateIsOutput, 1)
+            }, 3);
+
+        public string StateSortKey => CalculateSortKey(
+            new (bool, int)[]
+            {
+                (StatusIsFrozen, 100),
+                (StatusIsHidden, 10),
+                (IsInfo, 1)
+            }, 3);
+
+        public string IssueSortKey => CalculateSortKey(
+            new (bool, int)[]
+            {
+                (IssuesHasError, 10000),
+                (IsDummyNode, 1000),
+                (IssuesHasWarning, 100),
+                (DismissedAlertsCount > 0, DismissedAlertsCount)
+            }, 5);
+
+        public string OutputSortKey => CalculateSortKey(
+            new (bool, int)[]
+            {
+                (IsOutputSingleItem || TopLevelItemsNumberAsInt > 0, 100 * TopLevelItemsNumberAsInt),
+                (IsEmptyList, 10),
+                (IsNull, 1)
+            }, 3);
+
+        #endregion
     }
 }

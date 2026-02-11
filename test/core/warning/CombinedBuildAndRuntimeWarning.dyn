@@ -1,0 +1,260 @@
+{
+  "Uuid": "97a400ee-94fa-42f2-aeaf-eccee08b09d0",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "CombinedBuildAndRuntimeWarning",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Remember, CoreNodeModels",
+      "Cache": "",
+      "Id": "68d59d31924a4bd9ad8bedf6ad3d6ba8",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "cdddb90e19104b228d767cfbb80aee7e",
+          "Name": ">",
+          "Description": "Data to sample and store in the file.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3cf56d53b34140f3b6e0d2364761b4f7",
+          "Name": ">",
+          "Description": "Data",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Store data passing through this node to the Dynamo file. Return the stored data if the input is null."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "7cbc1c468eeb4212af0aff74bd0cef00",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "3bc7bf2fc7ac48a8a0120fdc84836f04",
+          "Name": "width",
+          "Description": "Width of cuboid\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d992692be6b84aa19166d48e4866527f",
+          "Name": "length",
+          "Description": "Length of cuboid\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "82110a4632424e839fa76ad5e11bd23b",
+          "Name": "height",
+          "Description": "Height of cuboid\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9954d36df8c3426fa002cf0b023f986e",
+          "Name": "Cuboid",
+          "Description": "Cuboid created by lengths",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Cuboid.ByLengths@double,double,double",
+      "Replication": "Auto",
+      "Description": "Create a Cuboid centered at WCS origin, with width, length, and height.\n\nCuboid.ByLengths (width: double = 1, length: double = 1, height: double = 1): Cuboid"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "8462a9c342cf4d34bd712a1d40d36d08",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "0de8cca8b3e1483f97965ed1e8a1e369",
+          "Name": "topology",
+          "Description": "Autodesk.DesignScript.Geometry.Topology",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "aef89188e8c54ee4a0dff43f2ffde441",
+          "Name": "Vertex[]",
+          "Description": "Vertex[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Topology.Vertices",
+      "Replication": "Auto",
+      "Description": "The Vertices of the Topology\n\nTopology.Vertices: Vertex[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "fa0a1055b0404964bfb03c0f1b63b03c",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "f18736ff029549c3bd2de86ba8a19b31",
+          "Name": "list",
+          "Description": "List to get the first item from.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2feda6bf839940eebf92be324f9896be",
+          "Name": "item",
+          "Description": "First item in the list.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.List.FirstItem@var[]..[]",
+      "Replication": "Auto",
+      "Description": "Returns the first item in a list.\n\nList.FirstItem (list: var[]..[]): var[]..[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "9954d36df8c3426fa002cf0b023f986e",
+      "End": "0de8cca8b3e1483f97965ed1e8a1e369",
+      "Id": "6fa48a366ab24c0db20aa151d7b0ebf4",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "aef89188e8c54ee4a0dff43f2ffde441",
+      "End": "f18736ff029549c3bd2de86ba8a19b31",
+      "Id": "7644549c527e4ec6b8f1372f8f989972",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2feda6bf839940eebf92be324f9896be",
+      "End": "cdddb90e19104b228d767cfbb80aee7e",
+      "Id": "2c5f9460c66a4ff18eaaf0506c434dad",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.0",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.0.0.5795",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "68d59d31924a4bd9ad8bedf6ad3d6ba8",
+        "Name": "Remember",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 687.3333333333334,
+        "Y": 113.33333333333334
+      },
+      {
+        "Id": "7cbc1c468eeb4212af0aff74bd0cef00",
+        "Name": "Cuboid.ByLengths",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -226.66666666666663,
+        "Y": 113.33333333333331
+      },
+      {
+        "Id": "8462a9c342cf4d34bd712a1d40d36d08",
+        "Name": "Topology.Vertices",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 82.0,
+        "Y": 113.33333333333331
+      },
+      {
+        "Id": "fa0a1055b0404964bfb03c0f1b63b03c",
+        "Name": "List.FirstItem",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 411.0,
+        "Y": 113.33333333333331
+      }
+    ],
+    "Annotations": [],
+    "X": -45.56275110587575,
+    "Y": 100.51976809533903,
+    "Zoom": 0.6468656130924141
+  }
+}

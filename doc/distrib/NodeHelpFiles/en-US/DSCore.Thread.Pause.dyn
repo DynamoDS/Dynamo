@@ -1,0 +1,264 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DSCore.Thread.Pause",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "fe5418e22c8d444a87529660399eb6c1",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "89d46ae36ec44d25a95703b6b0ad9047",
+          "Name": "object",
+          "Description": "Object to pass through.\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "357ec715a5e1433c93f62cb35e0f0279",
+          "Name": "msTimeout",
+          "Description": "Amount of time to pause the thread, in milliseconds.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "061ace2c9a03475fad873bfa745e5342",
+          "Name": "object",
+          "Description": "Object passed through.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.Thread.Pause@var,int",
+      "Replication": "Auto",
+      "Description": "Pauses the current evaluation thread for a given amount of time.\n\nThread.Pause (object: var, msTimeout: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "8f3d510707954377afe9f3b09ae89311",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5d4c55c625cf41a9880410202d25a118",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "5000;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "85389099bff940dd94cff6c88914564e",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "169c6aa2bcc946d691428b7fa580307a",
+          "Name": "centerPoint",
+          "Description": "Center point of circle\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9b6108242a3242d5bfbed081ab52c752",
+          "Name": "radius",
+          "Description": "Radius\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d8ee2dc7f2bf4638a60b39f9efd27416",
+          "Name": "Circle",
+          "Description": "Circle created with center point and radius",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "Replication": "Auto",
+      "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "e65f677f222a46bb90466eb3ff466811",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "6cd94e8853214e76bd2b7e8c3f983a14",
+          "Name": "curve",
+          "Description": "Autodesk.DesignScript.Geometry.Curve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ff190769b1884c7a862f76420a2d7830",
+          "Name": "distance",
+          "Description": "The distance to extrude the curve\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bfc826ceac7b44bc9eb989374fc9851c",
+          "Name": "Surface",
+          "Description": "The extruded Surface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.Extrude@double",
+      "Replication": "Auto",
+      "Description": "Extrudes a Curve in the normal Vector direction\n\nCurve.Extrude (distance: double = 1): Surface"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "061ace2c9a03475fad873bfa745e5342",
+      "End": "6cd94e8853214e76bd2b7e8c3f983a14",
+      "Id": "2502f35d7cb649acbeca7efae6d10f5d",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "5d4c55c625cf41a9880410202d25a118",
+      "End": "357ec715a5e1433c93f62cb35e0f0279",
+      "Id": "177ee1299cc24db79362ee12e4e730ef",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d8ee2dc7f2bf4638a60b39f9efd27416",
+      "End": "89d46ae36ec44d25a95703b6b0ad9047",
+      "Id": "efef28569b1f45208b865aac17893891",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.0.5742",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": 2.0443849563598633,
+      "EyeY": 3.4251701831817627,
+      "EyeZ": -3.5761997699737549,
+      "LookX": -0.82001298666000366,
+      "LookY": -2.9229989051818848,
+      "LookZ": 4.95900821685791,
+      "UpX": -0.049872010946273804,
+      "UpY": 0.95212936401367188,
+      "UpZ": 0.30159971117973328
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "fe5418e22c8d444a87529660399eb6c1",
+        "Name": "Thread.Pause",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 450.703594627201,
+        "Y": 3000.54788434371
+      },
+      {
+        "Id": "8f3d510707954377afe9f3b09ae89311",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 74.703594627201028,
+        "Y": 3106.3753843437103
+      },
+      {
+        "Id": "85389099bff940dd94cff6c88914564e",
+        "Name": "Circle.ByCenterPointRadius",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 74.703594627201028,
+        "Y": 2928.5478843437104
+      },
+      {
+        "Id": "e65f677f222a46bb90466eb3ff466811",
+        "Name": "Curve.Extrude",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 781.703594627201,
+        "Y": 3000.5478843437104
+      }
+    ],
+    "Annotations": [],
+    "X": 275.80681386049889,
+    "Y": -4229.2298406873888,
+    "Zoom": 1.5022542176644842
+  }
+}
