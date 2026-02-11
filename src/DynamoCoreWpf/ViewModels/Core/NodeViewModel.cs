@@ -68,7 +68,7 @@ namespace Dynamo.ViewModels
         private bool isHidden;
         private const int DocumentBrowserRefreshDebounceMs = 300;
         private Wpf.Utilities.ActionDebouncer delayDocumentBrowserRefresh
-          = new Wpf.Utilities.ActionDebouncer(null);
+          = new Wpf.Utilities.ActionDebouncer(() => { });
         private int delayDocumentBrowserRefreshTime = DocumentBrowserRefreshDebounceMs;
         #endregion
 
