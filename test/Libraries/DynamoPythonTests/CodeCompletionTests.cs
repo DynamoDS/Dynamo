@@ -27,6 +27,7 @@ namespace DynamoPythonTests
     [TestFixture]
     internal class SharedCodeCompletionProviderTests : UnitTestBase
     {
+        [SetUp]
         public override void Setup()
         {
             base.Setup();
