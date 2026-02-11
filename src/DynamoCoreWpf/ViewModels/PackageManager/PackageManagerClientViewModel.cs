@@ -933,10 +933,8 @@ namespace Dynamo.ViewModels
                     // The contents (string) property of the PackageVersion object can be null for an empty package 
                     // like LunchBox.
                     var are_contents_empty = string.IsNullOrEmpty(x.contents);
-                    var contains_binaries = x.contains_binaries ||
-                                            !are_contents_empty && x.contents.Contains(PackageManagerClient.PackageContainsBinariesConstant);
-                    var contains_python =
-                        !are_contents_empty && x.contents.Contains(PackageManagerClient.PackageContainsPythonScriptsConstant);
+                    var contains_binaries = x.contains_binaries || !are_contents_empty;
+                    var contains_python = !are_contents_empty;
                     return contains_binaries || contains_python;
 
                 });

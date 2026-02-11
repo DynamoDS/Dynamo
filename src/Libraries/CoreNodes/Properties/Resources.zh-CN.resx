@@ -156,9 +156,6 @@
   <data name="Exception_Serialize_Unsupported_Type" xml:space="preserve">
     <value>无法存储 {0} 类型的数据。</value>
   </data>
-  <data name="ExportToCSVObsolete" xml:space="preserve">
-    <value>而是使用 Data.ExportCSV 节点</value>
-  </data>
   <data name="FactorialNegativeInt" xml:space="preserve">
     <value>Math.Factorial 的输入值不能为负。</value>
   </data>
@@ -170,9 +167,6 @@
   </data>
   <data name="FindPointsWithinRadiusSearchRadiusMessage" xml:space="preserve">
     <value>搜索半径不能为零。</value>
-  </data>
-  <data name="FromObjectObsolete" xml:space="preserve">
-    <value>此节点已过时，请使用“String from Object”</value>
   </data>
   <data name="IntegerOverflow" xml:space="preserve">
     <value>该操作导致整数溢出。其结果可能异常。</value>
@@ -186,9 +180,6 @@
   <data name="InvalidKeysLenghtErrorMessage" xml:space="preserve">
     <value>项目数与关键字数不匹配。href=InvalidKeysLenghtErrorMessage.html</value>
   </data>
-  <data name="LoadImageFromPathObsolete" xml:space="preserve">
-    <value>而是使用 File.FromPath -&gt; Image.ReadFromFile 节点</value>
-  </data>
   <data name="MissingPythonEngine" xml:space="preserve">
     <value>找不到选定的 Python 引擎</value>
   </data>
@@ -201,12 +192,6 @@
   <data name="QuadtreeConstructionNullUVSetMessage" xml:space="preserve">
     <value>无法由空 UV 集构造四叉树。</value>
   </data>
-  <data name="ReadImageObsolete" xml:space="preserve">
-    <value>而是使用 File.FromPath -&gt; Image.ReadFromFile -&gt; Image.Pixels 节点</value>
-  </data>
-  <data name="ReadTextObsolete" xml:space="preserve">
-    <value>而是使用 File.FromPath -&gt; File.ReadText 节点。</value>
-  </data>
   <data name="StringRemoveCountOutOfRangeMessage" xml:space="preserve">
     <value>计数超出范围！</value>
   </data>
@@ -218,9 +203,6 @@
   </data>
   <data name="WebRequestNullUrlMessage" xml:space="preserve">
     <value>url 不能为空。</value>
-  </data>
-  <data name="WriteImageObsolete" xml:space="preserve">
-    <value>而是使用 Image.WriteToFile 节点</value>
   </data>
   <data name="DefineDataUnexpectedInputExceptionMessage" xml:space="preserve">
     <value>此节点预计需要 {0} 输入，但却收到 {1} 输入。请提供预计输入，或在节点的下拉菜单中拾取新类型。</value>

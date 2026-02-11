@@ -156,9 +156,6 @@
   <data name="Exception_Serialize_Unsupported_Type" xml:space="preserve">
     <value>Impossibile memorizzare i dati di tipo {0}.</value>
   </data>
-  <data name="ExportToCSVObsolete" xml:space="preserve">
-    <value>Utilizzare invece il nodo Data.ExportCSV</value>
-  </data>
   <data name="FactorialNegativeInt" xml:space="preserve">
     <value>Il valore di input Math.Factorial non può essere negativo.</value>
   </data>
@@ -170,9 +167,6 @@
   </data>
   <data name="FindPointsWithinRadiusSearchRadiusMessage" xml:space="preserve">
     <value>Il raggio di ricerca non può essere zero.</value>
-  </data>
-  <data name="FromObjectObsolete" xml:space="preserve">
-    <value>Il nodo è obsoleto, utilizzare "String from Object"</value>
   </data>
   <data name="IntegerOverflow" xml:space="preserve">
     <value>L'operazione ha generato un overflow dei numeri interi. Il risultato potrebbe essere imprevisto.</value>
@@ -186,9 +180,6 @@
   <data name="InvalidKeysLenghtErrorMessage" xml:space="preserve">
     <value>Il numero di elementi non corrisponde al numero di chiavi. href=InvalidKeysLenghtErrorMessage.html</value>
   </data>
-  <data name="LoadImageFromPathObsolete" xml:space="preserve">
-    <value>In sostituzione, utilizzare i nodi File.FromPath -&gt;  Image.ReadFromFile</value>
-  </data>
   <data name="MissingPythonEngine" xml:space="preserve">
     <value>Impossibile trovare il motore Python selezionato.</value>
   </data>
@@ -201,12 +192,6 @@
   <data name="QuadtreeConstructionNullUVSetMessage" xml:space="preserve">
     <value>Non è possibile costruire un elemento quadtree da un gruppo di UV nullo.</value>
   </data>
-  <data name="ReadImageObsolete" xml:space="preserve">
-    <value>In sostituzione, utilizzare i nodi File.FromPath -&gt; Image.ReadFromFile -&gt; Image.Pixels</value>
-  </data>
-  <data name="ReadTextObsolete" xml:space="preserve">
-    <value>In sostituzione, utilizzare i nodi File.FromPath -&gt; File.ReadText.</value>
-  </data>
   <data name="StringRemoveCountOutOfRangeMessage" xml:space="preserve">
     <value>Conteggio non rientra nell'intervallo.</value>
   </data>
@@ -218,9 +203,6 @@
   </data>
   <data name="WebRequestNullUrlMessage" xml:space="preserve">
     <value>L'URL non può essere Null.</value>
-  </data>
-  <data name="WriteImageObsolete" xml:space="preserve">
-    <value>In sostituzione, utilizzare il nodo Image.WriteToFile</value>
   </data>
   <data name="DefineDataUnexpectedInputExceptionMessage" xml:space="preserve">
     <value>Questo nodo prevedeva un input {0} ma ha ricevuto un input {1}. Fornire l'input previsto o selezionare un nuovo tipo nel menu a discesa del nodo.</value>

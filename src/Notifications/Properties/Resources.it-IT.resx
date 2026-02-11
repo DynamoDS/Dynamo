@@ -150,4 +150,10 @@
   <data name="NotificationsCenterTitle" xml:space="preserve">
     <value>Notifiche</value>
   </data>
+  <data name="UnsafePathDetectedDetail" xml:space="preserve">
+    <value>È stato rilevato un percorso non sicuro in Percorsi attendibili:</value>
+  </data>
+  <data name="UnsafePathDetectedTitle" xml:space="preserve">
+    <value>Percorso non sicuro rilevato</value>
+  </data>
 </root>

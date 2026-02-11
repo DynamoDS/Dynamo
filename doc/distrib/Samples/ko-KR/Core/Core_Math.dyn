@@ -2015,7 +2015,7 @@
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "Code": "import clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\nimport math\r\n\r\n# The inputs to this node will be stored as a list in the IN variable.\r\namp = IN[0]   # single value\r\nx = IN[1]     # list\r\ny = IN[2]     # list (expect same length as x)\r\nc = IN[3]     # single value\r\n\r\n# Declare an empty array of z-values\r\nz = []\r\n\r\n# Solve the equation for each x and y value\r\nfor index in range(len(x)):\r\n\tsum = math.pow(x[index],2) + math.pow(y[index],2) + math.pow(c,2)\r\n\tnum1 = math.sqrt(sum)\r\n\tnum2 = math.sin(num1)\r\n\tzVal = amp * num2 / num1\r\n\t\r\n\t# Append the answer to the list of z values\r\n\tz.append(zVal)\r\n\r\n# Assign the z-values to the OUT variable\r\nOUT = z",
-      "Engine": "CPython3",
+      "Engine": "PythonNet3",
       "VariableInputPorts": true,
       "Id": "7024be7096c74f46a832ce5749bba59a",
       "NodeType": "PythonScriptNode",

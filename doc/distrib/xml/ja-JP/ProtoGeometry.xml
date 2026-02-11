@@ -482,669 +482,6 @@
         <member name="P:Autodesk.DesignScript.Geometry.Cuboid.Height">
             <summary>高さの距離を返します。                         注: これは直方体の入力寸法を返すものです。実際のワールド空間の                   寸法を返すわけではありません。たとえば幅(X 軸)が 10 の直方体を作成後、                   X 軸が 2 倍に拡張された座標系にその直方体を移し替えたとしても、                   幅は 10 のままになります。ASM ではボディの頂点を予測可能な順番で                   抽出することができないため、 変換後の寸法を判断することはできません。</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ToString">
-            <summary>曲線の文字列表現を取得します</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByParameterLineOnSurface(Autodesk.DesignScript.Geometry.Surface,Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
-            <summary>UV 空間内のサーフェスの線分によって曲線を作成</summary>
-            <param name="baseSurface">使用するサーフェス</param>
-            <param name="startParams">曲線を開始する UV 開始点</param>
-            <param name="endParams">曲線を終了する UV 終了点</param>
-            <returns>サーフェスの始点および終点パラメータでの曲線</returns>
-            <search>
-            isocurve,curvebyuv,lines,uvs
-            </search>
-            <weights>
-            0.5,0.5,0.4,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByBlendBetweenCurves(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean,System.Boolean,System.Boolean)">
-            <summary>2 本の曲線の間でブレンドする曲線を作成します。</summary>
-            <param name="curve1">ブレンドする 1 番目の曲線</param>
-            <param name="curve2">ブレンドする 2 番目の曲線</param>
-            <param name="endOrStart1">ブレンドする曲線 1 の端点を示すフラグ</param>
-            <param name="endOrStart2">ブレンドする曲線 2 の端点を示すフラグ</param>
-            <param name="isG2Continuous">出力される曲線が G1 (接線連続) と G2 (曲率連続)のいずれであるかを示すフラグ</param>
-            <returns>2 本の曲線をブレンドして作成された曲線</returns>
-            <search>
-            blend,make continuous,connect
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByIsoCurveOnSurface(Autodesk.DesignScript.Geometry.Surface,System.Int32,System.Double)">
-            <summary>サーフェスの面分割線によって曲線を作成</summary>
-            <param name="baseSurface">基準面</param>
-            <param name="direction">面分割線が 0 本の場合は U 方向に、1 本の場合は V 方向に</param>
-            <param name="parameter">他のサーフェス パラメータの曲線の値で決定</param>
-            <returns>サーフェス上のアイソカーブ</returns>
-            <search>
-            isocurve,curvebydir,lines
-            </search>
-            <weights>
-            0.5,0.5,0.4
-            </weights>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.Length">
-            <summary>曲線の円弧全体の長さを返します</summary>
-            <search>
-            distance
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.IsPlanar">
-            <summary>曲線が平面曲線の場合は True を返し、それ以外の場合は False を返します。</summary>
-            <search>
-            flat,liesinplane
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.IsClosed">
-            <summary>曲線が閉じている場合は True を返し、それ以外の場合は False を返します。</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.StartPoint">
-            <summary>曲線上の始点を取得します</summary>
-            <search>
-            begin,curvestart,startpt
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.EndPoint">
-            <summary>曲線上の終点を取得します</summary>
-            <search>
-            end,curveend,endpt
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.Normal">
-            <summary>曲線が含まれている面に対する法線。平面曲線でのみ有効です。</summary>
-            <search>
-            perpendicular
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtParameter(System.Double)">
-            <summary>StartParameter() から EndParameter() までの範囲内の指定されたパラメータで曲線上の点を取得します。</summary>
-            <param name="param">評価するパラメータ</param>
-            <returns>点</returns>
-            <search>
-            pointoncurve,curvepoint
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TangentAtParameter(System.Double)">
-            <summary>StartParameter() から EndParameter() までの範囲内の指定されたパラメータで曲線に接するベクトルを取得します。</summary>
-            <param name="param">評価するパラメータ</param>
-            <returns>パラメータ上で曲線に平行するベクトル</returns>
-            <search>
-            tangentoncurve,curvetan
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double)">
-            <summary>StartParameter() から EndParameter() までの範囲内の指定されたパラメータで曲線に直交するベクトルを取得します。</summary>
-            <param name="param">評価するパラメータ</param>
-            <returns>パラメータ上で曲線に直交するベクトル</returns>
-            <search>
-            normaloncurve,curvenorm
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double,System.Boolean)">
-            <summary>StartParameter()から EndParameter()までの範囲内の指定されたパラメータで曲線に直交するベクトルを取得します。曲線が平面状になっている必要があります。曲線の曲率全体で一貫性のある法線が作成されます。</summary>
-            <param name="param">評価するパラメータ</param>
-            <param name="side">'side' が false に設定されている場合、法線は曲線の右側を向きます(曲線の始点から終点まで)。'side' が true の場合、法線は曲線の左側を向きます。</param>
-            <returns>パラメータ上で曲線に直交するベクトル</returns>
-            <search>
-            normaloncurve,curvenorm
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtParameter(System.Double)">
-            <summary>指定されたパラメータの位置に基準点を持つ座標系を取得します。 X 軸は曲線の法線に、Y 軸はこの点における曲線の接線に、Z 軸はこの点におけるアップ ベクトルまたは従法線に、それぞれ位置合わせされます。</summary>
-            <param name="param">評価するパラメータ</param>
-            <returns>曲線のパラメータを基準とする座標系</returns>
-            <search>
-            coordoncurve,curvecoord,derivatives
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.HorizontalFrameAtParameter(System.Double)">
-            <summary>指定したパラメータの点に基準点を持つ座標系を取得します。</summary>
-            <param name="param">評価するパラメータ</param>
-            <returns>点で軸を位置合わせされた座標系</returns>
-            <search>
-            frame,axisaligned,aa,coordcurve,framecurve,curveframe,coordoncurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtParameter(System.Double)">
-            <summary>曲線の接点で法線を位置合わせした平面を返します。開始点は常に 0 になり、また終了点は常に 1 になるように、パラメータが調整されます。</summary>
-            <param name="param"/>
-            <returns/>
-            <search>
-            planeoncurve,planecurve,tangentplane
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtSegmentLength(System.Double)">
-            <summary>曲線上で指定された弧長の端点を取得します。</summary>
-            <param name="segmentLength">評価する曲線上の距離</param>
-            <returns>指定された弧長の端点</returns>
-            <search>
-            pointoncurve,curvepoint,pointalongcurve,distanceoncurve,distancepoint,distpoint,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtDistance(System.Double)">
-            <summary>曲線上で指定された弧長の端点を取得します。</summary>
-            <param name="segmentLength">評価する曲線上の距離</param>
-            <returns>指定された弧長の端点</returns>
-            <search>
-            pointoncurve,curvepoint,pointalongcurve,distanceoncurve,distancepoint,distpoint,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualSegmentLength(System.Int32)">
-            <summary>分割の入力数値に基づいて曲線の長さに沿って等間隔に配置された点を返します</summary>
-            <param name="divisions">分割数</param>
-            <returns>曲線の長さに沿って等間隔に配置された点</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualChordLength(System.Int32)">
-            <summary>入力された分割数に基づいて、曲線上に等しい弦長で配置された点を返します</summary>
-            <param name="divisions">分割数</param>
-            <returns>曲線上の点のリスト</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtChordLength(System.Double,System.Double,System.Boolean)">
-            <summary>指定されたパラメータ位置を基準として、指定された曲線の弦長にある点を取得します。</summary>
-            <param name="chordLength">評価する弦長</param>
-            <param name="parameterLocation">計測する曲線上のパラメータ</param>
-            <param name="forward">曲線に沿って進む場合は true</param>
-            <returns>曲線上の点</returns>
-            <search>
-            measure from,measure to,parameteratdist
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtSegmentLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>指定された点を基準として、指定されたセグメントの長さまで、曲線上に等間隔に配置された点群を返します</summary>
-            <param name="point">計測元となる参照点</param>
-            <param name="segmentLength">評価する曲線上の距離</param>
-            <returns>曲線の方向に沿った、指定された点を含む曲線上の点のリスト。</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtChordLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>指定された点を基準として、指定された弦長まで、曲線上に等間隔に配置された点群を返します</summary>
-            <param name="point">計測元となる参照点</param>
-            <param name="chordLength">弦長</param>
-            <returns>曲線の方向に沿った、指定された点を含む曲線上の点のリスト。</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtSegmentLength(System.Double)">
-            <summary>曲線の開始点から指定された距離にある座標系を返します。Y 軸は曲線の接線、X 軸は曲率になります。</summary>
-            <param name="segmentLength">評価する曲線上の距離</param>
-            <returns>曲線上の座標系</returns>
-            <search>
-            coordoncurve,curvecoord,derivatives
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtDistance(System.Double)">
-            <summary>曲線の開始点から指定された距離にある座標系を返します。Y 軸は曲線の接線、X 軸は曲率になります。</summary>
-            <param name="segmentLength">評価する曲線上の距離</param>
-            <returns>曲線上の座標系</returns>
-            <search>
-            coordoncurve,curvecoord,derivatives
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtSegmentLength(System.Double)">
-            <summary>開始点から曲線に沿って指定された距離にある平面を返します。平面の法線は曲線の接線に位置合わせされます。</summary>
-            <param name="segmentLength">評価する曲線上の距離</param>
-            <returns>曲線に基づく平面</returns>
-            <search>
-            planeoncurve,planecurve,tangentplane
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtDistance(System.Double)">
-            <summary>開始点から曲線に沿って指定された距離にある平面を返します。平面の法線は曲線の接線に位置合わせされます。</summary>
-            <param name="segmentLength">評価する曲線上の距離</param>
-            <returns>曲線に基づく平面</returns>
-            <search>
-            planeoncurve,planecurve,tangentplane
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SegmentLengthAtParameter(System.Double)">
-            <summary>曲線の開始点から指定されたパラメータまで計測したセグメントの長さを取得します。</summary>
-            <param name="parameter">0 と 1 の間の値</param>
-            <returns>セグメントの長さ</returns>
-            <search>
-            lengthatparameter,dist along,lengthatpoint,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DistanceAtParameter(System.Double)">
-            <summary>曲線の開始点から指定されたパラメータまで計測したセグメントの長さを取得します。</summary>
-            <param name="param">0 と 1 の間の値</param>
-            <returns>セグメントの長さ</returns>
-            <search>
-            lengthatparameter,dist along,lengthatpoint,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtSegmentLength(System.Double)">
-            <summary>曲線上の指定された弧長でパラメータを取得します。</summary>
-            <param name="segmentLength">評価する曲線上の距離</param>
-            <returns>パラメータ</returns>
-            <search>
-            parameteratlen,param along,paramatlen,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtDistance(System.Double)">
-            <summary>曲線上の指定された弧長でパラメータを取得します。</summary>
-            <param name="segmentLength">評価する曲線上の距離</param>
-            <returns>パラメータ</returns>
-            <search>
-            parameteratlen,param along,paramatlen,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtChordLength(System.Double,System.Double,System.Boolean)">
-            <summary>曲線上の指定された位置から指定された弦長でパラメータを取得します。</summary>
-            <param name="chordLength">評価する弦長</param>
-            <param name="parameter">計測する曲線上のパラメータ</param>
-            <param name="forward">曲線に沿って進む場合は true</param>
-            <returns>パラメータ</returns>
-            <search>
-            measure from,measure to,parameteratdist
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.StartParameter">
-            <summary>曲線の開始点の位置でパラメータを取得します</summary>
-            <returns>パラメータ値</returns>
-            <search>
-            start domain,curvestart
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.EndParameter">
-            <summary>曲線の終了点の位置でパラメータを取得します</summary>
-            <returns>パラメータ値</returns>
-            <search>
-            end domain,curveend
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SegmentLengthBetweenParameters(System.Double,System.Double)">
-            <summary>曲線上の 2 つのパラメータ間のセグメントの長さを取得します</summary>
-            <param name="startParam">0 と 1 の間の値</param>
-            <param name="endParam">0 と 1 の間の値</param>
-            <returns>セグメントの長さ</returns>
-            <search>
-            measure,distance,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.LengthBetweenParameters(System.Double,System.Double)">
-            <summary>曲線上の 2 つのパラメータ点間の弧長を取得します。</summary>
-            <param name="startParam">ドメインの開始</param>
-            <param name="endParam">ドメインの終了</param>
-            <returns>2 つのパラメータ間の弧長</returns>
-            <search>
-            measure,distance,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
-            <summary>曲線に沿った指定された点でパラメータを取得します。点が曲線上にない場合でも、ParameterAtPoint は曲線上の近い点に対応する値を返しますが、通常この点は最も近い点ではありません。</summary>
-            <param name="point">曲線に沿っているか近くにある点</param>
-            <returns>曲線上の指定された点のパラメータ。</returns>
-            <search>
-            projectpoint,closestparam,curveparam
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Reverse">
-            <summary>曲線の方向を反転します</summary>
-            <returns>方向反転後の新しい曲線</returns>
-            <search>
-            flip
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Offset(System.Double)">
-            <summary>指定した量で曲線をオフセットします。曲線は平面状になっている必要があります。</summary>
-            <param name="distance">オフセットする正または負の距離</param>
-            <returns>オフセットした新しい曲線</returns>
-            <search>
-            thicken,lines
-            </search>
-            <weights>
-            0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.OffsetMany(System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>平面の法線で定義された平面で、平面曲線を指定された距離だけオフセットして、1 つまたは複数の曲線を作成します。オフセットされたコンポーネント曲線間にギャップがある場合は、オフセットされた曲線を延長してそのギャップを埋めます。既定では、入力引数「planeNormal」は曲線を含む平面の法線に設定されますが、元の曲線の法線に平行な明示的な法線となるため、オフセットの方向を簡単にコントロールできます。たとえば、同じ平面を共有している複数の曲線のオフセット方向を一致させる必要がある場合に「planeNormal」を使用すると、個々の曲線の法線を変更し、すべての曲線を強制的に同じ方向にオフセットできます。法線を反転すると、オフセットの方向が反転します。</summary>
-            <param name="signedDistance">正のオフセット距離は、曲線の接線と平面の法線ベクトルの外積の方向に適用され、負のオフセット距離はその反対の方向に適用されます。</param>
-            <param name="planeNormal">曲線の平面法線。既定では入力された曲線の平面法線に設定されます</param>
-            <returns>1 つまたは複数のオフセットされた曲線</returns>
-            <search>
-            thicken,lines
-            </search>
-            <weights>
-            0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoPlane(Autodesk.DesignScript.Geometry.Plane)">
-            <summary>平面に引き寄せることで曲線を作成します</summary>
-            <param name="plane">曲線を引き寄せる平面</param>
-            <returns>平面に基づく曲線</returns>
-            <search>
-            projectcurve,toplane
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoSurface(Autodesk.DesignScript.Geometry.Surface)">
-            <summary>入力 Surface で Surface 法線の方向に、この Curve を引きます。</summary>
-            <param name="surface"/>
-            <returns/>
-            <search>
-            projectcurve,tosurf
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideEqually(System.Int32)">
-            <summary>曲線を指定した数の長さの等しい曲線に分割します</summary>
-            <param name="divisions">分割数</param>
-            <returns>分割後の Curve の Array</returns>
-            <search>
-            chopcurve,segment,slices
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideByDistance(System.Int32)">
-            <summary>各曲線の始点と終点の距離を等しくして(等しい弦)、曲線を指定した数の曲線に分割します。</summary>
-            <param name="divisions">分割数</param>
-            <returns>分割後の Curve の Array</returns>
-            <search>
-            divide by chordlength,chord,segment,chopcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideByLengthFromParameter(System.Double,System.Double)">
-            <summary>指定したパラメータの位置から計測した、指定した長さの曲線に、曲線を分割します</summary>
-            <param name="length">分割後の曲線の長さ</param>
-            <param name="parameter">計測元のパラメータの位置</param>
-            <returns>分割後の Curve の配列</returns>
-            <search>
-            divide by chordlength,chord,segment,chopcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideByDistanceFromParameter(System.Double,System.Double)">
-            <summary>指定したパラメータの位置から計測した、指定した弦長の曲線に、曲線を分割します</summary>
-            <param name="distance">分割によって取得した各曲線の弦長</param>
-            <param name="parameter">計測元のパラメータの位置</param>
-            <returns>分割後の Curve の Array</returns>
-            <search>
-            divide by chordlength,chord,segment,chopcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByStartParameter(System.Double)">
-            <summary>入力されたパラメータで、曲線の先頭を削除します</summary>
-            <param name="startParameter">トリムを開始するパラメータ</param>
-            <returns>先頭を削除した後に残る新しい曲線</returns>
-            <search>
-            rem,remstart,removestart,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimStart(System.Double)">
-            <summary>入力されたパラメータで、曲線の先頭を削除します</summary>
-            <param name="startParameter">トリムを開始するパラメータ</param>
-            <returns>先頭を削除した後に残る新しい曲線</returns>
-            <search>
-            rem,remstart,removestart,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByEndParameter(System.Double)">
-            <summary>入力されたパラメータで、曲線の末尾を削除します</summary>
-            <param name="endParameter">トリムを開始するパラメータ</param>
-            <returns>末尾を削除した後に残る新しい曲線</returns>
-            <search>
-            rem,remend,removeend,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimEnd(System.Double)">
-            <summary>入力されたパラメータで、曲線の末尾を削除します</summary>
-            <param name="endParameter">トリムを開始するパラメータ</param>
-            <returns>末尾を削除した後に残る新しい曲線</returns>
-            <search>
-            rem,remend,removeend,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByParameter(System.Double,System.Double)">
-            <summary>入力されたパラメータで曲線の先頭と末尾を削除します。</summary>
-            <param name="startParameter">トリムを開始するパラメータ</param>
-            <param name="endParameter">トリムを開始するパラメータ</param>
-            <returns>外側部分を削除した後に残る新しい曲線</returns>
-            <search>
-            rem,remend,remstart,remove,trimcurve,removeends
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrim(System.Double,System.Double)">
-            <summary>入力されたパラメータで曲線の先頭と末尾を削除します。</summary>
-            <param name="startParameter">トリムを開始するパラメータ</param>
-            <param name="endParameter">トリムを開始するパラメータ</param>
-            <returns>外側部分を削除した後に残る新しい曲線</returns>
-            <search>
-            rem,remend,remstart,remove,trimcurve,removeends
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimInteriorByParameter(System.Double,System.Double)">
-            <summary>入力されたパラメータで、曲線の内側部分を削除します。</summary>
-            <param name="startParameter">トリムを開始するパラメータ</param>
-            <param name="endParameter">トリムを開始するパラメータ</param>
-            <returns>内側部分を削除した後に残る新しい曲線</returns>
-            <search>
-            rem,removemiddle,middle,remmiddle,cutout,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimInterior(System.Double,System.Double)">
-            <summary>入力されたパラメータで、曲線の内側部分を削除します。</summary>
-            <param name="startParameter">トリムを開始するパラメータ</param>
-            <param name="endParameter">トリムを開始するパラメータ</param>
-            <returns>内側部分を削除した後に残る新しい曲線</returns>
-            <search>
-            rem,removemiddle,middle,remmiddle,cutout,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(System.Double[])">
-            <summary>曲線のいくつかのセグメントを削除し、1 番目、3 番目、5 番目... のセグメントを破棄します。</summary>
-            <param name="parameters">曲線を分割するパラメータのリスト</param>
-            <returns>1 番目、3 番目、5 番目... のセグメントを破棄する曲線の配列</returns>
-            <search>
-            rem,removeparts,remparts,cutout,trimcurv,interior,odd
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimSegments(System.Double[])">
-            <summary>曲線のいくつかのセグメントを削除し、1 番目、3 番目、5 番目... のセグメントを破棄します。</summary>
-            <param name="parameters">曲線を分割するパラメータのリスト</param>
-            <returns>1 番目、3 番目、5 番目... のセグメントを破棄する曲線の配列</returns>
-            <search>
-            rem,removeparts,remparts,cutout,trimcurv,interior,odd
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(System.Double[],System.Boolean)">
-            <summary>指定されたパラメータで分割された曲線に対して、フラグ 'discardEvenSegments' が true の場合は偶数番のセグメント、false の場合は奇数番のセグメントを削除します。</summary>
-            <param name="parameters">曲線を分割するパラメータのリスト</param>
-            <param name="discardEvenSegments">偶数番のセグメントを破棄するかどうかを切り替え</param>
-            <returns>曲線の偶数番または奇数番のセグメントを破棄した後に残った曲線のリスト。</returns>
-            <search>
-            rem,removeparts,remparts,cutout,trimcurv,interior,even
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByParameter(System.Double)">
-            <summary>入力されたパラメータで、2 つの部分に曲線を分割します。</summary>
-            <param name="parameter">分割を実行するパラメータ</param>
-            <returns>分割後に残る 2 本の曲線</returns>
-            <search>
-            cutinto,divide,curve2curves,cut
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterSplit(System.Double)">
-            <summary>入力されたパラメータで、2 つの部分に曲線を分割します。</summary>
-            <param name="parameter">分割を実行するパラメータ</param>
-            <returns>分割後に残る 2 本の曲線</returns>
-            <search>
-            cutinto,divide,curve2curves,cut
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByParameter(System.Double[])">
-            <summary>入力されたパラメータで、曲線を複数の部分に分割します。</summary>
-            <param name="parameters">曲線を分割するパラメータのリスト</param>
-            <returns>分割によって作成される曲線</returns>
-            <search>
-            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterSplit(System.Double[])">
-            <summary>入力されたパラメータで、曲線を複数の部分に分割します。</summary>
-            <param name="parameters">曲線を分割するパラメータのリスト</param>
-            <returns>分割によって作成される曲線</returns>
-            <search>
-            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>点を指定して複数のピースに曲線を分割</summary>
-            <param name="points">曲線を分割する位置にある曲線上の点</param>
-            <returns>分割によって作成される曲線</returns>
-            <search>
-            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>ポリカーブの終点に一連の曲線を結合します。接続性を保証するために曲線を反転します。</summary>
-            <param name="curves">ポリカーブに結合するその他の曲線</param>
-            <returns>曲線から作成したポリカーブ</returns>
-            <search>
-            convertcurves,curves2polycurve,joincurves,concat,joinall,joinmany
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Join(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>この曲線と入力曲線を新しいポリカーブに結合し、元の曲線をそのまま保持します。</summary>
-            <param name="curve">結合先の曲線</param>
-            <returns>2 本の曲線から構成されたポリカーブ</returns>
-            <search>
-            convertcurve,curve2polycurve,joincurve,concat
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(System.Double)">
-            <summary>法線ベクトルの方向に曲線を押し出します。</summary>
-            <param name="distance">曲線を押し出す距離</param>
-            <returns>押し出されるサーフェス</returns>
-            <search>
-            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>指定した方向に、入力されたベクトルの長さだけ曲線を押し出します。</summary>
-            <param name="direction">押し出しの基準とするベクトル</param>
-            <returns>押し出されるサーフェス</returns>
-            <search>
-            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>指定した方向に、指定した距離だけ曲線を押し出します。</summary>
-            <param name="direction">押し出しの基準とするベクトル</param>
-            <param name="distance">押し出す距離</param>
-            <returns>押し出されるサーフェス</returns>
-            <search>
-            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(System.Double)">
-            <summary>距離を指定して法線方向に曲線を押し出します。曲線は閉じられている必要があります。</summary>
-            <param name="distance">押し出す距離</param>
-            <returns>押し出されるソリッド</returns>
-            <search>
-            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>指定した方向に、入力された法線の長さだけ曲線を押し出します。曲線は閉じられている必要があります。</summary>
-            <param name="direction">押し出しの基準とするベクトル</param>
-            <returns>押し出されるソリッド</returns>
-            <search>
-            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>指定した方向に、指定した距離だけ曲線を押し出します。曲線は閉じられている必要があります。</summary>
-            <param name="direction">押し出しの基準とするベクトル</param>
-            <param name="distance">押し出す距離</param>
-            <returns>押し出されるソリッド</returns>
-            <search>
-            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extend(System.Double,Autodesk.DesignScript.Geometry.Point)">
-            <summary>選択点によって決まる特定の終端で距離を指定して曲線を延長します。選択した側が延長されます。円や楕円などの閉じた曲線は延長されません。延長される曲線が直線状の場合は、延長も直線状になります。</summary>
-            <param name="distance">延長する距離</param>
-            <param name="pickSide">延長する終端の点</param>
-            <returns>延長された曲線</returns>
-            <search>
-            makelonger,stretch,extendside
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtendStart(System.Double)">
-            <summary>曲線の始端から、距離を指定して曲線を延長します。円や楕円などの閉じた曲線は延長されません。延長される曲線が直線状の場合は、延長も直線状になります。</summary>
-            <param name="distance">延長する距離</param>
-            <returns>延長された曲線</returns>
-            <search>
-            makelonger,stretch
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtendEnd(System.Double)">
-            <summary>曲線の終端から、距離を指定して曲線を延長します。円や楕円などの閉じた曲線は延長されません。延長される曲線が直線状の場合は、延長も直線状になります。</summary>
-            <param name="distance">延長する距離</param>
-            <returns>延長された曲線</returns>
-            <search>
-            makelonger,stretch
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ApproximateWithArcAndLineSegments">
-            <summary>円弧と線分の集合から、近似的な曲線を求めます</summary>
-            <returns>近似的な曲線を求める基準とする円弧と線分の配列</returns>
-            <search>
-            rationalizecurve,fitarcs,fitlines,arcs,lines
-            </search>
-            <weights>
-            0.5,0.5,0.5,0.4,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ToNurbsCurve">
-            <summary>曲線を近似の NURBS 曲線に変換します</summary>
-            <returns>近似的曲線を求める基準とする NURBS 曲線</returns>
-            <search>
-            curve2spline,convertcurve,tospline,lines
-            </search>
-            <weights>
-            0.5,0.5,0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Patch">
-            <summary>閉じた曲線をパッチします</summary>
-            <returns>曲線の内部にあるサーフェス</returns>
-            <search>
-            fill,profiletosurf,loop,loop2surf,edgesurf
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Project(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>指定された下部ジオメトリに、指定された投影方向に沿って入力曲線を投影します。</summary>
-            <param name="baseGeometry">投影先のジオメトリ</param>
-            <param name="projectionDirection">ベクトル</param>
-            <returns>下部ジオメトリに投影されたジオメトリのリスト</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSurface(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>パス曲線に沿って、閉じた曲線をスイープし、サーフェスを作成します</summary>
-            <param name="path"/>
-            <returns/>
-            <search>
-            sweep1,curve2surf
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>パス曲線に沿って、閉じた曲線をスイープし、ソリッドを作成します</summary>
-            <param name="path"/>
-            <returns/>
-            <search>
-            sweep1,curve2solid,loop2solid,profile2solid,curvetosolid,looptosolid,profiletosolid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
-            <summary>パス曲線に沿って、閉じた曲線をスイープし、ソリッドを作成します</summary>
-            <param name="path">スイープ パスを表すパス</param>
-            <param name="cutEndOff">スイープの終点を切り取り、パスに対して垂直にします</param>
-            <returns>閉じた曲線をパス曲線に沿ってスイープするソリッド</returns>
-            <search>
-            sweep1,curve2solid,loop2solid,profile2solid,curvetosolid,looptosolid,profiletosolid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Simplify(System.Double)">
-            <summary>指定された曲線に指定された許容差で近似している新しい曲線を返します。</summary>
-            <param name="tolerance"/>
-            <returns/>
-            <search>
-            fitcurve,reducecurve,simplecurve,approximate
-            </search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cylinder.ToString">
             <summary>円柱の文字列表現を取得します</summary>
         </member>
@@ -1264,18 +601,6 @@
             <param name="startAngle">入力平面の正の X 軸を計測基準とする円弧の開始角</param>
             <param name="sweepAngle">開始角からの開きの角度(度単位)</param>
             <returns>平面の半径と角度で作成した楕円弧</returns>
-            <search>
-            ellipsearc,arcs
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.EllipseArc.ByPlaneRadiiStartAngleSweepAngle(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double,System.Double,System.Double)">
-            <summary>XY 軸上の平面内に、半径とスイープする角度を指定して、楕円弧を作成します。</summary>
-            <param name="plane">楕円弧が含まれる平面</param>
-            <param name="xRadius">平面 X 方向に延びる楕円弧の半径</param>
-            <param name="yRadius">平面 Y 方向に延びる楕円弧の半径</param>
-            <param name="startAngle">入力平面の正の X 軸を計測基準とする円弧の開始角</param>
-            <param name="sweepAngle">開始角からの開きの角度(度単位)</param>
-            <returns/>
             <search>
             ellipsearc,arcs
             </search>
@@ -1944,209 +1269,6 @@
             <param name="projectionDirection"/>
             <returns/>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ToString">
-            <summary>ポリカーブの文字列表現を取得します</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>曲線を結合してポリカーブを作成します。接続性の必要に応じて曲線を反転します。優先される結合の許容値を 1e-6 から 1e-3 までの単位で選択します。</summary>
-            <param name="curves">ポリカーブに結合する曲線</param>
-            <param name="joinTolerance">結合する曲線間で使用できるギャップのサイズを判断するための許容値</param>
-            <returns>結合された曲線によって作成されたポリカーブ</returns>
-            <search>
-            segments,joincurves
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>曲線を結合してポリカーブを作成します。接続性の必要に応じて曲線を反転します。優先される結合の許容値を 1e-6 から 1e-3 までの単位で選択します。</summary>
-            <param name="curves">ポリカーブに結合する曲線</param>
-            <param name="joinTolerance">結合する曲線間で使用できるギャップのサイズを判断するための許容値</param>
-            <param name="trimCurves">入力された曲線が互いに交差または重複しており、ポリカーブを作成する前に終端セグメントをトリムする必要がある場合は、True に設定します。既定では False に設定されています。</param>
-            <param name="trimLength">trimLength が 0 より大きい場合、trimLength より長い終端セグメントはトリムされません。</param>
-            <returns>結合された曲線によって作成されたポリカーブ</returns>
-            <search>
-            segments,joincurves
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>接続された曲線をグループ化して、1 つまたは複数のポリカーブを作成します。優先される結合の許容値を 1e-6 から 1e-3 までの単位で選択します。</summary>
-            <param name="curves">グループ化して 1 つまたは複数のポリカーブを作成する曲線</param>
-            <param name="joinTolerance">結合する曲線間で使用できるギャップのサイズを判断するための許容値</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>接続された曲線をグループ化して、1 つまたは複数のポリカーブを作成します。優先される結合の許容値を 1e-6 から 1e-3 までの単位で選択します。</summary>
-            <param name="curves">グループ化して 1 つまたは複数のポリカーブを作成する曲線</param>
-            <param name="joinTolerance">結合する曲線間で使用できるギャップのサイズを判断するための許容値</param>
-            <param name="trimCurves">入力された曲線が互いに交差または重複しており、ポリカーブを作成する前に終端セグメントをトリムする必要がある場合は、True に設定します。既定では False に設定されています。</param>
-            <param name="trimLength">trimLength が 0 より大きい場合、trimLength より長い終端セグメントはトリムされません。</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
-            <summary>点を接続してポリカーブを作成します。「connectLastToFirst」入力を true に設定してポリカーブを閉じます。</summary>
-            <param name="points">ポリカーブを作成する点群</param>
-            <param name="connectLastToFirst">最後の点を最初の点に接続する場合は true、開いたままにする場合は false</param>
-            <returns>点群で作成したポリカーブ</returns>
-            <search>
-            segments,joincurves,lines
-            </search>
-            <weights>
-            0.5,0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>曲線に厚みを持たせてポリカーブを作成します。</summary>
-            <param name="curve">厚みをつける曲線</param>
-            <param name="thickness">厚み</param>
-            <param name="nor">厚みをつける方向に対して直交する法線</param>
-            <returns/>
-            <search>
-            offset
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurveNormal(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>入力法線によって指定された平面に沿って曲線に厚みを持たせてポリカーブを作成します。</summary>
-            <param name="curve">厚みをつける曲線</param>
-            <param name="thickness">厚み</param>
-            <param name="normal">厚み方向に垂直な法線。法線が指定されていない(null である)場合、既定で曲線の法線が使用されます。</param>
-            <returns/>
-            <search>
-            offset,thicken
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.Points">
-            <summary>最初のコンポーネントの始点と各コンポーネント曲線の終点を返します。閉じたポリカーブの場合、始点と終点は同じになるため、終点は除外されます。</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.NumberOfCurves">
-            <summary>ポリカーブの曲線の数</summary>
-            <search>
-            curvecount,subcurvecount,numbersubcurves
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Curves">
-            <summary>ポリカーブの曲線を返します</summary>
-            <returns/>
-            <search>
-            subcurves,polycurvesplit
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CurveAtIndex(System.Int32,System.Boolean)">
-            <summary>インデックスごとのポリカーブの曲線を返します。</summary>
-            <param name="index">点を配置する長さ</param>
-            <param name="endOrStart">ポリカーブの終点からカウントする場合は true、ポリカーブの始点からカウントする場合は false</param>
-            <returns>インデックスの曲線</returns>
-            <search>
-            subcurveatindex,getsubcurve,getcurvebyindex
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.BasePlane">
-            <summary>平面ポリカーブの平面を返します</summary>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithEllipse(System.Double,System.Double,System.Double,System.Double,System.Boolean)">
-            <summary>接線楕円でポリカーブを延長します</summary>
-            <param name="length">延長する楕円の長さ</param>
-            <param name="radius1">楕円のパラメータ</param>
-            <param name="radius2">楕円のパラメータ</param>
-            <param name="endEllipseParameter">楕円のパラメータ</param>
-            <param name="endOrStart">ポリカーブの終点または始点を延長しています</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithArc(System.Double,System.Double,System.Boolean)">
-            <summary>接線円弧でポリカーブを延長します。</summary>
-            <param name="length">延長する弧長</param>
-            <param name="radius">円弧の半径</param>
-            <param name="endOrStart">ポリカーブの終点または始点を延長しています</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLine">
-            <summary>始点と終点をつなぐ線分でポリカーブを閉じる</summary>
-            <returns/>
-            <search>
-            lines
-            </search>
-            <weights>
-            0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLineAndTangentArcs(System.Double,System.Double)">
-            <summary>円弧、線分、円弧の接線チェーンでポリカーブを閉じる</summary>
-            <param name="radiusAtStart">ポリカーブの始点での円弧の半径</param>
-            <param name="radiusAtEnd">ポリカーブの終点での円弧の半径</param>
-            <returns/>
-            <search>
-            lines
-            </search>
-            <weights>
-            0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Offset(System.Double,System.Boolean)">
-            <summary>平面でポリカーブをオフセットします。</summary>
-            <param name="signedDistance">オフセットする量</param>
-            <param name="extendCircular">コーナーに丸みを付けるかどうかを切り替え</param>
-            <returns>オフセットされたポリカーブ</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.OffsetMany(System.Double,System.Boolean,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>平面の法線で定義された平面で、平面ポリカーブを指定された距離だけオフセットして、1 つまたは複数のポリカーブを作成します。既定では、入力引数「planeNormal」は曲線を含む平面の法線に設定されますが、元の曲線の法線に平行な明示的な法線となるため、オフセットの方向を簡単にコントロールできます。たとえば、同じ平面を共有している複数の曲線のオフセット方向を一致させる必要がある場合に「planeNormal」を使用すると、個々の曲線の法線を変更し、すべての曲線を強制的に同じ方向にオフセットできます。法線を反転すると、オフセットの方向が反転します。</summary>
-            <param name="signedDistance">正のオフセット距離は、ポリカーブの接線と平面の法線ベクトルの外積の方向に適用され、負のオフセット距離はその反対の方向に適用されます。</param>
-            <param name="extendCircular">オフセットされたコンポーネント曲線間にギャップがある場合は、ギャップを埋める処理の設定に応じて、円弧で埋めて滑らかなコーナーにする(true 値の場合)か、オフセットされた曲線を延長して埋める(false 値の場合)ことができます。</param>
-            <param name="planeNormal">曲線の平面法線。既定では入力された曲線の平面法線に設定されます</param>
-            <returns>1 つまたは複数のオフセットされたポリカーブ</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Fillet(System.Double,System.Boolean)">
-            <summary>平面ポリカーブのコーナーをフィレットします。</summary>
-            <param name="radius">フィレットの半径</param>
-            <param name="clockwise_corners">どのコーナーをフィレットするかを示します。true の場合は、2 番目のコンポーネントの始端の接線が 1 番目のコンポーネントの終端の接線から(曲線の法線を基準として)時計回りになっているコーナーがフィレットされます。false の場合は、反時計回りのコーナーがフィレットされます。</param>
-            <returns>フィレットされたポリカーブ</returns>
-            <search>
-            round,smooth,radius
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Heal(System.Double)">
-            <summary>重複しているセグメントの長さが trimLength 以下の場合に、自己交差していない新しいポリカーブを返すことで、自己交差しているポリカーブを修復します。</summary>
-            <param name="trimLength">trimLength が 0 より大きい場合、trimLength より長い終端セグメントはトリムされません。</param>
-            <returns>自己交差も重複もしていないポリカーブ</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ToString">
-            <summary>ポリゴンの文字列表現を取得します</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>点を接続してポリゴン カーブを作成します。</summary>
-            <param name="points"/>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.RegularPolygon(Autodesk.DesignScript.Geometry.Circle,System.Int32)">
-            <summary>円に内接するポリゴン カーブを作成します。</summary>
-            <param name="circle"/>
-            <param name="numberSides"/>
-            <returns/>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Polygon.Points">
-            <summary>セグメントのすべての開始点/終了点を返します。</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Polygon.PlaneDeviation">
-            <summary>ポリゴンの平均平面からの最大偏差を返します。</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.Corners">
-            <summary>ポリゴンのコーナーを返します</summary>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.Center">
-            <summary>ポリゴンのコーナーの平均点を返します。</summary>
-            <returns/>
-            <search>
-            centroid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.SelfIntersections">
-            <summary>ポリゴンの辺の間の自己交差を返します。</summary>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ContainmentTest(Autodesk.DesignScript.Geometry.Point)">
-            <summary>入力された点がポリゴン内に含まれているかどうかを返します。ポリゴンが平面でない場合、点は最適フィット平面に投影され、ポリゴンをこの最適フィット平面に投影することで含まれているかどうかが計算されます。ポリゴンが自己交差している場合は、失敗したというステータスを返します。</summary>
-            <param name="point"/>
-            <returns/>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ToString">
             <summary>ポリサーフェスの文字列表現を取得します</summary>
         </member>
@@ -2196,15 +1318,6 @@
             <returns/>
             <search>
             sweep,rail,guide,sweep1
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
-            <summary>レールに沿って曲線をスイープしてポリサーフェスを作成します。</summary>
-            <param name="rail">スイープの基準とする曲線</param>
-            <param name="profile">スイープ プロファイル</param>
-            <returns/>
-            <search>
-            sweep,rail,guide,sweep1,sweepprofile,profile
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.Surfaces">
@@ -2354,15 +1467,6 @@
             Brep,brep
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Solid.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},Autodesk.DesignScript.Geometry.Curve)">
-            <summary>曲線に補助的なガイドを付け、入力された断面の閉じた曲線間のロフトによってソリッドを作成します。ガイド曲線はすべての断面曲線と交差する必要があります。</summary>
-            <param name="crossSections"/>
-            <param name="guideCurve"/>
-            <returns/>
-            <search>
-            Brep,brep,guide,loft
-            </search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
             <summary>曲線に補助的なガイドを付け、入力された断面の閉じた曲線間のロフトによってソリッドを作成します。ガイド曲線はすべての断面曲線と交差する必要があります。</summary>
             <param name="crossSections"/>
@@ -2449,14 +1553,6 @@
             <returns/>
             <search>
             addition,merge,combine
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Solid.UnionAll(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Solid})">
-            <summary>ソリッドのリストとこのソリッドの和</summary>
-            <param name="solids"/>
-            <returns/>
-            <search>
-            addition,merge,combine,unionmany,union multi
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.Difference(Autodesk.DesignScript.Geometry.Solid)">
@@ -2552,341 +1648,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Sphere.Radius">
             <summary>球の半径を返します。</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToString">
-            <summary>サーフェスの文字列表現を取得します</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByUnion(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>サーフェスの集合を 1 つのサーフェスにまとめます。まとめた結果が非多様体または複数の面を持つ場合、この方法はポリサーフェスを返します。</summary>
-            <param name="surfaces">サーフェスの集合です。</param>
-            <returns>サーフェスの和</returns>
-            <search>
-            merge,join,boolean,addition
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>入力された断面曲線間をロフトしてサーフェスを作成します。</summary>
-            <param name="crossSections">ロフトで通過する曲線</param>
-            <returns>ロフトで作成したサーフェス</returns>
-            <search>
-            loft
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRuledLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Line})">
-            <summary>入力された断面線分間のロフトによりサーフェスを作成します。これにより、Surface.ByLoft よりも短時間で、若干粗い結果が生成されます。</summary>
-            <param name="crossSections"/>
-            <returns/>
-            <search>
-            ruledsurface,lines
-            </search>
-            <weights>
-            0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},Autodesk.DesignScript.Geometry.Curve)">
-            <summary>ガイド曲線(レール)を指定し、断面にサーフェスをロフトします。ガイド曲線は、断面のすべての曲線と交差する必要があります。</summary>
-            <param name="crossSections"/>
-            <param name="guideCurve"/>
-            <returns/>
-            <search>
-            loftbyrail
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>ガイド曲線(レール)を指定し、断面にサーフェスをロフトします。ガイド曲線は、断面のすべての曲線と交差する必要があります。</summary>
-            <param name="crossSections">ロフトで通過する曲線</param>
-            <param name="guideCurves">ロフトの通過をガイドする曲線</param>
-            <returns>ロフトで作成したサーフェス</returns>
-            <search>
-            loftbyrails,loft rails,guides
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
-            <summary>プロファイル曲線をパスに沿ってスイープすることにより、サーフェスを作成します。</summary>
-            <param name="profile">スイープする曲線</param>
-            <param name="path">スイープに使用するパス曲線</param>
-            <returns>パスに沿ってプロファイルをスイープして作成したサーフェス</returns>
-            <search>
-            sweep,rail,guide,sweep1
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
-            <summary>プロファイル曲線をパスに沿ってスイープすることにより、サーフェスを作成します。</summary>
-            <param name="profile">スイープする曲線</param>
-            <param name="path">スイープに使用するパス曲線</param>
-            <param name="cutEndOff">スイープの終点を切り取り、パスに対して垂直にします</param>
-            <returns>パスに沿ってプロファイルをスイープして作成したサーフェス</returns>
-            <search>
-            sweep,rail,guide,sweep1
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPerimeterPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>閉じた ポリゴン内の入力された点群をつなぐポリゴン サーフェスを作成します。</summary>
-            <param name="points">ペリメータ点群のリスト</param>
-            <returns>ペリメータ点群から作成したサーフェス</returns>
-            <search>
-            patch,surfacebypolygon
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep2Rails(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
-            <summary>2 つのレールをガイドとするパスに沿って、断面をスイープします</summary>
-            <param name="path">スイープの基準とする入力パス。</param>
-            <param name="guideRail">スイープの方向をガイドするレール。</param>
-            <param name="profile">パスに沿ってスイープするプロファイル曲線です。</param>
-            <returns>2 つのレールをスイープして作成したサーフェス</returns>
-            <search>
-            sweep2,guides
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double)">
-            <summary>基準点によって形成される軸の配列要素を中心に、プロファイル曲線を軸ベクトルの向きにスイープすることにより、サーフェスを作成します。開始角度 startAngle から開始し、スイープ角度 sweepAngle までスイープします。</summary>
-            <param name="profile">回転するプロファイル曲線</param>
-            <param name="axisOrigin">回転軸原点</param>
-            <param name="axisDirection">回転軸方向</param>
-            <param name="startAngle">開始角(度単位)</param>
-            <param name="sweepAngle">スイープ角度(度単位)</param>
-            <returns>プロファイルを回転して作成したサーフェス</returns>
-            <search>
-            lathe
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPatch(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>入力された曲線で設定される閉じた境界の内部を塗り潰してサーフェスを作成します。</summary>
-            <param name="closedCurve">サーフェス境界として使用する閉じた曲線</param>
-            <returns>パッチで作成したサーフェス</returns>
-            <search>
-            edgesrf,edgesurface,patch,fill
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.Area">
-            <summary>サーフェスの合計面積を返します。</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.Perimeter">
-            <summary>サーフェスのすべての境界エッジの合計長さを返します。</summary>
-            <search>
-            circumference
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.ClosedInU">
-            <summary>サーフェスが U 方向で閉じている場合は true を返し、閉じていない場合は false を返します。</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.ClosedInV">
-            <summary>サーフェスが V 方向で閉じている場合は true を返し、閉じていない場合は false を返します。</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.Closed">
-            <summary>サーフェスが U 方向または V 方向で閉じている場合は true を返し、どちらの方向でも閉じていない場合は false を返します。</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.SubtractFrom(Autodesk.DesignScript.Geometry.Solid)">
-            <summary>入力されたツールをこのサーフェスから減算します。</summary>
-            <param name="trimmingEntity"/>
-            <returns/>
-            <search>
-            difference,trim,removefrom,cut
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Difference(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>このサーフェスと、入力されたサーフェスの和のブール演算差です。ブール演算の結果が非多様体または複数の面を持つ場合、この方法はポリサーフェスを返します。</summary>
-            <param name="others">減算するもう一方のサーフェス</param>
-            <returns>ブール演算後のサーフェスまたはポリサーフェス</returns>
-            <search>
-            subtract,differencemany,diffall,diff multi
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.UVParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
-            <summary>入力された点における UV パラメータ ペアを返します。これはパラメータで点を反転したものです。</summary>
-            <param name="point"/>
-            <returns/>
-            <search>
-            evaluateatpoint,surfaceatpoint,uvatpoint,uvs
-            </search>
-            <weights>
-            0.5,0.5,0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve})">
-            <summary>サーフェスを、1 つまたは複数の閉じたポリカーブの集合でトリムします。その中の 1 つのループを入力サーフェスの境界ループにする必要があります。また、穴には 1 つまたは複数の内側のループを追加する必要があります。</summary>
-            <param name="loops"/>
-            <returns/>
-            <search>
-            trim multiple,removeloops,cutloops
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve},System.Double)">
-            <summary>1 つまたは複数の閉じたポリカーブの集合でサーフェスをトリムします。すべてのポリカーブは指定した許容値内でサーフェス上に存在する必要があります。入力されたサーフェスから 1 つまたは複数の穴をトリムする必要がある場合は、サーフェスの境界用に 1 つの外側のループを指定し、穴ごとに 1 つの内側のループを指定する必要があります。サーフェス境界と穴の間の領域をトリムする必要がある場合は、各穴のループのみを指定する必要があります。球面のサーフェスなど、外側のループがない周期的なサーフェスの場合は、ループの曲線の方向を反転することでトリムされる領域をコントロールできます。</summary>
-            <param name="loops">任意の順序で入力できる 1 つまたは複数の閉じたポリカーブ。これらのループが互いに交差しないようにする必要があります。</param>
-            <param name="tolerance">曲線の終端が一致するかどうか、および曲線とサーフェスが一致するかどうかを判断する際に使用する許容値。入力されたポリカーブの作成に使用された許容値よりも小さい許容値を入力することはできません。既定値の 0.0 では、入力されたポリカーブの作成に使用された最大許容値が使用されます。</param>
-            <returns>閉じたループでトリムされたサーフェス。</returns>
-            <search>
-            trim multiple,removeloops,cutloops
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.NormalAtPoint(Autodesk.DesignScript.Geometry.Point)">
-            <summary>サーフェス上の入力された点でサーフェスの法線を返します。</summary>
-            <param name="point">サーフェス法線を評価する点</param>
-            <returns>点の法線</returns>
-            <search>
-            perpendicular
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface">
-            <summary>サーフェスの Nurbs 表現を取得します。特定の状況では、このメソッドは近似のサーフェスを取得します。</summary>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface(System.Boolean)">
-            <summary>サーフェスの Nurbs 表現を取得します。特定の状況では、このメソッドは近似のサーフェスを取得します。</summary>
-            <param name="limitSurface">変換前にサーフェスを元のパラメータ範囲に戻すかどうかを決定します。たとえば Trim を使用すると、サーフェスのパラメータ範囲が制限されます。</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ApproximateWithTolerance(System.Double)">
-            <summary>指定した許容値内でサーフェスの Nurbs 表現を取得します。特定の状況では、このメソッドは近似のサーフェスを取得します。</summary>
-            <param name="tolerance">指定公差</param>
-            <returns>サーフェスの NURBS サーフェス表示</returns>
-            <search>
-            tonurbs
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double)">
-            <summary>サーフェスに厚みを持たせてソリッドを作成します。サーフェスを法線の方向に両側に押し出します。</summary>
-            <param name="thickness">厚み付け量</param>
-            <returns>ソリッドとして厚みを付けたサーフェス</returns>
-            <search>
-            offset,tosolid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double,System.Boolean)">
-            <summary>サーフェスに厚みを持たせてソリッドを作成します。サーフェスを法線の方向に押し出します。both_sides パラメータが true の場合は、サーフェスの厚さが両側に設定されます。</summary>
-            <param name="thickness">厚み付け量</param>
-            <param name="both_sides">True の場合は両側に、False の場合は片側に厚み付けします</param>
-            <returns>ソリッドとして厚みを付けたサーフェス</returns>
-            <search>
-            offset,bothsides,tosolid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Offset(System.Double)">
-            <summary>サーフェスの法線の方向に指定された距離だけサーフェスをオフセットします。</summary>
-            <param name="distance">オフセットする量</param>
-            <returns>オフセットしたサーフェス</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.CurvatureAtParameter(System.Double,System.Double)">
-            <summary>返される座標系では、uDir、vDir、法線を表すのに xAxis、yAxis、zAxis を使用します。xAxis、yAxis の長さが曲率を表します。</summary>
-            <param name="u">パラメータの U コンポーネント</param>
-            <param name="v">パラメータの V コンポーネント</param>
-            <returns>サーフェス上の UV 位置の法線、U 方向、V 方向に基づく座標系</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.CoordinateSystemAtParameter(System.Double,System.Double)">
-            <summary>主曲率の方向で位置合わせされた座標系を返します。</summary>
-            <param name="u">パラメータの U コンポーネント</param>
-            <param name="v">パラメータの V コンポーネント</param>
-            <returns>主曲率方向に位置合わせした座標系</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.TangentAtUParameter(System.Double,System.Double)">
-            <summary>指定された U および V パラメータの U 接線ベクトルを返します。</summary>
-            <param name="u">パラメータの U コンポーネント</param>
-            <param name="v">パラメータの V コンポーネント</param>
-            <returns>U 接線ベクトル</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.TangentAtVParameter(System.Double,System.Double)">
-            <summary>指定した U および V パラメータの V 接線 Vector を返します。</summary>
-            <param name="u">パラメータの U コンポーネント</param>
-            <param name="v">パラメータの V コンポーネント</param>
-            <returns>V 接線ベクトル</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.NormalAtParameter(System.Double,System.Double)">
-            <summary>指定した U および V パラメータの法線 Vector を返します。</summary>
-            <param name="u">パラメータの U コンポーネント</param>
-            <param name="v">パラメータの V コンポーネント</param>
-            <returns>パラメータの法線</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.DerivativesAtParameter(System.Double,System.Double)">
-            <summary>入力 U 座標と入力 V 座標の導関数を返します。</summary>
-            <param name="u">パラメータの U コンポーネント</param>
-            <param name="v">パラメータの V コンポーネント</param>
-            <returns>サーフェスの U および V の導関数</returns>
-            <search>
-            tangent,normal
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.GaussianCurvatureAtParameter(System.Double,System.Double)">
-            <summary>U および V パラメータでのガウス曲率を返します。</summary>
-            <param name="u"/>
-            <param name="v"/>
-            <returns/>
-            <search>
-            developable
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.PrincipalCurvaturesAtParameter(System.Double,System.Double)">
-            <summary>U および V パラメータでの主曲率を返します。</summary>
-            <param name="u"/>
-            <param name="v"/>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.PrincipalDirectionsAtParameter(System.Double,System.Double)">
-            <summary>U と V パラメータでの主方向ベクトルを返します。</summary>
-            <param name="u">パラメータの U コンポーネント</param>
-            <param name="v">パラメータの V コンポーネント</param>
-            <returns>U および V 接線ベクトル</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.PointAtParameter(System.Double,System.Double)">
-            <summary>指定した U パラメータと V パラメータで点を返します。</summary>
-            <param name="u"/>
-            <param name="v"/>
-            <returns/>
-            <search>
-            surfacepoint
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.PerimeterCurves">
-            <summary>サーフェスのすべての境界曲線を返します。</summary>
-            <returns/>
-            <search>
-            edges
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.GetIsoline(System.Int32,System.Double)">
-            <summary>指定したサーフェスにパラメータ線分の曲線を作成します。サーフェスに U および V パラメータ線分を表す曲線を作成します。パラメータ線分は U または V パラメータが増加する方向に向き、U または V パラメータと逆の割合で増加していきます。作成される曲線は、サーフェスのパラメータ設定に一致し、その範囲はサーフェス パラメータの範囲に限定されます。返される曲線のタイプはサーフェスのタイプによって異なります。</summary>
-            <param name="isoDirection">direction == 0 の場合は U パラメータ線分が作成され、direction == 1 の場合は V パラメータ線分が作成されます。</param>
-            <param name="parameter"/>
-            <returns/>
-            <search>
-            lines
-            </search>
-            <weights>
-            0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.FlipNormalDirection">
-            <summary>法線を反転させた新しいサーフェスを返します。このサーフェスは変更されません。</summary>
-            <returns>サーフェス。入力サーフェスと同じですが、法線が反転されます</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Join(Autodesk.DesignScript.Geometry.Surface)">
-            <summary>このサーフェスと入力されたサーフェスを組み合わせてポリサーフェスを作成します</summary>
-            <param name="otherSurface"/>
-            <returns/>
-            <search>
-            topolysurface
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>このサーフェスと入力されたサーフェスをポリサーフェスに組み合わせます</summary>
-            <param name="otherSurfaces"/>
-            <returns/>
-            <search>
-            join multiple,joinmany,joinall,topolysurface
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>入力されたジオメトリを、入力されたベクトルの方向で、このサーフェス上に投影します。!!現在この投影方法では、点または曲線のみがサポートされています!!</summary>
-            <param name="geometryToProject"/>
-            <param name="projectionDirection"/>
-            <returns/>
-            <search>
-            projecttosurface,projectonto
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Repair">
-            <summary>サーフェスの修復を試みます。</summary>
-            <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Topology.ToString">
             <summary>トポロジの文字列表現を取得します</summary>
@@ -3534,20 +2295,6 @@
             <param name="inSmoothMode">ボックスの表示スタイルかスムーズな表示スタイルで T スプライン サーフェスを表示</param>
             <search>tspline,line,build</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Double,System.Collections.Generic.IEnumerable{System.Int32},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Boolean)">
-            <summary>曲線または直線のネットワークを使用して T スプライン パイプ サーフェスを作成します。
-            曲線の各交差部は滑らかに接合されます。
-            1 本の曲線について 1 つの値またはリストを受け取るパラーメータもあれば、2 つの値を受け取るパラメータもあります。</summary>
-            <param name="curves">パイプの作成に使用する曲線のリスト</param>
-            <param name="defaultRadius">作成されるパイプの既定の半径</param>
-            <param name="snappingTolerance">曲線の交差部を検出するための許容値</param>
-            <param name="segmentsCount">各パイプのセグメントの数。1 つの値か、曲線数の 2 倍の長さのリストを指定することができます。</param>
-            <param name="endRotations">各パイプの端部の回転角度。1 つの値か、曲線数の 2 倍の長さのリストを指定することができます。</param>
-            <param name="endRadii">各パイプの端部の半径。1 つの値か、曲線数の 2 倍の長さのリストを指定することができます。</param>
-            <param name="endPercentage">各入力曲線の終点からパイプ メッシュの始点までの値(0 から 1 の範囲)。1 つの値か、曲線数の 2 倍の長さのリストを指定することができます。</param>
-            <param name="inSmoothMode">ボックスの表示スタイルかスムーズな表示スタイルで T スプライン サーフェスを表示</param>
-            <search>tspline,create,pipe,curve</search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Double,System.Collections.Generic.IEnumerable{System.Int32},System.Boolean,System.Boolean,System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Boolean)">
             <summary>曲線または直線のネットワークを使用して T スプライン パイプ サーフェスを作成します。
             曲線の各交差部は滑らかに接合されます。
@@ -3688,23 +2435,6 @@
             <returns>連結が解除された頂点を持つ T スプライン サーフェス</returns>
             <search>tspline,unweld,vertex</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Double,System.Boolean)">
-            <summary>T スプラインと、閉じた曲線ループとの一致を作成します</summary>
-            <param name="tsEdges">一致を作成する閉じた T スプライン エッジ ループ</param>
-            <param name="curves">一致を作成する閉じた曲線ループ</param>
-            <param name="continuity">一致させるためのジオメトリの連続性: G0、G1、G2</param>
-            <param name="useArclength">一致を作成する際に arcLength 位置合わせを使用するかどうか</param>
-            <param name="useRefinement">true を指定すると、追加の制御点が T スプラインに付加され、入力された許容値の範囲内でサーフェスが一致します。</param>
-            <param name="numRefinementSteps">微調整の最大ステップ数。useRefinement に false を指定すると、この値は無視されます。</param>
-            <param name="refinementTolerance">最大の許容値。useRefinement に false を指定すると、この値は無視されます。</param>
-            <param name="usePropagation">一致を作成する際に伝播を使用するかどうか</param>
-            <param name="widthOfPropagation">一致によって影響を受けるサーフェスの範囲を指定します。usePropagation に false を指定すると、この値は無視されます。</param>
-            <param name="tangentScale">接線のスケール。連続性が G1 に設定されていない場合、この値は無視されます。</param>
-            <param name="curvParamWeight">曲率パラメータのウェイト。連続性が G2 に設定されていない場合、この値は無視されます。</param>
-            <param name="flipSourceTargetAlignment">位置合わせの方向を反転させるかどうか</param>
-            <returns>指定された T スプライン境界のエッジと曲線ループとの間に位置する T スプライン サーフェス</returns>
-            <search>tspline,match,curve</search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Boolean)">
             <summary>T スプラインと、閉じた曲線ループとの一致を作成します</summary>
             <param name="tsEdges">一致を作成する閉じた T スプライン エッジ ループ</param>
@@ -3720,24 +2450,6 @@
             <param name="flipSourceTargetAlignment">位置合わせの方向を反転させるかどうか</param>
             <returns>指定された T スプライン境界のエッジと曲線ループとの間に位置する T スプライン サーフェス</returns>
             <search>tspline,match,curve</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Double,System.Boolean)">
-            <summary>T スプラインと、閉じた BRep エッジ ループとの一致を作成します。最初に
-            エッジ ループが曲線ループに変換され、次に一致の作成処理が実行されます。</summary>
-            <param name="tsEdges">一致を作成する閉じた T スプライン エッジ ループ</param>
-            <param name="brepEdges">一致を作成する閉じた BRep エッジ ループ</param>
-            <param name="continuity">一致させるためのジオメトリの連続性: G0、G1、G2</param>
-            <param name="useArclength">一致を作成する際に arcLength 位置合わせを使用するかどうか</param>
-            <param name="useRefinement">true を指定すると、追加の制御点が T スプラインに付加され、入力された許容値の範囲内でサーフェスが一致します。</param>
-            <param name="numRefinementSteps">微調整の最大ステップ数。useRefinement に false を指定すると、この値は無視されます。</param>
-            <param name="refinementTolerance">最大の許容値。useRefinement に false を指定すると、この値は無視されます。</param>
-            <param name="usePropagation">一致を作成する際に伝播を使用するかどうか</param>
-            <param name="widthOfPropagation">一致によって影響を受けるサーフェスの範囲を指定します。usePropagation に false を指定すると、この値は無視されます。</param>
-            <param name="tangentScale">接線のスケール。連続性が G1 に設定されていない場合、この値は無視されます。</param>
-            <param name="curvParamWeight">曲率パラメータのウェイト。連続性が G2 に設定されていない場合、この値は無視されます。</param>
-            <param name="flipSourceTargetAlignment">位置合わせの方向を反転させるかどうか</param>
-            <returns>指定された T スプライン境界のエッジと BRep エッジ ループとの間に位置する T スプライン サーフェス</returns>
-            <search>tspline,match,brep</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Boolean)">
             <summary>T スプラインと、閉じた BRep エッジ ループとの一致を作成します。最初に
@@ -4192,14 +2904,6 @@
             <summary>このタイプのハッシュ値を取得します</summary>
             <returns>このオブジェクトのユニークなハッシュ値</returns>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry(Autodesk.DesignScript.Geometry.Geometry)">
-            <summary>入力されたジオメトリの周囲に、軸に位置合わせされ境界ボックスを作成します。</summary>
-            <param name="geom"/>
-            <returns/>
-            <search>
-            bounding,bound
-            </search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
             <summary>入力されたジオメトリの周囲に、軸に位置合わせされた BoundingBox を作成します。</summary>
             <param name="geom">境界ボックスを決定するジオメトリ</param>
@@ -4531,6 +3235,512 @@
             <summary>CoordinateSystem を autodesk.math:matrix44d-1.0.0 スキーマでフォーマットされた JSON オブジェクトに変換します。</summary>
             <returns>結果として得られる JSON 文字列</returns>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ToString">
+            <summary>曲線の文字列表現を取得します</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByParameterLineOnSurface(Autodesk.DesignScript.Geometry.Surface,Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
+            <summary>UV 空間内のサーフェスの線分によって曲線を作成</summary>
+            <param name="baseSurface">使用するサーフェス</param>
+            <param name="startParams">曲線を開始する UV 開始点</param>
+            <param name="endParams">曲線を終了する UV 終了点</param>
+            <returns>サーフェスの始点および終点パラメータでの曲線</returns>
+            <search>
+            isocurve,curvebyuv,lines,uvs
+            </search>
+            <weights>
+            0.5,0.5,0.4,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByBlendBetweenCurves(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>2 本の曲線の間でブレンドする曲線を作成します。</summary>
+            <param name="curve1">ブレンドする 1 番目の曲線</param>
+            <param name="curve2">ブレンドする 2 番目の曲線</param>
+            <param name="endOrStart1">ブレンドする曲線 1 の端点を示すフラグ</param>
+            <param name="endOrStart2">ブレンドする曲線 2 の端点を示すフラグ</param>
+            <param name="isG2Continuous">出力される曲線が G1 (接線連続) と G2 (曲率連続)のいずれであるかを示すフラグ</param>
+            <returns>2 本の曲線をブレンドして作成された曲線</returns>
+            <search>
+            blend,make continuous,connect
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByIsoCurveOnSurface(Autodesk.DesignScript.Geometry.Surface,System.Int32,System.Double)">
+            <summary>サーフェスの面分割線によって曲線を作成</summary>
+            <param name="baseSurface">基準面</param>
+            <param name="direction">面分割線が 0 本の場合は U 方向に、1 本の場合は V 方向に</param>
+            <param name="parameter">他のサーフェス パラメータの曲線の値で決定</param>
+            <returns>サーフェス上のアイソカーブ</returns>
+            <search>
+            isocurve,curvebydir,lines
+            </search>
+            <weights>
+            0.5,0.5,0.4
+            </weights>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.Length">
+            <summary>曲線の円弧全体の長さを返します</summary>
+            <search>
+            distance
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.IsPlanar">
+            <summary>曲線が平面曲線の場合は True を返し、それ以外の場合は False を返します。</summary>
+            <search>
+            flat,liesinplane
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.IsClosed">
+            <summary>曲線が閉じている場合は True を返し、それ以外の場合は False を返します。</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.StartPoint">
+            <summary>曲線上の始点を取得します</summary>
+            <search>
+            begin,curvestart,startpt
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.EndPoint">
+            <summary>曲線上の終点を取得します</summary>
+            <search>
+            end,curveend,endpt
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.Normal">
+            <summary>曲線が含まれている面に対する法線。平面曲線でのみ有効です。</summary>
+            <search>
+            perpendicular
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtParameter(System.Double)">
+            <summary>StartParameter() から EndParameter() までの範囲内の指定されたパラメータで曲線上の点を取得します。</summary>
+            <param name="param">評価するパラメータ</param>
+            <returns>点</returns>
+            <search>
+            pointoncurve,curvepoint
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TangentAtParameter(System.Double)">
+            <summary>StartParameter() から EndParameter() までの範囲内の指定されたパラメータで曲線に接するベクトルを取得します。</summary>
+            <param name="param">評価するパラメータ</param>
+            <returns>パラメータ上で曲線に平行するベクトル</returns>
+            <search>
+            tangentoncurve,curvetan
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double)">
+            <summary>StartParameter() から EndParameter() までの範囲内の指定されたパラメータで曲線に直交するベクトルを取得します。</summary>
+            <param name="param">評価するパラメータ</param>
+            <returns>パラメータ上で曲線に直交するベクトル</returns>
+            <search>
+            normaloncurve,curvenorm
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double,System.Boolean)">
+            <summary>StartParameter()から EndParameter()までの範囲内の指定されたパラメータで曲線に直交するベクトルを取得します。曲線が平面状になっている必要があります。曲線の曲率全体で一貫性のある法線が作成されます。</summary>
+            <param name="param">評価するパラメータ</param>
+            <param name="side">'side' が false に設定されている場合、法線は曲線の右側を向きます(曲線の始点から終点まで)。'side' が true の場合、法線は曲線の左側を向きます。</param>
+            <returns>パラメータ上で曲線に直交するベクトル</returns>
+            <search>
+            normaloncurve,curvenorm
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtParameter(System.Double)">
+            <summary>指定されたパラメータの位置に基準点を持つ座標系を取得します。 X 軸は曲線の法線に、Y 軸はこの点における曲線の接線に、Z 軸はこの点におけるアップ ベクトルまたは従法線に、それぞれ位置合わせされます。</summary>
+            <param name="param">評価するパラメータ</param>
+            <returns>曲線のパラメータを基準とする座標系</returns>
+            <search>
+            coordoncurve,curvecoord,derivatives
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.HorizontalFrameAtParameter(System.Double)">
+            <summary>指定したパラメータの点に基準点を持つ座標系を取得します。</summary>
+            <param name="param">評価するパラメータ</param>
+            <returns>点で軸を位置合わせされた座標系</returns>
+            <search>
+            frame,axisaligned,aa,coordcurve,framecurve,curveframe,coordoncurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtParameter(System.Double)">
+            <summary>曲線の接点で法線を位置合わせした平面を返します。開始点は常に 0 になり、また終了点は常に 1 になるように、パラメータが調整されます。</summary>
+            <param name="param"/>
+            <returns/>
+            <search>
+            planeoncurve,planecurve,tangentplane
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtSegmentLength(System.Double)">
+            <summary>曲線上で指定された弧長の端点を取得します。</summary>
+            <param name="segmentLength">評価する曲線上の距離</param>
+            <returns>指定された弧長の端点</returns>
+            <search>
+            pointoncurve,curvepoint,pointalongcurve,distanceoncurve,distancepoint,distpoint,arclength
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualSegmentLength(System.Int32)">
+            <summary>分割の入力数値に基づいて曲線の長さに沿って等間隔に配置された点を返します</summary>
+            <param name="divisions">分割数</param>
+            <returns>曲線の長さに沿って等間隔に配置された点</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualChordLength(System.Int32)">
+            <summary>入力された分割数に基づいて、曲線上に等しい弦長で配置された点を返します</summary>
+            <param name="divisions">分割数</param>
+            <returns>曲線上の点のリスト</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtChordLength(System.Double,System.Double,System.Boolean)">
+            <summary>指定されたパラメータ位置を基準として、指定された曲線の弦長にある点を取得します。</summary>
+            <param name="chordLength">評価する弦長</param>
+            <param name="parameterLocation">計測する曲線上のパラメータ</param>
+            <param name="forward">曲線に沿って進む場合は true</param>
+            <returns>曲線上の点</returns>
+            <search>
+            measure from,measure to,parameteratdist
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtSegmentLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
+            <summary>指定された点を基準として、指定されたセグメントの長さまで、曲線上に等間隔に配置された点群を返します</summary>
+            <param name="point">計測元となる参照点</param>
+            <param name="segmentLength">評価する曲線上の距離</param>
+            <returns>曲線の方向に沿った、指定された点を含む曲線上の点のリスト。</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtChordLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
+            <summary>指定された点を基準として、指定された弦長まで、曲線上に等間隔に配置された点群を返します</summary>
+            <param name="point">計測元となる参照点</param>
+            <param name="chordLength">弦長</param>
+            <returns>曲線の方向に沿った、指定された点を含む曲線上の点のリスト。</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtSegmentLength(System.Double)">
+            <summary>曲線の開始点から指定された距離にある座標系を返します。Y 軸は曲線の接線、X 軸は曲率になります。</summary>
+            <param name="segmentLength">評価する曲線上の距離</param>
+            <returns>曲線上の座標系</returns>
+            <search>
+            coordoncurve,curvecoord,derivatives
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtSegmentLength(System.Double)">
+            <summary>開始点から曲線に沿って指定された距離にある平面を返します。平面の法線は曲線の接線に位置合わせされます。</summary>
+            <param name="segmentLength">評価する曲線上の距離</param>
+            <returns>曲線に基づく平面</returns>
+            <search>
+            planeoncurve,planecurve,tangentplane
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SegmentLengthAtParameter(System.Double)">
+            <summary>曲線の開始点から指定されたパラメータまで計測したセグメントの長さを取得します。</summary>
+            <param name="parameter">0 と 1 の間の値</param>
+            <returns>セグメントの長さ</returns>
+            <search>
+            lengthatparameter,dist along,lengthatpoint,arclength
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtSegmentLength(System.Double)">
+            <summary>曲線上の指定された弧長でパラメータを取得します。</summary>
+            <param name="segmentLength">評価する曲線上の距離</param>
+            <returns>パラメータ</returns>
+            <search>
+            parameteratlen,param along,paramatlen,arclength
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtChordLength(System.Double,System.Double,System.Boolean)">
+            <summary>曲線上の指定された位置から指定された弦長でパラメータを取得します。</summary>
+            <param name="chordLength">評価する弦長</param>
+            <param name="parameter">計測する曲線上のパラメータ</param>
+            <param name="forward">曲線に沿って進む場合は true</param>
+            <returns>パラメータ</returns>
+            <search>
+            measure from,measure to,parameteratdist
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.StartParameter">
+            <summary>曲線の開始点の位置でパラメータを取得します</summary>
+            <returns>パラメータ値</returns>
+            <search>
+            start domain,curvestart
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.EndParameter">
+            <summary>曲線の終了点の位置でパラメータを取得します</summary>
+            <returns>パラメータ値</returns>
+            <search>
+            end domain,curveend
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SegmentLengthBetweenParameters(System.Double,System.Double)">
+            <summary>曲線上の 2 つのパラメータ間のセグメントの長さを取得します</summary>
+            <param name="startParam">0 と 1 の間の値</param>
+            <param name="endParam">0 と 1 の間の値</param>
+            <returns>セグメントの長さ</returns>
+            <search>
+            measure,distance,arclength
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
+            <summary>曲線に沿った指定された点でパラメータを取得します。点が曲線上にない場合でも、ParameterAtPoint は曲線上の近い点に対応する値を返しますが、通常この点は最も近い点ではありません。</summary>
+            <param name="point">曲線に沿っているか近くにある点</param>
+            <returns>曲線上の指定された点のパラメータ。</returns>
+            <search>
+            projectpoint,closestparam,curveparam
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Reverse">
+            <summary>曲線の方向を反転します</summary>
+            <returns>方向反転後の新しい曲線</returns>
+            <search>
+            flip
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Offset(System.Double)">
+            <summary>指定した量で曲線をオフセットします。曲線は平面状になっている必要があります。</summary>
+            <param name="distance">オフセットする正または負の距離</param>
+            <returns>オフセットした新しい曲線</returns>
+            <search>
+            thicken,lines
+            </search>
+            <weights>
+            0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.OffsetMany(System.Double,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>平面の法線で定義された平面で、平面曲線を指定された距離だけオフセットして、1 つまたは複数の曲線を作成します。オフセットされたコンポーネント曲線間にギャップがある場合は、オフセットされた曲線を延長してそのギャップを埋めます。既定では、入力引数「planeNormal」は曲線を含む平面の法線に設定されますが、元の曲線の法線に平行な明示的な法線となるため、オフセットの方向を簡単にコントロールできます。たとえば、同じ平面を共有している複数の曲線のオフセット方向を一致させる必要がある場合に「planeNormal」を使用すると、個々の曲線の法線を変更し、すべての曲線を強制的に同じ方向にオフセットできます。法線を反転すると、オフセットの方向が反転します。</summary>
+            <param name="signedDistance">正のオフセット距離は、曲線の接線と平面の法線ベクトルの外積の方向に適用され、負のオフセット距離はその反対の方向に適用されます。</param>
+            <param name="planeNormal">曲線の平面法線。既定では入力された曲線の平面法線に設定されます</param>
+            <returns>1 つまたは複数のオフセットされた曲線</returns>
+            <search>
+            thicken,lines
+            </search>
+            <weights>
+            0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoPlane(Autodesk.DesignScript.Geometry.Plane)">
+            <summary>平面に引き寄せることで曲線を作成します</summary>
+            <param name="plane">曲線を引き寄せる平面</param>
+            <returns>平面に基づく曲線</returns>
+            <search>
+            projectcurve,toplane
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoSurface(Autodesk.DesignScript.Geometry.Surface)">
+            <summary>入力 Surface で Surface 法線の方向に、この Curve を引きます。</summary>
+            <param name="surface"/>
+            <returns/>
+            <search>
+            projectcurve,tosurf
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByStartParameter(System.Double)">
+            <summary>入力されたパラメータで、曲線の先頭を削除します</summary>
+            <param name="startParameter">トリムを開始するパラメータ</param>
+            <returns>先頭を削除した後に残る新しい曲線</returns>
+            <search>
+            rem,remstart,removestart,trimcurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByEndParameter(System.Double)">
+            <summary>入力されたパラメータで、曲線の末尾を削除します</summary>
+            <param name="endParameter">トリムを開始するパラメータ</param>
+            <returns>末尾を削除した後に残る新しい曲線</returns>
+            <search>
+            rem,remend,removeend,trimcurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByParameter(System.Double,System.Double)">
+            <summary>入力されたパラメータで曲線の先頭と末尾を削除します。</summary>
+            <param name="startParameter">トリムを開始するパラメータ</param>
+            <param name="endParameter">トリムを開始するパラメータ</param>
+            <returns>外側部分を削除した後に残る新しい曲線</returns>
+            <search>
+            rem,remend,remstart,remove,trimcurve,removeends
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimInteriorByParameter(System.Double,System.Double)">
+            <summary>入力されたパラメータで、曲線の内側部分を削除します。</summary>
+            <param name="startParameter">トリムを開始するパラメータ</param>
+            <param name="endParameter">トリムを開始するパラメータ</param>
+            <returns>内側部分を削除した後に残る新しい曲線</returns>
+            <search>
+            rem,removemiddle,middle,remmiddle,cutout,trimcurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(System.Double[])">
+            <summary>曲線のいくつかのセグメントを削除し、1 番目、3 番目、5 番目... のセグメントを破棄します。</summary>
+            <param name="parameters">曲線を分割するパラメータのリスト</param>
+            <returns>1 番目、3 番目、5 番目... のセグメントを破棄する曲線の配列</returns>
+            <search>
+            rem,removeparts,remparts,cutout,trimcurv,interior,odd
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(System.Double[],System.Boolean)">
+            <summary>指定されたパラメータで分割された曲線に対して、フラグ 'discardEvenSegments' が true の場合は偶数番のセグメント、false の場合は奇数番のセグメントを削除します。</summary>
+            <param name="parameters">曲線を分割するパラメータのリスト</param>
+            <param name="discardEvenSegments">偶数番のセグメントを破棄するかどうかを切り替え</param>
+            <returns>曲線の偶数番または奇数番のセグメントを破棄した後に残った曲線のリスト。</returns>
+            <search>
+            rem,removeparts,remparts,cutout,trimcurv,interior,even
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByParameter(System.Double[])">
+            <summary>入力されたパラメータで、曲線を複数の部分に分割します。</summary>
+            <param name="parameters">曲線を分割するパラメータのリスト</param>
+            <returns>分割によって作成される曲線</returns>
+            <search>
+            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>点を指定して複数のピースに曲線を分割</summary>
+            <param name="points">曲線を分割する位置にある曲線上の点</param>
+            <returns>分割によって作成される曲線</returns>
+            <search>
+            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
+            <summary>ポリカーブの終点に一連の曲線を結合します。接続性を保証するために曲線を反転します。</summary>
+            <param name="curves">ポリカーブに結合するその他の曲線</param>
+            <returns>曲線から作成したポリカーブ</returns>
+            <search>
+            convertcurves,curves2polycurve,joincurves,concat,joinall,joinmany
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(System.Double)">
+            <summary>法線ベクトルの方向に曲線を押し出します。</summary>
+            <param name="distance">曲線を押し出す距離</param>
+            <returns>押し出されるサーフェス</returns>
+            <search>
+            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(Autodesk.DesignScript.Geometry.Vector)">
+            <summary>指定した方向に、入力されたベクトルの長さだけ曲線を押し出します。</summary>
+            <param name="direction">押し出しの基準とするベクトル</param>
+            <returns>押し出されるサーフェス</returns>
+            <search>
+            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(Autodesk.DesignScript.Geometry.Vector,System.Double)">
+            <summary>指定した方向に、指定した距離だけ曲線を押し出します。</summary>
+            <param name="direction">押し出しの基準とするベクトル</param>
+            <param name="distance">押し出す距離</param>
+            <returns>押し出されるサーフェス</returns>
+            <search>
+            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(System.Double)">
+            <summary>距離を指定して法線方向に曲線を押し出します。曲線は閉じられている必要があります。</summary>
+            <param name="distance">押し出す距離</param>
+            <returns>押し出されるソリッド</returns>
+            <search>
+            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(Autodesk.DesignScript.Geometry.Vector)">
+            <summary>指定した方向に、入力された法線の長さだけ曲線を押し出します。曲線は閉じられている必要があります。</summary>
+            <param name="direction">押し出しの基準とするベクトル</param>
+            <returns>押し出されるソリッド</returns>
+            <search>
+            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(Autodesk.DesignScript.Geometry.Vector,System.Double)">
+            <summary>指定した方向に、指定した距離だけ曲線を押し出します。曲線は閉じられている必要があります。</summary>
+            <param name="direction">押し出しの基準とするベクトル</param>
+            <param name="distance">押し出す距離</param>
+            <returns>押し出されるソリッド</returns>
+            <search>
+            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extend(System.Double,Autodesk.DesignScript.Geometry.Point)">
+            <summary>選択点によって決まる特定の終端で距離を指定して曲線を延長します。選択した側が延長されます。円や楕円などの閉じた曲線は延長されません。延長される曲線が直線状の場合は、延長も直線状になります。</summary>
+            <param name="distance">延長する距離</param>
+            <param name="pickSide">延長する終端の点</param>
+            <returns>延長された曲線</returns>
+            <search>
+            makelonger,stretch,extendside
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtendStart(System.Double)">
+            <summary>曲線の始端から、距離を指定して曲線を延長します。円や楕円などの閉じた曲線は延長されません。延長される曲線が直線状の場合は、延長も直線状になります。</summary>
+            <param name="distance">延長する距離</param>
+            <returns>延長された曲線</returns>
+            <search>
+            makelonger,stretch
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtendEnd(System.Double)">
+            <summary>曲線の終端から、距離を指定して曲線を延長します。円や楕円などの閉じた曲線は延長されません。延長される曲線が直線状の場合は、延長も直線状になります。</summary>
+            <param name="distance">延長する距離</param>
+            <returns>延長された曲線</returns>
+            <search>
+            makelonger,stretch
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ApproximateWithArcAndLineSegments">
+            <summary>円弧と線分の集合から、近似的な曲線を求めます</summary>
+            <returns>近似的な曲線を求める基準とする円弧と線分の配列</returns>
+            <search>
+            rationalizecurve,fitarcs,fitlines,arcs,lines
+            </search>
+            <weights>
+            0.5,0.5,0.5,0.4,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ToNurbsCurve">
+            <summary>曲線を近似の NURBS 曲線に変換します</summary>
+            <returns>近似的曲線を求める基準とする NURBS 曲線</returns>
+            <search>
+            curve2spline,convertcurve,tospline,lines
+            </search>
+            <weights>
+            0.5,0.5,0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Patch">
+            <summary>閉じた曲線をパッチします</summary>
+            <returns>曲線の内部にあるサーフェス</returns>
+            <search>
+            fill,profiletosurf,loop,loop2surf,edgesurf
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Project(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>指定された下部ジオメトリに、指定された投影方向に沿って入力曲線を投影します。</summary>
+            <param name="baseGeometry">投影先のジオメトリ</param>
+            <param name="projectionDirection">ベクトル</param>
+            <returns>下部ジオメトリに投影されたジオメトリのリスト</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSurface(Autodesk.DesignScript.Geometry.Curve)">
+            <summary>パス曲線に沿って、閉じた曲線をスイープし、サーフェスを作成します</summary>
+            <param name="path"/>
+            <returns/>
+            <search>
+            sweep1,curve2surf
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve)">
+            <summary>パス曲線に沿って、閉じた曲線をスイープし、ソリッドを作成します</summary>
+            <param name="path"/>
+            <returns/>
+            <search>
+            sweep1,curve2solid,loop2solid,profile2solid,curvetosolid,looptosolid,profiletosolid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
+            <summary>パス曲線に沿って、閉じた曲線をスイープし、ソリッドを作成します</summary>
+            <param name="path">スイープ パスを表すパス</param>
+            <param name="cutEndOff">スイープの終点を切り取り、パスに対して垂直にします</param>
+            <returns>閉じた曲線をパス曲線に沿ってスイープするソリッド</returns>
+            <search>
+            sweep1,curve2solid,loop2solid,profile2solid,curvetosolid,looptosolid,profiletosolid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Simplify(System.Double)">
+            <summary>指定された曲線に指定された許容差で近似している新しい曲線を返します。</summary>
+            <param name="tolerance"/>
+            <returns/>
+            <search>
+            fitcurve,reducecurve,simplecurve,approximate
+            </search>
+        </member>
         <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.constructorThreadId">
             <summary>このコンストラクタを呼び出したスレッドの管理されたスレッド ID を格納します。
            マルチスレッド化に関する潜在的な問題をユーザに警告するために使用されます。</summary>
@@ -4544,9 +3754,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.Dispose">
             <notranslation>true</notranslation>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.DisposeDisplayable">
-            <summary>表示可能な項目が必要なくなると、このメソッドが呼び出されます。</summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.GetHashCode">
             <notranslation>true</notranslation>
         </member>
@@ -4559,7 +3766,7 @@
         <member name="F:Autodesk.DesignScript.Geometry.Geometry.mGeometryContructors">
             <summary>ホストを使用した IGeometryEntity タイプと Geometry コンストラクタの間のマップ。</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.RegisterHostType(System.Type,System.Func{Autodesk.DesignScript.Interfaces.IGeometryEntity,System.Boolean,Autodesk.DesignScript.Geometry.Geometry})">
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.RegisterHostType(System.Type,System.Func{Autodesk.DesignScript.Interfaces.IGeometryEntity,Autodesk.DesignScript.Geometry.Geometry})">
             <summary>Geometry Type の登録メカニズム。</summary>
             <param name="hostType">IGeometryEntity 派生インタフェースのタイプ。</param>
             <param name="contructor">Geometry を作成するための代理。</param>
@@ -4745,17 +3952,6 @@
             <param name="json">解析する JSON 文字列</param>
             <returns>Geometry オブジェクト</returns>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.String)">
-            <summary>指定したジオメトリを指定した SAT ファイル パスに書き出します</summary>
-            <param name="filePath">ジオメトリの書き出し先のファイル名</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.String,System.Double)">
-            <summary>指定したジオメトリを指定した SAT ファイル パスに書き出します</summary>
-            <param name="filePath">ジオメトリの書き出し先のファイル名</param>
-            <param name="unitsMM">使用する単位</param>
-            <returns/>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},System.String)">
             <summary>指定したジオメトリのリストを指定した SAT ファイル パスに書き出します</summary>
             <param name="geometry"/>
@@ -4763,7 +3959,7 @@
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},System.String,System.Double)">
-            <summary>指定したジオメトリのリストを指定した SAT ファイル パスに書き出します</summary>
+            <summary>指定したジオメトリのリストを指定した SAT ファイル パスに書き出します。</summary>
             <param name="geometry"/>
             <param name="filePath"/>
             <param name="unitsMM"/>
@@ -4774,10 +3970,6 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ToNativePointer(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
             <summary>このメソッドは内部使用のみを目的とします。</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB">
-            <summary>指定したジオメトリを標準 ACIS バイナリ(SAB)形式にシリアル化し、シリアル化されたバイナリ ストリーム データを返します</summary>
-            <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
             <summary>一連の指定したジオメトリを標準 ACIS バイナリ(SAB)形式にシリアル化し、シリアル化されたバイナリ ストリーム データを返します</summary>
@@ -5269,6 +4461,531 @@
             <param name="panelIndices">ポリゴンを作成するのに使用されるパネル インデックス。既定値の null はサーフェス内のすべてのパネルを示します。</param>
             <returns/>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ToString">
+            <summary>ポリカーブの文字列表現を取得します</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
+            <summary>曲線を結合してポリカーブを作成します。入力曲線を、接続順に指定する必要はありません。
+           ポリカーブの方向は、入力された配列の最初の曲線を基準にします。
+            優先される結合の許容値を 1e-6 から 1e-3 までの単位で選択します。</summary>
+            <param name="curves">ポリカーブに結合する曲線</param>
+            <param name="joinTolerance">結合する曲線間で使用できるギャップのサイズを判断するための許容値</param>
+            <returns>結合された曲線によって作成されたポリカーブ</returns>
+            <search>
+            segments,joincurves
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
+            <summary>曲線を結合してポリカーブを作成します。入力曲線を、接続順に指定する必要はありません。
+           ポリカーブの方向は、入力された配列の最初の曲線を基準にします。
+            優先される結合の許容値を 1e-6 から 1e-3 までの単位で選択します。</summary>
+            <param name="curves">ポリカーブに結合する曲線</param>
+            <param name="joinTolerance">結合する曲線間で使用できるギャップのサイズを判断するための許容値</param>
+            <param name="trimCurves">入力された曲線が互いに交差または重複しており、ポリカーブを作成する前に終端セグメントをトリムする必要がある場合は、True に設定します。既定では False に設定されています。</param>
+            <param name="trimLength">trimLength が 0 より大きい場合、trimLength より長い終端セグメントはトリムされません。</param>
+            <returns>結合された曲線によって作成されたポリカーブ</returns>
+            <search>
+            segments,joincurves
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
+            <summary>接続された曲線をグループ化して、1 つまたは複数のポリカーブを作成します。優先される結合の許容値を 1e-6 から 1e-3 までの単位で選択します。</summary>
+            <param name="curves">グループ化して 1 つまたは複数のポリカーブを作成する曲線</param>
+            <param name="joinTolerance">結合する曲線間で使用できるギャップのサイズを判断するための許容値</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
+            <summary>接続された曲線をグループ化して、1 つまたは複数のポリカーブを作成します。優先される結合の許容値を 1e-6 から 1e-3 までの単位で選択します。</summary>
+            <param name="curves">グループ化して 1 つまたは複数のポリカーブを作成する曲線</param>
+            <param name="joinTolerance">結合する曲線間で使用できるギャップのサイズを判断するための許容値</param>
+            <param name="trimCurves">入力された曲線が互いに交差または重複しており、ポリカーブを作成する前に終端セグメントをトリムする必要がある場合は、True に設定します。既定では False に設定されています。</param>
+            <param name="trimLength">trimLength が 0 より大きい場合、trimLength より長い終端セグメントはトリムされません。</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
+            <summary>点を接続してポリカーブを作成します。「connectLastToFirst」入力を true に設定してポリカーブを閉じます。</summary>
+            <param name="points">ポリカーブを作成する点群</param>
+            <param name="connectLastToFirst">最後の点を最初の点に接続する場合は true、開いたままにする場合は false</param>
+            <returns>点群で作成したポリカーブ</returns>
+            <search>
+            segments,joincurves,lines
+            </search>
+            <weights>
+            0.5,0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>曲線に厚みを持たせてポリカーブを作成します。</summary>
+            <param name="curve">厚みをつける曲線</param>
+            <param name="thickness">厚み</param>
+            <param name="nor">厚みをつける方向に対して直交する法線</param>
+            <returns/>
+            <search>
+            offset
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurveNormal(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>入力法線によって指定された平面に沿って曲線に厚みを持たせてポリカーブを作成します。</summary>
+            <param name="curve">厚みをつける曲線</param>
+            <param name="thickness">厚み</param>
+            <param name="normal">厚み方向に垂直な法線。法線が指定されていない(null である)場合、既定で曲線の法線が使用されます。</param>
+            <returns/>
+            <search>
+            offset,thicken
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.Points">
+            <summary>最初のコンポーネントの始点と各コンポーネント曲線の終点を返します。閉じたポリカーブの場合、始点と終点は同じになるため、終点は除外されます。</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.NumberOfCurves">
+            <summary>ポリカーブの曲線の数</summary>
+            <search>
+            curvecount,subcurvecount,numbersubcurves
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Curves">
+            <summary>ポリカーブの曲線を返します</summary>
+            <returns/>
+            <search>
+            subcurves,polycurvesplit
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CurveAtIndex(System.Int32,System.Boolean)">
+            <summary>インデックスごとのポリカーブの曲線を返します。</summary>
+            <param name="index">点を配置する長さ</param>
+            <param name="endOrStart">ポリカーブの終点からカウントする場合は true、ポリカーブの始点からカウントする場合は false</param>
+            <returns>インデックスの曲線</returns>
+            <search>
+            subcurveatindex,getsubcurve,getcurvebyindex
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.BasePlane">
+            <summary>平面ポリカーブの平面を返します</summary>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithEllipse(System.Double,System.Double,System.Double,System.Double,System.Boolean)">
+            <summary>接線楕円でポリカーブを延長します</summary>
+            <param name="length">延長する楕円の長さ</param>
+            <param name="radius1">楕円のパラメータ</param>
+            <param name="radius2">楕円のパラメータ</param>
+            <param name="endEllipseParameter">楕円のパラメータ</param>
+            <param name="endOrStart">ポリカーブの終点または始点を延長しています</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithArc(System.Double,System.Double,System.Boolean)">
+            <summary>接線円弧でポリカーブを延長します。</summary>
+            <param name="length">延長する弧長</param>
+            <param name="radius">円弧の半径</param>
+            <param name="endOrStart">ポリカーブの終点または始点を延長しています</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLine">
+            <summary>始点と終点をつなぐ線分でポリカーブを閉じる</summary>
+            <returns/>
+            <search>
+            lines
+            </search>
+            <weights>
+            0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLineAndTangentArcs(System.Double,System.Double)">
+            <summary>円弧、線分、円弧の接線チェーンでポリカーブを閉じる</summary>
+            <param name="radiusAtStart">ポリカーブの始点での円弧の半径</param>
+            <param name="radiusAtEnd">ポリカーブの終点での円弧の半径</param>
+            <returns/>
+            <search>
+            lines
+            </search>
+            <weights>
+            0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Offset(System.Double,System.Boolean)">
+            <summary>平面でポリカーブをオフセットします。</summary>
+            <param name="signedDistance">オフセットする量</param>
+            <param name="extendCircular">コーナーに丸みを付けるかどうかを切り替え</param>
+            <returns>オフセットされたポリカーブ</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.OffsetMany(System.Double,System.Boolean,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>平面の法線で定義された平面で、平面ポリカーブを指定された距離だけオフセットして、1 つまたは複数のポリカーブを作成します。既定では、入力引数「planeNormal」は曲線を含む平面の法線に設定されますが、元の曲線の法線に平行な明示的な法線となるため、オフセットの方向を簡単にコントロールできます。たとえば、同じ平面を共有している複数の曲線のオフセット方向を一致させる必要がある場合に「planeNormal」を使用すると、個々の曲線の法線を変更し、すべての曲線を強制的に同じ方向にオフセットできます。法線を反転すると、オフセットの方向が反転します。</summary>
+            <param name="signedDistance">正のオフセット距離は、ポリカーブの接線と平面の法線ベクトルの外積の方向に適用され、負のオフセット距離はその反対の方向に適用されます。</param>
+            <param name="extendCircular">オフセットされたコンポーネント曲線間にギャップがある場合は、ギャップを埋める処理の設定に応じて、円弧で埋めて滑らかなコーナーにする(true 値の場合)か、オフセットされた曲線を延長して埋める(false 値の場合)ことができます。</param>
+            <param name="planeNormal">曲線の平面法線。既定では入力された曲線の平面法線に設定されます</param>
+            <returns>1 つまたは複数のオフセットされたポリカーブ</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Fillet(System.Double,System.Boolean)">
+            <summary>平面ポリカーブのコーナーをフィレットします。</summary>
+            <param name="radius">フィレットの半径</param>
+            <param name="clockwise_corners">どのコーナーをフィレットするかを示します。true の場合は、2 番目のコンポーネントの始端の接線が 1 番目のコンポーネントの終端の接線から(曲線の法線を基準として)時計回りになっているコーナーがフィレットされます。false の場合は、反時計回りのコーナーがフィレットされます。</param>
+            <returns>フィレットされたポリカーブ</returns>
+            <search>
+            round,smooth,radius
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Heal(System.Double)">
+            <summary>重複しているセグメントの長さが trimLength 以下の場合に、自己交差していない新しいポリカーブを返すことで、自己交差しているポリカーブを修復します。</summary>
+            <param name="trimLength">trimLength が 0 より大きい場合、trimLength より長い終端セグメントはトリムされません。</param>
+            <returns>自己交差も重複もしていないポリカーブ</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ToString">
+            <summary>ポリゴンの文字列表現を取得します</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>点を接続してポリゴン カーブを作成します。</summary>
+            <param name="points"/>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.RegularPolygon(Autodesk.DesignScript.Geometry.Circle,System.Int32)">
+            <summary>円に内接するポリゴン カーブを作成します。</summary>
+            <param name="circle"/>
+            <param name="numberSides"/>
+            <returns/>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Polygon.Points">
+            <summary>セグメントのすべての開始点/終了点を返します。</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Polygon.PlaneDeviation">
+            <summary>ポリゴンの平均平面からの最大偏差を返します。</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.Corners">
+            <summary>ポリゴンのコーナーを返します</summary>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.Center">
+            <summary>ポリゴンのコーナーの平均点を返します。</summary>
+            <returns/>
+            <search>
+            centroid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.SelfIntersections">
+            <summary>ポリゴンの辺の間の自己交差を返します。</summary>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ContainmentTest(Autodesk.DesignScript.Geometry.Point)">
+            <summary>入力された点がポリゴン内に含まれているかどうかを返します。ポリゴンが平面でない場合、点は最適フィット平面に投影され、ポリゴンをこの最適フィット平面に投影することで含まれているかどうかが計算されます。ポリゴンが自己交差している場合は、失敗したというステータスを返します。</summary>
+            <param name="point"/>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToString">
+            <summary>サーフェスの文字列表現を取得します</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByUnion(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
+            <summary>サーフェスの集合を 1 つのサーフェスにまとめます。まとめた結果が非多様体または複数の面を持つ場合、この方法はポリサーフェスを返します。</summary>
+            <param name="surfaces">サーフェスの集合です。</param>
+            <returns>サーフェスの和</returns>
+            <search>
+            merge,join,boolean,addition
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
+            <summary>入力された断面曲線間をロフトしてサーフェスを作成します。</summary>
+            <param name="crossSections">ロフトで通過する曲線</param>
+            <returns>ロフトで作成したサーフェス</returns>
+            <search>
+            loft
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRuledLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Line})">
+            <summary>入力された断面線分間のロフトによりサーフェスを作成します。これにより、Surface.ByLoft よりも短時間で、若干粗い結果が生成されます。</summary>
+            <param name="crossSections"/>
+            <returns/>
+            <search>
+            ruledsurface,lines
+            </search>
+            <weights>
+            0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
+            <summary>ガイド曲線(レール)を指定し、断面にサーフェスをロフトします。ガイド曲線は、断面のすべての曲線と交差する必要があります。</summary>
+            <param name="crossSections">ロフトで通過する曲線</param>
+            <param name="guideCurves">ロフトの通過をガイドする曲線</param>
+            <returns>ロフトで作成したサーフェス</returns>
+            <search>
+            loftbyrails,loft rails,guides
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
+            <summary>プロファイル曲線をパスに沿ってスイープすることにより、サーフェスを作成します。</summary>
+            <param name="profile">スイープする曲線</param>
+            <param name="path">スイープに使用するパス曲線</param>
+            <returns>パスに沿ってプロファイルをスイープして作成したサーフェス</returns>
+            <search>
+            sweep,rail,guide,sweep1
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
+            <summary>プロファイル曲線をパスに沿ってスイープすることにより、サーフェスを作成します。</summary>
+            <param name="profile">スイープする曲線</param>
+            <param name="path">スイープに使用するパス曲線</param>
+            <param name="cutEndOff">スイープの終点を切り取り、パスに対して垂直にします</param>
+            <returns>パスに沿ってプロファイルをスイープして作成したサーフェス</returns>
+            <search>
+            sweep,rail,guide,sweep1
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPerimeterPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>閉じた ポリゴン内の入力された点群をつなぐポリゴン サーフェスを作成します。</summary>
+            <param name="points">ペリメータ点群のリスト</param>
+            <returns>ペリメータ点群から作成したサーフェス</returns>
+            <search>
+            patch,surfacebypolygon
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep2Rails(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
+            <summary>2 つのレールをガイドとするパスに沿って、断面をスイープします</summary>
+            <param name="path">スイープの基準とする入力パス。</param>
+            <param name="guideRail">スイープの方向をガイドするレール。</param>
+            <param name="profile">パスに沿ってスイープするプロファイル曲線です。</param>
+            <returns>2 つのレールをスイープして作成したサーフェス</returns>
+            <search>
+            sweep2,guides
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double)">
+            <summary>基準点によって形成される軸の配列要素を中心に、プロファイル曲線を軸ベクトルの向きにスイープすることにより、サーフェスを作成します。開始角度 startAngle から開始し、スイープ角度 sweepAngle までスイープします。</summary>
+            <param name="profile">回転するプロファイル曲線</param>
+            <param name="axisOrigin">回転軸原点</param>
+            <param name="axisDirection">回転軸方向</param>
+            <param name="startAngle">開始角(度単位)</param>
+            <param name="sweepAngle">スイープ角度(度単位)</param>
+            <returns>プロファイルを回転して作成したサーフェス</returns>
+            <search>
+            lathe
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPatch(Autodesk.DesignScript.Geometry.Curve)">
+            <summary>入力された曲線で設定される閉じた境界の内部を塗り潰してサーフェスを作成します。</summary>
+            <param name="closedCurve">サーフェス境界として使用する閉じた曲線</param>
+            <returns>パッチで作成したサーフェス</returns>
+            <search>
+            edgesrf,edgesurface,patch,fill
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.Area">
+            <summary>サーフェスの合計面積を返します。</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.Perimeter">
+            <summary>サーフェスのすべての境界エッジの合計長さを返します。</summary>
+            <search>
+            circumference
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.ClosedInU">
+            <summary>サーフェスが U 方向で閉じている場合は true を返し、閉じていない場合は false を返します。</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.ClosedInV">
+            <summary>サーフェスが V 方向で閉じている場合は true を返し、閉じていない場合は false を返します。</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.Closed">
+            <summary>サーフェスが U 方向または V 方向で閉じている場合は true を返し、どちらの方向でも閉じていない場合は false を返します。</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.SubtractFrom(Autodesk.DesignScript.Geometry.Solid)">
+            <summary>入力されたツールをこのサーフェスから減算します。</summary>
+            <param name="trimmingEntity"/>
+            <returns/>
+            <search>
+            difference,trim,removefrom,cut
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Difference(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
+            <summary>このサーフェスと、入力されたサーフェスの和のブール演算差です。ブール演算の結果が非多様体または複数の面を持つ場合、この方法はポリサーフェスを返します。</summary>
+            <param name="others">減算するもう一方のサーフェス</param>
+            <returns>ブール演算後のサーフェスまたはポリサーフェス</returns>
+            <search>
+            subtract,differencemany,diffall,diff multi
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.UVParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
+            <summary>入力された点における UV パラメータ ペアを返します。これはパラメータで点を反転したものです。</summary>
+            <param name="point"/>
+            <returns/>
+            <search>
+            evaluateatpoint,surfaceatpoint,uvatpoint,uvs
+            </search>
+            <weights>
+            0.5,0.5,0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve})">
+            <summary>サーフェスを、1 つまたは複数の閉じたポリカーブの集合でトリムします。その中の 1 つのループを入力サーフェスの境界ループにする必要があります。また、穴には 1 つまたは複数の内側のループを追加する必要があります。</summary>
+            <param name="loops"/>
+            <returns/>
+            <search>
+            trim multiple,removeloops,cutloops
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve},System.Double)">
+            <summary>1 つまたは複数の閉じたポリカーブの集合でサーフェスをトリムします。すべてのポリカーブは指定した許容値内でサーフェス上に存在する必要があります。入力されたサーフェスから 1 つまたは複数の穴をトリムする必要がある場合は、サーフェスの境界用に 1 つの外側のループを指定し、穴ごとに 1 つの内側のループを指定する必要があります。サーフェス境界と穴の間の領域をトリムする必要がある場合は、各穴のループのみを指定する必要があります。球面のサーフェスなど、外側のループがない周期的なサーフェスの場合は、ループの曲線の方向を反転することでトリムされる領域をコントロールできます。</summary>
+            <param name="loops">任意の順序で入力できる 1 つまたは複数の閉じたポリカーブ。これらのループが互いに交差しないようにする必要があります。</param>
+            <param name="tolerance">曲線の終端が一致するかどうか、および曲線とサーフェスが一致するかどうかを判断する際に使用する許容値。入力されたポリカーブの作成に使用された許容値よりも小さい許容値を入力することはできません。既定値の 0.0 では、入力されたポリカーブの作成に使用された最大許容値が使用されます。</param>
+            <returns>閉じたループでトリムされたサーフェス。</returns>
+            <search>
+            trim multiple,removeloops,cutloops
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.NormalAtPoint(Autodesk.DesignScript.Geometry.Point)">
+            <summary>サーフェス上の入力された点でサーフェスの法線を返します。</summary>
+            <param name="point">サーフェス法線を評価する点</param>
+            <returns>点の法線</returns>
+            <search>
+            perpendicular
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface">
+            <summary>サーフェスの Nurbs 表現を取得します。特定の状況では、このメソッドは近似のサーフェスを取得します。</summary>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface(System.Boolean)">
+            <summary>サーフェスの Nurbs 表現を取得します。特定の状況では、このメソッドは近似のサーフェスを取得します。</summary>
+            <param name="limitSurface">変換前にサーフェスを元のパラメータ範囲に戻すかどうかを決定します。たとえば Trim を使用すると、サーフェスのパラメータ範囲が制限されます。</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ApproximateWithTolerance(System.Double)">
+            <summary>指定した許容値内でサーフェスの Nurbs 表現を取得します。特定の状況では、このメソッドは近似のサーフェスを取得します。</summary>
+            <param name="tolerance">指定公差</param>
+            <returns>サーフェスの NURBS サーフェス表示</returns>
+            <search>
+            tonurbs
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double)">
+            <summary>サーフェスに厚みを持たせてソリッドを作成します。サーフェスを法線の方向に両側に押し出します。</summary>
+            <param name="thickness">厚み付け量</param>
+            <returns>ソリッドとして厚みを付けたサーフェス</returns>
+            <search>
+            offset,tosolid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double,System.Boolean)">
+            <summary>サーフェスに厚みを持たせてソリッドを作成します。サーフェスを法線の方向に押し出します。both_sides パラメータが true の場合は、サーフェスの厚さが両側に設定されます。</summary>
+            <param name="thickness">厚み付け量</param>
+            <param name="both_sides">True の場合は両側に、False の場合は片側に厚み付けします</param>
+            <returns>ソリッドとして厚みを付けたサーフェス</returns>
+            <search>
+            offset,bothsides,tosolid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Offset(System.Double)">
+            <summary>サーフェスの法線の方向に指定された距離だけサーフェスをオフセットします。</summary>
+            <param name="distance">オフセットする量</param>
+            <returns>オフセットしたサーフェス</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.CurvatureAtParameter(System.Double,System.Double)">
+            <summary>返される座標系では、uDir、vDir、法線を表すのに xAxis、yAxis、zAxis を使用します。xAxis、yAxis の長さが曲率を表します。</summary>
+            <param name="u">パラメータの U コンポーネント</param>
+            <param name="v">パラメータの V コンポーネント</param>
+            <returns>サーフェス上の UV 位置の法線、U 方向、V 方向に基づく座標系</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.CoordinateSystemAtParameter(System.Double,System.Double)">
+            <summary>主曲率の方向で位置合わせされた座標系を返します。</summary>
+            <param name="u">パラメータの U コンポーネント</param>
+            <param name="v">パラメータの V コンポーネント</param>
+            <returns>主曲率方向に位置合わせした座標系</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.TangentAtUParameter(System.Double,System.Double)">
+            <summary>指定された U および V パラメータの U 接線ベクトルを返します。</summary>
+            <param name="u">パラメータの U コンポーネント</param>
+            <param name="v">パラメータの V コンポーネント</param>
+            <returns>U 接線ベクトル</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.TangentAtVParameter(System.Double,System.Double)">
+            <summary>指定した U および V パラメータの V 接線 Vector を返します。</summary>
+            <param name="u">パラメータの U コンポーネント</param>
+            <param name="v">パラメータの V コンポーネント</param>
+            <returns>V 接線ベクトル</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.NormalAtParameter(System.Double,System.Double)">
+            <summary>指定した U および V パラメータの法線 Vector を返します。</summary>
+            <param name="u">パラメータの U コンポーネント</param>
+            <param name="v">パラメータの V コンポーネント</param>
+            <returns>パラメータの法線</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.DerivativesAtParameter(System.Double,System.Double)">
+            <summary>入力 U 座標と入力 V 座標の導関数を返します。</summary>
+            <param name="u">パラメータの U コンポーネント</param>
+            <param name="v">パラメータの V コンポーネント</param>
+            <returns>サーフェスの U および V の導関数</returns>
+            <search>
+            tangent,normal
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.GaussianCurvatureAtParameter(System.Double,System.Double)">
+            <summary>U および V パラメータでのガウス曲率を返します。</summary>
+            <param name="u"/>
+            <param name="v"/>
+            <returns/>
+            <search>
+            developable
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.PrincipalCurvaturesAtParameter(System.Double,System.Double)">
+            <summary>U および V パラメータでの主曲率を返します。</summary>
+            <param name="u"/>
+            <param name="v"/>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.PrincipalDirectionsAtParameter(System.Double,System.Double)">
+            <summary>U と V パラメータでの主方向ベクトルを返します。</summary>
+            <param name="u">パラメータの U コンポーネント</param>
+            <param name="v">パラメータの V コンポーネント</param>
+            <returns>U および V 接線ベクトル</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.PointAtParameter(System.Double,System.Double)">
+            <summary>指定した U パラメータと V パラメータで点を返します。</summary>
+            <param name="u"/>
+            <param name="v"/>
+            <returns/>
+            <search>
+            surfacepoint
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.PerimeterCurves">
+            <summary>サーフェスのすべての境界曲線を返します。</summary>
+            <returns/>
+            <search>
+            edges
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.GetIsoline(System.Int32,System.Double)">
+            <summary>指定したサーフェスにパラメータ線分の曲線を作成します。サーフェスに U および V パラメータ線分を表す曲線を作成します。パラメータ線分は U または V パラメータが増加する方向に向き、U または V パラメータと逆の割合で増加していきます。作成される曲線は、サーフェスのパラメータ設定に一致し、その範囲はサーフェス パラメータの範囲に限定されます。返される曲線のタイプはサーフェスのタイプによって異なります。</summary>
+            <param name="isoDirection">direction == 0 の場合は U パラメータ線分が作成され、direction == 1 の場合は V パラメータ線分が作成されます。</param>
+            <param name="parameter"/>
+            <returns/>
+            <search>
+            lines
+            </search>
+            <weights>
+            0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.FlipNormalDirection">
+            <summary>法線を反転させた新しいサーフェスを返します。このサーフェスは変更されません。</summary>
+            <returns>サーフェス。入力サーフェスと同じですが、法線が反転されます</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
+            <summary>このサーフェスと入力されたサーフェスをポリサーフェスに組み合わせます</summary>
+            <param name="otherSurfaces"/>
+            <returns/>
+            <search>
+            join multiple,joinmany,joinall,topolysurface
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>入力されたジオメトリを、入力されたベクトルの方向で、このサーフェス上に投影します。!!現在この投影方法では、点または曲線のみがサポートされています!!</summary>
+            <param name="geometryToProject"/>
+            <param name="projectionDirection"/>
+            <returns/>
+            <search>
+            projecttosurface,projectonto
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Repair">
+            <summary>サーフェスの修復を試みます。</summary>
+            <returns/>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.ToString">
             <summary>ベクトルの文字列表現を取得します</summary>
         </member>
@@ -5453,29 +5170,13 @@
             <returns>指定されたベクトル間の角度を 0 ~ 180 度の範囲の度数で返します。</returns>
             <search>rotation angle,</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleBetween(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>0 ～ 180 度の範囲で、2 つのベクトル間の角度を返します。</summary>
-            <param name="otherVector"/>
-            <returns/>
-            <search>
-            rotation angle
-            </search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleAboutAxis(Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>0 ～ 180 度の範囲で、2 つのベクトル間の角度を返します。</summary>
             <summary>0 ～ 360 度の範囲で、2 つのベクトル間の角度を返します。角度の方向の決定には回転軸が使用されます。</summary>
             <param name="otherVector">もう一方のベクトル</param>
             <param name="rotationAxis">回転軸</param>
             <returns>指定されたベクトル間の角度を 0 ~ 360 度の範囲で返します</returns>
             <search>rotation angle,</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleBetween(Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>0 ～ 360 度の範囲で、2 つのベクトル間の角度を返します。角度の方向の決定には回転軸が使用されます。</summary>
-            <param name="otherVector"/>
-            <param name="rotationAxis"/>
-            <returns/>
-            <search>
-            rotation angle
-            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.FromJson(System.String)">
             <summary>autodesk.math:vector3d-1.0.0 スキーマでフォーマットされて取り込まれる JSON 文字列を解析します。</summary>
@@ -5507,18 +5208,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_distanceatparameter_deprecated">
             <summary>「このメソッドは廃止され、Dynamo の今後のバージョンで削除される予定です。代わりに SegmentLengthAtParameter を使用してください」に類似するローカライズされた文字列を検索します。</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_dividebydistance_deprecated">
-            <summary>「このメソッドは廃止され、Dynamo の今後のバージョンで削除される予定です。代わりに 'PointsAtEqualChordLength' および 'SplitByPoints' を使用してください」に類似するローカライズされた文字列を検索します。</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_dividebydistancefromparam_deprecated">
-            <summary>「このメソッドは廃止され、Dynamo の今後のバージョンで削除される予定です。代わりに、'PointsAtChordLengthFromPoint' および 'SplitByPoints' を使用してください」に類似するローカライズされた文字列を検索します。</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_dividebylengthfromparams_deprecated">
-            <summary>「このメソッドは廃止され、Dynamo の今後のバージョンで削除される予定です。代わりに、'PointsAtSegmentLengthFromPoint' および 'SplitByPoints' を使用してください」に類似するローカライズされた文字列を検索します。</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_divideequally_deprecated">
-            <summary>「このメソッドは廃止され、Dynamo の今後のバージョンで削除される予定です。代わりに、'PointsAtEqualSegmentLength' および 'SplitByPoints' を使用してください」に類似するローカライズされた文字列を検索します。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_lengthbetweenparams_deprecated">
             <summary>「このメソッドは廃止され、Dynamo の今後のバージョンで削除される予定です。代わりに SegmentLengthBetweenParameters を使用してください」に類似するローカライズされた文字列を検索します。</summary>
@@ -5552,9 +5241,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.geometry_deserializefromsab_deprecated">
             <summary>「このメソッドは廃止され、Dynamo の今後のバージョンで削除される予定です。mmPerUnit を渡すことができるオーバーロードを使用してください」に類似するローカライズされた文字列を検索します。</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.geometry_exporttosat_deprecated">
-            <summary>「このメソッドは廃止され、Dynamo の今後のバージョンで削除される予定です。代わりに ExportToSAT UI ノードを使用してください」に類似するローカライズされた文字列を検索します。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.geometry_importfromsat_deprecated">
             <summary>「このメソッドは廃止され、Dynamo の今後のバージョンで削除される予定です。単位あたりの mm を指定するオーバーロードを使用してください」に類似するローカライズされた文字列を検索します。</summary>
@@ -5617,7 +5303,7 @@
             <summary>「メッシュ ノードは 32 ビット精度(小数点以下 7 桁)を使用するため、大きな数値や小数点以下 7 桁を超える数値では、丸めエラーが発生する可能性があります。より高い精度(64 ビット、小数点以下 15 桁)を必要とする場合は、Geometry ライブラリのノードを使用してください。」に類似するローカライズされた文字列を検索します。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ModelerExtentsExceeded">
-            <summary>「使用可能なモデリング範囲を超えました。もっと小さな値を選択してください」に類似するローカライズされた文字列を検索します。</summary>
+            <summary>「使用可能なモデリング範囲を超えました。入力として、より小さな値を選択してください」に類似するローカライズされた文字列を検索します。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.NoImplementationException">
             <summary>「IGeometryFactory の実装が見つかりませんでした。ProtoGeometry.config が正しく構成されていることを確認してください。」に類似するローカライズされた文字列を検索します。</summary>
@@ -5670,6 +5356,9 @@
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.polycurve_offset_deprecated">
             <summary>「このメソッドは廃止され、Dynamo の今後のバージョンで削除される予定です。代わりに PolyCurve.OffsetMany を使用してください」に類似するローカライズされた文字列を検索します。</summary>
         </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.PolyCurveDirectionalityInfoMessage">
+            <summary>「ポリカーブの方向は一貫性を保つために更新されました。この変更により、4.0 より前のグラフでは、このノードが壊れる可能性があります。従来の動作を保持するには、DynamoPreferences.xml で DefaultEnableLegacyPolyCurveBehavior を true に設定します」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.polygon_points_deprecated">
             <summary>「このプロパティは廃止され、Dynamo の今後のバージョンで削除される予定です。代わりに PolyCurve.Points を使用してください」に類似するローカライズされた文字列を検索します。</summary>
         </member>
@@ -5684,9 +5373,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.solid_bysweep_deprecated">
             <summary>「このメソッドは廃止され、Dynamo の今後のバージョンで削除される予定です。代わりに SolidBySweep(ICurveEntity profile, ICurveEntity path, bool cutEndOff)を使用してください」に類似するローカライズされた文字列を検索します。</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.solid_unionall_deprecated">
-            <summary>「このメソッドは廃止され、Dynamo の今後のバージョンで削除される予定です。代わりに Solid.ByUnion を使用してください」に類似するローカライズされた文字列を検索します。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.surface_bysweep_deprecated">
             <summary>「このメソッドは廃止され、Dynamo の今後のバージョンで削除される予定です。代わりに SurfaceBySweep(ICurveEntity profile, ICurveEntity path, bool cutEndOff)を使用してください」に類似するローカライズされた文字列を検索します。</summary>

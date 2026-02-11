@@ -1,23 +1,493 @@
-<Workspace Version="1.0.1.1743" X="572" Y="213" zoom="1" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
-  <NamespaceResolutionMap />
-  <Elements>
-    <Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction guid="a1060235-e86b-4a8a-bc32-99317081402e" type="Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction" nickname="String.Concat" x="-181" y="205.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.String.Concat@string[]" inputcount="2" />
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="16abfb11-87a8-4bd0-924b-40173a197681" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="List.GetItemAtIndex" x="-181" y="436.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.List.GetItemAtIndex@var[]..[],int" />
-    <Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction guid="61a2c446-cbf9-4c82-ac20-5e3de9be90ac" type="Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction" nickname="String.Join" x="-331" y="536.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.String.Join@string,string[]" inputcount="2" />
-    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="b228439e-ff56-49e2-b583-611694ff6f00" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Code Block" x="-331" y="636.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="0;" ShouldFocus="false" />
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="0855199b-2dbc-4734-aaeb-81ca7a805148" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="String.FromObject" x="234" y="278.166666666667" isVisible="true" isUpstreamVisible="true" lacing="Longest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.String.FromObject@var" />
-    <Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction guid="863cd294-fd0f-49f1-be55-e20b96101f23" type="Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction" nickname="String.Split" x="234" y="428.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.String.Split@string,string[]" inputcount="2" />
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="32ec6f92-21c1-4069-87ec-7faa0416c8ba" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="String.ChangeCase" x="-181" y="-25.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.String.ChangeCase@string,bool" />
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="78394aa8-856b-4312-b24f-9ab63c2f1ef0" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="String.Length" x="-181" y="90" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.String.Length@string" />
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="22485394-9274-4999-bf8f-1e6c8ffb6fbf" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="String.ToNumber" x="-181" y="321" isVisible="true" isUpstreamVisible="true" lacing="Longest" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.String.ToNumber@string" />
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="4fc6fbbc-8c9e-4422-908c-322616776310" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="String.Substring" x="234" y="127.833333333333" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.String.Substring@string,int,int" />
-    <Dynamo.Graph.Nodes.ZeroTouch.DSFunction guid="727024e0-29b7-4806-afa2-edc765178cc0" type="Dynamo.Graph.Nodes.ZeroTouch.DSFunction" nickname="String.FromObject" x="234" y="-22.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.String.FromObject@var" />
-  </Elements>
-  <Connectors>
-    <Dynamo.Graph.Connectors.ConnectorModel start="61a2c446-cbf9-4c82-ac20-5e3de9be90ac" start_index="0" end="16abfb11-87a8-4bd0-924b-40173a197681" end_index="0" portType="0" />
-    <Dynamo.Graph.Connectors.ConnectorModel start="b228439e-ff56-49e2-b583-611694ff6f00" start_index="0" end="16abfb11-87a8-4bd0-924b-40173a197681" end_index="1" portType="0" />
-  </Connectors>
-  <Notes />
-  <Annotations />
-  <Presets />
-</Workspace>
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "TestMigration_Core_Strings",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction, DynamoCore",
+      "FunctionSignature": "DSCore.String.Concat@string[]",
+      "FunctionType": "VariableArgument",
+      "Id": "a1060235e86b4a8abc3299317081402e",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "bf9cf4f4651440fd8b16cd68c97f2e8a",
+          "Name": "string0",
+          "Description": "List of strings to concatenate.\n\nstring[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b05f1cd0541d4837bdb38d9b3f15511d",
+          "Name": "string1",
+          "Description": "string[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d22881230daa491390d6bdc421dd8477",
+          "Name": "string",
+          "Description": "String made from list of strings.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Concatenates multiple strings into a single string.\n\nString.Concat (strings: string[]): string"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "16abfb1187a84bd0924b40173a197681",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "8cbf707756ff4d50b94c0992dcbf7b6f",
+          "Name": "list",
+          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "00407196377749b397545dba53a57ac8",
+          "Name": "index",
+          "Description": "Index of the item to be fetched.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d0f84010b29a4527be5cbd8433ab89d7",
+          "Name": "item",
+          "Description": "Item in the list at the given index.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
+      "Replication": "Disabled",
+      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction, DynamoCore",
+      "FunctionSignature": "DSCore.String.Join@string,string[]",
+      "FunctionType": "VariableArgument",
+      "Id": "61a2c446cbf94c82ac205e3de9be90ac",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "3e003ada7bf340588e0ade293b94a14b",
+          "Name": "separator",
+          "Description": "String to be inserted between joined strings.\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "15dce99416f342f3a64d86b150b5e6e5",
+          "Name": "string0",
+          "Description": "Strings to be joined into a single string.\n\nstring[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "fe81c3200a004b18b2170c3780aad37f",
+          "Name": "string",
+          "Description": "A string made from the list of strings including the separator character.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Concatenates multiple strings into a single string, inserting the given separator between each joined string.\n\nString.Join (separator: string, strings: string[]): string"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "b228439eff5649e2b583611694ff6f00",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "28cd7e06346d4d048ea5d8021e9a94b6",
+          "Name": "integer",
+          "Description": "0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "0;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction, DynamoCore",
+      "FunctionSignature": "DSCore.String.Split@string,string[]",
+      "FunctionType": "VariableArgument",
+      "Id": "863cd294fd0f49f1be55e20b96101f23",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "3f4dc56ef74e40229b33707a3e1cf1e9",
+          "Name": "string",
+          "Description": "String to split up\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7b10f01af0ba4597852e36edb05db4bc",
+          "Name": "separator0",
+          "Description": "Strings that, if present, determine the end and start of a split.\n\nstring[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7a2c677340564b7fbb502680f8231c12",
+          "Name": "strings",
+          "Description": "List of strings made from the input string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Divides a single string into a list of strings, with divisions determined by the given separator strings.\n\nString.Split (string: string, separators: string[]): string[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "32ec6f9221c1406987ec7faa0416c8ba",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "a25783cfd7e143eb98fc3515bab4a5e0",
+          "Name": "string",
+          "Description": "String to be made uppercase or lowercase.\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "aa93e4e737574c66948c9a83b214b386",
+          "Name": "upper",
+          "Description": "True to convert to uppercase, false to convert to lowercase.\n\nbool",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f310d2a039d94b4da6755ba6a36af466",
+          "Name": "string",
+          "Description": "String with converted case.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.String.ChangeCase@string,bool",
+      "Replication": "Disabled",
+      "Description": "Converts the given string to all uppercase characters or all lowercase characters based on a boolean parameter.\n\nString.ChangeCase (string: string, upper: bool): string"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "78394aa8856b4312b24f9ab63c2f1ef0",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "e202fd2eb2354dd182bf2c59483a9161",
+          "Name": "string",
+          "Description": "String to find the length of\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b2d09399885b47dabca856e1ce714e7d",
+          "Name": "int",
+          "Description": "Number of characters in the string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.String.Length@string",
+      "Replication": "Disabled",
+      "Description": "Returns the number of characters contained in the given string.\n\nString.Length (string: string): int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "2248539492744999bf8f1e6c8ffb6fbf",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "5db81d04a5ee400b9e6f297fc25b636c",
+          "Name": "string",
+          "Description": "String to be converted\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cc2dca5a820643c8830529486d799015",
+          "Name": "number",
+          "Description": "Integer or double-type number",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.String.ToNumber@string",
+      "Replication": "Longest",
+      "Description": "Converts a string to an integer or a double.\n\nString.ToNumber (string: string): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "4fc6fbbc8c9e4422908c322616776310",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "a755567021894fb78f3482ff2f15268b",
+          "Name": "string",
+          "Description": "String to take substring of\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "45e92695b45241f981518a46bd51bbad",
+          "Name": "startIndex",
+          "Description": "Starting character position of the substring in the original string\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e2b4b764d7ca46d8bba947e3ac6777db",
+          "Name": "length",
+          "Description": "Number of characters in the substring\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7780ae566a754c5383c8494a77d9a350",
+          "Name": "string",
+          "Description": "Substring made from the original string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.String.Substring@string,int,int",
+      "Replication": "Disabled",
+      "Description": "Retrieves a substring from the given string. The substring starts at the given character position and has the given length.\n\nString.Substring (string: string, startIndex: int, length: int): string"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "fe81c3200a004b18b2170c3780aad37f",
+      "End": "8cbf707756ff4d50b94c0992dcbf7b6f",
+      "Id": "5f0d0692895343d7a33a508dc748d959",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "28cd7e06346d4d048ea5d8021e9a94b6",
+      "End": "00407196377749b397545dba53a57ac8",
+      "Id": "e0a526f1b9d04aee895332276c82a8ad",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": null,
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "4.1",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "4.1.0.3107",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "a1060235e86b4a8abc3299317081402e",
+        "Name": "String.Concat",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -181.0,
+        "Y": 205.5
+      },
+      {
+        "Id": "16abfb1187a84bd0924b40173a197681",
+        "Name": "List.GetItemAtIndex",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -181.0,
+        "Y": 436.5
+      },
+      {
+        "Id": "61a2c446cbf94c82ac205e3de9be90ac",
+        "Name": "String.Join",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -331.0,
+        "Y": 536.5
+      },
+      {
+        "Id": "b228439eff5649e2b583611694ff6f00",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -331.0,
+        "Y": 636.5
+      },
+      {
+        "Id": "863cd294fd0f49f1be55e20b96101f23",
+        "Name": "String.Split",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 234.0,
+        "Y": 428.5
+      },
+      {
+        "Id": "32ec6f9221c1406987ec7faa0416c8ba",
+        "Name": "String.ChangeCase",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -181.0,
+        "Y": -25.5
+      },
+      {
+        "Id": "78394aa8856b4312b24f9ab63c2f1ef0",
+        "Name": "String.Length",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -181.0,
+        "Y": 90.0
+      },
+      {
+        "Id": "2248539492744999bf8f1e6c8ffb6fbf",
+        "Name": "String.ToNumber",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -181.0,
+        "Y": 321.0
+      },
+      {
+        "Id": "4fc6fbbc8c9e4422908c322616776310",
+        "Name": "String.Substring",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 234.0,
+        "Y": 127.833333333333
+      }
+    ],
+    "Annotations": [],
+    "X": 572.0,
+    "Y": 213.0,
+    "Zoom": 1.0
+  }
+}

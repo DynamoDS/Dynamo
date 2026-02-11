@@ -117,31 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ByPointsAndValueObsolete" xml:space="preserve">
-    <value>これまでは PointData ノードを使用していたノードへの直接入力として Point ノードと Number ノードを使用します</value>
-  </data>
-  <data name="BySurfacePointObsolete" xml:space="preserve">
-    <value>これまでは SurfaceData ノードを使用していたノードへの直接入力として Surface ノードと UV ノードを使用します</value>
-  </data>
-  <data name="BySurfacePointsAndValues" xml:space="preserve">
-    <value>これまでは SurfaceData ノードを使用していたノードへの直接入力として Surface ノード、UV ノード、Number ノードを使用します</value>
-  </data>
-  <data name="SurfaceObsolete" xml:space="preserve">
-    <value>グラフ内の任意の場所に使用できる Surface を使用します</value>
-  </data>
-  <data name="ValueLocationObsolete" xml:space="preserve">
-    <value>グラフ内の任意の場所に使用できる Point を使用します</value>
-  </data>
-  <data name="ValueLocationsObsolete" xml:space="preserve">
-    <value>グラフ内の任意の場所に使用できる UV 位置を使用します。</value>
-  </data>
-  <data name="ValuesObsolete" xml:space="preserve">
-    <value>解析を実行するノードによって提供される値を使用します。</value>
-  </data>
-  <data name="ValueSurfaceObsolete" xml:space="preserve">
-    <value>解析を実行するノードによって提供される値を使用します</value>
-  </data>
-  <data name="VectorValueObsolete" xml:space="preserve">
-    <value>これまでは VectorData ノードを使用していたノードへの直接入力として Vector ノードと Number ノードを使用します</value>
-  </data>
 </root>

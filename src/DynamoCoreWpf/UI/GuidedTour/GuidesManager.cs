@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.ViewModels;
@@ -33,16 +32,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private readonly UIElement mainRootElement;
         private readonly DynamoViewModel dynamoViewModel;
 
-        private RealTimeInfoWindow exitTourPopup;
-
         //Checks if the tour has already finished
         private static bool tourStarted;
-
-        //The ExitTour popup will be shown at the top-right section of the Dynamo window (at the left side of the statusBarPanel element) only when the tour is closed
-        //The ExitTourVerticalOffset is used to move vertically the popup (using as a reference the statusBarPanel position)
-        private const double ExitTourVerticalOffset = 10;
-        //The ExitTourHorizontalOffset is used to move horizontally the popup (using as a reference the statusBarPanel position)
-        private const double ExitTourHorizontalOffset = 110;
 
         private const string guideBackgroundName = "GuidesBackground";
         private const string mainGridName = "mainGrid";
@@ -158,11 +149,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 currentGuide.CurrentStep.UpdateLocation();
             }
-
-            if (exitTourPopup != null)
-            {
-                exitTourPopup.UpdateLocation();
-            }
         }
 
         /// <summary>
@@ -175,6 +161,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             {
                 Initialize();
                 GuideFlowEvents.OnGuidedTourStart(tourName);
+                dynamoViewModel.ToastManager?.CloseRealTimeInfoWindow();
                 dynamoViewModel.OnEnableShortcutBarItems(false);
                 Logging.Analytics.TrackScreenView("InteractiveGuidedTours");
                 Logging.Analytics.TrackEvent(Logging.Actions.Start, Logging.Categories.GuidedTourOperations, Resources.ResourceManager.GetString(currentGuide.GuideNameResource, System.Globalization.CultureInfo.InvariantCulture).Replace("_", ""), currentGuide.SequenceOrder);
@@ -531,79 +518,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         private void Popup_StepClosed(string name, Step.StepTypes stepType)
         {
             GuideFlowEvents.OnGuidedTourFinish(currentGuide.Name);
+            dynamoViewModel.ToastManager?.CloseRealTimeInfoWindow();
 
             //The exit tour popup will be shown only when a popup (doesn't apply for survey) is closed or when the tour is closed. 
             if (stepType != Step.StepTypes.SURVEY)
-                CreateRealTimeInfoWindow(Res.ExitTourWindowContent);
-        }
-
-        /// <summary>
-        /// Display a notification to display on top right corner of canvas
-        /// and display message passed as param
-        /// </summary>
-        /// <param name="content">The target content to display.</param>
-        /// <param name="stayOpen">boolean indicates if the popup will stay open until user dismiss it.</param>
-        /// <param name="headerText">The header text to display.</param>
-        /// <param name="showHeader">boolean indicates if the header will be shown.</param>
-        /// <param name="showHyperlink">boolean indicates if the hyperlink will be shown.</param>
-        /// <param name="hyperlinkText">The hyperlink text to display.</param>
-        /// <param name="hyperlinkUri">The hyperlink uri to navigate to.</param>
-        /// TODO: Make this API out of guide manager to a more generic place
-        internal void CreateRealTimeInfoWindow(
-            string content,
-            bool stayOpen = false,
-            bool showHeader = false,
-            string headerText = "",
-            bool showHyperlink = false,
-            string hyperlinkText = "",
-            Uri hyperlinkUri = null)
-        {
-            //Search a UIElement with the Name "statusBarPanel" inside the Dynamo VisualTree
-            UIElement hostUIElement = GuideUtilities.FindChild(mainRootElement, "statusBarPanel");
-
-            // When popup already exist, replace it
-            CloseRealTimeInfoWindow();
-            // Otherwise creates the RealTimeInfoWindow popup and set up all the needed values
-            // to show the popup over the Dynamo workspace
-            exitTourPopup = new RealTimeInfoWindow()
-            {
-                VerticalOffset = ExitTourVerticalOffset,
-                HorizontalOffset = ExitTourHorizontalOffset,
-                Placement = PlacementMode.Left,
-                TextContent = content,
-                StaysOpen = stayOpen,
-                ShowHeader = showHeader,
-                HeaderContent = headerText,
-                ShowHyperlink = showHyperlink,
-                HyperlinkText = hyperlinkText,
-                HyperlinkUri = hyperlinkUri
-            };
-
-            if (hostUIElement != null)
-                exitTourPopup.PlacementTarget = hostUIElement;
-            exitTourPopup.IsOpen = true;
-        }
-
-        /// <summary>
-        /// Closes the exitTourPopup if exist and it's open
-        /// </summary>
-        internal void CloseRealTimeInfoWindow()
-        {
-            if (exitTourPopup != null && exitTourPopup.IsOpen)
-            {
-                exitTourPopup.IsOpen = false;
-            }
-        }
-
-        /// <summary>
-        /// Returns if the ExitTourPopup (Toast Notification) is open or not.
-        /// </summary>
-        internal bool ExitTourPopupIsVisible
-        {
-            get
-            {
-                return exitTourPopup != null && exitTourPopup.IsOpen;
-            }
+                dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(Res.ExitTourWindowContent);
         }
     }
 }

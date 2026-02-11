@@ -279,7 +279,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             Name = Resources.BackgroundPreviewDefaultName;
             isGridVisible = parameters.Preferences.IsBackgroundGridVisible;
-            active = parameters.Preferences.IsBackgroundPreviewActive;
+            active = parameters.Preferences.BackgroundPreviews.Count > 0;
             logger = parameters.Logger;
             GridScale = parameters.Preferences.GridScaleFactor;
 

@@ -156,9 +156,6 @@
   <data name="Exception_Serialize_Unsupported_Type" xml:space="preserve">
     <value>Nie można zapisać danych typu {0}.</value>
   </data>
-  <data name="ExportToCSVObsolete" xml:space="preserve">
-    <value>Zamiast tego użyj węzła Data.ExportCSV</value>
-  </data>
   <data name="FactorialNegativeInt" xml:space="preserve">
     <value>Wartość danych wejściowych z Math. Factorial nie może być ujemna.</value>
   </data>
@@ -170,9 +167,6 @@
   </data>
   <data name="FindPointsWithinRadiusSearchRadiusMessage" xml:space="preserve">
     <value>Promień wyszukiwania nie może być równy zeru.</value>
-  </data>
-  <data name="FromObjectObsolete" xml:space="preserve">
-    <value>Węzeł ten jest przestarzały, należy użyć polecenia „Ciąg z obiektu"</value>
   </data>
   <data name="IntegerOverflow" xml:space="preserve">
     <value>Operacja spowodowała przepełnienie liczby całkowitej. Jej wynik może być nieoczekiwany.</value>
@@ -186,9 +180,6 @@
   <data name="InvalidKeysLenghtErrorMessage" xml:space="preserve">
     <value>Liczba elementów nie odpowiada liczbie kluczy. href=InvalidKeysLenghtErrorMessage.html</value>
   </data>
-  <data name="LoadImageFromPathObsolete" xml:space="preserve">
-    <value>Zamiast tego należy użyć węzłów File.FromPath -&gt; Image.ReadFromFile</value>
-  </data>
   <data name="MissingPythonEngine" xml:space="preserve">
     <value>Nie można znaleźć wybranego silnika w języku Python</value>
   </data>
@@ -201,12 +192,6 @@
   <data name="QuadtreeConstructionNullUVSetMessage" xml:space="preserve">
     <value>Drzewo czwórkowe nie może być utworzone z pustego zestawu UV.</value>
   </data>
-  <data name="ReadImageObsolete" xml:space="preserve">
-    <value>Zamiast tego należy użyć węzłów File.FromPath -&gt; Image.ReadFromFile -&gt; Image.Pixels</value>
-  </data>
-  <data name="ReadTextObsolete" xml:space="preserve">
-    <value>Zamiast tego należy użyć węzłów File.FromPath -&gt; File.ReadText.</value>
-  </data>
   <data name="StringRemoveCountOutOfRangeMessage" xml:space="preserve">
     <value>Liczba jest poza zakresem!</value>
   </data>
@@ -218,9 +203,6 @@
   </data>
   <data name="WebRequestNullUrlMessage" xml:space="preserve">
     <value>URL nie może być pusty.</value>
-  </data>
-  <data name="WriteImageObsolete" xml:space="preserve">
-    <value>Zamiast tego należy użyć węzła Image.WriteToFile</value>
   </data>
   <data name="DefineDataUnexpectedInputExceptionMessage" xml:space="preserve">
     <value>Ten węzeł oczekiwał danych wejściowych {0}, ale przekazano do niego dane wejściowe {1}. Podaj oczekiwane dane wejściowe lub wybierz nowy typ z menu rozwijanego węzła.</value>

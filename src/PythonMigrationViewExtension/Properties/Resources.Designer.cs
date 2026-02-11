@@ -95,22 +95,22 @@ namespace Dynamo.PythonMigration.Properties {
                 return ResourceManager.GetString("CPython3NotificationShortMessage", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to {0} CPython nodes have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported..
+        ///   Looks up a localized string similar to Before updating, a backup file has been saved .
         /// </summary>
-        public static string CPythonUpgradeToastMessagePlural {
+        public static string CPythonMigrationBackupFileCreatedMessage {
             get {
-                return ResourceManager.GetString("CPythonUpgradeToastMessagePlural", resourceCulture);
+                return ResourceManager.GetString("CPythonMigrationBackupFileCreatedMessage", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to 1 CPython node has been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported..
+        ///   Looks up a localized string similar to {0} CPython node(s) and {1} custom node definition(s) have been automatically converted to PythonNet3 to run in Dynamo 4.0. CPython is no longer supported..
         /// </summary>
-        public static string CPythonUpgradeToastMessageSingular {
+        public static string CPythonUpgradeToastMessage {
             get {
-                return ResourceManager.GetString("CPythonUpgradeToastMessageSingular", resourceCulture);
+                return ResourceManager.GetString("CPythonUpgradeToastMessage", resourceCulture);
             }
         }
         
@@ -133,8 +133,8 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo has moved away from the old IronPython2 (Python 2) engine towards a new CPython3 (Python 3) engine. 
-        ///The IronPython engine is still available as a package from the Dynamo package manager, but only the CPython3 engine will be supported..
+        ///   Looks up a localized string similar to Dynamo has moved away from the old IronPython2 engine towards a new PythonNet3 engine. 
+        ///The IronPython engine is still available as a package from the Dynamo package manager, but only the PythonNet3 engine will be supported..
         /// </summary>
         public static string IronPythonDialogDescription {
             get {
@@ -170,7 +170,7 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This graph currently contains python nodes that are using the old IronPython Engine which has been deprecated. Consider updating these nodes to use the new CPython 3.7 Engine..
+        ///   Looks up a localized string similar to This graph currently contains python nodes that are using the old IronPython Engine which has been deprecated. Consider updating these nodes to use the new PythonNet3 Engine..
         /// </summary>
         public static string IronPythonNotificationDetailedMessage {
             get {
@@ -179,7 +179,7 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This graph currently contains nodes that are using the old IronPython2 (Python 2) engine which has been deprecated. A new CPython3 (Python 3) has been implemented and is accessible inside the Python editor..
+        ///   Looks up a localized string similar to This graph currently contains nodes that are using the old IronPython2 engine which has been deprecated. A new PythonNet3 has been implemented and is accessible inside the Python editor..
         /// </summary>
         public static string IronPythonNotificationShortMessage {
             get {
@@ -224,8 +224,8 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The Migration Assistant helps users to update scripts from Python 2 to Python 3.
-        ///By clicking “Continue”, you are agreeing to implement the syntax changes to your source code as suggested by the Migration Assistant. The Migration Assistant is a component of open source Dynamo, and as such it is licensed to you under the terms of the Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0 ). Under the terms of the Apache License 2.0, Dynamo and the Migration Assistant are provided to you on an “AS IS [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to The Migration Assistant helps users to update scripts from IronPython2 to PythonNet3.
+        ///By clicking “Continue”, you are agreeing to implement the syntax changes to your source code as suggested by the Migration Assistant. The Migration Assistant is a component of open source Dynamo, and as such it is licensed to you under the terms of the Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0 ). Under the terms of the Apache License 2.0, Dynamo and the Migration Assistant are provided to you on an “ [rest of string was truncated]&quot;;.
         /// </summary>
         public static string MigrationAssistantDisclaimerMessage {
             get {
@@ -270,7 +270,7 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your code is ready to run with the Python 3 engine. Click accept and we&apos;ll switch to the Python 3 engine for you..
+        ///   Looks up a localized string similar to Your code is ready to run with the PythonNet3 engine. Click accept and we&apos;ll switch to the PythonNet3 engine for you..
         /// </summary>
         public static string MigrationAssistantNoChangesStateMessage {
             get {
@@ -347,6 +347,15 @@ namespace Dynamo.PythonMigration.Properties {
         public static string PythonMigrationBackupExtension {
             get {
                 return ResourceManager.GetString("PythonMigrationBackupExtension", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backup graph has been saved.
+        /// </summary>
+        public static string PythonMigrationBackupFileCreatedHeader {
+            get {
+                return ResourceManager.GetString("PythonMigrationBackupFileCreatedHeader", resourceCulture);
             }
         }
         

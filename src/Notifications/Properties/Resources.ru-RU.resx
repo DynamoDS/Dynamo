@@ -150,4 +150,10 @@
   <data name="NotificationsCenterTitle" xml:space="preserve">
     <value>Уведомления</value>
   </data>
+  <data name="UnsafePathDetectedDetail" xml:space="preserve">
+    <value>В доверенных расположениях обнаружен небезопасный путь:</value>
+  </data>
+  <data name="UnsafePathDetectedTitle" xml:space="preserve">
+    <value>Обнаружен небезопасный путь</value>
+  </data>
 </root>

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Dynamo.Configuration;
+using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Utilities;
@@ -62,6 +63,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.ShowCodeBlockLineNumber, true);
             Assert.AreEqual(settings.ShowTabsAndSpacesInScriptEditor, false);
             Assert.AreEqual(settings.EnableNodeAutoComplete, true);
+            Assert.AreEqual(settings.IsAutoSyncDocumentBrowser, true);
             Assert.AreEqual(settings.EnableNotificationCenter, true);
             Assert.AreEqual(settings.DefaultPythonEngine, string.Empty);
             Assert.AreEqual(settings.MaxNumRecentFiles, PreferenceSettings.DefaultMaxNumRecentFiles);
@@ -82,6 +84,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.ShowCodeBlockLineNumber, true);
             Assert.AreEqual(settings.ShowTabsAndSpacesInScriptEditor, false);
             Assert.AreEqual(settings.EnableNodeAutoComplete, true);
+            Assert.AreEqual(settings.IsAutoSyncDocumentBrowser, true);
             Assert.AreEqual(settings.EnableNotificationCenter, true);
             Assert.AreEqual(settings.DefaultPythonEngine, string.Empty);
             Assert.AreEqual(settings.MaxNumRecentFiles, PreferenceSettings.DefaultMaxNumRecentFiles);
@@ -102,6 +105,7 @@ namespace Dynamo.Tests.Configuration
             settings.BackupInterval = 120000; //change to 2 minutes(120000 ms)
             settings.UseHardwareAcceleration = false;
             settings.EnableNodeAutoComplete = false;
+            settings.IsAutoSyncDocumentBrowser = false;
             settings.EnableNotificationCenter = false;
             settings.DefaultRunType = RunType.Manual;
             settings.ViewExtensionSettings.Add(new ViewExtensionSettings()
@@ -155,6 +159,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.BackupInterval, 120000);
             Assert.AreEqual(settings.UseHardwareAcceleration, false);
             Assert.AreEqual(settings.EnableNodeAutoComplete, false);
+            Assert.AreEqual(settings.IsAutoSyncDocumentBrowser, false);
             Assert.AreEqual(settings.EnableNotificationCenter, false);
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 1);
             var extensionSettings = settings.ViewExtensionSettings[0];
@@ -499,6 +504,29 @@ namespace Dynamo.Tests.Configuration
             settings = PreferenceSettings.Load(tempPath);
 
             Assert.IsTrue(settings.HomePageSettings.Contains(String.Concat("greeting", "Hello World")));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestPathManagerSamplesDirectoryRespectsLocalePreference()
+        {
+            // Arrange
+            var pathManagerParams = new PathManagerParams
+            {
+                CorePath = Path.GetDirectoryName(typeof(PathManager).Assembly.Location)
+            };
+
+            var pathManager = new PathManager(pathManagerParams);
+            var preferences = new PreferenceSettings { Locale = "es-ES" };
+            pathManager.Preferences = preferences;
+
+            // Act
+            var samplesPath = pathManager.SamplesDirectory;
+
+            // Assert - samples path should contain the locale
+            Assert.That(samplesPath, Is.Not.Null);
+            var expectedPathSegment = Path.Combine("samples", "es-ES");
+            Assert.That(samplesPath, Does.EndWith(expectedPathSegment));
         }
     }
 }

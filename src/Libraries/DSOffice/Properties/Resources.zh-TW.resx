@@ -120,9 +120,6 @@
   <data name="ExcelInteropObsoleteNode" xml:space="preserve">
     <value>此為舊型節點，未來版本的 Dynamo 將移除，請使用以 OpenXML 為基礎的對應節點。</value>
   </data>
-  <data name="ReadObsolete" xml:space="preserve">
-    <value>改為使用 File.FromPath -&gt; Excel.ReadFromFile 節點。</value>
-  </data>
   <data name="StreamWriterNotFoundException" xml:space="preserve">
     <value>找不到檔案或目錄</value>
   </data>

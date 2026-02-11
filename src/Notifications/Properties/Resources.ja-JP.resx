@@ -150,4 +150,10 @@
   <data name="NotificationsCenterTitle" xml:space="preserve">
     <value>通知</value>
   </data>
+  <data name="UnsafePathDetectedDetail" xml:space="preserve">
+    <value>[信頼できる場所]に、安全でないパスが検出されました:</value>
+  </data>
+  <data name="UnsafePathDetectedTitle" xml:space="preserve">
+    <value>安全でないパスが検出されました</value>
+  </data>
 </root>

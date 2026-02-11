@@ -127,8 +127,8 @@
     <value>Переключение между видами «Рядом» и «Встроенный».</value>
   </data>
   <data name="IronPythonDialogDescription" xml:space="preserve">
-    <value>Программа Dynamo переведена с устаревшего механизма IronPython2 (Python 2) на новый механизм CPython3 (Python 3). 
-Механизм IronPython по-прежнему доступен в виде пакета в Dynamo Package Manager, однако поддерживается только механизм CPython3.</value>
+    <value>Программа Dynamo переведена с устаревшего механизма IronPython2 на новый механизм PythonNet3. 
+Механизм IronPython по-прежнему доступен в виде пакета в Dynamo Package Manager, однако поддерживается только PythonNet3.</value>
   </data>
   <data name="IronPythonDialogSummary" xml:space="preserve">
     <value>Этот график содержит узлы, ссылающиеся на устаревший механизм Python.</value>
@@ -140,10 +140,10 @@
     <value>Больше не показывать.</value>
   </data>
   <data name="IronPythonNotificationDetailedMessage" xml:space="preserve">
-    <value>В настоящее время этот график содержит узлы Python, в которых используется устаревший механизм IronPython. Он выведен из использования. Обновите эти узлы для использования нового механизма CPython 3.7.</value>
+    <value>В настоящее время этот график содержит узлы Python, в которых используется устаревший механизм IronPython. Он выведен из использования. Обновите эти узлы для использования нового механизма PythonNet3.</value>
   </data>
   <data name="IronPythonNotificationShortMessage" xml:space="preserve">
-    <value>В настоящее время этот график содержит узлы, в которых используется устаревший механизм IronPython2 (Python 2). Он выведен из использования. Реализован новый механизм CPython3 (Python 3), который доступен в редакторе Python.</value>
+    <value>В настоящее время этот график содержит узлы, в которых используется устаревший механизм IronPython2. Он выведен из использования. Реализован новый механизм PythonNet3, который доступен в редакторе Python.</value>
   </data>
   <data name="MigrationAssistantDisclaimerContinueButtonContent" xml:space="preserve">
     <value>Продолжить</value>
@@ -158,7 +158,7 @@
     <value>Вы собираетесь внести изменения в код Python</value>
   </data>
   <data name="MigrationAssistantDisclaimerMessage" xml:space="preserve">
-    <value>Migration Assistant позволяет обновлять сценарии версии Python 2 до версии Python 3.
+    <value>Migration Assistant позволяет обновлять сценарии версии IronPython2 до версии PythonNet3.
 Нажимая кнопку «Продолжить», вы принимаете изменения синтаксиса исходного кода, предложенные Migration Assistant. Это компонент открытого исходного кода Dynamo, лицензия на который предоставляется вам в соответствии с условиями Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0). Согласно им, Dynamo и Migration Assistant предоставляются вам по принципу КАК ЕСТЬ.</value>
   </data>
   <data name="MigrationAssistantDisclaimerWindowTitle" xml:space="preserve">
@@ -168,7 +168,7 @@
     <value>Ничего нет.</value>
   </data>
   <data name="MigrationAssistantNoChangesStateMessage" xml:space="preserve">
-    <value>Код готов к выполнению с использованием механизма Python 3. Нажмите кнопку «Принять», чтобы переключиться на механизм Python 3.</value>
+    <value>Код готов к выполнению с использованием механизма PythonNet3. Нажмите кнопку «Принять», чтобы переключиться на механизм PythonNet3.</value>
   </data>
   <data name="MigrationAssistantErrorStateHeader" xml:space="preserve">
     <value>В вашем коде содержится ошибка.</value>
@@ -200,6 +200,9 @@
   <data name="PythonMigrationBackupFileCreatedMessage" xml:space="preserve">
     <value>Перед переносом кода Python резервная копия этого графика была сохранена в настроенную папку резервных копий: {0}</value>
   </data>
+  <data name="CPythonMigrationBackupFileCreatedMessage" xml:space="preserve">
+    <value>Перед обновлением был сохранен файл резервной копии </value>
+  </data>
   <data name="RejectButtonTooltip" xml:space="preserve">
     <value>Отклонить текущие изменения кода.</value>
   </data>
@@ -220,5 +223,17 @@
   </data>
   <data name="SwitchViewButton" xml:space="preserve">
     <value>Переключить вид</value>
+  </data>
+  <data name="CPython3NotificationDetailedMessage" xml:space="preserve">
+    <value>В настоящее время этот график содержит узлы Python, использующие устаревший компонент CPython, который был выведен из эксплуатации. Рекомендуем обновить эти узлы для использования нового компонента PythonNet3.</value>
+  </data>
+  <data name="CPython3NotificationShortMessage" xml:space="preserve">
+    <value>В настоящее время этот график содержит узлы, использующие устаревший компонент CPython3, который был выведен из эксплуатации. Реализован новый компонент PythonNet3, который доступен в редакторе Python.</value>
+  </data>
+  <data name="PythonMigrationBackupFileCreatedHeader" xml:space="preserve">
+    <value>Резервная копия графика сохранена</value>
+  </data>
+  <data name="CPythonUpgradeToastMessage" xml:space="preserve">
+    <value>Узлы CPython ({0}) и определения пользовательских узлов ({1}) автоматически преобразованы в формат PythonNet3 для работы в Dynamo 4.0. CPython больше не поддерживается.</value>
   </data>
 </root>
