@@ -4247,4 +4247,10 @@ To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the
   <data name="DynamoSplashScreenFailed" xml:space="preserve">
     <value>Failed to load Dynamo SplashScreen, please re-launch Dynamo</value>
   </data>
+  <data name="DocumentationBrowserPreferences" xml:space="preserve">
+    <value>Documentation Browser</value>
+  </data>
+  <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
+    <value>Auto‑sync with node selection.</value>
+  </data>
 </root>
