@@ -89,7 +89,8 @@ namespace Dynamo.PackageManager.UI
             // fighting WPF's internal focus transitions during tab changes.
             Dispatcher.BeginInvoke(new Action(() =>
             {
-                if (SelectedItem is TabItem selectedTab)
+                var selectedTab = ItemContainerGenerator.ContainerFromItem(SelectedItem) as TabItem;
+                if (selectedTab != null)
                 {
                     selectedTab.Focus();
                 }
