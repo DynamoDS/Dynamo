@@ -900,6 +900,53 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void IsSupportedDataNodeDynamoType_HandlesIEnumerableFromParseJSON()
+        {
+            // This test verifies the fix for the bug where list data from ParseJSON
+            // was incorrectly rejected because it returns IEnumerable, not ArrayList
+            
+            // Test 1: Verify that IEnumerable collections (like from ParseJSON) are properly handled
+            var jsonArrayString = "[1, 2, 3, 4, 5]";
+            var parsedArray = DSCore.Data.ParseJSON(jsonArrayString);
+            
+            // ParseJSON returns IEnumerable<object>, not ArrayList
+            Assert.IsInstanceOf<IEnumerable>(parsedArray);
+            Assert.IsNotInstanceOf<ArrayList>(parsedArray);
+            
+            // Verify it's recognized as a valid list of integers
+            var validate = DSCore.Data.IsSupportedDataNodeDynamoType(parsedArray, typeof(int), true);
+            Assert.AreEqual(true, validate, "Should validate IEnumerable from ParseJSON as a list of integers.");
+            
+            // Test 2: Verify string lists from ParseJSON work correctly
+            var jsonStringArrayString = "[\"hello\", \"world\", \"test\"]";
+            var parsedStringArray = DSCore.Data.ParseJSON(jsonStringArrayString);
+            
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(parsedStringArray, typeof(string), true);
+            Assert.AreEqual(true, validate, "Should validate IEnumerable from ParseJSON as a list of strings.");
+            
+            // Test 3: Verify that strings themselves are NOT treated as lists (string exclusion)
+            var singleString = "hello";
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(singleString, typeof(string), true);
+            Assert.AreEqual(false, validate, "Should NOT treat a single string as a list even though strings are IEnumerable.");
+            
+            // Test 4: Verify that single string value works correctly (not as list)
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(singleString, typeof(string), false);
+            Assert.AreEqual(true, validate, "Should validate a single string when isList is false.");
+            
+            // Test 5: Verify other IEnumerable types work (List<T>)
+            var intList = new List<int> { 1, 2, 3 };
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(intList, typeof(int), true);
+            Assert.AreEqual(true, validate, "Should validate List<int> as a list of integers.");
+            
+            // Test 6: Verify double array from ParseJSON
+            var jsonDoubleArrayString = "[1.5, 2.7, 3.14]";
+            var parsedDoubleArray = DSCore.Data.ParseJSON(jsonDoubleArrayString);
+            validate = DSCore.Data.IsSupportedDataNodeDynamoType(parsedDoubleArray, typeof(double), true);
+            Assert.AreEqual(true, validate, "Should validate IEnumerable from ParseJSON as a list of doubles.");
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void ThrowsCorrectErrorTypes()
         {
             // Arrange
