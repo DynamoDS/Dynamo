@@ -123,6 +123,12 @@ namespace Dynamo.GraphMetadata
                 linterManager.PropertyChanged += OnLinterManagerPropertyChange;
             }
 
+            // Subscribe to workspace PropertyChanged to refresh UI when Description changes programmatically
+            if (currentWorkspace != null)
+            {
+                currentWorkspace.PropertyChanged += OnWorkspacePropertyChanged;
+            }
+
             CustomProperties = new ObservableCollection<CustomPropertyControl>();
             InitializeCommands();
         }
@@ -145,14 +151,26 @@ namespace Dynamo.GraphMetadata
                 return;
             }
 
+            // Unsubscribe from previous workspace PropertyChanged
+            if (currentWorkspace != null)
+            {
+                currentWorkspace.PropertyChanged -= OnWorkspacePropertyChanged;
+            }
+
             //Handle workspace change cases in UI.  First is a new workspace or template opening
             //In this case the properties should be cleared
             if (!hwm.IsTemplate && string.IsNullOrEmpty(hwm.FileName) )
             {
+                currentWorkspace = hwm; // Update currentWorkspace to new workspace
                 GraphDescription = string.Empty;
                 GraphAuthor = string.Empty;
                 HelpLink = null;
                 Thumbnail = null;
+                // Subscribe AFTER making changes to avoid unnecessary event handling during initialization
+                if (currentWorkspace != null)
+                {
+                    currentWorkspace.PropertyChanged += OnWorkspacePropertyChanged;
+                }
             }
             //Second is switching between an open workspace and open custom node and no state changes are required.
             //This case can also be true if you close an open workspace while focused on a custom node.
@@ -165,12 +183,16 @@ namespace Dynamo.GraphMetadata
             else
             {
                 currentWorkspace = hwm;
+                // Subscribe BEFORE raising PropertyChanged
+                if (currentWorkspace != null)
+                {
+                    currentWorkspace.PropertyChanged += OnWorkspacePropertyChanged;
+                }
                 RaisePropertyChanged(nameof(GraphDescription));
                 RaisePropertyChanged(nameof(GraphAuthor));
                 RaisePropertyChanged(nameof(HelpLink));
                 RaisePropertyChanged(nameof(Thumbnail));
             }
-
             //Clear custom properties for cases one and two.
             CustomProperties.Clear();
         }
@@ -180,6 +202,28 @@ namespace Dynamo.GraphMetadata
             if (e.PropertyName == nameof(LinterManager.ActiveLinter))
             {
                 RaisePropertyChanged(nameof(CurrentLinter));
+            }
+        }
+
+        // Handle workspace PropertyChanged events to refresh UI when properties change programmatically
+        private void OnWorkspacePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            // Use WorkspaceModel.Description since that's where the property is defined
+            if (e.PropertyName == nameof(WorkspaceModel.Description))
+            {
+                RaisePropertyChanged(nameof(GraphDescription));
+            }
+            else if (e.PropertyName == nameof(WorkspaceModel.Author))
+            {
+                RaisePropertyChanged(nameof(GraphAuthor));
+            }
+            else if (e.PropertyName == nameof(HomeWorkspaceModel.GraphDocumentationURL))
+            {
+                RaisePropertyChanged(nameof(HelpLink));
+            }
+            else if (e.PropertyName == nameof(HomeWorkspaceModel.Thumbnail))
+            {
+                RaisePropertyChanged(nameof(Thumbnail));
             }
         }
 
@@ -299,6 +343,11 @@ namespace Dynamo.GraphMetadata
                 linterManager.PropertyChanged -= OnLinterManagerPropertyChange;
             }
 
+            // Unsubscribe from workspace PropertyChanged
+            if (currentWorkspace != null)
+            {
+                currentWorkspace.PropertyChanged -= OnWorkspacePropertyChanged;
+            }
             foreach (var cp in CustomProperties)
             {
                 cp.RequestDelete -= HandleDeleteRequest;

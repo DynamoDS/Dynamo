@@ -1006,6 +1006,34 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Python Engine Change.
+        /// </summary>
+        public static string CPython3EngineNotificationMessageBoxHeader {
+            get {
+                return ResourceManager.GetString("CPython3EngineNotificationMessageBoxHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This graph includes CPython nodes, which are no longer supported in Dynamo 4.0. Saving will convert them to PythonNet3, the new default engine.
+        ///To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the Package Manager..
+        /// </summary>
+        public static string CPython3EngineNotificationMessageBoxText {
+            get {
+                return ResourceManager.GetString("CPython3EngineNotificationMessageBoxText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to https://dynamobim.org/pythonnet3-a-new-dynamo-python-to-fix-everything/.
+        /// </summary>
+        public static string CPython3EngineUpgradeLearnMoreUri {
+            get {
+                return ResourceManager.GetString("CPython3EngineUpgradeLearnMoreUri", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy.
         /// </summary>
         public static string CrashPromptDialogCopyButton {
@@ -1397,6 +1425,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto‑sync with node selection..
+        /// </summary>
+        public static string DocumentationBrowserAutoSyncLabel {
+            get {
+                return ResourceManager.GetString("DocumentationBrowserAutoSyncLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Documentation Browser.
+        /// </summary>
+        public static string DocumentationBrowserPreferences {
+            get {
+                return ResourceManager.GetString("DocumentationBrowserPreferences", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download Warning.
         /// </summary>
         public static string DownloadWarningMessageBoxTitle {
@@ -1429,6 +1475,24 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoShowFileTrustWarning {
             get {
                 return ResourceManager.GetString("DynamoShowFileTrustWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo Splash Screen.
+        /// </summary>
+        public static string DynamoSplashScreen {
+            get {
+                return ResourceManager.GetString("DynamoSplashScreen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load Dynamo SplashScreen, please re-launch Dynamo.
+        /// </summary>
+        public static string DynamoSplashScreenFailed {
+            get {
+                return ResourceManager.GetString("DynamoSplashScreenFailed", resourceCulture);
             }
         }
         
@@ -3859,7 +3923,7 @@ namespace Dynamo.Wpf.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to It seems like Autodesk Identity Manager is not set up on your system. To ensure full access to all features, please sign in to your Autodesk account using Autodesk Identity Manager.
-        ///#Download and install=https://manage.autodesk.com/products/updates it here or through Autodesk Access, then sign in..
+        ///#Download and install=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html it here or through Autodesk Access, then sign in..
         /// </summary>
         public static string IDSDKErrorMessage {
             get {
@@ -4460,6 +4524,15 @@ namespace Dynamo.Wpf.Properties {
         public static string MessageAlreadyInstallDynamo {
             get {
                 return ResourceManager.GetString("MessageAlreadyInstallDynamo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Don&apos;t show this again.
+        /// </summary>
+        public static string MessageBoxDontShowAgainLabel {
+            get {
+                return ResourceManager.GetString("MessageBoxDontShowAgainLabel", resourceCulture);
             }
         }
         
@@ -5543,6 +5616,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Not connected to the internet..
+        /// </summary>
+        public static string OfflineStatusTooltip {
+            get {
+                return ResourceManager.GetString("OfflineStatusTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to OK.
         /// </summary>
         public static string OKButton {
@@ -5716,6 +5798,15 @@ namespace Dynamo.Wpf.Properties {
         public static string OneAssemblyWasLoadedSeveralTimesErrorMessage {
             get {
                 return ResourceManager.GetString("OneAssemblyWasLoadedSeveralTimesErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connected to the internet..
+        /// </summary>
+        public static string OnlineStatusTooltip {
+            get {
+                return ResourceManager.GetString("OnlineStatusTooltip", resourceCulture);
             }
         }
         
@@ -8478,6 +8569,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Python Engine change notifications.
+        /// </summary>
+        public static string PreferencesViewShowPythonEngineChangeNotifications {
+            get {
+                return ResourceManager.GetString("PreferencesViewShowPythonEngineChangeNotifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CPython is no longer supported in Dynamo 4.0 or above and will be converted to the new default engine PythonNet3. Disable the toggle to hide all notifications about engine changes..
+        /// </summary>
+        public static string PreferencesViewShowPythonEngineChangeNotificationsTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesViewShowPythonEngineChangeNotificationsTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to To preview the execution state of your graph, wires connected to ports that will be affected by a graph run are highlighted in orange. Available only when the current workspace is in Manual run mode..
         /// </summary>
         public static string PreferencesViewShowRunPreviewTooltip {
@@ -9619,20 +9728,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reset CPython.
+        ///   Looks up a localized string similar to Reset PythonNet3.
         /// </summary>
-        public static string ResetCPythonButtonText {
+        public static string ResetPythonNet3ButtonText {
             get {
-                return ResourceManager.GetString("ResetCPythonButtonText", resourceCulture);
+                return ResourceManager.GetString("ResetPythonNet3ButtonText", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Resets CPython environment by reloading modules..
+        ///   Looks up a localized string similar to Resets PythonNet3 environment by reloading modules..
         /// </summary>
-        public static string ResetCPythonButtonToolTip {
+        public static string ResetPythonNet3ButtonToolTip {
             get {
-                return ResourceManager.GetString("ResetCPythonButtonToolTip", resourceCulture);
+                return ResourceManager.GetString("ResetPythonNet3ButtonToolTip", resourceCulture);
             }
         }
         
@@ -10024,15 +10133,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sign in to access online services that integrate with your desktop software..
-        /// </summary>
-        public static string SignInOfflineButtonContentToolTip {
-            get {
-                return ResourceManager.GetString("SignInOfflineButtonContentToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Sign In.
         /// </summary>
         public static string SignInButtonText {
@@ -10047,6 +10147,15 @@ namespace Dynamo.Wpf.Properties {
         public static string SigningInButtonText {
             get {
                 return ResourceManager.GetString("SigningInButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable Network Mode to be able to sign in..
+        /// </summary>
+        public static string SignInOfflineButtonContentToolTip {
+            get {
+                return ResourceManager.GetString("SignInOfflineButtonContentToolTip", resourceCulture);
             }
         }
         
@@ -10461,6 +10570,15 @@ namespace Dynamo.Wpf.Properties {
         public static string TitlePackageTargetOtherHost {
             get {
                 return ResourceManager.GetString("TitlePackageTargetOtherHost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to here.
+        /// </summary>
+        public static string ToastHyperlinkPathText {
+            get {
+                return ResourceManager.GetString("ToastHyperlinkPathText", resourceCulture);
             }
         }
         

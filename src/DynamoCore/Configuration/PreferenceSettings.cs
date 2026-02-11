@@ -74,6 +74,7 @@ namespace Dynamo.Configuration
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
         private bool isEnablePersistExtensionsEnabled;
+        private bool isAutoSyncDocumentBrowser = true;
         private bool isStaticSplashScreenEnabled;
         private bool isTimeStampIncludedInExportFilePath;
         private bool isCreatedFromValidFile = true;
@@ -390,22 +391,6 @@ namespace Dynamo.Configuration
 
 
         /// <summary>
-        /// Indicates whether background preview is active or not.
-        /// </summary>
-        [Obsolete("Property will be deprecated in a future version of Dynamo, please use BackgroundPreviews")]
-        public bool IsBackgroundPreviewActive
-        {
-            get
-            {
-                return GetIsBackgroundPreviewActive("IsBackgroundPreviewActive");
-            }
-            set
-            {
-                SetIsBackgroundPreviewActive("IsBackgroundPreviewActive", value);
-            }
-        }
-
-        /// <summary>
         /// Indicate which render precision will be used
         /// </summary>
         public int RenderPrecision { get; set; }
@@ -708,6 +693,16 @@ namespace Dynamo.Configuration
         public bool ShowTabsAndSpacesInScriptEditor { get; set; }
 
         /// <summary>
+        /// Controls whether Dynamo shows upgrade notifications for legacy CPython nodes
+        /// when opening a graph. These notices appear when a graph contains CPython-engine
+        /// Python nodes that are automatically upgraded to PythonNet3:
+        ///  • save/close confirmation dialog
+        ///  • banner inside the Python Script Editor
+        /// NOTE: This setting is not related to the historical IronPython2 → CPython3 migration.
+        /// </summary>
+        public bool ShowPythonAutoMigrationNotifications { get; set; } = true;
+
+        /// <summary>
         /// This defines if user wants to see the enabled node Auto Complete feature for port interaction.
         /// </summary>
         public bool EnableNodeAutoComplete { get; set; }
@@ -789,7 +784,22 @@ namespace Dynamo.Configuration
                 RaisePropertyChanged(nameof(EnablePersistExtensions));
             }
         }
-
+        /// <summary>
+        /// This defines if user wants the Document Browser content to be automatically synced to the selected Node.
+        /// The default value is true.
+        /// </summary>
+        public bool IsAutoSyncDocumentBrowser
+        {
+            get
+            {
+                return isAutoSyncDocumentBrowser;
+            }
+            set
+            {
+                isAutoSyncDocumentBrowser = value;
+                RaisePropertyChanged(nameof(IsAutoSyncDocumentBrowser));
+            }
+        }
 
         /// <summary>
         /// This defines if the user wants to see the static splash screen again
@@ -1074,7 +1084,7 @@ namespace Dynamo.Configuration
             ShowTabsAndSpacesInScriptEditor = false;
             EnableNodeAutoComplete = true;
             EnableNewNodeAutoCompleteUI = true;
-            DefaultEnableLegacyPolyCurveBehavior = true;
+            DefaultEnableLegacyPolyCurveBehavior = false;
             HideNodesBelowSpecificConfidenceLevel = false;
             MLRecommendationConfidenceLevel = 10;
             MLRecommendationNumberOfResults = 10;
@@ -1401,11 +1411,17 @@ namespace Dynamo.Configuration
         internal void AddDefaultTrustedLocations()
         {
             if (!IsFirstRun) return;
-            string ProgramData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            AddTrustedLocation(Path.Combine(ProgramData, Configurations.AutodeskAsString));
 
             string ProgramFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
             AddTrustedLocation(Path.Combine(ProgramFiles, Configurations.AutodeskAsString));
+
+            //Adding Samples path to trusted folders
+            if(!string.IsNullOrEmpty(PathManager.Instance.SamplesDirectory))
+                AddTrustedLocation(PathManager.Instance.SamplesDirectory);
+
+            //Adding Templates path to trusted folders
+            if (!string.IsNullOrEmpty(PathManager.Instance.DefaultTemplatesDirectory))
+                AddTrustedLocation(PathManager.Instance.DefaultTemplatesDirectory);
         }
 
         /// <summary>

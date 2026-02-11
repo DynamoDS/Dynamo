@@ -481,669 +481,6 @@
         <member name="P:Autodesk.DesignScript.Geometry.Cuboid.Height">
             <summary>Restituisce la distanza dell'altezza. Nota: restituisce le dimensioni di input del cuboide e NON le dimensioni nello spazio comune. In altri termini, se si crea una larghezza del cuboide (asse X) pari a 10 e la si trasforma in un CoordinateSystem con scalatura 2x per l'asse X, il valore della larghezza resterà 10. ASM non consente l'estrazione dei vertici di un corpo in un ordine prevedibile, pertanto non è possibile determinare le dimensioni dopo una trasformazione.</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ToString">
-            <summary>Ottiene una rappresentazione stringa della curva</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByParameterLineOnSurface(Autodesk.DesignScript.Geometry.Surface,Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
-            <summary>Crea una curva mediante una linea di superficie nello spazio UV</summary>
-            <param name="baseSurface">Superficie da utilizzare</param>
-            <param name="startParams">UV iniziale in prossimità del quale inizierà la curva</param>
-            <param name="endParams">UV finale in prossimità del quale terminerà la curva</param>
-            <returns>Curva ai parametri di inizio e fine della superficie</returns>
-            <search>
-            isocurve,curvebyuv,lines,uvs
-            </search>
-            <weights>
-            0.5,0.5,0.4,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByBlendBetweenCurves(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean,System.Boolean,System.Boolean)">
-            <summary>Crea una curva che si unisce tra due curve</summary>
-            <param name="curve1">Prima curva da unire</param>
-            <param name="curve2">Seconda curva da unire</param>
-            <param name="endOrStart1">flag che indica quale estremità della curva 1 unire</param>
-            <param name="endOrStart2">flag che indica quale estremità della curva 2 unire</param>
-            <param name="isG2Continuous">flag che indica se la curva risultante è di continuità G1 o G2</param>
-            <returns>Curva risultante dall'unione di due curve</returns>
-            <search>
-            blend,make continuous,connect
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByIsoCurveOnSurface(Autodesk.DesignScript.Geometry.Surface,System.Int32,System.Double)">
-            <summary>Crea una curva dall'isolinea di una superficie</summary>
-            <param name="baseSurface">Superficie di base</param>
-            <param name="direction">se isolinea 0 si trova lungo la direzione U, se 1 si trova lungo la direzione V</param>
-            <param name="parameter">fissato per il valore di curva dell'altro parametro di superficie</param>
-            <returns>Isocurva sulla superficie</returns>
-            <search>
-            isocurve,curvebydir,lines
-            </search>
-            <weights>
-            0.5,0.5,0.4
-            </weights>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.Length">
-            <summary>Restituisce la lunghezza dell'arco totale della curva.</summary>
-            <search>
-            distance
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.IsPlanar">
-            <summary>Restituisce true se la curva è piana, altrimenti false.</summary>
-            <search>
-            flat,liesinplane
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.IsClosed">
-            <summary>Restituisce true se la curva è chiusa, altrimenti false.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.StartPoint">
-            <summary>Ottiene il punto iniziale lungo la curva</summary>
-            <search>
-            begin,curvestart,startpt
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.EndPoint">
-            <summary>Ottiene il punto finale lungo la curva</summary>
-            <search>
-            end,curveend,endpt
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Curve.Normal">
-            <summary>Normale del piano dove si trova la curva. Valida solo per le curve piane.</summary>
-            <search>
-            perpendicular
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtParameter(System.Double)">
-            <summary>Ottiene un punto sulla curva in corrispondenza di un parametro specificato, incluso tra StartParameter() e EndParameter()</summary>
-            <param name="param">Il parametro in base al quale valutare</param>
-            <returns>Punto</returns>
-            <search>
-            pointoncurve,curvepoint
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TangentAtParameter(System.Double)">
-            <summary>Ottiene un vettore tangente alla curva in corrispondenza di un parametro specificato, incluso tra StartParameter() e EndParameter()</summary>
-            <param name="param">Il parametro in base al quale valutare</param>
-            <returns>Un vettore parallelo alla curva in corrispondenza del parametro</returns>
-            <search>
-            tangentoncurve,curvetan
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double)">
-            <summary>Ottiene un vettore perpendicolare alla curva in corrispondenza di un parametro specificato, incluso tra StartParameter() e EndParameter()</summary>
-            <param name="param">Il parametro in base al quale valutare</param>
-            <returns>Un vettore perpendicolare alla curva in corrispondenza del parametro</returns>
-            <search>
-            normaloncurve,curvenorm
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double,System.Boolean)">
-            <summary>Ottiene un vettore perpendicolare alla curva in corrispondenza di un parametro specificato tra StartParameter() e EndParameter(). La curva deve essere piana. La normale risultante sarà coerente nell'intera curvatura della curva.</summary>
-            <param name="param">Il parametro in base al quale valutare</param>
-            <param name="side">Se l'opzione 'side' è impostata su False, la normale punterà al lato destro della curva (spostandosi dal punto iniziale al punto finale della curva). Se l'opzione 'side' è True, la normale punterà al lato sinistro della curva.</param>
-            <returns>Un vettore perpendicolare alla curva in corrispondenza del parametro</returns>
-            <search>
-            normaloncurve,curvenorm
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtParameter(System.Double)">
-            <summary>Ottieni un CoordinateSystem con origine nel punto corrispondente al parametro specificato. L'asse X viene allineato con la normale della curva, l'asse Y con la curva tangente in corrispondenza di tale punto e l'asse Z sul vettore di orientamento o binormale su tale punto</summary>
-            <param name="param">Il parametro in base al quale valutare</param>
-            <returns>CoordinateSystem in corrispondenza del parametro della curva</returns>
-            <search>
-            coordoncurve,curvecoord,derivatives
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.HorizontalFrameAtParameter(System.Double)">
-            <summary>Ottiene un CoordinateSystem con origine nel punto corrispondente al parametro specificato</summary>
-            <param name="param">Il parametro in base al quale valutare</param>
-            <returns>CoordinateSystem allineato all'asse nel punto</returns>
-            <search>
-            frame,axisaligned,aa,coordcurve,framecurve,curveframe,coordoncurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtParameter(System.Double)">
-            <summary>Restituisce un piano la cui normale è allineata con la tangente della curva. I parametri vengono regolati in modo che 0 sia sempre il punto iniziale e 1 sia sempre il punto finale.</summary>
-            <param name="param"/>
-            <returns/>
-            <search>
-            planeoncurve,planecurve,tangentplane
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtSegmentLength(System.Double)">
-            <summary>Ottiene un punto ad una determinata lunghezza di arco lungo la curva</summary>
-            <param name="segmentLength">La distanza lungo la curva in corrispondenza della quale eseguire la valutazione</param>
-            <returns>Il punto in corrispondenza della lunghezza arco fornita</returns>
-            <search>
-            pointoncurve,curvepoint,pointalongcurve,distanceoncurve,distancepoint,distpoint,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtDistance(System.Double)">
-            <summary>Ottenere un punto in corrispondenza di una determinata lunghezza dell'arco lungo la curva</summary>
-            <param name="segmentLength">La distanza lungo la curva in corrispondenza della quale si desidera valutare</param>
-            <returns>Il punto in corrispondenza di una determinata lunghezza dell'arco</returns>
-            <search>
-            pointoncurve,curvepoint,pointalongcurve,distanceoncurve,distancepoint,distpoint,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualSegmentLength(System.Int32)">
-            <summary>Restituisce i punti distanziati in modo uniforme lungo la lunghezza della curva in base al numero di divisioni immesso</summary>
-            <param name="divisions">Numero di divisioni</param>
-            <returns>Punti distanziati in modo uniforme lungo la curva</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualChordLength(System.Int32)">
-            <summary>Restituisce i punti equidistanti lungo la curva in corrispondenza dell'uguale lunghezza dell'asta in base al numero di divisioni immesso</summary>
-            <param name="divisions">Numero di divisioni</param>
-            <returns>Elenco di punti sulla curva</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtChordLength(System.Double,System.Double,System.Boolean)">
-            <summary>Consente di ottenere il punto in corrispondenza di una determinata lunghezza dell'asta della curva dalla posizione del parametro fornita.</summary>
-            <param name="chordLength">La lunghezza dell'asta in base alla quale valutare</param>
-            <param name="parameterLocation">Parametro della curva da cui eseguire la misurazione</param>
-            <param name="forward">true se si sposta in avanti lungo la curva</param>
-            <returns>Punto sulla curva</returns>
-            <search>
-            measure from,measure to,parameteratdist
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtSegmentLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>Restituisce punti distanziati in modo uniforme lungo la curva in corrispondenza della lunghezza del segmento specificata dal punto specificato.</summary>
-            <param name="point">Il punto di riferimento da cui eseguire la misurazione</param>
-            <param name="segmentLength">La distanza lungo la curva in corrispondenza della quale eseguire la valutazione</param>
-            <returns>Elenco di punti sulla curva, incluso il punto specificato e lungo la direzione della curva.</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtChordLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>Restituisce punti distanziati in modo uniforme sulla curva in corrispondenza della lunghezza della corda specificata dal punto specificato.</summary>
-            <param name="point">Il punto di riferimento da cui eseguire la misurazione</param>
-            <param name="chordLength">Lunghezza corda</param>
-            <returns>Elenco di punti sulla curva, incluso il punto specificato e lungo la direzione della curva.</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtSegmentLength(System.Double)">
-            <summary>Restituisce un CoordinateSystem alla distanza specificata dal punto iniziale della curva. L'asse Y risulta tangente alla curva, l'asse X è la curvatura.</summary>
-            <param name="segmentLength">La distanza lungo la curva in corrispondenza della quale eseguire la valutazione</param>
-            <returns>CoordinateSystem sulla curva</returns>
-            <search>
-            coordoncurve,curvecoord,derivatives
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtDistance(System.Double)">
-            <summary>Restituisce un CoordinateSystem alla distanza specificata dal punto iniziale della curva. L'asse Y è tangente alla curva, l'asse X è la curvatura.</summary>
-            <param name="segmentLength">La distanza lungo la curva in corrispondenza della quale si desidera valutare</param>
-            <returns>CoordinateSystem sulla curva</returns>
-            <search>
-            coordoncurve,curvecoord,derivatives
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtSegmentLength(System.Double)">
-            <summary>Restituisce un piano alla distanza specificata dal punto iniziale della curva. La perpendicolare al piano è allineata alla tangente della curva.</summary>
-            <param name="segmentLength">La distanza lungo la curva in corrispondenza della quale eseguire la valutazione</param>
-            <returns>Piano sulla curva</returns>
-            <search>
-            planeoncurve,planecurve,tangentplane
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtDistance(System.Double)">
-            <summary>Restituisce un piano alla distanza specificata lungo la curva rispetto al punto iniziale. La perpendicolare al piano si allinea con la tangente della curva.</summary>
-            <param name="segmentLength">La distanza lungo la curva in corrispondenza della quale si desidera valutare</param>
-            <returns>Piano sulla curva</returns>
-            <search>
-            planeoncurve,planecurve,tangentplane
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SegmentLengthAtParameter(System.Double)">
-            <summary>Ottiene la lunghezza del segmento misurata dal punto iniziale della curva al parametro specificato.</summary>
-            <param name="parameter">Valore compreso tra 0 e 1</param>
-            <returns>Lunghezza segmento</returns>
-            <search>
-            lengthatparameter,dist along,lengthatpoint,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DistanceAtParameter(System.Double)">
-            <summary>Ottiene la lunghezza del segmento misurata dal punto iniziale della curva al parametro specificato.</summary>
-            <param name="param">Valore compreso tra 0 e 1</param>
-            <returns>Lunghezza segmento</returns>
-            <search>
-            lengthatparameter,dist along,lengthatpoint,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtSegmentLength(System.Double)">
-            <summary>Ottiene il parametro ad una determinata lunghezza di arco sulla curva.</summary>
-            <param name="segmentLength">La distanza lungo la curva in corrispondenza della quale eseguire la valutazione</param>
-            <returns>Il parametro</returns>
-            <search>
-            parameteratlen,param along,paramatlen,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtDistance(System.Double)">
-            <summary>Ottenere il parametro ad una determinata lunghezza dell'arco lungo la curva.</summary>
-            <param name="segmentLength">La distanza lungo la curva in corrispondenza della quale si desidera valutare</param>
-            <returns>Il parametro</returns>
-            <search>
-            parameteratlen,param along,paramatlen,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtChordLength(System.Double,System.Double,System.Boolean)">
-            <summary>Ottiene il parametro ad una determinata lunghezza di corda sulla curva rispetto alla posizione data.</summary>
-            <param name="chordLength">La lunghezza dell'asta in base alla quale valutare</param>
-            <param name="parameter">Parametro della curva da cui eseguire la misurazione</param>
-            <param name="forward">true se si sposta in avanti lungo la curva</param>
-            <returns>Il parametro</returns>
-            <search>
-            measure from,measure to,parameteratdist
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.StartParameter">
-            <summary>Ottiene il parametro nel punto iniziale di una curva</summary>
-            <returns>Valore parametro</returns>
-            <search>
-            start domain,curvestart
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.EndParameter">
-            <summary>Ottiene il parametro nel punto finale di una curva</summary>
-            <returns>Valore parametro</returns>
-            <search>
-            end domain,curveend
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SegmentLengthBetweenParameters(System.Double,System.Double)">
-            <summary>Ottiene la lunghezza del segmento tra due punti parametrici sulla curva</summary>
-            <param name="startParam">Valore compreso tra 0 e 1</param>
-            <param name="endParam">Valore compreso tra 0 e 1</param>
-            <returns>Lunghezza segmento</returns>
-            <search>
-            measure,distance,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.LengthBetweenParameters(System.Double,System.Double)">
-            <summary>Ottenere la lunghezza dell'arco tra due punti parametrici sulla curva</summary>
-            <param name="startParam">L'inizio del dominio</param>
-            <param name="endParam">La fine del dominio</param>
-            <returns>La lunghezza dell'arco tra i due parametri</returns>
-            <search>
-            measure,distance,arclength
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
-            <summary>Ottiene il parametro in corrispondenza di un punto specificato lungo la curva. Se il punto non si trova sulla curva, ParameterAtPoint restituirà ancora un valore che corrisponderà ad un punto vicino sulla curva, ma il punto non è in generale il punto più vicino.</summary>
-            <param name="point">Un punto su o in prossimità della curva</param>
-            <returns>Il parametro sulla curva per il punto specificato.</returns>
-            <search>
-            projectpoint,closestparam,curveparam
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Reverse">
-            <summary>Inverte la direzione della curva</summary>
-            <returns>Una nuova curva con direzione opposta</returns>
-            <search>
-            flip
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Offset(System.Double)">
-            <summary>Applica l'offset ad una curva in base ad un valore specificato. La curva deve essere piana.</summary>
-            <param name="distance">Un valore positivo o negativo per la distanza per eseguire l'offset</param>
-            <returns>nuove curve di offset</returns>
-            <search>
-            thicken,lines
-            </search>
-            <weights>
-            0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.OffsetMany(System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Crea una o più curve eseguendo l'offset di una curva piana in base alla distanza specificata in un piano definito dalla normale al piano. Se sono presenti spazi tra le curve del componente di offset, vengono riempiti estendendo le curve di offset. Per default, l'argomento di input "planeNormal" è impostato sulla normale al piano contenente la curva, ma è possibile fornire una normale esplicita parallela alla normale alla curva originale per controllare meglio la direzione dell'offset. Ad esempio, se è richiesta una direzione di offset uniforme per più curve che condividono lo stesso piano, i"planeNormal" può essere utilizzato per sostituire le normali alle singole curve e forzare l'offset di tutte le curve nella stessa direzione. Invertendo la normale, si inverte la direzione dell'offset.</summary>
-            <param name="signedDistance">Una distanza di offset positiva si applica nella direzione del prodotto vettoriale tra la tangente alla curva e il vettore normale al piano, mentre un offset negativo si applica nella direzione opposta.</param>
-            <param name="planeNormal">La normale al piano della curva. L'impostazione di default è la normale al piano della curva di input</param>
-            <returns>Una o più curve di offset</returns>
-            <search>
-            thicken,lines
-            </search>
-            <weights>
-            0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoPlane(Autodesk.DesignScript.Geometry.Plane)">
-            <summary>Crea una curva mediante trascinamento sul piano</summary>
-            <param name="plane">Il piano su cui estrarre la curva</param>
-            <returns>Una curva sul piano</returns>
-            <search>
-            projectcurve,toplane
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoSurface(Autodesk.DesignScript.Geometry.Surface)">
-            <summary>Sposta la curva sulla superficie di input, nella direzione delle normali della superficie.</summary>
-            <param name="surface"/>
-            <returns/>
-            <search>
-            projectcurve,tosurf
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideEqually(System.Int32)">
-            <summary>Suddivide una curva in un numero dato di curve della stessa lunghezza</summary>
-            <param name="divisions">Numero di divisioni</param>
-            <returns>Una serie di curve dopo la divisione</returns>
-            <search>
-            chopcurve,segment,slices
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideByDistance(System.Int32)">
-            <summary>Suddivide una curva in un numero dato di curve con distanze uguali tra l'inizio e la fine di ciascuna curva (corde uguali).</summary>
-            <param name="divisions">Numero di divisioni</param>
-            <returns>Una serie di curve dopo la divisione</returns>
-            <search>
-            divide by chordlength,chord,segment,chopcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideByLengthFromParameter(System.Double,System.Double)">
-            <summary>Suddivide una curva in curve di una data lunghezza misurata dalla pozione specificata del parametro</summary>
-            <param name="length">Lunghezza di curve dopo la divisione</param>
-            <param name="parameter">Posizione parametro per la misurazione da</param>
-            <returns>Serie di curve dopo la divisione</returns>
-            <search>
-            divide by chordlength,chord,segment,chopcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.DivideByDistanceFromParameter(System.Double,System.Double)">
-            <summary>Suddivide una curva in curve di una data lunghezza asta misurata dalla posizione specificata del parametro</summary>
-            <param name="distance">Lunghezza dell'asta di ogni curva ottenuta dalla divisione</param>
-            <param name="parameter">Posizione parametro per la misurazione da</param>
-            <returns>Una serie di curve dopo la divisione</returns>
-            <search>
-            divide by chordlength,chord,segment,chopcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByStartParameter(System.Double)">
-            <summary>Rimuove l'inizio della curva in corrispondenza del parametro specificato</summary>
-            <param name="startParameter">Il parametro in corrispondenza del quale iniziare il taglio</param>
-            <returns>Una nuova curva con l'inizio rimosso</returns>
-            <search>
-            rem,remstart,removestart,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimStart(System.Double)">
-            <summary>Rimuove l'inizio della curva in corrispondenza del parametro specificato</summary>
-            <param name="startParameter">Il parametro in corrispondenza del quale iniziare il taglio</param>
-            <returns>Una nuova curva il cui punto iniziale è stato rimosso</returns>
-            <search>
-            rem,remstart,removestart,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByEndParameter(System.Double)">
-            <summary>Rimuove la fine della curva in corrispondenza del parametro specificato</summary>
-            <param name="endParameter">Il parametro in corrispondenza del quale iniziare il taglio</param>
-            <returns>Una nuova curva con l'estremità rimossa</returns>
-            <search>
-            rem,remend,removeend,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimEnd(System.Double)">
-            <summary>Rimuove la fine della curva in corrispondenza del parametro specificato</summary>
-            <param name="endParameter">Il parametro in corrispondenza del quale iniziare il taglio</param>
-            <returns>Una nuova curva il cui punto finale è stato rimosso</returns>
-            <search>
-            rem,remend,removeend,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByParameter(System.Double,System.Double)">
-            <summary>Rimuove l'inizio e la fine della curva in corrispondenza dei parametri specificati.</summary>
-            <param name="startParameter">Il parametro in corrispondenza del quale iniziare il taglio</param>
-            <param name="endParameter">Il parametro in corrispondenza del quale iniziare il taglio</param>
-            <returns>Una nuova curva con segmenti esterni rimossi</returns>
-            <search>
-            rem,remend,remstart,remove,trimcurve,removeends
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrim(System.Double,System.Double)">
-            <summary>Rimuove l'inizio e la fine della curva in corrispondenza dei parametri specificati.</summary>
-            <param name="startParameter">Il parametro in corrispondenza del quale iniziare il taglio</param>
-            <param name="endParameter">Il parametro in corrispondenza del quale iniziare il taglio</param>
-            <returns>Una nuova curva i cui segmenti esterni sono stati rimossi</returns>
-            <search>
-            rem,remend,remstart,remove,trimcurve,removeends
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimInteriorByParameter(System.Double,System.Double)">
-            <summary>Rimuove una parte interna di una curva in base ai parametri specificati</summary>
-            <param name="startParameter">Il parametro in corrispondenza del quale iniziare il taglio</param>
-            <param name="endParameter">Il parametro in corrispondenza del quale iniziare il taglio</param>
-            <returns>Una nuova curva con segmento interno rimosso</returns>
-            <search>
-            rem,removemiddle,middle,remmiddle,cutout,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimInterior(System.Double,System.Double)">
-            <summary>Rimuove la parte interna di una curva in corrispondenza dei parametri specificati</summary>
-            <param name="startParameter">Il parametro in corrispondenza del quale iniziare il taglio</param>
-            <param name="endParameter">Il parametro in corrispondenza del quale iniziare il taglio</param>
-            <returns>Una nuova curva il cui segmento interno è stato rimosso</returns>
-            <search>
-            rem,removemiddle,middle,remmiddle,cutout,trimcurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(System.Double[])">
-            <summary>Rimuove più segmenti della curva, eliminando il primo, terzo, quinto segmento e così via</summary>
-            <param name="parameters">Un elenco di parametri in base al quale dividere la curva</param>
-            <returns>Una serie di curve che eliminano il primo, il terzo, il quinto... segmento</returns>
-            <search>
-            rem,removeparts,remparts,cutout,trimcurv,interior,odd
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterTrimSegments(System.Double[])">
-            <summary>Rimuove più segmenti della curva, eliminando il primo, terzo, quinto... segmento</summary>
-            <param name="parameters">Un elenco di parametri in corrispondenza dei quali dividere la curva</param>
-            <returns>Una serie di curve in cui sono stati eliminati il primo, terzo, quinto... segmento</returns>
-            <search>
-            rem,removeparts,remparts,cutout,trimcurv,interior,odd
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(System.Double[],System.Boolean)">
-            <summary>Rimuove i segmenti pari o dispari della curva divisa in corrispondenza dei parametri specificati, a seconda che il flag 'discardEvenSegments' sia rispettivamente true o false.</summary>
-            <param name="parameters">Un elenco di parametri in base al quale dividere la curva</param>
-            <param name="discardEvenSegments">Attivare/Disattivare per eliminare anche i segmenti</param>
-            <returns>Elenco di curve rimanenti dopo l'eliminazione dei segmenti di curva pari o dispari.</returns>
-            <search>
-            rem,removeparts,remparts,cutout,trimcurv,interior,even
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByParameter(System.Double)">
-            <summary>Divide una curva in due parti in corrispondenza del parametro specificato</summary>
-            <param name="parameter">Il parametro in corrispondenza del quale eseguire la divisione</param>
-            <returns>Due curve rimanenti dopo la divisione</returns>
-            <search>
-            cutinto,divide,curve2curves,cut
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterSplit(System.Double)">
-            <summary>Dividere una curva in due parti in corrispondenza del parametro specificato</summary>
-            <param name="parameter">Il parametro in corrispondenza del quale eseguire la divisione</param>
-            <returns>Due curve rimanenti dopo la divisione</returns>
-            <search>
-            cutinto,divide,curve2curves,cut
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByParameter(System.Double[])">
-            <summary>Divide una curva in più parti in corrispondenza dei parametri specificati</summary>
-            <param name="parameters">Un elenco di parametri in base al quale dividere la curva</param>
-            <returns>Curve create dalla divisione</returns>
-            <search>
-            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterSplit(System.Double[])">
-            <summary>Dividere una curva in più parti in corrispondenza dei parametri specificati</summary>
-            <param name="parameters">Un elenco di parametri in corrispondenza dei quali dividere la curva</param>
-            <returns>Curve create dalla divisione</returns>
-            <search>
-            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>Dividere una curva in più parti in corrispondenza dei punti specificati</summary>
-            <param name="points">I punti sulla curva in cui essa deve essere divisa</param>
-            <returns>Curve create dalla divisione</returns>
-            <search>
-            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>Unisce un gruppo di curve alla fine della PolyCurve. Inverte le curve per garantire la connettività.</summary>
-            <param name="curves">Altre curve o curve da unire a PolyCurve</param>
-            <returns>Una PolyCurve create da curve</returns>
-            <search>
-            convertcurves,curves2polycurve,joincurves,concat,joinall,joinmany
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Join(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>Unisce la curva corrente e la curva di input in una nuova PolyCurve, mantenendo invariate le curve originali.</summary>
-            <param name="curve">La curva da unire a</param>
-            <returns>PolyCurve costituita da due curve</returns>
-            <search>
-            convertcurve,curve2polycurve,joincurve,concat
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(System.Double)">
-            <summary>Estrude una curva nella direzione del vettore normale</summary>
-            <param name="distance">La distanza di estrusione della curva</param>
-            <returns>La superficie estrusa</returns>
-            <search>
-            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Estrude una curva nella direzione specificata, per la lunghezza del vettore di input</summary>
-            <param name="direction">Vettore lungo cui eseguire l'estrusione</param>
-            <returns>La superficie estrusa</returns>
-            <search>
-            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Estrude una curva nella direzione specificata, per la distanza specificata</summary>
-            <param name="direction">Vettore lungo cui eseguire l'estrusione</param>
-            <param name="distance">Distanza di estrusione</param>
-            <returns>La superficie estrusa</returns>
-            <search>
-            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(System.Double)">
-            <summary>Estrude una curva nella direzione normale, per la distanza specificata. La curva deve essere chiusa.</summary>
-            <param name="distance">Distanza di estrusione</param>
-            <returns>Il solido estruso</returns>
-            <search>
-            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Estrude una curva nella direzione specificata, per la lunghezza del vettore di input. La curva deve essere chiusa.</summary>
-            <param name="direction">Vettore lungo cui eseguire l'estrusione</param>
-            <returns>Il solido estruso</returns>
-            <search>
-            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(Autodesk.DesignScript.Geometry.Vector,System.Double)">
-            <summary>Estrude una curva nella direzione specificata, per la distanza specificata. La curva deve essere chiusa.</summary>
-            <param name="direction">Vettore lungo cui eseguire l'estrusione</param>
-            <param name="distance">Distanza di estrusione</param>
-            <returns>Il solido estruso</returns>
-            <search>
-            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extend(System.Double,Autodesk.DesignScript.Geometry.Point)">
-            <summary>Estende una curva per una distanza data fino ad un'estremità specifica determinata da un punto di selezione. Il lato selezionato viene esteso. Le curve chiuse quali cerchi ed ellissi non possono essere estese. Se la curva in corso di estensione è lineare, anche l'estensione sarà lineare.</summary>
-            <param name="distance">Distanza da estendere</param>
-            <param name="pickSide">Un punto sull'estremità da estendere</param>
-            <returns>La curva estesa</returns>
-            <search>
-            makelonger,stretch,extendside
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtendStart(System.Double)">
-            <summary>Estende la parte iniziale di una curva per la distanza data. Le curve chiuse quali cerchi ed ellissi non possono essere estese. Se la curva in corso di estensione è lineare, anche l'estensione sarà lineare.</summary>
-            <param name="distance">Distanza da estendere</param>
-            <returns>La curva estesa</returns>
-            <search>
-            makelonger,stretch
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtendEnd(System.Double)">
-            <summary>Estende la parte finale di una curva per la distanza data. Le curve chiuse quali cerchi ed ellissi non possono essere estese. Se la curva in corso di estensione è lineare, anche l'estensione sarà lineare.</summary>
-            <param name="distance">Distanza da estendere</param>
-            <returns>La curva estesa</returns>
-            <search>
-            makelonger,stretch
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ApproximateWithArcAndLineSegments">
-            <summary>Definisce in modo approssimato una curva a partire da una raccolta di archi e linee</summary>
-            <returns>Una serie di archi e linee che si avvicinano alla curva</returns>
-            <search>
-            rationalizecurve,fitarcs,fitlines,arcs,lines
-            </search>
-            <weights>
-            0.5,0.5,0.5,0.4,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ToNurbsCurve">
-            <summary>Converte la curva in un'approssimazione NurbsCurve</summary>
-            <returns>Una NurbsCurve che si avvicina alla curva</returns>
-            <search>
-            curve2spline,convertcurve,tospline,lines
-            </search>
-            <weights>
-            0.5,0.5,0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Patch">
-            <summary>Applica una superficie ad una curva chiusa</summary>
-            <returns>Una superficie all'interno della curva</returns>
-            <search>
-            fill,profiletosurf,loop,loop2surf,edgesurf
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Project(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Proietta una curva di input lungo una direzione di proiezione data su una geometria di base specificata.</summary>
-            <param name="baseGeometry">Geometria su cui proiettare</param>
-            <param name="projectionDirection">Vettore</param>
-            <returns>Elenco delle geometrie proiettate nella geometria di base</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSurface(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>Esegue l'estrusione su percorso della curva corrente lungo la curva del percorso, creando una superficie</summary>
-            <param name="path"/>
-            <returns/>
-            <search>
-            sweep1,curve2surf
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>Esegue l'estrusione su percorso della curva chiusa corrente lungo la curva del percorso, creando un solido</summary>
-            <param name="path"/>
-            <returns/>
-            <search>
-            sweep1,curve2solid,loop2solid,profile2solid,curvetosolid,looptosolid,profiletosolid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
-            <summary>Esegue l'estrusione su percorso della curva chiusa corrente lungo la curva del percorso, creando un solido</summary>
-            <param name="path">Il percorso che rappresenta la traiettoria di estrusione su percorso</param>
-            <param name="cutEndOff">Tagliare l'estremità dell'estrusione su percorso e renderla normale al percorso</param>
-            <returns>Un solido che esegue l'estrusione su percorso di questa curva chiusa lungo la curva del percorso</returns>
-            <search>
-            sweep1,curve2solid,loop2solid,profile2solid,curvetosolid,looptosolid,profiletosolid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.Simplify(System.Double)">
-            <summary>Restituisce una nuova curva, approssimata con la tolleranza data</summary>
-            <param name="tolerance"/>
-            <returns/>
-            <search>
-            fitcurve,reducecurve,simplecurve,approximate
-            </search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Cylinder.ToString">
             <summary>Ottiene una rappresentazione stringa del cilindro</summary>
         </member>
@@ -1263,18 +600,6 @@
             <param name="startAngle">L'angolo iniziale dell'arco misurato dall'asse x positivo del piano di input</param>
             <param name="sweepAngle">L'angolo da sottoporre a sweep dall'angolo iniziale in gradi</param>
             <returns>Arco di ellisse creato da raggi e angoli del piano</returns>
-            <search>
-            ellipsearc,arcs
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.EllipseArc.ByPlaneRadiiStartAngleSweepAngle(Autodesk.DesignScript.Geometry.Plane,System.Double,System.Double,System.Double,System.Double)">
-            <summary>Creare un EllipseArc in un piano con i raggi dati lungo gli assi X e Y e gli angoli per l'estrusione su percorso</summary>
-            <param name="plane">Il piano in cui è contenuto EllipseArc</param>
-            <param name="xRadius">Il raggio di EllipseArc nella direzione X del piano</param>
-            <param name="yRadius">Il raggio di EllipseArc nella direzione Y del piano</param>
-            <param name="startAngle">L'angolo iniziale dell'arco misurato dall'asse x positivo del piano di input</param>
-            <param name="sweepAngle">L'angolo da cui eseguire lo sweep dall'angolo iniziale in gradi</param>
-            <returns/>
             <search>
             ellipsearc,arcs
             </search>
@@ -1943,209 +1268,6 @@
             <param name="projectionDirection"/>
             <returns/>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ToString">
-            <summary>Ottiene una rappresentazione stringa di PolyCurve</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Crea una PolyCurve mediante l'unione di curve. Inverte le curve in base alle esigenze di connettività. Scegliere la tolleranza di unione preferita compresa tra le unità 1e-6 e 1e-3.</summary>
-            <param name="curves">Le curve da unire in PolyCurve</param>
-            <param name="joinTolerance">La tolleranza per determinare la dimensione di spaziatura consentita tra curve da unire</param>
-            <returns>PolyCurve create da curve unite</returns>
-            <search>
-            segments,joincurves
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Crea una PolyCurve mediante l'unione di curve. Inverte le curve in base alle esigenze di connettività. Scegliere la tolleranza di unione preferita compresa tra le unità 1e-6 e 1e-3.</summary>
-            <param name="curves">Le curve da unire in PolyCurve</param>
-            <param name="joinTolerance">La tolleranza per determinare la dimensione di spaziatura consentita tra curve da unire</param>
-            <param name="trimCurves">Impostare su True se le curve di input si intersecano/si sovrappongono e i relativi segmenti finali devono essere tagliati prima della creazione di PolyCurve. L'opzione è impostata su False per default.</param>
-            <param name="trimLength">Se trimLength è maggiore di 0, i segmenti finali più lunghi di trimLength non verranno tagliati.</param>
-            <returns>PolyCurve create da curve unite</returns>
-            <search>
-            segments,joincurves
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Crea una o più PolyCurve raggruppando le curve connesse. Scegliere una tolleranza di unione preferita tra le unità 1e-6 e 1e-3.</summary>
-            <param name="curves">Curve da raggruppare per creare una o più PolyCurve</param>
-            <param name="joinTolerance">La tolleranza per determinare la dimensione di spaziatura consentita tra curve da unire</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Crea una o più PolyCurve raggruppando le curve connesse. Scegliere una tolleranza di unione preferita tra le unità 1e-6 e 1e-3.</summary>
-            <param name="curves">Curve da raggruppare per creare una o più PolyCurve</param>
-            <param name="joinTolerance">La tolleranza per determinare la dimensione di spaziatura consentita tra curve da unire</param>
-            <param name="trimCurves">Impostare su True se le curve di input si intersecano/si sovrappongono e i relativi segmenti finali devono essere tagliati prima della creazione di PolyCurve. L'opzione è impostata su False per default.</param>
-            <param name="trimLength">Se trimLength è maggiore di 0, i segmenti finali più lunghi di trimLength non verranno tagliati.</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
-            <summary>Creare una PolyCurve collegando i punti. Impostare l'input 'connectLastToFirst' su true per chiudere la PolyCurve.</summary>
-            <param name="points">Punti per creare PolyCurve</param>
-            <param name="connectLastToFirst">True per collegare l'ultimo punto al primo punto, false per lasciarli aperti</param>
-            <returns>PolyCurve creata da punti</returns>
-            <search>
-            segments,joincurves,lines
-            </search>
-            <weights>
-            0.5,0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Crea una PolyCurve tramite ispessimento di una curva.</summary>
-            <param name="curve">la curva da ispessire</param>
-            <param name="thickness">lo spessore</param>
-            <param name="nor">la perpendicolare normale alla direzione di ispessimento</param>
-            <returns/>
-            <search>
-            offset
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurveNormal(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Crea una PolyCurve tramite l'ispessimento di una curva lungo un piano specificato dalla normale di input.</summary>
-            <param name="curve">la curva da ispessire</param>
-            <param name="thickness">lo spessore</param>
-            <param name="normal">perpendicolare normale alla direzione di ispessimento. Se la normale non viene fornita (è nulla), per default viene utilizzata la normale della curva.</param>
-            <returns/>
-            <search>
-            offset,thicken
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.Points">
-            <summary>Restituisce il punto iniziale del primo componente e i punti finali di ogni curva del componente. Per una PolyCurve chiusa, poiché i punti iniziale e finale sono gli stessi, il punto finale è escluso.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.NumberOfCurves">
-            <summary>Numero di curve della PolyCurve</summary>
-            <search>
-            curvecount,subcurvecount,numbersubcurves
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Curves">
-            <summary>Restituisce le curve della PolyCurve</summary>
-            <returns/>
-            <search>
-            subcurves,polycurvesplit
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CurveAtIndex(System.Int32,System.Boolean)">
-            <summary>Restituisce la curva della PolyCurve in base all'indice</summary>
-            <param name="index">Lunghezza per posizionare punto</param>
-            <param name="endOrStart">True per contare dalla fine della PolyCurve, false per contare dall'inizio della PolyCurve</param>
-            <returns>Curva all'indice</returns>
-            <search>
-            subcurveatindex,getsubcurve,getcurvebyindex
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.BasePlane">
-            <summary>Restituisce il piano della PolyCurve piana</summary>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithEllipse(System.Double,System.Double,System.Double,System.Double,System.Boolean)">
-            <summary>Estende la PolyCurve in base all'ellisse tangente</summary>
-            <param name="length">Lunghezza di ellisse di estensione</param>
-            <param name="radius1">Parametro di ellisse</param>
-            <param name="radius2">Parametro di ellisse</param>
-            <param name="endEllipseParameter">Parametro di ellisse</param>
-            <param name="endOrStart">estensione estremità finale o iniziale di PolyCurve</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithArc(System.Double,System.Double,System.Boolean)">
-            <summary>Estende la PolyCurve in base all'arco tangente.</summary>
-            <param name="length">Lunghezza dell'arco di estensione</param>
-            <param name="radius">Raggio dell'arco</param>
-            <param name="endOrStart">estensione estremità finale o iniziale di PolyCurve</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLine">
-            <summary>Chiude la PolyCurve mediante una linea che collega i punti iniziale e finale</summary>
-            <returns/>
-            <search>
-            lines
-            </search>
-            <weights>
-            0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLineAndTangentArcs(System.Double,System.Double)">
-            <summary>Chiude la PolyCurve mediante una catena tangente arco - linea - arco</summary>
-            <param name="radiusAtStart">Raggio dell'arco all'inizio di PolyCurve</param>
-            <param name="radiusAtEnd">Raggio dell'arco alla fine di PolyCurve</param>
-            <returns/>
-            <search>
-            lines
-            </search>
-            <weights>
-            0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Offset(System.Double,System.Boolean)">
-            <summary>Applica un offset alla PolyCurve nel piano di appartenenza.</summary>
-            <param name="signedDistance">Valore di offset</param>
-            <param name="extendCircular">Attivare/Disattivare per rendere circolari gli angoli</param>
-            <returns>PolyCurve con offset</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.OffsetMany(System.Double,System.Boolean,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Crea una o più PolyCurve eseguendo l'offset di una PolyCurve piana in base alla distanza specificata in un piano definito dalla normale al piano. Per default, l'argomento di input "planeNormal" è impostato sulla normale al piano contenente la curva, ma è possibile fornire una normale esplicita parallela alla normale alla curva originale per controllare meglio la direzione dell'offset. Ad esempio, se è necessaria una direzione di offset uniforme per più curve che condividono lo stesso piano, "planeNormal" può essere utilizzato per sostituire le normali alle singole curve e forzare l'offset di tutte le curve nella stessa direzione. Invertendo la normale, si inverte la direzione dell'offset.</summary>
-            <param name="signedDistance">Una distanza di offset positiva si applica nella direzione del prodotto vettoriale tra la tangente alla PolyCurve e il vettore normale al piano, mentre un offset negativo si applica nella direzione opposta.</param>
-            <param name="extendCircular">Se sono presenti spazi tra le curve del componente di offset, a seconda delle impostazioni di chiusura dello spazio, possono essere riempiti da archi circolari (valore True) per fornire angoli levigati o estendendo (valore False) le curve di offset.</param>
-            <param name="planeNormal">La normale al piano della curva. L'impostazione di default è la normale al piano della curva di input</param>
-            <returns>Una o più PolyCurve di offset</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Fillet(System.Double,System.Boolean)">
-            <summary>Raccorda gli angoli di PolyCurve piana.</summary>
-            <param name="radius">Raggio di raccordo</param>
-            <param name="clockwise_corners">Indica gli angoli da raccordare. Se l'opzione è True, verranno raccordati gli angoli in cui la tangente all'inizio del secondo componente è in senso orario rispetto alla tangente alla fine del primo componente (rispetto alla normale alla curva). Se l'opzione è False, verranno raccordati gli angoli in senso antiorario.</param>
-            <returns>PolyCurve raccordata</returns>
-            <search>
-            round,smooth,radius
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Heal(System.Double)">
-            <summary>Corregge una PolyCurve autointersecante restituendone una nuova che non è autointersecante se la lunghezza del segmento sovrapposto è minore di o uguale a trimLength.</summary>
-            <param name="trimLength">Se trimLength è maggiore di 0, i segmenti finali più lunghi di trimLength non verranno tagliati.</param>
-            <returns>PolyCurve non autointersecante e non sovrapposta</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ToString">
-            <summary>Ottiene una rappresentazione stringa del poligono</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>Crea una curva poligonale mediante la connessione di punti.</summary>
-            <param name="points"/>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.RegularPolygon(Autodesk.DesignScript.Geometry.Circle,System.Int32)">
-            <summary>Creare una curva poligonale inscritta in un cerchio.</summary>
-            <param name="circle"/>
-            <param name="numberSides"/>
-            <returns/>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Polygon.Points">
-            <summary>Restituisce i punti iniziali/finali di tutti i segmenti.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Polygon.PlaneDeviation">
-            <summary>Restituisce la deviazione massima dal piano medio del poligono.</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.Corners">
-            <summary>Restituisce gli angoli del poligono</summary>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.Center">
-            <summary>Restituisce il punto medio degli angoli del poligono</summary>
-            <returns/>
-            <search>
-            centroid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.SelfIntersections">
-            <summary>Restituisce le autointersezioni tra i lati del poligono.</summary>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ContainmentTest(Autodesk.DesignScript.Geometry.Point)">
-            <summary>Restituisce il valore che specifica se un punto di input è contenuto all'interno del poligono. Se il poligono non è piano, il punto verrà proiettato sul piano di adattamento e il contenimento verrà calcolato utilizzando la proiezione del poligono sul piano di adattamento. Se il poligono si autointerseca, verrà restituito uno stato non riuscito.</summary>
-            <param name="point"/>
-            <returns/>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ToString">
             <summary>Ottiene una rappresentazione stringa di PolySurface</summary>
         </member>
@@ -2195,15 +1317,6 @@
             <returns/>
             <search>
             sweep,rail,guide,sweep1
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
-            <summary>Crea una PolySurface mediante l'estrusione su percorso di una curva lungo una guida.</summary>
-            <param name="rail">Curva lungo cui eseguire lo sweep</param>
-            <param name="profile">Profilo di sweep</param>
-            <returns/>
-            <search>
-            sweep,rail,guide,sweep1,sweepprofile,profile
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.Surfaces">
@@ -2353,15 +1466,6 @@
             Brep,brep
             </search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Solid.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},Autodesk.DesignScript.Geometry.Curve)">
-            <summary>Crea un solido generando loft tra curve chiuse di sezione trasversale di input, con una curva di guida. La curva di guida deve intersecare tutte le curve di sezione trasversale.</summary>
-            <param name="crossSections"/>
-            <param name="guideCurve"/>
-            <returns/>
-            <search>
-            Brep,brep,guide,loft
-            </search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
             <summary>Crea un solido generando loft tra curve chiuse di sezione trasversale di input, con curve di guida. Le curve di guida devono intersecare tutte le curve di sezione trasversale.</summary>
             <param name="crossSections"/>
@@ -2448,14 +1552,6 @@
             <returns/>
             <search>
             addition,merge,combine
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Solid.UnionAll(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Solid})">
-            <summary>Unisce un elenco di solidi al solido corrente.</summary>
-            <param name="solids"/>
-            <returns/>
-            <search>
-            addition,merge,combine,unionmany,union multi
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Solid.Difference(Autodesk.DesignScript.Geometry.Solid)">
@@ -2551,341 +1647,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Sphere.Radius">
             <summary>Restituisce il raggio della sfera.</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToString">
-            <summary>Ottiene una rappresentazione stringa della superficie</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByUnion(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>Unione di una raccolta di superfici in un'unica superficie. Questo metodo potrebbe restituire una PolySurface se l'unione risultante non è multiforme o a più facce.</summary>
-            <param name="surfaces">Raccolta di superfici.</param>
-            <returns>Unione di superfici</returns>
-            <search>
-            merge,join,boolean,addition
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>Crea una superficie mediante loft tra curve di sezione trasversale di input.</summary>
-            <param name="crossSections">Curve in cui eseguire il loft</param>
-            <returns>Superficie creata mediante loft</returns>
-            <search>
-            loft
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRuledLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Line})">
-            <summary>Crea una superficie mediante loft tra linee di sezione trasversale di input. Questo metodo è leggermente più veloce e produce un risultato meno uniforme rispetto a Surface.ByLoft.</summary>
-            <param name="crossSections"/>
-            <returns/>
-            <search>
-            ruledsurface,lines
-            </search>
-            <weights>
-            0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},Autodesk.DesignScript.Geometry.Curve)">
-            <summary>Esegue il loft di una superficie mediante le sezioni trasversali con una curva di guida data. La curva di guida deve intersecare tutte le curve di sezione trasversale.</summary>
-            <param name="crossSections"/>
-            <param name="guideCurve"/>
-            <returns/>
-            <search>
-            loftbyrail
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
-            <summary>Esegue il loft di una superficie mediante le sezioni trasversali con curve di guida date. Le curve di guida devono intersecare tutte le curve di sezione trasversale.</summary>
-            <param name="crossSections">Curve in cui eseguire il loft</param>
-            <param name="guideCurves">Curve in cui guidare il loft</param>
-            <returns>Superficie creata mediante loft</returns>
-            <search>
-            loftbyrails,loft rails,guides
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
-            <summary>Crea una superficie tramite estrusione su percorso di una curva del profilo lungo un percorso.</summary>
-            <param name="profile">Curva di cui eseguire l'estrusione su percorso</param>
-            <param name="path">Curva del percorso utilizzata lungo cui eseguire l'estrusione</param>
-            <returns>Superficie creata mediante estrusione del profilo lungo il percorso</returns>
-            <search>
-            sweep,rail,guide,sweep1
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
-            <summary>Crea una superficie tramite estrusione su percorso di una curva del profilo lungo un percorso.</summary>
-            <param name="profile">Curva di cui eseguire l'estrusione su percorso</param>
-            <param name="path">Curva del percorso utilizzata lungo cui eseguire l'estrusione su percorso</param>
-            <param name="cutEndOff">Tagliare l'estremità dell'estrusione su percorso e renderla normale al percorso</param>
-            <returns>Superficie creata mediante estrusione su percorso del profilo lungo il percorso</returns>
-            <search>
-            sweep,rail,guide,sweep1
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPerimeterPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
-            <summary>Crea una superficie poligonale connettendo punti di input in un poligono chiuso e aggiungendo una superficie chiusa.</summary>
-            <param name="points">Elenco di punti del perimetro</param>
-            <returns>Superficie creata da punti del perimetro</returns>
-            <search>
-            patch,surfacebypolygon
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep2Rails(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
-            <summary>Esegue l'estrusione su percorso della curva di sezione trasversale lungo un percorso definito da due guide</summary>
-            <param name="path">Il percorso di input lungo cui eseguire l'estrusione.</param>
-            <param name="guideRail">Una guida per l'orientamento dell'estrusione.</param>
-            <param name="profile">La curva del profilo di cui eseguire l'estrusione lungo il percorso.</param>
-            <returns>Superficie creata mediante estrusione su percorso di due guide</returns>
-            <search>
-            sweep2,guides
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double)">
-            <summary>Crea una superficie eseguendo l'estrusione su percorso della curva di profilo attorno al raggio asse formato dal punto di origine nella direzione del vettore dell'asse, dall'angolo iniziale in gradi all'angolo di estrusione su percorso in gradi.</summary>
-            <param name="profile">Curva di profilo di cui eseguire la rivoluzione</param>
-            <param name="axisOrigin">Origine asse di rivoluzione</param>
-            <param name="axisDirection">Direzione asse di rivoluzione</param>
-            <param name="startAngle">Angolo iniziale in gradi</param>
-            <param name="sweepAngle">Angolo di estrusione su percorso in gradi</param>
-            <returns>Superficie creata da profilo di rivoluzione</returns>
-            <search>
-            lathe
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPatch(Autodesk.DesignScript.Geometry.Curve)">
-            <summary>Crea una superficie mediante il riempimento di un contorno chiuso definito da curve di input.</summary>
-            <param name="closedCurve">Curva chiusa utilizzata come contorno della superficie</param>
-            <returns>Superficie creata da patch</returns>
-            <search>
-            edgesrf,edgesurface,patch,fill
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.Area">
-            <summary>Restituisce l'area totale della superficie.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.Perimeter">
-            <summary>Restituisce la somma di lunghezze di tutti gli spigoli della superficie.</summary>
-            <search>
-            circumference
-            </search>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.ClosedInU">
-            <summary>Restituisce true se la superficie è chiusa nella direzione U, altrimenti false.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.ClosedInV">
-            <summary>Restituisce true se la superficie è chiusa nella direzione V, altrimenti false.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Surface.Closed">
-            <summary>Restituisce true se la superficie è chiusa nella direzione U o V, altrimenti false.</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.SubtractFrom(Autodesk.DesignScript.Geometry.Solid)">
-            <summary>Sottrae gli strumenti di input dalla superficie corrente.</summary>
-            <param name="trimmingEntity"/>
-            <returns/>
-            <search>
-            difference,trim,removefrom,cut
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Difference(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>Differenza booleana di questa superficie e l'unione delle superfici di input. Questo metodo potrebbe restituire una PolySurface se il valore booleano risultante non è multiforme o a più facce.</summary>
-            <param name="others">Altre superfici da sottrarre</param>
-            <returns>Superficie booleana o polySurface risultante</returns>
-            <search>
-            subtract,differencemany,diffall,diff multi
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.UVParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
-            <summary>Restituisce la coppia di parametri UV in corrispondenza del punto di input. È l'istruzione opposta a PointAtParameter.</summary>
-            <param name="point"/>
-            <returns/>
-            <search>
-            evaluateatpoint,surfaceatpoint,uvatpoint,uvs
-            </search>
-            <weights>
-            0.5,0.5,0.5,0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve})">
-            <summary>Taglia la superficie con una raccolta di una o più PolyCurve chiuse. Uno dei perimetri chiusi deve essere il perimetro chiuso di contorno della superficie di input. È inoltre necessario aggiungere uno o più perimetri chiusi interni per i fori.</summary>
-            <param name="loops"/>
-            <returns/>
-            <search>
-            trim multiple,removeloops,cutloops
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve},System.Double)">
-            <summary>Taglia la superficie con una raccolta di una o più PolyCurve chiuse che devono trovarsi tutte sulla superficie entro la tolleranza specificata. Se uno o più fori devono essere tagliati dalla superficie di input, deve essere specificato un perimetro chiuso esterno per il contorno della superficie e un perimetro chiuso interno per ogni foro. Se la regione tra il contorno della superficie e i fori deve essere tagliata, deve essere fornito solo il perimetro chiuso per ogni foro. Per una superficie periodica senza perimetro chiuso esterno, ad esempio una superficie sferica, la regione tagliata può essere controllata invertendo la direzione della curva del perimetro chiuso.</summary>
-            <param name="loops">Una o più PolyCurve chiuse che possono essere in qualsiasi ordine nell'input. Questi perimetri chiusi non devono intersecarsi.</param>
-            <param name="tolerance">Tolleranza utilizzata per stabilire se le estremità della curva sono coincidenti e se una curva e una superficie sono coincidenti. La tolleranza fornita non può essere inferiore ad alcuna delle tolleranze utilizzate nella creazione delle PolyCurve di input. Il valore di default 0.0 indica che verrà utilizzata la tolleranza più grande usata nella creazione delle PolyCurve di input.</param>
-            <returns>Superficie tagliata da perimetri chiusi.</returns>
-            <search>
-            trim multiple,removeloops,cutloops
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.NormalAtPoint(Autodesk.DesignScript.Geometry.Point)">
-            <summary>Restituisce la normale della superficie in corrispondenza del punto di input sulla superficie stessa.</summary>
-            <param name="point">Punto in corrispondenza del quale valutare la normale della superficie</param>
-            <returns>Normale in corrispondenza del punto</returns>
-            <search>
-            perpendicular
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface">
-            <summary>Ottiene una rappresentazione NURBS della superficie. In determinate circostanze, questo metodo può restituire un valore di superficie approssimato.</summary>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface(System.Boolean)">
-            <summary>Ottiene una rappresentazione NURBS della superficie. In determinate circostanze, questo metodo può restituire un valore di superficie approssimato.</summary>
-            <param name="limitSurface">Determina se la superficie deve essere ripristinata al relativo intervallo di parametri originale prima della conversione. Un esempio di quando l'intervallo di parametri di una superficie è limitato è dopo un'operazione di taglio.</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ApproximateWithTolerance(System.Double)">
-            <summary>Ottiene una rappresentazione NURBS della superficie, entro una tolleranza specifica. In determinate circostanze, questo metodo può restituire un valore di superficie approssimato.</summary>
-            <param name="tolerance">Tolleranza specificata</param>
-            <returns>Rappresentazione della superficie NURBS</returns>
-            <search>
-            tonurbs
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double)">
-            <summary>Ispessisce una superficie e crea un solido. L'estrusione avviene nella direzione delle normali su entrambi i lati della superficie.</summary>
-            <param name="thickness">Valore di ispessimento</param>
-            <returns>Superficie ispessita come solido</returns>
-            <search>
-            offset,tosolid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double,System.Boolean)">
-            <summary>Ispessisce una superficie e crea un solido. L'estrusione avviene nella direzione delle normali su entrambi i lati della superficie. Se il parametro both_sides è true, la superficie viene ispessita su entrambi i lati.</summary>
-            <param name="thickness">Valore di ispessimento</param>
-            <param name="both_sides">True per ispessire su entrambi i lati, false per ispessire su un lato</param>
-            <returns>Superficie ispessita come solido</returns>
-            <search>
-            offset,bothsides,tosolid
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Offset(System.Double)">
-            <summary>Applica un offset alla superficie in direzione della normale e in base ad una distanza specificata.</summary>
-            <param name="distance">Valore di offset</param>
-            <returns>Superficie con offset</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.CurvatureAtParameter(System.Double,System.Double)">
-            <summary>Il sistema di coordinate restituito utilizza xAxis, yAxis e zAxis per rappresentare uDir, vDir e la normale. La lunghezza di xAxis, yAxis rappresenta le curvature.</summary>
-            <param name="u">Componente U del parametro</param>
-            <param name="v">Componente V del parametro</param>
-            <returns>Sistema di coordinate basato su normale, direzione U e direzione V nella posizione UV sulla superficie</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.CoordinateSystemAtParameter(System.Double,System.Double)">
-            <summary>Restituisce un CoordinateSystem allineato con le direzioni di curvatura principali.</summary>
-            <param name="u">Componente U del parametro</param>
-            <param name="v">Componente V del parametro</param>
-            <returns>CoordinateSystem allineato con le direzioni di curvatura principali</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.TangentAtUParameter(System.Double,System.Double)">
-            <summary>Restituisce il vettore tangente U in corrispondenza dei parametri U e V specificati.</summary>
-            <param name="u">Componente U del parametro</param>
-            <param name="v">Componente V del parametro</param>
-            <returns>Vettore tangente U</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.TangentAtVParameter(System.Double,System.Double)">
-            <summary>Restituisce il vettore tangente V in corrispondenza dei parametri U e V specificati.</summary>
-            <param name="u">Componente U del parametro</param>
-            <param name="v">Componente V del parametro</param>
-            <returns>Vettore tangente V</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.NormalAtParameter(System.Double,System.Double)">
-            <summary>Restituisce il vettore normale in corrispondenza dei parametri U e V specificati.</summary>
-            <param name="u">Componente U del parametro</param>
-            <param name="v">Componente V del parametro</param>
-            <returns>Normale in corrispondenza del parametro</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.DerivativesAtParameter(System.Double,System.Double)">
-            <summary>Restituisce le derivate in corrispondenza delle coordinate U e V di input.</summary>
-            <param name="u">Componente U del parametro</param>
-            <param name="v">Componente V del parametro</param>
-            <returns>Derivate U e V della superficie</returns>
-            <search>
-            tangent,normal
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.GaussianCurvatureAtParameter(System.Double,System.Double)">
-            <summary>Restituisce la curvatura di Gauss in corrispondenza dei parametri U e V.</summary>
-            <param name="u"/>
-            <param name="v"/>
-            <returns/>
-            <search>
-            developable
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.PrincipalCurvaturesAtParameter(System.Double,System.Double)">
-            <summary>Restituisce le curvature principali in corrispondenza dei parametri U e V.</summary>
-            <param name="u"/>
-            <param name="v"/>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.PrincipalDirectionsAtParameter(System.Double,System.Double)">
-            <summary>Restituisce i vettori di direzione principali in corrispondenza dei parametri U e V.</summary>
-            <param name="u">Componente U del parametro</param>
-            <param name="v">Componente V del parametro</param>
-            <returns>Vettori tangenti U e V</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.PointAtParameter(System.Double,System.Double)">
-            <summary>Restituisce il punto in corrispondenza dei parametri U e V specificati.</summary>
-            <param name="u"/>
-            <param name="v"/>
-            <returns/>
-            <search>
-            surfacepoint
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.PerimeterCurves">
-            <summary>Restituisce tutte le curve di contorno della superficie.</summary>
-            <returns/>
-            <search>
-            edges
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.GetIsoline(System.Int32,System.Double)">
-            <summary>Crea una curva da una linea di parametro sulla superficie data. La curva rappresenta una linea di parametro U o V sulla superficie. Una linea di parametro procede nella direzione di incremento di un parametro U o V in corrispondenza di una costante opposta al parametro U o V. La curva risultante corrisponderà alla parametrizzazione della superficie e il suo intervallo sarà delimitato dall'intervallo del parametro Surface. Il tipo di curva restituito dipenderà dal tipo di superficie.</summary>
-            <param name="isoDirection">Se direzione == 0, crea una linea di parametro U, se direzione == 1, crea una linea di parametro V.</param>
-            <param name="parameter"/>
-            <returns/>
-            <search>
-            lines
-            </search>
-            <weights>
-            0.4
-            </weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.FlipNormalDirection">
-            <summary>Restituisce una nuova superficie con la normale invertita. La superficie resta invariata.</summary>
-            <returns>Superficie, che è uguale alla superficie di input ma con normali invertite</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Join(Autodesk.DesignScript.Geometry.Surface)">
-            <summary>Combina la superficie corrente e la superficie di input in una PolySurface</summary>
-            <param name="otherSurface"/>
-            <returns/>
-            <search>
-            topolysurface
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
-            <summary>Combina la superficie corrente e le superfici di input in una PolySurface</summary>
-            <param name="otherSurfaces"/>
-            <returns/>
-            <search>
-            join multiple,joinmany,joinall,topolysurface
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Proietta la geometria di input su questa superficie nella direzione del vettore di input. Attualmente questo metodo di proiezione supporta solo punti o curve.</summary>
-            <param name="geometryToProject"/>
-            <param name="projectionDirection"/>
-            <returns/>
-            <search>
-            projecttosurface,projectonto
-            </search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.Repair">
-            <summary>Tentativi di riparare la superficie.</summary>
-            <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Topology.ToString">
             <summary>Ottiene una rappresentazione stringa della topologia</summary>
@@ -3533,20 +2294,6 @@
             <param name="inSmoothMode">Mostra superficie T-Spline nel riquadro o nella visualizzazione uniforme</param>
             <search>tspline,line,build</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Double,System.Collections.Generic.IEnumerable{System.Int32},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Boolean)">
-            <summary>Crea una superficie con tubazioni T-Spline da una rete di curve o linee.
-            Viene creato un giunto levigato ad ogni intersezione di curva.
-            Alcuni parametri richiedono un singolo valore o un elenco, due valori per curva.</summary>
-            <param name="curves">Un elenco di curve da cui creare condotte</param>
-            <param name="defaultRadius">Raggio di default per la creazione di tubazioni</param>
-            <param name="snappingTolerance">La tolleranza utilizzata per rilevare le intersezioni della curva</param>
-            <param name="segmentsCount">Il numero di segmenti in ciascuna tubazione. Sono consentiti i valori singoli o un elenco, due volte più lungo del numero delle curve</param>
-            <param name="endRotations">I valori delle rotazioni finali di ciascuna tubazione (in gradi). Sono consentiti i valori singoli o gli elenchi, due volte più lunghi del numero delle curve</param>
-            <param name="endRadii">I valori dei raggi finali di ciascuna tubazione. Sono consentiti i valori singoli o gli elenchi, due volte più lunghi del numero delle curve</param>
-            <param name="endPercentage">Valori (da 0 a 1) dalla fine di ogni curva di input al punto iniziale del mesh della tubazione. Sono consentiti i valori singoli o gli elenchi, due volte più lunghi del numero delle curve</param>
-            <param name="inSmoothMode">Mostra superficie T-Spline nel riquadro o nella visualizzazione uniforme</param>
-            <search>tspline,create,pipe,curve</search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Double,System.Collections.Generic.IEnumerable{System.Int32},System.Boolean,System.Boolean,System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Boolean)">
             <summary>Crea una superficie con tubazioni T-Spline da una rete di curve o linee.
             Viene creato un giunto levigato ad ogni intersezione di curva.
@@ -3687,23 +2434,6 @@
             <returns>Superficie T-Spline con vertici non saldati</returns>
             <search>tspline,unweld,vertex</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Double,System.Boolean)">
-            <summary>Crea una corrispondenza con una T-Spline e un perimetro chiuso di curve.</summary>
-            <param name="tsEdges">Perimetro bordo T-Spline chiuso con cui creare una corrispondenza</param>
-            <param name="curves">Perimetro curva chiuso con cui creare una corrispondenza</param>
-            <param name="continuity">Continuità della geometria per cui si sta tentando di eseguire la corrispondenza: G0, G1, G2</param>
-            <param name="useArclength">Indica se utilizzare o meno l'allineamento arcLength durante la creazione della corrispondenza</param>
-            <param name="useRefinement">Se è True, verranno aggiunti ulteriori punti di controllo alla T-Spline per garantire la corrispondenza alle superfici entro un dato margine di tolleranza.</param>
-            <param name="numRefinementSteps">Numero massimo di passaggi di affinamento. Viene ignorato se useRefinement è impostato su False</param>
-            <param name="refinementTolerance">Tolleranza da raggiungere. Viene ignorata se useRefinement è impostato su False</param>
-            <param name="usePropagation">Indica se si desidera utilizzare la propagazione durante la creazione delle corrispondenze</param>
-            <param name="widthOfPropagation">Determina la quantità di superficie interessata dalla corrispondenza. Ignorato se il valore usePropagation è impostato su False</param>
-            <param name="tangentScale">Scala della tangente. Viene ignorata se la continuità non è impostata su G1</param>
-            <param name="curvParamWeight">Peso parametro curvatura. Viene ignorato se la continuità non è impostata su G2</param>
-            <param name="flipSourceTargetAlignment">Indica se invertire la direzione di allineamento</param>
-            <returns>Superficie T-Spline posizionata tra i bordi T-Spline e la curva del perimetro</returns>
-            <search>tspline,match,curve</search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Boolean)">
             <summary>Crea una corrispondenza con una T-Spline e un perimetro chiuso di curve.</summary>
             <param name="tsEdges">Perimetro bordo T-Spline chiuso con cui creare una corrispondenza</param>
@@ -3719,24 +2449,6 @@
             <param name="flipSourceTargetAlignment">Indica se invertire la direzione di allineamento</param>
             <returns>Superficie T-Spline posizionata tra i bordi T-Spline specificati e il perimetro di curve</returns>
             <search>tspline,match,curve</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Double,System.Boolean)">
-            <summary>Crea una corrispondenza con una T-Spline e un perimetro chiuso di bordi BRep. Innanzitutto, 
-            il perimetro di bordi viene convertito in perimetro di curve, quindi viene eseguita la corrispondenza.</summary>
-            <param name="tsEdges">Perimetro bordo T-Spline chiuso con cui creare una corrispondenza</param>
-            <param name="brepEdges">Perimetro bordo B-Rep chiuso con cui creare una corrispondenza</param>
-            <param name="continuity">Continuità della geometria per cui si sta tentando di eseguire la corrispondenza: G0, G1, G2</param>
-            <param name="useArclength">Indica se utilizzare o meno l'allineamento arcLength durante la creazione della corrispondenza</param>
-            <param name="useRefinement">Se è True, verranno aggiunti ulteriori punti di controllo alla T-Spline per garantire la corrispondenza alle superfici entro un dato margine di tolleranza.</param>
-            <param name="numRefinementSteps">Numero massimo di passaggi di affinamento. Viene ignorato se useRefinement è impostato su False</param>
-            <param name="refinementTolerance">Tolleranza da raggiungere. Viene ignorata se useRefinement è impostato su False</param>
-            <param name="usePropagation">Indica se si desidera utilizzare la propagazione durante la creazione delle corrispondenze</param>
-            <param name="widthOfPropagation">Determina la quantità di superficie interessata dalla corrispondenza. Ignorato se il valore usePropagation è impostato su False</param>
-            <param name="tangentScale">Scala della tangente. Viene ignorata se la continuità non è impostata su G1</param>
-            <param name="curvParamWeight">Peso parametro curvatura. Viene ignorato se la continuità non è impostata su G2</param>
-            <param name="flipSourceTargetAlignment">Indica se invertire la direzione di allineamento</param>
-            <returns>Superficie T-Spline posizionata tra i bordi T-Spline e il bordo del perimetro BRep</returns>
-            <search>tspline,match,brep</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Edge},System.Int32,System.Boolean,System.Boolean,System.Int32,System.Double,System.Boolean,System.Double,System.Double,System.Boolean)">
             <summary>Crea una corrispondenza con T-Spline e un perimetro chiuso di bordi BRep. Innanzitutto, 
@@ -4195,14 +2907,6 @@
             <summary>Ottiene un hashcode per il tipo</summary>
             <returns>Hashcode univoco per l'oggetto corrente</returns>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry(Autodesk.DesignScript.Geometry.Geometry)">
-            <summary>Crea un BoundingBox allineato all'asse intorno alla geometria di input.</summary>
-            <param name="geom"/>
-            <returns/>
-            <search>
-            bounding,bound
-            </search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
             <summary>Crea un BoundingBox allineato all'asse intorno alle geometrie di input.</summary>
             <param name="geom">Geometrie per determinare il riquadro di delimitazione</param>
@@ -4524,6 +3228,512 @@
             <summary>Convertire CoordinateSystem in un oggetto JSON formattato con lo schema autodesk.matem:matrix44d-1.0.0.</summary>
             <returns>Stringa JSON risultante</returns>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ToString">
+            <summary>Ottiene una rappresentazione stringa della curva</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByParameterLineOnSurface(Autodesk.DesignScript.Geometry.Surface,Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
+            <summary>Crea una curva mediante una linea di superficie nello spazio UV</summary>
+            <param name="baseSurface">Superficie da utilizzare</param>
+            <param name="startParams">UV iniziale in prossimità del quale inizierà la curva</param>
+            <param name="endParams">UV finale in prossimità del quale terminerà la curva</param>
+            <returns>Curva ai parametri di inizio e fine della superficie</returns>
+            <search>
+            isocurve,curvebyuv,lines,uvs
+            </search>
+            <weights>
+            0.5,0.5,0.4,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByBlendBetweenCurves(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>Crea una curva che si unisce tra due curve</summary>
+            <param name="curve1">Prima curva da unire</param>
+            <param name="curve2">Seconda curva da unire</param>
+            <param name="endOrStart1">flag che indica quale estremità della curva 1 unire</param>
+            <param name="endOrStart2">flag che indica quale estremità della curva 2 unire</param>
+            <param name="isG2Continuous">flag che indica se la curva risultante è di continuità G1 o G2</param>
+            <returns>Curva risultante dall'unione di due curve</returns>
+            <search>
+            blend,make continuous,connect
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ByIsoCurveOnSurface(Autodesk.DesignScript.Geometry.Surface,System.Int32,System.Double)">
+            <summary>Crea una curva dall'isolinea di una superficie</summary>
+            <param name="baseSurface">Superficie di base</param>
+            <param name="direction">se isolinea 0 si trova lungo la direzione U, se 1 si trova lungo la direzione V</param>
+            <param name="parameter">fissato per il valore di curva dell'altro parametro di superficie</param>
+            <returns>Isocurva sulla superficie</returns>
+            <search>
+            isocurve,curvebydir,lines
+            </search>
+            <weights>
+            0.5,0.5,0.4
+            </weights>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.Length">
+            <summary>Restituisce la lunghezza dell'arco totale della curva.</summary>
+            <search>
+            distance
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.IsPlanar">
+            <summary>Restituisce true se la curva è piana, altrimenti false.</summary>
+            <search>
+            flat,liesinplane
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.IsClosed">
+            <summary>Restituisce true se la curva è chiusa, altrimenti false.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.StartPoint">
+            <summary>Ottiene il punto iniziale lungo la curva</summary>
+            <search>
+            begin,curvestart,startpt
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.EndPoint">
+            <summary>Ottiene il punto finale lungo la curva</summary>
+            <search>
+            end,curveend,endpt
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Curve.Normal">
+            <summary>Normale del piano dove si trova la curva. Valida solo per le curve piane.</summary>
+            <search>
+            perpendicular
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtParameter(System.Double)">
+            <summary>Ottiene un punto sulla curva in corrispondenza di un parametro specificato, incluso tra StartParameter() e EndParameter()</summary>
+            <param name="param">Il parametro in base al quale valutare</param>
+            <returns>Punto</returns>
+            <search>
+            pointoncurve,curvepoint
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TangentAtParameter(System.Double)">
+            <summary>Ottiene un vettore tangente alla curva in corrispondenza di un parametro specificato, incluso tra StartParameter() e EndParameter()</summary>
+            <param name="param">Il parametro in base al quale valutare</param>
+            <returns>Un vettore parallelo alla curva in corrispondenza del parametro</returns>
+            <search>
+            tangentoncurve,curvetan
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double)">
+            <summary>Ottiene un vettore perpendicolare alla curva in corrispondenza di un parametro specificato, incluso tra StartParameter() e EndParameter()</summary>
+            <param name="param">Il parametro in base al quale valutare</param>
+            <returns>Un vettore perpendicolare alla curva in corrispondenza del parametro</returns>
+            <search>
+            normaloncurve,curvenorm
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.NormalAtParameter(System.Double,System.Boolean)">
+            <summary>Ottiene un vettore perpendicolare alla curva in corrispondenza di un parametro specificato tra StartParameter() e EndParameter(). La curva deve essere piana. La normale risultante sarà coerente nell'intera curvatura della curva.</summary>
+            <param name="param">Il parametro in base al quale valutare</param>
+            <param name="side">Se l'opzione 'side' è impostata su False, la normale punterà al lato destro della curva (spostandosi dal punto iniziale al punto finale della curva). Se l'opzione 'side' è True, la normale punterà al lato sinistro della curva.</param>
+            <returns>Un vettore perpendicolare alla curva in corrispondenza del parametro</returns>
+            <search>
+            normaloncurve,curvenorm
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtParameter(System.Double)">
+            <summary>Ottieni un CoordinateSystem con origine nel punto corrispondente al parametro specificato. L'asse X viene allineato con la normale della curva, l'asse Y con la curva tangente in corrispondenza di tale punto e l'asse Z sul vettore di orientamento o binormale su tale punto</summary>
+            <param name="param">Il parametro in base al quale valutare</param>
+            <returns>CoordinateSystem in corrispondenza del parametro della curva</returns>
+            <search>
+            coordoncurve,curvecoord,derivatives
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.HorizontalFrameAtParameter(System.Double)">
+            <summary>Ottiene un CoordinateSystem con origine nel punto corrispondente al parametro specificato</summary>
+            <param name="param">Il parametro in base al quale valutare</param>
+            <returns>CoordinateSystem allineato all'asse nel punto</returns>
+            <search>
+            frame,axisaligned,aa,coordcurve,framecurve,curveframe,coordoncurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtParameter(System.Double)">
+            <summary>Restituisce un piano la cui normale è allineata con la tangente della curva. I parametri vengono regolati in modo che 0 sia sempre il punto iniziale e 1 sia sempre il punto finale.</summary>
+            <param name="param"/>
+            <returns/>
+            <search>
+            planeoncurve,planecurve,tangentplane
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtSegmentLength(System.Double)">
+            <summary>Ottiene un punto ad una determinata lunghezza di arco lungo la curva</summary>
+            <param name="segmentLength">La distanza lungo la curva in corrispondenza della quale eseguire la valutazione</param>
+            <returns>Il punto in corrispondenza della lunghezza arco fornita</returns>
+            <search>
+            pointoncurve,curvepoint,pointalongcurve,distanceoncurve,distancepoint,distpoint,arclength
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualSegmentLength(System.Int32)">
+            <summary>Restituisce i punti distanziati in modo uniforme lungo la lunghezza della curva in base al numero di divisioni immesso</summary>
+            <param name="divisions">Numero di divisioni</param>
+            <returns>Punti distanziati in modo uniforme lungo la curva</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtEqualChordLength(System.Int32)">
+            <summary>Restituisce i punti equidistanti lungo la curva in corrispondenza dell'uguale lunghezza dell'asta in base al numero di divisioni immesso</summary>
+            <param name="divisions">Numero di divisioni</param>
+            <returns>Elenco di punti sulla curva</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointAtChordLength(System.Double,System.Double,System.Boolean)">
+            <summary>Consente di ottenere il punto in corrispondenza di una determinata lunghezza dell'asta della curva dalla posizione del parametro fornita.</summary>
+            <param name="chordLength">La lunghezza dell'asta in base alla quale valutare</param>
+            <param name="parameterLocation">Parametro della curva da cui eseguire la misurazione</param>
+            <param name="forward">true se si sposta in avanti lungo la curva</param>
+            <returns>Punto sulla curva</returns>
+            <search>
+            measure from,measure to,parameteratdist
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtSegmentLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
+            <summary>Restituisce punti distanziati in modo uniforme lungo la curva in corrispondenza della lunghezza del segmento specificata dal punto specificato.</summary>
+            <param name="point">Il punto di riferimento da cui eseguire la misurazione</param>
+            <param name="segmentLength">La distanza lungo la curva in corrispondenza della quale eseguire la valutazione</param>
+            <returns>Elenco di punti sulla curva, incluso il punto specificato e lungo la direzione della curva.</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PointsAtChordLengthFromPoint(Autodesk.DesignScript.Geometry.Point,System.Double)">
+            <summary>Restituisce punti distanziati in modo uniforme sulla curva in corrispondenza della lunghezza della corda specificata dal punto specificato.</summary>
+            <param name="point">Il punto di riferimento da cui eseguire la misurazione</param>
+            <param name="chordLength">Lunghezza corda</param>
+            <returns>Elenco di punti sulla curva, incluso il punto specificato e lungo la direzione della curva.</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.CoordinateSystemAtSegmentLength(System.Double)">
+            <summary>Restituisce un CoordinateSystem alla distanza specificata dal punto iniziale della curva. L'asse Y risulta tangente alla curva, l'asse X è la curvatura.</summary>
+            <param name="segmentLength">La distanza lungo la curva in corrispondenza della quale eseguire la valutazione</param>
+            <returns>CoordinateSystem sulla curva</returns>
+            <search>
+            coordoncurve,curvecoord,derivatives
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtSegmentLength(System.Double)">
+            <summary>Restituisce un piano alla distanza specificata dal punto iniziale della curva. La perpendicolare al piano è allineata alla tangente della curva.</summary>
+            <param name="segmentLength">La distanza lungo la curva in corrispondenza della quale eseguire la valutazione</param>
+            <returns>Piano sulla curva</returns>
+            <search>
+            planeoncurve,planecurve,tangentplane
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SegmentLengthAtParameter(System.Double)">
+            <summary>Ottiene la lunghezza del segmento misurata dal punto iniziale della curva al parametro specificato.</summary>
+            <param name="parameter">Valore compreso tra 0 e 1</param>
+            <returns>Lunghezza segmento</returns>
+            <search>
+            lengthatparameter,dist along,lengthatpoint,arclength
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtSegmentLength(System.Double)">
+            <summary>Ottiene il parametro ad una determinata lunghezza di arco sulla curva.</summary>
+            <param name="segmentLength">La distanza lungo la curva in corrispondenza della quale eseguire la valutazione</param>
+            <returns>Il parametro</returns>
+            <search>
+            parameteratlen,param along,paramatlen,arclength
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtChordLength(System.Double,System.Double,System.Boolean)">
+            <summary>Ottiene il parametro ad una determinata lunghezza di corda sulla curva rispetto alla posizione data.</summary>
+            <param name="chordLength">La lunghezza dell'asta in base alla quale valutare</param>
+            <param name="parameter">Parametro della curva da cui eseguire la misurazione</param>
+            <param name="forward">true se si sposta in avanti lungo la curva</param>
+            <returns>Il parametro</returns>
+            <search>
+            measure from,measure to,parameteratdist
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.StartParameter">
+            <summary>Ottiene il parametro nel punto iniziale di una curva</summary>
+            <returns>Valore parametro</returns>
+            <search>
+            start domain,curvestart
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.EndParameter">
+            <summary>Ottiene il parametro nel punto finale di una curva</summary>
+            <returns>Valore parametro</returns>
+            <search>
+            end domain,curveend
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SegmentLengthBetweenParameters(System.Double,System.Double)">
+            <summary>Ottiene la lunghezza del segmento tra due punti parametrici sulla curva</summary>
+            <param name="startParam">Valore compreso tra 0 e 1</param>
+            <param name="endParam">Valore compreso tra 0 e 1</param>
+            <returns>Lunghezza segmento</returns>
+            <search>
+            measure,distance,arclength
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
+            <summary>Ottiene il parametro in corrispondenza di un punto specificato lungo la curva. Se il punto non si trova sulla curva, ParameterAtPoint restituirà ancora un valore che corrisponderà ad un punto vicino sulla curva, ma il punto non è in generale il punto più vicino.</summary>
+            <param name="point">Un punto su o in prossimità della curva</param>
+            <returns>Il parametro sulla curva per il punto specificato.</returns>
+            <search>
+            projectpoint,closestparam,curveparam
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Reverse">
+            <summary>Inverte la direzione della curva</summary>
+            <returns>Una nuova curva con direzione opposta</returns>
+            <search>
+            flip
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Offset(System.Double)">
+            <summary>Applica l'offset ad una curva in base ad un valore specificato. La curva deve essere piana.</summary>
+            <param name="distance">Un valore positivo o negativo per la distanza per eseguire l'offset</param>
+            <returns>nuove curve di offset</returns>
+            <search>
+            thicken,lines
+            </search>
+            <weights>
+            0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.OffsetMany(System.Double,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Crea una o più curve eseguendo l'offset di una curva piana in base alla distanza specificata in un piano definito dalla normale al piano. Se sono presenti spazi tra le curve del componente di offset, vengono riempiti estendendo le curve di offset. Per default, l'argomento di input "planeNormal" è impostato sulla normale al piano contenente la curva, ma è possibile fornire una normale esplicita parallela alla normale alla curva originale per controllare meglio la direzione dell'offset. Ad esempio, se è richiesta una direzione di offset uniforme per più curve che condividono lo stesso piano, i"planeNormal" può essere utilizzato per sostituire le normali alle singole curve e forzare l'offset di tutte le curve nella stessa direzione. Invertendo la normale, si inverte la direzione dell'offset.</summary>
+            <param name="signedDistance">Una distanza di offset positiva si applica nella direzione del prodotto vettoriale tra la tangente alla curva e il vettore normale al piano, mentre un offset negativo si applica nella direzione opposta.</param>
+            <param name="planeNormal">La normale al piano della curva. L'impostazione di default è la normale al piano della curva di input</param>
+            <returns>Una o più curve di offset</returns>
+            <search>
+            thicken,lines
+            </search>
+            <weights>
+            0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoPlane(Autodesk.DesignScript.Geometry.Plane)">
+            <summary>Crea una curva mediante trascinamento sul piano</summary>
+            <param name="plane">Il piano su cui estrarre la curva</param>
+            <returns>Una curva sul piano</returns>
+            <search>
+            projectcurve,toplane
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.PullOntoSurface(Autodesk.DesignScript.Geometry.Surface)">
+            <summary>Sposta la curva sulla superficie di input, nella direzione delle normali della superficie.</summary>
+            <param name="surface"/>
+            <returns/>
+            <search>
+            projectcurve,tosurf
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByStartParameter(System.Double)">
+            <summary>Rimuove l'inizio della curva in corrispondenza del parametro specificato</summary>
+            <param name="startParameter">Il parametro in corrispondenza del quale iniziare il taglio</param>
+            <returns>Una nuova curva con l'inizio rimosso</returns>
+            <search>
+            rem,remstart,removestart,trimcurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByEndParameter(System.Double)">
+            <summary>Rimuove la fine della curva in corrispondenza del parametro specificato</summary>
+            <param name="endParameter">Il parametro in corrispondenza del quale iniziare il taglio</param>
+            <returns>Una nuova curva con l'estremità rimossa</returns>
+            <search>
+            rem,remend,removeend,trimcurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimByParameter(System.Double,System.Double)">
+            <summary>Rimuove l'inizio e la fine della curva in corrispondenza dei parametri specificati.</summary>
+            <param name="startParameter">Il parametro in corrispondenza del quale iniziare il taglio</param>
+            <param name="endParameter">Il parametro in corrispondenza del quale iniziare il taglio</param>
+            <returns>Una nuova curva con segmenti esterni rimossi</returns>
+            <search>
+            rem,remend,remstart,remove,trimcurve,removeends
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimInteriorByParameter(System.Double,System.Double)">
+            <summary>Rimuove una parte interna di una curva in base ai parametri specificati</summary>
+            <param name="startParameter">Il parametro in corrispondenza del quale iniziare il taglio</param>
+            <param name="endParameter">Il parametro in corrispondenza del quale iniziare il taglio</param>
+            <returns>Una nuova curva con segmento interno rimosso</returns>
+            <search>
+            rem,removemiddle,middle,remmiddle,cutout,trimcurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(System.Double[])">
+            <summary>Rimuove più segmenti della curva, eliminando il primo, terzo, quinto segmento e così via</summary>
+            <param name="parameters">Un elenco di parametri in base al quale dividere la curva</param>
+            <returns>Una serie di curve che eliminano il primo, il terzo, il quinto... segmento</returns>
+            <search>
+            rem,removeparts,remparts,cutout,trimcurv,interior,odd
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.TrimSegmentsByParameter(System.Double[],System.Boolean)">
+            <summary>Rimuove i segmenti pari o dispari della curva divisa in corrispondenza dei parametri specificati, a seconda che il flag 'discardEvenSegments' sia rispettivamente true o false.</summary>
+            <param name="parameters">Un elenco di parametri in base al quale dividere la curva</param>
+            <param name="discardEvenSegments">Attivare/Disattivare per eliminare anche i segmenti</param>
+            <returns>Elenco di curve rimanenti dopo l'eliminazione dei segmenti di curva pari o dispari.</returns>
+            <search>
+            rem,removeparts,remparts,cutout,trimcurv,interior,even
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByParameter(System.Double[])">
+            <summary>Divide una curva in più parti in corrispondenza dei parametri specificati</summary>
+            <param name="parameters">Un elenco di parametri in base al quale dividere la curva</param>
+            <returns>Curve create dalla divisione</returns>
+            <search>
+            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SplitByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>Dividere una curva in più parti in corrispondenza dei punti specificati</summary>
+            <param name="points">I punti sulla curva in cui essa deve essere divisa</param>
+            <returns>Curve create dalla divisione</returns>
+            <search>
+            cutinto,divide,curve2curves,cut,cut multiple,splitmultiple
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
+            <summary>Unisce un gruppo di curve alla fine della PolyCurve. Inverte le curve per garantire la connettività.</summary>
+            <param name="curves">Altre curve o curve da unire a PolyCurve</param>
+            <returns>Una PolyCurve create da curve</returns>
+            <search>
+            convertcurves,curves2polycurve,joincurves,concat,joinall,joinmany
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(System.Double)">
+            <summary>Estrude una curva nella direzione del vettore normale</summary>
+            <param name="distance">La distanza di estrusione della curva</param>
+            <returns>La superficie estrusa</returns>
+            <search>
+            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Estrude una curva nella direzione specificata, per la lunghezza del vettore di input</summary>
+            <param name="direction">Vettore lungo cui eseguire l'estrusione</param>
+            <returns>La superficie estrusa</returns>
+            <search>
+            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extrude(Autodesk.DesignScript.Geometry.Vector,System.Double)">
+            <summary>Estrude una curva nella direzione specificata, per la distanza specificata</summary>
+            <param name="direction">Vettore lungo cui eseguire l'estrusione</param>
+            <param name="distance">Distanza di estrusione</param>
+            <returns>La superficie estrusa</returns>
+            <search>
+            pushcurve,pullcurve,curve2surf,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(System.Double)">
+            <summary>Estrude una curva nella direzione normale, per la distanza specificata. La curva deve essere chiusa.</summary>
+            <param name="distance">Distanza di estrusione</param>
+            <returns>Il solido estruso</returns>
+            <search>
+            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Estrude una curva nella direzione specificata, per la lunghezza del vettore di input. La curva deve essere chiusa.</summary>
+            <param name="direction">Vettore lungo cui eseguire l'estrusione</param>
+            <returns>Il solido estruso</returns>
+            <search>
+            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtrudeAsSolid(Autodesk.DesignScript.Geometry.Vector,System.Double)">
+            <summary>Estrude una curva nella direzione specificata, per la distanza specificata. La curva deve essere chiusa.</summary>
+            <param name="direction">Vettore lungo cui eseguire l'estrusione</param>
+            <param name="distance">Distanza di estrusione</param>
+            <returns>Il solido estruso</returns>
+            <search>
+            profileextrude,extrudeprofile,curve2solid,curveextrude,extrudecurve
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Extend(System.Double,Autodesk.DesignScript.Geometry.Point)">
+            <summary>Estende una curva per una distanza data fino ad un'estremità specifica determinata da un punto di selezione. Il lato selezionato viene esteso. Le curve chiuse quali cerchi ed ellissi non possono essere estese. Se la curva in corso di estensione è lineare, anche l'estensione sarà lineare.</summary>
+            <param name="distance">Distanza da estendere</param>
+            <param name="pickSide">Un punto sull'estremità da estendere</param>
+            <returns>La curva estesa</returns>
+            <search>
+            makelonger,stretch,extendside
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtendStart(System.Double)">
+            <summary>Estende la parte iniziale di una curva per la distanza data. Le curve chiuse quali cerchi ed ellissi non possono essere estese. Se la curva in corso di estensione è lineare, anche l'estensione sarà lineare.</summary>
+            <param name="distance">Distanza da estendere</param>
+            <returns>La curva estesa</returns>
+            <search>
+            makelonger,stretch
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ExtendEnd(System.Double)">
+            <summary>Estende la parte finale di una curva per la distanza data. Le curve chiuse quali cerchi ed ellissi non possono essere estese. Se la curva in corso di estensione è lineare, anche l'estensione sarà lineare.</summary>
+            <param name="distance">Distanza da estendere</param>
+            <returns>La curva estesa</returns>
+            <search>
+            makelonger,stretch
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ApproximateWithArcAndLineSegments">
+            <summary>Definisce in modo approssimato una curva a partire da una raccolta di archi e linee</summary>
+            <returns>Una serie di archi e linee che si avvicinano alla curva</returns>
+            <search>
+            rationalizecurve,fitarcs,fitlines,arcs,lines
+            </search>
+            <weights>
+            0.5,0.5,0.5,0.4,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.ToNurbsCurve">
+            <summary>Converte la curva in un'approssimazione NurbsCurve</summary>
+            <returns>Una NurbsCurve che si avvicina alla curva</returns>
+            <search>
+            curve2spline,convertcurve,tospline,lines
+            </search>
+            <weights>
+            0.5,0.5,0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Patch">
+            <summary>Applica una superficie ad una curva chiusa</summary>
+            <returns>Una superficie all'interno della curva</returns>
+            <search>
+            fill,profiletosurf,loop,loop2surf,edgesurf
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Project(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Proietta una curva di input lungo una direzione di proiezione data su una geometria di base specificata.</summary>
+            <param name="baseGeometry">Geometria su cui proiettare</param>
+            <param name="projectionDirection">Vettore</param>
+            <returns>Elenco delle geometrie proiettate nella geometria di base</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSurface(Autodesk.DesignScript.Geometry.Curve)">
+            <summary>Esegue l'estrusione su percorso della curva corrente lungo la curva del percorso, creando una superficie</summary>
+            <param name="path"/>
+            <returns/>
+            <search>
+            sweep1,curve2surf
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve)">
+            <summary>Esegue l'estrusione su percorso della curva chiusa corrente lungo la curva del percorso, creando un solido</summary>
+            <param name="path"/>
+            <returns/>
+            <search>
+            sweep1,curve2solid,loop2solid,profile2solid,curvetosolid,looptosolid,profiletosolid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
+            <summary>Esegue l'estrusione su percorso della curva chiusa corrente lungo la curva del percorso, creando un solido</summary>
+            <param name="path">Il percorso che rappresenta la traiettoria di estrusione su percorso</param>
+            <param name="cutEndOff">Tagliare l'estremità dell'estrusione su percorso e renderla normale al percorso</param>
+            <returns>Un solido che esegue l'estrusione su percorso di questa curva chiusa lungo la curva del percorso</returns>
+            <search>
+            sweep1,curve2solid,loop2solid,profile2solid,curvetosolid,looptosolid,profiletosolid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.Simplify(System.Double)">
+            <summary>Restituisce una nuova curva, approssimata con la tolleranza data</summary>
+            <param name="tolerance"/>
+            <returns/>
+            <search>
+            fitcurve,reducecurve,simplecurve,approximate
+            </search>
+        </member>
         <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.constructorThreadId">
             <summary>Memorizza l'ID thread gestito del thread che ha chiamato questo costruttore.
             Utilizzato per avvertire gli utenti in caso di potenziali problemi di multi-threading.</summary>
@@ -4537,9 +3747,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.Dispose">
             <notranslation>true</notranslation>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.DisposeDisplayable">
-            <summary>Questo metodo viene chiamato quando l'elemento visualizzabile non è più necessario.</summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.GetHashCode">
             <notranslation>true</notranslation>
         </member>
@@ -4552,7 +3759,7 @@
         <member name="F:Autodesk.DesignScript.Geometry.Geometry.mGeometryContructors">
             <summary>Mappatura tra tipi IGeometryEntity e costruttori Geometry mediante host.</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.RegisterHostType(System.Type,System.Func{Autodesk.DesignScript.Interfaces.IGeometryEntity,System.Boolean,Autodesk.DesignScript.Geometry.Geometry})">
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.RegisterHostType(System.Type,System.Func{Autodesk.DesignScript.Interfaces.IGeometryEntity,Autodesk.DesignScript.Geometry.Geometry})">
             <summary>Meccanismo di registrazione del tipo di geometria.</summary>
             <param name="hostType">Tipo di interfacce derivate da IGeometryEntity.</param>
             <param name="contructor">Elemento delegato per la costruzione della geometria.</param>
@@ -4735,17 +3942,6 @@
             <param name="json">Stringa JSON da analizzare</param>
             <returns>Oggetto geometrico</returns>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.String)">
-            <summary>Esporta la geometria specificata nel file SAT presente nel percorso dato</summary>
-            <param name="filePath">Nome del file nel quale esportare la geometria</param>
-            <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.String,System.Double)">
-            <summary>Esporta la geometria specificata nel file SAT presente nel percorso dato</summary>
-            <param name="filePath">Nome del file nel quale esportare la geometria</param>
-            <param name="unitsMM">Le unità di misura da utilizzare</param>
-            <returns/>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},System.String)">
             <summary>Esporta un elenco di geometria specificata nel percorso del file SAT dato</summary>
             <param name="geometry"/>
@@ -4753,7 +3949,7 @@
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ExportToSAT(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry},System.String,System.Double)">
-            <summary>Esporta un elenco di geometria specificata nel percorso del file SAT dato</summary>
+            <summary>Esporta un elenco di geometria specificata nel percorso del file SAT dato.</summary>
             <param name="geometry"/>
             <param name="filePath"/>
             <param name="unitsMM"/>
@@ -4764,10 +3960,6 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ToNativePointer(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
             <summary>Questo metodo è solo per uso interno.</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB">
-            <summary>Serializza la geometria specificata in formato Standard ACIS Binary (SAB) e restituisce dati di flusso binari serializzati</summary>
-            <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
             <summary>Serializza un elenco di geometria specificata in formato Standard ACIS Binary (SAB) e restituisce dati di flusso binari serializzati</summary>
@@ -5259,6 +4451,531 @@
             <param name="panelIndices">Indici dei pannelli utilizzati per costruire poligoni. Il valore di default null indica tutti i pannelli della superficie.</param>
             <returns/>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ToString">
+            <summary>Ottiene una rappresentazione stringa di PolyCurve</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
+            <summary>Crea una PolyCurve mediante l'unione di curve. Inverte le curve in base alle esigenze di connettività.
+            La direzione di PolyCurve si basa sulla prima curva nella matrice di input.
+            Scegliere la tolleranza di unione preferita compresa tra le unità 1e-6 e 1e-3.</summary>
+            <param name="curves">Le curve da unire in una PolyCurve</param>
+            <param name="joinTolerance">La tolleranza per determinare la dimensione di spaziatura consentita tra curve da unire</param>
+            <returns>PolyCurve create da curve unite</returns>
+            <search>
+            segments,joincurves
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
+            <summary>Crea una PolyCurve mediante l'unione di curve. Inverte le curve in base alle esigenze di connettività.
+            La direzione di PolyCurve si basa sulla prima curva nella matrice di input.
+            Scegliere la tolleranza di unione preferita compresa tra le unità 1e-6 e 1e-3.</summary>
+            <param name="curves">Le curve da unire in una PolyCurve</param>
+            <param name="joinTolerance">La tolleranza per determinare la dimensione di spaziatura consentita tra curve da unire</param>
+            <param name="trimCurves">Impostare su True se le curve di input si intersecano/si sovrappongono e i relativi segmenti finali devono essere tagliati prima della creazione di PolyCurve. L'opzione è impostata su False per default.</param>
+            <param name="trimLength">Se trimLength è maggiore di 0, i segmenti finali più lunghi di trimLength non verranno tagliati.</param>
+            <returns>PolyCurve create da curve unite</returns>
+            <search>
+            segments,joincurves
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
+            <summary>Crea una o più PolyCurve raggruppando le curve connesse. Scegliere una tolleranza di unione preferita tra le unità 1e-6 e 1e-3.</summary>
+            <param name="curves">Curve da raggruppare per creare una o più PolyCurve</param>
+            <param name="joinTolerance">La tolleranza per determinare la dimensione di spaziatura consentita tra curve da unire</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
+            <summary>Crea una o più PolyCurve raggruppando le curve connesse. Scegliere una tolleranza di unione preferita tra le unità 1e-6 e 1e-3.</summary>
+            <param name="curves">Curve da raggruppare per creare una o più PolyCurve</param>
+            <param name="joinTolerance">La tolleranza per determinare la dimensione di spaziatura consentita tra curve da unire</param>
+            <param name="trimCurves">Impostare su True se le curve di input si intersecano/si sovrappongono e i relativi segmenti finali devono essere tagliati prima della creazione di PolyCurve. L'opzione è impostata su False per default.</param>
+            <param name="trimLength">Se trimLength è maggiore di 0, i segmenti finali più lunghi di trimLength non verranno tagliati.</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Boolean)">
+            <summary>Creare una PolyCurve collegando i punti. Impostare l'input 'connectLastToFirst' su true per chiudere la PolyCurve.</summary>
+            <param name="points">Punti per creare PolyCurve</param>
+            <param name="connectLastToFirst">True per collegare l'ultimo punto al primo punto, false per lasciarli aperti</param>
+            <returns>PolyCurve creata da punti</returns>
+            <search>
+            segments,joincurves,lines
+            </search>
+            <weights>
+            0.5,0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Crea una PolyCurve tramite ispessimento di una curva.</summary>
+            <param name="curve">la curva da ispessire</param>
+            <param name="thickness">lo spessore</param>
+            <param name="nor">la perpendicolare normale alla direzione di ispessimento</param>
+            <returns/>
+            <search>
+            offset
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurveNormal(Autodesk.DesignScript.Geometry.Curve,System.Double,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Crea una PolyCurve tramite l'ispessimento di una curva lungo un piano specificato dalla normale di input.</summary>
+            <param name="curve">la curva da ispessire</param>
+            <param name="thickness">lo spessore</param>
+            <param name="normal">perpendicolare normale alla direzione di ispessimento. Se la normale non viene fornita (è nulla), per default viene utilizzata la normale della curva.</param>
+            <returns/>
+            <search>
+            offset,thicken
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.Points">
+            <summary>Restituisce il punto iniziale del primo componente e i punti finali di ogni curva del componente. Per una PolyCurve chiusa, poiché i punti iniziale e finale sono gli stessi, il punto finale è escluso.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.NumberOfCurves">
+            <summary>Numero di curve della PolyCurve</summary>
+            <search>
+            curvecount,subcurvecount,numbersubcurves
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Curves">
+            <summary>Restituisce le curve della PolyCurve</summary>
+            <returns/>
+            <search>
+            subcurves,polycurvesplit
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CurveAtIndex(System.Int32,System.Boolean)">
+            <summary>Restituisce la curva della PolyCurve in base all'indice</summary>
+            <param name="index">Lunghezza per posizionare punto</param>
+            <param name="endOrStart">True per contare dalla fine della PolyCurve, false per contare dall'inizio della PolyCurve</param>
+            <returns>Curva all'indice</returns>
+            <search>
+            subcurveatindex,getsubcurve,getcurvebyindex
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.BasePlane">
+            <summary>Restituisce il piano della PolyCurve piana</summary>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithEllipse(System.Double,System.Double,System.Double,System.Double,System.Boolean)">
+            <summary>Estende la PolyCurve in base all'ellisse tangente</summary>
+            <param name="length">Lunghezza di ellisse di estensione</param>
+            <param name="radius1">Parametro di ellisse</param>
+            <param name="radius2">Parametro di ellisse</param>
+            <param name="endEllipseParameter">Parametro di ellisse</param>
+            <param name="endOrStart">estensione estremità finale o iniziale di PolyCurve</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ExtendWithArc(System.Double,System.Double,System.Boolean)">
+            <summary>Estende la PolyCurve in base all'arco tangente.</summary>
+            <param name="length">Lunghezza dell'arco di estensione</param>
+            <param name="radius">Raggio dell'arco</param>
+            <param name="endOrStart">estensione estremità finale o iniziale di PolyCurve</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLine">
+            <summary>Chiude la PolyCurve mediante una linea che collega i punti iniziale e finale</summary>
+            <returns/>
+            <search>
+            lines
+            </search>
+            <weights>
+            0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.CloseWithLineAndTangentArcs(System.Double,System.Double)">
+            <summary>Chiude la PolyCurve mediante una catena tangente arco - linea - arco</summary>
+            <param name="radiusAtStart">Raggio dell'arco all'inizio di PolyCurve</param>
+            <param name="radiusAtEnd">Raggio dell'arco alla fine di PolyCurve</param>
+            <returns/>
+            <search>
+            lines
+            </search>
+            <weights>
+            0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Offset(System.Double,System.Boolean)">
+            <summary>Applica un offset alla PolyCurve nel piano di appartenenza.</summary>
+            <param name="signedDistance">Valore di offset</param>
+            <param name="extendCircular">Attivare/Disattivare per rendere circolari gli angoli</param>
+            <returns>PolyCurve con offset</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.OffsetMany(System.Double,System.Boolean,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Crea una o più PolyCurve eseguendo l'offset di una PolyCurve piana in base alla distanza specificata in un piano definito dalla normale al piano. Per default, l'argomento di input "planeNormal" è impostato sulla normale al piano contenente la curva, ma è possibile fornire una normale esplicita parallela alla normale alla curva originale per controllare meglio la direzione dell'offset. Ad esempio, se è necessaria una direzione di offset uniforme per più curve che condividono lo stesso piano, "planeNormal" può essere utilizzato per sostituire le normali alle singole curve e forzare l'offset di tutte le curve nella stessa direzione. Invertendo la normale, si inverte la direzione dell'offset.</summary>
+            <param name="signedDistance">Una distanza di offset positiva si applica nella direzione del prodotto vettoriale tra la tangente alla PolyCurve e il vettore normale al piano, mentre un offset negativo si applica nella direzione opposta.</param>
+            <param name="extendCircular">Se sono presenti spazi tra le curve del componente di offset, a seconda delle impostazioni di chiusura dello spazio, possono essere riempiti da archi circolari (valore True) per fornire angoli levigati o estendendo (valore False) le curve di offset.</param>
+            <param name="planeNormal">La normale al piano della curva. L'impostazione di default è la normale al piano della curva di input</param>
+            <returns>Una o più PolyCurve di offset</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Fillet(System.Double,System.Boolean)">
+            <summary>Raccorda gli angoli di PolyCurve piana.</summary>
+            <param name="radius">Raggio di raccordo</param>
+            <param name="clockwise_corners">Indica gli angoli da raccordare. Se l'opzione è True, verranno raccordati gli angoli in cui la tangente all'inizio del secondo componente è in senso orario rispetto alla tangente alla fine del primo componente (rispetto alla normale alla curva). Se l'opzione è False, verranno raccordati gli angoli in senso antiorario.</param>
+            <returns>PolyCurve raccordata</returns>
+            <search>
+            round,smooth,radius
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.Heal(System.Double)">
+            <summary>Corregge una PolyCurve autointersecante restituendone una nuova che non è autointersecante se la lunghezza del segmento sovrapposto è minore di o uguale a trimLength.</summary>
+            <param name="trimLength">Se trimLength è maggiore di 0, i segmenti finali più lunghi di trimLength non verranno tagliati.</param>
+            <returns>PolyCurve non autointersecante e non sovrapposta</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ToString">
+            <summary>Ottiene una rappresentazione stringa del poligono</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>Crea una curva poligonale mediante la connessione di punti.</summary>
+            <param name="points"/>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.RegularPolygon(Autodesk.DesignScript.Geometry.Circle,System.Int32)">
+            <summary>Creare una curva poligonale inscritta in un cerchio.</summary>
+            <param name="circle"/>
+            <param name="numberSides"/>
+            <returns/>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Polygon.Points">
+            <summary>Restituisce i punti iniziali/finali di tutti i segmenti.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Polygon.PlaneDeviation">
+            <summary>Restituisce la deviazione massima dal piano medio del poligono.</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.Corners">
+            <summary>Restituisce gli angoli del poligono</summary>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.Center">
+            <summary>Restituisce il punto medio degli angoli del poligono</summary>
+            <returns/>
+            <search>
+            centroid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.SelfIntersections">
+            <summary>Restituisce le autointersezioni tra i lati del poligono.</summary>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ContainmentTest(Autodesk.DesignScript.Geometry.Point)">
+            <summary>Restituisce il valore che specifica se un punto di input è contenuto all'interno del poligono. Se il poligono non è piano, il punto verrà proiettato sul piano di adattamento e il contenimento verrà calcolato utilizzando la proiezione del poligono sul piano di adattamento. Se il poligono si autointerseca, verrà restituito uno stato non riuscito.</summary>
+            <param name="point"/>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToString">
+            <summary>Ottiene una rappresentazione stringa della superficie</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByUnion(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
+            <summary>Unione di una raccolta di superfici in un'unica superficie. Questo metodo potrebbe restituire una PolySurface se l'unione risultante non è multiforme o a più facce.</summary>
+            <param name="surfaces">Raccolta di superfici.</param>
+            <returns>Unione di superfici</returns>
+            <search>
+            merge,join,boolean,addition
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
+            <summary>Crea una superficie mediante loft tra curve di sezione trasversale di input.</summary>
+            <param name="crossSections">Curve in cui eseguire il loft</param>
+            <returns>Superficie creata mediante loft</returns>
+            <search>
+            loft
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRuledLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Line})">
+            <summary>Crea una superficie mediante loft tra linee di sezione trasversale di input. Questo metodo è leggermente più veloce e produce un risultato meno uniforme rispetto a Surface.ByLoft.</summary>
+            <param name="crossSections"/>
+            <returns/>
+            <search>
+            ruledsurface,lines
+            </search>
+            <weights>
+            0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByLoft(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve})">
+            <summary>Esegue il loft di una superficie mediante le sezioni trasversali con curve di guida date. Le curve di guida devono intersecare tutte le curve di sezione trasversale.</summary>
+            <param name="crossSections">Curve in cui eseguire il loft</param>
+            <param name="guideCurves">Curve in cui guidare il loft</param>
+            <returns>Superficie creata mediante loft</returns>
+            <search>
+            loftbyrails,loft rails,guides
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
+            <summary>Crea una superficie tramite estrusione su percorso di una curva del profilo lungo un percorso.</summary>
+            <param name="profile">Curva di cui eseguire l'estrusione su percorso</param>
+            <param name="path">Curva del percorso utilizzata lungo cui eseguire l'estrusione</param>
+            <returns>Superficie creata mediante estrusione del profilo lungo il percorso</returns>
+            <search>
+            sweep,rail,guide,sweep1
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
+            <summary>Crea una superficie tramite estrusione su percorso di una curva del profilo lungo un percorso.</summary>
+            <param name="profile">Curva di cui eseguire l'estrusione su percorso</param>
+            <param name="path">Curva del percorso utilizzata lungo cui eseguire l'estrusione su percorso</param>
+            <param name="cutEndOff">Tagliare l'estremità dell'estrusione su percorso e renderla normale al percorso</param>
+            <returns>Superficie creata mediante estrusione su percorso del profilo lungo il percorso</returns>
+            <search>
+            sweep,rail,guide,sweep1
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPerimeterPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>Crea una superficie poligonale connettendo punti di input in un poligono chiuso e aggiungendo una superficie chiusa.</summary>
+            <param name="points">Elenco di punti del perimetro</param>
+            <returns>Superficie creata da punti del perimetro</returns>
+            <search>
+            patch,surfacebypolygon
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.BySweep2Rails(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve)">
+            <summary>Esegue l'estrusione su percorso della curva di sezione trasversale lungo un percorso definito da due guide</summary>
+            <param name="path">Il percorso di input lungo cui eseguire l'estrusione.</param>
+            <param name="guideRail">Una guida per l'orientamento dell'estrusione.</param>
+            <param name="profile">La curva del profilo di cui eseguire l'estrusione lungo il percorso.</param>
+            <returns>Superficie creata mediante estrusione su percorso di due guide</returns>
+            <search>
+            sweep2,guides
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByRevolve(Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,System.Double,System.Double)">
+            <summary>Crea una superficie eseguendo l'estrusione su percorso della curva di profilo attorno al raggio asse formato dal punto di origine nella direzione del vettore dell'asse, dall'angolo iniziale in gradi all'angolo di estrusione su percorso in gradi.</summary>
+            <param name="profile">Curva di profilo di cui eseguire la rivoluzione</param>
+            <param name="axisOrigin">Origine asse di rivoluzione</param>
+            <param name="axisDirection">Direzione asse di rivoluzione</param>
+            <param name="startAngle">Angolo iniziale in gradi</param>
+            <param name="sweepAngle">Angolo di estrusione su percorso in gradi</param>
+            <returns>Superficie creata da profilo di rivoluzione</returns>
+            <search>
+            lathe
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ByPatch(Autodesk.DesignScript.Geometry.Curve)">
+            <summary>Crea una superficie mediante il riempimento di un contorno chiuso definito da curve di input.</summary>
+            <param name="closedCurve">Curva chiusa utilizzata come contorno della superficie</param>
+            <returns>Superficie creata da patch</returns>
+            <search>
+            edgesrf,edgesurface,patch,fill
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.Area">
+            <summary>Restituisce l'area totale della superficie.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.Perimeter">
+            <summary>Restituisce la somma di lunghezze di tutti gli spigoli della superficie.</summary>
+            <search>
+            circumference
+            </search>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.ClosedInU">
+            <summary>Restituisce true se la superficie è chiusa nella direzione U, altrimenti false.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.ClosedInV">
+            <summary>Restituisce true se la superficie è chiusa nella direzione V, altrimenti false.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Surface.Closed">
+            <summary>Restituisce true se la superficie è chiusa nella direzione U o V, altrimenti false.</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.SubtractFrom(Autodesk.DesignScript.Geometry.Solid)">
+            <summary>Sottrae gli strumenti di input dalla superficie corrente.</summary>
+            <param name="trimmingEntity"/>
+            <returns/>
+            <search>
+            difference,trim,removefrom,cut
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Difference(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
+            <summary>Differenza booleana di questa superficie e l'unione delle superfici di input. Questo metodo potrebbe restituire una PolySurface se il valore booleano risultante non è multiforme o a più facce.</summary>
+            <param name="others">Altre superfici da sottrarre</param>
+            <returns>Superficie booleana o polySurface risultante</returns>
+            <search>
+            subtract,differencemany,diffall,diff multi
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.UVParameterAtPoint(Autodesk.DesignScript.Geometry.Point)">
+            <summary>Restituisce la coppia di parametri UV in corrispondenza del punto di input. È l'istruzione opposta a PointAtParameter.</summary>
+            <param name="point"/>
+            <returns/>
+            <search>
+            evaluateatpoint,surfaceatpoint,uvatpoint,uvs
+            </search>
+            <weights>
+            0.5,0.5,0.5,0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve})">
+            <summary>Taglia la superficie con una raccolta di una o più PolyCurve chiuse. Uno dei perimetri chiusi deve essere il perimetro chiuso di contorno della superficie di input. È inoltre necessario aggiungere uno o più perimetri chiusi interni per i fori.</summary>
+            <param name="loops"/>
+            <returns/>
+            <search>
+            trim multiple,removeloops,cutloops
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.TrimWithEdgeLoops(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.PolyCurve},System.Double)">
+            <summary>Taglia la superficie con una raccolta di una o più PolyCurve chiuse che devono trovarsi tutte sulla superficie entro la tolleranza specificata. Se uno o più fori devono essere tagliati dalla superficie di input, deve essere specificato un perimetro chiuso esterno per il contorno della superficie e un perimetro chiuso interno per ogni foro. Se la regione tra il contorno della superficie e i fori deve essere tagliata, deve essere fornito solo il perimetro chiuso per ogni foro. Per una superficie periodica senza perimetro chiuso esterno, ad esempio una superficie sferica, la regione tagliata può essere controllata invertendo la direzione della curva del perimetro chiuso.</summary>
+            <param name="loops">Una o più PolyCurve chiuse che possono essere in qualsiasi ordine nell'input. Questi perimetri chiusi non devono intersecarsi.</param>
+            <param name="tolerance">Tolleranza utilizzata per stabilire se le estremità della curva sono coincidenti e se una curva e una superficie sono coincidenti. La tolleranza fornita non può essere inferiore ad alcuna delle tolleranze utilizzate nella creazione delle PolyCurve di input. Il valore di default 0.0 indica che verrà utilizzata la tolleranza più grande usata nella creazione delle PolyCurve di input.</param>
+            <returns>Superficie tagliata da perimetri chiusi.</returns>
+            <search>
+            trim multiple,removeloops,cutloops
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.NormalAtPoint(Autodesk.DesignScript.Geometry.Point)">
+            <summary>Restituisce la normale della superficie in corrispondenza del punto di input sulla superficie stessa.</summary>
+            <param name="point">Punto in corrispondenza del quale valutare la normale della superficie</param>
+            <returns>Normale in corrispondenza del punto</returns>
+            <search>
+            perpendicular
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface">
+            <summary>Ottiene una rappresentazione NURBS della superficie. In determinate circostanze, questo metodo può restituire un valore di superficie approssimato.</summary>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToNurbsSurface(System.Boolean)">
+            <summary>Ottiene una rappresentazione NURBS della superficie. In determinate circostanze, questo metodo può restituire un valore di superficie approssimato.</summary>
+            <param name="limitSurface">Determina se la superficie deve essere ripristinata al relativo intervallo di parametri originale prima della conversione. Un esempio di quando l'intervallo di parametri di una superficie è limitato è dopo un'operazione di taglio.</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ApproximateWithTolerance(System.Double)">
+            <summary>Ottiene una rappresentazione NURBS della superficie, entro una tolleranza specifica. In determinate circostanze, questo metodo può restituire un valore di superficie approssimato.</summary>
+            <param name="tolerance">Tolleranza specificata</param>
+            <returns>Rappresentazione della superficie NURBS</returns>
+            <search>
+            tonurbs
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double)">
+            <summary>Ispessisce una superficie e crea un solido. L'estrusione avviene nella direzione delle normali su entrambi i lati della superficie.</summary>
+            <param name="thickness">Valore di ispessimento</param>
+            <returns>Superficie ispessita come solido</returns>
+            <search>
+            offset,tosolid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Thicken(System.Double,System.Boolean)">
+            <summary>Ispessisce una superficie e crea un solido. L'estrusione avviene nella direzione delle normali su entrambi i lati della superficie. Se il parametro both_sides è true, la superficie viene ispessita su entrambi i lati.</summary>
+            <param name="thickness">Valore di ispessimento</param>
+            <param name="both_sides">True per ispessire su entrambi i lati, false per ispessire su un lato</param>
+            <returns>Superficie ispessita come solido</returns>
+            <search>
+            offset,bothsides,tosolid
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Offset(System.Double)">
+            <summary>Applica un offset alla superficie in direzione della normale e in base ad una distanza specificata.</summary>
+            <param name="distance">Valore di offset</param>
+            <returns>Superficie con offset</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.CurvatureAtParameter(System.Double,System.Double)">
+            <summary>Il sistema di coordinate restituito utilizza xAxis, yAxis e zAxis per rappresentare uDir, vDir e la normale. La lunghezza di xAxis, yAxis rappresenta le curvature.</summary>
+            <param name="u">Componente U del parametro</param>
+            <param name="v">Componente V del parametro</param>
+            <returns>Sistema di coordinate basato su normale, direzione U e direzione V nella posizione UV sulla superficie</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.CoordinateSystemAtParameter(System.Double,System.Double)">
+            <summary>Restituisce un CoordinateSystem allineato con le direzioni di curvatura principali.</summary>
+            <param name="u">Componente U del parametro</param>
+            <param name="v">Componente V del parametro</param>
+            <returns>CoordinateSystem allineato con le direzioni di curvatura principali</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.TangentAtUParameter(System.Double,System.Double)">
+            <summary>Restituisce il vettore tangente U in corrispondenza dei parametri U e V specificati.</summary>
+            <param name="u">Componente U del parametro</param>
+            <param name="v">Componente V del parametro</param>
+            <returns>Vettore tangente U</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.TangentAtVParameter(System.Double,System.Double)">
+            <summary>Restituisce il vettore tangente V in corrispondenza dei parametri U e V specificati.</summary>
+            <param name="u">Componente U del parametro</param>
+            <param name="v">Componente V del parametro</param>
+            <returns>Vettore tangente V</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.NormalAtParameter(System.Double,System.Double)">
+            <summary>Restituisce il vettore normale in corrispondenza dei parametri U e V specificati.</summary>
+            <param name="u">Componente U del parametro</param>
+            <param name="v">Componente V del parametro</param>
+            <returns>Normale in corrispondenza del parametro</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.DerivativesAtParameter(System.Double,System.Double)">
+            <summary>Restituisce le derivate in corrispondenza delle coordinate U e V di input.</summary>
+            <param name="u">Componente U del parametro</param>
+            <param name="v">Componente V del parametro</param>
+            <returns>Derivate U e V della superficie</returns>
+            <search>
+            tangent,normal
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.GaussianCurvatureAtParameter(System.Double,System.Double)">
+            <summary>Restituisce la curvatura di Gauss in corrispondenza dei parametri U e V.</summary>
+            <param name="u"/>
+            <param name="v"/>
+            <returns/>
+            <search>
+            developable
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.PrincipalCurvaturesAtParameter(System.Double,System.Double)">
+            <summary>Restituisce le curvature principali in corrispondenza dei parametri U e V.</summary>
+            <param name="u"/>
+            <param name="v"/>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.PrincipalDirectionsAtParameter(System.Double,System.Double)">
+            <summary>Restituisce i vettori di direzione principali in corrispondenza dei parametri U e V.</summary>
+            <param name="u">Componente U del parametro</param>
+            <param name="v">Componente V del parametro</param>
+            <returns>Vettori tangenti U e V</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.PointAtParameter(System.Double,System.Double)">
+            <summary>Restituisce il punto in corrispondenza dei parametri U e V specificati.</summary>
+            <param name="u"/>
+            <param name="v"/>
+            <returns/>
+            <search>
+            surfacepoint
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.PerimeterCurves">
+            <summary>Restituisce tutte le curve di contorno della superficie.</summary>
+            <returns/>
+            <search>
+            edges
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.GetIsoline(System.Int32,System.Double)">
+            <summary>Crea una curva da una linea di parametro sulla superficie data. La curva rappresenta una linea di parametro U o V sulla superficie. Una linea di parametro procede nella direzione di incremento di un parametro U o V in corrispondenza di una costante opposta al parametro U o V. La curva risultante corrisponderà alla parametrizzazione della superficie e il suo intervallo sarà delimitato dall'intervallo del parametro Surface. Il tipo di curva restituito dipenderà dal tipo di superficie.</summary>
+            <param name="isoDirection">Se direzione == 0, crea una linea di parametro U, se direzione == 1, crea una linea di parametro V.</param>
+            <param name="parameter"/>
+            <returns/>
+            <search>
+            lines
+            </search>
+            <weights>
+            0.4
+            </weights>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.FlipNormalDirection">
+            <summary>Restituisce una nuova superficie con la normale invertita. La superficie resta invariata.</summary>
+            <returns>Superficie, che è uguale alla superficie di input ma con normali invertite</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Join(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Surface})">
+            <summary>Combina la superficie corrente e le superfici di input in una PolySurface</summary>
+            <param name="otherSurfaces"/>
+            <returns/>
+            <search>
+            join multiple,joinmany,joinall,topolysurface
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.ProjectInputOnto(Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Proietta la geometria di input su questa superficie nella direzione del vettore di input. Attualmente questo metodo di proiezione supporta solo punti o curve.</summary>
+            <param name="geometryToProject"/>
+            <param name="projectionDirection"/>
+            <returns/>
+            <search>
+            projecttosurface,projectonto
+            </search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Surface.Repair">
+            <summary>Tentativi di riparare la superficie.</summary>
+            <returns/>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.ToString">
             <summary>Ottiene una rappresentazione stringa del vettore</summary>
         </member>
@@ -5443,29 +5160,13 @@
             <returns>Restituisce l'angolo tra i vettori forniti in gradi compresi tra 0 e 180.</returns>
             <search>rotation angle,</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleBetween(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Restituisce l'angolo tra i due vettori nell'intervallo [0, 180] gradi.</summary>
-            <param name="otherVector"/>
-            <returns/>
-            <search>
-            rotation angle
-            </search>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleAboutAxis(Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Restituisce l'angolo tra i due vettori nell'intervallo [0, 180] gradi.</summary>
             <summary>Restituisce l'angolo tra i due vettori in gradi da 0 a 360. Utilizza l'asse di rotazione per determinare la direzione dell'angolo.</summary>
             <param name="otherVector">Altro vettore</param>
             <param name="rotationAxis">Asse di rotazione</param>
             <returns>Restituisce l'angolo tra i vettori forniti in gradi compresi tra 0 e 360</returns>
             <search>rotation angle,</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Vector.AngleBetween(Autodesk.DesignScript.Geometry.Vector,Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Restituisce l'angolo tra i due vettori nell'intervallo [0, 360] gradi. Utilizza l'asse di rotazione per determinare la direzione dell'angolo.</summary>
-            <param name="otherVector"/>
-            <param name="rotationAxis"/>
-            <returns/>
-            <search>
-            rotation angle
-            </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.FromJson(System.String)">
             <summary>Analizzare la stringa JSON in entrata formattata con lo schema autodesk.matem:vector3d-1.0.0.</summary>
@@ -5496,18 +5197,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_distanceatparameter_deprecated">
             <summary>Cerca una stringa localizzata simile a Questo metodo è obsoleto e verrà rimosso in una versione futura di Dynamo. Utilizzare SegmentLengthAtParameter.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_dividebydistance_deprecated">
-            <summary>Cerca una stringa localizzata simile a Questo metodo è obsoleto e verrà rimosso in una versione futura di Dynamo. Utilizzare PointsAtEqualChordLength e SplitByPoints.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_dividebydistancefromparam_deprecated">
-            <summary>Cerca una stringa localizzata simile a Questo metodo è obsoleto e verrà rimosso in una versione futura di Dynamo. Utilizzare PointsAtChordLengthFromPoint e SplitByPoints.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_dividebylengthfromparams_deprecated">
-            <summary>Cerca una stringa localizzata simile a Questo metodo è obsoleto e verrà rimosso in una versione futura di Dynamo. Utilizzare PointsAtSegmentLengthFromPoint e SplitByPoints.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_divideequally_deprecated">
-            <summary>Cerca una stringa localizzata simile a Questo metodo è obsoleto e verrà rimosso in una versione futura di Dynamo. Utilizzare PointsAtEqualSegmentLength e SplitByPoints.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_lengthbetweenparams_deprecated">
             <summary>Cerca una stringa localizzata simile a Questo metodo è obsoleto e verrà rimosso in una versione futura di Dynamo. Utilizzare SegmentLengthBetweenParameters.</summary>
@@ -5541,9 +5230,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.geometry_deserializefromsab_deprecated">
             <summary>Cerca una stringa localizzata simile a Questo metodo è obsoleto e verrà rimosso in una versione futura di Dynamo. Utilizzare overload che consente il passaggio a mmPerUnit.</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.geometry_exporttosat_deprecated">
-            <summary>Cerca una stringa localizzata simile a Questo metodo è obsoleto e verrà rimosso in una versione futura di Dynamo. Utilizzare il nodo dell'interfaccia utente ExportToSAT.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.geometry_importfromsat_deprecated">
             <summary>Cerca una stringa localizzata simile a Questo metodo è obsoleto e verrà rimosso in una versione futura di Dynamo. Utilizzare overload che specifica mm per unità.</summary>
@@ -5606,7 +5292,7 @@
             <summary>Cerca una stringa localizzata simile a I nodi della mesh utilizzano una precisione di 32 bit (7 cifre decimali), che può portare a errori di arrotondamento con numeri grandi o con più di 7 cifre decimali. Per una precisione maggiore (64 bit, 15 cifre decimali), utilizzare i nodi della libreria della geometria.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ModelerExtentsExceeded">
-            <summary>Cerca una stringa localizzata simile a Sono state superate le estensioni di modellazione consentite; prendere in considerazione la scelta di valori inferiori.</summary>
+            <summary>Cerca una stringa localizzata simile a Sono state superate le estensioni di modellazione consentite; prendere in considerazione la scelta di valori inferiori come input.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.NoImplementationException">
             <summary>Cerca una stringa localizzata simile a Nessuna implementazione di IGeometryFactory rilevata. Verificare che ProtoGeometry.config sia configurato correttamente.</summary>
@@ -5659,6 +5345,9 @@
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.polycurve_offset_deprecated">
             <summary>Cerca una stringa localizzata simile a Questo metodo è obsoleto e verrà rimosso in una versione futura di Dynamo. Utilizzare PolyCurve.OffsetMany.</summary>
         </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.PolyCurveDirectionalityInfoMessage">
+            <summary>Cerca una stringa localizzata simile a La direzione di PolyCurve è stata aggiornata per coerenza. Questa modifica potrebbe interrompere questo nodo nei grafici precedenti alla versione 4.0. Per mantenere il comportamento esistente, impostare DefaultEnableLegacyPolyCurveBehavior su true in DynamoPreferences.xml.</summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.polygon_points_deprecated">
             <summary>Cerca una stringa localizzata simile a Questa proprietà è obsoleta e verrà rimossa in una versione futura di Dynamo. Utilizzare PolyCurve.Points.</summary>
         </member>
@@ -5673,9 +5362,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.solid_bysweep_deprecated">
             <summary>Cerca una stringa localizzata simile a Questo metodo è obsoleto e verrà rimosso in una versione futura di Dynamo. Utilizzare SolidBySweep(ICurveEntity profile, ICurveEntity path, bool cutEndOff).</summary>
-        </member>
-        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.solid_unionall_deprecated">
-            <summary>Cerca una stringa localizzata simile a Questo metodo è obsoleto e verrà rimosso in una versione futura di Dynamo. Utilizzare Solid.ByUnion.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.surface_bysweep_deprecated">
             <summary>Cerca una stringa localizzata simile a Questo metodo è obsoleto e verrà rimosso in una versione futura di Dynamo. Utilizzare SurfaceBySweep(ICurveEntity profile, ICurveEntity path, bool cutEndOff).</summary>

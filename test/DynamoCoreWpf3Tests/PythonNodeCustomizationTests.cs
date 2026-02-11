@@ -30,7 +30,7 @@ namespace DynamoCoreWpfTests
 
         private readonly List<string> expectedEngineMenuItems = new List<string>()
         {
-            PythonEngineManager.CPython3EngineName,
+            PythonEngineManager.PythonNet3EngineName,
             PythonEngineManager.IronPython2EngineName
         };
 
@@ -74,7 +74,7 @@ namespace DynamoCoreWpfTests
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            libraries.Add("DSCPython.dll");
+            //libraries.Add("DSCPython.dll");
             libraries.Add("VMDataBridge.dll");
             libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
@@ -90,12 +90,12 @@ namespace DynamoCoreWpfTests
             // Arrange
             var expectedAvailableEngines = new List<string>()
             {
-                PythonEngineManager.CPython3EngineName,
+                PythonEngineManager.PythonNet3EngineName,
                 PythonEngineManager.IronPython2EngineName,
                 
             };
             var expectedDefaultEngine = PythonEngineManager.IronPython2EngineName;
-            var engineChange = PythonEngineManager.CPython3EngineName;
+            var engineChange = PythonEngineManager.PythonNet3EngineName;
 
             Open(@"core\python\python.dyn");
 
@@ -116,7 +116,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(engineSelectorComboBox.Visibility, Visibility.Visible);
             CollectionAssert.AreEqual(expectedAvailableEngines, comboBoxEngines);
             Assert.AreEqual(expectedDefaultEngine, engineBeforeChange);
-            Assert.AreEqual(engineSelectorComboBox.SelectedItem, PythonEngineManager.CPython3EngineName);
+            Assert.AreEqual(engineSelectorComboBox.SelectedItem, PythonEngineManager.PythonNet3EngineName);
             
             //Assert that selecting an engine from drop-down without saving won't update the engine.
             Assert.AreEqual(nodeModel.EngineName, engineBeforeChange);
@@ -133,11 +133,11 @@ namespace DynamoCoreWpfTests
             var ironPython2MenuItem = engineMenuItem.Items
                 .OfType<MenuItem>()
                 .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionTwo);
-            var cPython3MenuItem = engineMenuItem.Items
+            var pythonNet3MenuItem = engineMenuItem.Items
                 .OfType<MenuItem>()
                 .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree);
             Assert.AreEqual(false, ironPython2MenuItem.IsChecked);
-            Assert.AreEqual(true, cPython3MenuItem.IsChecked);
+            Assert.AreEqual(true, pythonNet3MenuItem.IsChecked);
             DispatcherUtil.DoEvents();
         }
 
@@ -511,19 +511,19 @@ namespace DynamoCoreWpfTests
 
             Assert.IsNotNull(engineMenuItem);
 
-            //Get the python engine menu option "CPython3"
-            var cPython3MenuItem = engineMenuItem.Items
+            //Get the python engine menu option "PythonNet3"
+            var pythonNet3MenuItem = engineMenuItem.Items
                 .OfType<MenuItem>()
                 .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree);
 
-            Assert.IsNotNull(cPython3MenuItem);
+            Assert.IsNotNull(pythonNet3MenuItem);
 
-            //Click the CPython3 option (previously was IronPython2)
-            cPython3MenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            //Click the PythonNet3 option (previously was IronPython2)
+            pythonNet3MenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
 
             DispatcherUtil.DoEvents();
 
-            //After running the graph if the python code is not valid for CPython3 we will get a null value in the Watch node
+            //After running the graph if the python code is not valid for PythonNet3 we will get a null value in the Watch node
             ViewModel.HomeSpace.Run();
 
             //Validate that the content of the Watch node is what we expected after running the Graph
@@ -573,7 +573,7 @@ namespace DynamoCoreWpfTests
         public void ChangingDropdownEngineDoesNotSavesCodeOrRun()
         {
             // Arrange
-            var engineChange = PythonEngineManager.CPython3EngineName;
+            var engineChange = PythonEngineManager.PythonNet3EngineName;
 
             Open(@"core\python\python.dyn");
             (Model.CurrentWorkspace as HomeWorkspaceModel).RunSettings.RunType = Dynamo.Models.RunType.Automatic;
@@ -656,7 +656,7 @@ namespace DynamoCoreWpfTests
                 case "IronPython2":
                     (engineSelection.Items[0] as MenuItem).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
                     break;
-                case "CPython3":
+                case "PythonNet3":
                     (engineSelection.Items[1] as MenuItem).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
                     break;
             }
@@ -673,7 +673,7 @@ namespace DynamoCoreWpfTests
         {
             // Arrange
             var expectedEngineVersionOnOpen = PythonEngineManager.IronPython2EngineName;
-            var expectedEngineVersionAfterChange = PythonEngineManager.CPython3EngineName;
+            var expectedEngineVersionAfterChange = PythonEngineManager.PythonNet3EngineName;
 
             Open(@"core\python\pyFromString_UnsavedEngine.dyn");
 
@@ -692,12 +692,12 @@ namespace DynamoCoreWpfTests
             var ironPython2MenuItem = engineMenuItems
                 .OfType<MenuItem>()
                 .First(x => x.Header.ToString() == PythonEngineManager.IronPython2EngineName);
-            var cPython3MenuItem = engineMenuItems
+            var pythonNet3MenuItem = engineMenuItems
                 .OfType<MenuItem>()
-                .First(x => x.Header.ToString() == PythonEngineManager.CPython3EngineName);
+                .First(x => x.Header.ToString() == PythonEngineManager.PythonNet3EngineName);
 
             // Act
-            cPython3MenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            pythonNet3MenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             var engineVersionAfterChange = nodeModel.EngineName;
 
             // Assert
@@ -705,14 +705,14 @@ namespace DynamoCoreWpfTests
             CollectionAssert.AreEqual(expectedEngineMenuItems, engineMenuItems.Cast<MenuItem>().Select(x => x.Header));
             Assert.AreEqual(expectedEngineVersionAfterChange, engineVersionAfterChange);
             Assert.AreEqual(false, ironPython2MenuItem.IsChecked);
-            Assert.AreEqual(true, cPython3MenuItem.IsChecked);
+            Assert.AreEqual(true, pythonNet3MenuItem.IsChecked);
 
             // Act
             nodeModel.EngineName = PythonEngineManager.IronPython2EngineName;
 
             // Assert
             Assert.AreEqual(true, ironPython2MenuItem.IsChecked);
-            Assert.AreEqual(false, cPython3MenuItem.IsChecked);
+            Assert.AreEqual(false, pythonNet3MenuItem.IsChecked);
             DispatcherUtil.DoEvents();
         }
 
@@ -725,7 +725,7 @@ namespace DynamoCoreWpfTests
         {
             // Arrange
             var expectedDefaultEngineLabelText = PythonEngineManager.IronPython2EngineName;
-            var engineChange = PythonEngineManager.CPython3EngineName;
+            var engineChange = PythonEngineManager.PythonNet3EngineName;
 
             Open(@"core\python\python.dyn");
 
@@ -789,7 +789,7 @@ namespace DynamoCoreWpfTests
             );
             DispatcherUtil.DoEvents();
 
-            engineSelectorComboBox.SelectedItem = PythonEngineManager.CPython3EngineName;
+            engineSelectorComboBox.SelectedItem = PythonEngineManager.PythonNet3EngineName;
 
             codeEditor.SelectionStart = 0;
             textArea.RaiseEvent(new KeyEventArgs(

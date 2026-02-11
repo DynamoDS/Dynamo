@@ -156,9 +156,6 @@
   <data name="Exception_Serialize_Unsupported_Type" xml:space="preserve">
     <value>Cannot store data of type {0}.</value>
   </data>
-  <data name="ExportToCSVObsolete" xml:space="preserve">
-    <value>Use Data.ExportCSV node instead</value>
-  </data>
   <data name="FactorialNegativeInt" xml:space="preserve">
     <value>The input value of Math.Factorial cannot be negative.</value>
   </data>
@@ -170,9 +167,6 @@
   </data>
   <data name="FindPointsWithinRadiusSearchRadiusMessage" xml:space="preserve">
     <value>The search radius cannot be zero.</value>
-  </data>
-  <data name="FromObjectObsolete" xml:space="preserve">
-    <value>This node is obsolete, please use "String from Object"</value>
   </data>
   <data name="IntegerOverflow" xml:space="preserve">
     <value>The operation resulted in an integer overflow. Its result may be unexpected.</value>
@@ -186,9 +180,6 @@
   <data name="InvalidKeysLenghtErrorMessage" xml:space="preserve">
     <value>Number of items does not match the number of keys. href=InvalidKeysLenghtErrorMessage.html</value>
   </data>
-  <data name="LoadImageFromPathObsolete" xml:space="preserve">
-    <value>Use File.FromPath -&gt;  Image.ReadFromFile nodes instead</value>
-  </data>
   <data name="MissingPythonEngine" xml:space="preserve">
     <value>The selected Python engine could not be found</value>
   </data>
@@ -201,12 +192,6 @@
   <data name="QuadtreeConstructionNullUVSetMessage" xml:space="preserve">
     <value>A Quadtree cannot be constructed from a null set of UVs.</value>
   </data>
-  <data name="ReadImageObsolete" xml:space="preserve">
-    <value>Use File.FromPath -&gt;  Image.ReadFromFile -&gt;  Image.Pixels nodes instead</value>
-  </data>
-  <data name="ReadTextObsolete" xml:space="preserve">
-    <value>Use File.FromPath -&gt;  File.ReadText nodes instead.</value>
-  </data>
   <data name="StringRemoveCountOutOfRangeMessage" xml:space="preserve">
     <value>Count is out of range!</value>
   </data>
@@ -218,9 +203,6 @@
   </data>
   <data name="WebRequestNullUrlMessage" xml:space="preserve">
     <value>The url cannot be null.</value>
-  </data>
-  <data name="WriteImageObsolete" xml:space="preserve">
-    <value>Use Image.WriteToFile node instead</value>
   </data>
   <data name="DefineDataUnexpectedInputExceptionMessage" xml:space="preserve">
     <value>This node expected a {0} input but received a {1} input. Please provide the expected input, or pick a new type in the node’s drop-down menu.</value>

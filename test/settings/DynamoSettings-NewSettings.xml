@@ -17,6 +17,7 @@
   <ShowConnectorToolTip>false</ShowConnectorToolTip>
   <LibraryZoomScale>200</LibraryZoomScale>
   <PythonScriptZoomScale>25</PythonScriptZoomScale>
+  <ShowPythonAutoMigrationNotifications>false</ShowPythonAutoMigrationNotifications>
   <ConnectorType>POLYLINE</ConnectorType>
   <BackgroundPreviews>
     <BackgroundPreviewActiveState>
@@ -78,11 +79,12 @@
   <ShowTabsAndSpacesInScriptEditor>true</ShowTabsAndSpacesInScriptEditor>
   <EnableNodeAutoComplete>false</EnableNodeAutoComplete>
   <EnableNewNodeAutoCompleteUI>false</EnableNewNodeAutoCompleteUI>
-  <DefaultEnableLegacyPolyCurveBehavior>false</DefaultEnableLegacyPolyCurveBehavior>
+  <DefaultEnableLegacyPolyCurveBehavior>true</DefaultEnableLegacyPolyCurveBehavior>
   <HideNodesBelowSpecificConfidenceLevel>true</HideNodesBelowSpecificConfidenceLevel>
   <MLRecommendationConfidenceLevel>99</MLRecommendationConfidenceLevel>
   <MLRecommendationNumberOfResults>5</MLRecommendationNumberOfResults>
   <HideAutocompleteMethodOptions>true</HideAutocompleteMethodOptions>
+  <IsAutoSyncDocumentBrowser>false</IsAutoSyncDocumentBrowser>
   <EnableNotificationCenter>false</EnableNotificationCenter>
   <EnableStaticSplashScreen>false</EnableStaticSplashScreen>
   <IsMLAutocompleteTOUApproved>false</IsMLAutocompleteTOUApproved>

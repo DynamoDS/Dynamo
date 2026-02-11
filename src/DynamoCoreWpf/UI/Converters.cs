@@ -4369,4 +4369,46 @@ namespace Dynamo.Controls
             return Binding.DoNothing;
         }
     }
+
+    /// <summary>
+    /// Converts boolean to appropriate online status text
+    /// </summary>
+    public class OnlineStatusTextConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool online)
+            {
+                return online ? Resources.OnlineStatusTooltip : Resources.OfflineStatusTooltip;
+            }
+
+            return Resources.OnlineStatusTooltip;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converts boolean OnlineAccess to appropriate icon source
+    /// </summary>
+    public class NetworkStatusIconConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool onlineAccess)
+            {
+                // Online = online.png, Offline = offline.png
+                return onlineAccess ? "/DynamoCoreWpf;component/UI/Images/online.png" : "/DynamoCoreWpf;component/UI/Images/offline.png";
+            }
+            return "/DynamoCoreWpf;component/UI/Images/online.png"; // Default to online icon
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

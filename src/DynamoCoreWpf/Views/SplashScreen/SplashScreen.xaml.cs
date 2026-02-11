@@ -12,6 +12,7 @@ using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Logging;
 using Dynamo.Models;
+using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
@@ -132,6 +133,20 @@ namespace Dynamo.UI.Views
         /// </summary>
         public void OnRequestStaticSplashScreen()
         {
+            if (viewModel == null)
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    DynamoMessageBox.Show(
+                        owner: this,
+                        messageBoxText: Wpf.Properties.Resources.DynamoSplashScreenFailed,
+                        caption: Wpf.Properties.Resources.DynamoSplashScreen,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning
+                        );
+                    this.Close();
+                });
+            }
             StaticSplashScreenReady?.Invoke();
         }
 
@@ -327,11 +342,7 @@ namespace Dynamo.UI.Views
         /// <returns></returns>
         private string GetUserDirectory()
         {
-            var version = AssemblyHelper.GetDynamoVersion();
-
-            var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(Path.Combine(folder, Configurations.DynamoAsString, "Dynamo Core"),
-                            String.Format("{0}.{1}", version.Major, version.Minor));
+            return WebView2Utilities.GetTempDirectory();
         }
 
         protected override async void OnContentRendered(EventArgs e)
@@ -355,10 +366,9 @@ namespace Dynamo.UI.Views
             try
             {
                 await webView.Initialize();
-                // Context menu disabled
-                webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
-                // Zoom control disabled
-                webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
+
+                // Apply standard WebView2 settings for splash screen
+                webView.ConfigureSettings();
 
                 var assembly = Assembly.GetExecutingAssembly();
 

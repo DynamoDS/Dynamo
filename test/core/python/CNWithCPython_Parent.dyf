@@ -1,0 +1,227 @@
+{
+  "Uuid": "868e49a5-6134-4353-908a-a8d944d63d56",
+  "IsCustomNode": true,
+  "Category": "python tests",
+  "Description": "",
+  "Name": "CNWithCPython_Parent",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
+      "Parameter": {
+        "Name": "number",
+        "TypeName": "double",
+        "TypeRank": -1,
+        "DefaultValue": null,
+        "Description": ""
+      },
+      "Id": "07160f84bf24401788efa4e7ab8683d9",
+      "NodeType": "InputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "20e6adb031664ee0b1af472e1ae53a48",
+          "Name": "",
+          "Description": "Input Data",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "Code": "OUT = IN[0] *2",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "89f8b50026254e86a0dc9c70b80e4478",
+      "NodeType": "PythonScriptNode",
+      "Inputs": [
+        {
+          "Id": "851b36337ed94f3987f458d5668f96ae",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5ba0369567bf467fa757deaae678efd2",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
+      "ElementResolver": null,
+      "Symbol": "result",
+      "Id": "b8228b2d42824deb9f30be7d9154ab2c",
+      "NodeType": "OutputNode",
+      "Inputs": [
+        {
+          "Id": "03daddad019a48839f2f65cc1f0adac4",
+          "Name": "",
+          "Description": "Output Data",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "A function output, use with custom nodes"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "a44a5cc7-6ed6-4e19-a605-958f4c3639ab",
+      "FunctionType": "Graph",
+      "Id": "c1164901d45343c7a854e522496f6256",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "67763d88623548da8d6c43e10ce0d0e0",
+          "Name": "number",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ac339087f62841ba919ecb6189004d1e",
+          "Name": "result",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": ""
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "20e6adb031664ee0b1af472e1ae53a48",
+      "End": "851b36337ed94f3987f458d5668f96ae",
+      "Id": "17664800669f4acdab79c352cdbb4b2f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "5ba0369567bf467fa757deaae678efd2",
+      "End": "67763d88623548da8d6c43e10ce0d0e0",
+      "Id": "cca5507326f34e798d36380d60a883f7",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ac339087f62841ba919ecb6189004d1e",
+      "End": "03daddad019a48839f2f65cc1f0adac4",
+      "Id": "7d317499fe2c4d46961de50efe231923",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [
+    "a44a5cc7-6ed6-4e19-a605-958f4c3639ab"
+  ],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "CNWithCPython_Child.dyf",
+      "ReferenceType": "DYFFile",
+      "Nodes": [
+        "c1164901d45343c7a854e522496f6256"
+      ]
+    }
+  ],
+  "Author": "None provided",
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.6.1.9895",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "07160f84bf24401788efa4e7ab8683d9",
+        "Name": "Input",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 423.33333333333326,
+        "Y": 455.33333333333314
+      },
+      {
+        "Id": "89f8b50026254e86a0dc9c70b80e4478",
+        "Name": "Python Script",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 787.9999999999998,
+        "Y": 449.9999999999999
+      },
+      {
+        "Id": "b8228b2d42824deb9f30be7d9154ab2c",
+        "Name": "Output",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1396.6666666666665,
+        "Y": 426.0
+      },
+      {
+        "Id": "c1164901d45343c7a854e522496f6256",
+        "Name": "CNWithCPython_Child",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1066.0000000000002,
+        "Y": 452.66666666666674
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

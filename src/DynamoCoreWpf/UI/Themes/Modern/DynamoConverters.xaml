@@ -176,4 +176,6 @@
     <controls:BooleanNegationConverter x:Key="BooleanNegationConverter" />
     <controls:LeftMarginConverter x:Key="LeftMarginConverter" />
     <controls:LengthToVisibilityConverter x:Key="LengthToVisibilityConverter" />
+    <controls:OnlineStatusTextConverter x:Key="OnlineStatusTextConverter" />
+    <controls:NetworkStatusIconConverter x:Key="NetworkStatusIconConverter" />
 </ResourceDictionary>

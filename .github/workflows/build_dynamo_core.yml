@@ -12,16 +12,15 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout Dynamo Repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: Dynamo
           repository: DynamoDS/Dynamo
       - name: Setup dotnet
         uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: |
-            8.0.x
-            10.0.100-preview.5.25277.114
+          dotnet-version: 8.0.x
+          global-json-file: Dynamo/global.json
       - name: Disable problem matcher
         run: Write-Output "::remove-matcher owner=csc::"
       - name: Setup msbuild
@@ -43,16 +42,15 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout Dynamo Repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: Dynamo
           repository: DynamoDS/Dynamo
       - name: Setup dotnet
         uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: |
-            8.0.x
-            10.0.100-preview.5.25277.114
+          dotnet-version: 8.0.x
+          global-json-file: Dynamo/global.json
       - name: Disable problem matcher
         run: Write-Output "::remove-matcher owner=csc::"
       - name: Setup msbuild
@@ -74,15 +72,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Dynamo Repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: Dynamo
       - name: Setup dotnet
         uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: |
-            8.0.x
-            10.0.100-preview.5.25277.114
+          dotnet-version: 8.0.x
+          global-json-file: Dynamo/global.json
       - name: Disable problem matcher
         run: echo "::remove-matcher owner=csc::"
       - name: Install dependencies for linux runtime

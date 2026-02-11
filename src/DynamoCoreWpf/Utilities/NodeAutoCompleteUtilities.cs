@@ -40,6 +40,44 @@ namespace Dynamo.Wpf.Utilities
             
         }
 
+        /// <summary>
+        /// Filters nodes to only those within the same group as the query node
+        /// If there is no group, all nodes are returned.
+        /// This is to ensure that AutoLayout operations only affect nodes within the same group.
+        /// Nodes outside the group should not be affected.
+        /// </summary>
+        /// <param name="wsModel">The workspace model.</param>
+        /// <param name="queryNode">The node to check for group membership.</param>
+        /// <param name="nodes">The nodes to filter.</param>
+        /// <returns>Filtered nodes (only those in the same group as queryNode, or all if queryNode is not in a group).</returns>
+        internal static IEnumerable<NodeModel> FilterNodesToSameGroup(
+            WorkspaceModel wsModel,
+            NodeModel queryNode,
+            IEnumerable<NodeModel> nodes)
+        {
+            HashSet<Guid> allowedNodeIds = null;
+            var containingGroup = wsModel.Annotations
+                .Where(g => g.ContainsModel(queryNode))
+                .FirstOrDefault();
+
+            IEnumerable<NodeModel> filteredNodes;
+            if (containingGroup != null)
+            {
+                allowedNodeIds = containingGroup.Nodes
+                    .OfType<NodeModel>()
+                    .Select(n => n.GUID)
+                    .ToHashSet();
+
+                // Filtered nodes to only those in the same group as queryNode
+                filteredNodes = nodes.Where(n => allowedNodeIds.Contains(n.GUID));
+            }
+            else
+            {
+                filteredNodes = nodes;
+            }
+            return filteredNodes;
+        }
+
         internal static Rect2D GetNodesBoundingBox(IEnumerable<NodeModel> nodes)
         {
             if (nodes is null || nodes.Count() == 0)
@@ -61,19 +99,26 @@ namespace Dynamo.Wpf.Utilities
         // an additional AutoLayout operation is needed.
         internal static bool AutoLayoutNeeded(WorkspaceModel wsModel, NodeModel originalNode, IEnumerable<NodeModel> nodesToConsider, out List<NodeModel> intersectedNodes)
         {
+            // Filter connected nodes to only those in the same group as the original node
+            var nodesToConsiderFiltered = FilterNodesToSameGroup(wsModel, originalNode, nodesToConsider);
+
             //Collect all connected input or output nodes from the original node.
 
-            var nodesGuidsToConsider = nodesToConsider.Select(n => n.GUID).ToHashSet();
-            nodesGuidsToConsider.Append(originalNode.GUID);
+            var nodesGuidsToConsider = nodesToConsiderFiltered.Select(n => n.GUID).ToHashSet();
+            nodesGuidsToConsider.Add(originalNode.GUID);
 
-            Rect2D connectedNodesBBox = GetNodesBoundingBox(nodesToConsider);
+            Rect2D connectedNodesBBox = GetNodesBoundingBox(nodesToConsiderFiltered);
 
             //See if there are other nodes that intersect with our bbbox.
             //If there are, check to see if they actually intersect with one of the
             //connected nodes and select them for auto layout.
             intersectedNodes = new List<NodeModel>();
             bool realIntersection = false;
-            foreach (var node in wsModel.Nodes)
+
+            // Filter wsModel.Nodes to only those in the same group as originalNode
+            var nodesToCheck = FilterNodesToSameGroup(wsModel, originalNode, wsModel.Nodes);
+
+            foreach (var node in nodesToCheck)
             {
                 if (nodesGuidsToConsider.Contains(node.GUID))
                     continue;
@@ -84,7 +129,7 @@ namespace Dynamo.Wpf.Utilities
                     intersectedNodes.Add(node);
                     if (!realIntersection)
                     {
-                        foreach (var connectedNode in nodesToConsider)
+                        foreach (var connectedNode in nodesToConsiderFiltered)
                         {
                             if (node.Rect.IntersectsWith(connectedNode.Rect) ||
                                 node.Rect.Contains(connectedNode.Rect) ||
@@ -134,9 +179,13 @@ namespace Dynamo.Wpf.Utilities
                 // Layout connected nodes based on connection direction
                 // This prevents cascading overlaps when multiple nodes are added in sequence
                 var connectedNodes = portType == PortType.Input
-                    ? queryNode.AllUpstreamNodes(new List<NodeModel>()).ToHashSet()
-                    : queryNode.AllDownstreamNodes(new List<NodeModel>()).ToHashSet();
-                wsModel.DoGraphAutoLayoutAutocomplete(queryNode.GUID, newNodes, connectedNodes, portType);
+                    ? queryNode.AllUpstreamNodes(new List<NodeModel>())
+                    : queryNode.AllDownstreamNodes(new List<NodeModel>());
+
+                // Filter connected nodes to only those in the same group as the query node
+                var connectedNodesFiltered = FilterNodesToSameGroup(wsModel, queryNode, connectedNodes);
+
+                wsModel.DoGraphAutoLayoutAutocomplete(queryNode.GUID, newNodes, connectedNodesFiltered, portType);
 
                 bool redoAutoLayout = AutoLayoutNeeded(wsModel, queryNode, newNodes, out List<NodeModel> intersectedNodes);
                 if (redoAutoLayout)

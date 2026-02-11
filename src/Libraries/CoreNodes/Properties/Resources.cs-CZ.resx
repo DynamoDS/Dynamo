@@ -156,9 +156,6 @@
   <data name="Exception_Serialize_Unsupported_Type" xml:space="preserve">
     <value>Nelze uložit data typu {0}.</value>
   </data>
-  <data name="ExportToCSVObsolete" xml:space="preserve">
-    <value>Použijte raději uzel Data.ExportCSV.</value>
-  </data>
   <data name="FactorialNegativeInt" xml:space="preserve">
     <value>Vstupní hodnota funkce Math.Factorial nemůže být záporná.</value>
   </data>
@@ -170,9 +167,6 @@
   </data>
   <data name="FindPointsWithinRadiusSearchRadiusMessage" xml:space="preserve">
     <value>Poloměr vyhledávání nemůže být nula.</value>
-  </data>
-  <data name="FromObjectObsolete" xml:space="preserve">
-    <value>Tento uzel je zastaralý. Použijte řetězec String from Object.</value>
   </data>
   <data name="IntegerOverflow" xml:space="preserve">
     <value>Operace vedla k přetečení celého čísla. Její výsledek může být neočekávaný.</value>
@@ -186,9 +180,6 @@
   <data name="InvalidKeysLenghtErrorMessage" xml:space="preserve">
     <value>Počet položek se neshoduje s počtem klíčů. href=InvalidKeysLenghtErrorMessage.html</value>
   </data>
-  <data name="LoadImageFromPathObsolete" xml:space="preserve">
-    <value>Raději použijte uzly File.FromPath -&gt;  Image.ReadFromFile.</value>
-  </data>
   <data name="MissingPythonEngine" xml:space="preserve">
     <value>Vybraný modul Python nebylo možné nalézt.</value>
   </data>
@@ -201,12 +192,6 @@
   <data name="QuadtreeConstructionNullUVSetMessage" xml:space="preserve">
     <value>Objekt QuadTree nemůže být sestaven z množiny UV s hodnotou null.</value>
   </data>
-  <data name="ReadImageObsolete" xml:space="preserve">
-    <value>Raději použijte uzly File.FromPath -&gt;  Image.ReadFromFile -&gt;  Image.Pixels.</value>
-  </data>
-  <data name="ReadTextObsolete" xml:space="preserve">
-    <value>Raději použijte uzly File.FromPath -&gt;  File.ReadText.</value>
-  </data>
   <data name="StringRemoveCountOutOfRangeMessage" xml:space="preserve">
     <value>Počet je mimo rozsah.</value>
   </data>
@@ -218,9 +203,6 @@
   </data>
   <data name="WebRequestNullUrlMessage" xml:space="preserve">
     <value>Adresa URL nesmí mít hodnotu null.</value>
-  </data>
-  <data name="WriteImageObsolete" xml:space="preserve">
-    <value>Raději použijte uzel Image.WriteToFile.</value>
   </data>
   <data name="DefineDataUnexpectedInputExceptionMessage" xml:space="preserve">
     <value>Tento uzel očekával vstup {0}, ale obdržel vstup {1}. Zadejte očekávaný vstup nebo vyberte nový typ v rozevírací nabídce uzlu.</value>

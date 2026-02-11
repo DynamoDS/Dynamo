@@ -127,8 +127,8 @@
     <value>在“并排”和“内嵌”视图之间切换。</value>
   </data>
   <data name="IronPythonDialogDescription" xml:space="preserve">
-    <value>Dynamo 已从旧的 IronPython2 (Python 2) 引擎移动到新的 CPython3 (Python 3) 引擎。
-IronPython 引擎仍然作为 Dynamo Package Manager 的一个软件包进行提供，但将仅支持 CPython3 引擎。</value>
+    <value>Dynamo 已从旧的 IronPython2 引擎移动到新的 PythonNet3 引擎。
+IronPython 引擎仍然作为 Dynamo Package Manager 的一个软件包进行提供，但将仅支持 PythonNet3 引擎。</value>
   </data>
   <data name="IronPythonDialogSummary" xml:space="preserve">
     <value>此图形包含引用过期 Python 引擎的节点。</value>
@@ -140,10 +140,10 @@ IronPython 引擎仍然作为 Dynamo Package Manager 的一个软件包进行提
     <value>不再显示。</value>
   </data>
   <data name="IronPythonNotificationDetailedMessage" xml:space="preserve">
-    <value>此图形当前包含正在使用已弃用的旧版 IronPython 引擎的 Python 节点。请考虑更新这些节点，以使用新的 CPython 3.7 引擎。</value>
+    <value>此图形当前包含正在使用已弃用的旧版 IronPython 引擎的 Python 节点。请考虑更新这些节点，以使用新的 PythonNet3 引擎。</value>
   </data>
   <data name="IronPythonNotificationShortMessage" xml:space="preserve">
-    <value>此图形当前包含正在使用已弃用的旧版 IronPython2 (Python 2) 引擎的节点。已实现新的 CPython3 (Python 3)，并可在 Python 编辑器内访问。</value>
+    <value>此图形当前包含正在使用已弃用的旧版 IronPython2 引擎的节点。已实现新的 PythonNet3，并可在 Python 编辑器内访问。</value>
   </data>
   <data name="MigrationAssistantDisclaimerContinueButtonContent" xml:space="preserve">
     <value>继续</value>
@@ -158,7 +158,7 @@ IronPython 引擎仍然作为 Dynamo Package Manager 的一个软件包进行提
     <value>您即将更改 Python 代码</value>
   </data>
   <data name="MigrationAssistantDisclaimerMessage" xml:space="preserve">
-    <value>“移植助手”会帮助用户将代码从 Python 2 更新到 Python 3。
+    <value>“移植助手”会帮助用户将脚本从 IronPython2 更新到 PythonNet3。
 单击“继续”，即表示您同意按照“移植助手”的建议对源代码实施语法更改。“移植助手”是开源 Dynamo 的一个组件，因此，它根据 Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0)的条款许可您使用。根据 Apache License 2.0 的条款，Dynamo 和“移植助手”将“原样”提供您使用。</value>
   </data>
   <data name="MigrationAssistantDisclaimerWindowTitle" xml:space="preserve">
@@ -168,7 +168,7 @@ IronPython 引擎仍然作为 Dynamo Package Manager 的一个软件包进行提
     <value>此处没有可供查看的内容！</value>
   </data>
   <data name="MigrationAssistantNoChangesStateMessage" xml:space="preserve">
-    <value>您的代码已准备就绪，可以使用 Python 3 引擎运行。单击“接受”，我们会为您切换到 Python 3 引擎。</value>
+    <value>您的代码已准备就绪，可以使用 PythonNet3 引擎运行。单击“接受”，我们会为您切换到 PythonNet3 引擎。</value>
   </data>
   <data name="MigrationAssistantErrorStateHeader" xml:space="preserve">
     <value>您的代码中存在错误！</value>
@@ -200,6 +200,9 @@ IronPython 引擎仍然作为 Dynamo Package Manager 的一个软件包进行提
   <data name="PythonMigrationBackupFileCreatedMessage" xml:space="preserve">
     <value>在应用 Python 代码移植之前，此图形的备份已保存到配置的备份位置: {0}</value>
   </data>
+  <data name="CPythonMigrationBackupFileCreatedMessage" xml:space="preserve">
+    <value>在更新之前，已保存备份文件</value>
+  </data>
   <data name="RejectButtonTooltip" xml:space="preserve">
     <value>拒绝当前代码更改。</value>
   </data>
@@ -220,5 +223,17 @@ IronPython 引擎仍然作为 Dynamo Package Manager 的一个软件包进行提
   </data>
   <data name="SwitchViewButton" xml:space="preserve">
     <value>切换视图</value>
+  </data>
+  <data name="CPython3NotificationDetailedMessage" xml:space="preserve">
+    <value>此图形当前包含使用已弃用的旧 CPython 引擎的 Python 节点。请考虑更新这些节点以使用新的 PythonNet3 引擎。</value>
+  </data>
+  <data name="CPython3NotificationShortMessage" xml:space="preserve">
+    <value>此图形当前包含使用已弃用的旧 CPython3 引擎的节点。新的 PythonNet3 已实现，并可在 Python 编辑器内访问。</value>
+  </data>
+  <data name="PythonMigrationBackupFileCreatedHeader" xml:space="preserve">
+    <value>已保存备份图形</value>
+  </data>
+  <data name="CPythonUpgradeToastMessage" xml:space="preserve">
+    <value>{0} CPython 节点和{1}自定义节点定义已自动转换为 PythonNet3，可在 Dynamo 4.0 中运行。CPython 不再受支持。</value>
   </data>
 </root>

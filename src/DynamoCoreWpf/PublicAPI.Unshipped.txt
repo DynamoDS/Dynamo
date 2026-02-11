@@ -443,6 +443,10 @@ Dynamo.Controls.NestedGroupsLabelConverter
 Dynamo.Controls.NestedGroupsLabelConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NestedGroupsLabelConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NestedGroupsLabelConverter.NestedGroupsLabelConverter() -> void
+Dynamo.Controls.NetworkStatusIconConverter
+Dynamo.Controls.NetworkStatusIconConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.NetworkStatusIconConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.NetworkStatusIconConverter.NetworkStatusIconConverter() -> void
 Dynamo.Controls.NodeAutocompleteImageConverter
 Dynamo.Controls.NodeAutocompleteImageConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NodeAutocompleteImageConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -528,6 +532,10 @@ Dynamo.Controls.ObjectTypeConverter
 Dynamo.Controls.ObjectTypeConverter.Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.ObjectTypeConverter.ConvertBack(object value, System.Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) -> object[]
 Dynamo.Controls.ObjectTypeConverter.ObjectTypeConverter() -> void
+Dynamo.Controls.OnlineStatusTextConverter
+Dynamo.Controls.OnlineStatusTextConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.OnlineStatusTextConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.OnlineStatusTextConverter.OnlineStatusTextConverter() -> void
 Dynamo.Controls.PackageDetailsLinkCollapseOnEmpty
 Dynamo.Controls.PackageDetailsLinkCollapseOnEmpty.Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.PackageDetailsLinkCollapseOnEmpty.ConvertBack(object value, System.Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) -> object[]
@@ -2127,6 +2135,7 @@ Dynamo.ViewModels.DynamoViewModel.NewHomeWorkspaceCommand.get -> Dynamo.UI.Comma
 Dynamo.ViewModels.DynamoViewModel.NewHomeWorkspaceCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.NodeFromSelectionCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.NodeFromSelectionCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.OnlineAccess.get -> bool
 Dynamo.ViewModels.DynamoViewModel.OnRequestPackagePublishDialog(Dynamo.PackageManager.PublishPackageViewModel vm) -> void
 Dynamo.ViewModels.DynamoViewModel.OnRequestShorcutToolbarLoaded(double rightMenuActualWidth) -> void
 Dynamo.ViewModels.DynamoViewModel.OpenCommand.get -> Dynamo.UI.Commands.DelegateCommand
@@ -2162,6 +2171,7 @@ Dynamo.ViewModels.DynamoViewModel.PublishNewPackageCommand.get -> Dynamo.UI.Comm
 Dynamo.ViewModels.DynamoViewModel.PublishNewPackageCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.PublishSelectedNodesCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.PublishSelectedNodesCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.PythonEngineUpgradeToastRequested -> System.Action<string, bool, string>
 Dynamo.ViewModels.DynamoViewModel.RecentFiles.get -> System.Collections.ObjectModel.ObservableCollection<string>
 Dynamo.ViewModels.DynamoViewModel.RecentFiles.set -> void
 Dynamo.ViewModels.DynamoViewModel.RedoCommand.get -> Dynamo.UI.Commands.DelegateCommand
@@ -2202,6 +2212,9 @@ Dynamo.ViewModels.DynamoViewModel.SelectAllCommand.get -> Dynamo.UI.Commands.Del
 Dynamo.ViewModels.DynamoViewModel.SelectAllCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.ShowGraphPropertiesCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.ShowGraphPropertiesCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.ToastManager.get -> Dynamo.Wpf.UI.ToastManager
+Dynamo.ViewModels.DynamoViewModel.ToastManager.set -> void
+Dynamo.ViewModels.DynamoViewModel.ShowPythonEngineUpgradeCanvasToast(string message, bool stayOpen = true, string filePath = null) -> void
 Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubbles(object parameter) -> void
 Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubblesCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.UnpinAllPreviewBubblesCommand.set -> void
@@ -2912,6 +2925,8 @@ Dynamo.ViewModels.PreferencesViewModel.PackagePathsViewModel.get -> Dynamo.ViewM
 Dynamo.ViewModels.PreferencesViewModel.PackagePathsViewModel.set -> void
 Dynamo.ViewModels.PreferencesViewModel.PersistExtensionsIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.PersistExtensionsIsChecked.set -> void
+Dynamo.ViewModels.PreferencesViewModel.AutoSyncDocumentBrowserIsChecked.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.AutoSyncDocumentBrowserIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.PreferencesTabs.get -> System.Collections.Generic.Dictionary<string, Dynamo.ViewModels.TabSettings>
 Dynamo.ViewModels.PreferencesViewModel.PreferencesTabs.set -> void
 Dynamo.ViewModels.PreferencesViewModel.PreferencesViewModel(Dynamo.ViewModels.DynamoViewModel dynamoViewModel) -> void
@@ -2948,6 +2963,8 @@ Dynamo.ViewModels.PreferencesViewModel.ShowDefaultGroupDescription.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowDefaultGroupDescription.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowEdges.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowEdges.set -> void
+Dynamo.ViewModels.PreferencesViewModel.ShowPythonAutoMigrationNotificationIsChecked.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.ShowPythonAutoMigrationNotificationIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.UnconnectedOutputsCollapsed.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.UnconnectedOutputsCollapsed.set -> void
 Dynamo.ViewModels.PreferencesViewModel.UseRenderInstancing.get -> bool
@@ -3809,10 +3826,15 @@ Dynamo.Wpf.UI.MouseBehaviour.MouseX.get -> double
 Dynamo.Wpf.UI.MouseBehaviour.MouseX.set -> void
 Dynamo.Wpf.UI.MouseBehaviour.MouseY.get -> double
 Dynamo.Wpf.UI.MouseBehaviour.MouseY.set -> void
+Dynamo.Wpf.UI.ToastManager
+Dynamo.Wpf.UI.ToastManager.CloseRealTimeInfoWindow() -> void
+Dynamo.Wpf.UI.ToastManager.CreateRealTimeInfoWindow(string content, bool stayOpen = false, string headerText = "", string hyperlinkText = "", System.Uri hyperlinkUri = null, System.Uri fileLinkUri = null) -> void
+Dynamo.Wpf.UI.ToastManager.ToastManager(System.Windows.UIElement rootElement) -> void
 Dynamo.Wpf.UI.VisualConfigurations
 Dynamo.Wpf.Utilities.CompactBubbleHandler
 Dynamo.Wpf.Utilities.DynamoWebView2
 Dynamo.Wpf.Utilities.DynamoWebView2.DynamoWebView2() -> void
+Dynamo.Wpf.Utilities.DynamoWebView2.ConfigureSettings(bool enableZoomControl = false, bool enableDevTools = false, bool enableContextMenu = false) -> void
 Dynamo.Wpf.Utilities.GroupStyleItemSelector
 Dynamo.Wpf.Utilities.GroupStyleItemSelector.GroupStyleItemSelector() -> void
 Dynamo.Wpf.Utilities.LibraryDragAndDrop
@@ -4301,6 +4323,14 @@ Dynamo.Wpf.Views.GuidedTour.RatingControl.RatingControl() -> void
 Dynamo.Wpf.Views.GuidedTour.RatingControl.Value.get -> int
 Dynamo.Wpf.Views.GuidedTour.RatingControl.Value.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.FileLinkUri.get -> System.Uri
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.FileLinkUri.set -> void
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HeaderContent.get -> string
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HeaderContent.set -> void
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkText.get -> string
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkText.set -> void
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkUri.get -> System.Uri
+Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkUri.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.InitializeComponent() -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.RealTimeInfoWindow() -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.TextContent.get -> string
@@ -4516,6 +4546,7 @@ static Dynamo.UI.Prompts.DynamoMessageBox.Show(string messageBoxText, string cap
 static Dynamo.UI.Prompts.DynamoMessageBox.Show(System.Windows.Window owner, string messageBoxText, string caption, bool showRichTextBox, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage icon) -> System.Windows.MessageBoxResult
 static Dynamo.UI.Prompts.DynamoMessageBox.Show(System.Windows.Window owner, string messageBoxText, string caption, System.Collections.Generic.Dictionary<Dynamo.UI.Prompts.DynamoMessageBox.DialogFlags, bool> flags, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage icon) -> System.Windows.MessageBoxResult
 static Dynamo.UI.Prompts.DynamoMessageBox.Show(System.Windows.Window owner, string messageBoxText, string caption, System.Windows.MessageBoxButton button, System.Windows.MessageBoxImage icon) -> System.Windows.MessageBoxResult
+static Dynamo.UI.Prompts.DynamoMessageBox.ShowWithCheckbox(System.Windows.Window owner, string messageBoxText, string caption, System.Windows.MessageBoxButton button, System.Collections.Generic.IEnumerable<string> buttonNames, System.Windows.MessageBoxImage icon, string checkboxText, out bool isChecked) -> System.Windows.MessageBoxResult
 static Dynamo.UI.SharedDictionaryManager.ConnectorsDictionary.get -> System.Windows.ResourceDictionary
 static Dynamo.UI.SharedDictionaryManager.ConnectorsDictionaryUri.get -> System.Uri
 static Dynamo.UI.SharedDictionaryManager.DataTemplatesDictionary.get -> System.Windows.ResourceDictionary
@@ -4661,6 +4692,9 @@ static Dynamo.Wpf.Properties.Resources.ConverterMessageTransformOrigin.get -> st
 static Dynamo.Wpf.Properties.Resources.ConverterMessageZoom.get -> string
 static Dynamo.Wpf.Properties.Resources.CopyToClipboardTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.CopyToClipboardFailedMessage.get -> string
+static Dynamo.Wpf.Properties.Resources.CPython3EngineNotificationMessageBoxHeader.get -> string
+static Dynamo.Wpf.Properties.Resources.CPython3EngineNotificationMessageBoxText.get -> string
+static Dynamo.Wpf.Properties.Resources.CPython3EngineUpgradeLearnMoreUri.get -> string
 static Dynamo.Wpf.Properties.Resources.CrashPromptDialogCopyButton.get -> string
 static Dynamo.Wpf.Properties.Resources.CrashPromptDialogCrashMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.CrashPromptDialogDetailButton.get -> string
@@ -4710,6 +4744,10 @@ static Dynamo.Wpf.Properties.Resources.DownloadWarningMessageBoxTitle.get -> str
 static Dynamo.Wpf.Properties.Resources.DuplicateFilesInPublishWarningMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.DuplicateFilesInPublishWarningTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoShowFileTrustWarning.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoSplashScreenFailed.get -> string
+static Dynamo.Wpf.Properties.Resources.DocumentationBrowserAutoSyncLabel.get -> string
+static Dynamo.Wpf.Properties.Resources.DocumentationBrowserPreferences.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoSplashScreen.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoUpdateAvailableToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewCancelButtonTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewContextMenuClearLog.get -> string
@@ -5046,6 +5084,7 @@ static Dynamo.Wpf.Properties.Resources.LogoutMenuItemText.get -> string
 static Dynamo.Wpf.Properties.Resources.MajorVersionNonNegative.get -> string
 static Dynamo.Wpf.Properties.Resources.Manual.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageAlreadyInstallDynamo.get -> string
+static Dynamo.Wpf.Properties.Resources.MessageBoxDontShowAgainLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageConfirmToDeletePackage.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageConfirmToInstallPackage.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageConfirmToInstallPackageToFolder.get -> string
@@ -5123,6 +5162,8 @@ static Dynamo.Wpf.Properties.Resources.NodeAutocomplete.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeAutoCompleteNotAvailableForCollapsedGroups.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeAutoCompleteToolTip.get -> string
+static Dynamo.Wpf.Properties.Resources.OfflineStatusTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.OnlineStatusTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDuplicateAssembliesFoundMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoCompleteNewUI.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoCompleteNewUITooltipText.get -> string
@@ -5466,6 +5507,8 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralTab.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGroupStylesHeader.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewHideInportsDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewHideOutportsDescription.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewShowPythonEngineChangeNotifications.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewShowPythonEngineChangeNotificationsTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewIncludeTimestampExportPathTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewLanguageLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewLanguageSwitchHelp.get -> string
@@ -5611,8 +5654,8 @@ static Dynamo.Wpf.Properties.Resources.RenderingMemoryOutageSummary.get -> strin
 static Dynamo.Wpf.Properties.Resources.RerunButton.get -> string
 static Dynamo.Wpf.Properties.Resources.RerunButtonToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.ResetChangesWarningPopupMessage.get -> string
-static Dynamo.Wpf.Properties.Resources.ResetCPythonButtonText.get -> string
-static Dynamo.Wpf.Properties.Resources.ResetCPythonButtonToolTip.get -> string
+static Dynamo.Wpf.Properties.Resources.ResetPythonNet3ButtonText.get -> string
+static Dynamo.Wpf.Properties.Resources.ResetPythonNet3ButtonToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.ResourceManager.get -> System.Resources.ResourceManager
 static Dynamo.Wpf.Properties.Resources.RunBlockedMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.RunCompletedMessage.get -> string
@@ -5706,6 +5749,7 @@ static Dynamo.Wpf.Properties.Resources.TermsOfUseDeclineButton.get -> string
 static Dynamo.Wpf.Properties.Resources.TermsOfUseViewTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.TitleFileInUse.get -> string
 static Dynamo.Wpf.Properties.Resources.TitlePackageTargetOtherHost.get -> string
+static Dynamo.Wpf.Properties.Resources.ToastHyperlinkPathText.get -> string
 static Dynamo.Wpf.Properties.Resources.TooltipCurrentIndex.get -> string
 static Dynamo.Wpf.Properties.Resources.TourLabelProgressText.get -> string
 static Dynamo.Wpf.Properties.Resources.TrustedLocationNotAccessible.get -> string

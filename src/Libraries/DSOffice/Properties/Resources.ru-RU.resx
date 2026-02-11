@@ -120,9 +120,6 @@
   <data name="ExcelInteropObsoleteNode" xml:space="preserve">
     <value>Этот узел устарел и будет удален в следующей версии Dynamo. Используйте соответствующий узел на основе OpenXML.</value>
   </data>
-  <data name="ReadObsolete" xml:space="preserve">
-    <value>Используйте узел File.FromPath -&gt; Excel.ReadFromFile.</value>
-  </data>
   <data name="StreamWriterNotFoundException" xml:space="preserve">
     <value>Не удается найти файл или папку</value>
   </data>

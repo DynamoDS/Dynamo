@@ -1,7 +1,10 @@
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Dynamo.Configuration;
 using Dynamo.Models;
 using Dynamo.Wpf.Properties;
 using DynamoUtilities;
@@ -42,6 +45,39 @@ namespace Dynamo.Wpf.Utilities
             await initTask;
 
             ObjectDisposedException.ThrowIf(disposeCalled, this);
+        }
+
+        /// <summary>
+        /// Configures standard security and usability settings for WebView2 instances.
+        /// This method applies recommended settings to standardize WebView2 behavior across the application.
+        /// </summary>
+        /// <param name="enableZoomControl">Enable zoom controls (default: false)</param>
+        /// <param name="enableDevTools">Enable developer tools for debugging (default: false)</param>
+        /// <param name="enableContextMenu">Enable right-click context menu (default: false)</param>
+        public void ConfigureSettings(bool enableZoomControl = false, bool enableDevTools = false, bool enableContextMenu = false)
+        {
+            if (CoreWebView2 == null)
+            {
+                throw new InvalidOperationException("CoreWebView2 is not initialized. Call Initialize() before ConfigureSettings().");
+            }
+
+            var settings = CoreWebView2.Settings;
+
+            // Security: Disable browser accelerator keys (Ctrl+P, Ctrl+F, F5, F12, etc.)
+            settings.AreBrowserAcceleratorKeysEnabled = false;
+
+            // Security: Control context menu access (prevents "View Source", "Inspect", etc.)
+            settings.AreDefaultContextMenusEnabled = enableContextMenu;
+
+            // UI: Disable status bar showing URLs on hover
+            settings.IsStatusBarEnabled = false;
+
+            // UI: Control zoom capabilities
+            settings.IsZoomControlEnabled = enableZoomControl;
+            settings.IsPinchZoomEnabled = false;
+
+            // Development: Control DevTools access
+            settings.AreDevToolsEnabled = enableDevTools;
         }
 
         protected override void Dispose(bool disposing)
@@ -102,6 +138,22 @@ namespace Dynamo.Wpf.Utilities
                                        MessageBoxImage.Error);
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Returns the user data folder path for WebView2 (used in SplashScreen, HomePage, PackageManagerWizard)
+        /// </summary>
+        /// <returns>user data folder path for WebView2</returns>
+        internal static string GetTempDirectory()
+        {
+            // Create a temp folder unique to this Dynamo instance based on process id
+            string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string tmpDataFolder = Path.Combine(
+                localAppData,
+                "Temp",
+                Configurations.DynamoAsString,
+                "WebView2");
+            return tmpDataFolder;
         }
     }
 }

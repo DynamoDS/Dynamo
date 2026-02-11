@@ -1,11 +1,13 @@
 using System;
 using Dynamo.Models;
 using Dynamo.PackageManager;
+using Dynamo.Wpf.UI;
 
 namespace Dynamo.ViewModels
 {
     partial class DynamoViewModel
     {
+
         public event RequestPackagePublishDialogHandler RequestPackagePublishDialog;
         public void OnRequestPackagePublishDialog(PublishPackageViewModel vm)
         {

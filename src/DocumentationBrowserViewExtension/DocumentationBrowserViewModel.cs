@@ -214,11 +214,18 @@ namespace Dynamo.DocumentationBrowser
                 {
                     case OpenNodeAnnotationEventArgs openNodeAnnotationEventArgs:
                         packageName = openNodeAnnotationEventArgs.PackageName;
-                        ownedByPackage = !string.IsNullOrEmpty(openNodeAnnotationEventArgs.PackageName);
 
                         var mdLink = packageManagerDoc.GetAnnotationDoc(
                             openNodeAnnotationEventArgs.MinimumQualifiedName, 
                             openNodeAnnotationEventArgs.PackageName);
+
+                        bool isBuiltInByPath = false;
+                        if (!string.IsNullOrEmpty(packageName))
+                        {
+                            isBuiltInByPath = IsBuiltInDocPath(mdLink);
+                        }
+
+                        ownedByPackage = !string.IsNullOrEmpty(packageName) && !isBuiltInByPath;
 
                         link = string.IsNullOrEmpty(mdLink) ? new Uri(String.Empty, UriKind.Relative) : new Uri(mdLink);
                         graphPath = GetGraphLinkFromMDLocation(link, ownedByPackage);
@@ -288,6 +295,35 @@ namespace Dynamo.DocumentationBrowser
             catch (Exception)
             {
                 return string.Empty;
+            }
+        }
+
+        private bool IsBuiltInDocPath(string mdLink)
+        {
+            if (string.IsNullOrEmpty(mdLink)) return false;
+
+            try
+            {
+                var binDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                var hostFallback = PackageDocumentationManager.Instance?.hostDynamoFallbackDocPath?.FullName;
+                var coreFallback = PackageDocumentationManager.Instance?.dynamoCoreFallbackDocPath?.FullName;
+
+                var mdFull = Path.GetFullPath(mdLink);
+                var sharedFull = Path.GetFullPath(Path.Combine(binDir, Configuration.Configurations.DynamoNodeHelpDocs));
+                var hostFull = hostFallback == null ? string.Empty : Path.GetFullPath(hostFallback);
+                var coreFull = coreFallback == null ? string.Empty : Path.GetFullPath(coreFallback);
+
+                if (!string.IsNullOrEmpty(sharedFull) && !sharedFull.EndsWith(Path.DirectorySeparatorChar)) sharedFull += Path.DirectorySeparatorChar;
+                if (!string.IsNullOrEmpty(hostFull) && !hostFull.EndsWith(Path.DirectorySeparatorChar)) hostFull += Path.DirectorySeparatorChar;
+                if (!string.IsNullOrEmpty(coreFull) && !coreFull.EndsWith(Path.DirectorySeparatorChar)) coreFull += Path.DirectorySeparatorChar;
+
+                return (!string.IsNullOrEmpty(sharedFull) && mdFull.StartsWith(sharedFull, StringComparison.OrdinalIgnoreCase)) ||
+                       (!string.IsNullOrEmpty(hostFull) && mdFull.StartsWith(hostFull, StringComparison.OrdinalIgnoreCase)) ||
+                       (!string.IsNullOrEmpty(coreFull) && mdFull.StartsWith(coreFull, StringComparison.OrdinalIgnoreCase));
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
 

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CoreNodeModels.Input;
@@ -482,12 +482,12 @@ namespace Dynamo.Tests
             RunModel(openPath);
             // check for number of Nodes and Connectors
             Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(4, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
             var node1 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
-                ("385281c8-3177-4359-a348-a3084e16a41a");
+                ("923ff0c7-0979-4327-942e-e41ebe7536fd");
             var node2 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
-                ("1ad8632e-7ddc-4cc7-bfa5-58cb899a5ddf");
+                ("0ce96568-fb37-48bb-a920-40857f1579f3");
 
             Assert.IsTrue(node1.Infos.Any(x => x.Message.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency)));
             Assert.IsTrue(node2.Infos.Any(x => x.Message.Equals(ProtoCore.Properties.Resources.kInvalidStaticCyclicDependency)));

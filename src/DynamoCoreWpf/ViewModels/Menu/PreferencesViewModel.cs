@@ -174,7 +174,7 @@ namespace Dynamo.ViewModels
                     if (Configurations.SupportedLocaleDic.TryGetValue(selectedLanguage, out string locale))
                     {
                         preferenceSettings.Locale = locale;
-                        dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.PreferencesViewLanguageSwitchHelp, true);
+                        dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(Res.PreferencesViewLanguageSwitchHelp, true);
                     }
                 }
             }
@@ -1078,6 +1078,19 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Controls the IsChecked property in the "Hide CPython notifications" toggle button
+        /// </summary>
+        public bool ShowPythonAutoMigrationNotificationIsChecked
+        {
+            get => preferenceSettings.ShowPythonAutoMigrationNotifications;
+            set
+            {
+                preferenceSettings.ShowPythonAutoMigrationNotifications = value;
+                RaisePropertyChanged(nameof(ShowPythonAutoMigrationNotificationIsChecked));
+            }
+        }
+
+        /// <summary>
         /// Controls the IsChecked property in the "Notification Center" toggle button
         /// </summary>
         public bool NotificationCenterIsChecked
@@ -1107,6 +1120,23 @@ namespace Dynamo.ViewModels
             {
                 preferenceSettings.EnablePersistExtensions = value;
                 RaisePropertyChanged(nameof(PersistExtensionsIsChecked));
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property of "Auto‑sync with node selection." option in "Documentation Browser" preferences.
+        /// The default value is true.
+        /// </summary>
+        public bool AutoSyncDocumentBrowserIsChecked
+        {
+            get
+            {
+                return preferenceSettings.IsAutoSyncDocumentBrowser;
+            }
+            set
+            {
+                preferenceSettings.IsAutoSyncDocumentBrowser = value;
+                RaisePropertyChanged(nameof(AutoSyncDocumentBrowserIsChecked));
             }
         }
 
@@ -1886,6 +1916,9 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(ShowWhitespaceIsChecked):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowWhitespaceInPythonEditor), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
+                case nameof(ShowPythonAutoMigrationNotificationIsChecked):
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowPythonEngineChangeNotifications), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(NodeAutocompleteIsChecked):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewEnableNodeAutoComplete), System.Globalization.CultureInfo.InvariantCulture);

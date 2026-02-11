@@ -127,8 +127,8 @@
     <value>Přepnout mezi pohledy Vedle sebe a Centrovaný.</value>
   </data>
   <data name="IronPythonDialogDescription" xml:space="preserve">
-    <value>Aplikace Dynamo přechází z modulu IronPython2 (Python 2) na nový modul CPython3 (Python 3). 
-Modul IronPython je i nadále k dispozici jako balíček v aplikaci Package Manager aplikace Dynamo, podporován však bude pouze modul CPython3.</value>
+    <value>Aplikace Dynamo přechází ze starého modulu IronPython2 na nový modul PythonNet3. 
+Modul IronPython je i nadále k dispozici jako balíček v aplikaci Package Manager aplikace Dynamo, podporován však bude pouze modul PythonNet3.</value>
   </data>
   <data name="IronPythonDialogSummary" xml:space="preserve">
     <value>Tento graf obsahuje uzly, které odkazují na zastaralý modul Python.</value>
@@ -140,10 +140,10 @@ Modul IronPython je i nadále k dispozici jako balíček v aplikaci Package Mana
     <value>Nezobrazovat znovu.</value>
   </data>
   <data name="IronPythonNotificationDetailedMessage" xml:space="preserve">
-    <value>Tento graf aktuálně obsahuje uzly jazyka Python používající starý modul IronPython, který byl vyřazen. Zvažte aktualizaci těchto uzlů tak, aby využívaly nový modul CPython 3.7.</value>
+    <value>Tento graf aktuálně obsahuje uzly jazyka Python používající starý modul IronPython, který byl vyřazen. Zvažte aktualizaci těchto uzlů tak, aby využívaly nový modul PythonNet3.</value>
   </data>
   <data name="IronPythonNotificationShortMessage" xml:space="preserve">
-    <value>Tento graf aktuálně obsahuje uzly používající starý modul IronPython2 (Python 2), který byl vyřazen. Byl implementován nový modul CPython3 (Python 3) a je přístupný v editoru jazyka Python.</value>
+    <value>Tento graf aktuálně obsahuje uzly používající starý modul IronPython2, který byl vyřazen. Byl implementován nový modul PythonNet3 a je přístupný v editoru Python.</value>
   </data>
   <data name="MigrationAssistantDisclaimerContinueButtonContent" xml:space="preserve">
     <value>Pokračovat</value>
@@ -158,8 +158,8 @@ Modul IronPython je i nadále k dispozici jako balíček v aplikaci Package Mana
     <value>Chystáte se provést změny v kódu jazyka Python</value>
   </data>
   <data name="MigrationAssistantDisclaimerMessage" xml:space="preserve">
-    <value>Nástroj Migration Assistant pomáhá uživatelům aktualizovat skripty z verze Python 2 do verze Python 3.
-Kliknutím na tlačítko Pokračovat souhlasíte s implementací změn syntaxe zdrojového kódu, jak je doporučeno v nástroji Migration Assistant. Nástroj Migration Assistant je komponentou Open Source aplikace Dynamo. A jako taková podléhá licenci Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0). Podle podmínek licence Apache 2.0 je pro vás software Dynamo a Migration Assistant k dispozici, tak jak je.</value>
+    <value>Nástroj Migration Assistant pomáhá uživatelům aktualizovat skripty z verze IronPython2 na PythonNet3.
+Kliknutím na tlačítko „Pokračovat“ souhlasíte s implementací změn syntaxe zdrojového kódu, jak je doporučeno v nástroji Migration Assistant. Nástroj Migration Assistant je open source komponenta aplikace Dynamo, podléhá tedy licenci Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0). Podle podmínek licence Apache 2.0 je pro vás software Dynamo a nástroj Migration Assistant k dispozici, „tak, jak je“.</value>
   </data>
   <data name="MigrationAssistantDisclaimerWindowTitle" xml:space="preserve">
     <value>Migration Assistant – omezení odpovědnosti</value>
@@ -168,7 +168,7 @@ Kliknutím na tlačítko Pokračovat souhlasíte s implementací změn syntaxe z
     <value>Zde nic není.</value>
   </data>
   <data name="MigrationAssistantNoChangesStateMessage" xml:space="preserve">
-    <value>Váš kód je připraven ke spuštění v modulu Python 3. Kliknutím na tlačítko Přijmout se přepnete do modulu Python 3.</value>
+    <value>Váš kód je připraven ke spuštění v modulu PythonNet3. Kliknutím na tlačítko Přijmout přepneme modul na PythonNet3.</value>
   </data>
   <data name="MigrationAssistantErrorStateHeader" xml:space="preserve">
     <value>Ve vašem kódu je chyba.</value>
@@ -200,6 +200,9 @@ Kliknutím na tlačítko Pokračovat souhlasíte s implementací změn syntaxe z
   <data name="PythonMigrationBackupFileCreatedMessage" xml:space="preserve">
     <value>Před použitím migrace kódu jazyka Python byla záloha tohoto grafu uložena do nakonfigurovaného záložního místa: {0}</value>
   </data>
+  <data name="CPythonMigrationBackupFileCreatedMessage" xml:space="preserve">
+    <value>Před aktualizací byl uložen záložní soubor </value>
+  </data>
   <data name="RejectButtonTooltip" xml:space="preserve">
     <value>Zamítnout změny v aktuálním kódu.</value>
   </data>
@@ -220,5 +223,17 @@ Kliknutím na tlačítko Pokračovat souhlasíte s implementací změn syntaxe z
   </data>
   <data name="SwitchViewButton" xml:space="preserve">
     <value>Přepnout pohled</value>
+  </data>
+  <data name="CPython3NotificationDetailedMessage" xml:space="preserve">
+    <value>Tento graf aktuálně obsahuje uzly jazyka Python, které používají starý vyřazený modul CPython. Zvažte aktualizaci těchto uzlů tak, aby používaly nový modul PythonNet3.</value>
+  </data>
+  <data name="CPython3NotificationShortMessage" xml:space="preserve">
+    <value>Tento graf aktuálně obsahuje uzly, které používají starý vyřazený modul CPython3. Byl implementován nový skript PythonNet3, který je přístupný v editoru jazyka Python.</value>
+  </data>
+  <data name="PythonMigrationBackupFileCreatedHeader" xml:space="preserve">
+    <value>Záložní graf byl uložen</value>
+  </data>
+  <data name="CPythonUpgradeToastMessage" xml:space="preserve">
+    <value>{0} uzlů CPython a {1} definic vlastních uzlů byly automaticky převedeny na PythonNet3, aby je bylo možné spustit ve verzi aplikace Dynamo 4.0. CPython již není podporováno.</value>
   </data>
 </root>

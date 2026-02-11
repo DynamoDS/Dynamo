@@ -104,7 +104,7 @@ namespace Dynamo.PackageManager.Tests
             var pkg = loader.ScanPackageDirectory(pkgDir);
             loader.LoadPackages(new List<Package> {pkg});
 
-            Assert.IsTrue(loader.RequestedExtensions.Count() == 1);
+            Assert.IsTrue(loader.RequestedExtensions.Count() == 2);
             Assert.IsTrue(extensionLoad);
             Assert.IsTrue(extensionAdd);
             Assert.IsTrue(extensionReady);
@@ -440,7 +440,8 @@ namespace Dynamo.PackageManager.Tests
             var pkg = loader.ScanPackageDirectory(pkgDir);
             loader.LoadPackages(new List<Package> {pkg});
 
-            Assert.IsTrue(!loader.RequestedExtensions.Any());
+            //assert the sample view extension is not part of RequestedExtensions
+            Assert.IsFalse(loader.RequestedExtensions.Any(ext => ext.Name == "SampleViewExtension"));
             Assert.IsFalse(viewExtensionLoad);
             Assert.IsFalse(viewExtensionAdd);
 

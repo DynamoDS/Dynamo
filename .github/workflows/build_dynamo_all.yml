@@ -12,16 +12,15 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout Dynamo Repo
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: Dynamo
           repository: DynamoDS/Dynamo
       - name: Setup dotnet
         uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: |
-            8.0.x
-            10.0.100-preview.5.25277.114
+          dotnet-version: 8.0.x
+          global-json-file: Dynamo/global.json
       - name: Disable problem matcher
         run: Write-Output "::remove-matcher owner=csc::"
       - name: Setup msbuild
@@ -41,7 +40,7 @@ jobs:
       - name: Check File Version
         run: ${{ github.workspace }}\Dynamo\.github\scripts\check_file_version.ps1 ${{ github.workspace }}\Dynamo\bin\AnyCPU\Release
       - name: Upload Build Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: DynamoSandbox
           path: ${{ github.workspace }}\Dynamo\bin\AnyCPU\Release
@@ -56,7 +55,7 @@ jobs:
           mkdir -p ${{ github.workspace }}/pr
           echo ${{ github.event.number }} > ${{ github.workspace }}/pr/pr_number.txt
       - name: Upload PR Data
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: pr_data
           path: ${{ github.workspace }}/pr

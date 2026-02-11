@@ -226,8 +226,9 @@ namespace Dynamo.UI.Controls
                 {
                     foreach (System.IO.DirectoryInfo directory in directories)
                     {
-                        //Make sure the folder's name is not "backup"
-                        if (!directory.Name.Equals(Configurations.BackupFolderName))
+                        //Make sure the folder's name is not "backup" and not "GD"
+                        if (!directory.Name.Equals(Configurations.BackupFolderName) && 
+                            !directory.Name.Equals("GD", StringComparison.OrdinalIgnoreCase))
                         {
                             // Recursive call for each subdirectory.
                             SampleFileEntry sampleFileEntry =

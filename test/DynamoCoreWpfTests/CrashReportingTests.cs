@@ -151,7 +151,7 @@ namespace Dynamo.Tests
             //Gets package loader
             var packageLoader = CurrentDynamoModel.GetPackageManagerExtension()?.PackageLoader;
             Assert.IsNotNull(packageLoader);
-            Assert.IsTrue(packageLoader.LocalPackages.Count() == 1);
+            Assert.IsTrue(packageLoader.LocalPackages.All(x => x.BuiltInPackage));
             Assert.IsNotEmpty(packageLoader.LocalPackages, string.Join(", ", packageLoader.LocalPackages.Select(x => x.Name)));
 
             //Get packages data from null package loader

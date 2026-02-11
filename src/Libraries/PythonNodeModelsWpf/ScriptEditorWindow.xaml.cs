@@ -1,12 +1,16 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Xml;
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -48,6 +52,16 @@ namespace PythonNodeModelsWpf
         // Reasonable max and min font size values for zooming limits
         private const double FONT_MAX_SIZE = 60d;
         private const double FONT_MIN_SIZE = 5d;
+        // Win32 system command and hit-test constants used for resizing
+        private const int WM_SYSCOMMAND = 0x0112;
+        private const int SC_SIZE = 0xF000;
+        private const int HTBOTTOMRIGHT = 0x0008;
+
+        /// <summary>
+        /// Sends a Win32 message to forward a system resize command when the custom resize grip is clicked
+        /// </summary>
+        [DllImport("user32.dll")]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
         private const double pythonZoomScalingSliderMaximum = 300d;
         private const double pythonZoomScalingSliderMinimum = 25d;
@@ -157,6 +171,15 @@ namespace PythonNodeModelsWpf
             editText.SyntaxHighlighting = HighlightingLoader.Load(
                 new XmlTextReader(elem), HighlightingManager.Instance);
 
+            // Set migrator tooltip
+            var tooltip = MigrationAssistantButton.ToolTip as System.Windows.Controls.ToolTip;
+            if (tooltip != null)
+            {
+                tooltip.Content = string.Format(
+                PythonNodeModels.Properties.Resources.PythonScriptEditorMigrationAssistantButtonTooltip,
+                PythonEngineManager.PythonNet3EngineName);
+            }            
+
             // Add custom highlighting rules consistent with DesignScript
             CodeHighlightingRuleFactory.AddCommonHighlighingRules(editText, dynamoViewModel.EngineController);
 
@@ -179,6 +202,37 @@ namespace PythonNodeModelsWpf
             InstallFoldingManager();
 
             dynamoViewModel.PreferencesWindowChanged += DynamoViewModel_PreferencesWindowChanged;
+
+            dynamoViewModel.PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+            NodeModel.PropertyChanged += OnNodeModelPropertyChanged;
+
+            UpdatePythonUpgradeBar();
+            UpdateMigrationAssistantButtonEnabled();
+        }
+
+        private void UpdatePythonUpgradeBar()
+        {
+            var showForThisNode = NodeModel.ShowAutoUpgradedBar
+                && dynamoViewModel.PreferenceSettings.ShowPythonAutoMigrationNotifications;
+
+            PythonUpgradeBar.Visibility = showForThisNode ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void DismissPythonUpgradeBar()
+        {
+            if (NodeModel.ShowAutoUpgradedBar && NodeModel.EngineName != PythonEngineManager.PythonNet3EngineName)
+            {
+                NodeModel.ShowAutoUpgradedBar = false;
+                UpdatePythonUpgradeBar();
+            }
+        }
+
+        private void PreferenceSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(PreferenceSettings.ShowPythonAutoMigrationNotifications))
+            {
+                UpdatePythonUpgradeBar();
+            }
         }
 
         /// <summary>
@@ -197,6 +251,7 @@ namespace PythonNodeModelsWpf
                 editor.IsModified = !IsSaved;
 
                 dynamoView.DockWindowInSideBar(this, NodeModel, titleBar);
+                WindowResizeHandle.Visibility = Visibility.Collapsed;
 
                 Analytics.TrackEvent(
                                Actions.Dock,
@@ -286,6 +341,12 @@ namespace PythonNodeModelsWpf
             return text.EndsWith(":");
         }
 
+        private void UpdateMigrationAssistantButtonEnabled()
+        {
+            var enable = CachedEngine == PythonEngineManager.IronPython2EngineName;
+            MigrationAssistantButton.IsEnabled = enable;
+            System.Windows.Controls.ToolTipService.SetIsEnabled(MigrationAssistantButton, enable);
+        }
 
         #region Text Zoom in Python Editor
 
@@ -408,14 +469,26 @@ namespace PythonNodeModelsWpf
 
         #region Private Event Handlers
 
+        private void OnNodeModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(PythonNode.EngineName))
+            {
+                if (CachedEngine != NodeModel.EngineName)
+                {
+                    CachedEngine = NodeModel.EngineName;
+                    EngineSelectorComboBox.SelectedItem = CachedEngine;
+                }
+            }
+        }
+
         private void OnNodeModelCodeMigrated(object sender, PythonCodeMigrationEventArgs e)
         {
             originalScript = e.OldCode;
             editText.Text = e.NewCode;
-            if (CachedEngine != PythonEngineManager.CPython3EngineName)
+            if (CachedEngine != PythonEngineManager.PythonNet3EngineName)
             {
-                CachedEngine = PythonEngineManager.CPython3EngineName;
-                EngineSelectorComboBox.SelectedItem = PythonEngineManager.CPython3EngineName;
+                CachedEngine = PythonEngineManager.PythonNet3EngineName;
+                EngineSelectorComboBox.SelectedItem = PythonEngineManager.PythonNet3EngineName;
             }
         }
 
@@ -433,6 +506,7 @@ namespace PythonNodeModelsWpf
                 Dynamo.Logging.Actions.Save,
                 Dynamo.Logging.Categories.PythonOperations);
             IsSaved = true;
+            DismissPythonUpgradeBar();
         }
 
         private void OnRevertClicked(object sender, RoutedEventArgs e)
@@ -466,6 +540,7 @@ namespace PythonNodeModelsWpf
             {
                 dynamoViewModel.HomeSpace.Run();
             }
+            DismissPythonUpgradeBar();
 
             Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Run,
@@ -520,6 +595,7 @@ namespace PythonNodeModelsWpf
             }
 
             editText.Options.ConvertTabsToSpaces = CachedEngine != PythonEngineManager.IronPython2EngineName;
+            UpdateMigrationAssistantButtonEnabled();
         }
 
         private void OnScriptEditorWindowClosed(object sender, EventArgs e)
@@ -531,8 +607,10 @@ namespace PythonNodeModelsWpf
                 completionProvider?.Dispose();
                 NodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
                 NodeModel.UserScriptWarned -= WarnUserScript;
+                NodeModel.PropertyChanged -= OnNodeModelPropertyChanged;
                 this.Closed -= OnScriptEditorWindowClosed;
                 PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= UpdateAvailableEngines;
+                dynamoViewModel.PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
 
                 Analytics.TrackEvent(
                     Dynamo.Logging.Actions.Close,
@@ -572,7 +650,11 @@ namespace PythonNodeModelsWpf
             e.Handled = true;
         }
 
-        
+        private void OnPythonAutoUpgradedBarClose(object sender, RoutedEventArgs e)
+        {
+            PythonUpgradeBar.Visibility = Visibility.Collapsed;
+            NodeModel.ShowAutoUpgradedBar = false;
+        }
 
         #endregion
 
@@ -607,11 +689,13 @@ namespace PythonNodeModelsWpf
             {
                 this.MaximizeButton.Visibility = Visibility.Collapsed;
                 this.NormalizeButton.Visibility = Visibility.Visible;
+                this.WindowResizeHandle.Visibility = Visibility.Collapsed;
             }
             else
             {
                 this.MaximizeButton.Visibility = Visibility.Visible;
                 this.NormalizeButton.Visibility = Visibility.Collapsed;
+                this.WindowResizeHandle.Visibility = Visibility.Visible;
             }
         }
 
@@ -709,7 +793,6 @@ namespace PythonNodeModelsWpf
             this.ZoomInButton.IsEnabled = true;
             this.ZoomOutButton.IsEnabled = true;
             this.EngineSelectorComboBox.IsEnabled = true;
-            this.MigrationAssistantButton.IsEnabled = true;
             this.ConvertTabsToSpacesButton.IsEnabled = true;
             this.MoreInfoButton.IsEnabled = true;
             this.SaveButtonBar.Visibility = Visibility.Visible;
@@ -728,6 +811,17 @@ namespace PythonNodeModelsWpf
                 IsEnterHit = false;
             }
         }
-        #endregion
+
+        // Handles clicks on the custom resize grip and forwards them as a Win32 bottom-right resize command
+        private void WindowResizeHandle_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (WindowState != WindowState.Normal)
+                return;
+
+            var helper = new WindowInteropHelper(this);
+            SendMessage(helper.Handle, WM_SYSCOMMAND, (IntPtr)(SC_SIZE + HTBOTTOMRIGHT), IntPtr.Zero);
+            e.Handled = true;
+        }
+        #endregion        
     }
 }

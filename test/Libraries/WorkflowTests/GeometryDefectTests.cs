@@ -267,10 +267,10 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(14, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-            Assert.AreEqual(17, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(15, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(19, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
 
-            var curves = "0503d40e-812b-47ae-8198-d4ed0ee91c91";
+            var curves = "da51f880-f22e-409b-82e8-545ae5caad6a";
             AssertPreviewCount(curves, 41);
 
             // output will be 41 Curves, so putting verification 
@@ -639,11 +639,11 @@ namespace Dynamo.Tests
             Assert.AreEqual(55, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             // check Curve.SweepAsSolid
-            var solid1 = "df601349-3c41-4223-8c4d-e9fa043d1663";
+            var solid1 = "ceda65ffdae3498697c99d5403816e2d";
             var obj = GetPreviewValue(solid1);
             Assert.IsTrue(obj is Solid);
 
-            AssertPreviewValue("7b4c927a-685e-43dc-8f43-527e21d59786", 2.5531);
+            AssertPreviewValue("7b4c927a-685e-43dc-8f43-527e21d59786", 2.7603308);
         }
 
         #region Test Node Changes
@@ -711,7 +711,7 @@ namespace Dynamo.Tests
 
             AssertNoDummyNodes();
             var val = GetPreviewValue("ec6a82c4-ee31-4c72-a5ef-58dc1bec0fe9") as Solid;
-            var val2 = GetPreviewValue("9f2ea7e8-51e8-4361-a337-9f7849a00d29") as Solid;
+            var val2 = GetPreviewValue("600fbd4d-4752-4552-a395-e41a21cc8273") as Solid;
             ShouldBeApproximate(val.Area, val2.Area);
             ShouldBeApproximate(val.Area, 45.83992284);
         }

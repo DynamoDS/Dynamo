@@ -30,12 +30,14 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.UI.Controls;
+using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Views;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Authentication;
 using Dynamo.Wpf.Extensions;
+using Dynamo.Wpf.UI;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.Views;
@@ -64,6 +66,7 @@ namespace Dynamo.Controls
     {
         public const string BackgroundPreviewName = "BackgroundPreview";
         private const int SideBarCollapseThreshold = 20;
+        private const int RightSideBarCollapseThreshold = 30;
         private const int navigationInterval = 100;
         private const string GraphMetadataExtensionId = "28992e1d-abb9-417f-8b1b-05e053bee670";
         // This is used to determine whether ESC key is being held down
@@ -80,6 +83,9 @@ namespace Dynamo.Controls
         private PreferencesView preferencesWindow;
         private PackageManagerView packageManagerWindow;
         private bool loaded = false;
+        private bool graphMetadataHooked;
+        private MenuItem graphPropsGeneralMenuItem;
+        private MenuItem graphPropsExtensionMenuItem;
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
         private bool isPSSCalledOnViewModelNoCancel = false;
@@ -106,7 +112,8 @@ namespace Dynamo.Controls
 
         internal ShortcutToolbar ShortcutBar { get { return shortcutBar; } }
 
-        internal PreferencesView PreferencesWindow {
+        internal PreferencesView PreferencesWindow
+        {
             get { return preferencesWindow; }
         }
 
@@ -146,7 +153,7 @@ namespace Dynamo.Controls
             _timer = new Stopwatch();
             _timer.Start();
 
-            InitializeComponent();  
+            InitializeComponent();
 
             Loaded += DynamoView_Loaded;
             Unloaded += DynamoView_Unloaded;
@@ -169,7 +176,7 @@ namespace Dynamo.Controls
                 {
                     leftLimit += screen.Bounds.Width;
                     topLimit += screen.Bounds.Height;
-                }   
+                }
 
                 Left = dynamoViewModel.Model.PreferenceSettings.WindowX;
                 Top = dynamoViewModel.Model.PreferenceSettings.WindowY;
@@ -291,16 +298,54 @@ namespace Dynamo.Controls
 
         private void DynamoViewModel_ShowGraphPropertiesRequested(object sender, EventArgs e)
         {
-            // Identify the GraphMetadata extension by its UniqueId because we can't reference its type directly.
-            // This exposes the menu item without creating a dependency on the Extensions project.
+            EnsureGraphPropertiesBinding();
+
             var provider = viewExtensionManager.ViewExtensions
                 .OfType<IExtensionMenuProvider>()
                 .FirstOrDefault(ext => (ext as IViewExtension)?.UniqueId == GraphMetadataExtensionId);
-            var menuItem = provider?.GetFileMenuItem();
 
-            if (menuItem != null)
+            var extItem = provider?.GetFileMenuItem();
+            if (extItem == null) return;
+
+            extItem.IsChecked = !extItem.IsChecked;
+        }
+
+        private void EnsureGraphPropertiesBinding()
+        {
+            if (graphMetadataHooked) return;
+
+            graphPropsGeneralMenuItem = this.FindName("general") as MenuItem;
+            if (graphPropsGeneralMenuItem == null) return;
+
+            var provider = viewExtensionManager.ViewExtensions
+                .OfType<IExtensionMenuProvider>()
+                .FirstOrDefault(ext => (ext as IViewExtension)?.UniqueId == GraphMetadataExtensionId);
+
+            graphPropsExtensionMenuItem = provider?.GetFileMenuItem();
+            if (graphPropsExtensionMenuItem == null) return;
+
+            graphPropsGeneralMenuItem.IsCheckable = true;
+            graphPropsGeneralMenuItem.IsChecked = graphPropsExtensionMenuItem.IsChecked;
+
+            graphPropsExtensionMenuItem.Checked += OnGraphMetadataChecked;
+            graphPropsExtensionMenuItem.Unchecked += OnGraphMetadataUnchecked;
+
+            graphMetadataHooked = true;
+        }
+
+        private void OnGraphMetadataChecked(object sender, RoutedEventArgs e)
+        {
+            if (graphPropsGeneralMenuItem != null)
             {
-                menuItem.IsChecked = true;
+                graphPropsGeneralMenuItem.IsChecked = true;
+            }
+        }
+
+        private void OnGraphMetadataUnchecked(object sender, RoutedEventArgs e)
+        {
+            if (graphPropsGeneralMenuItem != null)
+            {
+                graphPropsGeneralMenuItem.IsChecked = false;
             }
         }
 
@@ -331,12 +376,12 @@ namespace Dynamo.Controls
         }
 
         private void OnWorkspaceHidden(WorkspaceModel workspace)
-        {            
+        {
             CalculateWindowMinWidth();
         }
 
         private void OnWorkspaceAdded(WorkspaceModel workspace)
-        {            
+        {
             CalculateWindowMinWidth();
         }
 
@@ -345,17 +390,17 @@ namespace Dynamo.Controls
             var workspace = this.ChildOfType<WorkspaceView>();
             WorkspaceView.ExportImageResult isCurrentWorkSpaceValidForImage = workspace.IsWorkSpaceRenderValidAsImage(true);
 
-            if (isCurrentWorkSpaceValidForImage== WorkspaceView.ExportImageResult.IsValidAsImage)
+            if (isCurrentWorkSpaceValidForImage == WorkspaceView.ExportImageResult.IsValidAsImage)
             {
                 dynamoViewModel.ShowSaveImageDialogAndSave(parameter);
             }
             else if (isCurrentWorkSpaceValidForImage == WorkspaceView.ExportImageResult.EmptyDrawing)
             {
-                dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.CantExportWorkspaceAsImageEmptyMessage, true);
+                dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(Res.CantExportWorkspaceAsImageEmptyMessage, true);
             }
             else if (isCurrentWorkSpaceValidForImage == WorkspaceView.ExportImageResult.NotValidAsImage)
             {
-                dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.CantExportWorkspaceAsImageNotValidMessage, true);
+                dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(Res.CantExportWorkspaceAsImageNotValidMessage, true);
             }
         }
 
@@ -363,7 +408,7 @@ namespace Dynamo.Controls
         {
             if (PreferencesWindow != null && PreferencesWindow.IsLoaded)
             {
-                dynamoViewModel.MainGuideManager?.CreateRealTimeInfoWindow(Res.PreferencesMustBeClosedMessage, true);
+                dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(Res.PreferencesMustBeClosedMessage, true);
             }
         }
 
@@ -378,7 +423,7 @@ namespace Dynamo.Controls
             {
                 exportMenu.IsEnabled = enable;
             }
-           
+
             if (!(shortcutBar is null))
             {
                 shortcutBar.IsNewButtonEnabled = enable;
@@ -422,12 +467,12 @@ namespace Dynamo.Controls
             }
 
             if (!(workspace is HomeWorkspaceModel hws))
-            return;
-            
+                return;
+
             foreach (var extension in viewExtensionManager.StorageAccessViewExtensions)
             {
                 DynamoModel.RaiseIExtensionStorageAccessWorkspaceOpened(hws, extension, dynamoViewModel.Model.Logger);
-            }            
+            }
         }
 
         private void OnWorkspaceSaving(WorkspaceModel workspace, Graph.SaveContext saveContext)
@@ -439,6 +484,27 @@ namespace Dynamo.Controls
             {
                 DynamoModel.RaiseIExtensionStorageAccessWorkspaceSaving(hws, extension, saveContext, dynamoViewModel.Model.Logger);
             }
+
+            dynamoViewModel?.CheckOnlineAccess();
+        }
+
+        private void OnPythonEngineUpgradeToastRequested(string msg, bool stayOpen, string filePath)
+        {
+            Dispatcher.BeginInvoke(
+                System.Windows.Threading.DispatcherPriority.ContextIdle,
+                new Action(() =>
+                {
+                    Uri fileUri = null;
+                    var hasFile = !string.IsNullOrWhiteSpace(filePath) && Uri.TryCreate(filePath, UriKind.Absolute, out fileUri);
+
+                    dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(
+                        msg,
+                        stayOpen,
+                        headerText: Res.CPython3EngineNotificationMessageBoxHeader,
+                        hyperlinkText: Res.LearnMore,
+                        hyperlinkUri: new Uri(Res.CPython3EngineUpgradeLearnMoreUri),
+                        fileLinkUri: hasFile ? fileUri : null);
+                }));
         }
 
         /// <summary>
@@ -530,7 +596,7 @@ namespace Dynamo.Controls
                     window.ShouldMaximize = true;
                 }
             }
-            
+
             // Setting the content of the undocked window
             // Icon is passed from DynamoView (respecting Host integrator icon)
             SetApplicationIcon();
@@ -684,7 +750,7 @@ namespace Dynamo.Controls
             CloseRightSideBarTab(tabitem);
             CloseExtensionWindow(tabName);
         }
- 
+
         /// <summary>
         /// Event handler for the CloseButton.
         /// This method triggers the close operation on the selected tab.
@@ -859,7 +925,8 @@ namespace Dynamo.Controls
                 {
                     pythonNode.OnNodeEdited(textEditor.Text);
                 }
-                else {
+                else
+                {
                     pythonNode.OnNodeEdited(null);
                 }
 
@@ -964,7 +1031,7 @@ namespace Dynamo.Controls
 
             var locatableModels = clipBoard.Where(item => item is NoteModel || item is NodeModel);
             var modelsExcludingConnectorPins = locatableModels.Where(model => !(model is ConnectorPinModel));
-            if(modelsExcludingConnectorPins is null || modelsExcludingConnectorPins.Count()<1) { return; }
+            if (modelsExcludingConnectorPins is null || modelsExcludingConnectorPins.Count() < 1) { return; }
 
             var modelBounds = modelsExcludingConnectorPins.Select(lm =>
                 new Rect { X = lm.X, Y = lm.Y, Height = lm.Height, Width = lm.Width });
@@ -1110,8 +1177,8 @@ namespace Dynamo.Controls
             dynamoViewModel.Model.PreferenceSettings.WindowY = Top;
 
             //When the Dynamo window is moved to another place we need to update the Steps location
-            if(dynamoViewModel.MainGuideManager != null)
-                dynamoViewModel.MainGuideManager.UpdateGuideStepsLocation();
+            dynamoViewModel.MainGuideManager?.UpdateGuideStepsLocation();
+            dynamoViewModel.ToastManager?.UpdateLocation();
 
             if (fileTrustWarningPopup != null && fileTrustWarningPopup.IsOpen)
             {
@@ -1138,7 +1205,7 @@ namespace Dynamo.Controls
             }
 
             UpdateGeometryScalingPopupLocation();
-            
+
             CalculateWindowThreshold();
         }
 
@@ -1156,8 +1223,8 @@ namespace Dynamo.Controls
         /// <summary>
         /// Calculates the Window threshold to display the text or only icons in the shortcut toolbar
         internal void CalculateWindowThreshold()
-        {            
-            dynamoViewModel.OnWindowResized(dynamoViewModel.Model.PreferenceSettings.WindowW <= GetSumOfControlsWidth());            
+        {
+            dynamoViewModel.OnWindowResized(dynamoViewModel.Model.PreferenceSettings.WindowW <= GetSumOfControlsWidth());
         }
 
         /// <summary>
@@ -1183,7 +1250,7 @@ namespace Dynamo.Controls
             if (workspaceView != null && workspaceView.GeoScalingPopup != null)
             {
                 workspaceView.GeoScalingPopup.UpdatePopupLocation();
-            }               
+            }
         }
 
         private void InitializeShortcutBar()
@@ -1250,7 +1317,7 @@ namespace Dynamo.Controls
             shortcutBar.ShortcutBarItems.Add(saveButton);
             shortcutBar.ShortcutBarItems.Add(undoButton);
             shortcutBar.ShortcutBarItems.Add(redoButton);
-            
+
             shortcutBarGrid.Children.Add(shortcutBar);
         }
 
@@ -1329,6 +1396,7 @@ namespace Dynamo.Controls
                     Log(ext.Name + ": " + exc.Message);
                 }
             }
+            EnsureGraphPropertiesBinding();
         }
 
         /// <summary>
@@ -1362,7 +1430,7 @@ namespace Dynamo.Controls
 
             // If first run, Collect Info Prompt will appear
             UsageReportingManager.Instance.CheckIsFirstRun(this, dynamoViewModel.BrandingResourceProvider);
-            
+
 
             WorkspaceTabs.SelectedIndex = 0;
             dynamoViewModel = (DataContext as DynamoViewModel);
@@ -1372,7 +1440,13 @@ namespace Dynamo.Controls
 
             // Initialize Guide Manager as a member on Dynamo ViewModel so other than guided tour,
             // other part of application can also leverage it.
+            dynamoViewModel.ToastManager = new ToastManager(_this);
             dynamoViewModel.MainGuideManager = new GuidesManager(_this, dynamoViewModel);
+
+            // Subscribes to Python-engine-upgrade toast requests from the ViewModel and
+            // forwards them to GuidesManager on the UI thread
+            dynamoViewModel.PythonEngineUpgradeToastRequested += OnPythonEngineUpgradeToastRequested;
+
             GuideFlowEvents.GuidedTourStart += GuideFlowEvents_GuidedTourStart;
             _timer.Stop();
             dynamoViewModel.Model.Logger.Log(String.Format(Wpf.Properties.Resources.MessageLoadingTime,
@@ -1417,6 +1491,8 @@ namespace Dynamo.Controls
             DynamoSelection.Instance.Selection.CollectionChanged += Selection_CollectionChanged;
 
             dynamoViewModel.RequestUserSaveWorkflow += DynamoViewModelRequestUserSaveWorkflow;
+
+            dynamoViewModel.RequestPythonEngineChangeNotice += DynamoViewModel_RequestPythonEngineChangeNotice;
 
             dynamoViewModel.Model.ClipBoard.CollectionChanged += ClipBoard_CollectionChanged;
 
@@ -1503,7 +1579,7 @@ namespace Dynamo.Controls
 
         private void GuideFlowEvents_GuidedTourStart(GuidedTourStateEventArgs args)
         {
-            if(sidebarGrid.Visibility != Visibility.Visible || sidebarGrid.ActualWidth < 2)
+            if (sidebarGrid.Visibility != Visibility.Visible || sidebarGrid.ActualWidth < 2)
             {
                 OnCollapsedLeftSidebarClick(null, null);
             }
@@ -1516,7 +1592,11 @@ namespace Dynamo.Controls
         {
             var workspace = this.ChildOfType<WorkspaceView>();
             if (workspace != null)
+            {
                 workspace.HideAllPopUp(obj);
+                workspace.DestroyPortContextMenu();
+            }
+
         }
 
         private void TrackStartupAnalytics()
@@ -1680,6 +1760,22 @@ namespace Dynamo.Controls
                 }
             }
 
+            // Show the one-time Python Engine Change notification for the workspace
+            var ws = dynamoViewModel.Model.CurrentWorkspace;
+            var prefSettings = dynamoViewModel.Model.PreferenceSettings;
+
+            if (!ws.HasShownPythonAutoMigrationNotification
+                && ws.ShowPythonAutoMigrationNotifications
+                && prefSettings.ShowPythonAutoMigrationNotifications)
+            {
+                var cancelFirstDialogBox = ShowPythonEngineChangeNoticeAndMarkIfProceed();
+                if (cancelFirstDialogBox)
+                {
+                    e.Success = false;
+                    return;
+                }
+            }
+
             var buttons = e.AllowCancel ? MessageBoxButton.YesNoCancel : MessageBoxButton.YesNo;
             var result = MessageBoxService.Show(this, dialogText,
                 Dynamo.Wpf.Properties.Resources.UnsavedChangesMessageBoxTitle,
@@ -1702,6 +1798,46 @@ namespace Dynamo.Controls
             {
                 e.Success = false;
             }
+        }
+
+        private void DynamoViewModel_RequestPythonEngineChangeNotice(object sender, CancelEventArgs e)
+        {
+            e.Cancel = ShowPythonEngineChangeNoticeAndMarkIfProceed();
+        }
+
+        private bool ShowPythonEngineChangeNoticeAndMarkIfProceed()
+        {
+            var ws = dynamoViewModel.Model.CurrentWorkspace;
+            if (!(ws is HomeWorkspaceModel) && !(string.IsNullOrEmpty(ws?.FileName)) && ws.HasShownPythonAutoMigrationNotification) return false;
+
+            bool dontShowAgain;
+
+            var result = DynamoMessageBox.ShowWithCheckbox(
+                owner: this,
+                messageBoxText: Res.CPython3EngineNotificationMessageBoxText,
+                caption: Res.CPython3EngineNotificationMessageBoxHeader,
+                button: MessageBoxButton.YesNo,
+                buttonNames: new[] { Res.GenericTaskDialogOptionOK, Res.LearnMore },
+                icon: MessageBoxImage.Information,
+                checkboxText: Res.MessageBoxDontShowAgainLabel,
+                isChecked: out dontShowAgain);
+
+            // Update preference to not show again if checked
+            dynamoViewModel.Model.PreferenceSettings.ShowPythonAutoMigrationNotifications = !dontShowAgain;
+
+            // First button (Yes) is "OK"
+            if (result == MessageBoxResult.Yes)
+            {
+                ws.HasShownPythonAutoMigrationNotification = true;
+                return false;
+            }
+            // Second button (No) is "Learn more"
+            else if (result == MessageBoxResult.No)
+            {
+                Process.Start(new ProcessStartInfo(Res.CPython3EngineUpgradeLearnMoreUri) { UseShellExecute = true });
+                return true;
+            }
+            return false;
         }
 
         private void Selection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1742,7 +1878,7 @@ namespace Dynamo.Controls
                 dpiX = 96;
                 dpiY = 96;
             }
-            
+
             var bitmapSource = BackgroundPreview.View.RenderBitmap();
             // this image only really needs 24bits per pixel but to match previous implementation we'll use 32bit images.
             var rtBitmap = new RenderTargetBitmap(bitmapSource.PixelWidth, bitmapSource.PixelHeight, dpiX, dpiY, PixelFormats.Pbgra32);
@@ -2048,7 +2184,7 @@ namespace Dynamo.Controls
 
             // Force application shutdown when dynamo (in standalone mode) is closed, to prevent process hanging
             bool isStandaloneMode = string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName);
-            
+
             if (!DynamoModel.IsTestMode && isStandaloneMode && Application.Current != null)
             {
                 try
@@ -2087,6 +2223,15 @@ namespace Dynamo.Controls
             dynamoViewModel.RequestUserSaveWorkflow -= DynamoViewModelRequestUserSaveWorkflow;
             GuideFlowEvents.GuidedTourStart -= GuideFlowEvents_GuidedTourStart;
 
+            dynamoViewModel.RequestPythonEngineChangeNotice -= DynamoViewModel_RequestPythonEngineChangeNotice;
+            dynamoViewModel.PythonEngineUpgradeToastRequested -= OnPythonEngineUpgradeToastRequested;
+
+            if (graphPropsExtensionMenuItem != null)
+            {
+                graphPropsExtensionMenuItem.Checked -= OnGraphMetadataChecked;
+                graphPropsExtensionMenuItem.Unchecked -= OnGraphMetadataUnchecked;
+            }
+
             if (dynamoViewModel.Model != null)
             {
                 dynamoViewModel.Model.RequestTaskDialog -= Controller_RequestTaskDialog;
@@ -2116,10 +2261,10 @@ namespace Dynamo.Controls
                 }
                 catch (Exception exc)
                 {
-                    Log($"{ext.Name} :  {exc.Message} during shutdown" );
+                    Log($"{ext.Name} :  {exc.Message} during shutdown");
                 }
             }
-          
+
 
             viewExtensionManager.MessageLogged -= Log;
             BackgroundPreview = null;
@@ -2712,12 +2857,23 @@ namespace Dynamo.Controls
             UpdateHandleHoveredStyle(tb, collapseIcon);
         }
 
+        private void OnlineStatusGrid_MouseEnter(object sender, MouseEventArgs e)
+        {
+            // Trigger connectivity check when hovering over network status indicator
+            if (dynamoViewModel != null)
+            {
+                dynamoViewModel.CheckOnlineAccess();
+            }
+        }
+
         private bool libraryCollapsed;
         private bool extensionsCollapsed;
         private GridLength? extensionsColumnWidth;
 
         // Default side bar width
         private const int defaultSideBarWidth = 200;
+        //By default the extension bar width in px;
+        private const int defaultRightSideBarWidth = 455;
         // By default the extension bar over canvas size ratio is 2/5
         private const int DefaultExtensionBarWidthMultiplier = 2;
 
@@ -2755,7 +2911,7 @@ namespace Dynamo.Controls
                 }
                 else
                 {
-                    extensionsCollapsed = RightExtensionsViewColumn.Width.Value < SideBarCollapseThreshold;
+                    extensionsCollapsed = RightExtensionsViewColumn.Width.Value < RightSideBarCollapseThreshold;
                 }
 
                 return extensionsCollapsed;
@@ -2793,7 +2949,8 @@ namespace Dynamo.Controls
         {
             if (dynamoViewModel.SideBarTabItems.Count == 0)
             {
-                if (RightExtensionsViewColumn.Width.Value != 0)
+                if (RightExtensionsViewColumn.Width.Value != 0
+                    && RightExtensionsViewColumn.ActualWidth > RightSideBarCollapseThreshold)
                 {
                     extensionsColumnWidth = RightExtensionsViewColumn.Width;
                 }
@@ -2806,7 +2963,7 @@ namespace Dynamo.Controls
                 // 1. It allows the resized width to be remembered which is nice to have.
                 // 2. It allows to avoid a slider glitch which sets the panels size in pixel amount but using star,
                 // changing the proportions so that the initial value is counted as pixels after the first resize.
-                if (extensionsColumnWidth == null)
+                if (extensionsColumnWidth == null || extensionsColumnWidth.Value.Value < RightSideBarCollapseThreshold)
                 {
                     RightExtensionsViewColumn.Width = new GridLength(DefaultExtensionBarWidthMultiplier, GridUnitType.Star);
                 }
@@ -2846,23 +3003,20 @@ namespace Dynamo.Controls
             if (ExtensionsCollapsed)
             {
                 if (extensionsColumnWidth == null)
-                {
                     RightExtensionsViewColumn.Width = new GridLength(DefaultExtensionBarWidthMultiplier, GridUnitType.Star);
+                else if (extensionsColumnWidth.Value.Value <= RightSideBarCollapseThreshold &&
+                    !extensionsColumnWidth.Value.Equals(new GridLength(DefaultExtensionBarWidthMultiplier, GridUnitType.Star)))
+                {
+                    RightExtensionsViewColumn.Width = new GridLength(defaultRightSideBarWidth, GridUnitType.Star);
                 }
                 else
-                {
                     RightExtensionsViewColumn.Width = extensionsColumnWidth.Value;
-                }
             }
             else
             {
-                if (RightExtensionsViewColumn.Width.Value != 0)
-                {
-                    extensionsColumnWidth = RightExtensionsViewColumn.Width;
-                }
+                extensionsColumnWidth = RightExtensionsViewColumn.Width;
                 RightExtensionsViewColumn.Width = new GridLength(0, GridUnitType.Star);
             }
-
             // TODO: Maynot need this depending on tab design
             UpdateLibraryCollapseIcon();
         }
@@ -2971,7 +3125,7 @@ namespace Dynamo.Controls
         private void WorkspaceTabs_TargetUpdated(object sender, DataTransferEventArgs e)
         {
             if (WorkspaceTabs.SelectedIndex >= 0)
-            ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
+                ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
             UpdateWorkspaceTabSizes();
         }
 
@@ -2997,10 +3151,10 @@ namespace Dynamo.Controls
         /// </summary>
         private void UpdateWorkspaceTabSizes()
         {
-            
+
             // We measure the full library width at runtime.
             int fullLibraryWidth = dynamoViewModel.LibraryWidth + LibraryScrollBarWidth;
-            
+
             // Difference between the full library width (at runtime) and the minimum offset required
             // by the TabItems to not overlap the 5 icon buttons.
             int difference = fullLibraryWidth - FirstTabItemMinimumLeftMarginOffset;
@@ -3060,13 +3214,13 @@ namespace Dynamo.Controls
         }
         private void LogNotification(NotificationMessage notification)
         {
-            dynamoViewModel.Model.Logger.LogNotification(notification.Sender, notification.Title,notification.ShortMessage, notification.DetailedMessage);
+            dynamoViewModel.Model.Logger.LogNotification(notification.Sender, notification.Title, notification.ShortMessage, notification.DetailedMessage);
         }
 
         private void Window_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             //if original sender was scroll bar(i.e Thumb) don't close the popup.
-            if(!(e.OriginalSource is Thumb) && !(e.OriginalSource is TextBox))
+            if (!(e.OriginalSource is Thumb) && !(e.OriginalSource is TextBox))
             {
                 HidePopupWhenWindowDeactivated(sender);
             }
@@ -3094,7 +3248,7 @@ namespace Dynamo.Controls
         {
             //We pass the root UIElement to the GuidesManager so we can found other child UIElements
             try
-            {                
+            {
                 dynamoViewModel.MainGuideManager.LaunchTour(GuidesManager.GetStartedGuideName);
             }
             catch (Exception)
@@ -3105,7 +3259,8 @@ namespace Dynamo.Controls
 
         private void RightExtensionSidebar_DragCompleted(object sender, DragCompletedEventArgs e)
         {
-            //Setting the width of right extension after resize to
+            //Setting the width of right extension after resize to only if extension bar widht is greater than threshold value.
+            if (RightExtensionsViewColumn.ActualWidth > defaultRightSideBarWidth)
             extensionsColumnWidth = RightExtensionsViewColumn.Width;
         }
 
@@ -3113,7 +3268,7 @@ namespace Dynamo.Controls
         {
             try
             {
-                dynamoViewModel.MainGuideManager.LaunchTour(GuidesManager.PackagesGuideName);                
+                dynamoViewModel.MainGuideManager.LaunchTour(GuidesManager.PackagesGuideName);
             }
             catch (Exception)
             {
@@ -3129,7 +3284,7 @@ namespace Dynamo.Controls
         }
 
         private void DynamoView_Activated(object sender, EventArgs e)
-        {            
+        {
             if (fileTrustWarningPopup != null && dynamoViewModel.ViewingHomespace)
             {
                 fileTrustWarningPopup.ManagePopupActivation(true);
@@ -3138,7 +3293,7 @@ namespace Dynamo.Controls
 
         private void DynamoView_Deactivated(object sender, EventArgs e)
         {
-            if(fileTrustWarningPopup != null)
+            if (fileTrustWarningPopup != null)
                 fileTrustWarningPopup.ManagePopupActivation(false);
         }
 
