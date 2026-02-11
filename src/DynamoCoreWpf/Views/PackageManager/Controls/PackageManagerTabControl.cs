@@ -1,21 +1,53 @@
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace Dynamo.PackageManager.UI
 {
     public class PackageManagerTabControl : TabControl
     {
-        internal bool SuppressHomeEndNavigation { get; set; }
+        public static readonly DependencyProperty SuppressHomeEndWhenSelectedProperty =
+            DependencyProperty.RegisterAttached(
+                "SuppressHomeEndWhenSelected",
+                typeof(bool),
+                typeof(PackageManagerTabControl),
+                new FrameworkPropertyMetadata(false));
+
+        public static bool GetSuppressHomeEndWhenSelected(DependencyObject element)
+        {
+            return (bool)element.GetValue(SuppressHomeEndWhenSelectedProperty);
+        }
+
+        public static void SetSuppressHomeEndWhenSelected(DependencyObject element, bool value)
+        {
+            element.SetValue(SuppressHomeEndWhenSelectedProperty, value);
+        }
+
+        public PackageManagerTabControl()
+        {
+            Loaded += OnLoaded;
+        }
+
+        protected override void OnSelectionChanged(SelectionChangedEventArgs e)
+        {
+            base.OnSelectionChanged(e);
+
+            if (ReferenceEquals(e.OriginalSource, this))
+            {
+                FocusSelectedTabHeaderAsync();
+            }
+        }
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            if(TryHandlePageNavigation(e))
+            if (TryHandlePageUpDownNavigation(e))
             {
                 return;
             }
 
-            if (SuppressHomeEndNavigation && (e.Key == Key.Home || e.Key == Key.End))
+            if (ShouldSuppressHomeEndNavigation(e.Key))
             {
                 // Skip base handling to prevent tab switching, but do not
                 // mark as handled so WebView2 can still process the key.
@@ -25,7 +57,45 @@ namespace Dynamo.PackageManager.UI
             base.OnKeyDown(e);
         }
 
-        private bool TryHandlePageNavigation(KeyEventArgs e)
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            FocusSelectedTabHeaderAsync();
+        }
+
+        private void FocusSelectedTabHeaderAsync()
+        {
+            // Defer focus until layout/selection updates are applied to avoid
+            // fighting WPF's internal focus transitions during tab changes.
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (SelectedItem is TabItem selectedTab)
+                {
+                    selectedTab.Focus();
+                }
+                else
+                {
+                    Focus();
+                }
+            }), DispatcherPriority.Background);
+        }
+
+        private bool ShouldSuppressHomeEndNavigation(Key key)
+        {
+            if (key != Key.Home && key != Key.End)
+            {
+                return false;
+            }
+
+            if (SelectedItem == null)
+            {
+                return false;
+            }
+
+            return ItemContainerGenerator.ContainerFromItem(SelectedItem) is DependencyObject selectedTab &&
+                   GetSuppressHomeEndWhenSelected(selectedTab);
+        }
+
+        private bool TryHandlePageUpDownNavigation(KeyEventArgs e)
         {
             if (e.Key != Key.PageUp && e.Key != Key.PageDown)
             {
@@ -76,7 +146,8 @@ namespace Dynamo.PackageManager.UI
 
         private bool IsTabStripFocused()
         {
-            return Keyboard.FocusedElement == this || Keyboard.FocusedElement is TabItem;
+            return Keyboard.FocusedElement is TabItem tabItem &&
+                ReferenceEquals(ItemsControl.ItemsControlFromItemContainer(tabItem), this);
         }
     }
 }

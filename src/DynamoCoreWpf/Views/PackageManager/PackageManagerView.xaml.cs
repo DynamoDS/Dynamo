@@ -3,7 +3,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -70,8 +69,6 @@ namespace Dynamo.PackageManager.UI
             this.PackageManagerViewModel = packageManagerViewModel;
 
             InitializeComponent();
-            UpdatePublishTabKeyNavigation();
-            FocusSelectedTabHeader();
 
             if (packageManagerViewModel != null )
             {
@@ -185,7 +182,7 @@ namespace Dynamo.PackageManager.UI
         /// <param name="tabName">Tab name to navigate to</param>
         internal void Navigate(string tabName)
         {
-            var tabControl = this.projectManagerTabControl;
+            var tabControl = this.packageManagerTabControl;
 
             var preferencesTab = (from TabItem tabItem in tabControl.Items
                                   where tabItem.Header.ToString().Equals(tabName)
@@ -213,39 +210,6 @@ namespace Dynamo.PackageManager.UI
         {
             this.loadingSearchWarningBar.Visibility = Visibility.Collapsed;
             this.loadingMyPackagesWarningBar.Visibility = Visibility.Collapsed;
-        }
-
-        private void ProjectManagerTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            // SelectionChanged is a bubbling event. Ignore selection changes from child controls
-            // inside tab content and only react to actual package manager tab switches.
-            if (!ReferenceEquals(e.OriginalSource, projectManagerTabControl)) return;
-
-            UpdatePublishTabKeyNavigation();
-            FocusSelectedTabHeader();
-        }
-
-        private void UpdatePublishTabKeyNavigation()
-        {
-            if (projectManagerTabControl == null) return;
-            projectManagerTabControl.SuppressHomeEndNavigation = IsNewPMPublishWizardEnabled && publishTab?.IsSelected == true;
-        }
-
-        private void FocusSelectedTabHeader()
-        {
-            if (projectManagerTabControl == null) return;
-
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                if (projectManagerTabControl.SelectedItem is TabItem selectedTab)
-                {
-                    selectedTab.Focus();
-                }
-                else
-                {
-                    projectManagerTabControl.Focus();
-                }
-            }), DispatcherPriority.Background);
         }
 
         private void tab_PreviewMouseDown(object sender, MouseButtonEventArgs e)
