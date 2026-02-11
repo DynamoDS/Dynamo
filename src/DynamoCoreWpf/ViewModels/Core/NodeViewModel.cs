@@ -68,7 +68,7 @@ namespace Dynamo.ViewModels
         private bool isHidden;
         private const int DocumentBrowserRefreshDebounceMs = 300;
         private Wpf.Utilities.ActionDebouncer delayDocumentBrowserRefresh
-          = new Wpf.Utilities.ActionDebouncer(() => { });
+          = new Wpf.Utilities.ActionDebouncer(null);
         private int delayDocumentBrowserRefreshTime = DocumentBrowserRefreshDebounceMs;
         #endregion
 
@@ -1352,7 +1352,7 @@ namespace Dynamo.ViewModels
             if (DynamoViewModel.PreferenceSettings.IsAutoSyncDocumentBrowser)
             {
                 TabItem tabitem = DynamoViewModel.SideBarTabItems.OfType<TabItem>()
-                    .SingleOrDefault(n => n.Content is Dynamo.Views.DocumentationBrowserView);
+                    .SingleOrDefault(n => n.Content.GetType().Name.Equals("DocumentationBrowserView", StringComparison.OrdinalIgnoreCase));
                 if (tabitem != null &&
                     DynamoSelection.Instance.Selection.Count == 1)
                 {
