@@ -6,8 +6,16 @@ using System.Windows.Threading;
 
 namespace Dynamo.PackageManager.UI
 {
+    /// <summary>
+    /// TabControl for Package Manager tabs that customizes keyboard navigation
+    /// to preserve editing shortcuts inside tab content when required.
+    /// </summary>
     public class PackageManagerTabControl : TabControl
     {
+        /// <summary>
+        /// Attached property used on a tab item to disable Home/End tab switching
+        /// while that tab is selected.
+        /// </summary>
         public static readonly DependencyProperty SuppressHomeEndWhenSelectedProperty =
             DependencyProperty.RegisterAttached(
                 "SuppressHomeEndWhenSelected",
@@ -15,16 +23,29 @@ namespace Dynamo.PackageManager.UI
                 typeof(PackageManagerTabControl),
                 new FrameworkPropertyMetadata(false));
 
+        /// <summary>
+        /// Gets whether Home/End tab switching is suppressed for the provided element.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns><c>true</c> if Home/End tab switching should be suppressed.</returns>
         public static bool GetSuppressHomeEndWhenSelected(DependencyObject element)
         {
             return (bool)element.GetValue(SuppressHomeEndWhenSelectedProperty);
         }
 
+        /// <summary>
+        /// Sets whether Home/End tab switching is suppressed for the provided element.
+        /// </summary>
+        /// <param name="element">The element that stores the attached value.</param>
+        /// <param name="value"><c>true</c> to suppress Home/End tab switching.</param>
         public static void SetSuppressHomeEndWhenSelected(DependencyObject element, bool value)
         {
             element.SetValue(SuppressHomeEndWhenSelectedProperty, value);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PackageManagerTabControl"/> class.
+        /// </summary>
         public PackageManagerTabControl()
         {
             Loaded += OnLoaded;
