@@ -900,7 +900,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void IsSupportedDataType_HandlesIEnumerableFromParseJSON()
+        public void IsSupportedDataNodeDynamoType_HandlesIEnumerableFromParseJSON()
         {
             // This test verifies the fix for the bug where list data from ParseJSON
             // was incorrectly rejected because it returns IEnumerable, not ArrayList
