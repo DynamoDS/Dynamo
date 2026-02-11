@@ -56,8 +56,8 @@
       "Outputs": [
         {
           "Id": "7d6fb0d501024a2db4b788f6b0423c51",
-          "Name": "",
-          "Description": "Value of expression at line 1",
+          "Name": "integer",
+          "Description": "1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -387,6 +387,8 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "SerializedWidth": 0.0,
+      "SerializedHeight": 0.0,
       "Id": "32dbab73ed0f4de8998de64932d218c1",
       "NodeType": "StringInputNode",
       "Inputs": [],
@@ -402,7 +404,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a string",
+      "Description": "Creates a string.",
       "InputValue": "sheet1"
     },
     {
@@ -1088,8 +1090,8 @@
       ],
       "Replication": "Disabled",
       "Description": "Allows you to select a file on the system and returns its file path",
-      "HintPath": null,
-      "InputValue": "..\\..\\..\\..\\..\\..\\Desktop\\CSV_Import_Example.csv"
+      "HintPath": "C:\\Users\\piersoj\\Documents\\Repos\\Dynamo\\doc\\distrib\\Templates\\Data\\CSV_Import_Example.csv",
+      "InputValue": "..\\Data\\CSV_Import_Example.csv"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1247,8 +1249,8 @@
       "Outputs": [
         {
           "Id": "0befe87dfa904b36839a9852c82b163e",
-          "Name": "",
-          "Description": "Value of expression at line 1",
+          "Name": "string",
+          "Description": "\"-\"",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1267,8 +1269,8 @@
       "Outputs": [
         {
           "Id": "c902e2da13e041389cc5b894b1dc7c7f",
-          "Name": "",
-          "Description": "Value of expression at line 2",
+          "Name": "list",
+          "Description": "[\"GA\", \"DET\", \"STRUCT\"]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1287,8 +1289,8 @@
       "Outputs": [
         {
           "Id": "b5bb609cc5ae40c1b3aeb891b4417ae2",
-          "Name": "",
-          "Description": "Value of expression at line 1",
+          "Name": "integer",
+          "Description": "0",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1307,8 +1309,8 @@
       "Outputs": [
         {
           "Id": "4346d56c26134ed4b73e67e2961cc313",
-          "Name": "",
-          "Description": "Value of expression at line 1",
+          "Name": "integer",
+          "Description": "1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1327,8 +1329,8 @@
       "Outputs": [
         {
           "Id": "42f7944d91ac453190a91d2a0acba50c",
-          "Name": "",
-          "Description": "Value of expression at line 1",
+          "Name": "integer",
+          "Description": "2",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1455,8 +1457,8 @@
       "Outputs": [
         {
           "Id": "16af7132645447aa8de00d260a2b9303",
-          "Name": "",
-          "Description": "Value of expression at line 1",
+          "Name": "integer",
+          "Description": "0",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1602,7 +1604,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Creates a number.",
       "InputValue": 0.0
     },
     {
@@ -1978,6 +1980,8 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "SerializedWidth": 0.0,
+      "SerializedHeight": 0.0,
       "Id": "9c3b221cad134ac09ce6b64076fa4685",
       "NodeType": "StringInputNode",
       "Inputs": [],
@@ -1993,7 +1997,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a string",
+      "Description": "Creates a string.",
       "InputValue": "\"Export sheet\""
     },
     {
@@ -2303,8 +2307,8 @@
       "Outputs": [
         {
           "Id": "17921f3c741c4fb7b8ddf98dd3dcb031",
-          "Name": "",
-          "Description": "Value of expression at line 1",
+          "Name": "integer",
+          "Description": "5",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2382,7 +2386,7 @@
     },
     {
       "ConcreteType": "UnitsUI.Units, UnitsNodeModels",
-      "SelectedIndex": 198,
+      "SelectedIndex": 234,
       "SelectedString": "Meters",
       "Id": "1793f07dffa0435794d226458a336340",
       "NodeType": "ExtensionNode",
@@ -2979,7 +2983,7 @@
       "ScaleFactor": 0.01,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "3.0.3.7597",
+      "Version": "4.0.0.3076",
       "RunType": "Manual",
       "RunPeriod": "1000"
     },
@@ -3746,6 +3750,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "0881ee38125247cf8991ca5be7324912"
         ],
@@ -3759,6 +3765,10 @@
         "InitialTop": 122.39587550334466,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFFFB8D8"
       },
       {
@@ -3768,6 +3778,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "95290eb7e8734f058d9abff5bc0f0201"
         ],
@@ -3781,6 +3793,10 @@
         "InitialTop": 549.9046226684566,
         "InitialHeight": 145.0,
         "TextblockHeight": 86.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB9F9E1"
       },
       {
@@ -3790,6 +3806,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "4e5aee3d04ab4239ad85d38f721507e8",
           "eaea9a99701b40e58b6123dc5e4791d5",
@@ -3802,13 +3820,17 @@
         "HasNestedGroups": false,
         "Left": 3352.462375754578,
         "Top": 166.15888961675944,
-        "Width": 1062.6004901470378,
+        "Width": 1124.6004901470378,
         "Height": 631.096758214704,
         "FontSize": 36.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
         "InitialTop": 239.15888961675944,
         "InitialHeight": 571.096758214704,
         "TextblockHeight": 63.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB9F9E1"
       },
       {
@@ -3818,6 +3840,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "d67a19759462481d8bf2a46e623f1389",
           "7411bb4b30b243ac9eb0cdc042b96ab4",
@@ -3836,6 +3860,10 @@
         "InitialTop": 25.01383175597391,
         "InitialHeight": 790.8914087316047,
         "TextblockHeight": 63.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFFFC999"
       },
       {
@@ -3845,6 +3873,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "34cba3ead253497689eea54feb2ef3be"
         ],
@@ -3858,6 +3888,10 @@
         "InitialTop": 55.51483682822504,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFFFC999"
       },
       {
@@ -3867,6 +3901,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "fe6b123e962b4040b6cfea6985d1601c",
           "c48b2a8d816a4ec69f3823efcfe4f455",
@@ -3883,6 +3919,10 @@
         "InitialTop": 203.19202215734038,
         "InitialHeight": 383.19734674949916,
         "TextblockHeight": 63.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB9F9E1"
       },
       {
@@ -3892,6 +3932,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "a4d7a09d6f7346a88cd266e08af876ba"
         ],
@@ -3905,6 +3947,10 @@
         "InitialTop": 271.1979335082532,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB9F9E1"
       },
       {
@@ -3914,6 +3960,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "310246e9910c4c43a5b9c08e657c1269"
         ],
@@ -3927,6 +3975,10 @@
         "InitialTop": 231.51602173628578,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB9F9E1"
       },
       {
@@ -3936,6 +3988,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "fe52fd5891da4bcea449c5177a0bd7e6"
         ],
@@ -3949,6 +4003,10 @@
         "InitialTop": 3546.867839433516,
         "InitialHeight": 145.0,
         "TextblockHeight": 63.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB5B5B5"
       },
       {
@@ -3958,6 +4016,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "c1ef7f086fe7434b97f9e225c19e8cee"
         ],
@@ -3971,6 +4031,10 @@
         "InitialTop": 2804.0836841454197,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFFFB8D8"
       },
       {
@@ -3980,6 +4044,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "ca9be0647e6d4646bab46be612b55b53",
           "0b9e8a6609bc4dcdac746e19231992b1",
@@ -3998,6 +4064,10 @@
         "InitialTop": 2768.6848869754867,
         "InitialHeight": 506.01298942902395,
         "TextblockHeight": 63.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB9F9E1"
       },
       {
@@ -4007,6 +4077,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "c82103290124472eb7b8f24bfe9886f2",
           "a8291326ebdb4701a4b1f3573737ffec"
@@ -4015,12 +4087,16 @@
         "Left": 6053.359116585374,
         "Top": 2955.448075944776,
         "Width": 1033.4959343448045,
-        "Height": 235.0,
+        "Height": 233.0,
         "FontSize": 36.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
         "InitialTop": 3028.448075944776,
         "InitialHeight": 145.0,
         "TextblockHeight": 63.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB9F9E1"
       },
       {
@@ -4030,6 +4106,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "1330bf6dcebd48e5af9a01e16bbbef1b"
         ],
@@ -4037,12 +4115,16 @@
         "Left": 7730.357781000359,
         "Top": 2646.1076849326905,
         "Width": 255.0,
-        "Height": 306.0,
+        "Height": 304.0,
         "FontSize": 36.0,
         "GroupStyleId": "07655dc1-2d65-4fed-8d6a-37235d3e3a8d",
         "InitialTop": 2785.1076849326905,
         "InitialHeight": 145.0,
         "TextblockHeight": 129.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFFFC999"
       },
       {
@@ -4052,6 +4134,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "fb450c2fc5aa46a0a6dc70a903d74c8a",
           "5c73fce195c64532ae32051ba8185da7",
@@ -4066,12 +4150,16 @@
         "Left": 4298.738532469024,
         "Top": 3919.7362741248985,
         "Width": 1620.6686568465884,
-        "Height": 697.9675065261649,
+        "Height": 694.9675065261649,
         "FontSize": 36.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
         "InitialTop": 3992.7362741248985,
         "InitialHeight": 606.0951378495188,
         "TextblockHeight": 63.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB9F9E1"
       },
       {
@@ -4081,6 +4169,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "0317f6d20fd64573915f70b52c5314a1",
           "326cb742642b4c65b609c258f302de1f"
@@ -4089,12 +4179,16 @@
         "Left": 4240.395226795548,
         "Top": 2731.031930020381,
         "Width": 241.0,
-        "Height": 564.5998705372986,
+        "Height": 561.5998705372986,
         "FontSize": 36.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
         "InitialTop": 2929.031930020381,
         "InitialHeight": 314.59987053729856,
         "TextblockHeight": 188.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB9F9E1"
       },
       {
@@ -4104,6 +4198,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "785df82a2fcd4c18863c5bb752826d5f",
           "6bb3bc3218744247948e055fada56aa9"
@@ -4112,12 +4208,16 @@
         "Left": 8175.8989426863955,
         "Top": 2516.442959765734,
         "Width": 298.9830159323101,
-        "Height": 739.4857306120211,
+        "Height": 733.4857306120211,
         "FontSize": 36.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
         "InitialTop": 2641.442959765734,
         "InitialHeight": 461.48573061202114,
         "TextblockHeight": 115.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFA4E1FF"
       },
       {
@@ -4127,6 +4227,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "efaaa3893bd949adaad9b5cf40f643fe",
           "301bdfcc08a34d9f8c99c39c32b0b850",
@@ -4142,6 +4244,10 @@
         "InitialTop": 2770.6745048975367,
         "InitialHeight": 341.69365650362715,
         "TextblockHeight": 63.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFFFB8D8"
       },
       {
@@ -4151,6 +4257,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "4d267f4680c344cbbca95e1a8ca47d54",
           "8ce5f1f8cbcb4d0e811535078253f07d",
@@ -4168,6 +4276,10 @@
         "InitialTop": 415.59992186677175,
         "InitialHeight": 324.6108250605188,
         "TextblockHeight": 63.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB9F9E1"
       },
       {
@@ -4177,6 +4289,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "5601851f846d4ec1ab282f64b4766d3c"
         ],
@@ -4184,12 +4298,16 @@
         "Left": 6037.1028063723115,
         "Top": -384.6384479093599,
         "Width": 297.0,
-        "Height": 423.0,
+        "Height": 417.0,
         "FontSize": 36.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
         "InitialTop": -259.6384479093599,
         "InitialHeight": 145.0,
         "TextblockHeight": 115.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFA4E1FF"
       },
       {
@@ -4199,6 +4317,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "3456a78cd5d84fd3ae423c32155b2d47"
         ],
@@ -4206,12 +4326,16 @@
         "Left": 4177.641609858128,
         "Top": -393.7449530437243,
         "Width": 297.0,
-        "Height": 414.0,
+        "Height": 408.0,
         "FontSize": 36.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
         "InitialTop": -277.7449530437243,
         "InitialHeight": 145.0,
         "TextblockHeight": 106.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFA4E1FF"
       },
       {
@@ -4221,6 +4345,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "9481bd38719b4d05b9823342d673afd6"
         ],
@@ -4228,12 +4354,16 @@
         "Left": 4766.689677134478,
         "Top": -383.49460058198724,
         "Width": 394.0,
-        "Height": 410.0,
+        "Height": 404.0,
         "FontSize": 36.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
         "InitialTop": -301.49460058198724,
         "InitialHeight": 145.0,
         "TextblockHeight": 72.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFA4E1FF"
       },
       {
@@ -4243,6 +4373,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "86a7baae7d834b948fe6aceb7b3fb9b4"
         ],
@@ -4256,6 +4388,10 @@
         "InitialTop": -279.1922369839267,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFA4E1FF"
       },
       {
@@ -4265,6 +4401,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "09b44aaa2f8b470ebbae84d8acf7af96"
         ],
@@ -4278,6 +4416,10 @@
         "InitialTop": 448.5240127045414,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB9F9E1"
       },
       {
@@ -4287,6 +4429,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "4bb81adba55f413c968dce3682747052"
         ],
@@ -4300,6 +4444,10 @@
         "InitialTop": -281.59873917813434,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFA4E1FF"
       },
       {
@@ -4309,6 +4457,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "2bcf7f2e3f82413595307ae32f6d0563"
         ],
@@ -4322,6 +4472,10 @@
         "InitialTop": -294.1713009670425,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFA4E1FF"
       },
       {
@@ -4331,6 +4485,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "9a5fdadbdfd94667b8b998abe1ae82f0"
         ],
@@ -4338,12 +4494,16 @@
         "Left": 4762.3415592849415,
         "Top": 852.8589537111836,
         "Width": 297.0,
-        "Height": 437.0,
+        "Height": 431.0,
         "FontSize": 36.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
         "InitialTop": 991.8589537111836,
         "InitialHeight": 145.0,
         "TextblockHeight": 129.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFA4E1FF"
       },
       {
@@ -4353,6 +4513,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "eef0e25676de4f2a9ebe6d7d9dd58f06"
         ],
@@ -4366,6 +4528,10 @@
         "InitialTop": 953.9274563988704,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFA4E1FF"
       },
       {
@@ -4375,6 +4541,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "2a5f76ae41034cf7a857d6d393e973ff"
         ],
@@ -4388,6 +4556,10 @@
         "InitialTop": 2801.77095924856,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB9F9E1"
       },
       {
@@ -4397,6 +4569,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "8689790c378d4d40a9f7b24d6ee5e439"
         ],
@@ -4410,6 +4584,10 @@
         "InitialTop": 2839.155642902203,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB9F9E1"
       },
       {
@@ -4419,6 +4597,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "7c880d19f49344728b187a174aad1485"
         ],
@@ -4432,6 +4612,10 @@
         "InitialTop": 3057.5579488222966,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB9F9E1"
       },
       {
@@ -4441,6 +4625,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "099d49a6eb0d46f1bf6ba6535698a290"
         ],
@@ -4454,6 +4640,10 @@
         "InitialTop": 4022.2153368692575,
         "InitialHeight": 145.00000000000045,
         "TextblockHeight": 92.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB9F9E1"
       },
       {
@@ -4463,6 +4653,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "466a8cec03e3445f995a53efeafb65f9"
         ],
@@ -4476,6 +4668,10 @@
         "InitialTop": 3426.5615004333213,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFFFB8D8"
       },
       {
@@ -4485,6 +4681,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "8ceabbbf13cb4d4a887e6794642cf45e"
         ],
@@ -4498,6 +4696,10 @@
         "InitialTop": 2749.0474646546973,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFFFC999"
       },
       {
@@ -4507,6 +4709,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "094cf1f06e7f4e09a243c2d98cd3537b"
         ],
@@ -4520,6 +4724,10 @@
         "InitialTop": 2621.5919822702026,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFA4E1FF"
       },
       {
@@ -4529,6 +4737,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "8d13406595a6436390dfe1c1055537d6",
           "884693a20f824b99b999a4e8ba213c21"
@@ -4537,12 +4747,16 @@
         "Left": 8623.176311964015,
         "Top": 2457.8493788593055,
         "Width": 674.3858466876427,
-        "Height": 445.56059208743136,
+        "Height": 443.56059208743136,
         "FontSize": 36.0,
         "GroupStyleId": "07655dc1-2d65-4fed-8d6a-37235d3e3a8d",
         "InitialTop": 2530.8493788593055,
         "InitialHeight": 355.56059208743136,
         "TextblockHeight": 63.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFFFC999"
       },
       {
@@ -4552,6 +4766,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "e106f4ccc2e34aa18741be56cbaee9cd"
         ],
@@ -4565,6 +4781,10 @@
         "InitialTop": 2558.4219246519965,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFFFC999"
       },
       {
@@ -4574,6 +4794,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "ff8a505c1f374455adf33f32ea73d75a"
         ],
@@ -4581,12 +4803,16 @@
         "Left": 2527.966224992412,
         "Top": 2294.5928514215716,
         "Width": 297.0,
-        "Height": 371.0,
+        "Height": 365.0,
         "FontSize": 36.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
         "InitialTop": 2367.5928514215716,
         "InitialHeight": 145.0,
         "TextblockHeight": 63.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFA4E1FF"
       },
       {
@@ -4596,6 +4822,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "a2ec0d953eef4c86bf732b3bac769437"
         ],
@@ -4609,6 +4837,10 @@
         "InitialTop": 2396.7737137252066,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFA4E1FF"
       },
       {
@@ -4618,6 +4850,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "34bb581fedd141609b0586083ba8bad5"
         ],
@@ -4631,6 +4865,10 @@
         "InitialTop": 5719.316876014108,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFA4E1FF"
       },
       {
@@ -4640,6 +4878,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "ec84f4c8feea479d8dcfa2101f8b1757",
           "690450cf8d914fb6a73a9cb04c8238f7"
@@ -4648,12 +4888,16 @@
         "Left": 3390.239660385553,
         "Top": 5615.586632184678,
         "Width": 641.1788482979719,
-        "Height": 385.1625232982278,
+        "Height": 379.1625232982278,
         "FontSize": 36.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
         "InitialTop": 5697.586632184678,
         "InitialHeight": 150.16252329822782,
         "TextblockHeight": 72.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFA4E1FF"
       },
       {
@@ -4663,6 +4907,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "10d09dd48c1d45af8ef18732c7dda4cc"
         ],
@@ -4676,6 +4922,10 @@
         "InitialTop": 6065.166031415201,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFFFC999"
       },
       {
@@ -4685,6 +4935,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "839afd304c6e40c8876c809822188b32"
         ],
@@ -4698,6 +4950,10 @@
         "InitialTop": 6182.760297598091,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB9F9E1"
       },
       {
@@ -4707,6 +4963,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "35956a635b264500984d0da3580379d4"
         ],
@@ -4720,6 +4978,10 @@
         "InitialTop": 6158.377074071222,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFFFB8D8"
       },
       {
@@ -4729,6 +4991,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "e44dd63cea4b4378975b8b353f266bb9",
           "44a50161b79c4255a3f7eaf38392beac",
@@ -4738,12 +5002,16 @@
         "Left": 3398.5215970382333,
         "Top": 6079.882873436116,
         "Width": 537.2732639301048,
-        "Height": 371.01016678095493,
+        "Height": 366.01016678095493,
         "FontSize": 36.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
         "InitialTop": 6152.882873436116,
         "InitialHeight": 297.82178584851954,
         "TextblockHeight": 63.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB9F9E1"
       },
       {
@@ -4753,6 +5021,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "562efd615d0f4710896a83c836535c64",
           "1793f07dffa0435794d226458a336340",
@@ -4771,6 +5041,10 @@
         "InitialTop": 6131.967598541426,
         "InitialHeight": 399.13612493745495,
         "TextblockHeight": 63.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFFFB8D8"
       },
       {
@@ -4780,6 +5054,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "b2660d4f8bd1434d8203108456c7840c",
           "8fc4ef904b6d41a3bc198cf9e4ff97d8",
@@ -4795,6 +5071,10 @@
         "InitialTop": 6037.375098135352,
         "InitialHeight": 478.85818290987027,
         "TextblockHeight": 63.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFFFC999"
       },
       {
@@ -4804,6 +5084,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "d6ecf5e85b2848f286af8f671aa31d9f",
           "6df0f9e569ad4b44acd9139afc1aff4a",
@@ -4824,6 +5106,10 @@
         "InitialTop": -395.4713367548075,
         "InitialHeight": 518.6623795843702,
         "TextblockHeight": 63.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB5B5B5"
       },
       {
@@ -4833,6 +5119,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "1631cc2fdc2a4fa6b223312c98429edf"
         ],
@@ -4846,6 +5134,10 @@
         "InitialTop": 209.3682398964949,
         "InitialHeight": 145.0,
         "TextblockHeight": 86.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFA4E1FF"
       },
       {
@@ -4855,6 +5147,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "23b2770851e84c80b4f2ea0f44d751d5"
         ],
@@ -4868,6 +5162,10 @@
         "InitialTop": 406.8982410962457,
         "InitialHeight": 145.00000000000006,
         "TextblockHeight": 63.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB5B5B5"
       },
       {
@@ -4877,6 +5175,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "e4fdbce9cbab4db08736bf9381de03c8"
         ],
@@ -4890,6 +5190,10 @@
         "InitialTop": 7.756888872766183,
         "InitialHeight": 145.0,
         "TextblockHeight": 72.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFFFC999"
       },
       {
@@ -4899,6 +5203,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "c79a36c7053942ee8ba7cab9bcf93a26"
         ],
@@ -4912,6 +5218,10 @@
         "InitialTop": -368.4074220024506,
         "InitialHeight": 145.0,
         "TextblockHeight": 86.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFFFB8D8"
       },
       {
@@ -4921,6 +5231,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "48510fcf004d4f8e8075bd167782f9a0"
         ],
@@ -4934,6 +5246,10 @@
         "InitialTop": -180.18062146324223,
         "InitialHeight": 145.0,
         "TextblockHeight": 63.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB9F9E1"
       },
       {
@@ -4943,8 +5259,11 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "9720d963938746abb3aa701597f8ef5a",
+          "f6cdcb741d604b9bb99d934405330cc7",
           "e564442e3f11457fa9fc48ce16e81be4",
           "2e5ac5c674784612bb63e27846ce097b",
           "f4b1690f92d8435987bcb6cf4c17b439",
@@ -4961,19 +5280,22 @@
           "db48ecda86834c68bb0e6553d7e80236",
           "99f12c669a17459ca456b37cd92af6fd",
           "6c69c997e97e4e54ae07d871bb8902ef",
-          "c5a18186e68d4fe1b13efe857df27c55",
-          "f6cdcb741d604b9bb99d934405330cc7"
+          "c5a18186e68d4fe1b13efe857df27c55"
         ],
         "HasNestedGroups": true,
         "Left": 885.0931232080977,
         "Top": -469.1713009670425,
         "Width": 6780.021475955994,
-        "Height": 1774.0302546782261,
+        "Height": 1768.0302546782261,
         "FontSize": 36.0,
         "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
         "InitialTop": -396.1713009670425,
         "InitialHeight": 1483.3535542931709,
         "TextblockHeight": 63.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB5B5B5"
       },
       {
@@ -4983,6 +5305,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "4b3fe08c16754910864933a52563d847",
           "ed993b30fa464d7aa7f67d4cc8517818",
@@ -5001,6 +5325,10 @@
         "InitialTop": 104.6987119893613,
         "InitialHeight": 605.2059106790953,
         "TextblockHeight": 72.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFFFB8D8"
       },
       {
@@ -5010,7 +5338,11 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
+          "3dddd26295384e9fa2f04f3cf32da2a1",
+          "659cc1f62a3049f28a5f37b9fc4fa89c",
           "e9b2be598f1144c89f89b46bf75cbab7",
           "fd5bb39349724d7ab97ea7ae7ce4543d",
           "a44c2e1b93f2465bb67e1327a409eaf8",
@@ -5029,20 +5361,22 @@
           "c37c09d746b840138951472163098fdb",
           "ed6bb7fcf0fb4e26b64276c70c157e04",
           "691e3d7b9ca043ca87737d332d16ad4e",
-          "a8ec6d4d9f0e472c9b55bd7c2d6c43fe",
-          "3dddd26295384e9fa2f04f3cf32da2a1",
-          "659cc1f62a3049f28a5f37b9fc4fa89c"
+          "a8ec6d4d9f0e472c9b55bd7c2d6c43fe"
         ],
         "HasNestedGroups": true,
         "Left": 886.2573120681936,
         "Top": 2221.5928514215716,
         "Width": 8421.304846583464,
-        "Height": 2411.110929229492,
+        "Height": 2408.110929229492,
         "FontSize": 36.0,
         "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
         "InitialTop": 2294.5928514215716,
         "InitialHeight": 2276.2385605528457,
         "TextblockHeight": 63.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB5B5B5"
       },
       {
@@ -5052,6 +5386,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "887abfaf661448ab86d057531a8684cb",
           "7138b0a590714397954835fb537203f3",
@@ -5072,6 +5408,10 @@
         "InitialTop": 3473.867839433516,
         "InitialHeight": 1142.7450411895466,
         "TextblockHeight": 144.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFFFB8D8"
       },
       {
@@ -5081,6 +5421,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [
           "3cff7aa9de13428ea2587eb2ada9faff",
           "e94ff2c64ea54d6197d22f3d3f61214e",
@@ -5101,6 +5443,10 @@
         "InitialTop": 5615.586632184678,
         "InitialHeight": 878.517091294203,
         "TextblockHeight": 63.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB5B5B5"
       },
       {
@@ -5110,6 +5456,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 905.0931232080977,
@@ -5121,6 +5469,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5130,6 +5482,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 6678.52380924283,
@@ -5141,6 +5495,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5150,6 +5508,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 3280.2459447298434,
@@ -5161,6 +5521,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5170,6 +5534,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 2557.38395907021,
@@ -5181,6 +5547,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676",
         "PinnedNode": "9a0dcc8321954ca2a62b03ee1b802262"
       },
@@ -5191,6 +5561,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 2424.6008169261604,
@@ -5202,6 +5574,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5211,6 +5587,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 1995.77264608208,
@@ -5222,6 +5600,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676",
         "PinnedNode": "4b3fe08c16754910864933a52563d847"
       },
@@ -5232,6 +5614,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 906.2573120681936,
@@ -5243,6 +5627,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5252,6 +5640,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 3046.671823346267,
@@ -5263,6 +5653,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5272,6 +5666,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 3694.0671731078164,
@@ -5283,6 +5679,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676",
         "PinnedNode": "4e5aee3d04ab4239ad85d38f721507e8"
       },
@@ -5293,6 +5693,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 4783.663944026293,
@@ -5304,6 +5706,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5313,6 +5719,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 5638.11972031032,
@@ -5324,6 +5732,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676",
         "PinnedNode": "f9cce61d8e174c5098842634bc0f448f"
       },
@@ -5334,6 +5746,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 5958.15215067707,
@@ -5345,6 +5759,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5354,6 +5772,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 4668.806584269295,
@@ -5365,6 +5785,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5374,6 +5798,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 4668.806584269295,
@@ -5385,6 +5811,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5394,6 +5824,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 4100.867550859867,
@@ -5405,6 +5837,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5414,6 +5850,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 4677.617375083789,
@@ -5425,6 +5863,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5434,6 +5876,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 2127.838008945975,
@@ -5445,6 +5889,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5454,6 +5902,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 4160.139285131741,
@@ -5465,6 +5915,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5474,6 +5928,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 5971.549380767956,
@@ -5485,6 +5941,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5494,6 +5954,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 4224.0452406067625,
@@ -5505,6 +5967,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5514,6 +5980,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 2956.7959211098746,
@@ -5525,6 +5993,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5534,6 +6006,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 7653.366492052499,
@@ -5545,6 +6019,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5554,6 +6032,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 8101.696043286644,
@@ -5565,6 +6045,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5574,6 +6058,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 8548.57436848165,
@@ -5585,6 +6071,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5594,6 +6084,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 2450.4078005712827,
@@ -5605,6 +6097,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5614,6 +6110,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 3299.5857186872454,
@@ -5625,6 +6123,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5634,6 +6136,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 2052.224016316847,
@@ -5645,6 +6149,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5654,6 +6162,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 4167.693711648443,
@@ -5665,6 +6175,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5674,6 +6188,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 3299.5857186872454,
@@ -5685,6 +6201,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5694,6 +6214,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 943.2556672159099,
@@ -5705,6 +6227,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5714,6 +6240,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": -144.88739111652865,
@@ -5725,6 +6253,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5734,6 +6266,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 160.33935988919472,
@@ -5745,6 +6279,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5754,6 +6292,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 160.33935988919472,
@@ -5765,6 +6305,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5774,6 +6318,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": -144.88739111652865,
@@ -5785,6 +6331,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5794,6 +6344,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 161.27098969213148,
@@ -5805,6 +6357,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5814,6 +6370,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": -143.9557613135919,
@@ -5825,6 +6383,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5834,6 +6396,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 161.27098969213148,
@@ -5845,6 +6409,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5854,6 +6422,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": -143.9557613135919,
@@ -5865,6 +6435,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5874,6 +6448,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 515.3823740771336,
@@ -5885,6 +6461,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5894,6 +6474,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 515.3823740771336,
@@ -5905,6 +6487,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5914,6 +6500,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 512.9649763933808,
@@ -5925,6 +6513,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5934,6 +6526,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 513.1417055169732,
@@ -5945,6 +6539,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5954,6 +6552,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 522.9819793812258,
@@ -5965,6 +6565,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -5974,9 +6578,11 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": 6789.8071161198895,
+        "Left": 6814.3071161198895,
         "Top": 33.01383175597391,
         "Width": 0.0,
         "Height": 0.0,
@@ -5985,6 +6591,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676",
         "PinnedNode": "d67a19759462481d8bf2a46e623f1389"
       },
@@ -5995,6 +6605,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 1698.1317618718115,
@@ -6006,6 +6618,10 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       },
       {
@@ -6015,6 +6631,8 @@
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 1696.7146835440292,
@@ -6026,11 +6644,15 @@
         "InitialTop": 0.0,
         "InitialHeight": 0.0,
         "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFC1D676"
       }
     ],
-    "X": 51.61917494846671,
-    "Y": -220.58294795752965,
-    "Zoom": 0.16196144449891925
+    "X": 318.31265798789235,
+    "Y": 124.31345710772163,
+    "Zoom": 0.09206401543549131
   }
 }
