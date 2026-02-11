@@ -534,32 +534,78 @@ namespace Dynamo.Wpf.UI.GuidedTour
         {
             if (dynamoView == null || dynamoViewModel == null) return;
 
-            var tabsToClose = new List<TabItem>();
+            // Close sidebar extension tabs
+            var extensionsToClose = dynamoViewModel.SideBarTabItems
+                .OfType<TabItem>()
+                .Where(t => t.Tag is IViewExtension)
+                .Select(t => (IViewExtension)t.Tag)
+                .GroupBy(e => e.UniqueId)
+                .Select(g => g.First())
+                .ToList();
 
-            foreach (var item in dynamoViewModel.SideBarTabItems.OfType<TabItem>())
+            foreach (var viewExtension in extensionsToClose)
             {
-                if (item.Tag is IViewExtension)
+                try
                 {
-                    tabsToClose.Add(item);
+                    dynamoView.CloseExtensionControl(viewExtension);
+                }
+                catch (Exception ex)
+                {
+                    dynamoViewModel.Model.Logger.Log(
+                        $"Error closing view extension {viewExtension.Name}: {ex.Message}");
                 }
             }
 
-            // Close each view extension tab
-            foreach (var tab in tabsToClose)
+            // Close owner-owned extension windows (not docked in sidebar)
+            if (dynamoView?.viewExtensionManager == null) return;
+
+            var extensionAssemblies = dynamoView.viewExtensionManager.ViewExtensions
+                .Where(e => e != null)
+                .Select(e => e.GetType().Assembly)
+                .ToHashSet();
+
+            if (!extensionAssemblies.Any()) return;
+
+            var ownerOwnedWindows = Application.Current != null
+                ? Application.Current.Windows.OfType<Window>()
+                : dynamoView.OwnedWindows.Cast<Window>();
+
+            var windowsToClose = ownerOwnedWindows
+                 .Where(window =>
+                     window != null &&
+                     window != dynamoView &&
+                     window.Owner == dynamoView &&
+                     IsExtensionWindow(window, extensionAssemblies))
+                 .ToList();
+
+            foreach (var window in windowsToClose)
             {
-                var viewExtension = tab.Tag as IViewExtension;
-                if (viewExtension != null)
+                try
                 {
-                    try
-                    {
-                        dynamoView.CloseExtensionControl(viewExtension);
-                    }
-                    catch (Exception ex)
-                    {
-                        dynamoViewModel.Model.Logger.Log($"Error closing view extension {viewExtension.Name}: {ex}");
-                    }
+                    window.Close();
+                }
+                catch (Exception ex)
+                {
+                    dynamoViewModel.Model.Logger.Log(
+                        $"Error closing extension-owned window '{window.Title}': {ex.Message}");
                 }
             }
+        }
+
+        private static bool IsExtensionWindow(Window window, HashSet<Assembly> extensionAssemblies)
+        {
+            if (window == null || extensionAssemblies == null || extensionAssemblies.Count == 0) return false;
+
+            bool IsFromExtensionAssembly(object obj) =>
+                obj != null && extensionAssemblies.Contains(obj.GetType().Assembly);
+
+            if (IsFromExtensionAssembly(window)) return true;
+            if (IsFromExtensionAssembly(window.Tag)) return true;
+            if (IsFromExtensionAssembly(window.DataContext)) return true;
+            if (IsFromExtensionAssembly(window.Content)) return true;
+            if (window.Content is FrameworkElement contentElement && IsFromExtensionAssembly(contentElement.DataContext)) return true;
+
+            return false;
         }
     }
 }

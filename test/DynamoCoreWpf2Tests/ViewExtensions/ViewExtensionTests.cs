@@ -9,6 +9,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.UI.GuidedTour;
+using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
@@ -427,6 +428,40 @@ namespace DynamoCoreWpfTests
             var finalTabsOpen = ViewModel.SideBarTabItems.OfType<TabItem>()
                 .Count(tab => tab.Tag is IViewExtension);
             Assert.LessOrEqual(finalTabsOpen, initialTabsOpen);
+        }
+
+        [Test]
+        public void CloseAllViewExtensions_ClosesOwnerOwnedExtensionWindows()
+        {
+            var extension = new GuidedTourSidePanelTestViewExtension();
+            View.viewExtensionManager.Add(extension);
+
+            Window ownerOwnedWindow = null;
+            try
+            {
+                ownerOwnedWindow = new Window
+                {
+                    Owner = View,
+                    Tag = extension,
+                    Title = "OwnerOwnedExtensionWindow",
+                    Content = new TextBlock { Text = "OwnerOwnedExtensionWindow" }
+                };
+                ownerOwnedWindow.Show();
+                Assert.IsTrue(ownerOwnedWindow.IsVisible);
+
+                var guidesManager = new GuidesManager(View, ViewModel);
+                Assert.DoesNotThrow(() => guidesManager.CloseAllViewExtensions(View));
+                DispatcherUtil.DoEvents();
+
+                Assert.IsFalse(ownerOwnedWindow.IsVisible);
+            }
+            finally
+            {
+                if (ownerOwnedWindow != null && ownerOwnedWindow.IsVisible)
+                {
+                    ownerOwnedWindow.Close();
+                }
+            }
         }
     }
 
