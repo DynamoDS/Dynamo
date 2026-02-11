@@ -66,9 +66,10 @@ namespace Dynamo.ViewModels
         private const string WatchNodeName = "Watch";
         private bool nodeHoveringState;
         private bool isHidden;
+        private const int DocumentBrowserRefreshDebounceMs = 300;
         private Wpf.Utilities.ActionDebouncer delayDocumentBrowserRefresh
           = new Wpf.Utilities.ActionDebouncer(null);
-        private int delayDocumentBrowserRefreshTime = 300;
+        private int delayDocumentBrowserRefreshTime = DocumentBrowserRefreshDebounceMs;
         #endregion
 
         #region public members
@@ -1351,12 +1352,11 @@ namespace Dynamo.ViewModels
             if (DynamoViewModel.PreferenceSettings.IsAutoSyncDocumentBrowser)
             {
                 TabItem tabitem = DynamoViewModel.SideBarTabItems.OfType<TabItem>()
-                    .SingleOrDefault(n => n.Content.GetType().Name.Equals("DocumentationBrowserView", StringComparison.OrdinalIgnoreCase));
+                    .SingleOrDefault(n => n.Content is Dynamo.Views.DocumentationBrowserView);
                 if (tabitem != null &&
-                    RequestShowNodeHelp != null &&
                     DynamoSelection.Instance.Selection.Count == 1)
                 {
-                    RequestShowNodeHelp(this, new NodeDialogEventArgs(this.nodeLogic));
+                    RequestShowNodeHelp?.Invoke(this, new NodeDialogEventArgs(this.nodeLogic));
                 }
             }
         }
