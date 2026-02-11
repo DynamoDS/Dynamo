@@ -127,8 +127,8 @@
     <value>サイドバイサイドとインラインのどちらかのビューで差分を表示します。</value>
   </data>
   <data name="IronPythonDialogDescription" xml:space="preserve">
-    <value>Dynamo のエンジンは、旧来の IronPython2 (Python 2)から新しい CPython3 (Python 3)に移行されました。
-IronPython エンジンも 1 つのパッケージとして Dynamo Package Manager から引き続きご利用いただけますが、サポートされるのは CPython3 のみとなります。</value>
+    <value>Dynamo のエンジンは、旧式の IronPython2 から新しい PythonNet3 に移行されました。
+IronPython エンジンも 1 つのパッケージとして Dynamo Package Manager から引き続きご利用いただけますが、サポートされるのは PythonNet3 のみとなります。</value>
   </data>
   <data name="IronPythonDialogSummary" xml:space="preserve">
     <value>このグラフには、古い Python エンジンを参照するノードが含まれています。</value>
@@ -140,10 +140,10 @@ IronPython エンジンも 1 つのパッケージとして Dynamo Package Manag
     <value>次回からこのダイアログを表示しない</value>
   </data>
   <data name="IronPythonNotificationDetailedMessage" xml:space="preserve">
-    <value>現在このグラフには、廃止された旧式の IronPython エンジンを使用する Python ノードが含まれています。このノードを更新し、新しい CPython 3.7 エンジンを使用することをご検討ください。</value>
+    <value>現在このグラフには、廃止された旧式の IronPython エンジンを使用する Python ノードが含まれています。このノードを更新し、新しい PythonNet3 エンジンを使用することをご検討ください。</value>
   </data>
   <data name="IronPythonNotificationShortMessage" xml:space="preserve">
-    <value>現在このグラフには、廃止された旧式の IronPython2 (Python 2)エンジンを使用したノードが含まれています。新しい CPython3 (Python 3)が実装されており、Python エディタ内で利用可能です。</value>
+    <value>現在このグラフには、廃止された旧式の IronPython2 エンジンを使用したノードが含まれています。新しい PythonNet3 が実装されており、Python エディタ内で利用可能です。</value>
   </data>
   <data name="MigrationAssistantDisclaimerContinueButtonContent" xml:space="preserve">
     <value>続行</value>
@@ -158,7 +158,7 @@ IronPython エンジンも 1 つのパッケージとして Dynamo Package Manag
     <value>Python コードを変更しようとしています</value>
   </data>
   <data name="MigrationAssistantDisclaimerMessage" xml:space="preserve">
-    <value>マイグレーション アシスタントを使用すると、Python 2 から Python 3 にスクリプトを更新できます。
+    <value>マイグレーション アシスタントを使用すると、IronPython2 から PythonNet3 にスクリプトを更新できます。
 [続行]をクリックすると、マイグレーション アシスタントによって推奨されたソース コードへの構文変更の適用に同意したものとみなされます。マイグレーション アシスタントはオープン ソース Dynamo のコンポーネントであり、Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0)の条件の下でユーザにライセンスされます。Apache License 2.0、Dynamo、およびマイグレーション アシスタントは「現状有姿」で提供されます。</value>
   </data>
   <data name="MigrationAssistantDisclaimerWindowTitle" xml:space="preserve">
@@ -168,7 +168,7 @@ IronPython エンジンも 1 つのパッケージとして Dynamo Package Manag
     <value>ここに表示するものはありません</value>
   </data>
   <data name="MigrationAssistantNoChangesStateMessage" xml:space="preserve">
-    <value>Python 3 エンジンを使用してコードを実行する準備が整いました。[適用]をクリックすると、Python 3 エンジンに切り替わります。</value>
+    <value>PythonNet3 エンジンを使用してコードを実行する準備が整いました。[適用]をクリックすると、PythonNet3 エンジンに切り替わります。</value>
   </data>
   <data name="MigrationAssistantErrorStateHeader" xml:space="preserve">
     <value>コードの中にエラーがあります!</value>
@@ -200,6 +200,9 @@ IronPython エンジンも 1 つのパッケージとして Dynamo Package Manag
   <data name="PythonMigrationBackupFileCreatedMessage" xml:space="preserve">
     <value>Python コードのマイグレーションを適用する前の、このグラフのバックアップが、設定済みのバックアップ場所 {0} に保存されました。</value>
   </data>
+  <data name="CPythonMigrationBackupFileCreatedMessage" xml:space="preserve">
+    <value>更新する前にバックアップ ファイルが保存されました </value>
+  </data>
   <data name="RejectButtonTooltip" xml:space="preserve">
     <value>現在のコードの変更を拒否します。</value>
   </data>
@@ -220,5 +223,17 @@ IronPython エンジンも 1 つのパッケージとして Dynamo Package Manag
   </data>
   <data name="SwitchViewButton" xml:space="preserve">
     <value>ビューを切り替え</value>
+  </data>
+  <data name="CPython3NotificationDetailedMessage" xml:space="preserve">
+    <value>現在このグラフには、廃止された旧式の CPython エンジンを使用する Python ノードが含まれています。このノードを更新し、新しい PythonNet3 エンジンを使用することを検討してください。</value>
+  </data>
+  <data name="CPython3NotificationShortMessage" xml:space="preserve">
+    <value>現在このグラフには、廃止された旧式の CPython3 エンジンを使用したノードが含まれています。新しい PythonNet3 が実装されており、Python エディタ内で利用可能です。</value>
+  </data>
+  <data name="PythonMigrationBackupFileCreatedHeader" xml:space="preserve">
+    <value>バックアップ グラフが保存されました</value>
+  </data>
+  <data name="CPythonUpgradeToastMessage" xml:space="preserve">
+    <value>{0} 個の CPython ノードと {1} 個のカスタム ノード定義は、Dynamo 4.0 で動作するように PythonNet3 に自動的に変換されました。CPython はサポートされなくなりました。</value>
   </data>
 </root>

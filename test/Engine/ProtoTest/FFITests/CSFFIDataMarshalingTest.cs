@@ -796,10 +796,10 @@ d2 = TestData.SumList([1, 2, [3, 4], [5, [6, [7]]]]);
                 arr1 = TestData.JoinList([d, [1,2,3]]);
                 arr2 = TestData.JoinList([d, d, d]);
 
-                type1 = ToString(arr1[0]);
+                type1 = __ToStringFromObject(arr1[0]);
                 rank1 = List.Rank(arr1);
 
-                type2 = ToString(arr2[0]);
+                type2 = __ToStringFromObject(arr2[0]);
                 rank2 = List.Rank(arr2);
             ";
             ValidationData[] data = { 

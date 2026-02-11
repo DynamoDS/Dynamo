@@ -866,18 +866,6 @@ namespace Dynamo.Tests
 
         #endregion
 
-        #region Test obsolete string functions ToString and String.FromObject
-        [Test]
-        public void TestObsoleteStringFunctions()
-        {
-            string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestObsoleteStringFunctions.dyn");
-
-            RunModel(testFilePath);
-            AssertPreviewValue("88ecf13c-40dc-42c2-89b3-375c2773f5b1", 42);
-            AssertPreviewValue("257aaba5-5e11-4646-a25f-6cd17eb8d200", 42);
-        }
-        #endregion
-
         #region Test localized string
         [Test]
         public void TestLocalizedString()

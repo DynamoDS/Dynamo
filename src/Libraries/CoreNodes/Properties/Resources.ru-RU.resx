@@ -156,9 +156,6 @@
   <data name="Exception_Serialize_Unsupported_Type" xml:space="preserve">
     <value>Не удается сохранить данные типа {0}.</value>
   </data>
-  <data name="ExportToCSVObsolete" xml:space="preserve">
-    <value>Используйте узел Data.ExportCSV</value>
-  </data>
   <data name="FactorialNegativeInt" xml:space="preserve">
     <value>Входное значение Math.Factorial не может быть отрицательным.</value>
   </data>
@@ -170,9 +167,6 @@
   </data>
   <data name="FindPointsWithinRadiusSearchRadiusMessage" xml:space="preserve">
     <value>Радиус поиска не может быть равен нулю.</value>
-  </data>
-  <data name="FromObjectObsolete" xml:space="preserve">
-    <value>Этот узел является устаревшим, используйте "String from Object"</value>
   </data>
   <data name="IntegerOverflow" xml:space="preserve">
     <value>Операция привела к переполнению целого числа. Результат может быть непредсказуемым.</value>
@@ -186,9 +180,6 @@
   <data name="InvalidKeysLenghtErrorMessage" xml:space="preserve">
     <value>Количество элементов не соответствует количеству ключей. href=InvalidKeysLenghtErrorMessage.html</value>
   </data>
-  <data name="LoadImageFromPathObsolete" xml:space="preserve">
-    <value>Используйте узлы File.FromPath -&gt;  Image.ReadFromFile</value>
-  </data>
   <data name="MissingPythonEngine" xml:space="preserve">
     <value>Не удалось найти выбранный механизм Python</value>
   </data>
@@ -201,12 +192,6 @@
   <data name="QuadtreeConstructionNullUVSetMessage" xml:space="preserve">
     <value>Квадрадерево не может быть построено на основе пустого набора UV.</value>
   </data>
-  <data name="ReadImageObsolete" xml:space="preserve">
-    <value>Используйте узлы File.FromPath -&gt;  Image.ReadFromFile -&gt;  Image.Pixels</value>
-  </data>
-  <data name="ReadTextObsolete" xml:space="preserve">
-    <value>Используйте узлы File.FromPath -&gt;  File.ReadText.</value>
-  </data>
   <data name="StringRemoveCountOutOfRangeMessage" xml:space="preserve">
     <value>Количество выходит за пределы диапазона!</value>
   </data>
@@ -218,9 +203,6 @@
   </data>
   <data name="WebRequestNullUrlMessage" xml:space="preserve">
     <value>URL-адрес не может быть пустым.</value>
-  </data>
-  <data name="WriteImageObsolete" xml:space="preserve">
-    <value>Используйте узел Image.WriteToFile</value>
   </data>
   <data name="DefineDataUnexpectedInputExceptionMessage" xml:space="preserve">
     <value>Для этого узла ожидался ввод {0}, но получен ввод {1}. Введите ожидаемое входное значение или выберите новый тип в раскрывающемся меню узла.</value>

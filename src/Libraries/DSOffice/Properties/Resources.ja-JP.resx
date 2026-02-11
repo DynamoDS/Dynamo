@@ -120,9 +120,6 @@
   <data name="ExcelInteropObsoleteNode" xml:space="preserve">
     <value>このノードは廃止され、Dynamo の将来のバージョンで削除される予定です。対応する OpenXML ベースのノードを使用してください。</value>
   </data>
-  <data name="ReadObsolete" xml:space="preserve">
-    <value>File.FromPath ノードの代わりに Excel.ReadFromFile ノードを使用してください。</value>
-  </data>
   <data name="StreamWriterNotFoundException" xml:space="preserve">
     <value>ファイルまたはフォルダが見つかりません</value>
   </data>

@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)Config/CS_SDK.props" Condition="Exists('$(SolutionDir)Config/CS_SDK.props')" />
+  </ImportGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PlatformTarget>x64</PlatformTarget>
+    <RootNamespace>GCBenchmark</RootNamespace>
+    <AssemblyName>GCBenchmark</AssemblyName>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <OutputPath>bin\$(Configuration)</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Engine\ProtoCore\ProtoCore.csproj" />
+    <ProjectReference Include="..\..\..\src\Engine\ProtoAssociative\ProtoAssociative.csproj" />
+    <ProjectReference Include="..\..\..\src\Engine\ProtoImperative\ProtoImperative.csproj" />
+    <ProjectReference Include="..\..\..\src\Engine\ProtoScript\ProtoScript.csproj" />
+    <ProjectReference Include="..\..\..\src\DynamoUtilities\DynamoUtilities.csproj" />
+    <ProjectReference Include="..\..\..\test\Engine\FFITarget\FFITarget.csproj" />
+    <ProjectReference Include="..\..\..\test\Engine\ProtoTestFx\ProtoTestFx.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommandLineParser" Version="2.9.1" />
+  </ItemGroup>
+</Project>

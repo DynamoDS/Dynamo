@@ -80,7 +80,9 @@ namespace Dynamo.Events
         /// <summary>
         /// An event raised when workspace EnableLegacyPolyCurveBehavior setting is changed.
         /// </summary>
-        // TODO: Remove in Dynamo 4.0.
+        // TODO: Remove in Dynamo 5.0 - The default behavior has been changed to non-legacy in 4.0
+        // and the deprecation timeline has been extended until 5.0 to allow users to continue to use the legacy option if they so choose.
+        // The option to enable legacy behavior will be removed in 5.0.
         internal static event WorkspaceSettingsChangedEventHandler WorkspaceEnableLegacyPolyCurveSettingChanged;
         internal static void OnWorkspaceSettingsChanged(bool enableLegacyPolyCurveBehavior)
         {
@@ -121,7 +123,9 @@ namespace Dynamo.Events
         /// This reflects whether legacy (pre-3.0) PolyCurve behavior is selected either in preference settings or in the workspace.
         /// A workspace setting if exists, overrides the default preference setting. 
         /// </summary>
-        // TODO: Remove in Dynamo 4.0.
+        // TODO: Remove in Dynamo 5.0 - The default behavior has been changed to non-legacy in 4.0
+        // // and the deprecation timeline has been extended until 5.0 to allow users to continue to use the legacy option if they so choose.
+        // // The option to enable legacy behavior will be removed in 5.0.
         internal bool EnableLegacyPolyCurveBehavior { get; private set; }
 
         public WorkspacesSettingsChangedEventArgs(double scaleFactor)
@@ -129,7 +133,7 @@ namespace Dynamo.Events
             ScaleFactor = scaleFactor;
         }
 
-        // TODO: Remove in Dynamo 4.0.
+        // TODO: Remove in Dynamo 5.0.
         internal WorkspacesSettingsChangedEventArgs(bool enableLegacyPolyCurveBehavior)
         {
             EnableLegacyPolyCurveBehavior = enableLegacyPolyCurveBehavior;

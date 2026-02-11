@@ -150,4 +150,10 @@
   <data name="NotificationsCenterTitle" xml:space="preserve">
     <value>Benachrichtigungen</value>
   </data>
+  <data name="UnsafePathDetectedDetail" xml:space="preserve">
+    <value>An vertrauenswürdigen Speicherorten wurde ein unsicherer Pfad gefunden:</value>
+  </data>
+  <data name="UnsafePathDetectedTitle" xml:space="preserve">
+    <value>Unsicherer Pfad gefunden</value>
+  </data>
 </root>

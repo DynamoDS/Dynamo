@@ -117,31 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ByPointsAndValueObsolete" xml:space="preserve">
-    <value>Použijte uzly bodů a čísel jako přímé vstupy k uzlům, u kterých byly dříve použity uzly PointData.</value>
-  </data>
-  <data name="BySurfacePointObsolete" xml:space="preserve">
-    <value>Použijte uzly povrchů a atributů UV jako přímé vstupy k uzlům, u kterých byly dříve použity uzly SurfaceData.</value>
-  </data>
-  <data name="BySurfacePointsAndValues" xml:space="preserve">
-    <value>Použijte uzly povrchů, atributů UV a čísel jako přímé vstupy k uzlům, u kterých byly dříve použity uzly SurfaceData.</value>
-  </data>
-  <data name="SurfaceObsolete" xml:space="preserve">
-    <value>Použijte povrch dostupný na jiném místě v grafu.</value>
-  </data>
-  <data name="ValueLocationObsolete" xml:space="preserve">
-    <value>Použijte body dostupné na jiném místě v grafu.</value>
-  </data>
-  <data name="ValueLocationsObsolete" xml:space="preserve">
-    <value>Použijte umístění atributů UV dostupná na jiném místě v grafu.</value>
-  </data>
-  <data name="ValuesObsolete" xml:space="preserve">
-    <value>Použijte hodnoty dodané v rámci uzlu, pomocí kterého se provede analýza.</value>
-  </data>
-  <data name="ValueSurfaceObsolete" xml:space="preserve">
-    <value>Použijte hodnoty dodané v rámci uzlu, pomocí kterého se provede analýza.</value>
-  </data>
-  <data name="VectorValueObsolete" xml:space="preserve">
-    <value>Použijte uzly vektorů a čísel jako přímé vstupy k uzlům, u kterých byly dříve použity uzly VectorData.</value>
-  </data>
 </root>

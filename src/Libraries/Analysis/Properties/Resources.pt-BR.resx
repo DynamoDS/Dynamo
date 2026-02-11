@@ -117,31 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ByPointsAndValueObsolete" xml:space="preserve">
-    <value>Utilize os nós de pontos e número de nós como entradas diretas para os nós que utilizam anteriormente os nós PointData</value>
-  </data>
-  <data name="BySurfacePointObsolete" xml:space="preserve">
-    <value>Utilize os nós Superfície e UV como entradas diretas para os nós que utilizam anteriormente os nós SurfaceData</value>
-  </data>
-  <data name="BySurfacePointsAndValues" xml:space="preserve">
-    <value>Utilize os nós Superfície, UV e Número como entradas diretas para os nós que utilizam anteriormente os nós SurfaceData</value>
-  </data>
-  <data name="SurfaceObsolete" xml:space="preserve">
-    <value>Utilize a superfície que estiver disponível em qualquer lugar em seu gráfico</value>
-  </data>
-  <data name="ValueLocationObsolete" xml:space="preserve">
-    <value>Utilize os pontos disponíveis em outro lugar em seu gráfico</value>
-  </data>
-  <data name="ValueLocationsObsolete" xml:space="preserve">
-    <value>Utilize as localizações de UV disponíveis em outro lugar em seu gráfico.</value>
-  </data>
-  <data name="ValuesObsolete" xml:space="preserve">
-    <value>Utilize os valores fornecidos pelo nó que conduz a análise.</value>
-  </data>
-  <data name="ValueSurfaceObsolete" xml:space="preserve">
-    <value>Utilize os valores fornecidos pelo nó que conduz a análise.</value>
-  </data>
-  <data name="VectorValueObsolete" xml:space="preserve">
-    <value>Utilize os nós de Vetor e o Número como entradas diretas para os nós que utilizam anteriormente os nós VectorData</value>
-  </data>
 </root>

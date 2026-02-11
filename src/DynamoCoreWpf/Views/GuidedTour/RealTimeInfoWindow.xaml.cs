@@ -3,6 +3,8 @@ using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Documents;
+using System.Windows.Media;
 
 namespace Dynamo.Wpf.Views.GuidedTour
 {
@@ -11,21 +13,12 @@ namespace Dynamo.Wpf.Views.GuidedTour
     /// </summary>
     public partial class RealTimeInfoWindow : Popup
     {
+        private Hyperlink fileLink;
 
         /// <summary>
         /// This property contains the text that will be shown in the popup and it can be updated on runtime.
         /// </summary>
         public string TextContent { get; set; }
-
-        /// <summary>
-        /// This property indicates if the Hyperlink will be shown in the RealTimeInfo window
-        /// </summary>
-        public bool ShowHyperlink { get; set; }
-
-        /// <summary>
-        /// This property indicates if the Header will be shown in the RealTimeInfo window
-        /// </summary>
-        public bool ShowHeader { get; set; }
 
         /// <summary>
         /// This property contains the text that will be shown in the Hyperlink
@@ -42,39 +35,21 @@ namespace Dynamo.Wpf.Views.GuidedTour
         /// </summary>
         public Uri HyperlinkUri { get; set; }
 
+        /// <summary>
+        /// This property contains the path that will be opened when the file link is clicked
+        /// </summary>
+        public Uri FileLinkUri { get; set; }
+
         public RealTimeInfoWindow()
         {
             InitializeComponent();
 
             DataContext = this;
-
-            GuideFlowEvents.GuidedTourFinish += GuideFlowEvents_GuidedTourFinish;
-            GuideFlowEvents.GuidedTourStart += GuideFlowEvents_GuidedTourStart;
         }
 
         private void CleanRealTimeInfoWindow()
         {
             IsOpen = false;
-            GuideFlowEvents.GuidedTourFinish -= GuideFlowEvents_GuidedTourFinish;
-            GuideFlowEvents.GuidedTourStart -= GuideFlowEvents_GuidedTourStart;
-        }
-
-        /// <summary>
-        /// This method remove the existing subscription to events and close the current RealTimeInfo window
-        /// </summary>
-        /// <param name="args"></param>
-        private void GuideFlowEvents_GuidedTourStart(GuidedTourStateEventArgs args)
-        {
-            CleanRealTimeInfoWindow();
-        }
-            
-        /// <summary>
-        /// When the Tour has finished we need to close the RealTimeInfo window and remove subscriptions to events
-        /// </summary>
-        /// <param name="args"></param>
-        private void GuideFlowEvents_GuidedTourFinish(GuidedTourStateEventArgs args)
-        {
-            CleanRealTimeInfoWindow();
         }
 
         /// <summary>
@@ -101,13 +76,58 @@ namespace Dynamo.Wpf.Views.GuidedTour
         }
         private void TextBlock_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-                BorderLine.Y2 = PopupGrid.ActualHeight /*+ ((TextBlock)sender).Margin.Bottom*/;
+            BorderLine.Y2 = PopupGrid.ActualHeight /*+ ((TextBlock)sender).Margin.Bottom*/;
         }
 
         private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
             e.Handled = true;
+        }
+
+        internal void SetToastMessage(string sentencePrefix, bool showFileLink, Uri fileUri)
+        {
+            MessageTextBlock.Inlines.Clear();
+            MessageTextBlock.Inlines.Add(new Run(sentencePrefix ?? string.Empty));
+
+            if (showFileLink && fileUri != null)
+            {
+                if (fileLink != null)
+                {
+                    fileLink.RequestNavigate -= Hyperlink_RequestNavigate;
+                }
+
+                fileLink = new Hyperlink(new Run(Dynamo.Wpf.Properties.Resources.ToastHyperlinkPathText))
+                {
+                    NavigateUri = fileUri
+                };
+
+                var brush = TryFindResource("TextBlockLinkForegroundColor") as Brush;
+                if (brush != null)
+                {
+                    fileLink.Foreground = brush;
+                }
+
+                fileLink.TextDecorations = null;
+
+                fileLink.RequestNavigate += Hyperlink_RequestNavigate;
+
+                MessageTextBlock.Inlines.Add(fileLink);
+                MessageTextBlock.Inlines.Add(new Run("."));
+            }
+        }
+
+        internal void UpdateVisualState()
+        {
+            HeaderTextBlock.Visibility =
+                string.IsNullOrWhiteSpace(HeaderContent)
+                ? Visibility.Collapsed
+                : Visibility.Visible;
+
+            HyperlinkTextBlock.Visibility =
+                string.IsNullOrWhiteSpace(HyperlinkText)
+                ? Visibility.Collapsed
+                : Visibility.Visible;
         }
     }
 }

@@ -127,8 +127,8 @@
     <value>Zmiana pomiędzy widokiem obok siebie i widokiem osadzonym.</value>
   </data>
   <data name="IronPythonDialogDescription" xml:space="preserve">
-    <value>W dodatku Dynamo wycofano używanie starego silnika IronPython2 (Python 2) na rzecz nowego silnika CPython3 (Python 3). 
-Silnik IronPython jest nadal dostępny jako pakiet w narzędziu Package Manager dodatku Dynamo, ale obsługiwany będzie tylko silnik CPython3.</value>
+    <value>W dodatku Dynamo wycofano używanie starego aparatu IronPython2 na rzecz nowego: PythonNet3. 
+Aparat IronPython jest nadal dostępny jako pakiet w Menedżerze pakietów dodatku Dynamo, ale obsługiwany będzie tylko aparat PythonNet3.</value>
   </data>
   <data name="IronPythonDialogSummary" xml:space="preserve">
     <value>Wykres zawiera węzły, które odnoszą się do przestarzałego silnika języka Python.</value>
@@ -140,10 +140,10 @@ Silnik IronPython jest nadal dostępny jako pakiet w narzędziu Package Manager 
     <value>Nie pokazuj ponownie.</value>
   </data>
   <data name="IronPythonNotificationDetailedMessage" xml:space="preserve">
-    <value>Ten wykres zawiera aktualnie węzły w języku Python korzystające ze starego silnika IronPython, który został wycofany. Rozważ zaktualizowanie tych węzłów, tak aby używały nowego silnika CPython 3.7.</value>
+    <value>Ten wykres zawiera aktualnie węzły w języku Python korzystające ze starego aparatu IronPython, który został wycofany. Rozważ zaktualizowanie tych węzłów, aby używały nowego aparatu PythonNet3.</value>
   </data>
   <data name="IronPythonNotificationShortMessage" xml:space="preserve">
-    <value>Ten wykres zawiera aktualnie węzły korzystające ze starego silnika IronPython2 (Python 2), który został wycofany. Zaimplementowano nowy silnik CPython3 (Python 3) i jest on dostępny w edytorze Python.</value>
+    <value>Ten wykres zawiera aktualnie węzły korzystające ze starego aparatu IronPython2, który został wycofany. Zaimplementowano nowy aparat PythonNet3, który jest dostępny w edytorze Python.</value>
   </data>
   <data name="MigrationAssistantDisclaimerContinueButtonContent" xml:space="preserve">
     <value>Kontynuuj</value>
@@ -158,8 +158,8 @@ Silnik IronPython jest nadal dostępny jako pakiet w narzędziu Package Manager 
     <value>Zamierzasz wprowadzić zmiany w kodzie języka Python</value>
   </data>
   <data name="MigrationAssistantDisclaimerMessage" xml:space="preserve">
-    <value>Program Migration Assistant ułatwia użytkownikom aktualizowanie skryptów w języku Python 2 do wersji Python 3.
-Kliknięcie przycisku Kontynuuj oznacza zaakceptowanie wprowadzenia zmian w składni kodu źródłowego zgodnie z sugestiami programu Migration Assistant. Program ten jest elementem dodatku open source Dynamo. W związku z tym jest licencjonowany na bazie licencji Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0). Zgodnie z warunkami licencji Apache License 2.0 dodatek Dynamo i program Migration Assistant są udostępniane „w stanie, w jakim się znajdują”.</value>
+    <value>Program Migration Assistant ułatwia użytkownikom aktualizowanie skryptów w języku IronPython2 do wersji PythonNet3.
+Kliknięcie przycisku Kontynuuj oznacza zaakceptowanie wprowadzenia zmian w składni kodu źródłowego zgodnie z sugestiami programu Migration Assistant. Program ten jest elementem dodatku open source Dynamo. W związku z tym jest licencjonowany w oparciu o licencję Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0). Zgodnie z warunkami licencji Apache License 2.0 dodatek Dynamo i program Migration Assistant są udostępniane „w stanie, w jakim się znajdują”.</value>
   </data>
   <data name="MigrationAssistantDisclaimerWindowTitle" xml:space="preserve">
     <value>Migration Assistant — zrzeczenie odpowiedzialności</value>
@@ -168,7 +168,7 @@ Kliknięcie przycisku Kontynuuj oznacza zaakceptowanie wprowadzenia zmian w skł
     <value>Nie ma tu nic do oglądania!</value>
   </data>
   <data name="MigrationAssistantNoChangesStateMessage" xml:space="preserve">
-    <value>Twój kod jest gotowy do uruchamiania za pomocą aparatu Python 3. Kliknij przycisk Akceptuj, a przełączymy się na aparat Python 3.</value>
+    <value>Kod jest gotowy do uruchamiania za pomocą aparatu PythonNet3. Kliknij przycisk Akceptuj, a nastąpi przełączenie na aparat PythonNet3.</value>
   </data>
   <data name="MigrationAssistantErrorStateHeader" xml:space="preserve">
     <value>W kodzie jest błąd!</value>
@@ -200,6 +200,9 @@ Kliknięcie przycisku Kontynuuj oznacza zaakceptowanie wprowadzenia zmian w skł
   <data name="PythonMigrationBackupFileCreatedMessage" xml:space="preserve">
     <value>Przed zastosowaniem migracji kodu języka Python zapisano kopię zapasową tego wykresu w skonfigurowanej lokalizacji kopii zapasowej: {0}</value>
   </data>
+  <data name="CPythonMigrationBackupFileCreatedMessage" xml:space="preserve">
+    <value>Przed aktualizacją zapisano plik kopii zapasowej </value>
+  </data>
   <data name="RejectButtonTooltip" xml:space="preserve">
     <value>Odrzuć bieżące zmiany kodu.</value>
   </data>
@@ -220,5 +223,17 @@ Kliknięcie przycisku Kontynuuj oznacza zaakceptowanie wprowadzenia zmian w skł
   </data>
   <data name="SwitchViewButton" xml:space="preserve">
     <value>Przełącz widok</value>
+  </data>
+  <data name="CPython3NotificationDetailedMessage" xml:space="preserve">
+    <value>Ten wykres zawiera obecnie węzły w języku Python korzystające ze starego, wycofanego aparatu CPython. Rozważ ich zaktualizowanie, aby używały nowego aparatu PythonNet3.</value>
+  </data>
+  <data name="CPython3NotificationShortMessage" xml:space="preserve">
+    <value>Ten wykres zawiera obecnie węzły korzystające ze starego, wycofanego aparatu CPython3. Zaimplementowano nowy aparat PythonNet3, który jest dostępny w edytorze języka Python.</value>
+  </data>
+  <data name="PythonMigrationBackupFileCreatedHeader" xml:space="preserve">
+    <value>Zapisano wykres kopii zapasowej</value>
+  </data>
+  <data name="CPythonUpgradeToastMessage" xml:space="preserve">
+    <value>Węzły CPython ({0}) i definicje węzłów niestandardowych ({1}) zostały automatycznie przekonwertowane na język PythonNet3, aby działały w dodatku Dynamo 4.0. Język CPython nie jest już obsługiwany.</value>
   </data>
 </root>

@@ -19,6 +19,7 @@ using System.Text.Json.Serialization;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Greg.Requests;
 using Newtonsoft.Json.Linq;
@@ -233,10 +234,8 @@ namespace Dynamo.UI.Views
                 // Initialize the webview asynchroneously 
                 await dynWebView?.Initialize();
 
-                // Set WebView2 settings    
-                this.dynWebView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
-                this.dynWebView.CoreWebView2.Settings.IsZoomControlEnabled = false;
-                this.dynWebView.CoreWebView2.Settings.AreDevToolsEnabled = true;
+                // Apply standard WebView2 settings with DevTools enabled for package manager debugging
+                dynWebView.ConfigureSettings(enableDevTools: true);
                 this.dynWebView.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
 
                 // Embed the font
@@ -537,17 +536,63 @@ namespace Dynamo.UI.Views
             };
 
             var payload = new { payload = packageDetails };
-            var options = new JsonSerializerOptions
+            var jsonSerializerSettings = new JsonSerializerSettings
             {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
             };
+            var jsonSerializer = Newtonsoft.Json.JsonSerializer.Create(jsonSerializerSettings);
+            var rootObj = JObject.FromObject(payload, jsonSerializer);
 
-            string jsonPayload = JsonSerializer.Serialize(payload, options);
+            // Include payload.versions[*].compatibility_matrix for the "Copy from" dropdown.
+            try
+            {
+                var header = await TryGetPackageHeaderAsync(vm);
+                if (header != null)
+                {
+                    if (rootObj["payload"] is JObject payloadObj)
+                    {
+                        payloadObj["versions"] = header.versions != null
+                            ? JToken.FromObject(header.versions, jsonSerializer)
+                            : new JArray();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage(ex);
+            }
+
+            var jsonPayload = rootObj.ToString(Newtonsoft.Json.Formatting.None);
 
             if (dynWebView?.CoreWebView2 != null)   
             {
                 await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveUpdatedPackageDetails({jsonPayload});");
             }
+        }
+
+        private async Task<Greg.Responses.PackageHeader> TryGetPackageHeaderAsync(PublishPackageViewModel vm)
+        {
+            var pmClientVm = vm?.DynamoViewModel?.PackageManagerClientViewModel;
+            var pkgName = vm?.Package?.Name ?? vm?.Name;
+            if (string.IsNullOrWhiteSpace(pkgName) || pmClientVm == null) return null;
+
+            var cachedHeader = pmClientVm.CachedPackageList?.FirstOrDefault(x => x.Name == pkgName)?.Header;
+            if (cachedHeader != null) return cachedHeader;
+
+            if (pmClientVm.Model != null && !pmClientVm.Model.NoNetworkMode)
+            {
+                try
+                {
+                    await Task.Run(() => pmClientVm.ListAll());
+                    return pmClientVm.CachedPackageList?.FirstOrDefault(x => x.Name == pkgName)?.Header;
+                }
+                catch (Exception ex)
+                {
+                    LogMessage(ex);
+                }
+            }
+
+            return null;
         }
 
         private async void UpdateRetainFolderStructureFlag(bool flag)
@@ -1007,11 +1052,7 @@ namespace Dynamo.UI.Views
         /// <returns></returns>
         private static string GetUserDirectory()
         {
-            var version = AssemblyHelper.GetDynamoVersion();
-
-            var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(Path.Combine(folder, "Dynamo", "Dynamo Core"),
-                            String.Format("{0}.{1}", version.Major, version.Minor));
+            return WebView2Utilities.GetTempDirectory();
         }
 
         /// <summary>

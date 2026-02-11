@@ -1,38 +1,692 @@
-<Workspace Version="0.7.2.2114" X="-92.5" Y="274" zoom="1" Description="" Category="" Name="Home">
-  <Elements>
-    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="75b9d0a3-e954-42b5-8ccf-66845b122e3f" nickname="Code Block" x="462" y="257" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="c = FileSystem.LoadImageFromPath(a);&#xA;FileSystem.WriteImage(b,&quot;Image&quot;,c);" ShouldFocus="false" />
-    <DSCore.File.Filename type="DSCore.File.Filename" guid="545b092b-8b2c-4cd4-b15e-9e4162dd4579" nickname="File Path" x="118" y="185.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String>File_Migration.txt</System.String>
-    </DSCore.File.Filename>
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="b6e77130-3c2e-4d6b-ae5b-2137c3d3a51b" nickname="File.ReadText" x="544" y="146.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.File.ReadText@string" />
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="7fba95f1-fd7a-4033-a7a9-5dfb91c7e886" nickname="File.ReadImage" x="467" y="413.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.File.ReadImage@string,int,int" />
-    <Dynamo.Nodes.CodeBlockNodeModel type="Dynamo.Nodes.CodeBlockNodeModel" guid="c865c5b3-8dd8-4a9b-97a5-a9aaa87ea0a9" nickname="Code Block" x="136" y="514" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="10;" ShouldFocus="false" />
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="3ddc75fb-e607-4932-8e08-f215ee86211e" nickname="File.ExportToCSV" x="805" y="444.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.File.ExportToCSV@string,double[][]" />
-    <Dynamo.Nodes.DSFunction type="Dynamo.Nodes.DSFunction" guid="ac1e30c2-27c5-46ef-88c9-52f0a2c0d1d9" nickname="File.WriteText" x="815" y="128.5" isVisible="true" isUpstreamVisible="true" lacing="Shortest" assembly="DSCoreNodes.dll" function="DSCore.File.WriteText@string,string" />
-    <DSCore.File.Filename type="DSCore.File.Filename" guid="c20d8f16-4bf7-465f-93ca-6afd05fe02a2" nickname="File Path" x="91" y="301.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String>File_Migration.png</System.String>
-    </DSCore.File.Filename>
-    <DSCore.File.Directory type="DSCore.File.Directory" guid="729b5ffd-7813-4e09-94a2-74a1e4619c5f" nickname="Directory Path" x="345.5" y="19.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String>No file selected.</System.String>
-    </DSCore.File.Directory>
-    <DSCore.File.Filename type="DSCore.File.Filename" guid="23f8f80b-eca7-4651-a082-7e2cce93c88d" nickname="File Path" x="570.5" y="-80.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String>File_Migration_Write.txt</System.String>
-    </DSCore.File.Filename>
-    <DSCore.File.Filename type="DSCore.File.Filename" guid="b8f8f48b-c546-4ae8-b7f6-45e52310e361" nickname="File Path" x="141.5" y="78.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.String>File_Migration.xlsx</System.String>
-    </DSCore.File.Filename>
-  </Elements>
-  <Connectors>
-    <Dynamo.Models.ConnectorModel start="545b092b-8b2c-4cd4-b15e-9e4162dd4579" start_index="0" end="b6e77130-3c2e-4d6b-ae5b-2137c3d3a51b" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="b6e77130-3c2e-4d6b-ae5b-2137c3d3a51b" start_index="0" end="ac1e30c2-27c5-46ef-88c9-52f0a2c0d1d9" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="7fba95f1-fd7a-4033-a7a9-5dfb91c7e886" start_index="0" end="3ddc75fb-e607-4932-8e08-f215ee86211e" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="c865c5b3-8dd8-4a9b-97a5-a9aaa87ea0a9" start_index="0" end="7fba95f1-fd7a-4033-a7a9-5dfb91c7e886" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="c865c5b3-8dd8-4a9b-97a5-a9aaa87ea0a9" start_index="0" end="7fba95f1-fd7a-4033-a7a9-5dfb91c7e886" end_index="2" portType="0" />
-    <Dynamo.Models.ConnectorModel start="c20d8f16-4bf7-465f-93ca-6afd05fe02a2" start_index="0" end="75b9d0a3-e954-42b5-8ccf-66845b122e3f" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="c20d8f16-4bf7-465f-93ca-6afd05fe02a2" start_index="0" end="7fba95f1-fd7a-4033-a7a9-5dfb91c7e886" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="729b5ffd-7813-4e09-94a2-74a1e4619c5f" start_index="0" end="75b9d0a3-e954-42b5-8ccf-66845b122e3f" end_index="1" portType="0" />
-    <Dynamo.Models.ConnectorModel start="23f8f80b-eca7-4651-a082-7e2cce93c88d" start_index="0" end="ac1e30c2-27c5-46ef-88c9-52f0a2c0d1d9" end_index="0" portType="0" />
-    <Dynamo.Models.ConnectorModel start="b8f8f48b-c546-4ae8-b7f6-45e52310e361" start_index="0" end="3ddc75fb-e607-4932-8e08-f215ee86211e" end_index="0" portType="0" />
-  </Connectors>
-  <Notes />
-</Workspace>
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "File",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "FileSystem": {
+        "Key": "DSCore.IO.FileSystem",
+        "Value": "DSCoreNodes.dll"
+      },
+      "Image": {
+        "Key": "DSCore.IO.Image",
+        "Value": "DSCoreNodes.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "75b9d0a3e95442b58ccf66845b122e3f",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [
+        {
+          "Id": "bb485b43322b4579b96c952531b1bd1b",
+          "Name": "a",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1f056f08daac4518803802461a1c8c6c",
+          "Name": "c",
+          "Description": "c = DSCore.IO.Image.ReadFromFile(a)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9bd339b3572744e1b97dcc50c7843ec6",
+          "Name": "function",
+          "Description": "DSCore.IO.Image.WriteToFile(\"Image.png\", c)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "c = Image.ReadFromFile(a);\nImage.WriteToFile(\"Image.png\", c);"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "Id": "545b092b8b2c4cd4b15e9e4162dd4579",
+      "NodeType": "ExtensionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "718e6f5204fb4860846c4b444ace9822",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system and returns its file path",
+      "HintPath": "C:\\dev\\Dynamo\\test\\core\\WorkflowTestFiles\\File Migration\\File_Migration.txt",
+      "InputValue": "File_Migration.txt"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "c865c5b38dd84a9b97a5a9aaa87ea0a9",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3da6c2a43b154b6da2a83173c03b0a05",
+          "Name": "integer",
+          "Description": "10",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "10;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "3ddc75fbe60749328e08f215ee86211e",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "b4e8aac202f344a69cd9e28a9fc5509b",
+          "Name": "filePath",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2f0c8366202644dd9eeac2a9ef3edb1f",
+          "Name": "data",
+          "Description": "var[][]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "58e9f415db33428fbb437c19d041eaf0",
+          "Name": "void",
+          "Description": "void",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSOffice.Data.ExportCSV@string,var[][]",
+      "Replication": "Auto",
+      "Description": "Data.ExportCSV (filePath: string, data: var[][]): void"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "ac1e30c227c546ef88c952f0a2c0d1d9",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "49d9ebe6d7d347f0adbf0472c5528c08",
+          "Name": "filePath",
+          "Description": "Path to write to\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bf34a96c6c924769853228168b36942d",
+          "Name": "text",
+          "Description": "Text content\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "052151ea6099482789ed3c294db7fc25",
+          "Name": "void",
+          "Description": "No output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.IO.FileSystem.WriteText@string,string",
+      "Replication": "Auto",
+      "Description": "Write the text content to a file specified by the path\n\nFileSystem.WriteText (filePath: string, text: string): void"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "Id": "c20d8f164bf7465f93ca6afd05fe02a2",
+      "NodeType": "ExtensionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ffc25e74eb244ffeb70e9bba35594b62",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system and returns its file path",
+      "HintPath": "C:\\dev\\Dynamo\\test\\core\\WorkflowTestFiles\\File Migration\\File_Migration.png",
+      "InputValue": "File_Migration.png"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "Id": "23f8f80beca74651a0827e2cce93c88d",
+      "NodeType": "ExtensionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "4a5cba49112943c1a51852cb760c4329",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system and returns its file path",
+      "HintPath": "C:\\dev\\Dynamo\\test\\core\\WorkflowTestFiles\\File Migration\\File_Migration_Write.txt",
+      "InputValue": "File_Migration_Write.txt"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "Id": "b8f8f48bc5464ae8b7f645e52310e361",
+      "NodeType": "ExtensionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "df99b9bd727a4387b9b168bf76a3561a",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system and returns its file path",
+      "HintPath": "C:\\dev\\Dynamo\\test\\core\\WorkflowTestFiles\\File Migration\\File_Migration.xlsx",
+      "InputValue": "File_Migration.xlsx"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "6d87386652e846feb58e307858577eed",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "d8438cb051014df99e51ed993ab6294c",
+          "Name": "file",
+          "Description": "File object to load image from\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "39b0b9366d154d588292e152b519e44f",
+          "Name": "image",
+          "Description": "Image object from file",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.IO.Image.ReadFromFile@var",
+      "Replication": "Auto",
+      "Description": "Loads the file as a bitmap.\n\nImage.ReadFromFile (file: var): var"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.FileObject, CoreNodeModels",
+      "Id": "36d986a07b7b46b784d9af50b728f2aa",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "3dbde6dc7c3e45cfb865b1de46b45d17",
+          "Name": "path",
+          "Description": "Path to the file as string.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ddded49a51f14844ad10d4876e94a904",
+          "Name": "file",
+          "Description": "File object",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a file object from the given path"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.FileObject, CoreNodeModels",
+      "Id": "1bee281532b84839a2765f28379026eb",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "02d961911c8047a69ecddef0aa728ad2",
+          "Name": "path",
+          "Description": "Path to the file as string.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "17d1d0694b6c41d288ccff99ae96f6f0",
+          "Name": "file",
+          "Description": "File object",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a file object from the given path"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "f866a25bdf8f4c11a57a6483d007d432",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "6d226cc4a5ff41d98239f7940a72c4fa",
+          "Name": "image",
+          "Description": "Image object to get pixel colors from\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6d66a62761d7452eb688d86e970298ba",
+          "Name": "xSamples",
+          "Description": "Number of sample grid points in the X direction.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5c184a0d275f4572a1184c5be0c8c9cb",
+          "Name": "ySamples",
+          "Description": "Number of sample grid points in the Y direction.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b4259091352a4af482ca7b1132a8cc5a",
+          "Name": "colors",
+          "Description": "Colors at the specified grid points",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.IO.Image.Pixels@var,int,int",
+      "Replication": "Auto",
+      "Description": "Reads an image file and returns the color values at the specified grid locations.\n\nImage.Pixels (image: var, xSamples: int, ySamples: int): Color[][]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "2d8d78913de240d6bd115cd46f983030",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "747d39ff35a448ad80e6ec2c6b863952",
+          "Name": "file",
+          "Description": "File object to read text from\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "11fe0e6c3f994d8d87ec21ce1e8c4803",
+          "Name": "string",
+          "Description": "Contents of the text file.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.IO.FileSystem.ReadText@var",
+      "Replication": "Auto",
+      "Description": "Reads a text file and returns the contents as a string.\n\nFileSystem.ReadText (file: var): string"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "718e6f5204fb4860846c4b444ace9822",
+      "End": "3dbde6dc7c3e45cfb865b1de46b45d17",
+      "Id": "16ef962caed7496bb64fc079ec863e72",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "3da6c2a43b154b6da2a83173c03b0a05",
+      "End": "6d66a62761d7452eb688d86e970298ba",
+      "Id": "548477bb2d0244e0853eb2a47344bc74",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "3da6c2a43b154b6da2a83173c03b0a05",
+      "End": "5c184a0d275f4572a1184c5be0c8c9cb",
+      "Id": "c1387aae186f43c0a298a50a6b043f28",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ffc25e74eb244ffeb70e9bba35594b62",
+      "End": "02d961911c8047a69ecddef0aa728ad2",
+      "Id": "1c7834b5508e4863aedd9ad261242067",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4a5cba49112943c1a51852cb760c4329",
+      "End": "49d9ebe6d7d347f0adbf0472c5528c08",
+      "Id": "e5b1c7f6e555446c96499b05c2dcc16e",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "df99b9bd727a4387b9b168bf76a3561a",
+      "End": "b4e8aac202f344a69cd9e28a9fc5509b",
+      "Id": "bd871806b8f8455791886f08547a8da5",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "39b0b9366d154d588292e152b519e44f",
+      "End": "6d226cc4a5ff41d98239f7940a72c4fa",
+      "Id": "8fbec6b9539e4b30afef4d6f3f7089ec",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ddded49a51f14844ad10d4876e94a904",
+      "End": "747d39ff35a448ad80e6ec2c6b863952",
+      "Id": "0db436b64f914720ac141f44fda8b335",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "17d1d0694b6c41d288ccff99ae96f6f0",
+      "End": "d8438cb051014df99e51ed993ab6294c",
+      "Id": "f695ddb081f341eebc8c0cd39b71c5a9",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "17d1d0694b6c41d288ccff99ae96f6f0",
+      "End": "bb485b43322b4579b96c952531b1bd1b",
+      "Id": "1050909672b9469eaa2fb862fb787a06",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "b4259091352a4af482ca7b1132a8cc5a",
+      "End": "2f0c8366202644dd9eeac2a9ef3edb1f",
+      "Id": "74f7d7aed8bb470dbcb61979fd181480",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "11fe0e6c3f994d8d87ec21ce1e8c4803",
+      "End": "bf34a96c6c924769853228168b36942d",
+      "Id": "aa66caef394449c1a8fcb0314046e191",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "File_Migration.txt",
+      "ReferenceType": "External",
+      "Nodes": [
+        "545b092b8b2c4cd4b15e9e4162dd4579"
+      ]
+    },
+    {
+      "Name": "File_Migration.png",
+      "ReferenceType": "External",
+      "Nodes": [
+        "c20d8f164bf7465f93ca6afd05fe02a2"
+      ]
+    },
+    {
+      "Name": "File_Migration_Write.txt",
+      "ReferenceType": "External",
+      "Nodes": [
+        "23f8f80beca74651a0827e2cce93c88d"
+      ]
+    },
+    {
+      "Name": "File_Migration.xlsx",
+      "ReferenceType": "External",
+      "Nodes": [
+        "b8f8f48bc5464ae8b7f645e52310e361"
+      ]
+    }
+  ],
+  "EnableLegacyPolyCurveBehavior": true,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "4.1",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "4.1.0.2940",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "75b9d0a3e95442b58ccf66845b122e3f",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 483.3649851632049,
+        "Y": 267.6824925816024
+      },
+      {
+        "Id": "545b092b8b2c4cd4b15e9e4162dd4579",
+        "Name": "File Path",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 118.0,
+        "Y": 185.5
+      },
+      {
+        "Id": "c865c5b38dd84a9b97a5a9aaa87ea0a9",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 171.60830860534134,
+        "Y": 642.1899109792284
+      },
+      {
+        "Id": "3ddc75fbe60749328e08f215ee86211e",
+        "Name": "Data.ExportCSV",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 805.0,
+        "Y": 444.5
+      },
+      {
+        "Id": "ac1e30c227c546ef88c952f0a2c0d1d9",
+        "Name": "FileSystem.WriteText",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 995.4154302670622,
+        "Y": 48.97477744807122
+      },
+      {
+        "Id": "c20d8f164bf7465f93ca6afd05fe02a2",
+        "Name": "File Path",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 91.0,
+        "Y": 301.5
+      },
+      {
+        "Id": "23f8f80beca74651a0827e2cce93c88d",
+        "Name": "File Path",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 570.5,
+        "Y": -80.5
+      },
+      {
+        "Id": "b8f8f48bc5464ae8b7f645e52310e361",
+        "Name": "File Path",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 141.5,
+        "Y": 78.5
+      },
+      {
+        "Id": "6d87386652e846feb58e307858577eed",
+        "Name": "Image.ReadFromFile",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 477.3545994065279,
+        "Y": 494.4050445103858
+      },
+      {
+        "Id": "36d986a07b7b46b784d9af50b728f2aa",
+        "Name": "File From Path",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 527.3783382789319,
+        "Y": 127.84569732937695
+      },
+      {
+        "Id": "1bee281532b84839a2765f28379026eb",
+        "Name": "File From Path",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 250.82047477744823,
+        "Y": 434.07715133531156
+      },
+      {
+        "Id": "f866a25bdf8f4c11a57a6483d007d432",
+        "Name": "Image.Pixels",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 596.2210682492579,
+        "Y": 663.1572700296737
+      },
+      {
+        "Id": "2d8d78913de240d6bd115cd46f983030",
+        "Name": "FileSystem.ReadText",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 739.8412462908013,
+        "Y": 110.04154302670611
+      }
+    ],
+    "Annotations": [],
+    "X": 16.558749999999918,
+    "Y": 103.66499999999996,
+    "Zoom": 0.8425
+  }
+}

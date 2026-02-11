@@ -54,7 +54,6 @@ namespace ProtoCore.Lang
             Reorder,
             RangeExpression,
             Sum,
-            ToString,
             ToStringFromObject,
             ToStringFromArray,
             Transpose,
@@ -120,7 +119,6 @@ namespace ProtoCore.Lang
             "Reorder",                  // kReorder
             Constants.kFunctionRangeExpression, // kGenerateRange
             "Sum",                      // kSum
-            "ToString",                 // kToString               
             "__ToStringFromObject",     // kToStringFromObject
             "__ToStringFromArray",      // kToStringFromArray
             "Transpose",                // kTranspose
@@ -784,17 +782,6 @@ namespace ProtoCore.Lang
                     MethodAttributes = new MethodAttributes(){Description = Resources.Gettypes}
                 },
 
-                new BuiltInMethod
-                {
-                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.String, 0),
-
-                    Parameters = new [] 
-                    {
-                        new KeyValuePair<string, Type>("object", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var)),
-                    }.ToList(),
-                    ID = BuiltInMethods.MethodID.ToString,
-                    MethodAttributes = new MethodAttributes(true, false, "This node is obsolete, please use \"String from Object\""),
-                },
 
                 new BuiltInMethod
                 {

@@ -188,7 +188,7 @@ namespace Dynamo.DocumentationBrowser
             if (e.Data.Equals(Resources.FileNotFoundFailureMessage))
             {
                 var message = String.Format(Resources.ToastFileNotFoundLocationNotificationText, e.Name);
-                DynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(message, true);
+                DynamoViewModel.ToastManager.CreateRealTimeInfoWindow(message, true);
 
                 return;
             }
@@ -198,7 +198,7 @@ namespace Dynamo.DocumentationBrowser
                 var homeWorkspace = DynamoViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
                 if (homeWorkspace != null && homeWorkspace.RunSettings.RunType != RunType.Manual)
                 {
-                    DynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Resources.ToastInsertGraphNotificationText, true);
+                    DynamoViewModel.ToastManager.CreateRealTimeInfoWindow(Resources.ToastInsertGraphNotificationText, true);
                     homeWorkspace.RunSettings.RunType = RunType.Manual;
                 }
             }
