@@ -32,13 +32,12 @@ namespace DynamoPythonTests
         {
             base.Setup();
             //for some legacy tests we'll need the DSPythonNet3 binary loaded manually
-            //as the types are found using reflection - during normal dynamo use these types are already loaded. 
-            var path = Path.Combine(PathManager.BuiltinPackagesDirectory, @"PythonNet3Engine\extra\DSPythonNet3.dll");
-            if (!File.Exists(path))
-            {
-                Assert.Fail($"DSPythonNet3.dll not found at expected path: {path}. BuiltinPackagesDirectory: {PathManager.BuiltinPackagesDirectory}");
-            }
-            Assembly.LoadFrom(path);
+            //as the types are found using reflection - during normal dynamo use these types are already loaded.
+            
+            // Force loading of the DSPythonNet3 assembly by accessing a type from it
+            // This ensures the assembly is in AppDomain.CurrentDomain.GetAssemblies()
+            // before SharedCompletionProvider tries to find IExternalCodeCompletionProviderCore implementations
+            var _ = typeof(DSPythonNet3CodeCompletionProviderCore);
         }
 
         [Test]
