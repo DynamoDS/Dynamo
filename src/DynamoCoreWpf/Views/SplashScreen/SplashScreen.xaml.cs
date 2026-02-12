@@ -781,9 +781,8 @@ namespace Dynamo.UI.Views
         readonly Action RequestResetSettings;
 
         /// <summary>
-        /// [Obsolete] Constructor for ScriptObject
+        /// Constructor for ScriptObject
         /// </summary>
-        [Obsolete]
         public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings, Func< bool> requestSignIn, Func<bool> requestSignOut, Action requestResetSettings)
         {
             RequestLaunchDynamo = requestLaunchDynamo;
