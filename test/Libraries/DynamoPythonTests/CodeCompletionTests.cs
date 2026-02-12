@@ -27,13 +27,17 @@ namespace DynamoPythonTests
     [TestFixture]
     internal class SharedCodeCompletionProviderTests : UnitTestBase
     {
+        [SetUp]
         public override void Setup()
         {
             base.Setup();
             //for some legacy tests we'll need the DSPythonNet3 binary loaded manually
-            //as the types are found using reflection - during normal dynamo use these types are already loaded. 
-            var path = Path.Combine(PathManager.BuiltinPackagesDirectory, @"PythonNet3Engine\extra\DSPythonNet3.dll");
-            Assembly.LoadFrom(path);
+            //as the types are found using reflection - during normal dynamo use these types are already loaded.
+            
+            // Force loading of the DSPythonNet3 assembly by accessing a type from it
+            // This ensures the assembly is in AppDomain.CurrentDomain.GetAssemblies()
+            // before SharedCompletionProvider tries to find IExternalCodeCompletionProviderCore implementations
+            var _ = typeof(DSPythonNet3CodeCompletionProviderCore);
         }
 
         [Test]
@@ -51,6 +55,7 @@ namespace DynamoPythonTests
             var str = "\nimport System.Collections\nSystem.Collections.";
 
             var completionData = provider.GetCompletionData(str);
+            Assert.IsNotNull(completionData, "GetCompletionData returned null. This typically means the IExternalCodeCompletionProviderCore implementation could not be found. Ensure DSPythonNet3.dll is loaded.");
             var completionList = completionData.Select(d => d.Text);
 
             Assert.IsTrue(completionList.Any());
