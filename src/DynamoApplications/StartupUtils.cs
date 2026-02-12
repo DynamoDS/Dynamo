@@ -210,7 +210,7 @@ namespace Dynamo.Applications
                 }
                 catch
                 {
-                    // Version extraction failed, leave as null
+                    Console.WriteLine("ASM Version extraction failed");
                 }
             }
         }
