@@ -108,7 +108,7 @@ namespace DynamoPerformanceTests
             /// </summary>
             protected Job JobDefault = Job.Default
                 .WithPlatform(BenchmarkDotNet.Environments.Platform.X64)
-                .WithRuntime(CoreRuntime.CreateForNewVersion("net8.0-windows7.0", "NET 8.0"));
+                .WithRuntime(CoreRuntime.CreateForNewVersion("net10.0-windows7.0", "NET 10.0"));
 
             public DynamoBenchmarkConfigBase()
             {

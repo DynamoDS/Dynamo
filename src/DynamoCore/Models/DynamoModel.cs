@@ -3421,6 +3421,13 @@ namespace Dynamo.Models
             //don't save the file path
             CurrentWorkspace.FileName = "";
             CurrentWorkspace.HasUnsavedChanges = false;
+            CurrentWorkspace.Name = "";
+
+            // Clear workspace metadata properties when creating new workspace
+            if (CurrentWorkspace is HomeWorkspaceModel homeWorkspace)
+            {
+                homeWorkspace.ExtensionData?.Clear();
+            }
             EngineController.CurrentWorkspaceVersion = AssemblyHelper.GetDynamoVersion();
 
             this.LinterManager?.SetDefaultLinter();

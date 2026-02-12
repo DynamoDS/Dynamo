@@ -342,11 +342,7 @@ namespace Dynamo.UI.Views
         /// <returns></returns>
         private string GetUserDirectory()
         {
-            var version = AssemblyHelper.GetDynamoVersion();
-
-            var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(Path.Combine(folder, Configurations.DynamoAsString, "Dynamo Core"),
-                            String.Format("{0}.{1}", version.Major, version.Minor));
+            return WebView2Utilities.GetTempDirectory();
         }
 
         protected override async void OnContentRendered(EventArgs e)
@@ -370,10 +366,9 @@ namespace Dynamo.UI.Views
             try
             {
                 await webView.Initialize();
-                // Context menu disabled
-                webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
-                // Zoom control disabled
-                webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
+
+                // Apply standard WebView2 settings for splash screen
+                webView.ConfigureSettings();
 
                 var assembly = Assembly.GetExecutingAssembly();
 

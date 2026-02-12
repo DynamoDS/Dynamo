@@ -994,6 +994,12 @@
   <data name="Autodesk.DesignScript.Geometry.Curve.SweepAsSurface.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.Curve.SweepAsSurface.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="Autodesk.DesignScript.Geometry.Curve.SweepAsSurface.Curve-bool.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.Curve.SweepAsSurface.Curve-bool.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.Curve.SweepAsSurface.Curve-bool.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.Curve.SweepAsSurface.Curve-bool.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="Autodesk.DesignScript.Geometry.Curve.TangentAtParameter.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.Curve.TangentAtParameter.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -2319,6 +2325,12 @@
   </data>
   <data name="Autodesk.DesignScript.Geometry.Point.Project.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.Point.Project.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.Geometry.ProjectPointsOnto.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.Geometry.ProjectPointsOnto.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.Geometry.ProjectPointsOnto.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.Geometry.ProjectPointsOnto.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Autodesk.DesignScript.Geometry.Point.PruneDuplicates.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.Point.PruneDuplicates.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

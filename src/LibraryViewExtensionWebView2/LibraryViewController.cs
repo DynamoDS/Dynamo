@@ -373,11 +373,13 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 {
                     await browser.Initialize(LogToDynamoConsole);
 
+                    // Apply standard WebView2 settings with zoom enabled for library browsing
+                    browser.ConfigureSettings(enableZoomControl: true);
+
                     this.browser.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
                     twoWayScriptingObject = new ScriptingObject(this);
                     //register the interop object into the browser.
                     this.browser.CoreWebView2.AddHostObjectToScript("bridgeTwoWay", twoWayScriptingObject);
-                    browser.CoreWebView2.Settings.IsZoomControlEnabled = true;
 
                     initState = AsyncMethodState.Done;
                 }

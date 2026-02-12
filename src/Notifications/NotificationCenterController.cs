@@ -248,11 +248,12 @@ namespace Dynamo.Notifications
 
             if (notificationUIPopup.webView.CoreWebView2 != null)
             {
-                // More initialization options
-                // Context menu disabled
-                notificationUIPopup.webView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = true;
-                notificationUIPopup.webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
-                notificationUIPopup.webView.CoreWebView2.Settings.IsStatusBarEnabled = false;
+                // Apply standard WebView2 settings with the context menu enabled for notifications.
+                // Note: Enabling the context menu here intentionally exposes the full default WebView2 browser menu
+                // (including items such as "View Source" and "Inspect") to support interaction with notification content.
+                // If future requirements call for restricting these options, ConfigureSettings and/or the notification
+                // WebView configuration should be updated to provide more granular control.
+                notificationUIPopup.webView.ConfigureSettings(enableContextMenu: true);
                 // Opening hyper-links using default system browser instead of WebView2 tab window
                 notificationUIPopup.webView.CoreWebView2.NewWindowRequested += WebView_NewWindowRequested;
 

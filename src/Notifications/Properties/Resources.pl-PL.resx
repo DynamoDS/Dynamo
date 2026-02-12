@@ -151,9 +151,9 @@
     <value>Powiadomienia</value>
   </data>
   <data name="UnsafePathDetectedDetail" xml:space="preserve">
-    <value>An unsafe path has been detected in Trusted Locations:</value>
+    <value>W zaufanych lokalizacjach wykryto niebezpieczną ścieżkę:</value>
   </data>
   <data name="UnsafePathDetectedTitle" xml:space="preserve">
-    <value>Unsafe path detected</value>
+    <value>Wykryto niebezpieczną ścieżkę</value>
   </data>
 </root>

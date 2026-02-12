@@ -12,21 +12,32 @@ function createNpmrcFile {
     New-Item -Path . -Name .npmrc -ItemType File -Value "registry=$registry`n" -Force
 }
 
-try {
-    Write-Host "Checking if adsk npm registry is reachable..." -ForegroundColor Blue
-    $response = Invoke-WebRequest -Uri $adskNpmRegistry -TimeoutSec 20 -ErrorAction Stop
-
-    if ($response.StatusCode -eq 200) {
-        Write-Host "adsk npm registry is reachable" -ForegroundColor Green
-        createNpmrcFile -registry $adskNpmRegistry
-        Write-Output "//npm.autodesk.com/artifactory/api/npm/:_authToken=`${NPM_TOKEN}" | Out-File -FilePath .npmrc -Encoding UTF8 -Append
+function Test-UrlReachable {
+    param ([string]$url)
+    $response = $null
+    try {
+        $request = [System.Net.WebRequest]::Create($url)
+        $request.Method = "HEAD"
+        $request.Timeout = 20000  # 20 seconds
+        $response = $request.GetResponse()
+        return $true
     }
-    else {
-        Write-Host "adsk npm registry is not reachable" -ForegroundColor Red
-        createNpmrcFile -registry $npmRegistry
+    catch {
+        return $false
+    }
+    finally {
+        if ($response) { $response.Dispose() }
     }
 }
-catch {
+
+Write-Host "Checking if adsk npm registry is reachable..." -ForegroundColor Blue
+
+if (Test-UrlReachable -url $adskNpmRegistry) {
+    Write-Host "adsk npm registry is reachable" -ForegroundColor Green
+    createNpmrcFile -registry $adskNpmRegistry
+    Write-Output "//npm.autodesk.com/artifactory/api/npm/:_authToken=`${NPM_TOKEN}" | Out-File -FilePath .npmrc -Encoding UTF8 -Append
+}
+else {
     Write-Host "adsk npm registry is not reachable" -ForegroundColor Red
     createNpmrcFile -registry $npmRegistry
 }

@@ -151,9 +151,9 @@
     <value>通知</value>
   </data>
   <data name="UnsafePathDetectedDetail" xml:space="preserve">
-    <value>An unsafe path has been detected in Trusted Locations:</value>
+    <value>在可信任的位置偵測到不安全的路徑:</value>
   </data>
   <data name="UnsafePathDetectedTitle" xml:space="preserve">
-    <value>Unsafe path detected</value>
+    <value>偵測到不安全的路徑</value>
   </data>
 </root>

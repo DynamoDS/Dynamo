@@ -276,7 +276,20 @@ namespace Dynamo.Manipulation
         public CoordinateSystem ReferenceCoordinateSystem { get; set; }
 
         /// <summary>
-        /// Performs hit test on Gizmo to find out hit object. The returned 
+        /// Clears the cached hit axis and plane after manipulation is complete.
+        /// This prevents stale hit state from affecting subsequent camera operations.
+        /// This method is called automatically by <c>NodeManipulator.MouseUp</c> when a
+        /// manipulation operation finishes; it typically does not need to be invoked
+        /// directly except in custom manipulation workflows.
+        /// </summary>
+        public void ClearHitState()
+        {
+            hitAxis = null;
+            hitPlane = null;
+        }
+
+        /// <summary>
+        /// Performs hit test on Gizmo to find out hit object. The returned
         /// hitObject could be either axis vector or a plane.
         /// </summary>
         /// <param name="source">Mouse click source for hit test</param>
