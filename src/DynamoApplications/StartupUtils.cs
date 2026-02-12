@@ -228,7 +228,7 @@ namespace Dynamo.Applications
             // Preload ASM and display corresponding message on splash screen
             DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenPreLoadingAsm, 10));
             var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation, out Version asmVersion, out string asmLoadedFrom);
-            var model = StartDynamoWithDefaultConfig(true, userDataFolder, commonDataFolder, geometryFactoryPath, preloaderLocation, false, info, asmVersion: asmVersion, asmPath: asmLoadedFrom);
+            var model = StartDynamoWithDefaultConfig(true, userDataFolder, commonDataFolder, geometryFactoryPath, preloaderLocation, false, info, asmVersion: asmVersion, asmPath: asmLoadedFrom, isASMLoaded: isASMloaded);
             model.IsASMLoaded = isASMloaded;
             return model;
         }
@@ -263,7 +263,8 @@ namespace Dynamo.Applications
                 isServiceMode: serviceMode,
                 cliLocale: normalizedCLILocale,
                 asmVersion: asmVersion,
-                asmPath: asmLoadedFrom
+                asmPath: asmLoadedFrom,
+                isASMLoaded: isASMloaded
             );
             model.IsASMLoaded = isASMloaded;
             return model;
@@ -429,7 +430,8 @@ namespace Dynamo.Applications
             bool isServiceMode = false,
             string cliLocale = null,
             Version asmVersion = null,
-            string asmPath = null)
+            string asmPath = null,
+            bool isASMLoaded = true)
         {
 
             var config = new DynamoModel.DefaultStartConfiguration
@@ -456,7 +458,7 @@ namespace Dynamo.Applications
                 model.Logger.Log(string.Format("ASM version {0} loaded from: {1}",
                     asmVersion, string.IsNullOrEmpty(asmPath) ? "unknown location" : asmPath));
             }
-            else if (model.IsASMLoaded)
+            else if (isASMLoaded)
             {
                 model.Logger.Log("ASM loaded successfully (version could not be determined)");
             }
