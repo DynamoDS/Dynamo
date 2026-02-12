@@ -92,47 +92,13 @@
         <Delete Files="$(MSBuildProjectDirectory)\$(Last).tgz" />
     </Target>
 
-    <Target Name="NpmRunBuildPMWizard" BeforeTargets="BeforeBuild">
-        <PropertyGroup>
-            <PackageVersion>0.0.24</PackageVersion>
-            <PackageName>PackageManagerWizard</PackageName>
-        </PropertyGroup>
-        <Exec Command="$(PowerShellCommand) -ExecutionPolicy Bypass -File &quot;$(SolutionDir)pkgexist.ps1&quot; &quot;$(PackageName)&quot; &quot;$(PackageVersion)&quot;" ConsoleToMSBuild="true">
-            <Output TaskParameter="ConsoleOutput" PropertyName="ShouldInstall" />
-        </Exec>
-        <Message Text="Skipping Install for $(PackageName) $(PackageVersion), package up to date." Condition="!$(ShouldInstall)" Importance="high" />
-        <!--This command updates the npm registry configuration if necessary-->
-        <Exec Command="$(PowerShellCommand) -ExecutionPolicy Bypass -File &quot;$(SolutionDir)setnpmreg.ps1&quot;" Condition="$(ShouldInstall)" />
-        <!--This command gets a specific splash screen build from npm-->
-        <Exec Command="npm pack @dynamods/dynamo-pm-wizard@$(PackageVersion)" Condition="$(ShouldInstall)" />
-    </Target>
 
-    <Target Name="ExtractTGZFilePMWizard" DependsOnTargets="NpmRunBuild" BeforeTargets="BeforeBuild" Condition="$(ShouldInstall)">
-        <!--Locates the .tgz files-->
-        <ItemGroup>
-            <TGZFiles Include="./dynamods-dynamo-pm-wizard-*.tgz" />
-        </ItemGroup>
-
-        <PropertyGroup>
-            <Last>%(TGZFiles.Filename)</Last>
-        </PropertyGroup>
-
-        <!--Creates the folder for the package-->
-        <MakeDir Directories="Packages/PackageManagerWizard" />
-
-        <!--Extracts the file to /package-->
-        <Exec Command="tar -xzf &quot;$(MSBuildProjectDirectory)\$(Last).tgz&quot; --strip-components=1 --directory=&quot;Packages/PackageManagerWizard&quot;" />
-
-        <!--Deletes the tgz file-->
-        <Delete Files="$(MSBuildProjectDirectory)\$(Last).tgz" />
-    </Target>
 
     <ItemGroup>
     <None Remove="Controls\Docs\en-GB\FileTrustWarningDocumentation.html" />
     <None Remove="Controls\Docs\en-GB\NodeAutocompleteDocumentation.html" />
     <None Remove="Controls\OutPorts.xaml" />
     <None Remove="Controls\InPorts.xaml" />
-    <None Remove="Packages\PackageManagerWizard\dist\index.html" />
     <None Remove="Controls\Docs\cs-CZ\FileTrustWarningDocumentation.html" />
     <None Remove="Controls\Docs\cs-CZ\NodeAutocompleteDocumentation.html" />
     <None Remove="Controls\Docs\de-DE\FileTrustWarningDocumentation.html" />
@@ -183,7 +149,6 @@
     <None Remove="UI\Images\lock_default_16px.png" />
     <None Remove="UI\Images\lock_hover_16px.png" />
     <None Remove="UI\Images\menu_white_48px.png" />
-    <None Remove="UI\Images\PackageManager\empty-state-first-use-light-gray.png" />
     <None Remove="UI\Images\reset_default_16px.png" />
     <None Remove="UI\Images\reset_hover_16px.png" />
     <None Remove="UI\Images\search_icon_20px.png" />
@@ -192,20 +157,6 @@
     <None Remove="UI\Images\unlock_hover_16px.png" />
     <None Remove="UI\Images\warning_48px.png" />
     <None Remove="UI\Prompts\PortPropertiesEditPrompt.xaml" />
-    <None Remove="ViewModels\PackageManager\Docs\cs-CZ\PublishPackageDocumentation.html" />
-    <None Remove="ViewModels\PackageManager\Docs\de-DE\PublishPackageDocumentation.html" />
-    <None Remove="ViewModels\PackageManager\Docs\en-GB\PublishPackageDocumentation.html" />
-    <None Remove="ViewModels\PackageManager\Docs\en-US\PublishPackageDocumentation.html" />
-    <None Remove="ViewModels\PackageManager\Docs\es-ES\PublishPackageDocumentation.html" />
-    <None Remove="ViewModels\PackageManager\Docs\fr-FR\PublishPackageDocumentation.html" />
-    <None Remove="ViewModels\PackageManager\Docs\it-IT\PublishPackageDocumentation.html" />
-    <None Remove="ViewModels\PackageManager\Docs\ja-JP\PublishPackageDocumentation.html" />
-    <None Remove="ViewModels\PackageManager\Docs\ko-KR\PublishPackageDocumentation.html" />
-    <None Remove="ViewModels\PackageManager\Docs\pl-PL\PublishPackageDocumentation.html" />
-    <None Remove="ViewModels\PackageManager\Docs\pt-BR\PublishPackageDocumentation.html" />
-    <None Remove="ViewModels\PackageManager\Docs\ru-RU\PublishPackageDocumentation.html" />
-    <None Remove="ViewModels\PackageManager\Docs\zh-CN\PublishPackageDocumentation.html" />
-    <None Remove="ViewModels\PackageManager\Docs\zh-TW\PublishPackageDocumentation.html" />
     <None Remove="Views\Core\CustomColorPicker.xaml" />
     <None Remove="Views\Core\GeometryScalingPopup.xaml" />
     <None Remove="UI\Images\question-hover-blue-16px.png" />
@@ -285,19 +236,6 @@
     <None Remove="Views\GuidedTour\HtmlPages\zh-TW\learnPackages.html" />
     <None Remove="Views\GuidedTour\HtmlPages\zh-TW\nodePackage.html" />
     <None Remove="Views\GuidedTour\HtmlPages\zh-TW\searchPackages.html" />
-    <None Remove="Views\PackageManager\Controls\ControlColorsAndBrushes.xaml" />      
-    <None Remove="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml" />
-    <None Remove="Views\PackageManager\Controls\NumericUpDownControl.xaml" />
-    <None Remove="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml" />
-    <None Remove="Views\PackageManager\Controls\PackageManagerPublishControl.xaml" />
-    <None Remove="Views\PackageManager\Controls\PackageManagerPublishHost.xaml" />
-    <None Remove="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml" />
-    <None Remove="Views\PackageManager\Controls\PackageManagerSearchControl.xaml" />
-    <None Remove="Views\PackageManager\Controls\SearchBoxControl.xaml" />
-    <None Remove="Views\PackageManager\Pages\PublishPackageFinishPage.xaml" />
-    <None Remove="Views\PackageManager\Pages\PublishPackagePreviewPage.xaml" />
-    <None Remove="Views\PackageManager\Pages\PublishPackagePublishPage.xaml" />
-    <None Remove="Views\PackageManager\Pages\PublishPackageSelectPage.xaml" />
     <None Remove="Views\SplashScreen\WebApp\splashScreenBackground.png" />
   </ItemGroup>
   <ItemGroup>
@@ -332,20 +270,6 @@
     <EmbeddedResource Include="Packages\SplashScreen\build\index.bundle.js" />
     <EmbeddedResource Include="Packages\SplashScreen\build\index.html" />
     <EmbeddedResource Include="Properties\Resources.en-GB.resx" />
-    <EmbeddedResource Include="ViewModels\PackageManager\Docs\cs-CZ\PublishPackageDocumentation.html" />
-    <EmbeddedResource Include="ViewModels\PackageManager\Docs\de-DE\PublishPackageDocumentation.html" />
-    <EmbeddedResource Include="ViewModels\PackageManager\Docs\en-GB\PublishPackageDocumentation.html" />
-    <EmbeddedResource Include="ViewModels\PackageManager\Docs\en-US\PublishPackageDocumentation.html" />
-    <EmbeddedResource Include="ViewModels\PackageManager\Docs\es-ES\PublishPackageDocumentation.html" />
-    <EmbeddedResource Include="ViewModels\PackageManager\Docs\fr-FR\PublishPackageDocumentation.html" />
-    <EmbeddedResource Include="ViewModels\PackageManager\Docs\it-IT\PublishPackageDocumentation.html" />
-    <EmbeddedResource Include="ViewModels\PackageManager\Docs\ja-JP\PublishPackageDocumentation.html" />
-    <EmbeddedResource Include="ViewModels\PackageManager\Docs\ko-KR\PublishPackageDocumentation.html" />
-    <EmbeddedResource Include="ViewModels\PackageManager\Docs\pl-PL\PublishPackageDocumentation.html" />
-    <EmbeddedResource Include="ViewModels\PackageManager\Docs\pt-BR\PublishPackageDocumentation.html" />
-    <EmbeddedResource Include="ViewModels\PackageManager\Docs\ru-RU\PublishPackageDocumentation.html" />
-    <EmbeddedResource Include="ViewModels\PackageManager\Docs\zh-CN\PublishPackageDocumentation.html" />
-    <EmbeddedResource Include="ViewModels\PackageManager\Docs\zh-TW\PublishPackageDocumentation.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\cs-CZ\connectTheNodes.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\cs-CZ\installedPackage.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\cs-CZ\learnPackages.html" />
@@ -725,9 +649,6 @@
     <Compile Include="ViewModels\GuidedTour\SurveyPopupViewModel.cs" />
     <Compile Include="ViewModels\Menu\TrustedPathViewModel.cs" />
     <Compile Include="ViewModels\Menu\PreferencesViewModel.cs" />
-    <Compile Include="ViewModels\PackageManager\IPackageInstaller.cs" />
-    <Compile Include="ViewModels\PackageManager\PackageManagerViewModel.cs" />
-    <Compile Include="ViewModels\PackageManager\PackagePathViewModel.cs" />
     <Compile Include="ViewModels\Preview\CompactBubbleViewModel.cs" />
     <Compile Include="ViewModels\Preview\ConnectorAnchorViewModel.cs" />
     <Compile Include="ViewModels\Preview\ConnectorContextMenuViewModel.cs" />
@@ -800,30 +721,8 @@
     </Compile>
     <Compile Include="Views\HomePage\HomePage.xaml.cs" />
     <Compile Include="Views\Input\ParameterEditor.cs" />
-    <Compile Include="Views\PackageManager\Components\PackageManagerWizard\PackageManagerWizard.xaml.cs" />
-    <Compile Include="Views\PackageManager\Controls\CustomBrowserControl.xaml.cs" />
-    <Compile Include="Views\PackageManager\Controls\FilterTagControl.xaml.cs" />
-    <Compile Include="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml.cs" />
-    <Compile Include="Views\PackageManager\Controls\NumericUpDownControl.xaml.cs" />
-    <Compile Include="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml.cs" />
-    <Compile Include="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml.cs" />
-    <Compile Include="Views\PackageManager\Controls\PackageManagerPublishControl.xaml.cs" />
-    <Compile Include="Views\PackageManager\Controls\PackageManagerPublishHost.xaml.cs" />
-    <Compile Include="Views\PackageManager\Controls\PackageManagerSearchControl.xaml.cs" />
-    <Compile Include="Views\PackageManager\Controls\SearchBoxControl.xaml.cs" />
-    <Compile Include="Views\PackageManager\PackageManagerView.xaml.cs" />
     <Compile Include="Views\Menu\TrustedPathView.xaml.cs" />
     <Compile Include="Views\Output\OutputEditor.cs" />
-    <Compile Include="Views\PackageManager\PackagePathView.xaml.cs">
-      <DependentUpon>PackagePathView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\PackageManager\Pages\PublishPackageFinishPage.xaml.cs" />
-    <Compile Include="Views\PackageManager\Pages\PublishPackagePreviewPage.xaml.cs" />
-    <Compile Include="Views\PackageManager\Pages\PublishPackagePublishPage.xaml.cs" />
-    <Compile Include="Views\PackageManager\Pages\PublishPackageSelectPage.xaml.cs" />
-    <Compile Include="Views\PackageManager\TermsOfUseView.xaml.cs">
-      <DependentUpon>TermsOfUseView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ViewModels\Watch3D\AttachedProperties.cs" />
     <Compile Include="ViewModels\Watch3D\DynamoEffectsManager.cs" />
     <Compile Include="Views\Menu\PreferencesView.xaml.cs">
@@ -866,14 +765,8 @@
     <Compile Include="Views\Core\NoteView.xaml.cs">
       <DependentUpon>NoteView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PackageManager\PackageManagerSearchView.xaml.cs">
-      <DependentUpon>PackageManagerSearchView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Preview\PreviewControl.xaml.cs">
       <DependentUpon>PreviewControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\PackageManager\PublishPackageView.xaml.cs">
-      <DependentUpon>PublishPackageView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\TooltipWindow.xaml.cs">
       <DependentUpon>TooltipWindow.xaml</DependentUpon>
@@ -887,9 +780,6 @@
     <Compile Include="Views\Core\WorkspaceView.xaml.cs">
       <DependentUpon>WorkspaceView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\PackageManager\Components\PackageManagerWizard\PackageManagerWizard.xaml.cs">
-        <DependentUpon>PackageManagerWizard.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Utilities\WpfUtilities.cs" />
     <Compile Include="Controls\ZoomBorder.cs" />
     <Compile Include="Utilities\CursorLibrary.cs" />
@@ -901,24 +791,15 @@
     <Compile Include="ViewModels\Core\DynamoViewModelEventArgs.cs" />
     <Compile Include="ViewModels\Core\DynamoViewModelEvents.cs" />
     <Compile Include="ViewModels\Preview\InfoBubbleViewModel.cs" />
-    <Compile Include="ViewModels\PackageManager\InstalledPackagesViewModel.cs" />
     <Compile Include="ViewModels\Core\NodeViewModel.cs" />
     <Compile Include="ViewModels\Core\NoteViewModel.cs" />
-    <Compile Include="ViewModels\PackageManager\PackageItemInternalViewModel.cs" />
-    <Compile Include="ViewModels\PackageManager\PackageItemLeafViewModel.cs" />
-    <Compile Include="ViewModels\PackageManager\PackageItemRootViewModel.cs" />
-    <Compile Include="ViewModels\PackageManager\PackageItemViewModel.cs" />
-    <Compile Include="ViewModels\PackageManager\PackageManagerClientViewModel.cs" />
-    <Compile Include="ViewModels\PackageManager\PackageManagerSearchElementViewModel.cs" />
-    <Compile Include="ViewModels\PackageManager\PackageManagerSearchViewModel.cs" />
-    <Compile Include="ViewModels\PackageManager\PackageViewModel.cs" />
     <Compile Include="ViewModels\Core\PortViewModel.cs" />
-    <Compile Include="ViewModels\PackageManager\PublishPackageViewModel.cs" />
     <Compile Include="ViewModels\Search\SearchViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="ViewModels\Preview\Watch3DFullscreenViewModel.cs" />
     <Compile Include="ViewModels\Preview\WatchViewModel.cs" />
     <Compile Include="ViewModels\Core\WorkspaceViewModel.cs" />
+    <Compile Include="ViewModels\PackageManager\PublishPackageViewModel.cs" />
     <Compile Include="Windows\ExtensionWindow.xaml.cs">
       <DependentUpon>ExtensionWindow.xaml</DependentUpon>
     </Compile>
@@ -1003,34 +884,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\PackageManager\Controls\ControlColorsAndBrushes.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml">
-        <SubType>Designer</SubType>
-        <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\PackageManager\Controls\NumericUpDownControl.xaml">
-        <SubType>Designer</SubType>
-        <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\PackageManager\Controls\SearchBoxControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\PackageManager\Controls\CustomBrowserControl.xaml">
-        <SubType>Designer</SubType>
-        <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\PackageManager\Controls\FilterTagControl.xaml">
-        <SubType>Designer</SubType>
-        <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Menu\TrustedPathView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1039,45 +892,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\PackageManager\PackageManagerView.xaml">
-        <Generator>MSBuild:Compile</Generator>
-        <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml">
-        <Generator>MSBuild:Compile</Generator>
-        <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\PackageManager\Controls\PackageManagerSearchControl.xaml">
-        <Generator>MSBuild:Compile</Generator>
-        <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\PackageManager\Controls\PackageManagerPublishControl.xaml">
-        <Generator>MSBuild:Compile</Generator>
-        <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\PackageManager\Controls\PackageManagerPublishHost.xaml">
-        <Generator>MSBuild:Compile</Generator>
-        <SubType>Designer</SubType>
-    </Page>
     <Page Include="Windows\ExtensionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>      
-    <Page Include="Views\PackageManager\Pages\PublishPackageFinishPage.xaml">
-        <SubType>Designer</SubType>
-        <Generator>MSBuild:Compile</Generator>
-    </Page>   
-    <Page Include="Views\PackageManager\Pages\PublishPackagePreviewPage.xaml">
-        <SubType>Designer</SubType>
-        <Generator>MSBuild:Compile</Generator>
-    </Page>   
-    <Page Include="Views\PackageManager\Pages\PublishPackagePublishPage.xaml">
-        <SubType>Designer</SubType>
-        <Generator>MSBuild:Compile</Generator>
-    </Page>   
-    <Page Include="Views\PackageManager\Pages\PublishPackageSelectPage.xaml">
-        <SubType>Designer</SubType>
-        <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -1118,19 +935,14 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.en-US.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Resources\DesignScript.Resources.SyntaxHighlighting.xshd" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
     <None Include="App.config">
-      <SubType>Designer</SubType>
     </None>
     <None Include="UI\Fonts\Autodesk\Artifakt-Element-Bold.otf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1180,7 +992,6 @@
     <EmbeddedResource Include="UI\GuidedTour\DynamoOnboardingGuide_HouseCreationDS.dyn">
 	</EmbeddedResource>
     <None Include="ViewModels\Watch3D\shaderSource\CompileShaders.bat" />
-    <Resource Include="Packages\PackageManagerWizard\dist\index.html" />
     <Resource Include="UI\Images\AboutWindow\logo_about_dark.png">
       <CopyToOutputDirectory></CopyToOutputDirectory>
     </Resource>
@@ -1367,7 +1178,6 @@
     <Resource Include="UI\Images\NodeStates\package-64px.png" />
     <Resource Include="UI\Images\NodeStates\transient-64px.png" />
     <Resource Include="UI\Images\NodeStates\transient-light-64px.png" />
-    <Resource Include="UI\Images\PackageManager\empty-state-first-use-light-gray.png" />
     <Resource Include="UI\Images\question-hover-blue-16px.png" />
     <Resource Include="UI\Images\reset_default_16px.png" />
     <Resource Include="UI\Images\reset_hover_16px.png" />
@@ -1764,77 +1574,56 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="UI\Themes\Modern\Connectors.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="UI\Themes\Modern\DataTemplates.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="UI\Themes\Modern\DynamoColorsAndBrushes.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="UI\Themes\Modern\DynamoConverters.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="UI\Themes\Modern\DynamoModern.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
     <ItemGroup>
         <None Include="UI\Themes\Modern\LiveChartsStyle.xaml">
-            <Generator>MSBuild:Compile</Generator>
-            <SubType>Designer</SubType>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>
   <ItemGroup>
     <None Include="UI\Themes\Modern\DynamoText.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="UI\Themes\Modern\MenuStyleDictionary.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="UI\Themes\Modern\Ports.xaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="UI\Themes\Modern\ToolbarStyleDictionary.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="UI\Themes\Modern\SidebarGridStyleDictionary.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Page Include="UI\Prompts\PresetPrompt.xaml">
@@ -1852,14 +1641,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\CodeCompletion\CodeCompletionEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\PackageManager\PackagePathView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\PackageManager\TermsOfUseView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1906,10 +1687,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\PackageManager\PackageManagerSearchView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\Preview\PreviewControl.xaml">
@@ -1918,10 +1695,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\PackageManager\PublishPackageView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Controls\TooltipWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1956,10 +1729,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Views\PackageManager\Components\PackageManagerWizard\PackageManagerWizard.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
@@ -2049,10 +1818,6 @@
   <ItemGroup>
     <Resource Include="UI\Images\customizerWorkflow.png" />
     <Resource Include="UI\Images\dynamowithtext.png" />
-    <Resource Include="UI\Images\PackageManager\custom-path-dialog-minus.png" />
-    <Resource Include="UI\Images\PackageManager\custom-path-dialog-move-down.png" />
-    <Resource Include="UI\Images\PackageManager\custom-path-dialog-move-up.png" />
-    <Resource Include="UI\Images\PackageManager\custom-path-dialog-plus.png" />
     <Resource Include="UI\Images\drag_move.cur" />
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
@@ -2169,34 +1934,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Update="Views\HomePage\HomePage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Views\PackageManager\Components\PackageManagerWizard\PackageManagerWizard.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Views\PackageManager\Controls\CustomBrowserControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Views\PackageManager\Controls\FilterTagControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Views\PackageManager\Controls\NumericUpDownControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Views\PackageManager\Pages\PublishPackageFinishPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Views\PackageManager\Pages\PublishPackagePreviewPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Views\PackageManager\Pages\PublishPackagePublishPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Views\PackageManager\Pages\PublishPackageSelectPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="Views\PackageManager\Components\PackageManagerWizard\PackageManagerWizard.xaml">
-      <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>
  <Target Name="AfterBuildOps" AfterTargets="Build">
@@ -2207,12 +1944,6 @@
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
     <Copy SourceFiles="@(ExternTuneUpPkg)" DestinationFolder="$(OutputPath)\Built-In Packages\packages\TuneUp\%(RecursiveDir)" />
 	<Copy SourceFiles="@(DistribSamples)" DestinationFolder="$(OutputPath)\Samples" SkipUnchangedFiles="True" />
-  </Target>
-  <Target Name="CopyPMWizardHtmlFiles" AfterTargets="Build">
-    <ItemGroup>
-      <HtmlAndBundleFiles Include="Packages\PackageManagerWizard\dist\index.html" />
-    </ItemGroup>
-    <Copy SourceFiles="@(HtmlAndBundleFiles)" DestinationFolder="$(OutputPath)\PackageManager\" />
   </Target>
   <Target Name="CopyGuidedTourHTMLFiles" AfterTargets="AfterBuildOps">
     <ItemGroup>
@@ -2363,20 +2094,20 @@
 		<HTMLPackageManagerZhCNFiles Include="$(SolutionDir)..\doc\distrib\html\zh-CN\PackageManager\**\*.html" />
 		<HTMLPackageManagerZhTWFiles Include="$(SolutionDir)..\doc\distrib\html\zh-TW\PackageManager\**\*.html" />
     </ItemGroup>
-    <Copy SourceFiles="@(HTMLPackageManagerEnUSFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\en-US" SkipUnchangedFiles="True" />
-	<Copy SourceFiles="@(HTMLPackageManagerEnGBFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\en-GB" SkipUnchangedFiles="True" />
-	<Copy SourceFiles="@(HTMLPackageManagerCsCZFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\cs-CZ" SkipUnchangedFiles="True" />
-	<Copy SourceFiles="@(HTMLPackageManagerDeDEFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\de-DE" SkipUnchangedFiles="True" />
-	<Copy SourceFiles="@(HTMLPackageManagerEsESFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\es-ES" SkipUnchangedFiles="True" />
-	<Copy SourceFiles="@(HTMLPackageManagerFrFRFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\fr-FR" SkipUnchangedFiles="True" />
-	<Copy SourceFiles="@(HTMLPackageManagerItITFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\it-IT" SkipUnchangedFiles="True" />
-	<Copy SourceFiles="@(HTMLPackageManagerJaJPFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\ja-JP" SkipUnchangedFiles="True" />
-	<Copy SourceFiles="@(HTMLPackageManagerKoKRFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\ko-KR" SkipUnchangedFiles="True" />
-	<Copy SourceFiles="@(HTMLPackageManagerPlPLFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\pl-PL" SkipUnchangedFiles="True" />
-	<Copy SourceFiles="@(HTMLPackageManagerPtBRFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\pt-BR" SkipUnchangedFiles="True" />
-	<Copy SourceFiles="@(HTMLPackageManagerRuRUFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\ru-RU" SkipUnchangedFiles="True" />
-	<Copy SourceFiles="@(HTMLPackageManagerZhCNFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\zh-CN" SkipUnchangedFiles="True" />
-	<Copy SourceFiles="@(HTMLPackageManagerZhTWFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\zh-TW" SkipUnchangedFiles="True" />
+    <Copy SourceFiles="@(HTMLPackageManagerEnUSFiles)" DestinationFolder="$(SolutionDir)\DynamoPackagesWPF\ViewModels\PackageManager\Docs\en-US" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerEnGBFiles)" DestinationFolder="$(SolutionDir)\DynamoPackagesWPF\ViewModels\PackageManager\Docs\en-GB" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerCsCZFiles)" DestinationFolder="$(SolutionDir)\DynamoPackagesWPF\ViewModels\PackageManager\Docs\cs-CZ" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerDeDEFiles)" DestinationFolder="$(SolutionDir)\DynamoPackagesWPF\ViewModels\PackageManager\Docs\de-DE" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerEsESFiles)" DestinationFolder="$(SolutionDir)\DynamoPackagesWPF\ViewModels\PackageManager\Docs\es-ES" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerFrFRFiles)" DestinationFolder="$(SolutionDir)\DynamoPackagesWPF\ViewModels\PackageManager\Docs\fr-FR" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerItITFiles)" DestinationFolder="$(SolutionDir)\DynamoPackagesWPF\ViewModels\PackageManager\Docs\it-IT" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerJaJPFiles)" DestinationFolder="$(SolutionDir)\DynamoPackagesWPF\ViewModels\PackageManager\Docs\ja-JP" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerKoKRFiles)" DestinationFolder="$(SolutionDir)\DynamoPackagesWPF\ViewModels\PackageManager\Docs\ko-KR" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerPlPLFiles)" DestinationFolder="$(SolutionDir)\DynamoPackagesWPF\ViewModels\PackageManager\Docs\pl-PL" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerPtBRFiles)" DestinationFolder="$(SolutionDir)\DynamoPackagesWPF\ViewModels\PackageManager\Docs\pt-BR" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerRuRUFiles)" DestinationFolder="$(SolutionDir)\DynamoPackagesWPF\ViewModels\PackageManager\Docs\ru-RU" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerZhCNFiles)" DestinationFolder="$(SolutionDir)\DynamoPackagesWPF\ViewModels\PackageManager\Docs\zh-CN" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerZhTWFiles)" DestinationFolder="$(SolutionDir)\DynamoPackagesWPF\ViewModels\PackageManager\Docs\zh-TW" SkipUnchangedFiles="True" />
   </Target>
   <Target Name="CopyLintingViewExtensionHTMLFiles" AfterTargets="CopyPackageManagerHTMLFiles">
     <ItemGroup>
