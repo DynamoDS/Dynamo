@@ -174,8 +174,8 @@ namespace Dynamo.Applications
         /// </summary>
         /// <param name="geometryFactoryPath">libG ProtoInterface path</param>
         /// <param name="preloaderLocation">libG folder path</param>
-        /// <param name="asmVersion">Version of the loaded ASM</param>
-        /// <param name="asmPath">Path where ASM binaries are located</param>
+        /// <param name="asmVersion">Version of the loaded ASM, or null if version cannot be determined</param>
+        /// <param name="asmPath">Path where ASM binaries are located, or empty string if not found</param>
 #if NET6_0_OR_GREATER
         [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
@@ -454,7 +454,7 @@ namespace Dynamo.Applications
             if (asmVersion != null)
             {
                 model.Logger.Log(string.Format("ASM version {0} loaded from: {1}",
-                    asmVersion, asmPath ?? "unknown location"));
+                    asmVersion, string.IsNullOrEmpty(asmPath) ? "unknown location" : asmPath));
             }
             else if (model.IsASMLoaded)
             {
