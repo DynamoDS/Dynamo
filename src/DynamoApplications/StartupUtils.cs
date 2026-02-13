@@ -151,7 +151,7 @@ namespace Dynamo.Applications
 #if NET6_0_OR_GREATER
         [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
-        [Obsolete]
+        [Obsolete("The API has been deprecated and will be removed in a future release of Dynamo. Use the overload that returns asmVersion and asmPath out parameters for better diagnostics.")]
         public static void PreloadShapeManager(ref string geometryFactoryPath, ref string preloaderLocation)
         {
             var exePath = Assembly.GetExecutingAssembly().Location;
@@ -206,7 +206,7 @@ namespace Dynamo.Applications
             {
                 try
                 {
-                    asmVersion = DynamoShapeManager.Utilities.GetVersionFromPath(asmPath, OSHelper.IsWindows() ? "*ASMAHL*.dll" : "*ASMahl*.so");
+                    asmVersion = DynamoShapeManager.Utilities.GetVersionFromPath(asmPath);
                 }
                 catch
                 {
