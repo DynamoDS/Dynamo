@@ -325,13 +325,6 @@ namespace Dynamo.Configuration
         /// </summary>
         internal static readonly int NodeStartZIndex = 3;
 
-        /// <summary>
-        /// Base ZIndex for info/warning/error bubbles when hidden or idle.
-        /// Set to 1,000,000 to ensure bubbles always appear above all nodes and notes.
-        /// When shown, bubbles are boosted to int.MaxValue - 1.
-        /// </summary>
-        internal static readonly int InfoBubbleBaseZIndex = 1000000;
-
         #endregion
 
         #region Preview Control Settings

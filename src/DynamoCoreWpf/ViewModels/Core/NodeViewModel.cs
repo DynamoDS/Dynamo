@@ -350,6 +350,8 @@ namespace Dynamo.ViewModels
             {
                 zIndex = value;
                 RaisePropertyChanged("ZIndex");
+                if (ErrorBubble == null) return;
+                ErrorBubble.ZIndex = zIndex + 1;
             }
         }
 
@@ -1376,7 +1378,10 @@ namespace Dynamo.ViewModels
                 ErrorBubble = new InfoBubbleViewModel(this)
                 {
                     IsCollapsed = this.IsCollapsed,
-                    ZIndex = Configurations.InfoBubbleBaseZIndex
+                    // The Error bubble sits above the node in ZIndex. Since pinned notes sit above
+                    // the node as well and the ErrorBubble needs to display on top of these, the
+                    // ErrorBubble's ZIndex should be the node's ZIndex + 2.
+                    ZIndex = ZIndex + 2
                 };
             }
 

@@ -800,7 +800,6 @@ namespace Dynamo.Controls
                 fadeInStoryBoard.Begin(this);
                 fadeInStoryBoard.SkipToFill(this);
             }
-            ViewModel.ZIndex = int.MaxValue - 1;
         }
 
         // Hide bubble instantly
@@ -812,7 +811,6 @@ namespace Dynamo.Controls
                 fadeOutStoryBoard.Begin(this);
                 fadeOutStoryBoard.SkipToFill(this);
             }
-            ViewModel.ZIndex = Configurations.InfoBubbleBaseZIndex;
         }
 
         private void FadeInInfoBubble()
@@ -827,7 +825,6 @@ namespace Dynamo.Controls
             fadeOutStoryBoard.Stop(this);
             mainGrid.Visibility = Visibility.Visible;
             fadeInStoryBoard.Begin(this);
-            ViewModel.ZIndex = int.MaxValue - 1;
         }
 
         private void FadeOutInfoBubble()
@@ -840,7 +837,6 @@ namespace Dynamo.Controls
 
             fadeInStoryBoard.Stop(this);
             fadeOutStoryBoard.Begin(this);
-            ViewModel.ZIndex = Configurations.InfoBubbleBaseZIndex;
         }
 
         #region Mouse Event Handlers
