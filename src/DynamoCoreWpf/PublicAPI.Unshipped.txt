@@ -6,6 +6,1606 @@ Dynamo.Controls.OnlineStatusTextConverter
 Dynamo.Controls.OnlineStatusTextConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.OnlineStatusTextConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.OnlineStatusTextConverter.OnlineStatusTextConverter() -> void
+Dynamo.Controls.PackageDetailsLinkCollapseOnEmpty
+Dynamo.Controls.PackageDetailsLinkCollapseOnEmpty.Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PackageDetailsLinkCollapseOnEmpty.ConvertBack(object value, System.Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) -> object[]
+Dynamo.Controls.PackageDetailsLinkCollapseOnEmpty.PackageDetailsLinkCollapseOnEmpty() -> void
+Dynamo.Controls.PackageDownloadStateToStringConverter
+Dynamo.Controls.PackageDownloadStateToStringConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PackageDownloadStateToStringConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PackageDownloadStateToStringConverter.PackageDownloadStateToStringConverter() -> void
+Dynamo.Controls.PackageSearchStateToStringConverter
+Dynamo.Controls.PackageSearchStateToStringConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PackageSearchStateToStringConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PackageSearchStateToStringConverter.PackageSearchStateToStringConverter() -> void
+Dynamo.Controls.PackageUploadHandleUploadTypeToVisibilityConverter
+Dynamo.Controls.PackageUploadHandleUploadTypeToVisibilityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PackageUploadHandleUploadTypeToVisibilityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PackageUploadHandleUploadTypeToVisibilityConverter.PackageUploadHandleUploadTypeToVisibilityConverter() -> void
+Dynamo.Controls.PackageUploadStateToStringConverter
+Dynamo.Controls.PackageUploadStateToStringConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PackageUploadStateToStringConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PackageUploadStateToStringConverter.PackageUploadStateToStringConverter() -> void
+Dynamo.Controls.PathToFileNameConverter
+Dynamo.Controls.PathToFileNameConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PathToFileNameConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PathToFileNameConverter.PathToFileNameConverter() -> void
+Dynamo.Controls.PathToSaveStateConverter
+Dynamo.Controls.PathToSaveStateConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PathToSaveStateConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PathToSaveStateConverter.PathToSaveStateConverter() -> void
+Dynamo.Controls.PointsToPathConverter
+Dynamo.Controls.PointsToPathConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PointsToPathConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PointsToPathConverter.PointsToPathConverter() -> void
+Dynamo.Controls.PortCountToHeightConverter
+Dynamo.Controls.PortCountToHeightConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PortCountToHeightConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PortCountToHeightConverter.PortCountToHeightConverter() -> void
+Dynamo.Controls.PortNameToWidthConverter
+Dynamo.Controls.PortNameToWidthConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PortNameToWidthConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PortNameToWidthConverter.PortNameToWidthConverter() -> void
+Dynamo.Controls.PortToAttachmentConverter
+Dynamo.Controls.PortToAttachmentConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PortToAttachmentConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PortToAttachmentConverter.PortToAttachmentConverter() -> void
+Dynamo.Controls.PortTypeToClipConverter
+Dynamo.Controls.PortTypeToClipConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PortTypeToClipConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PortTypeToClipConverter.PortTypeToClipConverter() -> void
+Dynamo.Controls.PortTypeToGridColumnConverter
+Dynamo.Controls.PortTypeToGridColumnConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PortTypeToGridColumnConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PortTypeToGridColumnConverter.PortTypeToGridColumnConverter() -> void
+Dynamo.Controls.PortTypeToMarginConverter
+Dynamo.Controls.PortTypeToMarginConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PortTypeToMarginConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PortTypeToMarginConverter.PortTypeToMarginConverter() -> void
+Dynamo.Controls.PortTypeToStringConverter
+Dynamo.Controls.PortTypeToStringConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PortTypeToStringConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PortTypeToStringConverter.PortTypeToStringConverter() -> void
+Dynamo.Controls.PortTypeToTextAlignmentConverter
+Dynamo.Controls.PortTypeToTextAlignmentConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PortTypeToTextAlignmentConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PortTypeToTextAlignmentConverter.PortTypeToTextAlignmentConverter() -> void
+Dynamo.Controls.PrettyDateConverter
+Dynamo.Controls.PrettyDateConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PrettyDateConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.PrettyDateConverter.PrettyDateConverter() -> void
+Dynamo.Controls.RadianToDegreesConverter
+Dynamo.Controls.RadianToDegreesConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.RadianToDegreesConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.RadianToDegreesConverter.RadianToDegreesConverter() -> void
+Dynamo.Controls.RadioButtonCheckedConverter
+Dynamo.Controls.RadioButtonCheckedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.RadioButtonCheckedConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.RadioButtonCheckedConverter.RadioButtonCheckedConverter() -> void
+Dynamo.Controls.ReadyToPublishToVisibilityCollapsedConverter
+Dynamo.Controls.ReadyToPublishToVisibilityCollapsedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ReadyToPublishToVisibilityCollapsedConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ReadyToPublishToVisibilityCollapsedConverter.ReadyToPublishToVisibilityCollapsedConverter() -> void
+Dynamo.Controls.RgbaStringToBrushConverter
+Dynamo.Controls.RgbaStringToBrushConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.RgbaStringToBrushConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.RgbaStringToBrushConverter.RgbaStringToBrushConverter() -> void
+Dynamo.Controls.RootElementVMToBoolConverter
+Dynamo.Controls.RootElementVMToBoolConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.RootElementVMToBoolConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.RootElementVMToBoolConverter.RootElementVMToBoolConverter() -> void
+Dynamo.Controls.RunPreviewConverter
+Dynamo.Controls.RunPreviewConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.RunPreviewConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.RunPreviewConverter.RunPreviewConverter() -> void
+Dynamo.Controls.RunPreviewToolTipConverter
+Dynamo.Controls.RunPreviewToolTipConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.RunPreviewToolTipConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.RunPreviewToolTipConverter.RunPreviewToolTipConverter() -> void
+Dynamo.Controls.ScaleSizeBackgroundConverter
+Dynamo.Controls.ScaleSizeBackgroundConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ScaleSizeBackgroundConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ScaleSizeBackgroundConverter.ScaleSizeBackgroundConverter() -> void
+Dynamo.Controls.SearchHighlightMarginConverter
+Dynamo.Controls.SearchHighlightMarginConverter.Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.SearchHighlightMarginConverter.ConvertBack(object value, System.Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) -> object[]
+Dynamo.Controls.SearchHighlightMarginConverter.SearchHighlightMarginConverter() -> void
+Dynamo.Controls.SearchResultsToVisibilityConverter
+Dynamo.Controls.SearchResultsToVisibilityConverter.Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.SearchResultsToVisibilityConverter.ConvertBack(object value, System.Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) -> object[]
+Dynamo.Controls.SearchResultsToVisibilityConverter.SearchResultsToVisibilityConverter() -> void
+Dynamo.Controls.SelectedItemToActiveConverter
+Dynamo.Controls.SelectedItemToActiveConverter.ActiveColor.get -> System.Windows.Media.SolidColorBrush
+Dynamo.Controls.SelectedItemToActiveConverter.ActiveColor.set -> void
+Dynamo.Controls.SelectedItemToActiveConverter.Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.SelectedItemToActiveConverter.ConvertBack(object value, System.Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) -> object[]
+Dynamo.Controls.SelectedItemToActiveConverter.NormalColor.get -> System.Windows.Media.SolidColorBrush
+Dynamo.Controls.SelectedItemToActiveConverter.NormalColor.set -> void
+Dynamo.Controls.SelectedItemToActiveConverter.SelectedItemToActiveConverter() -> void
+Dynamo.Controls.ShowHideClassicNavigatorMenuItemConverter
+Dynamo.Controls.ShowHideClassicNavigatorMenuItemConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ShowHideClassicNavigatorMenuItemConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ShowHideClassicNavigatorMenuItemConverter.ShowHideClassicNavigatorMenuItemConverter() -> void
+Dynamo.Controls.ShowHideFullscreenWatchMenuItemConverter
+Dynamo.Controls.ShowHideFullscreenWatchMenuItemConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ShowHideFullscreenWatchMenuItemConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ShowHideFullscreenWatchMenuItemConverter.ShowHideFullscreenWatchMenuItemConverter() -> void
+Dynamo.Controls.SnapRegionMarginConverter
+Dynamo.Controls.SnapRegionMarginConverter.Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.SnapRegionMarginConverter.ConvertBack(object value, System.Type[] targetType, object parameter, System.Globalization.CultureInfo culture) -> object[]
+Dynamo.Controls.SnapRegionMarginConverter.SnapRegionMarginConverter() -> void
+Dynamo.Controls.StringDisplay
+Dynamo.Controls.StringDisplay.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.StringDisplay.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.StringDisplay.StringDisplay() -> void
+Dynamo.Controls.StringEqualsZeroToVisibilityCollapsedConverter
+Dynamo.Controls.StringEqualsZeroToVisibilityCollapsedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.StringEqualsZeroToVisibilityCollapsedConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.StringEqualsZeroToVisibilityCollapsedConverter.StringEqualsZeroToVisibilityCollapsedConverter() -> void
+Dynamo.Controls.StringToBrushColorConverter
+Dynamo.Controls.StringToBrushColorConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.StringToBrushColorConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.StringToBrushColorConverter.StringToBrushColorConverter() -> void
+Dynamo.Controls.SumConverter
+Dynamo.Controls.SumConverter.Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.SumConverter.ConvertBack(object value, System.Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) -> object[]
+Dynamo.Controls.SumConverter.SumConverter() -> void
+Dynamo.Controls.TabSizeConverter
+Dynamo.Controls.TabSizeConverter.Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.TabSizeConverter.ConvertBack(object value, System.Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) -> object[]
+Dynamo.Controls.TabSizeConverter.TabSizeConverter() -> void
+Dynamo.Controls.TextForegroundSaturationColorConverter
+Dynamo.Controls.TextForegroundSaturationColorConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.TextForegroundSaturationColorConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.TextForegroundSaturationColorConverter.TextForegroundSaturationColorConverter() -> void
+Dynamo.Controls.ToolTipAllLinesButFirst
+Dynamo.Controls.ToolTipAllLinesButFirst.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ToolTipAllLinesButFirst.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ToolTipAllLinesButFirst.ToolTipAllLinesButFirst() -> void
+Dynamo.Controls.ToolTipFirstLineOnly
+Dynamo.Controls.ToolTipFirstLineOnly.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ToolTipFirstLineOnly.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ToolTipFirstLineOnly.ToolTipFirstLineOnly() -> void
+Dynamo.Controls.TooltipLengthTruncater
+Dynamo.Controls.TooltipLengthTruncater.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.TooltipLengthTruncater.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.TooltipLengthTruncater.TooltipLengthTruncater() -> void
+Dynamo.Controls.TopLevelLabelMarginConverter
+Dynamo.Controls.TopLevelLabelMarginConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.TopLevelLabelMarginConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.TopLevelLabelMarginConverter.TopLevelLabelMarginConverter() -> void
+Dynamo.Controls.ToTitleCaseStringConverter
+Dynamo.Controls.ToTitleCaseStringConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ToTitleCaseStringConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ToTitleCaseStringConverter.ToTitleCaseStringConverter() -> void
+Dynamo.Controls.TransformOriginStatConverter
+Dynamo.Controls.TransformOriginStatConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.TransformOriginStatConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.TransformOriginStatConverter.TransformOriginStatConverter() -> void
+Dynamo.Controls.TreeViewHLineMarginConverter
+Dynamo.Controls.TreeViewHLineMarginConverter.Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.TreeViewHLineMarginConverter.ConvertBack(object value, System.Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) -> object[]
+Dynamo.Controls.TreeViewHLineMarginConverter.TreeViewHLineMarginConverter() -> void
+Dynamo.Controls.TreeViewLineConverter
+Dynamo.Controls.TreeViewLineConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.TreeViewLineConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.TreeViewLineConverter.TreeViewLineConverter() -> void
+Dynamo.Controls.TreeViewLineMarginConverter
+Dynamo.Controls.TreeViewLineMarginConverter.Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.TreeViewLineMarginConverter.ConvertBack(object value, System.Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) -> object[]
+Dynamo.Controls.TreeViewLineMarginConverter.TreeViewLineMarginConverter() -> void
+Dynamo.Controls.TreeViewMarginCheck
+Dynamo.Controls.TreeViewMarginCheck.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.TreeViewMarginCheck.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.TreeViewMarginCheck.TreeViewMarginCheck() -> void
+Dynamo.Controls.TreeViewVLineMarginConverter
+Dynamo.Controls.TreeViewVLineMarginConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.TreeViewVLineMarginConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.TreeViewVLineMarginConverter.TreeViewVLineMarginConverter() -> void
+Dynamo.Controls.VersionStringAsteriskToXConverter
+Dynamo.Controls.VersionStringAsteriskToXConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.VersionStringAsteriskToXConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.VersionStringAsteriskToXConverter.VersionStringAsteriskToXConverter() -> void
+Dynamo.Controls.ViewButtonClipRectConverter
+Dynamo.Controls.ViewButtonClipRectConverter.Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ViewButtonClipRectConverter.ConvertBack(object value, System.Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) -> object[]
+Dynamo.Controls.ViewButtonClipRectConverter.ViewButtonClipRectConverter() -> void
+Dynamo.Controls.ViewModeToVisibilityConverter
+Dynamo.Controls.ViewModeToVisibilityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ViewModeToVisibilityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ViewModeToVisibilityConverter.ViewModeToVisibilityConverter() -> void
+Dynamo.Controls.WarningLevelToColorConverter
+Dynamo.Controls.WarningLevelToColorConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.WarningLevelToColorConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.WarningLevelToColorConverter.WarningLevelToColorConverter() -> void
+Dynamo.Controls.Watch3DView
+Dynamo.Controls.Watch3DView.InitializeComponent() -> void
+Dynamo.Controls.Watch3DView.inputGrid -> System.Windows.Controls.Grid
+Dynamo.Controls.Watch3DView.MainContextMenu -> System.Windows.Controls.ContextMenu
+Dynamo.Controls.Watch3DView.View.get -> HelixToolkit.Wpf.SharpDX.Viewport3DX
+Dynamo.Controls.Watch3DView.Watch3DView() -> void
+Dynamo.Controls.WatchTree
+Dynamo.Controls.WatchTree.InitializeComponent() -> void
+Dynamo.Controls.WatchTree.WatchTree(Dynamo.ViewModels.WatchViewModel vm) -> void
+Dynamo.Controls.WorkspaceBackgroundBrushConverter
+Dynamo.Controls.WorkspaceBackgroundBrushConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.WorkspaceBackgroundBrushConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.WorkspaceBackgroundBrushConverter.CustomBackgroundBrush.get -> System.Windows.Media.SolidColorBrush
+Dynamo.Controls.WorkspaceBackgroundBrushConverter.CustomBackgroundBrush.set -> void
+Dynamo.Controls.WorkspaceBackgroundBrushConverter.HomeBackgroundBrush.get -> System.Windows.Media.SolidColorBrush
+Dynamo.Controls.WorkspaceBackgroundBrushConverter.HomeBackgroundBrush.set -> void
+Dynamo.Controls.WorkspaceBackgroundBrushConverter.WorkspaceBackgroundBrushConverter() -> void
+Dynamo.Controls.WorkspaceBackgroundColorConverter
+Dynamo.Controls.WorkspaceBackgroundColorConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.WorkspaceBackgroundColorConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.WorkspaceBackgroundColorConverter.CustomBackgroundColor.get -> System.Windows.Media.Color
+Dynamo.Controls.WorkspaceBackgroundColorConverter.CustomBackgroundColor.set -> void
+Dynamo.Controls.WorkspaceBackgroundColorConverter.HomeBackgroundColor.get -> System.Windows.Media.Color
+Dynamo.Controls.WorkspaceBackgroundColorConverter.HomeBackgroundColor.set -> void
+Dynamo.Controls.WorkspaceBackgroundColorConverter.WorkspaceBackgroundColorConverter() -> void
+Dynamo.Controls.WorkspaceTypeConverter
+Dynamo.Controls.WorkspaceTypeConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.WorkspaceTypeConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.WorkspaceTypeConverter.WorkspaceTypeConverter() -> void
+Dynamo.Controls.ZeroToVisibilityCollapsedConverter
+Dynamo.Controls.ZeroToVisibilityCollapsedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ZeroToVisibilityCollapsedConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ZeroToVisibilityCollapsedConverter.ZeroToVisibilityCollapsedConverter() -> void
+Dynamo.Controls.ZoomBorder
+Dynamo.Controls.ZoomBorder.GetChildScaleTransform() -> System.Windows.Media.ScaleTransform
+Dynamo.Controls.ZoomBorder.GetChildTranslateTransform() -> System.Windows.Media.TranslateTransform
+Dynamo.Controls.ZoomBorder.GetTranslateTransformOrigin() -> System.Windows.Point
+Dynamo.Controls.ZoomBorder.SetTranslateTransformOrigin(Dynamo.Utilities.Point2D p) -> void
+Dynamo.Controls.ZoomBorder.SetZoom(double zoom) -> void
+Dynamo.Controls.ZoomBorder.ZoomBorder() -> void
+Dynamo.Controls.ZoomStatConverter
+Dynamo.Controls.ZoomStatConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ZoomStatConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ZoomStatConverter.ZoomStatConverter() -> void
+Dynamo.Controls.ZoomToBooleanConverter
+Dynamo.Controls.ZoomToBooleanConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ZoomToBooleanConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ZoomToBooleanConverter.ZoomToBooleanConverter() -> void
+Dynamo.Controls.ZoomToInverseVisibilityCollapsedConverter
+Dynamo.Controls.ZoomToInverseVisibilityCollapsedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ZoomToInverseVisibilityCollapsedConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ZoomToInverseVisibilityCollapsedConverter.ZoomToInverseVisibilityCollapsedConverter() -> void
+Dynamo.Controls.ZoomToOpacityConverter
+Dynamo.Controls.ZoomToOpacityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ZoomToOpacityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ZoomToOpacityConverter.ZoomToOpacityConverter() -> void
+Dynamo.Controls.ZoomToVisibilityCollapsedConverter
+Dynamo.Controls.ZoomToVisibilityCollapsedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ZoomToVisibilityCollapsedConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.ZoomToVisibilityCollapsedConverter.ZoomToVisibilityCollapsedConverter() -> void
+Dynamo.Interfaces.DefaultWatchHandler
+Dynamo.Interfaces.DefaultWatchHandler.DefaultWatchHandler(Dynamo.Interfaces.IPreferences preferences) -> void
+Dynamo.Interfaces.DefaultWatchHandler.Process(dynamic value, System.Collections.Generic.IEnumerable<string> preferredDictionaryOrdering, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, Dynamo.Interfaces.WatchHandlerCallback callback) -> Dynamo.ViewModels.WatchViewModel
+Dynamo.Interfaces.DefaultWatchHandler.RequestSelectGeometry -> System.Action<string>
+Dynamo.Interfaces.IWatchHandler
+Dynamo.Interfaces.IWatchHandler.Process(dynamic value, System.Collections.Generic.IEnumerable<string> preferredDictionaryOrdering, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData, Dynamo.Interfaces.WatchHandlerCallback callback) -> Dynamo.ViewModels.WatchViewModel
+Dynamo.Interfaces.IWatchHandler.RequestSelectGeometry -> System.Action<string>
+Dynamo.Interfaces.WatchHandler
+Dynamo.Interfaces.WatchHandlerCallback
+Dynamo.Nodes.AnnotationView
+Dynamo.Nodes.AnnotationView.AnnotationView() -> void
+Dynamo.Nodes.AnnotationView.InitializeComponent() -> void
+Dynamo.Nodes.AnnotationView.ViewModel.get -> Dynamo.ViewModels.AnnotationViewModel
+Dynamo.Nodes.ClickSelectTextBox
+Dynamo.Nodes.ClickSelectTextBox.ClickSelectTextBox() -> void
+Dynamo.Nodes.ClickSelectTextBox.focusHandler -> System.Windows.RoutedEventHandler
+Dynamo.Nodes.ClickSelectTextBox.selectAllWhenFocused -> bool
+Dynamo.Nodes.ConnectorPinView
+Dynamo.Nodes.ConnectorPinView.ConnectorPinView() -> void
+Dynamo.Nodes.ConnectorPinView.InitializeComponent() -> void
+Dynamo.Nodes.ConnectorPinView.ViewModel.get -> Dynamo.ViewModels.ConnectorPinViewModel
+Dynamo.Nodes.DynamoNodeButton
+Dynamo.Nodes.DynamoNodeButton.DynamoNodeButton() -> void
+Dynamo.Nodes.DynamoNodeButton.DynamoNodeButton(Dynamo.Graph.ModelBase model, string eventName) -> void
+Dynamo.Nodes.DynamoNodeButton.ShowWarningForRemovingInPort.get -> bool
+Dynamo.Nodes.DynamoNodeButton.ShowWarningForRemovingInPort.set -> void
+Dynamo.Nodes.DynamoTextBox
+Dynamo.Nodes.DynamoTextBox.BindToProperty(System.Windows.Data.Binding binding) -> void
+Dynamo.Nodes.DynamoTextBox.DynamoTextBox() -> void
+Dynamo.Nodes.DynamoTextBox.DynamoTextBox(string initialText) -> void
+Dynamo.Nodes.DynamoTextBox.OnChangeCommitted -> System.Action
+Dynamo.Nodes.DynamoTextBox.Pending.get -> bool
+Dynamo.Nodes.DynamoTextBox.Pending.set -> void
+Dynamo.Nodes.DynamoTextBox.Text.get -> string
+Dynamo.Nodes.DynamoTextBox.Text.set -> void
+Dynamo.Nodes.FunctionNamePrompt
+Dynamo.Nodes.FunctionNamePrompt.Category.get -> string
+Dynamo.Nodes.FunctionNamePrompt.Description.get -> string
+Dynamo.Nodes.FunctionNamePrompt.FunctionNamePrompt(System.Collections.Generic.IEnumerable<string> categories) -> void
+Dynamo.Nodes.FunctionNamePrompt.InitializeComponent() -> void
+Dynamo.Nodes.FunctionNamePrompt.Text.get -> string
+Dynamo.Nodes.NoteView
+Dynamo.Nodes.NoteView.InitializeComponent() -> void
+Dynamo.Nodes.NoteView.NoteView() -> void
+Dynamo.Nodes.NoteView.ViewModel.get -> Dynamo.ViewModels.NoteViewModel
+Dynamo.Nodes.PresetOverwritePrompt
+Dynamo.Nodes.PresetOverwritePrompt.InitializeComponent() -> void
+Dynamo.Nodes.PresetOverwritePrompt.IsCancelButtonVisible.get -> System.Windows.Visibility
+Dynamo.Nodes.PresetOverwritePrompt.IsCancelButtonVisible.set -> void
+Dynamo.Nodes.PresetOverwritePrompt.PresetOverwritePrompt() -> void
+Dynamo.Nodes.PresetOverwritePrompt.Text.get -> string
+Dynamo.Nodes.PresetOverwritePrompt.Text.set -> void
+Dynamo.Nodes.PresetPrompt
+Dynamo.Nodes.PresetPrompt.Description.get -> string
+Dynamo.Nodes.PresetPrompt.InitializeComponent() -> void
+Dynamo.Nodes.PresetPrompt.MaxLength.get -> int
+Dynamo.Nodes.PresetPrompt.PresetPrompt() -> void
+Dynamo.Nodes.PresetPrompt.Text.get -> string
+Dynamo.Nodes.PresetPrompt.Text.set -> void
+Dynamo.Nodes.Prompts.CrashPrompt
+Dynamo.Nodes.Prompts.CrashPrompt.CrashDetailsContent -> System.Windows.Controls.TextBox
+Dynamo.Nodes.Prompts.CrashPrompt.CrashPrompt(Dynamo.Core.CrashPromptArgs args, Dynamo.ViewModels.DynamoViewModel dynamoViewModel) -> void
+Dynamo.Nodes.Prompts.CrashPrompt.CrashPrompt(Dynamo.ViewModels.DynamoViewModel dynamoViewModel) -> void
+Dynamo.Nodes.Prompts.CrashPrompt.CrashPrompt(string details, Dynamo.ViewModels.DynamoViewModel dynamoViewModel) -> void
+Dynamo.Nodes.Prompts.CrashPrompt.InitializeComponent() -> void
+Dynamo.Nodes.StringTextBox
+Dynamo.Nodes.StringTextBox.StringTextBox() -> void
+Dynamo.PackageManager.KeywordTag
+Dynamo.PackageManager.KeywordTag.KeywordTag(string name) -> void
+Dynamo.PackageManager.KeywordTag.Name.get -> string
+Dynamo.PackageManager.KeywordTag.Name.set -> void
+Dynamo.PackageManager.KeywordTag.OnChecked.get -> bool
+Dynamo.PackageManager.KeywordTag.OnChecked.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel
+Dynamo.PackageManager.PackageManagerSearchViewModel.CanClearCompleted() -> bool
+Dynamo.PackageManager.PackageManagerSearchViewModel.CanSetSortingDirection(object par) -> bool
+Dynamo.PackageManager.PackageManagerSearchViewModel.CanSetSortingKey(object par) -> bool
+Dynamo.PackageManager.PackageManagerSearchViewModel.CanSort() -> bool
+Dynamo.PackageManager.PackageManagerSearchViewModel.ClearCompleted() -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.ClearCompletedCommand.get -> Prism.Commands.DelegateCommand
+Dynamo.PackageManager.PackageManagerSearchViewModel.ClearCompletedCommand.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.ClearFiltersCommand.get -> Prism.Commands.DelegateCommand<object>
+Dynamo.PackageManager.PackageManagerSearchViewModel.ClearFiltersCommand.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.ClearSearchTextBox(object obj) -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.ClearSearchTextBoxCommand.get -> Prism.Commands.DelegateCommand<object>
+Dynamo.PackageManager.PackageManagerSearchViewModel.ClearSearchTextBoxCommand.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.ClearToastNotification(object obj) -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.ClearToastNotificationCommand.get -> Prism.Commands.DelegateCommand<object>
+Dynamo.PackageManager.PackageManagerSearchViewModel.ClearToastNotificationCommand.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.CompatibilityFilter.get -> System.Collections.Generic.List<Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry>
+Dynamo.PackageManager.PackageManagerSearchViewModel.CompatibilityFilter.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.DisableSearchTextBox() -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.Downloads.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.PackageDownloadHandle>
+Dynamo.PackageManager.PackageManagerSearchViewModel.ExecuteSelected() -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry
+Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.FilterCommand.get -> Prism.Commands.DelegateCommand<object>
+Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.FilterCommand.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.FilterEntry(string filterName, string groupName, string tooltip, Dynamo.PackageManager.PackageManagerSearchViewModel packageManagerSearchViewModel) -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.FilterName.get -> string
+Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.FilterName.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.GroupName.get -> string
+Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.GroupName.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.IsEnabled.get -> bool
+Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.IsEnabled.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.OnChecked.get -> bool
+Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.OnChecked.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.Tooltip.get -> string
+Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry.Tooltip.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.HasDownloads.get -> bool
+Dynamo.PackageManager.PackageManagerSearchViewModel.HasNoResults.get -> bool
+Dynamo.PackageManager.PackageManagerSearchViewModel.HostFilter.get -> System.Collections.Generic.List<Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry>
+Dynamo.PackageManager.PackageManagerSearchViewModel.HostFilter.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.InfectedPackages.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.PackageManagerSearchElement>
+Dynamo.PackageManager.PackageManagerSearchViewModel.InfectedPackages.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.InitializeHostFilter() -> System.Collections.Generic.List<Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry>
+Dynamo.PackageManager.PackageManagerSearchViewModel.InitialResultsLoaded.get -> bool
+Dynamo.PackageManager.PackageManagerSearchViewModel.InitialResultsLoaded.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.IsAnyFilterOn.get -> bool
+Dynamo.PackageManager.PackageManagerSearchViewModel.IsAnyFilterOn.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.IsDetailPackagesExtensionOpened.get -> bool
+Dynamo.PackageManager.PackageManagerSearchViewModel.IsDetailPackagesExtensionOpened.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.IsLoggedIn.get -> bool
+Dynamo.PackageManager.PackageManagerSearchViewModel.KeyHandler(object sender, System.Windows.Input.KeyEventArgs e) -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.LastSync.get -> System.Collections.Generic.List<Dynamo.PackageManager.PackageManagerSearchElement>
+Dynamo.PackageManager.PackageManagerSearchViewModel.LastSync.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.MaxNumSearchResults.get -> int
+Dynamo.PackageManager.PackageManagerSearchViewModel.MaxNumSearchResults.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.NonHostFilter.get -> System.Collections.Generic.List<Dynamo.PackageManager.PackageManagerSearchViewModel.FilterEntry>
+Dynamo.PackageManager.PackageManagerSearchViewModel.NonHostFilter.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.PackageManagerClientViewModel.get -> Dynamo.ViewModels.PackageManagerClientViewModel
+Dynamo.PackageManager.PackageManagerSearchViewModel.PackageManagerSearchViewModel(Dynamo.ViewModels.PackageManagerClientViewModel client) -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSearchState
+Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSearchState.NoResults = 2 -> Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSearchState
+Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSearchState.Results = 3 -> Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSearchState
+Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSearchState.Retry = 4 -> Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSearchState
+Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSearchState.Searching = 1 -> Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSearchState
+Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSearchState.Syncing = 0 -> Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSearchState
+Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSortingDirection
+Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSortingDirection.Ascending = 0 -> Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSortingDirection
+Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSortingDirection.Descending = 1 -> Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSortingDirection
+Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSortingKey
+Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSortingKey.Downloads = 1 -> Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSortingKey
+Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSortingKey.LastUpdate = 4 -> Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSortingKey
+Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSortingKey.Maintainers = 3 -> Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSortingKey
+Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSortingKey.Name = 0 -> Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSortingKey
+Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSortingKey.Search = 5 -> Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSortingKey
+Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSortingKey.Votes = 2 -> Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSortingKey
+Dynamo.PackageManager.PackageManagerSearchViewModel.Preferences.get -> Dynamo.Interfaces.IPreferences
+Dynamo.PackageManager.PackageManagerSearchViewModel.Refresh() -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.RefreshAndSearch() -> System.Collections.Generic.IEnumerable<Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel>
+Dynamo.PackageManager.PackageManagerSearchViewModel.RefreshAndSearchAsync() -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.RequestDisableTextSearch -> System.EventHandler<Dynamo.ViewModels.PackagePathEventArgs>
+Dynamo.PackageManager.PackageManagerSearchViewModel.RequestShowFileDialog -> System.EventHandler<Dynamo.ViewModels.PackagePathEventArgs>
+Dynamo.PackageManager.PackageManagerSearchViewModel.SearchBoxPrompt.get -> string
+Dynamo.PackageManager.PackageManagerSearchViewModel.SearchMyResults.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel>
+Dynamo.PackageManager.PackageManagerSearchViewModel.SearchMyResults.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.SearchResults.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel>
+Dynamo.PackageManager.PackageManagerSearchViewModel.SearchSortCommand.get -> Prism.Commands.DelegateCommand<object>
+Dynamo.PackageManager.PackageManagerSearchViewModel.SearchSortCommand.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.SearchState.get -> Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSearchState
+Dynamo.PackageManager.PackageManagerSearchViewModel.SearchState.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.SearchText.get -> string
+Dynamo.PackageManager.PackageManagerSearchViewModel.SearchText.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.SelectedHosts.get -> System.Collections.Generic.List<string>
+Dynamo.PackageManager.PackageManagerSearchViewModel.SelectedHosts.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.SelectedIndex.get -> int
+Dynamo.PackageManager.PackageManagerSearchViewModel.SelectedIndex.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.SelectNext() -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.SelectPrevious() -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.SetSortingDirection(object sortingDir) -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.SetSortingDirectionCommand.get -> Prism.Commands.DelegateCommand<object>
+Dynamo.PackageManager.PackageManagerSearchViewModel.SetSortingDirectionCommand.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.SetSortingKey(object sortingKey) -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.SetSortingKeyCommand.get -> Prism.Commands.DelegateCommand<object>
+Dynamo.PackageManager.PackageManagerSearchViewModel.SetSortingKeyCommand.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.ShowSearchText.get -> bool
+Dynamo.PackageManager.PackageManagerSearchViewModel.Sort() -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.SortCommand.get -> Prism.Commands.DelegateCommand
+Dynamo.PackageManager.PackageManagerSearchViewModel.SortCommand.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.SortingDirection.get -> Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSortingDirection
+Dynamo.PackageManager.PackageManagerSearchViewModel.SortingDirection.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.SortingKey.get -> Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSortingKey
+Dynamo.PackageManager.PackageManagerSearchViewModel.SortingKey.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.TimedOut.get -> bool
+Dynamo.PackageManager.PackageManagerSearchViewModel.TimedOut.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.ViewPackageDetails(object obj) -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel.ViewPackageDetailsCommand.get -> Prism.Commands.DelegateCommand<object>
+Dynamo.PackageManager.PackageManagerSearchViewModel.ViewPackageDetailsCommand.set -> void
+Dynamo.PackageManager.PackageManagerSearchViewModel._searchState -> Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSearchState
+Dynamo.PackageManager.PackageManagerSearchViewModel._SearchText -> string
+Dynamo.PackageManager.PackageManagerSearchViewModel._sortingDirection -> Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSortingDirection
+Dynamo.PackageManager.PackageManagerSearchViewModel._sortingKey -> Dynamo.PackageManager.PackageManagerSearchViewModel.PackageSortingKey
+Dynamo.PackageManager.PackageManagerViewModel
+Dynamo.PackageManager.PackageManagerViewModel.Dispose() -> void
+Dynamo.PackageManager.PackageManagerViewModel.Filters.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.PackageFilter>
+Dynamo.PackageManager.PackageManagerViewModel.Height.get -> double
+Dynamo.PackageManager.PackageManagerViewModel.Height.set -> void
+Dynamo.PackageManager.PackageManagerViewModel.LocalPackages.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.PackageViewModel>
+Dynamo.PackageManager.PackageManagerViewModel.PackageManagerViewModel(Dynamo.ViewModels.DynamoViewModel dynamoViewModel, Dynamo.PackageManager.PackageManagerSearchViewModel PkgSearchVM) -> void
+Dynamo.PackageManager.PackageManagerViewModel.PackageSearchViewModel.get -> Dynamo.PackageManager.PackageManagerSearchViewModel
+Dynamo.PackageManager.PackageManagerViewModel.PackageSearchViewModel.set -> void
+Dynamo.PackageManager.PackageManagerViewModel.PreferencesViewModel.get -> Dynamo.ViewModels.PreferencesViewModel
+Dynamo.PackageManager.PackageManagerViewModel.PreferencesViewModel.set -> void
+Dynamo.PackageManager.PackageManagerViewModel.PublishNewVersionCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.PackageManager.PackageManagerViewModel.PublishNewVersionCommand.set -> void
+Dynamo.PackageManager.PackageManagerViewModel.PublishPackageViewModel.get -> Dynamo.PackageManager.PublishPackageViewModel
+Dynamo.PackageManager.PackageManagerViewModel.PublishPackageViewModel.set -> void
+Dynamo.PackageManager.PackageManagerViewModel.Width.get -> double
+Dynamo.PackageManager.PackageManagerViewModel.Width.set -> void
+Dynamo.PackageManager.PublishPackageView
+Dynamo.PackageManager.PublishPackageView.InitializeComponent() -> void
+Dynamo.PackageManager.PublishPackageView.PublishPackageView(Dynamo.PackageManager.PublishPackageViewModel publishPackageViewModel) -> void
+Dynamo.PackageManager.PublishPackageView.PublishPackageViewModel.get -> Dynamo.PackageManager.PublishPackageViewModel
+Dynamo.PackageManager.PublishPackageViewModel
+Dynamo.PackageManager.PublishPackageViewModel.AdditionalFiles.get -> System.Collections.ObjectModel.ObservableCollection<string>
+Dynamo.PackageManager.PublishPackageViewModel.AdditionalFiles.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.Assemblies.get -> System.Collections.Generic.List<Dynamo.PackageManager.PackageAssembly>
+Dynamo.PackageManager.PublishPackageViewModel.Assemblies.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.BaseVersionHeader.get -> Greg.Requests.PackageUploadRequestBody
+Dynamo.PackageManager.PublishPackageViewModel.BaseVersionHeader.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.BuildVersion.get -> string
+Dynamo.PackageManager.PublishPackageViewModel.BuildVersion.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.CancelCommand.get -> Prism.Commands.DelegateCommand
+Dynamo.PackageManager.PublishPackageViewModel.CancelFileLoading() -> void
+Dynamo.PackageManager.PublishPackageViewModel.CanEditName.get -> bool
+Dynamo.PackageManager.PublishPackageViewModel.ClearMarkdownDirectoryCommand.get -> Prism.Commands.DelegateCommand
+Dynamo.PackageManager.PublishPackageViewModel.CompatibilityMatrix.get -> System.Collections.Generic.ICollection<Greg.Requests.PackageCompatibility>
+Dynamo.PackageManager.PublishPackageViewModel.CompatibilityMatrix.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.CopyrightHolder.get -> string
+Dynamo.PackageManager.PublishPackageViewModel.CopyrightHolder.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.CopyrightYear.get -> string
+Dynamo.PackageManager.PublishPackageViewModel.CopyrightYear.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.CurrentWarningMessage.get -> string
+Dynamo.PackageManager.PublishPackageViewModel.CurrentWarningMessage.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.CustomNodeDefinitions.get -> System.Collections.Generic.List<Dynamo.CustomNodeDefinition>
+Dynamo.PackageManager.PublishPackageViewModel.CustomNodeDefinitions.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.Dependencies.get -> System.Collections.ObjectModel.ObservableCollection<Greg.Requests.PackageDependency>
+Dynamo.PackageManager.PublishPackageViewModel.Dependencies.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.DependencyNames.get -> string
+Dynamo.PackageManager.PublishPackageViewModel.DependencyNames.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.Description.get -> string
+Dynamo.PackageManager.PublishPackageViewModel.Description.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.DynamoViewModel.get -> Dynamo.ViewModels.DynamoViewModel
+Dynamo.PackageManager.PublishPackageViewModel.ErrorString.get -> string
+Dynamo.PackageManager.PublishPackageViewModel.ErrorString.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.FullVersion.get -> string
+Dynamo.PackageManager.PublishPackageViewModel.Group.get -> string
+Dynamo.PackageManager.PublishPackageViewModel.Group.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.HasChanges.get -> bool
+Dynamo.PackageManager.PublishPackageViewModel.HasDependencies.get -> bool
+Dynamo.PackageManager.PublishPackageViewModel.HostComboboxEntry
+Dynamo.PackageManager.PublishPackageViewModel.HostComboboxEntry.HostComboboxEntry(string hostName) -> void
+Dynamo.PackageManager.PublishPackageViewModel.HostComboboxEntry.HostName.get -> string
+Dynamo.PackageManager.PublishPackageViewModel.HostComboboxEntry.HostName.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.HostComboboxEntry.IsSelected.get -> bool
+Dynamo.PackageManager.PublishPackageViewModel.HostComboboxEntry.IsSelected.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.IsNewVersion.get -> bool
+Dynamo.PackageManager.PublishPackageViewModel.IsNewVersion.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.IsWarningEnabled.get -> bool
+Dynamo.PackageManager.PublishPackageViewModel.IsWarningEnabled.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.KeywordList.get -> System.Collections.Generic.List<string>
+Dynamo.PackageManager.PublishPackageViewModel.KeywordList.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.Keywords.get -> string
+Dynamo.PackageManager.PublishPackageViewModel.Keywords.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.KeywordsCollection.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.KeywordTag>
+Dynamo.PackageManager.PublishPackageViewModel.KeywordsCollection.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.KnownHosts.get -> System.Collections.Generic.List<Dynamo.PackageManager.PublishPackageViewModel.HostComboboxEntry>
+Dynamo.PackageManager.PublishPackageViewModel.KnownHosts.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.License.get -> string
+Dynamo.PackageManager.PublishPackageViewModel.License.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.MajorVersion.get -> string
+Dynamo.PackageManager.PublishPackageViewModel.MajorVersion.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.MarkdownFilesDirectory.get -> string
+Dynamo.PackageManager.PublishPackageViewModel.MarkdownFilesDirectory.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.MinorVersion.get -> string
+Dynamo.PackageManager.PublishPackageViewModel.MinorVersion.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.MoreExpanded.get -> bool
+Dynamo.PackageManager.PublishPackageViewModel.MoreExpanded.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.Name.get -> string
+Dynamo.PackageManager.PublishPackageViewModel.Name.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.OnPublishSuccess() -> void
+Dynamo.PackageManager.PublishPackageViewModel.Owner.get -> System.Windows.Window
+Dynamo.PackageManager.PublishPackageViewModel.Owner.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.Package.get -> Dynamo.PackageManager.Package
+Dynamo.PackageManager.PublishPackageViewModel.Package.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.PackageContents.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.UI.PackageItemRootViewModel>
+Dynamo.PackageManager.PublishPackageViewModel.PackageContents.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.PreviewPackageContents.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.UI.PackageItemRootViewModel>
+Dynamo.PackageManager.PublishPackageViewModel.PreviewPackageContents.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.PublishDirectory.get -> string
+Dynamo.PackageManager.PublishPackageViewModel.PublishDirectory.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.PublishLocallyCommand.get -> Prism.Commands.DelegateCommand
+Dynamo.PackageManager.PublishPackageViewModel.PublishPackageViewModel(Dynamo.ViewModels.DynamoViewModel dynamoViewModel) -> void
+Dynamo.PackageManager.PublishPackageViewModel.PublishSuccess -> Dynamo.PackageManager.PublishSuccessHandler
+Dynamo.PackageManager.PublishPackageViewModel.ReleaseNotesUrl.get -> string
+Dynamo.PackageManager.PublishPackageViewModel.ReleaseNotesUrl.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.RemoveItemCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.PackageManager.PublishPackageViewModel.RepositoryUrl.get -> string
+Dynamo.PackageManager.PublishPackageViewModel.RepositoryUrl.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.RequestShowFolderBrowserDialog -> System.EventHandler<Dynamo.ViewModels.PackagePathEventArgs>
+Dynamo.PackageManager.PublishPackageViewModel.RetainFolderStructureOverride.get -> bool
+Dynamo.PackageManager.PublishPackageViewModel.RetainFolderStructureOverride.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.RootContents.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.UI.PackageItemRootViewModel>
+Dynamo.PackageManager.PublishPackageViewModel.RootContents.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.RootFolder.get -> string
+Dynamo.PackageManager.PublishPackageViewModel.RootFolder.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.SelectDirectoryAndAddFilesRecursivelyCommand.get -> Prism.Commands.DelegateCommand
+Dynamo.PackageManager.PublishPackageViewModel.SelectDirectoryAndAddFilesRecursivelyCommand.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.SelectedHosts.get -> System.Collections.Generic.List<string>
+Dynamo.PackageManager.PublishPackageViewModel.SelectedHosts.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.SelectedHostsString.get -> string
+Dynamo.PackageManager.PublishPackageViewModel.SelectedHostsString.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.SelectMarkdownDirectoryCommand.get -> Prism.Commands.DelegateCommand
+Dynamo.PackageManager.PublishPackageViewModel.SetKeywordsCommand.get -> Prism.Commands.DelegateCommand
+Dynamo.PackageManager.PublishPackageViewModel.ShowAddFileDialogAndAddCommand.get -> Prism.Commands.DelegateCommand
+Dynamo.PackageManager.PublishPackageViewModel.SiteUrl.get -> string
+Dynamo.PackageManager.PublishPackageViewModel.SiteUrl.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.SubmitCommand.get -> Prism.Commands.DelegateCommand
+Dynamo.PackageManager.PublishPackageViewModel.ToggleMoreCommand.get -> Prism.Commands.DelegateCommand
+Dynamo.PackageManager.PublishPackageViewModel.UploadCancelled -> System.Action
+Dynamo.PackageManager.PublishPackageViewModel.UploadHandle.get -> Dynamo.PackageManager.PackageUploadHandle
+Dynamo.PackageManager.PublishPackageViewModel.UploadHandle.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.Uploading.get -> bool
+Dynamo.PackageManager.PublishPackageViewModel.Uploading.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.UploadProgress -> System.Action<int, int, string>
+Dynamo.PackageManager.PublishPackageViewModel.UploadState.get -> Dynamo.PackageManager.PackageUploadHandle.State
+Dynamo.PackageManager.PublishPackageViewModel.UploadState.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.UploadType.get -> Dynamo.PackageManager.PackageUploadHandle.UploadType
+Dynamo.PackageManager.PublishPackageViewModel.UploadType.set -> void
+Dynamo.PackageManager.PublishSuccessHandler
+Dynamo.PackageManager.UI.AsselmblyPackageItemRootViewModelToVisibilityConverter
+Dynamo.PackageManager.UI.AsselmblyPackageItemRootViewModelToVisibilityConverter.AsselmblyPackageItemRootViewModelToVisibilityConverter() -> void
+Dynamo.PackageManager.UI.AsselmblyPackageItemRootViewModelToVisibilityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.PackageManager.UI.AsselmblyPackageItemRootViewModelToVisibilityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.PackageManager.UI.BooleanToBorderColorConverter
+Dynamo.PackageManager.UI.BooleanToBorderColorConverter.BooleanToBorderColorConverter() -> void
+Dynamo.PackageManager.UI.BooleanToBorderColorConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.PackageManager.UI.BooleanToBorderColorConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.PackageManager.UI.BooleanToBorderColorConverter.ToggleBrush.get -> System.Windows.Media.SolidColorBrush
+Dynamo.PackageManager.UI.BooleanToBorderColorConverter.ToggleBrush.set -> void
+Dynamo.PackageManager.UI.BooleanToColorConverter
+Dynamo.PackageManager.UI.BooleanToColorConverter.BooleanToColorConverter() -> void
+Dynamo.PackageManager.UI.BooleanToColorConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.PackageManager.UI.BooleanToColorConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.PackageManager.UI.BooleanToColorConverter.DefaultBrush.get -> System.Windows.Media.SolidColorBrush
+Dynamo.PackageManager.UI.BooleanToColorConverter.DefaultBrush.set -> void
+Dynamo.PackageManager.UI.BooleanToColorConverter.HoverBrush.get -> System.Windows.Media.SolidColorBrush
+Dynamo.PackageManager.UI.BooleanToColorConverter.HoverBrush.set -> void
+Dynamo.PackageManager.UI.BooleanToColorConverter.PressedBrush.get -> System.Windows.Media.SolidColorBrush
+Dynamo.PackageManager.UI.BooleanToColorConverter.PressedBrush.set -> void
+Dynamo.PackageManager.UI.BooleanToColorConverter.ToggleDefaultBrush.get -> System.Windows.Media.SolidColorBrush
+Dynamo.PackageManager.UI.BooleanToColorConverter.ToggleDefaultBrush.set -> void
+Dynamo.PackageManager.UI.BooleanToColorConverter.ToggleHoverBrush.get -> System.Windows.Media.SolidColorBrush
+Dynamo.PackageManager.UI.BooleanToColorConverter.ToggleHoverBrush.set -> void
+Dynamo.PackageManager.UI.BooleanToColorConverter.TogglePressedBrush.get -> System.Windows.Media.SolidColorBrush
+Dynamo.PackageManager.UI.BooleanToColorConverter.TogglePressedBrush.set -> void
+Dynamo.PackageManager.UI.ChildrenItemsContainsFolderToVisibilityConverter
+Dynamo.PackageManager.UI.ChildrenItemsContainsFolderToVisibilityConverter.ChildrenItemsContainsFolderToVisibilityConverter() -> void
+Dynamo.PackageManager.UI.ChildrenItemsContainsFolderToVisibilityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.PackageManager.UI.ChildrenItemsContainsFolderToVisibilityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.PackageManager.UI.CustomBrowserControl
+Dynamo.PackageManager.UI.CustomBrowserControl.CustomBrowserControl() -> void
+Dynamo.PackageManager.UI.CustomBrowserControl.DisableRemove.get -> bool
+Dynamo.PackageManager.UI.CustomBrowserControl.DisableRemove.set -> void
+Dynamo.PackageManager.UI.CustomBrowserControl.Dispose() -> void
+Dynamo.PackageManager.UI.CustomBrowserControl.InitializeComponent() -> void
+Dynamo.PackageManager.UI.CustomBrowserControl.Root.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.UI.PackageItemRootViewModel>
+Dynamo.PackageManager.UI.CustomBrowserControl.Root.set -> void
+Dynamo.PackageManager.UI.DependencyType
+Dynamo.PackageManager.UI.DependencyType.Assembly = 1 -> Dynamo.PackageManager.UI.DependencyType
+Dynamo.PackageManager.UI.DependencyType.CustomNode = 0 -> Dynamo.PackageManager.UI.DependencyType
+Dynamo.PackageManager.UI.DependencyType.CustomNodePreview = 4 -> Dynamo.PackageManager.UI.DependencyType
+Dynamo.PackageManager.UI.DependencyType.File = 2 -> Dynamo.PackageManager.UI.DependencyType
+Dynamo.PackageManager.UI.DependencyType.Folder = 3 -> Dynamo.PackageManager.UI.DependencyType
+Dynamo.PackageManager.UI.DependencyTypeToImageSourceConverter
+Dynamo.PackageManager.UI.DependencyTypeToImageSourceConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.PackageManager.UI.DependencyTypeToImageSourceConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.PackageManager.UI.DependencyTypeToImageSourceConverter.DependencyTypeToImageSourceConverter() -> void
+Dynamo.PackageManager.UI.DependencyTypeToVisibilityConverter
+Dynamo.PackageManager.UI.DependencyTypeToVisibilityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.PackageManager.UI.DependencyTypeToVisibilityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.PackageManager.UI.DependencyTypeToVisibilityConverter.DependencyTypeToVisibilityConverter() -> void
+Dynamo.PackageManager.UI.EmptyStringToCollapsedConverter
+Dynamo.PackageManager.UI.EmptyStringToCollapsedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.PackageManager.UI.EmptyStringToCollapsedConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.PackageManager.UI.EmptyStringToCollapsedConverter.EmptyStringToCollapsedConverter() -> void
+Dynamo.PackageManager.UI.FilterTagControl
+Dynamo.PackageManager.UI.FilterTagControl.FilterCommand.get -> System.Windows.Input.ICommand
+Dynamo.PackageManager.UI.FilterTagControl.FilterCommand.set -> void
+Dynamo.PackageManager.UI.FilterTagControl.FilterTagControl() -> void
+Dynamo.PackageManager.UI.FilterTagControl.InitializeComponent() -> void
+Dynamo.PackageManager.UI.FilterTagControl.IsFilterOn.get -> bool
+Dynamo.PackageManager.UI.FilterTagControl.IsFilterOn.set -> void
+Dynamo.PackageManager.UI.FilterTagControl.TagName.get -> string
+Dynamo.PackageManager.UI.FilterTagControl.TagName.set -> void
+Dynamo.PackageManager.UI.HasChildrenToStyleConverter
+Dynamo.PackageManager.UI.HasChildrenToStyleConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.PackageManager.UI.HasChildrenToStyleConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.PackageManager.UI.HasChildrenToStyleConverter.HasChildrenToStyleConverter() -> void
+Dynamo.PackageManager.UI.HasChildrenToVisibilityConverter
+Dynamo.PackageManager.UI.HasChildrenToVisibilityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.PackageManager.UI.HasChildrenToVisibilityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.PackageManager.UI.HasChildrenToVisibilityConverter.HasChildrenToVisibilityConverter() -> void
+Dynamo.PackageManager.UI.IndentConverter
+Dynamo.PackageManager.UI.IndentConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.PackageManager.UI.IndentConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.PackageManager.UI.IndentConverter.IndentConverter() -> void
+Dynamo.PackageManager.UI.LoadingAnimationStripeControl
+Dynamo.PackageManager.UI.LoadingAnimationStripeControl.AnimationSpeed.get -> double
+Dynamo.PackageManager.UI.LoadingAnimationStripeControl.AnimationSpeed.set -> void
+Dynamo.PackageManager.UI.LoadingAnimationStripeControl.InitializeComponent() -> void
+Dynamo.PackageManager.UI.LoadingAnimationStripeControl.LoadingAnimationStripeControl() -> void
+Dynamo.PackageManager.UI.MyTreeViewHelper
+Dynamo.PackageManager.UI.NumericUpDownControl
+Dynamo.PackageManager.UI.NumericUpDownControl.InitializeComponent() -> void
+Dynamo.PackageManager.UI.NumericUpDownControl.Label.get -> string
+Dynamo.PackageManager.UI.NumericUpDownControl.Label.set -> void
+Dynamo.PackageManager.UI.NumericUpDownControl.NumericUpDownControl() -> void
+Dynamo.PackageManager.UI.NumericUpDownControl.Value.get -> string
+Dynamo.PackageManager.UI.NumericUpDownControl.Value.set -> void
+Dynamo.PackageManager.UI.NumericUpDownControl.Watermark.get -> string
+Dynamo.PackageManager.UI.NumericUpDownControl.Watermark.set -> void
+Dynamo.PackageManager.UI.PackageItemInternalViewModel
+Dynamo.PackageManager.UI.PackageItemInternalViewModel.PackageItemInternalViewModel(Dynamo.CustomNodeDefinition def, Dynamo.PackageManager.UI.PackageItemViewModel parent) -> void
+Dynamo.PackageManager.UI.PackageItemInternalViewModel.Parent.get -> Dynamo.PackageManager.UI.PackageItemViewModel
+Dynamo.PackageManager.UI.PackageItemInternalViewModel.Parent.set -> void
+Dynamo.PackageManager.UI.PackageItemLeafViewModel
+Dynamo.PackageManager.UI.PackageItemLeafViewModel.PackageItemLeafViewModel(Dynamo.CustomNodeDefinition def, Dynamo.PackageManager.UI.PackageItemViewModel parent) -> void
+Dynamo.PackageManager.UI.PackageItemRootViewModel
+Dynamo.PackageManager.UI.PackageItemRootViewModel.ChildItems.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.UI.PackageItemRootViewModel>
+Dynamo.PackageManager.UI.PackageItemRootViewModel.ChildItems.set -> void
+Dynamo.PackageManager.UI.PackageItemRootViewModel.DirectoryName.get -> string
+Dynamo.PackageManager.UI.PackageItemRootViewModel.DisplayName.get -> string
+Dynamo.PackageManager.UI.PackageItemRootViewModel.FilePath.get -> string
+Dynamo.PackageManager.UI.PackageItemRootViewModel.PackageItemRootViewModel(Dynamo.CustomNodeDefinition def) -> void
+Dynamo.PackageManager.UI.PackageItemRootViewModel.PackageItemRootViewModel(Dynamo.PackageManager.PackageAssembly assembly) -> void
+Dynamo.PackageManager.UI.PackageItemRootViewModel.PackageItemRootViewModel(string fileName, string filePath) -> void
+Dynamo.PackageManager.UI.PackageItemRootViewModel.PackageItemRootViewModel(string folderName) -> void
+Dynamo.PackageManager.UI.PackageItemRootViewModel.PackageItemRootViewModel(System.IO.FileInfo fileInfo) -> void
+Dynamo.PackageManager.UI.PackageItemViewModel
+Dynamo.PackageManager.UI.PackageItemViewModel.AddChild(Dynamo.PackageManager.UI.PackageItemInternalViewModel elem) -> void
+Dynamo.PackageManager.UI.PackageItemViewModel.AlreadyDiscovered.get -> bool
+Dynamo.PackageManager.UI.PackageItemViewModel.AlreadyDiscovered.set -> void
+Dynamo.PackageManager.UI.PackageItemViewModel.Assembly.get -> Dynamo.PackageManager.PackageAssembly
+Dynamo.PackageManager.UI.PackageItemViewModel.Assembly.set -> void
+Dynamo.PackageManager.UI.PackageItemViewModel.BuildDependencies(System.Collections.Generic.HashSet<object> discoveredDeps) -> void
+Dynamo.PackageManager.UI.PackageItemViewModel.Definition.get -> Dynamo.CustomNodeDefinition
+Dynamo.PackageManager.UI.PackageItemViewModel.Definition.set -> void
+Dynamo.PackageManager.UI.PackageItemViewModel.DependencyType.get -> Dynamo.PackageManager.UI.DependencyType
+Dynamo.PackageManager.UI.PackageItemViewModel.DependencyType.set -> void
+Dynamo.PackageManager.UI.PackageItemViewModel.FileInfo.get -> System.IO.FileInfo
+Dynamo.PackageManager.UI.PackageItemViewModel.FileInfo.set -> void
+Dynamo.PackageManager.UI.PackageItemViewModel.Height.get -> int
+Dynamo.PackageManager.UI.PackageItemViewModel.Height.set -> void
+Dynamo.PackageManager.UI.PackageItemViewModel.IsExpanded.get -> bool
+Dynamo.PackageManager.UI.PackageItemViewModel.IsExpanded.set -> void
+Dynamo.PackageManager.UI.PackageItemViewModel.IsNodeLibrary.get -> bool
+Dynamo.PackageManager.UI.PackageItemViewModel.IsNodeLibrary.set -> void
+Dynamo.PackageManager.UI.PackageItemViewModel.IsSelected.get -> bool
+Dynamo.PackageManager.UI.PackageItemViewModel.IsSelected.set -> void
+Dynamo.PackageManager.UI.PackageItemViewModel.Name.get -> string
+Dynamo.PackageManager.UI.PackageItemViewModel.PackageItemViewModel() -> void
+Dynamo.PackageManager.UI.PackageItemViewModel.ToggleIsExpanded.get -> Dynamo.PackageManager.UI.PackageItemViewModel.ToggleIsExpandedCommand
+Dynamo.PackageManager.UI.PackageItemViewModel.ToggleIsExpandedCommand
+Dynamo.PackageManager.UI.PackageItemViewModel.ToggleIsExpandedCommand.CanExecute(object parameters) -> bool
+Dynamo.PackageManager.UI.PackageItemViewModel.ToggleIsExpandedCommand.CanExecuteChanged -> System.EventHandler
+Dynamo.PackageManager.UI.PackageItemViewModel.ToggleIsExpandedCommand.Execute(object parameters) -> void
+Dynamo.PackageManager.UI.PackageItemViewModel.ToggleIsExpandedCommand.ToggleIsExpandedCommand(Dynamo.PackageManager.UI.PackageItemViewModel i) -> void
+Dynamo.PackageManager.UI.PackageItemViewModel.Visibility.get -> System.Windows.Visibility
+Dynamo.PackageManager.UI.PackageItemViewModel.Visibility.set -> void
+Dynamo.PackageManager.UI.PackageManagerPackageAnimationControl
+Dynamo.PackageManager.UI.PackageManagerPackageAnimationControl.DummySearchResults.get -> System.Collections.ObjectModel.ObservableCollection<string>
+Dynamo.PackageManager.UI.PackageManagerPackageAnimationControl.DummySearchResults.set -> void
+Dynamo.PackageManager.UI.PackageManagerPackageAnimationControl.InitializeComponent() -> void
+Dynamo.PackageManager.UI.PackageManagerPackageAnimationControl.PackageManagerPackageAnimationControl() -> void
+Dynamo.PackageManager.UI.PackageManagerPackagesControl
+Dynamo.PackageManager.UI.PackageManagerPackagesControl.InitializeComponent() -> void
+Dynamo.PackageManager.UI.PackageManagerPackagesControl.PackageManagerPackagesControl() -> void
+Dynamo.PackageManager.UI.PackageManagerPackagesControl.SearchItems.get -> System.Collections.Generic.IEnumerable<Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel>
+Dynamo.PackageManager.UI.PackageManagerPackagesControl.SearchItems.set -> void
+Dynamo.PackageManager.UI.PackageManagerPackagesControl.SelectedItem.get -> Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel
+Dynamo.PackageManager.UI.PackageManagerPublishControl
+Dynamo.PackageManager.UI.PackageManagerPublishControl.Breadcrumbs.get -> System.Collections.ObjectModel.ObservableCollection<string>
+Dynamo.PackageManager.UI.PackageManagerPublishControl.Dispose() -> void
+Dynamo.PackageManager.UI.PackageManagerPublishControl.InitializeComponent() -> void
+Dynamo.PackageManager.UI.PackageManagerPublishControl.Owner.get -> System.Windows.Window
+Dynamo.PackageManager.UI.PackageManagerPublishControl.Owner.set -> void
+Dynamo.PackageManager.UI.PackageManagerPublishControl.PackageManagerPublishControl() -> void
+Dynamo.PackageManager.UI.PackageManagerPublishControl.PublishPackageViewModel.get -> Dynamo.PackageManager.PublishPackageViewModel
+Dynamo.PackageManager.UI.PackageManagerPublishControl.PublishPackageViewModel.set -> void
+Dynamo.PackageManager.UI.PackageManagerPublishHost
+Dynamo.PackageManager.UI.PackageManagerPublishHost.InitializeComponent() -> void
+Dynamo.PackageManager.UI.PackageManagerPublishHost.PackageManagerPublishHost() -> void
+Dynamo.PackageManager.UI.PackageManagerPublishHost.PublishPackageViewModel.get -> Dynamo.PackageManager.PublishPackageViewModel
+Dynamo.PackageManager.UI.PackageManagerPublishHost.PublishPackageViewModel.set -> void
+Dynamo.PackageManager.UI.PackageManagerPublishHost.Wizard.get -> Dynamo.UI.Views.PackageManagerWizard
+Dynamo.PackageManager.UI.PackageManagerSearchControl
+Dynamo.PackageManager.UI.PackageManagerSearchControl.InitializeComponent() -> void
+Dynamo.PackageManager.UI.PackageManagerSearchControl.PackageManagerSearchControl() -> void
+Dynamo.PackageManager.UI.PackageManagerSearchControl.PkgSearchVM.get -> Dynamo.PackageManager.PackageManagerSearchViewModel
+Dynamo.PackageManager.UI.PackageManagerSearchControl.PkgSearchVM.set -> void
+Dynamo.PackageManager.UI.PackageManagerSearchView
+Dynamo.PackageManager.UI.PackageManagerSearchView.InitializeComponent() -> void
+Dynamo.PackageManager.UI.PackageManagerSearchView.PackageManagerSearchView(Dynamo.PackageManager.PackageManagerSearchViewModel pm) -> void
+Dynamo.PackageManager.UI.PackageManagerSearchView.ViewModel.get -> Dynamo.PackageManager.PackageManagerSearchViewModel
+Dynamo.PackageManager.UI.PackageManagerView
+Dynamo.PackageManager.UI.PackageManagerView.InitializeComponent() -> void
+Dynamo.PackageManager.UI.PackageManagerView.IsNewPMPublishWizardEnabled.get -> bool
+Dynamo.PackageManager.UI.PackageManagerView.PackageManagerView(Dynamo.Controls.DynamoView dynamoView, Dynamo.PackageManager.PackageManagerViewModel packageManagerViewModel) -> void
+Dynamo.PackageManager.UI.PackageManagerView.PackageManagerViewModel.get -> Dynamo.PackageManager.PackageManagerViewModel
+Dynamo.PackageManager.UI.PackageManagerView.PackageManagerViewModel.set -> void
+Dynamo.PackageManager.UI.PackageNameLengthValidationRule
+Dynamo.PackageManager.UI.PackageNameLengthValidationRule.PackageNameLengthValidationRule() -> void
+Dynamo.PackageManager.UI.PublishPackagePreviewPage
+Dynamo.PackageManager.UI.PublishPackagePreviewPage.Dispose() -> void
+Dynamo.PackageManager.UI.PublishPackagePreviewPage.FilesAndFoldersCounterPreview.get -> string
+Dynamo.PackageManager.UI.PublishPackagePreviewPage.FilesAndFoldersCounterPreview.set -> void
+Dynamo.PackageManager.UI.PublishPackagePreviewPage.InitializeComponent() -> void
+Dynamo.PackageManager.UI.PublishPackagePreviewPage.PropertyChanged -> System.ComponentModel.PropertyChangedEventHandler
+Dynamo.PackageManager.UI.PublishPackagePreviewPage.PublishPackagePreviewPage() -> void
+Dynamo.PackageManager.UI.PublishPackagePublishPage
+Dynamo.PackageManager.UI.PublishPackagePublishPage.Dispose() -> void
+Dynamo.PackageManager.UI.PublishPackagePublishPage.InitializeComponent() -> void
+Dynamo.PackageManager.UI.PublishPackagePublishPage.LoadEvents() -> void
+Dynamo.PackageManager.UI.PublishPackagePublishPage.PublishPackagePublishPage() -> void
+Dynamo.PackageManager.UI.PublishPackageSelectPage
+Dynamo.PackageManager.UI.PublishPackageSelectPage.AllItemsSelected.get -> bool
+Dynamo.PackageManager.UI.PublishPackageSelectPage.AllItemsSelected.set -> void
+Dynamo.PackageManager.UI.PublishPackageSelectPage.Dispose() -> void
+Dynamo.PackageManager.UI.PublishPackageSelectPage.FilesAndFoldersCounterPreview.get -> string
+Dynamo.PackageManager.UI.PublishPackageSelectPage.FilesAndFoldersCounterPreview.set -> void
+Dynamo.PackageManager.UI.PublishPackageSelectPage.InitializeComponent() -> void
+Dynamo.PackageManager.UI.PublishPackageSelectPage.ItemSelection.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.UI.PackageItemRootViewModel>
+Dynamo.PackageManager.UI.PublishPackageSelectPage.ItemSelection.set -> void
+Dynamo.PackageManager.UI.PublishPackageSelectPage.PropertyChanged -> System.ComponentModel.PropertyChangedEventHandler
+Dynamo.PackageManager.UI.PublishPackageSelectPage.PublishPackageSelectPage() -> void
+Dynamo.PackageManager.UI.SearchBoxControl
+Dynamo.PackageManager.UI.SearchBoxControl.InitializeComponent() -> void
+Dynamo.PackageManager.UI.SearchBoxControl.SearchBoxControl() -> void
+Dynamo.PackageManager.UI.SortingConverter
+Dynamo.PackageManager.UI.SortingConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.PackageManager.UI.SortingConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.PackageManager.UI.SortingConverter.SortingConverter() -> void
+Dynamo.PackageManager.UI.TermsOfUseView
+Dynamo.PackageManager.UI.TermsOfUseView.AcceptedTermsOfUse.get -> bool
+Dynamo.PackageManager.UI.TermsOfUseView.InitializeComponent() -> void
+Dynamo.PackageManager.UI.TermsOfUseView.TermsOfUseView(string touFilePath) -> void
+Dynamo.PackageManager.UI.TreeViewItemHelper
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.CanInstall.get -> bool
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.DownloadLatestCommand.get -> System.Windows.Input.ICommand
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.DownloadLatestCommand.set -> void
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.DownloadLatestToCustomPathCommand.get -> System.Windows.Input.ICommand
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.DownloadLatestToCustomPathCommand.set -> void
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.Downloads.get -> int
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.Equals(Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel other) -> bool
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.HasUpvote.get -> bool
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.Hosts.get -> System.Collections.Generic.List<string>
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsDeprecated.get -> bool
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsEnabledForInstall.get -> bool
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsOnwer.get -> bool
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsSelectedVersionCompatible.get -> bool?
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsSelectedVersionCompatible.set -> void
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.LatestVersion.get -> string
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.LatestVersionCreated.get -> string
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.Maintainers.get -> string
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.Name.get -> string
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.OnRequestDownload(Greg.Responses.PackageVersion version, bool downloadToCustomPath) -> void
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.PackageManagerSearchElementViewModel(Dynamo.PackageManager.PackageManagerSearchElement element, bool canLogin) -> void
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.PackageManagerSearchElementViewModel(Dynamo.PackageManager.PackageManagerSearchElement element, bool canLogin, bool install, bool isEnabledForInstall = true) -> void
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.PackageSearchElementDownloadHandler
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.PkgVersion.get -> System.Collections.Generic.IEnumerable<string>
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.RequestDownload -> Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.PackageSearchElementDownloadHandler
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.RequestShowFileDialog -> System.EventHandler<Dynamo.ViewModels.PackagePathEventArgs>
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.ReversedVersionInformationList.get -> System.ComponentModel.ICollectionView
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.SearchElementModel.get -> Dynamo.PackageManager.PackageManagerSearchElement
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.SelectedVersion.get -> Dynamo.PackageManager.VersionInformation
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.SelectedVersion.set -> void
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.UpvoteCommand.get -> System.Windows.Input.ICommand
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.UpvoteCommand.set -> void
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.VersionInformationList.get -> System.Collections.Generic.List<Dynamo.PackageManager.VersionInformation>
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.VersionInformationList.set -> void
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.Versions.get -> System.Collections.Generic.List<System.Tuple<Greg.Responses.PackageVersion, Prism.Commands.DelegateCommand<object>>>
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.VisitRepositoryCommand.get -> System.Windows.Input.ICommand
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.VisitRepositoryCommand.set -> void
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.VisitSiteCommand.get -> System.Windows.Input.ICommand
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.VisitSiteCommand.set -> void
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.Votes.get -> int
+Dynamo.Services.UsageReportingManager
+Dynamo.Services.UsageReportingManager.CheckIsFirstRun(System.Windows.Window ownerWindow, Dynamo.Wpf.Interfaces.IBrandingResourceProvider resource) -> void
+Dynamo.Services.UsageReportingManager.FirstRun.get -> bool
+Dynamo.Services.UsageReportingManager.InitializeCore(Dynamo.ViewModels.DynamoViewModel dynamoViewModel) -> void
+Dynamo.Services.UsageReportingManager.ToggleIsAnalyticsReportingApproved(object parameter) -> void
+Dynamo.Services.UsageReportingManager.ToggleIsAnalyticsReportingApprovedCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.Services.UsageReportingManager.ToggleIsAnalyticsReportingApprovedCommand.set -> void
+Dynamo.Services.UsageReportingManager.ToggleIsUsageReportingApprovedCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.Services.UsageReportingManager.ToggleIsUsageReportingApprovedCommand.set -> void
+Dynamo.Services.UsageReportingManager.UsageReportingManager() -> void
+Dynamo.TestInfrastructure.MutatorDriver
+Dynamo.TestInfrastructure.MutatorDriver.MutatorDriver(Dynamo.ViewModels.DynamoViewModel dynamoViewModel) -> void
+Dynamo.UI.Commands.DelegateCommand
+Dynamo.UI.Commands.DelegateCommand.CanExecute(object parameter) -> bool
+Dynamo.UI.Commands.DelegateCommand.CanExecuteChanged -> System.EventHandler
+Dynamo.UI.Commands.DelegateCommand.DelegateCommand(System.Action<object> execute) -> void
+Dynamo.UI.Commands.DelegateCommand.DelegateCommand(System.Action<object> execute, System.Predicate<object> canExecute) -> void
+Dynamo.UI.Commands.DelegateCommand.Execute(object parameter) -> void
+Dynamo.UI.Commands.DelegateCommand.RaiseCanExecuteChanged() -> void
+Dynamo.UI.Controls.ClassInformationView
+Dynamo.UI.Controls.ClassInformationView.ClassInformationView() -> void
+Dynamo.UI.Controls.ClassInformationView.FocusItemOnSelection.get -> bool
+Dynamo.UI.Controls.ClassInformationView.FocusItemOnSelection.set -> void
+Dynamo.UI.Controls.ClassInformationView.InitializeComponent() -> void
+Dynamo.UI.Controls.CodeBlockEditor
+Dynamo.UI.Controls.CodeBlockEditor.CodeBlockEditor(Dynamo.Controls.NodeView nodeView) -> void
+Dynamo.UI.Controls.CodeCompletionEditor
+Dynamo.UI.Controls.CodeCompletionEditor.Code.get -> string
+Dynamo.UI.Controls.CodeCompletionEditor.Code.set -> void
+Dynamo.UI.Controls.CodeCompletionEditor.CodeCompletionEditor() -> void
+Dynamo.UI.Controls.CodeCompletionEditor.CodeCompletionEditor(Dynamo.Controls.NodeView nodeView) -> void
+Dynamo.UI.Controls.CodeCompletionEditor.InitializeComponent() -> void
+Dynamo.UI.Controls.CodeCompletionEditor.IsDisposed.get -> bool
+Dynamo.UI.Controls.CodeCompletionEditor.nodeViewModel -> Dynamo.ViewModels.NodeViewModel
+Dynamo.UI.Controls.CodeCompletionEditor.ReturnFocus() -> void
+Dynamo.UI.Controls.CodeCompletionEditor.SetFocus() -> void
+Dynamo.UI.Controls.CodeCompletionEditor.UpdateNodeValue(string property) -> void
+Dynamo.UI.Controls.DynamoToolTip
+Dynamo.UI.Controls.DynamoToolTip.AttachmentSide.get -> Dynamo.UI.Controls.DynamoToolTip.Side
+Dynamo.UI.Controls.DynamoToolTip.AttachmentSide.set -> void
+Dynamo.UI.Controls.DynamoToolTip.DynamoToolTip() -> void
+Dynamo.UI.Controls.DynamoToolTip.Side
+Dynamo.UI.Controls.DynamoToolTip.Side.Bottom = 3 -> Dynamo.UI.Controls.DynamoToolTip.Side
+Dynamo.UI.Controls.DynamoToolTip.Side.Left = 0 -> Dynamo.UI.Controls.DynamoToolTip.Side
+Dynamo.UI.Controls.DynamoToolTip.Side.Right = 2 -> Dynamo.UI.Controls.DynamoToolTip.Side
+Dynamo.UI.Controls.DynamoToolTip.Side.Top = 1 -> Dynamo.UI.Controls.DynamoToolTip.Side
+Dynamo.UI.Controls.HeaderStrip
+Dynamo.UI.Controls.HeaderStrip.HeaderActivated -> System.Windows.RoutedEventHandler
+Dynamo.UI.Controls.HeaderStrip.HeaderStrip() -> void
+Dynamo.UI.Controls.HeaderStrip.HeaderStripItems.get -> System.Collections.Generic.IEnumerable<Dynamo.UI.Controls.HeaderStripItem>
+Dynamo.UI.Controls.HeaderStrip.HeaderStripItems.set -> void
+Dynamo.UI.Controls.HeaderStrip.InitializeComponent() -> void
+Dynamo.UI.Controls.HeaderStrip.SelectedItem.get -> Dynamo.UI.Controls.HeaderStripItem
+Dynamo.UI.Controls.HeaderStripItem
+Dynamo.UI.Controls.HeaderStripItem.HeaderStripItem() -> void
+Dynamo.UI.Controls.HeaderStripItem.Text.get -> string
+Dynamo.UI.Controls.HeaderStripItem.Text.set -> void
+Dynamo.UI.Controls.ImageButton
+Dynamo.UI.Controls.ImageButton.ImageButton() -> void
+Dynamo.UI.Controls.ImageButton.StateImage.get -> System.Windows.Media.ImageSource
+Dynamo.UI.Controls.ImageButton.StateImage.set -> void
+Dynamo.UI.Controls.ImageCheckBox
+Dynamo.UI.Controls.ImageCheckBox.CheckImage.get -> System.Windows.Media.ImageSource
+Dynamo.UI.Controls.ImageCheckBox.CheckImage.set -> void
+Dynamo.UI.Controls.ImageCheckBox.ImageCheckBox() -> void
+Dynamo.UI.Controls.ImageCheckBox.StateImage.get -> System.Windows.Media.ImageSource
+Dynamo.UI.Controls.ImageCheckBox.StateImage.set -> void
+Dynamo.UI.Controls.ImageRepeatButton
+Dynamo.UI.Controls.ImageRepeatButton.ImageRepeatButton() -> void
+Dynamo.UI.Controls.ImageRepeatButton.StateImage.get -> System.Windows.Media.ImageSource
+Dynamo.UI.Controls.ImageRepeatButton.StateImage.set -> void
+Dynamo.UI.Controls.InCanvasSearchControl
+Dynamo.UI.Controls.InCanvasSearchControl.InCanvasSearchControl() -> void
+Dynamo.UI.Controls.InCanvasSearchControl.InitializeComponent() -> void
+Dynamo.UI.Controls.InCanvasSearchControl.ViewModel.get -> Dynamo.ViewModels.SearchViewModel
+Dynamo.UI.Controls.InOutPortPanel
+Dynamo.UI.Controls.InOutPortPanel.InOutPortPanel() -> void
+Dynamo.UI.Controls.InPortContextMenu
+Dynamo.UI.Controls.InPortContextMenu.InitializeComponent() -> void
+Dynamo.UI.Controls.InPortContextMenu.InPortContextMenu() -> void
+Dynamo.UI.Controls.InPorts
+Dynamo.UI.Controls.InPorts.InitializeComponent() -> void
+Dynamo.UI.Controls.InPorts.InPorts() -> void
+Dynamo.UI.Controls.LibraryToolTipPopup
+Dynamo.UI.Controls.LibraryToolTipPopup.LibraryToolTipPopup() -> void
+Dynamo.UI.Controls.LibraryToolTipPopup.SetDataContext(object dataContext, bool closeImmediately = false) -> void
+Dynamo.UI.Controls.NodeAutoCompleteSearchControl
+Dynamo.UI.Controls.NodeAutoCompleteSearchControl.Dispose() -> void
+Dynamo.UI.Controls.NodeAutoCompleteSearchControl.InitializeComponent() -> void
+Dynamo.UI.Controls.NodeAutoCompleteSearchControl.NodeAutoCompleteSearchControl() -> void
+Dynamo.UI.Controls.NodeAutoCompleteSearchControl.ViewModel.get -> Dynamo.ViewModels.NodeAutoCompleteSearchViewModel
+Dynamo.UI.Controls.OutPortContextMenu
+Dynamo.UI.Controls.OutPortContextMenu.InitializeComponent() -> void
+Dynamo.UI.Controls.OutPortContextMenu.OutPortContextMenu() -> void
+Dynamo.UI.Controls.OutPorts
+Dynamo.UI.Controls.OutPorts.InitializeComponent() -> void
+Dynamo.UI.Controls.OutPorts.OutPorts() -> void
+Dynamo.UI.Controls.OutputEditor
+Dynamo.UI.Controls.OutputEditor.OutputEditor(Dynamo.Controls.NodeView view) -> void
+Dynamo.UI.Controls.ParameterEditor
+Dynamo.UI.Controls.ParameterEditor.ParameterEditor(Dynamo.Controls.NodeView view) -> void
+Dynamo.UI.Controls.PreviewCompactView
+Dynamo.UI.Controls.PreviewCompactView.InitializeComponent() -> void
+Dynamo.UI.Controls.PreviewCompactView.PreviewCompactView() -> void
+Dynamo.UI.Controls.PreviewControl
+Dynamo.UI.Controls.PreviewControl.InitializeComponent() -> void
+Dynamo.UI.Controls.PreviewControl.PreviewControl(Dynamo.ViewModels.NodeViewModel nodeViewModel) -> void
+Dynamo.UI.Controls.PreviewControl.State
+Dynamo.UI.Controls.PreviewControl.State.Condensed = 1 -> Dynamo.UI.Controls.PreviewControl.State
+Dynamo.UI.Controls.PreviewControl.State.Expanded = 2 -> Dynamo.UI.Controls.PreviewControl.State
+Dynamo.UI.Controls.PreviewControl.State.Hidden = 0 -> Dynamo.UI.Controls.PreviewControl.State
+Dynamo.UI.Controls.PreviewControl.State.InTransition = 3 -> Dynamo.UI.Controls.PreviewControl.State
+Dynamo.UI.Controls.PreviewControl.State.PreTransition = 4 -> Dynamo.UI.Controls.PreviewControl.State
+Dynamo.UI.Controls.PreviewControl.StateChanged -> Dynamo.UI.Controls.StateChangedEventHandler
+Dynamo.UI.Controls.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State nextState) -> void
+Dynamo.UI.Controls.SampleFileEntry
+Dynamo.UI.Controls.SampleFileEntry.AddChildSampleFile(Dynamo.UI.Controls.SampleFileEntry childSampleFile) -> void
+Dynamo.UI.Controls.SampleFileEntry.Children.get -> System.Collections.Generic.IEnumerable<Dynamo.UI.Controls.SampleFileEntry>
+Dynamo.UI.Controls.SampleFileEntry.FileName.get -> string
+Dynamo.UI.Controls.SampleFileEntry.FilePath.get -> string
+Dynamo.UI.Controls.SampleFileEntry.SampleFileEntry(string name, string path) -> void
+Dynamo.UI.Controls.SampleFileEntry.SampleFileEntry(string name, string path, string thumbnail, string author, string description, string dateModified) -> void
+Dynamo.UI.Controls.ShortcutBarItem
+Dynamo.UI.Controls.ShortcutBarItem.ImgDisabledSource.get -> string
+Dynamo.UI.Controls.ShortcutBarItem.ImgDisabledSource.set -> void
+Dynamo.UI.Controls.ShortcutBarItem.ImgHoverSource.get -> string
+Dynamo.UI.Controls.ShortcutBarItem.ImgHoverSource.set -> void
+Dynamo.UI.Controls.ShortcutBarItem.ImgNormalSource.get -> string
+Dynamo.UI.Controls.ShortcutBarItem.ImgNormalSource.set -> void
+Dynamo.UI.Controls.ShortcutBarItem.Name.get -> string
+Dynamo.UI.Controls.ShortcutBarItem.Name.set -> void
+Dynamo.UI.Controls.ShortcutBarItem.ShortcutBarItem() -> void
+Dynamo.UI.Controls.ShortcutBarItem.ShortcutCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.UI.Controls.ShortcutBarItem.ShortcutCommand.set -> void
+Dynamo.UI.Controls.ShortcutBarItem.ShortcutCommandParameter.get -> string
+Dynamo.UI.Controls.ShortcutBarItem.ShortcutCommandParameter.set -> void
+Dynamo.UI.Controls.ShortcutBarItem.shortcutToolTip -> string
+Dynamo.UI.Controls.ShortcutToolbar
+Dynamo.UI.Controls.ShortcutToolbar.AllChildren(System.Windows.DependencyObject parent) -> System.Collections.Generic.List<System.Windows.Controls.Control>
+Dynamo.UI.Controls.ShortcutToolbar.Dispose() -> void
+Dynamo.UI.Controls.ShortcutToolbar.InitializeComponent() -> void
+Dynamo.UI.Controls.ShortcutToolbar.ShortcutBarItems.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.UI.Controls.ShortcutBarItem>
+Dynamo.UI.Controls.ShortcutToolbar.ShortcutBarRightSideItems.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.UI.Controls.ShortcutBarItem>
+Dynamo.UI.Controls.ShortcutToolbar.ShortcutToolbar(Dynamo.ViewModels.DynamoViewModel dynamoViewModel) -> void
+Dynamo.UI.Controls.StartPageListItem
+Dynamo.UI.Controls.StartPageListItem.Action
+Dynamo.UI.Controls.StartPageListItem.Action.ExternalUrl = 2 -> Dynamo.UI.Controls.StartPageListItem.Action
+Dynamo.UI.Controls.StartPageListItem.Action.FilePath = 1 -> Dynamo.UI.Controls.StartPageListItem.Action
+Dynamo.UI.Controls.StartPageListItem.Action.RegularCommand = 0 -> Dynamo.UI.Controls.StartPageListItem.Action
+Dynamo.UI.Controls.StartPageListItem.Author.get -> string
+Dynamo.UI.Controls.StartPageListItem.Caption.get -> string
+Dynamo.UI.Controls.StartPageListItem.ClickAction.get -> Dynamo.UI.Controls.StartPageListItem.Action
+Dynamo.UI.Controls.StartPageListItem.ClickAction.set -> void
+Dynamo.UI.Controls.StartPageListItem.ContextData.get -> string
+Dynamo.UI.Controls.StartPageListItem.ContextData.set -> void
+Dynamo.UI.Controls.StartPageListItem.DateModified.get -> string
+Dynamo.UI.Controls.StartPageListItem.DateModified.set -> void
+Dynamo.UI.Controls.StartPageListItem.Description.get -> string
+Dynamo.UI.Controls.StartPageListItem.Icon.get -> System.Windows.Media.ImageSource
+Dynamo.UI.Controls.StartPageListItem.IconVisibility.get -> System.Windows.Visibility
+Dynamo.UI.Controls.StartPageListItem.LoadBitmapImage(string iconPath) -> System.Windows.Media.Imaging.BitmapImage
+Dynamo.UI.Controls.StartPageListItem.StartPageListItem(string caption) -> void
+Dynamo.UI.Controls.StartPageListItem.StartPageListItem(string caption, string iconPath) -> void
+Dynamo.UI.Controls.StartPageListItem.SubScript.get -> string
+Dynamo.UI.Controls.StartPageListItem.SubScript.set -> void
+Dynamo.UI.Controls.StartPageListItem.Thumbnail.get -> string
+Dynamo.UI.Controls.StartPageListItem.Thumbnail.set -> void
+Dynamo.UI.Controls.StartPageListItem.ToolTip.get -> string
+Dynamo.UI.Controls.StartPageListItem.ToolTip.set -> void
+Dynamo.UI.Controls.StartPageView
+Dynamo.UI.Controls.StartPageView.InitializeComponent() -> void
+Dynamo.UI.Controls.StartPageView.StartPageView() -> void
+Dynamo.UI.Controls.StartPageViewModel
+Dynamo.UI.Controls.StartPageViewModel.BackupFiles.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.UI.Controls.StartPageListItem>
+Dynamo.UI.Controls.StartPageViewModel.BackupTitle.get -> string
+Dynamo.UI.Controls.StartPageViewModel.CommunityLinks.get -> System.Collections.Generic.IEnumerable<Dynamo.UI.Controls.StartPageListItem>
+Dynamo.UI.Controls.StartPageViewModel.ContributeLinks.get -> System.Collections.Generic.IEnumerable<Dynamo.UI.Controls.StartPageListItem>
+Dynamo.UI.Controls.StartPageViewModel.FileOperations.get -> System.Collections.Generic.IEnumerable<Dynamo.UI.Controls.StartPageListItem>
+Dynamo.UI.Controls.StartPageViewModel.IsFirstRun.get -> bool
+Dynamo.UI.Controls.StartPageViewModel.RecentFiles.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.UI.Controls.StartPageListItem>
+Dynamo.UI.Controls.StartPageViewModel.References.get -> System.Collections.Generic.IEnumerable<Dynamo.UI.Controls.StartPageListItem>
+Dynamo.UI.Controls.StartPageViewModel.SampleFiles.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.UI.Controls.SampleFileEntry>
+Dynamo.UI.Controls.StartPageViewModel.SampleFolderPath.get -> string
+Dynamo.UI.Controls.StartPageViewModel.SampleDatasetsPath.get -> string
+Dynamo.UI.Controls.StartPageViewModel.TemplateFiles.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.UI.Controls.StartPageListItem>
+Dynamo.UI.Controls.StateChangedEventHandler
+Dynamo.UI.Controls.ToolTipWindow
+Dynamo.UI.Controls.ToolTipWindow.CopyIconMouseClick(object sender, System.Windows.Input.MouseButtonEventArgs e) -> void
+Dynamo.UI.Controls.ToolTipWindow.InitializeComponent() -> void
+Dynamo.UI.Controls.ToolTipWindow.ToolTipWindow() -> void
+Dynamo.UI.Controls.UseLevelPopup
+Dynamo.UI.Controls.UseLevelPopup.UseLevelPopup() -> void
+Dynamo.UI.Controls.UseLevelSpinner
+Dynamo.UI.Controls.UseLevelSpinner.ContentText.get -> string
+Dynamo.UI.Controls.UseLevelSpinner.IsReadOnly.get -> bool
+Dynamo.UI.Controls.UseLevelSpinner.IsReadOnly.set -> void
+Dynamo.UI.Controls.UseLevelSpinner.KeepListStructure.get -> bool
+Dynamo.UI.Controls.UseLevelSpinner.KeepListStructure.set -> void
+Dynamo.UI.Controls.UseLevelSpinner.Level.get -> int
+Dynamo.UI.Controls.UseLevelSpinner.Level.set -> void
+Dynamo.UI.Controls.UseLevelSpinner.LevelChanged -> System.Windows.RoutedPropertyChangedEventHandler<int>
+Dynamo.UI.Controls.UseLevelSpinner.UseLevelSpinner() -> void
+Dynamo.UI.DynamoFolderBrowserDialog
+Dynamo.UI.DynamoFolderBrowserDialog.DynamoFolderBrowserDialog() -> void
+Dynamo.UI.DynamoFolderBrowserDialog.Owner.get -> System.Windows.Window
+Dynamo.UI.DynamoFolderBrowserDialog.Owner.set -> void
+Dynamo.UI.DynamoFolderBrowserDialog.SelectedPath.get -> string
+Dynamo.UI.DynamoFolderBrowserDialog.SelectedPath.set -> void
+Dynamo.UI.DynamoFolderBrowserDialog.ShowDialog() -> System.Windows.Forms.DialogResult
+Dynamo.UI.DynamoFolderBrowserDialog.Title.get -> string
+Dynamo.UI.DynamoFolderBrowserDialog.Title.set -> void
+Dynamo.UI.FrozenResources
+Dynamo.UI.FrozenResources.FrozenResources() -> void
+Dynamo.UI.IViewModelView<T>
+Dynamo.UI.IViewModelView<T>.ViewModel.get -> T
+Dynamo.UI.Prompts.DynamoMessageBox
+Dynamo.UI.Prompts.DynamoMessageBox.BodyText.get -> string
+Dynamo.UI.Prompts.DynamoMessageBox.BodyText.set -> void
+Dynamo.UI.Prompts.DynamoMessageBox.DialogFlags
+Dynamo.UI.Prompts.DynamoMessageBox.DialogFlags.Scrollable = 0 -> Dynamo.UI.Prompts.DynamoMessageBox.DialogFlags
+Dynamo.UI.Prompts.DynamoMessageBox.DialogResult.get -> bool?
+Dynamo.UI.Prompts.DynamoMessageBox.DialogResult.set -> void
+Dynamo.UI.Prompts.DynamoMessageBox.DynamoMessageBox() -> void
+Dynamo.UI.Prompts.DynamoMessageBox.InitializeComponent() -> void
+Dynamo.UI.Prompts.DynamoMessageBox.MessageBoxButton.get -> System.Windows.MessageBoxButton
+Dynamo.UI.Prompts.DynamoMessageBox.MessageBoxButton.set -> void
+Dynamo.UI.Prompts.DynamoMessageBox.MessageBoxImage.get -> System.Windows.MessageBoxImage
+Dynamo.UI.Prompts.DynamoMessageBox.MessageBoxImage.set -> void
+Dynamo.UI.Prompts.DynamoMessageBox.PropertyChanged -> System.ComponentModel.PropertyChangedEventHandler
+Dynamo.UI.Prompts.DynamoMessageBox.ShowTooltip.get -> bool
+Dynamo.UI.Prompts.DynamoMessageBox.TitleText.get -> string
+Dynamo.UI.Prompts.DynamoMessageBox.TitleText.set -> void
+Dynamo.UI.Prompts.DynamoMessageBox.Tooltip.get -> string
+Dynamo.UI.Prompts.EditWindow
+Dynamo.UI.Prompts.EditWindow.BindToProperty(object dataContext, System.Windows.Data.Binding binding) -> void
+Dynamo.UI.Prompts.EditWindow.EditWindow(Dynamo.ViewModels.DynamoViewModel dynamoViewModel, bool updateSourceOnTextChange = false, bool commitChangesOnReturn = false) -> void
+Dynamo.UI.Prompts.EditWindow.InitializeComponent() -> void
+Dynamo.UI.Prompts.GenericTaskDialog
+Dynamo.UI.Prompts.GenericTaskDialog.DetailedContent -> System.Windows.Controls.TextBox
+Dynamo.UI.Prompts.GenericTaskDialog.GenericTaskDialog() -> void
+Dynamo.UI.Prompts.GenericTaskDialog.InitializeComponent() -> void
+Dynamo.UI.Prompts.UsageReportingAgreementPrompt
+Dynamo.UI.Prompts.UsageReportingAgreementPrompt.InitializeComponent() -> void
+Dynamo.UI.Prompts.UsageReportingAgreementPrompt.UsageReportingAgreementPrompt(Dynamo.Wpf.Interfaces.IBrandingResourceProvider resourceProvider, Dynamo.ViewModels.DynamoViewModel dynamoViewModel) -> void
+Dynamo.UI.SharedDictionaryManager
+Dynamo.UI.SharedResourceDictionary
+Dynamo.UI.SharedResourceDictionary.SharedResourceDictionary() -> void
+Dynamo.UI.SharedResourceDictionary.Source.get -> System.Uri
+Dynamo.UI.SharedResourceDictionary.Source.set -> void
+Dynamo.UI.Views.AboutWindow
+Dynamo.UI.Views.AboutWindow.AboutWindow(Dynamo.ViewModels.DynamoViewModel dynamoViewModel) -> void
+Dynamo.UI.Views.AboutWindow.InitializeComponent() -> void
+Dynamo.UI.Views.AboutWindow.InstallNewUpdate.get -> bool
+Dynamo.UI.Views.GuidedTourItem
+Dynamo.UI.Views.GuidedTourItem.Description.get -> string
+Dynamo.UI.Views.GuidedTourItem.Description.set -> void
+Dynamo.UI.Views.GuidedTourItem.GuidedTourItem(string name, string description, string type, string thumbnail) -> void
+Dynamo.UI.Views.GuidedTourItem.Name.get -> string
+Dynamo.UI.Views.GuidedTourItem.Name.set -> void
+Dynamo.UI.Views.GuidedTourItem.Thumbnail.get -> string
+Dynamo.UI.Views.GuidedTourItem.Thumbnail.set -> void
+Dynamo.UI.Views.GuidedTourItem.Type.get -> string
+Dynamo.UI.Views.GuidedTourItem.Type.set -> void
+Dynamo.UI.Views.GuidedTourType
+Dynamo.UI.Views.GuidedTourType.GetStarted = 1 -> Dynamo.UI.Views.GuidedTourType
+Dynamo.UI.Views.GuidedTourType.Packages = 2 -> Dynamo.UI.Views.GuidedTourType
+Dynamo.UI.Views.GuidedTourType.UserInterface = 0 -> Dynamo.UI.Views.GuidedTourType
+Dynamo.UI.Views.HandlingEventTrigger
+Dynamo.UI.Views.HandlingEventTrigger.HandlingEventTrigger() -> void
+Dynamo.UI.Views.HomePage
+Dynamo.UI.Views.HomePage.Dispose() -> void
+Dynamo.UI.Views.HomePage.HomePage() -> void
+Dynamo.UI.Views.HomePage.InitializeComponent() -> void
+Dynamo.UI.Views.LibraryView
+Dynamo.UI.Views.LibraryView.InitializeComponent() -> void
+Dynamo.UI.Views.LibraryView.LibraryView() -> void
+Dynamo.UI.Views.PackageManagerWizard
+Dynamo.UI.Views.PackageManagerWizard.Dispose() -> void
+Dynamo.UI.Views.PackageManagerWizard.InitializeComponent() -> void
+Dynamo.UI.Views.PackageManagerWizard.PackageManagerWizard() -> void
+Dynamo.UI.Views.PackageUpdateRequest
+Dynamo.UI.Views.PackageUpdateRequest.CopyrightHolder.get -> string
+Dynamo.UI.Views.PackageUpdateRequest.CopyrightHolder.set -> void
+Dynamo.UI.Views.PackageUpdateRequest.CopyrightYear.get -> string
+Dynamo.UI.Views.PackageUpdateRequest.CopyrightYear.set -> void
+Dynamo.UI.Views.PackageUpdateRequest.Description.get -> string
+Dynamo.UI.Views.PackageUpdateRequest.Description.set -> void
+Dynamo.UI.Views.PackageUpdateRequest.Equals(Dynamo.UI.Views.PackageUpdateRequest other) -> bool
+Dynamo.UI.Views.PackageUpdateRequest.Group.get -> string
+Dynamo.UI.Views.PackageUpdateRequest.Group.set -> void
+Dynamo.UI.Views.PackageUpdateRequest.Keywords.get -> System.Collections.Generic.List<string>
+Dynamo.UI.Views.PackageUpdateRequest.Keywords.set -> void
+Dynamo.UI.Views.PackageUpdateRequest.License.get -> string
+Dynamo.UI.Views.PackageUpdateRequest.License.set -> void
+Dynamo.UI.Views.PackageUpdateRequest.Major.get -> string
+Dynamo.UI.Views.PackageUpdateRequest.Major.set -> void
+Dynamo.UI.Views.PackageUpdateRequest.Minor.get -> string
+Dynamo.UI.Views.PackageUpdateRequest.Minor.set -> void
+Dynamo.UI.Views.PackageUpdateRequest.Name.get -> string
+Dynamo.UI.Views.PackageUpdateRequest.Name.set -> void
+Dynamo.UI.Views.PackageUpdateRequest.PackageUpdateRequest() -> void
+Dynamo.UI.Views.PackageUpdateRequest.Patch.get -> string
+Dynamo.UI.Views.PackageUpdateRequest.Patch.set -> void
+Dynamo.UI.Views.PackageUpdateRequest.ReleaseNotesUrl.get -> string
+Dynamo.UI.Views.PackageUpdateRequest.ReleaseNotesUrl.set -> void
+Dynamo.UI.Views.PackageUpdateRequest.RepositoryUrl.get -> string
+Dynamo.UI.Views.PackageUpdateRequest.RepositoryUrl.set -> void
+Dynamo.UI.Views.PackageUpdateRequest.SiteUrl.get -> string
+Dynamo.UI.Views.PackageUpdateRequest.SiteUrl.set -> void
+Dynamo.UI.Views.ScriptHomeObject
+Dynamo.UI.Views.ScriptHomeObject.ApplicationLoaded() -> void
+Dynamo.UI.Views.ScriptHomeObject.NewCustomNodeWorkspace() -> void
+Dynamo.UI.Views.ScriptHomeObject.NewWorkspace() -> void
+Dynamo.UI.Views.ScriptHomeObject.OpenFile(string path) -> void
+Dynamo.UI.Views.ScriptHomeObject.OpenWorkspace() -> void
+Dynamo.UI.Views.ScriptHomeObject.SaveSettings(string settings) -> void
+Dynamo.UI.Views.ScriptHomeObject.ScriptHomeObject(System.Action<string> requestOpenFile, System.Action requestNewWorkspace, System.Action requestOpenWorkspace, System.Action requestNewCustomNodeWorkspace, System.Action requestApplicationLoaded, System.Action<string> requestShowGuidedTour, System.Action requestShowSampleFilesInFolder, System.Action requestShowSampleDatasetsInFolder, System.Action requestShowBackupFilesInFolder, System.Action requestShowTemplate, System.Action<string> requestSaveSettings) -> void
+Dynamo.UI.Views.ScriptHomeObject.ShowBackupFilesInFolder() -> void
+Dynamo.UI.Views.ScriptHomeObject.ShowSampleFilesInFolder() -> void
+Dynamo.UI.Views.ScriptHomeObject.ShowSampleDatasetsInFolder() -> void
+Dynamo.UI.Views.ScriptHomeObject.ShowTempalte() -> void
+Dynamo.UI.Views.ScriptHomeObject.StartGuidedTour(string path) -> void
+Dynamo.UI.Views.ScriptObject
+Dynamo.UI.Views.ScriptObject.ImportSettings(string file) -> void
+Dynamo.UI.Views.ScriptObject.LaunchDynamo(bool showScreenAgain) -> void
+Dynamo.UI.Views.ScriptObject.ScriptObject(System.Action<bool> requestLaunchDynamo, System.Action<string> requestImportSettings, System.Func<bool> requestSignIn, System.Func<bool> requestSignOut) -> void
+Dynamo.UI.Views.ScriptObject.SignIn() -> bool
+Dynamo.UI.Views.ScriptObject.SignOut() -> bool
+Dynamo.UI.Views.ScriptWizardObject
+Dynamo.UI.Views.ScriptWizardObject.AddFileOrFolder(string fileOrFolder) -> void
+Dynamo.UI.Views.ScriptWizardObject.ApplicationLoaded() -> void
+Dynamo.UI.Views.ScriptWizardObject.CancelUpload() -> void
+Dynamo.UI.Views.ScriptWizardObject.ClearMarkdownContent() -> void
+Dynamo.UI.Views.ScriptWizardObject.LoadMarkdownContent() -> void
+Dynamo.UI.Views.ScriptWizardObject.LogMessage(string message) -> void
+Dynamo.UI.Views.ScriptWizardObject.OpenFolder(string path) -> void
+Dynamo.UI.Views.ScriptWizardObject.Publish() -> void
+Dynamo.UI.Views.ScriptWizardObject.RemoveFileOrFolder(string name) -> void
+Dynamo.UI.Views.ScriptWizardObject.Reset() -> void
+Dynamo.UI.Views.ScriptWizardObject.ScriptWizardObject(System.Action<string> requestAddFileOrFolder, System.Action<string> requestRemoveFileOrFolder, System.Action<bool> requestRetainFolderStructure, System.Action<string> requestUpdatePackageDetails, System.Action requestSubmit, System.Action requestPublish, System.Action requestReset, System.Action<string> requestToggleNodeLibraryOnItem, System.Action<string> requestOpenFolder, System.Action<string> requestUpdateCompatibilityMatrix, System.Action requestLoadMarkdownContent, System.Action requestClearMarkdownContent, System.Action<string> requestLogMessage, System.Action requestApplicationLoaded, System.Action<string, string> requestShowDialog, System.Action requestCancelUpload, System.Action<int, int, string> requestUploadProgress) -> void
+Dynamo.UI.Views.ScriptWizardObject.ShowDialog(string title, string message) -> void
+Dynamo.UI.Views.ScriptWizardObject.Submit() -> void
+Dynamo.UI.Views.ScriptWizardObject.ToggleNodeLibraryOnItem(string name) -> void
+Dynamo.UI.Views.ScriptWizardObject.ToggleRetainFolderStructure(bool flag) -> void
+Dynamo.UI.Views.ScriptWizardObject.UpdateCompatibilityMatrix(string jsonPayload) -> void
+Dynamo.UI.Views.ScriptWizardObject.UpdatePackageDetails(string jsonPayload) -> void
+Dynamo.UI.Views.ScriptWizardObject.UploadProgress(int currentFile, int totalFiles, string currentFileName) -> void
+Dynamo.UI.Views.SplashScreen
+Dynamo.UI.Views.SplashScreen.CloseWasExplicit.get -> bool
+Dynamo.UI.Views.SplashScreen.DynamicSplashScreenReady -> Dynamo.UI.Views.SplashScreen.DynamicSplashScreenReadyHandler
+Dynamo.UI.Views.SplashScreen.DynamicSplashScreenReadyHandler
+Dynamo.UI.Views.SplashScreen.DynamoView.get -> Dynamo.Controls.DynamoView
+Dynamo.UI.Views.SplashScreen.DynamoView.set -> void
+Dynamo.UI.Views.SplashScreen.InitializeComponent() -> void
+Dynamo.UI.Views.SplashScreen.OnRequestDynamicSplashScreen() -> void
+Dynamo.UI.Views.SplashScreen.OnRequestStaticSplashScreen() -> void
+Dynamo.UI.Views.SplashScreen.RequestLaunchDynamo -> System.Action<bool>
+Dynamo.UI.Views.SplashScreen.SplashScreen(bool enableSignInButton = true) -> void
+Dynamo.UI.Views.SplashScreen.totalLoadingTime -> long
+Dynamo.Utilities.MouseClickManager
+Dynamo.Utilities.MouseClickManager.Click -> System.Windows.Input.MouseButtonEventHandler
+Dynamo.Utilities.MouseClickManager.DoubleClick -> System.Windows.Input.MouseButtonEventHandler
+Dynamo.Utilities.MouseClickManager.DoubleClickTimeout.get -> int
+Dynamo.Utilities.MouseClickManager.DoubleClickTimeout.set -> void
+Dynamo.Utilities.MouseClickManager.HandleClick(object sender, System.Windows.Input.MouseButtonEventArgs e) -> void
+Dynamo.Utilities.MouseClickManager.MouseClickManager(int doubleClickTimeout) -> void
+Dynamo.Utilities.OnceDisposable
+Dynamo.Utilities.OnceDisposable.Dispose() -> void
+Dynamo.Utilities.OnceDisposable.OnceDisposable(System.IDisposable disposable) -> void
+Dynamo.Utilities.ResourceUtilities
+Dynamo.Utilities.WindowsBaseExtensions
+Dynamo.ViewModels.AnnotationViewModel
+Dynamo.ViewModels.AnnotationViewModel.AddGroupToGroupCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.AnnotationViewModel.AddToGroupCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.AnnotationViewModel.AnnotationDescriptionText.get -> string
+Dynamo.ViewModels.AnnotationViewModel.AnnotationDescriptionText.set -> void
+Dynamo.ViewModels.AnnotationViewModel.AnnotationModel.get -> Dynamo.Graph.Annotations.AnnotationModel
+Dynamo.ViewModels.AnnotationViewModel.AnnotationModel.set -> void
+Dynamo.ViewModels.AnnotationViewModel.AnnotationText.get -> string
+Dynamo.ViewModels.AnnotationViewModel.AnnotationText.set -> void
+Dynamo.ViewModels.AnnotationViewModel.AnnotationViewModel(Dynamo.ViewModels.WorkspaceViewModel workspaceViewModel, Dynamo.Graph.Annotations.AnnotationModel model) -> void
+Dynamo.ViewModels.AnnotationViewModel.Background.get -> System.Windows.Media.Color
+Dynamo.ViewModels.AnnotationViewModel.Background.set -> void
+Dynamo.ViewModels.AnnotationViewModel.ChangeFontSize.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.AnnotationViewModel.DissolveNestedGroupsCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.AnnotationViewModel.FontSize.get -> double
+Dynamo.ViewModels.AnnotationViewModel.FontSize.set -> void
+Dynamo.ViewModels.AnnotationViewModel.GroupStyleId.get -> System.Guid
+Dynamo.ViewModels.AnnotationViewModel.GroupStyleId.set -> void
+Dynamo.ViewModels.AnnotationViewModel.GroupStyleList.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.Configuration.StyleItem>
+Dynamo.ViewModels.AnnotationViewModel.GroupStyleList.set -> void
+Dynamo.ViewModels.AnnotationViewModel.Height.get -> double
+Dynamo.ViewModels.AnnotationViewModel.Height.set -> void
+Dynamo.ViewModels.AnnotationViewModel.InPorts.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.PortViewModel>
+Dynamo.ViewModels.AnnotationViewModel.IsExpanded.get -> bool
+Dynamo.ViewModels.AnnotationViewModel.IsExpanded.set -> void
+Dynamo.ViewModels.AnnotationViewModel.IsOptionalInPortsCollapsed.get -> bool
+Dynamo.ViewModels.AnnotationViewModel.IsOptionalInPortsCollapsed.set -> void
+Dynamo.ViewModels.AnnotationViewModel.IsUnconnectedOutPortsCollapsed.get -> bool
+Dynamo.ViewModels.AnnotationViewModel.IsUnconnectedOutPortsCollapsed.set -> void
+Dynamo.ViewModels.AnnotationViewModel.Left.get -> double
+Dynamo.ViewModels.AnnotationViewModel.Left.set -> void
+Dynamo.ViewModels.AnnotationViewModel.ModelAreaHeight.get -> double
+Dynamo.ViewModels.AnnotationViewModel.ModelAreaHeight.set -> void
+Dynamo.ViewModels.AnnotationViewModel.ModelAreaRect.get -> System.Windows.Rect
+Dynamo.ViewModels.AnnotationViewModel.NestedGroups.get -> System.Collections.Generic.ICollection<Dynamo.ViewModels.AnnotationViewModel>
+Dynamo.ViewModels.AnnotationViewModel.NestedGroups.set -> void
+Dynamo.ViewModels.AnnotationViewModel.NestedGroupsGeometries -> DynamoUtilities.SmartObservableCollection<System.Windows.Media.Geometry>
+Dynamo.ViewModels.AnnotationViewModel.NodeContentCount.get -> int
+Dynamo.ViewModels.AnnotationViewModel.NodeHoveringState.get -> bool
+Dynamo.ViewModels.AnnotationViewModel.NodeHoveringState.set -> void
+Dynamo.ViewModels.AnnotationViewModel.Nodes.get -> System.Collections.Generic.IEnumerable<Dynamo.Graph.ModelBase>
+Dynamo.ViewModels.AnnotationViewModel.OptionalInPorts.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.PortViewModel>
+Dynamo.ViewModels.AnnotationViewModel.OutPorts.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.PortViewModel>
+Dynamo.ViewModels.AnnotationViewModel.PreviewState.get -> Dynamo.ViewModels.PreviewState
+Dynamo.ViewModels.AnnotationViewModel.RemoveGroupFromGroupCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.AnnotationViewModel.SnapInputEvent -> Dynamo.ViewModels.AnnotationViewModel.SnapInputEventHandler
+Dynamo.ViewModels.AnnotationViewModel.SnapInputEventHandler
+Dynamo.ViewModels.AnnotationViewModel.ToggleIsFrozenGroupCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.AnnotationViewModel.ToggleIsVisibleGroupCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.AnnotationViewModel.Top.get -> double
+Dynamo.ViewModels.AnnotationViewModel.Top.set -> void
+Dynamo.ViewModels.AnnotationViewModel.UnconnectedOutPorts.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.PortViewModel>
+Dynamo.ViewModels.AnnotationViewModel.Width.get -> double
+Dynamo.ViewModels.AnnotationViewModel.Width.set -> void
+Dynamo.ViewModels.AnnotationViewModel.ZIndex.get -> double
+Dynamo.ViewModels.CompactBubbleViewModel
+Dynamo.ViewModels.CompactBubbleViewModel.CompactBubbleViewModel(bool isCollection) -> void
+Dynamo.ViewModels.CompactBubbleViewModel.CompactBubbleViewModel(string nodeLabel, int items) -> void
+Dynamo.ViewModels.CompactBubbleViewModel.NodeLabel.get -> string
+Dynamo.ViewModels.CompactBubbleViewModel.NodeLabel.set -> void
+Dynamo.ViewModels.CompactBubbleViewModel.NumberOfItems.get -> int
+Dynamo.ViewModels.CompactBubbleViewModel.NumberOfItems.set -> void
+Dynamo.ViewModels.CompactBubbleViewModel.SetObjectType(object obj) -> void
+Dynamo.ViewModels.CompactBubbleViewModel.ShowNumberOfItems.get -> bool
+Dynamo.ViewModels.CompactBubbleViewModel.ValueType.get -> string
+Dynamo.ViewModels.CompactBubbleViewModel.ValueType.set -> void
+Dynamo.ViewModels.ConnectorAnchorViewModel
+Dynamo.ViewModels.ConnectorAnchorViewModel.AnchorOffset.get -> double
+Dynamo.ViewModels.ConnectorAnchorViewModel.AnchorSize.get -> double
+Dynamo.ViewModels.ConnectorAnchorViewModel.AnchorSize.set -> void
+Dynamo.ViewModels.ConnectorAnchorViewModel.CanDisplayIcons.get -> bool
+Dynamo.ViewModels.ConnectorAnchorViewModel.CanDisplayIcons.set -> void
+Dynamo.ViewModels.ConnectorAnchorViewModel.CanShowTooltip.get -> bool
+Dynamo.ViewModels.ConnectorAnchorViewModel.CanShowTooltip.set -> void
+Dynamo.ViewModels.ConnectorAnchorViewModel.ConnectorAnchorViewModel(Dynamo.ViewModels.ConnectorViewModel connectorViewModel, Dynamo.ViewModels.DynamoViewModel dynamoViewModel, string tooltipText) -> void
+Dynamo.ViewModels.ConnectorAnchorViewModel.CurrentPosition.get -> System.Windows.Point
+Dynamo.ViewModels.ConnectorAnchorViewModel.CurrentPosition.set -> void
+Dynamo.ViewModels.ConnectorAnchorViewModel.DataToolTipText.get -> string
+Dynamo.ViewModels.ConnectorAnchorViewModel.DataToolTipText.set -> void
+Dynamo.ViewModels.ConnectorAnchorViewModel.IsDataFlowCollection.get -> bool
+Dynamo.ViewModels.ConnectorAnchorViewModel.IsDataFlowCollection.set -> void
+Dynamo.ViewModels.ConnectorAnchorViewModel.IsHalftone.get -> bool
+Dynamo.ViewModels.ConnectorAnchorViewModel.IsHalftone.set -> void
+Dynamo.ViewModels.ConnectorAnchorViewModel.IsTemporarilyDisplayed.get -> bool
+Dynamo.ViewModels.ConnectorAnchorViewModel.IsTemporarilyDisplayed.set -> void
+Dynamo.ViewModels.ConnectorAnchorViewModel.MarkerOffsetY.get -> double
+Dynamo.ViewModels.ConnectorAnchorViewModel.MarkerOffsetX.get -> double
+Dynamo.ViewModels.ConnectorAnchorViewModel.MarkerSize.get -> double
+Dynamo.ViewModels.ConnectorAnchorViewModel.MarkerSize.set -> void
+Dynamo.ViewModels.ConnectorAnchorViewModel.PinConnectorCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.ConnectorAnchorViewModel.PinConnectorCommand.set -> void
+Dynamo.ViewModels.ConnectorAnchorViewModel.PinIconPreviewOn.get -> bool
+Dynamo.ViewModels.ConnectorAnchorViewModel.PinIconPreviewOn.set -> void
+Dynamo.ViewModels.ConnectorAnchorViewModel.PlaceWatchNodeCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.ConnectorAnchorViewModel.PlaceWatchNodeCommand.set -> void
+Dynamo.ViewModels.ConnectorAnchorViewModel.RequestDispose -> System.EventHandler
+Dynamo.ViewModels.ConnectorAnchorViewModel.ScaledAnchorSize.get -> double
+Dynamo.ViewModels.ConnectorAnchorViewModel.ScaledMarkerSize.get -> double
+Dynamo.ViewModels.ConnectorAnchorViewModel.WatchIconPreviewOn.get -> bool
+Dynamo.ViewModels.ConnectorAnchorViewModel.WatchIconPreviewOn.set -> void
+Dynamo.ViewModels.ConnectorContextMenuViewModel
+Dynamo.ViewModels.ConnectorContextMenuViewModel.BreakConnectionsSurrogateCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.ConnectorContextMenuViewModel.BreakConnectionsSurrogateCommand.set -> void
+Dynamo.ViewModels.ConnectorContextMenuViewModel.ConnectorContextMenuViewModel(Dynamo.ViewModels.ConnectorViewModel connectorViewModel) -> void
+Dynamo.ViewModels.ConnectorContextMenuViewModel.CurrentPosition.get -> System.Windows.Point
+Dynamo.ViewModels.ConnectorContextMenuViewModel.CurrentPosition.set -> void
+Dynamo.ViewModels.ConnectorContextMenuViewModel.GoToEndNodeCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.ConnectorContextMenuViewModel.GoToEndNodeCommand.set -> void
+Dynamo.ViewModels.ConnectorContextMenuViewModel.GoToStartNodeCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.ConnectorContextMenuViewModel.GoToStartNodeCommand.set -> void
+Dynamo.ViewModels.ConnectorContextMenuViewModel.HideConnectorSurrogateCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.ConnectorContextMenuViewModel.HideConnectorSurrogateCommand.set -> void
+Dynamo.ViewModels.ConnectorContextMenuViewModel.PinConnectedSurrogateCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.ConnectorContextMenuViewModel.PinConnectedSurrogateCommand.set -> void
+Dynamo.ViewModels.ConnectorContextMenuViewModel.RequestDispose -> System.EventHandler
+Dynamo.ViewModels.ConnectorContextMenuViewModel.SelectConnectedSurrogateCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.ConnectorContextMenuViewModel.SelectConnectedSurrogateCommand.set -> void
+Dynamo.ViewModels.ConnectorPinViewModel
+Dynamo.ViewModels.ConnectorPinViewModel.ConnectorGuid.get -> System.Guid
+Dynamo.ViewModels.ConnectorPinViewModel.ConnectorPinViewModel(Dynamo.ViewModels.WorkspaceViewModel workspaceViewModel, Dynamo.Graph.ConnectorPinModel model) -> void
+Dynamo.ViewModels.ConnectorPinViewModel.IsHidden.get -> bool
+Dynamo.ViewModels.ConnectorPinViewModel.IsHidden.set -> void
+Dynamo.ViewModels.ConnectorPinViewModel.IsHoveredOver.get -> bool
+Dynamo.ViewModels.ConnectorPinViewModel.IsHoveredOver.set -> void
+Dynamo.ViewModels.ConnectorPinViewModel.IsSelected.get -> bool
+Dynamo.ViewModels.ConnectorPinViewModel.IsTemporarilyVisible.get -> bool
+Dynamo.ViewModels.ConnectorPinViewModel.IsTemporarilyVisible.set -> void
+Dynamo.ViewModels.ConnectorPinViewModel.IsInGroup.get -> bool
+Dynamo.ViewModels.ConnectorPinViewModel.IsInGroup.set -> void
+Dynamo.ViewModels.ConnectorPinViewModel.Left.get -> double
+Dynamo.ViewModels.ConnectorPinViewModel.Left.set -> void
+Dynamo.ViewModels.ConnectorPinViewModel.Model.get -> Dynamo.Graph.ConnectorPinModel
+Dynamo.ViewModels.ConnectorPinViewModel.Model.set -> void
+Dynamo.ViewModels.ConnectorPinViewModel.RequestRedraw -> System.EventHandler
+Dynamo.ViewModels.ConnectorPinViewModel.RequestRemove -> System.EventHandler
+Dynamo.ViewModels.ConnectorPinViewModel.RequestRemoveFromGroup -> System.EventHandler
+Dynamo.ViewModels.ConnectorPinViewModel.RequestSelect -> System.EventHandler
+Dynamo.ViewModels.ConnectorPinViewModel.Top.get -> double
+Dynamo.ViewModels.ConnectorPinViewModel.Top.set -> void
+Dynamo.ViewModels.ConnectorPinViewModel.UnpinConnectorCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.ConnectorPinViewModel.UnpinConnectorCommand.set -> void
+Dynamo.ViewModels.ConnectorPinViewModel.RemovePinFromGroupCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.ConnectorPinViewModel.RemovePinFromGroupCommand.set -> void
+Dynamo.ViewModels.ConnectorPinViewModel.ZIndex.get -> int
+Dynamo.ViewModels.ConnectorPinViewModel.ZIndex.set -> void
+Dynamo.ViewModels.ConnectorViewModel
+Dynamo.ViewModels.ConnectorViewModel.ActiveStartPort.get -> Dynamo.Graph.Nodes.PortModel
+Dynamo.ViewModels.ConnectorViewModel.AnyPinSelected.get -> bool
+Dynamo.ViewModels.ConnectorViewModel.AnyPinSelected.set -> void
+Dynamo.ViewModels.ConnectorViewModel.BezierControlPoints.get -> System.Collections.Generic.List<System.Windows.Point[]>
+Dynamo.ViewModels.ConnectorViewModel.BezierControlPoints.set -> void
+Dynamo.ViewModels.ConnectorViewModel.BreakConnectionCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.ConnectorViewModel.BreakConnectionCommand.set -> void
+Dynamo.ViewModels.ConnectorViewModel.CanShowConnectorTooltip.get -> bool
+Dynamo.ViewModels.ConnectorViewModel.CanShowConnectorTooltip.set -> void
+Dynamo.ViewModels.ConnectorViewModel.ComputedBezierPath.get -> System.Windows.Shapes.Path
+Dynamo.ViewModels.ConnectorViewModel.ComputedBezierPath.set -> void
+Dynamo.ViewModels.ConnectorViewModel.ComputedBezierPathGeometry.get -> System.Windows.Media.PathGeometry
+Dynamo.ViewModels.ConnectorViewModel.ComputedBezierPathGeometry.set -> void
+Dynamo.ViewModels.ConnectorViewModel.ConnectorAnchorViewModel.get -> Dynamo.ViewModels.ConnectorAnchorViewModel
+Dynamo.ViewModels.ConnectorViewModel.ConnectorAnchorViewModelExists.get -> bool
+Dynamo.ViewModels.ConnectorViewModel.ConnectorAnchorViewModelExists.set -> void
+Dynamo.ViewModels.ConnectorViewModel.ConnectorContextMenuViewModel.get -> Dynamo.ViewModels.ConnectorContextMenuViewModel
+Dynamo.ViewModels.ConnectorViewModel.ConnectorDataTooltip.get -> string
+Dynamo.ViewModels.ConnectorViewModel.ConnectorDataTooltip.set -> void
+Dynamo.ViewModels.ConnectorViewModel.ConnectorModel.get -> Dynamo.Graph.Connectors.ConnectorModel
+Dynamo.ViewModels.ConnectorViewModel.ConnectorPinViewCollection.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.ConnectorPinViewModel>
+Dynamo.ViewModels.ConnectorViewModel.ConnectorPinViewCollection.set -> void
+Dynamo.ViewModels.ConnectorViewModel.ConnectorViewModel(Dynamo.ViewModels.WorkspaceViewModel workspace, Dynamo.Graph.Connectors.ConnectorModel connectorModel) -> void
+Dynamo.ViewModels.ConnectorViewModel.ConnectorViewModel(Dynamo.ViewModels.WorkspaceViewModel workspace, Dynamo.Graph.Nodes.PortModel port) -> void
+Dynamo.ViewModels.ConnectorViewModel.CurvePoint0.get -> System.Windows.Point
+Dynamo.ViewModels.ConnectorViewModel.CurvePoint1.get -> System.Windows.Point
+Dynamo.ViewModels.ConnectorViewModel.CurvePoint1.set -> void
+Dynamo.ViewModels.ConnectorViewModel.CurvePoint2.get -> System.Windows.Point
+Dynamo.ViewModels.ConnectorViewModel.CurvePoint2.set -> void
+Dynamo.ViewModels.ConnectorViewModel.CurvePoint3.get -> System.Windows.Point
+Dynamo.ViewModels.ConnectorViewModel.CurvePoint3.set -> void
+Dynamo.ViewModels.ConnectorViewModel.DotLeft.get -> double
+Dynamo.ViewModels.ConnectorViewModel.DotLeft.set -> void
+Dynamo.ViewModels.ConnectorViewModel.DotTop.get -> double
+Dynamo.ViewModels.ConnectorViewModel.DotTop.set -> void
+Dynamo.ViewModels.ConnectorViewModel.DynamicStrokeThickness.get -> double
+Dynamo.ViewModels.ConnectorViewModel.DynamicStrokeThickness.set -> void
+Dynamo.ViewModels.ConnectorViewModel.EndDotSize.get -> double
+Dynamo.ViewModels.ConnectorViewModel.EndDotSize.set -> void
+Dynamo.ViewModels.ConnectorViewModel.GoToEndNodeCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.ConnectorViewModel.GoToEndNodeCommand.set -> void
+Dynamo.ViewModels.ConnectorViewModel.GoToStartNodeCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.ConnectorViewModel.GoToStartNodeCommand.set -> void
+Dynamo.ViewModels.ConnectorViewModel.InstantiateContextMenuCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.ConnectorViewModel.InstantiateContextMenuCommand.set -> void
+Dynamo.ViewModels.ConnectorViewModel.IsConnecting.get -> bool
+Dynamo.ViewModels.ConnectorViewModel.IsConnecting.set -> void
+Dynamo.ViewModels.ConnectorViewModel.IsDataFlowCollection.get -> bool
+Dynamo.ViewModels.ConnectorViewModel.IsDataFlowCollection.set -> void
+Dynamo.ViewModels.ConnectorViewModel.IsFrozen.get -> bool
+Dynamo.ViewModels.ConnectorViewModel.IsHidden.get -> bool
+Dynamo.ViewModels.ConnectorViewModel.IsHidden.set -> void
+Dynamo.ViewModels.ConnectorViewModel.IsTemporarilyDisplayed.get -> bool
+Dynamo.ViewModels.ConnectorViewModel.IsTemporarilyDisplayed.set -> void
+Dynamo.ViewModels.ConnectorViewModel.Left.get -> double
+Dynamo.ViewModels.ConnectorViewModel.MouseHoverCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.ConnectorViewModel.MouseHoverCommand.set -> void
+Dynamo.ViewModels.ConnectorViewModel.MouseHoverOn.get -> bool
+Dynamo.ViewModels.ConnectorViewModel.MouseHoverOn.set -> void
+Dynamo.ViewModels.ConnectorViewModel.MousePosition.get -> System.Windows.Point
+Dynamo.ViewModels.ConnectorViewModel.MousePosition.set -> void
+Dynamo.ViewModels.ConnectorViewModel.MouseUnhoverCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.ConnectorViewModel.MouseUnhoverCommand.set -> void
+Dynamo.ViewModels.ConnectorViewModel.NodeEnd.get -> Dynamo.ViewModels.NodeViewModel
+Dynamo.ViewModels.ConnectorViewModel.Nodevm.get -> Dynamo.ViewModels.NodeViewModel
+Dynamo.ViewModels.ConnectorViewModel.PanelX.get -> double
+Dynamo.ViewModels.ConnectorViewModel.PanelX.set -> void
+Dynamo.ViewModels.ConnectorViewModel.PanelY.get -> double
+Dynamo.ViewModels.ConnectorViewModel.PanelY.set -> void
+Dynamo.ViewModels.ConnectorViewModel.PinConnectorCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.ConnectorViewModel.PinConnectorCommand.set -> void
+Dynamo.ViewModels.ConnectorViewModel.PinConnectorPlacementFromWatchNode(Dynamo.Graph.Connectors.ConnectorModel[] connectors, int connectorWireIndex, System.Windows.Point point, System.Collections.Generic.List<Dynamo.Graph.ModelBase> createdModels) -> void
+Dynamo.ViewModels.ConnectorViewModel.PreviewState.get -> Dynamo.ViewModels.PreviewState
+Dynamo.ViewModels.ConnectorViewModel.PreviewState.set -> void
+Dynamo.ViewModels.ConnectorViewModel.Redraw() -> void
+Dynamo.ViewModels.ConnectorViewModel.Redraw(object parameter) -> void
+Dynamo.ViewModels.ConnectorViewModel.RedrawCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.ConnectorViewModel.SelectConnectedCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.ConnectorViewModel.SelectConnectedCommand.set -> void
+Dynamo.ViewModels.ConnectorViewModel.ShowhideConnectorCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.ConnectorViewModel.ShowhideConnectorCommand.set -> void
+Dynamo.ViewModels.ConnectorViewModel.Top.get -> double
+Dynamo.ViewModels.ConnectorViewModel.ZIndex.get -> double
+Dynamo.ViewModels.ConnectorViewModel.ZIndex.set -> void
+Dynamo.ViewModels.DynamoViewModel
+Dynamo.ViewModels.DynamoViewModel.AddAnnotationCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.AddAnnotationCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.AddGroupToGroupModelCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.AddGroupToGroupModelCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.AddModelsToGroupModelCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.AddModelsToGroupModelCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.AddNote(object parameters) -> void
+Dynamo.ViewModels.DynamoViewModel.AddNoteCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.AddNoteCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.AddToSelectionCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.AddToSelectionCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.AlignSelected(object param) -> void
+Dynamo.ViewModels.DynamoViewModel.AlignSelectedCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.AlignSelectedCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.AskUserToSaveWorkspaceOrCancel(Dynamo.Graph.Workspaces.WorkspaceModel workspace, bool allowCancel = true) -> bool
+Dynamo.ViewModels.DynamoViewModel.BackgroundPreviewActive.get -> bool
+Dynamo.ViewModels.DynamoViewModel.BackgroundPreviewViewModel.get -> Dynamo.Wpf.ViewModels.Watch3D.DefaultWatch3DViewModel
+Dynamo.ViewModels.DynamoViewModel.BrandingResourceProvider.get -> Dynamo.Wpf.Interfaces.IBrandingResourceProvider
+Dynamo.ViewModels.DynamoViewModel.CanGoHome(object _) -> bool
+Dynamo.ViewModels.DynamoViewModel.CheckCurrentFileInTrustedLocation() -> void
+Dynamo.ViewModels.DynamoViewModel.CheckCustomGroupStylesChanges(System.Collections.Generic.List<Dynamo.Configuration.GroupStyleItem> originalCustomGroupStyles) -> void
+Dynamo.ViewModels.DynamoViewModel.CheckForLatestRenderCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.CheckForLatestRenderCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.ClearLog(object parameter) -> void
+Dynamo.ViewModels.DynamoViewModel.ClearLogCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.ClearLogCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.CloseHomeWorkspaceCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.CloseHomeWorkspaceCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.ConnectorType.get -> Dynamo.Graph.Connectors.ConnectorType
+Dynamo.ViewModels.DynamoViewModel.ConnectorType.set -> void
+Dynamo.ViewModels.DynamoViewModel.ConsoleHeight.get -> int
+Dynamo.ViewModels.DynamoViewModel.ConsoleHeight.set -> void
+Dynamo.ViewModels.DynamoViewModel.CopyCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.CopyCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.CurrentSpace.get -> Dynamo.Graph.Workspaces.WorkspaceModel
+Dynamo.ViewModels.DynamoViewModel.CurrentSpaceViewModel.get -> Dynamo.ViewModels.WorkspaceViewModel
+Dynamo.ViewModels.DynamoViewModel.CurrentWorkspaceIndex.get -> int
+Dynamo.ViewModels.DynamoViewModel.CurrentWorkspaceIndex.set -> void
+Dynamo.ViewModels.DynamoViewModel.DefaultPythonEngine.get -> string
+Dynamo.ViewModels.DynamoViewModel.DefaultPythonEngine.set -> void
+Dynamo.ViewModels.DynamoViewModel.DeleteCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.DeleteCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.DisplayFunction(object parameters) -> void
+Dynamo.ViewModels.DynamoViewModel.DisplayFunctionCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.DisplayFunctionCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.DisplayInteractiveGuideCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.DisplayInteractiveGuideCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.DisplayStartPageCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.DisplayStartPageCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.DoGraphAutoLayout(object parameter) -> void
+Dynamo.ViewModels.DynamoViewModel.DumpLibraryToXmlCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.DumpLibraryToXmlCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.DumpNodeHelpDataCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.DumpNodeHelpDataCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.DumpNodeIconsCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.DumpNodeIconsCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.DynamoViewModel(Dynamo.ViewModels.DynamoViewModel.StartConfiguration startConfiguration) -> void
+Dynamo.ViewModels.DynamoViewModel.EditName.get -> string
+Dynamo.ViewModels.DynamoViewModel.EditName.set -> void
+Dynamo.ViewModels.DynamoViewModel.EnableNodeAutoComplete.get -> bool
+Dynamo.ViewModels.DynamoViewModel.EnableNodeAutoComplete.set -> void
+Dynamo.ViewModels.DynamoViewModel.EnablePresetOptions.get -> bool
+Dynamo.ViewModels.DynamoViewModel.EnableTSpline.get -> bool
+Dynamo.ViewModels.DynamoViewModel.EnableTSpline.set -> void
+Dynamo.ViewModels.DynamoViewModel.EngineController.get -> Dynamo.Engine.EngineController
+Dynamo.ViewModels.DynamoViewModel.Escape(object parameter) -> void
+Dynamo.ViewModels.DynamoViewModel.EscapeCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.EscapeCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.ExecuteCommand(Dynamo.Models.DynamoModel.RecordableCommand command) -> void
+Dynamo.ViewModels.DynamoViewModel.Exit(object allowCancel) -> void
+Dynamo.ViewModels.DynamoViewModel.ExitCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.ExitCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.ExportToSTLCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.ExportToSTLCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.FitViewCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.FitViewCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.ForceRunExpressionCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.ForceRunExpressionCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.GetSaveDialog(Dynamo.Graph.Workspaces.WorkspaceModel workspace) -> Dynamo.Wpf.UI.CustomSaveFileDialog
+Dynamo.ViewModels.DynamoViewModel.GettingStartedGuideCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.GettingStartedGuideCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.GoHome(object _) -> void
+Dynamo.ViewModels.DynamoViewModel.GoHomeCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.GoHomeCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.GoHomeView(object parameter) -> void
+Dynamo.ViewModels.DynamoViewModel.GoToDictionary(object parameter) -> void
+Dynamo.ViewModels.DynamoViewModel.GoToDictionaryCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.GoToDictionaryCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.GoToWebsite(object parameter) -> void
+Dynamo.ViewModels.DynamoViewModel.GoToWebsiteCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.GoToWebsiteCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.GoToSourceCode(object parameter) -> void
+Dynamo.ViewModels.DynamoViewModel.GoToSourceCodeCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.GoToSourceCodeCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.GoToWiki(object parameter) -> void
+Dynamo.ViewModels.DynamoViewModel.GoToWikiCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.GoToWikiCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.GoToWorkspace(object parameter) -> void
+Dynamo.ViewModels.DynamoViewModel.GoToWorkspaceCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.GoToWorkspaceCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.GraphAutoLayoutCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.GraphAutoLayoutCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.HideReportOptions.get -> bool
+Dynamo.ViewModels.DynamoViewModel.HomeCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.HomeCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.HomeSpace.get -> Dynamo.Graph.Workspaces.HomeWorkspaceModel
+Dynamo.ViewModels.DynamoViewModel.HomeSpaceViewModel.get -> Dynamo.ViewModels.WorkspaceViewModel
+Dynamo.ViewModels.DynamoViewModel.HostName.get -> string
+Dynamo.ViewModels.DynamoViewModel.HostVersion.get -> string
+Dynamo.ViewModels.DynamoViewModel.ImportLibrary(object parameter) -> void
+Dynamo.ViewModels.DynamoViewModel.ImportLibraryCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.ImportLibraryCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.InsertPausePlaybackCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.InsertPausePlaybackCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.IsAbleToGoHome.get -> bool
+Dynamo.ViewModels.DynamoViewModel.IsMouseDown.get -> bool
+Dynamo.ViewModels.DynamoViewModel.IsMouseDown.set -> void
+Dynamo.ViewModels.DynamoViewModel.IsShowingConnectors.get -> bool
+Dynamo.ViewModels.DynamoViewModel.IsShowingConnectors.set -> void
+Dynamo.ViewModels.DynamoViewModel.IsShowingConnectorTooltip.get -> bool
+Dynamo.ViewModels.DynamoViewModel.IsShowingConnectorTooltip.set -> void
+Dynamo.ViewModels.DynamoViewModel.LibraryWidth.get -> int
+Dynamo.ViewModels.DynamoViewModel.LibraryWidth.set -> void
+Dynamo.ViewModels.DynamoViewModel.LicenseFile.get -> string
+Dynamo.ViewModels.DynamoViewModel.LinterIssuesCount.get -> int
+Dynamo.ViewModels.DynamoViewModel.LogText.get -> string
+Dynamo.ViewModels.DynamoViewModel.MainGuideManager.get -> Dynamo.Wpf.UI.GuidedTour.GuidesManager
+Dynamo.ViewModels.DynamoViewModel.MainGuideManager.set -> void
+Dynamo.ViewModels.DynamoViewModel.MakeNewHomeWorkspace(object parameter) -> void
+Dynamo.ViewModels.DynamoViewModel.MinLeftMarginOffset.get -> double
+Dynamo.ViewModels.DynamoViewModel.MinLeftMarginOffset.set -> void
+Dynamo.ViewModels.DynamoViewModel.Model.get -> Dynamo.Models.DynamoModel
+Dynamo.ViewModels.DynamoViewModel.MutateTestDelegateCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.MutateTestDelegateCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.NewHomeWorkspaceCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.NewHomeWorkspaceCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.NodeFromSelectionCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.NodeFromSelectionCommand.set -> void
 Dynamo.PackageManager.UI.PackageManagerTabControl
 Dynamo.PackageManager.UI.PackageManagerTabControl.PackageManagerTabControl() -> void
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.HasUpdateAvailable.get -> bool
