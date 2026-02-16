@@ -1580,6 +1580,7 @@ Dynamo.UI.Controls.StartPageViewModel.References.get -> System.Collections.Gener
 Dynamo.UI.Controls.StartPageViewModel.SampleFiles.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.UI.Controls.SampleFileEntry>
 Dynamo.UI.Controls.StartPageViewModel.SampleFolderPath.get -> string
 Dynamo.UI.Controls.StartPageViewModel.SampleDatasetsPath.get -> string
+Dynamo.UI.Controls.StartPageViewModel.TemplateFiles.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.UI.Controls.StartPageListItem>
 Dynamo.UI.Controls.StateChangedEventHandler
 Dynamo.UI.Controls.ToolTipWindow
 Dynamo.UI.Controls.ToolTipWindow.CopyIconMouseClick(object sender, System.Windows.Input.MouseButtonEventArgs e) -> void
