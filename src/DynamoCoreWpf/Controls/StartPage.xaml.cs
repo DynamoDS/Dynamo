@@ -118,9 +118,9 @@ namespace Dynamo.UI.Controls
 
         // Dynamic lists that update views on the fly.
         ObservableCollection<SampleFileEntry> sampleFiles = null;
+        ObservableCollection<StartPageListItem> templateFiles = null;
         ObservableCollection<StartPageListItem> recentFiles = null;
         ObservableCollection<StartPageListItem> backupFiles = null;
-        readonly ObservableCollection<StartPageListItem> templateFiles;
         internal readonly DynamoViewModel DynamoViewModel;
         private readonly bool isFirstRun;
 
@@ -131,8 +131,8 @@ namespace Dynamo.UI.Controls
 
             this.recentFiles = new ObservableCollection<StartPageListItem>();
             this.sampleFiles = new ObservableCollection<SampleFileEntry>();
-            this.backupFiles = new ObservableCollection<StartPageListItem>();
             this.templateFiles = new ObservableCollection<StartPageListItem>();
+            this.backupFiles = new ObservableCollection<StartPageListItem>();
 
 
             #region File Operations
