@@ -35,6 +35,10 @@ namespace Dynamo.ViewModels
         private readonly WorkspaceViewModel workspaceViewModel;
         private PortModel activeStartPort;
         private ConnectorModel model;
+        private PortModel subscribedStartPort;
+        private PortModel subscribedEndPort;
+        private NodeViewModel subscribedStartNodeViewModel;
+        private NodeViewModel subscribedEndNodeViewModel;
         private bool isConnecting = false;
         private bool isCollapsed = false;
         private bool isHidden = false;
@@ -1041,22 +1045,10 @@ namespace Dynamo.ViewModels
                 }
             }
 
-            connectorModel.Start.PropertyChanged += StartPortModel_PropertyChanged;
-            connectorModel.End.PropertyChanged += EndPortModel_PropertyChanged;
-
-            connectorModel.Start.Owner.PropertyChanged += StartOwner_PropertyChanged;
-            connectorModel.End.Owner.PropertyChanged += EndOwner_PropertyChanged;
+            UpdatePortSubscriptions(connectorModel.Start, connectorModel.End);
 
             workspaceViewModel.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
-            if (Nodevm != null)
-            {
-                Nodevm.PropertyChanged += nodeViewModel_PropertyChanged;
-            }
-
-            if (NodeEnd != null)
-            {
-                NodeEnd.PropertyChanged += nodeEndViewModel_PropertyChanged;
-            }
+            UpdateNodeViewModelSubscriptions();
             
             UpdateDynamicStrokeThickness();
             Redraw();
@@ -1078,8 +1070,91 @@ namespace Dynamo.ViewModels
                     }
                     IsHidden = connector.IsHidden;
                     break;
+                case nameof(ConnectorModel.Start):
+                    UpdatePortSubscriptions(model.Start, model.End);
+                    UpdateNodeViewModelSubscriptions();
+                    RaisePropertyChanged(nameof(Nodevm));
+                    RaisePropertyChanged(nameof(CurvePoint0));
+                    RaisePropertyChanged(nameof(PreviewState));
+                    UpdateConnectorDataToolTip();
+                    Redraw();
+                    break;
+                case nameof(ConnectorModel.End):
+                    UpdatePortSubscriptions(model.Start, model.End);
+                    UpdateNodeViewModelSubscriptions();
+                    RaisePropertyChanged(nameof(Nodevm));
+                    RaisePropertyChanged(nameof(NodeEnd));
+                    RaisePropertyChanged(nameof(CurvePoint3));
+                    RaisePropertyChanged(nameof(PreviewState));
+                    UpdateConnectorDataToolTip();
+                    Redraw();
+                    break;
                 default:
                     break;
+            }
+        }
+
+        private void UpdatePortSubscriptions(PortModel newStartPort, PortModel newEndPort)
+        {
+            if (subscribedStartPort != null)
+            {
+                subscribedStartPort.PropertyChanged -= StartPortModel_PropertyChanged;
+                subscribedStartPort.Owner.PropertyChanged -= StartOwner_PropertyChanged;
+            }
+
+            if (subscribedEndPort != null)
+            {
+                subscribedEndPort.PropertyChanged -= EndPortModel_PropertyChanged;
+                subscribedEndPort.Owner.PropertyChanged -= EndOwner_PropertyChanged;
+            }
+
+            subscribedStartPort = newStartPort;
+            subscribedEndPort = newEndPort;
+
+            if (subscribedStartPort != null)
+            {
+                subscribedStartPort.PropertyChanged += StartPortModel_PropertyChanged;
+                subscribedStartPort.Owner.PropertyChanged += StartOwner_PropertyChanged;
+            }
+
+            if (subscribedEndPort != null)
+            {
+                subscribedEndPort.PropertyChanged += EndPortModel_PropertyChanged;
+                subscribedEndPort.Owner.PropertyChanged += EndOwner_PropertyChanged;
+            }
+        }
+
+        private void UpdateNodeViewModelSubscriptions(bool subscribeToCurrentNodes = true)
+        {
+            if (subscribedStartNodeViewModel != null)
+            {
+                subscribedStartNodeViewModel.PropertyChanged -= nodeViewModel_PropertyChanged;
+            }
+
+            if (subscribedEndNodeViewModel != null)
+            {
+                subscribedEndNodeViewModel.PropertyChanged -= nodeEndViewModel_PropertyChanged;
+            }
+
+            subscribedStartNodeViewModel = null;
+            subscribedEndNodeViewModel = null;
+
+            if (!subscribeToCurrentNodes)
+            {
+                return;
+            }
+
+            subscribedStartNodeViewModel = Nodevm;
+            subscribedEndNodeViewModel = NodeEnd;
+
+            if (subscribedStartNodeViewModel != null)
+            {
+                subscribedStartNodeViewModel.PropertyChanged += nodeViewModel_PropertyChanged;
+            }
+
+            if (subscribedEndNodeViewModel != null)
+            {
+                subscribedEndNodeViewModel.PropertyChanged += nodeEndViewModel_PropertyChanged;
             }
         }
         private void ConnectorPinModelCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1222,22 +1297,10 @@ namespace Dynamo.ViewModels
             {
                 model.PropertyChanged -= HandleConnectorPropertyChanged;
 
-                model.Start.PropertyChanged -= StartPortModel_PropertyChanged;
-                model.End.PropertyChanged -= EndPortModel_PropertyChanged;
-
-                model.Start.Owner.PropertyChanged -= StartOwner_PropertyChanged;
-                model.End.Owner.PropertyChanged -= EndOwner_PropertyChanged;
+                UpdatePortSubscriptions(null, null);
                 model.ConnectorPinModels.CollectionChanged -= ConnectorPinModelCollectionChanged;
 
-                // Nodevm and NodeEnd props are found via model
-                if (Nodevm != null)
-                {
-                    Nodevm.PropertyChanged -= nodeViewModel_PropertyChanged;
-                }
-                if (NodeEnd != null)
-                {
-                    NodeEnd.PropertyChanged -= nodeEndViewModel_PropertyChanged;
-                }
+                UpdateNodeViewModelSubscriptions(false);
             }
 
             workspaceViewModel.PropertyChanged -= WorkspaceViewModel_PropertyChanged;
