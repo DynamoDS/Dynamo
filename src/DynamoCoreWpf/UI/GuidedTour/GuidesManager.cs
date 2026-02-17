@@ -537,8 +537,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
             // Close sidebar extension tabs
             var extensionsToClose = dynamoViewModel.SideBarTabItems
                 .OfType<TabItem>()
-                .Where(t => t.Tag is IViewExtension)
-                .Select(t => (IViewExtension)t.Tag)
+                .Select(t => t.Tag)
+                .OfType<IViewExtension>()
                 .GroupBy(e => e.UniqueId)
                 .Select(g => g.First())
                 .ToList();
