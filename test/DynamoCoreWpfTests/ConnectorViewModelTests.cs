@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.Selection;
@@ -506,15 +507,26 @@ namespace DynamoCoreWpfTests
                 new DynamoModel.MakeConnectionCommand(startNode.GUID, startPortIndex, PortType.Output,
                 MakeConnectionCommand.Mode.BeginShiftReconnections));
 
+            // During reconnect drag, the active dashed connector should retain and route through pin data.
+            var activeConnector = this.ViewModel.CurrentSpaceViewModel.WorkspaceElements
+                .OfType<ConnectorViewModel>()
+                .FirstOrDefault(c => c.IsConnecting);
+            Assert.IsNotNull(activeConnector);
+            Assert.AreEqual(initialConnectorPinCount + 1, activeConnector.ConnectorPinViewCollection.Count);
+
+            activeConnector.Redraw(new Point2D(650, 350));
+            Assert.IsNotNull(activeConnector.ComputedBezierPathGeometry);
+            Assert.Greater(activeConnector.ComputedBezierPathGeometry.Figures.Count, 1);
+
             // Execute the second part of the workflow - simulate placing the connectors over the new port
             this.ViewModel.ExecuteCommand(
                 new DynamoModel.MakeConnectionCommand(codeblock.GUID, 0, PortType.Output,
                 MakeConnectionCommand.Mode.EndShiftReconnections));
 
-            // Validate that the pin does not exists anymore
+            // Validate that the newly reconnected connector persists equivalent pins.
             var connectorAfterReconnect = this.ViewModel.CurrentSpaceViewModel.Connectors;
             Assert.AreEqual(1, connectorAfterReconnect.Count());
-            Assert.AreEqual(0, connectorAfterReconnect.First().ConnectorPinViewCollection.Count());
+            Assert.AreEqual(initialConnectorPinCount + 1, connectorAfterReconnect.First().ConnectorPinViewCollection.Count());
 
             // --- Undo ---
             Model.ExecuteCommand(new UndoRedoCommand(UndoRedoCommand.Operation.Undo));
