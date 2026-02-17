@@ -2770,6 +2770,15 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
+        /// Restores node-specific cached value state from runtime data.
+        /// The base implementation is a no-op and specialized nodes can override.
+        /// </summary>
+        /// <param name="data">Runtime data used to restore node cache state.</param>
+        internal virtual void RestoreCachedValueFromEngine(object data)
+        {
+        }
+
+        /// <summary>
         /// Call this method to asynchronously regenerate render package for
         /// this node. This method accesses core properties of a NodeModel and
         /// therefore is typically called on the main/UI thread.

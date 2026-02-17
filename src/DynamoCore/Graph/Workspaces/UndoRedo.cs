@@ -12,7 +12,6 @@ using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
 using Dynamo.Utilities;
-using System.Reflection;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -341,7 +340,7 @@ namespace Dynamo.Graph.Workspaces
             UpdateUpstreamCacheAfterWatchRewire(reconnectedAnyConnector, upstreamPort);
         }
 
-        private void TryGetWatchReconnectContext(
+        private static void TryGetWatchReconnectContext(
             NodeModel node,
             ISet<Guid> nodesScheduledForDeletion,
             out PortModel upstreamPort,
@@ -747,21 +746,13 @@ namespace Dynamo.Graph.Workspaces
         {
             if (nodeModel == null || nodeModel.OutPorts.Count == 0) return;
 
+            if (!string.Equals(nodeModel.GetType().FullName, WatchNodeTypeName, StringComparison.Ordinal)) return;
+
             var engineController = (this as HomeWorkspaceModel)?.EngineController;
             if (engineController == null) return;
 
-            // Watch nodes expose their UI cache through a private callback method.
             // If execution was intentionally skipped, pull the current mirror value
-            // and invoke that callback so the restored node regains its displayed data.
-            var onEvaluationComplete = nodeModel.GetType().GetMethod(
-                WatchEvaluationCompleteMethodName,
-                BindingFlags.Instance | BindingFlags.NonPublic,
-                null,
-                new[] { typeof(object) },
-                null);
-
-            if (onEvaluationComplete == null) return;
-
+            // and restore the watch-specific cache so the node regains its displayed data
             var outputIdentifier = nodeModel.GetAstIdentifierForOutputIndex(0)?.Value;
             if (string.IsNullOrEmpty(outputIdentifier)) return;
 
@@ -770,13 +761,7 @@ namespace Dynamo.Graph.Workspaces
 
             try
             {
-                onEvaluationComplete.Invoke(nodeModel, new object[] { mirrorData.Data });
-            }
-            catch (TargetInvocationException ex)
-            {
-                this.Log(
-                    $"Failed restoring watch cache for node '{nodeModel.GUID}': {ex.InnerException?.Message ?? ex.Message}",
-                    Logging.WarningLevel.Moderate);
+                nodeModel.RestoreCachedValueFromEngine(mirrorData.Data);
             }
             catch (Exception ex)
             {
