@@ -41,7 +41,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.4117" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.4047" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
