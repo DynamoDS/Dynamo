@@ -1425,6 +1425,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto‑sync with node selection..
+        /// </summary>
+        public static string DocumentationBrowserAutoSyncLabel {
+            get {
+                return ResourceManager.GetString("DocumentationBrowserAutoSyncLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Documentation Browser.
+        /// </summary>
+        public static string DocumentationBrowserPreferences {
+            get {
+                return ResourceManager.GetString("DocumentationBrowserPreferences", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download Warning.
         /// </summary>
         public static string DownloadWarningMessageBoxTitle {

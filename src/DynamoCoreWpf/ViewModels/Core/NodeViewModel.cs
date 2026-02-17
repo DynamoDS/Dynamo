@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Configuration;
@@ -65,6 +66,10 @@ namespace Dynamo.ViewModels
         private const string WatchNodeName = "Watch";
         private bool nodeHoveringState;
         private bool isHidden;
+        private const int DocumentBrowserRefreshDebounceMs = 300;
+        private Wpf.Utilities.ActionDebouncer delayDocumentBrowserRefresh
+          = new Wpf.Utilities.ActionDebouncer(null);
+        private int delayDocumentBrowserRefreshTime = DocumentBrowserRefreshDebounceMs;
         #endregion
 
         #region public members
@@ -1123,6 +1128,8 @@ namespace Dynamo.ViewModels
             if (ErrorBubble != null) DisposeErrorBubble();
 
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
+            delayDocumentBrowserRefresh?.Dispose();
+            delayDocumentBrowserRefresh = null;
             base.Dispose();
         }
 
@@ -1249,6 +1256,10 @@ namespace Dynamo.ViewModels
                 case "IsSelected":
                     RaisePropertyChanged("IsSelected");
                     RaisePropertyChanged("PreviewState");
+                    if (IsSelected)
+                        delayDocumentBrowserRefresh?.Debounce(delayDocumentBrowserRefreshTime, HandleDocumentationBrowserRefresh);
+                    else
+                        delayDocumentBrowserRefresh?.Cancel();
                     break;
                 case "State":
                     RaisePropertyChanged("State");
@@ -1328,7 +1339,27 @@ namespace Dynamo.ViewModels
             WarningBarColor = GetWarningColor();
             NodeOverlayColor = GetBorderColor();
         }
-
+        /// <summary>
+        /// DYN-9600: Automatically synchronize the Documentation Browser to the currently selected node to reduce clicks
+        /// Implementation Scope (When the Node Help Documentation Browser is open and visible):
+        /// - When Single node selected: Change and display that new selected node’s help content automatically.
+        /// - When Multiple nodes or a group selected: Do not change content; retain the last viewed help
+        /// - No selection: Retain the last viewed help.
+        /// - If a selected node is deleted or becomes invalid, retain last help and clear pause state if needed.
+        ///  </summary>
+        private void HandleDocumentationBrowserRefresh()
+        {
+            if (DynamoViewModel.PreferenceSettings.IsAutoSyncDocumentBrowser)
+            {
+                TabItem tabitem = DynamoViewModel.SideBarTabItems.OfType<TabItem>()
+                    .SingleOrDefault(n => n.Content.GetType().Name.Equals("DocumentationBrowserView", StringComparison.OrdinalIgnoreCase));
+                if (tabitem != null &&
+                    DynamoSelection.Instance.Selection.Count == 1)
+                {
+                    RequestShowNodeHelp?.Invoke(this, new NodeDialogEventArgs(this.nodeLogic));
+                }
+            }
+        }
         /// <summary>
         /// Updates the width of the node's Warning/Error bubbles, in case the width of the node changes.
         /// </summary>
