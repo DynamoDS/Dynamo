@@ -270,9 +270,6 @@ namespace Dynamo.UI.Views
 
                 if (isImported)
                 {
-                    // Save the imported settings to disk immediately
-                    System.IO.File.WriteAllText(importedSettingsFilePath, fileContent);
-
                     // Mark that settings were imported
                     settingsWereImported = true;
 
