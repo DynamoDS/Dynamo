@@ -1721,6 +1721,7 @@ Dynamo.UI.Views.ScriptObject
 Dynamo.UI.Views.ScriptObject.ImportSettings(string file) -> void
 Dynamo.UI.Views.ScriptObject.LaunchDynamo(bool showScreenAgain) -> void
 Dynamo.UI.Views.ScriptObject.ResetSettings() -> void
+Dynamo.UI.Views.ScriptObject.ScriptObject(System.Action<bool> requestLaunchDynamo, System.Action<string> requestImportSettings, System.Func<bool> requestSignIn, System.Func<bool> requestSignOut) -> void
 Dynamo.UI.Views.ScriptObject.ScriptObject(System.Action<bool> requestLaunchDynamo, System.Action<string> requestImportSettings, System.Func<bool> requestSignIn, System.Func<bool> requestSignOut, System.Action requestResetSettings) -> void
 Dynamo.UI.Views.ScriptObject.SignIn() -> bool
 Dynamo.UI.Views.ScriptObject.SignOut() -> bool

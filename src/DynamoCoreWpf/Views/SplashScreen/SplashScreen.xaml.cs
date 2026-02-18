@@ -780,6 +780,15 @@ namespace Dynamo.UI.Views
         readonly Func<bool> RequestSignOut;
         readonly Action RequestResetSettings;
 
+        [Obsolete("This constructor is obsolete. Use the constructor with the additional parameters instead.")]
+        public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings, Func<bool> requestSignIn, Func<bool> requestSignOut)
+        {
+            RequestLaunchDynamo = requestLaunchDynamo;
+            RequestImportSettings = requestImportSettings;
+            RequestSignIn = requestSignIn;
+            RequestSignOut = requestSignOut;
+        }
+
         /// <summary>
         /// Constructor for ScriptObject
         /// </summary>
@@ -791,27 +800,32 @@ namespace Dynamo.UI.Views
             RequestSignOut = requestSignOut;
             RequestResetSettings = requestResetSettings;
         }
+
         [DynamoJSInvokable]
         public void LaunchDynamo(bool showScreenAgain)
         {
             RequestLaunchDynamo(showScreenAgain);
             Analytics.TrackEvent(Actions.Start, Categories.SplashScreenOperations);
         }
+
         [DynamoJSInvokable]
         public void ImportSettings(string file)
         {
             RequestImportSettings(file);
         }
+
         [DynamoJSInvokable]
         public bool SignIn()
         {
             return RequestSignIn();
         }
+
         [DynamoJSInvokable]
         public bool SignOut()
         {
             return RequestSignOut();
         }
+
         [DynamoJSInvokable]
         public void ResetSettings()
         {
