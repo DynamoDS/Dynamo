@@ -1364,13 +1364,20 @@ Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.DownloadLa
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.DownloadLatestToCustomPathCommand.set -> void
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.Downloads.get -> int
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.Equals(Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel other) -> bool
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.HasUpdateAvailable.get -> bool
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.HasUpdateAvailable.set -> void
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.HasUpvote.get -> bool
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.Hosts.get -> System.Collections.Generic.List<string>
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.InstallActionCommand.get -> System.Windows.Input.ICommand
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.InstallActionText.get -> string
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsDeprecated.get -> bool
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsEnabledForInstall.get -> bool
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsInstalledFallback.get -> bool
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsInstalledVersionSelected.get -> bool
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsOnwer.get -> bool
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsSelectedVersionCompatible.get -> bool?
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsSelectedVersionCompatible.set -> void
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsUninstallState.get -> bool
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.LatestVersion.get -> string
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.LatestVersionCreated.get -> string
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.Maintainers.get -> string
@@ -2929,6 +2936,8 @@ Dynamo.ViewModels.PreferencesViewModel.PackagePathsViewModel.get -> Dynamo.ViewM
 Dynamo.ViewModels.PreferencesViewModel.PackagePathsViewModel.set -> void
 Dynamo.ViewModels.PreferencesViewModel.PersistExtensionsIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.PersistExtensionsIsChecked.set -> void
+Dynamo.ViewModels.PreferencesViewModel.AutoSyncDocumentBrowserIsChecked.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.AutoSyncDocumentBrowserIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.PreferencesTabs.get -> System.Collections.Generic.Dictionary<string, Dynamo.ViewModels.TabSettings>
 Dynamo.ViewModels.PreferencesViewModel.PreferencesTabs.set -> void
 Dynamo.ViewModels.PreferencesViewModel.PreferencesViewModel(Dynamo.ViewModels.DynamoViewModel dynamoViewModel) -> void
@@ -4747,6 +4756,8 @@ static Dynamo.Wpf.Properties.Resources.DuplicateFilesInPublishWarningMessage.get
 static Dynamo.Wpf.Properties.Resources.DuplicateFilesInPublishWarningTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoShowFileTrustWarning.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoSplashScreenFailed.get -> string
+static Dynamo.Wpf.Properties.Resources.DocumentationBrowserAutoSyncLabel.get -> string
+static Dynamo.Wpf.Properties.Resources.DocumentationBrowserPreferences.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoSplashScreen.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoUpdateAvailableToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewCancelButtonTooltip.get -> string
@@ -5164,7 +5175,11 @@ static Dynamo.Wpf.Properties.Resources.NodeAutoCompleteNotAvailableForCollapsedG
 static Dynamo.Wpf.Properties.Resources.NodeAutoCompleteToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.OfflineStatusTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.OnlineStatusTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDropdownInstalledVersionLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDuplicateAssembliesFoundMessage.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageManagerPackageUpdateAvailable.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageManagerUninstall.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageManagerUpdate.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoCompleteNewUI.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoCompleteNewUITooltipText.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeContextMenuEnablePeriodicUpdate.get -> string

@@ -63,6 +63,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.ShowCodeBlockLineNumber, true);
             Assert.AreEqual(settings.ShowTabsAndSpacesInScriptEditor, false);
             Assert.AreEqual(settings.EnableNodeAutoComplete, true);
+            Assert.AreEqual(settings.IsAutoSyncDocumentBrowser, true);
             Assert.AreEqual(settings.EnableNotificationCenter, true);
             Assert.AreEqual(settings.DefaultPythonEngine, string.Empty);
             Assert.AreEqual(settings.MaxNumRecentFiles, PreferenceSettings.DefaultMaxNumRecentFiles);
@@ -83,6 +84,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.ShowCodeBlockLineNumber, true);
             Assert.AreEqual(settings.ShowTabsAndSpacesInScriptEditor, false);
             Assert.AreEqual(settings.EnableNodeAutoComplete, true);
+            Assert.AreEqual(settings.IsAutoSyncDocumentBrowser, true);
             Assert.AreEqual(settings.EnableNotificationCenter, true);
             Assert.AreEqual(settings.DefaultPythonEngine, string.Empty);
             Assert.AreEqual(settings.MaxNumRecentFiles, PreferenceSettings.DefaultMaxNumRecentFiles);
@@ -103,6 +105,7 @@ namespace Dynamo.Tests.Configuration
             settings.BackupInterval = 120000; //change to 2 minutes(120000 ms)
             settings.UseHardwareAcceleration = false;
             settings.EnableNodeAutoComplete = false;
+            settings.IsAutoSyncDocumentBrowser = false;
             settings.EnableNotificationCenter = false;
             settings.DefaultRunType = RunType.Manual;
             settings.ViewExtensionSettings.Add(new ViewExtensionSettings()
@@ -156,6 +159,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.BackupInterval, 120000);
             Assert.AreEqual(settings.UseHardwareAcceleration, false);
             Assert.AreEqual(settings.EnableNodeAutoComplete, false);
+            Assert.AreEqual(settings.IsAutoSyncDocumentBrowser, false);
             Assert.AreEqual(settings.EnableNotificationCenter, false);
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 1);
             var extensionSettings = settings.ViewExtensionSettings[0];

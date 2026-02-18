@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels.GuidedTour;
 using Dynamo.Wpf.Views.GuidedTour;
@@ -179,12 +180,16 @@ namespace Dynamo.Wpf.UI.GuidedTour
             currentGuide = (from guide in Guides where guide.Name.Equals(args.GuideName) select guide).FirstOrDefault();
             if (currentGuide != null)
             {
+                var dynamoView = (mainRootElement as DynamoView);
+                if (dynamoView == null) return;
+
+                // Close all view extensions before starting the tour
+                CloseAllViewExtensions(dynamoView);
+
                 //Show background overlay
                 guideBackgroundElement.Visibility = Visibility.Visible;
                 currentGuide.GuideBackgroundElement = guideBackgroundElement;
                 currentGuide.MainWindow = mainRootElement;
-                var dynamoView = (mainRootElement as DynamoView);
-                if (dynamoView == null) return;
                 currentGuide.LibraryView = dynamoView.sidebarGrid.Children.OfType<UserControl>().FirstOrDefault();
 
                 currentGuide.Initialize();
@@ -523,6 +528,84 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //The exit tour popup will be shown only when a popup (doesn't apply for survey) is closed or when the tour is closed. 
             if (stepType != Step.StepTypes.SURVEY)
                 dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(Res.ExitTourWindowContent);
+        }
+
+        internal void CloseAllViewExtensions(DynamoView dynamoView)
+        {
+            if (dynamoView == null || dynamoViewModel == null) return;
+
+            // Close sidebar extension tabs
+            var extensionsToClose = dynamoViewModel.SideBarTabItems
+                .OfType<TabItem>()
+                .Select(t => t.Tag)
+                .OfType<IViewExtension>()
+                .GroupBy(e => e.UniqueId)
+                .Select(g => g.First())
+                .ToList();
+
+            foreach (var viewExtension in extensionsToClose)
+            {
+                try
+                {
+                    dynamoView.CloseExtensionControl(viewExtension);
+                }
+                catch (Exception ex)
+                {
+                    dynamoViewModel.Model.Logger.Log(
+                        $"Error closing view extension {viewExtension.Name}: {ex.Message}");
+                }
+            }
+
+            // Close owner-owned extension windows (not docked in sidebar)
+            if (dynamoView?.viewExtensionManager == null) return;
+
+            var extensionAssemblies = dynamoView.viewExtensionManager.ViewExtensions
+                .Where(e => e != null)
+                .Select(e => e.GetType().Assembly)
+                .ToHashSet();
+
+            if (!extensionAssemblies.Any()) return;
+
+            var ownerOwnedWindows = Application.Current != null
+                ? Application.Current.Windows.OfType<Window>()
+                : dynamoView.OwnedWindows.Cast<Window>();
+
+            var windowsToClose = ownerOwnedWindows
+                 .Where(window =>
+                     window != null &&
+                     window != dynamoView &&
+                     window.Owner == dynamoView &&
+                     IsExtensionWindow(window, extensionAssemblies))
+                 .ToList();
+
+            foreach (var window in windowsToClose)
+            {
+                try
+                {
+                    window.Close();
+                }
+                catch (Exception ex)
+                {
+                    dynamoViewModel.Model.Logger.Log(
+                        $"Error closing extension-owned window '{window.Title}': {ex.Message}");
+                }
+            }
+        }
+
+        private static bool IsExtensionWindow(Window window, HashSet<Assembly> extensionAssemblies)
+        {
+            if (window == null || extensionAssemblies == null || extensionAssemblies.Count == 0) return false;
+
+            bool IsFromExtensionAssembly(object obj) =>
+                obj != null && extensionAssemblies.Contains(obj.GetType().Assembly);
+
+            if (IsFromExtensionAssembly(window)) return true;
+            if (IsFromExtensionAssembly(window.Tag)) return true;
+            if (IsFromExtensionAssembly(window.DataContext)) return true;
+            if (IsFromExtensionAssembly(window.Content)) return true;
+            if (window.Content is FrameworkElement contentElement && IsFromExtensionAssembly(contentElement.DataContext)) return true;
+
+            return false;
         }
     }
 }
