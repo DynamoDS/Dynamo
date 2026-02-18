@@ -1291,9 +1291,21 @@ Don't worry, you'll have the option to save your work.</value>
     <value>Install</value>
     <comment>Used on the package manager search result card. If the package is not installed, the button will say 'Install'.</comment>
   </data>
+  <data name="PackageManagerUpdate" xml:space="preserve">
+    <value>Update</value>
+    <comment>Used on the package manager search result card when a different version is selected.</comment>
+  </data>
+  <data name="PackageManagerUninstall" xml:space="preserve">
+    <value>Uninstall</value>
+    <comment>Used on the package manager search result card when the installed version is selected.</comment>
+  </data>
   <data name="PackageManagerPackageUpdated" xml:space="preserve">
     <value>Updated</value>
     <comment>Displays next to the package name in the Package Search window if the package has been updated in the last 30 days.</comment>
+  </data>
+  <data name="PackageManagerPackageUpdateAvailable" xml:space="preserve">
+    <value>New version available</value>
+      <comment>Displays next to the package name in the Package Search window if a newer version of the package is available.</comment>
   </data>
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>New</value>
@@ -1403,6 +1415,9 @@ Don't worry, you'll have the option to save your work.</value>
   </data>
   <data name="PackageDownloadStateInstalled" xml:space="preserve">
     <value>Installed</value>
+  </data>
+  <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
+    <value> (installed)</value>
   </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>Installing</value>

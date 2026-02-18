@@ -546,6 +546,16 @@ namespace Dynamo.Models
             /// Configuration object that contains host information like Host name, parent id and session id.
             /// </summary>
             HostAnalyticsInfo HostAnalyticsInfo { get; set; }
+
+            /// <summary>
+            /// Enables or disables notifications about untrusted file locations.
+            /// When true (default), notifications are shown in the notification center when trusted locations
+            /// contain paths pointing to the common application data (ProgramData) directory.
+            /// When false, no notifications are displayed for untrusted locations.
+            /// Default value is true to maintain backward compatibility.
+            /// Note: This does not affect the file trust warning popup when opening files from untrusted locations.
+            /// </summary>
+            bool EnableUnTrustedLocationsNotifications => true;
         }
 
         /// <summary>
@@ -622,6 +632,20 @@ namespace Dynamo.Models
             /// to enable logging during the initialization and runtime of Dynamo.
             /// </summary>
             public DynamoLogger Logger { get; set; }
+
+            /// <summary>
+            /// Enables or disables notifications about untrusted file locations.
+            /// When true (default), notifications are shown in the notification center.
+            /// When false, no notifications are displayed for untrusted locations.
+            /// </summary>
+            public bool EnableUnTrustedLocationsNotifications { get; set; } = true;
+
+            /// <summary>
+            /// Initializes a new instance of the DefaultStartConfiguration struct.
+            /// </summary>
+            public DefaultStartConfiguration()
+            {
+            }
         }
 
         /// <summary>
@@ -728,6 +752,8 @@ namespace Dynamo.Models
 
             if (PreferenceSettings != null)
             {
+                // Pass EnableUnTrustedLocationsNotifications from config to PreferenceSettings
+                PreferenceSettings.EnableUnTrustedLocationsNotifications = config.EnableUnTrustedLocationsNotifications;
                 SetUICulture(CLILocale ?? PreferenceSettings.Locale);
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
                 PreferenceSettings.MessageLogged += LogMessage;
