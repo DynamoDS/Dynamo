@@ -4511,7 +4511,7 @@ namespace Dynamo.ViewModels
                     !CurrentSpaceViewModel.HasSelection;
         }
         private void FitCanvasToSelectedNodes(List<NodeViewModel> nodes)
-            {
+        {
             var nodeSet = new HashSet<NodeModel>(nodes.Select(nvm => nvm.NodeModel));
             var groups = CurrentSpaceViewModel.Annotations.Where(a => a.Nodes.Any(n => nodeSet.Contains(n)));
             nodes.ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
