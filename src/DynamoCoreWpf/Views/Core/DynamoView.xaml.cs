@@ -2911,8 +2911,8 @@ namespace Dynamo.Controls
                     extensionsCollapsed = RightExtensionsViewColumn.ActualWidth < RightSideBarCollapseThreshold;
                 }
                 return extensionsCollapsed;
-                }
-                }
+            }
+        }
 
         /// <summary>
         /// A bool controlling the appearance of the Dynamo home navigation page
@@ -2958,12 +2958,12 @@ namespace Dynamo.Controls
                 if (action.Equals(NotifyCollectionChangedAction.Add))
                 {
                     if (ExtensionsCollapsed)
-                {
+                    {
                         ExpandRightExtensionView(true);
+                    }
+                    collapsedExtensionSidebar.Visibility = Visibility.Visible;
                 }
-                collapsedExtensionSidebar.Visibility = Visibility.Visible;
             }
-        }
         }
 
         private void OnCollapsedLeftSidebarClick(object sender, EventArgs e)
@@ -3010,12 +3010,12 @@ namespace Dynamo.Controls
         /// <param name="forceDefaultWidth">true - to set the width to the default width value</param>
         private void ExpandRightExtensionView(bool forceDefaultWidth = false)
         {
-                if (extensionsColumnWidth == null)
+            if (extensionsColumnWidth == null)
             {
-                    RightExtensionsViewColumn.Width = new GridLength(DefaultExtensionBarWidthMultiplier, GridUnitType.Star);
+                RightExtensionsViewColumn.Width = new GridLength(DefaultExtensionBarWidthMultiplier, GridUnitType.Star);
             }
             else if (!extensionsColumnWidth.Value.Value.Equals(DefaultExtensionBarWidthMultiplier))
-                {
+            {
                 if (extensionsColumnWidth.Value.Value <= RightSideBarCollapseThreshold || forceDefaultWidth)
                 {
                     RightExtensionsViewColumn.Width = new GridLength(defaultRightSideBarWidth, GridUnitType.Star);
@@ -3023,7 +3023,7 @@ namespace Dynamo.Controls
                 else
                 {
                     RightExtensionsViewColumn.Width = new GridLength(extensionsColumnWidth.Value.Value, GridUnitType.Star);
-            }
+                }
             }
             else
             {
@@ -3273,7 +3273,9 @@ namespace Dynamo.Controls
             RightExtensionsViewColumn.Width = new GridLength(RightExtensionsViewColumn.ActualWidth, GridUnitType.Star);
             //Setting the width of right extension after resize to only if extension bar width is greater than threshold value.
             if (RightExtensionsViewColumn.ActualWidth > RightSideBarCollapseThreshold)
-            extensionsColumnWidth = RightExtensionsViewColumn.Width;
+            {
+                extensionsColumnWidth = RightExtensionsViewColumn.Width;
+            }
         }
 
         private void PackagesMenuGuide_Click(object sender, RoutedEventArgs e)
