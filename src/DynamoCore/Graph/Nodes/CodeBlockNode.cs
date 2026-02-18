@@ -1155,7 +1155,8 @@ namespace Dynamo.Graph.Nodes
                                 i);
                             //during an undo operation we should set the new input connector
                             //to have the same id as the old connector.
-                            if (context == SaveContext.Undo)
+                            // Null check: Make() returns null if port indices are no longer valid
+                            if (context == SaveContext.Undo && connector != null)
                             {
                                 connector.GUID = oldConnector.GUID;
                             }
@@ -1209,7 +1210,8 @@ namespace Dynamo.Graph.Nodes
 
                         // During an undo operation we should set the new output connector
                         // to have the same id as the old connector.
-                        if (context == SaveContext.Undo)
+                        // Null check: Make() returns null if port indices are no longer valid
+                        if (context == SaveContext.Undo && connector != null)
                         {
                             connector.GUID = oldConnector.GUID;
                         }
