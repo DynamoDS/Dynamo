@@ -4500,7 +4500,7 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        #region "DYN-9637 - Home And End key press events in Canvas"
+        #region "Home And End key press events in Canvas"
         /// <summary>
         /// Enable the shortcut key events when there is no selection.
         /// </summary>
@@ -4519,7 +4519,7 @@ namespace Dynamo.ViewModels
             FitViewCommand.Execute(true);
             DynamoSelection.Instance.ClearSelection();
         }
-        internal void GotoLeftMostNode(object parameter)
+        internal void GoToLeftMostNode(object parameter)
         {
             if (CurrentSpaceViewModel.Nodes.Count > 0)
             {
@@ -4528,11 +4528,11 @@ namespace Dynamo.ViewModels
                 FitCanvasToSelectedNodes(nodes);
             }
         }
-        internal bool CanGotoLeftMostNode(object obj)
+        internal bool CanGoToLeftMostNode(object obj)
         {
             return IsHomeAndEndKeyEnabled();
         }
-        internal void GotoRightMostNode(object parameter)
+        internal void GoToRightMostNode(object parameter)
         {
             if (CurrentSpaceViewModel.Nodes.Count > 0)
             {
@@ -4541,7 +4541,7 @@ namespace Dynamo.ViewModels
                 FitCanvasToSelectedNodes(nodes);         
             }
         }
-        internal bool CanGotoRightMostNode(object obj)
+        internal bool CanGoToRightMostNode(object obj)
         {
             return IsHomeAndEndKeyEnabled();
         }
