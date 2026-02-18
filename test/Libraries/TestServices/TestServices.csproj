@@ -10,7 +10,8 @@
     <AssemblyName>TestServices</AssemblyName>
   </PropertyGroup>
   <ItemGroup>         
-    <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.4047"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.4117"/>
+    
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
   </ItemGroup>
   <ItemGroup>

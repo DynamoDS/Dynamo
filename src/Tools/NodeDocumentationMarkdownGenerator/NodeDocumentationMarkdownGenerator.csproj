@@ -15,7 +15,8 @@
         <PackageReference Include="Greg" Version="3.0.2.8780" />
         <PackageReference Include="Magick.NET.Core" Version="14.10.0" />
         <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="14.10.0" />
-        <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.4047"/>
+        <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.4117"/>
+        
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="RestSharp" Version="112.0.0" />
         <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
