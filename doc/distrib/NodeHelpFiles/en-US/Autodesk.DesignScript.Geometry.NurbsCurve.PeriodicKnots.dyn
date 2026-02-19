@@ -1,209 +1,310 @@
 {
-  "Uuid": "93c9d0464-8643-5ffe-96e5-ab1769818301",
+  "Uuid": "3c7fbc68-0838-4345-8f56-d32719de4db4",
   "IsCustomNode": false,
-  "Description": "Example demonstrating NurbsCurve.PeriodicKnots",
-  "Name": "PeriodicKnots",
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots",
   "ElementResolver": {
-    "ResolutionMap": {}
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      },
+      "NurbsCurve": {
+        "Key": "Autodesk.DesignScript.Geometry.NurbsCurve",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
   },
   "Inputs": [],
   "Outputs": [],
   "Nodes": [
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "eaeca1c3a7b2492fa0f5e875e0235aab",
       "NodeType": "CodeBlockNode",
-      "Code": "// Create control points for a periodic curve\npts = [\n    Point.ByCoordinates(0, 0, 0),\n    Point.ByCoordinates(10, 5, 0),\n    Point.ByCoordinates(20, 0, 0),\n    Point.ByCoordinates(20, -10, 0),\n    Point.ByCoordinates(10, -15, 0),\n    Point.ByCoordinates(0, -10, 0)\n];\ndegree = 3;",
-      "Id": "codeblock1",
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "pts_out",
-          "Name": "",
-          "Description": "pts"
+          "Id": "8ccb9f65fd944400be2de68a4d317d64",
+          "Name": "p1",
+          "Description": "p1 = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
         },
         {
-          "Id": "degree_out",
-          "Name": "",
-          "Description": "degree"
+          "Id": "35d6be9cbcdf43738a660732e1cd2308",
+          "Name": "p2",
+          "Description": "p2 = Autodesk.DesignScript.Geometry.Point.ByCoordinates(10, 10)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "45d1fddf300f495cbbd8be6851a76c16",
+          "Name": "p3",
+          "Description": "p3 = Autodesk.DesignScript.Geometry.Point.ByCoordinates(20, 0)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "678c89e010964ff284c912970b92365c",
+          "Name": "p4",
+          "Description": "p4 = Autodesk.DesignScript.Geometry.Point.ByCoordinates(10, -10)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b236eadb12c54e7090160afe5f6aaa0f",
+          "Name": "list",
+          "Description": "[p1, p2, p3, p4]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
         }
       ],
       "Replication": "Disabled",
-      "Description": "Create control points and degree"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints@Autodesk.DesignScript.Geometry.Point[],int,bool",
-      "Id": "nurbscurve_node",
-      "Inputs": [
-        {
-          "Id": "controlPoints",
-          "Name": "controlPoints",
-          "Description": "Control points\n\nPoint[]"
-        },
-        {
-          "Id": "degree",
-          "Name": "degree",
-          "Description": "int\nDefault value : 3"
-        },
-        {
-          "Id": "isPeriodic",
-          "Name": "isPeriodic",
-          "Description": "bool\nDefault value : false"
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "curve_out",
-          "Name": "NurbsCurve",
-          "Description": "NurbsCurve"
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Create a periodic BSpline Curve by using control points"
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "p1 = Point.ByCoordinates(0, 0);\np2 = Point.ByCoordinates(10, 10);\np3 = Point.ByCoordinates(20, 0);\np4 = Point.ByCoordinates(10, -10);\n[p1,p2,p3,p4];"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "a2c03267cb524a9b88d3e690836f4b58",
       "NodeType": "CodeBlockNode",
-      "Code": "true;",
-      "Id": "boolean_node",
-      "Inputs": [],
+      "Inputs": [
+        {
+          "Id": "acf4d4cfc0224caa8f23a823e86352d2",
+          "Name": "pts",
+          "Description": "pts",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
       "Outputs": [
         {
-          "Id": "bool_out",
-          "Name": "",
-          "Description": "Value of expression"
+          "Id": "1e340ac8e37f4ffb9cc3be60bc74b98f",
+          "Name": "nc",
+          "Description": "nc = Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints(pts, true)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
         }
       ],
       "Replication": "Disabled",
-      "Description": "Set isPeriodic to true"
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "nc = NurbsCurve.ByPoints(pts, true);"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "72573c2cf7e544afac5c61b8c606e029",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.Knots",
-      "Id": "knots_node",
       "Inputs": [
         {
-          "Id": "curve_in",
+          "Id": "8aba15eb8188468c951c9eb39035d9cd",
           "Name": "nurbsCurve",
-          "Description": "NurbsCurve"
+          "Description": "Autodesk.DesignScript.Geometry.NurbsCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
         }
       ],
       "Outputs": [
         {
-          "Id": "knots_out",
-          "Name": "double[]",
-          "Description": "Standard (clamped) knot vector"
+          "Id": "f17eddae6db441a6a0b7daa88b07e4e2",
+          "Name": "bool",
+          "Description": "bool",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
         }
       ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.IsPeriodic",
       "Replication": "Auto",
-      "Description": "Returns the standard knot vector"
+      "Description": "Whether the NurbsCurve is periodic or not, a periodic curve is a closed curve in which deformation does not cause the appearance of kinks.\n\nNurbsCurve.IsPeriodic: bool"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "8b71c3961d914c7dacd03ff6c881dd73",
       "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "22ac905039be4ca08380bf9e98ed357f",
+          "Name": "nurbsCurve",
+          "Description": "Autodesk.DesignScript.Geometry.NurbsCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e676ef6c1aa046a6b9e24ffebc696199",
+          "Name": "double[]",
+          "Description": "The periodic knot vector of the nurbs curve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots",
-      "Id": "periodicknots_node",
-      "Inputs": [
-        {
-          "Id": "curve_in2",
-          "Name": "nurbsCurve",
-          "Description": "NurbsCurve"
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "periodicknots_out",
-          "Name": "double[]",
-          "Description": "Unclamped periodic knot vector"
-        }
-      ],
       "Replication": "Auto",
-      "Description": "Returns the periodic knot vector"
+      "Description": "The unclamped knots of the Curve if Periodic. Knots is a series of parameter values (doubles) used to determine where and how the control points affect the curve. Note that this cannot be used together with PeriodicControlPoints() to reconstruct the original periodic NurbsCurve. Throws (or is undefined) when the curve is not periodic.\n\nNurbsCurve.PeriodicKnots ( ): double[]"
     },
     {
-      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
-      "NodeType": "ExtensionNode",
-      "Id": "watch_knots",
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "fe1e032c5b3a47a58f773d767409e2fe",
+      "NodeType": "FunctionNode",
       "Inputs": [
         {
-          "Id": "watch_knots_in",
-          "Name": "",
-          "Description": "Node to show output from"
+          "Id": "bf0b0c4e787d4944b6b6e0f530cae327",
+          "Name": "nurbsCurve",
+          "Description": "Autodesk.DesignScript.Geometry.NurbsCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
         }
       ],
       "Outputs": [
         {
-          "Id": "watch_knots_out",
-          "Name": "",
-          "Description": "Node output"
+          "Id": "d8d2d01424cf45acad35ff911da537f9",
+          "Name": "double[]",
+          "Description": "The knots of the nurbs curve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
         }
       ],
-      "Replication": "Disabled",
-      "Description": "Visualize standard knots"
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.Knots",
+      "Replication": "Auto",
+      "Description": "The knots of the Curve. Knots is a series of parameter values (doubles) used to determine where and how the control points affect the curve.\n\nNurbsCurve.Knots ( ): double[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 245.6,
+      "WatchHeight": 294.4,
+      "Id": "d2ce8477f78a452b85e3e3228e13ad73",
       "NodeType": "ExtensionNode",
-      "Id": "watch_periodicknots",
       "Inputs": [
         {
-          "Id": "watch_periodicknots_in",
+          "Id": "b2236808785d4bcd9f729ad4f78288b3",
           "Name": "",
-          "Description": "Node to show output from"
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
         }
       ],
       "Outputs": [
         {
-          "Id": "watch_periodicknots_out",
+          "Id": "c32f70e6a44c452a830eb15a352cafec",
           "Name": "",
-          "Description": "Node output"
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualize periodic knots"
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 257.6,
+      "WatchHeight": 289.2,
+      "Id": "0d3479e8c059419baf7583a4b7caf669",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "8f0618e8bee04cebba3bd057f3aaf38d",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7e37c69f418e43afad1864dc414c74f1",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
     }
   ],
   "Connectors": [
     {
-      "Start": "pts_out",
-      "End": "controlPoints"
+      "Start": "b236eadb12c54e7090160afe5f6aaa0f",
+      "End": "acf4d4cfc0224caa8f23a823e86352d2",
+      "Id": "85289fb6ab0d4cf492441f4a351cedba",
+      "IsHidden": "False"
     },
     {
-      "Start": "degree_out",
-      "End": "degree"
+      "Start": "1e340ac8e37f4ffb9cc3be60bc74b98f",
+      "End": "8aba15eb8188468c951c9eb39035d9cd",
+      "Id": "14cba5db931e484fa7edd54dd3c48086",
+      "IsHidden": "False"
     },
     {
-      "Start": "bool_out",
-      "End": "isPeriodic"
+      "Start": "1e340ac8e37f4ffb9cc3be60bc74b98f",
+      "End": "22ac905039be4ca08380bf9e98ed357f",
+      "Id": "f0322582265b41f6a04fa289eba5b10b",
+      "IsHidden": "False"
     },
     {
-      "Start": "curve_out",
-      "End": "curve_in"
+      "Start": "1e340ac8e37f4ffb9cc3be60bc74b98f",
+      "End": "bf0b0c4e787d4944b6b6e0f530cae327",
+      "Id": "8db9de35fdad4937baee47bfda6d22b9",
+      "IsHidden": "False"
     },
     {
-      "Start": "curve_out",
-      "End": "curve_in2"
+      "Start": "e676ef6c1aa046a6b9e24ffebc696199",
+      "End": "b2236808785d4bcd9f729ad4f78288b3",
+      "Id": "80aca44bf9b04092ab5c48aad1bc2a5f",
+      "IsHidden": "False"
     },
     {
-      "Start": "knots_out",
-      "End": "watch_knots_in"
-    },
-    {
-      "Start": "periodicknots_out",
-      "End": "watch_periodicknots_in"
+      "Start": "d8d2d01424cf45acad35ff911da537f9",
+      "End": "8f0618e8bee04cebba3bd057f3aaf38d",
+      "Id": "dcbc9f45c825400ca951128ed5128463",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
   "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": true,
   "Thumbnail": "",
   "GraphDocumentationURL": null,
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
       "Name": "Properties",
-      "Version": "2.13",
+      "Version": "4.1",
       "Data": {}
     }
   ],
@@ -220,26 +321,98 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.13.0.0",
+      "Version": "4.1.0.4124",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "Background Preview",
-      "EyeX": -17.0,
-      "EyeY": 24.0,
-      "EyeZ": 50.0,
-      "LookX": 12.0,
-      "LookY": -13.0,
-      "LookZ": -58.0,
-      "UpX": 0.0,
-      "UpY": 1.0,
-      "UpZ": 0.0
+      "Name": "_Background Preview",
+      "EyeX": 47.137725830078125,
+      "EyeY": 37.942501068115234,
+      "EyeZ": -23.256635665893555,
+      "LookX": -52.137725830078125,
+      "LookY": -26.942501068115234,
+      "LookZ": 15.256635665893555,
+      "UpX": -0.23218537867069244,
+      "UpY": 0.970295786857605,
+      "UpZ": 0.06794249266386032
     },
-    "NodeViews": [],
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "eaeca1c3a7b2492fa0f5e875e0235aab",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 214.5340862397909,
+        "Y": -210.05005136230562
+      },
+      {
+        "Id": "a2c03267cb524a9b88d3e690836f4b58",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 689.6107225349153,
+        "Y": -168.7887474624368
+      },
+      {
+        "Id": "72573c2cf7e544afac5c61b8c606e029",
+        "Name": "NurbsCurve.IsPeriodic",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1203.493740350473,
+        "Y": 368.8264662529619
+      },
+      {
+        "Id": "8b71c3961d914c7dacd03ff6c881dd73",
+        "Name": "NurbsCurve.PeriodicKnots",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1203.519921072464,
+        "Y": -252.93605942819104
+      },
+      {
+        "Id": "fe1e032c5b3a47a58f773d767409e2fe",
+        "Name": "NurbsCurve.Knots",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1222.319417328075,
+        "Y": -72.2350391752152
+      },
+      {
+        "Id": "d2ce8477f78a452b85e3e3228e13ad73",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1572.7199210724648,
+        "Y": -282.08549474834825
+      },
+      {
+        "Id": "0d3479e8c059419baf7583a4b7caf669",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1569.4326740408465,
+        "Y": 123.6990618267103
+      }
+    ],
     "Annotations": [],
-    "X": 0.0,
-    "Y": 0.0,
-    "Zoom": 1.0
+    "X": -223.3051621342936,
+    "Y": 283.0817121423966,
+    "Zoom": 0.7658293928515519
   }
 }

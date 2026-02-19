@@ -1,261 +1,310 @@
 {
-  "Uuid": "94c9d0464-8643-5ffe-96e5-ab1769818302",
+  "Uuid": "afb64de8-321f-4e94-aed6-544b259ae77c",
   "IsCustomNode": false,
-  "Description": "Example demonstrating NurbsCurve.PeriodicControlPoints",
-  "Name": "PeriodicControlPoints",
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints",
   "ElementResolver": {
-    "ResolutionMap": {}
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      },
+      "NurbsCurve": {
+        "Key": "Autodesk.DesignScript.Geometry.NurbsCurve",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
   },
   "Inputs": [],
   "Outputs": [],
   "Nodes": [
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "64d61f7dcede4e7095118e2d493f2ad0",
       "NodeType": "CodeBlockNode",
-      "Code": "// Create control points for a periodic curve\npts = [\n    Point.ByCoordinates(0, 0, 0),\n    Point.ByCoordinates(10, 5, 0),\n    Point.ByCoordinates(20, 0, 0),\n    Point.ByCoordinates(20, -10, 0),\n    Point.ByCoordinates(10, -15, 0),\n    Point.ByCoordinates(0, -10, 0)\n];\ndegree = 3;",
-      "Id": "codeblock1",
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "pts_out",
-          "Name": "",
-          "Description": "pts"
+          "Id": "5c37d734d8754a5f8e6f856f9e4be301",
+          "Name": "p1",
+          "Description": "p1 = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
         },
         {
-          "Id": "degree_out",
-          "Name": "",
-          "Description": "degree"
+          "Id": "115aaa91ed2f41dead3934068955b431",
+          "Name": "p2",
+          "Description": "p2 = Autodesk.DesignScript.Geometry.Point.ByCoordinates(10, 10)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "eb563720e53641f492376fb24927ed3b",
+          "Name": "p3",
+          "Description": "p3 = Autodesk.DesignScript.Geometry.Point.ByCoordinates(20, 0)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ec7d7181212c4a18bc3ddf1e61c44017",
+          "Name": "p4",
+          "Description": "p4 = Autodesk.DesignScript.Geometry.Point.ByCoordinates(10, -10)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "95126acf80a54f178379b5b262329b68",
+          "Name": "list",
+          "Description": "[p1, p2, p3, p4]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
         }
       ],
       "Replication": "Disabled",
-      "Description": "Create control points and degree"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints@Autodesk.DesignScript.Geometry.Point[],int,bool",
-      "Id": "nurbscurve_node",
-      "Inputs": [
-        {
-          "Id": "controlPoints",
-          "Name": "controlPoints",
-          "Description": "Control points\n\nPoint[]"
-        },
-        {
-          "Id": "degree",
-          "Name": "degree",
-          "Description": "int\nDefault value : 3"
-        },
-        {
-          "Id": "isPeriodic",
-          "Name": "isPeriodic",
-          "Description": "bool\nDefault value : false"
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "curve_out",
-          "Name": "NurbsCurve",
-          "Description": "NurbsCurve"
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Create a periodic BSpline Curve by using control points"
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "p1 = Point.ByCoordinates(0, 0);\np2 = Point.ByCoordinates(10, 10);\np3 = Point.ByCoordinates(20, 0);\np4 = Point.ByCoordinates(10, -10);\n[p1,p2,p3,p4];"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "59832cd4412544c79d510c15e2aa9aa9",
       "NodeType": "CodeBlockNode",
-      "Code": "true;",
-      "Id": "boolean_node",
-      "Inputs": [],
+      "Inputs": [
+        {
+          "Id": "a4afc06572124bad8389a2317dd0b496",
+          "Name": "pts",
+          "Description": "pts",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
       "Outputs": [
         {
-          "Id": "bool_out",
-          "Name": "",
-          "Description": "Value of expression"
+          "Id": "3c692710d10f4ed5b3d3607f5198c2e7",
+          "Name": "nc",
+          "Description": "nc = Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints(pts, true)",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
         }
       ],
       "Replication": "Disabled",
-      "Description": "Set isPeriodic to true"
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "nc = NurbsCurve.ByPoints(pts, true);"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "92fa92fd97b14a89b98f4864ba160956",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ControlPoints",
-      "Id": "controlpoints_node",
       "Inputs": [
         {
-          "Id": "curve_in",
+          "Id": "3db47db1a6de406e80878420984bec4b",
           "Name": "nurbsCurve",
-          "Description": "NurbsCurve"
+          "Description": "Autodesk.DesignScript.Geometry.NurbsCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
         }
       ],
       "Outputs": [
         {
-          "Id": "controlpoints_out",
-          "Name": "Point[]",
-          "Description": "Standard control points"
+          "Id": "0c1a446fbfbf43c18680ce56f5d686ef",
+          "Name": "bool",
+          "Description": "bool",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
         }
       ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.IsPeriodic",
       "Replication": "Auto",
-      "Description": "Returns the standard control points"
+      "Description": "Whether the NurbsCurve is periodic or not, a periodic curve is a closed curve in which deformation does not cause the appearance of kinks.\n\nNurbsCurve.IsPeriodic: bool"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "ef2ac369e6394f749feb7d164e7960f1",
       "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "326e649a03714adf91edec4db5254799",
+          "Name": "nurbsCurve",
+          "Description": "Autodesk.DesignScript.Geometry.NurbsCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "267ac4800fad499b99efe4acb9863140",
+          "Name": "Point[]",
+          "Description": "An Array of Points",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints",
-      "Id": "periodiccontrolpoints_node",
+      "Replication": "Auto",
+      "Description": "The truly periodic control points of the NurbsCurve if periodic. Note that this cannot be used together with PeriodicKnots() to reconstruct the original periodic NurbsCurve. Throws (or is undefined) when the curve is not periodic.\n\nNurbsCurve.PeriodicControlPoints ( ): Point[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "0a01ac43c4c248a99976621809368eff",
+      "NodeType": "FunctionNode",
       "Inputs": [
         {
-          "Id": "curve_in2",
+          "Id": "e98c3f95c4bf4e70a153134c9e5da177",
           "Name": "nurbsCurve",
-          "Description": "NurbsCurve"
+          "Description": "Autodesk.DesignScript.Geometry.NurbsCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
         }
       ],
       "Outputs": [
         {
-          "Id": "periodiccontrolpoints_out",
+          "Id": "41e7a06d26664f548218a360f471f26d",
           "Name": "Point[]",
-          "Description": "Periodic control points including overlapping points"
+          "Description": "An Array of Points",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
         }
       ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ControlPoints",
       "Replication": "Auto",
-      "Description": "Returns the periodic control points"
+      "Description": "Get the control points of the NurbsCurve.\n\nNurbsCurve.ControlPoints ( ): Point[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 528.0,
+      "WatchHeight": 213.6,
+      "Id": "93d5cbaf492d4050bae71c3a11ede2f0",
       "NodeType": "ExtensionNode",
-      "Id": "watch_controlpoints",
       "Inputs": [
         {
-          "Id": "watch_controlpoints_in",
+          "Id": "e17af0a4197544518f8db8da2eb3e8a8",
           "Name": "",
-          "Description": "Node to show output from"
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
         }
       ],
       "Outputs": [
         {
-          "Id": "watch_controlpoints_out",
+          "Id": "d35603d9cdf149f5b04ce11f13ff5e28",
           "Name": "",
-          "Description": "Node output"
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualize standard control points"
+      "Description": "Visualizes a node's output"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 542.8,
+      "WatchHeight": 200.0,
+      "Id": "ff4af1775253484ca68a6799d7e6308c",
       "NodeType": "ExtensionNode",
-      "Id": "watch_periodiccontrolpoints",
       "Inputs": [
         {
-          "Id": "watch_periodiccontrolpoints_in",
+          "Id": "e42865b3c60a4e0b8c4ae5733967b1b9",
           "Name": "",
-          "Description": "Node to show output from"
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
         }
       ],
       "Outputs": [
         {
-          "Id": "watch_periodiccontrolpoints_out",
+          "Id": "0b5772aa4a194254924e99f63326923c",
           "Name": "",
-          "Description": "Node output"
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualize periodic control points"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "DSCore.List.Count@var[]..[]",
-      "Id": "count_standard",
-      "Inputs": [
-        {
-          "Id": "list_in1",
-          "Name": "list",
-          "Description": "var[]..[]"
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "count_out1",
-          "Name": "int",
-          "Description": "Count of standard control points"
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Count items in list"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "DSCore.List.Count@var[]..[]",
-      "Id": "count_periodic",
-      "Inputs": [
-        {
-          "Id": "list_in2",
-          "Name": "list",
-          "Description": "var[]..[]"
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "count_out2",
-          "Name": "int",
-          "Description": "Count of periodic control points"
-        }
-      ],
-      "Replication": "Auto",
-      "Description": "Count items in list"
+      "Description": "Visualizes a node's output"
     }
   ],
   "Connectors": [
     {
-      "Start": "pts_out",
-      "End": "controlPoints"
+      "Start": "95126acf80a54f178379b5b262329b68",
+      "End": "a4afc06572124bad8389a2317dd0b496",
+      "Id": "f6abd19bf49944aa80df3fc2e7ab66fc",
+      "IsHidden": "False"
     },
     {
-      "Start": "degree_out",
-      "End": "degree"
+      "Start": "3c692710d10f4ed5b3d3607f5198c2e7",
+      "End": "3db47db1a6de406e80878420984bec4b",
+      "Id": "e347ddf82b084188be5f4ecbdeb0be53",
+      "IsHidden": "False"
     },
     {
-      "Start": "bool_out",
-      "End": "isPeriodic"
+      "Start": "3c692710d10f4ed5b3d3607f5198c2e7",
+      "End": "326e649a03714adf91edec4db5254799",
+      "Id": "f0fd38a105214713b37af6057d202782",
+      "IsHidden": "False"
     },
     {
-      "Start": "curve_out",
-      "End": "curve_in"
+      "Start": "3c692710d10f4ed5b3d3607f5198c2e7",
+      "End": "e98c3f95c4bf4e70a153134c9e5da177",
+      "Id": "d14b567567fa4dd4a1d91d8bc9ab0261",
+      "IsHidden": "False"
     },
     {
-      "Start": "curve_out",
-      "End": "curve_in2"
+      "Start": "267ac4800fad499b99efe4acb9863140",
+      "End": "e17af0a4197544518f8db8da2eb3e8a8",
+      "Id": "58ee71acb6644f739f0bc56096f76da9",
+      "IsHidden": "False"
     },
     {
-      "Start": "controlpoints_out",
-      "End": "watch_controlpoints_in"
-    },
-    {
-      "Start": "controlpoints_out",
-      "End": "list_in1"
-    },
-    {
-      "Start": "periodiccontrolpoints_out",
-      "End": "watch_periodiccontrolpoints_in"
-    },
-    {
-      "Start": "periodiccontrolpoints_out",
-      "End": "list_in2"
+      "Start": "41e7a06d26664f548218a360f471f26d",
+      "End": "e42865b3c60a4e0b8c4ae5733967b1b9",
+      "Id": "771cd4ce34ff4268bbd9d61ffbc30136",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
   "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": true,
   "Thumbnail": "",
   "GraphDocumentationURL": null,
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
       "Name": "Properties",
-      "Version": "2.13",
+      "Version": "4.1",
       "Data": {}
     }
   ],
@@ -272,26 +321,98 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.13.0.0",
+      "Version": "4.1.0.4124",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "Background Preview",
-      "EyeX": -17.0,
-      "EyeY": 24.0,
-      "EyeZ": 50.0,
-      "LookX": 12.0,
-      "LookY": -13.0,
-      "LookZ": -58.0,
-      "UpX": 0.0,
-      "UpY": 1.0,
-      "UpZ": 0.0
+      "Name": "_Background Preview",
+      "EyeX": 46.095163345336914,
+      "EyeY": 34.44188690185547,
+      "EyeZ": 27.825153350830078,
+      "LookX": -26.44776725769043,
+      "LookY": -25.415184020996094,
+      "LookZ": -48.286521911621094,
+      "UpX": -0.10315599292516708,
+      "UpY": 0.9766722917556763,
+      "UpZ": -0.1883353739976883
     },
-    "NodeViews": [],
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "64d61f7dcede4e7095118e2d493f2ad0",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 224.00000000000023,
+        "Y": 194.67499999999995
+      },
+      {
+        "Id": "59832cd4412544c79d510c15e2aa9aa9",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 676.0000000000002,
+        "Y": 260.22749999999996
+      },
+      {
+        "Id": "92fa92fd97b14a89b98f4864ba160956",
+        "Name": "NurbsCurve.IsPeriodic",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1625.6301340244572,
+        "Y": 241.59970410036556
+      },
+      {
+        "Id": "ef2ac369e6394f749feb7d164e7960f1",
+        "Name": "NurbsCurve.PeriodicControlPoints",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1180.8000000000002,
+        "Y": -48.60000000000002
+      },
+      {
+        "Id": "0a01ac43c4c248a99976621809368eff",
+        "Name": "NurbsCurve.ControlPoints",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 1180.8000000000002,
+        "Y": 407.4
+      },
+      {
+        "Id": "93d5cbaf492d4050bae71c3a11ede2f0",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1611.4115477137188,
+        "Y": -68.97007216700536
+      },
+      {
+        "Id": "ff4af1775253484ca68a6799d7e6308c",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1608.8000000000002,
+        "Y": 407.4
+      }
+    ],
     "Annotations": [],
-    "X": 0.0,
-    "Y": 0.0,
-    "Zoom": 1.0
+    "X": -136.55495055872433,
+    "Y": 148.7575960086313,
+    "Zoom": 0.6468656130924144
   }
 }
