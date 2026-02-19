@@ -3,7 +3,7 @@ RECOMMENDED TOOLTIP DESCRIPTION FOR Geometry.ProjectPointsOnto
 
 Following the Dynamo node description guidelines, the recommended tooltip description is:
 
-Projects a collection of points onto this geometry along a given direction. Returns a flat array of resulting geometry
+Projects a collection of points onto this geometry along a given direction. Returns a flat array of resulting geometry.
 
 ---
 
@@ -12,8 +12,8 @@ Guidelines applied:
 - Uses "a" when first referring to inputs (collection, geometry, direction)
 - Uses "Returns" instead of "Gets"
 - Sentence case with proper capitalization
-- Clear and concise (one sentence)
-- No period at end (single sentence rule)
+- Clear and concise (two sentences)
+- Period at end (two-sentence rule)
 
 ---
 
