@@ -1,0 +1,297 @@
+{
+  "Uuid": "94c9d0464-8643-5ffe-96e5-ab1769818302",
+  "IsCustomNode": false,
+  "Description": "Example demonstrating NurbsCurve.PeriodicControlPoints",
+  "Name": "PeriodicControlPoints",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "// Create control points for a periodic curve\npts = [\n    Point.ByCoordinates(0, 0, 0),\n    Point.ByCoordinates(10, 5, 0),\n    Point.ByCoordinates(20, 0, 0),\n    Point.ByCoordinates(20, -10, 0),\n    Point.ByCoordinates(10, -15, 0),\n    Point.ByCoordinates(0, -10, 0)\n];\ndegree = 3;",
+      "Id": "codeblock1",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "pts_out",
+          "Name": "",
+          "Description": "pts"
+        },
+        {
+          "Id": "degree_out",
+          "Name": "",
+          "Description": "degree"
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Create control points and degree"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints@Autodesk.DesignScript.Geometry.Point[],int,bool",
+      "Id": "nurbscurve_node",
+      "Inputs": [
+        {
+          "Id": "controlPoints",
+          "Name": "controlPoints",
+          "Description": "Control points\n\nPoint[]"
+        },
+        {
+          "Id": "degree",
+          "Name": "degree",
+          "Description": "int\nDefault value : 3"
+        },
+        {
+          "Id": "isPeriodic",
+          "Name": "isPeriodic",
+          "Description": "bool\nDefault value : false"
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "curve_out",
+          "Name": "NurbsCurve",
+          "Description": "NurbsCurve"
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a periodic BSpline Curve by using control points"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "true;",
+      "Id": "boolean_node",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "bool_out",
+          "Name": "",
+          "Description": "Value of expression"
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Set isPeriodic to true"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ControlPoints",
+      "Id": "controlpoints_node",
+      "Inputs": [
+        {
+          "Id": "curve_in",
+          "Name": "nurbsCurve",
+          "Description": "NurbsCurve"
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "controlpoints_out",
+          "Name": "Point[]",
+          "Description": "Standard control points"
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the standard control points"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints",
+      "Id": "periodiccontrolpoints_node",
+      "Inputs": [
+        {
+          "Id": "curve_in2",
+          "Name": "nurbsCurve",
+          "Description": "NurbsCurve"
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "periodiccontrolpoints_out",
+          "Name": "Point[]",
+          "Description": "Periodic control points including overlapping points"
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the periodic control points"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "watch_controlpoints",
+      "Inputs": [
+        {
+          "Id": "watch_controlpoints_in",
+          "Name": "",
+          "Description": "Node to show output from"
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "watch_controlpoints_out",
+          "Name": "",
+          "Description": "Node output"
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize standard control points"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "watch_periodiccontrolpoints",
+      "Inputs": [
+        {
+          "Id": "watch_periodiccontrolpoints_in",
+          "Name": "",
+          "Description": "Node to show output from"
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "watch_periodiccontrolpoints_out",
+          "Name": "",
+          "Description": "Node output"
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize periodic control points"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.Count@var[]..[]",
+      "Id": "count_standard",
+      "Inputs": [
+        {
+          "Id": "list_in1",
+          "Name": "list",
+          "Description": "var[]..[]"
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "count_out1",
+          "Name": "int",
+          "Description": "Count of standard control points"
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Count items in list"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.Count@var[]..[]",
+      "Id": "count_periodic",
+      "Inputs": [
+        {
+          "Id": "list_in2",
+          "Name": "list",
+          "Description": "var[]..[]"
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "count_out2",
+          "Name": "int",
+          "Description": "Count of periodic control points"
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Count items in list"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "pts_out",
+      "End": "controlPoints"
+    },
+    {
+      "Start": "degree_out",
+      "End": "degree"
+    },
+    {
+      "Start": "bool_out",
+      "End": "isPeriodic"
+    },
+    {
+      "Start": "curve_out",
+      "End": "curve_in"
+    },
+    {
+      "Start": "curve_out",
+      "End": "curve_in2"
+    },
+    {
+      "Start": "controlpoints_out",
+      "End": "watch_controlpoints_in"
+    },
+    {
+      "Start": "controlpoints_out",
+      "End": "list_in1"
+    },
+    {
+      "Start": "periodiccontrolpoints_out",
+      "End": "watch_periodiccontrolpoints_in"
+    },
+    {
+      "Start": "periodiccontrolpoints_out",
+      "End": "list_in2"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.13.0.0",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
