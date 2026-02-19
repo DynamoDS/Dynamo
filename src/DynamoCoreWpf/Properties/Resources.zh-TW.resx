@@ -1350,6 +1350,9 @@
   <data name="PackageDownloadStateInstalled" xml:space="preserve">
     <value>已安裝</value>
   </data>
+  <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
+    <value> (installed)</value>
+  </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>安裝中</value>
   </data>
@@ -2707,8 +2710,17 @@
   <data name="PackageManagerInstall" xml:space="preserve">
     <value>安裝</value>
   </data>
+  <data name="PackageManagerUpdate" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="PackageManagerUninstall" xml:space="preserve">
+    <value>解除安裝</value>
+  </data>
   <data name="PackageManagerPackageUpdated" xml:space="preserve">
     <value>已更新</value>
+  </data>
+  <data name="PackageManagerPackageUpdateAvailable" xml:space="preserve">
+    <value>有新版本</value>
   </data>
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>新建</value>
@@ -3880,6 +3892,12 @@
   </data>
   <data name="DynamoSplashScreenFailed" xml:space="preserve">
     <value>無法載入 Dynamo 啟動畫面，請重新啟動 Dynamo</value>
+  </data>
+  <data name="DocumentationBrowserPreferences" xml:space="preserve">
+    <value>文件瀏覽器</value>
+  </data>
+  <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
+    <value>Auto‑sync with node selection.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

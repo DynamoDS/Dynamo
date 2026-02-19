@@ -1350,6 +1350,9 @@ Les ensembles suivants ont été chargés plusieurs fois:
   <data name="PackageDownloadStateInstalled" xml:space="preserve">
     <value>Installé</value>
   </data>
+  <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
+    <value> (installed)</value>
+  </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>Installation</value>
   </data>
@@ -2706,8 +2709,17 @@ Ce package sera déchargé après le prochain redémarrage de Dynamo.</value>
   <data name="PackageManagerInstall" xml:space="preserve">
     <value>Installer</value>
   </data>
+  <data name="PackageManagerUpdate" xml:space="preserve">
+    <value>Mettre à jour</value>
+  </data>
+  <data name="PackageManagerUninstall" xml:space="preserve">
+    <value>Désinstaller</value>
+  </data>
   <data name="PackageManagerPackageUpdated" xml:space="preserve">
     <value>Mis à jour</value>
+  </data>
+  <data name="PackageManagerPackageUpdateAvailable" xml:space="preserve">
+    <value>Nouvelle version disponible</value>
   </data>
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>Nouveau</value>
@@ -3875,6 +3887,12 @@ Pour ouvrir ce graphique dans Dynamo 3.3–3.6.x: installez le package PythonNet
   </data>
   <data name="DynamoSplashScreenFailed" xml:space="preserve">
     <value>Échec du chargement de l'écran de démarrage de Dynamo, veuillez relancer Dynamo</value>
+  </data>
+  <data name="DocumentationBrowserPreferences" xml:space="preserve">
+    <value>Navigateur de documentation</value>
+  </data>
+  <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
+    <value>Auto‑sync with node selection.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

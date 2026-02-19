@@ -1350,6 +1350,9 @@ Next assemblies were loaded several times:
   <data name="PackageDownloadStateInstalled" xml:space="preserve">
     <value>Installed</value>
   </data>
+  <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
+    <value> (installed)</value>
+  </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>Installing</value>
   </data>
@@ -2708,8 +2711,17 @@ This package will be unloaded after the next Dynamo restart.</value>
   <data name="PackageManagerInstall" xml:space="preserve">
     <value>Install</value>
   </data>
+  <data name="PackageManagerUpdate" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="PackageManagerUninstall" xml:space="preserve">
+    <value>Uninstall</value>
+  </data>
   <data name="PackageManagerPackageUpdated" xml:space="preserve">
     <value>Updated</value>
+  </data>
+  <data name="PackageManagerPackageUpdateAvailable" xml:space="preserve">
+    <value>New version available</value>
   </data>
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>New</value>
@@ -3881,6 +3893,12 @@ To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the
   </data>
   <data name="DynamoSplashScreenFailed" xml:space="preserve">
     <value>Failed to load Dynamo SplashScreen, please re-launch Dynamo</value>
+  </data>
+  <data name="DocumentationBrowserPreferences" xml:space="preserve">
+    <value>Documentation Browser</value>
+  </data>
+  <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
+    <value>Auto‑sync with node selection.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

@@ -1350,6 +1350,9 @@
   <data name="PackageDownloadStateInstalled" xml:space="preserve">
     <value>Установлено</value>
   </data>
+  <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
+    <value> (installed)</value>
+  </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>Установка</value>
   </data>
@@ -2708,8 +2711,17 @@
   <data name="PackageManagerInstall" xml:space="preserve">
     <value>Установить</value>
   </data>
+  <data name="PackageManagerUpdate" xml:space="preserve">
+    <value>Обновить</value>
+  </data>
+  <data name="PackageManagerUninstall" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
   <data name="PackageManagerPackageUpdated" xml:space="preserve">
     <value>Обновлено</value>
+  </data>
+  <data name="PackageManagerPackageUpdateAvailable" xml:space="preserve">
+    <value>Доступна новая версия</value>
   </data>
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>Создать</value>
@@ -3881,6 +3893,12 @@
   </data>
   <data name="DynamoSplashScreenFailed" xml:space="preserve">
     <value>Не удалось загрузить заставку Dynamo. Перезапустите Dynamo.</value>
+  </data>
+  <data name="DocumentationBrowserPreferences" xml:space="preserve">
+    <value>Обозреватель документации</value>
+  </data>
+  <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
+    <value>Auto‑sync with node selection.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

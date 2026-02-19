@@ -1350,6 +1350,9 @@ Poniższe zespoły zostały wczytane wiele razy:
   <data name="PackageDownloadStateInstalled" xml:space="preserve">
     <value>Zainstalowany</value>
   </data>
+  <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
+    <value> (installed)</value>
+  </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>Instalowanie</value>
   </data>
@@ -2708,8 +2711,17 @@ Ten pakiet zostanie usunięty po następnym ponownym uruchomieniu dodatku Dynamo
   <data name="PackageManagerInstall" xml:space="preserve">
     <value>Zainstaluj</value>
   </data>
+  <data name="PackageManagerUpdate" xml:space="preserve">
+    <value>Aktualizuj</value>
+  </data>
+  <data name="PackageManagerUninstall" xml:space="preserve">
+    <value>Odinstaluj</value>
+  </data>
   <data name="PackageManagerPackageUpdated" xml:space="preserve">
     <value>Zaktualizowany</value>
+  </data>
+  <data name="PackageManagerPackageUpdateAvailable" xml:space="preserve">
+    <value>Dostępna nowa wersja</value>
   </data>
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>Nowy</value>
@@ -3881,6 +3893,12 @@ Aby otworzyć ten wykres w dodatku Dynamo w wersji od 3.3 do 3.6.x, zainstaluj p
   </data>
   <data name="DynamoSplashScreenFailed" xml:space="preserve">
     <value>Nie można wczytać ekranu powitalnego dodatku Dynamo. Uruchom dodatek ponownie.</value>
+  </data>
+  <data name="DocumentationBrowserPreferences" xml:space="preserve">
+    <value>Przeglądarka dokumentacji</value>
+  </data>
+  <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
+    <value>Auto‑sync with node selection.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
