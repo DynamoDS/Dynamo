@@ -1,5 +1,6 @@
-RECOMMENDED TOOLTIP DESCRIPTION FOR Geometry.ProjectPointsOnto
-================================================================
+# Recommended Tooltip Description for Geometry.ProjectPointsOnto
+
+## Tooltip Text
 
 Following the Dynamo node description guidelines, the recommended tooltip description is:
 
@@ -7,7 +8,8 @@ Projects a collection of points onto this geometry along a given direction. Retu
 
 ---
 
-Guidelines applied:
+## Guidelines Applied
+
 - Starts with third-person verb "Projects"
 - Uses "a" when first referring to inputs (collection, geometry, direction)
 - Uses "Returns" instead of "Gets"
@@ -17,11 +19,14 @@ Guidelines applied:
 
 ---
 
-IMPLEMENTATION NOTE:
+## Implementation Note
+
 This tooltip text should be added to the XML documentation comment for the 
 Geometry.ProjectPointsOnto method in the ProtoGeometry source code. Since ProtoGeometry
 is a precompiled binary in this repository, the tooltip may need to be updated in the
 upstream ProtoGeometry repository.
 
 The method signature is:
+```
 Geometry.ProjectPointsOnto(points: Point[], projectionDirection: Vector): Geometry[]..[]
+```
