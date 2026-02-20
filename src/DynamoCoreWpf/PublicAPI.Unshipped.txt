@@ -1313,6 +1313,8 @@ Dynamo.PackageManager.UI.PackageManagerSearchView
 Dynamo.PackageManager.UI.PackageManagerSearchView.InitializeComponent() -> void
 Dynamo.PackageManager.UI.PackageManagerSearchView.PackageManagerSearchView(Dynamo.PackageManager.PackageManagerSearchViewModel pm) -> void
 Dynamo.PackageManager.UI.PackageManagerSearchView.ViewModel.get -> Dynamo.PackageManager.PackageManagerSearchViewModel
+Dynamo.PackageManager.UI.PackageManagerTabControl
+Dynamo.PackageManager.UI.PackageManagerTabControl.PackageManagerTabControl() -> void
 Dynamo.PackageManager.UI.PackageManagerView
 Dynamo.PackageManager.UI.PackageManagerView.InitializeComponent() -> void
 Dynamo.PackageManager.UI.PackageManagerView.IsNewPMPublishWizardEnabled.get -> bool
@@ -1727,7 +1729,9 @@ Dynamo.UI.Views.ScriptHomeObject.StartGuidedTour(string path) -> void
 Dynamo.UI.Views.ScriptObject
 Dynamo.UI.Views.ScriptObject.ImportSettings(string file) -> void
 Dynamo.UI.Views.ScriptObject.LaunchDynamo(bool showScreenAgain) -> void
+Dynamo.UI.Views.ScriptObject.ResetSettings() -> void
 Dynamo.UI.Views.ScriptObject.ScriptObject(System.Action<bool> requestLaunchDynamo, System.Action<string> requestImportSettings, System.Func<bool> requestSignIn, System.Func<bool> requestSignOut) -> void
+Dynamo.UI.Views.ScriptObject.ScriptObject(System.Action<bool> requestLaunchDynamo, System.Action<string> requestImportSettings, System.Func<bool> requestSignIn, System.Func<bool> requestSignOut, System.Action requestResetSettings) -> void
 Dynamo.UI.Views.ScriptObject.SignIn() -> bool
 Dynamo.UI.Views.ScriptObject.SignOut() -> bool
 Dynamo.UI.Views.ScriptWizardObject
@@ -4400,6 +4404,8 @@ override Dynamo.PackageManager.UI.PackageItemInternalViewModel.Items.set -> void
 override Dynamo.PackageManager.UI.PackageItemRootViewModel.Items.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.UI.PackageItemViewModel>
 override Dynamo.PackageManager.UI.PackageItemRootViewModel.Items.set -> void
 override Dynamo.PackageManager.UI.PackageManagerSearchView.OnClosing(System.ComponentModel.CancelEventArgs e) -> void
+override Dynamo.PackageManager.UI.PackageManagerTabControl.OnKeyDown(System.Windows.Input.KeyEventArgs e) -> void
+override Dynamo.PackageManager.UI.PackageManagerTabControl.OnSelectionChanged(System.Windows.Controls.SelectionChangedEventArgs e) -> void
 override Dynamo.PackageManager.UI.PackageNameLengthValidationRule.Validate(object value, System.Globalization.CultureInfo cultureInfo) -> System.Windows.Controls.ValidationResult
 override Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.GetHashCode() -> int
 override Dynamo.UI.Controls.CodeBlockEditor.OnCommitChange() -> void
@@ -4537,6 +4543,8 @@ static Dynamo.Nodes.AnnotationView.SelectAllTextOnFocus -> System.Windows.Depend
 static Dynamo.PackageManager.PackageManagerSearchViewModel.FormatPackageVersionList(System.Collections.Generic.IEnumerable<System.Tuple<Greg.Responses.PackageHeader, Greg.Responses.PackageVersion>> packages) -> string
 static Dynamo.PackageManager.PublishPackageViewModel.FromLocalPackage(Dynamo.ViewModels.DynamoViewModel dynamoViewModel, Dynamo.PackageManager.Package pkg) -> Dynamo.PackageManager.PublishPackageViewModel
 static Dynamo.PackageManager.UI.MyTreeViewHelper.GetIsMouseDirectlyOverItem(System.Windows.DependencyObject obj) -> bool
+static Dynamo.PackageManager.UI.PackageManagerTabControl.GetSuppressHomeEndWhenSelected(System.Windows.DependencyObject element) -> bool
+static Dynamo.PackageManager.UI.PackageManagerTabControl.SetSuppressHomeEndWhenSelected(System.Windows.DependencyObject element, bool value) -> void
 static Dynamo.PackageManager.UI.PackageNameLengthValidationRule.IsValidName(string value) -> bool
 static Dynamo.PackageManager.UI.PublishPackagePublishPage.GetUserControlFromPage(System.Windows.Controls.Page page) -> System.Windows.Controls.UserControl
 static Dynamo.PackageManager.UI.TreeViewItemHelper.GetIndent(System.Windows.DependencyObject obj) -> System.Windows.GridLength
@@ -5722,6 +5730,9 @@ static Dynamo.Wpf.Properties.Resources.SplashScreenImportSettingsFailDescription
 static Dynamo.Wpf.Properties.Resources.SplashScreenLaunchingDynamo.get -> string
 static Dynamo.Wpf.Properties.Resources.SplashScreenLaunchTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.SplashScreenLoadingTimeLabel.get -> string
+static Dynamo.Wpf.Properties.Resources.SplashScreenResetSettingsTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.SplashScreenSettingsImportedRestartMessage.get -> string
+static Dynamo.Wpf.Properties.Resources.SplashScreenSettingsResetSuccess.get -> string
 static Dynamo.Wpf.Properties.Resources.SplashScreenShowScreenAgainLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.SplashScreenSignIn.get -> string
 static Dynamo.Wpf.Properties.Resources.SplashScreenSigningIn.get -> string
@@ -5894,6 +5905,7 @@ static readonly Dynamo.PackageManager.UI.NumericUpDownControl.ValueProperty -> S
 static readonly Dynamo.PackageManager.UI.NumericUpDownControl.WatermarkProperty -> System.Windows.DependencyProperty
 static readonly Dynamo.PackageManager.UI.PackageManagerPackagesControl.SearchItemsProperty -> System.Windows.DependencyProperty
 static readonly Dynamo.PackageManager.UI.PackageManagerPackagesControl.SelectedItemProperty -> System.Windows.DependencyProperty
+static readonly Dynamo.PackageManager.UI.PackageManagerTabControl.SuppressHomeEndWhenSelectedProperty -> System.Windows.DependencyProperty
 static readonly Dynamo.PackageManager.UI.TreeViewItemHelper.IndentProperty -> System.Windows.DependencyProperty
 static readonly Dynamo.UI.Controls.CodeCompletionEditor.CodeProperty -> System.Windows.DependencyProperty
 static readonly Dynamo.UI.Controls.DynamoToolTip.AttachmentSideProperty -> System.Windows.DependencyProperty

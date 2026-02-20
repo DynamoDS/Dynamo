@@ -1350,6 +1350,9 @@ Několikrát byly načteny i další sestavy:
   <data name="PackageDownloadStateInstalled" xml:space="preserve">
     <value>Nainstalováno</value>
   </data>
+  <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
+    <value> (installed)</value>
+  </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>Probíhá instalace</value>
   </data>
@@ -2707,8 +2710,17 @@ Tento balíček bude uvolněn po dalším restartování aplikace Dynamo.</value
   <data name="PackageManagerInstall" xml:space="preserve">
     <value>Instalovat</value>
   </data>
+  <data name="PackageManagerUpdate" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="PackageManagerUninstall" xml:space="preserve">
+    <value>Odinstalovat</value>
+  </data>
   <data name="PackageManagerPackageUpdated" xml:space="preserve">
     <value>Aktualizovaný</value>
+  </data>
+  <data name="PackageManagerPackageUpdateAvailable" xml:space="preserve">
+    <value>Je k dispozici nová verze.</value>
   </data>
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>Nový</value>
@@ -3880,6 +3892,12 @@ Otevření tohoto grafu v aplikaci Dynamo 3.3–3.6.x: Ze správce balíčků na
   </data>
   <data name="DynamoSplashScreenFailed" xml:space="preserve">
     <value>Načtení úvodní obrazovky aplikace Dynamo se nezdařilo, spusťte aplikaci Dynamo znovu</value>
+  </data>
+  <data name="DocumentationBrowserPreferences" xml:space="preserve">
+    <value>Prohlížeč dokumentace</value>
+  </data>
+  <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
+    <value>Auto‑sync with node selection.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
