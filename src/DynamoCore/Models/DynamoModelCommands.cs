@@ -628,12 +628,12 @@ namespace Dynamo.Models
         {
             if (activeStartPort == null || reconnectionPinLocationsByStartPortId == null)
             {
-                return null;
+                return Array.Empty<(double X, double Y)>();
             }
 
             if (!reconnectionPinLocationsByStartPortId.TryGetValue(activeStartPort.GUID, out var pinLocations))
             {
-                return null;
+                return Array.Empty<(double X, double Y)>();
             }
 
             reconnectionPinLocationsByStartPortId.Remove(activeStartPort.GUID);

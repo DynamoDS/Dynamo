@@ -1657,7 +1657,7 @@ namespace Dynamo.ViewModels
             return pathFigure;
         }
 
-        private bool TryGetEndPoint(object parameter, out Point point)
+        private static bool TryGetEndPoint(object parameter, out Point point)
         {
             point = new Point();
             if (parameter is Point windowsPoint)

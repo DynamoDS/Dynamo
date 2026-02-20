@@ -345,9 +345,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(initialConnectorPinCount + 1, activeConnector.ConnectorPinViewCollection.Count);
             Assert.IsTrue(activeConnector.ConnectorPinViewCollection.All(pin => !pin.IsInteractive));
 
-            var transientPin = activeConnector.ConnectorPinViewCollection.First();
-            Assert.AreEqual(initialConnectorPinCount + 1, activeConnector.ConnectorPinViewCollection.Count);
-
             // Execute the second part of the workflow - simulate placing the connectors over the new port
             this.ViewModel.ExecuteCommand(
                 new DynamoModel.MakeConnectionCommand(codeblock.GUID, 0, PortType.Output,
