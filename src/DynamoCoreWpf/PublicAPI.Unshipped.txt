@@ -1890,6 +1890,8 @@ Dynamo.ViewModels.ConnectorPinViewModel.IsHidden.get -> bool
 Dynamo.ViewModels.ConnectorPinViewModel.IsHidden.set -> void
 Dynamo.ViewModels.ConnectorPinViewModel.IsHoveredOver.get -> bool
 Dynamo.ViewModels.ConnectorPinViewModel.IsHoveredOver.set -> void
+Dynamo.ViewModels.ConnectorPinViewModel.IsInteractive.get -> bool
+Dynamo.ViewModels.ConnectorPinViewModel.IsInteractive.set -> void
 Dynamo.ViewModels.ConnectorPinViewModel.IsSelected.get -> bool
 Dynamo.ViewModels.ConnectorPinViewModel.IsTemporarilyVisible.get -> bool
 Dynamo.ViewModels.ConnectorPinViewModel.IsTemporarilyVisible.set -> void

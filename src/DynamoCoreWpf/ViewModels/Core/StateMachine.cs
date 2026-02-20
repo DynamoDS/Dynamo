@@ -205,7 +205,7 @@ namespace Dynamo.ViewModels
 
                 // Define the new active connector
                 var activeConnector = new ConnectorViewModel(this, existingConnector.Start);
-                activeConnector.SetTransientConnectorPinPositions(CollectConnectorPinPositions(existingConnector));
+                activeConnector.SetTransientConnectorPinPositions(existingConnector.GetPinLocations());
                 activeConnector.Redraw(existingConnector.End.Center);
                 var c = new ConnectorViewModel[] { activeConnector };
                 this.SetActiveConnectors(c);
@@ -249,25 +249,13 @@ namespace Dynamo.ViewModels
             {
                 var selectedConnector = selectedConnectors[i];
                 var c = new ConnectorViewModel(this, selectedConnector.End);
-                c.SetTransientConnectorPinPositions(CollectConnectorPinPositions(selectedConnector));
+                c.SetTransientConnectorPinPositions(selectedConnector.GetPinLocations());
                 c.Redraw(selectedConnector.Start.Center);
                 connectorsAr[i] = c;
             }
 
             this.SetActiveConnectors(connectorsAr);
             return;
-        }
-
-        private static IEnumerable<Point> CollectConnectorPinPositions(ConnectorModel connectorModel)
-        {
-            if (connectorModel?.ConnectorPinModels == null || connectorModel.ConnectorPinModels.Count == 0)
-            {
-                return Enumerable.Empty<Point>();
-            }
-
-            return connectorModel.ConnectorPinModels
-                .Select(pin => new Point(pin.X, pin.Y))
-                .ToList();
         }
 
         internal void EndConnection(Guid nodeId, int portIndex, PortType portType)

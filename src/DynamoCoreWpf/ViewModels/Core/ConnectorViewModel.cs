@@ -1150,7 +1150,8 @@ namespace Dynamo.ViewModels
             var pinViewModel = new ConnectorPinViewModel(this.workspaceViewModel, pinModel)
             {
                 IsHidden = this.IsHidden,
-                IsTemporarilyVisible = isTemporarilyVisible
+                IsTemporarilyVisible = isTemporarilyVisible,
+                IsInteractive = !isTransientPin
             };
             pinViewModel.PropertyChanged += PinViewModelPropertyChanged;
 
@@ -1491,7 +1492,7 @@ namespace Dynamo.ViewModels
         /// Creates transient pin visuals for a temporary connector (ConnectorModel == null).
         /// </summary>
         /// <param name="pinLocations">Pin top-left canvas coordinates.</param>
-        internal void SetTransientConnectorPinPositions(IEnumerable<Point> pinLocations)
+        internal void SetTransientConnectorPinPositions(IEnumerable<(double X, double Y)> pinLocations)
         {
             if (ConnectorModel != null || pinLocations == null)
             {

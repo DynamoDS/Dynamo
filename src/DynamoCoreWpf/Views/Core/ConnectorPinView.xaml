@@ -18,7 +18,9 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Canvas Left="{Binding Left, Mode=TwoWay}" Top="{Binding Top, Mode=TwoWay}">
+    <Canvas Left="{Binding Left, Mode=TwoWay}"
+            Top="{Binding Top, Mode=TwoWay}"
+            IsHitTestVisible="{Binding IsInteractive}">
         <Canvas.ContextMenu>
             <ContextMenu Style="{StaticResource ContextMenuStyle}" Background="{StaticResource NodeContextMenuBackground}">
                 <MenuItem Header="{x:Static props:Resources.ConnectorContextMenuHeaderUnpinConnector}" Command="{Binding UnpinConnectorCommand}"/>

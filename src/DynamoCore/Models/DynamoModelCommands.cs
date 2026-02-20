@@ -621,9 +621,7 @@ namespace Dynamo.Models
             }
 
             reconnectionPinLocationsByStartPortId ??= new Dictionary<Guid, List<(double X, double Y)>>();
-            reconnectionPinLocationsByStartPortId[activeStartPort.GUID] = connector.ConnectorPinModels
-                .Select(pin => (pin.X, pin.Y))
-                .ToList();
+            reconnectionPinLocationsByStartPortId[activeStartPort.GUID] = connector.GetPinLocations().ToList();
         }
 
         private IEnumerable<(double X, double Y)> ConsumeReconnectionPinLocations(PortModel activeStartPort)
