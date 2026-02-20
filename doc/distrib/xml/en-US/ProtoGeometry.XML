@@ -52,9 +52,6 @@
             geometry integration.
             </summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Core.EntityTags.#ctor(System.Collections.Generic.Dictionary{System.String,System.Object},Autodesk.DesignScript.Geometry.DesignScriptEntity)">
-            <notranslation>true</notranslation>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Core.EntityTags.Parent">
             <notranslation>true</notranslation>
         </member>
@@ -1190,7 +1187,15 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ControlPoints">
             <summary>
-            Get the control points of the NurbsCurve.  These are the points that the curve interpolates.
+            Get the control points of the NurbsCurve.
+            </summary>
+            <returns> An Array of Points </returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
+            <summary>
+            The truly periodic control points of the NurbsCurve if periodic.
+            Note that this cannot be used together with PeriodicKnots() to reconstruct the original periodic NurbsCurve.
+            Throws (or is undefined) when the curve is not periodic.
             </summary>
             <returns> An Array of Points </returns>
         </member>
@@ -1199,6 +1204,14 @@
             The knots of the Curve. Knots is a series of parameter values (doubles) used to determine where and how the control points affect the curve.
             </summary>
             <returns> The knots of the nurbs curve </returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots">
+            <summary>
+            The unclamped knots of the Curve if Periodic. Knots is a series of parameter values (doubles) used to determine where and how the control points affect the curve.
+            Note that this cannot be used together with PeriodicControlPoints() to reconstruct the original periodic NurbsCurve.
+            Throws (or is undefined) when the curve is not periodic.
+            </summary>
+            <returns> The periodic knot vector of the nurbs curve </returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Weights">
             <summary>
@@ -4802,6 +4815,17 @@
             sweep1,curve2surf
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSurface(Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
+            <summary>
+            Sweeps this Curve along the path Curve, creating a Surface
+            </summary>
+            <param name="path">  </param>
+            <param name="cutEndOff"> Cut the end of the sweep and make it normal to the path </param>
+            <returns> A Surface resulting from sweeping the curve along the path</returns>
+            <search>
+            sweep1,curve2surf
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve)">
             <summary>
             Sweeps this closed Curve along the path Curve, creating a Solid
@@ -4844,7 +4868,7 @@
             This is used for testing only.
             </summary>
         </member>
-        <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.Tags">
+        <member name="P:Autodesk.DesignScript.Geometry.DesignScriptEntity.Tags">
             <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.Dispose">
@@ -5011,6 +5035,16 @@
             Get the intersection of Geometry for this object and a collection of other Geometries. Finds common geometry of all participants.
             </summary>
             <search>get overlap,multi intersect,intersect many</search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ProjectPointsOnto(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},Autodesk.DesignScript.Geometry.Vector)">
+            <summary>
+            Projects a collection of Points onto this Geometry along the specified direction.
+            Returns a flat array of resulting Geometry.
+            </summary>
+            <param name="points">Points to project</param>
+            <param name="projectionDirection">Projection direction</param>
+            <returns>Flat array of resulting Geometry</returns>
+            <search>project points,batch project</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Split(Autodesk.DesignScript.Geometry.Geometry)">
             <summary>
@@ -6803,6 +6837,11 @@
               Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use SweepAsSolid(ICurveEntity path, bool cutEndOff) instead.
             </summary>
         </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_sweepassurface_deprecated">
+            <summary>
+              Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Curve.SweepAsSurface(profile, path, cutEndOff) instead.
+            </summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_trimsegmentsbyparam_deprecated">
             <summary>
               Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Curve.TrimSegmentsByParameter(double[] parameters, bool discardEvenSegments) instead..
@@ -7001,6 +7040,11 @@
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ParameterizedCollectionException">
             <summary>
               Looks up a localized string similar to Given data : \&quot;{0}\&quot; is not an array of name value pairs.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.point_project_deprecated">
+            <summary>
+              Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Geometry.ProjectPointsOnto(Point[] points, Vector projectionDirection) instead..
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.PointsCoincident">
