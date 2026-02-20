@@ -111,9 +111,15 @@ namespace Dynamo.Core
         /// </summary>
         public IDisposable BeginActionGroup()
         {
-            EnsureValidRecorderStates();
-            currentActionGroup = document.CreateElement(ActionGroup);
-            return new ActionGroupDisposable(this);
+            //EnsureValidRecorderStates();
+            bool isRoot = currentActionGroup == null;
+            //if its not root, then we are already in an action group, so we should reuse that one and just return a disposable that does nothing on dispose
+            //this allows us to have nested "action" groups by flattening them into the parent groups.
+            if (isRoot)
+            {
+                currentActionGroup = document.CreateElement(ActionGroup);
+            }
+            return new ActionGroupDisposable(this, isRoot);
         }
 
         /// <summary>
@@ -466,14 +472,19 @@ namespace Dynamo.Core
         private sealed class ActionGroupDisposable : IDisposable
         {
             private readonly UndoRedoRecorder recorder;
-            public ActionGroupDisposable(UndoRedoRecorder recorder)
+            private readonly bool isRoot;
+            public ActionGroupDisposable(UndoRedoRecorder recorder, bool isRoot)
             {
                 this.recorder = recorder;
+                this.isRoot = isRoot;
             }
 
             public void Dispose()
             {
-                recorder.EndActionGroup();
+                if (isRoot)
+                {
+                    recorder.EndActionGroup();
+                }
             }
         }
 
