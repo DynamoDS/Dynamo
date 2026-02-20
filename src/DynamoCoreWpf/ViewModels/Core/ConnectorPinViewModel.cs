@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Dynamo.Configuration;
 using Dynamo.Graph;
@@ -227,7 +227,7 @@ namespace Dynamo.ViewModels
 
         private bool isInteractive;
         /// <summary>
-        /// gets or sets whether the pin is interactive (can be hovered over, clicked on, etc.) and updates the command state when this changes.
+        /// Gets or sets whether the pin is interactive (can be hovered over, clicked on, etc.) and updates the command state when this changes.
         /// </summary>
         [JsonIgnore]
         public bool IsInteractive
