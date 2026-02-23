@@ -1985,8 +1985,9 @@ namespace Dynamo.Models
 
         private bool ShouldLogVersionedInfoMessage(LogWarningMessageEventArgs args)
         {
+            //If CurrentWorkspace is null(unexpected state), the info message is silently dropped. A safer default is return true
             if (CurrentWorkspace == null)
-                return false;
+                return true;
 
             var introducedInVersion = args?.IntroducedInVersion;
             if (introducedInVersion == null)
