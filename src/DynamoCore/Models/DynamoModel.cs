@@ -2070,7 +2070,18 @@ namespace Dynamo.Models
             // depend on it get executed, or those tasks are thrown away if safe to
             // do that.
 
+            // Save the current workspace version before resetting the engine
+            // so it doesn't get overwritten with the running Dynamo version
+            var workspaceVersion = EngineController?.CurrentWorkspaceVersion;
+
             ResetEngineInternal();
+
+            // Restore the workspace version after creating the new EngineController
+            if (workspaceVersion != null)
+            {
+                EngineController.CurrentWorkspaceVersion = workspaceVersion;
+            }
+
             foreach (var workspaceModel in Workspaces.OfType<HomeWorkspaceModel>())
             {
                 workspaceModel.ResetEngine(EngineController, markNodesAsDirty);
@@ -2114,11 +2125,7 @@ namespace Dynamo.Models
         {
             Logger.Log("Beginning engine reset");
 
-            // Save the workspace version before resetting the engine
-            var workspaceVersion = EngineController.CurrentWorkspaceVersion;
             ResetEngine(true);
-            // Restore the workspace version after engine reset
-            EngineController.CurrentWorkspaceVersion = workspaceVersion;
 
             Logger.Log("Reset complete");
 

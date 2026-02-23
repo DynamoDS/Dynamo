@@ -111,5 +111,15 @@
             <returns name="wt">weight</returns>
             <returns name="ok">okay</returns>
         </member>
+        <member name="M:FFITarget.TestVersionedInfoMessage.WithVersion">
+            <summary>
+            Returns a value and logs an info message with version 3.0.0
+            </summary>
+        </member>
+        <member name="M:FFITarget.TestVersionedInfoMessage.WithoutVersion">
+            <summary>
+            Returns a value and logs an info message without version
+            </summary>
+        </member>
     </members>
 </doc>

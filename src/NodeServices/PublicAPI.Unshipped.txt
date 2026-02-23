@@ -1,0 +1,3 @@
+#nullable enable
+DynamoServices.LogWarningMessageEventArgs.IntroducedInVersion.get -> System.Version
+DynamoServices.LogWarningMessageEventArgs.LogWarningMessageEventArgs(string msg, System.Version introducedInVersion) -> void
