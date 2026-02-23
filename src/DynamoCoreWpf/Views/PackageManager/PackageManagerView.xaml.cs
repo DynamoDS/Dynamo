@@ -182,7 +182,7 @@ namespace Dynamo.PackageManager.UI
         /// <param name="tabName">Tab name to navigate to</param>
         internal void Navigate(string tabName)
         {
-            var tabControl = this.projectManagerTabControl;
+            var tabControl = this.packageManagerTabControl;
 
             var preferencesTab = (from TabItem tabItem in tabControl.Items
                                   where tabItem.Header.ToString().Equals(tabName)

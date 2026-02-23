@@ -733,7 +733,6 @@ namespace Dynamo.Views
         private void UpdateNodeViewCacheScale()
         {
             var nodes = this.ChildrenOfType<NodeView>();
-            BitmapCache sharedCache = null;
             foreach (var node in nodes)
             {
                 if (node.CacheMode is BitmapCache cache)
@@ -742,11 +741,10 @@ namespace Dynamo.Views
                 }
                 else
                 {
-                    if (sharedCache == null)
-                    {
-                        sharedCache = new BitmapCache(currentRenderScale);
-                    }
-                    node.CacheMode = sharedCache;
+                    // Create a unique BitmapCache for each node to ensure thread-safety and reentrancy.
+                    // Sharing a single cache instance across multiple nodes causes race conditions in WPF's
+                    // rendering thread, leading to pure virtual function calls during concurrent access.
+                    node.CacheMode = new BitmapCache(currentRenderScale);
                 }
             }
         }

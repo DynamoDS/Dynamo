@@ -1350,6 +1350,9 @@ Die nächsten Assemblys wurden mehrmals geladen:
   <data name="PackageDownloadStateInstalled" xml:space="preserve">
     <value>Installiert</value>
   </data>
+  <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
+    <value> (installed)</value>
+  </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>Installation</value>
   </data>
@@ -2706,8 +2709,17 @@ Dieses Paket wird nach dem nächsten Neustart von Dynamo entfernt.</value>
   <data name="PackageManagerInstall" xml:space="preserve">
     <value>Installieren</value>
   </data>
+  <data name="PackageManagerUpdate" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="PackageManagerUninstall" xml:space="preserve">
+    <value>Deinstallieren</value>
+  </data>
   <data name="PackageManagerPackageUpdated" xml:space="preserve">
     <value>Aktualisiert</value>
+  </data>
+  <data name="PackageManagerPackageUpdateAvailable" xml:space="preserve">
+    <value>Neue Version verfügbar</value>
   </data>
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>Neu</value>
@@ -3879,6 +3891,12 @@ Installieren Sie das PythonNet-Paket aus dem Package Manager, um dieses Diagramm
   </data>
   <data name="DynamoSplashScreenFailed" xml:space="preserve">
     <value>Fehler beim Laden des Dynamo-Startbildschirms. Starten Sie Dynamo neu</value>
+  </data>
+  <data name="DocumentationBrowserPreferences" xml:space="preserve">
+    <value>Dokumentationsbrowser</value>
+  </data>
+  <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
+    <value>Auto‑sync with node selection.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

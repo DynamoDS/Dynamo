@@ -3730,6 +3730,15 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
     <value>Something went wrong when importing your custom setting file. Please try again or proceed with default settings.</value>
   </data>
+  <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
+    <value>Settings imported. Please restart Dynamo.</value>
+  </data>
+  <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
+    <value>Reset imported settings</value>
+  </data>
+  <data name="SplashScreenSettingsResetSuccess" xml:space="preserve">
+    <value>Imported settings have been reset.</value>
+  </data>
   <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
     <value>Launching Dynamo View...</value>
   </data>
