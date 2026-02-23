@@ -1,2 +1,2 @@
 #nullable enable
-DynamoServices.LogWarningMessageEvents.OnLogInfoMessage(string message, System.Version introducedInVersion) -> void
+static DynamoServices.LogWarningMessageEvents.OnLogInfoMessage(string message, System.Version introducedInVersion) -> void

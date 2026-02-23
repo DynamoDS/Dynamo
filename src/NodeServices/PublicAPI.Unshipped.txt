@@ -108,7 +108,7 @@ Autodesk.DesignScript.Runtime.AllowArrayPromotionAttribute.AllowArrayPromotionAt
 Autodesk.DesignScript.Runtime.AllowArrayPromotionAttribute.IsAllowed.get -> bool
 Autodesk.DesignScript.Runtime.AllowRankReductionAttribute
 Autodesk.DesignScript.Runtime.AllowRankReductionAttribute.AllowRankReductionAttribute() -> void
-Autodesk.DesignScript.Runtime.AllowRankReductionAttribute.IsRankReducible(object collection) -> bool
+static Autodesk.DesignScript.Runtime.AllowRankReductionAttribute.IsRankReducible(object collection) -> bool
 Autodesk.DesignScript.Runtime.AllowRankReductionAttribute.ReduceRank(object collection) -> object
 Autodesk.DesignScript.Runtime.ArbitraryDimensionArrayImportAttribute
 Autodesk.DesignScript.Runtime.ArbitraryDimensionArrayImportAttribute.ArbitraryDimensionArrayImportAttribute() -> void
@@ -150,20 +150,20 @@ Autodesk.DesignScript.Runtime.RuntimeRequirementAttribute.RuntimeRequirementAttr
 Autodesk.DesignScript.Runtime.SupressImportIntoVMAttribute
 Autodesk.DesignScript.Runtime.SupressImportIntoVMAttribute.SupressImportIntoVMAttribute() -> void
 Dynamo.Events.ExecutionEvents
-Dynamo.Events.ExecutionEvents.ActiveSession.get -> Dynamo.Session.IExecutionSession
-Dynamo.Events.ExecutionEvents.GraphPostExecution -> Dynamo.Events.ExecutionStateHandler
-Dynamo.Events.ExecutionEvents.GraphPreExecution -> Dynamo.Events.ExecutionStateHandler
+static Dynamo.Events.ExecutionEvents.ActiveSession.get -> Dynamo.Session.IExecutionSession
+static Dynamo.Events.ExecutionEvents.GraphPostExecution -> Dynamo.Events.ExecutionStateHandler
+static Dynamo.Events.ExecutionEvents.GraphPreExecution -> Dynamo.Events.ExecutionStateHandler
 Dynamo.Events.ExecutionStateHandler
 Dynamo.Events.WorkspaceAddedEventHandler
 Dynamo.Events.WorkspaceClearedEventHandler
 Dynamo.Events.WorkspaceClearingEventHandler
 Dynamo.Events.WorkspaceEvents
-Dynamo.Events.WorkspaceEvents.WorkspaceAdded -> Dynamo.Events.WorkspaceAddedEventHandler
-Dynamo.Events.WorkspaceEvents.WorkspaceCleared -> Dynamo.Events.WorkspaceClearedEventHandler
-Dynamo.Events.WorkspaceEvents.WorkspaceClearing -> Dynamo.Events.WorkspaceClearingEventHandler
-Dynamo.Events.WorkspaceEvents.WorkspaceRemoved -> Dynamo.Events.WorkspaceRemovedEventHandler
-Dynamo.Events.WorkspaceEvents.WorkspaceRemoveStarted -> Dynamo.Events.WorkspaceRemoveStartedEventHandler
-Dynamo.Events.WorkspaceEvents.WorkspaceSettingsChanged -> Dynamo.Events.WorkspaceSettingsChangedEventHandler
+static Dynamo.Events.WorkspaceEvents.WorkspaceAdded -> Dynamo.Events.WorkspaceAddedEventHandler
+static Dynamo.Events.WorkspaceEvents.WorkspaceCleared -> Dynamo.Events.WorkspaceClearedEventHandler
+static Dynamo.Events.WorkspaceEvents.WorkspaceClearing -> Dynamo.Events.WorkspaceClearingEventHandler
+static Dynamo.Events.WorkspaceEvents.WorkspaceRemoved -> Dynamo.Events.WorkspaceRemovedEventHandler
+static Dynamo.Events.WorkspaceEvents.WorkspaceRemoveStarted -> Dynamo.Events.WorkspaceRemoveStartedEventHandler
+static Dynamo.Events.WorkspaceEvents.WorkspaceSettingsChanged -> Dynamo.Events.WorkspaceSettingsChangedEventHandler
 Dynamo.Events.WorkspaceRemovedEventHandler
 Dynamo.Events.WorkspaceRemoveStartedEventHandler
 Dynamo.Events.WorkspacesModificationEventArgs
@@ -177,11 +177,28 @@ Dynamo.Events.WorkspacesSettingsChangedEventArgs.ScaleFactor.get -> double
 Dynamo.Events.WorkspacesSettingsChangedEventArgs.WorkspacesSettingsChangedEventArgs(double scaleFactor) -> void
 Dynamo.Logging.Actions
 Dynamo.Logging.Analytics
-Dynamo.Logging.Analytics.DisableAnalytics.get -> bool
-Dynamo.Logging.Analytics.ReportingAnalytics.get -> bool
+static Dynamo.Logging.Analytics.DisableAnalytics.get -> bool
+static Dynamo.Logging.Analytics.ReportingAnalytics.get -> bool
 Dynamo.Logging.Categories
 Dynamo.Logging.HeartBeatType
 Dynamo.Logging.IAnalyticsClient
+Dynamo.Logging.IAnalyticsClient.CreateCommandEvent(string name, string description, int? value) -> System.IDisposable
+Dynamo.Logging.IAnalyticsClient.CreateTaskCommandEvent(string name, string description, int? value, System.Collections.Generic.IDictionary<string, object> parameters = null) -> System.Threading.Tasks.Task<System.IDisposable>
+Dynamo.Logging.IAnalyticsClient.CreateTaskTimedEvent(Dynamo.Logging.Categories category, string variable, string description, int? value) -> System.Threading.Tasks.Task<System.IDisposable>
+Dynamo.Logging.IAnalyticsClient.CreateTimedEvent(Dynamo.Logging.Categories category, string variable, string description, int? value) -> System.IDisposable
+Dynamo.Logging.IAnalyticsClient.EndEventTask(System.Threading.Tasks.Task<System.IDisposable> taskToEnd) -> void
+Dynamo.Logging.IAnalyticsClient.ReportingAnalytics.get -> bool
+Dynamo.Logging.IAnalyticsClient.ShutDown() -> void
+Dynamo.Logging.IAnalyticsClient.Start() -> void
+Dynamo.Logging.IAnalyticsClient.TrackActivityStatus(string activityType) -> void
+Dynamo.Logging.IAnalyticsClient.TrackEvent(Dynamo.Logging.Actions action, Dynamo.Logging.Categories category, string description, int? value) -> void
+Dynamo.Logging.IAnalyticsClient.TrackEvent(Dynamo.Logging.Actions action, string category, string description, int? value) -> void
+Dynamo.Logging.IAnalyticsClient.TrackException(System.Exception ex, bool isFatal) -> void
+Dynamo.Logging.IAnalyticsClient.TrackFileOperationEvent(string filepath, Dynamo.Logging.Actions operation, int size, string description) -> System.IDisposable
+Dynamo.Logging.IAnalyticsClient.TrackPreference(string name, string stringValue, int? metricValue) -> void
+Dynamo.Logging.IAnalyticsClient.TrackScreenView(string viewName) -> void
+Dynamo.Logging.IAnalyticsClient.TrackTaskFileOperationEvent(string filepath, Dynamo.Logging.Actions operation, int size, string description) -> System.Threading.Tasks.Task<System.IDisposable>
+Dynamo.Logging.IAnalyticsClient.TrackTimedEvent(Dynamo.Logging.Categories category, string variable, System.TimeSpan time, string description) -> void
 Dynamo.PythonServices.EventHandlers.EvaluationFinishedEventHandler
 Dynamo.PythonServices.EventHandlers.EvaluationStartedEventHandler
 Dynamo.PythonServices.EventHandlers.ScopeGetAction
@@ -197,10 +214,10 @@ Dynamo.PythonServices.PythonEngine.OutputDataMarshaler.get -> object
 Dynamo.PythonServices.PythonEngine.PythonEngine() -> void
 Dynamo.PythonServices.PythonEngineManager
 Dynamo.PythonServices.PythonEngineManager.AvailableEngines.get -> System.Collections.ObjectModel.ReadOnlyCollection<string>
-Dynamo.PythonServices.PythonEngineManager.Instance.get -> Dynamo.PythonServices.PythonEngineManager
+static Dynamo.PythonServices.PythonEngineManager.Instance.get -> Dynamo.PythonServices.PythonEngineManager
 Dynamo.PythonServices.PythonEngineManager.PythonEngineManager() -> void
 Dynamo.Session.ExecutionSessionHelper
-Dynamo.Session.ExecutionSessionHelper.ThrowIfNoNetworkMode() -> void
+static Dynamo.Session.ExecutionSessionHelper.ThrowIfNoNetworkMode() -> void
 Dynamo.Session.IExecutionSession
 Dynamo.Session.IExecutionSession.CurrentWorkspacePath.get -> string
 Dynamo.Session.IExecutionSession.GetParameterKeys() -> System.Collections.Generic.IEnumerable<string>
@@ -218,12 +235,16 @@ static readonly Dynamo.Session.ParameterKeys.NoNetworkMode -> string
 static readonly Dynamo.Session.ParameterKeys.NumberFormat -> string
 static readonly Dynamo.Session.ParameterKeys.PackagePaths -> string
 DynamoServices.AuthServices
-DynamoServices.AuthServices.AuthProvider.get -> object
+static DynamoServices.AuthServices.AuthProvider.get -> object
+DynamoServices.LogWarningMessageEventArgs
 DynamoServices.LogWarningMessageEventArgs.IntroducedInVersion.get -> System.Version
+DynamoServices.LogWarningMessageEventArgs.LogWarningMessageEventArgs(string msg) -> void
 DynamoServices.LogWarningMessageEventArgs.LogWarningMessageEventArgs(string msg, System.Version introducedInVersion) -> void
+DynamoServices.LogWarningMessageEventArgs.message.get -> string
 DynamoServices.LogWarningMessageEventHandler
 DynamoServices.LogWarningMessageEvents
-DynamoServices.LogWarningMessageEvents.OnLogWarningMessage(string message) -> void
+static DynamoServices.LogWarningMessageEvents.OnLogInfoMessage(string message) -> void
+static DynamoServices.LogWarningMessageEvents.OnLogWarningMessage(string message) -> void
 DynamoServices.NodeInternalException
 DynamoServices.NodeInternalException.NodeInternalException() -> void
 DynamoServices.NodeInternalException.NodeInternalException(string message) -> void
@@ -231,11 +252,11 @@ DynamoServices.NodeInternalException.NodeInternalException(string message, Syste
 DynamoServices.RegisterForTraceAttribute
 DynamoServices.RegisterForTraceAttribute.RegisterForTraceAttribute() -> void
 DynamoServices.TraceUtils
-DynamoServices.TraceUtils.GetTraceData(string key) -> string
-DynamoServices.TraceUtils.SetTraceData(string key, string value) -> void
+static DynamoServices.TraceUtils.GetTraceData(string key) -> string
+static DynamoServices.TraceUtils.SetTraceData(string key, string value) -> void
 DynamoServices.Validity
-DynamoServices.Validity.Assert(bool cond) -> void
-DynamoServices.Validity.Assert(bool cond, string message) -> void
+static DynamoServices.Validity.Assert(bool cond) -> void
+static DynamoServices.Validity.Assert(bool cond, string message) -> void
 DynamoServices.Validity.Validity() -> void
 DynamoUnits.ExtensionStartupParams
 static Dynamo.Logging.Analytics.CreateCommandEvent(string name, string description = "", int? value = null) -> System.IDisposable
