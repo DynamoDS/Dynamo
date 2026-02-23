@@ -102,6 +102,11 @@ Autodesk.DesignScript.Interfaces.TessellationParameters.Tolerance.set -> void
 Autodesk.DesignScript.Interfaces.TessellationParameters.UseRenderInstancing.get -> bool
 Autodesk.DesignScript.Interfaces.TessellationParameters.UseRenderInstancing.set -> void
 Autodesk.DesignScript.Interfaces.VertexType
+Autodesk.DesignScript.Interfaces.VertexType.Line -> Autodesk.DesignScript.Interfaces.VertexType
+Autodesk.DesignScript.Interfaces.VertexType.LineInstance -> Autodesk.DesignScript.Interfaces.VertexType
+Autodesk.DesignScript.Interfaces.VertexType.Mesh -> Autodesk.DesignScript.Interfaces.VertexType
+Autodesk.DesignScript.Interfaces.VertexType.MeshInstance -> Autodesk.DesignScript.Interfaces.VertexType
+Autodesk.DesignScript.Interfaces.VertexType.Point -> Autodesk.DesignScript.Interfaces.VertexType
 Autodesk.DesignScript.Runtime.AllowArrayPromotionAttribute
 Autodesk.DesignScript.Runtime.AllowArrayPromotionAttribute.AllowArrayPromotionAttribute() -> void
 Autodesk.DesignScript.Runtime.AllowArrayPromotionAttribute.AllowArrayPromotionAttribute(bool isAllowed) -> void
@@ -176,11 +181,107 @@ Dynamo.Events.WorkspacesSettingsChangedEventArgs
 Dynamo.Events.WorkspacesSettingsChangedEventArgs.ScaleFactor.get -> double
 Dynamo.Events.WorkspacesSettingsChangedEventArgs.WorkspacesSettingsChangedEventArgs(double scaleFactor) -> void
 Dynamo.Logging.Actions
+Dynamo.Logging.Actions.AddedTo -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Break -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.BuiltInPackageConflict -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.CallTool -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Cancel -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Close -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Collapsed -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Completed -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Copy -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Create -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Delete -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Dismiss -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Dock -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Downloaded -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.DownloadNew -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.End -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.EngineFailure -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Expanded -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Export -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.ExternalReferences -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Filter -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Freeze -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Handle -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Hide -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Import -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Installed -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.KeepOld -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Load -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.LocalReferences -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Migration -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.MissingDocumentation -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Move -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.New -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Next -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Open -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.PackageReferences -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Pin -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Previous -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Preview -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Rate -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Read -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.RemovedFrom -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Rename -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Run -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Save -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.SaveAs -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Select -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Set -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Show -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.SignIn -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.SignOut -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Sort -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Start -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Startup -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Switch -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.TimeElapsed -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Undismiss -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Undock -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Ungroup -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Unpin -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Unresolved -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.UpdateGraphAsyncTask -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.View -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.ViewDocumentation -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.ViewStartup -> Dynamo.Logging.Actions
+Dynamo.Logging.Actions.Write -> Dynamo.Logging.Actions
 Dynamo.Logging.Analytics
 static Dynamo.Logging.Analytics.DisableAnalytics.get -> bool
 static Dynamo.Logging.Analytics.ReportingAnalytics.get -> bool
 Dynamo.Logging.Categories
+Dynamo.Logging.Categories.ApplicationLifecycle -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.Command -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.ConnectorOperations -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.DynamoHomeOperations -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.DynamoMLDataPipelineOperations -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.Engine -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.ExtensionOperations -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.FileOperation -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.GroupOperations -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.GroupStyleOperations -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.GuidedTourOperations -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.InCanvasSearchOperations -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.NodeAutoCompleteOperations -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.NodeContextMenuOperations -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.NodeOperations -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.NoteOperations -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.PackageManager -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.PackageManagerOperations -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.Performance -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.Preferences -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.PythonOperations -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.SearchUX -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.SplashScreenOperations -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.Stability -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.Upgrade -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.ViewExtensionOperations -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.WorkspaceReferences -> Dynamo.Logging.Categories
+Dynamo.Logging.Categories.WorkspaceReferencesOperations -> Dynamo.Logging.Categories
 Dynamo.Logging.HeartBeatType
+Dynamo.Logging.HeartBeatType.Machine -> Dynamo.Logging.HeartBeatType
+Dynamo.Logging.HeartBeatType.User -> Dynamo.Logging.HeartBeatType
 Dynamo.Logging.IAnalyticsClient
 Dynamo.Logging.IAnalyticsClient.CreateCommandEvent(string name, string description, int? value) -> System.IDisposable
 Dynamo.Logging.IAnalyticsClient.CreateTaskCommandEvent(string name, string description, int? value, System.Collections.Generic.IDictionary<string, object> parameters = null) -> System.Threading.Tasks.Task<System.IDisposable>
@@ -204,6 +305,8 @@ Dynamo.PythonServices.EventHandlers.EvaluationStartedEventHandler
 Dynamo.PythonServices.EventHandlers.ScopeGetAction
 Dynamo.PythonServices.EventHandlers.ScopeSetAction
 Dynamo.PythonServices.EvaluationState
+Dynamo.PythonServices.EvaluationState.Failed -> Dynamo.PythonServices.EvaluationState
+Dynamo.PythonServices.EvaluationState.Success -> Dynamo.PythonServices.EvaluationState
 Dynamo.PythonServices.PythonEngine
 Dynamo.PythonServices.PythonEngine.Evaluate(string code, System.Collections.IList bindingNames, System.Collections.IList bindingValues) -> object
 Dynamo.PythonServices.PythonEngine.EvaluationFinished -> Dynamo.PythonServices.EventHandlers.EvaluationFinishedEventHandler
