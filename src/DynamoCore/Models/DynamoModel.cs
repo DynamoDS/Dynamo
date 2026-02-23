@@ -1988,13 +1988,12 @@ namespace Dynamo.Models
             if (CurrentWorkspace == null)
                 return false;
 
-            if (string.IsNullOrEmpty(CurrentWorkspace.FileName))
-                return false;
-
             var introducedInVersion = args?.IntroducedInVersion;
             if (introducedInVersion == null)
                 return true;
 
+            if (string.IsNullOrEmpty(CurrentWorkspace.FileName))
+                return false;
             var workspaceVersion = EngineController.CurrentWorkspaceVersion;
             if (workspaceVersion == null)
                 return true;
