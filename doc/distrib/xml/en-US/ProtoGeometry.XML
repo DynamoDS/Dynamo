@@ -5858,6 +5858,7 @@
             Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
             PolyCurve direction is based on the first curve in the input array.
             Choose a preferred join tolerance between 1e-6 and 1e-3 units.
+            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.
             </summary>
             <param name="curves"> Curves to join into a polycurve </param>
             <param name="joinTolerance"> Tolerance to determine size of gap allowed between curves to be joined </param>
@@ -5871,6 +5872,7 @@
             Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
             PolyCurve direction is based on the first curve in the input array.
             Choose a preferred join tolerance between 1e-6 and 1e-3 units.
+            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.
             </summary>
             <param name="curves"> Curves to join into a polycurve </param>
             <param name="joinTolerance"> Tolerance to determine size of gap allowed between curves to be joined </param>
@@ -5884,6 +5886,7 @@
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
             <summary>
             Make one or more polycurves by grouping connected curves. Choose a preferred join tolerance between 1e-6 and 1e-3 units.
+            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.
             </summary>
             <param name="curves"> Curves to group together to create one or more PolyCurves </param>
             <param name="joinTolerance"> Tolerance to determine size of gap allowed between curves to be joined </param>
@@ -5892,6 +5895,7 @@
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
             <summary>
             Make one or more polycurves by grouping connected curves. Choose a preferred join tolerance between 1e-6 and 1e-3 units.
+            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.
             </summary>
             <param name="curves"> Curves to group together to create one or more PolyCurves </param>
             <param name="joinTolerance"> Tolerance to determine size of gap allowed between curves to be joined </param>
