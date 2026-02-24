@@ -97,6 +97,7 @@ Load the relevant reference when working on that content type.
 - Include all code examples and technical details
 - Mark areas needing fact-checking with [TODO]
 - Don't worry about perfect flow yet
+- Never hallucinate or make up facts that you are not sure about. Always ask when there isn’t enough information to write something.
 
 ### 3. Technical Review
 - Verify all technical claims and code examples
