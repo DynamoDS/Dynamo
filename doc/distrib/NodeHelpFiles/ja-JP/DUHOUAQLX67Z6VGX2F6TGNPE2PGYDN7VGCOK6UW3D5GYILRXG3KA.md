@@ -1,7 +1,7 @@
 <!--- Autodesk.DesignScript.Geometry.Curve.SweepAsSurface(curve, path, cutEndOff) --->
 <!--- DUHOUAQLX67Z6VGX2F6TGNPE2PGYDN7VGCOK6UW3D5GYILRXG3KA --->
 ## 詳細
-`Curve.SweepAsSurface` will create a surface by sweeping an input curve along a specfied path. In the example below, we create a curve to sweep by using a Code Block to create three points of an `Arc.ByThreePoints` node. A path curve is created as a simple line along the x-axis. `Curve.SweepAsSurface` moves the profile curve along the path curve creating a surface. The `cutEndOff` parameter is a boolean that controls the end treatment of the swept surface. When set to `true`, the ends of the surface are cut perpendicular (normal) to the path curve, producing clean, flat terminations. When set to `false` (the default), the surface ends follow the natural shape of the profile curve without any trimming, which may result in angled or uneven ends depending on the path curvature.
+`Curve.SweepAsSurface` は、入力された曲線を指定されたパスに沿ってスイープしてサーフェスを作成します。次の例では、Code Block を使用して `Arc.ByThreePoints` ノードの 3 点を作成することで、スイープする曲線を作成します。パス曲線は、X 軸に沿った単純な線分として作成されます。`Curve.SweepAsSurface` は、プロファイル曲線をパス曲線に沿って移動して、サーフェスを作成します。`cutEndOff` パラメータは、スイープ サーフェスの末端処理をコントロールするブール値です。`true` に設定すると、サーフェスの終端がパス曲線に対して垂直(法線)にカットされ、平坦で整った終端になります。`false`(既定)に設定すると、サーフェスの終端は、トリミングを行わずにプロファイル曲線の自然な形状に従います。このため、パスの曲率によっては、終端に角度がついたり、不均一になることがあります。
 ___
 ## サンプル ファイル
 

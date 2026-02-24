@@ -997,7 +997,7 @@ namespace Dynamo.Controls
         // This event is triggered when the tabitems list is changed and will show/hide the right side bar accordingly.
         private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            this.HideOrShowRightSideBar();
+            this.HideOrShowRightSideBar(e.Action);
         }
 
         private TabItem FindExtensionTab(IViewExtension viewExtension)
@@ -2902,18 +2902,14 @@ namespace Dynamo.Controls
         {
             get
             {
-                // Special case: when the extension bar was never resized its size will be 2.
-                // While 2 is a valid size for the extension bar, 5 is not one for the canvas,
-                // so that's a safer check to be made.
                 if (CanvasColumn.Width.Value == 5)
                 {
                     extensionsCollapsed = RightExtensionsViewColumn.Width.Value == 0;
                 }
                 else
                 {
-                    extensionsCollapsed = RightExtensionsViewColumn.Width.Value < RightSideBarCollapseThreshold;
+                    extensionsCollapsed = RightExtensionsViewColumn.ActualWidth < RightSideBarCollapseThreshold;
                 }
-
                 return extensionsCollapsed;
             }
         }
@@ -2945,7 +2941,7 @@ namespace Dynamo.Controls
         }
 
         // Show the extensions right side bar when there is atleast one extension
-        private void HideOrShowRightSideBar()
+        private void HideOrShowRightSideBar(NotifyCollectionChangedAction action = NotifyCollectionChangedAction.Reset)
         {
             if (dynamoViewModel.SideBarTabItems.Count == 0)
             {
@@ -2959,19 +2955,14 @@ namespace Dynamo.Controls
             }
             else
             {
-                // The introduction of extensionsColumnWidth is two-fold:
-                // 1. It allows the resized width to be remembered which is nice to have.
-                // 2. It allows to avoid a slider glitch which sets the panels size in pixel amount but using star,
-                // changing the proportions so that the initial value is counted as pixels after the first resize.
-                if (extensionsColumnWidth == null || extensionsColumnWidth.Value.Value < RightSideBarCollapseThreshold)
+                if (action.Equals(NotifyCollectionChangedAction.Add))
                 {
-                    RightExtensionsViewColumn.Width = new GridLength(DefaultExtensionBarWidthMultiplier, GridUnitType.Star);
+                    if (ExtensionsCollapsed)
+                    {
+                        ExpandRightExtensionView(true);
+                    }
+                    collapsedExtensionSidebar.Visibility = Visibility.Visible;
                 }
-                else
-                {
-                    RightExtensionsViewColumn.Width = extensionsColumnWidth.Value;
-                }
-                collapsedExtensionSidebar.Visibility = Visibility.Visible;
             }
         }
 
@@ -3002,15 +2993,7 @@ namespace Dynamo.Controls
         {
             if (ExtensionsCollapsed)
             {
-                if (extensionsColumnWidth == null)
-                    RightExtensionsViewColumn.Width = new GridLength(DefaultExtensionBarWidthMultiplier, GridUnitType.Star);
-                else if (extensionsColumnWidth.Value.Value <= RightSideBarCollapseThreshold &&
-                    !extensionsColumnWidth.Value.Equals(new GridLength(DefaultExtensionBarWidthMultiplier, GridUnitType.Star)))
-                {
-                    RightExtensionsViewColumn.Width = new GridLength(defaultRightSideBarWidth, GridUnitType.Star);
-                }
-                else
-                    RightExtensionsViewColumn.Width = extensionsColumnWidth.Value;
+                ExpandRightExtensionView();
             }
             else
             {
@@ -3019,6 +3002,33 @@ namespace Dynamo.Controls
             }
             // TODO: Maynot need this depending on tab design
             UpdateLibraryCollapseIcon();
+        }
+        /// <summary>
+        /// To set the widht of the Right Extension side bar to the default value or to the last value before it was collapsed based on the current width of the extension bar.
+        /// The forceDefaultWidth parameter is used when the extension bar is being collapsed/resized beyond the threshold, in that case we want to reset the width of the extension bar to the default value instead of the last value before it was collapsed.
+        /// </summary>
+        /// <param name="forceDefaultWidth">true - to set the width to the default width value</param>
+        private void ExpandRightExtensionView(bool forceDefaultWidth = false)
+        {
+            if (extensionsColumnWidth == null)
+            {
+                RightExtensionsViewColumn.Width = new GridLength(DefaultExtensionBarWidthMultiplier, GridUnitType.Star);
+            }
+            else if (!extensionsColumnWidth.Value.Value.Equals(DefaultExtensionBarWidthMultiplier))
+            {
+                if (extensionsColumnWidth.Value.Value <= RightSideBarCollapseThreshold || forceDefaultWidth)
+                {
+                    RightExtensionsViewColumn.Width = new GridLength(defaultRightSideBarWidth, GridUnitType.Star);
+                }
+                else
+                {
+                    RightExtensionsViewColumn.Width = new GridLength(extensionsColumnWidth.Value.Value, GridUnitType.Star);
+                }
+            }
+            else
+            {
+                RightExtensionsViewColumn.Width = new GridLength(extensionsColumnWidth.Value.Value, GridUnitType.Star);
+            }
         }
 
         private void LibraryHandle_MouseLeave(object sender, MouseEventArgs e)
@@ -3259,9 +3269,13 @@ namespace Dynamo.Controls
 
         private void RightExtensionSidebar_DragCompleted(object sender, DragCompletedEventArgs e)
         {
-            //Setting the width of right extension after resize to only if extension bar widht is greater than threshold value.
-            if (RightExtensionsViewColumn.ActualWidth > defaultRightSideBarWidth)
-            extensionsColumnWidth = RightExtensionsViewColumn.Width;
+            //This line will make the width of the right extension bar to be proportional.
+            RightExtensionsViewColumn.Width = new GridLength(RightExtensionsViewColumn.ActualWidth, GridUnitType.Star);
+            //Setting the width of right extension after resize to only if extension bar width is greater than threshold value.
+            if (RightExtensionsViewColumn.ActualWidth > RightSideBarCollapseThreshold)
+            {
+                extensionsColumnWidth = RightExtensionsViewColumn.Width;
+            }
         }
 
         private void PackagesMenuGuide_Click(object sender, RoutedEventArgs e)

@@ -1351,7 +1351,7 @@ Poniższe zespoły zostały wczytane wiele razy:
     <value>Zainstalowany</value>
   </data>
   <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
-    <value> (installed)</value>
+    <value> (zainstalowano)</value>
   </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>Instalowanie</value>
@@ -3384,6 +3384,15 @@ W niektórych sytuacjach ze złożonymi wykresami lub programami nadrzędnymi tr
   <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
     <value>Wystąpiły problemy podczas importowania pliku ustawień niestandardowych. Spróbuj ponownie lub kontynuuj z ustawieniami domyślnymi.</value>
   </data>
+  <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
+    <value>Settings imported. Please restart Dynamo.</value>
+  </data>
+  <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
+    <value>Reset imported settings</value>
+  </data>
+  <data name="SplashScreenSettingsResetSuccess" xml:space="preserve">
+    <value>Imported settings have been reset.</value>
+  </data>
   <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
     <value>Uruchamianie widoku dodatku Dynamo...</value>
   </data>
@@ -3898,7 +3907,7 @@ Aby otworzyć ten wykres w dodatku Dynamo w wersji od 3.3 do 3.6.x, zainstaluj p
     <value>Przeglądarka dokumentacji</value>
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
-    <value>Auto‑sync with node selection.</value>
+    <value>Synchronizuje automatycznie z wyborem węzła.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
