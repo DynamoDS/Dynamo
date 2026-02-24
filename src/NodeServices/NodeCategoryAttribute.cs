@@ -5,7 +5,7 @@ namespace Dynamo.Graph.Nodes
     /// <summary>
     ///     The NodeCategoryAttribute attribute allows the node implementer
     ///     to define in which category node will appear.
-    ///     Type-forwarded from DynamoCore so libraries that reference only DynamoServices
+    ///     Moved from DynamoCore to DynamoServices so libraries that reference only DynamoServices
     ///     (e.g. LibG) can use it to control Create/Actions/Query grouping for Zero Touch nodes.
     /// </summary>
     [AttributeUsage(AttributeTargets.All)]
