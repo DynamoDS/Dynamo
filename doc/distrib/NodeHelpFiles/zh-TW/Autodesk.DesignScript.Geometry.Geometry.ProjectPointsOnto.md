@@ -1,5 +1,5 @@
 ## 深入資訊
-ProjectPointsOnto will project the point(s) along a given vector direction onto a specified geometry. The projection is only attempted in the positve direction of the vector. If the vector does not intersect the given geometry, it will return null. In the example below, we create a point using a code block to specify the x,y, and z coordinates. We use a sphere as the geometry to project onto, and the world XAxis as the projection Direction. The output is a point on the surface of the sphere that is projected from the original point.
+ProjectPointsOnto 會沿給定的向量方向將點投影到指定的幾何圖形上。只會在向量的正方向嘗試投影。如果向量與給定的幾何圖形不相交，則會傳回空值。在以下範例中，我們使用 Code Block 指定 x、y、z 座標。我們使用圓球作為要投影到上面的幾何圖形，使用世界 XAxis 作為投影方向。輸出是從原始點投影到圓球表面上的點。
 ___
 ## 範例檔案
 

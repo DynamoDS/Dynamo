@@ -44,9 +44,6 @@
         <member name="T:Autodesk.DesignScript.Geometry.Core.EntityTags">
             <summary>Etykiety umożliwiają dodawanie dowolnych metadanych do DesignScriptEntity.  Jest to istotne w przypadku integragracji geometrii programu Revit.</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Core.EntityTags.#ctor(System.Collections.Generic.Dictionary{System.String,System.Object},Autodesk.DesignScript.Geometry.DesignScriptEntity)">
-            <notranslation>true</notranslation>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Core.EntityTags.Parent">
             <notranslation>true</notranslation>
         </member>
@@ -923,12 +920,24 @@
             <summary>Określa, czy NurbsCurve jest wymierna, czy nie. Parametr ten określa, czy któraś z szerokości nie wynosi 1,0.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ControlPoints">
-            <summary>Pobierz punkty sterujące NurbsCurve. Są to punkty interpolowane przez krzywą.</summary>
+            <summary>Get the control points of the NurbsCurve.</summary>
+            <returns>Szyk punktów</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
+            <summary>The truly periodic control points of the NurbsCurve if periodic.
+            Note that this cannot be used together with PeriodicKnots() to reconstruct the original periodic NurbsCurve.
+            Throws (or is undefined) when the curve is not periodic.</summary>
             <returns>Szyk punktów</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
             <summary>Węzły krzywej. Węzły to seria wartości parametrów (typu double) służących do określenia, gdzie i jak punkty sterujące wpływają na krzywą.</summary>
             <returns>Węzły krzywej nurbs</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots">
+            <summary>The unclamped knots of the Curve if Periodic. Knots is a series of parameter values (doubles) used to determine where and how the control points affect the curve.
+            Note that this cannot be used together with PeriodicControlPoints() to reconstruct the original periodic NurbsCurve.
+            Throws (or is undefined) when the curve is not periodic.</summary>
+            <returns>The periodic knot vector of the nurbs curve</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Weights">
             <summary>Zwraca wagi punktów sterujących NurbsCurve. Wagi określają wpływ każdego z punktów sterujących na kształt krzywej.</summary>
@@ -3716,6 +3725,15 @@
             sweep1,curve2surf
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSurface(Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
+            <summary>Przeciąga tę krzywą wzdłuż krzywej definiującej, tworząc powierzchnię</summary>
+            <param name="path"/>
+            <param name="cutEndOff">Wytnij koniec przyciągnięcia i ustaw go prostopadle do ścieżki</param>
+            <returns>A Surface resulting from sweeping the curve along the path</returns>
+            <search>
+            sweep1,curve2surf
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve)">
             <summary>Przeciąga tę krzywą zamkniętą wzdłuż krzywej definiującej, tworząc bryłę</summary>
             <param name="path"/>
@@ -3748,7 +3766,7 @@
         <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.disposedWrongThread">
             <summary>Opcja ta służy wyłącznie do testowania.</summary>
         </member>
-        <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.Tags">
+        <member name="P:Autodesk.DesignScript.Geometry.DesignScriptEntity.Tags">
             <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.Dispose">
@@ -3871,6 +3889,14 @@
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.IntersectAll(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
             <summary>Pobierz przecięcie geometrii dla tego obiektu i kolekcji innych geometrii. Znajduje wspólną geometrię dla wszystkich elementów uczestniczących.</summary>
             <search>get overlap,multi intersect,intersect many</search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ProjectPointsOnto(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Projects a collection of Points onto this Geometry along the specified direction.
+            Returns a flat array of resulting Geometry.</summary>
+            <param name="points">Points to project</param>
+            <param name="projectionDirection">Kierunek rzutowania</param>
+            <returns>Flat array of resulting Geometry</returns>
+            <search>project points,batch project</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Split(Autodesk.DesignScript.Geometry.Geometry)">
             <summary>Podziel tę geometrię, używając innej geometrii jako "narzędzia" do cięcia</summary>
@@ -4468,9 +4494,10 @@
             <summary>Pobierz reprezentację ciągu znaków PolyCurve</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Utwórz PolyCurve przez połączenie krzywych. Odwraca krzywą, aby utworzyć połączenie.
-            Kierunek PolyCurve zależy od pierwszej krzywej w tablicy wejściowej.
-            Wybierz preferowaną tolerancję połączenia z zakresu od 1e-6 do 1e-3 jednostek.</summary>
+            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
+            PolyCurve direction is based on the first curve in the input array.
+            Choose a preferred join tolerance between 1e-6 and 1e-3 units.
+            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
             <param name="curves">Krzywe do połączenia w PolyCurve</param>
             <param name="joinTolerance">Tolerancja do określenia rozmiaru odstępu dozwolonego między krzywymi do połączenia</param>
             <returns>PolyCurve utworzona przez połączone krzywe</returns>
@@ -4479,9 +4506,10 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Utwórz PolyCurve przez połączenie krzywych. Odwraca krzywą, aby utworzyć połączenie.
-            Kierunek PolyCurve zależy od pierwszej krzywej w tablicy wejściowej.
-            Wybierz preferowaną tolerancję połączenia z zakresu od 1e-6 do 1e-3 jednostek.</summary>
+            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
+            PolyCurve direction is based on the first curve in the input array.
+            Choose a preferred join tolerance between 1e-6 and 1e-3 units.
+            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
             <param name="curves">Krzywe do połączenia w PolyCurve</param>
             <param name="joinTolerance">Tolerancja do określenia rozmiaru odstępu dozwolonego między krzywymi do połączenia</param>
             <param name="trimCurves">Ustaw wartość „True” (Prawda), jeśli krzywe wejściowe przecinają się/nakładają się na siebie i ich segmenty końcowe muszą zostać ucięte przed utworzeniem krzywej PolyCurve. Domyślnie jest ustawiona wartość „False” (Fałsz).</param>
@@ -4492,13 +4520,15 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Utwórz jedną lub więcej krzywych PolyCurve przez zgrupowanie połączonych krzywych. Wybierz preferowaną tolerancję łączenia między 1e-6 a 1e-3 jednostek.</summary>
+            <summary>Make one or more polycurves by grouping connected curves. Choose a preferred join tolerance between 1e-6 and 1e-3 units.
+            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
             <param name="curves">Krzywe do zgrupowania w celu utworzenia jednej lub wielu krzywych PolyCurve</param>
             <param name="joinTolerance">Tolerancja do określenia rozmiaru odstępu dozwolonego między krzywymi do połączenia</param>
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Utwórz jedną lub więcej krzywych PolyCurve przez zgrupowanie połączonych krzywych. Wybierz preferowaną tolerancję łączenia między 1e-6 a 1e-3 jednostek.</summary>
+            <summary>Make one or more polycurves by grouping connected curves. Choose a preferred join tolerance between 1e-6 and 1e-3 units.
+            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
             <param name="curves">Krzywe do zgrupowania w celu utworzenia jednej lub wielu krzywych PolyCurve</param>
             <param name="joinTolerance">Tolerancja do określenia rozmiaru odstępu dozwolonego między krzywymi do połączenia</param>
             <param name="trimCurves">Ustaw wartość „True” (Prawda), jeśli krzywe wejściowe przecinają się/nakładają się na siebie i ich segmenty końcowe muszą zostać ucięte przed utworzeniem krzywej PolyCurve. Domyślnie jest ustawiona wartość „False” (Fałsz).</param>
@@ -5220,6 +5250,9 @@
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_sweepassolidsingle_deprecated">
             <summary>Wyszukuje zlokalizowany ciąg podobny do: Ta metoda została wycofana i zostanie usunięta w przyszłej wersji dodatku Dynamo. Zamiast niej użyj SweepAsSolid(ICurveEntity path, bool cutEndOff).</summary>
         </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_sweepassurface_deprecated">
+            <summary>Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Curve.SweepAsSurface(profile, path, cutEndOff) instead.</summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_trimsegmentsbyparam_deprecated">
             <summary>Wyszukuje zlokalizowany ciąg podobny do: Ta metoda została wycofana i zostanie usunięta w przyszłej wersji dodatku Dynamo. Zamiast niej użyj Curve.TrimSegmentsByParameter(double[] parameters, bool discardEvenSegments).</summary>
         </member>
@@ -5339,6 +5372,9 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ParameterizedCollectionException">
             <summary>Wyszukuje zlokalizowany ciąg podobny do Podane dane: \"{0}\" nie są szykiem par wartości nazwy.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.point_project_deprecated">
+            <summary>Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Geometry.ProjectPointsOnto(Point[] points, Vector projectionDirection) instead..</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.PointsCoincident">
             <summary>Wyszukuje zlokalizowany ciąg podobny do {0} pokrywają się.</summary>

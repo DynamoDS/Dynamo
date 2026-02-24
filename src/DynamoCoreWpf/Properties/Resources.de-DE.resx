@@ -1351,7 +1351,7 @@ Die nächsten Assemblys wurden mehrmals geladen:
     <value>Installiert</value>
   </data>
   <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
-    <value> (installed)</value>
+    <value> (installiert)</value>
   </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>Installation</value>
@@ -3382,6 +3382,15 @@ In bestimmten komplexen Diagrammen oder Host-Programmszenarien kann der automati
   <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
     <value>Beim Importieren der benutzerdefinierten Einstellungsdatei ist ein Fehler aufgetreten. Versuchen Sie es erneut, oder fahren Sie mit den Vorgabeeinstellungen fort.</value>
   </data>
+  <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
+    <value>Settings imported. Please restart Dynamo.</value>
+  </data>
+  <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
+    <value>Reset imported settings</value>
+  </data>
+  <data name="SplashScreenSettingsResetSuccess" xml:space="preserve">
+    <value>Imported settings have been reset.</value>
+  </data>
   <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
     <value>Dynamo-Ansicht wird gestartet...</value>
   </data>
@@ -3896,7 +3905,7 @@ Installieren Sie das PythonNet-Paket aus dem Package Manager, um dieses Diagramm
     <value>Dokumentationsbrowser</value>
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
-    <value>Auto‑sync with node selection.</value>
+    <value>Automatisch mit Blockauswahl synchronisieren.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

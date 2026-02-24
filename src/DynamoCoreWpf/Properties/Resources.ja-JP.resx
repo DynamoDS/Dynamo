@@ -1351,7 +1351,7 @@
     <value>インストール済み</value>
   </data>
   <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
-    <value> (installed)</value>
+    <value> (インストール済み)</value>
   </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>インストール中</value>
@@ -3384,6 +3384,15 @@ Dynamo を再起動してアンインストールを完了します。
   <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
     <value>カスタム設定ファイルの読み込み時に問題が発生しました。もう一度試すか、既定の設定で続行してください。</value>
   </data>
+  <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
+    <value>Settings imported. Please restart Dynamo.</value>
+  </data>
+  <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
+    <value>Reset imported settings</value>
+  </data>
+  <data name="SplashScreenSettingsResetSuccess" xml:space="preserve">
+    <value>Imported settings have been reset.</value>
+  </data>
   <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
     <value>Dynamo ビューを起動しています...</value>
   </data>
@@ -3898,7 +3907,7 @@ Dynamo を再起動してアンインストールを完了します。
     <value>ドキュメント ブラウザ</value>
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
-    <value>Auto‑sync with node selection.</value>
+    <value>ノード選択による自動同期。</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
