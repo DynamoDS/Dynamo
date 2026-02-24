@@ -30,7 +30,7 @@ namespace Dynamo.UI.Views
     public partial class HomePage : UserControl, IDisposable
     {
         private static readonly string htmlEmbeddedFile = "Dynamo.Wpf.Packages.DynamoHome.build.index.html";
-        private static readonly string jsEmbeddedFile = "Dynamo.Wpf.Packages.DynamoHome.build.index.bundle.js";
+        private static readonly string jsEmbeddedFile = "Dynamo.Wpf.Packages.DynamoHome.index.bundle.js";
         private static readonly string fontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";
         private static readonly string virtualFolderName = "embeddedFonts";
         private static readonly string fontUrl = $"http://{virtualFolderName}/ArtifaktElement-Regular.woff";
@@ -57,6 +57,7 @@ namespace Dynamo.UI.Views
         internal Action RequestShowSampleDatasetsInFolder;
         internal Action RequestShowBackupFilesInFolder;
         internal Action RequestShowTemplate;
+        internal Action<string> RequestNewWorkspaceWithTemplate;
         internal Action<string> RequestSaveSettings;
 
         internal List<GuidedTourItem> GuidedTourItems;
@@ -91,6 +92,7 @@ namespace Dynamo.UI.Views
             RequestShowSampleDatasetsInFolder = ShowSampleDatasetsInFolder;
             RequestShowBackupFilesInFolder = ShowBackupFilesInFolder;
             RequestShowTemplate = OpenTemplate;
+            RequestNewWorkspaceWithTemplate = NewWorkspaceWithTemplate;
             RequestApplicationLoaded = ApplicationLoaded;
             RequestSaveSettings = SaveSettings;
 
@@ -211,6 +213,7 @@ namespace Dynamo.UI.Views
                                         RequestShowSampleDatasetsInFolder,
                                         RequestShowBackupFilesInFolder,
                                         RequestShowTemplate,
+                                        RequestNewWorkspaceWithTemplate,
                                         RequestSaveSettings));
             }
             catch (ObjectDisposedException ex)
@@ -627,6 +630,35 @@ namespace Dynamo.UI.Views
             Logging.Analytics.TrackEvent(Logging.Actions.New, Logging.Categories.DynamoHomeOperations, "Workspace");
         }
 
+        internal void NewWorkspaceWithTemplate(string path)
+        {
+            if (String.IsNullOrEmpty(path)) return;
+            if (DynamoModel.IsTestMode)
+            {
+                TestHook?.Invoke(path);
+                return;
+            }
+
+            // create a new workspace
+            if (this.startPage.DynamoViewModel.NewHomeWorkspaceCommand.CanExecute(null))
+            {
+                this.startPage.DynamoViewModel.NewHomeWorkspaceCommand.Execute(null);
+            }
+
+            // insert the template file into the new workspace (same as File > Insert)
+            // Use InsertFileCommand instead of OpenCommand to insert into current workspace
+            this.startPage.DynamoViewModel.Model.ExecuteCommand(
+                new DynamoModel.InsertFileCommand(path, forceManualExecutionMode: false));
+            
+            // Fit view after insertion
+            if (this.startPage.DynamoViewModel.FitViewCommand.CanExecute(null))
+            {
+                this.startPage.DynamoViewModel.FitViewCommand.Execute(null);
+            }
+            
+            Logging.Analytics.TrackEvent(Logging.Actions.New, Logging.Categories.DynamoHomeOperations, "Workspace with Template");
+        }
+
         internal void OpenWorkspace()
         {
             if (DynamoModel.IsTestMode)
@@ -794,6 +826,7 @@ namespace Dynamo.UI.Views
         readonly Action RequestShowSampleDatasetsInFolder;
         readonly Action RequestShowBackupFilesInFolder;
         readonly Action RequestShowTemplate;
+        readonly Action<string> RequestNewWorkspaceWithTemplate;
         readonly Action<string> RequestSaveSettings;
 
         public ScriptHomeObject(Action<string> requestOpenFile,
@@ -806,6 +839,7 @@ namespace Dynamo.UI.Views
             Action requestShowSampleDatasetsInFolder,
             Action requestShowBackupFilesInFolder,
             Action requestShowTemplate,
+            Action<string> requestNewWorkspaceWithTemplate,
             Action<string> requestSaveSettings)
         {
             RequestOpenFile = requestOpenFile;
@@ -818,6 +852,7 @@ namespace Dynamo.UI.Views
             RequestShowSampleDatasetsInFolder = requestShowSampleDatasetsInFolder;
             RequestShowBackupFilesInFolder = requestShowBackupFilesInFolder;
             RequestShowTemplate = requestShowTemplate;
+            RequestNewWorkspaceWithTemplate = requestNewWorkspaceWithTemplate;
             RequestSaveSettings = requestSaveSettings;
         }
         [DynamoJSInvokable]
@@ -864,6 +899,11 @@ namespace Dynamo.UI.Views
         public void ShowTempalte()
         {
             RequestShowTemplate();
+        }
+        [DynamoJSInvokable]
+        public void NewWorkspaceWithTemplate(string path)
+        {
+            RequestNewWorkspaceWithTemplate(path);
         }
         [DynamoJSInvokable]
         public void ApplicationLoaded()
