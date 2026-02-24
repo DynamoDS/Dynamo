@@ -1,5 +1,5 @@
 ## 상세
-ProjectPointsOnto will project the point(s) along a given vector direction onto a specified geometry. The projection is only attempted in the positve direction of the vector. If the vector does not intersect the given geometry, it will return null. In the example below, we create a point using a code block to specify the x,y, and z coordinates. We use a sphere as the geometry to project onto, and the world XAxis as the projection Direction. The output is a point on the surface of the sphere that is projected from the original point.
+ProjectPointsOnto는 지정된 벡터 방향을 따라 지정된 형상에 점을 투영합니다. 투영은 벡터의 양수 방향으로만 시도됩니다. 벡터가 지정된 형상과 교차하지 않으면 null을 반환합니다. 아래 예제에서는 x, y 및 z 좌표를 지정하기 위해 코드 블록을 사용하여 점을 작성합니다. 투영 대상 형상으로 구를 사용하고 표준 X 축을 투영 방향으로 사용합니다. 출력은 원래 점에서 투영된 구의 표면에 있는 점입니다.
 ___
 ## 예제 파일
 

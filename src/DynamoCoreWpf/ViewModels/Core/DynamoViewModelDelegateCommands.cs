@@ -101,6 +101,8 @@ namespace Dynamo.ViewModels
             OpenDocumentationLinkCommand = new DelegateCommand(OpenDocumentationLink);
             ShowNodeDocumentationCommand = new DelegateCommand(ShowNodeDocumentation, CanShowNodeDocumentation);
             UnpinAllPreviewBubblesCommand = new DelegateCommand(UnpinAllPreviewBubbles, CanUnpinAllPreviewBubbles);
+            GoToLeftMostNodeCommand = new DelegateCommand(GoToLeftMostNode, CanGoToLeftMostNode);
+            GoToRightMostNodeCommand = new DelegateCommand(GoToRightMostNode, CanGoToRightMostNode);
         }
         public DelegateCommand OpenFromJsonIfSavedCommand { get; set; }
         public DelegateCommand OpenFromJsonCommand { get; set; }
@@ -191,5 +193,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand ShowNodeDocumentationCommand { get; set; }
         public DelegateCommand UnpinAllPreviewBubblesCommand { get; set; }
         public DelegateCommand ShowGraphPropertiesCommand { get; set; }
+        public DelegateCommand GoToLeftMostNodeCommand { get; set; }
+        public DelegateCommand GoToRightMostNodeCommand { get; set; }
     }
 }

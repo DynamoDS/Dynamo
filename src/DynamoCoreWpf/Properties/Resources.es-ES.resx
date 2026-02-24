@@ -1351,7 +1351,7 @@ Los siguientes montajes se han cargado varias veces:
     <value>Instalado</value>
   </data>
   <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
-    <value> (installed)</value>
+    <value> (instalado)</value>
   </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>Instalando</value>
@@ -3384,6 +3384,15 @@ En determinados gráficos complejos o al usar programas anfitriones, el modo Aut
   <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
     <value>Se ha producido un error al importar el archivo de configuración personalizada. Inténtelo de nuevo o continúe con la configuración por defecto.</value>
   </data>
+  <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
+    <value>Settings imported. Please restart Dynamo.</value>
+  </data>
+  <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
+    <value>Reset imported settings</value>
+  </data>
+  <data name="SplashScreenSettingsResetSuccess" xml:space="preserve">
+    <value>Imported settings have been reset.</value>
+  </data>
   <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
     <value>Iniciando vista de Dynamo...</value>
   </data>
@@ -3898,7 +3907,7 @@ Para abrir este gráfico en Dynamo 3.3–3.6.x, instale el paquete PythonNet des
     <value>Navegador de documentación</value>
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
-    <value>Auto‑sync with node selection.</value>
+    <value>Sincronización automática con selección de nodos.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

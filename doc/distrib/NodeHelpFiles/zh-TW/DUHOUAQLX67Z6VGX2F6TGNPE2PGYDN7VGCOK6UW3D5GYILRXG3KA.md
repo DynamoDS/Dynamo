@@ -1,7 +1,7 @@
 <!--- Autodesk.DesignScript.Geometry.Curve.SweepAsSurface(curve, path, cutEndOff) --->
 <!--- DUHOUAQLX67Z6VGX2F6TGNPE2PGYDN7VGCOK6UW3D5GYILRXG3KA --->
 ## 深入資訊
-`Curve.SweepAsSurface` will create a surface by sweeping an input curve along a specfied path. In the example below, we create a curve to sweep by using a Code Block to create three points of an `Arc.ByThreePoints` node. A path curve is created as a simple line along the x-axis. `Curve.SweepAsSurface` moves the profile curve along the path curve creating a surface. The `cutEndOff` parameter is a boolean that controls the end treatment of the swept surface. When set to `true`, the ends of the surface are cut perpendicular (normal) to the path curve, producing clean, flat terminations. When set to `false` (the default), the surface ends follow the natural shape of the profile curve without any trimming, which may result in angled or uneven ends depending on the path curvature.
+`Curve.SweepAsSurface` 會透過沿著指定路徑掃掠輸入曲線來建立曲面。在以下範例中，我們使用 Code Block 建立 `Arc.ByThreePoints` 節點的三點，建立要掃掠的曲線。建立的路徑曲線是沿著 x 軸的簡單直線。`Curve.SweepAsSurface` 會沿著建立曲面的路徑曲線移動輪廓曲線。`cutEndOff` 參數是布林值，用於控制掃掠曲面的端點處理方式。設定為 `true` 時，曲面端點會垂直 (法向) 於路徑曲線切割，產生乾淨、平直的終止面。設定為 `false` (預設) 時，曲面端點會跟著輪廓曲線的自然形狀而不做任何修剪，這可能會導致端點呈現斜角或不平整的情形 (取決於路徑曲率)。
 ___
 ## 範例檔案
 
