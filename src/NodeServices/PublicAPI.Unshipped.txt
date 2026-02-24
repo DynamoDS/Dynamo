@@ -91,6 +91,10 @@ Autodesk.DesignScript.Interfaces.ITransformable.SetTransform(double[] matrix) ->
 Autodesk.DesignScript.Interfaces.ITransformable.Transform.get -> double[]
 Autodesk.DesignScript.Interfaces.LegacyRenderPackageMethodException
 Autodesk.DesignScript.Interfaces.LegacyRenderPackageMethodException.LegacyRenderPackageMethodException() -> void
+Autodesk.DesignScript.Interfaces.ExtensionStartupParams
+Autodesk.DesignScript.Interfaces.ExtensionStartupParams.ExtensionStartupParams() -> void
+Autodesk.DesignScript.Interfaces.ExtensionStartupParams.DisableADP.get -> bool
+Autodesk.DesignScript.Interfaces.ExtensionStartupParams.DisableADP.set -> void
 Autodesk.DesignScript.Interfaces.TessellationParameters
 Autodesk.DesignScript.Interfaces.TessellationParameters.MaxTessellationDivisions.get -> int
 Autodesk.DesignScript.Interfaces.TessellationParameters.MaxTessellationDivisions.set -> void
@@ -134,6 +138,7 @@ Autodesk.DesignScript.Runtime.IsObsoleteAttribute.IsObsoleteAttribute(string des
 Autodesk.DesignScript.Runtime.IsObsoleteAttribute.IsObsoleteAttribute(string descriptionResourceID, System.Type resourceType) -> void
 Autodesk.DesignScript.Runtime.IsObsoleteAttribute.IsObsoleteAttribute(string message) -> void
 Autodesk.DesignScript.Runtime.IsObsoleteAttribute.Message.get -> string
+Autodesk.DesignScript.Runtime.IsObsoleteAttribute.Message.set -> void
 Autodesk.DesignScript.Runtime.IsVisibleInDynamoLibraryAttribute
 Autodesk.DesignScript.Runtime.IsVisibleInDynamoLibraryAttribute.IsVisibleInDynamoLibraryAttribute(bool visible) -> void
 Autodesk.DesignScript.Runtime.IsVisibleInDynamoLibraryAttribute.Visible.get -> bool
@@ -328,6 +333,7 @@ Dynamo.Session.IExecutionSession.GetParameterValue(string parameter) -> object
 Dynamo.Session.IExecutionSession.ResolveFilePath(ref string filepath) -> bool
 Dynamo.Session.NoNetworkModeHandler
 Dynamo.Session.NoNetworkModeHandler.NoNetworkModeHandler() -> void
+protected override Dynamo.Session.NoNetworkModeHandler.SendAsync(System.Net.Http.HttpRequestMessage request, System.Threading.CancellationToken cancellationToken) -> System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage>
 Dynamo.Session.ParameterKeys
 static readonly Dynamo.Session.ParameterKeys.GeometryFactory -> string
 static readonly Dynamo.Session.ParameterKeys.LastExecutionDuration -> string
@@ -361,12 +367,12 @@ DynamoServices.Validity
 static DynamoServices.Validity.Assert(bool cond) -> void
 static DynamoServices.Validity.Assert(bool cond, string message) -> void
 DynamoServices.Validity.Validity() -> void
-DynamoUnits.ExtensionStartupParams
 static Dynamo.Logging.Analytics.CreateCommandEvent(string name, string description = "", int? value = null) -> System.IDisposable
 static Dynamo.Logging.Analytics.CreateTaskCommandEvent(string name, string description = "", int? value = null, System.Collections.Generic.IDictionary<string, object> parameters = null) -> System.Threading.Tasks.Task<System.IDisposable>
 static Dynamo.Logging.Analytics.CreateTaskTimedEvent(Dynamo.Logging.Categories category, string variable, string description = "", int? value = null) -> System.Threading.Tasks.Task<System.IDisposable>
 static Dynamo.Logging.Analytics.CreateTimedEvent(Dynamo.Logging.Categories category, string variable, string description = "", int? value = null) -> System.IDisposable
 static Dynamo.Logging.Analytics.EndTaskCommandEvent(System.Threading.Tasks.Task<System.IDisposable> taskEvent) -> void
+static Dynamo.Logging.Analytics.TrackCommandEvent(string name, string description = "", int? value = null) -> System.IDisposable
 static Dynamo.Logging.Analytics.TrackActivityStatus(string activityType) -> void
 static Dynamo.Logging.Analytics.TrackEvent(Dynamo.Logging.Actions action, Dynamo.Logging.Categories category, string description = "", int? value = null) -> void
 static Dynamo.Logging.Analytics.TrackEvent(Dynamo.Logging.Actions action, string category, string description = "", int? value = null) -> void
