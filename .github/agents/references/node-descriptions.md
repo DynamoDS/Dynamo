@@ -5,6 +5,8 @@ Node descriptions briefly describe a node's function and output. In Dynamo, they
 - In the node tooltip
 - In the documentation browser
 
+When asked to create a node description, add the node description to the pull request description, marked as "Node description: [insert description here]". Do not create a separate Markdown file for node descriptions.
+
 Follow these guidelines to ensure consistency and help save time when writing or updating node descriptions.
 
 ## Overview
