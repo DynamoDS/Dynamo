@@ -44,9 +44,6 @@
         <member name="T:Autodesk.DesignScript.Geometry.Core.EntityTags">
             <summary>Os identificadores permitem adicionar metadados arbitrários para um DesignScriptEntity.  Isto é crítico para a integração da geometria do Revit.</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Core.EntityTags.#ctor(System.Collections.Generic.Dictionary{System.String,System.Object},Autodesk.DesignScript.Geometry.DesignScriptEntity)">
-            <notranslation>true</notranslation>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Core.EntityTags.Parent">
             <notranslation>true</notranslation>
         </member>
@@ -923,12 +920,24 @@
             <summary>Determina se NurbsCurve é ou não racional. Isso define se algum peso não corresponder a 1,0.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ControlPoints">
-            <summary>Obtém os pontos de controle da curva Nurbs.  Estes são os pontos nos quais a curva interpola.</summary>
+            <summary>Get the control points of the NurbsCurve.</summary>
+            <returns>Uma matriz de pontos</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
+            <summary>The truly periodic control points of the NurbsCurve if periodic.
+            Note that this cannot be used together with PeriodicKnots() to reconstruct the original periodic NurbsCurve.
+            Throws (or is undefined) when the curve is not periodic.</summary>
             <returns>Uma matriz de pontos</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
             <summary>Os nós da curva. Os nós são uma série de valores de parâmetros (duplos) usados para determinar onde e como os pontos de controle afetam a curva.</summary>
             <returns>Os nós da curva nurbs</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots">
+            <summary>The unclamped knots of the Curve if Periodic. Knots is a series of parameter values (doubles) used to determine where and how the control points affect the curve.
+            Note that this cannot be used together with PeriodicControlPoints() to reconstruct the original periodic NurbsCurve.
+            Throws (or is undefined) when the curve is not periodic.</summary>
+            <returns>The periodic knot vector of the nurbs curve</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Weights">
             <summary>Retorna os pesos dos pontos de controle da NurbsCurve. Os pesos determinam a influência de cada ponto de controle no formato da curva.</summary>
@@ -3697,6 +3706,15 @@
             sweep1,curve2surf
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSurface(Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
+            <summary>Efetua a extrusão por percurso da curva ao longo da curva do caminho, criando uma superfície</summary>
+            <param name="path"/>
+            <param name="cutEndOff">Cortar o final da varredura e torná-la normal ao caminho</param>
+            <returns>A Surface resulting from sweeping the curve along the path</returns>
+            <search>
+            sweep1,curve2surf
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve)">
             <summary>Efetua a extrusão por percurso da curva ao longo da curva do caminho, criando um sólido</summary>
             <param name="path"/>
@@ -3729,7 +3747,7 @@
         <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.disposedWrongThread">
             <summary>Isso é usado apenas para testes.</summary>
         </member>
-        <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.Tags">
+        <member name="P:Autodesk.DesignScript.Geometry.DesignScriptEntity.Tags">
             <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.Dispose">
@@ -3847,6 +3865,14 @@
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.IntersectAll(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
             <summary>Obter a intersecção da geometria para este objeto e uma coleção de outras geometrias. Localiza a geometria comum de todos os participantes.</summary>
             <search>get overlap,multi intersect,intersect many</search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ProjectPointsOnto(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Projects a collection of Points onto this Geometry along the specified direction.
+            Returns a flat array of resulting Geometry.</summary>
+            <param name="points">Points to project</param>
+            <param name="projectionDirection">Direção de projeção</param>
+            <returns>Flat array of resulting Geometry</returns>
+            <search>project points,batch project</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Split(Autodesk.DesignScript.Geometry.Geometry)">
             <summary>Dividir esta geometria utilizando outra geometria como um "ferramenta" de corte</summary>
@@ -4443,9 +4469,10 @@ Basicamente, a malha é preenchida com várias pequenas caixas, e uma nova
             <summary>Obtém uma representação da sequência de caracteres da PolyCurve</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Crie a PolyCurve unindo curvas. As curvas  de entrada não precisam ser especificadas por ordem de conectividade.
-            A direção da PolyCurve é baseada na primeira curva na matriz de entradas.
-            Escolha uma tolerância de união preferencial entre as unidades 1e-6 e 1e-3.</summary>
+            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
+            PolyCurve direction is based on the first curve in the input array.
+            Choose a preferred join tolerance between 1e-6 and 1e-3 units.
+            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
             <param name="curves">Curvas para unir em uma PolyCurve</param>
             <param name="joinTolerance">Tolerância para determinar o tamanho permitido da lacuna entre curvas a unir</param>
             <returns>PolyCurve criada usando curvas unidas</returns>
@@ -4454,9 +4481,10 @@ Basicamente, a malha é preenchida com várias pequenas caixas, e uma nova
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Crie a PolyCurve unindo curvas. As curvas  de entrada não precisam ser especificadas por ordem de conectividade.
-            A direção da PolyCurve é baseada na primeira curva na matriz de entradas.
-            Escolha uma tolerância de união preferencial entre as unidades 1e-6 e 1e-3.</summary>
+            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
+            PolyCurve direction is based on the first curve in the input array.
+            Choose a preferred join tolerance between 1e-6 and 1e-3 units.
+            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
             <param name="curves">Curvas para unir em uma PolyCurve</param>
             <param name="joinTolerance">Tolerância para determinar o tamanho permitido da lacuna entre curvas a unir</param>
             <param name="trimCurves">Será definido como True se as curvas de entrada fizerem interseção/sobreposição umas às outras e precisarem que seus segmentos de extremidade sejam aparados antes da criação da PolyCurve. Por padrão, está definido como False.</param>
@@ -4467,13 +4495,15 @@ Basicamente, a malha é preenchida com várias pequenas caixas, e uma nova
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Crie uma ou mais PolyCurves agrupando curvas conectadas. Escolha uma tolerância de união preferida entre 1e-6 e 1e-3 unidades.</summary>
+            <summary>Make one or more polycurves by grouping connected curves. Choose a preferred join tolerance between 1e-6 and 1e-3 units.
+            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
             <param name="curves">Curvas a agrupar para criar uma ou mais PolyCurves</param>
             <param name="joinTolerance">Tolerância para determinar o tamanho permitido da lacuna entre curvas a unir</param>
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Crie uma ou mais PolyCurves agrupando curvas conectadas. Escolha uma tolerância de união preferida entre 1e-6 e 1e-3 unidades.</summary>
+            <summary>Make one or more polycurves by grouping connected curves. Choose a preferred join tolerance between 1e-6 and 1e-3 units.
+            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
             <param name="curves">Curvas a agrupar para criar uma ou mais PolyCurves</param>
             <param name="joinTolerance">Tolerância para determinar o tamanho permitido da lacuna entre curvas a unir</param>
             <param name="trimCurves">Será definido como True se as curvas de entrada fizerem interseção/sobreposição umas às outras e precisarem que seus segmentos de extremidade sejam aparados antes da criação da PolyCurve. Por padrão, está definido como False.</param>
@@ -5196,6 +5226,9 @@ Basicamente, a malha é preenchida com várias pequenas caixas, e uma nova
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_sweepassolidsingle_deprecated">
             <summary>Procura uma sequência de caracteres localizada, que seja similar a “Esse método está obsoleto e será removido em uma versão futura do Dynamo. Use SweepAsSolid(ICurveEntity path, bool cutEndOff)”.</summary>
         </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_sweepassurface_deprecated">
+            <summary>Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Curve.SweepAsSurface(profile, path, cutEndOff) instead.</summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_trimsegmentsbyparam_deprecated">
             <summary>Procura uma sequência de caracteres localizada, que seja similar a “Esse método está obsoleto e será removido em uma versão futura do Dynamo. Use Curve.TrimSegmentsByParameter(double[] parameters, bool discardEvenSegments)”.</summary>
         </member>
@@ -5315,6 +5348,9 @@ Basicamente, a malha é preenchida com várias pequenas caixas, e uma nova
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ParameterizedCollectionException">
             <summary>A pesquisa de sequência de caracteres localizada similar a Determinados dados: \"{0}\" não é uma matriz de pares de valor de nome.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.point_project_deprecated">
+            <summary>Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Geometry.ProjectPointsOnto(Point[] points, Vector projectionDirection) instead..</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.PointsCoincident">
             <summary>A pesquisa de sequência de caracteres localizada similar a {0} é coincidente.</summary>

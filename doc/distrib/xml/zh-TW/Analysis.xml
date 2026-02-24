@@ -51,20 +51,6 @@
             <param name="label"/>
             <returns/>
         </member>
-        <member name="T:Analysis.PointData">
-            <summary>用於儲存結構點分析資料的類別。</summary>
-        </member>
-        <member name="P:Analysis.PointData.ValueLocations">
-            <summary>點清單。</summary>
-        </member>
-        <member name="P:Analysis.PointData.Values">
-            <summary>倍精度值清單的字典。</summary>
-        </member>
-        <member name="M:Analysis.PointData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{System.Double})">
-            <summary>建立 PointAnalysisData 物件。</summary>
-            <param name="points">點清單。</param>
-            <param name="values">倍精度值清單。</param>
-        </member>
         <member name="T:Analysis.Properties.Resources">
             <summary>一種強型別資源類別，用於查找本土化的字串，等等。</summary>
         </member>
@@ -102,52 +88,8 @@
         <member name="P:Analysis.Properties.Resources.VectorValueObsolete">
             <summary>查找類似於「使用向量節點和號碼節點，作為之前使用 PointData 節點之節點的直接輸入」的本土化字串。</summary>
         </member>
-        <member name="T:Analysis.SurfaceData">
-            <summary>用於儲存結構化曲面分析資料的類別。</summary>
-        </member>
-        <member name="P:Analysis.SurfaceData.Surface">
-            <summary>包含位置的曲面。</summary>
-        </member>
-        <member name="P:Analysis.SurfaceData.ValueLocations">
-            <summary>曲面上的 UV 位置清單。</summary>
-        </member>
-        <member name="P:Analysis.SurfaceData.Values">
-            <summary>倍精度實數清單的字典。</summary>
-        </member>
-        <member name="M:Analysis.SurfaceData.BySurfaceAndPoints(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV})">
-            <summary>建立沒有值的 SurfaceData 物件。</summary>
-            <param name="surface">包含位置的曲面。</param>
-            <param name="uvs">曲面上的 UV 位置清單。</param>
-            <returns/>
-        </member>
-        <member name="M:Analysis.SurfaceData.BySurfacePointsAndValues(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},System.Collections.Generic.IList{System.Double})">
-            <summary>建立 SurfaceData 物件。</summary>
-            <param name="surface">包含位置的曲面。</param>
-            <param name="uvs">曲面上的 UV 位置清單。</param>
-            <param name="values">倍精度值清單。</param>
-        </member>
-        <member name="M:Analysis.AnalysisExtensions.IsAlmostEqualTo(Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
-            <summary>參考兩個 UV 類型的平面，如其之間差異小於 1.0e-6，將傳回 True，否則傳回 False。</summary>
-            <param name="a"/>
-            <param name="b"/>
-            <returns/>
-        </member>
         <member name="T:Analysis.Utils.ValueLocation`1">
             <summary>用於儲存位置中值的類別。</summary>
-        </member>
-        <member name="T:Analysis.VectorData">
-            <summary>用於儲存結構化向量分析資料的類別。</summary>
-        </member>
-        <member name="P:Analysis.VectorData.ValueLocations">
-            <summary>計算位置清單。</summary>
-        </member>
-        <member name="P:Analysis.VectorData.Values">
-            <summary>結果字典。</summary>
-        </member>
-        <member name="M:Analysis.VectorData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{Autodesk.DesignScript.Geometry.Vector})">
-            <summary>建立 VectorAnalysisData 物件。</summary>
-            <param name="points">點清單。</param>
-            <param name="values">向量值清單。</param>
         </member>
     </members>
 </doc>

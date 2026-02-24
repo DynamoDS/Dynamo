@@ -1351,7 +1351,7 @@ As montagens a seguir foram carregadas diversas vezes:
     <value>Instalado</value>
   </data>
   <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
-    <value> (installed)</value>
+    <value> (instalada)</value>
   </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>Instalando</value>
@@ -2712,7 +2712,7 @@ Esse pacote será descarregado após a próxima reinicialização do Dynamo.</va
     <value>Instalar</value>
   </data>
   <data name="PackageManagerUpdate" xml:space="preserve">
-    <value>Update</value>
+    <value>Atualizar</value>
   </data>
   <data name="PackageManagerUninstall" xml:space="preserve">
     <value>Desinstalar</value>
@@ -3384,6 +3384,15 @@ Em alguns gráficos complexos ou cenários de programas hospedeiros, o modo Auto
   <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
     <value>Ocorreu um erro durante a importação do arquivo de configurações personalizadas. Tente novamente ou continue com as configurações padrão.</value>
   </data>
+  <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
+    <value>Settings imported. Please restart Dynamo.</value>
+  </data>
+  <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
+    <value>Reset imported settings</value>
+  </data>
+  <data name="SplashScreenSettingsResetSuccess" xml:space="preserve">
+    <value>Imported settings have been reset.</value>
+  </data>
   <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
     <value>Iniciando a vista do Dynamo...</value>
   </data>
@@ -3898,7 +3907,7 @@ Para abrir esse gráfico no Dynamo 3.3–3.6.x: instale o pacote PythonNet do Pa
     <value>Navegador da documentação</value>
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
-    <value>Auto‑sync with node selection.</value>
+    <value>Sincronização automática com seleção de nós.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

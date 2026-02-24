@@ -51,20 +51,6 @@
             <param name="label"/>
             <returns/>
         </member>
-        <member name="T:Analysis.PointData">
-            <summary>구조 점 해석 데이터를 저장하기 위한 클래스.</summary>
-        </member>
-        <member name="P:Analysis.PointData.ValueLocations">
-            <summary>Points 리스트.</summary>
-        </member>
-        <member name="P:Analysis.PointData.Values">
-            <summary>double 값 리스트 사전.</summary>
-        </member>
-        <member name="M:Analysis.PointData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{System.Double})">
-            <summary>PointAnalysisData 객체를 작성합니다.</summary>
-            <param name="points">Points 리스트.</param>
-            <param name="values">double 값 리스트.</param>
-        </member>
         <member name="T:Analysis.Properties.Resources">
             <summary>현지화된 문자열 등을 조회하기 위한 강력한 유형의 리소스 클래스</summary>
         </member>
@@ -102,52 +88,8 @@
         <member name="P:Analysis.Properties.Resources.VectorValueObsolete">
             <summary>'이전에 VectorData 노드를 사용한 노드에 대한 직접 입력으로 Vector 노드와 Number 노드를 사용합니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
         </member>
-        <member name="T:Analysis.SurfaceData">
-            <summary>구조 표면 해석 데이터를 저장하기 위한 클래스.</summary>
-        </member>
-        <member name="P:Analysis.SurfaceData.Surface">
-            <summary>위치가 포함된 표면.</summary>
-        </member>
-        <member name="P:Analysis.SurfaceData.ValueLocations">
-            <summary>표면의 UV 위치 리스트.</summary>
-        </member>
-        <member name="P:Analysis.SurfaceData.Values">
-            <summary>double 값 리스트 사전.</summary>
-        </member>
-        <member name="M:Analysis.SurfaceData.BySurfaceAndPoints(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV})">
-            <summary>값 없이 SurfaceData 객체를 작성합니다.</summary>
-            <param name="surface">위치가 포함된 표면.</param>
-            <param name="uvs">표면의 UV 위치 리스트.</param>
-            <returns/>
-        </member>
-        <member name="M:Analysis.SurfaceData.BySurfacePointsAndValues(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},System.Collections.Generic.IList{System.Double})">
-            <summary>SurfaceData 객체를 작성합니다.</summary>
-            <param name="surface">위치가 포함된 표면.</param>
-            <param name="uvs">표면의 UV 위치 리스트.</param>
-            <param name="values">double 값 리스트.</param>
-        </member>
-        <member name="M:Analysis.AnalysisExtensions.IsAlmostEqualTo(Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
-            <summary>두 개의 평면(UV 유형)을 취하며 두 평면 간의 차이가 1.0e-6보다 작으면 True를 반환하고 그렇지 않으면 False를 반환합니다.</summary>
-            <param name="a"/>
-            <param name="b"/>
-            <returns/>
-        </member>
         <member name="T:Analysis.Utils.ValueLocation`1">
             <summary>위치에 값을 저장하기 위한 클래스.</summary>
-        </member>
-        <member name="T:Analysis.VectorData">
-            <summary>구조 벡터 해석 데이터를 저장하기 위한 클래스.</summary>
-        </member>
-        <member name="P:Analysis.VectorData.ValueLocations">
-            <summary>계산 위치 리스트.</summary>
-        </member>
-        <member name="P:Analysis.VectorData.Values">
-            <summary>결과 사전.</summary>
-        </member>
-        <member name="M:Analysis.VectorData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{Autodesk.DesignScript.Geometry.Vector})">
-            <summary>VectorAnalysisData 객체를 작성합니다.</summary>
-            <param name="points">Points 리스트.</param>
-            <param name="values">Vector 값 리스트.</param>
         </member>
     </members>
 </doc>

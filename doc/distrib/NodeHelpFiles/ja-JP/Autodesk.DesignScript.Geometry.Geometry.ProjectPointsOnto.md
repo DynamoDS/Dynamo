@@ -1,5 +1,5 @@
 ## 詳細
-ProjectPointsOnto will project the point(s) along a given vector direction onto a specified geometry. The projection is only attempted in the positve direction of the vector. If the vector does not intersect the given geometry, it will return null. In the example below, we create a point using a code block to specify the x,y, and z coordinates. We use a sphere as the geometry to project onto, and the world XAxis as the projection Direction. The output is a point on the surface of the sphere that is projected from the original point.
+ProjectPointsOnto は、入力されたベクトル方向に沿って指定されたジオメトリ上に点を投影します。ベクトルの正の方向にのみ投影されます。ベクトルが指定されたジオメトリと交差しない場合は、NULL を返します。次の例では、X、Y、Z 座標を指定するコード ブロックを使用して点を作成します。投影先のジオメトリとして球体を使用し、ワールド座標系の XAxis を projectionDirection として使用します。出力は元の点から投影された、球体のサーフェス上の点です。
 ___
 ## サンプル ファイル
 
