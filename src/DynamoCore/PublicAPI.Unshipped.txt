@@ -1866,6 +1866,8 @@ Dynamo.Models.DynamoModel.DefaultStartConfiguration.DynamoCorePath.get -> string
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.DynamoCorePath.set -> void
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.DynamoHostPath.get -> string
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.DynamoHostPath.set -> void
+Dynamo.Models.DynamoModel.DefaultStartConfiguration.EnableUnTrustedLocationsNotifications.get -> bool
+Dynamo.Models.DynamoModel.DefaultStartConfiguration.EnableUnTrustedLocationsNotifications.set -> void
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.Extensions.get -> System.Collections.Generic.IEnumerable<Dynamo.Extensions.IExtension>
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.Extensions.set -> void
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.GeometryFactoryPath.get -> string
@@ -1938,6 +1940,7 @@ Dynamo.Models.DynamoModel.IStartConfiguration.DynamoCorePath.get -> string
 Dynamo.Models.DynamoModel.IStartConfiguration.DynamoCorePath.set -> void
 Dynamo.Models.DynamoModel.IStartConfiguration.DynamoHostPath.get -> string
 Dynamo.Models.DynamoModel.IStartConfiguration.DynamoHostPath.set -> void
+Dynamo.Models.DynamoModel.IStartConfiguration.EnableUnTrustedLocationsNotifications.get -> bool
 Dynamo.Models.DynamoModel.IStartConfiguration.Extensions.get -> System.Collections.Generic.IEnumerable<Dynamo.Extensions.IExtension>
 Dynamo.Models.DynamoModel.IStartConfiguration.Extensions.set -> void
 Dynamo.Models.DynamoModel.IStartConfiguration.GeometryFactoryPath.get -> string
