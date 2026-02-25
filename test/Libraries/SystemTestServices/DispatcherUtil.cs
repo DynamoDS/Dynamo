@@ -1,6 +1,6 @@
 using System;
+using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Threading;
 
 namespace DynamoCoreWpfTests.Utility
@@ -14,8 +14,11 @@ namespace DynamoCoreWpfTests.Utility
         {
             var frame = new DispatcherFrame();
 
-            // Invoke with the lowest priority possible so that other tasks (with higher priority) can get a chance to finish.
-            Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.SystemIdle,
+            // Use Background priority so the exit callback is not starved when
+            // WebView2 or other components continuously post higher-priority messages.
+            // The previous SystemIdle priority could be starved indefinitely, causing
+            // PushFrame to block forever and making the DoEventsLoop timeout ineffective.
+            Dispatcher.CurrentDispatcher.Invoke(DispatcherPriority.Background,
                 new DispatcherOperationCallback(ExitFrame), frame);
             Dispatcher.PushFrame(frame);
         }
@@ -27,22 +30,10 @@ namespace DynamoCoreWpfTests.Utility
         /// <param name="check">When check returns true, the even loop is stopped.</param>
         public static void DoEventsLoop(Func<bool> check = null, int timeoutSeconds = 60)
         {
-            var cts = new CancellationTokenSource();
-            var token = cts.Token;
+            var sw = Stopwatch.StartNew();
 
-            Task.Delay(timeoutSeconds * 1000).ContinueWith(t =>
+            while (sw.Elapsed.TotalSeconds < timeoutSeconds)
             {
-                cts.Cancel();
-                cts.Dispose();
-            });
-
-            while (true)
-            {
-                if (token.IsCancellationRequested)
-                {
-                    return;
-                }
-
                 if (check != null && check())
                 {
                     return;
