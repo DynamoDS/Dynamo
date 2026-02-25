@@ -1632,7 +1632,7 @@ namespace Dynamo.ViewModels
             };
         }
 
-        private PathFigure DrawSegmentBetweenPointPairs(
+        private static PathFigure DrawSegmentBetweenPointPairs(
             Point startPt,
             Point endPt,
             ref List<Point[]> controlPointList,
@@ -1723,7 +1723,10 @@ namespace Dynamo.ViewModels
                     count++;
                 }
 
-                var orderedPoints = points.OrderBy(p => p.X).ToList();
+                var isInputStartReconnection = ActiveStartPort?.PortType == PortType.Input;
+                var orderedPoints = isInputStartReconnection
+                    ? points.OrderByDescending(p => p.X).ToList()
+                    : points.OrderBy(p => p.X).ToList();
 
                 orderedPoints.Insert(0, CurvePoint0);
                 orderedPoints.Insert(orderedPoints.Count, CurvePoint3);
