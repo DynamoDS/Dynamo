@@ -56,6 +56,7 @@ namespace DynamoServices
         /// Log node info message with the Dynamo version it was introduced in.
         /// Info messages with a version will only be displayed if the workspace was created
         /// in a Dynamo version older than the specified introducedInVersion.
+        /// For new unsaved workspaces, versioned messages are always suppressed.
         /// </summary>
         /// <param name="message">info message</param>
         /// <param name="introducedInVersion">Dynamo version the message was introduced in</param>
