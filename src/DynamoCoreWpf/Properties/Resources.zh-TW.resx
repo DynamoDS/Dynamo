@@ -1351,7 +1351,7 @@
     <value>已安裝</value>
   </data>
   <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
-    <value> (installed)</value>
+    <value> (已安裝)</value>
   </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>安裝中</value>
@@ -3383,6 +3383,15 @@
   <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
     <value>匯入您的自訂設定檔時發生錯誤。請再試一次，或繼續使用預設設定。</value>
   </data>
+  <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
+    <value>Settings imported. Please restart Dynamo.</value>
+  </data>
+  <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
+    <value>Reset imported settings</value>
+  </data>
+  <data name="SplashScreenSettingsResetSuccess" xml:space="preserve">
+    <value>Imported settings have been reset.</value>
+  </data>
   <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
     <value>正在啟動 Dynamo 視圖…</value>
   </data>
@@ -3897,7 +3906,7 @@
     <value>文件瀏覽器</value>
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
-    <value>Auto‑sync with node selection.</value>
+    <value>與節點選取自動同步。</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

@@ -1351,7 +1351,7 @@ Několikrát byly načteny i další sestavy:
     <value>Nainstalováno</value>
   </data>
   <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
-    <value> (installed)</value>
+    <value> (nainstalováno)</value>
   </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>Probíhá instalace</value>
@@ -2711,7 +2711,7 @@ Tento balíček bude uvolněn po dalším restartování aplikace Dynamo.</value
     <value>Instalovat</value>
   </data>
   <data name="PackageManagerUpdate" xml:space="preserve">
-    <value>Update</value>
+    <value>Aktualizovat</value>
   </data>
   <data name="PackageManagerUninstall" xml:space="preserve">
     <value>Odinstalovat</value>
@@ -2720,7 +2720,7 @@ Tento balíček bude uvolněn po dalším restartování aplikace Dynamo.</value
     <value>Aktualizovaný</value>
   </data>
   <data name="PackageManagerPackageUpdateAvailable" xml:space="preserve">
-    <value>Je k dispozici nová verze.</value>
+    <value>Je k dispozici nová verze</value>
   </data>
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>Nový</value>
@@ -3383,6 +3383,15 @@ V určitém kontextu složitých grafů nebo hostitelských režimů může auto
   <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
     <value>Při importu souboru uživatelských nastavení došlo k chybě. Zkuste to znovu nebo pokračujte s výchozím nastavením.</value>
   </data>
+  <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
+    <value>Settings imported. Please restart Dynamo.</value>
+  </data>
+  <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
+    <value>Reset imported settings</value>
+  </data>
+  <data name="SplashScreenSettingsResetSuccess" xml:space="preserve">
+    <value>Imported settings have been reset.</value>
+  </data>
   <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
     <value>Spouštění aplikace Dynamo View...</value>
   </data>
@@ -3897,7 +3906,7 @@ Otevření tohoto grafu v aplikaci Dynamo 3.3–3.6.x: Ze správce balíčků na
     <value>Prohlížeč dokumentace</value>
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
-    <value>Auto‑sync with node selection.</value>
+    <value>Automaticky synchronizovat s výběrem uzlů.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

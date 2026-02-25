@@ -1,5 +1,5 @@
 ## Podrobnosti
-ProjectPointsOnto will project the point(s) along a given vector direction onto a specified geometry. The projection is only attempted in the positve direction of the vector. If the vector does not intersect the given geometry, it will return null. In the example below, we create a point using a code block to specify the x,y, and z coordinates. We use a sphere as the geometry to project onto, and the world XAxis as the projection Direction. The output is a point on the surface of the sphere that is projected from the original point.
+Uzel ProjectPointsOnto promítne body podél směru daného vektoru na určenou geometrii. Pokus o promítnutí se provede pouze v kladném směru vektoru. Pokud vektor neprotíná danou geometrii, funkce vrátí hodnotu null. V níže uvedeném příkladu vytvoříme bod pomocí bloku kódu, který určuje souřadnice x, y a z. Jako geometrii, na kterou se promítá, použijeme kouli a jako směr projekce globální objekt XAxis. Výstupem je bod na povrchu koule, který je promítnut z původního bodu.
 ___
 ## Vzorový soubor
 
