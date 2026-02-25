@@ -2514,7 +2514,10 @@ namespace Dynamo.Models
                 var workspaceVersion = EngineController.CurrentWorkspaceVersion;
                 ResetEngine(false);
                 // Restore the workspace version after engine reset
-                EngineController.CurrentWorkspaceVersion = workspaceVersion;
+                if (workspaceVersion != null)
+                {
+                    EngineController.CurrentWorkspaceVersion = workspaceVersion;
+                }
 
                 if (hws.RunSettings.RunType == RunType.Periodic)
                 {
