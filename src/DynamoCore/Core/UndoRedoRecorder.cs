@@ -55,6 +55,8 @@ namespace Dynamo.Core
         /// UndoRedoRecorder requires for serialization purposes.</param>
         /// <returns>Returns the model that modelData corresponds to.</returns>
         ModelBase GetModelForElement(XmlElement modelData);
+
+        void UpdateUndoRedoStack();
     }
 
     internal class UndoRedoRecorder : LogSourceBase
@@ -139,6 +141,7 @@ namespace Dynamo.Core
                 undoStack.Push(currentActionGroup);
 
             currentActionGroup = null;
+            undoClient.UpdateUndoRedoStack();
         }
 
         public void Undo()

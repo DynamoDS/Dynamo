@@ -155,6 +155,11 @@ namespace Dynamo.Tests
             return (models.Find((x) => (x.Identifier == identifier)));
         }
 
+        public void UpdateUndoRedoStack()
+        {
+            
+        }
+
         #endregion
     }
 

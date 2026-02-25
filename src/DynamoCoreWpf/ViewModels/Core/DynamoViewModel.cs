@@ -1479,6 +1479,9 @@ namespace Dynamo.ViewModels
                 case "EnablePresetOptions":
                     RaisePropertyChanged("EnablePresetOptions");
                     break;
+                case "CanUndoRedoCommand":
+                    RaiseCanExecuteUndoRedo();
+                    break;
             }
         }
 

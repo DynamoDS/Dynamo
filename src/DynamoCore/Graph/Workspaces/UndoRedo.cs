@@ -599,6 +599,11 @@ namespace Dynamo.Graph.Workspaces
             return null;
         }
 
+
+        public void UpdateUndoRedoStack()
+        {
+            RaisePropertyChanged("CanUndoRedoCommand");
+        }
         /// <summary>
         /// Returns model by GUID
         /// </summary>
