@@ -11247,7 +11247,7 @@ namespace Dynamo.Wpf.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Settings imported. Please restart Dynamo.
+        ///   Looks up a localized string similar to Settings imported. To apply the settings, launch Dynamo, then close it and restart it.
         /// </summary>
         public static string SplashScreenSettingsImportedRestartMessage
         {
