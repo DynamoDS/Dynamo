@@ -1632,7 +1632,11 @@ namespace Dynamo.ViewModels
             };
         }
 
-        private PathFigure DrawSegmentBetweenPointPairs(Point startPt, Point endPt, ref List<Point[]> controlPointList)
+        private PathFigure DrawSegmentBetweenPointPairs(
+            Point startPt,
+            Point endPt,
+            ref List<Point[]> controlPointList,
+            bool invertTangents = false)
         {
             var offset = 0.0;
             double distance = 0;
@@ -1640,8 +1644,12 @@ namespace Dynamo.ViewModels
             distance = Math.Sqrt(Math.Pow(endPt.X - startPt.X, 2) + Math.Pow(endPt.Y - startPt.Y, 2));
             offset = .45 * distance;
 
-            var pt1 = new Point(startPt.X + offset, startPt.Y);
-            var pt2 = new Point(endPt.X - offset, endPt.Y);
+            var pt1 = invertTangents
+                ? new Point(startPt.X - offset, startPt.Y)
+                : new Point(startPt.X + offset, startPt.Y);
+            var pt2 = invertTangents
+                ? new Point(endPt.X + offset, endPt.Y)
+                : new Point(endPt.X - offset, endPt.Y);
 
 
             PathFigure pathFigure = new PathFigure();
@@ -1724,6 +1732,11 @@ namespace Dynamo.ViewModels
 
                 PathFigureCollection pathFigureCollection = new PathFigureCollection();
 
+                var isTransientStartReconnection =
+                    ConnectorModel == null &&
+                    IsConnecting &&
+                    ActiveStartPort?.PortType == PortType.Input;
+
                 for (int i = 0; i < pointPairs.GetLength(0); i++)
                 {
                     //each segment starts here
@@ -1734,7 +1747,11 @@ namespace Dynamo.ViewModels
                         segmentList.Add(pointPairs[i, j]);
                     }
 
-                    var pathFigure = DrawSegmentBetweenPointPairs(segmentList[0], segmentList[1], ref controlPoints);
+                    var pathFigure = DrawSegmentBetweenPointPairs(
+                        segmentList[0],
+                        segmentList[1],
+                        ref controlPoints,
+                        isTransientStartReconnection);
                     pathFigureCollection.Add(pathFigure);
                 }
 
