@@ -26,7 +26,7 @@ namespace DynamoServices
         /// <summary>
         /// event handler for logging info message
         /// </summary>
-        public static event LogWarningMessageEventHandler LogInfoMessage;
+        internal static event LogWarningMessageEventHandler LogInfoMessage;
 
         /// <summary>
         /// event handler for logging warning message
