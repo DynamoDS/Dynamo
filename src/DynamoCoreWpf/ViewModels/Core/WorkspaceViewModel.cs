@@ -943,11 +943,33 @@ namespace Dynamo.ViewModels
               note.PinnedNode == null)
             {
                 var pinnedNode = Nodes.Where(x => x.Id.Equals(note.PinnedNodeGuid));
-                if (pinnedNode.Count() > 0)
+                if (pinnedNode.Any())
                 {
                     DynamoSelection.Instance.Selection.Clear();
                     DynamoSelection.Instance.Selection.Add(pinnedNode.First().NodeModel);
                     viewModel.PinToNodeCommand.Execute(null);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Resolves the pinned note references with node during Undo operation.
+        /// During undo, the note model is recreated with the pinned node guid but without the reference to the pinned node.
+        /// This function resolves the reference by looking for the node with the same guid as stored in note model and re-establishes the pin relationship in view model.
+        /// Executed if note is created before the pinned node during undo operation.
+        /// </summary>
+        /// <param name="node"></param>
+        private void ResolvePinnedNodeReference(NodeModel node)
+        {
+            var pinnedNotes = Notes.Where(x => x.Model.PinnedNodeGuid.Equals(node.GUID) &&
+                x.Model.PinnedNode == null);
+            if (pinnedNotes.Any())
+            {
+                foreach (NoteViewModel note in pinnedNotes)
+                {
+                    DynamoSelection.Instance.Selection.Clear();
+                    DynamoSelection.Instance.Selection.Add(node);
+                    note.PinToNodeCommand.Execute(null);
                 }
             }
         }
@@ -1049,27 +1071,7 @@ namespace Dynamo.ViewModels
 
             SetNodeCountOptimizationEnabled(zoomAnimationThresholdFeatureFlagVal);
         }
-        /// <summary>
-        /// Resolves the pinned note references with node during Undo operation.
-        /// During undo, the note model is recreated with the pinned node guid but without the reference to the pinned node.
-        /// This function resolves the reference by looking for the node with the same guid as stored in note model and re-establishes the pin relationship in view model.
-        /// Executed if note is created before the pinned node during undo operation.
-        /// </summary>
-        /// <param name="node"></param>
-        private void ResolvePinnedNodeReference(NodeModel node)
-        {
-            var pinnedNotes = Notes.Where(x => x.Model.PinnedNodeGuid.Equals(node.GUID) &&
-                x.Model.PinnedNode == null);
-            if (pinnedNotes.Count() > 0)
-            {
-                foreach (NoteViewModel note in pinnedNotes)
-                {
-                    DynamoSelection.Instance.Selection.Clear();
-                    DynamoSelection.Instance.Selection.Add(node);
-                    note.PinToNodeCommand.Execute(null);
-                }
-            }
-        }
+        
         void PostNodeChangeActions()
         {
             if (RunSettingsViewModel == null) return;
