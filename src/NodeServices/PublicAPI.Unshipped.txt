@@ -373,7 +373,6 @@ static Dynamo.Session.ExecutionSessionHelper.ThrowIfNoNetworkMode() -> void
 static DynamoServices.AuthServices.AuthProvider.get -> object
 static DynamoServices.LogWarningMessageEvents.LogInfoMessage -> DynamoServices.LogWarningMessageEventHandler
 static DynamoServices.LogWarningMessageEvents.LogWarningMessage -> DynamoServices.LogWarningMessageEventHandler
-static DynamoServices.LogWarningMessageEvents.OnLogInfoMessage(string message) -> void
 static DynamoServices.LogWarningMessageEvents.OnLogInfoMessage(string message, System.Version introducedInVersion) -> void
 static DynamoServices.LogWarningMessageEvents.OnLogWarningMessage(string message) -> void
 static DynamoServices.TraceUtils.GetTraceData(string key) -> string

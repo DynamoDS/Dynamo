@@ -1,0 +1,1 @@
+static DynamoServices.LogWarningMessageEvents.OnLogInfoMessage(string message) -> void
