@@ -928,10 +928,6 @@ Dynamo.Graph.Nodes.LacingStrategy.Disabled = 0 -> Dynamo.Graph.Nodes.LacingStrat
 Dynamo.Graph.Nodes.LacingStrategy.First = 1 -> Dynamo.Graph.Nodes.LacingStrategy
 Dynamo.Graph.Nodes.LacingStrategy.Longest = 3 -> Dynamo.Graph.Nodes.LacingStrategy
 Dynamo.Graph.Nodes.LacingStrategy.Shortest = 2 -> Dynamo.Graph.Nodes.LacingStrategy
-Dynamo.Graph.Nodes.NodeCategoryAttribute
-Dynamo.Graph.Nodes.NodeCategoryAttribute.ElementCategory.get -> string
-Dynamo.Graph.Nodes.NodeCategoryAttribute.ElementCategory.set -> void
-Dynamo.Graph.Nodes.NodeCategoryAttribute.NodeCategoryAttribute(string category) -> void
 Dynamo.Graph.Nodes.NodeDeprecatedAttribute
 Dynamo.Graph.Nodes.NodeDeprecatedAttribute.NodeDeprecatedAttribute() -> void
 Dynamo.Graph.Nodes.NodeDescriptionAttribute
