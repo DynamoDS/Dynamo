@@ -56,6 +56,9 @@ namespace Dynamo.Core
         /// <returns>Returns the model that modelData corresponds to.</returns>
         ModelBase GetModelForElement(XmlElement modelData);
 
+        /// <summary>
+        /// Notifies the UI that the undo/redo state has changed so that undo/redo buttons can be enabled/disabled.
+        /// </summary>
         void UpdateUndoRedoStack();
     }
 
@@ -108,8 +111,8 @@ namespace Dynamo.Core
         /// one undo command.</para>
         /// <para>It is mandatory for the caller of this method to call 
         /// EndActionGroup when the undo recording is done for the current 
-        /// action group. Failing to do so will result in subsequent calls to 
-        /// BeginActionGroup to throw an exception.</para>
+        /// action group. Failing to do so will result in the recorder
+        /// being stuck in an invalid state.</para>
         /// </summary>
         public IDisposable BeginActionGroup()
         {
