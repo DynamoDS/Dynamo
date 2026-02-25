@@ -113,7 +113,6 @@ namespace Dynamo.Core
         /// </summary>
         public IDisposable BeginActionGroup()
         {
-            //EnsureValidRecorderStates();
             bool isRoot = currentActionGroup == null;
             //if its not root, then we are already in an action group, so we should reuse that one and just return a disposable that does nothing on dispose
             //this allows us to have nested "action" groups by flattening them into the parent groups.
@@ -275,7 +274,7 @@ namespace Dynamo.Core
         /// <summary>
         /// This method is called at the beginning of any method that requires 
         /// any existing undo group to be closed before proceeding. For example,
-        /// UndoRedoRecorder.OpenGroup cannot be called again while there is an
+        /// UndoRedoRecorder.Undo or UndoRedoRecorder.Redo cannot be called again while there is an
         /// existing undo group that is left open.
         /// </summary>
         private void EnsureValidRecorderStates()
