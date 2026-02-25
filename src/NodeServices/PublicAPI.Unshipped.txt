@@ -326,6 +326,8 @@ Dynamo.Session.ParameterKeys.ParameterKeys() -> void
 DynamoServices.AuthServices
 DynamoServices.LogWarningMessageEventArgs
 DynamoServices.LogWarningMessageEventArgs.LogWarningMessageEventArgs(string msg) -> void
+DynamoServices.LogWarningMessageEventArgs.LogWarningMessageEventArgs(string msg, System.Version introducedInVersion) -> void
+DynamoServices.LogWarningMessageEventArgs.IntroducedInVersion.get -> System.Version
 DynamoServices.LogWarningMessageEventArgs.message.get -> string
 DynamoServices.LogWarningMessageEventHandler
 DynamoServices.LogWarningMessageEvents
@@ -369,8 +371,10 @@ static Dynamo.Logging.Analytics.TrackTimedEvent(Dynamo.Logging.Categories catego
 static Dynamo.PythonServices.PythonEngineManager.Instance.get -> Dynamo.PythonServices.PythonEngineManager
 static Dynamo.Session.ExecutionSessionHelper.ThrowIfNoNetworkMode() -> void
 static DynamoServices.AuthServices.AuthProvider.get -> object
+static DynamoServices.LogWarningMessageEvents.LogInfoMessage -> DynamoServices.LogWarningMessageEventHandler
 static DynamoServices.LogWarningMessageEvents.LogWarningMessage -> DynamoServices.LogWarningMessageEventHandler
 static DynamoServices.LogWarningMessageEvents.OnLogInfoMessage(string message) -> void
+static DynamoServices.LogWarningMessageEvents.OnLogInfoMessage(string message, System.Version introducedInVersion) -> void
 static DynamoServices.LogWarningMessageEvents.OnLogWarningMessage(string message) -> void
 static DynamoServices.TraceUtils.GetTraceData(string key) -> string
 static DynamoServices.TraceUtils.SetTraceData(string key, string value) -> void
