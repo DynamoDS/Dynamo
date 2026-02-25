@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://dynamobim.org/schemas/dyn-file-v4.json",
   "title": "Dynamo Graph File (.dyn / .dyf)",
-  "description": "Schema for the Dynamo visual-programming graph file format (JSON, Dynamo 3.0+). Both .dyn (home workspace) and .dyf (custom node definition) files share this schema. Serialised by WorkspaceWriteConverter and WorkspaceViewWriteConverter.",
+  "description": "Schema for the Dynamo visual-programming graph file format (JSON, Dynamo 3.0+). Both .dyn (home workspace) and .dyf (custom node definition) files share this schema. Serialized by WorkspaceWriteConverter and WorkspaceViewWriteConverter.",
   "type": "object",
   "required": [
     "Uuid",
@@ -282,7 +282,7 @@
       "properties": {
         "ConcreteType": {
           "type": "string",
-          "description": "Assembly-qualified type name of the node class. Replaces JSON.NET $type via post-serialisation regex. Format: 'Namespace.ClassName, AssemblyName'.",
+          "description": "Assembly-qualified type name of the node class. Replaces JSON.NET $type via post-serialization regex. Format: 'Namespace.ClassName, AssemblyName'.",
           "examples": [
             "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
             "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
