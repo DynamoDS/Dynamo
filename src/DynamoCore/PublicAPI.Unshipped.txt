@@ -3193,3 +3193,4 @@ virtual Dynamo.Search.SearchElements.NodeSearchElement.GenerateInputParameters()
 virtual Dynamo.Search.SearchElements.NodeSearchElement.GenerateOutputParameters() -> System.Collections.Generic.IEnumerable<string>
 virtual Dynamo.Search.SearchElements.NodeSearchElement.OnItemProduced(Dynamo.Graph.Nodes.NodeModel obj) -> void
 virtual Dynamo.Search.SearchElements.SearchElementBase.CreationName.get -> string
+virtual Dynamo.Search.SearchElements.SearchElementBase.CreationName.get -> string
