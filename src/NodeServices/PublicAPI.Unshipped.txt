@@ -2,3 +2,6 @@ Dynamo.Graph.Nodes.NodeCategoryAttribute
 Dynamo.Graph.Nodes.NodeCategoryAttribute.ElementCategory.get -> string
 Dynamo.Graph.Nodes.NodeCategoryAttribute.ElementCategory.set -> void
 Dynamo.Graph.Nodes.NodeCategoryAttribute.NodeCategoryAttribute(string category) -> void
+DynamoServices.LogWarningMessageEventArgs.IntroducedInVersion.get -> System.Version
+DynamoServices.LogWarningMessageEventArgs.LogWarningMessageEventArgs(string msg, System.Version introducedInVersion) -> void
+static DynamoServices.LogWarningMessageEvents.OnLogInfoMessage(string message, System.Version introducedInVersion) -> void
