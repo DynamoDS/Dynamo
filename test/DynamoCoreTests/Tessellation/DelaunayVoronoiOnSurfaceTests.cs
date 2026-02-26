@@ -86,24 +86,8 @@ namespace Dynamo.Tests
 
         private static (double normU, double normV) GetUvScale(Surface face)
         {
-            // Mirror the scaling logic used by the production methods.
-            using var p00 = face.PointAtParameter(0, 0);
-            using var p10 = face.PointAtParameter(1, 0);
-            using var p01 = face.PointAtParameter(0, 1);
-
-            var scaleU = p00.DistanceTo(p10);
-            var scaleV = p00.DistanceTo(p01);
-
-            var max = Math.Max(scaleU, scaleV);
-            if (max <= 1e-9) max = 1.0;
-
-            var normU = scaleU / max;
-            var normV = scaleV / max;
-
-            if (normU <= 1e-9) normU = 1.0;
-            if (normV <= 1e-9) normV = 1.0;
-
-            return (normU, normV);
+            // Use the production method to ensure test validates actual code
+            return UvScalingUtilities.GetNormalizedUvScales(face);
         }
 
         private static List<Triangle> ComputeDelaunayTrianglesInScaledUvSpace(IReadOnlyList<UV> uvs, Surface face)

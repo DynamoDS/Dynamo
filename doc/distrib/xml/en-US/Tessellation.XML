@@ -63,14 +63,6 @@
                 Functions for creating Delaunay triangulations.
             </summary>
         </member>
-        <member name="M:Tessellation.Delaunay.GetNormalizedUvScales(Autodesk.DesignScript.Geometry.Surface)">
-            <summary>
-                Computes normalized UV scaling factors for a surface to handle anisotropic parameter spaces.
-                The scaling preserves the aspect ratio while keeping values in a reasonable numerical range.
-            </summary>
-            <param name="face">Surface to compute scaling factors for.</param>
-            <returns>Tuple containing normalized U and V scale factors.</returns>
-        </member>
         <member name="M:Tessellation.Delaunay.ByParametersOnSurface(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},Autodesk.DesignScript.Geometry.Surface)">
             <summary>
                 Creates a Delaunay triangulation of a surface with a given set of UV parameters.
@@ -84,6 +76,19 @@
                 Creates a Delaunay triangulation of a set of points.
             </summary>
             <param name="points">A set of points.</param>
+        </member>
+        <member name="T:Tessellation.UvScalingUtilities">
+            <summary>
+                Utility functions for UV scaling on surfaces.
+            </summary>
+        </member>
+        <member name="M:Tessellation.UvScalingUtilities.GetNormalizedUvScales(Autodesk.DesignScript.Geometry.Surface)">
+            <summary>
+                Computes normalized UV scaling factors for a surface to handle anisotropic parameter spaces.
+                The scaling preserves the aspect ratio while keeping values in a reasonable numerical range.
+            </summary>
+            <param name="face">Surface to compute scaling factors for.</param>
+            <returns>Tuple containing normalized U and V scale factors.</returns>
         </member>
         <member name="T:Tessellation.Voronoi">
             <summary>

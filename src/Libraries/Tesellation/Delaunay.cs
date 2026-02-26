@@ -12,34 +12,6 @@ namespace Tessellation
     public static class Delaunay
     {
         /// <summary>
-        ///     Computes normalized UV scaling factors for a surface to handle anisotropic parameter spaces.
-        ///     The scaling preserves the aspect ratio while keeping values in a reasonable numerical range.
-        /// </summary>
-        /// <param name="face">Surface to compute scaling factors for.</param>
-        /// <returns>Tuple containing normalized U and V scale factors.</returns>
-        internal static (double normU, double normV) GetNormalizedUvScales(Surface face)
-        {
-            // Physical scale per unit U/V (affine for planar Rectangle->Surface.ByPatch)
-            var p00 = face.PointAtParameter(0, 0);
-            var p10 = face.PointAtParameter(1, 0);
-            var p01 = face.PointAtParameter(0, 1);
-
-            var scaleU = p00.DistanceTo(p10);
-            var scaleV = p00.DistanceTo(p01);
-
-            // Normalize scales to keep values in a reasonable range, preserve aspect ratio
-            var max = System.Math.Max(scaleU, scaleV);
-            if (max <= 1e-9) max = 1.0;
-            
-            var normU = scaleU / max;
-            var normV = scaleV / max;
-            
-            if (normU <= 1e-9) normU = 1.0;
-            if (normV <= 1e-9) normV = 1.0;
-
-            return (normU, normV);
-        }
-        /// <summary>
         ///     Creates a Delaunay triangulation of a surface with a given set of UV parameters.
         /// </summary>
         /// <param name="uvs">Set of UV parameters.</param>
@@ -52,7 +24,7 @@ namespace Tessellation
                 yield break;
 
             // Get normalized UV scaling factors to handle anisotropic parameter spaces
-            var (normU, normV) = GetNormalizedUvScales(face);
+            var (normU, normV) = UvScalingUtilities.GetNormalizedUvScales(face);
 
             // Build Delaunay in anisotropically scaled (u*normU, v*normV) space.
             var verts = uvList.Select(uv => new Vertex2(uv.U * normU, uv.V * normV)).ToList();

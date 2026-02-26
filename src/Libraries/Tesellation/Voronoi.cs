@@ -24,7 +24,7 @@ namespace Tessellation
                 yield break;
 
             // Get normalized UV scaling factors to handle anisotropic parameter spaces
-            var (normU, normV) = Delaunay.GetNormalizedUvScales(face);
+            var (normU, normV) = UvScalingUtilities.GetNormalizedUvScales(face);
 
             // Anisotropic scaling only by aspect ratio
             var verts = uvList.Select(uv => new Vertex2(uv.U * normU, uv.V * normV)).ToList();
