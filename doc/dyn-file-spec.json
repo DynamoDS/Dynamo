@@ -1,0 +1,799 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dynamobim.org/schemas/dyn-file-v4.json",
+  "title": "Dynamo Graph File (.dyn / .dyf)",
+  "description": "Schema for the Dynamo visual-programming graph file format (JSON, Dynamo 3.0+). Both .dyn (home workspace) and .dyf (custom node definition) files share this schema. Serialized by WorkspaceWriteConverter and WorkspaceViewWriteConverter.",
+  "type": "object",
+  "required": [
+    "Uuid",
+    "IsCustomNode",
+    "Description",
+    "Name",
+    "ElementResolver",
+    "Inputs",
+    "Outputs",
+    "Nodes",
+    "Connectors",
+    "Dependencies",
+    "View"
+  ],
+  "properties": {
+    "Uuid": {
+      "type": "string",
+      "description": "Unique identifier for the workspace. Uses standard hyphenated GUID format. For custom nodes this is the CustomNodeId; for home workspaces it is the workspace GUID.",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "examples": ["8731c011-66bc-4cc2-80a8-712e7c75bcfe"]
+    },
+    "IsCustomNode": {
+      "type": "boolean",
+      "description": "True if this file is a custom node definition (.dyf), false for a regular graph (.dyn)."
+    },
+    "Category": {
+      "type": "string",
+      "description": "Hierarchical category path for custom node definitions. Only present when IsCustomNode is true.",
+      "examples": ["MyPackage.Utilities"]
+    },
+    "Description": {
+      "type": ["string", "null"],
+      "description": "Human-readable description of the workspace."
+    },
+    "Name": {
+      "type": "string",
+      "description": "Display name of the workspace, typically derived from the file name."
+    },
+    "ElementResolver": {
+      "$ref": "#/$defs/ElementResolver",
+      "description": "Maps partial type names to fully qualified names and their containing assemblies."
+    },
+    "Inputs": {
+      "type": "array",
+      "description": "Nodes marked as graph inputs (for Dynamo Player / Customizer). Populated from nodes where IsSetAsInput=true and InputData is non-null.",
+      "items": { "$ref": "#/$defs/NodeInputData" }
+    },
+    "Outputs": {
+      "type": "array",
+      "description": "Nodes marked as graph outputs (for Dynamo Player). Populated from nodes where IsSetAsOutput=true and OutputData is non-null.",
+      "items": { "$ref": "#/$defs/NodeOutputData" }
+    },
+    "Nodes": {
+      "type": "array",
+      "description": "All nodes in the graph. Each node is polymorphic based on the ConcreteType discriminator. Transient nodes are excluded.",
+      "items": { "$ref": "#/$defs/NodeModel" }
+    },
+    "Connectors": {
+      "type": "array",
+      "description": "All wire connections between node ports.",
+      "items": { "$ref": "#/$defs/ConnectorModel" }
+    },
+    "Dependencies": {
+      "type": "array",
+      "description": "GUIDs of custom node definitions used in this graph (distinct FunctionIds from Function nodes).",
+      "items": {
+        "type": "string"
+      }
+    },
+    "NodeLibraryDependencies": {
+      "type": "array",
+      "description": "Package, file, and external dependencies required by nodes in this graph.",
+      "items": { "$ref": "#/$defs/NodeLibraryDependencyInfo" }
+    },
+    "EnableLegacyPolyCurveBehavior": {
+      "type": ["boolean", "null"],
+      "description": "Legacy PolyCurve behavior flag. Only present in home workspace (.dyn) files.",
+      "deprecated": true
+    },
+    "Thumbnail": {
+      "type": ["string", "null"],
+      "description": "Base64-encoded thumbnail image of the graph, or empty string. Only present in home workspace (.dyn) files."
+    },
+    "GraphDocumentationURL": {
+      "type": ["string", "null"],
+      "description": "URI linking to external documentation for this graph. Only present in home workspace (.dyn) files.",
+      "format": "uri"
+    },
+    "ExtensionWorkspaceData": {
+      "type": "array",
+      "description": "Data stored by Dynamo extensions/plugins. Only present in home workspace (.dyn) files.",
+      "items": { "$ref": "#/$defs/ExtensionData" }
+    },
+    "Author": {
+      "type": "string",
+      "description": "Name of the graph author."
+    },
+    "Linting": {
+      "$ref": "#/$defs/LintingInfo",
+      "description": "Active linter configuration and counts."
+    },
+    "Bindings": {
+      "type": "array",
+      "description": "Execution trace data (callsite bindings) for nodes that participate in trace. Used for element binding (e.g. Dynamo for Revit). Only present when an engine was available at save time.",
+      "items": { "$ref": "#/$defs/BindingEntry" }
+    },
+    "View": {
+      "$ref": "#/$defs/ViewBlock",
+      "description": "UI/view layer data added by the WPF ViewModel during save. Contains canvas position, zoom, node positions, annotations, notes, camera, and Dynamo version info."
+    }
+  },
+  "if": {
+    "properties": { "IsCustomNode": { "const": true } }
+  },
+  "then": {
+    "required": ["Category"]
+  },
+  "$defs": {
+    "GuidNFormat": {
+      "type": "string",
+      "description": "A GUID in N format (32 hex characters, no hyphens).",
+      "pattern": "^[0-9a-fA-F]{32}$"
+    },
+
+    "ElementResolver": {
+      "type": "object",
+      "description": "Resolves partial class names to fully qualified names and assembly paths.",
+      "properties": {
+        "ResolutionMap": {
+          "type": "object",
+          "description": "Map from short name to {Key, Value} pair where Key is the fully qualified name and Value is the assembly/DLL name.",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "Key": { "type": "string", "description": "Fully qualified type name." },
+              "Value": { "type": "string", "description": "Assembly or DLL file name." }
+            },
+            "required": ["Key", "Value"]
+          }
+        }
+      },
+      "required": ["ResolutionMap"]
+    },
+
+    "NodeInputData": {
+      "type": "object",
+      "description": "Metadata for a node designated as a graph input (for Dynamo Player/Customizer). Source: NodeInputData.cs",
+      "required": ["Id", "Name", "Type", "Value"],
+      "properties": {
+        "Id": {
+          "$ref": "#/$defs/GuidNFormat",
+          "description": "GUID of the input node."
+        },
+        "Name": {
+          "type": "string",
+          "description": "Display name of the input."
+        },
+        "Type": {
+          "type": "string",
+          "description": "Input type (legacy, limited to backward-compatible values). Obsolete in favor of Type2.",
+          "deprecated": true,
+          "enum": ["number", "boolean", "string", "color", "date", "selection"]
+        },
+        "Type2": {
+          "type": "string",
+          "description": "Input type (preferred). Superset of Type values, includes newer selection types. Note: 'selection' is obsolete; use 'hostSelection' or 'dropdownSelection' instead.",
+          "enum": ["number", "boolean", "string", "color", "date", "selection", "hostSelection", "dropdownSelection"]
+        },
+        "Value": {
+          "type": "string",
+          "description": "The value of the input when the graph was saved. Always a string regardless of input type."
+        },
+        "Choices": {
+          "type": "array",
+          "description": "Available choices for dropdown selection inputs. Omitted when null.",
+          "items": { "type": "string" }
+        },
+        "MaximumValue": {
+          "type": ["number", "null"],
+          "description": "Maximum value for number inputs. Omitted when null."
+        },
+        "MinimumValue": {
+          "type": ["number", "null"],
+          "description": "Minimum value for number inputs. Omitted when null."
+        },
+        "StepValue": {
+          "type": ["number", "null"],
+          "description": "Step value for slider inputs. Omitted when null."
+        },
+        "NumberType": {
+          "type": ["string", "null"],
+          "description": "Numeric type: 'Double' or 'Int32'. Omitted when null."
+        },
+        "Description": {
+          "type": ["string", "null"],
+          "description": "Tooltip description. Omitted when null."
+        },
+        "SelectedIndex": {
+          "type": ["integer", "null"],
+          "description": "Selected item index for dropdown inputs. Omitted when null."
+        }
+      }
+    },
+
+    "NodeOutputData": {
+      "type": "object",
+      "description": "Metadata for a node designated as a graph output. Source: NodeOutputData.cs",
+      "required": ["Id", "Name", "Type", "InitialValue"],
+      "properties": {
+        "Id": {
+          "$ref": "#/$defs/GuidNFormat",
+          "description": "GUID of the output node."
+        },
+        "Name": {
+          "type": "string",
+          "description": "Display name of the output."
+        },
+        "Type": {
+          "type": "string",
+          "description": "Output value type.",
+          "enum": ["integer", "float", "boolean", "string", "unknown"]
+        },
+        "InitialValue": {
+          "type": ["string", "null"],
+          "description": "The value of the output when the graph was saved."
+        },
+        "Description": {
+          "type": ["string", "null"],
+          "description": "Tooltip description."
+        }
+      }
+    },
+
+    "PortModel": {
+      "type": "object",
+      "description": "An input or output port on a node. Source: PortModel.cs",
+      "required": ["Id", "Name", "Description", "UsingDefaultValue", "Level", "UseLevels", "KeepListStructure"],
+      "properties": {
+        "Id": {
+          "$ref": "#/$defs/GuidNFormat",
+          "description": "Unique port identifier."
+        },
+        "Name": {
+          "type": "string",
+          "description": "Port label."
+        },
+        "Description": {
+          "type": "string",
+          "description": "Port tooltip. Maps to PortModel.ToolTip in source."
+        },
+        "UsingDefaultValue": {
+          "type": "boolean",
+          "description": "Whether the port is using its default value."
+        },
+        "Level": {
+          "type": "integer",
+          "description": "List nesting level for list-at-level feature.",
+          "default": 2
+        },
+        "UseLevels": {
+          "type": "boolean",
+          "description": "Whether list-at-level is enabled for this port.",
+          "default": false
+        },
+        "KeepListStructure": {
+          "type": "boolean",
+          "description": "Whether to preserve list structure during replication.",
+          "default": false
+        }
+      }
+    },
+
+    "NodeModel": {
+      "type": "object",
+      "description": "A node in the graph. Polymorphic — the ConcreteType field determines which additional properties are present. Source: NodeModel.cs, SerializationConverters.cs",
+      "required": ["ConcreteType", "Id", "NodeType", "Inputs", "Outputs", "Replication"],
+      "properties": {
+        "ConcreteType": {
+          "type": "string",
+          "description": "Assembly-qualified type name of the node class. Replaces JSON.NET $type via post-serialization regex. Format: 'Namespace.ClassName, AssemblyName'.",
+          "examples": [
+            "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+            "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+            "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+            "CoreNodeModels.Watch, CoreNodeModels",
+            "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore"
+          ]
+        },
+        "Id": {
+          "$ref": "#/$defs/GuidNFormat",
+          "description": "Unique node identifier."
+        },
+        "NodeType": {
+          "type": "string",
+          "description": "Semantic type category. Overridden by node subclasses.",
+          "enum": [
+            "ExtensionNode",
+            "FunctionNode",
+            "CodeBlockNode",
+            "NumberInputNode",
+            "BooleanInputNode",
+            "StringInputNode",
+            "ColorInputNode",
+            "DateTimeInputNode",
+            "PythonScriptNode",
+            "ConvertBetweenUnitsNode",
+            "InputNode",
+            "OutputNode",
+            "FormulaNode"
+          ]
+        },
+        "Inputs": {
+          "type": "array",
+          "description": "Input ports.",
+          "items": { "$ref": "#/$defs/PortModel" }
+        },
+        "Outputs": {
+          "type": "array",
+          "description": "Output ports.",
+          "items": { "$ref": "#/$defs/PortModel" }
+        },
+        "Replication": {
+          "type": "string",
+          "description": "Lacing strategy controlling how argument lists of different lengths are combined.",
+          "enum": ["Disabled", "First", "Shortest", "Longest", "CrossProduct", "Auto"]
+        },
+        "Description": {
+          "type": "string",
+          "description": "Node description. Ignored on deserialization (re-derived from localization resources)."
+        },
+        "FunctionSignature": {
+          "type": "string",
+          "description": "For FunctionNode types: mangled function name (DSFunction/DSVarArgFunction) or custom node definition GUID (Function).",
+          "examples": ["+@var[]..[],var[]..[]", "DSCore.List.Flatten@var[]..[],int", "7b1ab118-0088-4b39-bb1b-7f9d009448fd"]
+        },
+        "Code": {
+          "type": "string",
+          "description": "DesignScript source code. Only present on CodeBlockNodeModel nodes."
+        },
+        "NumberType": {
+          "type": "string",
+          "description": "Numeric type for slider/number input nodes.",
+          "enum": ["Double", "Integer"]
+        },
+        "MaximumValue": {
+          "type": "number",
+          "description": "Maximum slider value. Present on slider input nodes."
+        },
+        "MinimumValue": {
+          "type": "number",
+          "description": "Minimum slider value. Present on slider input nodes."
+        },
+        "StepValue": {
+          "type": "number",
+          "description": "Slider step increment. Present on slider input nodes."
+        },
+        "InputValue": {
+          "description": "Current value for input nodes. Type varies: number for sliders, boolean for BoolSelector, string for StringInput, object for ColorPalette ({R,G,B,A})."
+        },
+        "WatchWidth": {
+          "type": "number",
+          "description": "Custom display width for Watch nodes."
+        },
+        "WatchHeight": {
+          "type": "number",
+          "description": "Custom display height for Watch nodes."
+        },
+        "SelectedIndex": {
+          "type": "integer",
+          "description": "Selected item index for dropdown nodes. -1 if nothing selected."
+        },
+        "SelectedString": {
+          "type": "string",
+          "description": "Serialized selection value for dropdown nodes."
+        },
+        "InstanceId": {
+          "type": "array",
+          "description": "Selection identifiers for host-selection nodes.",
+          "items": { "type": "string" }
+        },
+        "IsAutoMode": {
+          "type": "boolean",
+          "description": "Auto-mode flag for DefineData nodes."
+        },
+        "IsList": {
+          "type": "boolean",
+          "description": "List flag for DefineData nodes."
+        },
+        "DisplayValue": {
+          "type": "string",
+          "description": "Display value for DefineData nodes."
+        },
+        "Name": {
+          "type": "string",
+          "description": "Node name override. Used by custom node (Function) instances."
+        },
+        "Category": {
+          "type": "string",
+          "description": "Category path. Used by custom node (Function) instances."
+        }
+      },
+      "additionalProperties": true
+    },
+
+    "ConnectorModel": {
+      "type": "object",
+      "description": "A wire connecting an output port to an input port. Source: ConnectorModel.cs, ConnectorConverter in SerializationConverters.cs",
+      "required": ["Start", "End", "Id"],
+      "properties": {
+        "Start": {
+          "$ref": "#/$defs/GuidNFormat",
+          "description": "GUID of the source output port."
+        },
+        "End": {
+          "$ref": "#/$defs/GuidNFormat",
+          "description": "GUID of the target input port."
+        },
+        "Id": {
+          "$ref": "#/$defs/GuidNFormat",
+          "description": "Unique connector identifier."
+        },
+        "IsHidden": {
+          "type": "string",
+          "description": "Visibility flag. NOTE: serialized as a string ('True'/'False'), not a boolean.",
+          "enum": ["True", "False"]
+        }
+      }
+    },
+
+    "NodeLibraryDependencyInfo": {
+      "type": "object",
+      "description": "A package, file, or external dependency required by nodes in the graph. Source: NodeLibraryDependencyConverter in SerializationConverters.cs",
+      "required": ["Name", "ReferenceType", "Nodes"],
+      "properties": {
+        "Name": {
+          "type": "string",
+          "description": "Package name or file name."
+        },
+        "Version": {
+          "type": "string",
+          "description": "Package version (semver). Present for Package reference types."
+        },
+        "ReferenceType": {
+          "type": "string",
+          "description": "Type of dependency.",
+          "enum": ["Package", "ZeroTouch", "DYFFile", "External", "NodeModel", "DSFile"]
+        },
+        "Nodes": {
+          "type": "array",
+          "description": "GUIDs of nodes that depend on this library.",
+          "items": { "type": "string" }
+        }
+      }
+    },
+
+    "ExtensionData": {
+      "type": "object",
+      "description": "Data stored by a Dynamo extension/plugin. Source: ExtensionData.cs",
+      "required": ["ExtensionGuid", "Name", "Version", "Data"],
+      "properties": {
+        "ExtensionGuid": {
+          "type": "string",
+          "description": "Unique extension identifier."
+        },
+        "Name": {
+          "type": "string",
+          "description": "Extension name."
+        },
+        "Version": {
+          "type": "string",
+          "description": "Extension version."
+        },
+        "Data": {
+          "type": "object",
+          "description": "Extension-specific key-value data.",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    },
+
+    "LintingInfo": {
+      "type": "object",
+      "description": "Active linter state. Source: LinterManagerConverter in SerializationConverters.cs",
+      "properties": {
+        "activeLinter": {
+          "type": "string",
+          "description": "Name of the active linter, or 'None'."
+        },
+        "activeLinterId": {
+          "type": "string",
+          "description": "GUID of the active linter."
+        },
+        "warningCount": {
+          "type": "integer",
+          "description": "Number of lint warnings."
+        },
+        "errorCount": {
+          "type": "integer",
+          "description": "Number of lint errors."
+        }
+      }
+    },
+
+    "BindingEntry": {
+      "type": "object",
+      "description": "Trace/binding data for a single node. Used for element binding (e.g. Dynamo for Revit). Source: WorkspaceWriteConverter lines 948-989",
+      "required": ["NodeId", "Binding"],
+      "properties": {
+        "NodeId": {
+          "type": "string",
+          "description": "GUID of the node."
+        },
+        "Binding": {
+          "type": "object",
+          "description": "Map of callsite IDs to serialized trace data strings.",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    },
+
+    "ViewBlock": {
+      "type": "object",
+      "description": "UI/view layer data. Added by WorkspaceViewWriteConverter during save. Source: DynamoCoreWpf/ViewModels/Core/Converters/SerializationConverters.cs",
+      "required": ["Dynamo", "Camera", "NodeViews", "Annotations", "X", "Y", "Zoom"],
+      "properties": {
+        "Dynamo": {
+          "$ref": "#/$defs/DynamoViewInfo",
+          "description": "Dynamo application preferences snapshot at save time."
+        },
+        "Camera": {
+          "$ref": "#/$defs/CameraInfo",
+          "description": "3D background preview camera state."
+        },
+        "ConnectorPins": {
+          "type": "array",
+          "description": "Pins placed on connectors for routing.",
+          "items": { "$ref": "#/$defs/ConnectorPinInfo" }
+        },
+        "NodeViews": {
+          "type": "array",
+          "description": "Per-node view state (position, visibility, input/output designation).",
+          "items": { "$ref": "#/$defs/NodeViewInfo" }
+        },
+        "Annotations": {
+          "type": "array",
+          "description": "Groups and notes. NoteModels are serialized as AnnotationModels with an empty Nodes array and optional PinnedNode.",
+          "items": { "$ref": "#/$defs/AnnotationViewInfo" }
+        },
+        "X": {
+          "type": "number",
+          "description": "Canvas horizontal pan offset."
+        },
+        "Y": {
+          "type": "number",
+          "description": "Canvas vertical pan offset."
+        },
+        "Zoom": {
+          "type": "number",
+          "description": "Canvas zoom level."
+        }
+      }
+    },
+
+    "DynamoViewInfo": {
+      "type": "object",
+      "description": "Dynamo application state captured at save time. Serialized from DynamoPreferences.",
+      "properties": {
+        "ScaleFactor": {
+          "type": "number",
+          "description": "Geometry scale factor.",
+          "default": 1.0
+        },
+        "HasRunWithoutCrash": {
+          "type": "boolean",
+          "description": "Whether the graph has executed successfully at least once."
+        },
+        "IsVisibleInDynamoLibrary": {
+          "type": "boolean",
+          "description": "For custom nodes: whether this node appears in the library."
+        },
+        "Version": {
+          "type": "string",
+          "description": "Dynamo application version string at save time.",
+          "examples": ["4.1.0.3057", "3.3.0.5104"]
+        },
+        "RunType": {
+          "type": "string",
+          "description": "Graph execution mode.",
+          "enum": ["Automatic", "Manual", "Periodic"]
+        },
+        "RunPeriod": {
+          "type": "string",
+          "description": "Interval in milliseconds between automatic runs (as a string).",
+          "examples": ["1000"]
+        }
+      }
+    },
+
+    "CameraInfo": {
+      "type": "object",
+      "description": "3D background preview camera configuration.",
+      "properties": {
+        "Name": {
+          "type": "string",
+          "description": "Camera name.",
+          "examples": ["_Background Preview"]
+        },
+        "EyeX": { "type": "number", "description": "Camera eye position X." },
+        "EyeY": { "type": "number", "description": "Camera eye position Y." },
+        "EyeZ": { "type": "number", "description": "Camera eye position Z." },
+        "LookX": { "type": "number", "description": "Camera look direction X." },
+        "LookY": { "type": "number", "description": "Camera look direction Y." },
+        "LookZ": { "type": "number", "description": "Camera look direction Z." },
+        "UpX": { "type": "number", "description": "Camera up vector X." },
+        "UpY": { "type": "number", "description": "Camera up vector Y." },
+        "UpZ": { "type": "number", "description": "Camera up vector Z." }
+      }
+    },
+
+    "ConnectorPinInfo": {
+      "type": "object",
+      "description": "A pin placed on a connector for visual routing. Source: ConnectorPinModel.cs",
+      "properties": {
+        "ConnectorGuid": {
+          "type": "string",
+          "description": "GUID of the parent connector."
+        },
+        "Left": {
+          "type": "number",
+          "description": "Pin X position on canvas."
+        },
+        "Top": {
+          "type": "number",
+          "description": "Pin Y position on canvas."
+        }
+      }
+    },
+
+    "NodeViewInfo": {
+      "type": "object",
+      "description": "Per-node view state (position, flags). Source: NodeViewModel.cs JSON properties",
+      "required": ["Id", "Name", "IsSetAsInput", "IsSetAsOutput", "Excluded", "ShowGeometry", "X", "Y"],
+      "properties": {
+        "Id": {
+          "$ref": "#/$defs/GuidNFormat",
+          "description": "GUID of the node this view info belongs to."
+        },
+        "Name": {
+          "type": "string",
+          "description": "Display name of the node as shown in the UI."
+        },
+        "IsSetAsInput": {
+          "type": "boolean",
+          "description": "Whether the node is designated as a graph input."
+        },
+        "IsSetAsOutput": {
+          "type": "boolean",
+          "description": "Whether the node is designated as a graph output."
+        },
+        "Excluded": {
+          "type": "boolean",
+          "description": "Whether the node is frozen/excluded from execution. Maps to IsFrozenExplicitly."
+        },
+        "ShowGeometry": {
+          "type": "boolean",
+          "description": "Whether to render this node's geometry in the 3D preview. Maps to IsVisible."
+        },
+        "X": {
+          "type": "number",
+          "description": "Node X position on the canvas."
+        },
+        "Y": {
+          "type": "number",
+          "description": "Node Y position on the canvas."
+        },
+        "UserDescription": {
+          "type": ["string", "null"],
+          "description": "User-defined description/note for the node. Omitted from JSON when null."
+        }
+      }
+    },
+
+    "AnnotationViewInfo": {
+      "type": "object",
+      "description": "A group annotation or serialized note in the View block. Notes are stored as annotations with an empty Nodes array and optional PinnedNode. Source: AnnotationViewModelConverter in DynamoCoreWpf SerializationConverters.cs",
+      "required": ["Id", "Title", "Nodes"],
+      "properties": {
+        "Id": {
+          "$ref": "#/$defs/GuidNFormat",
+          "description": "Unique annotation/note identifier."
+        },
+        "Title": {
+          "type": "string",
+          "description": "Group title text, or note text for serialized notes."
+        },
+        "DescriptionText": {
+          "type": ["string", "null"],
+          "description": "Group description text."
+        },
+        "IsExpanded": {
+          "type": "boolean",
+          "description": "Whether the group is expanded or collapsed.",
+          "default": true
+        },
+        "WidthAdjustment": {
+          "type": "number",
+          "description": "Manual width adjustment offset."
+        },
+        "HeightAdjustment": {
+          "type": "number",
+          "description": "Manual height adjustment offset."
+        },
+        "UserSetWidth": {
+          "type": "number",
+          "description": "User-specified width override."
+        },
+        "UserSetHeight": {
+          "type": "number",
+          "description": "User-specified height override."
+        },
+        "Nodes": {
+          "type": "array",
+          "description": "GUIDs (N format) of nodes belonging to this group. Empty for serialized notes.",
+          "items": { "$ref": "#/$defs/GuidNFormat" }
+        },
+        "HasNestedGroups": {
+          "type": "boolean",
+          "description": "Whether this group contains other groups."
+        },
+        "Left": {
+          "type": "number",
+          "description": "Group X position on canvas."
+        },
+        "Top": {
+          "type": "number",
+          "description": "Group Y position on canvas."
+        },
+        "Width": {
+          "type": "number",
+          "description": "Group width."
+        },
+        "Height": {
+          "type": "number",
+          "description": "Group height."
+        },
+        "FontSize": {
+          "type": "number",
+          "description": "Title font size."
+        },
+        "GroupStyleId": {
+          "type": "string",
+          "description": "GUID of the group style."
+        },
+        "InitialTop": {
+          "type": "number",
+          "description": "Initial top position before user adjustments."
+        },
+        "InitialHeight": {
+          "type": "number",
+          "description": "Initial height before user adjustments."
+        },
+        "TextblockHeight": {
+          "type": "number",
+          "description": "Height of the title text block."
+        },
+        "IsOptionalInPortsCollapsed": {
+          "type": "boolean",
+          "description": "Whether optional input ports are collapsed for nodes in this group."
+        },
+        "IsUnconnectedOutPortsCollapsed": {
+          "type": "boolean",
+          "description": "Whether unconnected output ports are collapsed for nodes in this group."
+        },
+        "HasToggledOptionalInPorts": {
+          "type": "boolean",
+          "description": "Whether user has toggled optional input ports visibility."
+        },
+        "HasToggledUnconnectedOutPorts": {
+          "type": "boolean",
+          "description": "Whether user has toggled unconnected output ports visibility."
+        },
+        "Background": {
+          "type": "string",
+          "description": "Background color in ARGB hex format.",
+          "examples": ["#FFC1D676", "#FFB5B5B5"]
+        },
+        "PinnedNode": {
+          "type": "string",
+          "description": "GUID (N format) of a node this note is pinned to. Only present for serialized notes that are pinned."
+        }
+      }
+    }
+  }
+}

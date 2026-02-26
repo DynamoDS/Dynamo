@@ -3737,7 +3737,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
     <value>Something went wrong when importing your custom setting file. Please try again or proceed with default settings.</value>
   </data>
   <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
-    <value>Settings imported. Please restart Dynamo.</value>
+    <value>Settings imported. To apply the settings, launch Dynamo, then close it and restart it.</value>
   </data>
   <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
     <value>Reset imported settings</value>
