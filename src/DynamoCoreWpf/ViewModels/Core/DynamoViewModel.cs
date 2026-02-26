@@ -1546,26 +1546,26 @@ namespace Dynamo.ViewModels
         /// <param name="isBinding">Should be set to true, if you require to bind the passed
         /// NodeModel engine value with the menu item, works only when a single node is passed in the list.</param>
         internal void AddPythonEngineToMenuItems(List<PythonNodeBase> pythonNodeModel,
-           System.Windows.Controls.MenuItem pythonEngineVersionMenu,
+           MenuItem pythonEngineVersionMenu,
            RoutedEventHandler updateEngineDelegate,
            string engineName, bool isBinding = false)
         {
             //if all nodes in the selection are set to a specific engine, then that engine will be checked in the list.
             bool hasCommonEngine = pythonNodeModel.All(x => x.EngineName == engineName);
-            var currentItem = pythonEngineVersionMenu.Items.Cast<System.Windows.Controls.MenuItem>().FirstOrDefault(x => x.Header as string == engineName);
+            var currentItem = pythonEngineVersionMenu.Items.Cast<MenuItem>().FirstOrDefault(x => x.Header as string == engineName);
             if (currentItem != null)
             {
                 if (pythonNodeModel.Count == 1) return;
                 currentItem.IsChecked = hasCommonEngine;
                 return;
             }
-            System.Windows.Controls.MenuItem pythonEngineItem = null;
+            MenuItem pythonEngineItem = null;
             //if single node, then checked property is bound to the engine value, as python node context menu is not recreated
             if (pythonNodeModel.Count == 1 && isBinding)
             {
                 var pythonNode = pythonNodeModel.FirstOrDefault(); ;
-                pythonEngineItem = new System.Windows.Controls.MenuItem { Header = engineName, IsCheckable = false };
-                pythonEngineItem.SetBinding(System.Windows.Controls.MenuItem.IsCheckedProperty, new System.Windows.Data.Binding(nameof(pythonNode.EngineName))
+                pythonEngineItem = new MenuItem { Header = engineName, IsCheckable = false };
+                pythonEngineItem.SetBinding(MenuItem.IsCheckedProperty, new System.Windows.Data.Binding(nameof(pythonNode.EngineName))
                 {
                     Source = pythonNode,
                     Converter = new CompareToParameterConverter(),
@@ -1576,7 +1576,7 @@ namespace Dynamo.ViewModels
             {
                 //when updating multiple nodes checked value is not bound to any specific node,
                 //rather takes into account all the selected nodes
-                pythonEngineItem = new System.Windows.Controls.MenuItem { Header = engineName, IsCheckable = true };
+                pythonEngineItem = new MenuItem { Header = engineName, IsCheckable = true };
                 pythonEngineItem.IsChecked = hasCommonEngine;
             }
             pythonEngineItem.Click += updateEngineDelegate;
@@ -2444,7 +2444,7 @@ namespace Dynamo.ViewModels
                 }
             }
 
-            if (_fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
                 if (CanOpen(_fileDialog.FileName))
                 {
@@ -2539,7 +2539,7 @@ namespace Dynamo.ViewModels
                     _fileDialog.InitialDirectory = path;
             }
 
-            if (_fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
                 if (CanOpen(_fileDialog.FileName))
                 {
@@ -3496,11 +3496,11 @@ namespace Dynamo.ViewModels
 
         public void ShowSaveImageDialogAndSave(object parameter)
         {
-            System.Windows.Forms.FileDialog _fileDialog = null;
+            FileDialog _fileDialog = null;
 
             if (_fileDialog == null)
             {
-                _fileDialog = new System.Windows.Forms.SaveFileDialog()
+                _fileDialog = new SaveFileDialog()
                 {
                     AddExtension = true,
                     DefaultExt = ".png",
@@ -3518,7 +3518,7 @@ namespace Dynamo.ViewModels
                 _fileDialog.FileName = snapshotName;
             }
 
-            if (_fileDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+            if (_fileDialog.ShowDialog() != DialogResult.OK) return;
             if (!CanSaveImage(_fileDialog.FileName)) return;
 
             if (parameter == null)
@@ -3929,14 +3929,14 @@ namespace Dynamo.ViewModels
         {
             string[] fileFilter = {string.Format(Resources.FileDialogLibraryFiles, "*.dll; *.ds" ), string.Format(Resources.FileDialogAssemblyFiles, "*.dll"),
                                    string.Format(Resources.FileDialogDesignScriptFiles, "*.ds"), string.Format(Resources.FileDialogAllFiles,"*.*")};
-            System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = String.Join("|", fileFilter);
             openFileDialog.Title = Resources.ImportLibraryDialogTitle;
             openFileDialog.Multiselect = true;
             openFileDialog.RestoreDirectory = true;
 
-            System.Windows.Forms.DialogResult result = openFileDialog.ShowDialog();
-            if (result == System.Windows.Forms.DialogResult.OK)
+            DialogResult result = openFileDialog.ShowDialog();
+            if (result == DialogResult.OK)
             {
                 try
                 {
@@ -4033,7 +4033,7 @@ namespace Dynamo.ViewModels
 
         private void ExportToSTL(object parameter)
         {
-            System.Windows.Forms.FileDialog _fileDialog = null ?? new System.Windows.Forms.SaveFileDialog()
+            FileDialog _fileDialog = null ?? new SaveFileDialog()
             {
                 AddExtension = true,
                 DefaultExt = ".stl",
@@ -4049,7 +4049,7 @@ namespace Dynamo.ViewModels
                 _fileDialog.InitialDirectory = fi.DirectoryName;
             }
 
-            if (_fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
                 BackgroundPreviewViewModel.ExportToSTL(_fileDialog.FileName, HomeSpace.Name);
 
