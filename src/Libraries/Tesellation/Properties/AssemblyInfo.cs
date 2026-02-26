@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -12,4 +12,4 @@ using System.Runtime.InteropServices;
 [assembly: Guid("89ae6d07-95ef-49e7-b607-22dc7a7013cf")]
 
 // Make internal types visible to test assembly
-[assembly: InternalsVisibleTo("DynamoCoreTests")]
+[assembly: InternalsVisibleTo("TessellationTests")]

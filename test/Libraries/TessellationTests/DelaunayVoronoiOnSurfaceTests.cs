@@ -42,7 +42,7 @@ namespace Dynamo.Tests
             // Compute the correct circumcenters in scaled UV space (as Delaunay does).
             var triangles = ComputeDelaunayTrianglesInScaledUvSpace(uvs, surface);
             Assert.That(triangles.Count, Is.GreaterThan(0));
-            
+
             // Validate that Delaunay triangulation satisfies empty circumcircle property.
             AssertTrianglesSatisfyEmptyCircumcircle(triangles);
 

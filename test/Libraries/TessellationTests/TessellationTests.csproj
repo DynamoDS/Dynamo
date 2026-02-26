@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)Config/CS_SDK.props" />
+  </ImportGroup>
+  <PropertyGroup>
+    <ProjectGuid>{B5C64B59-6D12-4B8A-9A7B-1C0C5E7A1A2F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Dynamo.Tests.Tessellation</RootNamespace>
+    <AssemblyName>TessellationTests</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.4154" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+    <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\DynamoCore\DynamoCore.csproj">
+      <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
+      <Name>DynamoCore</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\src\Libraries\Tesellation\Tessellation.csproj">
+      <Project>{D6279651-D099-4F8D-A319-5BF12ED9F269}</Project>
+      <Name>Tessellation</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj">
+      <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
+      <Name>DynamoCoreTests</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\TestServices\TestServices.csproj">
+      <Project>{6cd0f0cf-8199-49f9-b0ea-0b9598b44419}</Project>
+      <Name>TestServices</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+</Project>
