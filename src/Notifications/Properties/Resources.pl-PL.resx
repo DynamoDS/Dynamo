@@ -150,4 +150,10 @@
   <data name="NotificationsCenterTitle" xml:space="preserve">
     <value>Powiadomienia</value>
   </data>
+  <data name="UnsafePathDetectedDetail" xml:space="preserve">
+    <value>W zaufanych lokalizacjach wykryto niebezpieczną ścieżkę:</value>
+  </data>
+  <data name="UnsafePathDetectedTitle" xml:space="preserve">
+    <value>Wykryto niebezpieczną ścieżkę</value>
+  </data>
 </root>

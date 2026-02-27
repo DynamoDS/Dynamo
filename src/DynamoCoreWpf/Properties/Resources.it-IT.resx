@@ -1342,6 +1342,9 @@ Gli assiemi successivi sono stati caricati più volte:
   <data name="PackageDownloadStateInstalled" xml:space="preserve">
     <value>Installato</value>
   </data>
+  <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
+    <value> (installato)</value>
+  </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>Installazione in corso</value>
   </data>
@@ -2690,8 +2693,17 @@ Questo pacchetto viene caricato ed è pronto per essere utilizzato.</value>
   <data name="PackageManagerInstall" xml:space="preserve">
     <value>Installa</value>
   </data>
+  <data name="PackageManagerUpdate" xml:space="preserve">
+    <value>Aggiorna</value>
+  </data>
+  <data name="PackageManagerUninstall" xml:space="preserve">
+    <value>Disinstalla</value>
+  </data>
   <data name="PackageManagerPackageUpdated" xml:space="preserve">
     <value>Aggiornato</value>
+  </data>
+  <data name="PackageManagerPackageUpdateAvailable" xml:space="preserve">
+    <value>Nuova versione disponibile</value>
   </data>
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>Nuovo</value>
@@ -3354,6 +3366,15 @@ In alcuni scenari complessi di programmi host o grafici, la modalità Automatico
   <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
     <value>Si è verificato un errore quando è stato importato il file di impostazioni personalizzate. Riprovare o continuare con le impostazioni di default.</value>
   </data>
+  <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
+    <value>Settings imported. Please restart Dynamo.</value>
+  </data>
+  <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
+    <value>Reset imported settings</value>
+  </data>
+  <data name="SplashScreenSettingsResetSuccess" xml:space="preserve">
+    <value>Imported settings have been reset.</value>
+  </data>
   <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
     <value>Avvio della vista di Dynamo in corso...</value>
   </data>
@@ -3831,7 +3852,7 @@ Per trasformare questo file in un nuovo modello, salvarlo in un'altra cartella e
     <value>Nasconde le porte di output non connesse per default</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotifications" xml:space="preserve">
-    <value>Show Python Engine change notifications</value>
+    <value>Mostra notifiche di modifica del motore Python</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotificationsTooltip" xml:space="preserve">
     <value>CPython non è più supportato in Dynamo 4.0 o versioni successive e verrà convertito nel nuovo motore di default PythonNet3. Disattivare il pulsante di commutazione per nascondere tutte le notifiche relative alle modifiche del motore.</value>
@@ -3863,6 +3884,12 @@ Per aprire questo grafico in Dynamo 3.3-3.6.x: installare il pacchetto PythonNet
   </data>
   <data name="DynamoSplashScreenFailed" xml:space="preserve">
     <value>Impossibile caricare la schermata iniziale di Dynamo. Riavviare Dynamo.</value>
+  </data>
+  <data name="DocumentationBrowserPreferences" xml:space="preserve">
+    <value>Browser della documentazione</value>
+  </data>
+  <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
+    <value>Sincronizzazione automatica con selezione del nodo.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

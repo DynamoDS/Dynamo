@@ -137,11 +137,7 @@ namespace Dynamo.UI.Views
         /// <returns></returns>
         private static string GetUserDirectory()
         {
-            var version = AssemblyHelper.GetDynamoVersion();
-
-            var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(Path.Combine(folder, "Dynamo", "Dynamo Core"),
-                            String.Format("{0}.{1}", version.Major, version.Minor));
+            return WebView2Utilities.GetTempDirectory();
         }
 
         private async void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
@@ -164,10 +160,8 @@ namespace Dynamo.UI.Views
             {
                 await dynWebView.Initialize();
 
-                // Set WebView2 settings
-                this.dynWebView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
-                this.dynWebView.CoreWebView2.Settings.IsZoomControlEnabled = false;
-                this.dynWebView.CoreWebView2.Settings.AreDevToolsEnabled = true;
+                // Apply standard WebView2 settings with DevTools enabled for home page debugging
+                dynWebView.ConfigureSettings(enableDevTools: true);
                 this.dynWebView.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
 
                 var assembly = Assembly.GetExecutingAssembly();

@@ -45,9 +45,6 @@
             <summary>タグにより、DesignScriptEntity に任意のメタデータを追加できます。これは、Revit ジオメトリの
             統合の際に重要です。</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Core.EntityTags.#ctor(System.Collections.Generic.Dictionary{System.String,System.Object},Autodesk.DesignScript.Geometry.DesignScriptEntity)">
-            <notranslation>true</notranslation>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Core.EntityTags.Parent">
             <notranslation>true</notranslation>
         </member>
@@ -924,12 +921,24 @@
             <summary>NURBS 曲線が有理であるかどうかを判断します。これにより、すべての重みを 1.0 としないかどうかを設定します。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ControlPoints">
-            <summary>NURBS 曲線の制御点を取得します。これらの点は曲線が補間される点です。</summary>
+            <summary>Get the control points of the NurbsCurve.</summary>
+            <returns>点の配列</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
+            <summary>The truly periodic control points of the NurbsCurve if periodic.
+            Note that this cannot be used together with PeriodicKnots() to reconstruct the original periodic NurbsCurve.
+            Throws (or is undefined) when the curve is not periodic.</summary>
             <returns>点の配列</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
             <summary>曲線のノット。ノットは、制御点が曲線に影響を与える位置とその影響の程度を判断するために使用される、一連のパラメータ値(倍精度浮動小数点数)です。</summary>
             <returns>NURBS 曲線のノット</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots">
+            <summary>The unclamped knots of the Curve if Periodic. Knots is a series of parameter values (doubles) used to determine where and how the control points affect the curve.
+            Note that this cannot be used together with PeriodicControlPoints() to reconstruct the original periodic NurbsCurve.
+            Throws (or is undefined) when the curve is not periodic.</summary>
+            <returns>The periodic knot vector of the nurbs curve</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Weights">
             <summary>NURBS 曲線の制御点の重みを返します。重みによって、各制御点が曲線形状に与える影響を判断します。</summary>
@@ -3716,6 +3725,15 @@
             sweep1,curve2surf
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSurface(Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
+            <summary>パス曲線に沿って、閉じた曲線をスイープし、サーフェスを作成します</summary>
+            <param name="path"/>
+            <param name="cutEndOff">スイープの終点を切り取り、パスに対して垂直にします</param>
+            <returns>A Surface resulting from sweeping the curve along the path</returns>
+            <search>
+            sweep1,curve2surf
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve)">
             <summary>パス曲線に沿って、閉じた曲線をスイープし、ソリッドを作成します</summary>
             <param name="path"/>
@@ -3748,7 +3766,7 @@
         <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.disposedWrongThread">
             <summary>これはテストにのみ使用されます。</summary>
         </member>
-        <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.Tags">
+        <member name="P:Autodesk.DesignScript.Geometry.DesignScriptEntity.Tags">
             <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.Dispose">
@@ -3869,6 +3887,14 @@
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.IntersectAll(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
             <summary>このオブジェクトの Geometry の交点と別の Geometry の集合の交点を取得します。その中から共通のジオメトリを求めます。</summary>
             <search>get overlap,multi intersect,intersect many</search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ProjectPointsOnto(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Projects a collection of Points onto this Geometry along the specified direction.
+            Returns a flat array of resulting Geometry.</summary>
+            <param name="points">Points to project</param>
+            <param name="projectionDirection">投影方向</param>
+            <returns>Flat array of resulting Geometry</returns>
+            <search>project points,batch project</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Split(Autodesk.DesignScript.Geometry.Geometry)">
             <summary>別の Geometry を切り取り「ツール」として使用してこの Geometry を分割</summary>
@@ -4465,9 +4491,10 @@
             <summary>ポリカーブの文字列表現を取得します</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>曲線を結合してポリカーブを作成します。入力曲線を、接続順に指定する必要はありません。
-           ポリカーブの方向は、入力された配列の最初の曲線を基準にします。
-            優先される結合の許容値を 1e-6 から 1e-3 までの単位で選択します。</summary>
+            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
+            PolyCurve direction is based on the first curve in the input array.
+            Choose a preferred join tolerance between 1e-6 and 1e-3 units.
+            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
             <param name="curves">ポリカーブに結合する曲線</param>
             <param name="joinTolerance">結合する曲線間で使用できるギャップのサイズを判断するための許容値</param>
             <returns>結合された曲線によって作成されたポリカーブ</returns>
@@ -4476,9 +4503,10 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>曲線を結合してポリカーブを作成します。入力曲線を、接続順に指定する必要はありません。
-           ポリカーブの方向は、入力された配列の最初の曲線を基準にします。
-            優先される結合の許容値を 1e-6 から 1e-3 までの単位で選択します。</summary>
+            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
+            PolyCurve direction is based on the first curve in the input array.
+            Choose a preferred join tolerance between 1e-6 and 1e-3 units.
+            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
             <param name="curves">ポリカーブに結合する曲線</param>
             <param name="joinTolerance">結合する曲線間で使用できるギャップのサイズを判断するための許容値</param>
             <param name="trimCurves">入力された曲線が互いに交差または重複しており、ポリカーブを作成する前に終端セグメントをトリムする必要がある場合は、True に設定します。既定では False に設定されています。</param>
@@ -4489,13 +4517,15 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>接続された曲線をグループ化して、1 つまたは複数のポリカーブを作成します。優先される結合の許容値を 1e-6 から 1e-3 までの単位で選択します。</summary>
+            <summary>Make one or more polycurves by grouping connected curves. Choose a preferred join tolerance between 1e-6 and 1e-3 units.
+            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
             <param name="curves">グループ化して 1 つまたは複数のポリカーブを作成する曲線</param>
             <param name="joinTolerance">結合する曲線間で使用できるギャップのサイズを判断するための許容値</param>
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>接続された曲線をグループ化して、1 つまたは複数のポリカーブを作成します。優先される結合の許容値を 1e-6 から 1e-3 までの単位で選択します。</summary>
+            <summary>Make one or more polycurves by grouping connected curves. Choose a preferred join tolerance between 1e-6 and 1e-3 units.
+            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
             <param name="curves">グループ化して 1 つまたは複数のポリカーブを作成する曲線</param>
             <param name="joinTolerance">結合する曲線間で使用できるギャップのサイズを判断するための許容値</param>
             <param name="trimCurves">入力された曲線が互いに交差または重複しており、ポリカーブを作成する前に終端セグメントをトリムする必要がある場合は、True に設定します。既定では False に設定されています。</param>
@@ -5218,6 +5248,9 @@
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_sweepassolidsingle_deprecated">
             <summary>「このメソッドは廃止され、Dynamo の今後のバージョンで削除される予定です。代わりに SweepAsSolid(ICurveEntity path, bool cutEndOff)を使用してください」に類似するローカライズされた文字列を検索します。</summary>
         </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_sweepassurface_deprecated">
+            <summary>Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Curve.SweepAsSurface(profile, path, cutEndOff) instead.</summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_trimsegmentsbyparam_deprecated">
             <summary>「このメソッドは廃止され、Dynamo の今後のバージョンで削除される予定です。代わりに Curve.TrimSegmentsByParameter(double[] parameters, bool discardEvenSegments)を使用してください」に類似するローカライズされた文字列を検索します。</summary>
         </member>
@@ -5337,6 +5370,9 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ParameterizedCollectionException">
             <summary>「指定したデータ: \"{0}\" は値のペアの配列ではありません」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.point_project_deprecated">
+            <summary>Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Geometry.ProjectPointsOnto(Point[] points, Vector projectionDirection) instead..</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.PointsCoincident">
             <summary>「{0} は一致します」に類似するローカライズされた文字列を検索します。</summary>

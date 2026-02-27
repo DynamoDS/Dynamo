@@ -68,6 +68,8 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
+                <Setter Property="HorizontalContentAlignment"
+                        Value="Stretch" />
                 <Setter Property="Margin"
                         Value="0" />
                 <Setter Property="Padding"
@@ -131,7 +133,7 @@
 
         </ResourceDictionary>
     </UserControl.Resources>
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <Grid Margin="10px, 10px">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -261,11 +263,14 @@
                 </Button>
             </Grid>
 
-            <ListView Grid.Row="1" 
+            <ListView Grid.Row="1"
+                      x:Name="CustomPropertiesList"
                       Margin="0px 5px"
-                      HorizontalContentAlignment="Left"
+                      HorizontalContentAlignment="Stretch"
                       Background="Transparent"
                       BorderBrush="Transparent"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      ScrollViewer.CanContentScroll="False"
                       ItemsSource="{Binding CustomProperties}"
                       BorderThickness="0">
             </ListView>

@@ -1350,6 +1350,9 @@
   <data name="PackageDownloadStateInstalled" xml:space="preserve">
     <value>已安裝</value>
   </data>
+  <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
+    <value> (已安裝)</value>
+  </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>安裝中</value>
   </data>
@@ -2707,8 +2710,17 @@
   <data name="PackageManagerInstall" xml:space="preserve">
     <value>安裝</value>
   </data>
+  <data name="PackageManagerUpdate" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="PackageManagerUninstall" xml:space="preserve">
+    <value>解除安裝</value>
+  </data>
   <data name="PackageManagerPackageUpdated" xml:space="preserve">
     <value>已更新</value>
+  </data>
+  <data name="PackageManagerPackageUpdateAvailable" xml:space="preserve">
+    <value>有新版本</value>
   </data>
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>新建</value>
@@ -3371,6 +3383,15 @@
   <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
     <value>匯入您的自訂設定檔時發生錯誤。請再試一次，或繼續使用預設設定。</value>
   </data>
+  <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
+    <value>Settings imported. Please restart Dynamo.</value>
+  </data>
+  <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
+    <value>Reset imported settings</value>
+  </data>
+  <data name="SplashScreenSettingsResetSuccess" xml:space="preserve">
+    <value>Imported settings have been reset.</value>
+  </data>
   <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
     <value>正在啟動 Dynamo 視圖…</value>
   </data>
@@ -3848,10 +3869,10 @@
     <value>預設隱藏未連線的輸出埠</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotifications" xml:space="preserve">
-    <value>Show Python Engine change notifications</value>
+    <value>展示 Python 引擎變更通知</value>
   </data>
   <data name="PreferencesViewShowPythonEngineChangeNotificationsTooltip" xml:space="preserve">
-    <value>Dynamo 4.0 或更高版本不再支援 CPython，CPython 將轉換為新的預設引擎 PythonNet3。停用開關可隱藏有關引擎變更的所有通知。</value>
+    <value>Dynamo 4.0 或更高版本不再支援 CPython，CPython 將轉換為新的預設引擎 PythonNet3。關閉開關可隱藏有關引擎變更的所有通知。</value>
   </data>
   <data name="MessageBoxDontShowAgainLabel" xml:space="preserve">
     <value>不再顯示此畫面</value>
@@ -3880,6 +3901,12 @@
   </data>
   <data name="DynamoSplashScreenFailed" xml:space="preserve">
     <value>無法載入 Dynamo 啟動畫面，請重新啟動 Dynamo</value>
+  </data>
+  <data name="DocumentationBrowserPreferences" xml:space="preserve">
+    <value>文件瀏覽器</value>
+  </data>
+  <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
+    <value>與節點選取自動同步。</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
