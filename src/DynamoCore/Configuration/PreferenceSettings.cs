@@ -74,6 +74,7 @@ namespace Dynamo.Configuration
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
         private bool isEnablePersistExtensionsEnabled;
+        private bool isAutoSyncDocumentBrowser = true;
         private bool isStaticSplashScreenEnabled;
         private bool isTimeStampIncludedInExportFilePath;
         private bool isCreatedFromValidFile = true;
@@ -692,6 +693,15 @@ namespace Dynamo.Configuration
         public bool ShowTabsAndSpacesInScriptEditor { get; set; }
 
         /// <summary>
+        /// Controls whether untrusted location notifications are shown in the notification center.
+        /// This value is set by the host during initialization and is not persisted to DynamoSettings.xml.
+        /// Default is true to maintain existing behavior.
+        /// Note: This does not affect the file trust warning popup.
+        /// </summary>
+        [XmlIgnore]
+        internal bool EnableUnTrustedLocationsNotifications { get; set; } = true;
+
+        /// <summary>
         /// Controls whether Dynamo shows upgrade notifications for legacy CPython nodes
         /// when opening a graph. These notices appear when a graph contains CPython-engine
         /// Python nodes that are automatically upgraded to PythonNet3:
@@ -783,7 +793,22 @@ namespace Dynamo.Configuration
                 RaisePropertyChanged(nameof(EnablePersistExtensions));
             }
         }
-
+        /// <summary>
+        /// This defines if user wants the Document Browser content to be automatically synced to the selected Node.
+        /// The default value is true.
+        /// </summary>
+        public bool IsAutoSyncDocumentBrowser
+        {
+            get
+            {
+                return isAutoSyncDocumentBrowser;
+            }
+            set
+            {
+                isAutoSyncDocumentBrowser = value;
+                RaisePropertyChanged(nameof(IsAutoSyncDocumentBrowser));
+            }
+        }
 
         /// <summary>
         /// This defines if the user wants to see the static splash screen again

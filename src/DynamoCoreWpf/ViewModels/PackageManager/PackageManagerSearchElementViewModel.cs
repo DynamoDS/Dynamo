@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
 using Greg.Responses;
 using Prism.Commands;
@@ -20,9 +21,15 @@ namespace Dynamo.PackageManager.ViewModels
         public ICommand VisitSiteCommand { get; set; }
         public ICommand VisitRepositoryCommand { get; set; }
         public ICommand DownloadLatestToCustomPathCommand { get; set; }
+        public ICommand InstallActionCommand
+        {
+            get { return IsInstalledVersionSelected ? uninstallCommand : DownloadLatestCommand; }
+        }
 
         /// <summary>
-        /// VM IsDeprecated property
+        /// VM IsDeprecated property.
+        /// Indicates the package is deprecated. Used to disable install/update
+        /// actions (DownloadLatestCommand CanExecute), while uninstall remains available.
         /// </summary>
         public bool IsDeprecated { get { return this.SearchElementModel.IsDeprecated; } }
         /// <summary>
@@ -69,6 +76,33 @@ namespace Dynamo.PackageManager.ViewModels
         /// The currently selected version of a package
         /// </summary>
         private VersionInformation selectedVersion;
+        private string installedVersion;
+        private bool hasUpdateAvailable;
+        private readonly DelegateCommand uninstallCommand;
+        private Func<bool> canUninstall;
+
+        /// <summary>
+        /// True when any version of this package is installed locally. Used with
+        /// IsInstalledVersionSelected to drive Install vs Update vs Uninstall UI.
+        /// </summary>
+        private bool HasInstalledVersion => !string.IsNullOrEmpty(installedVersion);
+
+        /// <summary>
+        /// True when the selected version is installed. Drives whether the install
+        /// button maps to Uninstall versus Install/Update.
+        /// </summary>
+        public bool IsInstalledVersionSelected => SelectedVersion?.IsInstalled == true;
+
+        /// <summary>
+        /// True when the selected installed version cannot be uninstalled.
+        /// </summary>
+        public bool IsInstalledFallback => IsInstalledVersionSelected && canUninstall == null;
+
+        /// <summary>
+        /// Compatibility of the currently selected version with the current host.
+        /// This is used for indicators and warnings only; it does not block install/update.
+        /// </summary>
+        public bool IsUninstallState => IsInstalledVersionSelected && canUninstall != null;
 
         public bool? IsSelectedVersionCompatible
         {
@@ -96,8 +130,71 @@ namespace Dynamo.PackageManager.ViewModels
                     selectedVersion = value;
 
                     // Update the compatibility info so the icon of the currently selected version is updated
-                    IsSelectedVersionCompatible = selectedVersion.IsCompatible;
+                    IsSelectedVersionCompatible = selectedVersion?.IsCompatible;
                     SearchElementModel.SelectedVersion = selectedVersion;
+                    RaisePropertyChanged(nameof(SelectedVersion));
+                    RaisePropertyChanged(nameof(InstallActionText));
+                    RaisePropertyChanged(nameof(InstallActionCommand));
+                    RaisePropertyChanged(nameof(IsInstalledVersionSelected));
+                    RaisePropertyChanged(nameof(IsInstalledFallback));
+                    RaisePropertyChanged(nameof(IsUninstallState));
+                    RefreshUninstallCommandCanExecute();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The text to display for the install action button, which changes based on the package's installation state.
+        /// </summary>
+        public string InstallActionText
+        {
+            get
+            {
+                if (HasInstalledVersion)
+                {
+                    if (IsInstalledVersionSelected)
+                    {
+                        return IsInstalledFallback
+                            ? Resources.PackageDownloadStateInstalled
+                            : Resources.PackageManagerUninstall;
+                    }
+
+                    return Resources.PackageManagerUpdate;
+                }
+
+                return Resources.PackageManagerInstall;
+            }
+        }
+
+        /// <summary>
+        /// True if newer version is available for an installed package
+        /// </summary>
+        public bool HasUpdateAvailable
+        {
+            get { return hasUpdateAvailable; }
+            set
+            {
+                if (hasUpdateAvailable != value)
+                {
+                    hasUpdateAvailable = value;
+                    RaisePropertyChanged(nameof(HasUpdateAvailable));
+                }
+            }
+        }
+
+        internal ICommand UninstallCommand => uninstallCommand;
+        internal Func<bool> CanUninstall
+        {
+            get { return canUninstall; }
+            set
+            {
+                if (canUninstall != value)
+                {
+                    canUninstall = value;
+                    RaisePropertyChanged(nameof(InstallActionText));
+                    RaisePropertyChanged(nameof(IsInstalledFallback));
+                    RaisePropertyChanged(nameof(IsUninstallState));
+                    RefreshUninstallCommandCanExecute();
                 }
             }
         }
@@ -116,6 +213,7 @@ namespace Dynamo.PackageManager.ViewModels
             this.SearchElementModel = element;
             CanInstall = install;
             IsEnabledForInstall = isEnabledForInstall;
+            uninstallCommand = new DelegateCommand(OnRequestUninstall, () => CanUninstall?.Invoke() == true);
 
             // Attempts to show the latest compatible version. If no compatible, will return the latest instead.
             this.SelectedVersion = this.SearchElementModel.LatestCompatibleVersion;
@@ -128,7 +226,7 @@ namespace Dynamo.PackageManager.ViewModels
 
             this.DownloadLatestCommand = new DelegateCommand(
                 () => OnRequestDownload(false),
-                () => !SearchElementModel.IsDeprecated && CanInstall);
+                () => !SearchElementModel.IsDeprecated);
             this.DownloadLatestToCustomPathCommand = new DelegateCommand(() => OnRequestDownload(true));
 
             this.UpvoteCommand = new DelegateCommand(SearchElementModel.Upvote, () => canLogin);
@@ -143,11 +241,11 @@ namespace Dynamo.PackageManager.ViewModels
         {
             if (e.PropertyName == nameof(SearchElementModel.LatestCompatibleVersion))
             {
-                this.SelectedVersion = this.SearchElementModel.LatestCompatibleVersion;
+                SetDefaultSelectedVersion();
             }
             if (e.PropertyName == nameof(SearchElementModel.VersionDetails))
             {
-                this.VersionInformationList = this.SearchElementModel.VersionDetails;
+                SetDefaultSelectedVersion();
             }
         }
 
@@ -191,14 +289,17 @@ namespace Dynamo.PackageManager.ViewModels
 
             internal set
             {
-                canInstall = value;
-                RaisePropertyChanged(nameof(CanInstall));
+                if (canInstall != value)
+                {
+                    canInstall = value;
+                    RaisePropertyChanged(nameof(CanInstall));
+                }
             }
         }
 
         /// <summary>
-        /// True if package is enabled for download if custom package paths are not disabled,
-        /// False if custom package paths are disabled.
+        /// True when install actions are enabled (custom package locations allowed or bypassed).
+        /// Bound to the install button IsEnabled, independent of deprecation or version selection.
         /// </summary>
         public bool IsEnabledForInstall { get; private set; }
 
@@ -262,6 +363,7 @@ namespace Dynamo.PackageManager.ViewModels
                 {
                     versionInformationList = value;
                     RaisePropertyChanged(nameof(VersionInformationList));
+                    UpdateInstalledVersionFlags();
                 }
             }
         }
@@ -278,13 +380,75 @@ namespace Dynamo.PackageManager.ViewModels
             }
         }
 
+        internal void UpdateInstalledVersion(string version, bool setDefaultSelection)
+        {
+            installedVersion = version;
+            UpdateInstalledVersionFlags();
+
+            if (setDefaultSelection)
+            {
+                SetDefaultSelectedVersion();
+            }
+            RaisePropertyChanged(nameof(InstallActionText));
+            RaisePropertyChanged(nameof(InstallActionCommand));
+            RaisePropertyChanged(nameof(IsInstalledVersionSelected));
+            RaisePropertyChanged(nameof(IsInstalledFallback));
+            RaisePropertyChanged(nameof(IsUninstallState));
+            RefreshUninstallCommandCanExecute();
+        }
+
+        private void SetDefaultSelectedVersion()
+        {
+            var defaultVersion = GetDefaultSelectedVersion();
+            if (defaultVersion != null && SelectedVersion != defaultVersion)
+            {
+                SelectedVersion = defaultVersion;
+            }
+        }
+
+        private VersionInformation GetDefaultSelectedVersion()
+        {
+            if (!string.IsNullOrEmpty(installedVersion))
+            {
+                var installedInfo = VersionInformationList?.FirstOrDefault(v => v.Version == installedVersion);
+                if (installedInfo != null)
+                {
+                    return installedInfo;
+                }
+            }
+
+            return SearchElementModel?.LatestCompatibleVersion;
+        }
+
+        private void UpdateInstalledVersionFlags()
+        {
+            if (VersionInformationList == null) return;
+
+            foreach (var versionInfo in VersionInformationList)
+            {
+                versionInfo.IsInstalled = !string.IsNullOrEmpty(installedVersion) &&
+                                          string.Equals(versionInfo.Version, installedVersion, StringComparison.OrdinalIgnoreCase);
+            }
+
+            RaisePropertyChanged(nameof(ReversedVersionInformationList));
+        }
+
+        private void RefreshUninstallCommandCanExecute()
+        {
+            if (uninstallCommand is DelegateCommand delegateCommand)
+            {
+                delegateCommand.RaiseCanExecuteChanged();
+            }
+        }
+
         private List<String> CustomPackageFolders;
         private bool? isSelectedVersionCompatible;
 
         public delegate void PackageSearchElementDownloadHandler(
             PackageManagerSearchElement element, PackageVersion version, string downloadPath = null);
         public event PackageSearchElementDownloadHandler RequestDownload;
-        
+        internal event Action<PackageManagerSearchElementViewModel> RequestUninstall;
+
         public void OnRequestDownload(PackageVersion version, bool downloadToCustomPath)
         {
             string downloadPath = String.Empty;
@@ -301,9 +465,19 @@ namespace Dynamo.PackageManager.ViewModels
                 RequestDownload(this.SearchElementModel, version, downloadPath);
         }
 
+        private void OnRequestUninstall()
+        {
+            if (RequestUninstall != null)
+            {
+                RequestUninstall(this);
+            }
+        }
+
         private void OnRequestDownload(bool downloadToCustomPath)
         {
-            var version = this.SearchElementModel.Header.versions.First(x => x.version.Equals(SelectedVersion.Version));
+            var version = this.SearchElementModel?.Header?.versions
+                ?.FirstOrDefault(x => x.version.Equals(SelectedVersion.Version));
+            if (version == null) return;
 
             string downloadPath = String.Empty;
 

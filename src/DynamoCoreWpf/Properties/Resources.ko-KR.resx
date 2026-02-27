@@ -1349,6 +1349,9 @@
   <data name="PackageDownloadStateInstalled" xml:space="preserve">
     <value>설치됨</value>
   </data>
+  <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
+    <value> (설치됨)</value>
+  </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>설치</value>
   </data>
@@ -2706,8 +2709,17 @@
   <data name="PackageManagerInstall" xml:space="preserve">
     <value>설치</value>
   </data>
+  <data name="PackageManagerUpdate" xml:space="preserve">
+    <value>업데이트</value>
+  </data>
+  <data name="PackageManagerUninstall" xml:space="preserve">
+    <value>설치제거</value>
+  </data>
   <data name="PackageManagerPackageUpdated" xml:space="preserve">
     <value>업데이트됨</value>
+  </data>
+  <data name="PackageManagerPackageUpdateAvailable" xml:space="preserve">
+    <value>새 버전 사용 가능</value>
   </data>
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>새로 만들기</value>
@@ -3370,6 +3382,15 @@
   <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
     <value>사용자 설정 파일을 가져올 때 문제가 발생했습니다. 다시 시도하거나 기본 설정으로 계속하십시오.</value>
   </data>
+  <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
+    <value>Settings imported. Please restart Dynamo.</value>
+  </data>
+  <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
+    <value>Reset imported settings</value>
+  </data>
+  <data name="SplashScreenSettingsResetSuccess" xml:space="preserve">
+    <value>Imported settings have been reset.</value>
+  </data>
   <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
     <value>Dynamo 뷰를 시작하는 중...</value>
   </data>
@@ -3878,6 +3899,12 @@ Dynamo 3.3–3.6.x에서 이 그래프를 열려면 패키지 관리자에서 Py
   </data>
   <data name="DynamoSplashScreenFailed" xml:space="preserve">
     <value>Dynamo 스플래시 화면을 로드하지 못했습니다. Dynamo를 다시 시작하십시오.</value>
+  </data>
+  <data name="DocumentationBrowserPreferences" xml:space="preserve">
+    <value>문서 탐색기</value>
+  </data>
+  <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
+    <value>노드 선택과 자동 동기화됩니다.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
