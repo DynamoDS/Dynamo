@@ -65,6 +65,10 @@
             <param name="x">複製されたディスパッチを強制するために使用されるダミー変数</param>
             <param name="failWithException">次の代わりに、例外を発生させるディスパッチの失敗:</param>
         </member>
+        <member name="T:FFITarget.NodeCategoryAttributeTest">
+            <summary>Test class for NodeCategoryAttribute type-forwarded to DynamoServices.
+            CreateFromAttribute is a static method (not a constructor) but is forced into the "Create" category via the attribute.</summary>
+        </member>
         <member name="T:FFITarget.OverloadTarget">
             <summary>オーバーロードされたメソッドのテスト対象</summary>
         </member>

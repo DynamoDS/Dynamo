@@ -3367,7 +3367,7 @@ In alcuni scenari complessi di programmi host o grafici, la modalità Automatico
     <value>Si è verificato un errore quando è stato importato il file di impostazioni personalizzate. Riprovare o continuare con le impostazioni di default.</value>
   </data>
   <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
-    <value>Settings imported. Please restart Dynamo.</value>
+    <value>Settings imported. To apply the settings, launch Dynamo, then close it and restart it.</value>
   </data>
   <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
     <value>Reset imported settings</value>
