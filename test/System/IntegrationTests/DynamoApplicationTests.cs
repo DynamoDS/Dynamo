@@ -105,5 +105,59 @@ namespace IntegrationTests
             Assert.AreEqual(version.Minor, thisVersion.Minor);
             Assert.AreEqual(version.Build, thisVersion.Build);
         }
+
+        [Test]
+        public void ASMVersionIsLoggedWhenSuccessfullyLoaded()
+        {
+            // Arrange
+            var model = StartupUtils.MakeModel(CLImode: true, asmPath: string.Empty);
+
+            // Assert - Verify that either a specific version is logged or the generic success message
+            var logText = model.Logger.LogText;
+            Assert.IsTrue(
+                (logText.Contains("ASM version") && logText.Contains("loaded from:")) ||
+                logText.Contains("ASM loaded successfully"),
+                "Expected ASM logging to appear in logger output"
+            );
+
+            model.ShutDown(false);
+        }
+
+        [Test]
+        public void ASMWarningLoggedWhenLoadFails()
+        {
+            // Arrange - use invalid path to force ASM load failure
+            var invalidPath = @"./invalid/asm/path/";
+            var model = StartupUtils.MakeModel(CLImode: true, asmPath: invalidPath);
+
+            // Assert - Invalid path should log a warning
+            var logText = model.Logger.LogText;
+            Assert.IsTrue(
+                logText.Contains("ASM could not be loaded"),
+                "Expected ASM load failure warning to be logged"
+            );
+
+            model.ShutDown(false);
+        }
+
+        [Test]
+        public void ASMMessageLoggedWhenVersionUndetermined()
+        {
+            // Arrange - create model with default ASM
+            var model = StartupUtils.MakeModel(CLImode: true, asmPath: string.Empty);
+
+            // Assert
+            var logText = model.Logger.LogText;
+
+            // Should have some ASM-related log message
+            Assert.IsTrue(
+                logText.Contains("ASM version") ||
+                logText.Contains("ASM loaded successfully") ||
+                logText.Contains("ASM could not be loaded"),
+                "Expected some ASM status message in logger output"
+            );
+
+            model.ShutDown(false);
+        }
     }
 }

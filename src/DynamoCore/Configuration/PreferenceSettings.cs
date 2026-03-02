@@ -693,6 +693,15 @@ namespace Dynamo.Configuration
         public bool ShowTabsAndSpacesInScriptEditor { get; set; }
 
         /// <summary>
+        /// Controls whether untrusted location notifications are shown in the notification center.
+        /// This value is set by the host during initialization and is not persisted to DynamoSettings.xml.
+        /// Default is true to maintain existing behavior.
+        /// Note: This does not affect the file trust warning popup.
+        /// </summary>
+        [XmlIgnore]
+        internal bool EnableUnTrustedLocationsNotifications { get; set; } = true;
+
+        /// <summary>
         /// Controls whether Dynamo shows upgrade notifications for legacy CPython nodes
         /// when opening a graph. These notices appear when a graph contains CPython-engine
         /// Python nodes that are automatically upgraded to PythonNet3:
