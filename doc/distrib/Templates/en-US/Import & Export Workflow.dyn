@@ -1090,7 +1090,7 @@
       ],
       "Replication": "Disabled",
       "Description": "Allows you to select a file on the system and returns its file path",
-      "HintPath": "C:\\Users\\piersoj\\Documents\\Repos\\Dynamo\\doc\\distrib\\Templates\\Data\\CSV_Import_Example.csv",
+      "HintPath": "..\\Data\\CSV_Import_Example.csv",
       "InputValue": "..\\Data\\CSV_Import_Example.csv"
     },
     {
@@ -6651,8 +6651,8 @@
         "Background": "#FFC1D676"
       }
     ],
-    "X": 428.86761538879307,
-    "Y": 562.2663428795349,
-    "Zoom": 1.1638298288860631
+    "X": 318.31265798789235,
+    "Y": 124.31345710772163,
+    "Zoom": 0.09206401543549131
   }
 }
