@@ -84,15 +84,9 @@ namespace Dynamo.Tests
             return uvs;
         }
 
-        private static (double normU, double normV) GetUvScale(Surface face)
-        {
-            // Use the production method to ensure test validates actual code
-            return UvScalingUtilities.GetNormalizedUvScales(face);
-        }
-
         private static List<Triangle> ComputeDelaunayTrianglesInScaledUvSpace(IReadOnlyList<UV> uvs, Surface face)
         {
-            var (normU, normV) = GetUvScale(face);
+            var (normU, normV) = UvScalingUtilities.GetNormalizedUvScales(face);
 
             // Perform Delaunay triangulation in the same anisotropically scaled UV space as production.
             var points = uvs.Select(uv => new Pt(uv.U * normU, uv.V * normV)).ToList();
@@ -168,7 +162,7 @@ namespace Dynamo.Tests
 
         private static void AssertVoronoiUsesScaledCircumcenters(IReadOnlyList<Triangle> triangles, Surface face)
         {
-            var (normU, normV) = GetUvScale(face);
+            var (normU, normV) = UvScalingUtilities.GetNormalizedUvScales(face);
 
             // For each triangle in scaled UV space, compute where its circumcenter maps to in world space.
             var expectedCircumcentersInWorldSpace = new List<Point>();
