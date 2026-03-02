@@ -1351,7 +1351,7 @@
     <value>Установлено</value>
   </data>
   <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
-    <value> (installed)</value>
+    <value> (установлено)</value>
   </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>Установка</value>
@@ -3384,6 +3384,15 @@
   <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
     <value>При импорте файла пользовательских параметров произошла ошибка. Повторите попытку или используйте параметры по умолчанию.</value>
   </data>
+  <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
+    <value>Settings imported. Please restart Dynamo.</value>
+  </data>
+  <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
+    <value>Reset imported settings</value>
+  </data>
+  <data name="SplashScreenSettingsResetSuccess" xml:space="preserve">
+    <value>Imported settings have been reset.</value>
+  </data>
   <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
     <value>Запуск вида Dynamo...</value>
   </data>
@@ -3898,7 +3907,7 @@
     <value>Обозреватель документации</value>
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
-    <value>Auto‑sync with node selection.</value>
+    <value>Автоматическая синхронизация с выбором узла.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

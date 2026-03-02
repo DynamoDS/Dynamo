@@ -63,7 +63,6 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("MCPViewExtension")]
 [assembly: InternalsVisibleTo("MCPServer")]
 
-// Disable PublicAPIAnalyzer errors for this type as they're already added to the public API text file
-#pragma warning disable RS0016 
 [assembly: TypeForwardedTo(typeof(Dynamo.Scheduler.Disposable))]
-#pragma warning restore RS0016
+// NodeCategoryAttribute moved to DynamoServices so libraries that reference only DynamoServices (e.g. LibG) can use it.
+[assembly: TypeForwardedTo(typeof(Dynamo.Graph.Nodes.NodeCategoryAttribute))]

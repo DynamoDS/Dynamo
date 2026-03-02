@@ -1,5 +1,5 @@
 ## Em profundidade
-ProjectPointsOnto will project the point(s) along a given vector direction onto a specified geometry. The projection is only attempted in the positve direction of the vector. If the vector does not intersect the given geometry, it will return null. In the example below, we create a point using a code block to specify the x,y, and z coordinates. We use a sphere as the geometry to project onto, and the world XAxis as the projection Direction. The output is a point on the surface of the sphere that is projected from the original point.
+ProjectPointsOnto projetará os pontos ao longo de uma dada direção de vetor para uma geometria especificada. A projeção é tentada somente na direção positiva do vetor. Se o vetor não fizer interseção com a geometria fornecida, ele retornará nulo. No exemplo abaixo, criamos um ponto usando um bloco de código para especificar as coordenadas x, y e z. Usamos uma esfera como a geometria na qual projetar e o XAxis universal como a direção de projeção. A saída é um ponto na superfície da esfera que é projetado do ponto original.
 ___
 ## Arquivo de exemplo
 
