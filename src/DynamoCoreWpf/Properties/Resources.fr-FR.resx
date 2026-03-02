@@ -3379,7 +3379,7 @@ Vous pouvez gérer ce paramètre dans Préférences -&gt; Sécurité.</value>
     <value>Une erreur s'est produite lors de l'importation de votre fichier. Réessayez ou poursuivez avec les paramètres par défaut.</value>
   </data>
   <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
-    <value>Settings imported. Please restart Dynamo.</value>
+    <value>Settings imported. To apply the settings, launch Dynamo, then close it and restart it.</value>
   </data>
   <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
     <value>Reset imported settings</value>

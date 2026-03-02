@@ -3384,7 +3384,7 @@
     <value>匯入您的自訂設定檔時發生錯誤。請再試一次，或繼續使用預設設定。</value>
   </data>
   <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
-    <value>Settings imported. Please restart Dynamo.</value>
+    <value>Settings imported. To apply the settings, launch Dynamo, then close it and restart it.</value>
   </data>
   <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
     <value>Reset imported settings</value>

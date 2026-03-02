@@ -65,6 +65,10 @@
             <param name="x">用於強制使用複寫的分派的虛擬變數</param>
             <param name="failWithException">分派失敗，發生例外狀況，而不是</param>
         </member>
+        <member name="T:FFITarget.NodeCategoryAttributeTest">
+            <summary>Test class for NodeCategoryAttribute type-forwarded to DynamoServices.
+            CreateFromAttribute is a static method (not a constructor) but is forced into the "Create" category via the attribute.</summary>
+        </member>
         <member name="T:FFITarget.OverloadTarget">
             <summary>多載方法的測試目標</summary>
         </member>
