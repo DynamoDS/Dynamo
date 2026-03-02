@@ -3385,7 +3385,7 @@ En determinados gráficos complejos o al usar programas anfitriones, el modo Aut
     <value>Se ha producido un error al importar el archivo de configuración personalizada. Inténtelo de nuevo o continúe con la configuración por defecto.</value>
   </data>
   <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
-    <value>Settings imported. Please restart Dynamo.</value>
+    <value>Settings imported. To apply the settings, launch Dynamo, then close it and restart it.</value>
   </data>
   <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
     <value>Reset imported settings</value>
