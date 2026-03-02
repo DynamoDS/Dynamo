@@ -65,6 +65,10 @@
             <param name="x">복제된 디스패치를 강제하는 데 사용되는 더미 변수</param>
             <param name="failWithException">다음이 아닌 예외로 인한 디스패치 실패</param>
         </member>
+        <member name="T:FFITarget.NodeCategoryAttributeTest">
+            <summary>Test class for NodeCategoryAttribute type-forwarded to DynamoServices.
+            CreateFromAttribute is a static method (not a constructor) but is forced into the "Create" category via the attribute.</summary>
+        </member>
         <member name="T:FFITarget.OverloadTarget">
             <summary>오버로드된 메서드에 대한 대상을 테스트합니다.</summary>
         </member>
