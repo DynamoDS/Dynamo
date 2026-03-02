@@ -2,7 +2,7 @@
   "Uuid": "f506efaf-89e0-41a1-b8da-2979bc1d7674",
   "IsCustomNode": false,
   "Description": "This document will help you get familiarised with different way of importing and exporting excel and csv files.",
-  "Name": "Template_01_DynamoWorkflowImportExport",
+  "Name": "Import & Export Workflow",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -1090,7 +1090,7 @@
       ],
       "Replication": "Disabled",
       "Description": "Allows you to select a file on the system and returns its file path",
-      "HintPath": "C:\\Users\\piersoj\\Documents\\Repos\\Dynamo\\doc\\distrib\\Templates\\Data\\CSV_Import_Example.csv",
+      "HintPath": "..\\Data\\CSV_Import_Example.csv",
       "InputValue": "..\\Data\\CSV_Import_Example.csv"
     },
     {
@@ -6235,7 +6235,7 @@
       },
       {
         "Id": "d6ecf5e85b2848f286af8f671aa31d9f",
-        "Title": "DYNAMO PROJECT\n_____________________________________________________ \n\nTemplate_01_DynamoWorkflowImportExport\n",
+        "Title": "DYNAMO PROJECT\n_____________________________________________________ \n\nImport & Export Workflow\n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

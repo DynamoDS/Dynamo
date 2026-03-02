@@ -2,7 +2,7 @@
   "Uuid": "5c68cbf9-983c-46d8-a76e-ea2a62e91ca1",
   "IsCustomNode": false,
   "Description": "This document will help you get familiarised with the  creation of Custom node. ",
-  "Name": "Template_02_DynamoWorkflowCustomNode",
+  "Name": "Make a Custom Node",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -3552,7 +3552,7 @@
       },
       {
         "Id": "87391c15042a4e1db5102c3ac63ea566",
-        "Title": "DYNAMO PROJECT\n_____________________________________________________ \n\nTemplate_02_DynamoWorkflowCustomNode\n",
+        "Title": "DYNAMO PROJECT\n_____________________________________________________ \n\nMake a Custom Node\n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

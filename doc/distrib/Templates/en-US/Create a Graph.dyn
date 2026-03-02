@@ -2,7 +2,7 @@
   "Uuid": "9d7f9466-915e-498a-b024-bf6bfe021dee",
   "IsCustomNode": false,
   "Description": "This document will help you get familiarised with a standardised workflow and the following important steps.",
-  "Name": "Template_00_HowToCreateADynamoGraph",
+  "Name": "Create a Graph",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -2007,7 +2007,7 @@
       },
       {
         "Id": "2571591a0b2b499a8402206eba4356a2",
-        "Title": "DYNAMO PROJECT\n_____________________________________________________ \n\nTemplate_00_HowToCreateADynamoGraph\n",
+        "Title": "DYNAMO PROJECT\n_____________________________________________________ \n\nTCreate a Graph\n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
