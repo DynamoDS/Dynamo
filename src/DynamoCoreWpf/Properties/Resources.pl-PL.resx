@@ -3385,7 +3385,7 @@ W niektórych sytuacjach ze złożonymi wykresami lub programami nadrzędnymi tr
     <value>Wystąpiły problemy podczas importowania pliku ustawień niestandardowych. Spróbuj ponownie lub kontynuuj z ustawieniami domyślnymi.</value>
   </data>
   <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
-    <value>Settings imported. Please restart Dynamo.</value>
+    <value>Settings imported. To apply the settings, launch Dynamo, then close it and restart it.</value>
   </data>
   <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
     <value>Reset imported settings</value>

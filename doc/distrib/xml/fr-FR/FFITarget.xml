@@ -65,6 +65,10 @@
             <param name="x">Variable factice utilisée pour forcer la distribution répliquée</param>
             <param name="failWithException">Échec de la distribution avec une exception plutôt qu'avec</param>
         </member>
+        <member name="T:FFITarget.NodeCategoryAttributeTest">
+            <summary>Test class for NodeCategoryAttribute type-forwarded to DynamoServices.
+            CreateFromAttribute is a static method (not a constructor) but is forced into the "Create" category via the attribute.</summary>
+        </member>
         <member name="T:FFITarget.OverloadTarget">
             <summary>Cible de test pour les méthodes surchargées</summary>
         </member>
