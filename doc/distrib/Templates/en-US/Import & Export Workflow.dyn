@@ -2,7 +2,7 @@
   "Uuid": "f506efaf-89e0-41a1-b8da-2979bc1d7674",
   "IsCustomNode": false,
   "Description": "This document will help you get familiarised with different way of importing and exporting excel and csv files.",
-  "Name": "Template_01_DynamoWorkflowImportExport",
+  "Name": "Import & Export Workflow",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -6235,7 +6235,7 @@
       },
       {
         "Id": "d6ecf5e85b2848f286af8f671aa31d9f",
-        "Title": "DYNAMO PROJECT\n_____________________________________________________ \n\nTemplate_01_DynamoWorkflowImportExport\n",
+        "Title": "DYNAMO PROJECT\n_____________________________________________________ \n\nImport & Export Workflow\n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -6651,8 +6651,8 @@
         "Background": "#FFC1D676"
       }
     ],
-    "X": 318.31265798789235,
-    "Y": 124.31345710772163,
-    "Zoom": 0.09206401543549131
+    "X": 428.86761538879307,
+    "Y": 562.2663428795349,
+    "Zoom": 1.1638298288860631
   }
 }
