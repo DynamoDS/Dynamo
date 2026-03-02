@@ -65,6 +65,10 @@
             <param name="x">Dummy-Variable zum Erzwingen einer replizierten Ausgabe</param>
             <param name="failWithException">Ausgabe-Fehler mit Ausnahme anstatt</param>
         </member>
+        <member name="T:FFITarget.NodeCategoryAttributeTest">
+            <summary>Test class for NodeCategoryAttribute type-forwarded to DynamoServices.
+            CreateFromAttribute is a static method (not a constructor) but is forced into the "Create" category via the attribute.</summary>
+        </member>
         <member name="T:FFITarget.OverloadTarget">
             <summary>Testziel für überlastete Methoden</summary>
         </member>

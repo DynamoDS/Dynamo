@@ -65,6 +65,10 @@
             <param name="x">Dummy var used to force replicated dispatch</param>
             <param name="failWithException">Fail dispatch with an exception rather than</param>
         </member>
+        <member name="T:FFITarget.NodeCategoryAttributeTest">
+            <summary>Test class for NodeCategoryAttribute type-forwarded to DynamoServices.
+            CreateFromAttribute is a static method (not a constructor) but is forced into the "Create" category via the attribute.</summary>
+        </member>
         <member name="T:FFITarget.OverloadTarget">
             <summary>Test target for overloaded methods</summary>
         </member>

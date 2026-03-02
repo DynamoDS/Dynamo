@@ -3385,7 +3385,7 @@ Dynamo を再起動してアンインストールを完了します。
     <value>カスタム設定ファイルの読み込み時に問題が発生しました。もう一度試すか、既定の設定で続行してください。</value>
   </data>
   <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
-    <value>Settings imported. Please restart Dynamo.</value>
+    <value>Settings imported. To apply the settings, launch Dynamo, then close it and restart it.</value>
   </data>
   <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
     <value>Reset imported settings</value>
