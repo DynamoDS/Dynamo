@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Xml;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Utilities;
 
 namespace Dynamo.Graph.Notes
@@ -19,7 +21,14 @@ namespace Dynamo.Graph.Notes
         /// <summary>
         /// This action is triggered when undo command is pressed and a node is pinned
         /// </summary>
+        /// <remarks>Obsolete: no longer fired. DeserializeCore now resolves PinnedNode directly.</remarks>
         internal event Action<ModelBase> UndoRequest;
+
+        /// <summary>
+        /// Reference to the owning workspace, set when the note is added to the workspace.
+        /// Used during deserialization to resolve PinnedNode by GUID.
+        /// </summary>
+        internal WorkspaceModel Workspace { get; set; }
 
         private string text;
 
@@ -141,36 +150,35 @@ namespace Dynamo.Graph.Notes
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            var helper = new XmlElementHelper(nodeElement);
+            XmlElementHelper helper = new XmlElementHelper(nodeElement);
             GUID = helper.ReadGuid("guid", GUID);
             Text = helper.ReadString("text", "New Note");
             X = helper.ReadDouble("x", 0.0);
             Y = helper.ReadDouble("y", 0.0);
-            PinnedNodeGuid = helper.ReadGuid("pinnedNode", Guid.Empty);
 
-            // Notify listeners that the position of the note has changed, 
+            Guid savedPinnedNodeGuid = helper.ReadGuid("pinnedNode", Guid.Empty);
+
+            // Resolve the pinned node directly from the workspace rather than relying
+            // on the fragile TryToSubscribeUndoNote side-channel event mechanism.
+            if (savedPinnedNodeGuid == Guid.Empty)
+            {
+                PinnedNode = null;
+            }
+            else if (Workspace != null)
+            {
+                PinnedNode = Workspace.Nodes.FirstOrDefault(n => n.GUID == savedPinnedNodeGuid);
+            }
+
+            // Notify listeners that the position of the note has changed,
             // then parent group will also redraw itself.
             ReportPosition();
-            TryToSubscribeUndoNote();
         }
 
         /// <summary>
-        /// Verify if the current user action is to pin a node so the 'unpin' method can be called to undo the action
+        /// Obsolete: no longer called. PinnedNode is now resolved directly in DeserializeCore.
+        /// Retained to avoid breaking internal callers via InternalsVisibleTo.
         /// </summary>
-        internal void TryToSubscribeUndoNote()
-        {
-            if (pinnedNode != null && PinnedNodeGuid == Guid.Empty && UndoRequest != null)
-            {
-                UndoRedoAction = UndoAction.Unpin;
-                UndoRequest(this);
-                return;
-            }
-            else if (pinnedNode == null && PinnedNodeGuid != Guid.Empty && UndoRequest != null)
-            {
-                UndoRedoAction = UndoAction.Pin;
-                UndoRequest(this);
-            }
-        }
+        internal void TryToSubscribeUndoNote() { }
 
         #endregion
     }

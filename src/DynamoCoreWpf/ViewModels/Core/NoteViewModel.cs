@@ -144,12 +144,16 @@ namespace Dynamo.ViewModels
 
         #endregion
 
+        // Tracks the NodeModel we are currently subscribed to, so we can safely
+        // unsubscribe even after Model.PinnedNode has already been set to null
+        // (e.g. during undo deserialization).
+        private NodeModel subscribedPinnedNode;
+
         public NoteViewModel(WorkspaceViewModel workspaceViewModel, NoteModel model)
         {
             this.WorkspaceViewModel = workspaceViewModel;
             _model = model;
             model.PropertyChanged += note_PropertyChanged;
-            model.UndoRequest += note_PinUnpinToNode;
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
             ZIndex = ++StaticZIndex; // places the note on top of all nodes/notes
 
@@ -162,42 +166,13 @@ namespace Dynamo.ViewModels
 
         public override void Dispose()
         {
-            if (Model.PinnedNode != null)
+            if (subscribedPinnedNode != null)
             {
                 UnsuscribeFromPinnedNode();
             }
             _model.PropertyChanged -= note_PropertyChanged;
-            _model.UndoRequest -= note_PinUnpinToNode;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
         }
-
-        private void note_PinUnpinToNode(ModelBase obj)
-        {
-            if (Model.UndoRedoAction.Equals(NoteModel.UndoAction.Unpin))
-            {
-                // Undo of a pin: unpin without re-recording to the undo stack
-                UnpinFromNode(obj, recordForUndo: false);
-                return;
-            }
-            if (Model.UndoRedoAction.Equals(NoteModel.UndoAction.Pin))
-            {
-                // Redo of a pin: apply pin state directly without re-recording.
-                // Calling PinToNode here would invoke RecordModelForModification,
-                // injecting a spurious entry onto the undo stack and corrupting
-                // subsequent undo/redo cycles.
-                NodeModel node = WorkspaceViewModel.Model.Nodes
-                    .Where(x => x.GUID.Equals(Model.PinnedNodeGuid))
-                    .FirstOrDefault();
-
-                if (node == null) return;
-
-                Model.PinnedNode = node;
-                MoveNoteAbovePinnedNode();
-                SubscribeToPinnedNode();
-                WorkspaceViewModel.HasUnsavedChanges = true;
-            }
-        }
-
 
         private void SelectionOnCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
@@ -245,6 +220,17 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("IsSelected");
                     break;
                 case nameof(NoteModel.PinnedNode):
+                    if (Model.PinnedNode != null && subscribedPinnedNode == null)
+                    {
+                        // Became pinned (undo of unpin, or redo of pin via DeserializeCore)
+                        SubscribeToPinnedNode();
+                        MoveNoteAbovePinnedNode();
+                    }
+                    else if (Model.PinnedNode == null && subscribedPinnedNode != null)
+                    {
+                        // Became unpinned (undo of pin via DeserializeCore)
+                        UnsuscribeFromPinnedNode();
+                    }
                     RaisePropertyChanged(nameof(this.PinnedNode));
                     PinToNodeCommand.RaiseCanExecuteChanged();
                     UnpinFromNodeCommand.RaiseCanExecuteChanged();
@@ -316,19 +302,15 @@ namespace Dynamo.ViewModels
 
         private void PinToNode(object parameters)
         {
-
-            var nodeToPin = DynamoSelection.Instance.Selection
+            NodeModel nodeToPin = DynamoSelection.Instance.Selection
                 .OfType<NodeModel>()
                 .FirstOrDefault();
 
-            if (nodeToPin == null)
-            {
-                return;
-            }
+            if (nodeToPin == null) return;
 
             WorkspaceModel.RecordModelForModification(Model, WorkspaceViewModel.Model.UndoRecorder);
 
-            var nodeGroup = WorkspaceViewModel.Annotations
+            AnnotationViewModel nodeGroup = WorkspaceViewModel.Annotations
                 .FirstOrDefault(x => x.AnnotationModel.ContainsModel(nodeToPin));
 
             if (nodeGroup != null)
@@ -336,10 +318,9 @@ namespace Dynamo.ViewModels
                 nodeGroup.AnnotationModel.AddToTargetAnnotationModel(this.Model);
             }
 
+            // Setting PinnedNode fires note_PropertyChanged, which calls
+            // SubscribeToPinnedNode() and MoveNoteAbovePinnedNode().
             Model.PinnedNode = nodeToPin;
-
-            MoveNoteAbovePinnedNode();
-            SubscribeToPinnedNode();
 
             WorkspaceViewModel.HasUnsavedChanges = true;
         }
@@ -387,11 +368,12 @@ namespace Dynamo.ViewModels
             return false;
         }
 
-        private void UnpinFromNode(object parameters, bool recordForUndo = true)
+        private void UnpinFromNode(object parameters)
         {
-            if (recordForUndo)
-                WorkspaceModel.RecordModelForModification(Model, WorkspaceViewModel.Model.UndoRecorder);
+            WorkspaceModel.RecordModelForModification(Model, WorkspaceViewModel.Model.UndoRecorder);
 
+            // Unsubscribe before setting PinnedNode to null so UnsuscribeFromPinnedNode
+            // can still access the node reference via subscribedPinnedNode.
             UnsuscribeFromPinnedNode();
 
             Model.PinnedNode = null;
@@ -400,10 +382,12 @@ namespace Dynamo.ViewModels
 
         private void SubscribeToPinnedNode()
         {
+            subscribedPinnedNode = Model.PinnedNode;
+
             // Subscribe to PinnedNode (model and viewmodel) Property_Changed
             // so that note moves above and behind node every time
             // NodeModel.State, NodeModel.Position, or NodeViewModel.ZIndex change
-            Model.PinnedNode.PropertyChanged += PinnedNodeModel_PropertyChanged;
+            subscribedPinnedNode.PropertyChanged += PinnedNodeModel_PropertyChanged;
             PinnedNode.PropertyChanged += PinnedNodeViewModel_PropertyChanged;
 
             // Subscribe to PinnedNode.Selected (fires before node is selected)
@@ -415,22 +399,32 @@ namespace Dynamo.ViewModels
 
             Analytics.TrackEvent(
                 Actions.Pin,
-                Categories.NoteOperations, Model.PinnedNode.Name);
+                Categories.NoteOperations, subscribedPinnedNode.Name);
         }
 
         private void UnsuscribeFromPinnedNode()
         {
-            Model.PinnedNode.PropertyChanged -= PinnedNodeModel_PropertyChanged;
-            if (PinnedNode != null)
+            if (subscribedPinnedNode == null) return;
+
+            subscribedPinnedNode.PropertyChanged -= PinnedNodeModel_PropertyChanged;
+
+            // Look up the NodeViewModel by the tracked model's GUID so we can
+            // unsubscribe even after Model.PinnedNode has been set to null.
+            NodeViewModel pinnedNodeVM = WorkspaceViewModel.Nodes
+                .FirstOrDefault(x => x.Id == subscribedPinnedNode.GUID);
+
+            if (pinnedNodeVM != null)
             {
-                PinnedNode.PropertyChanged -= PinnedNodeViewModel_PropertyChanged;
-                PinnedNode.Selected -= PinnedNodeViewModel_OnPinnedNodeSelected;
-                PinnedNode.Removed -= PinnedNodeViewModel_OnPinnedNodeRemoved;
+                pinnedNodeVM.PropertyChanged -= PinnedNodeViewModel_PropertyChanged;
+                pinnedNodeVM.Selected -= PinnedNodeViewModel_OnPinnedNodeSelected;
+                pinnedNodeVM.Removed -= PinnedNodeViewModel_OnPinnedNodeRemoved;
 
                 Analytics.TrackEvent(
                     Actions.Unpin,
-                    Categories.NoteOperations, Model.PinnedNode.Name);
+                    Categories.NoteOperations, subscribedPinnedNode.Name);
             }
+
+            subscribedPinnedNode = null;
         }
 
         private void PinnedNodeViewModel_OnPinnedNodeRemoved(object sender, EventArgs e)
