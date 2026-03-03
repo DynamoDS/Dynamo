@@ -1,9 +1,9 @@
 ## Im Detail
-Use `NurbsCurve.PeriodicKnots` when you need to export a closed NURBS curve to another system (for example Alias) or when that system expects the curve in its periodic form. Many CAD tools expect this form for round-trip accuracy.
+Verwenden Sie `NurbsCurve.PeriodicKnots`, wenn Sie eine geschlossene NURBS-Kurve in ein anderes System (z. B. Alias) exportieren müssen oder wenn dieses System die Kurve in ihrer periodischen Form erwartet. Viele CAD-Werkzeuge erwarten diese Form für die Roundtrip-Genauigkeit.
 
-`PeriodicKnots` returns the knot vector in the *periodic* (unclamped) form. `Knots` returns it in the *clamped* form. Both arrays have the same length; they are two different ways to describe the same curve. In the clamped form, knots repeat at the start and end so the curve is pinned to the parameter range. In the periodic form, the knot spacing repeats at the start and end instead, which gives a smooth closed loop.
+`PeriodicKnots` gibt den Knotenvektor in der *periodischen* (ungeklammerten) Form zurück. `Knots` gibt ihn in der *geklammerten* Form zurück. Beide Arrays haben die gleiche Länge; es sind zwei verschiedene Möglichkeiten, dieselbe Kurve zu beschreiben. In der geklammerten Form wiederholen sich die Knoten am Anfang und Ende, sodass die Kurve am Parameterbereich fixiert wird. In der periodischen Form wiederholt sich der Knotenabstand stattdessen am Anfang und Ende, wodurch eine glatte, geschlossene Schleife entsteht.
 
-In the example below, a periodic NURBS curve is built with `NurbsCurve.ByControlPointsWeightsKnots`. Watch nodes compare `Knots` and `PeriodicKnots` so you can see the same length but different values. Knots is the clamped form (repeated knots at the ends), and PeriodicKnots is the unclamped form with the repeating difference pattern that defines the curve's periodicity.
+Im folgenden Beispiel wird eine periodische NURBS-Kurve mit `NurbsCurve.ByControlPointsWeightsKnots` erstellt. Watch-Blöcke vergleichen `Knots` und `PeriodicKnots`, sodass Sie die gleiche Länge, jedoch unterschiedliche Werte sehen. Knots ist die geklammerte Form (wiederholte Knoten an den Enden), und PeriodicKnots ist die ungeklammerte Form mit dem sich wiederholenden Differenzmuster, das die Periodizität der Kurve definiert.
 ___
 ## Beispieldatei
 

@@ -1,9 +1,9 @@
 ## Em profundidade
-Use `NurbsCurve.PeriodicKnots` when you need to export a closed NURBS curve to another system (for example Alias) or when that system expects the curve in its periodic form. Many CAD tools expect this form for round-trip accuracy.
+Use `NurbsCurve.PeriodicKnots` quando precisar exportar uma curva NURBS fechada para outro sistema (por exemplo, Alias) ou quando esse sistema esperar a curva em sua forma periódica. Muitas ferramentas de CAD esperam essa forma para precisão da conversão.
 
-`PeriodicKnots` returns the knot vector in the *periodic* (unclamped) form. `Knots` returns it in the *clamped* form. Both arrays have the same length; they are two different ways to describe the same curve. In the clamped form, knots repeat at the start and end so the curve is pinned to the parameter range. In the periodic form, the knot spacing repeats at the start and end instead, which gives a smooth closed loop.
+`PeriodicKnots` retorna o vetor de nós na forma *periódica* (sem restrições). `Knots`  o retorna na forma *fixa*. Ambos os vetores têm o mesmo comprimento; são duas maneiras diferentes de descrever a mesma curva. Na forma fixa, os nós se repetem no início e no fim, de modo que a curva fica fixada no intervalo de parâmetros. Na forma periódica, o espaçamento entre os nós se repete no início e no fim, o que resulta em um laço fechado suave.
 
-In the example below, a periodic NURBS curve is built with `NurbsCurve.ByControlPointsWeightsKnots`. Watch nodes compare `Knots` and `PeriodicKnots` so you can see the same length but different values. Knots is the clamped form (repeated knots at the ends), and PeriodicKnots is the unclamped form with the repeating difference pattern that defines the curve's periodicity.
+No exemplo abaixo, uma curva NURBS periódica é criada com `NurbsCurve.ByControlPointsWeightsKnots`. Observe os nós que comparam `Knots` e `PeriodicKnots` para ver o mesmo comprimento, mas valores diferentes. `Knots` é a forma fixa (nós repetidos nas extremidades) e `PeriodicKnots` é a forma não fixa com o padrão de diferença repetido que define a periodicidade da curva.
 ___
 ## Arquivo de exemplo
 

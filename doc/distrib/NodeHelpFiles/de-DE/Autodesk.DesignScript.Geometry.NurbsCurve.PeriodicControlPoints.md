@@ -1,9 +1,9 @@
 ## Im Detail
-Use `NurbsCurve.PeriodicControlPoints` when you need to export a closed NURBS curve to another system (for example Alias) or when that system expects the curve in its periodic form. Many CAD tools expect this form for round-trip accuracy.
+Verwenden Sie `NurbsCurve.PeriodicControlPoints`, wenn Sie eine geschlossene NURBS-Kurve in ein anderes System (z. B. Alias) exportieren müssen oder wenn dieses System die Kurve in ihrer periodischen Form erwartet. Viele CAD-Werkzeuge erwarten diese Form für die Roundtrip-Genauigkeit.
 
-`PeriodicControlPoints` returns the control points in the *periodic* form. `ControlPoints` returns them in the *clamped* form. Both arrays have the same number of points; they are two different ways to describe the same curve. In the periodic form, the last few control points match the first few (as many as the curve degree), so the curve closes smoothly. The clamped form uses a different layout, so the point positions in the two arrays differ.
+`PeriodicControlPoints` gibt die Steuerpunkte in der *periodischen* Form zurück. `ControlPoints` gibt sie in der *geklammerten* Form zurück. Beide Arrays haben die gleiche Anzahl von Punkten; es sind zwei verschiedene Möglichkeiten, dieselbe Kurve zu beschreiben. In der periodischen Form stimmen die letzten Steuerpunkte mit den ersten überein (Anzahl entspricht dem Kurvengrad), sodass die Kurve glatt geschlossen wird. Die geklammerte Form verwendet ein anderes Layout, sodass die Punktpositionen in den beiden Arrays unterschiedlich sind.
 
-In the example below, a periodic NURBS curve is built with `NurbsCurve.ByControlPointsWeightsKnots`. Watch nodes compare `ControlPoints` and `PeriodicControlPoints` so you can see the same length but different point positions. The ControlPoints are seen with a red color so they appear distinctly from the PeriodicControlPoints, which are in black, in the background preview.
+Im folgenden Beispiel wird eine periodische NURBS-Kurve mit `NurbsCurve.ByControlPointsWeightsKnots` erstellt. Watch-Blöcke vergleichen `ControlPoints` und `PeriodicControlPoints`, sodass Sie die gleiche Länge, aber unterschiedliche Punktpositionen sehen können. Die ControlPoints werden in Rot angezeigt, so können sie in der Hintergrundvorschau deutlich von den schwarzen PeriodicControlPoints unterschieden werden.
 ___
 ## Beispieldatei
 
