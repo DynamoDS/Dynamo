@@ -438,11 +438,6 @@ namespace Dynamo.UI.Controls
             get { return this.backupFiles; }
         }
 
-        public ObservableCollection<StartPageListItem> TemplateFiles
-        {
-            get { return this.templateFiles; }
-        }
-
         #endregion
 
         public ObservableCollection<SampleFileEntry> SampleFiles
