@@ -308,10 +308,16 @@ namespace Dynamo.ViewModels
 
             if (nodeToPin == null) return;
 
-            WorkspaceModel.RecordModelForModification(Model, WorkspaceViewModel.Model.UndoRecorder);
-
+            // Find the group containing the target node before recording so we
+            // can include its AnnotationModel in the same undo action group.
             AnnotationViewModel nodeGroup = WorkspaceViewModel.Annotations
                 .FirstOrDefault(x => x.AnnotationModel.ContainsModel(nodeToPin));
+
+            List<ModelBase> modelsToRecord = new List<ModelBase> { Model };
+            if (nodeGroup != null)
+                modelsToRecord.Add(nodeGroup.AnnotationModel);
+
+            WorkspaceModel.RecordModelsForModification(modelsToRecord, WorkspaceViewModel.Model.UndoRecorder);
 
             if (nodeGroup != null)
             {
@@ -370,13 +376,29 @@ namespace Dynamo.ViewModels
 
         private void UnpinFromNode(object parameters)
         {
-            WorkspaceModel.RecordModelForModification(Model, WorkspaceViewModel.Model.UndoRecorder);
+            // Find the group containing this note before recording so we
+            // can include its AnnotationModel in the same undo action group.
+            AnnotationViewModel noteGroup = WorkspaceViewModel.Annotations
+                .FirstOrDefault(x => x.AnnotationModel.ContainsModel(Model));
+
+            List<ModelBase> modelsToRecord = new List<ModelBase> { Model };
+            if (noteGroup != null)
+                modelsToRecord.Add(noteGroup.AnnotationModel);
+
+            WorkspaceModel.RecordModelsForModification(modelsToRecord, WorkspaceViewModel.Model.UndoRecorder);
 
             // Unsubscribe before setting PinnedNode to null so UnsuscribeFromPinnedNode
             // can still access the node reference via subscribedPinnedNode.
             UnsuscribeFromPinnedNode();
 
             Model.PinnedNode = null;
+
+            if (noteGroup != null)
+            {
+                noteGroup.AnnotationModel.Nodes = noteGroup.AnnotationModel.Nodes
+                    .Where(n => n.GUID != Model.GUID);
+            }
+
             WorkspaceViewModel.HasUnsavedChanges = true;
         }
 
