@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
+using MIConvexHull;
 using NUnit.Framework;
 using Tessellation;
+using Tessellation.Adapters;
 
 namespace Dynamo.Tests
 {
@@ -84,60 +86,36 @@ namespace Dynamo.Tests
             return uvs;
         }
 
+        /// <summary>
+        /// Extracts triangles from the actual Delaunay implementation using the same algorithm as production code.
+        /// This calls the real MIConvexHull library that Delaunay.ByParametersOnSurface uses internally.
+        /// </summary>
         private static List<Triangle> ComputeDelaunayTrianglesInScaledUvSpace(IReadOnlyList<UV> uvs, Surface face)
         {
             var (normU, normV) = UvScalingUtilities.GetNormalizedUvScales(face);
 
-            // Perform Delaunay triangulation in the same anisotropically scaled UV space as production.
-            var points = uvs.Select(uv => new Pt(uv.U * normU, uv.V * normV)).ToList();
+            // Use the same triangulation algorithm as the production Delaunay.ByParametersOnSurface method.
+            var verts = uvs.Select(uv => new Vertex2(uv.U * normU, uv.V * normV)).ToList();
 
-            // Bowyer-Watson in 2D.
-            var (superA, superB, superC) = CreateSuperTriangle(points);
-            var triangles = new List<Triangle> { new(superA, superB, superC) };
+            const double PlaneDistanceTolerance = 1e-6;
+            var triangulation = DelaunayTriangulation<Vertex2, Cell2>.Create(verts, PlaneDistanceTolerance);
 
-            foreach (var p in points)
+            // Convert each cell (triangle) to our test Triangle structure
+            var triangles = new List<Triangle>();
+            foreach (var cell in triangulation.Cells)
             {
-                var badTriangles = triangles.Where(t => t.IsPointInCircumcircle(p, Epsilon)).ToList();
+                var v1 = cell.Vertices[0].AsVector();
+                var v2 = cell.Vertices[1].AsVector();
+                var v3 = cell.Vertices[2].AsVector();
 
-                var polygon = new List<Edge>();
-                foreach (var t in badTriangles)
-                {
-                    foreach (var e in t.Edges)
-                    {
-                        if (!polygon.Remove(e))
-                            polygon.Add(e);
-                    }
-                }
+                var a = new Pt(v1.X, v1.Y);
+                var b = new Pt(v2.X, v2.Y);
+                var c = new Pt(v3.X, v3.Y);
 
-                triangles.RemoveAll(t => badTriangles.Contains(t));
-                triangles.AddRange(polygon.Select(e => new Triangle(e.A, e.B, p)));
+                triangles.Add(new Triangle(a, b, c));
             }
 
-            // Remove triangles that contain a super triangle vertex.
-            triangles.RemoveAll(t => t.ContainsVertex(superA) || t.ContainsVertex(superB) || t.ContainsVertex(superC));
-
             return triangles;
-        }
-
-        private static (Pt a, Pt b, Pt c) CreateSuperTriangle(IReadOnlyList<Pt> points)
-        {
-            var minX = points.Min(p => p.X);
-            var minY = points.Min(p => p.Y);
-            var maxX = points.Max(p => p.X);
-            var maxY = points.Max(p => p.Y);
-
-            var dx = maxX - minX;
-            var dy = maxY - minY;
-            var deltaMax = Math.Max(dx, dy);
-
-            var midX = (minX + maxX) / 2.0;
-            var midY = (minY + maxY) / 2.0;
-
-            // Large triangle that encompasses all points.
-            var a = new Pt(midX - 20 * deltaMax, midY - deltaMax);
-            var b = new Pt(midX, midY + 20 * deltaMax);
-            var c = new Pt(midX + 20 * deltaMax, midY - deltaMax);
-            return (a, b, c);
         }
 
         private static void AssertTrianglesSatisfyEmptyCircumcircle(IReadOnlyList<Triangle> triangles)
