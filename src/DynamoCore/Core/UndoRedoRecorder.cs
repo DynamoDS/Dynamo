@@ -252,6 +252,32 @@ namespace Dynamo.Core
                 return null;
             }
         }
+
+        /// <summary>
+        /// Appends all actions from a previously recorded action group into the
+        /// currently open action group.
+        /// </summary>
+        /// <param name="actionGroup">An action group to append from.</param>
+        internal void AppendActionGroupToCurrentGroup(XmlElement actionGroup)
+        {
+            if (actionGroup == null || !actionGroup.HasChildNodes)
+                return;
+
+            if (currentActionGroup == null)
+            {
+                throw new InvalidOperationException("No open group to append to");
+            }
+
+            // Copy into a list first because appending each child moves it out of the source group.
+            var actions = actionGroup.ChildNodes.Cast<XmlNode>().ToList();
+            foreach (var action in actions)
+            {
+                currentActionGroup.AppendChild(action);
+            }
+
+            // Whenever we record a new action, redo history must be invalidated.
+            redoStack.Clear();
+        }
         #endregion
 
         #region Public Class Properties

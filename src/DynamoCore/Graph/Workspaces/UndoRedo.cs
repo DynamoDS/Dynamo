@@ -132,21 +132,32 @@ namespace Dynamo.Graph.Workspaces
             if (!ShouldProceedWithRecording(models))
                 return;
 
+            XmlElement savedDeletionActionGroup = null;
             if (null != savedModels)
             {
                 // Before an existing connector is reconnected, we have one action group
                 // which records the deletion of the connector. Pop that out so that we can
                 // record the deletion and reconnection in one action group.
-                recorder.PopFromUndoGroup();
+                savedDeletionActionGroup = recorder.PopFromUndoGroup();
             }
 
             using (recorder.BeginActionGroup())
             {
                 if (null != savedModels)
                 {
-                    foreach (var modelPair in savedModels)
+                    // Reuse the previously recorded deletion action group when available.
+                    // This avoids serializing the connector and its pins twice.
+                    if (savedDeletionActionGroup != null && savedDeletionActionGroup.HasChildNodes)
                     {
-                        recorder.RecordDeletionForUndo(modelPair);
+                        recorder.AppendActionGroupToCurrentGroup(savedDeletionActionGroup);
+                    }
+                    else
+                    {
+                        // Fallback to previous behavior if the pop failed unexpectedly.
+                        foreach (var modelPair in savedModels)
+                        {
+                            recorder.RecordDeletionForUndo(modelPair);
+                        }
                     }
                     savedModels = null;
                 }
