@@ -175,24 +175,26 @@ namespace Dynamo.ViewModels
         {
             if (Model.UndoRedoAction.Equals(NoteModel.UndoAction.Unpin))
             {
-                UnpinFromNode(obj);
+                // Undo of a pin: unpin without re-recording to the undo stack
+                UnpinFromNode(obj, recordForUndo: false);
                 return;
             }
             if (Model.UndoRedoAction.Equals(NoteModel.UndoAction.Pin))
             {
+                // Redo of a pin: apply pin state directly without re-recording.
+                // Calling PinToNode here would invoke RecordModelForModification,
+                // injecting a spurious entry onto the undo stack and corrupting
+                // subsequent undo/redo cycles.
                 NodeModel node = WorkspaceViewModel.Model.Nodes
                     .Where(x => x.GUID.Equals(Model.PinnedNodeGuid))
                     .FirstOrDefault();
 
                 if (node == null) return;
 
-                // In case the user has selected a different Node before Undo
-                // We run the risk of pinning to the wrong Node
-                // Therefore clear selection before running
-                DynamoSelection.Instance.ClearSelection();
-                DynamoSelection.Instance.Selection.Add(node);
-                PinToNode(obj);
-                return;
+                Model.PinnedNode = node;
+                MoveNoteAbovePinnedNode();
+                SubscribeToPinnedNode();
+                WorkspaceViewModel.HasUnsavedChanges = true;
             }
         }
 
@@ -385,8 +387,11 @@ namespace Dynamo.ViewModels
             return false;
         }
 
-        private void UnpinFromNode(object parameters)
+        private void UnpinFromNode(object parameters, bool recordForUndo = true)
         {
+            if (recordForUndo)
+                WorkspaceModel.RecordModelForModification(Model, WorkspaceViewModel.Model.UndoRecorder);
+
             UnsuscribeFromPinnedNode();
 
             Model.PinnedNode = null;

@@ -298,5 +298,68 @@ namespace DynamoCoreWpfTests
             this.Model.CurrentWorkspace.Undo();
             Assert.IsNull(noteView.ViewModel.Model.PinnedNode);
         }
+
+        /// <summary>
+        /// Verify that unpinning a note via the context menu command can be undone.
+        /// Regression test for DYN-10130.
+        /// </summary>
+        [Test]
+        public void UndoUnpinNode()
+        {
+            Open(@"UI\UINotes.dyn");
+            string nodeGUID = "bbc16882-75c2-4a50-a4e4-5e50e191af8f";
+            string noteGUID = "4677e999-d5f5-4bb2-9706-a97bf3a86711";
+            var nodeView = NodeViewWithGuid(nodeGUID);
+            var noteView = NoteViewWithGuid(noteGUID);
+
+            // Pin note to node
+            DynamoSelection.Instance.Selection.AddUnique(nodeView.ViewModel.NodeModel);
+            noteView.ViewModel.PinToNodeCommand.Execute(null);
+            Assert.IsNotNull(noteView.ViewModel.Model.PinnedNode);
+
+            // Unpin via command
+            noteView.ViewModel.UnpinFromNodeCommand.Execute(null);
+            Assert.IsNull(noteView.ViewModel.Model.PinnedNode);
+
+            // Undo the unpin — note should be re-pinned to the original node
+            this.Model.CurrentWorkspace.Undo();
+            Assert.IsNotNull(noteView.ViewModel.Model.PinnedNode);
+            Assert.AreEqual(noteView.ViewModel.Model.PinnedNode.GUID.ToString(), nodeGUID);
+        }
+
+        /// <summary>
+        /// Verify that undo/redo cycles on a pin action do not corrupt the undo stack,
+        /// requiring only a single Ctrl+Z to undo after a redo.
+        /// Regression test for DYN-10130.
+        /// </summary>
+        [Test]
+        public void UndoRedoPinDoesNotCorruptStack()
+        {
+            Open(@"UI\UINotes.dyn");
+            string nodeGUID = "bbc16882-75c2-4a50-a4e4-5e50e191af8f";
+            string noteGUID = "4677e999-d5f5-4bb2-9706-a97bf3a86711";
+            var nodeView = NodeViewWithGuid(nodeGUID);
+            var noteView = NoteViewWithGuid(noteGUID);
+
+            // Pin
+            DynamoSelection.Instance.Selection.AddUnique(nodeView.ViewModel.NodeModel);
+            noteView.ViewModel.PinToNodeCommand.Execute(null);
+            Assert.IsNotNull(noteView.ViewModel.Model.PinnedNode);
+
+            // Undo pin
+            this.Model.CurrentWorkspace.Undo();
+            Assert.IsNull(noteView.ViewModel.Model.PinnedNode);
+
+            // Redo pin
+            this.Model.CurrentWorkspace.Redo();
+            Assert.IsNotNull(noteView.ViewModel.Model.PinnedNode);
+
+            // A single undo should be sufficient to unpin again
+            this.Model.CurrentWorkspace.Undo();
+            Assert.IsNull(noteView.ViewModel.Model.PinnedNode);
+
+            // The undo stack should now be exhausted (no prior actions before the pin)
+            Assert.IsFalse(this.Model.CurrentWorkspace.CanUndo);
+        }
     }
 }

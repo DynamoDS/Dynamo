@@ -1,4 +1,4 @@
-﻿using Dynamo.UI.Commands;
+using Dynamo.UI.Commands;
 using Newtonsoft.Json;
 
 namespace Dynamo.ViewModels
@@ -88,7 +88,7 @@ namespace Dynamo.ViewModels
             {
                 if (unpinFromNodeCommand == null)
                 {
-                    unpinFromNodeCommand = new DelegateCommand(UnpinFromNode, CanUnpinFromNode);
+                    unpinFromNodeCommand = new DelegateCommand(o => UnpinFromNode(o), CanUnpinFromNode);
                 }
                 return unpinFromNodeCommand;
             }
