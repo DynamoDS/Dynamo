@@ -1,9 +1,9 @@
 ## 詳細
-Use `NurbsCurve.PeriodicKnots` when you need to export a closed NURBS curve to another system (for example Alias) or when that system expects the curve in its periodic form. Many CAD tools expect this form for round-trip accuracy.
+閉じた NURBS 曲線を別のシステム(Alias など)に書き出す必要がある場合、またはシステムが周期的に形成する曲線を想定している場合は、`NurbsCurve.PeriodicKnots` を使用します。多くの CAD ツールでは、ラウンド トリップの精度にこの形成を想定しています。
 
-`PeriodicKnots` returns the knot vector in the *periodic* (unclamped) form. `Knots` returns it in the *clamped* form. Both arrays have the same length; they are two different ways to describe the same curve. In the clamped form, knots repeat at the start and end so the curve is pinned to the parameter range. In the periodic form, the knot spacing repeats at the start and end instead, which gives a smooth closed loop.
+`PeriodicKnots` は、*周期的に*(未固定で)形成するノット ベクトルを返します。`Knots` は*固定*で形成するノット ベクトルを返します。どちらの配列も同じ長さです。これらは同じ曲線を記述する 2 つの異なる方法です。固定の形成では、ノットが始点と終点で繰り返されるため、曲線がパラメータ範囲に固定されます。周期的な形成では、ノットの間隔は始点と終点で繰り返され、滑らかな閉じたループになります。
 
-In the example below, a periodic NURBS curve is built with `NurbsCurve.ByControlPointsWeightsKnots`. Watch nodes compare `Knots` and `PeriodicKnots` so you can see the same length but different values. Knots is the clamped form (repeated knots at the ends), and PeriodicKnots is the unclamped form with the repeating difference pattern that defines the curve's periodicity.
+次の例では、`NurbsCurve.ByControlPointsWeightsKnots` を使用して周期的な NURBS 曲線を作成します。Watch ノードは、`Knots` と `PeriodicKnots` を比較するため、同じ長さでも異なる値を持つことを確認できます。Knots は固定の形成(端点で繰り返されるノット)で、PeriodicKnots は、曲線の周期性を定義する繰返しの異なるパターンを持つ未固定の形成です。
 ___
 ## サンプル ファイル
 

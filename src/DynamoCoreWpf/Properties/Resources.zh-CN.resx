@@ -3386,10 +3386,10 @@
     <value>Settings imported. To apply the settings, launch Dynamo, then close it and restart it.</value>
   </data>
   <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
-    <value>Reset imported settings</value>
+    <value>重置输入的设置</value>
   </data>
   <data name="SplashScreenSettingsResetSuccess" xml:space="preserve">
-    <value>Imported settings have been reset.</value>
+    <value>已重置输入的设置。</value>
   </data>
   <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
     <value>正在启动 Dynamo 视图...</value>
