@@ -599,7 +599,9 @@ namespace Dynamo.Graph.Workspaces
             return null;
         }
 
-
+        /// <summary>
+        /// Notifies the UI that the undo/redo state has changed so that undo/redo buttons can be enabled/disabled.
+        /// </summary>
         public void UpdateUndoRedoStack()
         {
             RaisePropertyChanged("CanUndoRedoCommand");
