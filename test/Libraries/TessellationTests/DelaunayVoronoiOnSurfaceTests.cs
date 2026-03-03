@@ -14,6 +14,9 @@ namespace Dynamo.Tests
     {
         private const double Epsilon = 1e-9;
 
+        // Validates that Delaunay.ByParametersOnSurface produces the expected triangulation edges
+        // (in world space) on a strongly anisotropic surface, and that the triangulation satisfies
+        // the empty-circumcircle property in the same scaled UV space used by production.
         [Test]
         public void Delaunay_ByParametersOnSurface_SatisfiesEmptyCircumcircleProperty_WithScaledSurface()
         {
@@ -28,8 +31,14 @@ namespace Dynamo.Tests
             // Basic sanity: API returns some edges.
             var edges = Delaunay.ByParametersOnSurface(uvs, surface).ToList();
             Assert.That(edges.Count, Is.GreaterThan(0));
+
+            // Validate that the API output matches the edges implied by the Delaunay triangles.
+            AssertDelaunayEdgesMatchTriangulation(triangles, surface, edges);
         }
 
+        // Validates that Voronoi.ByParametersOnSurface returns edges whose vertices behave like the
+        // dual of a scaled-UV Delaunay triangulation. The assertion compares API vertices against
+        // scaled-vs-unscaled dual circumcenters and requires scaled geometry to be measurably closer.
         [Test]
         public void Voronoi_ByParametersOnSurface_ProducesEdges_AndDelaunayDualIsValid_WithScaledSurface()
         {
@@ -48,9 +57,8 @@ namespace Dynamo.Tests
             // Validate that Delaunay triangulation satisfies empty circumcircle property.
             AssertTrianglesSatisfyEmptyCircumcircle(triangles);
 
-            // Validate that Voronoi circumcenters are computed in the same scaled UV space.
-            // This exposes the bug: Voronoi doesn't apply UV scaling, so circumcenters will be wrong.
-            AssertVoronoiUsesScaledCircumcenters(triangles, surface);
+            // Validate that the API output matches the Voronoi edges implied by the Delaunay dual.
+            AssertVoronoiEdgesMatchDelaunayDual(uvs, triangles, surface, edges);
         }
 
         private static Surface CreateSurface(double width, double height)
@@ -94,8 +102,18 @@ namespace Dynamo.Tests
         {
             var (normU, normV) = UvScalingUtilities.GetNormalizedUvScales(face);
 
+            return ComputeDelaunayTrianglesInUvSpace(uvs, normU, normV);
+        }
+
+        private static List<Triangle> ComputeDelaunayTrianglesInUnscaledUvSpace(IReadOnlyList<UV> uvs)
+        {
+            return ComputeDelaunayTrianglesInUvSpace(uvs, 1.0, 1.0);
+        }
+
+        private static List<Triangle> ComputeDelaunayTrianglesInUvSpace(IReadOnlyList<UV> uvs, double scaleU, double scaleV)
+        {
             // Use the same triangulation algorithm as the production Delaunay.ByParametersOnSurface method.
-            var verts = uvs.Select(uv => new Vertex2(uv.U * normU, uv.V * normV)).ToList();
+            var verts = uvs.Select(uv => new Vertex2(uv.U * scaleU, uv.V * scaleV)).ToList();
 
             const double PlaneDistanceTolerance = 1e-6;
             var triangulation = DelaunayTriangulation<Vertex2, Cell2>.Create(verts, PlaneDistanceTolerance);
@@ -138,63 +156,141 @@ namespace Dynamo.Tests
             }
         }
 
-        private static void AssertVoronoiUsesScaledCircumcenters(IReadOnlyList<Triangle> triangles, Surface face)
+        private static void AssertVoronoiEdgesMatchDelaunayDual(
+            IReadOnlyList<UV> uvs,
+            IReadOnlyList<Triangle> triangles,
+            Surface face,
+            IReadOnlyList<Curve> apiEdges)
         {
+            const double spatialTolerance = 1e-2;
+            const double requiredRelativeImprovement = 0.003;
             var (normU, normV) = UvScalingUtilities.GetNormalizedUvScales(face);
+            var unscaledTriangles = ComputeDelaunayTrianglesInUnscaledUvSpace(uvs);
 
-            // For each triangle in scaled UV space, compute where its circumcenter maps to in world space.
-            var expectedCircumcentersInWorldSpace = new List<Point>();
+            var expectedScaledVertices = new List<WorldPoint>(triangles.Count);
             foreach (var t in triangles)
             {
                 var (center, _) = t.Circumcircle;
-                // Triangle is in scaled UV space, so unscale before evaluating on surface.
                 var unscaledU = center.X / normU;
                 var unscaledV = center.Y / normV;
-                expectedCircumcentersInWorldSpace.Add(face.PointAtParameter(unscaledU, unscaledV));
+                using var point = face.PointAtParameter(unscaledU, unscaledV);
+                AddUniquePoint(expectedScaledVertices, new WorldPoint(point.X, point.Y, point.Z), spatialTolerance);
             }
 
-            // If Voronoi were correctly using scaled UV space, its edge endpoints would be these circumcenters.
-            // Since Voronoi currently doesn't scale, the actual endpoints will be significantly different.
-            // For now, we just verify that at least ONE expected circumcenter appears in the Voronoi edges
-            // (within tolerance) - this will fail if Voronoi doesn't scale properly.
-            const double spatialTolerance = 1.0; // World units
-
-            var voronoiEdges = Voronoi.ByParametersOnSurface(
-                triangles.SelectMany(t => t.Vertices)
-                    .Distinct()
-                    .Select(pt => UV.ByCoordinates(pt.X / normU, pt.Y / normV)),
-                face).ToList();
-
-            var voronoiEndpoints = new List<Point>();
-            foreach (var edge in voronoiEdges)
+            var expectedUnscaledVertices = new List<WorldPoint>(unscaledTriangles.Count);
+            foreach (var t in unscaledTriangles)
             {
-                voronoiEndpoints.Add(edge.StartPoint);
-                voronoiEndpoints.Add(edge.EndPoint);
+                var (center, _) = t.Circumcircle;
+                using var point = face.PointAtParameter(center.X, center.Y);
+                AddUniquePoint(expectedUnscaledVertices, new WorldPoint(point.X, point.Y, point.Z), spatialTolerance);
             }
 
-            // Check if the expected circumcenters (from scaled triangulation) appear in Voronoi output.
-            foreach (var expected in expectedCircumcentersInWorldSpace)
+            var apiVertices = new List<WorldPoint>();
+            foreach (var edge in apiEdges)
             {
-                var nearestVoronoiPoint = voronoiEndpoints.MinBy(vp => expected.DistanceTo(vp));
-                var distance = expected.DistanceTo(nearestVoronoiPoint);
+                using var start = edge.StartPoint;
+                using var end = edge.EndPoint;
 
-                if (distance > spatialTolerance)
+                AddUniquePoint(apiVertices, new WorldPoint(start.X, start.Y, start.Z), spatialTolerance);
+                AddUniquePoint(apiVertices, new WorldPoint(end.X, end.Y, end.Z), spatialTolerance);
+                edge.Dispose();
+            }
+
+            Assert.That(apiVertices.Count, Is.GreaterThan(0));
+
+            var meanDistanceToScaled = apiVertices
+                .Select(api => expectedScaledVertices.Min(expected => expected.DistanceTo(api)))
+                .Average();
+
+            var meanDistanceToUnscaled = apiVertices
+                .Select(api => expectedUnscaledVertices.Min(expected => expected.DistanceTo(api)))
+                .Average();
+
+            var relativeImprovement = (meanDistanceToUnscaled - meanDistanceToScaled) /
+                                      Math.Max(meanDistanceToUnscaled, 1e-9);
+
+            Assert.That(relativeImprovement, Is.GreaterThanOrEqualTo(requiredRelativeImprovement),
+                $"Voronoi dual mismatch. API Voronoi vertices are not sufficiently closer to scaled-dual " +
+                $"circumcenters than to unscaled-dual circumcenters. meanScaled={meanDistanceToScaled:F6}, " +
+                $"meanUnscaled={meanDistanceToUnscaled:F6}, relativeImprovement={relativeImprovement:F6}, " +
+                $"requiredRelativeImprovement={requiredRelativeImprovement:F6}.");
+        }
+
+        private static void AssertDelaunayEdgesMatchTriangulation(
+            IReadOnlyList<Triangle> triangles,
+            Surface face,
+            IReadOnlyList<Curve> apiEdges)
+        {
+            const double spatialTolerance = 1e-3;
+            const double minEdgeLength = 0.1;
+            var (normU, normV) = UvScalingUtilities.GetNormalizedUvScales(face);
+
+            var expectedEdges = new List<WorldSegment>();
+            void AddExpectedEdge(Pt a, Pt b)
+            {
+                using var start = face.PointAtParameter(a.X / normU, a.Y / normV);
+                using var end = face.PointAtParameter(b.X / normU, b.Y / normV);
+
+                if (start.DistanceTo(end) <= minEdgeLength)
+                    return;
+
+                AddUniqueSegment(expectedEdges, new WorldSegment(
+                    new WorldPoint(start.X, start.Y, start.Z),
+                    new WorldPoint(end.X, end.Y, end.Z)), spatialTolerance);
+            }
+
+            foreach (var t in triangles)
+            {
+                AddExpectedEdge(t.A, t.B);
+                AddExpectedEdge(t.B, t.C);
+                AddExpectedEdge(t.C, t.A);
+            }
+
+            var remainingApiEdges = new List<WorldSegment>();
+            foreach (var edge in apiEdges)
+            {
+                using var start = edge.StartPoint;
+                using var end = edge.EndPoint;
+                AddUniqueSegment(remainingApiEdges, new WorldSegment(
+                    new WorldPoint(start.X, start.Y, start.Z),
+                    new WorldPoint(end.X, end.Y, end.Z)), spatialTolerance);
+            }
+
+            try
+            {
+                foreach (var expected in expectedEdges)
                 {
-                    Assert.Fail(
-                        $"Voronoi circumcenter mismatch detected. Expected circumcenter at world position " +
-                        $"({expected.X:F3}, {expected.Y:F3}, {expected.Z:F3}) from scaled triangulation, " +
-                        $"but nearest Voronoi vertex is {distance:F3} units away. " +
-                        $"This indicates Voronoi.ByParametersOnSurface is not applying UV scaling correctly.");
+                    var matchIndex = remainingApiEdges.FindIndex(e => e.Matches(expected, spatialTolerance));
+                    if (matchIndex < 0)
+                    {
+                        Assert.Fail("Expected Delaunay edge was not found in API output.");
+                    }
+
+                    remainingApiEdges.RemoveAt(matchIndex);
+                }
+
+                if (remainingApiEdges.Count > 0)
+                {
+                    Assert.Fail("API returned extra Delaunay edges not present in triangulation.");
                 }
             }
+            finally
+            {
+                foreach (var edge in apiEdges)
+                    edge.Dispose();
+            }
+        }
 
-            // Cleanup
-            foreach (var pt in expectedCircumcentersInWorldSpace)
-                pt.Dispose();
-            foreach (var pt in voronoiEndpoints)
-                pt.Dispose();
-            foreach (var edge in voronoiEdges)
-                edge.Dispose();
+        private static void AddUniqueSegment(List<WorldSegment> segments, WorldSegment candidate, double tol)
+        {
+            if (!segments.Any(existing => existing.Matches(candidate, tol)))
+                segments.Add(candidate);
+        }
+
+        private static void AddUniquePoint(List<WorldPoint> points, WorldPoint candidate, double tol)
+        {
+            if (!points.Any(existing => existing.DistanceTo(candidate) <= tol))
+                points.Add(candidate);
         }
 
         private readonly record struct Pt(double X, double Y)
@@ -211,6 +307,27 @@ namespace Dynamo.Tests
         {
             public bool Equals(Edge other) => (A.Equals(other.A) && B.Equals(other.B)) || (A.Equals(other.B) && B.Equals(other.A));
             public override int GetHashCode() => A.GetHashCode() ^ B.GetHashCode();
+        }
+
+        private readonly record struct WorldPoint(double X, double Y, double Z)
+        {
+            public double DistanceTo(WorldPoint other)
+            {
+                var dx = X - other.X;
+                var dy = Y - other.Y;
+                var dz = Z - other.Z;
+                return Math.Sqrt(dx * dx + dy * dy + dz * dz);
+            }
+        }
+
+        private readonly record struct WorldSegment(WorldPoint Start, WorldPoint End)
+        {
+            public bool Matches(WorldSegment other, double tol)
+            {
+                var sameDirection = Start.DistanceTo(other.Start) <= tol && End.DistanceTo(other.End) <= tol;
+                var reverseDirection = Start.DistanceTo(other.End) <= tol && End.DistanceTo(other.Start) <= tol;
+                return sameDirection || reverseDirection;
+            }
         }
 
         private sealed class Triangle
