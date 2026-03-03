@@ -3811,6 +3811,9 @@ namespace Dynamo.Models
 
             if (args.PropertyName == "EnablePresetOptions")
                 OnPropertyChanged("EnablePresetOptions");
+
+            if (args.PropertyName == "CanUndoRedoCommand")
+                OnPropertyChanged("CanUndoRedoCommand");
         }
 
         #region insert private methods
