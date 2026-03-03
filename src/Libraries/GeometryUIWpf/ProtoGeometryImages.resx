@@ -1936,6 +1936,18 @@
   <data name="Autodesk.DesignScript.Geometry.NurbsCurve.Knots.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.NurbsCurve.Knots.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots.Small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\Resources\ProtoGeometry\SmallIcons\Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots.Small.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="Autodesk.DesignScript.Geometry.NurbsCurve.Weights.Large" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\..\Resources\ProtoGeometry\LargeIcons\Autodesk.DesignScript.Geometry.NurbsCurve.Weights.Large.png;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
