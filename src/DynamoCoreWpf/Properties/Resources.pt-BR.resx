@@ -3385,13 +3385,13 @@ Em alguns gráficos complexos ou cenários de programas hospedeiros, o modo Auto
     <value>Ocorreu um erro durante a importação do arquivo de configurações personalizadas. Tente novamente ou continue com as configurações padrão.</value>
   </data>
   <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
-    <value>Settings imported. Please restart Dynamo.</value>
+    <value>Settings imported. To apply the settings, launch Dynamo, then close it and restart it.</value>
   </data>
   <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
-    <value>Reset imported settings</value>
+    <value>Redefinir configurações importadas</value>
   </data>
   <data name="SplashScreenSettingsResetSuccess" xml:space="preserve">
-    <value>Imported settings have been reset.</value>
+    <value>As configurações importadas foram redefinidas.</value>
   </data>
   <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
     <value>Iniciando a vista do Dynamo...</value>

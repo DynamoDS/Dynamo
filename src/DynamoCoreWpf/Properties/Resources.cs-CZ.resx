@@ -3384,13 +3384,13 @@ V určitém kontextu složitých grafů nebo hostitelských režimů může auto
     <value>Při importu souboru uživatelských nastavení došlo k chybě. Zkuste to znovu nebo pokračujte s výchozím nastavením.</value>
   </data>
   <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
-    <value>Settings imported. Please restart Dynamo.</value>
+    <value>Settings imported. To apply the settings, launch Dynamo, then close it and restart it.</value>
   </data>
   <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
-    <value>Reset imported settings</value>
+    <value>Obnovit importovaná nastavení</value>
   </data>
   <data name="SplashScreenSettingsResetSuccess" xml:space="preserve">
-    <value>Imported settings have been reset.</value>
+    <value>Importovaná nastavení byla obnovena.</value>
   </data>
   <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
     <value>Spouštění aplikace Dynamo View...</value>

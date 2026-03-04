@@ -1,9 +1,9 @@
 ## En detalle:
-Use `NurbsCurve.PeriodicControlPoints` when you need to export a closed NURBS curve to another system (for example Alias) or when that system expects the curve in its periodic form. Many CAD tools expect this form for round-trip accuracy.
+Utilice `NurbsCurve.PeriodicControlPoints` cuando necesite exportar una curva NURBS cerrada a otro sistema (por ejemplo, Alias) o cuando ese sistema requiera la curva en su forma periódica. Muchas herramientas CAD requieren esta forma para garantizar la precisión en ambos sentidos.
 
-`PeriodicControlPoints` returns the control points in the *periodic* form. `ControlPoints` returns them in the *clamped* form. Both arrays have the same number of points; they are two different ways to describe the same curve. In the periodic form, the last few control points match the first few (as many as the curve degree), so the curve closes smoothly. The clamped form uses a different layout, so the point positions in the two arrays differ.
+`PeriodicControlPoints` devuelve los puntos de control en forma *periódica*. `ControlPoints` los devuelve en forma *bloqueada*. Ambas matrices tienen el mismo número de puntos; son dos formas diferentes de describir la misma curva. En la forma periódica, los últimos puntos de control coinciden con los primeros (tantos como el grado de la curva), por lo que la curva se cierra suavemente. La forma bloqueada utiliza un diseño diferente, por lo que las posiciones de los puntos en las dos matrices son diferentes.
 
-In the example below, a periodic NURBS curve is built with `NurbsCurve.ByControlPointsWeightsKnots`. Watch nodes compare `ControlPoints` and `PeriodicControlPoints` so you can see the same length but different point positions. The ControlPoints are seen with a red color so they appear distinctly from the PeriodicControlPoints, which are in black, in the background preview.
+En el ejemplo siguiente, se crea una curva NURBS periódica con `NurbsCurve.ByControlPointsWeightsKnots`. Observe cómo los nodos comparan `ControlPoints` y `PeriodicControlPoints`, lo que le permite ver la misma longitud, pero con posiciones de puntos diferentes. Los ControlPoints aparecen en color rojo, por lo que se distinguen claramente de los PeriodicControlPoints, que son de color negro, en la vista previa en segundo plano.
 ___
 ## Archivo de ejemplo
 

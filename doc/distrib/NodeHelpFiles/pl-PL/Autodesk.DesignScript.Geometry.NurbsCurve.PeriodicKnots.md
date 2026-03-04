@@ -1,9 +1,9 @@
 ## Informacje szczegółowe
-Use `NurbsCurve.PeriodicKnots` when you need to export a closed NURBS curve to another system (for example Alias) or when that system expects the curve in its periodic form. Many CAD tools expect this form for round-trip accuracy.
+Metody „NurbsCurve.PeriodicKnots” należy użyć, gdy trzeba wyeksportować zamkniętą krzywą NURBS do innego układu (na przykład Alias) lub system oczekuje krzywej w postaci okresowej. Wiele narzędzi CAD oczekuje tej postaci w celu zagwarantowania dokładności przenoszenia danych w obie strony.
 
-`PeriodicKnots` returns the knot vector in the *periodic* (unclamped) form. `Knots` returns it in the *clamped* form. Both arrays have the same length; they are two different ways to describe the same curve. In the clamped form, knots repeat at the start and end so the curve is pinned to the parameter range. In the periodic form, the knot spacing repeats at the start and end instead, which gives a smooth closed loop.
+Metoda „PeriodicKnots” zwraca wektor węzła w postaci *okresowej* (nieprzyciętej). Metoda „Knots” zwraca go w postaci *przyciętej*. Oba szyki mają tę samą długość. Są to dwa różne sposoby opisania tej samej krzywej. W formie przyciętej węzły powtarzają się na początku i końcu, aby krzywa była związana z zakresem parametrów. W postaci okresowej odstępy między węzłami powtarzają się na początku i końcu, co daje gładko zamkniętą pętlę.
 
-In the example below, a periodic NURBS curve is built with `NurbsCurve.ByControlPointsWeightsKnots`. Watch nodes compare `Knots` and `PeriodicKnots` so you can see the same length but different values. Knots is the clamped form (repeated knots at the ends), and PeriodicKnots is the unclamped form with the repeating difference pattern that defines the curve's periodicity.
+W poniższym przykładzie jest tworzona okresowa krzywa NURBS za pomocą metody „NurbsCurve.ByControlPointsWeightsKnots”. Węzły obserwacyjne porównują parametry „Knots” i „PeriodicKnots”, co pozwala zilustrować tę samą długość różnymi wartościami. Parametr Knots to postać przycięta (powtarzające się węzły na końcach), a parametr PeriodicKnots to postać nieprzycięta z powtarzającym się wzorem różnicy, który definiuje okresowość krzywej.
 ___
 ## Plik przykładowy
 

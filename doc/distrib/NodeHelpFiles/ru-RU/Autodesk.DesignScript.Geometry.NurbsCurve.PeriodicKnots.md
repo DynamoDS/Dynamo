@@ -1,9 +1,9 @@
 ## Подробности
-Use `NurbsCurve.PeriodicKnots` when you need to export a closed NURBS curve to another system (for example Alias) or when that system expects the curve in its periodic form. Many CAD tools expect this form for round-trip accuracy.
+Используйте `NurbsCurve.PeriodicKnots`, когда требуется экспортировать замкнутую NURBS-кривую в другую систему (например, Alias) или когда в такой системе нужно использовать периодическую форму кривой. Многие инструменты САПР предполагают использование этой формы, чтобы обеспечить точность обмена данными.
 
-`PeriodicKnots` returns the knot vector in the *periodic* (unclamped) form. `Knots` returns it in the *clamped* form. Both arrays have the same length; they are two different ways to describe the same curve. In the clamped form, knots repeat at the start and end so the curve is pinned to the parameter range. In the periodic form, the knot spacing repeats at the start and end instead, which gives a smooth closed loop.
+`PeriodicKnots` возвращает узловой вектор в *периодической* (нефиксированной) форме, а `Knots` — в *фиксированной*. Оба массива имеют одинаковую длину. Это два способа описания одной и той же кривой. В фиксированной форме узлы повторяются в начале и конце, поэтому кривая фиксируется в диапазоне параметров. В периодической форме интервал между узлами повторяется в начале и конце, что дает плавный замкнутый контур.
 
-In the example below, a periodic NURBS curve is built with `NurbsCurve.ByControlPointsWeightsKnots`. Watch nodes compare `Knots` and `PeriodicKnots` so you can see the same length but different values. Knots is the clamped form (repeated knots at the ends), and PeriodicKnots is the unclamped form with the repeating difference pattern that defines the curve's periodicity.
+В приведенном ниже примере периодическая NURBS-кривая строится с помощью `NurbsCurve.ByControlPointsWeightsKnots`. Узлы Watch сравнивают `Knots` и `PeriodicKnots`, чтобы можно было увидеть одинаковую длину, но разные значения. Knots — это фиксированная форма (с повторяющимися узлами на концах), а PeriodicKnots — нефиксированная форма с повторяющимся разностным шаблоном, который определяет периодичность кривой.
 ___
 ## Файл примера
 
