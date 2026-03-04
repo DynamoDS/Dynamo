@@ -6081,7 +6081,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Created by Autodesk.
+        ///   Looks up a localized string similar to Published by Autodesk.
         /// </summary>
         public static string PackageDetailsPackageApprovedTooltip {
             get {

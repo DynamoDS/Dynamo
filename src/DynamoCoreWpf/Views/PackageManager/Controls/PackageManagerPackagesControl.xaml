@@ -510,7 +510,7 @@
                                 <!--  Package Name + DynamoTeam badge-->                                
                                 <Grid x:Name="packageNameArea" Grid.Column="0" HorizontalAlignment="Stretch">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                       <!--Package Name-->  

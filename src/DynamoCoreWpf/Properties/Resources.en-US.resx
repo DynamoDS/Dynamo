@@ -3151,7 +3151,7 @@ This package will be unloaded after the next Dynamo restart.</value>
     <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
   </data>
   <data name="PackageDetailsPackageApprovedTooltip" xml:space="preserve">
-    <value>Created by Autodesk</value>
+    <value>Published by Autodesk</value>
   </data>
   <data name="PackageSortToolTip" xml:space="preserve">
     <value>Sort Packages.</value>

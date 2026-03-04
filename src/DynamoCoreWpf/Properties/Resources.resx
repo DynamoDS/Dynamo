@@ -1405,7 +1405,7 @@ Don't worry, you'll have the option to save your work.</value>
     <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
   </data>
   <data name="PackageDetailsPackageApprovedTooltip" xml:space="preserve">
-    <value>Created by Autodesk</value>
+    <value>Published by Autodesk</value>
   </data>
   <data name="PackageDownloadStateDownloaded" xml:space="preserve">
     <value>Downloaded</value>
