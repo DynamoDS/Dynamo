@@ -1067,7 +1067,7 @@ namespace Dynamo.ViewModels
 
             SetNodeCountOptimizationEnabled(zoomAnimationThresholdFeatureFlagVal);
         }
-        
+
         void PostNodeChangeActions()
         {
             if (RunSettingsViewModel == null) return;
