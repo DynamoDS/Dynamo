@@ -2636,7 +2636,7 @@ namespace Dynamo.Graph.Workspaces
                 var connectorGuid = IdToGuidConverter(pinViewInfo.ConnectorGuid);
 
                 var matchingConnector = Connectors.FirstOrDefault(x => x.GUID == connectorGuid);
-                if (matchingConnector is null) { return; }
+                if (matchingConnector is null) { continue; }
 
                 if (offsetX == 0.0 && offsetY == 0.0)
                 {
