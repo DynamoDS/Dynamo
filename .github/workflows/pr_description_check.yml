@@ -22,7 +22,11 @@ jobs:
     - name: Extract Release Notes
       id: extract_notes
       run: |
-        release_notes=$(grep -oP '(?s)(?<=### Release Notes)\s*([\s\S]*?)\s*(?=###)' pr_description.txt)
+        release_notes=$(sed -n '/^### Release Notes/,/^###/{/^### Release Notes/d;/^###/d;p}' pr_description.txt)
+        if [ -z "$release_notes" ]; then
+          # Release Notes is the last section, no trailing ###
+          release_notes=$(sed -n '/^### Release Notes/,$p' pr_description.txt | tail -n +2)
+        fi
         echo "$release_notes" > release_notes.txt
         cat release_notes.txt
       
