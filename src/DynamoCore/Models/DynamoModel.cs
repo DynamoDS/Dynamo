@@ -3142,17 +3142,17 @@ namespace Dynamo.Models
                                 connector.End != null && connector.End.Owner.IsSelected
                                     && !ClipBoard.Contains(connector));
 
-                ClipBoard.AddRange(connectors);
-
-                var connectorPins = ClipBoard
-                .OfType<ConnectorModel>()
-                .SelectMany(connector => connector.ConnectorPinModels)
-                .Where(pin => !ClipBoard.Contains(pin))
-                .Cast<ModelBase>()
-                .ToList();
-
-                ClipBoard.AddRange(connectorPins);
+                ClipBoard.AddRange(connectors);                
             }
+
+            var connectorPins = ClipBoard
+                    .OfType<ConnectorModel>()
+                    .SelectMany(connector => connector.ConnectorPinModels)
+                    .Where(pin => !ClipBoard.Contains(pin))
+                    .Cast<ModelBase>()
+                    .ToList();
+
+            ClipBoard.AddRange(connectorPins);
         }
 
         /// <summary>
@@ -3314,7 +3314,7 @@ namespace Dynamo.Models
                             : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == c.End.Owner.GUID);
 
                     // Don't make a connector if either end is null.
-                    if (startNode == null && endNode == null)
+                    if (startNode == null || endNode == null)
                     {
                         continue;
                     }
