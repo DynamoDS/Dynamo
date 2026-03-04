@@ -1391,13 +1391,11 @@ namespace Dynamo.Graph.Nodes
                     {
                         p.PropertyChanged += OnPortPropertyChanged;
 
-                        p.Connectors.CollectionChanged += (coll, args) =>
-                        {
-                            // Call the collection changed handler, replacing
-                            // the 'sender' with the port, which is required
-                            // for the disconnect operations.
-                            ConnectorsCollectionChanged(p, args);
-                        };
+                        // Subscribe via PortModel's ConnectorCollectionChanged event,
+                        // which replaces the sender with the PortModel instance.
+                        // This allows proper unsubscription in DisposePort, fixing
+                        // a leak where the previous anonymous lambda could never be removed.
+                        p.ConnectorCollectionChanged += ConnectorsCollectionChanged;
 
                         SetNodeStateBasedOnConnectionAndDefaults();
                     }
@@ -1413,6 +1411,13 @@ namespace Dynamo.Graph.Nodes
 
         private void ConnectorsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
+            // Skip processing for disposed nodes - during workspace clear, nodes are disposed
+            // before connectors are deleted. Without this guard, the anonymous lambda leak on
+            // Connectors.CollectionChanged would trigger expensive cascading UI updates
+            // (port color refreshes, WPF binding updates) for every connector removal on
+            // already-dead nodes.
+            if (HasBeenDisposed) return;
+
             var p = (PortModel)sender;
 
             switch (e.Action)
