@@ -921,13 +921,13 @@
             <summary>确定 NurbsCurve 是否为有理曲线。这定义是否有任何权重不为 1.0。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ControlPoints">
-            <summary>Get the control points of the NurbsCurve.</summary>
+            <summary>获取 NurbsCurve 的控制点。</summary>
             <returns>一组点</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
-            <summary>The truly periodic control points of the NurbsCurve if periodic.
-            Note that this cannot be used together with PeriodicKnots() to reconstruct the original periodic NurbsCurve.
-            Throws (or is undefined) when the curve is not periodic.</summary>
+            <summary>NurbsCurve 真正的周期性控制点(如果是周期性的)。
+            请注意，此选项不能与 PeriodicKnots() 一起使用来重建原始周期性 NurbsCurve。
+            当曲线不具有周期性时引发(或未定义)。</summary>
             <returns>一组点</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
@@ -935,10 +935,10 @@
             <returns>NURBS 曲线的节点</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots">
-            <summary>The unclamped knots of the Curve if Periodic. Knots is a series of parameter values (doubles) used to determine where and how the control points affect the curve.
-            Note that this cannot be used together with PeriodicControlPoints() to reconstruct the original periodic NurbsCurve.
-            Throws (or is undefined) when the curve is not periodic.</summary>
-            <returns>The periodic knot vector of the nurbs curve</returns>
+            <summary>曲线的未钳制结(如果是周期性的)。结是一系列参数值(双精度值)，用于确定控制点影响曲线的位置和方式。
+            请注意，这不能与 PeriodicControlPoints() 一起使用来重建原始周期性 NurbsCurve。
+            当曲线不具有周期性时引发(或未定义)。</summary>
+            <returns>NURBS 曲线的周期性结向量</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Weights">
             <summary>返回 NurbsCurve 控制点权重。权重确定每个控制点对曲线形状的影响。</summary>
@@ -3730,7 +3730,7 @@
             <summary>沿路径曲线扫掠该曲线，以创建曲面</summary>
             <param name="path"/>
             <param name="cutEndOff">剪切扫掠的端点，使其与路径垂直</param>
-            <returns>A Surface resulting from sweeping the curve along the path</returns>
+            <returns>通过沿路径扫掠曲线生成的曲面</returns>
             <search>
             sweep1,curve2surf
             </search>
@@ -3892,11 +3892,11 @@
             <search>get overlap,multi intersect,intersect many</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ProjectPointsOnto(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Projects a collection of Points onto this Geometry along the specified direction.
-            Returns a flat array of resulting Geometry.</summary>
-            <param name="points">Points to project</param>
+            <summary>沿指定方向将点集合投影到此几何图形上。
+            返回生成的几何图形的平面阵列。</summary>
+            <param name="points">指向项目</param>
             <param name="projectionDirection">投影方向</param>
-            <returns>Flat array of resulting Geometry</returns>
+            <returns>生成的几何图形的平面数组</returns>
             <search>project points,batch project</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Split(Autodesk.DesignScript.Geometry.Geometry)">
@@ -4495,10 +4495,10 @@
             <summary>获取 PolyCurve 的字符串表示</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
-            PolyCurve direction is based on the first curve in the input array.
-            Choose a preferred join tolerance between 1e-6 and 1e-3 units.
-            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
+            <summary>通过连接曲线生成复合线。不需要按连接顺序指定输入曲线。
+            复合线方向基于输入阵列中的第一个曲线。
+            在 1e-6 到 1e-3 单位之间选择首选的连接公差。
+            较低的值可能过于严格，会阻止本应连接的曲线相交；而较高的值则可能导致短曲线被无意中合并或折叠为退化点。</summary>
             <param name="curves">连接到复合线的曲线</param>
             <param name="joinTolerance">确定要连接的曲线之间允许的间隙尺寸的公差</param>
             <returns>由连接曲线创建的复合线</returns>
@@ -4507,10 +4507,10 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
-            PolyCurve direction is based on the first curve in the input array.
-            Choose a preferred join tolerance between 1e-6 and 1e-3 units.
-            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
+            <summary>通过连接曲线生成复合线。不需要按连接顺序指定输入曲线。
+            复合线方向基于输入阵列中的第一个曲线。
+            在 1e-6 到 1e-3 单位之间选择首选的连接公差。
+            较低的值可能过于严格，会阻止本应连接的曲线相交；而较高的值则可能导致短曲线被无意中合并或折叠为退化点。</summary>
             <param name="curves">连接到复合线的曲线</param>
             <param name="joinTolerance">确定要连接的曲线之间允许的间隙尺寸的公差</param>
             <param name="trimCurves">如果输入曲线彼此相交/重叠，并且需要在创建复合线之前修剪掉其末端段，则设置为 True。默认情况下，它设置为 False。</param>
@@ -4521,15 +4521,15 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Make one or more polycurves by grouping connected curves. Choose a preferred join tolerance between 1e-6 and 1e-3 units.
-            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
+            <summary>通过对连接的曲线进行分组，从而生成一条或多条复合线。选择一个介于 1e-6 和 1e-3 单位之间的首选连接公差。
+            较低的值可能过于严格，会阻止本应连接的曲线相互连接；而较高的值则可能导致短曲线被无意中合并或折叠为退化点。</summary>
             <param name="curves">分组在一起以创建一条或多条复合线的曲线</param>
             <param name="joinTolerance">确定要连接的曲线之间允许的间隙尺寸的公差</param>
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Make one or more polycurves by grouping connected curves. Choose a preferred join tolerance between 1e-6 and 1e-3 units.
-            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
+            <summary>通过对连接的曲线进行分组，从而生成一条或多条复合线。选择一个介于 1e-6 和 1e-3 单位之间的首选连接公差。
+            较低的值可能过于严格，会阻止本应连接的曲线相互连接；而较高的值则可能导致短曲线被无意中合并或折叠为退化点。</summary>
             <param name="curves">分组在一起以创建一条或多条复合线的曲线</param>
             <param name="joinTolerance">确定要连接的曲线之间允许的间隙尺寸的公差</param>
             <param name="trimCurves">如果输入曲线彼此相交/重叠，并且需要在创建复合线之前修剪掉其末端段，则设置为 True。默认情况下，它设置为 False。</param>
@@ -5253,7 +5253,7 @@
             <summary>查找类似“此方法已弃用，将在未来版本的 Dynamo 中删除。请改用‘SweepAsSolid(ICurveEntity path, bool cutEndOff)’。”的本地化字符串。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_sweepassurface_deprecated">
-            <summary>Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Curve.SweepAsSurface(profile, path, cutEndOff) instead.</summary>
+            <summary>查找类似“此方法已弃用，将在未来版本的 Dynamo 中删除”的本地化字符串。请改用 Curve.SweepAsSurface(profile, path, cutEndOff)。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_trimsegmentsbyparam_deprecated">
             <summary>查找类似“此方法已弃用，将在未来版本的 Dynamo 中删除。请改用‘Curve.TrimSegmentsByParameter(double[] parameters, bool discardEvenSegments)’。”的本地化字符串。</summary>
@@ -5376,7 +5376,7 @@
             <summary>查找类似“给定数据: \"{0}\" 不是名称值对数组”的本地化字符串。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.point_project_deprecated">
-            <summary>Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Geometry.ProjectPointsOnto(Point[] points, Vector projectionDirection) instead..</summary>
+            <summary>查找类似“此方法已弃用，将在未来版本的 Dynamo 中删除”的本地化字符串。请改用 Geometry.ProjectPointsOnto(Point[] points, Vector projectionDirection)。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.PointsCoincident">
             <summary>查找类似“{0} 重合”的本地化字符串。</summary>

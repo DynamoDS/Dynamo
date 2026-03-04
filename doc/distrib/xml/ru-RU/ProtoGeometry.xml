@@ -921,13 +921,13 @@
             <summary>Определение того, является ли объект NurbsCurve рациональным. С помощью этого выявляется, имеются ли значения веса, которые не составляют 1,0.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ControlPoints">
-            <summary>Get the control points of the NurbsCurve.</summary>
+            <summary>Получение управляющих точек NURBS-кривой.</summary>
             <returns>Массив точек</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
-            <summary>The truly periodic control points of the NurbsCurve if periodic.
-            Note that this cannot be used together with PeriodicKnots() to reconstruct the original periodic NurbsCurve.
-            Throws (or is undefined) when the curve is not periodic.</summary>
+            <summary>Истинно периодические управляющие точки NURBS-кривой, если она является периодической.
+            Обратите внимание, что этот метод нельзя использовать вместе с PeriodicKnots() для воссоздания исходной периодической NURBS-кривой.
+            Отбрасывается (или считается неопределенной) в случае с непериодической кривой.</summary>
             <returns>Массив точек</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
@@ -935,10 +935,10 @@
             <returns>Узлы NURBS-кривой</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots">
-            <summary>The unclamped knots of the Curve if Periodic. Knots is a series of parameter values (doubles) used to determine where and how the control points affect the curve.
-            Note that this cannot be used together with PeriodicControlPoints() to reconstruct the original periodic NurbsCurve.
-            Throws (or is undefined) when the curve is not periodic.</summary>
-            <returns>The periodic knot vector of the nurbs curve</returns>
+            <summary>Нефиксированные узлы кривой, если она является периодической. Узлы представляют собой серию значений параметров (двойных значений), которые позволяют определить, где и как управляющие точки воздействуют на кривую.
+            Учтите, что этот параметр нельзя использовать вместе с PeriodicControlPoints() для воссоздания исходной периодической NURBS-кривой.
+            Отбрасывается (или считается неопределенной) в случае с непериодической кривой.</summary>
+            <returns>Периодический узловой вектор NURBS-кривой</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Weights">
             <summary>Возврат весов управляющих точек объекта NurbsCurve. Веса определяют влияние каждой управляющей точки на форму кривой.</summary>
@@ -3727,10 +3727,10 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSurface(Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
-            <summary>Сдвиг данной кривой вдоль криволинейной траектории с созданием поверхности</summary>
+            <summary>Сдвиг этой кривой вдоль криволинейной траектории, при котором создается поверхность</summary>
             <param name="path"/>
             <param name="cutEndOff">Обрезать конец элемента сдвига и сделать его перпендикулярным траектории</param>
-            <returns>A Surface resulting from sweeping the curve along the path</returns>
+            <returns>Поверхность, полученная в результате сдвига кривой вдоль траектории</returns>
             <search>
             sweep1,curve2surf
             </search>
@@ -3892,11 +3892,11 @@
             <search>get overlap,multi intersect,intersect many</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ProjectPointsOnto(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Projects a collection of Points onto this Geometry along the specified direction.
-            Returns a flat array of resulting Geometry.</summary>
-            <param name="points">Points to project</param>
-            <param name="projectionDirection">Проецирование </param>
-            <returns>Flat array of resulting Geometry</returns>
+            <summary>Проецирование набора точек на эту геометрию в заданном направлении.
+            Возврат одноуровневого массива итоговой геометрии.</summary>
+            <param name="points">Точки для проецирования</param>
+            <param name="projectionDirection">Направление проецирования</param>
+            <returns>Одноуровневый массив итоговой геометрии</returns>
             <search>project points,batch project</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Split(Autodesk.DesignScript.Geometry.Geometry)">
@@ -4495,10 +4495,10 @@
             <summary>Получение строчного представления объекта PolyCurve</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
-            PolyCurve direction is based on the first curve in the input array.
-            Choose a preferred join tolerance between 1e-6 and 1e-3 units.
-            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
+            <summary>Создание сложной кривой путем объединения кривых. Для обеспечения возможности соединения необходимо указать входные кривые.
+            Направление сложной кривой определяется по первой кривой во входном массиве.
+            Задайте нужный допуск смыкания между элементами 1e-6 и 1e-3.
+            Низкие значения могут быть слишком строгими, из-за чего вероятны ошибки при попытке объединить кривые, а при высоких значениях короткие кривые могут быть объединены, когда это не требуется, или превратиться в вырожденные точки.</summary>
             <param name="curves">Кривые для объединения в элемент PolyCurve</param>
             <param name="joinTolerance">Допуск для определения размера допустимого зазора между объединяемыми кривыми</param>
             <returns>Сложная кривая, созданная соединенными кривыми</returns>
@@ -4507,10 +4507,10 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
-            PolyCurve direction is based on the first curve in the input array.
-            Choose a preferred join tolerance between 1e-6 and 1e-3 units.
-            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
+            <summary>Создание сложной кривой путем объединения кривых. Для обеспечения возможности соединения необходимо указать входные кривые.
+            Направление сложной кривой определяется по первой кривой во входном массиве.
+            Задайте нужный допуск смыкания между элементами 1e-6 и 1e-3.
+            Низкие значения могут быть слишком строгими, из-за чего вероятны ошибки при попытке объединить кривые, а при высоких значениях короткие кривые могут быть объединены, когда это не требуется, или превратиться в вырожденные точки.</summary>
             <param name="curves">Кривые для объединения в элемент PolyCurve</param>
             <param name="joinTolerance">Допуск для определения размера допустимого зазора между объединяемыми кривыми</param>
             <param name="trimCurves">Укажите значение True, если входные кривые пересекают или перекрывают друг друга, из-за чего перед созданием объекта PolyCurve необходимо удалить их конечные сегменты. По умолчанию задано значение False.</param>
@@ -4521,15 +4521,15 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Make one or more polycurves by grouping connected curves. Choose a preferred join tolerance between 1e-6 and 1e-3 units.
-            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
+            <summary>Создание одной или нескольких сложных кривых путем группировки соединенных кривых. Задайте нужный допуск смыкания между элементами 1e-6 и 1e-3.
+            Низкие значения могут быть слишком строгими, из-за чего вероятны ошибки при попытке объединить кривые, а при высоких значениях короткие кривые могут быть объединены, когда это не требуется, или превратиться в вырожденные точки.</summary>
             <param name="curves">Кривые, которые нужно сгруппировать для создания одного или нескольких объектов PolyCurve</param>
             <param name="joinTolerance">Допуск для определения размера допустимого зазора между объединяемыми кривыми</param>
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Make one or more polycurves by grouping connected curves. Choose a preferred join tolerance between 1e-6 and 1e-3 units.
-            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
+            <summary>Создание одной или нескольких сложных кривых путем группировки соединенных кривых. Задайте нужный допуск смыкания между элементами 1e-6 и 1e-3.
+            Низкие значения могут быть слишком строгими, из-за чего вероятны ошибки при попытке объединить кривые, а при высоких значениях короткие кривые могут быть объединены, когда это не требуется, или превратиться в вырожденные точки.</summary>
             <param name="curves">Кривые, которые нужно сгруппировать для создания одного или нескольких объектов PolyCurve</param>
             <param name="joinTolerance">Допуск для определения размера допустимого зазора между объединяемыми кривыми</param>
             <param name="trimCurves">Укажите значение True, если входные кривые пересекают или перекрывают друг друга, из-за чего перед созданием объекта PolyCurve необходимо удалить их конечные сегменты. По умолчанию задано значение False.</param>
@@ -5254,7 +5254,7 @@
             <summary>Поиск локализованной строки, аналогичной строке «Этот метод исключен и в следующей версии Dynamo будет удален. Используйте вместо него SweepAsSolid(ICurveEntity path, bool cutEndOff)».</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_sweepassurface_deprecated">
-            <summary>Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Curve.SweepAsSurface(profile, path, cutEndOff) instead.</summary>
+            <summary>Поиск локализованной строки, подобной строке «Этот метод исключен и в следующей версии Dynamo будет удален. Используйте вместо него Curve.SweepAsSurface(profile, path, cutEndOff)».</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_trimsegmentsbyparam_deprecated">
             <summary>Поиск локализованной строки, аналогичной строке «Этот метод исключен и в следующей версии Dynamo будет удален. Используйте вместо него Curve.TrimSegmentsByParameter(double[] parameters, bool discardEvenSegments)».</summary>
@@ -5377,7 +5377,7 @@
             <summary>Поиск локализованной строки, подобной строке «Данные: \"{0}\" отсутствуют в массиве парных значений имен».</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.point_project_deprecated">
-            <summary>Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Geometry.ProjectPointsOnto(Point[] points, Vector projectionDirection) instead..</summary>
+            <summary>Поиск локализованной строки, подобной строке «Этот метод исключен и в следующей версии Dynamo будет удален. Используйте вместо него Geometry.ProjectPointsOnto(Point[] points, Vector projectionDirection)».</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.PointsCoincident">
             <summary>Поиск локализованной строки, подобной строке «{0} совпадают».</summary>

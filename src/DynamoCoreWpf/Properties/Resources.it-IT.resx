@@ -3370,10 +3370,10 @@ In alcuni scenari complessi di programmi host o grafici, la modalità Automatico
     <value>Settings imported. To apply the settings, launch Dynamo, then close it and restart it.</value>
   </data>
   <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
-    <value>Reset imported settings</value>
+    <value>Ripristina le impostazioni importate.</value>
   </data>
   <data name="SplashScreenSettingsResetSuccess" xml:space="preserve">
-    <value>Imported settings have been reset.</value>
+    <value>Le impostazioni importate sono state reimpostate.</value>
   </data>
   <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
     <value>Avvio della vista di Dynamo in corso...</value>
