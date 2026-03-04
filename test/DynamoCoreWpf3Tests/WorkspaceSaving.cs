@@ -955,6 +955,37 @@ namespace Dynamo.Tests
             Assert.AreEqual(openPath, ViewModel.Model.CurrentWorkspace.FileName);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void SaveAsPreservesConnectorPins()
+        {
+            var openPath = Path.Combine(TestDirectory, @"core", "ConnectorPinSelectionTest.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var initialFileName = ViewModel.Model.CurrentWorkspace.FileName;
+            var initialPinCount = ViewModel.Model.CurrentWorkspace.Connectors
+                .SelectMany(connector => connector.ConnectorPinModels)
+                .Count();
+            Assert.AreEqual(3, initialPinCount, "The baseline graph should contain 3 connector pins.");
+
+            var dynamoModel = ViewModel.Model;
+            var newPath = GetNewFileNameOnTempPath("dyn");
+            dynamoModel.CurrentWorkspace.Save(newPath);
+
+            var reloadedWorkspace = ViewModel.Model.CurrentWorkspace;
+            var reloadedPins = reloadedWorkspace.Connectors
+                .SelectMany(connector => connector.ConnectorPinModels)
+                .ToList();
+
+            Assert.AreNotEqual(initialFileName, dynamoModel.CurrentWorkspace.FileName);
+            Assert.AreEqual(initialPinCount, reloadedPins.Count);
+
+            var reloadedConnectorIds = new HashSet<Guid>(
+                reloadedWorkspace.Connectors.Select(connector => connector.GUID));
+
+            Assert.IsTrue(reloadedPins.All(pin => reloadedConnectorIds.Contains(pin.ConnectorId)));
+        }
+
         #region CustomNodeWorkspaceModel SaveAs side effects
 
         [Test]
