@@ -325,7 +325,7 @@ namespace Dynamo.ViewModels
             }
             if (!Model.SuppressUndoRecording)
             {
-            WorkspaceModel.RecordModelForModification(Model, WorkspaceViewModel.Model.UndoRecorder);
+                WorkspaceModel.RecordModelForModification(Model, WorkspaceViewModel.Model.UndoRecorder);
             }
             Model.PinnedNode = nodeToPin;
             var nodeGroup = WorkspaceViewModel.Annotations
