@@ -3143,6 +3143,15 @@ namespace Dynamo.Models
                                     && !ClipBoard.Contains(connector));
 
                 ClipBoard.AddRange(connectors);
+
+                var connectorPins = ClipBoard
+                .OfType<ConnectorModel>()
+                .SelectMany(connector => connector.ConnectorPinModels)
+                .Where(pin => !ClipBoard.Contains(pin))
+                .Cast<ModelBase>()
+                .ToList();
+
+                ClipBoard.AddRange(connectorPins);
             }
         }
 
@@ -3193,6 +3202,7 @@ namespace Dynamo.Models
 
             var nodes = ClipBoard.OfType<NodeModel>();
             var connectors = ClipBoard.OfType<ConnectorModel>();
+            var connectorPins = ClipBoard.OfType<ConnectorPinModel>();
             var notes = ClipBoard.OfType<NoteModel>();
             // we only want to get groups that either has nested groups
             // or does not belong to a group here.
@@ -3287,26 +3297,58 @@ namespace Dynamo.Models
 
                 ModelBase start;
                 ModelBase end;
-                var newConnectors =
-                    from c in connectors
 
-                        // If the guid is in nodeLookup, then we connect to the new pasted node. Otherwise we
-                        // re-connect to the original.
-                    let startNode =
+                var newConnectors = new List<ConnectorModel>();
+                var connectorLookup = new Dictionary<Guid, ConnectorModel>();
+                foreach (var c in connectors)
+                {
+                    // If the guid is in nodeLookup, then we connect to the new pasted node. Otherwise we
+                    // re-connect to the original.
+                    var startNode =
                             modelLookup.TryGetValue(c.Start.Owner.GUID, out start)
                                 ? start as NodeModel
-                                : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == c.Start.Owner.GUID)
-                    let endNode =
+                                : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == c.Start.Owner.GUID);
+                    var endNode =
                         modelLookup.TryGetValue(c.End.Owner.GUID, out end)
                             ? end as NodeModel
-                            : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == c.End.Owner.GUID)
+                            : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == c.End.Owner.GUID);
 
                     // Don't make a connector if either end is null.
-                    where startNode != null && endNode != null
-                    select
-                        ConnectorModel.Make(startNode, endNode, c.Start.Index, c.End.Index);
+                    if (startNode == null && endNode == null)
+                    {
+                        continue;
+                    }
+                    var newConnector = ConnectorModel.Make(startNode, endNode, c.Start.Index, c.End.Index);
+                    if (newConnector != null)
+                    {
+                        newConnectors.Add(newConnector);
+                        connectorLookup.Add(c.GUID, newConnector);
+                    }
+                }
 
                 createdModels.AddRange(newConnectors);
+
+                var newConnectorPins = new List<ConnectorPinModel>();
+                foreach (var pin in connectorPins)
+                {
+                    if (!connectorLookup.TryGetValue(pin.ConnectorId, out var connector))
+                    {
+                        continue;
+                    }
+
+                    var copiedPin = new ConnectorPinModel
+                        (
+                        pin.Position.X + shiftX + offset,
+                        pin.Position.Y + shiftY + offset,
+                        Guid.NewGuid(),
+                        connector.GUID
+                        );
+
+                    connector.AddPin(copiedPin);
+                    newConnectorPins.Add(copiedPin);
+                }
+
+                createdModels.AddRange(newConnectorPins);
 
                 //Grouping depends on the selected node models.
                 //so adding the group after nodes / notes are added to workspace.
@@ -3355,6 +3397,12 @@ namespace Dynamo.Models
                 foreach (var item in newItems)
                 {
                     AddToSelection(item);
+                }
+
+                // Keep connector pins selected together with the pasted graph chunk
+                foreach (var connectorPin in newConnectorPins)
+                {
+                    AddToSelection(connectorPin);
                 }
 
                 DynamoSelection.Instance.ClearSelectionDisabled = false;
