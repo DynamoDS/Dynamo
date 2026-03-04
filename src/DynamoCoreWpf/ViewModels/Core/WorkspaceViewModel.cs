@@ -926,7 +926,7 @@ namespace Dynamo.ViewModels
         private void Model_NoteAdded(NoteModel note)
         {
             var viewModel = new NoteViewModel(this, note);
-            ResolvePinnedNodeReference(note, viewModel);
+            ResolvePinnedNodeReference(note);
             Notes.Add(viewModel);
         }
         /// <summary>
@@ -936,8 +936,7 @@ namespace Dynamo.ViewModels
         /// Executed if node is created before the note during undo operation.
         /// </summary>
         /// <param name="note"></param>
-        /// <param name="viewModel"></param>
-        private void ResolvePinnedNodeReference(NoteModel note, NoteViewModel viewModel)
+        private void ResolvePinnedNodeReference(NoteModel note)
         {
             if (!note.PinnedNodeGuid.Equals(Guid.Empty) &&
               note.PinnedNode == null)
