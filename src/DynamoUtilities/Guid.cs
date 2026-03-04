@@ -123,8 +123,9 @@ namespace Dynamo.Utilities
 
         /// <summary>
         /// Performs an update to all Guids inside the json string before deserialization.
-        /// Targets specifically Guids without the '-' hyphen, which are all the workspace elements.
-        /// Replacing all occurrences of each individual Guid guarantees that the relationships between the elements are retained.
+        /// Builds a remap from workspace-element Guids serialized in compact ("N") format,
+        /// then replaces both compact ("N") and hyphenated ("D") occurrences for those same Guids
+        /// so relationships between workspace elements are preserved.
         /// </summary>
         /// <param name="jsonData">Json representation of workspace.</param>
         /// <returns>String representation of workspace after all elements' Guids replaced.</returns>
