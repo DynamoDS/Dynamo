@@ -945,9 +945,7 @@ namespace Dynamo.ViewModels
                 var pinnedNode = Nodes.Where(x => x.Id.Equals(note.PinnedNodeGuid));
                 if (pinnedNode.Any())
                 {
-                    DynamoSelection.Instance.Selection.Clear();
-                    DynamoSelection.Instance.Selection.Add(pinnedNode.First().NodeModel);
-                    viewModel.PinToNodeCommand.Execute(null);
+                    note.TryToSubscribeUndoNote(recordForUndo: false);                    
                 }
             }
         }
@@ -967,9 +965,7 @@ namespace Dynamo.ViewModels
             {
                 foreach (NoteViewModel note in pinnedNotes)
                 {
-                    DynamoSelection.Instance.Selection.Clear();
-                    DynamoSelection.Instance.Selection.Add(node);
-                    note.PinToNodeCommand.Execute(null);
+                    note.Model.TryToSubscribeUndoNote(recordForUndo: false);                                     
                 }
             }
         }
