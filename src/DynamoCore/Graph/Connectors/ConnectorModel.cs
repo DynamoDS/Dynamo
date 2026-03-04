@@ -253,7 +253,7 @@ namespace Dynamo.Graph.Connectors
         /// Retarget the start port of this connector while preserving the connector instance.
         /// </summary>
         /// <param name="newStart">The new start/output port.</param>
-        /// /// <param name="notifyEndNodeModified">
+        /// <param name="notifyEndNodeModified">
         /// If true, triggers node-modified events on the downstream node.
         /// If false, only marks the downstream node as dirty.
         /// </param>

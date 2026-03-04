@@ -18,7 +18,6 @@ namespace Dynamo.Graph.Workspaces
     public partial class WorkspaceModel
     {
         private const string WatchNodeTypeName = "CoreNodeModels.Watch";
-        private const string WatchEvaluationCompleteMethodName = "OnEvaluationComplete";
 
         /// <summary>
         /// Returns the current UndoRedoRecorder that is associated with the current
