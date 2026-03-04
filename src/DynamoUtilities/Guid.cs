@@ -122,21 +122,35 @@ namespace Dynamo.Utilities
         }
 
         /// <summary>
-        /// Performs an update to all Guids inside the json string before deserialization.
-        /// Builds a remap from workspace-element Guids serialized in compact ("N") format,
-        /// then replaces both compact ("N") and hyphenated ("D") occurrences for those same Guids
-        /// so relationships between workspace elements are preserved.
+        /// Performs an update to all Guid values in the json string before deserialization.
+        /// Remaps both compact ("N") and hyphenated ("D") Guid occurrences.
         /// </summary>
         /// <param name="jsonData">Json representation of workspace.</param>
-        /// <returns>String representation of workspace after all elements' Guids replaced.</returns>
+        /// <returns>String representation of workspace after all Guid values are remapped.</returns>
         internal static string UpdateWorkspaceGUIDs(string jsonData)
         {
-            // Collect all workspace-element ids serialized in "N" format.
-            var compactGuidPattern = new Regex(@"\b[a-f0-9]{32}\b", RegexOptions.IgnoreCase);
-            var guidRemap = compactGuidPattern.Matches(jsonData)
+            if (string.IsNullOrEmpty(jsonData))
+            {
+                return jsonData;
+            }
+
+            var regexTimeout = TimeSpan.FromSeconds(5);
+
+            var anyGuidPattern = new Regex(
+                @"\b[a-f0-9]{32}\b|\b[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\b",
+                RegexOptions.IgnoreCase,
+                regexTimeout);
+
+            // Build a stable old->new map from every guid found.
+            var guidRemap = anyGuidPattern.Matches(jsonData)
                 .Cast<Match>()
                 .Select(m => m.Value)
-                .Select(Guid.Parse)
+                .Select(v =>
+                {
+                    Guid parsed;
+                    return Guid.TryParse(v, out parsed) ? parsed : Guid.Empty;
+                })
+                .Where(g => g != Guid.Empty)
                 .Distinct()
                 .ToDictionary(g => g, _ => Guid.NewGuid());
 
@@ -144,13 +158,6 @@ namespace Dynamo.Utilities
             {
                 return jsonData;
             }
-
-            // Replace both compact and hyphenated guid occurrences, but only for ids that were
-            // remapped from compact workspace-element ids. This keeps unrelated hyphenated guids
-            // (for example style ids) untouched.
-            var anyGuidPattern = new Regex(
-                @"\b[a-f0-9]{32}\b|\b[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\b",
-                RegexOptions.IgnoreCase);
 
             return anyGuidPattern.Replace(jsonData, match =>
             {
@@ -166,6 +173,7 @@ namespace Dynamo.Utilities
                     return match.Value;
                 }
 
+                // Keep original serialization style.
                 return match.Value.Contains("-")
                     ? updatedGuid.ToString("D")
                     : updatedGuid.ToString("N");
