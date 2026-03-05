@@ -3142,7 +3142,7 @@ namespace Dynamo.Models
                                 connector.End != null && connector.End.Owner.IsSelected
                                     && !ClipBoard.Contains(connector));
 
-                ClipBoard.AddRange(connectors);                
+                ClipBoard.AddRange(connectors);
             }
 
             var connectorPins = ClipBoard
