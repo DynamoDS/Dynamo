@@ -121,9 +121,13 @@ namespace Dynamo.Utilities
             guid[right] = temp;
         }
 
+        private static readonly TimeSpan RegexTimeout = TimeSpan.FromSeconds(5);
+
         /// <summary>
-        /// Performs an update to all Guid values in the json string before deserialization.
-        /// Remaps both compact ("N") and hyphenated ("D") Guid occurrences.
+        /// Performs an update to workspace-element Guids inside the json string before deserialization.
+        /// Remaps compact ("N") workspace ids globally, and additionally remaps
+        /// View.ConnectorPins[].ConnectorGuid when it is in hyphenated ("D") format,
+        /// so connector-pin links remain valid after SaveAs.
         /// </summary>
         /// <param name="jsonData">Json representation of workspace.</param>
         /// <returns>String representation of workspace after all Guid values are remapped.</returns>
@@ -134,23 +138,16 @@ namespace Dynamo.Utilities
                 return jsonData;
             }
 
-            var regexTimeout = TimeSpan.FromSeconds(5);
+            string updatedJsonData = jsonData;
 
-            var anyGuidPattern = new Regex(
-                @"\b[a-f0-9]{32}\b|\b[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\b",
-                RegexOptions.IgnoreCase,
-                regexTimeout);
+            // Match compact 32-char guids
+            var compactGuidPattern = new Regex(@"\b[a-f0-9]{32}\b", RegexOptions.IgnoreCase, RegexTimeout);
 
-            // Build a stable old->new map from every guid found.
-            var guidRemap = anyGuidPattern.Matches(jsonData)
+            // old guid -> new guid map 
+            var guidRemap = compactGuidPattern.Matches(jsonData)
                 .Cast<Match>()
                 .Select(m => m.Value)
-                .Select(v =>
-                {
-                    Guid parsed;
-                    return Guid.TryParse(v, out parsed) ? parsed : Guid.Empty;
-                })
-                .Where(g => g != Guid.Empty)
+                .Select(Guid.Parse)
                 .Distinct()
                 .ToDictionary(g => g, _ => Guid.NewGuid());
 
@@ -159,7 +156,8 @@ namespace Dynamo.Utilities
                 return jsonData;
             }
 
-            return anyGuidPattern.Replace(jsonData, match =>
+            // Replace compact guids globally
+            updatedJsonData = compactGuidPattern.Replace(updatedJsonData, match =>
             {
                 Guid parsedGuid;
                 if (!Guid.TryParse(match.Value, out parsedGuid))
@@ -167,17 +165,41 @@ namespace Dynamo.Utilities
                     return match.Value;
                 }
 
-                Guid updatedGuid;
-                if (!guidRemap.TryGetValue(parsedGuid, out updatedGuid))
+                Guid remappedGuid;
+                if (!guidRemap.TryGetValue(parsedGuid, out remappedGuid))
                 {
                     return match.Value;
                 }
 
-                // Keep original serialization style.
-                return match.Value.Contains("-")
-                    ? updatedGuid.ToString("D")
-                    : updatedGuid.ToString("N");
+                return remappedGuid.ToString("N");
             });
+
+            // Remap only ConnectorGuid values that are hyphenated (D format).
+            var connectorGuidPattern = new Regex(
+                @"(?<prefix>""ConnectorGuid""\s*:\s*"")(?<guid>[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})(?<suffix>"")",
+                RegexOptions.IgnoreCase,
+                RegexTimeout);
+
+            updatedJsonData = connectorGuidPattern.Replace(updatedJsonData, match =>
+            {
+                var connectorGuidValue = match.Groups["guid"].Value;
+
+                Guid connectorGuid;
+                if (!Guid.TryParse(connectorGuidValue, out connectorGuid))
+                {
+                    return match.Value;
+                }
+
+                Guid remappedGuid;
+                if (!guidRemap.TryGetValue(connectorGuid, out remappedGuid))
+                {
+                    return match.Value;
+                }
+
+                return match.Groups["prefix"].Value + remappedGuid.ToString("D") + match.Groups["suffix"].Value;
+            });
+
+            return updatedJsonData;
         }
     }
 }
