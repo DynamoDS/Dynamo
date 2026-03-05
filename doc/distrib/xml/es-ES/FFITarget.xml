@@ -65,6 +65,10 @@
             <param name="x">Var. ficticia utilizada para forzar el envío replicado</param>
             <param name="failWithException">Error de envío con una excepción en lugar de</param>
         </member>
+        <member name="T:FFITarget.NodeCategoryAttributeTest">
+            <summary>Test class for NodeCategoryAttribute type-forwarded to DynamoServices.
+            CreateFromAttribute is a static method (not a constructor) but is forced into the "Create" category via the attribute.</summary>
+        </member>
         <member name="T:FFITarget.OverloadTarget">
             <summary>Pruebe el destino para detectar métodos sobrecargados.</summary>
         </member>

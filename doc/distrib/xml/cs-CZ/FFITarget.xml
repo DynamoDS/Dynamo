@@ -65,6 +65,10 @@
             <param name="x">Fiktivní proměnná použitá k vynucení replikovaného odeslání</param>
             <param name="failWithException">Selhání odeslání s výjimkou místo</param>
         </member>
+        <member name="T:FFITarget.NodeCategoryAttributeTest">
+            <summary>Test class for NodeCategoryAttribute type-forwarded to DynamoServices.
+            CreateFromAttribute is a static method (not a constructor) but is forced into the "Create" category via the attribute.</summary>
+        </member>
         <member name="T:FFITarget.OverloadTarget">
             <summary>Testovací cíl přetížených metod</summary>
         </member>

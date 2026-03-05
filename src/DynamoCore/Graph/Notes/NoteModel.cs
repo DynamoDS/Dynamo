@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Xml;
@@ -21,7 +21,6 @@ namespace Dynamo.Graph.Notes
         /// <summary>
         /// This action is triggered when undo command is pressed and a node is pinned
         /// </summary>
-        /// <remarks>Obsolete: no longer fired. DeserializeCore now resolves PinnedNode directly.</remarks>
         internal event Action<ModelBase> UndoRequest;
 
         /// <summary>
@@ -49,10 +48,10 @@ namespace Dynamo.Graph.Notes
 
         /// <summary>
         /// NodeModel which this Note is pinned to
-        /// When using the pin to node command  
-        /// note and node become entangled so that 
-        /// if you select and move one the other one 
-        /// moves as well. 
+        /// When using the pin to node command
+        /// note and node become entangled so that
+        /// if you select and move one the other one
+        /// moves as well.
         /// </summary>
         public NodeModel PinnedNode
         {
@@ -86,6 +85,13 @@ namespace Dynamo.Graph.Notes
                 RaisePropertyChanged(nameof(UndoRedoAction));
             }
         }
+
+        /// <summary>
+        /// When true, the next Pin/Unpin triggered by UndoRequest will not be recorded for undo.
+        /// Used when restoring pinned state (e.g. from deserialization or ResolvePinnedNodeReference)
+        /// so that the operation is not added to the undo stack.
+        /// </summary>
+        internal bool SuppressUndoRecording { get; set; }
 
         /// <summary>
         /// Creates NoteModel.
@@ -140,7 +146,7 @@ namespace Dynamo.Graph.Notes
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
-            var helper = new XmlElementHelper(element);
+            XmlElementHelper helper = new XmlElementHelper(element);
             helper.SetAttribute("guid", GUID);
             helper.SetAttribute("text", Text);
             helper.SetAttribute("x", X);
@@ -158,15 +164,22 @@ namespace Dynamo.Graph.Notes
 
             Guid savedPinnedNodeGuid = helper.ReadGuid("pinnedNode", Guid.Empty);
 
-            // Resolve the pinned node directly from the workspace rather than relying
-            // on the fragile TryToSubscribeUndoNote side-channel event mechanism.
             if (savedPinnedNodeGuid == Guid.Empty)
             {
                 PinnedNode = null;
+                PinnedNodeGuid = Guid.Empty;
             }
             else if (Workspace != null)
             {
+                // Workspace is available: resolve directly (undo-of-modification path).
                 PinnedNode = Workspace.Nodes.FirstOrDefault(n => n.GUID == savedPinnedNodeGuid);
+                PinnedNodeGuid = savedPinnedNodeGuid;
+            }
+            else
+            {
+                // Workspace is null (file load or undo-of-deletion): store the GUID so
+                // ResolvePinnedNodeReference can re-establish the pin after AddNote runs.
+                PinnedNodeGuid = savedPinnedNodeGuid;
             }
 
             // Notify listeners that the position of the note has changed,
@@ -175,10 +188,27 @@ namespace Dynamo.Graph.Notes
         }
 
         /// <summary>
-        /// Obsolete: no longer called. PinnedNode is now resolved directly in DeserializeCore.
-        /// Retained to avoid breaking internal callers via InternalsVisibleTo.
+        /// Verify if the current user action is to pin a node so the 'unpin' method can be called to undo the action.
+        /// Used by ResolvePinnedNodeReference to re-establish pin state after a note is added to the workspace
+        /// (e.g. file load or undo of note deletion) without adding to the undo stack.
         /// </summary>
-        internal void TryToSubscribeUndoNote() { }
+        /// <param name="recordForUndo">When true, the resulting pin/unpin will be recorded for undo/redo.
+        /// When false (e.g. when restoring from file or resolving references), the operation is not recorded.</param>
+        internal void TryToSubscribeUndoNote(bool recordForUndo = true)
+        {
+            if (pinnedNode != null && PinnedNodeGuid == Guid.Empty && UndoRequest != null)
+            {
+                UndoRedoAction = UndoAction.Unpin;
+                UndoRequest(this);
+                return;
+            }
+            else if (pinnedNode == null && PinnedNodeGuid != Guid.Empty && UndoRequest != null)
+            {
+                SuppressUndoRecording = !recordForUndo;
+                UndoRedoAction = UndoAction.Pin;
+                UndoRequest(this);
+            }
+        }
 
         #endregion
     }

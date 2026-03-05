@@ -600,6 +600,13 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
+        /// Notifies the UI that the undo/redo state has changed so that undo/redo buttons can be enabled/disabled.
+        /// </summary>
+        public void UpdateUndoRedoStack()
+        {
+            RaisePropertyChanged("CanUndoRedoCommand");
+        }
+        /// <summary>
         /// Returns model by GUID
         /// </summary>
         /// <param name="modelGuid">Identifier of the requested model.</param>

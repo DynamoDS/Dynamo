@@ -131,7 +131,7 @@ namespace Dynamo.Tests
             var pyNode = currentws.Nodes.OfType<PythonNode>().FirstOrDefault();
             Assert.IsNotNull(pyNode);
             Assert.AreEqual(pyNode.EngineName, PythonEngineManager.PythonNet3EngineName);
-            Assert.AreEqual(PythonEngineManager.Instance.AvailableEngines.Count, 2);
+            Assert.AreEqual(2, PythonEngineManager.Instance.AvailableEngines.Count);
 
             currentws.ForceComputeWorkspaceReferences = true;
             var packageDependencies = currentws.NodeLibraryDependencies;
