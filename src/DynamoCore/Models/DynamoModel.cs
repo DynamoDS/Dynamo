@@ -1960,7 +1960,8 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// This warning message is displayed on the node associated with the FFI dll
+        /// This warning message is displayed on the node associated with the FFI dll.
+        /// Warning messages are always displayed regardless of workspace version.
         /// </summary>
         /// <param name="args"></param>
         private void LogWarningMessage(LogWarningMessageEventArgs args)
@@ -1970,13 +1971,35 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// This info message is displayed on the node associated with the FFI dll
+        /// This info message is displayed on the node associated with the FFI dll.
+        /// Info messages are filtered based on workspace version if IntroducedInVersion is specified.
         /// </summary>
         /// <param name="args"></param>
         private void LogInfoMessage(LogWarningMessageEventArgs args)
         {
+            if (!ShouldLogVersionedInfoMessage(args))
+                return;
             Validity.Assert(EngineController.LiveRunnerRuntimeCore != null);
             EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogInfo(InfoID.Default, args.message);
+        }
+
+        private bool ShouldLogVersionedInfoMessage(LogWarningMessageEventArgs args)
+        {
+            //If CurrentWorkspace is null(unexpected state), the info message is silently dropped. A safer default is return true
+            if (CurrentWorkspace == null)
+                return true;
+
+            var introducedInVersion = args?.IntroducedInVersion;
+            if (introducedInVersion == null)
+                return true;
+
+            if (string.IsNullOrEmpty(CurrentWorkspace.FileName))
+                return false;
+            var workspaceVersion = EngineController.CurrentWorkspaceVersion;
+            if (workspaceVersion == null)
+                return true;
+
+            return workspaceVersion < introducedInVersion;
         }
 
         #endregion
@@ -2048,7 +2071,18 @@ namespace Dynamo.Models
             // depend on it get executed, or those tasks are thrown away if safe to
             // do that.
 
+            // Save the current workspace version before resetting the engine
+            // so it doesn't get overwritten with the running Dynamo version
+            var workspaceVersion = EngineController?.CurrentWorkspaceVersion;
+
             ResetEngineInternal();
+
+            // Restore the workspace version after creating the new EngineController
+            if (workspaceVersion != null)
+            {
+                EngineController.CurrentWorkspaceVersion = workspaceVersion;
+            }
+
             foreach (var workspaceModel in Workspaces.OfType<HomeWorkspaceModel>())
             {
                 workspaceModel.ResetEngine(EngineController, markNodesAsDirty);
@@ -2475,7 +2509,15 @@ namespace Dynamo.Models
                 // TODO: #4258
                 // Remove this ResetEngine call when multiple home workspaces is supported.
                 // This call formerly lived in DynamoViewModel
+                
+                // Save the workspace version before resetting the engine
+                var workspaceVersion = EngineController.CurrentWorkspaceVersion;
                 ResetEngine(false);
+                // Restore the workspace version after engine reset
+                if (workspaceVersion != null)
+                {
+                    EngineController.CurrentWorkspaceVersion = workspaceVersion;
+                }
 
                 if (hws.RunSettings.RunType == RunType.Periodic)
                 {
