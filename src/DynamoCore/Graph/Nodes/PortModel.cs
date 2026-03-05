@@ -367,7 +367,6 @@ namespace Dynamo.Graph.Nodes
             this.Name = name;
             MarginThickness = new Thickness(0);
             Height = Math.Abs(Height) < 0.001 ? Configurations.PortHeightInPixels : Height;
-            Connectors.CollectionChanged += Connectors_CollectionChanged;
         }
 
         internal event NotifyCollectionChangedEventHandler ConnectorCollectionChanged;
