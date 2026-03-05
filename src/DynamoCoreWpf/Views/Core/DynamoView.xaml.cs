@@ -1369,15 +1369,15 @@ namespace Dynamo.Controls
                         dynamoViewModel.BackgroundPreviewViewModel.ZoomToFitCommand.Execute(null);
                         return;
                     }
-                    BackgroundPreview.View.ZoomExtents();
+                    BackgroundPreview?.View?.ZoomExtents();
                     break;
 
                 case ViewOperationEventArgs.Operation.ZoomIn:
-                    BackgroundPreview.View.AddZoomForce(-0.5);
+                    BackgroundPreview?.View?.AddZoomForce(-0.5);
                     break;
 
                 case ViewOperationEventArgs.Operation.ZoomOut:
-                    BackgroundPreview.View.AddZoomForce(0.5);
+                    BackgroundPreview?.View?.AddZoomForce(0.5);
                     break;
             }
         }
@@ -1510,17 +1510,23 @@ namespace Dynamo.Controls
             sharedViewExtensionLoadedParams = new ViewLoadedParams(this, dynamoViewModel);
             this.DynamoLoadedViewExtensionHandler(sharedViewExtensionLoadedParams, viewExtensionManager.ViewExtensions);
 
-            BackgroundPreview = new Watch3DView { Name = BackgroundPreviewName };
-            background_grid.Children.Add(BackgroundPreview);
-            BackgroundPreview.DataContext = dynamoViewModel.BackgroundPreviewViewModel;
-            var vizBinding = new Binding
+            // Defer 3D viewport creation to a background dispatcher frame so it doesn't
+            // block the initial window render. DirectX initialization (~1.4s) will happen
+            // asynchronously after the UI is responsive.
+            Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
-                Source = dynamoViewModel.BackgroundPreviewViewModel,
-                Path = new PropertyPath("Active"),
-                Mode = BindingMode.TwoWay,
-                Converter = new BooleanToVisibilityConverter()
-            };
-            BackgroundPreview.SetBinding(VisibilityProperty, vizBinding);
+                BackgroundPreview = new Watch3DView { Name = BackgroundPreviewName };
+                background_grid.Children.Add(BackgroundPreview);
+                BackgroundPreview.DataContext = dynamoViewModel.BackgroundPreviewViewModel;
+                var vizBinding = new Binding
+                {
+                    Source = dynamoViewModel.BackgroundPreviewViewModel,
+                    Path = new PropertyPath("Active"),
+                    Mode = BindingMode.TwoWay,
+                    Converter = new BooleanToVisibilityConverter()
+                };
+                BackgroundPreview.SetBinding(VisibilityProperty, vizBinding);
+            }));
 
             TrackStartupAnalytics();
 
@@ -1879,6 +1885,11 @@ namespace Dynamo.Controls
                 dpiY = 96;
             }
 
+            if (BackgroundPreview == null)
+            {
+                e.Success = false;
+                return;
+            }
             var bitmapSource = BackgroundPreview.View.RenderBitmap();
             // this image only really needs 24bits per pixel but to match previous implementation we'll use 32bit images.
             var rtBitmap = new RenderTargetBitmap(bitmapSource.PixelWidth, bitmapSource.PixelHeight, dpiX, dpiY, PixelFormats.Pbgra32);

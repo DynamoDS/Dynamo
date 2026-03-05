@@ -2240,10 +2240,28 @@ namespace Dynamo.ViewModels
                 if (displayTrustWarning && (currentWorkspaceViewModel?.IsHomeSpace ?? false))
                 {
                     // Skip these when opening dyf
-                    FileTrustViewModel.DynFileDirectoryName = directoryName;
-                    FileTrustViewModel.ShowWarningPopup = true;
-                    (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
                     FileTrustViewModel.AllowOneTimeTrust = false;
+
+                    // Defer popup display to a separate dispatcher frame so graph rendering
+                    // from ExecuteCommand is not forced to complete synchronously within Open().
+                    // Capture directoryName so rapid successive Open() calls each show the correct path.
+                    var capturedDirectoryName = directoryName;
+                    Action showPopup = () =>
+                    {
+                        FileTrustViewModel.DynFileDirectoryName = capturedDirectoryName;
+                        FileTrustViewModel.ShowWarningPopup = true;
+                        (HomeSpaceViewModel as HomeWorkspaceViewModel)?.UpdateRunStatusMsgBasedOnStates();
+                    };
+
+                    if (UIDispatcher != null)
+                    {
+                        UIDispatcher.BeginInvoke(DispatcherPriority.Loaded, showPopup);
+                    }
+                    else
+                    {
+                        // Fallback for test mode or when dispatcher is unavailable
+                        showPopup();
+                    }
                 }
             }
             catch (Exception e)
@@ -2331,10 +2349,26 @@ namespace Dynamo.ViewModels
                 if (displayTrustWarning && (currentWorkspaceViewModel?.IsHomeSpace ?? false))
                 {
                     // Skip these when opening dyf
-                    FileTrustViewModel.DynFileDirectoryName = directoryName;
-                    FileTrustViewModel.ShowWarningPopup = true;
-                    (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
                     FileTrustViewModel.AllowOneTimeTrust = false;
+
+                    // Defer popup display to a separate dispatcher frame so graph rendering
+                    // from ExecuteCommand is not forced to complete synchronously.
+                    var capturedDirectoryName = directoryName;
+                    Action showPopup = () =>
+                    {
+                        FileTrustViewModel.DynFileDirectoryName = capturedDirectoryName;
+                        FileTrustViewModel.ShowWarningPopup = true;
+                        (HomeSpaceViewModel as HomeWorkspaceViewModel)?.UpdateRunStatusMsgBasedOnStates();
+                    };
+
+                    if (UIDispatcher != null)
+                    {
+                        UIDispatcher.BeginInvoke(DispatcherPriority.Loaded, showPopup);
+                    }
+                    else
+                    {
+                        showPopup();
+                    }
                 }
             }
             catch (Exception e)
@@ -3608,12 +3642,14 @@ namespace Dynamo.ViewModels
 
         private void Save3DImage(object parameters)
         {
-            // Save the parameters
-            OnRequestSave3DImage(this, new ImageSaveEventArgs(parameters.ToString()));
+            var args = new ImageSaveEventArgs(parameters.ToString());
+            OnRequestSave3DImage(this, args);
 
-            string message = String.Concat(WpfResources.ExportWorkspaceAs3DImage, parameters.ToString());
-
-            ToastManager?.CreateRealTimeInfoWindow(message, true);
+            if (args.Success)
+            {
+                string message = String.Concat(WpfResources.ExportWorkspaceAs3DImage, parameters.ToString());
+                ToastManager?.CreateRealTimeInfoWindow(message, true);
+            }
         }
 
         internal bool CanSaveImage(object parameters)

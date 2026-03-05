@@ -75,8 +75,8 @@ namespace Dynamo.Wpf.Views.FileTrust
                 if (fileTrustWarningViewModel.ShowWarningPopup == true)
                 {
                     FindPopupPlacementTarget();
-                    //Force to run all the drawing events in the Dispatcher so later we can disable the button/combobox in the Run section
-                    mainWindow.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
+                    // ShowWarningPopup is now deferred to DispatcherPriority.Loaded, so layout
+                    // has already completed by the time this fires — disable run controls immediately.
                     DisableRunInteractivity();
                 }
                 else

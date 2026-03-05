@@ -19,6 +19,7 @@ using Dynamo.Wpf.Views;
 using NUnit.Framework;
 using DynamoMLDataPipeline;
 using Dynamo.Wpf.UI;
+using DynamoCoreWpfTests.Utility;
 
 
 namespace DynamoCoreWpfTests
@@ -95,6 +96,8 @@ namespace DynamoCoreWpfTests
             // Open workspace with test mode as false, to verify trust warning.
             DynamoModel.IsTestMode = false;
             Open(@"core\CustomNodes\TestAdd.dyn");
+            // ShowWarningPopup is now deferred via Dispatcher.BeginInvoke — pump the dispatcher.
+            DispatcherUtil.DoEvents();
             Assert.IsTrue(ViewModel.FileTrustViewModel.ShowWarningPopup);
 
             // Close workspace
