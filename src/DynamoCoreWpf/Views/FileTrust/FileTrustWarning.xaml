@@ -13,7 +13,7 @@
        Opacity="0.5"
        Width="530"
        Height="250"
-       IsOpen="False"
+       IsOpen="{Binding ShowWarningPopup}"
        d:DesignWidth="415"
        d:DesignHeight="250">
     <Popup.Resources>
