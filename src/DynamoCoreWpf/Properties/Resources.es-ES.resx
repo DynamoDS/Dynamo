@@ -3388,10 +3388,10 @@ En determinados gráficos complejos o al usar programas anfitriones, el modo Aut
     <value>Settings imported. To apply the settings, launch Dynamo, then close it and restart it.</value>
   </data>
   <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
-    <value>Reset imported settings</value>
+    <value>Restablecer parámetros importados</value>
   </data>
   <data name="SplashScreenSettingsResetSuccess" xml:space="preserve">
-    <value>Imported settings have been reset.</value>
+    <value>Se han restablecido los parámetros importados.</value>
   </data>
   <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
     <value>Iniciando vista de Dynamo...</value>

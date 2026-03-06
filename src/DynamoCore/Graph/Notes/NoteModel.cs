@@ -79,6 +79,13 @@ namespace Dynamo.Graph.Notes
         }
 
         /// <summary>
+        /// When true, the next Pin/Unpin triggered by UndoRequest will not be recorded for undo.
+        /// Used when restoring pinned state (e.g. from deserialization or ResolvePinnedNodeReference)
+        /// so that the operation is not added to the undo stack.
+        /// </summary>
+        internal bool SuppressUndoRecording { get; set; }
+
+        /// <summary>
         /// Creates NoteModel.
         /// </summary>
         /// <param name="x">X coordinate of note.</param>
@@ -157,7 +164,8 @@ namespace Dynamo.Graph.Notes
         /// <summary>
         /// Verify if the current user action is to pin a node so the 'unpin' method can be called to undo the action
         /// </summary>
-        internal void TryToSubscribeUndoNote()
+        /// <param name="recordForUndo">When true, the resulting pin/unpin will be recorded for undo/redo. When false (e.g. when restoring from file or resolving references), the operation is not recorded.</param>
+        internal void TryToSubscribeUndoNote(bool recordForUndo = true)
         {
             if (pinnedNode != null && PinnedNodeGuid == Guid.Empty && UndoRequest != null)
             {
@@ -167,6 +175,7 @@ namespace Dynamo.Graph.Notes
             }
             else if (pinnedNode == null && PinnedNodeGuid != Guid.Empty && UndoRequest != null)
             {
+                SuppressUndoRecording = !recordForUndo;
                 UndoRedoAction = UndoAction.Pin;
                 UndoRequest(this);
             }

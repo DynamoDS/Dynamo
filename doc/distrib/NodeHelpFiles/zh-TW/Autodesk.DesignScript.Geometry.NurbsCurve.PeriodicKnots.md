@@ -1,9 +1,9 @@
 ## 深入資訊
-Use `NurbsCurve.PeriodicKnots` when you need to export a closed NURBS curve to another system (for example Alias) or when that system expects the curve in its periodic form. Many CAD tools expect this form for round-trip accuracy.
+當您需要將封閉的 NURBS 曲線匯出至其他系統 (例如 Alias)，或當該系統需要週期形式的曲線時，請使用 `NurbsCurve.PeriodicKnots`。許多 CAD 工具需要此形式才能達到雙向準確度。
 
-`PeriodicKnots` returns the knot vector in the *periodic* (unclamped) form. `Knots` returns it in the *clamped* form. Both arrays have the same length; they are two different ways to describe the same curve. In the clamped form, knots repeat at the start and end so the curve is pinned to the parameter range. In the periodic form, the knot spacing repeats at the start and end instead, which gives a smooth closed loop.
+`PeriodicKnots` 會以*週期* (未鎖模) 形式傳回節點向量。`Knots` 會以*鎖模*形式傳回向量。兩個陣列的長度相同；這是兩種描述同一條曲線的方式。在鎖模形式中，節點在起點和終點處重複出現，因此曲線被限制在參數範圍內。在週期形式中，節點間距在起點和終點處重複出現，因此形成一個平滑的封閉迴路。
 
-In the example below, a periodic NURBS curve is built with `NurbsCurve.ByControlPointsWeightsKnots`. Watch nodes compare `Knots` and `PeriodicKnots` so you can see the same length but different values. Knots is the clamped form (repeated knots at the ends), and PeriodicKnots is the unclamped form with the repeating difference pattern that defines the curve's periodicity.
+以下範例使用 `NurbsCurve.ByControlPointsWeightsKnots` 建置一條週期性 NURBS 曲線。Watch 節點會比較 `Knots` 和 `PeriodicKnots`，因此您可以看到相同長度但不同值。Knots 是鎖模形式 (在終點處重複出現節點)，PeriodicKnots 是未鎖模形式，重複出現定義曲線週期性的差異樣式。
 ___
 ## 範例檔案
 
