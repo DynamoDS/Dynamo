@@ -32,6 +32,9 @@ namespace Dynamo.Tests
             var edges = Delaunay.ByParametersOnSurface(uvs, surface).ToList();
             Assert.That(edges.Count, Is.GreaterThan(0));
 
+            // Reconstruct triangles from API edges and verify empty circumcircle on production output.
+            AssertApiEdgesSatisfyEmptyCircumcircle(uvs, surface, edges);
+
             // Validate that the API output matches the edges implied by the Delaunay triangles.
             AssertDelaunayEdgesMatchTriangulation(triangles, surface, edges);
         }
@@ -281,6 +284,123 @@ namespace Dynamo.Tests
             }
         }
 
+        private static void AssertApiEdgesSatisfyEmptyCircumcircle(
+            IReadOnlyList<UV> uvs,
+            Surface face,
+            IReadOnlyList<Curve> apiEdges)
+        {
+            const double vertexMatchTolerance = 1e-3;
+            const double edgeLengthTolerance = 1e-9;
+            var (normU, normV) = UvScalingUtilities.GetNormalizedUvScales(face);
+
+            var uvVertices = new List<UvVertex>(uvs.Count);
+            foreach (var uv in uvs)
+            {
+                using var worldPoint = face.PointAtParameter(uv.U, uv.V);
+                uvVertices.Add(new UvVertex(
+                    new Pt(uv.U * normU, uv.V * normV),
+                    new WorldPoint(worldPoint.X, worldPoint.Y, worldPoint.Z)));
+            }
+
+            var edgeSet = new HashSet<Edge>();
+            foreach (var edge in apiEdges)
+            {
+                using var start = edge.StartPoint;
+                using var end = edge.EndPoint;
+
+                var startIndex = FindClosestVertexIndex(
+                    uvVertices,
+                    new WorldPoint(start.X, start.Y, start.Z),
+                    vertexMatchTolerance);
+                var endIndex = FindClosestVertexIndex(
+                    uvVertices,
+                    new WorldPoint(end.X, end.Y, end.Z),
+                    vertexMatchTolerance);
+
+                if (startIndex == endIndex)
+                    continue;
+
+                var a = uvVertices[startIndex].ScaledUv;
+                var b = uvVertices[endIndex].ScaledUv;
+                if (a.DistanceTo(b) <= edgeLengthTolerance)
+                    continue;
+
+                edgeSet.Add(new Edge(a, b));
+            }
+
+            var triangles = BuildTrianglesFromEdges(edgeSet);
+            Assert.That(triangles.Count, Is.GreaterThan(0), "Could not reconstruct any triangles from API edges.");
+
+            AssertTrianglesSatisfyEmptyCircumcircle(triangles);
+        }
+
+        private static List<Triangle> BuildTrianglesFromEdges(HashSet<Edge> edgeSet)
+        {
+            var points = edgeSet
+                .SelectMany(e => new[] { e.A, e.B })
+                .Distinct()
+                .ToList();
+
+            var pointIndex = points
+                .Select((point, index) => (point, index))
+                .ToDictionary(x => x.point, x => x.index);
+
+            var adjacency = points.Select(_ => new HashSet<int>()).ToList();
+            foreach (var edge in edgeSet)
+            {
+                var ia = pointIndex[edge.A];
+                var ib = pointIndex[edge.B];
+                adjacency[ia].Add(ib);
+                adjacency[ib].Add(ia);
+            }
+
+            var triangles = new List<Triangle>();
+            for (var i = 0; i < points.Count; i++)
+            {
+                for (var j = i + 1; j < points.Count; j++)
+                {
+                    if (!adjacency[i].Contains(j))
+                        continue;
+
+                    for (var k = j + 1; k < points.Count; k++)
+                    {
+                        if (!adjacency[i].Contains(k) || !adjacency[j].Contains(k))
+                            continue;
+
+                        triangles.Add(new Triangle(points[i], points[j], points[k]));
+                    }
+                }
+            }
+
+            return triangles;
+        }
+
+        private static int FindClosestVertexIndex(
+            IReadOnlyList<UvVertex> vertices,
+            WorldPoint candidate,
+            double tolerance)
+        {
+            var bestDistance = double.PositiveInfinity;
+            var bestIndex = -1;
+
+            for (var i = 0; i < vertices.Count; i++)
+            {
+                var distance = vertices[i].World.DistanceTo(candidate);
+                if (distance < bestDistance)
+                {
+                    bestDistance = distance;
+                    bestIndex = i;
+                }
+            }
+
+            if (bestIndex < 0 || bestDistance > tolerance)
+            {
+                Assert.Fail($"API edge endpoint could not be mapped to a UV input vertex. bestDistance={bestDistance}");
+            }
+
+            return bestIndex;
+        }
+
         private static void AddUniqueSegment(List<WorldSegment> segments, WorldSegment candidate, double tol)
         {
             if (!segments.Any(existing => existing.Matches(candidate, tol)))
@@ -329,6 +449,8 @@ namespace Dynamo.Tests
                 return sameDirection || reverseDirection;
             }
         }
+
+        private readonly record struct UvVertex(Pt ScaledUv, WorldPoint World);
 
         private sealed class Triangle
         {

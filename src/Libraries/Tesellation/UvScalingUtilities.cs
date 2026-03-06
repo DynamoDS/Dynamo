@@ -15,13 +15,17 @@ namespace Tessellation
         /// <returns>Tuple containing normalized U and V scale factors.</returns>
         internal static (double normU, double normV) GetNormalizedUvScales(Surface face)
         {
-            // Physical scale per unit U/V (affine for planar Rectangle->Surface.ByPatch)
-            var p00 = face.PointAtParameter(0, 0);
-            var p10 = face.PointAtParameter(1, 0);
-            var p01 = face.PointAtParameter(0, 1);
-
-            var scaleU = p00.DistanceTo(p10);
-            var scaleV = p00.DistanceTo(p01);
+            // Physical scale per unit U/V based on iso-curve lengths along surface edges.
+            double scaleU;
+            double scaleV;
+            using (var uCurveV0 = face.GetIsoline(0, 0))
+            using (var uCurveV1 = face.GetIsoline(0, 1))
+            using (var vCurveU0 = face.GetIsoline(1, 0))
+            using (var vCurveU1 = face.GetIsoline(1, 1))
+            {
+                scaleU = (uCurveV0.Length + uCurveV1.Length) / 2.0;
+                scaleV = (vCurveU0.Length + vCurveU1.Length) / 2.0;
+            }
 
             // Normalize scales to keep values in a reasonable range, preserve aspect ratio
             var max = System.Math.Max(scaleU, scaleV);
