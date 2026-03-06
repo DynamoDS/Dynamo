@@ -2241,27 +2241,9 @@ namespace Dynamo.ViewModels
                 {
                     // Skip these when opening dyf
                     FileTrustViewModel.AllowOneTimeTrust = false;
-
-                    // Defer popup display to a separate dispatcher frame so graph rendering
-                    // from ExecuteCommand is not forced to complete synchronously within Open().
-                    // Capture directoryName so rapid successive Open() calls each show the correct path.
-                    var capturedDirectoryName = directoryName;
-                    Action showPopup = () =>
-                    {
-                        FileTrustViewModel.DynFileDirectoryName = capturedDirectoryName;
-                        FileTrustViewModel.ShowWarningPopup = true;
-                        (HomeSpaceViewModel as HomeWorkspaceViewModel)?.UpdateRunStatusMsgBasedOnStates();
-                    };
-
-                    if (UIDispatcher != null)
-                    {
-                        UIDispatcher.BeginInvoke(DispatcherPriority.Loaded, showPopup);
-                    }
-                    else
-                    {
-                        // Fallback for test mode or when dispatcher is unavailable
-                        showPopup();
-                    }
+                    FileTrustViewModel.DynFileDirectoryName = directoryName;
+                    FileTrustViewModel.ShowWarningPopup = true;
+                    (HomeSpaceViewModel as HomeWorkspaceViewModel)?.UpdateRunStatusMsgBasedOnStates();
                 }
             }
             catch (Exception e)
@@ -2350,25 +2332,9 @@ namespace Dynamo.ViewModels
                 {
                     // Skip these when opening dyf
                     FileTrustViewModel.AllowOneTimeTrust = false;
-
-                    // Defer popup display to a separate dispatcher frame so graph rendering
-                    // from ExecuteCommand is not forced to complete synchronously.
-                    var capturedDirectoryName = directoryName;
-                    Action showPopup = () =>
-                    {
-                        FileTrustViewModel.DynFileDirectoryName = capturedDirectoryName;
-                        FileTrustViewModel.ShowWarningPopup = true;
-                        (HomeSpaceViewModel as HomeWorkspaceViewModel)?.UpdateRunStatusMsgBasedOnStates();
-                    };
-
-                    if (UIDispatcher != null)
-                    {
-                        UIDispatcher.BeginInvoke(DispatcherPriority.Loaded, showPopup);
-                    }
-                    else
-                    {
-                        showPopup();
-                    }
+                    FileTrustViewModel.DynFileDirectoryName = directoryName;
+                    FileTrustViewModel.ShowWarningPopup = true;
+                    (HomeSpaceViewModel as HomeWorkspaceViewModel)?.UpdateRunStatusMsgBasedOnStates();
                 }
             }
             catch (Exception e)

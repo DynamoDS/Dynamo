@@ -75,12 +75,16 @@ namespace Dynamo.Wpf.Views.FileTrust
                 if (fileTrustWarningViewModel.ShowWarningPopup == true)
                 {
                     FindPopupPlacementTarget();
-                    // ShowWarningPopup is now deferred to DispatcherPriority.Loaded, so layout
-                    // has already completed by the time this fires — disable run controls immediately.
+                    // Flush pending layout/render so PlacementTarget has its final
+                    // screen position before we open the popup. Without this, the
+                    // RunButton may still be at (0,0) from the workspace transition.
+                    mainWindow.Dispatcher.Invoke(DispatcherPriority.Render, new Action(delegate { }));
+                    IsOpen = true;
                     DisableRunInteractivity();
                 }
                 else
                 {
+                    IsOpen = false;
                     EnableRunInteractivity();
                 }
             }
@@ -194,10 +198,20 @@ namespace Dynamo.Wpf.Views.FileTrust
         /// </summary>
         internal void ManagePopupActivation(bool activate)
         {
-            if (dynViewModel.FileTrustViewModel.ShowWarningPopup == !activate &&
-               !string.IsNullOrEmpty(dynViewModel.FileTrustViewModel.DynFileDirectoryName) &&
-               RunSettings.ForceBlockRun == true)
-                IsOpen = activate;
+            if (!dynViewModel.FileTrustViewModel.ShowWarningPopup ||
+                string.IsNullOrEmpty(dynViewModel.FileTrustViewModel.DynFileDirectoryName) ||
+                !RunSettings.ForceBlockRun)
+                return;
+
+            if (activate && !IsOpen)
+            {
+                FindPopupPlacementTarget();
+                IsOpen = true;
+            }
+            else if (!activate && IsOpen)
+            {
+                IsOpen = false;
+            }
         }
 
         private void SetUpPopup()

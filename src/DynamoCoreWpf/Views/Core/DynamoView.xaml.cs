@@ -1510,23 +1510,17 @@ namespace Dynamo.Controls
             sharedViewExtensionLoadedParams = new ViewLoadedParams(this, dynamoViewModel);
             this.DynamoLoadedViewExtensionHandler(sharedViewExtensionLoadedParams, viewExtensionManager.ViewExtensions);
 
-            // Defer 3D viewport creation to a background dispatcher frame so it doesn't
-            // block the initial window render. DirectX initialization (~1.4s) will happen
-            // asynchronously after the UI is responsive.
-            Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            BackgroundPreview = new Watch3DView { Name = BackgroundPreviewName };
+            background_grid.Children.Add(BackgroundPreview);
+            BackgroundPreview.DataContext = dynamoViewModel.BackgroundPreviewViewModel;
+            var vizBinding = new Binding
             {
-                BackgroundPreview = new Watch3DView { Name = BackgroundPreviewName };
-                background_grid.Children.Add(BackgroundPreview);
-                BackgroundPreview.DataContext = dynamoViewModel.BackgroundPreviewViewModel;
-                var vizBinding = new Binding
-                {
-                    Source = dynamoViewModel.BackgroundPreviewViewModel,
-                    Path = new PropertyPath("Active"),
-                    Mode = BindingMode.TwoWay,
-                    Converter = new BooleanToVisibilityConverter()
-                };
-                BackgroundPreview.SetBinding(VisibilityProperty, vizBinding);
-            }));
+                Source = dynamoViewModel.BackgroundPreviewViewModel,
+                Path = new PropertyPath("Active"),
+                Mode = BindingMode.TwoWay,
+                Converter = new BooleanToVisibilityConverter()
+            };
+            BackgroundPreview.SetBinding(VisibilityProperty, vizBinding);
 
             TrackStartupAnalytics();
 
