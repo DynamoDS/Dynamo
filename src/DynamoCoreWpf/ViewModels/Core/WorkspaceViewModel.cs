@@ -908,9 +908,10 @@ namespace Dynamo.ViewModels
 
         void Connectors_ConnectorAdded(ConnectorModel c)
         {
+            if (Connectors.Any(x => x.ConnectorModel == c)) return;
+
             var viewModel = new ConnectorViewModel(this, c);
-            if (Connectors.All(x => x.ConnectorModel != c))
-                Connectors.Add(viewModel);
+            Connectors.Add(viewModel);
         }
 
         void Connectors_ConnectorDeleted(ConnectorModel c)

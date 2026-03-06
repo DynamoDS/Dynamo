@@ -126,15 +126,15 @@ namespace Dynamo.Graph.Connectors
         /// <summary>
         /// Returns a snapshot of pin top-left canvas coordinates for this connector.
         /// </summary>
-        internal IEnumerable<(double X, double Y)> GetPinLocations()
+        internal List<(double X, double Y)> GetPinLocations()
         {
             if (ConnectorPinModels == null || ConnectorPinModels.Count == 0)
             {
-                return Enumerable.Empty<(double X, double Y)>();
+                return new List<(double X, double Y)>();
             }
 
             return ConnectorPinModels
-                .Select(pin => (pin.X, pin.Y))
+                .Select(pin => (pin.Position.X, pin.Position.Y))
                 .ToList();
         }
 

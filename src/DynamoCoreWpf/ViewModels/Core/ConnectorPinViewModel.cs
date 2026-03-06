@@ -225,22 +225,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool isInteractive;
-        /// <summary>
-        /// Gets or sets whether the pin is interactive (can be hovered over, clicked on, etc.) and updates the command state when this changes.
-        /// </summary>
-        [JsonIgnore]
-        public bool IsInteractive
-        {
-            get => isInteractive;
-            set
-            {
-                if (isInteractive == value) return;
-                isInteractive = value;
-                RaisePropertyChanged(nameof(IsInteractive));
-            }
-        }
-
         private bool isInGroup;
         /// <summary>
         /// Gets or sets whether the pin is in a group and updates the command state when this changes.

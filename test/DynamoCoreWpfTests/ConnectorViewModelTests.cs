@@ -306,7 +306,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void ShiftReconnectionUsesNonInteractiveTransientPinsAndPersistsPins()
+        public void ShiftReconnectionTransfersPinsToTransientConnectorAndPersistsAfterReconnect()
         {
             // Open a test graph with at least two connected nodes
             Open(@"UI/ConnectorPinTests.dyn");
@@ -326,6 +326,12 @@ namespace DynamoCoreWpfTests
             // Assert that the pin was added
             Assert.AreEqual(initialConnectorPinCount + 1, connectorViewModel.ConnectorPinViewCollection.Count);
 
+            var pinLocationsBeforeReconnect = connectorViewModel.ConnectorPinViewCollection
+                .Select(pin => (pin.Left, pin.Top))
+                .OrderBy(pin => pin.Left)
+                .ThenBy(pin => pin.Top)
+                .ToList();
+
             // Begin reconnection – simulate grabbing the connector and starting a shift drag
             var startPort = connectorViewModel.ConnectorModel.Start;
             var startNode = startPort.Owner;
@@ -342,19 +348,23 @@ namespace DynamoCoreWpfTests
             // Assert that during shift reconnection, a transient connector is created that has the same number of pins
             Assert.IsNotNull(activeConnector);
             Assert.IsNull(activeConnector.ConnectorModel, "Expected active connector to be transient during drag.");
-            Assert.AreEqual(initialConnectorPinCount + 1, activeConnector.ConnectorPinViewCollection.Count);
-            Assert.IsTrue(activeConnector.ConnectorPinViewCollection.All(pin => !pin.IsInteractive));
+            Assert.AreEqual(0, connectorViewModel.ConnectorPinViewCollection.Count);            
 
             // Execute the second part of the workflow - simulate placing the connectors over the new port
             this.ViewModel.ExecuteCommand(
                 new DynamoModel.MakeConnectionCommand(codeblock.GUID, 0, PortType.Output,
                 MakeConnectionCommand.Mode.EndShiftReconnections));
 
-            // Assert that after reconnection, the new connector has the same number of pins and they are interactive
+            // Assert that after reconnection, the new connector has the same number of pins and locations
             var connectorAfterReconnect = this.ViewModel.CurrentSpaceViewModel.Connectors;
+            var pinLocationsAfterReconnect = connectorAfterReconnect.First().ConnectorPinViewCollection
+                .Select(pin => (pin.Left, pin.Top))
+                .OrderBy(pin => pin.Left)
+                .ThenBy(pin => pin.Top)
+                .ToList();
             Assert.AreEqual(1, connectorAfterReconnect.Count());
             Assert.AreEqual(initialConnectorPinCount + 1, connectorAfterReconnect.First().ConnectorPinViewCollection.Count);
-            Assert.IsTrue(connectorAfterReconnect.First().ConnectorPinViewCollection.All(pin => pin.IsInteractive));
+            CollectionAssert.AreEqual(pinLocationsBeforeReconnect, pinLocationsAfterReconnect);
         }
         #endregion
 
