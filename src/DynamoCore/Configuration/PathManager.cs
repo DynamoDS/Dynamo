@@ -487,6 +487,10 @@ namespace Dynamo.Core
 
             BuildHostDirectories(pathManagerParams.HostPath);
 
+            // Go up the call-stack to look for a versioned assembly,
+            // and we will likely discover 'AcDynamo.dll' that is '18.0'.
+            assemblyPath = TraverseForExecutableAssembly();
+
             // If both major/minor versions are zero, get from assembly.
             majorFileVersion = pathManagerParams.MajorFileVersion;
             minorFileVersion = pathManagerParams.MinorFileVersion;
@@ -500,6 +504,51 @@ namespace Dynamo.Core
             BuildUserSpecificDirectories();
             BuildCommonDirectories();
             LoadPathsFromResolver();
+        }
+
+        /// <summary>
+        /// Traverses the current call stack and returns the first host-facing
+        /// assembly with a non-zero file version.
+        /// </summary>
+        /// <returns>A valid assembly path used for version discovery.</returns>
+        private string TraverseForExecutableAssembly()
+        {
+            var currentAssembly = typeof(PathManager).Assembly;
+            var stackTrace = new StackTrace(skipFrames: 1, fNeedFileInfo: false);
+
+            foreach (var frame in stackTrace.GetFrames() ?? Array.Empty<StackFrame>())
+            {
+                var assembly = frame.GetMethod()?.DeclaringType?.Assembly;
+                if (assembly == null || assembly == currentAssembly || assembly.IsDynamic)
+                    continue;
+
+                var assemblyName = assembly.GetName().Name;
+                if (string.IsNullOrEmpty(assemblyName))
+                    continue;
+
+                if (assemblyName.StartsWith("System", StringComparison.OrdinalIgnoreCase) ||
+                    assemblyName.StartsWith("Microsoft", StringComparison.OrdinalIgnoreCase) ||
+                    assemblyName.Equals("mscorlib", StringComparison.OrdinalIgnoreCase) ||
+                    assemblyName.Equals("netstandard", StringComparison.OrdinalIgnoreCase) ||
+                    assemblyName.IndexOf("test", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    continue;
+                }
+
+                var candidatePath = assembly.Location;
+                if (PathHelper.IsValidPath(candidatePath))
+                {
+                    var fileVersion = FileVersionInfo.GetVersionInfo(candidatePath);
+                    if (fileVersion.FileMajorPart > 0 || fileVersion.FileMinorPart > 0)
+                        return candidatePath;
+                }
+            }
+
+            var entryAssemblyPath = Assembly.GetEntryAssembly()?.Location;
+            if (PathHelper.IsValidPath(entryAssemblyPath))
+                return entryAssemblyPath;
+
+            return Assembly.GetExecutingAssembly().Location;
         }
 
         /// <summary>
