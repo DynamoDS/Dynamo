@@ -471,6 +471,17 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
+        ///     Event that is fired before connectors are deleted during workspace clear.
+        ///     Allows the ViewModel layer to dispose NodeViewModels early, detaching
+        ///     PortPropertyChanged handlers before the expensive connector deletion loop.
+        /// </summary>
+        internal event Action NodesClearingConnectors;
+        protected virtual void OnNodesClearingConnectors()
+        {
+            NodesClearingConnectors?.Invoke();
+        }
+
+        /// <summary>
         ///     Event that is fired when a note is added to the workspace.
         /// </summary>
         public event Action<NoteModel> NoteAdded;
@@ -1553,6 +1564,11 @@ namespace Dynamo.Graph.Workspaces
                 // to delete events when an input connector is deleted.
                 node.Dispose();
             }
+
+            // Signal the ViewModel layer to dispose NodeViewModels before connector deletion.
+            // This detaches all PortPropertyChanged handlers, preventing expensive cascading
+            // UI updates (port color refreshes, WPF binding updates) during bulk connector removal.
+            OnNodesClearingConnectors();
 
             foreach (NodeModel el in Nodes)
             {

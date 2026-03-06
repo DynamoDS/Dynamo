@@ -630,6 +630,7 @@ namespace Dynamo.ViewModels
             Model.NodeAdded += Model_NodeAdded;
             Model.NodeRemoved += Model_NodeRemoved;
             Model.NodesCleared += Model_NodesCleared;
+            Model.NodesClearingConnectors += Model_NodesClearingConnectors;
 
             Model.NoteAdded += Model_NoteAdded;
             Model.NoteRemoved += Model_NoteRemoved;
@@ -724,6 +725,7 @@ namespace Dynamo.ViewModels
             Model.NodeAdded -= Model_NodeAdded;
             Model.NodeRemoved -= Model_NodeRemoved;
             Model.NodesCleared -= Model_NodesCleared;
+            Model.NodesClearingConnectors -= Model_NodesClearingConnectors;
             Model.NoteAdded -= Model_NoteAdded;
             Model.NoteRemoved -= Model_NoteRemoved;
             Model.NotesCleared -= Model_NotesCleared;
@@ -1007,7 +1009,12 @@ namespace Dynamo.ViewModels
             Annotations.Clear();
         }
 
-        void Model_NodesCleared()
+        /// <summary>
+        /// Fired before connectors are deleted during workspace clear.
+        /// Disposes NodeViewModels early to detach PortPropertyChanged handlers,
+        /// preventing expensive cascading UI updates during bulk connector removal.
+        /// </summary>
+        void Model_NodesClearingConnectors()
         {
             lock (Nodes)
             {
@@ -1016,6 +1023,29 @@ namespace Dynamo.ViewModels
                     this.unsubscribeNodeEvents(nodeViewModel);
                     nodeViewModel.Dispose();
                 }
+                nodeViewModelsPreDisposed = true;
+            }
+        }
+
+        /// <summary>
+        /// Tracks whether NodeViewModels have already been disposed by
+        /// Model_NodesClearingConnectors during workspace clear.
+        /// </summary>
+        private bool nodeViewModelsPreDisposed;
+
+        void Model_NodesCleared()
+        {
+            lock (Nodes)
+            {
+                if (!nodeViewModelsPreDisposed)
+                {
+                    foreach (var nodeViewModel in Nodes)
+                    {
+                        this.unsubscribeNodeEvents(nodeViewModel);
+                        nodeViewModel.Dispose();
+                    }
+                }
+                nodeViewModelsPreDisposed = false;
                 Nodes.Clear();
             }
             Errors.Clear();

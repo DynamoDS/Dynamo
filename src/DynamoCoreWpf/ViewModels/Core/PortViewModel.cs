@@ -195,6 +195,7 @@ namespace Dynamo.ViewModels
             get => portBorderBrushColor;
             set
             {
+                if (ReferenceEquals(portBorderBrushColor, value)) return;
                 portBorderBrushColor = value;
                 RaisePropertyChanged(nameof(PortBorderBrushColor));
             }
@@ -251,6 +252,7 @@ namespace Dynamo.ViewModels
             get => portBackgroundColor;
             set
             {
+                if (ReferenceEquals(portBackgroundColor, value)) return;
                 portBackgroundColor = value;
                 RaisePropertyChanged(nameof(PortBackgroundColor));
             }
