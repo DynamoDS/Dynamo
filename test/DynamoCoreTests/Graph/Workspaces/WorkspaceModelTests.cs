@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.ExceptionServices;
+using CoreNodeModels.Input;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Properties;
@@ -329,6 +332,51 @@ namespace Dynamo.Tests
 
             // Assert scale factor did not got reset after workspace clear
             Assert.AreEqual(this.CurrentDynamoModel.CurrentWorkspace.ScaleFactor, 10000);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NodesClearingConnectorsFiresBeforeConnectorDeletion()
+        {
+            // Arrange: create nodes with a connector
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+            var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
+            var numNode = new DoubleInput();
+            workspace.AddAndRegisterNode(addNode, false);
+            workspace.AddAndRegisterNode(numNode, false);
+            ConnectorModel.Make(numNode, addNode, 0, 0);
+
+            Assert.AreEqual(2, workspace.Nodes.Count());
+            Assert.AreEqual(1, workspace.Connectors.Count());
+
+            // Track event ordering
+            var events = new List<string>();
+            int connectorsAtPreClear = -1;
+            int nodesAtPreClear = -1;
+
+            workspace.NodesClearingConnectors += () =>
+            {
+                events.Add("NodesClearingConnectors");
+                connectorsAtPreClear = workspace.Connectors.Count();
+                nodesAtPreClear = workspace.Nodes.Count();
+            };
+            workspace.NodesCleared += () => events.Add("NodesCleared");
+
+            // Act
+            CurrentDynamoModel.ClearCurrentWorkspace();
+
+            // Assert: NodesClearingConnectors fired exactly once and before NodesCleared
+            Assert.AreEqual(2, events.Count, "Expected exactly two events");
+            Assert.AreEqual("NodesClearingConnectors", events[0], "NodesClearingConnectors should fire first");
+            Assert.AreEqual("NodesCleared", events[1], "NodesCleared should fire second");
+
+            // Assert: connectors and nodes were still present when NodesClearingConnectors fired
+            Assert.AreEqual(1, connectorsAtPreClear, "Connectors should not yet be deleted when NodesClearingConnectors fires");
+            Assert.AreEqual(2, nodesAtPreClear, "Nodes should still be present when NodesClearingConnectors fires");
+
+            // Assert: workspace is now empty
+            Assert.AreEqual(0, workspace.Nodes.Count());
+            Assert.AreEqual(0, workspace.Connectors.Count());
         }
     }
 }

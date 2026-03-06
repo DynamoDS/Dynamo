@@ -146,6 +146,7 @@ namespace Dynamo.ViewModels
             get => portValueMarkerColor;
             set
             {
+                if (ReferenceEquals(portValueMarkerColor, value)) return;
                 portValueMarkerColor = value;
                 RaisePropertyChanged(nameof(PortValueMarkerColor));
             }
