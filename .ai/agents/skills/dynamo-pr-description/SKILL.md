@@ -1,0 +1,119 @@
+---
+name: dynamo-pr-description
+description: Generate PR descriptions for Dynamo that match the team template exactly. Use this skill whenever writing a pull request description, cleaning up a PR body, or generating a review-ready summary from a diff in the Dynamo repo. Also use when the user says "write a PR", "PR description", or "prep this for review."
+invocable: true
+---
+
+# Dynamo PR Description Writer
+
+## When to use
+
+- Writing a PR description from a diff in the Dynamo repo.
+- Cleaning up or reformatting an existing PR body to match the team template.
+- Producing review-ready summaries quickly.
+
+## When not to use
+
+- PRs targeting the DynamoMCP repo -- that repo has its own PR description skill.
+- Jira ticket triage -- use [template](../dynamo-jira-ticket/template.md) instead.
+
+## Inputs expected
+
+A git diff, commit log, or description of the changes. Optionally a Jira key.
+
+## Output format
+
+A complete PR body matching the Dynamo template below, ready to paste.
+
+---
+
+## Workflow
+
+1. Read the diff (staged changes, commit history, or user-provided summary).
+2. Identify the *why* -- what problem does this solve?
+3. Fill the template below from the diff and context.
+4. For each declaration checkbox, only check it if you've verified it's true.
+5. Write the release note from the user's perspective (one sentence, or `N/A`).
+6. Leave `(FILL ME IN)` placeholders for anything you can't determine from the diff.
+
+## Rules
+
+- Mirror section names and heading order from the template exactly.
+- Keep facts verifiable from the diff. Do not invent Jira keys, reviewers, or test results.
+- Call out breaking changes or migration steps explicitly in Purpose.
+- If the PR changes public API, mention the affected types and whether `PublicAPI.Unshipped.txt` was updated.
+- If the PR adds new nodes, mention the node names and whether help files were included.
+- The API versioning declaration is important -- check it only if changes follow [Semantic Versioning](https://github.com/DynamoDS/Dynamo/wiki/Dynamo-Versions).
+- Release Notes is a **mandatory** section -- always include it, even if just `N/A`.
+- If the user provides explicit checklist bullets or section content, treat those as source of truth and override the defaults below.
+
+## PR Title
+
+Format: `DYN-1234: concise change summary` (include Jira key when known).
+
+## Template
+
+```markdown
+### Purpose
+
+(Why this PR exists. Include Jira key if known: DYN-1234)
+
+Key changes:
+- (bullet per significant change)
+
+### Declarations
+
+Check these if you believe they are true
+
+- [ ] Is documented according to the [standards](https://github.com/DynamoDS/Dynamo/wiki/Coding-Standards)
+- [ ] The level of testing this PR includes is appropriate
+- [ ] Changes to the API follow [Semantic Versioning](https://github.com/DynamoDS/Dynamo/wiki/Dynamo-Versions) and are documented in the [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document.
+
+### Release Notes
+
+(One concise sentence based on the diff, or `N/A` when not user-facing.)
+
+### Reviewers
+
+(FILL ME IN) Reviewer 1 (If possible, assign the Reviewer for the PR)
+
+(FILL ME IN, optional) Any additional notes to reviewers or testers.
+
+### FYIs
+
+(FILL ME IN, Optional) Names of anyone else you wish to be notified of
+```
+
+---
+
+**Example: PR adding a new node**
+
+```markdown
+### Purpose
+
+DYN-5678: Add `String.Interpolate` node for string formatting with placeholders.
+
+Key changes:
+- New `StringInterpolate` method in `src/Libraries/CoreNodes/String.cs`
+- Added to `PublicAPI.Unshipped.txt`
+- NUnit tests in `test/Libraries/CoreNodesTests/StringTests.cs`
+- Help files: `.dyn`, `.md`, `.jpg` in `doc/distrib/NodeHelpFiles/`
+
+### Declarations
+
+- [x] Is documented according to the standards
+- [x] The level of testing this PR includes is appropriate
+- [x] Changes to the API follow Semantic Versioning and are documented in the API Changes document.
+
+### Release Notes
+
+Added String.Interpolate node for formatting strings with named placeholders.
+
+### Reviewers
+
+(FILL ME IN) Reviewer 1
+
+### FYIs
+
+(FILL ME IN, Optional)
+```
