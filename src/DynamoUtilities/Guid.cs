@@ -124,12 +124,13 @@ namespace Dynamo.Utilities
         private static readonly TimeSpan RegexTimeout = TimeSpan.FromSeconds(5);
 
         /// <summary>
-        /// Performs an update to all Guids inside the json string before deserialization.
-        /// Targets specifically Guids without the '-' hyphen, which are all the workspace elements.
-        /// Replacing all occurrences of each individual Guid guarantees that the relationships between the elements are retained.
+        /// Performs an update to workspace-element Guids inside the json string before deserialization.
+        /// Remaps compact ("N") workspace ids globally, and additionally remaps
+        /// View.ConnectorPins[].ConnectorGuid when it is in hyphenated ("D") format,
+        /// so connector-pin links remain valid after Insert.
         /// </summary>
         /// <param name="jsonData">Json representation of workspace.</param>
-        /// <returns>String representation of workspace after all elements' Guids replaced.</returns>
+        /// <returns>String representation of workspace after all Guid values are remapped.</returns>
         internal static string UpdateWorkspaceGUIDs(string jsonData)
         {
             if (string.IsNullOrEmpty(jsonData))
@@ -171,6 +172,31 @@ namespace Dynamo.Utilities
                 }
 
                 return remappedGuid.ToString("N");
+            });
+
+            // Remap only ConnectorGuid values that are hyphenated (D format).
+            var connectorGuidPattern = new Regex(
+                @"(?<prefix>""ConnectorGuid""\s*:\s*"")(?<guid>[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})(?<suffix>"")",
+                RegexOptions.IgnoreCase,
+                RegexTimeout);
+
+            updatedJsonData = connectorGuidPattern.Replace(updatedJsonData, match =>
+            {
+                var connectorGuidValue = match.Groups["guid"].Value;
+
+                Guid connectorGuid;
+                if (!Guid.TryParse(connectorGuidValue, out connectorGuid))
+                {
+                    return match.Value;
+                }
+
+                Guid remappedGuid;
+                if (!guidRemap.TryGetValue(connectorGuid, out remappedGuid))
+                {
+                    return match.Value;
+                }
+
+                return match.Groups["prefix"].Value + remappedGuid.ToString("D") + match.Groups["suffix"].Value;
             });
 
             return updatedJsonData;
