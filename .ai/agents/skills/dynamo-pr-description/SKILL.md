@@ -23,7 +23,7 @@ A git diff, commit log, or description of the changes. Optionally a Jira key.
 
 ## Output format
 
-A complete PR body matching the Dynamo template below, ready to paste.
+A complete PR body matching the Dynamo template in `.github/PULL_REQUEST_TEMPLATE.md`, ready to paste.
 
 ---
 
@@ -53,36 +53,11 @@ Format: `DYN-1234: concise change summary` (include Jira key when known).
 
 ## Template
 
-```markdown
-### Purpose
+Read `.github/PULL_REQUEST_TEMPLATE.md` for the exact template structure. Follow its sections in order.
 
-(Why this PR exists. Include Jira key if known: DYN-1234)
-
-Key changes:
-- (bullet per significant change)
-
-### Declarations
-
-Check these if you believe they are true
-
-- [ ] Is documented according to the [standards](https://github.com/DynamoDS/Dynamo/wiki/Coding-Standards)
-- [ ] The level of testing this PR includes is appropriate
-- [ ] Changes to the API follow [Semantic Versioning](https://github.com/DynamoDS/Dynamo/wiki/Dynamo-Versions) and are documented in the [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document.
-
-### Release Notes
-
-(One concise sentence based on the diff, or `N/A` when not user-facing.)
-
-### Reviewers
-
-(FILL ME IN) Reviewer 1 (If possible, assign the Reviewer for the PR)
-
-(FILL ME IN, optional) Any additional notes to reviewers or testers.
-
-### FYIs
-
-(FILL ME IN, Optional) Names of anyone else you wish to be notified of
-```
+Enhancements to apply when filling it in:
+- Add a **"Key changes:"** bullet list under Purpose summarizing the significant changes.
+- For Release Notes, write one concise sentence from the user's perspective, or `N/A` when not user-facing.
 
 ---
 
