@@ -507,10 +507,18 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        /// Traverses the current call stack and returns the first host-facing
-        /// assembly with a non-zero file version.
+        /// Traverses the current call stack to identify the first host-facing assembly
+        /// with a non-zero file version, and returns its path for version discovery.
+        ///
+        /// Starting from Dynamo 4.0, data folders are no longer versioned based on
+        /// DynamoCore.dll (e.g. '/4.0/data'). Instead, they are versioned according to
+        /// the host application's major version (e.g. '/27.0/data' for Revit 2027).
+        /// As a result, we must inspect the call stack to locate the host assembly
+        /// rather than relying on DynamoCore's assembly version.
         /// </summary>
-        /// <returns>A valid assembly path used for version discovery.</returns>
+        /// <returns>
+        /// The file path of the host assembly used to determine the data directory version.
+        /// </returns>
         private string TraverseForExecutableAssembly()
         {
             var currentAssembly = typeof(PathManager).Assembly;
