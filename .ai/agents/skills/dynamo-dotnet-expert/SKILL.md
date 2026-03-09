@@ -104,6 +104,9 @@ Use modern syntax when the TFM supports it (.NET 10 / C# 14):
 - Use `ConfigureAwait(false)` in library code; omit in app entry/UI.
 - Prefer `Task` over `ValueTask` unless benchmarks show otherwise.
 - Stream large payloads: `GetAsync(..., ResponseHeadersRead)` then `ReadAsStreamAsync`.
+- **Timeouts**: use a linked `CancellationTokenSource` + `CancelAfter` rather than `Task.WhenAny` — this actually cancels the work instead of abandoning it: `using var linked = CancellationTokenSource.CreateLinkedTokenSource(ct); linked.CancelAfter(TimeSpan.FromSeconds(10));`
+- **Async dispose**: prefer `await using` for streams, HTTP responses, and other async-disposable resources.
+- **Don't wrap needlessly**: if a method only returns another task with no additional logic, return the task directly instead of adding `async`/`await` overhead.
 
 ## Immutability
 
@@ -164,6 +167,15 @@ public int Factorial_ReturnsCorrectResult(int n) => MathHelper.Factorial(n);
 - New or changed public APIs require tests.
 - Assert specific values, not vague outcomes.
 - Use `Assert.Throws<T>` / `Assert.ThrowsAsync<T>` for exception testing.
+
+### Mocking (Moq)
+
+Dynamo uses Moq for test doubles. Follow these principles:
+
+- **Mock external dependencies only** (services, file system, HTTP) — never mock code whose implementation is part of the solution under test.
+- **Don't change visibility for mocking**: don't add `InternalsVisibleTo` or make methods `virtual` just to enable mocking. Test through public APIs.
+- **Verify mock behavior approximates real behavior**: if a mock returns data, make sure the shape and edge cases match what the real dependency would produce.
+- Keep mock setup minimal. If a test needs elaborate mock configuration, it may be testing too much indirection.
 
 ### Running tests
 
