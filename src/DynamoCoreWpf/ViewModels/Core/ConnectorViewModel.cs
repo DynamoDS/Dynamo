@@ -489,7 +489,7 @@ namespace Dynamo.ViewModels
         }
 
         private NodeViewModel cachedNodevm;
-        private bool cachedNodevmInitialized;
+        private bool cachedNodevmInitialized = false;
         public NodeViewModel Nodevm
         {
             get
@@ -505,7 +505,7 @@ namespace Dynamo.ViewModels
         }
 
         private NodeViewModel cachedNodeEnd;
-        private bool cachedNodeEndInitialized;
+        private bool cachedNodeEndInitialized = false;
         public NodeViewModel NodeEnd
         {
             get
