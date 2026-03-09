@@ -44,7 +44,16 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
 
             foreach (var wirePin in workspaceView.Pins)
             {
-                serializer.Serialize(writer, wirePin);
+                // Persist model-space coordinates and connector GUID
+                // to avoid Top view-offset drift and preserve pin-to-connector mapping
+                writer.WriteStartObject();
+                writer.WritePropertyName(nameof(ConnectorPinViewModel.Left));
+                writer.WriteValue(wirePin.Model.Position.X);
+                writer.WritePropertyName(nameof(ConnectorPinViewModel.Top));
+                writer.WriteValue(wirePin.Model.Position.Y);
+                writer.WritePropertyName(nameof(ConnectorPinViewModel.ConnectorGuid));
+                writer.WriteValue(wirePin.ConnectorGuid.ToString("N"));
+                writer.WriteEndObject();
             }
             writer.WriteEndArray();
 
