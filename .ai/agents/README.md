@@ -21,7 +21,7 @@ Templates are co-located inside the skill folder that uses them:
 
 | Template | Location | Purpose |
 |----------|----------|---------|
-| PR description | [dynamo-pr-description/template.md](skills/dynamo-pr-description/template.md) | Dynamo PR template for quick copy/paste |
+| PR description | [.github/PULL_REQUEST_TEMPLATE.md](../../.github/PULL_REQUEST_TEMPLATE.md) | GitHub PR template (referenced by PR description skill) |
 | Jira triage | [dynamo-jira-ticket/template.md](skills/dynamo-jira-ticket/template.md) | Triage a Jira ticket into a structured issue |
 
 ### Rules (short guardrails -- always applicable)
@@ -41,7 +41,6 @@ Templates are co-located inside the skill folder that uses them:
 │   │   └── SKILL.md
 │   ├── dynamo-pr-description/
 │   │   ├── SKILL.md          ← workflow for writing PR descriptions
-│   │   └── template.md       ← copy/paste PR template
 │   └── dynamo-jira-ticket/
 │       ├── SKILL.md          ← workflow for writing Jira tickets
 │       └── template.md       ← copy/paste Jira template

@@ -86,7 +86,7 @@ dotnet build src/DynamoCore.sln -c Release
 
 ### Core Model
 
-`DynamoModel` is the central class -- it owns the workspace, manages state transitions, and coordinates node evaluation. Key states: `None`, `StartedUI`, `StartedUIless`.
+`DynamoModel` is the central class -- it owns the workspace, manages state transitions, and coordinates node evaluation. Key states: `NotStarted`, `StartedUI`, `StartedUIless`.
 
 ### Workspace
 
@@ -174,7 +174,7 @@ Briefing output:
 **Example 2: "Where does node evaluation happen?"**
 
 Briefing output:
-- `HomeWorkspaceModel.RunExpression()` triggers evaluation.
+- `HomeWorkspaceModel.Run()` triggers evaluation.
 - The graph is compiled to DesignScript AST via the engine in `src/Engine/`.
 - `ProtoCore` handles AST construction and type resolution.
 - Each node's `BuildAst()` method generates its AST contribution.
