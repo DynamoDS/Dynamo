@@ -1759,6 +1759,8 @@ namespace Dynamo.Graph.Workspaces
 
         private void AddNote(NoteModel note)
         {
+            note.Workspace = this;
+
             lock (notes)
             {
                 notes.Add(note);
