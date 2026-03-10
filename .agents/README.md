@@ -33,7 +33,7 @@ Templates are co-located inside the skill folder that uses them:
 ## Folder Structure
 
 ```
-.ai/agents/
+.agents/
 ├── skills/
 │   ├── dynamo-dotnet-expert/
 │   │   └── SKILL.md
@@ -57,7 +57,7 @@ Templates are co-located inside the skill folder that uses them:
 ## How this relates to other guidance files
 
 ```
-.ai/agents/          <-- canonical source of truth (you are here)
+.agents/             <-- canonical source of truth (you are here)
 .cursor/rules/*.mdc  <-- auto-applied Cursor constraints (auto-apply by glob)
 .github/copilot-instructions.md  <-- Copilot guidance + pointers here
 .github/agents/      <-- existing Copilot agents (Janitor, UX Designer, ContentDesigner)
@@ -66,7 +66,7 @@ CLAUDE.md            <-- Claude guidance + pointers here
 
 ## For Cursor users
 
-Reference skills with `@.ai/agents/skills/dynamo-dotnet-expert/SKILL.md`. `.cursor/rules/` files auto-apply based on file globs.
+Reference skills with `@.agents/skills/dynamo-dotnet-expert/SKILL.md`. `.cursor/rules/` files auto-apply based on file globs.
 
 ## For Copilot users
 

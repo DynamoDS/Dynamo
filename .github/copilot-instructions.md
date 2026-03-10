@@ -166,10 +166,10 @@ Alert contributors if changes include:
 
 ## Agent Skills and Templates
 
-For detailed task workflows, rules, and templates, see `.ai/agents/README.md`:
+For detailed task workflows, rules, and templates, see `.agents/README.md`:
 
-- **Skills**: each in `.ai/agents/skills/<name>/SKILL.md` -- dynamo-dotnet-expert, dynamo-onboarding, dynamo-pr-description, dynamo-jira-ticket
-- **Rules**: `.ai/agents/rules/` -- dynamo-core-rules
+- **Skills**: each in `.agents/skills/<name>/SKILL.md` -- dynamo-dotnet-expert, dynamo-onboarding, dynamo-pr-description, dynamo-jira-ticket
+- **Rules**: `.agents/rules/` -- dynamo-core-rules
 - **Templates**: bundled inside skill folders as `template.md` (Jira)
 
 ## Important Documentation
