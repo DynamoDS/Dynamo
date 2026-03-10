@@ -6,6 +6,10 @@ This folder is owned and maintained by the **Dynamo Codebase Patterns** agent (`
 
 Do not edit pattern files manually without also updating the agent, and do not add patterns here that have not passed the agent's three-question filter.
 
+## TODO
+
+- Investigate using [GitHub Agentic Workflows (technical preview)](https://github.blog/changelog/2026-02-13-github-agentic-workflows-are-now-in-technical-preview/) to automatically trigger the Codebase Patterns agent on PRs, so pattern enforcement runs without manual invocation.
+
 ## Status vocabulary
 
 | Status | Meaning |
