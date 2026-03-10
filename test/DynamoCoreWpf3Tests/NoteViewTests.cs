@@ -275,6 +275,47 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(nodeAView.ViewModel.WorkspaceViewModel.HasUnsavedChanges);
         }
 
+        /// <summary>
+        /// DYN-10261: Unpinning a note should clear the selection (note and node both deselected).
+        /// Undo of unpin should re-pin and select both. Redo should unpin and clear again.
+        /// </summary>
+        [Test]
+        public void UnpinClearsSelection_UndoRedoSelectsAndClearsCorrectly()
+        {
+            Open(@"UI\UINotes.dyn");
+            var nodeGUID = "bbc16882-75c2-4a50-a4e4-5e50e191af8f";
+            var noteGUID = "4677e999-d5f5-4bb2-9706-a97bf3a86711";
+            var nodeView = NodeViewWithGuid(nodeGUID);
+            var noteView = NoteViewWithGuid(noteGUID);
+            var nodeModel = nodeView.ViewModel.NodeModel;
+            var noteModel = noteView.ViewModel.Model;
+
+            // Pin the note to the node (requires both in selection)
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.AddUnique(nodeModel);
+            DynamoSelection.Instance.Selection.AddUnique(noteModel);
+            noteView.ViewModel.PinToNodeCommand.Execute(null);
+            Assert.IsNotNull(noteModel.PinnedNode, "Pre-condition: note should be pinned.");
+
+            // AC1 – Unpin should clear the selection
+            noteView.ViewModel.UnpinFromNodeCommand.Execute(null);
+            Assert.IsNull(noteModel.PinnedNode, "Note should be unpinned.");
+            Assert.IsFalse(DynamoSelection.Instance.Selection.Contains(noteModel), "Note should be deselected after unpin.");
+            Assert.IsFalse(DynamoSelection.Instance.Selection.Contains(nodeModel), "Node should be deselected after unpin.");
+
+            // AC2 – Undo of unpin should re-pin and select both note and node
+            this.Model.CurrentWorkspace.Undo();
+            Assert.IsNotNull(noteModel.PinnedNode, "Undo should restore the pin.");
+            Assert.IsTrue(DynamoSelection.Instance.Selection.Contains(nodeModel), "Node should be selected after undo.");
+            Assert.IsTrue(DynamoSelection.Instance.Selection.Contains(noteModel), "Note should be selected after undo.");
+
+            // AC3 – Redo of unpin should unpin and clear the selection
+            this.Model.CurrentWorkspace.Redo();
+            Assert.IsNull(noteModel.PinnedNode, "Redo should unpin the note.");
+            Assert.IsFalse(DynamoSelection.Instance.Selection.Contains(noteModel), "Note should be deselected after redo.");
+            Assert.IsFalse(DynamoSelection.Instance.Selection.Contains(nodeModel), "Node should be deselected after redo.");
+        }
+
         [Test]
         public void UndoPinNode()
         {
