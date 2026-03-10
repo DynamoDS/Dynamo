@@ -470,15 +470,6 @@ namespace Dynamo.Core
 
             dynamoCoreDir = corePath;
 
-            var assemblyPath = Path.Combine(dynamoCoreDir, "DynamoCore.dll");
-            if (!PathHelper.IsValidPath(assemblyPath))
-            {
-                throw new Exception("Dynamo's core path could not be found. " +
-                    "If you are running Dynamo from a test, try specifying the " +
-                    "Dynamo core location in the DynamoBasePath variable in " +
-                    "TestServices.dll.config.");
-            }
-
             extensionsDirectories = new HashSet<string>();
             viewExtensionsDirectories = new HashSet<string>();
 
@@ -489,7 +480,7 @@ namespace Dynamo.Core
 
             // Go up the call-stack to look for a versioned assembly,
             // and we will likely discover 'AcDynamo.dll' that is '18.0'.
-            assemblyPath = TraverseForExecutableAssembly();
+            var assemblyPath = TraverseForExecutableAssembly();
 
             // If both major/minor versions are zero, get from assembly.
             majorFileVersion = pathManagerParams.MajorFileVersion;
