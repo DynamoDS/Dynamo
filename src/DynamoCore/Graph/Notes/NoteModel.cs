@@ -1,7 +1,9 @@
-﻿using System;
+using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Xml;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Utilities;
 
 namespace Dynamo.Graph.Notes
@@ -20,6 +22,12 @@ namespace Dynamo.Graph.Notes
         /// This action is triggered when undo command is pressed and a node is pinned
         /// </summary>
         internal event Action<ModelBase> UndoRequest;
+
+        /// <summary>
+        /// Reference to the owning workspace, set when the note is added to the workspace.
+        /// Used during deserialization to resolve PinnedNode by GUID.
+        /// </summary>
+        internal WorkspaceModel Workspace { get; set; }
 
         private string text;
 
@@ -40,10 +48,10 @@ namespace Dynamo.Graph.Notes
 
         /// <summary>
         /// NodeModel which this Note is pinned to
-        /// When using the pin to node command  
-        /// note and node become entangled so that 
-        /// if you select and move one the other one 
-        /// moves as well. 
+        /// When using the pin to node command
+        /// note and node become entangled so that
+        /// if you select and move one the other one
+        /// moves as well.
         /// </summary>
         public NodeModel PinnedNode
         {
@@ -138,7 +146,7 @@ namespace Dynamo.Graph.Notes
 
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
-            var helper = new XmlElementHelper(element);
+            XmlElementHelper helper = new XmlElementHelper(element);
             helper.SetAttribute("guid", GUID);
             helper.SetAttribute("text", Text);
             helper.SetAttribute("x", X);
@@ -148,23 +156,44 @@ namespace Dynamo.Graph.Notes
 
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
-            var helper = new XmlElementHelper(nodeElement);
+            XmlElementHelper helper = new XmlElementHelper(nodeElement);
             GUID = helper.ReadGuid("guid", GUID);
             Text = helper.ReadString("text", "New Note");
             X = helper.ReadDouble("x", 0.0);
             Y = helper.ReadDouble("y", 0.0);
-            PinnedNodeGuid = helper.ReadGuid("pinnedNode", Guid.Empty);
 
-            // Notify listeners that the position of the note has changed, 
+            Guid savedPinnedNodeGuid = helper.ReadGuid("pinnedNode", Guid.Empty);
+
+            if (savedPinnedNodeGuid == Guid.Empty)
+            {
+                PinnedNode = null;
+                PinnedNodeGuid = Guid.Empty;
+            }
+            else if (Workspace != null)
+            {
+                // Workspace is available: resolve directly (undo-of-modification path).
+                PinnedNode = Workspace.Nodes.FirstOrDefault(n => n.GUID == savedPinnedNodeGuid);
+                PinnedNodeGuid = savedPinnedNodeGuid;
+            }
+            else
+            {
+                // Workspace is null (file load or undo-of-deletion): store the GUID so
+                // ResolvePinnedNodeReference can re-establish the pin after AddNote runs.
+                PinnedNodeGuid = savedPinnedNodeGuid;
+            }
+
+            // Notify listeners that the position of the note has changed,
             // then parent group will also redraw itself.
             ReportPosition();
-            TryToSubscribeUndoNote();
         }
 
         /// <summary>
-        /// Verify if the current user action is to pin a node so the 'unpin' method can be called to undo the action
+        /// Verify if the current user action is to pin a node so the 'unpin' method can be called to undo the action.
+        /// Used by ResolvePinnedNodeReference to re-establish pin state after a note is added to the workspace
+        /// (e.g. file load or undo of note deletion) without adding to the undo stack.
         /// </summary>
-        /// <param name="recordForUndo">When true, the resulting pin/unpin will be recorded for undo/redo. When false (e.g. when restoring from file or resolving references), the operation is not recorded.</param>
+        /// <param name="recordForUndo">When true, the resulting pin/unpin will be recorded for undo/redo.
+        /// When false (e.g. when restoring from file or resolving references), the operation is not recorded.</param>
         internal void TryToSubscribeUndoNote(bool recordForUndo = true)
         {
             if (pinnedNode != null && PinnedNodeGuid == Guid.Empty && UndoRequest != null)

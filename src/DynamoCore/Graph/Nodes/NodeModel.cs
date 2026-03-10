@@ -2219,6 +2219,10 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public void RegisterAllPorts()
         {
+            // TODO: Replace manual RaisesModificationEvents = false/true with a using-block
+            // suppressor similar to PropertyChangeManager, so callers outside this method
+            // can also batch modifications safely without risk of forgetting to reset the flag.
+            // See PropertyChangeManager in Dynamo.Core for the existing IDisposable pattern.
             RaisesModificationEvents = false;
 
             var inportDatas = GetPortDataFromAttributes(PortType.Input);
@@ -2768,6 +2772,15 @@ namespace Dynamo.Graph.Nodes
 
             var runtimeMirror = engine.GetMirror(variableName);
             CachedValue = runtimeMirror?.GetData();
+        }
+
+        /// <summary>
+        /// Restores node-specific cached value state from runtime data.
+        /// The base implementation is a no-op and specialized nodes can override.
+        /// </summary>
+        /// <param name="data">Runtime data used to restore node cache state.</param>
+        internal virtual void RestoreCachedValueFromEngine(object data)
+        {
         }
 
         /// <summary>

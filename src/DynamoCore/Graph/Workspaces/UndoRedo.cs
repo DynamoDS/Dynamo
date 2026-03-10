@@ -17,6 +17,9 @@ namespace Dynamo.Graph.Workspaces
 {
     public partial class WorkspaceModel
     {
+        private const string WatchNodeTypeName = "CoreNodeModels.Watch";
+        private static readonly Type CachedWatchNodeType = Type.GetType("CoreNodeModels.Watch, CoreNodeModels", throwOnError: false);
+
         /// <summary>
         /// Returns the current UndoRedoRecorder that is associated with the current
         /// WorkspaceModel. Note that external parties should not have the needs
@@ -203,11 +206,16 @@ namespace Dynamo.Graph.Workspaces
             if (!ShouldProceedWithRecording(models))
                 return; // There's nothing for deletion.
 
+            HashSet<Guid> nodesScheduledForDeletion = new HashSet<Guid>(models.OfType<NodeModel>().Select(node => node.GUID));
+            // Deleting inline watch nodes can preserve data flow (rewire pass-through connectors),
+            // so we can defer execution until the next explicit graph run.
+            var requestRunOnDispose = !ShouldSuppressRunAfterDelete(models);
+
             // Gather a list of connectors first before the nodes they connect
             // to are deleted. We will have to delete the connectors first
             // before
 
-            using (BeginDelayedGraphExecution())// Delayed execution
+            using (BeginDelayedGraphExecution(requestRunOnDispose))// Delayed execution
             using (undoRecorder.BeginActionGroup()) // Start a new action group.
             {
                 foreach (var model in models)
@@ -255,6 +263,10 @@ namespace Dynamo.Graph.Workspaces
 
                         bool silentFlag = node.RaisesModificationEvents;
                         node.RaisesModificationEvents = false;
+
+                        // Removing an inline Watch node should preserve existing
+                        // downstream connectors by retargeting their start ports.
+                        TryReconnectInlineWatchNode(node, nodesScheduledForDeletion);
 
                         // Note that AllConnectors is duplicated as a separate list
                         // by calling its "ToList" method. This is the because the
@@ -308,6 +320,141 @@ namespace Dynamo.Graph.Workspaces
                     }
                 }
             } // Conclude the deletion.
+        }
+
+        private void TryReconnectInlineWatchNode(NodeModel node, ISet<Guid> nodesScheduledForDeletion)
+        {
+            TryGetWatchReconnectContext(
+                node,
+                nodesScheduledForDeletion,
+                out var upstreamPort,
+                out var downstreamConnectors,
+                out var incomingPinCoordinates);
+
+            if (upstreamPort == null || downstreamConnectors == null || incomingPinCoordinates == null) return;
+
+            var (reconnectedAnyConnector, firstReconnectedConnector) =
+                ReconnectWatchDownstreamConnectors(downstreamConnectors, upstreamPort, nodesScheduledForDeletion);
+
+            RecreateIncomingPinsOnFirstReconnectedConnector(firstReconnectedConnector, incomingPinCoordinates);
+            UpdateUpstreamCacheAfterWatchRewire(reconnectedAnyConnector, upstreamPort);
+        }
+
+        private static void TryGetWatchReconnectContext(
+            NodeModel node,
+            ISet<Guid> nodesScheduledForDeletion,
+            out PortModel upstreamPort,
+            out List<ConnectorModel> downstreamConnectors,
+            out List<(double x, double y)> incomingPinCoordinates)
+        {
+            upstreamPort = null;
+            downstreamConnectors = null;
+            incomingPinCoordinates = null;
+
+            if (!IsInlineWatchNode(node)) return;
+
+            var inputPort = node.InPorts[0];
+            var outputPort = node.OutPorts[0];
+            if (inputPort.Connectors.Count != 1 || outputPort.Connectors.Count == 0) return;
+
+            var incomingConnector = inputPort.Connectors[0];
+            upstreamPort = incomingConnector.Start;
+            if (upstreamPort == null || upstreamPort.Owner == null) return;
+
+            if (nodesScheduledForDeletion.Contains(upstreamPort.Owner.GUID)) return;
+
+            downstreamConnectors = outputPort.Connectors.ToList();
+            incomingPinCoordinates = incomingConnector.ConnectorPinModels
+                .Select(pin => (pin.Position.X, pin.Position.Y))
+                .ToList();
+        }
+
+        private (bool reconnectedAnyConnector, ConnectorModel firstReconnectedConnector) ReconnectWatchDownstreamConnectors(
+            IEnumerable<ConnectorModel> downstreamConnectors,
+            PortModel upstreamPort,
+            ISet<Guid> nodesScheduledForDeletion)
+        {
+            var reconnectedAnyConnector = false;
+            ConnectorModel firstReconnectedConnector = null;
+
+            foreach (var downstreamConnector in downstreamConnectors)
+            {
+                if (ShouldSkipReconnectionTarget(downstreamConnector, nodesScheduledForDeletion))
+                    continue;
+
+                undoRecorder.RecordModificationForUndo(downstreamConnector);
+
+                if (!downstreamConnector.TryUpdateStartPort(upstreamPort, notifyEndNodeModified: false))
+                    continue;
+
+                reconnectedAnyConnector = true;
+                firstReconnectedConnector ??= downstreamConnector;
+            }
+            return (reconnectedAnyConnector, firstReconnectedConnector);
+        }
+
+        private static bool ShouldSkipReconnectionTarget(
+            ConnectorModel downstreamConnector,
+            ISet<Guid> nodesScheduledForDeletion)
+        {
+            var endOwner = downstreamConnector.End?.Owner;
+            return endOwner == null || nodesScheduledForDeletion.Contains(endOwner.GUID);
+        }
+
+        private void RecreateIncomingPinsOnFirstReconnectedConnector(
+            ConnectorModel firstReconnectedConnector,
+            IEnumerable<(double pinX, double pinY)> incomingPinCoordinates)
+        {
+            if (firstReconnectedConnector == null)
+                return;
+
+            foreach (var (pinX, pinY) in incomingPinCoordinates)
+            {
+                var recreatedPin = new ConnectorPinModel(pinX, pinY, Guid.NewGuid(), firstReconnectedConnector.GUID);
+                firstReconnectedConnector.AddPin(recreatedPin);
+                undoRecorder.RecordCreationForUndo(recreatedPin);
+            }
+        }
+
+        private void UpdateUpstreamCacheAfterWatchRewire(bool reconnectedAnyConnector, PortModel upstreamPort)
+        {
+            if (reconnectedAnyConnector && workspaceLoaded)
+            {
+                upstreamPort.Owner.ComputeUpstreamOnDownstreamNodes();
+            }
+        }
+
+        private static bool ShouldSuppressRunAfterDelete(IEnumerable<ModelBase> models)
+        {
+            var deletedModels = models.ToList();
+            var deletedNodes = deletedModels.OfType<NodeModel>().ToList();
+            if (!deletedNodes.Any())
+            {
+                return false;
+            }
+
+            if (deletedNodes.Any(node => !IsInlineWatchNode(node)))
+            {
+                return false;
+            }
+
+            // If connectors/pins are explicitly in the deletion set, keep existing
+            // run behavior because the deletion may include non-watch graph edits.
+            if (deletedModels.Any(model => model is ConnectorModel || model is ConnectorPinModel))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool IsInlineWatchNode(NodeModel node)
+        {
+            return node != null &&
+                   node.InPorts.Count == 1 &&
+                   node.OutPorts.Count == 1 &&
+                   ((CachedWatchNodeType != null && CachedWatchNodeType.IsInstanceOfType(node)) ||
+                   string.Equals(node.GetType().FullName, WatchNodeTypeName, StringComparison.Ordinal));
         }
 
         internal void DeleteSavedModels()
@@ -457,7 +604,32 @@ namespace Dynamo.Graph.Workspaces
             ModelBase model = GetModelForElement(modelData);
             if (model != null)
             {
+                if (model is ConnectorModel connectorModel)
+                {
+                    UpdateConnectorStartFromXml(connectorModel, modelData);
+                }
+
                 model.Deserialize(modelData, SaveContext.Undo);
+            }
+        }
+
+        private void UpdateConnectorStartFromXml(ConnectorModel connectorModel, XmlElement modelData)
+        {
+            var helper = new XmlElementHelper(modelData);
+            var startNodeGuid = helper.ReadGuid("start", Guid.Empty);
+            var startPortIndex = helper.ReadInteger("start_index", -1);
+
+            if (startNodeGuid == Guid.Empty || startPortIndex < 0)
+                return;
+
+            var startNode = Nodes.FirstOrDefault(node => node.GUID == startNodeGuid);
+            if (startNode == null || startPortIndex >= startNode.OutPorts.Count)
+                return;
+
+            var startPort = startNode.OutPorts[startPortIndex];
+            if (!ReferenceEquals(connectorModel.Start, startPort))
+            {
+                connectorModel.TryUpdateStartPort(startPort, notifyEndNodeModified: false);
             }
         }
 
@@ -557,6 +729,7 @@ namespace Dynamo.Graph.Workspaces
                 NodeModel nodeModel = NodeFactory.CreateNodeFromXml(modelData, SaveContext.Undo, ElementResolver);
 
                 AddAndRegisterNode(nodeModel);
+                TryRestoreWatchCachedValueFromEngine(nodeModel);
 
                 //check whether this node belongs to a group
                 foreach (var annotation in Annotations)
@@ -567,6 +740,35 @@ namespace Dynamo.Graph.Workspaces
                         annotation.AddToTargetAnnotationModel(nodeModel);
                     }
                 }
+            }
+        }
+
+        private void TryRestoreWatchCachedValueFromEngine(NodeModel nodeModel)
+        {
+            if (nodeModel == null || nodeModel.OutPorts.Count == 0) return;
+
+            if (!string.Equals(nodeModel.GetType().FullName, WatchNodeTypeName, StringComparison.Ordinal)) return;
+
+            var engineController = (this as HomeWorkspaceModel)?.EngineController;
+            if (engineController == null) return;
+
+            // If execution was intentionally skipped, pull the current mirror value
+            // and restore the watch-specific cache so the node regains its displayed data
+            var outputIdentifier = nodeModel.GetAstIdentifierForOutputIndex(0)?.Value;
+            if (string.IsNullOrEmpty(outputIdentifier)) return;
+
+            var mirrorData = engineController.GetMirror(outputIdentifier)?.GetData();
+            if (mirrorData == null) return;
+
+            try
+            {
+                nodeModel.RestoreCachedValueFromEngine(mirrorData.Data);
+            }
+            catch (Exception ex)
+            {
+                this.Log(
+                    $"Unexpected error restoring watch cache for node '{nodeModel.GUID}': {ex.Message}",
+                    Logging.WarningLevel.Moderate);
             }
         }
 
