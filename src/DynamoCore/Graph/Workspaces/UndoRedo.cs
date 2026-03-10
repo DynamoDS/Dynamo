@@ -18,6 +18,7 @@ namespace Dynamo.Graph.Workspaces
     public partial class WorkspaceModel
     {
         private const string WatchNodeTypeName = "CoreNodeModels.Watch";
+        private static readonly Type CachedWatchNodeType = Type.GetType("CoreNodeModels.Watch, CoreNodeModels", throwOnError: false);
 
         /// <summary>
         /// Returns the current UndoRedoRecorder that is associated with the current
@@ -205,7 +206,7 @@ namespace Dynamo.Graph.Workspaces
             if (!ShouldProceedWithRecording(models))
                 return; // There's nothing for deletion.
 
-            var nodesScheduledForDeletion = new HashSet<Guid>(models.OfType<NodeModel>().Select(node => node.GUID));
+            HashSet<Guid> nodesScheduledForDeletion = new HashSet<Guid>(models.OfType<NodeModel>().Select(node => node.GUID));
             // Deleting inline watch nodes can preserve data flow (rewire pass-through connectors),
             // so we can defer execution until the next explicit graph run.
             var requestRunOnDispose = !ShouldSuppressRunAfterDelete(models);
@@ -452,7 +453,8 @@ namespace Dynamo.Graph.Workspaces
             return node != null &&
                    node.InPorts.Count == 1 &&
                    node.OutPorts.Count == 1 &&
-                   string.Equals(node.GetType().FullName, WatchNodeTypeName, StringComparison.Ordinal);
+                   ((CachedWatchNodeType != null && CachedWatchNodeType.IsInstanceOfType(node)) ||
+                   string.Equals(node.GetType().FullName, WatchNodeTypeName, StringComparison.Ordinal));
         }
 
         internal void DeleteSavedModels()

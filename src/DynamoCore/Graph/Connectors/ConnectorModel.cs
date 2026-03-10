@@ -270,8 +270,8 @@ namespace Dynamo.Graph.Connectors
 
             if (ReferenceEquals(newStart.Owner, End.Owner)) return false;
 
-            var oldStart = Start;
-            var endPort = End;
+            PortModel oldStart = Start;
+            PortModel endPort = End;
 
             // Keep node input/output lookup tables synchronized with the moved connector.
             oldStart.Owner.DisconnectOutput(oldStart.Index, endPort.Index, endPort.Owner);
