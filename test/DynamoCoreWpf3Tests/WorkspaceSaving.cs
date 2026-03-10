@@ -955,6 +955,53 @@ namespace Dynamo.Tests
             Assert.AreEqual(openPath, ViewModel.Model.CurrentWorkspace.FileName);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void SaveAsPreservesConnectorPins()
+        {
+            var openPath = Path.Combine(TestDirectory, @"core", "ConnectorPinSelectionTest.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var initialWorkspace = ViewModel.Model.CurrentWorkspace;
+            var initialPinCount = initialWorkspace.Connectors
+                .SelectMany(connector => connector.ConnectorPinModels)
+                .Count();
+            Assert.AreEqual(3, initialPinCount, "The baseline graph should contain 3 connector pins.");
+
+            var initialWorkspaceGuid = initialWorkspace.Guid;
+            var initialConnectorIds = new HashSet<Guid>(
+                initialWorkspace.Connectors.Select(connector => connector.GUID));
+
+            var newPath = GetNewFileNameOnTempPath("dyn");
+
+            var saveAsSucceeded = ViewModel.CurrentSpaceViewModel.Save(
+                newPath,
+                false,
+                ViewModel.Model.EngineController,
+                SaveContext.SaveAs);
+
+            Assert.IsTrue(saveAsSucceeded);
+            Assert.IsTrue(File.Exists(newPath));
+
+            // Explicitly reload from disk before validating persisted relationships.
+            ViewModel.OpenCommand.Execute(newPath);
+
+            var reloadedWorkspace = ViewModel.Model.CurrentWorkspace;
+            var reloadedPins = reloadedWorkspace.Connectors
+                .SelectMany(connector => connector.ConnectorPinModels)
+                .ToList();
+            var reloadedConnectorIds = new HashSet<Guid>(
+                reloadedWorkspace.Connectors.Select(connector => connector.GUID));
+
+            Assert.AreEqual(newPath, reloadedWorkspace.FileName);
+            Assert.AreNotEqual(initialWorkspaceGuid, reloadedWorkspace.Guid);
+            Assert.AreEqual(initialPinCount, reloadedPins.Count);
+            Assert.IsTrue(reloadedPins.All(pin => reloadedConnectorIds.Contains(pin.ConnectorId)));
+
+            // SaveAs should remap element ids, including connector ids.
+            Assert.IsFalse(initialConnectorIds.Overlaps(reloadedConnectorIds));
+        }
+
         #region CustomNodeWorkspaceModel SaveAs side effects
 
         [Test]

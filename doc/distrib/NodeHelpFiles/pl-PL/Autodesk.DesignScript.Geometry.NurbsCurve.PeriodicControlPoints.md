@@ -1,9 +1,9 @@
 ## Informacje szczegółowe
-Use `NurbsCurve.PeriodicControlPoints` when you need to export a closed NURBS curve to another system (for example Alias) or when that system expects the curve in its periodic form. Many CAD tools expect this form for round-trip accuracy.
+Metody „NurbsCurve.PeriodicControlPoints” należy użyć, gdy trzeba wyeksportować zamkniętą krzywą NURBS do innego układu (na przykład Alias) lub system oczekuje krzywej w postaci okresowej. Wiele narzędzi CAD oczekuje tej postaci w celu zagwarantowania dokładności przenoszenia danych w obie strony.
 
-`PeriodicControlPoints` returns the control points in the *periodic* form. `ControlPoints` returns them in the *clamped* form. Both arrays have the same number of points; they are two different ways to describe the same curve. In the periodic form, the last few control points match the first few (as many as the curve degree), so the curve closes smoothly. The clamped form uses a different layout, so the point positions in the two arrays differ.
+Metoda „PeriodicControlPoints” zwraca punkty kontrolne w postaci *okresowej*. Metoda „ControlPoints” zwraca je w postaci *przyciętej*. Oba szyki mają tę samą liczbę punktów. Są to dwa różne sposoby opisania tej samej krzywej. W postaci okresowej kilka ostatnich punktów sterujących odpowiada kilku pierwszym (tyle, ile wynosi stopień krzywej), więc krzywa zamyka się gładko. W postaci przyciętej jest używany inny układ, więc położenia punktów w dwóch szykach są różne.
 
-In the example below, a periodic NURBS curve is built with `NurbsCurve.ByControlPointsWeightsKnots`. Watch nodes compare `ControlPoints` and `PeriodicControlPoints` so you can see the same length but different point positions. The ControlPoints are seen with a red color so they appear distinctly from the PeriodicControlPoints, which are in black, in the background preview.
+W poniższym przykładzie jest tworzona okresowa krzywa NURBS za pomocą metody „NurbsCurve.ByControlPointsWeightsKnot”. Węzły obserwacji porównują parametry „ControlPoints” i „PeriodicControlPoints”, aby zilustrować tę samą długość przy różnych położeniach punktów. Punkty sterujące są wyświetlane w kolorze czerwonym, dzięki czemu łatwo jest je odróżnić od okresowych punktów sterujących, które są wyświetlane na czarno, w podglądzie tła.
 ___
 ## Plik przykładowy
 

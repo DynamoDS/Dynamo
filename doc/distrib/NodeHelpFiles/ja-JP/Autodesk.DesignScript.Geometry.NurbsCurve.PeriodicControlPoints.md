@@ -1,9 +1,9 @@
 ## 詳細
-Use `NurbsCurve.PeriodicControlPoints` when you need to export a closed NURBS curve to another system (for example Alias) or when that system expects the curve in its periodic form. Many CAD tools expect this form for round-trip accuracy.
+閉じた NURBS 曲線を別のシステム(Alias など)に書き出す必要がある場合、またはシステムが周期的に形成する曲線を想定している場合は、`NurbsCurve.PeriodicControlPoints` を使用します。多くの CAD ツールでは、ラウンド トリップの精度にこの形成を想定しています。
 
-`PeriodicControlPoints` returns the control points in the *periodic* form. `ControlPoints` returns them in the *clamped* form. Both arrays have the same number of points; they are two different ways to describe the same curve. In the periodic form, the last few control points match the first few (as many as the curve degree), so the curve closes smoothly. The clamped form uses a different layout, so the point positions in the two arrays differ.
+`PeriodicControlPoints` は、*周期的に*形成する制御点を返します。`ControlPoints` は、*固定*で形成する制御店を返します。どちらの配列も同じ数の点を持ちます。これらは同じ曲線を記述する 2 つの異なる方法です。周期的な形成では、最後の数個の制御点が最初の数個(曲線の次数と同じ数)と一致するため、曲線は滑らかに閉じます。固定の形成は異なるレイアウトを使用するため、2 つの配列で点の位置が異なります。
 
-In the example below, a periodic NURBS curve is built with `NurbsCurve.ByControlPointsWeightsKnots`. Watch nodes compare `ControlPoints` and `PeriodicControlPoints` so you can see the same length but different point positions. The ControlPoints are seen with a red color so they appear distinctly from the PeriodicControlPoints, which are in black, in the background preview.
+次の例では、`NurbsCurve.ByControlPointsWeightsKnots` を使用して周期的な NURBS 曲線を作成します。Watch ノードは、`ControlPoints` と `PeriodicControlPoints` を比較するため、同じ長さでも異なる点の位置を確認できます。ControlPoint は赤色で表示されるため、バックグラウンド プレビューで黒で表示される PeriodicControlPoints と区別することができます。
 ___
 ## サンプル ファイル
 
