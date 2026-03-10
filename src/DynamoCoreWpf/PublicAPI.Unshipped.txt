@@ -1607,9 +1607,6 @@ Dynamo.ViewModels.DynamoViewModel.NewHomeWorkspaceCommand.get -> Dynamo.UI.Comma
 Dynamo.ViewModels.DynamoViewModel.NewHomeWorkspaceCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.NodeFromSelectionCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.NodeFromSelectionCommand.set -> void
-=======
-<<<<<<< HEAD
->>>>>>> Stashed changes
 Dynamo.PackageManager.UI.PackageManagerTabControl
 Dynamo.PackageManager.UI.PackageManagerTabControl.PackageManagerTabControl() -> void
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.HasUpdateAvailable.get -> bool
@@ -1621,7 +1618,6 @@ Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsInstalle
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsUninstallState.get -> bool
 Dynamo.UI.Views.ScriptObject.ResetSettings() -> void
 Dynamo.UI.Views.ScriptObject.ScriptObject(System.Action<bool> requestLaunchDynamo, System.Action<string> requestImportSettings, System.Func<bool> requestSignIn, System.Func<bool> requestSignOut, System.Action requestResetSettings) -> void
-=======
 Dynamo.Controls.PackageDetailsLinkCollapseOnEmpty
 Dynamo.Controls.PackageDetailsLinkCollapseOnEmpty.Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.PackageDetailsLinkCollapseOnEmpty.ConvertBack(object value, System.Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) -> object[]
