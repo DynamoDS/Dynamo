@@ -26,7 +26,13 @@ using (node.PropertyChangeManager.SetPropsToSuppress("IsFrozen"))
     node.IsFrozen = true;
     // ... other related changes
 }
-// PropertyChanged for "IsFrozen" fires again after the using block exits
+// Dispose() clears the suppression set — it does NOT re-raise any suppressed notifications.
+// Notifications fired while suppressed are permanently dropped.
+// If the UI needs to reflect the final state, the caller must raise PropertyChanged explicitly
+// (e.g. RaisePropertyChanged("IsFrozen")) after the using block.
+//
+// Note: SetPropsToSuppress overwrites the active suppression set entirely.
+// Nested or overlapping suppressions are not supported — the last call wins.
 ```
 
 ## Anti-pattern

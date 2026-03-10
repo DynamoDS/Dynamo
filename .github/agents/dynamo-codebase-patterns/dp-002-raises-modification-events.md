@@ -30,7 +30,8 @@ public void RegisterAllPorts()
     if (outPortDatas.Any())
         RegisterOutputPorts(outPortDatas);
 
-    RaisesModificationEvents = true; // fires a single consolidated event
+    RaisesModificationEvents = true; // re-enables notifications only — does NOT fire OnNodeModified() itself
+    // If a final scheduler update is required, call OnNodeModified() explicitly here.
 }
 ```
 

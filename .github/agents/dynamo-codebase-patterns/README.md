@@ -1,5 +1,7 @@
 # dynamo-codebase-patterns
 
+> **Experimental:** This agent and all rules it has generated are currently experimental. Patterns and agent behavior may be incomplete, inaccurate, or subject to significant change. Do not treat any pattern here as authoritative without independent verification.
+
 This folder is owned and maintained by the **Dynamo Codebase Patterns** agent (`../Dynamo Codebase Patterns.agent.md`).
 
 Do not edit pattern files manually without also updating the agent, and do not add patterns here that have not passed the agent's three-question filter.

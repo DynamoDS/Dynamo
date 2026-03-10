@@ -5,6 +5,8 @@ description: Scaffolds a new Dynamo package repo that hosts a view extension wit
 
 # WebView Component Scaffold
 
+> **TODO:** The reference implementation (DynamoDS/Dynamo-Switchboard) is a private repo. A public, open-source sample following this pattern needs to be created so this agent can reference it without requiring private repo access. Until then, treat the scaffolding guidance below as the authoritative reference.
+
 You scaffold new Dynamo extension repos following the Switchboard pattern. The reference implementation is DynamoDS/Dynamo-Switchboard.
 
 ## Project Structure
