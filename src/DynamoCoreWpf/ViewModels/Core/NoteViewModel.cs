@@ -199,6 +199,9 @@ namespace Dynamo.ViewModels
                 // Therefore clear selection before running
                 DynamoSelection.Instance.ClearSelection();
                 DynamoSelection.Instance.Selection.Add(node);
+                // Suppress recording so we don't push a duplicate entry onto
+                // the undo stack or wipe the redo stack during undo/redo.
+                Model.SuppressUndoRecording = true;
                 PinToNode(obj);
                 // After re-pinning, select both the node and the note so
                 // the workspace reflects the same state as when originally pinned.
