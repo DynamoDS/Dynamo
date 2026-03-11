@@ -1491,7 +1491,9 @@ namespace Dynamo.ViewModels
         /// to all previous pins is required for undo/redo recorder.</param>
         internal void DiscardAllConnectorPinModels(List<ModelBase> allDeletedModels = null)
         {
-            foreach (var pin in ConnectorPinViewCollection)
+            // Removing pin models can mutate ConnectorPinViewCollection through
+            // ConnectorPinModelCollectionChanged handlers, so iterate a snapshot
+            foreach (var pin in ConnectorPinViewCollection.ToList())
             {
                 workspaceViewModel.Pins.Remove(pin);
                 ConnectorModel?.RemovePin(pin.Model);
