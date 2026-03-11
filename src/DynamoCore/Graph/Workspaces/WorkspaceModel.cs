@@ -1430,6 +1430,8 @@ namespace Dynamo.Graph.Workspaces
 
             this.nodes = new List<NodeModel>(nodes);
             this.notes = new List<NoteModel>(notes);
+            foreach (var note in this.notes)
+                note.Workspace = this;
 
             this.annotations = new List<AnnotationModel>(annotations);
 
