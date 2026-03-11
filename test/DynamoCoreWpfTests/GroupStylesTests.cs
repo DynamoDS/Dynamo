@@ -1,9 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Input;
 using Dynamo.Configuration;
 using Dynamo.Nodes;
 using Dynamo.Utilities;
@@ -12,6 +6,13 @@ using Dynamo.Views;
 using Dynamo.Wpf.Views;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 
 namespace DynamoCoreWpfTests
 {
@@ -204,6 +205,50 @@ namespace DynamoCoreWpfTests
 
             //Validates that the 3 added custom colors are present in the custom Colors list
             Assert.AreEqual(preferencesWindow.stylesCustomColors.Count, 2);
+        }
+
+        [Test]
+        public void ResetStylesButton_RemovesCustomStylesOnly()
+        {
+            Open(@"UI\GroupTest.dyn");
+
+            var preferencesWindow = new PreferencesView(View);
+            preferencesWindow.Show();
+            DispatcherUtil.DoEvents();
+
+            var prefViewModel = preferencesWindow.DataContext as PreferencesViewModel;
+            Assert.AreEqual(Visibility.Collapsed, preferencesWindow.ResetStylesButton.Visibility);
+
+            prefViewModel.AddStyle(new StyleItem
+            {
+                Name = "Custom Style 1",
+                HexColorString = "FFFF00",
+                FontSize = 36,
+                GroupStyleId = Guid.NewGuid(),
+                IsDefault = false
+            });
+
+            prefViewModel.AddStyle(new StyleItem
+            {
+                Name = "Custom Style 2",
+                HexColorString = "00FFFF",
+                FontSize = 36,
+                GroupStyleId = Guid.NewGuid(),
+                IsDefault = false
+            });
+
+            DispatcherUtil.DoEvents();
+            Assert.AreEqual(6, prefViewModel.StyleItemsList.Count);
+            Assert.IsTrue(prefViewModel.CanResetGroupStyles);
+            Assert.AreEqual(Visibility.Visible, preferencesWindow.ResetStylesButton.Visibility);
+
+            preferencesWindow.ResetStylesButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            DispatcherUtil.DoEvents();
+
+            Assert.AreEqual(4, prefViewModel.StyleItemsList.Count);
+            Assert.IsTrue(prefViewModel.StyleItemsList.All(style => style.IsDefault));
+            Assert.IsFalse(prefViewModel.CanResetGroupStyles);
+            Assert.AreEqual(Visibility.Collapsed, preferencesWindow.ResetStylesButton.Visibility);
         }
     }
 }
