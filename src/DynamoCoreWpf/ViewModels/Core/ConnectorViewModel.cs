@@ -1558,13 +1558,17 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Adds the specified collection of transient connector pin view models to the workspace for temporary
-        /// visualization.
+        /// Caches connector pins for a transient (drag/reconnection) connector without attaching them
+        /// to <see cref="ConnectorPinViewCollection"/>.
         /// </summary>
-        /// <remarks>This method only operates if there is no associated connector model. Pins are added
-        /// to the workspace view model for temporary display and their locations are cached if not already
-        /// present.</remarks>
-        /// <param name="pinViewModels">A collection of connector pin view models to be added as transient pins. If null, no action is taken.</param>
+        /// <remarks>
+        /// Transient connectors render pin bends from cached locations only. Pin view models remain
+        /// visible through the workspaceViewModel.Pins, but are kept non-owned by the transient
+        /// connector to avoid interaction/event-subscription overhead during drag.
+        /// </remarks>
+        /// <param name="pinViewModels">
+        /// Pin view models extracted from an existing connector; if null, no action is taken.
+        /// </param>
         internal void CacheTransientConnectorPins(IEnumerable<ConnectorPinViewModel> pinViewModels)
         {
             if (ConnectorModel != null || pinViewModels == null) return;
@@ -1851,9 +1855,17 @@ namespace Dynamo.ViewModels
         {
             foreach (var pinViewModel in transientCachedPins.ToList())
             {
+                if (pinViewModel == null) continue;
+
                 ConnectorPinViewCollection.Remove(pinViewModel);
                 workspaceViewModel.Pins.Remove(pinViewModel);
-                pinViewModel.Model.Dispose();
+
+                if (pinViewModel.Model != null)
+                {
+                    DynamoSelection.Instance.Selection.Remove(pinViewModel.Model);
+                    pinViewModel.Model.Dispose();
+                }
+
                 pinViewModel.Dispose();
             }
 
