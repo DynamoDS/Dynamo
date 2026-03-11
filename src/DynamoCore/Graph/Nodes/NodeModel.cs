@@ -57,7 +57,7 @@ namespace Dynamo.Graph.Nodes
             unchecked
             {
                 int hash = 17;
-                hash = hash * 23 + Message == null ? 0 : Message.GetHashCode();
+                hash = hash * 23 + (Message == null ? 0 : Message.GetHashCode());
                 hash = hash * 23 + State.GetHashCode();
                 return hash;
             }
@@ -81,6 +81,12 @@ namespace Dynamo.Graph.Nodes
         private bool canUpdatePeriodically;
         private string name;
         private ElementState state;
+        /// <summary>
+        /// Suppresses ClearTransientWarningsAndErrors() in the State setter during
+        /// Info() state restoration. Access is single-threaded (NodeModel state mutations
+        /// are not thread-safe by design).
+        /// </summary>
+        private bool suppressTransientClear;
         private readonly ObservableHashSet<Info> infos = new ObservableHashSet<Info>();
         private string description;
 
@@ -390,7 +396,8 @@ namespace Dynamo.Graph.Nodes
             get { return state; }
             set
             {
-                if (value != ElementState.Error && value != ElementState.Info && value != ElementState.PersistentInfo && value != ElementState.AstBuildBroken)
+                if (!suppressTransientClear &&
+                    value != ElementState.Error && value != ElementState.Info && value != ElementState.PersistentInfo && value != ElementState.AstBuildBroken)
                     ClearTransientWarningsAndErrors();
 
                 // Check before settings and raising
@@ -1797,13 +1804,12 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Clears the info messages that are generated when running the graph,
-        /// the State will be set to ElementState.Active.
+        /// Clears the info messages that are generated when running the graph.
+        /// If the current State is Info or PersistentInfo, it will be set to Active.
+        /// If the current State is Warning, Error, or another non-info state, it is preserved.
         /// </summary>
         public virtual void ClearInfoMessages()
         {
-            // It is very unlikely a node could be in both info state and persistent info state from the current design
-            // If that exception happens, we should redesign this function or have particular node override the behavior
             if (State == ElementState.Info)
             {
                 infos.RemoveWhere(x => x.State == ElementState.Info);
@@ -1812,12 +1818,21 @@ namespace Dynamo.Graph.Nodes
             {
                 infos.RemoveWhere(x => x.State == ElementState.PersistentInfo);
             }
-            // If there are still warnings/errors, keep the state unchanged.
-            else if (State == ElementState.Warning || State == ElementState.Error)
+            else
             {
+                // For any other state (Warning, Error, Active, Dead, etc.), clear all info types.
+                // This fixes the case where State was restored (e.g., by Info() method) and no
+                // longer matches Info/PersistentInfo, but info entries still exist in Infos.
                 infos.RemoveWhere(x => x.State == ElementState.PersistentInfo || x.State == ElementState.Info);
             }
-            State = ElementState.Active;
+
+            // Only reset State to Active if it was info-related.
+            // Don't demote Warning/Error to Active — that would trigger
+            // ClearTransientWarningsAndErrors() via the setter side effect.
+            if (State == ElementState.Info || State == ElementState.PersistentInfo)
+            {
+                State = ElementState.Active;
+            }
             OnNodeInfoMessagesClearing();
         }
 
@@ -1985,7 +2000,13 @@ namespace Dynamo.Graph.Nodes
                 initialState == ElementState.PersistentWarning ||
                 initialState == ElementState.Error)
             {
-                State = initialState;
+                // Suppress the ClearTransientWarningsAndErrors() side effect in the State setter
+                // during restoration. Without this, restoring State to Warning triggers the setter
+                // which calls ClearTransientWarningsAndErrors(), wiping the warning entry from Infos
+                // that was just added before Info() was called.
+                suppressTransientClear = true;
+                try { State = initialState; }
+                finally { suppressTransientClear = false; }
             }
         }
 

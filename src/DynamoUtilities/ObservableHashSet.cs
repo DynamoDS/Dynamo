@@ -42,6 +42,12 @@ namespace Dynamo.Utilities
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, range));
         }
 
+        public void Clear()
+        {
+            set.Clear();
+            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
         public int Count
         {
             get { return set.Count; }

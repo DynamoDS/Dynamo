@@ -309,6 +309,12 @@ namespace Dynamo.ViewModels
         public ObservableCollection<InfoBubbleDataPacket> DismissedMessages { get; } = new ObservableCollection<InfoBubbleDataPacket>();
 
         /// <summary>
+        /// Tracks nested batch update depth. When > 0, suppresses
+        /// RefreshNodeInformationalStateDisplay() calls during batch updates to NodeMessages.
+        /// </summary>
+        private int batchUpdateDepth;
+
+        /// <summary>
         /// Used to determine whether the UI container for node Info is visible
         /// </summary>
         public bool NodeInfoVisible => NodeInfoToDisplay.Count > 0;
@@ -551,7 +557,29 @@ namespace Dynamo.ViewModels
         /// <param name="e"></param>
         private void NodeInformation_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            RefreshNodeInformationalStateDisplay();
+            if (batchUpdateDepth == 0)
+                RefreshNodeInformationalStateDisplay();
+        }
+
+        /// <summary>
+        /// Begins a batch update. Suppresses per-item RefreshNodeInformationalStateDisplay()
+        /// calls until the matching EndBatchUpdate() is called. Supports nesting.
+        /// </summary>
+        internal void BeginBatchUpdate()
+        {
+            batchUpdateDepth++;
+        }
+
+        /// <summary>
+        /// Ends a batch update. When the outermost batch completes (depth returns to 0),
+        /// performs a single RefreshNodeInformationalStateDisplay().
+        /// </summary>
+        internal void EndBatchUpdate()
+        {
+            if (batchUpdateDepth > 0)
+                batchUpdateDepth--;
+            if (batchUpdateDepth == 0)
+                RefreshNodeInformationalStateDisplay();
         }
 
         #region Command Methods
@@ -1068,6 +1096,7 @@ namespace Dynamo.ViewModels
         public override void Dispose()
         {
             NodeMessages.CollectionChanged -= NodeInformation_CollectionChanged;
+            base.Dispose();
         }
     }
 

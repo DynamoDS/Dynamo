@@ -1126,6 +1126,7 @@ namespace Dynamo.ViewModels
             NodeModel.NodeWarningMessagesClearing -= Logic_NodeWarningMessagesClearing;
 
             if (ErrorBubble != null) DisposeErrorBubble();
+            ErrorBubble = null;
 
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             delayDocumentBrowserRefresh?.Dispose();
@@ -1383,23 +1384,24 @@ namespace Dynamo.ViewModels
                     // ErrorBubble's ZIndex should be the node's ZIndex + 2.
                     ZIndex = ZIndex + 2
                 };
+
+                // All subscriptions inside the null guard to prevent double-subscription
+                // if BuildErrorBubble is ever called when ErrorBubble already exists.
+                ErrorBubble.NodeInfoToDisplay.CollectionChanged += UpdateOverlays;
+                ErrorBubble.NodeWarningsToDisplay.CollectionChanged += UpdateOverlays;
+                ErrorBubble.NodeErrorsToDisplay.CollectionChanged += UpdateOverlays;
+                ErrorBubble.PropertyChanged += ErrorBubble_PropertyChanged;
+                ErrorBubble.DismissedMessages.CollectionChanged += DismissedNodeMessages_CollectionChanged;
             }
 
-            ErrorBubble.NodeInfoToDisplay.CollectionChanged += UpdateOverlays;
-            ErrorBubble.NodeWarningsToDisplay.CollectionChanged += UpdateOverlays;
-            ErrorBubble.NodeErrorsToDisplay.CollectionChanged += UpdateOverlays;
-            ErrorBubble.PropertyChanged += ErrorBubble_PropertyChanged;
-            
             if (DynamoViewModel.UIDispatcher != null)
             {
                 DynamoViewModel.UIDispatcher.Invoke(() =>
                 {
-                    WorkspaceViewModel.Errors.Add(ErrorBubble);
+                    if (!WorkspaceViewModel.Errors.Contains(ErrorBubble))
+                        WorkspaceViewModel.Errors.Add(ErrorBubble);
                 });
             }
-
-            // The Node displays a count of dismissed messages, listening to that collection in the node's ErrorBubble
-            ErrorBubble.DismissedMessages.CollectionChanged += DismissedNodeMessages_CollectionChanged;
         }
 
         // These colors are duplicated from the DynamoColorsAndBrushesDictionary as it is not assumed that the xaml will be loaded before setting the color
@@ -1668,33 +1670,36 @@ namespace Dynamo.ViewModels
 
             ErrorBubble.InfoBubbleStyle = style;
 
-            // If running Dynamo with UI, use dispatcher, otherwise not
-            if (DynamoViewModel.UIDispatcher != null)
+            // Batch updates to avoid O(n²) cascade: each NodeMessages.Add() triggers
+            // RefreshNodeInformationalStateDisplay() which clears/rebuilds 3 display collections.
+            // By batching, we do one refresh at the end instead of N refreshes.
+            void UpdateMessages()
             {
-                DynamoViewModel.UIDispatcher.Invoke(() =>
+                ErrorBubble.BeginBatchUpdate();
+                try
                 {
+                    ErrorBubble.NodeMessages.Clear();
                     foreach (var data in packets)
-                    {
-                        if (!ErrorBubble.NodeMessages.Contains(data))
-                        {
-                            ErrorBubble.NodeMessages.Add(data);
-                        }
-                    }
-                    HandleColorOverlayChange();
-                });
-            }
-            else
-            {
-                foreach (var data in packets)
-                {
-                    if (!ErrorBubble.NodeMessages.Contains(data))
                     {
                         ErrorBubble.NodeMessages.Add(data);
                     }
                 }
+                finally
+                {
+                    ErrorBubble.EndBatchUpdate();
+                }
                 HandleColorOverlayChange();
             }
-            ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);            
+
+            if (DynamoViewModel.UIDispatcher != null)
+            {
+                DynamoViewModel.UIDispatcher.Invoke(UpdateMessages);
+            }
+            else
+            {
+                UpdateMessages();
+            }
+            ErrorBubble.ChangeInfoBubbleStateCommand.Execute(InfoBubbleViewModel.State.Pinned);
         }
 
         private void UpdateErrorBubblePosition()
