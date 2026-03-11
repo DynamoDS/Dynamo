@@ -120,11 +120,6 @@
       <Project>{6cd0f0cf-8199-49f9-b0ea-0b9598b44419}</Project>
       <Name>TestServices</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Libraries\Tesellation\Tessellation.csproj">
-      <Project>{D6279651-D099-4F8D-A319-5BF12ED9F269}</Project>
-      <Name>Tessellation</Name>
-      <Private>False</Private>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
