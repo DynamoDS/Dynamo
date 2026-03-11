@@ -3383,13 +3383,13 @@ In bestimmten komplexen Diagrammen oder Host-Programmszenarien kann der automati
     <value>Beim Importieren der benutzerdefinierten Einstellungsdatei ist ein Fehler aufgetreten. Versuchen Sie es erneut, oder fahren Sie mit den Vorgabeeinstellungen fort.</value>
   </data>
   <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
-    <value>Settings imported. Please restart Dynamo.</value>
+    <value>Settings imported. To apply the settings, launch Dynamo, then close it and restart it.</value>
   </data>
   <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
-    <value>Reset imported settings</value>
+    <value>Importierte Einstellungen zurücksetzen</value>
   </data>
   <data name="SplashScreenSettingsResetSuccess" xml:space="preserve">
-    <value>Imported settings have been reset.</value>
+    <value>Importierte Einstellungen wurden zurückgesetzt.</value>
   </data>
   <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
     <value>Dynamo-Ansicht wird gestartet...</value>

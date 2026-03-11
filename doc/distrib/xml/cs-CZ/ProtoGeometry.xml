@@ -921,13 +921,13 @@
             <summary>Určuje, zda je objekt NurbsCurve racionální, či nikoli. Tento údaj definuje, zda libovolné váhy nemají hodnotu 1.0.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ControlPoints">
-            <summary>Get the control points of the NurbsCurve.</summary>
+            <summary>Získejte řídicí body objektu NurbsCurve.</summary>
             <returns>Pole bodů</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
-            <summary>The truly periodic control points of the NurbsCurve if periodic.
-            Note that this cannot be used together with PeriodicKnots() to reconstruct the original periodic NurbsCurve.
-            Throws (or is undefined) when the curve is not periodic.</summary>
+            <summary>Skutečně periodické řídicí body objektu NurbsCurve, pokud jsou periodické.
+            Všimněte si, že toto nelze použít společně s uzlem PeriodicKnots() k rekonstrukci původního periodického objektu NurbsCurve.
+            Vrátí (nebo je nedefinován), pokud oblouk není periodický.</summary>
             <returns>Pole bodů</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
@@ -935,10 +935,10 @@
             <returns>Uzly křivky nurbs</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots">
-            <summary>The unclamped knots of the Curve if Periodic. Knots is a series of parameter values (doubles) used to determine where and how the control points affect the curve.
-            Note that this cannot be used together with PeriodicControlPoints() to reconstruct the original periodic NurbsCurve.
-            Throws (or is undefined) when the curve is not periodic.</summary>
-            <returns>The periodic knot vector of the nurbs curve</returns>
+            <summary>Nesvázané uzly křivky, pokud je periodická. Položka Knots je řada hodnot parametru (hodnoty double), pomocí nichž se určí, kde a jak řídicí body ovlivní křivku.
+            Tuto možnost nelze použít společně s uzlem PeriodicControlPoints() k rekonstrukci původního periodického objektu NurbsCurve.
+            Vrátí (nebo je nedefinován), pokud oblouk není periodický.</summary>
+            <returns>Vektor periodického uzlu křivky nurbs</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Weights">
             <summary>Vrací váhy řídicích bodů objektu NurbsCurve. Váhy určují vliv jednotlivých řídicích bodů na tvar křivky.</summary>
@@ -3727,10 +3727,10 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSurface(Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
-            <summary>Táhne tuto křivku podél křivky trajektorie, přičemž vytváří povrch.</summary>
+            <summary>Táhne tuto křivku podél křivky trajektorie a tím vytváří povrch</summary>
             <param name="path"/>
             <param name="cutEndOff">Odřízněte konec tažení a nastavte jej kolmo k trajektorii.</param>
-            <returns>A Surface resulting from sweeping the curve along the path</returns>
+            <returns>Povrch, který je výsledkem tažení křivky podél trajektorie</returns>
             <search>
             sweep1,curve2surf
             </search>
@@ -3891,11 +3891,11 @@
             <search>get overlap,multi intersect,intersect many</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ProjectPointsOnto(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Projects a collection of Points onto this Geometry along the specified direction.
-            Returns a flat array of resulting Geometry.</summary>
-            <param name="points">Points to project</param>
-            <param name="projectionDirection">Směr projektování</param>
-            <returns>Flat array of resulting Geometry</returns>
+            <summary>Promítne kolekci bodů na tuto geometrii podél určeného směru.
+            Vrací ploché pole výsledné geometrie.</summary>
+            <param name="points">Body k promítnutí</param>
+            <param name="projectionDirection">Směr promítání</param>
+            <returns>Ploché pole výsledné geometrie</returns>
             <search>project points,batch project</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Split(Autodesk.DesignScript.Geometry.Geometry)">
@@ -4489,10 +4489,10 @@
             <summary>Získat řetězcovou reprezentaci prvku PolyCurve</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
-            PolyCurve direction is based on the first curve in the input array.
-            Choose a preferred join tolerance between 1e-6 and 1e-3 units.
-            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
+            <summary>Vytvořte objekt PolyCurve spojením křivek. Vstupní křivky nemusí být zadány v pořadí propojení. 
+            Směr objektu PolyCurve je určen první křivkou ve vstupním poli.
+            Vyberte preferovanou toleranci spojení od 1e-6 do 1e-3 jednotek.
+            Nízké hodnoty mohou být příliš omezující a bránit ve spojení křivek; vyšší hodnoty zase mohou způsobit, že krátké křivky budou sloučeny nežádoucím způsobem nebo se rozpadnou na jednotlivé body.</summary>
             <param name="curves">Křivky ke spojení do objektu PolyCurve</param>
             <param name="joinTolerance">Tolerance, která určuje velikost povolené mezery mezi spojovanými křivkami</param>
             <returns>Objekt Polycurve vytvořený podle spojených křivek</returns>
@@ -4501,10 +4501,10 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
-            PolyCurve direction is based on the first curve in the input array.
-            Choose a preferred join tolerance between 1e-6 and 1e-3 units.
-            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
+            <summary>Vytvořte objekt PolyCurve spojením křivek. Vstupní křivky nemusí být zadány v pořadí propojení. 
+            Směr objektu PolyCurve je určen první křivkou ve vstupním poli.
+            Vyberte preferovanou toleranci spojení od 1e-6 do 1e-3 jednotek.
+            Nízké hodnoty mohou být příliš omezující a bránit ve spojení křivek; vyšší hodnoty zase mohou způsobit, že krátké křivky budou sloučeny nežádoucím způsobem nebo se rozpadnou na jednotlivé body.</summary>
             <param name="curves">Křivky ke spojení do objektu PolyCurve</param>
             <param name="joinTolerance">Tolerance, která určuje velikost povolené mezery mezi spojovanými křivkami</param>
             <param name="trimCurves">Nastavte na hodnotu True, pokud se vstupní křivky protínají nebo překrývají a je nutné oříznout jejich koncové úseky před vytvořením objektu PolyCurve. Ve výchozím nastavení je tato možnost nastavena na hodnotu False.</param>
@@ -4515,15 +4515,15 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Make one or more polycurves by grouping connected curves. Choose a preferred join tolerance between 1e-6 and 1e-3 units.
-            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
+            <summary>Vytvořte jeden nebo více objektů PolyCurve seskupením spojených křivek. Vyberte preferovanou toleranci spojení mezi 1e-6 a 1e-3 jednotkami.
+            Nízké hodnoty mohou být příliš omezující a bránit ve spojení křivek; vyšší hodnoty zase mohou způsobit, že krátké křivky budou sloučeny nežádoucím způsobem nebo se rozpadnou na jednotlivé body.</summary>
             <param name="curves">Křivky, které chcete seskupit dohromady, aby se vytvořil jeden nebo více objektů PolyCurve</param>
             <param name="joinTolerance">Tolerance, která určuje velikost povolené mezery mezi spojovanými křivkami</param>
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Make one or more polycurves by grouping connected curves. Choose a preferred join tolerance between 1e-6 and 1e-3 units.
-            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
+            <summary>Vytvořte jeden nebo více objektů PolyCurve seskupením spojených křivek. Vyberte preferovanou toleranci spojení mezi 1e-6 a 1e-3 jednotkami.
+            Nízké hodnoty mohou být příliš omezující a bránit ve spojení křivek; vyšší hodnoty zase mohou způsobit, že krátké křivky budou sloučeny nežádoucím způsobem nebo se rozpadnou na jednotlivé body.</summary>
             <param name="curves">Křivky, které chcete seskupit dohromady, aby se vytvořil jeden nebo více objektů PolyCurve</param>
             <param name="joinTolerance">Tolerance, která určuje velikost povolené mezery mezi spojovanými křivkami</param>
             <param name="trimCurves">Nastavte na hodnotu True, pokud se vstupní křivky protínají nebo překrývají a je nutné oříznout jejich koncové úseky před vytvořením objektu PolyCurve. Ve výchozím nastavení je tato možnost nastavena na hodnotu False.</param>
@@ -5247,7 +5247,7 @@
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato metoda je vyřazena a bude odebrána v budoucí verzi aplikace Dynamo. Použijte místo ní metodu SweepAsSolid(ICurveEntity path, bool cutEndOff).“.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_sweepassurface_deprecated">
-            <summary>Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Curve.SweepAsSurface(profile, path, cutEndOff) instead.</summary>
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato metoda je vyřazena a bude debrána v budoucí verzi aplikace Dynamo.". Místo něj použijte uzel Curve.SweepAsSurface(profile, path, cutEndOff).</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_trimsegmentsbyparam_deprecated">
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato metoda je vyřazena a bude odebrána v budoucí verzi aplikace Dynamo. Použijte místo ní metodu Curve.TrimSegmentsByParameter(double[] parameters, bool discardEvenSegments).“.</summary>
@@ -5370,7 +5370,7 @@
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Daná data: \„{0}\“ nejsou pole dvojic název-hodnota.“.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.point_project_deprecated">
-            <summary>Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Geometry.ProjectPointsOnto(Point[] points, Vector projectionDirection) instead..</summary>
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato metoda je vyřazena a bude debrána v budoucí verzi aplikace Dynamo.“ Místo toho použijte Geometry.ProjectPointsOnto(Point[] points, Vector projectionDirection).</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.PointsCoincident">
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci „{0} jsou totožné.“.</summary>

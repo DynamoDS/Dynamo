@@ -1,9 +1,9 @@
 ## In profondità
-Use `NurbsCurve.PeriodicKnots` when you need to export a closed NURBS curve to another system (for example Alias) or when that system expects the curve in its periodic form. Many CAD tools expect this form for round-trip accuracy.
+Utilizzare `NurbsCurve.PeriodicKnots` quando è necessario esportare una curva NURBS chiusa in un altro sistema (ad esempio, Alias) o quando tale sistema richiede la curva nella sua forma periodica. Molti strumenti CAD richiedono questa forma per garantire l'accuratezza dei dati in entrata e in uscita.
 
-`PeriodicKnots` returns the knot vector in the *periodic* (unclamped) form. `Knots` returns it in the *clamped* form. Both arrays have the same length; they are two different ways to describe the same curve. In the clamped form, knots repeat at the start and end so the curve is pinned to the parameter range. In the periodic form, the knot spacing repeats at the start and end instead, which gives a smooth closed loop.
+`PeriodicKnots` restituisce il vettore del nodo nella forma *periodica* (non bloccata). `Knots` lo restituisce nella forma *bloccata*. Entrambe le matrici hanno la stessa lunghezza; sono due modi diversi di descrivere la stessa curva. Nella forma bloccata, i nodi vengono ripetuti all'inizio e alla fine in modo che la curva sia bloccata nell'intervallo di parametri. Nella forma periodica, la spaziatura dei nodi si ripete invece all'inizio e alla fine, creando un perimetro chiuso uniforme.
 
-In the example below, a periodic NURBS curve is built with `NurbsCurve.ByControlPointsWeightsKnots`. Watch nodes compare `Knots` and `PeriodicKnots` so you can see the same length but different values. Knots is the clamped form (repeated knots at the ends), and PeriodicKnots is the unclamped form with the repeating difference pattern that defines the curve's periodicity.
+Nell'esempio seguente, viene creata una curva NURBS periodica con `NurbsCurve.ByControlPointsWeightsKnots`. I nodi Watch confrontano `Knots` e `PeriodicKnots` in modo da poter vedere la stessa lunghezza ma valori diversi. Knots è la forma bloccata (nodi ripetuti alle estremità) e PeriodicKnots è la forma non bloccata con il motivo di differenza ripetuto che definisce la periodicità della curva.
 ___
 ## File di esempio
 

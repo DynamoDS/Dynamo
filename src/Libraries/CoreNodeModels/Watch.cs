@@ -95,6 +95,11 @@ namespace CoreNodeModels
             }
         }
 
+        internal override void RestoreCachedValueFromEngine(object data)
+        {
+            OnEvaluationComplete(data);
+        }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(
             List<AssociativeNode> inputAstNodes)
         {

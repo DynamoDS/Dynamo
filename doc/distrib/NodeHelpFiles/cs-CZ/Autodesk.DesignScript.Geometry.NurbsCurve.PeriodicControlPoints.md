@@ -1,9 +1,9 @@
 ## Podrobnosti
-Use `NurbsCurve.PeriodicControlPoints` when you need to export a closed NURBS curve to another system (for example Alias) or when that system expects the curve in its periodic form. Many CAD tools expect this form for round-trip accuracy.
+Uzel `NurbsCurve.PeriodicControlPoints` použijte pokud potřebujete exportovat uzavřenou křivku NURBS do jiného systému (například do aplikace Alias) nebo pokud daný systém očekává křivku v periodické formě. Mnoho nástrojů CAD očekává tuto formu kvůli přesnosti zpracování.
 
-`PeriodicControlPoints` returns the control points in the *periodic* form. `ControlPoints` returns them in the *clamped* form. Both arrays have the same number of points; they are two different ways to describe the same curve. In the periodic form, the last few control points match the first few (as many as the curve degree), so the curve closes smoothly. The clamped form uses a different layout, so the point positions in the two arrays differ.
+Uzel `PeriodicControlPoints` vrací řídicí body v *periodické* formě. Uzel `ControlPoints` je vrátí ve *svázané* formě. Obě pole mají stejný počet bodů; jedná se o dva různé způsoby, jak popsat stejnou křivku. V periodické formě se posledních několik řídicích bodů shoduje s několika prvními (podle stupně křivky), takže se křivka uzavře plynule. Svázaná forma používá jiné rozvržení, takže pozice bodů v obou polích se liší.
 
-In the example below, a periodic NURBS curve is built with `NurbsCurve.ByControlPointsWeightsKnots`. Watch nodes compare `ControlPoints` and `PeriodicControlPoints` so you can see the same length but different point positions. The ControlPoints are seen with a red color so they appear distinctly from the PeriodicControlPoints, which are in black, in the background preview.
+V následujícím příkladu je vytvořena periodická křivka NURBS pomocí uzlu `NurbsCurve.ByControlPointsWeightsKnots`. Uzly Watch porovnají položky `ControlPoints` a `PeriodicControlPoints`, abyste viděli stejnou délku, ale různé pozice bodů. Objekty ControlPoints se zobrazují červenou barvou, takže se v náhledu na pozadí zobrazují odlišně od objektů PeriodicControlPoints, které jsou černé.
 ___
 ## Vzorový soubor
 

@@ -216,17 +216,22 @@ namespace Dynamo.Graph.Workspaces
         internal class DelayedGraphExecution : IDisposable
         {
             private readonly WorkspaceModel workspace;
+            private readonly bool requestRunOnDispose;
 
-            public DelayedGraphExecution(WorkspaceModel wModel)
+            public DelayedGraphExecution(WorkspaceModel wModel, bool requestRunOnDispose = true)
             {
                 workspace = wModel;
+                this.requestRunOnDispose = requestRunOnDispose;
                 Interlocked.Increment(ref workspace.delayGraphExecutionCounter);
             }
 
             public virtual void Dispose()
             {
                 Interlocked.Decrement(ref workspace.delayGraphExecutionCounter);
-                workspace.RequestRun();
+                if (requestRunOnDispose)
+                {
+                    workspace.RequestRun();
+                }
             }
         }
         #endregion
@@ -468,6 +473,17 @@ namespace Dynamo.Graph.Workspaces
         {
             var handler = NodesCleared;
             if (handler != null) handler();
+        }
+
+        /// <summary>
+        ///     Event that is fired before connectors are deleted during workspace clear.
+        ///     Allows the ViewModel layer to dispose NodeViewModels early, detaching
+        ///     PortPropertyChanged handlers before the expensive connector deletion loop.
+        /// </summary>
+        internal event Action NodesClearingConnectors;
+        protected virtual void OnNodesClearingConnectors()
+        {
+            NodesClearingConnectors?.Invoke();
         }
 
         /// <summary>
@@ -1554,6 +1570,11 @@ namespace Dynamo.Graph.Workspaces
                 node.Dispose();
             }
 
+            // Signal the ViewModel layer to dispose NodeViewModels before connector deletion.
+            // This detaches all PortPropertyChanged handlers, preventing expensive cascading
+            // UI updates (port color refreshes, WPF binding updates) during bulk connector removal.
+            OnNodesClearingConnectors();
+
             foreach (NodeModel el in Nodes)
             {
                 foreach (PortModel p in el.InPorts)
@@ -1738,6 +1759,8 @@ namespace Dynamo.Graph.Workspaces
 
         private void AddNote(NoteModel note)
         {
+            note.Workspace = this;
+
             lock (notes)
             {
                 notes.Add(note);
@@ -2776,9 +2799,9 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns a DelayedGraphExecution object.
         /// </summary>
-        internal DelayedGraphExecution BeginDelayedGraphExecution()
+        internal DelayedGraphExecution BeginDelayedGraphExecution(bool requestRunOnDispose = true)
         {
-            return new DelayedGraphExecution(this);
+            return new DelayedGraphExecution(this, requestRunOnDispose);
         }
     }
 }

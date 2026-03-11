@@ -1,9 +1,9 @@
 ## Подробности
-Use `NurbsCurve.PeriodicControlPoints` when you need to export a closed NURBS curve to another system (for example Alias) or when that system expects the curve in its periodic form. Many CAD tools expect this form for round-trip accuracy.
+Используйте `NurbsCurve.PeriodicControlPoints`, когда требуется экспортировать замкнутую NURBS-кривую в другую систему (например, Alias) или когда в такой системе нужно использовать периодическую форму кривой. Многие инструменты САПР предполагают использование этой формы, чтобы обеспечить точность обмена данными.
 
-`PeriodicControlPoints` returns the control points in the *periodic* form. `ControlPoints` returns them in the *clamped* form. Both arrays have the same number of points; they are two different ways to describe the same curve. In the periodic form, the last few control points match the first few (as many as the curve degree), so the curve closes smoothly. The clamped form uses a different layout, so the point positions in the two arrays differ.
+`PeriodicControlPoints` возвращает управляющие точки в *периодической* форме, а `ControlPoints` — в *фиксированной*. Оба массива содержат одинаковое количество точек. Это два способа описания одной и той же кривой. В периодической форме последние несколько контрольных точек совпадают с первыми (со столькими, сколько градусов кривой), поэтому кривая замыкается плавно. В фиксированной форме используется другая компоновка, поэтому положения точек в двух массивах различаются.
 
-In the example below, a periodic NURBS curve is built with `NurbsCurve.ByControlPointsWeightsKnots`. Watch nodes compare `ControlPoints` and `PeriodicControlPoints` so you can see the same length but different point positions. The ControlPoints are seen with a red color so they appear distinctly from the PeriodicControlPoints, which are in black, in the background preview.
+В приведенном ниже примере периодическая NURBS-кривая строится с помощью `NurbsCurve.ByControlPointsWeightsKnots`. Узлы Watch сравнивают `ControlPoints` и `PeriodicControlPoints`, чтобы можно было видеть одинаковую длину, но разные положения точек. Объекты ControlPoint выделены красным цветом, поэтому их легко отличить от элементов PeriodicControlPoint, которые выделены черным цветом при фоновом просмотре.
 ___
 ## Файл примера
 
