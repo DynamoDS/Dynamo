@@ -1673,15 +1673,21 @@ namespace Dynamo.ViewModels
             // Batch updates to avoid O(n²) cascade: each NodeMessages.Add() triggers
             // RefreshNodeInformationalStateDisplay() which clears/rebuilds 3 display collections.
             // By batching, we do one refresh at the end instead of N refreshes.
+            // NOTE: We use incremental Contains+Add (not Clear+rebuild) because messages
+            // accumulate across multiple UpdateBubbleContent() calls (e.g., build errors
+            // followed by runtime warnings). ClearTransientWarningsAndErrors() may remove
+            // earlier entries from Infos between calls, but they must persist in NodeMessages.
             void UpdateMessages()
             {
                 ErrorBubble.BeginBatchUpdate();
                 try
                 {
-                    ErrorBubble.NodeMessages.Clear();
                     foreach (var data in packets)
                     {
-                        ErrorBubble.NodeMessages.Add(data);
+                        if (!ErrorBubble.NodeMessages.Contains(data))
+                        {
+                            ErrorBubble.NodeMessages.Add(data);
+                        }
                     }
                 }
                 finally
