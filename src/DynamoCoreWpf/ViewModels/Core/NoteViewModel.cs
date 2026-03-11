@@ -180,6 +180,9 @@ namespace Dynamo.ViewModels
         {
             if (Model.UndoRedoAction.Equals(NoteModel.UndoAction.Unpin))
             {
+                // Called by undo/redo — suppress recording so we don't push
+                // a duplicate entry onto the undo stack.
+                Model.SuppressUndoRecording = true;
                 UnpinFromNode(obj);
                 return;
             }
@@ -196,7 +199,13 @@ namespace Dynamo.ViewModels
                 // Therefore clear selection before running
                 DynamoSelection.Instance.ClearSelection();
                 DynamoSelection.Instance.Selection.Add(node);
+                // Suppress recording so we don't push a duplicate entry onto
+                // the undo stack or wipe the redo stack during undo/redo.
+                Model.SuppressUndoRecording = true;
                 PinToNode(obj);
+                // After re-pinning, select both the node and the note so
+                // the workspace reflects the same state as when originally pinned.
+                DynamoSelection.Instance.Selection.AddUnique(Model);
                 return;
             }
         }
@@ -252,11 +261,17 @@ namespace Dynamo.ViewModels
                         // Became pinned (undo of unpin, or redo of pin via DeserializeCore)
                         SubscribeToPinnedNode();
                         MoveNoteAbovePinnedNode();
+                        // Select both the node and the note so the workspace reflects
+                        // the restored pin relationship.
+                        DynamoSelection.Instance.ClearSelection();
+                        DynamoSelection.Instance.Selection.Add(Model.PinnedNode);
+                        DynamoSelection.Instance.Selection.AddUnique(Model);
                     }
                     else if (Model.PinnedNode == null && subscribedPinnedNode != null)
                     {
                         // Became unpinned (undo of pin via DeserializeCore)
                         UnsuscribeFromPinnedNode();
+                        DynamoSelection.Instance.ClearSelection();
                     }
                     RaisePropertyChanged(nameof(this.PinnedNode));
                     PinToNodeCommand.RaiseCanExecuteChanged();
@@ -410,16 +425,19 @@ namespace Dynamo.ViewModels
             AnnotationViewModel noteGroup = WorkspaceViewModel.Annotations
                 .FirstOrDefault(x => x.AnnotationModel.ContainsModel(Model));
 
-            List<ModelBase> modelsToRecord = new List<ModelBase> { Model };
-            if (noteGroup != null)
-                modelsToRecord.Add(noteGroup.AnnotationModel);
+            if (!Model.SuppressUndoRecording)
+            {
+                List<ModelBase> modelsToRecord = new List<ModelBase> { Model };
+                if (noteGroup != null)
+                    modelsToRecord.Add(noteGroup.AnnotationModel);
 
-            WorkspaceModel.RecordModelsForModification(modelsToRecord, WorkspaceViewModel.Model.UndoRecorder);
+                WorkspaceModel.RecordModelsForModification(modelsToRecord, WorkspaceViewModel.Model.UndoRecorder);
+            }
+            Model.SuppressUndoRecording = false;
 
             // Unsubscribe before setting PinnedNode to null so UnsuscribeFromPinnedNode
             // can still access the node reference via subscribedPinnedNode.
             UnsuscribeFromPinnedNode();
-
             Model.PinnedNode = null;
 
             if (noteGroup != null)
@@ -428,6 +446,7 @@ namespace Dynamo.ViewModels
                     .Where(n => n.GUID != Model.GUID);
             }
 
+            DynamoSelection.Instance.ClearSelection();
             WorkspaceViewModel.HasUnsavedChanges = true;
         }
 
