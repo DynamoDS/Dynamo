@@ -200,6 +200,14 @@ namespace Dynamo.Wpf.Views
             Logging.Analytics.TrackEvent(Actions.New, Categories.GroupStyleOperations, nameof(GroupStyleItem));
         }
 
+        private void ResetStylesButton_Click(object sender, RoutedEventArgs e)
+        {
+            viewModel.ResetCustomGroupStyles();
+            viewModel.ResetAddStyleControl();
+            stylesCustomColors?.Clear();
+            Logging.Analytics.TrackEvent(Actions.Delete, Categories.GroupStyleOperations, nameof(GroupStyleItem) + "s");
+        }
+
         private void ResetGroupStyleForm()
         {
             viewModel.CurrentWarningMessage = string.Empty;

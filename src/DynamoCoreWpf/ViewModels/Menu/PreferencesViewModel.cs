@@ -615,7 +615,16 @@ namespace Dynamo.ViewModels
             {
                 preferenceSettings.GroupStyleItemsList = value.ToList<GroupStyleItem>();
                 RaisePropertyChanged(nameof(StyleItemsList));
+                RaisePropertyChanged(nameof(CanResetGroupStyles));
             }
+        }
+
+        /// <summary>
+        /// Returns whether there are custom (non-default) styles that can be removed.
+        /// </summary>
+        public bool CanResetGroupStyles
+        {
+            get { return preferenceSettings.GroupStyleItemsList.Any(style => !style.IsDefault); }
         }
 
         /// <summary>
@@ -632,6 +641,7 @@ namespace Dynamo.ViewModels
                 IsDefault = style.IsDefault
             });
             RaisePropertyChanged(nameof(StyleItemsList));
+            RaisePropertyChanged(nameof(CanResetGroupStyles));
         }
      
         /// <summary>
@@ -1989,6 +1999,28 @@ namespace Dynamo.ViewModels
             GroupStyleItem itemToRemovePreferences = preferenceSettings.GroupStyleItemsList.FirstOrDefault(x => x.Name.Equals(styleName));
             preferenceSettings.GroupStyleItemsList.Remove(itemToRemovePreferences);
             RaisePropertyChanged(nameof(StyleItemsList));
+            RaisePropertyChanged(nameof(CanResetGroupStyles));
+            UpdateSavedChangesLabel();
+        }
+
+        /// <summary>
+        /// Removes all custom group styles and restores the default styles only.
+        /// </summary>
+        internal void ResetCustomGroupStyles()
+        {
+            preferenceSettings.GroupStyleItemsList = GroupStyleItem.DefaultGroupStyleItems
+                .Select(defaultStyle => new GroupStyleItem
+                {
+                    Name = defaultStyle.Name,
+                    HexColorString = defaultStyle.HexColorString,
+                    FontSize = defaultStyle.FontSize,
+                    GroupStyleId = defaultStyle.GroupStyleId,
+                    IsDefault = true
+                })
+                .ToList();
+
+            RaisePropertyChanged(nameof(StyleItemsList));
+            RaisePropertyChanged(nameof(CanResetGroupStyles));
             UpdateSavedChangesLabel();
         }
 
