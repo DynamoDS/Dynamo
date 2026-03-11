@@ -1617,5 +1617,57 @@ namespace Dynamo.PackageManager.Wpf.Tests
 
         #endregion
 
+        [Test]
+        public void IsPublishedByDynamoTeam_IsFalse_WhenMaintainersNull()
+        {
+            var tmpPackageVersion = new PackageVersion { version = "1.0.0", created = DateTime.Now.ToString() };
+            var vm = new PackageManagerSearchElementViewModel(
+                new PackageManagerSearchElement(new PackageHeader()
+                {
+                    name = "pkg",
+                    versions = new List<PackageVersion> { tmpPackageVersion },
+                    maintainers = null
+                }),
+                false);
+
+            Assert.IsFalse(vm.IsPublishedByDynamoTeam);
+        }
+
+        [Test]
+        public void IsPublishedByDynamoTeam_IsFalse_WhenMaintainersDoNotContainDynamoTeam()
+        {
+            var tmpPackageVersion = new PackageVersion { version = "1.0.0", created = DateTime.Now.ToString() };
+            var vm = new PackageManagerSearchElementViewModel(
+                new PackageManagerSearchElement(new PackageHeader()
+                {
+                    name = "pkg",
+                    versions = new List<PackageVersion> { tmpPackageVersion },
+                    maintainers = new List<User> { new User { username = "someoneElse" } }
+                }),
+                false);
+
+            Assert.IsFalse(vm.IsPublishedByDynamoTeam);
+        }
+
+        [Test]
+        public void IsPublishedByDynamoTeam_IsTrue_WhenMaintainersContainDynamoTeam_IgnoringCase()
+        {
+            var tmpPackageVersion = new PackageVersion { version = "1.0.0", created = DateTime.Now.ToString() };
+            var vm = new PackageManagerSearchElementViewModel(
+                new PackageManagerSearchElement(new PackageHeader()
+                {
+                    name = "pkg",
+                    versions = new List<PackageVersion> { tmpPackageVersion },
+                    maintainers = new List<User>
+                    {
+                        new User { username = "someoneElse" },
+                        new User { username = "dYnaMoTeAm" }
+                    }
+                }),
+                false);
+
+            Assert.IsTrue(vm.IsPublishedByDynamoTeam);
+        }
+
     }
 }
