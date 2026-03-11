@@ -576,8 +576,10 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void EndBatchUpdate()
         {
-            if (batchUpdateDepth > 0)
-                batchUpdateDepth--;
+            if (batchUpdateDepth <= 0)
+                return;
+
+            batchUpdateDepth--;
             if (batchUpdateDepth == 0)
                 RefreshNodeInformationalStateDisplay();
         }
