@@ -955,6 +955,91 @@ namespace Dynamo.Tests
             Assert.AreEqual(openPath, ViewModel.Model.CurrentWorkspace.FileName);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void SaveAsPreservesConnectorPins()
+        {
+            var openPath = Path.Combine(TestDirectory, @"core", "ConnectorPinSelectionTest.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var initialWorkspace = ViewModel.Model.CurrentWorkspace;
+            var initialPinCount = initialWorkspace.Connectors
+                .SelectMany(connector => connector.ConnectorPinModels)
+                .Count();
+            var initialPinPositions = initialWorkspace.Connectors
+                .SelectMany(connector => connector.ConnectorPinModels)
+                .Select(pin => new { pin.Position.X, pin.Position.Y })
+                .OrderBy(pin => pin.X)
+                .ThenBy(pin => pin.Y)
+                .ToList();
+            Assert.AreEqual(3, initialPinCount, "The baseline graph should contain 3 connector pins.");
+
+            var initialWorkspaceGuid = initialWorkspace.Guid;
+            var initialConnectorIds = new HashSet<Guid>(
+                initialWorkspace.Connectors.Select(connector => connector.GUID));
+
+            var newPath = GetNewFileNameOnTempPath("dyn");
+
+            var saveAsSucceeded = ViewModel.CurrentSpaceViewModel.Save(
+                newPath,
+                false,
+                ViewModel.Model.EngineController,
+                SaveContext.SaveAs);
+
+            Assert.IsTrue(saveAsSucceeded);
+            Assert.IsTrue(File.Exists(newPath));
+
+            // Assert that the serialized connector pins have the same positions as the original pins before reloading
+            var serializedWorkspace = JObject.Parse(File.ReadAllText(newPath));
+            var serializedPins = serializedWorkspace["View"]?["ConnectorPins"] as JArray;
+            Assert.IsNotNull(serializedPins);
+            var serializedPinPositions = serializedPins
+                .Select(pin => new
+                {
+                    X = pin["Left"]?.Value<double>() ?? double.NaN,
+                    Y = pin["Top"]?.Value<double>() ?? double.NaN
+                })
+                .OrderBy(pin => pin.X)
+                .ThenBy(pin => pin.Y)
+                .ToList();
+            Assert.AreEqual(initialPinPositions.Count, serializedPinPositions.Count);
+            const double pinTolerance = 1e-6;
+            for (int i = 0; i < initialPinPositions.Count; i++)
+            {
+                Assert.That(Math.Abs(initialPinPositions[i].X - serializedPinPositions[i].X), Is.LessThan(pinTolerance));
+                Assert.That(Math.Abs(initialPinPositions[i].Y - serializedPinPositions[i].Y), Is.LessThan(pinTolerance));
+            }
+
+            // Explicitly reload from disk before validating persisted relationships.
+            ViewModel.OpenCommand.Execute(newPath);
+
+            var reloadedWorkspace = ViewModel.Model.CurrentWorkspace;
+            var reloadedPins = reloadedWorkspace.Connectors
+                .SelectMany(connector => connector.ConnectorPinModels)
+                .ToList();
+            var reloadedPinPositions = reloadedPins
+                .Select(pin => new { pin.Position.X, pin.Position.Y })
+                .OrderBy(pin => pin.X)
+                .ThenBy(pin => pin.Y)
+                .ToList();
+            var reloadedConnectorIds = new HashSet<Guid>(
+                reloadedWorkspace.Connectors.Select(connector => connector.GUID));
+
+            Assert.AreEqual(newPath, reloadedWorkspace.FileName);
+            Assert.AreNotEqual(initialWorkspaceGuid, reloadedWorkspace.Guid);
+            Assert.AreEqual(initialPinCount, reloadedPins.Count);
+            Assert.IsTrue(reloadedPins.All(pin => reloadedConnectorIds.Contains(pin.ConnectorId)));
+            Assert.AreEqual(initialPinPositions.Count, reloadedPinPositions.Count);
+            for (int i = 0; i < initialPinPositions.Count; i++)
+            {
+                Assert.That(Math.Abs(initialPinPositions[i].X - reloadedPinPositions[i].X), Is.LessThan(pinTolerance));
+                Assert.That(Math.Abs(initialPinPositions[i].Y - reloadedPinPositions[i].Y), Is.LessThan(pinTolerance));
+            }
+
+            // SaveAs should remap element ids, including connector ids.
+            Assert.IsFalse(initialConnectorIds.Overlaps(reloadedConnectorIds));
+        }
+
         #region CustomNodeWorkspaceModel SaveAs side effects
 
         [Test]

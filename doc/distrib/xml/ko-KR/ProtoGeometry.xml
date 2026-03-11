@@ -921,13 +921,13 @@
             <summary>NurbsCurve가 유리수인지 여부를 확인합니다. 이는 1.0이 아닌 가중치가 있는지 여부를 정의합니다.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ControlPoints">
-            <summary>Get the control points of the NurbsCurve.</summary>
+            <summary>NurbsCurve의 제어점을 가져옵니다.</summary>
             <returns>점의 배열</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
-            <summary>The truly periodic control points of the NurbsCurve if periodic.
-            Note that this cannot be used together with PeriodicKnots() to reconstruct the original periodic NurbsCurve.
-            Throws (or is undefined) when the curve is not periodic.</summary>
+            <summary>주기적일 경우 NurbsCurve의 진정한 주기적 제어점입니다.
+            PeriodicKnots()와 함께 사용하여 원래의 주기적 NurbsCurve를 재구성할 수는 없다는 점에 유의하십시오.
+            곡선이 주기적이지 않은 경우에는 오류가 발생하거나 정의되지 않습니다.</summary>
             <returns>점의 배열</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
@@ -935,10 +935,10 @@
             <returns>Nurbscurve의 노트</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots">
-            <summary>The unclamped knots of the Curve if Periodic. Knots is a series of parameter values (doubles) used to determine where and how the control points affect the curve.
-            Note that this cannot be used together with PeriodicControlPoints() to reconstruct the original periodic NurbsCurve.
-            Throws (or is undefined) when the curve is not periodic.</summary>
-            <returns>The periodic knot vector of the nurbs curve</returns>
+            <summary>주기적일 경우 곡선의 클램프되지 않은 매듭입니다. 매듭은 제어점이 곡선에 어떻게, 어디서 영향을 미치는지를 결정하는 데 사용되는 일련의 매개변수 값(double)입니다.
+            PeriodicControlPoints()와 함께 사용하여 원래의 주기적 NurbsCurve를 재구성할 수는 없다는 점에 유의하십시오.
+            곡선이 주기적이지 않은 경우에는 오류가 발생하거나 정의되지 않습니다.</summary>
+            <returns>NURBS 곡선의 주기적 매듭 벡터</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Weights">
             <summary>NurbsCurve 제어점 가중치를 반환합니다. 가중치는 각 제어점이 곡선의 모양에 미치는 영향을 결정합니다.</summary>
@@ -3724,10 +3724,10 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSurface(Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
-            <summary>이 곡선을 경로 곡선을 따라 스윕하여 표면을 만듭니다</summary>
+            <summary>이 곡선을 경로 곡선을 따라 스윕하여 표면을 만듭니다.</summary>
             <param name="path"/>
             <param name="cutEndOff">스윕의 끝을 잘라내어 경로에 수직으로 만듭니다.</param>
-            <returns>A Surface resulting from sweeping the curve along the path</returns>
+            <returns>경로를 따라 곡선을 스윕하여 생성된 표면</returns>
             <search>
             sweep1,curve2surf
             </search>
@@ -3886,11 +3886,11 @@
             <search>get overlap,multi intersect,intersect many</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ProjectPointsOnto(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Projects a collection of Points onto this Geometry along the specified direction.
-            Returns a flat array of resulting Geometry.</summary>
-            <param name="points">Points to project</param>
+            <summary>지정된 방향으로 이 형상 위에 점 모음을 투영합니다.
+            결과로 생성된 형상을 평면 배열로 반환합니다.</summary>
+            <param name="points">투영할 점</param>
             <param name="projectionDirection">투영 방향</param>
-            <returns>Flat array of resulting Geometry</returns>
+            <returns>결과로 생성된 형상의 평면 배열</returns>
             <search>project points,batch project</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Split(Autodesk.DesignScript.Geometry.Geometry)">
@@ -4488,10 +4488,10 @@
             <summary>PolyCurve의 문자열 표현을 가져옵니다</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
-            PolyCurve direction is based on the first curve in the input array.
-            Choose a preferred join tolerance between 1e-6 and 1e-3 units.
-            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
+            <summary>곡선을 연결하여 PolyCurve를 생성합니다. 입력 곡선은 연결 순서대로 지정할 필요가 없습니다.
+            PolyCurve의 방향은 입력 배열의 첫 번째 곡선을 기준으로 결정됩니다.
+            1e-6에서 1e-3 단위 사이에서 원하는 결합 공차를 선택합니다.
+            값이 너무 낮으면 결합되어야 할 곡선이 결합되지 않을 수 있고, 값이 너무 높으면 짧은 곡선이 의도치 않게 병합되거나 퇴화한 점으로 축소될 수 있습니다.</summary>
             <param name="curves">PolyCurve에 결합할 원곡선</param>
             <param name="joinTolerance">결합할 곡선 간에 허용되는 간격 크기를 결정하는 공차</param>
             <returns>결합된 곡선으로 작성된 Polycurve</returns>
@@ -4500,10 +4500,10 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity.
-            PolyCurve direction is based on the first curve in the input array.
-            Choose a preferred join tolerance between 1e-6 and 1e-3 units.
-            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
+            <summary>곡선을 연결하여 PolyCurve를 생성합니다. 입력 곡선은 연결 순서대로 지정할 필요가 없습니다.
+            PolyCurve의 방향은 입력 배열의 첫 번째 곡선을 기준으로 결정됩니다.
+            1e-6에서 1e-3 단위 사이에서 원하는 결합 공차를 선택합니다.
+            값이 너무 낮으면 결합되어야 할 곡선이 결합되지 않을 수 있고, 값이 너무 높으면 짧은 곡선이 의도치 않게 병합되거나 퇴화한 점으로 축소될 수 있습니다.</summary>
             <param name="curves">PolyCurve에 결합할 원곡선</param>
             <param name="joinTolerance">결합할 곡선 간에 허용되는 간격 크기를 결정하는 공차</param>
             <param name="trimCurves">입력 곡선이 서로 교차하거나 겹치고 PolyCurve를 작성하기 전에 끝 세그먼트를 잘라내야 하면 True로 설정합니다. 기본적으로 False로 설정되어 있습니다.</param>
@@ -4514,15 +4514,15 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Make one or more polycurves by grouping connected curves. Choose a preferred join tolerance between 1e-6 and 1e-3 units.
-            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
+            <summary>연결된 곡선을 그룹화하여 하나 이상의 PolyCurve를 생성합니다. 1e-6에서 1e-3 단위 사이에서 원하는 결합 공차를 선택합니다.
+            값이 너무 낮으면 결합되어야 할 곡선이 결합되지 못할 수 있고, 값이 너무 높으면 짧은 곡선이 의도치 않게 병합되거나 퇴화한 점으로 축소될 수 있습니다.</summary>
             <param name="curves">하나 이상의 PolyCurves를 만들기 위해 함께 그룹화할 곡선</param>
             <param name="joinTolerance">결합할 곡선 간에 허용되는 간격 크기를 결정하는 공차</param>
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Make one or more polycurves by grouping connected curves. Choose a preferred join tolerance between 1e-6 and 1e-3 units.
-            Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.</summary>
+            <summary>연결된 곡선을 그룹화하여 하나 이상의 PolyCurve를 생성합니다. 1e-6에서 1e-3 단위 사이에서 원하는 결합 공차를 선택합니다.
+            값이 너무 낮으면 결합되어야 할 곡선이 결합되지 못할 수 있고, 값이 너무 높으면 짧은 곡선이 의도치 않게 병합되거나 퇴화한 점으로 축소될 수 있습니다.</summary>
             <param name="curves">하나 이상의 PolyCurves를 만들기 위해 함께 그룹화할 곡선</param>
             <param name="joinTolerance">결합할 곡선 간에 허용되는 간격 크기를 결정하는 공차</param>
             <param name="trimCurves">입력 곡선이 서로 교차하거나 겹치고 PolyCurve를 작성하기 전에 끝 세그먼트를 잘라내야 하면 True로 설정합니다. 기본적으로 False로 설정되어 있습니다.</param>
@@ -5246,7 +5246,7 @@
             <summary>유사한 현지화된 문자열을 조회합니다. 이 메서드는 더 이상 사용되지 않으며 이후 버전의 Dynamo에서 제거될 예정입니다. 대신 SweepAsSolid(ICurveEntity path, bool cutEndOff)를 사용하십시오.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_sweepassurface_deprecated">
-            <summary>Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Curve.SweepAsSurface(profile, path, cutEndOff) instead.</summary>
+            <summary>"이 메서드는 더 이상 사용되지 않으며 이후 버전의 Dynamo에서 제거될 예정입니다."와 유사한 현지화된 문자열을 조회합니다. 대신 Curve.SweepAsSurface(profile, path, cutEndOff)를 사용하십시오.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_trimsegmentsbyparam_deprecated">
             <summary>유사한 현지화된 문자열을 조회합니다. 이 메서드는 더 이상 사용되지 않으며 이후 버전의 Dynamo에서 제거될 예정입니다. 대신 Curve.TrimSegmentsByParameter(double[] parameters, bool discardEvenSegments)를 사용하십시오.</summary>
@@ -5369,7 +5369,7 @@
             <summary>'지정된 데이터: \"{0}\"은(는) 이름 값 쌍의 배열이 아닙니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.point_project_deprecated">
-            <summary>Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Geometry.ProjectPointsOnto(Point[] points, Vector projectionDirection) instead..</summary>
+            <summary>"이 메서드는 더 이상 사용되지 않으며 이후 버전의 Dynamo에서 제거될 예정입니다."와 유사한 현지화된 문자열을 조회합니다. 대신 Geometry.ProjectPointsOnto(Point[] points, Vector projectionDirection)를 사용하십시오.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.PointsCoincident">
             <summary>'{0}이(가) 일치합니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>

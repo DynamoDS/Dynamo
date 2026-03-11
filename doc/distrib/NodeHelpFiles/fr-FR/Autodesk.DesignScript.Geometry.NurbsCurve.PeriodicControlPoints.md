@@ -1,10 +1,10 @@
 ## Description approfondie
-Use `NurbsCurve.PeriodicControlPoints` when you need to export a closed NURBS curve to another system (for example Alias) or when that system expects the curve in its periodic form. Many CAD tools expect this form for round-trip accuracy.
+Utilisez 'NurbsCurve.PeriodicControlPoints' lorsque vous avez besoin d'exporter une courbe NURBS fermée vers un autre système (par exemple Alias) ou lorsque ce système attend la courbe sous sa forme périodique. De nombreux outils de CAO attendent cette forme pour assurer la précision des allers-retours.
 
-`PeriodicControlPoints` returns the control points in the *periodic* form. `ControlPoints` returns them in the *clamped* form. Both arrays have the same number of points; they are two different ways to describe the same curve. In the periodic form, the last few control points match the first few (as many as the curve degree), so the curve closes smoothly. The clamped form uses a different layout, so the point positions in the two arrays differ.
+'PeriodicControlPoints' renvoie les points de contrôle sous la forme *périodique*. 'ControlPoints' les renvoie sous la forme *bloquée*. Les deux réseaux ont le même nombre de points; ce sont deux façons différentes de décrire la même courbe. Sous la forme périodique, les derniers points de contrôle correspondent aux premiers (autant que le degré de la courbe), de sorte que la courbe se ferme en douceur. La forme bloquée utilise une disposition différente, de sorte que les positions des points des deux réseaux diffèrent.
 
-In the example below, a periodic NURBS curve is built with `NurbsCurve.ByControlPointsWeightsKnots`. Watch nodes compare `ControlPoints` and `PeriodicControlPoints` so you can see the same length but different point positions. The ControlPoints are seen with a red color so they appear distinctly from the PeriodicControlPoints, which are in black, in the background preview.
+Dans l'exemple ci-dessous, une courbe NURBS périodique est créée avec 'NurbsCurve.ByControlPointsWeightsKnots'. Les noeuds Watch comparent les 'ControlPoints' et les 'PeriodicControlPoints' de sorte que vous puissiez voir la même longueur, mais des positions de points différentes. Les ControlPoints sont affichés en rouge afin de les distinguer des PeriodicControlPoints, qui sont en noir, dans l'aperçu de l'arrière-plan.
 ___
-## Exemple de fichier
+## Fichier d'exemple
 
 ![PeriodicControlPoints](./Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints_img.jpg)

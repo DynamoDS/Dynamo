@@ -1,9 +1,9 @@
 ## 深入資訊
-Use `NurbsCurve.PeriodicControlPoints` when you need to export a closed NURBS curve to another system (for example Alias) or when that system expects the curve in its periodic form. Many CAD tools expect this form for round-trip accuracy.
+當您需要將封閉的 NURBS 曲線匯出至其他系統 (例如 Alias)，或當該系統需要週期形式的曲線時，請使用 `NurbsCurve.PeriodicControlPoints`。許多 CAD 工具需要此形式才能達到雙向準確度。
 
-`PeriodicControlPoints` returns the control points in the *periodic* form. `ControlPoints` returns them in the *clamped* form. Both arrays have the same number of points; they are two different ways to describe the same curve. In the periodic form, the last few control points match the first few (as many as the curve degree), so the curve closes smoothly. The clamped form uses a different layout, so the point positions in the two arrays differ.
+`PeriodicControlPoints` 會以*週期*形式傳回控制點。`ControlPoints` 會以*鎖模*形式傳回這些點。兩個陣列的點數相同；這是兩種描述同一條曲線的方式。在週期形式中，最後幾個控制點與前幾個控制點相符 (與曲線次數一樣多)，因此曲線會平滑封閉。鎖模形式使用不同的配置，因此兩個陣列中的點位置不同。
 
-In the example below, a periodic NURBS curve is built with `NurbsCurve.ByControlPointsWeightsKnots`. Watch nodes compare `ControlPoints` and `PeriodicControlPoints` so you can see the same length but different point positions. The ControlPoints are seen with a red color so they appear distinctly from the PeriodicControlPoints, which are in black, in the background preview.
+以下範例使用 `NurbsCurve.ByControlPointsWeightsKnots` 建置一條週期性 NURBS 曲線。Watch 節點會比較 `ControlPoints` 和 `PeriodicControlPoints`，因此您可以看到相同長度但不同的點位置。ControlPoints 顯示為紅色，因此與背景預覽中的 PeriodicControlPoints (黑色) 明顯不同。
 ___
 ## 範例檔案
 
