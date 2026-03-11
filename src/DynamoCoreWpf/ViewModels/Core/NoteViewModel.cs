@@ -258,11 +258,17 @@ namespace Dynamo.ViewModels
                         // Became pinned (undo of unpin, or redo of pin via DeserializeCore)
                         SubscribeToPinnedNode();
                         MoveNoteAbovePinnedNode();
+                        // Select both the node and the note so the workspace reflects
+                        // the restored pin relationship.
+                        DynamoSelection.Instance.ClearSelection();
+                        DynamoSelection.Instance.Selection.Add(Model.PinnedNode);
+                        DynamoSelection.Instance.Selection.AddUnique(Model);
                     }
                     else if (Model.PinnedNode == null && subscribedPinnedNode != null)
                     {
                         // Became unpinned (undo of pin via DeserializeCore)
                         UnsuscribeFromPinnedNode();
+                        DynamoSelection.Instance.ClearSelection();
                     }
                     RaisePropertyChanged(nameof(this.PinnedNode));
                     PinToNodeCommand.RaiseCanExecuteChanged();
