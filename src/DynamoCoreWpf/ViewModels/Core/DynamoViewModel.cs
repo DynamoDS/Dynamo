@@ -2485,17 +2485,21 @@ namespace Dynamo.ViewModels
                     return;
             }
 
-            bool isTemplate = parameter != null && (parameter as string).Equals("Template");
+            bool isTemplate = parameter is string s && string.Equals(s, "Template", StringComparison.Ordinal);
             var fileExtensions = isTemplate ? "*.dyn" : "*.dyn;*.dyf";
             var dialogTitle = isTemplate
                 ? Resources.OpenDynamoTemplateDialogTitle
                 : string.Format(Resources.OpenDynamoDefinitionDialogTitle, BrandingResourceProvider.ProductName);
+            var fileFilter = string.Format(Resources.FileDialogDynamoDefinitions,
+                BrandingResourceProvider.ProductName, fileExtensions);
+            if (!isTemplate)
+            {
+                fileFilter += "|" + string.Format(Resources.FileDialogAllFiles, "*.*");
+            }
 
             DynamoOpenFileDialog _fileDialog = new DynamoOpenFileDialog(this)
             {
-                Filter = string.Format(Resources.FileDialogDynamoDefinitions,
-                         BrandingResourceProvider.ProductName, fileExtensions) + "|" +
-                         string.Format(Resources.FileDialogAllFiles, "*.*"),
+                Filter = fileFilter,
                 Title = dialogTitle
             };
 
