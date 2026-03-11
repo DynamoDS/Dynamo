@@ -9782,6 +9782,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reset Styles.
+        /// </summary>
+        public static string ResetStylesButton {
+            get {
+                return ResourceManager.GetString("ResetStylesButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run blocked..
         /// </summary>
         public static string RunBlockedMessage {

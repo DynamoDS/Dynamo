@@ -2904,6 +2904,9 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
   <data name="AddStyleButton" xml:space="preserve">
     <value>Add Style</value>
   </data>
+  <data name="ResetStylesButton" xml:space="preserve">
+    <value>Reset Styles</value>
+  </data>
   <data name="ResetPythonNet3ButtonText" xml:space="preserve">
     <value>Reset PythonNet3</value>
   </data>

@@ -1225,8 +1225,8 @@
                                                     MinWidth="100"
                                                     Margin="0,5,0,5"
                                                     Click="ResetStylesButton_Click"
-                                                    IsEnabled="{Binding CanResetGroupStyles}"
-                                                    Content="RESET STYLES" />
+                                                    Visibility="{Binding CanResetGroupStyles, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                    Content="{x:Static p:Resources.ResetStylesButton}" />
                                         </StackPanel>                                        
                                         <Border x:Name="AddStyleBorder"
                                                 Visibility="{Binding IsVisibleAddStyleBorder, Converter={StaticResource BooleanToVisibilityConverter}}"
