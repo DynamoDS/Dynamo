@@ -394,7 +394,7 @@ namespace Dynamo.ViewModels
             bool oneNodeInCollapsedGroup = OneConnectingNodeInCollapsedGroup(firstNode, lastNode);
             if (oneNodeInCollapsedGroup)
             {
-                var lowestIndex = new int[] { this.Nodevm.ZIndex, this.NodeEnd.ZIndex }
+                var lowestIndex = new int[] { this.Nodevm?.ZIndex ?? 0, this.NodeEnd?.ZIndex ?? 0 }
                 .OrderBy(x => x)
                 .FirstOrDefault();
 
@@ -492,19 +492,35 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private NodeViewModel cachedNodevm;
+        private bool cachedNodevmInitialized = false;
         public NodeViewModel Nodevm
         {
             get
             {
-                return workspaceViewModel.Nodes?.FirstOrDefault(x => x.NodeLogic.GUID == model.Start.Owner.GUID);
+                if (!cachedNodevmInitialized)
+                {
+                    cachedNodevm = workspaceViewModel.Nodes?.FirstOrDefault(x => x.NodeLogic.GUID == model.Start.Owner.GUID);
+                    if (cachedNodevm != null)
+                        cachedNodevmInitialized = true;
+                }
+                return cachedNodevm;
             }
         }
 
+        private NodeViewModel cachedNodeEnd;
+        private bool cachedNodeEndInitialized = false;
         public NodeViewModel NodeEnd
         {
             get
             {
-                return workspaceViewModel.Nodes?.FirstOrDefault(x => x.NodeLogic.GUID == model.End.Owner.GUID);
+                if (!cachedNodeEndInitialized)
+                {
+                    cachedNodeEnd = workspaceViewModel.Nodes?.FirstOrDefault(x => x.NodeLogic.GUID == model.End.Owner.GUID);
+                    if (cachedNodeEnd != null)
+                        cachedNodeEndInitialized = true;
+                }
+                return cachedNodeEnd;
             }
         }
 
@@ -523,7 +539,7 @@ namespace Dynamo.ViewModels
                     return PreviewState.Transient;
                 }
 
-                if (Nodevm.ShowExecutionPreview || NodeEnd.ShowExecutionPreview)
+                if (Nodevm?.ShowExecutionPreview == true || NodeEnd?.ShowExecutionPreview == true)
                 {
                     return PreviewState.ExecutionPreview;
                 }
@@ -571,7 +587,7 @@ namespace Dynamo.ViewModels
         }
         public bool IsFrozen
         {
-            get { return model == null ? activeStartPort.Owner.IsFrozen : Nodevm.IsFrozen; }
+            get { return model == null ? activeStartPort.Owner.IsFrozen : Nodevm?.IsFrozen ?? false; }
         }
         public Path ComputedBezierPath { get; set; }
         private PathGeometry _computedPathGeometry;
