@@ -14,6 +14,7 @@ Each skill lives in its own folder with a `SKILL.md` and optionally a `template.
 | [dynamo-onboarding](skills/dynamo-onboarding/SKILL.md) | Learning the Dynamo codebase, architecture briefings, finding where to start on a Jira ticket. | Repo-specific variant |
 | [dynamo-pr-description](skills/dynamo-pr-description/SKILL.md) | Writing PR descriptions matching the Dynamo template. | Repo-specific variant |
 | [dynamo-jira-ticket](skills/dynamo-jira-ticket/SKILL.md) | Creating or refining Jira tickets from bugs, test failures, or feature requests. | Repo-specific variant |
+| [dynamo-unit-testing](skills/dynamo-unit-testing/SKILL.md) | Writing NUnit tests following Dynamo patterns. Test classes, setup/teardown, .dyn file testing. | Repo-specific variant |
 
 ### Templates (bundled with skills)
 
@@ -22,13 +23,13 @@ Templates are co-located inside the skill folder that uses them:
 | Template | Location | Purpose |
 |----------|----------|---------|
 | PR description | [.github/PULL_REQUEST_TEMPLATE.md](../../.github/PULL_REQUEST_TEMPLATE.md) | GitHub PR template (referenced by PR description skill) |
-| Jira triage | [dynamo-jira-ticket/template.md](skills/dynamo-jira-ticket/template.md) | Triage a Jira ticket into a structured issue |
+| Jira triage | [dynamo-jira-ticket/assets/template.md](./skills/dynamo-jira-ticket/assets/template.md) | Triage a Jira ticket into a structured issue |
 
 ### Rules (short guardrails -- always applicable)
 
 | Rule | Scope | Repo scope |
 |------|-------|------------|
-| [dynamo-core-rules](rules/dynamo-core-rules.md) | C#/.NET coding standards, NUnit, PublicAPI, security, quality checks. | Repo-specific variant |
+| [dynamo-core-rules](./rules/dynamo-core-rules.md) | C#/.NET coding standards, NUnit, PublicAPI, security, quality checks. | Repo-specific variant |
 
 ## Folder Structure
 
@@ -40,10 +41,16 @@ Templates are co-located inside the skill folder that uses them:
 │   ├── dynamo-onboarding/
 │   │   └── SKILL.md
 │   ├── dynamo-pr-description/
-│   │   ├── SKILL.md          ← workflow for writing PR descriptions
-│   └── dynamo-jira-ticket/
-│       ├── SKILL.md          ← workflow for writing Jira tickets
-│       └── template.md       ← copy/paste Jira template
+│   │   └── SKILL.md          ← workflow for writing PR descriptions
+│   ├── dynamo-jira-ticket/
+│   │   ├── SKILL.md          ← workflow for writing Jira tickets
+│   │   └── template.md       ← copy/paste Jira template
+│   └── dynamo-unit-testing/
+│       ├── SKILL.md          ← workflow for writing tests
+│       ├── assets/
+│       │   └── test-patterns.md  ← code templates & examples
+│       └── references/
+│           └── quality-checklist.md  ← guidelines & best practices
 ├── rules/
 │   └── dynamo-core-rules.md
 └── README.md                  ← you are here
@@ -61,7 +68,8 @@ Templates are co-located inside the skill folder that uses them:
 .cursor/rules/*.mdc  <-- auto-applied Cursor constraints (auto-apply by glob)
 .github/copilot-instructions.md  <-- Copilot guidance + pointers here
 .github/agents/      <-- existing Copilot agents (Janitor, UX Designer, ContentDesigner)
-CLAUDE.md            <-- Claude guidance + pointers here
+../AGENTS.md            <-- Agent guidance overview + pointers here
+../CLAUDE.md            <-- Claude guidance + pointers here
 ```
 
 ## For Cursor users
