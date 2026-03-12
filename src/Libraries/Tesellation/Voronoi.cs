@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
@@ -25,11 +24,12 @@ namespace Tessellation
                 yield break;
 
             // Get normalized UV scaling factors to handle anisotropic parameter spaces
-            var (normU, normV, maxPhysicalScale) = UvScalingUtilities.GetNormalizedUvScales(face);
+            var (normU, normV, minPhysicalScale) = UvScalingUtilities.GetNormalizedUvScales(face);
 
-            // Minimum edge length as a fraction of the surface's dominant physical dimension,
-            // so the filter scales correctly regardless of scene units.
-            var minEdgeLength = maxPhysicalScale * 1e-3;
+            // Minimum edge length threshold in world units: 0.1% of the shorter physical dimension
+            // of the surface. Filters degenerate near-zero Voronoi edges arising from nearly
+            // coincident circumcenters without affecting valid geometry under normal usage.
+            var minEdgeLength = minPhysicalScale * 1e-3;
 
             // Anisotropic scaling only by aspect ratio
             var verts = uvList.Select(uv => new Vertex2(uv.U * normU, uv.V * normV)).ToList();
@@ -53,13 +53,6 @@ namespace Tessellation
                 // These are purely external Voronoi rays with no valid surface intersection.
                 if (IsOutsideDomain(u1, v1) && IsOutsideDomain(u2, v2))
                     continue;
-
-                // Clamp each endpoint to the valid UV domain before projecting onto the surface.
-                // This truncates edges that cross the surface boundary rather than extrapolating.
-                u1 = Math.Clamp(u1, 0.0, 1.0);
-                v1 = Math.Clamp(v1, 0.0, 1.0);
-                u2 = Math.Clamp(u2, 0.0, 1.0);
-                v2 = Math.Clamp(v2, 0.0, 1.0);
 
                 using var start = face.PointAtParameter(u1, v1);
                 using var end = face.PointAtParameter(u2, v2);

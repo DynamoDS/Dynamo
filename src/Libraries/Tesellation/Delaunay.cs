@@ -25,11 +25,12 @@ namespace Tessellation
                 yield break;
 
             // Get normalized UV scaling factors to handle anisotropic parameter spaces
-            var (normU, normV, maxPhysicalScale) = UvScalingUtilities.GetNormalizedUvScales(face);
+            var (normU, normV, minPhysicalScale) = UvScalingUtilities.GetNormalizedUvScales(face);
 
-            // Minimum edge length as a fraction of the surface's dominant physical dimension,
-            // so the filter scales correctly regardless of scene units.
-            var minEdgeLength = maxPhysicalScale * 1e-3;
+            // Minimum edge length threshold in world units: 0.1% of the shorter physical dimension
+            // of the surface. Filters degenerate near-zero edges from duplicate or near-duplicate
+            // input UV points without ever affecting valid geometry under normal usage.
+            var minEdgeLength = minPhysicalScale * 1e-3;
 
             // Clamp input UVs to [0,1] before scaling to guard against out-of-range user input.
             var verts = uvList

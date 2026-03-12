@@ -226,8 +226,8 @@ namespace Dynamo.Tests
             IReadOnlyList<Curve> apiEdges)
         {
             const double spatialTolerance = 1e-3;
-            var (normU, normV, maxPhysicalScale) = UvScalingUtilities.GetNormalizedUvScales(face);
-            var minEdgeLength = maxPhysicalScale * 1e-3; // must match Delaunay.ByParametersOnSurface threshold
+            var (normU, normV, minPhysicalScale) = UvScalingUtilities.GetNormalizedUvScales(face);
+            var minEdgeLength = minPhysicalScale * 1e-3; // must match Delaunay.ByParametersOnSurface threshold
 
             var expectedEdges = new List<WorldSegment>();
             void AddExpectedEdge(Pt a, Pt b)
