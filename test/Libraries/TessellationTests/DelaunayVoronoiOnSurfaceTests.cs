@@ -83,14 +83,16 @@ namespace Dynamo.Tests
                 for (int j = 0; j < countV; j++)
                 {
                     var v = j / (double)(countV - 1);
+                    var u0 = u;
+                    var v0 = v;
                     // Slightly jitter interior points to reduce degenerate cocircular cases.
                     if (i != 0 && i != countU - 1 && j != 0 && j != countV - 1)
                     {
-                        u += (i + j) * 1e-6;
-                        v += (i - j) * 1e-6;
+                        u0 += (i + j) * 1e-6;
+                        v0 += (i - j) * 1e-6;
                     }
 
-                    uvs.Add(UV.ByCoordinates(u, v));
+                    uvs.Add(UV.ByCoordinates(u0, v0));
                 }
             }
 
