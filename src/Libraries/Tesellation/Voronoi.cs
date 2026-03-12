@@ -61,8 +61,8 @@ namespace Tessellation
                 u2 = Math.Clamp(u2, 0.0, 1.0);
                 v2 = Math.Clamp(v2, 0.0, 1.0);
 
-                var start = face.PointAtParameter(u1, v1);
-                var end = face.PointAtParameter(u2, v2);
+                using var start = face.PointAtParameter(u1, v1);
+                using var end = face.PointAtParameter(u2, v2);
 
                 if (start.DistanceTo(end) > minEdgeLength)
                     yield return Line.ByStartPointEndPoint(start, end);
