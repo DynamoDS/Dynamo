@@ -5,6 +5,9 @@ on:
     paths:
       - ".agents/skills/**"
 
+permissions:
+  contents: read
+
 env:
   SKILLS_DIR: .agents/skills
 
