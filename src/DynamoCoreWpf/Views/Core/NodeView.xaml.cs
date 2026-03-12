@@ -1593,7 +1593,7 @@ namespace Dynamo.Controls
             }));
         }
 
-        private bool TryPointToLocal(double x, double y, UIElement target, out Point result)
+        private static bool TryPointToLocal(double x, double y, UIElement target, out Point result)
         {
             result = default;
             try
