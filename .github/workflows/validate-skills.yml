@@ -1,0 +1,26 @@
+name: Validate Agent Skills
+
+on:
+  pull_request:
+    paths:
+      - ".agents/skills/**"
+
+env:
+  SKILLS_DIR: .agents/skills
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: stable
+          cache: false
+      - name: Install skill-validator
+        run: go install github.com/agent-ecosystem/skill-validator/cmd/skill-validator@latest
+      - name: Validate changed skills
+        run: bash .github/scripts/validate-skills.sh "${{ github.base_ref }}" "$SKILLS_DIR"
