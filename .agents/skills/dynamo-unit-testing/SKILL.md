@@ -28,7 +28,7 @@ Complete test classes with proper setup, test methods using Dynamo patterns, and
 
 ## Workflow
 
-> 🚀 **Quick Start**: [test-patterns.md](./assets/test-patterns.md) has ready-to-use templates
+> 🚀 **Quick Start**: [test-patterns.md](test-patterns.md) has ready-to-use templates
 
 ### 1. Choose Your Base Class
 Select the appropriate test base class based on what you're testing:
@@ -37,7 +37,7 @@ Select the appropriate test base class based on what you're testing:
 - **DSEvaluationUnitTestBase** - DesignScript expression evaluation
 
 ### 2. Apply Testing Standards
-Follow NUnit conventions and Dynamo patterns. See [quality-checklist.md](./references/quality-checklist.md) for guidelines and anti-patterns and Dynamo coding standards for general coding practices.
+Follow NUnit conventions and Dynamo patterns. See [quality-checklist.md](quality-checklist.md) for guidelines and anti-patterns and Dynamo coding standards for general coding practices.
 - [Dynamo Coding Standards](https://github.com/DynamoDS/Dynamo/wiki/Coding-Standards)
 - [Dynamo Naming Standards](https://github.com/DynamoDS/Dynamo/wiki/Naming-Standards)
 
@@ -53,8 +53,8 @@ One behavior per test, descriptive names, Arrange-Act-Assert structure.
 ## Documentation
 
 **Assets & References:**
-- **[test-patterns.md](./assets/test-patterns.md)** - Base classes, code templates, common scenarios, complete examples
-- **[quality-checklist.md](./references/quality-checklist.md)** - Quality guidelines, anti-patterns, best practices
+- **[test-patterns.md](test-patterns.md)** - Base classes, code templates, common scenarios, complete examples
+- **[quality-checklist.md](quality-checklist.md)** - Quality guidelines, anti-patterns, best practices
 
 **Related Skills:**
 [dynamo-dotnet-expert](../dynamo-dotnet-expert/SKILL.md) • [dynamo-onboarding](../dynamo-onboarding/SKILL.md)
