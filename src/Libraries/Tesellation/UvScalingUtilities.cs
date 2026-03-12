@@ -13,7 +13,7 @@ namespace Tessellation
         /// </summary>
         /// <param name="face">Surface to compute scaling factors for.</param>
         /// <returns>Tuple containing normalized U and V scale factors.</returns>
-        internal static (double normU, double normV) GetNormalizedUvScales(Surface face)
+        internal static (double normU, double normV, double maxPhysicalScale) GetNormalizedUvScales(Surface face)
         {
             // Physical scale per unit U/V based on iso-curve lengths along surface edges.
             double scaleU;
@@ -37,7 +37,7 @@ namespace Tessellation
             if (normU <= 1e-9) normU = 1.0;
             if (normV <= 1e-9) normV = 1.0;
 
-            return (normU, normV);
+            return (normU, normV, max);
         }
     }
 }
