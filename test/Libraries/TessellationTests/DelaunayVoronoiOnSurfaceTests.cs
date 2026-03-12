@@ -103,7 +103,7 @@ namespace Dynamo.Tests
         /// </summary>
         private static List<Triangle> ComputeDelaunayTrianglesInScaledUvSpace(IReadOnlyList<UV> uvs, Surface face)
         {
-            var (normU, normV) = UvScalingUtilities.GetNormalizedUvScales(face);
+            var (normU, normV, _) = UvScalingUtilities.GetNormalizedUvScales(face);
 
             return ComputeDelaunayTrianglesInUvSpace(uvs, normU, normV);
         }
@@ -167,7 +167,7 @@ namespace Dynamo.Tests
         {
             const double spatialTolerance = 1e-2;
             const double requiredRelativeImprovement = 0.003;
-            var (normU, normV) = UvScalingUtilities.GetNormalizedUvScales(face);
+            var (normU, normV, _) = UvScalingUtilities.GetNormalizedUvScales(face);
             var unscaledTriangles = ComputeDelaunayTrianglesInUnscaledUvSpace(uvs);
 
             var expectedScaledVertices = new List<WorldPoint>(triangles.Count);
@@ -225,8 +225,8 @@ namespace Dynamo.Tests
             IReadOnlyList<Curve> apiEdges)
         {
             const double spatialTolerance = 1e-3;
-            const double minEdgeLength = 0.1;
-            var (normU, normV) = UvScalingUtilities.GetNormalizedUvScales(face);
+            var (normU, normV, maxPhysicalScale) = UvScalingUtilities.GetNormalizedUvScales(face);
+            var minEdgeLength = maxPhysicalScale * 1e-3; // must match Delaunay.ByParametersOnSurface threshold
 
             var expectedEdges = new List<WorldSegment>();
             void AddExpectedEdge(Pt a, Pt b)
@@ -291,7 +291,7 @@ namespace Dynamo.Tests
         {
             const double vertexMatchTolerance = 1e-3;
             const double edgeLengthTolerance = 1e-9;
-            var (normU, normV) = UvScalingUtilities.GetNormalizedUvScales(face);
+            var (normU, normV, _) = UvScalingUtilities.GetNormalizedUvScales(face);
 
             var uvVertices = new List<UvVertex>(uvs.Count);
             foreach (var uv in uvs)
