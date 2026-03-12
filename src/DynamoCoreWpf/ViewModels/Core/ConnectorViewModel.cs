@@ -35,6 +35,10 @@ namespace Dynamo.ViewModels
         private readonly WorkspaceViewModel workspaceViewModel;
         private PortModel activeStartPort;
         private ConnectorModel model;
+        private PortModel subscribedStartPort;
+        private PortModel subscribedEndPort;
+        private NodeViewModel subscribedStartNodeViewModel;
+        private NodeViewModel subscribedEndNodeViewModel;
         private bool isConnecting = false;
         private bool isCollapsed = false;
         private bool isHidden = false;
@@ -55,6 +59,10 @@ namespace Dynamo.ViewModels
         private Point curvePoint1;
         private Point curvePoint2;
         private Point curvePoint3;
+        private readonly List<ConnectorPinViewModel> transientCachedPins = new List<ConnectorPinViewModel>();
+        private readonly List<Point> transientCachedPinLocations = new List<Point>();
+        private int pinCollectionRedrawDeferralDepth;
+        private bool pinCollectionRedrawPending;
 
         /// <summary>
         /// Required timer for desired delay prior to ' connector anchor' display.
@@ -390,7 +398,7 @@ namespace Dynamo.ViewModels
             bool oneNodeInCollapsedGroup = OneConnectingNodeInCollapsedGroup(firstNode, lastNode);
             if (oneNodeInCollapsedGroup)
             {
-                var lowestIndex = new int[] { this.Nodevm.ZIndex, this.NodeEnd.ZIndex }
+                var lowestIndex = new int[] { this.Nodevm?.ZIndex ?? 0, this.NodeEnd?.ZIndex ?? 0 }
                 .OrderBy(x => x)
                 .FirstOrDefault();
 
@@ -488,19 +496,45 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private NodeViewModel cachedNodevm;
+        private bool cachedNodevmInitialized = false;
         public NodeViewModel Nodevm
         {
             get
             {
-                return workspaceViewModel.Nodes?.FirstOrDefault(x => x.NodeLogic.GUID == model.Start.Owner.GUID);
+                if (model?.Start?.Owner == null)
+                {
+                    return null;
+                }
+                
+                if (!cachedNodevmInitialized)
+                {
+                    cachedNodevm = workspaceViewModel.Nodes?.FirstOrDefault(x => x.NodeLogic.GUID == model.Start.Owner.GUID);
+                    if (cachedNodevm != null)
+                        cachedNodevmInitialized = true;
+                }
+                return cachedNodevm;
             }
         }
 
+        private NodeViewModel cachedNodeEnd;
+        private bool cachedNodeEndInitialized = false;
         public NodeViewModel NodeEnd
         {
             get
             {
-                return workspaceViewModel.Nodes?.FirstOrDefault(x => x.NodeLogic.GUID == model.End.Owner.GUID);
+                if (model?.End?.Owner == null)
+                {
+                    return null;
+                }
+                
+                if (!cachedNodeEndInitialized)
+                {
+                    cachedNodeEnd = workspaceViewModel.Nodes?.FirstOrDefault(x => x.NodeLogic.GUID == model.End.Owner.GUID);
+                    if (cachedNodeEnd != null)
+                        cachedNodeEndInitialized = true;
+                }
+                return cachedNodeEnd;
             }
         }
 
@@ -519,7 +553,7 @@ namespace Dynamo.ViewModels
                     return PreviewState.Transient;
                 }
 
-                if (Nodevm.ShowExecutionPreview || NodeEnd.ShowExecutionPreview)
+                if (Nodevm?.ShowExecutionPreview == true || NodeEnd?.ShowExecutionPreview == true)
                 {
                     return PreviewState.ExecutionPreview;
                 }
@@ -567,7 +601,7 @@ namespace Dynamo.ViewModels
         }
         public bool IsFrozen
         {
-            get { return model == null ? activeStartPort.Owner.IsFrozen : Nodevm.IsFrozen; }
+            get { return model == null ? activeStartPort.Owner.IsFrozen : Nodevm?.IsFrozen ?? false; }
         }
         public Path ComputedBezierPath { get; set; }
         private PathGeometry _computedPathGeometry;
@@ -1029,34 +1063,25 @@ namespace Dynamo.ViewModels
             model.ConnectorPinModels.CollectionChanged += ConnectorPinModelCollectionChanged;
 
             ConnectorPinViewCollection = new ObservableCollection<ConnectorPinViewModel>();
-            ConnectorPinViewCollection.CollectionChanged += HandleCollectionChanged;
             workspaceViewModel.PropertyChanged += WorkspaceViewModel_PropertyChanged;
 
 
             if (connectorModel.ConnectorPinModels != null)
             {
-                foreach (var p in connectorModel.ConnectorPinModels)
+                using (DeferPinCollectionRedraw())
                 {
-                    AddConnectorPinViewModel(p);
+                    foreach (var p in connectorModel.ConnectorPinModels)
+                    {
+                        AddConnectorPinViewModel(p);
+                    }
                 }
             }
+            ConnectorPinViewCollection.CollectionChanged += HandleCollectionChanged;
 
-            connectorModel.Start.PropertyChanged += StartPortModel_PropertyChanged;
-            connectorModel.End.PropertyChanged += EndPortModel_PropertyChanged;
-
-            connectorModel.Start.Owner.PropertyChanged += StartOwner_PropertyChanged;
-            connectorModel.End.Owner.PropertyChanged += EndOwner_PropertyChanged;
+            UpdatePortSubscriptions(connectorModel.Start, connectorModel.End);
 
             workspaceViewModel.DynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
-            if (Nodevm != null)
-            {
-                Nodevm.PropertyChanged += nodeViewModel_PropertyChanged;
-            }
-
-            if (NodeEnd != null)
-            {
-                NodeEnd.PropertyChanged += nodeEndViewModel_PropertyChanged;
-            }
+            UpdateNodeViewModelSubscriptions();
             
             UpdateDynamicStrokeThickness();
             Redraw();
@@ -1078,8 +1103,91 @@ namespace Dynamo.ViewModels
                     }
                     IsHidden = connector.IsHidden;
                     break;
+                case nameof(ConnectorModel.Start):
+                    UpdatePortSubscriptions(model.Start, model.End);
+                    UpdateNodeViewModelSubscriptions();
+                    RaisePropertyChanged(nameof(Nodevm));
+                    RaisePropertyChanged(nameof(CurvePoint0));
+                    RaisePropertyChanged(nameof(PreviewState));
+                    UpdateConnectorDataToolTip();
+                    Redraw();
+                    break;
+                case nameof(ConnectorModel.End):
+                    UpdatePortSubscriptions(model.Start, model.End);
+                    UpdateNodeViewModelSubscriptions();
+                    RaisePropertyChanged(nameof(Nodevm));
+                    RaisePropertyChanged(nameof(NodeEnd));
+                    RaisePropertyChanged(nameof(CurvePoint3));
+                    RaisePropertyChanged(nameof(PreviewState));
+                    UpdateConnectorDataToolTip();
+                    Redraw();
+                    break;
                 default:
                     break;
+            }
+        }
+
+        private void UpdatePortSubscriptions(PortModel newStartPort, PortModel newEndPort)
+        {
+            if (subscribedStartPort != null)
+            {
+                subscribedStartPort.PropertyChanged -= StartPortModel_PropertyChanged;
+                subscribedStartPort.Owner.PropertyChanged -= StartOwner_PropertyChanged;
+            }
+
+            if (subscribedEndPort != null)
+            {
+                subscribedEndPort.PropertyChanged -= EndPortModel_PropertyChanged;
+                subscribedEndPort.Owner.PropertyChanged -= EndOwner_PropertyChanged;
+            }
+
+            subscribedStartPort = newStartPort;
+            subscribedEndPort = newEndPort;
+
+            if (subscribedStartPort != null)
+            {
+                subscribedStartPort.PropertyChanged += StartPortModel_PropertyChanged;
+                subscribedStartPort.Owner.PropertyChanged += StartOwner_PropertyChanged;
+            }
+
+            if (subscribedEndPort != null)
+            {
+                subscribedEndPort.PropertyChanged += EndPortModel_PropertyChanged;
+                subscribedEndPort.Owner.PropertyChanged += EndOwner_PropertyChanged;
+            }
+        }
+
+        private void UpdateNodeViewModelSubscriptions(bool subscribeToCurrentNodes = true)
+        {
+            if (subscribedStartNodeViewModel != null)
+            {
+                subscribedStartNodeViewModel.PropertyChanged -= nodeViewModel_PropertyChanged;
+            }
+
+            if (subscribedEndNodeViewModel != null)
+            {
+                subscribedEndNodeViewModel.PropertyChanged -= nodeEndViewModel_PropertyChanged;
+            }
+
+            subscribedStartNodeViewModel = null;
+            subscribedEndNodeViewModel = null;
+
+            if (!subscribeToCurrentNodes)
+            {
+                return;
+            }
+
+            subscribedStartNodeViewModel = Nodevm;
+            subscribedEndNodeViewModel = NodeEnd;
+
+            if (subscribedStartNodeViewModel != null)
+            {
+                subscribedStartNodeViewModel.PropertyChanged += nodeViewModel_PropertyChanged;
+            }
+
+            if (subscribedEndNodeViewModel != null)
+            {
+                subscribedEndNodeViewModel.PropertyChanged += nodeEndViewModel_PropertyChanged;
             }
         }
         private void ConnectorPinModelCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -1087,15 +1195,21 @@ namespace Dynamo.ViewModels
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach (ConnectorPinModel newItem in e.NewItems)
+                    using (DeferPinCollectionRedraw())
                     {
-                        AddConnectorPinViewModel(newItem);
+                        foreach (ConnectorPinModel newItem in e.NewItems)
+                        {
+                            AddConnectorPinViewModel(newItem);
+                        }
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (ConnectorPinModel oldItem in e.OldItems)
+                    using (DeferPinCollectionRedraw())
                     {
-                        RemoveConnectorPinModelViewModel(oldItem);
+                        foreach (ConnectorPinModel oldItem in e.OldItems)
+                        {
+                            RemoveConnectorPinModelViewModel(oldItem);
+                        }
                     }
                     break;
                 default: break;
@@ -1107,7 +1221,12 @@ namespace Dynamo.ViewModels
         /// <param name="connectorPin"></param>
         private void RemoveConnectorPinModelViewModel(ConnectorPinModel connectorPin)
         {
-            var matchingConnectorPinViewModel = this.workspaceViewModel.Pins.FirstOrDefault(x => x.Model.GUID == connectorPin.GUID);
+            if (connectorPin == null) return;
+
+            // Only remove pins still owned by this connector VM
+            var matchingConnectorPinViewModel = ConnectorPinViewCollection?
+                .FirstOrDefault(x => x.Model.GUID == connectorPin.GUID);
+
             if (matchingConnectorPinViewModel is null) return;
             RemoveConnectorPinModelViewModel(matchingConnectorPinViewModel);
         }
@@ -1137,6 +1256,9 @@ namespace Dynamo.ViewModels
         /// <param name="pinModel"></param>
         private void AddConnectorPinViewModel(ConnectorPinModel pinModel)
         {
+            if (pinModel == null) return;
+            if (ConnectorPinViewCollection.Any(p => p.Model.GUID == pinModel.GUID)) return;
+
             var pinViewModel = new ConnectorPinViewModel(this.workspaceViewModel, pinModel)
             {
                 IsHidden = this.IsHidden,
@@ -1185,6 +1307,12 @@ namespace Dynamo.ViewModels
         {
             if (!(sender is ConnectorPinViewModel viewModelSender)) return;
 
+            if (ConnectorModel is null)
+            {
+                RemoveConnectorPinModelViewModel(viewModelSender);
+                return;
+            }
+
             workspaceViewModel.Model.RecordAndDeleteModels(
                 new List<ModelBase>() { viewModelSender.Model });
             ConnectorModel.ConnectorPinModels.Remove(viewModelSender.Model);
@@ -1192,7 +1320,43 @@ namespace Dynamo.ViewModels
 
         private void HandleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (pinCollectionRedrawDeferralDepth > 0)
+            {
+                pinCollectionRedrawPending = true;
+                return;
+            }
+
             Redraw();
+        }
+
+        private IDisposable DeferPinCollectionRedraw()
+        {
+            pinCollectionRedrawDeferralDepth++;
+            return new PinCollectionRedrawDeferral(this);
+        }
+
+        private sealed class PinCollectionRedrawDeferral : IDisposable
+        {
+            private ConnectorViewModel owner;
+
+            internal PinCollectionRedrawDeferral(ConnectorViewModel owner)
+            {
+                this.owner = owner;
+            }
+
+            public void Dispose()
+            {
+                if (owner is null) return;
+
+                owner.pinCollectionRedrawDeferralDepth = Math.Max(0, owner.pinCollectionRedrawDeferralDepth - 1);
+                if (owner.pinCollectionRedrawDeferralDepth == 0 && owner.pinCollectionRedrawPending)
+                {
+                    owner.pinCollectionRedrawPending = false;
+                    owner.Redraw();
+                }
+
+                owner = null;
+            }
         }
 
         private void WorkspaceViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -1222,22 +1386,10 @@ namespace Dynamo.ViewModels
             {
                 model.PropertyChanged -= HandleConnectorPropertyChanged;
 
-                model.Start.PropertyChanged -= StartPortModel_PropertyChanged;
-                model.End.PropertyChanged -= EndPortModel_PropertyChanged;
-
-                model.Start.Owner.PropertyChanged -= StartOwner_PropertyChanged;
-                model.End.Owner.PropertyChanged -= EndOwner_PropertyChanged;
+                UpdatePortSubscriptions(null, null);
                 model.ConnectorPinModels.CollectionChanged -= ConnectorPinModelCollectionChanged;
 
-                // Nodevm and NodeEnd props are found via model
-                if (Nodevm != null)
-                {
-                    Nodevm.PropertyChanged -= nodeViewModel_PropertyChanged;
-                }
-                if (NodeEnd != null)
-                {
-                    NodeEnd.PropertyChanged -= nodeEndViewModel_PropertyChanged;
-                }
+                UpdateNodeViewModelSubscriptions(false);
             }
 
             workspaceViewModel.PropertyChanged -= WorkspaceViewModel_PropertyChanged;
@@ -1257,6 +1409,7 @@ namespace Dynamo.ViewModels
             }
 
             this.PropertyChanged -= ConnectorViewModelPropertyChanged;
+            ClearTransientPinCache();
             DiscardAllConnectorPinModels();
 
             if (ConnectorContextMenuViewModel != null)
@@ -1408,24 +1561,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void HandlePinModelChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            foreach (ConnectorPinModel oldPin in e.OldItems)
-            {
-                var matchingPinViewModel = ConnectorPinViewCollection.FirstOrDefault(pin => pin.ConnectorGuid == oldPin.ConnectorId);
-                oldPin.Dispose();
-
-                workspaceViewModel.Pins.Remove(matchingPinViewModel);
-                ConnectorPinViewCollection.Remove(matchingPinViewModel);
-
-                if (ConnectorPinViewCollection.Count == 0)
-                    BezierControlPoints = null;
-
-                matchingPinViewModel.Dispose();
-            }
-        }
-
-
         /// <summary>
         ///  Removes all connectorPinViewModels/ connectorPinModels. This occurs during 'dispose'
         /// operation as well as during the 'PlaceWatchNode', where all previous pins corresponding 
@@ -1435,12 +1570,14 @@ namespace Dynamo.ViewModels
         /// to all previous pins is required for undo/redo recorder.</param>
         internal void DiscardAllConnectorPinModels(List<ModelBase> allDeletedModels = null)
         {
-            foreach (var pin in ConnectorPinViewCollection)
+            // Removing pin models can mutate ConnectorPinViewCollection through
+            // ConnectorPinModelCollectionChanged handlers, so iterate a snapshot
+            foreach (var pin in ConnectorPinViewCollection.ToList())
             {
                 workspaceViewModel.Pins.Remove(pin);
-                ConnectorModel.RemovePin(pin.Model);
+                ConnectorModel?.RemovePin(pin.Model);
 
-                if(allDeletedModels != null)
+                if (ConnectorModel != null && allDeletedModels != null)
                 {
                     allDeletedModels.Add(pin.Model);
                 }
@@ -1468,6 +1605,66 @@ namespace Dynamo.ViewModels
             return points;
         }
 
+        /// <summary>
+        /// Extracts all connector pin view models from the current collection.
+        /// The pin view models are detached from event handlers and marked as non-interactive,
+        /// but will be removed from the workspace collection only when the transient connector is disposed.
+        /// </summary>
+        /// <returns>A list of connector pin view models that were removed from the collection. The list is empty if there are no
+        /// pins to extract.</returns>
+        internal List<ConnectorPinViewModel> AddTransientConnectorPins()
+        {
+            var extractedPins = new List<ConnectorPinViewModel>();
+
+            if (ConnectorPinViewCollection == null || ConnectorPinViewCollection.Count == 0)
+            {
+                return extractedPins;
+            }
+
+            using (DeferPinCollectionRedraw())
+            {
+                foreach (var pinViewModel in ConnectorPinViewCollection.ToList())
+                {
+                    pinViewModel.PropertyChanged -= PinViewModelPropertyChanged;
+                    pinViewModel.RequestSelect -= HandleRequestSelected;
+                    pinViewModel.RequestRedraw -= HandlerRedrawRequest;
+                    pinViewModel.RequestRemove -= HandleConnectorPinViewModelRemove;
+
+                    ConnectorPinViewCollection.Remove(pinViewModel);
+                    extractedPins.Add(pinViewModel);
+                }
+            }
+
+            return extractedPins;
+        }
+
+        /// <summary>
+        /// Caches connector pins for a transient (drag/reconnection) connector without attaching them
+        /// to <see cref="ConnectorPinViewCollection"/>.
+        /// </summary>
+        /// <remarks>
+        /// Transient connectors render pin bends from cached locations only. Pin view models remain
+        /// visible through the workspaceViewModel.Pins, but are kept non-owned by the transient
+        /// connector to avoid interaction/event-subscription overhead during drag.
+        /// </remarks>
+        /// <param name="pinViewModels">
+        /// Pin view models extracted from an existing connector; if null, no action is taken.
+        /// </param>
+        internal void CacheTransientConnectorPins(IEnumerable<ConnectorPinViewModel> pinViewModels)
+        {
+            if (ConnectorModel != null || pinViewModels == null) return;
+
+            if (transientCachedPins.Count > 0 || transientCachedPinLocations.Count > 0) return;
+
+            foreach (var pinViewModel in pinViewModels)
+            {
+                if (pinViewModel == null) continue;
+
+                transientCachedPinLocations.Add(new Point(pinViewModel.Left, pinViewModel.Top));
+                transientCachedPins.Add(pinViewModel);                
+            }
+        }
+
         #region ConnectorRedraw
 
         /// <summary>
@@ -1477,16 +1674,20 @@ namespace Dynamo.ViewModels
         {
             try
             {
-                if (this.ConnectorModel != null && ConnectorPinViewCollection != null)
+                if (ConnectorPinViewCollection?.Count > 0)
                 {
-                    if (this.ConnectorModel?.End != null && ConnectorPinViewCollection?.Count > 0)
+                    if (this.ConnectorModel?.End != null && transientCachedPinLocations.Count == 0)
                     {
-                        RedrawBezierManyPoints();
+                        RedrawBezierManyPoints(this.ConnectorModel.End.Center);
                     }
-                    else if (this.ConnectorModel?.End != null)
+                    else
                     {
-                        this.Redraw(this.ConnectorModel.End.Center);
+                        RedrawBezierManyPoints(CurvePoint3);
                     }
+                }
+                else if (this.ConnectorModel?.End != null)
+                {
+                    this.Redraw(this.ConnectorModel.End.Center);
                 }
 
                 this.SetCollapsedByNodeViewModel();
@@ -1506,6 +1707,11 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void SetCollapsedByNodeViewModel()
         {
+            if (ConnectorModel?.Start == null || ConnectorModel?.End == null)
+            {
+                return;
+            }
+
             // Check if the connector is between two proxy ports. 
             // Connectors between proxy ports should not be collapsed.
             bool bothEndsAreProxyPorts = ConnectorModel.Start.IsProxyPort && ConnectorModel.End.IsProxyPort;
@@ -1522,15 +1728,15 @@ namespace Dynamo.ViewModels
         /// <param name="parameter">The position of the end point</param>
         public void Redraw(object parameter)
         {
-            var p2 = new Point();
-
-            if (parameter is Point point)
+            if (ConnectorPinViewCollection?.Count > 0 || transientCachedPinLocations.Count > 0)
             {
-                p2 = point;
+                RedrawBezierManyPoints(parameter);
+                return;
             }
-            else if (parameter is Point2D d)
+
+            if (!TryGetEndPoint(parameter, out var p2))
             {
-                p2 = d.AsWindowsType();
+                return;
             }
 
             CurvePoint3 = p2;
@@ -1579,7 +1785,11 @@ namespace Dynamo.ViewModels
             };
         }
 
-        private PathFigure DrawSegmentBetweenPointPairs(Point startPt, Point endPt, ref List<Point[]> controlPointList)
+        private static PathFigure DrawSegmentBetweenPointPairs(
+            Point startPt,
+            Point endPt,
+            ref List<Point[]> controlPointList,
+            bool invertTangents = false)
         {
             var offset = 0.0;
             double distance = 0;
@@ -1587,8 +1797,12 @@ namespace Dynamo.ViewModels
             distance = Math.Sqrt(Math.Pow(endPt.X - startPt.X, 2) + Math.Pow(endPt.Y - startPt.Y, 2));
             offset = .45 * distance;
 
-            var pt1 = new Point(startPt.X + offset, startPt.Y);
-            var pt2 = new Point(endPt.X - offset, endPt.Y);
+            var pt1 = invertTangents
+                ? new Point(startPt.X - offset, startPt.Y)
+                : new Point(startPt.X + offset, startPt.Y);
+            var pt2 = invertTangents
+                ? new Point(endPt.X + offset, endPt.Y)
+                : new Point(endPt.X - offset, endPt.Y);
 
 
             PathFigure pathFigure = new PathFigure();
@@ -1604,25 +1818,34 @@ namespace Dynamo.ViewModels
             return pathFigure;
         }
 
-        private void RedrawBezierManyPoints()
+        private static bool TryGetEndPoint(object parameter, out Point point)
         {
-            var parameter = this.ConnectorModel.End.Center;
-            var param = parameter as object;
+            point = new Point();
+            if (parameter is Point windowsPoint)
+            {
+                point = windowsPoint;
+                return true;
+            }
+
+            if (parameter is Point2D dynamoPoint)
+            {
+                point = dynamoPoint.AsWindowsType();
+                return true;
+            }
+
+            return false;
+        }
+
+        private void RedrawBezierManyPoints(object parameter)
+        {
+            if (!TryGetEndPoint(parameter, out var p2))
+            {
+                return;
+            }
 
             var controlPoints = new List<Point[]>();
             try
             {
-                var p2 = new Point();
-
-                if (parameter is Point)
-                {
-                    p2 = (Point)param;
-                }
-                else if (parameter is Point2D)
-                {
-                    p2 = ((Point2D)param).AsWindowsType();
-                }
-
                 CurvePoint3 = p2;
 
                 var offset = 0.0;
@@ -1644,16 +1867,10 @@ namespace Dynamo.ViewModels
                 dotTop = CurvePoint3.Y - EndDotSize / 2;
                 dotLeft = CurvePoint3.X - EndDotSize / 2;
 
-                // Add chain of points including start/end
-                Point[] points = new Point[ConnectorPinViewCollection.Count];
-                int count = 0;
-                foreach (var wirePin in ConnectorPinViewCollection)
-                {
-                    points[count] = new Point(wirePin.Left+ConnectorPinModel.StaticWidth - (ConnectorPinViewModel.OneThirdWidth * 0.5), wirePin.Top+ ConnectorPinModel.StaticWidth - (ConnectorPinViewModel.OneThirdWidth * 0.5));
-                    count++;
-                }
-
-                var orderedPoints = points.OrderBy(p => p.X).ToList();
+                var isInputStartReconnection = ActiveStartPort?.PortType == PortType.Input;
+                var orderedPoints = isInputStartReconnection
+                    ? GetBezierPinPoints().OrderByDescending(p => p.X).ToList()
+                    : GetBezierPinPoints().OrderBy(p => p.X).ToList();
 
                 orderedPoints.Insert(0, CurvePoint0);
                 orderedPoints.Insert(orderedPoints.Count, CurvePoint3);
@@ -1661,6 +1878,11 @@ namespace Dynamo.ViewModels
                 Point[,] pointPairs = BreakIntoPointPairs(orderedPoints);
 
                 PathFigureCollection pathFigureCollection = new PathFigureCollection();
+
+                var isTransientStartReconnection =
+                    ConnectorModel == null &&
+                    IsConnecting &&
+                    ActiveStartPort?.PortType == PortType.Input;
 
                 for (int i = 0; i < pointPairs.GetLength(0); i++)
                 {
@@ -1672,7 +1894,11 @@ namespace Dynamo.ViewModels
                         segmentList.Add(pointPairs[i, j]);
                     }
 
-                    var pathFigure = DrawSegmentBetweenPointPairs(segmentList[0], segmentList[1], ref controlPoints);
+                    var pathFigure = DrawSegmentBetweenPointPairs(
+                        segmentList[0],
+                        segmentList[1],
+                        ref controlPoints,
+                        isTransientStartReconnection);
                     pathFigureCollection.Add(pathFigure);
                 }
 
@@ -1688,6 +1914,44 @@ namespace Dynamo.ViewModels
             {
                 string mess = ex.Message;
             }
+        }
+
+        private IEnumerable<Point> GetBezierPinPoints()
+        {
+            if (ConnectorPinViewCollection?.Count > 0)
+            {
+                return ConnectorPinViewCollection
+                    .Select(pin => new Point(
+                        pin.Left + ConnectorPinModel.StaticWidth - (ConnectorPinViewModel.OneThirdWidth * 0.5),
+                        pin.Top + ConnectorPinModel.StaticWidth - (ConnectorPinViewModel.OneThirdWidth * 0.5)));
+            }
+
+            return transientCachedPinLocations
+                .Select(pinLocation => new Point(
+                    pinLocation.X + ConnectorPinModel.StaticWidth - (ConnectorPinViewModel.OneThirdWidth * 0.5),
+                    pinLocation.Y + ConnectorPinModel.StaticWidth - (ConnectorPinViewModel.OneThirdWidth * 0.5)));
+        }
+
+        private void ClearTransientPinCache()
+        {
+            foreach (var pinViewModel in transientCachedPins.ToList())
+            {
+                if (pinViewModel == null) continue;
+
+                ConnectorPinViewCollection.Remove(pinViewModel);
+                workspaceViewModel.Pins.Remove(pinViewModel);
+
+                if (pinViewModel.Model != null)
+                {
+                    DynamoSelection.Instance.Selection.Remove(pinViewModel.Model);
+                    pinViewModel.Model.Dispose();
+                }
+
+                pinViewModel.Dispose();
+            }
+
+            transientCachedPins.Clear();
+            transientCachedPinLocations.Clear();
         }
 
         /// <summary>

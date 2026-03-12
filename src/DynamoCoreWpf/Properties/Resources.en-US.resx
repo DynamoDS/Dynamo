@@ -1580,6 +1580,9 @@ Next assemblies were loaded several times:
   <data name="PackageDownloadStateInstalled" xml:space="preserve">
     <value>Installed</value>
   </data>
+  <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
+    <value> (installed)</value>
+  </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>Installing</value>
   </data>
@@ -3038,9 +3041,21 @@ This package will be unloaded after the next Dynamo restart.</value>
     <value>Install</value>
     <comment>Used on the package manager search result card. If the package is not installed, the button will say 'Install'.</comment>
   </data>
+  <data name="PackageManagerUpdate" xml:space="preserve">
+    <value>Update</value>
+    <comment>Used on the package manager search result card when a different version is selected.</comment>
+  </data>
+  <data name="PackageManagerUninstall" xml:space="preserve">
+    <value>Uninstall</value>
+    <comment>Used on the package manager search result card when the installed version is selected.</comment>
+  </data>
   <data name="PackageManagerPackageUpdated" xml:space="preserve">
     <value>Updated</value>
     <comment>Displays next to the package name in the Package Search window if the package has been updated in the last 30 days.</comment>
+  </data>
+  <data name="PackageManagerPackageUpdateAvailable" xml:space="preserve">
+    <value>New version available</value>
+      <comment>Displays next to the package name in the Package Search window if a newer version of the package is available.</comment>
   </data>
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>New</value>
@@ -3138,6 +3153,9 @@ This package will be unloaded after the next Dynamo restart.</value>
   <data name="PackageDetailsPackage" xml:space="preserve">
     <value>Package</value>
     <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
+  </data>
+  <data name="PackageDetailsPackageApprovedTooltip" xml:space="preserve">
+    <value>Published by Autodesk</value>
   </data>
   <data name="PackageSortToolTip" xml:space="preserve">
     <value>Sort Packages.</value>
@@ -3724,6 +3742,15 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   </data>
   <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
     <value>Something went wrong when importing your custom setting file. Please try again or proceed with default settings.</value>
+  </data>
+  <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
+    <value>Settings imported. To apply the settings, launch Dynamo, then close it and restart it.</value>
+  </data>
+  <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
+    <value>Reset imported settings</value>
+  </data>
+  <data name="SplashScreenSettingsResetSuccess" xml:space="preserve">
+    <value>Imported settings have been reset.</value>
   </data>
   <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
     <value>Launching Dynamo View...</value>

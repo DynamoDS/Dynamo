@@ -45,9 +45,6 @@
             <summary>Les étiquettes vous permettent d'ajouter des métadonnées arbitraires à une DesignScriptEntity. Cela est essentiel pour
             l'intégration de la géométrie Revit.</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Core.EntityTags.#ctor(System.Collections.Generic.Dictionary{System.String,System.Object},Autodesk.DesignScript.Geometry.DesignScriptEntity)">
-            <notranslation>true</notranslation>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Core.EntityTags.Parent">
             <notranslation>true</notranslation>
         </member>
@@ -924,12 +921,24 @@
             <summary>Détermine si la NurbsCurve est rationnelle ou non. Cela spécifie si des épaisseurs ne sont pas égales à 1.0.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ControlPoints">
-            <summary>Obtenir les points de contrôle de la NurbsCurve. Il s'agit des points que la courbe interpole.</summary>
+            <summary>Obtenir les points de contrôle de la courbe NurbsCurve.</summary>
+            <returns>Un réseau de points</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
+            <summary>Les points de contrôle vraiment périodiques de la courbe NurbsCurve si elle est périodique.
+            Notez que cette fonctionnalité ne peut pas être utilisée avec PeriodicKnots() pour reconstruire la courbe NurbsCurve périodique d'origine.
+            Génère une exception (ou n'est pas définie) lorsque la courbe n'est pas périodique.</summary>
             <returns>Un réseau de points</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
             <summary>Noeuds de la courbe. Les noeuds sont une série de valeurs de paramètres (doubles) servant à déterminer où et comment les points de contrôle affectent la courbe.</summary>
             <returns>Les noeuds de la courbe NURBS</returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots">
+            <summary>Les noeuds non bloqués de la courbe si elle est périodique. Les noeuds constituent une série de valeurs de paramètres (doubles) utilisées pour déterminer où et comment les points de contrôle affectent la courbe.
+            Notez que cette fonctionnalité ne peut pas être utilisée avec PeriodicControlPoints() pour reconstruire la courbe NurbsCurve périodique d'origine.
+            Génère une exception (ou n'est pas définie) lorsque la courbe n'est pas périodique.</summary>
+            <returns>Le vecteur de noeuds périodiques de la courbe NURBS</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Weights">
             <summary>Renvoie les épaisseurs des points de contrôle de la NurbsCurve. Elles déterminent l'influence de chaque point de contrôle sur la forme de la courbe.</summary>
@@ -3717,6 +3726,15 @@
             sweep1,curve2surf
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSurface(Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
+            <summary>Balaie cette Curve le long de la Curve de la trajectoire, créant ainsi une surface</summary>
+            <param name="path"/>
+            <param name="cutEndOff">Couper la fin du balayage et la rendre normale à la trajectoire</param>
+            <returns>Surface résultant du balayage de la courbe le long de la trajectoire</returns>
+            <search>
+            sweep1,curve2surf
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSolid(Autodesk.DesignScript.Geometry.Curve)">
             <summary>Balaie cette Curve fermée le long de la Curve de la trajectoire, créant ainsi un Solid</summary>
             <param name="path"/>
@@ -3749,7 +3767,7 @@
         <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.disposedWrongThread">
             <summary>Il est utilisé à des fins de test uniquement.</summary>
         </member>
-        <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.Tags">
+        <member name="P:Autodesk.DesignScript.Geometry.DesignScriptEntity.Tags">
             <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DesignScriptEntity.Dispose">
@@ -3872,6 +3890,14 @@
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.IntersectAll(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Geometry})">
             <summary>Obtenir l'intersection de Geometry pour cet objet et un ensemble d'autres Geometries. Trouve la géométrie commune de tous les participants.</summary>
             <search>get overlap,multi intersect,intersect many</search>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ProjectPointsOnto(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Projette un ensemble de points sur cette géométrie dans la direction indiquée.
+            Renvoie un réseau plat de la géométrie résultante.</summary>
+            <param name="points">Points vers le projet</param>
+            <param name="projectionDirection">Direction de projection</param>
+            <returns>Réseau plat de la géométrie résultante</returns>
+            <search>project points,batch project</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Split(Autodesk.DesignScript.Geometry.Geometry)">
             <summary>Scinder cette Geometry en utilisant une autre Geometry comme "outil" de coupe</summary>
@@ -4469,8 +4495,9 @@ Fondamentalement, le maillage est rempli d’un tas de petites boîtes, et un no
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
             <summary>Créer une PolyCurve en joignant des courbes. Les courbes d'entrée n'ont pas besoin d'être spécifiée dans l'ordre de connectivité.
-            La direction de la PolyCurve dépend de la première courbe du tableau d'entrée.
-            Choisissez une tolérance de jonction entre 1e-6 et 1e-3.</summary>
+            La direction de la PolyCurve dépend de la première courbe du réseau d'entrée.
+            Choisissez une tolérance de jonction préférée entre 1e-6 et 1e-3 unités.
+            Les valeurs inférieures peuvent s'avérer trop strictes et empêcher la jonction de courbes qui devraient être reliées; les valeurs supérieures peuvent entraîner la fusion involontaire ou la réduction des courbes courtes provoquant la dégénération de points.</summary>
             <param name="curves">Courbes à joindre pour former une PolyCurve</param>
             <param name="joinTolerance">Tolérance pour déterminer la taille de l'écart autorisé entre les courbes à joindre</param>
             <returns>Polycourbe créée par des courbes jointes</returns>
@@ -4480,8 +4507,9 @@ Fondamentalement, le maillage est rempli d’un tas de petites boîtes, et un no
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
             <summary>Créer une PolyCurve en joignant des courbes. Les courbes d'entrée n'ont pas besoin d'être spécifiée dans l'ordre de connectivité.
-            La direction de la PolyCurve dépend de la première courbe du tableau d'entrée.
-            Choisissez une tolérance de jonction entre 1e-6 et 1e-3.</summary>
+            La direction de la PolyCurve dépend de la première courbe du réseau d'entrée.
+            Choisissez une tolérance de jonction préférée entre 1e-6 et 1e-3 unités.
+            Les valeurs inférieures peuvent s'avérer trop strictes et empêcher la jonction de courbes qui devraient être reliées; les valeurs supérieures peuvent entraîner la fusion involontaire ou la réduction des courbes courtes provoquant la dégénération de points.</summary>
             <param name="curves">Courbes à joindre pour former une PolyCurve</param>
             <param name="joinTolerance">Tolérance pour déterminer la taille de l'écart autorisé entre les courbes à joindre</param>
             <param name="trimCurves">Définissez cette option sur True si les courbes d'entrée se croisent ou se chevauchent et que leurs segments finaux doivent être ajustés avant la création de la polycourbe. Elle est définie sur False par défaut.</param>
@@ -4492,13 +4520,15 @@ Fondamentalement, le maillage est rempli d’un tas de petites boîtes, et un no
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double)">
-            <summary>Créez une ou plusieurs polycourbes en regroupant les courbes connectées. Choisissez une tolérance de jonction préférée entre 1e-6 et 1e-3.</summary>
+            <summary>Créez une ou plusieurs polycourbes en regroupant les courbes connectées. Choisissez une tolérance de jonction préférée entre 1e-6 et 1e-3 unités.
+            Les valeurs inférieures peuvent s'avérer trop strictes et empêcher la jonction de courbes qui devraient être reliées; les valeurs supérieures peuvent entraîner la fusion involontaire ou la réduction des courbes courtes provoquant la dégénération de points.</summary>
             <param name="curves">Courbes à regrouper pour créer une ou plusieurs polycourbes</param>
             <param name="joinTolerance">Tolérance pour déterminer la taille de l'écart autorisé entre les courbes à joindre</param>
             <returns/>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Boolean,System.Double)">
-            <summary>Créez une ou plusieurs polycourbes en regroupant les courbes connectées. Choisissez une tolérance de jonction préférée entre 1e-6 et 1e-3.</summary>
+            <summary>Créez une ou plusieurs polycourbes en regroupant les courbes connectées. Choisissez une tolérance de jonction préférée entre 1e-6 et 1e-3 unités.
+            Les valeurs inférieures peuvent s'avérer trop strictes et empêcher la jonction de courbes qui devraient être reliées; les valeurs supérieures peuvent entraîner la fusion involontaire ou la réduction des courbes courtes provoquant la dégénération de points.</summary>
             <param name="curves">Courbes à regrouper pour créer une ou plusieurs polycourbes</param>
             <param name="joinTolerance">Tolérance pour déterminer la taille de l'écart autorisé entre les courbes à joindre</param>
             <param name="trimCurves">Définissez cette option sur True si les courbes d'entrée se croisent ou se chevauchent et que leurs segments finaux doivent être ajustés avant la création de la polycourbe. Elle est définie sur False par défaut.</param>
@@ -5221,6 +5251,9 @@ Fondamentalement, le maillage est rempli d’un tas de petites boîtes, et un no
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_sweepassolidsingle_deprecated">
             <summary>La fonctionnalité "Rechercher une chaîne localisée similaire à cette méthode" est obsolète et sera supprimée dans une version ultérieure de Dynamo. Utilisez plutôt SweepAsSolid(ICurveEntity path, bool cutEndOff).</summary>
         </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_sweepassurface_deprecated">
+            <summary>Recherche une chaîne localisée similaire à Cette méthode est obsolète et sera supprimée dans une prochaine version de Dynamo. Utilisez Curve.SweepAsSurface(profile, path, cutEndOff) à la place.</summary>
+        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.curve_trimsegmentsbyparam_deprecated">
             <summary>La fonctionnalité "Rechercher une chaîne localisée similaire à cette méthode" est obsolète et sera supprimée dans une version ultérieure de Dynamo. Utilisez plutôt Curve.TrimSegmentsByParameter(double[] parameters, bool discardEvenSegments).</summary>
         </member>
@@ -5340,6 +5373,9 @@ Fondamentalement, le maillage est rempli d’un tas de petites boîtes, et un no
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.ParameterizedCollectionException">
             <summary>Recherche une chaîne localisée similaire à Données indiquées: "{0}" n'est pas un réseau de paires de valeurs de nom.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.point_project_deprecated">
+            <summary>Recherche une chaîne localisée similaire à Cette méthode est obsolète et sera supprimée dans une prochaine version de Dynamo. Utilisez Geometry.ProjectPointsOnto(Point[] points, Vector projectionDirection) à la place.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.PointsCoincident">
             <summary>Recherche une chaîne localisée similaire à {0} coïncident.</summary>

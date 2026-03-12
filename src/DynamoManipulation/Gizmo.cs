@@ -210,11 +210,13 @@ namespace Dynamo.Manipulation
 
         public void Dispose()
         {
+            // Unsubscribe before disposing geometry to prevent OnViewCameraChanged
+            // from firing Redraw() against a disposed ManipulatorOrigin.
+            BackgroundPreviewViewModel.ViewCameraChanged -= OnViewCameraChanged;
+
             Dispose(true);
 
             if(origin != null) origin.Dispose();
-
-            BackgroundPreviewViewModel.ViewCameraChanged -= OnViewCameraChanged;
         }
     }
 }

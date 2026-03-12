@@ -1350,6 +1350,9 @@ Několikrát byly načteny i další sestavy:
   <data name="PackageDownloadStateInstalled" xml:space="preserve">
     <value>Nainstalováno</value>
   </data>
+  <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
+    <value> (nainstalováno)</value>
+  </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>Probíhá instalace</value>
   </data>
@@ -2707,8 +2710,17 @@ Tento balíček bude uvolněn po dalším restartování aplikace Dynamo.</value
   <data name="PackageManagerInstall" xml:space="preserve">
     <value>Instalovat</value>
   </data>
+  <data name="PackageManagerUpdate" xml:space="preserve">
+    <value>Aktualizovat</value>
+  </data>
+  <data name="PackageManagerUninstall" xml:space="preserve">
+    <value>Odinstalovat</value>
+  </data>
   <data name="PackageManagerPackageUpdated" xml:space="preserve">
     <value>Aktualizovaný</value>
+  </data>
+  <data name="PackageManagerPackageUpdateAvailable" xml:space="preserve">
+    <value>Je k dispozici nová verze</value>
   </data>
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>Nový</value>
@@ -3371,6 +3383,15 @@ V určitém kontextu složitých grafů nebo hostitelských režimů může auto
   <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
     <value>Při importu souboru uživatelských nastavení došlo k chybě. Zkuste to znovu nebo pokračujte s výchozím nastavením.</value>
   </data>
+  <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
+    <value>Settings imported. To apply the settings, launch Dynamo, then close it and restart it.</value>
+  </data>
+  <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
+    <value>Obnovit importovaná nastavení</value>
+  </data>
+  <data name="SplashScreenSettingsResetSuccess" xml:space="preserve">
+    <value>Importovaná nastavení byla obnovena.</value>
+  </data>
   <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
     <value>Spouštění aplikace Dynamo View...</value>
   </data>
@@ -3880,6 +3901,12 @@ Otevření tohoto grafu v aplikaci Dynamo 3.3–3.6.x: Ze správce balíčků na
   </data>
   <data name="DynamoSplashScreenFailed" xml:space="preserve">
     <value>Načtení úvodní obrazovky aplikace Dynamo se nezdařilo, spusťte aplikaci Dynamo znovu</value>
+  </data>
+  <data name="DocumentationBrowserPreferences" xml:space="preserve">
+    <value>Prohlížeč dokumentace</value>
+  </data>
+  <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
+    <value>Automaticky synchronizovat s výběrem uzlů.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

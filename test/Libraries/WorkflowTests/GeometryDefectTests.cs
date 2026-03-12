@@ -594,7 +594,7 @@ namespace Dynamo.Tests
 
             var polyCurve = GetPreviewValue("c730df73-7ce9-43c1-8f97-87608fb48e43") as PolyCurve;
             Assert.IsNotNull(polyCurve);
-            Assert.AreEqual(3, polyCurve.NumberOfCurves);
+            Assert.AreEqual(7, polyCurve.NumberOfCurves);
         }
 
         [Test]

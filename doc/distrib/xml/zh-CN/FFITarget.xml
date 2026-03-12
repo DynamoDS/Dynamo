@@ -65,6 +65,10 @@
             <param name="x">用于强制复制调度的虚拟变量</param>
             <param name="failWithException">分派失败时出现异常，而不是</param>
         </member>
+        <member name="T:FFITarget.NodeCategoryAttributeTest">
+            <summary>Test class for NodeCategoryAttribute type-forwarded to DynamoServices.
+            CreateFromAttribute is a static method (not a constructor) but is forced into the "Create" category via the attribute.</summary>
+        </member>
         <member name="T:FFITarget.OverloadTarget">
             <summary>重载方法的测试目标</summary>
         </member>

@@ -6090,6 +6090,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Published by Autodesk.
+        /// </summary>
+        public static string PackageDetailsPackageApprovedTooltip {
+            get {
+                return ResourceManager.GetString("PackageDetailsPackageApprovedTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Python.
         /// </summary>
         public static string PackageDetailsPython {
@@ -6239,6 +6248,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageDownloadStateStarting {
             get {
                 return ResourceManager.GetString("PackageDownloadStateStarting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  (installed).
+        /// </summary>
+        public static string PackageDropdownInstalledVersionLabel {
+            get {
+                return ResourceManager.GetString("PackageDropdownInstalledVersionLabel", resourceCulture);
             }
         }
         
@@ -6568,6 +6586,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New version available.
+        /// </summary>
+        public static string PackageManagerPackageUpdateAvailable {
+            get {
+                return ResourceManager.GetString("PackageManagerPackageUpdateAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Updated.
         /// </summary>
         public static string PackageManagerPackageUpdated {
@@ -6699,6 +6726,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageManagerTitle {
             get {
                 return ResourceManager.GetString("PackageManagerTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uninstall.
+        /// </summary>
+        public static string PackageManagerUninstall {
+            get {
+                return ResourceManager.GetString("PackageManagerUninstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update.
+        /// </summary>
+        public static string PackageManagerUpdate {
+            get {
+                return ResourceManager.GetString("PackageManagerUpdate", resourceCulture);
             }
         }
         
@@ -11216,6 +11261,37 @@ namespace Dynamo.Wpf.Properties {
         public static string ZoomLevel {
             get {
                 return ResourceManager.GetString("ZoomLevel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Settings imported. To apply the settings, launch Dynamo, then close it and restart it.
+        /// </summary>
+        public static string SplashScreenSettingsImportedRestartMessage
+        {
+            get
+            {
+                return ResourceManager.GetString("SplashScreenSettingsImportedRestartMessage", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to Reset imported settings.
+        /// </summary>
+        public static string SplashScreenResetSettingsTooltip
+        {
+            get
+            {
+                return ResourceManager.GetString("SplashScreenResetSettingsTooltip", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to Imported settings have been reset.
+        /// </summary>
+        public static string SplashScreenSettingsResetSuccess
+        {
+            get
+            {
+                return ResourceManager.GetString("SplashScreenSettingsResetSuccess", resourceCulture);
             }
         }
     }

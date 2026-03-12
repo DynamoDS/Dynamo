@@ -77,6 +77,19 @@
             </summary>
             <param name="points">A set of points.</param>
         </member>
+        <member name="T:Tessellation.UvScalingUtilities">
+            <summary>
+                Utility functions for UV scaling on surfaces.
+            </summary>
+        </member>
+        <member name="M:Tessellation.UvScalingUtilities.GetNormalizedUvScales(Autodesk.DesignScript.Geometry.Surface)">
+            <summary>
+                Computes normalized UV scaling factors for a surface to handle anisotropic parameter spaces.
+                The scaling preserves the aspect ratio while keeping values in a reasonable numerical range.
+            </summary>
+            <param name="face">Surface to compute scaling factors for.</param>
+            <returns>Tuple containing normalized U and V scale factors.</returns>
+        </member>
         <member name="T:Tessellation.Voronoi">
             <summary>
                 Functions for creating Voronoi tesselations.

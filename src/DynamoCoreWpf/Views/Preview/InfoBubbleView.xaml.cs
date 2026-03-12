@@ -30,6 +30,7 @@ namespace Dynamo.Controls
         private bool isResizing = false;
         private bool isResizeHeight = false;
         private bool isResizeWidth = false;
+        private double previousZIndex = 0;
 
         private InfoBubbleViewModel viewModel = null;
 
@@ -1057,7 +1058,7 @@ namespace Dynamo.Controls
 
             InfoBubbleViewModel.NodeMessageVisibility nodeMessageVisibility = InfoBubbleViewModel.NodeMessageVisibility.Icon;
             HorizontalAlignment horizontalAlignment = HorizontalAlignment.Left;
-
+            ViewModel.ZIndex = previousZIndex;
             switch (border.Name)
             {
                 case "InfoBorder":
@@ -1091,7 +1092,9 @@ namespace Dynamo.Controls
             HorizontalAlignment left = HorizontalAlignment.Left;
 
             bool isIcon;
-            
+            // boost bubble's z-index to make sure the expanded content won't be blocked by other elements.
+            previousZIndex = ViewModel.ZIndex;
+            ViewModel.ZIndex = int.MaxValue - 1;
             switch (border.Name)
             {
                 case "InfoBorder":

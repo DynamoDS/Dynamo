@@ -8,6 +8,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace Dynamo.Graph.Connectors
 {
@@ -120,6 +121,21 @@ namespace Dynamo.Graph.Connectors
             {
                 base.GUID = value;
             }
+        }
+
+        /// <summary>
+        /// Returns a snapshot of pin top-left canvas coordinates for this connector.
+        /// </summary>
+        internal List<(double X, double Y)> GetPinLocations()
+        {
+            if (ConnectorPinModels == null || ConnectorPinModels.Count == 0)
+            {
+                return new List<(double X, double Y)>();
+            }
+
+            return ConnectorPinModels
+                .Select(pin => (pin.Position.X, pin.Position.Y))
+                .ToList();
         }
 
         #endregion 
@@ -249,6 +265,57 @@ namespace Dynamo.Graph.Connectors
 
             return;
         }
+        /// <summary>
+        /// Retarget the start port of this connector while preserving the connector instance.
+        /// </summary>
+        /// <param name="newStart">The new start/output port.</param>
+        /// <param name="notifyEndNodeModified">
+        /// If true, triggers node-modified events on the downstream node.
+        /// If false, only marks the downstream node as dirty.
+        /// </param>
+        /// <returns>True if retargeting was successful, false otherwise.</returns>
+        internal bool TryUpdateStartPort(PortModel newStart, bool notifyEndNodeModified = true)
+        {
+            if (newStart == null || End == null || Start == null) return false;
+
+            if (ReferenceEquals(Start, newStart)) return false;
+
+            if (newStart.PortType != PortType.Output) return false;
+
+            if (ReferenceEquals(newStart, End) || newStart.Owner == null || End.Owner == null) return false;
+
+            if (ReferenceEquals(newStart.Owner, End.Owner)) return false;
+
+            PortModel oldStart = Start;
+            PortModel endPort = End;
+
+            // Keep node input/output lookup tables synchronized with the moved connector.
+            oldStart.Owner.DisconnectOutput(oldStart.Index, endPort.Index, endPort.Owner);
+            endPort.Owner.DisconnectInput(endPort.Index);
+
+            oldStart.Connectors.Remove(this);
+            Start = newStart;
+            if (!newStart.Connectors.Contains(this))
+            {
+                newStart.Connectors.Add(this);
+            }
+
+            endPort.Owner.ConnectInput(endPort.Index, newStart.Index, newStart.Owner);
+            newStart.Owner.ConnectOutput(newStart.Index, endPort.Index, endPort.Owner);
+
+            RaisePropertyChanged(nameof(Start));
+            if (notifyEndNodeModified)
+            {
+                endPort.Owner.OnNodeModified();
+            }
+            else
+            {
+                endPort.Owner.MarkNodeAsModified();
+            }
+
+            return true;
+        }   
+
 
         /// <summary>
         /// Delete the connector without raising port disconnection events.

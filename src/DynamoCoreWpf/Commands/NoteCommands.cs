@@ -1,4 +1,4 @@
-﻿using Dynamo.UI.Commands;
+using Dynamo.UI.Commands;
 using Newtonsoft.Json;
 
 namespace Dynamo.ViewModels

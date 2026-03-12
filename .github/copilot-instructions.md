@@ -164,6 +164,14 @@ Alert contributors if changes include:
 - Document changes clearly in the changelog
 - Follow API compatibility guidelines
 
+## Agent Skills and Templates
+
+For detailed task workflows, rules, and templates, see `.agents/README.md`:
+
+- **Skills**: each in `.agents/skills/<name>/SKILL.md` -- dynamo-dotnet-expert, dynamo-onboarding, dynamo-pr-description, dynamo-jira-ticket
+- **Rules**: `.agents/rules/` -- dynamo-core-rules
+- **Templates**: bundled inside skill folders as `template.md` (Jira)
+
 ## Important Documentation
 
 - [Dynamo Wiki](https://github.com/DynamoDS/Dynamo/wiki)
