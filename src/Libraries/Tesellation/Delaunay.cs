@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using MIConvexHull;
@@ -19,8 +19,18 @@ namespace Tessellation
         /// <search>uvs</search>
         public static IEnumerable<Curve> ByParametersOnSurface(IEnumerable<UV> uvs, Surface face)
         {
-            var verts = uvs.Select(Vertex2.FromUV).ToList();
-            var triangulation = DelaunayTriangulation<Vertex2, Cell2>.Create(verts);
+            var uvList = uvs?.ToList();
+            if (uvList == null || uvList.Count == 0 || face == null)
+                yield break;
+
+            // Get normalized UV scaling factors to handle anisotropic parameter spaces
+            var (normU, normV) = UvScalingUtilities.GetNormalizedUvScales(face);
+
+            // Build Delaunay in anisotropically scaled (u*normU, v*normV) space.
+            var verts = uvList.Select(uv => new Vertex2(uv.U * normU, uv.V * normV)).ToList();
+
+            const double PlaneDistanceTolerance = 1e-6;
+            var triangulation = DelaunayTriangulation<Vertex2, Cell2>.Create(verts, PlaneDistanceTolerance);
 
             // there are three vertices per cell in 2D
             foreach (var cell in triangulation.Cells)
@@ -29,9 +39,9 @@ namespace Tessellation
                 var v2 = cell.Vertices[1].AsVector();
                 var v3 = cell.Vertices[2].AsVector();
 
-                var xyz1 = face.PointAtParameter(v1.X, v1.Y);
-                var xyz2 = face.PointAtParameter(v2.X, v2.Y);
-                var xyz3 = face.PointAtParameter(v3.X, v3.Y);
+                var xyz1 = face.PointAtParameter(v1.X / normU, v1.Y / normV);
+                var xyz2 = face.PointAtParameter(v2.X / normU, v2.Y / normV);
+                var xyz3 = face.PointAtParameter(v3.X / normU, v3.Y / normV);
 
                 if (xyz1.DistanceTo(xyz2) > 0.1)
                 {
@@ -41,14 +51,14 @@ namespace Tessellation
 
                 if (xyz2.DistanceTo(xyz3) > 0.1)
                 {
-                    var l1 = Line.ByStartPointEndPoint(xyz3, xyz2);
-                    yield return l1;
+                    var l2 = Line.ByStartPointEndPoint(xyz3, xyz2);
+                    yield return l2;
                 }
 
                 if (xyz3.DistanceTo(xyz1) > 0.1)
                 {
-                    var l1 = Line.ByStartPointEndPoint(xyz1, xyz3);
-                    yield return l1;
+                    var l3 = Line.ByStartPointEndPoint(xyz1, xyz3);
+                    yield return l3;
                 }
             }
         }
@@ -60,7 +70,8 @@ namespace Tessellation
         public static IEnumerable<Curve> ByPoints(IEnumerable<Point> points)
         {
             var verts = points.Select(Vertex3.FromPoint).ToList();
-            var triResult = DelaunayTriangulation<Vertex3, Tetrahedron>.Create(verts);
+            const double PlaneDistanceTolerance = 1e-6;
+            var triResult = DelaunayTriangulation<Vertex3, Tetrahedron>.Create(verts, PlaneDistanceTolerance);
 
             // make edges
             foreach (var cell in triResult.Cells)
