@@ -63,17 +63,17 @@ Required sections in each generated ticket:
 **Example: Good ticket**
 
 ```markdown
-## [DYN-5678] String.FromObject node returns null for custom Python class instances
+# [DYN-5678] String.FromObject node returns null for custom Python class instances
 
-### Problem
+## Problem
 
 When a Python Script node returns a custom class instance, passing it to `String.FromObject` produces `null` instead of calling `__str__` or `ToString()`. This breaks downstream string operations.
 
-### Expected Behavior
+## Expected Behavior
 
 `String.FromObject` should call the object's `ToString()` method (or Python `__str__`) and return the string representation, consistent with how it handles built-in types.
 
-### Repro Steps
+## Repro Steps
 
 1. Open Dynamo Sandbox
 2. Create a Python Script node with: `class Foo:\n  def __str__(self): return "hello"\nOUT = Foo()`
@@ -82,20 +82,20 @@ When a Python Script node returns a custom class instance, passing it to `String
 5. Expected: `String.FromObject` outputs `"hello"`
 6. Actual: `String.FromObject` outputs `null`
 
-### Impact
+## Impact
 
 - **Users affected**: Users with Python-heavy workflows using custom classes
 - **Frequency**: Always (deterministic)
 - **Severity**: Major (breaks string formatting workflows)
 
-### Acceptance Criteria
+## Acceptance Criteria
 
 - [ ] `String.FromObject` returns `__str__` result for Python objects with `__str__` defined
 - [ ] `String.FromObject` returns `ToString()` result for .NET objects with custom `ToString()`
 - [ ] NUnit test added in `test/Libraries/CoreNodesTests/StringTests.cs`
 - [ ] No regression on built-in types (int, float, list, dict)
 
-### Investigation Notes
+## Investigation Notes
 
 - **Relevant files**: `src/Libraries/CoreNodes/String.cs`, `src/Engine/ProtoCore/`
 - **Root cause hypothesis**: The engine may be wrapping the Python return value in a way that loses the original type's `ToString()` override
