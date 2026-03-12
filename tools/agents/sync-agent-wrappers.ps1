@@ -164,11 +164,8 @@ if ($Check) {
     if (Test-Path $agentsDir) {
         $agentFiles = Get-ChildItem -Path $agentsDir -File
         foreach ($agentFile in $agentFiles) {
-            $relativePath = Resolve-Path -Path $agentFile.FullName -Relative
-            if ($relativePath.StartsWith(".\\")) {
-                $relativePath = $relativePath.Substring(2)
-            }
-
+            # Compute a path relative to the repository root, not the current working directory.
+            $relativePath = [System.IO.Path]::GetRelativePath($repoRoot, $agentFile.FullName)
             $relativePath = $relativePath.Replace("\", "/")
             $content = Get-Content -Raw -Encoding UTF8 $agentFile.FullName
 
