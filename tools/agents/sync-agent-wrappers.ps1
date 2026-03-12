@@ -149,7 +149,11 @@ foreach ($mapping in $wrapperMap) {
             New-Item -ItemType Directory -Path $wrapperDir | Out-Null
         }
 
-        Set-Content -Path $wrapperPath -Value $expected -Encoding UTF8 -NoNewline
+        [System.IO.File]::WriteAllText(
+            $wrapperPath,
+            $expected,
+            [System.Text.UTF8Encoding]::new($false, $true)
+        )
         Write-Host "Wrote wrapper: $($mapping.WrapperPath)"
     }
 }
