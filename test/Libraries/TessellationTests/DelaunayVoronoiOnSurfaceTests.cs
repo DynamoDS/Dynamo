@@ -12,7 +12,6 @@ namespace Dynamo.Tests
     [TestFixture]
     public class DelaunayVoronoiOnSurfaceTests : DynamoModelTestBase
     {
-        private const double Epsilon = 1e-9;
 
         // Validates that Delaunay.ByParametersOnSurface produces the expected triangulation edges
         // (in world space) on a strongly anisotropic surface, and that the triangulation satisfies
