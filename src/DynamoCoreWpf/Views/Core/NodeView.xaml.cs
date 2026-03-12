@@ -1593,12 +1593,23 @@ namespace Dynamo.Controls
             }));
         }
 
-        private Point PointToLocal(double x, double y, UIElement target)
+        private bool TryPointToLocal(double x, double y, UIElement target, out Point result)
         {
-            Point positionFromScreen = target.PointToScreen(new Point(x, y));
-            PresentationSource source = PresentationSource.FromVisual(target);
-            Point targetPoints = source.CompositionTarget.TransformFromDevice.Transform(positionFromScreen);
-            return targetPoints;
+            result = default;
+            try
+            {
+                Point positionFromScreen = target.PointToScreen(new Point(x, y));
+                PresentationSource source = PresentationSource.FromVisual(target);
+                result = source.CompositionTarget.TransformFromDevice.Transform(positionFromScreen);
+                return true;
+            }
+            catch
+            {
+                // DYN-9823: PointToScreen can throw when the visual is not connected to a PresentationSource
+                // (e.g. during layout, tab switch, or node deletion). Popup placement is non-critical,
+                // so just return false for any exception and let the caller handle it.
+                return false;
+            }
         }
 
         private void ViewModel_RequestAutoCompletePopupPlacementTarget(Window window, PortModel portModel, double spacing)
@@ -1606,20 +1617,27 @@ namespace Dynamo.Controls
             if (portModel.PortType == PortType.Input)
             {
                 var portView = inputPortControl.ItemContainerGenerator.ContainerFromIndex(portModel.Index) as FrameworkElement;
-                window.Top = PointToLocal(0, 0, portView).Y;
-                window.Left = PointToLocal(0, 0, this).X - window.Width - spacing;
+                if (TryPointToLocal(0, 0, portView, out var portTop) && TryPointToLocal(0, 0, this, out var nodeLeft))
+                {
+                    window.Top = portTop.Y;
+                    window.Left = nodeLeft.X - window.Width - spacing;
+                }
             }
             else
             {
                 var portView = outputPortControl.ItemContainerGenerator.ContainerFromIndex(portModel.Index) as FrameworkElement;
-                window.Top = PointToLocal(0, 0, portView).Y;
-                window.Left = PointToLocal(ActualWidth, 0, this).X + spacing;
+                if (TryPointToLocal(0, 0, portView, out var portTop) && TryPointToLocal(ActualWidth, 0, this, out var nodeRight))
+                {
+                    window.Top = portTop.Y;
+                    window.Left = nodeRight.X + spacing;
+                }
             }
         }
 
         private void ViewModel_RequestClusterAutoCompletePopupPlacementTarget(Window window, double spacing)
         {
-            Point targetPoints = PointToLocal(0, ActualHeight, this);
+            if (!TryPointToLocal(0, ActualHeight, this, out var targetPoints))
+                return;
             window.Left = Math.Clamp(targetPoints.X,
                     SystemParameters.VirtualScreenLeft,
                     SystemParameters.VirtualScreenLeft + SystemParameters.VirtualScreenWidth - window.Width);
