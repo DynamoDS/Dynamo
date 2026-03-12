@@ -14,6 +14,7 @@ Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.InstallAct
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.InstallActionText.get -> string
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsInstalledFallback.get -> bool
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsInstalledVersionSelected.get -> bool
+Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsPublishedByDynamoTeam.get -> bool
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsUninstallState.get -> bool
 Dynamo.UI.Views.ScriptObject.ResetSettings() -> void
 Dynamo.UI.Views.ScriptObject.ScriptObject(System.Action<bool> requestLaunchDynamo, System.Action<string> requestImportSettings, System.Func<bool> requestSignIn, System.Func<bool> requestSignOut, System.Action requestResetSettings) -> void

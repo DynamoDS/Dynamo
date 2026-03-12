@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using MIConvexHull;
@@ -19,16 +19,34 @@ namespace Tessellation
         /// <search>uvs</search>
         public static IEnumerable<Curve> ByParametersOnSurface(IEnumerable<UV> uvs, Surface face)
         {
-            var verts = uvs.Select(Vertex2.FromUV).ToList();
+            var uvList = uvs?.ToList();
+            if (uvList == null || uvList.Count == 0 || face == null)
+                yield break;
+
+            // Get normalized UV scaling factors to handle anisotropic parameter spaces
+            var (normU, normV) = UvScalingUtilities.GetNormalizedUvScales(face);
+
+            // Anisotropic scaling only by aspect ratio
+            var verts = uvList.Select(uv => new Vertex2(uv.U * normU, uv.V * normV)).ToList();
             var voronoiMesh = VoronoiMesh.Create<Vertex2, Cell2>(verts);
 
-            return from edge in voronoiMesh.Edges
-                   let _from = edge.Source.Circumcenter
-                   let to = edge.Target.Circumcenter
-                   let start = face.PointAtParameter(_from.X, _from.Y)
-                   let end = face.PointAtParameter(to.X, to.Y)
-                   where start.DistanceTo(end) > 0.1
-                   select Line.ByStartPointEndPoint(start, end);
+            foreach (var edge in voronoiMesh.Edges)
+            {
+                // Map circumcenters back to UV
+                var cFrom = edge.Source.Circumcenter;
+                var cTo = edge.Target.Circumcenter;
+
+                var u1 = cFrom.X / normU;
+                var v1 = cFrom.Y / normV;
+                var u2 = cTo.X / normU;
+                var v2 = cTo.Y / normV;
+
+                var start = face.PointAtParameter(u1, v1);
+                var end = face.PointAtParameter(u2, v2);
+
+                if (start.DistanceTo(end) > 0.1)
+                    yield return Line.ByStartPointEndPoint(start, end);
+            }
         }
     }
 }
