@@ -44,7 +44,8 @@ Templates are co-located inside the skill folder that uses them:
 │   │   └── SKILL.md          ← workflow for writing PR descriptions
 │   ├── dynamo-jira-ticket/
 │   │   ├── SKILL.md          ← workflow for writing Jira tickets
-│   │   └── template.md       ← copy/paste Jira template
+│   │   ├── assets/
+│   │   │   └── template.md   ← copy/paste Jira template
 │   └── dynamo-unit-testing/
 │       ├── SKILL.md          ← workflow for writing tests
 │       ├── assets/
