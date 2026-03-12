@@ -35,6 +35,9 @@ namespace Tessellation
             var verts = uvList.Select(uv => new Vertex2(uv.U * normU, uv.V * normV)).ToList();
             var voronoiMesh = VoronoiMesh.Create<Vertex2, Cell2>(verts);
 
+            static bool IsOutsideDomain(double u, double v) =>
+                    u < 0.0 || u > 1.0 || v < 0.0 || v > 1.0;
+
             foreach (var edge in voronoiMesh.Edges)
             {
                 // Map circumcenters back to UV
@@ -48,9 +51,6 @@ namespace Tessellation
 
                 // Discard edges where both circumcenters lie outside the UV domain [0,1].
                 // These are purely external Voronoi rays with no valid surface intersection.
-                static bool IsOutsideDomain(double u, double v) =>
-                    u < 0.0 || u > 1.0 || v < 0.0 || v > 1.0;
-
                 if (IsOutsideDomain(u1, v1) && IsOutsideDomain(u2, v2))
                     continue;
 

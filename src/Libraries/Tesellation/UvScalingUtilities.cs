@@ -12,7 +12,7 @@ namespace Tessellation
         ///     The scaling preserves the aspect ratio while keeping values in a reasonable numerical range.
         /// </summary>
         /// <param name="face">Surface to compute scaling factors for.</param>
-        /// <returns>Tuple containing normalized U and V scale factors.</returns>
+        /// <returns>Tuple containing normalized scale factors in the U and V directions and the maximum physical scale per unit UV parameter, equal to the larger of the normalized scale factors.</returns>
         internal static (double normU, double normV, double maxPhysicalScale) GetNormalizedUvScales(Surface face)
         {
             // Physical scale per unit U/V based on iso-curve lengths along surface edges.
