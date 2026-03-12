@@ -24,11 +24,19 @@ namespace Tessellation
                 yield break;
 
             // Get normalized UV scaling factors to handle anisotropic parameter spaces
-            var (normU, normV) = UvScalingUtilities.GetNormalizedUvScales(face);
+            var (normU, normV, minPhysicalScale) = UvScalingUtilities.GetNormalizedUvScales(face);
+
+            // Minimum edge length threshold in world units: 0.1% of the shorter physical dimension
+            // of the surface. Filters degenerate near-zero Voronoi edges arising from nearly
+            // coincident circumcenters without affecting valid geometry under normal usage.
+            var minEdgeLength = minPhysicalScale * 1e-3;
 
             // Anisotropic scaling only by aspect ratio
             var verts = uvList.Select(uv => new Vertex2(uv.U * normU, uv.V * normV)).ToList();
             var voronoiMesh = VoronoiMesh.Create<Vertex2, Cell2>(verts);
+
+            static bool IsOutsideDomain(double u, double v) =>
+                    u < 0.0 || u > 1.0 || v < 0.0 || v > 1.0;
 
             foreach (var edge in voronoiMesh.Edges)
             {
@@ -41,10 +49,15 @@ namespace Tessellation
                 var u2 = cTo.X / normU;
                 var v2 = cTo.Y / normV;
 
-                var start = face.PointAtParameter(u1, v1);
-                var end = face.PointAtParameter(u2, v2);
+                // Discard edges where both circumcenters lie outside the UV domain [0,1].
+                // These are purely external Voronoi rays with no valid surface intersection.
+                if (IsOutsideDomain(u1, v1) && IsOutsideDomain(u2, v2))
+                    continue;
 
-                if (start.DistanceTo(end) > 0.1)
+                using var start = face.PointAtParameter(u1, v1);
+                using var end = face.PointAtParameter(u2, v2);
+
+                if (start.DistanceTo(end) > minEdgeLength)
                     yield return Line.ByStartPointEndPoint(start, end);
             }
         }
