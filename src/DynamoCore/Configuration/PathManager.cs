@@ -503,9 +503,9 @@ namespace Dynamo.Core
         ///
         /// Resolution order:
         /// 1) First assembly on the current managed call stack under hostApplicationDirectory.
-        /// 2) Entry assembly location.
-        /// 3) Current process main module path.
-        /// 4) First non-system, non-test assembly on the current managed call stack.
+        /// 2) First non-system, non-test assembly on the current managed call stack.
+        /// 3) Entry assembly location.
+        /// 4) Current process main module path.
         /// 5) Fallback to DynamoCore assembly location.
         /// </summary>
         /// <returns>
@@ -518,18 +518,9 @@ namespace Dynamo.Core
             if (TryGetAssemblyPathFromHostDirectory(out var hostAssemblyPath))
                 return hostAssemblyPath;
 
-            // Option 2: Use the process entry assembly when available and versioned.
-            var entryAssemblyPath = Assembly.GetEntryAssembly()?.Location;
-            if (HasNonZeroFileVersion(entryAssemblyPath))
-                return entryAssemblyPath;
-
-            // Option 3: Use the current process main module path as a hosted fallback.
-            var processMainModulePath = TryGetCurrentProcessMainModulePath();
-            if (HasNonZeroFileVersion(processMainModulePath))
-                return processMainModulePath;
-
-            // Option 4: Last resort, walk stack frames and pick the first non-system,
-            // non-test assembly with a non-zero file version.
+            // Option 2: Use the first non-system, non-test assembly on the current
+            // managed call stack. This helps when PathManager is created before host
+            // directories are assigned, as in some integrations.
             var currentAssembly = typeof(PathManager).Assembly;
             var stackTrace = new StackTrace(skipFrames: 1, fNeedFileInfo: false);
 
@@ -556,6 +547,16 @@ namespace Dynamo.Core
                 if (HasNonZeroFileVersion(candidatePath))
                     return candidatePath;
             }
+
+            // Option 3: Use the process entry assembly when available and versioned.
+            var entryAssemblyPath = Assembly.GetEntryAssembly()?.Location;
+            if (HasNonZeroFileVersion(entryAssemblyPath))
+                return entryAssemblyPath;
+
+            // Option 4: Use the current process main module path as a hosted fallback.
+            var processMainModulePath = TryGetCurrentProcessMainModulePath();
+            if (HasNonZeroFileVersion(processMainModulePath))
+                return processMainModulePath;
 
             if (PathHelper.IsValidPath(entryAssemblyPath))
                 return entryAssemblyPath;
