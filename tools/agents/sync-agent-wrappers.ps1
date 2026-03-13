@@ -43,6 +43,12 @@ $wrapperMap = @(
         WrapperPath = ".github/agents/Dynamo Jira Ticket.md"
         WrapperName = "Dynamo Jira Ticket"
         WrapperTitle = "Dynamo Jira Ticket"
+    },
+    @{
+        CanonicalSkillPath = ".agents/skills/dynamo-skill-writer/SKILL.md"
+        WrapperPath = ".github/agents/Dynamo Skill Writer.md"
+        WrapperName = "Dynamo Skill Writer"
+        WrapperTitle = "Dynamo Skill Writer"
     }
 )
 
@@ -99,6 +105,32 @@ Usage guidance:
 Maintenance note:
 - Keep this file lightweight to avoid drift across tools (Copilot/Cursor/Claude).
 "@
+}
+
+function Resolve-RepoRelativePath {
+    param(
+        [string]$basePath,
+        [string]$targetPath
+    )
+
+    $method = [System.IO.Path].GetMethod(
+        "GetRelativePath",
+        [System.Reflection.BindingFlags]::Public -bor [System.Reflection.BindingFlags]::Static,
+        $null,
+        [Type[]]@([string], [string]),
+        $null
+    )
+
+    if ($null -ne $method) {
+        return [System.IO.Path]::GetRelativePath($basePath, $targetPath)
+    }
+
+    $relative = Resolve-Path -Path $targetPath -Relative
+    if ($relative.StartsWith(".\\")) {
+        return $relative.Substring(2)
+    }
+
+    return $relative
 }
 
 $driftCount = 0
@@ -165,7 +197,7 @@ if ($Check) {
         $agentFiles = Get-ChildItem -Path $agentsDir -File
         foreach ($agentFile in $agentFiles) {
             # Compute a path relative to the repository root, not the current working directory.
-            $relativePath = [System.IO.Path]::GetRelativePath($repoRoot, $agentFile.FullName)
+            $relativePath = Resolve-RepoRelativePath -basePath $repoRoot -targetPath $agentFile.FullName
             $relativePath = $relativePath.Replace("\", "/")
             $content = Get-Content -Raw -Encoding UTF8 $agentFile.FullName
 

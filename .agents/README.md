@@ -39,6 +39,7 @@ This matrix documents how canonical skills in `.agents/skills/` are exposed in e
 | `dynamo-onboarding` | Reference `@.agents/skills/dynamo-onboarding/SKILL.md` | Wrapper: `.github/agents/Dynamo Onboarding.md` | Referenced from `CLAUDE.md` via `.agents/` |
 | `dynamo-pr-description` | Reference `@.agents/skills/dynamo-pr-description/SKILL.md` | Wrapper: `.github/agents/Dynamo PR Description.md` | Referenced from `CLAUDE.md` via `.agents/` |
 | `dynamo-jira-ticket` | Reference `@.agents/skills/dynamo-jira-ticket/SKILL.md` | Wrapper: `.github/agents/Dynamo Jira Ticket.md` | Referenced from `CLAUDE.md` via `.agents/` |
+| `dynamo-skill-writer` | Reference `@.agents/skills/dynamo-skill-writer/SKILL.md` | Wrapper: `.github/agents/Dynamo Skill Writer.md` | Referenced from `CLAUDE.md` via `.agents/` |
 
 Notes:
 - Skill logic lives only in `.agents/skills/`.
@@ -57,6 +58,7 @@ Each skill lives in its own folder with a `SKILL.md` and optionally a `template.
 | [dynamo-onboarding](skills/dynamo-onboarding/SKILL.md) | Learning the Dynamo codebase, architecture briefings, finding where to start on a Jira ticket. | Repo-specific variant |
 | [dynamo-pr-description](skills/dynamo-pr-description/SKILL.md) | Writing PR descriptions matching the Dynamo template. | Repo-specific variant |
 | [dynamo-jira-ticket](skills/dynamo-jira-ticket/SKILL.md) | Creating or refining Jira tickets from bugs, test failures, or feature requests. | Repo-specific variant |
+| [dynamo-skill-writer](skills/dynamo-skill-writer/SKILL.md) | Authoring/updating skills and enforcing sync across Copilot, Cursor, and Claude surfaces. | Repo-specific variant |
 
 ### Templates (bundled with skills)
 
@@ -84,9 +86,11 @@ Templates are co-located inside the skill folder that uses them:
 │   │   └── SKILL.md
 │   ├── dynamo-pr-description/
 │   │   ├── SKILL.md          ← workflow for writing PR descriptions
-│   └── dynamo-jira-ticket/
+│   ├── dynamo-jira-ticket/
 │       ├── SKILL.md          ← workflow for writing Jira tickets
 │       └── template.md       ← copy/paste Jira template
+│   └── dynamo-skill-writer/
+│       └── SKILL.md          ← workflow for authoring and syncing skills
 ├── rules/
 │   └── dynamo-core-rules.md
 └── README.md                  ← you are here

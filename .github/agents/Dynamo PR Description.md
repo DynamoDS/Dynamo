@@ -1,4 +1,4 @@
-﻿<!--
+<!--
 AUTO-GENERATED FILE. Do not edit directly.
 Canonical source: .agents/skills/dynamo-pr-description/SKILL.md
 Regenerate with: ./tools/agents/sync-agent-wrappers.ps1
