@@ -31,6 +31,7 @@ Read `.agents/` for comprehensive skills, rules, and templates:
   - `dynamo-onboarding` -- Dynamo architecture, ecosystem, debugging
   - `dynamo-pr-description` -- PR descriptions matching Dynamo template (uses `.github/PULL_REQUEST_TEMPLATE.md`)
   - `dynamo-jira-ticket` -- creating/refining Jira tickets (includes template.md)
+  - `dynamo-skill-writer` -- writing/updating canonical skills and keeping Copilot/Cursor/Claude skill surfaces in sync
 - **Rules** (constraints): `.agents/rules/`
   - `dynamo-core-rules.md` -- .NET/Dynamo constraints
 

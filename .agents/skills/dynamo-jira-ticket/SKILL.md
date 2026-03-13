@@ -22,7 +22,7 @@ A bug description, error log, failing test output, feature request, or code inve
 
 ## Output format
 
-A complete Jira ticket body ready to paste, following the template below.
+A complete Jira ticket body ready to paste, following the canonical template in `template.md`.
 
 ---
 
@@ -34,7 +34,7 @@ A complete Jira ticket body ready to paste, following the template below.
    - For UI issues: check `src/DynamoCoreWpf/` and the relevant view extension.
    - For PublicAPI errors: check `PublicAPI.Unshipped.txt` / `PublicAPI.Shipped.txt` in the affected project.
    - For test failures: read the NUnit test output and the relevant test file.
-2. **Write the ticket** using the template below.
+2. **Write the ticket** using `template.md` in this folder.
 3. **Review** -- ensure every section has concrete, verifiable content. No vague language.
 
 ## Writing Rules
@@ -47,60 +47,33 @@ A complete Jira ticket body ready to paste, following the template below.
 
 ## Ticket Template
 
-```markdown
-## [DYN-XXXX] <concise problem statement>
+Use the canonical template at `template.md` in this folder.
 
-### Problem
-
-(What fails, where, and when. Include exact error messages or stack traces.)
-
-### Expected Behavior
-
-(What should happen instead.)
-
-### Repro Steps
-
-1. Open Dynamo Sandbox / Dynamo in Revit
-2. (specific steps to reproduce)
-3. Expected: (what should happen)
-4. Actual: (what happens instead)
-
-### Impact
-
-- **Users affected**: (all users / specific workflow / specific host)
-- **Frequency**: (Always / intermittent / edge case)
-- **Severity**: (Blocker / major / minor / cosmetic)
-
-### Acceptance Criteria
-
-- [ ] (Specific, testable condition)
-- [ ] (Include NUnit test if applicable)
-- [ ] (If API change: PublicAPI.Unshipped.txt updated, API Changes wiki updated)
-
-### Investigation Notes
-
-- **Relevant files**: (paths in the Dynamo repo to start investigating)
-- **Related tickets**: (DYN-xxxx, if any)
-- **Root cause hypothesis**: (if known, otherwise omit)
-- **Risk/Rollback**: (known risks and fallback plan, if applicable)
-```
+Required sections in each generated ticket:
+- Title
+- Problem
+- Expected Behavior
+- Repro Steps
+- Impact
+- Acceptance Criteria
+- Investigation Notes
 
 ---
 
 **Example: Good ticket**
 
 ```markdown
-## [DYN-5678] String.FromObject node returns null for custom Python class instances
+# [DYN-5678] String.FromObject node returns null for custom Python class instances
 
-### Problem
+## Problem
 
 When a Python Script node returns a custom class instance, passing it to `String.FromObject` produces `null` instead of calling `__str__` or `ToString()`. This breaks downstream string operations.
 
-### Expected Behavior
+## Expected Behavior
 
 `String.FromObject` should call the object's `ToString()` method (or Python `__str__`) and return the string representation, consistent with how it handles built-in types.
 
-### Repro Steps
+## Repro Steps
 
 1. Open Dynamo Sandbox
 2. Create a Python Script node with: `class Foo:\n  def __str__(self): return "hello"\nOUT = Foo()`
@@ -109,20 +82,20 @@ When a Python Script node returns a custom class instance, passing it to `String
 5. Expected: `String.FromObject` outputs `"hello"`
 6. Actual: `String.FromObject` outputs `null`
 
-### Impact
+## Impact
 
 - **Users affected**: Users with Python-heavy workflows using custom classes
 - **Frequency**: Always (deterministic)
 - **Severity**: Major (breaks string formatting workflows)
 
-### Acceptance Criteria
+## Acceptance Criteria
 
 - [ ] `String.FromObject` returns `__str__` result for Python objects with `__str__` defined
 - [ ] `String.FromObject` returns `ToString()` result for .NET objects with custom `ToString()`
 - [ ] NUnit test added in `test/Libraries/CoreNodesTests/StringTests.cs`
 - [ ] No regression on built-in types (int, float, list, dict)
 
-### Investigation Notes
+## Investigation Notes
 
 - **Relevant files**: `src/Libraries/CoreNodes/String.cs`, `src/Engine/ProtoCore/`
 - **Root cause hypothesis**: The engine may be wrapping the Python return value in a way that loses the original type's `ToString()` override
