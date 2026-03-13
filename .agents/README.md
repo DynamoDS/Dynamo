@@ -68,7 +68,7 @@ Templates are co-located inside the skill folder that uses them:
 | Template | Location | Purpose |
 |----------|----------|---------|
 | PR description | [.github/PULL_REQUEST_TEMPLATE.md](../../.github/PULL_REQUEST_TEMPLATE.md) | GitHub PR template (referenced by PR description skill) |
-| Jira triage | [dynamo-jira-ticket/assets/template.md](./skills/dynamo-jira-ticket/assets/template.md) | Triage a Jira ticket into a structured issue |
+| Jira triage | [dynamo-jira-ticket/template.md](./skills/dynamo-jira-ticket/template.md) | Triage a Jira ticket into a structured issue |
 
 ### Rules (short guardrails -- always applicable)
 
@@ -113,7 +113,7 @@ Templates are co-located inside the skill folder that uses them:
 .cursor/skills/      <-- Cursor skill mirror/pointers
 .github/copilot-instructions.md  <-- Copilot guidance + pointers here
 .github/agents/      <-- existing Copilot agents (Janitor, UX Designer, ContentDesigner)
-../AGENTS.md            <-- Agent guidance overview + pointers here
+../AGENTS.md            <-- AI Agents guidance overview + pointers here
 ../CLAUDE.md            <-- Claude guidance + pointers here
 ```
 
