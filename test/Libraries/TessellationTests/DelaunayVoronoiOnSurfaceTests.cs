@@ -12,7 +12,6 @@ namespace Dynamo.Tests
     [TestFixture]
     public class DelaunayVoronoiOnSurfaceTests : DynamoModelTestBase
     {
-        private const double Epsilon = 1e-9;
 
         // Validates that Delaunay.ByParametersOnSurface produces the expected triangulation edges
         // (in world space) on a strongly anisotropic surface, and that the triangulation satisfies
@@ -83,14 +82,16 @@ namespace Dynamo.Tests
                 for (int j = 0; j < countV; j++)
                 {
                     var v = j / (double)(countV - 1);
+                    var u0 = u;
+                    var v0 = v;
                     // Slightly jitter interior points to reduce degenerate cocircular cases.
                     if (i != 0 && i != countU - 1 && j != 0 && j != countV - 1)
                     {
-                        u += (i + j) * 1e-6;
-                        v += (i - j) * 1e-6;
+                        u0 += (i + j) * 1e-6;
+                        v0 += (i - j) * 1e-6;
                     }
 
-                    uvs.Add(UV.ByCoordinates(u, v));
+                    uvs.Add(UV.ByCoordinates(u0, v0));
                 }
             }
 
@@ -103,7 +104,7 @@ namespace Dynamo.Tests
         /// </summary>
         private static List<Triangle> ComputeDelaunayTrianglesInScaledUvSpace(IReadOnlyList<UV> uvs, Surface face)
         {
-            var (normU, normV) = UvScalingUtilities.GetNormalizedUvScales(face);
+            var (normU, normV, _) = UvScalingUtilities.GetNormalizedUvScales(face);
 
             return ComputeDelaunayTrianglesInUvSpace(uvs, normU, normV);
         }
@@ -167,7 +168,7 @@ namespace Dynamo.Tests
         {
             const double spatialTolerance = 1e-2;
             const double requiredRelativeImprovement = 0.003;
-            var (normU, normV) = UvScalingUtilities.GetNormalizedUvScales(face);
+            var (normU, normV, _) = UvScalingUtilities.GetNormalizedUvScales(face);
             var unscaledTriangles = ComputeDelaunayTrianglesInUnscaledUvSpace(uvs);
 
             var expectedScaledVertices = new List<WorldPoint>(triangles.Count);
@@ -225,8 +226,8 @@ namespace Dynamo.Tests
             IReadOnlyList<Curve> apiEdges)
         {
             const double spatialTolerance = 1e-3;
-            const double minEdgeLength = 0.1;
-            var (normU, normV) = UvScalingUtilities.GetNormalizedUvScales(face);
+            var (normU, normV, minPhysicalScale) = UvScalingUtilities.GetNormalizedUvScales(face);
+            var minEdgeLength = minPhysicalScale * 1e-3; // must match Delaunay.ByParametersOnSurface threshold
 
             var expectedEdges = new List<WorldSegment>();
             void AddExpectedEdge(Pt a, Pt b)
@@ -291,7 +292,7 @@ namespace Dynamo.Tests
         {
             const double vertexMatchTolerance = 1e-3;
             const double edgeLengthTolerance = 1e-9;
-            var (normU, normV) = UvScalingUtilities.GetNormalizedUvScales(face);
+            var (normU, normV, _) = UvScalingUtilities.GetNormalizedUvScales(face);
 
             var uvVertices = new List<UvVertex>(uvs.Count);
             foreach (var uv in uvs)
