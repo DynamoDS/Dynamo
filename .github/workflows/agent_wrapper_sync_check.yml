@@ -1,0 +1,24 @@
+name: Agent Wrapper Sync Check
+
+on:
+  pull_request:
+    paths:
+      - '.agents/**'
+      - '.github/agents/**'
+      - 'tools/agents/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-agent-wrappers:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate generated wrappers
+        shell: pwsh
+        run: ./tools/agents/sync-agent-wrappers.ps1 -Check

@@ -1,29 +1,35 @@
-# [DYN-XXXX] Title
+# [DYN-XXXX] <concise problem statement>
 
 ## Problem
 
-(What is broken or missing? Include exact error messages or screenshots if available.)
+(What fails, where, and when. Include exact error messages or stack traces.)
 
-## Impact
+## Expected Behavior
 
-- **Users affected**: (Who is impacted? How many?)
-- **Frequency**: (Always / intermittent / edge case)
-- **Severity**: (Blocker / major / minor / cosmetic)
+(What should happen instead.)
 
 ## Repro Steps
 
-1. Open Dynamo Sandbox 3.x
-2. (Step-by-step to reproduce)
+1. Open Dynamo Sandbox / Dynamo in Revit
+2. (specific steps to reproduce)
 3. Expected: (what should happen)
 4. Actual: (what happens instead)
 
+## Impact
+
+- **Users affected**: (all users / specific workflow / specific host)
+- **Frequency**: (Always / intermittent / edge case)
+- **Severity**: (Blocker / major / minor / cosmetic)
+
 ## Acceptance Criteria
 
-- [ ] (Specific, testable condition that proves the issue is resolved)
-- [ ] (Include regression test if applicable)
+- [ ] (Specific, testable condition)
+- [ ] (Include NUnit test if applicable)
+- [ ] (If API change: PublicAPI.Unshipped.txt updated, API Changes wiki updated)
 
-## Notes
+## Investigation Notes
 
+- **Relevant files**: (paths in the Dynamo repo to start investigating)
 - **Related tickets**: (DYN-xxxx, if any)
-- **Affected area**: (component or module within Dynamo)
-- **Relevant files**: (paths to start investigating)
+- **Root cause hypothesis**: (if known, otherwise omit)
+- **Risk/Rollback**: (known risks and fallback plan, if applicable)
