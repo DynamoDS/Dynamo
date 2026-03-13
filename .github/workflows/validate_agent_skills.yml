@@ -6,9 +6,6 @@ on:
       - ".agents/skills/**"
       - ".github/agents/**"
 
-permissions:
-  contents: read
-
 env:
   SKILLS_DIR: .agents/skills
 
@@ -16,6 +13,8 @@ jobs:
   validate_agent_skills:
     name: Validate Agent Skills
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v6
         with:
@@ -33,6 +32,8 @@ jobs:
   validate_agent_skill_wrappers:
     name: Validate Agent Skill Wrappers
     runs-on: windows-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v6
