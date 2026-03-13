@@ -174,10 +174,12 @@ foreach ($canonicalPath in $canonicalSkills) {
         $expectedWrapperRelativePaths[$normalizedWrapperPath] = $true
     }
 
+    $name = Get-SkillName -skillContent $skillContent
     $description = Get-SkillDescription -skillContent $skillContent
-    $title = Get-SkillTitle -skillContent $skillContent -skillName $skillName
+    $title = Get-SkillTitle -skillContent $skillContent -skillName $name
 
-    $expected = New-WrapperContent -name $skillName -description $description -title $title -canonicalPath $canonicalPath
+    # using title as the wrapper name since it's used as display name in GitHub web UI
+    $expected = New-WrapperContent -name $title -description $description -title $title -canonicalPath $canonicalPath
 
     if ($Check) {
         if (-not (Test-Path $wrapperFullPath)) {

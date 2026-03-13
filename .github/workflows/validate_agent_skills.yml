@@ -28,7 +28,7 @@ jobs:
       - name: Install skill-validator
         run: go install github.com/agent-ecosystem/skill-validator/cmd/skill-validator@v1.2.1
       - name: Validate changed skills
-        run: bash .github/scripts/validate-skills.sh "${{ github.base_ref }}" "$SKILLS_DIR"
+        run: bash .github/scripts/validate_skills.sh "${{ github.base_ref }}" "$SKILLS_DIR"
 
   validate_agent_skill_wrappers:
     name: Validate Agent Skill Wrappers

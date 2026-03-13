@@ -5,7 +5,7 @@ Regenerate with: ./.github/scripts/sync_agent_wrappers.ps1
 -->
 
 ---
-name: dynamo-skill-writer
+name: Dynamo Skill Writer
 description: Author and maintain Dynamo agent skills while enforcing cross-tool sync between canonical .agents skills and generated wrappers for GitHub Copilot, Cursor, and Claude Code.
 ---
 
