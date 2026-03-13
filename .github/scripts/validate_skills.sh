@@ -67,10 +67,8 @@ if [ $FAILED -ne 0 ]; then
   echo ""
   echo "Skill validation failed!"
   echo ""
-  if [ -n "${GITHUB_REPOSITORY:-}" ] && [ -n "${GITHUB_RUN_ID:-}" ]; then
-    echo "See the Job Summary for detailed validation results:"
-    echo "  https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
-  fi
+  echo "See the Job Summary for detailed validation results:"
+  echo "  https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
   echo ""
 fi
 

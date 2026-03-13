@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - ".agents/skills/**"
+      - ".github/agents/**"
 
 permissions:
   contents: read
@@ -12,7 +13,8 @@ env:
   SKILLS_DIR: .agents/skills
 
 jobs:
-  validate:
+  validate_agent_skills:
+    name: Validate Agent Skills
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -27,3 +29,13 @@ jobs:
         run: go install github.com/agent-ecosystem/skill-validator/cmd/skill-validator@v1.2.1
       - name: Validate changed skills
         run: bash .github/scripts/validate-skills.sh "${{ github.base_ref }}" "$SKILLS_DIR"
+
+  validate_agent_skill_wrappers:
+    name: Validate Agent Skill Wrappers
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Validate generated wrappers
+        shell: pwsh
+        run: ./.github/scripts/sync_agent_wrappers.ps1 -Check -Report
