@@ -65,17 +65,13 @@ function Get-SkillDescription {
 }
 
 function Get-SkillTitle {
-    # Extracts title from skill content, or derives from skill name as fallback
+    # Extracts title from first heading in markdown content, or derives from skill name as fallback
     param([string]$skillContent, [string]$skillName)
 
-    # Try to extract title from frontmatter first
-    $titleMatch = [regex]::Match($skillContent, '(?ms)^---\s*.*?^title:\s*(.+?)\s*$.*?^---\s*')
+    # Try to extract from first level-1 heading after frontmatter block
+    $titleMatch = [regex]::Match($skillContent, '(?ms)^---.*?^---.*?^#\s+([^#\r\n]+)')
     if ($titleMatch.Success) {
-        $raw = $titleMatch.Groups[1].Value.Trim()
-        if (($raw.StartsWith('"') -and $raw.EndsWith('"')) -or ($raw.StartsWith("'") -and $raw.EndsWith("'"))) {
-            return $raw.Substring(1, $raw.Length - 2)
-        }
-        return $raw
+        return $titleMatch.Groups[1].Value.Trim()
     }
 
     # Fallback: derive from skill name

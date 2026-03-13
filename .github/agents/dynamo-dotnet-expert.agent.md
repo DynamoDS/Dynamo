@@ -5,11 +5,11 @@ Regenerate with: ./.github/scripts/sync_agent_wrappers.ps1
 -->
 
 ---
-name: Dynamo Dotnet Expert
+name: Dynamo dotNet Expert
 description: Write and review C#/.NET code in Dynamo following Dynamo coding standards, modern C# patterns, and repo conventions. Use this skill whenever writing C# code, reviewing a PR diff, designing types, managing PublicAPI surface files, choosing patterns, making performance decisions, or refactoring in the Dynamo codebase. Also use when asking about NUnit testing, async patterns, error handling, immutability, or security in Dynamo.
 ---
 
-# Dynamo Dotnet Expert
+# Dynamo dotNet Expert
 
 This is a thin compatibility wrapper for the canonical skill.
 
