@@ -1,6 +1,6 @@
 ---
 name: dynamo-pr-description
-description: Generate PR descriptions for Dynamo that match the team template exactly. Use this skill whenever writing a pull request description, cleaning up a PR body, or generating a review-ready summary from a diff in the Dynamo repo. Also use when the user says "write a PR", "PR description", or "prep this for review."
+description: Generate PR descriptions for Dynamo that align with the team template section names and order. Use this skill whenever writing a pull request description, cleaning up a PR body, or generating a review-ready summary from a diff in the Dynamo repo. Also use when the user says "write a PR", "PR description", or "prep this for review."
 ---
 
 # Dynamo PR Description Writer
@@ -30,7 +30,7 @@ A complete PR body matching the Dynamo template in `.github/PULL_REQUEST_TEMPLAT
 
 1. Read the diff (staged changes, commit history, or user-provided summary).
 2. Identify the *why* -- what problem does this solve?
-3. Fill the template below from the diff and context.
+3. Fill `.github/PULL_REQUEST_TEMPLATE.md` from the diff and context.
 4. For each declaration checkbox, only check it if you've verified it's true.
 5. Write the release note from the user's perspective (one sentence, or `N/A`).
 6. Leave `(FILL ME IN)` placeholders for anything you can't determine from the diff.
@@ -54,8 +54,8 @@ Format: `DYN-1234: concise change summary` (include Jira key when known).
 
 Read `.github/PULL_REQUEST_TEMPLATE.md` for the exact template structure. Follow its sections in order.
 
-Enhancements to apply when filling it in:
-- Add a **"Key changes:"** bullet list under Purpose summarizing the significant changes.
+Content guidance within those sections:
+- In Purpose, include a concise **"Key changes:"** bullet list when it helps readability.
 - For Release Notes, write one concise sentence from the user's perspective, or `N/A` when not user-facing.
 
 ---
