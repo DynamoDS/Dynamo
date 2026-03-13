@@ -3,7 +3,7 @@ name: dynamo-unit-testing
 description: Write comprehensive NUnit tests for the Dynamo codebase following Dynamo testing patterns, conventions, and architectural constraints. Use this skill when writing test methods, test classes, setting up test infrastructure, mocking dependencies, testing with .dyn files, or reviewing test code in Dynamo.
 ---
 
-# Dynamo Unit Testing Expert
+# Dynamo Unit Testing
 
 ## When to use
 - Writing new test methods or test classes for Dynamo components

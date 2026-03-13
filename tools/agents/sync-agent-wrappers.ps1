@@ -49,6 +49,12 @@ $wrapperMap = @(
         WrapperPath = ".github/agents/Dynamo Skill Writer.md"
         WrapperName = "Dynamo Skill Writer"
         WrapperTitle = "Dynamo Skill Writer"
+    },
+    @{
+        CanonicalSkillPath = ".agents/skills/dynamo-unit-testing/SKILL.md"
+        WrapperPath = ".github/agents/Dynamo Unit Testing.md"
+        WrapperName = "Dynamo Unit Testing"
+        WrapperTitle = "Dynamo Unit Testing"
     }
 )
 
