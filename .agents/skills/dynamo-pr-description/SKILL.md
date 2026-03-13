@@ -14,7 +14,7 @@ description: Generate PR descriptions for Dynamo that align with the team templa
 ## When not to use
 
 - PRs targeting the DynamoMCP repo -- that repo has its own PR description skill.
-- Jira ticket triage -- use [template](../dynamo-jira-ticket/template.md) instead.
+- Jira ticket triage -- use [template](../dynamo-jira-ticket/assets/template.md) instead.
 
 ## Inputs expected
 
