@@ -4016,6 +4016,9 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="PreferencesViewGeneralSettingsTemplate" xml:space="preserve">
     <value>Templates</value>
   </data>
+  <data name="PreferencesTemplatesInfoTooltip" xml:space="preserve">
+    <value>Templates are pre-built Dynamo workspaces that you can use as starting points for new graphs. Set the folder path where Dynamo looks for template files.</value>
+  </data>
   <data name="DynamoXmlFileFormat" xml:space="preserve">
     <value>Dynamo 1.x file format</value>
   </data>
