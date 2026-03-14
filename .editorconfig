@@ -18,3 +18,6 @@ dotnet_diagnostic.CA2326.severity = warning
 
 [*.tt]
 insert_final_newline = false
+
+[*.yml]
+indent_size = 2
