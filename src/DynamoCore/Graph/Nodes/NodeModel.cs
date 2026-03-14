@@ -86,7 +86,7 @@ namespace Dynamo.Graph.Nodes
         /// Info() state restoration. Access is single-threaded (NodeModel state mutations
         /// are not thread-safe by design).
         /// </summary>
-        private bool suppressTransientClear;
+        private bool suppressClearTransientMessages;
         private readonly ObservableHashSet<Info> infos = new ObservableHashSet<Info>();
         private string description;
 
@@ -396,7 +396,7 @@ namespace Dynamo.Graph.Nodes
             get { return state; }
             set
             {
-                if (!suppressTransientClear &&
+                if (!suppressClearTransientMessages &&
                     value != ElementState.Error && value != ElementState.Info && value != ElementState.PersistentInfo && value != ElementState.AstBuildBroken)
                     ClearTransientWarningsAndErrors();
 
@@ -2004,9 +2004,9 @@ namespace Dynamo.Graph.Nodes
                 // during restoration. Without this, restoring State to Warning triggers the setter
                 // which calls ClearTransientWarningsAndErrors(), wiping the warning entry from Infos
                 // that was just added before Info() was called.
-                suppressTransientClear = true;
+                suppressClearTransientMessages = true;
                 try { State = initialState; }
-                finally { suppressTransientClear = false; }
+                finally { suppressClearTransientMessages = false; }
             }
         }
 
