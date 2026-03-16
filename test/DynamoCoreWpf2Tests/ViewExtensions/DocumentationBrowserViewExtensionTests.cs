@@ -623,8 +623,8 @@ namespace DynamoCoreWpfTests
             var nodeWithoutDocumentation = "Package.Package.Package";
 
             // Assert
-            Assert.That(PackageDocumentationManager.Instance.ContainsAnnotationDoc(Path.Combine(packageName, nodeWithDocumentation)));
-            Assert.That(!PackageDocumentationManager.Instance.ContainsAnnotationDoc(Path.Combine(packageName, nodeWithoutDocumentation)));
+            Assert.That(PackageDocumentationManager.Instance.ContainsAnnotationDoc(nodeWithDocumentation, packageName));
+            Assert.That(!PackageDocumentationManager.Instance.ContainsAnnotationDoc(nodeWithoutDocumentation, packageName));
         }
 
         [Test]

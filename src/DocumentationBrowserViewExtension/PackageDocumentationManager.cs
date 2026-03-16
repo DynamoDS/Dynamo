@@ -27,6 +27,11 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         private Dictionary<string, FileSystemWatcher> markdownFileWatchers = new Dictionary<string, FileSystemWatcher>();
 
+        /// <summary>
+        /// Map of package name to its node documentation directory path. Used to resolve hash-named doc files in packages.
+        /// </summary>
+        private Dictionary<string, string> packageDocDirectories = new Dictionary<string, string>();
+
         private const string VALID_DOC_FILEEXTENSION = "*.md";
         private const string FALLBACK_DOC_DIRECTORY_NAME = "fallback_docs";
         private static PackageDocumentationManager instance;
@@ -97,8 +102,24 @@ namespace Dynamo.DocumentationBrowser
             }
 
             var shortName = Hash.GetHashFilenameFromString(nodeNamespace);
-
             FileInfo matchingDoc = null;
+
+            // Try hash-named file in package doc directory (packages may use hash filenames for long paths)
+            if (!string.IsNullOrEmpty(packageName) && packageDocDirectories.TryGetValue(packageName, out var pkgDocPath))
+            {
+                var pkgDir = new DirectoryInfo(pkgDocPath);
+                if (pkgDir.Exists)
+                {
+                    matchingDoc = pkgDir.GetFiles($"{shortName}.md", SearchOption.AllDirectories).FirstOrDefault();
+                    if (matchingDoc != null)
+                    {
+                        // Cache so future lookups and file watcher logic resolve correctly
+                        nodeDocumentationFileLookup[Path.Combine(packageName, nodeNamespace)] = matchingDoc.FullName;
+                        return matchingDoc.FullName;
+                    }
+                }
+            }
+
             if (hostDynamoFallbackDocPath != null)
             {
                 matchingDoc = hostDynamoFallbackDocPath.GetFiles($"{shortName}.md").FirstOrDefault() ??
@@ -119,13 +140,14 @@ namespace Dynamo.DocumentationBrowser
         }
 
         /// <summary>
-        /// Checks if the nodeNamespace has a documentation markdown associated.
+        /// Checks if the node has a documentation markdown associated (by direct lookup or hash-named file in package/fallback).
         /// </summary>
-        /// <param name="nodeNamespace"></param>
-        /// <returns></returns>
-        public bool ContainsAnnotationDoc(string nodeNamespace)
+        /// <param name="nodeNamespace">Namespace (e.g. minimum qualified name) of the node.</param>
+        /// <param name="packageName">Package name if the node is from a package; otherwise empty.</param>
+        /// <returns>True if documentation can be resolved for this node.</returns>
+        public bool ContainsAnnotationDoc(string nodeNamespace, string packageName)
         {
-            return nodeDocumentationFileLookup.ContainsKey(nodeNamespace);
+            return !string.IsNullOrEmpty(GetAnnotationDoc(nodeNamespace, packageName));
         }
 
         /// <summary>
@@ -143,6 +165,7 @@ namespace Dynamo.DocumentationBrowser
                 return;
 
             MonitorDirectory(directoryInfo);
+            packageDocDirectories[packageName] = directoryInfo.FullName;
             var files = directoryInfo.GetFiles(VALID_DOC_FILEEXTENSION, SearchOption.AllDirectories);
             TrackDocumentationFiles(files, packageName);
         }
@@ -165,7 +188,8 @@ namespace Dynamo.DocumentationBrowser
             {
                 try
                 {
-                    nodeDocumentationFileLookup.Add(Path.Combine(packageName,Path.GetFileNameWithoutExtension(file.Name)), file.FullName);
+                    var key = Path.Combine(packageName, Path.GetFileNameWithoutExtension(file.Name));
+                    nodeDocumentationFileLookup[key] = file.FullName;
                 }
                 catch (Exception e)
                 {

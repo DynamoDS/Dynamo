@@ -178,6 +178,87 @@ namespace Dynamo.DocumentationBrowser.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Node help audit CSV saved to: {0}.
+        /// </summary>
+        public static string NodeHelpAuditCompleted {
+            get {
+                return ResourceManager.GetString("NodeHelpAuditCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Library,Category,Name,FullName,MissingMd,MissingDyn,MarkdownPath,SampleGraphPath.
+        /// </summary>
+        public static string NodeHelpAuditCsvHeader {
+            get {
+                return ResourceManager.GetString("NodeHelpAuditCsvHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node help audit skipped &apos;{0}&apos;: {1}.
+        /// </summary>
+        public static string NodeHelpAuditEntryFailed {
+            get {
+                return ResourceManager.GetString("NodeHelpAuditEntryFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node help audit failed: {0}.
+        /// </summary>
+        public static string NodeHelpAuditFailed {
+            get {
+                return ResourceManager.GetString("NodeHelpAuditFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node help audit failed: documentation manager is not available..
+        /// </summary>
+        public static string NodeHelpAuditManagerMissing {
+            get {
+                return ResourceManager.GetString("NodeHelpAuditManagerMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node help audit found no search entries to process..
+        /// </summary>
+        public static string NodeHelpAuditNoEntries {
+            get {
+                return ResourceManager.GetString("NodeHelpAuditNoEntries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node help audit is not available yet..
+        /// </summary>
+        public static string NodeHelpAuditNotReady {
+            get {
+                return ResourceManager.GetString("NodeHelpAuditNotReady", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CSV (*.csv)|*.csv.
+        /// </summary>
+        public static string NodeHelpAuditSaveDialogFilter {
+            get {
+                return ResourceManager.GetString("NodeHelpAuditSaveDialogFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Node Help Audit CSV.
+        /// </summary>
+        public static string NodeHelpAuditSaveDialogTitle {
+            get {
+                return ResourceManager.GetString("NodeHelpAuditSaveDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Message.
         /// </summary>
         public static string MessageHeading {

@@ -98,6 +98,16 @@ namespace Dynamo.ViewModels
             RequestOpenDocumentationLink?.Invoke(e);
         }
 
+        /// <summary>
+        /// Event raised when the user requests a node help documentation audit (e.g. from Debug menu).
+        /// The Documentation Browser extension subscribes to this event to run the audit.
+        /// </summary>
+        internal event Action NodeHelpAuditRequested;
+        internal virtual void OnNodeHelpAuditRequested()
+        {
+            NodeHelpAuditRequested?.Invoke();
+        }
+
         public event Action RequestShowHideSidebar;
         public virtual void OnShowHideSidebar(bool show)
         {

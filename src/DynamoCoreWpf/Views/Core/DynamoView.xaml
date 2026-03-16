@@ -697,6 +697,10 @@
                                       Header="{x:Static p:Resources.DynamoViewDebugMenuDumpNodeIcons}"
                                       IsEnabled="True" />
                         </MenuItem>
+                        <MenuItem Name="AuditNodeHelpDocs"
+                                  Click="OnAuditNodeHelpDocsClick"
+                                  Header="{x:Static p:Resources.DynamoViewDebugMenuAuditNodeHelpDocs}"
+                                  IsCheckable="False" />
                         <MenuItem Name="DebugModes"
                                   Click="OnDebugModesClick"
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuDebugModes}"

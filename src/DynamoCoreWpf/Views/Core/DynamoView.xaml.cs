@@ -2521,6 +2521,11 @@ namespace Dynamo.Controls
             debugModesWindow.ShowDialog();
         }
 
+        private void OnAuditNodeHelpDocsClick(object sender, RoutedEventArgs e)
+        {
+            dynamoViewModel.OnNodeHelpAuditRequested();
+        }
+
         private void OnPreferencesWindowClick(object sender, RoutedEventArgs e)
         {
             preferencesWindow = new PreferencesView(this);

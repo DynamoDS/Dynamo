@@ -75,7 +75,7 @@ namespace Dynamo.DocumentationBrowser
                 if (value != oldLink)
                 {
                     UnsubscribeMdWatcher();
-                    WatchMdFile(value.OriginalString);
+                    WatchMdFile(value?.OriginalString, CurrentGraphName, CurrentPackageName);
                 }
 
                 this.link = value;
@@ -298,7 +298,7 @@ namespace Dynamo.DocumentationBrowser
             }
         }
 
-        private bool IsBuiltInDocPath(string mdLink)
+        internal bool IsBuiltInDocPath(string mdLink)
         {
             if (string.IsNullOrEmpty(mdLink)) return false;
 
@@ -327,13 +327,12 @@ namespace Dynamo.DocumentationBrowser
             }
         }
 
-        private void WatchMdFile(string mdLink)
+        private void WatchMdFile(string mdLink, string nodeNamespace, string packageName)
         {
             if (string.IsNullOrWhiteSpace(mdLink))
                 return;
 
-            var fileName = Path.GetFileNameWithoutExtension(mdLink);
-            if (!packageManagerDoc.ContainsAnnotationDoc(fileName))
+            if (!packageManagerDoc.ContainsAnnotationDoc(nodeNamespace ?? string.Empty, packageName ?? string.Empty))
                 return;
 
             markdownFileWatcher = new FileSystemWatcher(Path.GetDirectoryName(mdLink))
@@ -493,7 +492,7 @@ namespace Dynamo.DocumentationBrowser
         internal delegate void InsertDocumentationLinkEventHandler(object sender, InsertDocumentationLinkEventArgs e);
         internal event InsertDocumentationLinkEventHandler HandleInsertFile;
 
-        private string DynamoGraphFromMDFilePath(string path, bool IsOwnedByPackage)
+        internal string DynamoGraphFromMDFilePath(string path, bool IsOwnedByPackage)
         {
             path = HttpUtility.UrlDecode(path);
             if (!IsOwnedByPackage)

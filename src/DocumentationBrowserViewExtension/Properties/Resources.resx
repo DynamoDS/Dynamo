@@ -222,4 +222,31 @@
   <data name="MessageHeading" xml:space="preserve">
     <value>Message</value>
   </data>
+  <data name="NodeHelpAuditCompleted" xml:space="preserve">
+    <value>Node help audit CSV saved to: {0}</value>
+  </data>
+  <data name="NodeHelpAuditCsvHeader" xml:space="preserve">
+    <value>Library,Category,Name,FullName,MissingMd,MissingDyn,MissingImage,MarkdownPath,SampleGraphPath,ImagePaths</value>
+  </data>
+  <data name="NodeHelpAuditEntryFailed" xml:space="preserve">
+    <value>Node help audit skipped '{0}': {1}</value>
+  </data>
+  <data name="NodeHelpAuditFailed" xml:space="preserve">
+    <value>Node help audit failed: {0}</value>
+  </data>
+  <data name="NodeHelpAuditManagerMissing" xml:space="preserve">
+    <value>Node help audit failed: documentation manager is not available.</value>
+  </data>
+  <data name="NodeHelpAuditNoEntries" xml:space="preserve">
+    <value>Node help audit found no search entries to process.</value>
+  </data>
+  <data name="NodeHelpAuditNotReady" xml:space="preserve">
+    <value>Node help audit is not available yet.</value>
+  </data>
+  <data name="NodeHelpAuditSaveDialogFilter" xml:space="preserve">
+    <value>CSV (*.csv)|*.csv</value>
+  </data>
+  <data name="NodeHelpAuditSaveDialogTitle" xml:space="preserve">
+    <value>Save Node Help Audit CSV</value>
+  </data>
 </root>

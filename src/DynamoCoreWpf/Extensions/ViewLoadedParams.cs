@@ -211,6 +211,16 @@ namespace Dynamo.Wpf.Extensions
         }
 
         /// <summary>
+        /// Event raised when the user requests a node help documentation audit (e.g. from Debug menu).
+        /// Extensions (e.g. Documentation Browser) should subscribe to this event to run the audit.
+        /// </summary>
+        public event Action NodeHelpAuditRequested
+        {
+            add => dynamoViewModel.NodeHelpAuditRequested += value;
+            remove => dynamoViewModel.NodeHelpAuditRequested -= value;
+        }
+
+        /// <summary>
         /// Request to open a view extension in the side panel by name.
         /// </summary>
         /// <param name="extensionName"></param>

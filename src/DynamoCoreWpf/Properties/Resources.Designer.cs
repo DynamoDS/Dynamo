@@ -1551,6 +1551,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Audit Node Help Docs (CSV).
+        /// </summary>
+        public static string DynamoViewDebugMenuAuditNodeHelpDocs {
+            get {
+                return ResourceManager.GetString("DynamoViewDebugMenuAuditNodeHelpDocs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Dump Data.
         /// </summary>
         public static string DynamoViewDebugMenuDumpData {

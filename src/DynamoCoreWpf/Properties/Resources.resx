@@ -254,6 +254,10 @@
     <value>Debug _Modes</value>
     <comment>Debug menu | Show debug modes</comment>
   </data>
+  <data name="DynamoViewDebugMenuAuditNodeHelpDocs" xml:space="preserve">
+    <value>Audit Node Help Docs (CSV)</value>
+    <comment>Debug menu | Audit node help documentation</comment>
+  </data>
   <data name="DynamoViewEditMenu" xml:space="preserve">
     <value>_Edit</value>
     <comment>Edit menu</comment>
