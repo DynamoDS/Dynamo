@@ -1856,18 +1856,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Returns whether Group Style submenu should be enabled in the group context menu.
-        /// </summary>
-        internal bool IsGroupStyleMenuEnabled()
-        {
-            var showDefaultGroupStyles = preferenceSettings?.ShowDefaultGroupStyles ?? true;    
-            var hasCustomStyles = preferenceSettings?.GroupStyleItemsList?
-                .Any(style => style != null && !style.IsDefault) ?? false;
-
-            return showDefaultGroupStyles || hasCustomStyles;
-        }
-
-        /// <summary>
         /// Selects this group and models within it.
         /// </summary>
         internal void SelectAll()

@@ -1883,8 +1883,7 @@ namespace Dynamo.Nodes
 
             GroupStyleSelectorGrid = CreateSubmenuItem(
                 Wpf.Properties.Resources.GroupStyleContextAnnotation,
-                CreateGroupStyleSelector,
-                ViewModel.IsGroupStyleMenuEnabled());
+                CreateGroupStyleSelector);
             groupPopupPanel.Children.Add(GroupStyleSelectorGrid);
 
             groupPopupPanel.Children.Add(CreateSubmenuItem(
@@ -1989,7 +1988,7 @@ namespace Dynamo.Nodes
             return border;
         }
 
-        private Grid CreateSubmenuItem(string label, Func<UIElement> submenuContentFactory, bool isEnabled = true)
+        private Grid CreateSubmenuItem(string label, Func<UIElement> submenuContentFactory)
         {
             var popup = new Popup
             {
@@ -2018,10 +2017,7 @@ namespace Dynamo.Nodes
                 Foreground = _nodeContextMenuForeground,
                 Margin = new Thickness(10, 0, 0, 0),
                 VerticalAlignment = VerticalAlignment.Center,
-                Opacity = isEnabled ? 1.0 : 0.5,
             };
-
-            arrow.Opacity =  isEnabled ? 1.0 : 0.5;
 
             var layoutGrid = new Grid();
             layoutGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -2032,11 +2028,10 @@ namespace Dynamo.Nodes
             layoutGrid.Children.Add(text);
             layoutGrid.Children.Add(arrow);
 
-            var border = WrapWithMenuBorder(layoutGrid, isEnabled: isEnabled);
+            var border = WrapWithMenuBorder(layoutGrid);
 
             border.MouseEnter += (s, e) =>
             {
-                if (!isEnabled) return;
                 popup.Child = submenuContentFactory.Invoke();
                 popup.PlacementTarget = border;
                 popup.IsOpen = true;
@@ -2045,7 +2040,6 @@ namespace Dynamo.Nodes
 
             border.MouseLeave += (s, e) =>
             {
-                if (!IsEnabled) return;
                 if (!popup.IsMouseOver)
                 {
                     popup.IsOpen = false;
