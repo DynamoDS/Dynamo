@@ -273,6 +273,7 @@ namespace Dynamo.UI.Views
 
             SendGuidesData();
             SendSamplesData();
+            SendTemplateData();
             SendRecentGraphsData();
             SendVideoData();
             SetLocale();
@@ -300,6 +301,22 @@ namespace Dynamo.UI.Views
             }
         }
 
+
+        /// <summary>
+        /// Sends graph data to react app
+        /// </summary>
+        /// <param name="data"></param>
+        private async void LoadTemplates(List<StartPageListItem> data)
+        {
+            if (data == null) { return; }
+            string jsonData = JsonSerializer.Serialize(data);
+
+            if (dynWebView?.CoreWebView2 != null)
+            {
+                await dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.receiveTemplatesDataFromDotNet({jsonData})");
+            }
+        }
+
         /// <summary>
         /// Sends samples data to react app
         /// </summary>
@@ -315,9 +332,23 @@ namespace Dynamo.UI.Views
             }
         }
 
+        /// <summary>
+        /// Sends samples data to react app
+        /// </summary>
+        private async void SendTemplateData()
+        {
+            // Load template files
+            var templateFiles = startPage.TemplateFiles?.DistinctBy(x => x.ContextData).ToList();
+            if (templateFiles != null && templateFiles.Any())
+            {
+                LoadTemplates(templateFiles);
+            }
+        }
+
         private async void SendRecentGraphsData()
         {
             // Send user preferences
+            // TODO: move preferecnes in a separate call, not as a side-effect of sending Recent files
             if (dynWebView?.CoreWebView2 != null)
             {
                 if (startPage.DynamoViewModel.PreferenceSettings.HomePageSettings != null)
