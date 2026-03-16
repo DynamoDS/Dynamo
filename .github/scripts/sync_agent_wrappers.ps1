@@ -91,12 +91,6 @@ function New-WrapperContent {
     )
 
 @"
-<!--
-AUTO-GENERATED FILE. Do not edit directly.
-Canonical source: $canonicalPath
-Regenerate with: ./.github/scripts/sync_agent_wrappers.ps1
--->
-
 ---
 name: $name
 description: $description
@@ -115,6 +109,13 @@ Usage guidance:
 
 Maintenance note:
 - Keep this file lightweight to avoid drift across tools (Copilot/Cursor/Claude).
+
+<!--
+AUTO-GENERATED FILE. Do not edit directly.
+Canonical source: $canonicalPath
+Regenerate with: ./.github/scripts/sync_agent_wrappers.ps1
+-->
+
 "@
 }
 
