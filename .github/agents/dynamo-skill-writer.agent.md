@@ -1,7 +1,7 @@
 <!--
 AUTO-GENERATED FILE. Do not edit directly.
 Canonical source: .agents/skills/dynamo-skill-writer/SKILL.md
-Regenerate with: ./tools/agents/sync-agent-wrappers.ps1
+Regenerate with: ./.github/scripts/sync_agent_wrappers.ps1
 -->
 
 ---

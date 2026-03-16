@@ -15,13 +15,13 @@ Use the wrapper sync script to keep `.github/agents/` aligned with canonical ski
 
 ```powershell
 # Regenerate wrappers from canonical skills
-./tools/agents/sync-agent-wrappers.ps1
+./.github/scripts/sync_agent_wrappers.ps1
 
 # Validate wrappers are in sync (non-zero exit code on drift)
-./tools/agents/sync-agent-wrappers.ps1 -Check
+./.github/scripts/sync_agent_wrappers.ps1 -Check
 
 # Print a compact diagnostics summary (does not change pass/fail)
-./tools/agents/sync-agent-wrappers.ps1 -Check -VerboseReport
+./.github/scripts/sync_agent_wrappers.ps1 -Check -VerboseReport
 ```
 
 Check mode validates:
@@ -43,7 +43,7 @@ This matrix documents how canonical skills in `.agents/skills/` are exposed in e
 
 Notes:
 - Skill logic lives only in `.agents/skills/`.
-- Copilot wrappers are generated/validated by `tools/agents/sync-agent-wrappers.ps1`.
+- Copilot wrappers are generated/validated by `.github/scripts/sync_agent_wrappers.ps1`.
 - If mirrors differ from canonical files, canonical files win.
 
 ## Quick Reference
@@ -86,16 +86,19 @@ Templates are co-located inside the skill folder that uses them:
 │   ├── dynamo-onboarding/
 │   │   └── SKILL.md
 │   ├── dynamo-pr-description/
-│   │   ├── SKILL.md          ← workflow for writing PR descriptions
+│   │   └── SKILL.md
 │   ├── dynamo-jira-ticket/
-│   │   ├── SKILL.md          ← workflow for writing Jira tickets
-│   │   └── template.md       ← copy/paste Jira template
+│   │   ├── SKILL.md
+│   │   └── assets/
+│   │       └── template.md       ← copy/paste Jira template
 │   ├── dynamo-skill-writer/
-│   │   └── SKILL.md          ← workflow for authoring and syncing skills
+│   │   └── SKILL.md
 │   └── dynamo-unit-testing/
-│       ├── SKILL.md          ← workflow for writing tests
-│       ├── test-patterns.md  ← code templates & examples
-│       └── quality-checklist.md  ← guidelines & best practices
+│       ├── SKILL.md
+│       ├── assets/
+│       │   └── test-patterns.md     ← code templates & examples
+│       └── references/
+│           └── quality-checklist.md ← guidelines & best practices
 ├── rules/
 │   └── dynamo-core-rules.md
 └── README.md                  ← you are here

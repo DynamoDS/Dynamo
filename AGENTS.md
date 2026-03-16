@@ -86,9 +86,10 @@ Read `.agents/` for comprehensive skills, rules, and templates:
 
 - **Skills** (task workflows): `.agents/skills/<skill-name>/SKILL.md`
   - `dynamo-dotnet-expert` -- C#/.NET patterns, testing, PublicAPI
+  - `dynamo-jira-ticket` -- creating/refining Jira tickets (includes template.md)
   - `dynamo-onboarding` -- Dynamo architecture, ecosystem, debugging
   - `dynamo-pr-description` -- PR descriptions matching Dynamo template (uses `.github/PULL_REQUEST_TEMPLATE.md`)
-  - `dynamo-jira-ticket` -- creating/refining Jira tickets (includes template.md)
+  - `dynamo-skill-writer` -- Author and maintain Dynamo agent skills
   - `dynamo-unit-testing` -- NUnit test writing following Dynamo patterns
 - **Rules** (constraints): `.agents/rules/`
   - `dynamo-core-rules.md` -- .NET/Dynamo constraints

@@ -4,12 +4,12 @@ Synchronizes and validates generated Copilot agent wrapper files.
 Modes:
 - default: regenerate mapped wrappers in .github/agents from canonical skills in .agents/skills
 - -Check: validate mapped wrappers exist and match generated output, then detect orphan generated wrappers
-- -VerboseReport: print summary counters; does not change pass/fail behavior
+- -Report: print summary counters; does not change pass/fail behavior
 #>
 
 param(
     [switch]$Check,
-    [switch]$VerboseReport
+    [switch]$Report
 )
 
 Set-StrictMode -Version Latest
@@ -17,46 +17,34 @@ $ErrorActionPreference = "Stop"
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..")
 $generatedMarker = "AUTO-GENERATED FILE. Do not edit directly."
+$githubAgentsDir = Join-Path $repoRoot ".github/agents"
 
-$wrapperMap = @(
-    # Keep this map as the explicit contract between canonical skills and generated wrappers.
-    @{
-        CanonicalSkillPath = ".agents/skills/dynamo-dotnet-expert/SKILL.md"
-        WrapperPath = ".github/agents/Dynamo Dotnet Expert.md"
-        WrapperName = "Dynamo C#/Dotnet Expert"
-        WrapperTitle = "Dynamo .NET Expert"
-    },
-    @{
-        CanonicalSkillPath = ".agents/skills/dynamo-onboarding/SKILL.md"
-        WrapperPath = ".github/agents/Dynamo Onboarding.md"
-        WrapperName = "Dynamo Onboarding"
-        WrapperTitle = "Dynamo Onboarding"
-    },
-    @{
-        CanonicalSkillPath = ".agents/skills/dynamo-pr-description/SKILL.md"
-        WrapperPath = ".github/agents/Dynamo PR Description.md"
-        WrapperName = "Dynamo PR Description"
-        WrapperTitle = "Dynamo PR Description"
-    },
-    @{
-        CanonicalSkillPath = ".agents/skills/dynamo-jira-ticket/SKILL.md"
-        WrapperPath = ".github/agents/Dynamo Jira Ticket.md"
-        WrapperName = "Dynamo Jira Ticket"
-        WrapperTitle = "Dynamo Jira Ticket"
-    },
-    @{
-        CanonicalSkillPath = ".agents/skills/dynamo-skill-writer/SKILL.md"
-        WrapperPath = ".github/agents/Dynamo Skill Writer.md"
-        WrapperName = "Dynamo Skill Writer"
-        WrapperTitle = "Dynamo Skill Writer"
-    },
-    @{
-        CanonicalSkillPath = ".agents/skills/dynamo-unit-testing/SKILL.md"
-        WrapperPath = ".github/agents/Dynamo Unit Testing.md"
-        WrapperName = "Dynamo Unit Testing"
-        WrapperTitle = "Dynamo Unit Testing"
-    }
+# List of canonical skills to generate wrappers for
+$canonicalSkills = @(
+    ".agents/skills/dynamo-dotnet-expert/SKILL.md",
+    ".agents/skills/dynamo-onboarding/SKILL.md",
+    ".agents/skills/dynamo-pr-description/SKILL.md",
+    ".agents/skills/dynamo-jira-ticket/SKILL.md",
+    ".agents/skills/dynamo-skill-writer/SKILL.md",
+    ".agents/skills/dynamo-unit-testing/SKILL.md"
 )
+
+function Get-SkillName {
+    # Extracts skill name from frontmatter
+    param([string]$skillContent)
+
+    $nameMatch = [regex]::Match($skillContent, '(?ms)^---\s*.*?^name:\s*(.+?)\s*$.*?^---\s*')
+    if (-not $nameMatch.Success) {
+        throw "Could not parse frontmatter name from skill file."
+    }
+
+    $raw = $nameMatch.Groups[1].Value.Trim()
+    if (($raw.StartsWith('"') -and $raw.EndsWith('"')) -or ($raw.StartsWith("'") -and $raw.EndsWith("'"))) {
+        return $raw.Substring(1, $raw.Length - 2)
+    }
+
+    return $raw
+}
 
 function Get-SkillDescription {
     # Extracts the frontmatter description from a canonical SKILL.md file.
@@ -76,6 +64,23 @@ function Get-SkillDescription {
     return $raw
 }
 
+function Get-SkillTitle {
+    # Extracts title from first heading in markdown content, or derives from skill name as fallback
+    param([string]$skillContent, [string]$skillName)
+
+    # Try to extract from first level-1 heading after frontmatter block
+    $titleMatch = [regex]::Match($skillContent, '(?ms)^---.*?^---.*?^#\s+([^#\r\n]+)')
+    if ($titleMatch.Success) {
+        return $titleMatch.Groups[1].Value.Trim()
+    }
+
+    # Fallback: derive from skill name
+    $title = $skillName -replace '-', ' '
+    $title = (Get-Culture).TextInfo.ToTitleCase($title)
+
+    return $title
+}
+
 function New-WrapperContent {
     # Produces deterministic wrapper file contents for drift-safe generation/checking.
     param(
@@ -89,7 +94,7 @@ function New-WrapperContent {
 <!--
 AUTO-GENERATED FILE. Do not edit directly.
 Canonical source: $canonicalPath
-Regenerate with: ./tools/agents/sync-agent-wrappers.ps1
+Regenerate with: ./.github/scripts/sync_agent_wrappers.ps1
 -->
 
 ---
@@ -140,67 +145,72 @@ function Resolve-RepoRelativePath {
 }
 
 $driftCount = 0
-$expectedWrapperRelativePaths = @{}
 $missingCount = 0
 $contentDriftCount = 0
 $orphanCount = 0
 $generatedFilesScanned = 0
+$expectedWrapperRelativePaths = @{}
 
-foreach ($mapping in $wrapperMap) {
-    # Normalize map keys for robust path comparisons on Windows and CI.
-    $normalizedWrapperPath = $mapping.WrapperPath.Replace("\", "/")
-    $expectedWrapperRelativePaths[$normalizedWrapperPath] = $true
-}
-
-foreach ($mapping in $wrapperMap) {
-    # Process each mapped wrapper: either verify drift (-Check) or regenerate (default mode).
-    $skillPath = Join-Path $repoRoot $mapping.CanonicalSkillPath
-    $wrapperPath = Join-Path $repoRoot $mapping.WrapperPath
+foreach ($canonicalPath in $canonicalSkills) {
+    # Process each canonical skill: either verify drift (-Check) or regenerate (default mode).
+    $skillPath = Join-Path $repoRoot $canonicalPath
 
     if (-not (Test-Path $skillPath)) {
-        throw "Missing canonical skill: $($mapping.CanonicalSkillPath)"
+        throw "Missing canonical skill: $canonicalPath"
     }
 
     $skillContent = Get-Content -Raw -Encoding UTF8 $skillPath
-    $description = Get-SkillDescription -skillContent $skillContent
+    $skillName = Get-SkillName -skillContent $skillContent
+    $wrapperRelativePath = ".github/agents/$skillName.agent.md"
+    $wrapperFullPath = Join-Path $repoRoot $wrapperRelativePath
 
-    $expected = New-WrapperContent -name $mapping.WrapperName -description $description -title $mapping.WrapperTitle -canonicalPath $mapping.CanonicalSkillPath
+    # Build expected wrapper paths for orphan detection during check mode
+    if ($Check) {
+        $normalizedWrapperPath = $wrapperRelativePath.Replace("\", "/")
+        $expectedWrapperRelativePaths[$normalizedWrapperPath] = $true
+    }
+
+    $name = Get-SkillName -skillContent $skillContent
+    $description = Get-SkillDescription -skillContent $skillContent
+    $title = Get-SkillTitle -skillContent $skillContent -skillName $name
+
+    # using title as the wrapper name since it's used as display name in GitHub web UI
+    $expected = New-WrapperContent -name $title -description $description -title $title -canonicalPath $canonicalPath
 
     if ($Check) {
-        if (-not (Test-Path $wrapperPath)) {
-            Write-Host "Missing wrapper: $($mapping.WrapperPath)"
+        if (-not (Test-Path $wrapperFullPath)) {
+            Write-Host "Missing wrapper: $wrapperRelativePath"
             $driftCount++
             $missingCount++
             continue
         }
 
-        $actual = Get-Content -Raw -Encoding UTF8 $wrapperPath
+        $actual = Get-Content -Raw -Encoding UTF8 $wrapperFullPath
         if ($actual -ne $expected) {
-            Write-Host "Wrapper drift detected: $($mapping.WrapperPath)"
+            Write-Host "Wrapper drift detected: $wrapperRelativePath"
             $driftCount++
             $contentDriftCount++
         }
     }
     else {
-        $wrapperDir = Split-Path -Parent $wrapperPath
+        $wrapperDir = Split-Path -Parent $wrapperFullPath
         if (-not (Test-Path $wrapperDir)) {
             New-Item -ItemType Directory -Path $wrapperDir | Out-Null
         }
 
         [System.IO.File]::WriteAllText(
-            $wrapperPath,
+            $wrapperFullPath,
             $expected,
             [System.Text.UTF8Encoding]::new($false, $true)
         )
-        Write-Host "Wrote wrapper: $($mapping.WrapperPath)"
+        Write-Host "Wrote wrapper: $wrapperRelativePath"
     }
 }
 
 if ($Check) {
     # In check mode, also detect orphan generated wrappers that are no longer mapped.
-    $agentsDir = Join-Path $repoRoot ".github/agents"
-    if (Test-Path $agentsDir) {
-        $agentFiles = Get-ChildItem -Path $agentsDir -File
+    if (Test-Path $githubAgentsDir) {
+        $agentFiles = Get-ChildItem -Path $githubAgentsDir -File
         foreach ($agentFile in $agentFiles) {
             # Compute a path relative to the repository root, not the current working directory.
             $relativePath = Resolve-RepoRelativePath -basePath $repoRoot -targetPath $agentFile.FullName
@@ -221,16 +231,35 @@ if ($Check) {
     }
 }
 
-if ($VerboseReport) {
+if ($Report) {
     # Optional operator-friendly diagnostics for local runs and CI troubleshooting.
     Write-Host ""
     Write-Host "Agent wrapper report"
-    Write-Host "- Mapped wrappers: $($wrapperMap.Count)"
+    Write-Host "- Mapped wrappers: $($canonicalSkills.Count)"
     Write-Host "- Missing mapped wrappers: $missingCount"
     Write-Host "- Mapped content drift: $contentDriftCount"
     Write-Host "- Generated wrappers scanned: $generatedFilesScanned"
     Write-Host "- Orphan generated wrappers: $orphanCount"
     Write-Host "- Total drift count: $driftCount"
+
+    # Write GitHub Action summary if running in GitHub Actions environment
+    if ($env:GITHUB_REPOSITORY -and $env:GITHUB_RUN_ID) {
+        $summaryContent = @"
+## Agent Wrapper Sync Report
+
+| Metric | Count |
+|--------|-------|
+| Mapped wrappers | $($canonicalSkills.Count) |
+| Missing mapped wrappers | $missingCount |
+| Mapped content drift | $contentDriftCount |
+| Generated wrappers scanned | $generatedFilesScanned |
+| Orphan generated wrappers | $orphanCount |
+| **Total drift count** | **$driftCount** |
+
+$( if ($driftCount -eq 0) { "✅ All wrapper files are synchronized" } else { "⚠️ Drift detected - run sync script to update wrappers" } )
+"@
+        Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $summaryContent
+    }
 }
 
 if ($Check -and $driftCount -gt 0) {

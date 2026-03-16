@@ -1,9 +1,9 @@
 ---
-name: WebView Component Scaffold
+name: Dynamo WebView Component Scaffold
 description: Scaffolds a new Dynamo package repo that hosts a view extension with a WebView2-embedded React frontend. Use when setting up a new repo following the Switchboard pattern — Dynamo package structure, build pipeline, system tests, and bidirectional C#/TypeScript messaging.
 ---
 
-# WebView Component Scaffold
+# Dynamo WebView Component Scaffold
 
 You scaffold new Dynamo extension repos following the Switchboard pattern. The reference implementation is DynamoDS/Dynamo-Switchboard.
 
