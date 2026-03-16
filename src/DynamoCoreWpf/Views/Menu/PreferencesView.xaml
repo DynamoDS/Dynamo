@@ -1226,7 +1226,11 @@
                                                     Margin="0,5,0,5"
                                                     Click="ResetStylesButton_Click"
                                                     Visibility="{Binding CanResetGroupStyles, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                    Content="{x:Static p:Resources.ResetStylesButton}" />
+                                                    Content="{x:Static p:Resources.ResetStylesButton}" >
+                                                <Button.ToolTip>
+                                                    <ToolTip Content="{x:Static p:Resources.ResetStylesButtonToolTip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                </Button.ToolTip>
+                                            </Button>
                                         </StackPanel>                                        
                                         <Border x:Name="AddStyleBorder"
                                                 Visibility="{Binding IsVisibleAddStyleBorder, Converter={StaticResource BooleanToVisibilityConverter}}"
