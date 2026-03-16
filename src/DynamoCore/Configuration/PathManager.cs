@@ -470,15 +470,6 @@ namespace Dynamo.Core
 
             dynamoCoreDir = corePath;
 
-            var assemblyPath = Path.Combine(dynamoCoreDir, "DynamoCore.dll");
-            if (!PathHelper.IsValidPath(assemblyPath))
-            {
-                throw new Exception("Dynamo's core path could not be found. " +
-                    "If you are running Dynamo from a test, try specifying the " +
-                    "Dynamo core location in the DynamoBasePath variable in " +
-                    "TestServices.dll.config.");
-            }
-
             extensionsDirectories = new HashSet<string>();
             viewExtensionsDirectories = new HashSet<string>();
 
@@ -492,6 +483,7 @@ namespace Dynamo.Core
             minorFileVersion = pathManagerParams.MinorFileVersion;
             if (majorFileVersion == 0 && (minorFileVersion == 0))
             {
+                var assemblyPath = TraverseForExecutableAssembly();
                 var v = FileVersionInfo.GetVersionInfo(assemblyPath);
                 majorFileVersion = v.FileMajorPart;
                 minorFileVersion = v.FileMinorPart;
@@ -500,6 +492,142 @@ namespace Dynamo.Core
             BuildUserSpecificDirectories();
             BuildCommonDirectories();
             LoadPathsFromResolver();
+        }
+
+        /// <summary>
+        /// Resolves the assembly path used for data-folder version discovery.
+        ///
+        /// Starting from Dynamo 4.0, data folders are no longer versioned from
+        /// DynamoCore.dll by default. Instead, the version is derived from a selected
+        /// host-facing assembly file version.
+        ///
+        /// Resolution order:
+        /// 1) First assembly on the current managed call stack under hostApplicationDirectory.
+        /// 2) First non-system, non-test assembly on the current managed call stack.
+        /// 3) Entry assembly location.
+        /// 4) Current process main module path.
+        /// 5) Fallback to DynamoCore assembly location.
+        /// </summary>
+        /// <returns>
+        /// The file path of the assembly used to determine the data directory version.
+        /// </returns>
+        private string TraverseForExecutableAssembly()
+        {
+            // Option 1: Prefer an assembly discovered on the current call stack that
+            // physically resides under the host application directory.
+            if (TryGetAssemblyPathFromHostDirectory(out var hostAssemblyPath))
+                return hostAssemblyPath;
+
+            // Option 2: Use the first non-system, non-test assembly on the current
+            // managed call stack. This helps when PathManager is created before host
+            // directories are assigned, as in some integrations.
+            var currentAssembly = typeof(PathManager).Assembly;
+            var stackTrace = new StackTrace(skipFrames: 1, fNeedFileInfo: false);
+
+            foreach (var frame in stackTrace.GetFrames() ?? Array.Empty<StackFrame>())
+            {
+                var assembly = frame.GetMethod()?.DeclaringType?.Assembly;
+                if (assembly == null || assembly == currentAssembly || assembly.IsDynamic)
+                    continue;
+
+                var assemblyName = assembly.GetName().Name;
+                if (string.IsNullOrEmpty(assemblyName))
+                    continue;
+
+                if (assemblyName.StartsWith("System", StringComparison.OrdinalIgnoreCase) ||
+                    assemblyName.StartsWith("Microsoft", StringComparison.OrdinalIgnoreCase) ||
+                    assemblyName.Equals("mscorlib", StringComparison.OrdinalIgnoreCase) ||
+                    assemblyName.Equals("netstandard", StringComparison.OrdinalIgnoreCase) ||
+                    assemblyName.IndexOf("test", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    continue;
+                }
+
+                var candidatePath = assembly.Location;
+                if (HasNonZeroFileVersion(candidatePath))
+                    return candidatePath;
+            }
+
+            // Option 3: Use the process entry assembly when available and versioned.
+            var entryAssemblyPath = Assembly.GetEntryAssembly()?.Location;
+            if (HasNonZeroFileVersion(entryAssemblyPath))
+                return entryAssemblyPath;
+
+            // Option 4: Use the current process main module path as a hosted fallback.
+            var processMainModulePath = TryGetCurrentProcessMainModulePath();
+            if (HasNonZeroFileVersion(processMainModulePath))
+                return processMainModulePath;
+
+            if (PathHelper.IsValidPath(entryAssemblyPath))
+                return entryAssemblyPath;
+
+            if (PathHelper.IsValidPath(processMainModulePath))
+                return processMainModulePath;
+
+            // Option 5: Final fallback to DynamoCore assembly location.
+            return Assembly.GetExecutingAssembly().Location;
+        }
+
+        private bool TryGetAssemblyPathFromHostDirectory(out string hostAssemblyPath)
+        {
+            hostAssemblyPath = null;
+
+            if (!PathHelper.IsValidPath(hostApplicationDirectory))
+                return false;
+
+            var currentAssembly = typeof(PathManager).Assembly;
+            var stackTrace = new StackTrace(skipFrames: 1, fNeedFileInfo: false);
+            foreach (var frame in stackTrace.GetFrames() ?? Array.Empty<StackFrame>())
+            {
+                var assembly = frame.GetMethod()?.DeclaringType?.Assembly;
+                if (assembly == null || assembly == currentAssembly || assembly.IsDynamic)
+                    continue;
+
+                var candidatePath = assembly.Location;
+                if (IsPathUnderDirectory(candidatePath, hostApplicationDirectory) &&
+                    HasNonZeroFileVersion(candidatePath))
+                {
+                    hostAssemblyPath = candidatePath;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static bool HasNonZeroFileVersion(string candidatePath)
+        {
+            if (!PathHelper.IsValidPath(candidatePath))
+                return false;
+
+            var fileVersion = FileVersionInfo.GetVersionInfo(candidatePath);
+            return fileVersion.FileMajorPart > 0 || fileVersion.FileMinorPart > 0;
+        }
+
+        private static string TryGetCurrentProcessMainModulePath()
+        {
+            try
+            {
+                return Process.GetCurrentProcess().MainModule?.FileName;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        private static bool IsPathUnderDirectory(string candidatePath, string directoryPath)
+        {
+            if (!PathHelper.IsValidPath(candidatePath) || !PathHelper.IsValidPath(directoryPath))
+                return false;
+
+            var fullCandidatePath = Path.GetFullPath(candidatePath);
+            var fullDirectoryPath = Path.GetFullPath(directoryPath);
+
+            if (!fullDirectoryPath.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
+                fullDirectoryPath += Path.DirectorySeparatorChar;
+
+            return fullCandidatePath.StartsWith(fullDirectoryPath, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
