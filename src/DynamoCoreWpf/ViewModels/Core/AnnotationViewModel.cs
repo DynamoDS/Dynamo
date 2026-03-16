@@ -814,9 +814,6 @@ namespace Dynamo.ViewModels
                         annotationModel.UpdateBoundaryFromSelection();
                     }
                     break;
-                case nameof(PreferenceSettings.ShowDefaultGroupStyles):
-                    ReloadGroupStyles();
-                    break;
             }
         }
 
@@ -1828,16 +1825,10 @@ namespace Dynamo.ViewModels
             var customGroupStylesList = styleItemsList.Where(style => style.IsDefault == false);
 
             //Adds to the list the Default Group Styles created by Dynamo
-            if (preferenceSettings.ShowDefaultGroupStyles)
-            {
-                groupStyleList.AddRange(defaultGroupStylesList);
+            groupStyleList.AddRange(defaultGroupStylesList);
 
-                if (customGroupStylesList.Any())
-                {
-                    //Adds the separator between the Default Group Styles and the Custom Group Styles
-                    groupStyleList.Add(new GroupStyleSeparator());
-                }
-            }
+            //Adds the separator between the Default Group Styles and the Custom Group Styles
+            groupStyleList.Add(new GroupStyleSeparator());
 
             //Adds to the list the Custom Group Styles created by the user
             groupStyleList.AddRange(customGroupStylesList);

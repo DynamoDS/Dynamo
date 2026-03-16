@@ -1199,7 +1199,6 @@
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
                                         <Label Grid.Row="0"
                                                Content="{x:Static p:Resources.PreferencesViewGroupStylesHeader}"
@@ -1346,45 +1345,13 @@
                                                        Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                             </Grid>
                                         </Grid>
-                                        <Grid Grid.Row="5" Margin="0,12,0,0">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <ToggleButton Width="{StaticResource ToggleButtonWidth}"
-                                                              Height="{StaticResource ToggleButtonHeight}"
-                                                              VerticalAlignment="Center"
-                                                              Margin="2,0,0,0"
-                                                              Grid.Column="0"
-                                                              IsEnabled="True"
-                                                              IsChecked="{Binding Path=ShowDefaultGroupStyles}"
-                                                              Style="{StaticResource EllipseToggleButton1}"/>
-                                                <Label Grid.Column="1"
-                                                       Content="{x:Static p:Resources.PreferencesViewShowDefaultGroupStyles}"
-                                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                                <Image Grid.Column="2"
-                                                       Margin="6,2,0,0"
-                                                       Width="14"
-                                                       Height="14"
-                                                       HorizontalAlignment="Center"
-                                                       VerticalAlignment="Center"
-                                                       Style="{StaticResource QuestionIcon}">
-                                                    <Image.ToolTip>
-                                                        <ToolTip Content="{x:Static p:Resources.PreferencesViewShowDefaultGroupStylesTooltip}"
-                                                                 Style="{StaticResource GenericToolTipLight}"/>
-                                                    </Image.ToolTip>
-                                                </Image>
-                                            </Grid>
-                                        </Grid>
                                         <!--Hide ports-->
-                                        <Label Grid.Row="6"
+                                        <Label Grid.Row="5"
                                                Content="{x:Static p:Resources.PreferencesViewCollapsedGroupHeader}"
                                                Margin="-3,12,0,0"
                                                FontWeight="Bold"
                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                        <Grid Grid.Row="7" Margin="0,12,0,0">
+                                        <Grid Grid.Row="6" Margin="0,12,0,0">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"/>
@@ -1403,7 +1370,7 @@
                                                        Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                             </Grid>
                                         </Grid>
-                                        <Grid Grid.Row="8" Margin="0,12,0,0">
+                                        <Grid Grid.Row="7" Margin="0,12,0,0">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"/>
@@ -1422,7 +1389,7 @@
                                                        Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                             </Grid>
                                         </Grid>
-                                        <Grid Grid.Row="9" Margin="0,12,0,5">
+                                        <Grid Grid.Row="8" Margin="0,12,0,5">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"/>

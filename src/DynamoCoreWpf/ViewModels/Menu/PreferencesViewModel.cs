@@ -840,22 +840,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Indicates if default group styles should be shown in graph context menus.
-        /// </summary>
-        public bool ShowDefaultGroupStyles
-        {
-            get
-            {
-                return preferenceSettings.ShowDefaultGroupStyles;
-            }
-            set
-            {
-                preferenceSettings.ShowDefaultGroupStyles = value;
-                RaisePropertyChanged(nameof(ShowDefaultGroupStyles));
-            }
-        }
-
-        /// <summary>
         /// Indicates if the optional input ports are collapsed by default.
         /// </summary>
         public bool OptionalInputsCollapsed
@@ -1954,9 +1938,6 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(ShowDefaultGroupDescription):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowDefaultGroupDescription), System.Globalization.CultureInfo.InvariantCulture);
-                    goto default;
-                case nameof(ShowDefaultGroupStyles):
-                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowDefaultGroupStyles), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(OptionalInputsCollapsed):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewHideInportsDescription), System.Globalization.CultureInfo.InvariantCulture);

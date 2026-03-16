@@ -84,7 +84,6 @@ namespace Dynamo.Configuration
         private bool optionalInputsCollapsed;
         private bool unconnectedOutputsCollapsed;
         private bool collapseToMinSize;
-        private bool showDefaultGroupStyles;
 
         #region Constants
         /// <summary>
@@ -198,20 +197,6 @@ namespace Dynamo.Configuration
         /// Indicates if groups should display the default description.
         /// </summary>
         public bool ShowDefaultGroupDescription { get; set; }
-
-        /// <summary>
-        /// Indicates if default group styles should be shown in the graph context menu.
-        /// </summary>
-        public bool ShowDefaultGroupStyles
-        {
-            get => showDefaultGroupStyles;
-            set
-            {
-                if (showDefaultGroupStyles == value) return;
-                showDefaultGroupStyles = value;
-                RaisePropertyChanged(nameof(ShowDefaultGroupStyles));
-            }
-        }
 
         /// <summary>
         /// Indicates if the optional input ports are collapsed by default.
@@ -1087,7 +1072,6 @@ namespace Dynamo.Configuration
             DefaultRunType = RunType.Automatic;
             DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
             ShowDefaultGroupDescription = true;
-            ShowDefaultGroupStyles = true;
             OptionalInPortsCollapsed = true;
             UnconnectedOutPortsCollapsed = true;
             CollapseToMinSize = true;

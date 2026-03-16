@@ -4183,12 +4183,6 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="PreferencesViewShowDefaultGroupDescription" xml:space="preserve">
     <value>Show default group description</value>
   </data>
-  <data name="PreferencesViewShowDefaultGroupStyles" xml:space="preserve">
-    <value>Show default group styles</value>
-  </data>
-  <data name="PreferencesViewShowDefaultGroupStylesTooltip" xml:space="preserve">
-    <value>When off, default group styles remain editable in Preferences but are hidden from the graph style menu.</value>
-  </data>
   <data name="NodeAutoCompleteToolTip" xml:space="preserve">
     <value>Click to get Node Autocomplete suggestions</value>
   </data>
