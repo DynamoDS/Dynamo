@@ -5829,6 +5829,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New Graph from Template....
+        /// </summary>
+        public static string OpenDynamoTemplateDialogTitle {
+            get {
+                return ResourceManager.GetString("OpenDynamoTemplateDialogTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Provide compatibility information for the package...
         /// </summary>
         public static string PackageCompatibilityMatrixMissing {
