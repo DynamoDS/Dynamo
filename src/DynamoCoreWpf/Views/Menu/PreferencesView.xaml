@@ -118,11 +118,12 @@
                                         </Image.ToolTip>
                                     </Image>
                                     <ComboBox Grid.Row="1"
-                                                  HorizontalAlignment="Left"
-                                                  Margin="2,0,0,0"
-                                                  ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Window},Path=DataContext.GroupStyleFontSizeList}" 
-                                                  SelectedItem="{Binding Path=FontSize}"
-                                                  Style="{StaticResource NoBordersComboBoxStyle}">
+                                              HorizontalAlignment="Left"
+                                              Margin="2,0,0,0"
+                                              ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=Window},Path=DataContext.GroupStyleFontSizeList}"
+                                              SelectedItem="{Binding Path=FontSize}"
+                                              SelectionChanged="ExistingStyleFontSize_SelectionChanged"
+                                              Style="{StaticResource NoBordersComboBoxStyle}">
                                     </ComboBox>
                                 </StackPanel>
                             </Grid>

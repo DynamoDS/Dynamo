@@ -297,6 +297,13 @@ namespace Dynamo.Wpf.Views
             groupStyleItemExisting = false;
         }
 
+        private void ExistingStyleFontSize_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.RemovedItems.Count == 0 || this.viewModel == null) return;
+
+            this.viewModel.NotifyGroupStyleEdited();
+        }
+
         private void ButtonColorPicker_Click(object sender, RoutedEventArgs e)
         {
             ShowCustomColorPicker(sender);

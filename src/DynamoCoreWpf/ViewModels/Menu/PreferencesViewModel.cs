@@ -2043,6 +2043,15 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Updates state after in-place edits to an existing group style
+        /// </summary>
+        internal void NotifyGroupStyleEdited()
+        {
+            RaisePropertyChanged(nameof(CanResetGroupStyles));
+            UpdateSavedChangesLabel();
+        }
+
+        /// <summary>
         /// This method will check if the name of Style that is being created already exists in the Styles list
         /// </summary>
         /// <param name="item">target style item to check</param>
