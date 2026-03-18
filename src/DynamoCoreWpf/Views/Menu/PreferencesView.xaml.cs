@@ -292,6 +292,7 @@ namespace Dynamo.Wpf.Views
                 {
                     GroupStyleItem selectedGroupStyle = (GroupStyleItem)colorButtonSelected.DataContext;
                     selectedGroupStyle.HexColorString = viewModel.ColorPickerSelectedColor.Value.R.ToString("X2") + viewModel.ColorPickerSelectedColor.Value.G.ToString("X2") + viewModel.ColorPickerSelectedColor.Value.B.ToString("X2");
+                    this.viewModel.NotifyGroupStyleEdited();
                 }
             }
             groupStyleItemExisting = false;
@@ -300,7 +301,6 @@ namespace Dynamo.Wpf.Views
         private void ExistingStyleFontSize_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.RemovedItems.Count == 0 || this.viewModel == null) return;
-
             this.viewModel.NotifyGroupStyleEdited();
         }
 

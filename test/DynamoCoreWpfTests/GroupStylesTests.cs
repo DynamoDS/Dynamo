@@ -369,5 +369,89 @@ namespace DynamoCoreWpfTests
                 Assert.IsTrue(string.Equals(defaultStyle.HexColorString, currentStyle.HexColorString, StringComparison.OrdinalIgnoreCase));
             }
         }
+
+        /// <summary>
+        /// Validates that restoring default styles repopulates the Group Style submenu in the graph context menu
+        /// </summary>
+        [Test]
+        public void GroupStyleSubmenu_LoadsRestoredDefaults_AfterResetFromEmptyStyles()
+        {
+            Open(@"UI\GroupTest.dyn");
+
+            var dynamoViewModel = View.DataContext as DynamoViewModel;
+            Assert.IsNotNull(dynamoViewModel);
+            //Remove all the styles from preferences
+            dynamoViewModel.PreferenceSettings.GroupStyleItemsList = new List<GroupStyleItem>();
+
+            var annotationView = NodeViewWithGuid("a432d63f-7a36-45ad-b30a-7924beb20e90");
+
+            //Create the context menu and validates that Group Style submenu is disabled when there are no styles
+            annotationView.CreateAndAttachAnnotationPopup();
+            annotationView.GroupContextMenuPopup.IsOpen = true;
+            DispatcherUtil.DoEvents();
+
+            var emptyStylesSubmenu = annotationView.GroupStyleSelectorGrid as Grid;
+            Assert.IsNotNull(emptyStylesSubmenu, "Styles sub-menu grid not found.");
+            var emptyBorder = emptyStylesSubmenu.Children.OfType<Border>().FirstOrDefault();
+            var emptyPopup = emptyStylesSubmenu.Children.OfType<Popup>().FirstOrDefault();
+            Assert.IsNotNull(emptyBorder, "Sub-menu border not found.");
+            Assert.IsNotNull(emptyPopup, "Sub-menu popup not found.");
+
+            emptyBorder.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0)
+            {
+                RoutedEvent = Mouse.MouseEnterEvent
+            });
+            DispatcherUtil.DoEvents();
+            Assert.IsFalse(emptyPopup.IsOpen, "Disabled Group Style submenu should not open on hover.");
+
+            //Open Preferences and restores the default styles
+            var preferencesWindow = new PreferencesView(View);
+            preferencesWindow.Show();
+            DispatcherUtil.DoEvents();
+            preferencesWindow.ResetStylesButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            DispatcherUtil.DoEvents();
+
+            var prefViewModel = preferencesWindow.DataContext as PreferencesViewModel;
+            Assert.IsNotNull(prefViewModel);
+            Assert.AreEqual(GroupStyleItem.DefaultGroupStyleItems.Count, prefViewModel.StyleItemsList.Count);
+
+            //Close the Preferences Dialog
+            preferencesWindow.CloseButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            DispatcherUtil.DoEvents();
+
+            //Recreate and open the context menu to validate that Group Style submenu contains restored defaults
+            annotationView.CreateAndAttachAnnotationPopup();
+            annotationView.GroupContextMenuPopup.IsOpen = true;
+            DispatcherUtil.DoEvents();
+
+            var stylesSubmenu = annotationView.GroupStyleSelectorGrid as Grid;
+            Assert.IsNotNull(stylesSubmenu, "Styles sub-menu grid not found.");
+
+            var border = stylesSubmenu.Children.OfType<Border>().FirstOrDefault();
+            var popup = stylesSubmenu.Children.OfType<Popup>().FirstOrDefault();
+            Assert.IsNotNull(border, "Sub-menu border not found.");
+            Assert.IsNotNull(popup, "Sub-menu popup not found.");
+
+            border.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0)
+            {
+                RoutedEvent = Mouse.MouseEnterEvent
+            });
+            DispatcherUtil.DoEvents();
+
+            Assert.IsTrue(popup.IsOpen, "Group Style submenu did not open after restoring defaults.");
+            Assert.IsInstanceOf<Border>(popup.Child, "Popup content is not a Border.");
+
+            var wrapper = popup.Child as Border;
+            var stackPanel = wrapper.Child as StackPanel;
+            Assert.IsNotNull(stackPanel, "Could not find StackPanel inside popup.");
+
+            var restoredStylesCount = stackPanel.Children
+                .OfType<Border>()
+                .Select(b => b.Child)
+                .OfType<StackPanel>()
+                .Count();
+
+            Assert.AreEqual(GroupStyleItem.DefaultGroupStyleItems.Count, restoredStylesCount);
+        }
     }
 }

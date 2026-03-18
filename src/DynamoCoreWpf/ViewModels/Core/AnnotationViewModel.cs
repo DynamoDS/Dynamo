@@ -39,7 +39,6 @@ namespace Dynamo.ViewModels
         private const int portVerticalMidPoint = 17;
         private const int portToggleOffset = 30;
         private ObservableCollection<Dynamo.Configuration.StyleItem> groupStyleList;
-        private IEnumerable<Configuration.StyleItem> preferencesStyleItemsList;
         private PreferenceSettings preferenceSettings;
         private double heightBeforeToggle;
         private double widthBeforeToggle;
@@ -1828,7 +1827,7 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         private void LoadGroupStylesFromPreferences(IEnumerable<Configuration.StyleItem> styleItemsList)
         {
-            preferencesStyleItemsList = styleItemsList;
+            if (styleItemsList == null) return;
 
             var defaultGroupStylesList = styleItemsList.Where(style => style.IsDefault == true);
             var customGroupStylesList = styleItemsList.Where(style => style.IsDefault == false);
@@ -1852,10 +1851,8 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void ReloadGroupStyles()
         {
-            if (preferencesStyleItemsList == null) return;
             groupStyleList.Clear();
-
-            LoadGroupStylesFromPreferences(preferencesStyleItemsList);
+            LoadGroupStylesFromPreferences(preferenceSettings.GroupStyleItemsList);
         }
 
         /// <summary>
