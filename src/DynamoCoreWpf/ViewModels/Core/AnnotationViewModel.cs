@@ -707,6 +707,15 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Returns whether the Group Style submenu shoudl be enabled in the context menu.
+        /// </summary>
+        /// <returns></returns>
+        internal bool IsGroupStyleMenuEnabled()
+        {
+            return preferenceSettings.GroupStyleItemsList.Any();
+        }
+
+        /// <summary>
         /// Command to toggle this group's node preview visibility.
         /// </summary>
         [JsonIgnore]
@@ -1827,8 +1836,11 @@ namespace Dynamo.ViewModels
             //Adds to the list the Default Group Styles created by Dynamo
             groupStyleList.AddRange(defaultGroupStylesList);
 
-            //Adds the separator between the Default Group Styles and the Custom Group Styles
-            groupStyleList.Add(new GroupStyleSeparator());
+            //Adds the separator only when both default and custom groups are present
+            if (defaultGroupStylesList.Any() && customGroupStylesList.Any())
+            {
+                groupStyleList.Add(new GroupStyleSeparator());
+            }
 
             //Adds to the list the Custom Group Styles created by the user
             groupStyleList.AddRange(customGroupStylesList);
