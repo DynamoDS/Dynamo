@@ -205,7 +205,7 @@ namespace Dynamo.Wpf.Views
             viewModel.ResetCustomGroupStyles();
             viewModel.ResetAddStyleControl();
             stylesCustomColors?.Clear();
-            Logging.Analytics.TrackEvent(Actions.Delete, Categories.GroupStyleOperations, nameof(GroupStyleItem) + "s");
+            Logging.Analytics.TrackEvent(Actions.Delete, Categories.GroupStyleOperations, nameof(GroupStyleItem));
         }
 
         private void ResetGroupStyleForm()

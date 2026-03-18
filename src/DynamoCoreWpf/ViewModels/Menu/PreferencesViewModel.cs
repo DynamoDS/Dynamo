@@ -620,7 +620,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Returns whether there are custom (non-default) styles that can be removed.
+        /// Returns whether the current group styles differ from the default set and therefore can be reset.
         /// </summary>
         public bool CanResetGroupStyles
         {

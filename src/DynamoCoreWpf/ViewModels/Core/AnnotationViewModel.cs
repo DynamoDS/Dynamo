@@ -707,7 +707,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Returns whether the Group Style submenu shoudl be enabled in the context menu.
+        /// Returns whether the Group Style submenu should be enabled in the context menu.
         /// </summary>
         /// <returns></returns>
         internal bool IsGroupStyleMenuEnabled()

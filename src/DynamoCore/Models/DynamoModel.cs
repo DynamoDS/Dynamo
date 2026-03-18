@@ -1209,7 +1209,7 @@ namespace Dynamo.Models
             }
 
             // Otherwise make a default preference settings object.
-            // Greate default group styles only for brand-new settings
+            // Create default group styles only for brand-new settings
             var defaultSettings = new PreferenceSettings();
             defaultSettings.GroupStyleItemsList = GroupStyleItem.CloneDefaultGroupStyleItems();
             return defaultSettings;
