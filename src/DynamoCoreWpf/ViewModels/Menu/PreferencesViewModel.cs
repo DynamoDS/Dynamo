@@ -624,7 +624,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool CanResetGroupStyles
         {
-            get { return preferenceSettings.GroupStyleItemsList.Any(style => !style.IsDefault); }
+            get { return !MatchesDefaultGroupStyles(preferenceSettings.GroupStyleItemsList); }
         }
 
         /// <summary>
@@ -1606,12 +1606,6 @@ namespace Dynamo.ViewModels
             //By Default the warning state of the Visual Settings tab (Group Styles section) will be disabled
             isWarningEnabled = false;
 
-            // Initialize group styles with default and custom GroupStyleItems.
-            var customStyles = preferenceSettings.GroupStyleItemsList.Where(style => style.IsDefault != true).ToList();
-            var newGroupStylesList = new List<GroupStyleItem>(GroupStyleItem.DefaultGroupStyleItems);
-            newGroupStylesList.AddRange(customStyles);
-            preferenceSettings.GroupStyleItemsList = newGroupStylesList;
-
             StyleItemsList = preferenceSettings.GroupStyleItemsList.ToObservableCollection();
 
             //When pressing the "Add Style" button some controls will be shown with some values by default so later they can be populated by the user
@@ -2008,20 +2002,44 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void ResetCustomGroupStyles()
         {
-            preferenceSettings.GroupStyleItemsList = GroupStyleItem.DefaultGroupStyleItems
-                .Select(defaultStyle => new GroupStyleItem
-                {
-                    Name = defaultStyle.Name,
-                    HexColorString = defaultStyle.HexColorString,
-                    FontSize = defaultStyle.FontSize,
-                    GroupStyleId = defaultStyle.GroupStyleId,
-                    IsDefault = true
-                })
-                .ToList();
+            preferenceSettings.GroupStyleItemsList = GroupStyleItem.CloneDefaultGroupStyleItems();
 
             RaisePropertyChanged(nameof(StyleItemsList));
             RaisePropertyChanged(nameof(CanResetGroupStyles));
             UpdateSavedChangesLabel();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="styles"></param>
+        /// <returns></returns>
+        private static bool MatchesDefaultGroupStyles(IEnumerable<GroupStyleItem> styles)
+        {
+            var stylesList = styles?.ToList() ?? new List<GroupStyleItem>();
+            if (stylesList.Count != GroupStyleItem.DefaultGroupStyleItems.Count)
+            {
+                return false;
+            }
+
+            foreach (var defaultStyle in GroupStyleItem.DefaultGroupStyleItems)
+            {
+                var currentStyle = stylesList.FirstOrDefault(style => style.GroupStyleId == defaultStyle.GroupStyleId);
+                if (currentStyle == null)
+                {
+                    return false;
+                }
+
+                if (!currentStyle.IsDefault ||
+                    !string.Equals(currentStyle.Name, defaultStyle.Name, StringComparison.Ordinal) ||
+                    !string.Equals(currentStyle.HexColorString, defaultStyle.HexColorString, StringComparison.OrdinalIgnoreCase) ||
+                    currentStyle.FontSize != defaultStyle.FontSize)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>

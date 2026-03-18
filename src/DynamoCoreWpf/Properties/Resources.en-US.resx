@@ -2601,7 +2601,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Reset Styles</value>
   </data>
   <data name="ResetStylesButtonToolTip" xml:space="preserve">
-    <value>Deletes all user-created (non-default) group styles. This does not affect styles in existing graphs and cannot be undone.</value>
+    <value>Restores the default group styles and removed user-created styles. This does not affect groups in existing graphs and cannot be undone.</value>
   </data>
   <data name="ResetPythonNet3ButtonText" xml:space="preserve">
     <value>Reset PythonNet3</value>

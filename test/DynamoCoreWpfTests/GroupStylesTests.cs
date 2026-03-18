@@ -250,5 +250,20 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(prefViewModel.CanResetGroupStyles);
             Assert.AreEqual(Visibility.Collapsed, preferencesWindow.ResetStylesButton.Visibility);
         }
+
+        [Test]
+        public void PreferencesViewModel_DoesNotRecreateDefaultStyles_WhenListIsEmpty()
+        {
+            Open(@"UI\GroupTest.dyn");
+
+            var dynamoViewModel = View.DataContext as DynamoViewModel;
+            Assert.IsNotNull(dynamoViewModel);
+            dynamoViewModel.PreferenceSettings.GroupStyleItemsList = new List<GroupStyleItem>();
+
+            var preferencesViewModel = new PreferencesViewModel(dynamoViewModel);
+
+            Assert.AreEqual(0, preferencesViewModel.StyleItemsList.Count);
+            Assert.IsTrue(preferencesViewModel.CanResetGroupStyles);
+        }
     }
 }

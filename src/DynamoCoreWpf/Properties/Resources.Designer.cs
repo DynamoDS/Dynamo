@@ -9791,7 +9791,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deletes all user-created (non-default) group styles. This does not affect styles in existing graphs and cannot be undone..
+        ///   Looks up a localized string similar to Restores the default group styles and removed user-created styles. This does not affect groups in existing graphs and cannot be undone..
         /// </summary>
         public static string ResetStylesButtonToolTip {
             get {
