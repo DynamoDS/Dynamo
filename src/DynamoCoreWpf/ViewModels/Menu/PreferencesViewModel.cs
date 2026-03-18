@@ -2010,7 +2010,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// 
+        /// Determines whether the provided styles exactly match Dynamo's default group styles.
         /// </summary>
         /// <param name="styles"></param>
         /// <returns></returns>
