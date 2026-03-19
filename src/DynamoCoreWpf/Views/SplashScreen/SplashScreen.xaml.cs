@@ -23,6 +23,63 @@ using Microsoft.Web.WebView2.Wpf;
 
 namespace Dynamo.UI.Views
 {
+    /// <summary>
+    /// The Dynamo startup splash screen, displayed before the main <see cref="DynamoView"/> is shown.
+    /// <para>
+    /// The splash screen is a WPF <see cref="Window"/> that hosts a <see cref="DynamoWebView2"/> (WebView2)
+    /// component. The WebView2 renders an embedded HTML/JavaScript (React) application that provides the
+    /// visual splash-screen experience. Communication between the C# host and the web app is achieved via
+    /// <see cref="ScriptObject"/>, which is registered as a host object exposed to JavaScript.
+    /// </para>
+    /// <para>
+    /// <strong>Lifecycle</strong>
+    /// <list type="number">
+    ///   <item>
+    ///     <description>
+    ///       <see cref="OnContentRendered"/> initializes WebView2, loads the embedded HTML and JS bundle,
+    ///       and navigates the WebView2 to the splash-screen content.
+    ///     </description>
+    ///   </item>
+    ///   <item>
+    ///     <description>
+    ///       Navigation completion triggers <see cref="OnRequestDynamicSplashScreen"/>, which fires
+    ///       <see cref="DynamicSplashScreenReady"/>. The host (e.g., <c>DynamoCoreSetup</c>) subscribes to
+    ///       this event and begins loading the <see cref="DynamoModel"/> and other Dynamo subsystems.
+    ///     </description>
+    ///   </item>
+    ///   <item>
+    ///     <description>
+    ///       As Dynamo loads, progress is reported via <see cref="SetBarProperties"/> which updates the
+    ///       loading-bar label and percentage shown in the web app.
+    ///     </description>
+    ///   </item>
+    ///   <item>
+    ///     <description>
+    ///       When the host has finished constructing the <see cref="DynamoView"/> and assigned it to
+    ///       <see cref="DynamoView"/>, it calls <see cref="OnRequestStaticSplashScreen"/> to fire
+    ///       <see cref="StaticSplashScreenReady"/> and hand off control to <see cref="OnStaticScreenReady"/>.
+    ///     </description>
+    ///   </item>
+    ///   <item>
+    ///     <description>
+    ///       <see cref="OnStaticScreenReady"/> decides whether to display the interactive splash screen
+    ///       (first run or user preference) or skip straight to launching Dynamo via
+    ///       <see cref="RequestLaunchDynamo"/>.
+    ///     </description>
+    ///   </item>
+    /// </list>
+    /// </para>
+    /// <para>
+    /// <strong>Features exposed on the splash screen</strong>
+    /// <list type="bullet">
+    ///   <item><description>Sign-in / sign-out via Autodesk Identity (IDSDK).</description></item>
+    ///   <item><description>Import of a custom Dynamo settings (XML preferences) file.</description></item>
+    ///   <item><description>A "Don't show this again" checkbox that sets
+    ///     <see cref="Dynamo.Configuration.PreferenceSettings.EnableStaticSplashScreen"/>.</description></item>
+    ///   <item><description>Localized UI labels set at runtime via <see cref="SetLabels"/>.</description></item>
+    /// </list>
+    /// </para>
+    /// </summary>
     public partial class SplashScreen : Window
     {
         // These are hardcoded string and should only change when npm package structure changed or image path changed
@@ -38,12 +95,29 @@ namespace Dynamo.UI.Views
         /// </summary>
         public bool CloseWasExplicit { get; private set; }
 
-        // Indicates if the SplashScren close button was hit.
+        // Indicates if the SplashScreen close button was hit.
         // Used to ensure that OnClosing is called only once.
         private bool IsClosing = false;
 
-        internal enum CloseMode { ByStartingDynamo, ByCloseButton, ByOther };
+        /// <summary>
+        /// Describes the reason the splash screen was closed, so that callers can
+        /// distinguish between an intentional "launch Dynamo" flow and other dismissal paths.
+        /// </summary>
+        internal enum CloseMode
+        {
+            /// <summary>The user clicked the "Launch Dynamo" button on the splash screen.</summary>
+            ByStartingDynamo,
+            /// <summary>The user clicked the window close (X) button on the splash screen.</summary>
+            ByCloseButton,
+            /// <summary>The window was closed by an external action (e.g. Windows Task Bar).</summary>
+            ByOther
+        }
 
+        /// <summary>
+        /// Tracks how the splash screen was most recently closed.
+        /// Used together with <see cref="CloseWasExplicit"/> to determine whether Dynamo
+        /// is already running when the splash screen exits.
+        /// </summary>
         internal CloseMode currentCloseMode = CloseMode.ByOther;
 
         // Timer used for Splash Screen loading
@@ -59,8 +133,21 @@ namespace Dynamo.UI.Views
         /// </summary>
         public Action<bool> RequestLaunchDynamo;
 
+        /// <summary>
+        /// Callback invoked by the JavaScript web app with the raw XML content of a
+        /// settings file selected by the user. The content is validated and imported
+        /// into <see cref="DynamoViewModel.PreferencesViewModel"/> when the call succeeds.
+        /// </summary>
         internal Action<string> RequestImportSettings;
+        /// <summary>
+        /// Callback invoked by the JavaScript web app to trigger a sign-in flow.
+        /// Returns <c>true</c> if sign-in succeeded; <c>false</c> otherwise.
+        /// </summary>
         internal Func<bool> RequestSignIn;
+        /// <summary>
+        /// Callback invoked by the JavaScript web app to trigger a sign-out flow.
+        /// Returns <c>true</c> if sign-out succeeded; <c>false</c> otherwise.
+        /// </summary>
         internal Func<bool> RequestSignOut;
 
         // Fields for tracking imported settings and enabling reset functionality
