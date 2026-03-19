@@ -925,20 +925,18 @@
             <returns>Pole bodů</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
-            <summary>Skutečně periodické řídicí body objektu NurbsCurve, pokud jsou periodické.
-            Všimněte si, že toto nelze použít společně s uzlem PeriodicKnots() k rekonstrukci původního periodického objektu NurbsCurve.
-            Vrátí (nebo je nedefinován), pokud oblouk není periodický.</summary>
-            <returns>Pole bodů</returns>
+            <summary>The truly periodic control points of a periodic NurbsCurve.
+            Note: This operation only works for periodic curves and will fail if the curve is not periodic.</summary>
+            <returns>Periodic Control Points of a NURBS curve</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
             <summary>Uzly křivky. Za uzly se považuje řada hodnot parametru (hodnoty double), pomocí nichž se určí, kde a jak řídicí body ovlivní křivku.</summary>
             <returns>Uzly křivky nurbs</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots">
-            <summary>Nesvázané uzly křivky, pokud je periodická. Položka Knots je řada hodnot parametru (hodnoty double), pomocí nichž se určí, kde a jak řídicí body ovlivní křivku.
-            Tuto možnost nelze použít společně s uzlem PeriodicControlPoints() k rekonstrukci původního periodického objektu NurbsCurve.
-            Vrátí (nebo je nedefinován), pokud oblouk není periodický.</summary>
-            <returns>Vektor periodického uzlu křivky nurbs</returns>
+            <summary>The unclamped knots of a periodic NurbsCurve.
+            Note: This operation only works for periodic curves and will fail if the curve is not periodic.</summary>
+            <returns>The periodic knot vector of the NURBS curve</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Weights">
             <summary>Vrací váhy řídicích bodů objektu NurbsCurve. Váhy určují vliv jednotlivých řídicích bodů na tvar křivky.</summary>

@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutWindowCannotGetVersion" xml:space="preserve">
-    <value>Could not get version.</value>
+    <value />
   </data>
   <data name="AboutWindowDynamoWebsiteButton" xml:space="preserve">
-    <value>{0} Website</value>
+    <value />
   </data>
   <data name="AboutWindowTitle" xml:space="preserve">
-    <value>About {0}</value>
+    <value />
   </data>
   <data name="AboutWindowUpToDate" xml:space="preserve">
     <value>(Up to date)</value>
@@ -133,13 +133,13 @@
     <value>Action</value>
   </data>
   <data name="AddButton" xml:space="preserve">
-    <value>Add</value>
+    <value />
   </data>
   <data name="AddCustomFileToPackageDialogTitle" xml:space="preserve">
-    <value>Add Custom Node, Library, or XML file to Package...</value>
+    <value />
   </data>
   <data name="AddFileToPackageDialogTitle" xml:space="preserve">
-    <value>Add File to Package...</value>
+    <value />
   </data>
   <data name="AddToLibraryButton" xml:space="preserve">
     <value>Add</value>
@@ -151,13 +151,13 @@
     <value>Enable Network Mode to be able to sign in.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
-    <value>Autodesk A360</value>
+    <value />
   </data>
   <data name="AutodeskSignIn" xml:space="preserve">
-    <value>Autodesk Sign In</value>
+    <value />
   </data>
   <data name="Automatic" xml:space="preserve">
-    <value>Automatic</value>
+    <value />
   </data>
   <data name="BackgroundPreviewCreationFailureMessage" xml:space="preserve">
     <value>There was an error creating a background preview in Dynamo. This could be due to a lack of graphics resources on your machine. See the log for more information.</value>
@@ -169,16 +169,16 @@
     <value>_Background Preview</value>
   </data>
   <data name="BrowserNodeButtonLabel" xml:space="preserve">
-    <value>Browse...</value>
+    <value />
   </data>
   <data name="BrowserNodeNoFileSelected" xml:space="preserve">
-    <value>No file selected.</value>
+    <value />
   </data>
   <data name="BrowserWindowLoading" xml:space="preserve">
-    <value>Loading...</value>
+    <value />
   </data>
   <data name="BuildVersionNonNegative" xml:space="preserve">
-    <value>You must provide a Build version as a non-negative integer.</value>
+    <value />
   </data>
   <data name="CameraDataLoadError" xml:space="preserve">
     <value>Camera position information could not be loaded from the file.</value>
@@ -187,10 +187,10 @@
     <value>Camera position information could not be saved.</value>
   </data>
   <data name="CancelButton" xml:space="preserve">
-    <value>Cancel</value>
+    <value />
   </data>
   <data name="CannotDownloadPackageMessageBoxTitle" xml:space="preserve">
-    <value>Cannot Download Package</value>
+    <value />
   </data>
   <data name="BuiltInPackageConflictMessageBoxTitle" xml:space="preserve">
     <value>Package has conflicts with one or more Built-In packages.</value>
@@ -202,7 +202,7 @@
     <value>Package has conflicts with one or more loaded packages.</value>
   </data>
   <data name="CannotSubmitPackage" xml:space="preserve">
-    <value>You can't submit a package in this version of {0}.  You'll need a host application, like Revit, to submit a package.</value>
+    <value />
   </data>
   <data name="ChangeScaleFactorPromptCaptionText" xml:space="preserve">
     <value>To ensure accurate geometry rendering and calculation, select the range of geometry sizes that you will be working on:</value>
@@ -247,7 +247,7 @@
     <value>Add Node To Group</value>
   </data>
   <data name="ContextCreateGroupFromSelection" xml:space="preserve">
-    <value>Create Group</value>
+    <value />
   </data>
   <data name="ContextMenuCopy" xml:space="preserve">
     <value>Copy Contents</value>
@@ -256,85 +256,85 @@
     <value>Delete</value>
   </data>
   <data name="ContextMenuEditCustomNode" xml:space="preserve">
-    <value>Edit Custom Node...</value>
+    <value />
   </data>
   <data name="ContextMenuEditCustomNodeProperty" xml:space="preserve">
-    <value>Edit Custom Node Properties...</value>
+    <value />
   </data>
   <data name="ContextMenuFitToScreen" xml:space="preserve">
-    <value>_Fit to Screen</value>
+    <value />
   </data>
   <data name="ContextMenuGeometryView" xml:space="preserve">
-    <value>Switch to Geometry _View</value>
+    <value />
   </data>
   <data name="ContextMenuHideGeometry" xml:space="preserve">
     <value>Hide geometry preview</value>
   </data>
   <data name="ContextMenuHideAllTextBubble" xml:space="preserve">
-    <value>Hide all text bubble</value>
+    <value />
   </data>
   <data name="ContextMenuInsertCodeBlock" xml:space="preserve">
-    <value>Insert code block</value>
+    <value />
   </data>
   <data name="ContextMenuLacing" xml:space="preserve">
-    <value>Lacing</value>
+    <value />
   </data>
   <data name="ContextMenuLacingAuto" xml:space="preserve">
     <value>Auto</value>
   </data>
   <data name="ContextMenuLacingCrossProduct" xml:space="preserve">
-    <value>Cross Product</value>
+    <value />
   </data>
   <data name="ContextMenuLacingFirst" xml:space="preserve">
-    <value>First</value>
+    <value />
   </data>
   <data name="ContextMenuLacingLongest" xml:space="preserve">
-    <value>Longest</value>
+    <value />
   </data>
   <data name="ContextMenuLacingShortest" xml:space="preserve">
-    <value>Shortest</value>
+    <value />
   </data>
   <data name="ContextMenuNodesFromGeometry" xml:space="preserve">
-    <value>Nodes From _Selected Geometry</value>
+    <value />
   </data>
   <data name="ContextMenuNodesFromSelection" xml:space="preserve">
     <value>Create Custom Node</value>
   </data>
   <data name="ContextMenuNodeToCode" xml:space="preserve">
-    <value>Node to _Code</value>
+    <value />
   </data>
   <data name="ContextMenuPan" xml:space="preserve">
-    <value>Pa_n</value>
+    <value />
   </data>
   <data name="ContextMenuPaste" xml:space="preserve">
-    <value>Paste</value>
+    <value />
   </data>
   <data name="ContextMenuPublishCustomNode" xml:space="preserve">
-    <value>Publish This Custom Node...</value>
+    <value />
   </data>
   <data name="ContextMenuShowGeometry" xml:space="preserve">
     <value>Show geometry preview</value>
   </data>
   <data name="ContextMenuShowAllTextBubble" xml:space="preserve">
-    <value>Show all text buble</value>
+    <value />
   </data>
   <data name="ContextUnGroupFromSelection" xml:space="preserve">
-    <value>Remove from Group</value>
+    <value />
   </data>
   <data name="ContinueButton" xml:space="preserve">
-    <value>Continue</value>
+    <value />
   </data>
   <data name="ConverterMessageCurrentOffset" xml:space="preserve">
-    <value>Current offset X: {0}, Y: {1}</value>
+    <value />
   </data>
   <data name="ConverterMessageTransformOrigin" xml:space="preserve">
-    <value>Transform origin X: {0}, Y: {1}</value>
+    <value />
   </data>
   <data name="ConverterMessageZoom" xml:space="preserve">
-    <value>Zoom : {0}</value>
+    <value />
   </data>
   <data name="CrashPromptDialogCopyButton" xml:space="preserve">
-    <value>Copy</value>
+    <value />
   </data>
   <data name="CrashPromptDialogCrashMessage" xml:space="preserve">
     <value>Something went wrong and Dynamo has closed unexpectedly.
@@ -342,10 +342,10 @@
 Don't worry, you'll have the option to save your work.</value>
   </data>
   <data name="CrashPromptDialogDetailButton" xml:space="preserve">
-    <value>Details</value>
+    <value />
   </data>
   <data name="CrashPromptDialogOpenFolderButton" xml:space="preserve">
-    <value>Open Folder</value>
+    <value />
   </data>
   <data name="CrashPromptDialogSubmitBugButton" xml:space="preserve">
     <value>Submit bug to GitHub</value>
@@ -357,43 +357,43 @@ Don't worry, you'll have the option to save your work.</value>
     <value>Create</value>
   </data>
   <data name="CustomNodePromptDescriptionTooltip" xml:space="preserve">
-    <value>A description that helps people understand what the node might be used for.</value>
+    <value />
   </data>
   <data name="CustomNodePromptNameTooltip" xml:space="preserve">
-    <value>A unique name for the node.</value>
+    <value />
   </data>
   <data name="CustomNodePropertyErrorMessageBoxTitle" xml:space="preserve">
-    <value>Custom Node Property Error</value>
+    <value />
   </data>
   <data name="CustomNodePropertyWindowCategory" xml:space="preserve">
     <value>Add-Ons Category</value>
   </data>
   <data name="CustomNodePropertyWindowDescription" xml:space="preserve">
-    <value>Description</value>
+    <value />
   </data>
   <data name="CustomNodePropertyWindowDescriptionHint" xml:space="preserve">
-    <value>Description of Custom Node</value>
+    <value />
   </data>
   <data name="CustomNodePropertyWindowName" xml:space="preserve">
-    <value>Name</value>
+    <value />
   </data>
   <data name="CustomNodePropertyWindowNameHint" xml:space="preserve">
-    <value>Name of Custom Node</value>
+    <value />
   </data>
   <data name="CustomNodePropertyWindowLocationNote" xml:space="preserve">
     <value>Custom Nodes will be placed in the Add-Ons section of the library.</value>
   </data>
   <data name="CustomNodePropertyWindowTitle" xml:space="preserve">
-    <value>Custom Node Properties</value>
+    <value />
   </data>
   <data name="CustomNodeTypeShortString" xml:space="preserve">
-    <value>DS</value>
+    <value />
   </data>
   <data name="DeprecatingPackageMessageBoxTitle" xml:space="preserve">
-    <value>Deprecating Package</value>
+    <value />
   </data>
   <data name="DescriptionNeedMoreCharacters" xml:space="preserve">
-    <value>Description must be longer than 10 characters.</value>
+    <value />
   </data>
   <data name="DetailedLayoutTitle" xml:space="preserve">
     <value>Detailed</value>
@@ -402,7 +402,7 @@ Don't worry, you'll have the option to save your work.</value>
     <value>Directory Not Found</value>
   </data>
   <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
-    <value>Download Warning</value>
+    <value />
   </data>
   <data name="CopyToClipboardTooltip" xml:space="preserve">
     <value>Copy to clipboard</value>
@@ -411,13 +411,13 @@ Don't worry, you'll have the option to save your work.</value>
     <value>Copy to clipboard failed</value>
   </data>
   <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
-    <value>A Dynamo update is available. Click to install.</value>
+    <value />
   </data>
   <data name="DynamoViewCancelButtonTooltip" xml:space="preserve">
-    <value>Cancel Run (Shift+F5)</value>
+    <value />
   </data>
   <data name="DynamoViewContextMenuClearLog" xml:space="preserve">
-    <value>Clear</value>
+    <value />
   </data>
   <data name="DynamoViewDebugMenu" xml:space="preserve">
     <value>De_bug</value>
@@ -447,31 +447,31 @@ Don't worry, you'll have the option to save your work.</value>
     <value>Debug _Modes</value>
   </data>
   <data name="DynamoViewEditMenu" xml:space="preserve">
-    <value>_Edit</value>
+    <value />
   </data>
   <data name="DynamoViewEditMenuAlighBottom" xml:space="preserve">
-    <value>_Bottom</value>
+    <value />
   </data>
   <data name="DynamoViewEditMenuAlignLeft" xml:space="preserve">
-    <value>_Left</value>
+    <value />
   </data>
   <data name="DynamoViewEditMenuAlignRight" xml:space="preserve">
-    <value>_Right</value>
+    <value />
   </data>
   <data name="DynamoViewEditMenuAlignSelection" xml:space="preserve">
-    <value>_Align Selection</value>
+    <value />
   </data>
   <data name="DynamoViewEditMenuAlignTop" xml:space="preserve">
-    <value>_Top</value>
+    <value />
   </data>
   <data name="DynamoViewEditMenuAlignXAverage" xml:space="preserve">
-    <value>_X Average</value>
+    <value />
   </data>
   <data name="DynamoViewEditMenuAlignXDistribute" xml:space="preserve">
     <value>X _Distribute</value>
   </data>
   <data name="DynamoViewEditMenuAlignYAverage" xml:space="preserve">
-    <value>_Y Average</value>
+    <value />
   </data>
   <data name="DynamoViewEditMenuAlignYDistribute" xml:space="preserve">
     <value>Y Di_stribute</value>
@@ -480,7 +480,7 @@ Don't worry, you'll have the option to save your work.</value>
     <value>Cleanup Node _Layout</value>
   </data>
   <data name="DynamoViewEditMenuCopy" xml:space="preserve">
-    <value>_Copy</value>
+    <value />
   </data>
   <data name="DynamoViewEditMenuCreateCustomNode" xml:space="preserve">
     <value>Crea_te Custom Node</value>
@@ -492,43 +492,43 @@ Don't worry, you'll have the option to save your work.</value>
     <value>Create _Note</value>
   </data>
   <data name="DynamoViewEditMenuCreatePreset" xml:space="preserve">
-    <value>Create Preset From Selection</value>
+    <value />
   </data>
   <data name="DynamoViewEditMenuDeletePreset" xml:space="preserve">
-    <value>Delete Preset</value>
+    <value />
   </data>
   <data name="DynamoViewEditMenuDeleteSelected" xml:space="preserve">
-    <value>_Delete Selected</value>
+    <value />
   </data>
   <data name="DynamoViewEditMenuPaste" xml:space="preserve">
-    <value>_Paste</value>
+    <value />
   </data>
   <data name="DynamoViewEditMenuPresetsMenu" xml:space="preserve">
-    <value>Presets</value>
+    <value />
   </data>
   <data name="DynamoViewEditMenuRedo" xml:space="preserve">
-    <value>_Redo</value>
+    <value />
   </data>
   <data name="DynamoViewEditMenuRestorePreset" xml:space="preserve">
-    <value>Restore Preset</value>
+    <value />
   </data>
   <data name="DynamoViewEditMenuSelectAll" xml:space="preserve">
-    <value>_Select All</value>
+    <value />
   </data>
   <data name="DynamoViewEditMenuUnpinAllPreviewBubbles" xml:space="preserve">
     <value>_Unpin All Preview Bubbles</value>
   </data>
   <data name="DynamoViewEditMenuSelectNeighbours" xml:space="preserve">
-    <value>_Select Neighbors</value>
+    <value />
   </data>
   <data name="DynamoViewEditMenuUndo" xml:space="preserve">
-    <value>_Undo</value>
+    <value />
   </data>
   <data name="DynamoViewDynamoMenuExit" xml:space="preserve">
     <value>_Exit Dynamo</value>
   </data>
   <data name="DynamoViewFileMenu" xml:space="preserve">
-    <value>_File</value>
+    <value />
   </data>
   <data name="DynamoViewFileMenuExport3DAsImage" xml:space="preserve">
     <value>Export _Background 3D Preview as Image...</value>
@@ -540,25 +540,25 @@ Don't worry, you'll have the option to save your work.</value>
     <value>Export _Model to STL...</value>
   </data>
   <data name="DynamoViewFileMenuImport" xml:space="preserve">
-    <value>_Import Library...</value>
+    <value />
   </data>
   <data name="DynamoViewFileMenuNew" xml:space="preserve">
-    <value>_New</value>
+    <value />
   </data>
   <data name="DynamoViewFileMenuNewCustomNode" xml:space="preserve">
-    <value>_Custom Node...</value>
+    <value />
   </data>
   <data name="DynamoViewFileMenuNewHomeWorkSpace" xml:space="preserve">
     <value>_Home Workspace</value>
   </data>
   <data name="DynamoViewFileMenuOpen" xml:space="preserve">
-    <value>_Open...</value>
+    <value />
   </data>
   <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
     <value>Open _Recent Files</value>
   </data>
   <data name="DynamoViewFileMenuSave" xml:space="preserve">
-    <value>_Save</value>
+    <value />
   </data>
   <data name="DynamoViewFileMenuSaveAs" xml:space="preserve">
     <value>Save _As...</value>
@@ -570,7 +570,7 @@ Don't worry, you'll have the option to save your work.</value>
     <value>_Help</value>
   </data>
   <data name="DynamoViewHelpMenuDisplayStartPage" xml:space="preserve">
-    <value>_Display Start Page</value>
+    <value />
   </data>
   <data name="DynamoViewHelpMenuGotoWebsite" xml:space="preserve">
     <value>Dynamo _Website</value>
@@ -582,19 +582,19 @@ Don't worry, you'll have the option to save your work.</value>
     <value>Dynamo _Project Wiki</value>
   </data>
   <data name="DynamoViewHelpMenuReportBug" xml:space="preserve">
-    <value>_Report A Bug</value>
+    <value />
   </data>
   <data name="DynamoViewHelpMenuShowInFolder" xml:space="preserve">
-    <value>Show In Folder</value>
+    <value />
   </data>
   <data name="DynamoViewHepMenuSamples" xml:space="preserve">
     <value>_Samples</value>
   </data>
   <data name="DynamoViewPackageMenu" xml:space="preserve">
-    <value>_Packages</value>
+    <value />
   </data>
   <data name="DynamoViewPackageMenuManagePackage" xml:space="preserve">
-    <value>_Manage Packages...</value>
+    <value />
   </data>
   <data name="DynamoViewPackageMenuPublishNodes" xml:space="preserve">
     <value>Publish _Selected Nodes...</value>
@@ -603,25 +603,25 @@ Don't worry, you'll have the option to save your work.</value>
     <value>Publish _Current Workspace...</value>
   </data>
   <data name="DynamoViewPackageMenuSearchPackage" xml:space="preserve">
-    <value>_Search for a Package...</value>
+    <value />
   </data>
   <data name="DynamoViewPackageMenuPackageManager" xml:space="preserve">
     <value>_Package Manager...</value>
   </data>
   <data name="DynamoViewRunAutomaticallyOption" xml:space="preserve">
-    <value>Run Automatically</value>
+    <value />
   </data>
   <data name="DynamoViewRunButton" xml:space="preserve">
-    <value>Run</value>
+    <value />
   </data>
   <data name="DynamoViewRunButtonTooltip" xml:space="preserve">
-    <value>Run Workflow (F5)</value>
+    <value />
   </data>
   <data name="DynamoViewRunButtonToolTipDisabled" xml:space="preserve">
-    <value>Run is not available when running Automatically or Periodically.</value>
+    <value />
   </data>
   <data name="DynamoViewSamplesMenuShowInFolder" xml:space="preserve">
-    <value>Show In Folder</value>
+    <value />
   </data>
   <data name="PreferencesViewEnableTSplineNodes" xml:space="preserve">
     <value>Enable T-Spline nodes</value>
@@ -630,61 +630,61 @@ Don't worry, you'll have the option to save your work.</value>
     <value>Experimental</value>
   </data>
   <data name="DynamoViewSettingMenu" xml:space="preserve">
-    <value>_Settings</value>
+    <value />
   </data>
   <data name="DynamoViewSettingMenuAreaUnits" xml:space="preserve">
-    <value>Area Display Units</value>
+    <value />
   </data>
   <data name="DynamoViewSettingMenuCentimeter" xml:space="preserve">
-    <value>Centimeter</value>
+    <value />
   </data>
   <data name="DynamoViewSettingMenuCubicCentimeter" xml:space="preserve">
-    <value>Cubic Centimeter</value>
+    <value />
   </data>
   <data name="DynamoViewSettingMenuCubicFoot" xml:space="preserve">
-    <value>Cubic Foot</value>
+    <value />
   </data>
   <data name="DynamoViewSettingMenuCubicInch" xml:space="preserve">
-    <value>Cubic Inch</value>
+    <value />
   </data>
   <data name="DynamoViewSettingMenuCubicMeter" xml:space="preserve">
-    <value>Cubic Meter</value>
+    <value />
   </data>
   <data name="DynamoViewSettingMenuCubicMillimeter" xml:space="preserve">
-    <value>Cubic Millimeter</value>
+    <value />
   </data>
   <data name="DynamoViewSettingMenuDecimalFoot" xml:space="preserve">
-    <value>Decimal Foot</value>
+    <value />
   </data>
   <data name="DynamoViewSettingMenuDecimalInch" xml:space="preserve">
-    <value>Decimal Inch</value>
+    <value />
   </data>
   <data name="DynamoViewSettingMenuShowDataReportingDialog" xml:space="preserve">
     <value>Agreements for _Data Collection</value>
   </data>
   <data name="DynamoViewSettingMenuFractionalFoot" xml:space="preserve">
-    <value>Fractional Foot</value>
+    <value />
   </data>
   <data name="DynamoViewSettingMenuFractionalInch" xml:space="preserve">
-    <value>Fractional Inch</value>
+    <value />
   </data>
   <data name="DynamoViewSettingMenuHighRenderPrecision" xml:space="preserve">
-    <value>High</value>
+    <value />
   </data>
   <data name="DynamoViewSettingMenuLengthUnits" xml:space="preserve">
-    <value>Length Display Units</value>
+    <value />
   </data>
   <data name="DynamoViewSettingMenuLowRenderPrecision" xml:space="preserve">
-    <value>Low</value>
+    <value />
   </data>
   <data name="DynamoViewSettingMenuManagePackagePath" xml:space="preserve">
-    <value>Manage Node and Package Paths...</value>
+    <value />
   </data>
   <data name="DynamoViewSettingMenuMeter" xml:space="preserve">
-    <value>Meter</value>
+    <value />
   </data>
   <data name="DynamoViewSettingMenuMillimeter" xml:space="preserve">
-    <value>Millimeter</value>
+    <value />
   </data>
   <data name="DynamoViewSettingMenuNumber0" xml:space="preserve">
     <value>0</value>
@@ -702,7 +702,7 @@ Don't worry, you'll have the option to save your work.</value>
     <value>0.0000</value>
   </data>
   <data name="DynamoViewSettingMenuNumberFormat" xml:space="preserve">
-    <value>Number Format</value>
+    <value />
   </data>
   <data name="PreferencesViewSelectedPackagePathForDownload" xml:space="preserve">
     <value>Selected package path for download</value>
@@ -714,100 +714,100 @@ Don't worry, you'll have the option to save your work.</value>
     <value>Disable Loading Custom Packages</value>
   </data>
   <data name="DynamoViewSettingMenuSquareCentimeter" xml:space="preserve">
-    <value>Square Centimeter</value>
+    <value />
   </data>
   <data name="DynamoViewSettingMenuSquareFoot" xml:space="preserve">
-    <value>Square Foot</value>
+    <value />
   </data>
   <data name="DynamoViewSettingMenuSquareInch" xml:space="preserve">
-    <value>Square Inch</value>
+    <value />
   </data>
   <data name="DynamoViewSettingMenuSquareMeter" xml:space="preserve">
-    <value>Square Meter</value>
+    <value />
   </data>
   <data name="DynamoViewSettingMenuSquareMillimeter" xml:space="preserve">
-    <value>Square Millimeter</value>
+    <value />
   </data>
   <data name="DynamoViewSettingMenuVolumeUnits" xml:space="preserve">
-    <value>Volume Display Units</value>
+    <value />
   </data>
   <data name="DynamoViewSettingShowRunPreview" xml:space="preserve">
-    <value>Show Run Preview</value>
+    <value />
   </data>
   <data name="DynamoViewSettingsMenuChangeScaleFactor" xml:space="preserve">
     <value>Geometry Scaling...</value>
   </data>
   <data name="DynamoViewSettingsMenuVisualizationSettings" xml:space="preserve">
-    <value>Visualization Settings</value>
+    <value />
   </data>
   <data name="DynamoViewToolbarExport3DButtonTooltip" xml:space="preserve">
     <value>Export Background Preview As Image</value>
   </data>
   <data name="DynamoViewToolbarExportButtonTooltip" xml:space="preserve">
-    <value>Export Workspace As Image</value>
+    <value />
   </data>
   <data name="DynamoViewToolbarNewButtonTooltip" xml:space="preserve">
-    <value>New [Ctrl + N]</value>
+    <value />
   </data>
   <data name="DynamoViewToolbarOpenButtonTooltip" xml:space="preserve">
-    <value>Open [Ctrl + O]</value>
+    <value />
   </data>
   <data name="DynamoViewToolbarRedoButtonTooltip" xml:space="preserve">
-    <value>Redo [Ctrl + Y]</value>
+    <value />
   </data>
   <data name="DynamoViewToolbarSaveButtonTooltip" xml:space="preserve">
-    <value>Save [Ctrl + S]</value>
+    <value />
   </data>
   <data name="DynamoViewToolbarUndoButtonTooltip" xml:space="preserve">
-    <value>Undo [Ctrl + Z]</value>
+    <value />
   </data>
   <data name="DynamoViewViewMenu" xml:space="preserve">
-    <value>_View</value>
+    <value />
   </data>
   <data name="DynamoViewViewMenu3DPreview" xml:space="preserve">
-    <value>_Background 3D Preview</value>
+    <value />
   </data>
   <data name="DynamoViewViewMenuAlternateContextGeometry" xml:space="preserve">
-    <value>Show Geometry in {0}</value>
+    <value />
   </data>
   <data name="DynamoViewViewMenuAvailablePreviews" xml:space="preserve">
     <value>_Available Previews</value>
   </data>
   <data name="DynamoViewViewMenuConnector" xml:space="preserve">
-    <value>_Connectors</value>
+    <value />
   </data>
   <data name="DynamoViewViewMenuConnectorType" xml:space="preserve">
-    <value>_Connector Type</value>
+    <value />
   </data>
   <data name="DynamoViewViewMenuConnectorTypeCurve" xml:space="preserve">
-    <value>Curves</value>
+    <value />
   </data>
   <data name="DynamoViewViewMenuConnectorTypePolylines" xml:space="preserve">
-    <value>Polylines</value>
+    <value />
   </data>
   <data name="DynamoViewViewMenuHideConsole" xml:space="preserve">
-    <value>Hide Console</value>
+    <value />
   </data>
   <data name="DynamoViewViewMenuPan" xml:space="preserve">
-    <value>_Pan</value>
+    <value />
   </data>
   <data name="DynamoViewViewMenuPanDown" xml:space="preserve">
-    <value>Pan Down (Mouse wheel drag down)</value>
+    <value />
   </data>
   <data name="DynamoViewViewMenuPanLeft" xml:space="preserve">
-    <value>Pan Left (Mouse wheel drag left)</value>
+    <value />
   </data>
   <data name="DynamoViewViewMenuPanRight" xml:space="preserve">
-    <value>Pan Right (Mouse wheel drag right)</value>
+    <value />
   </data>
   <data name="DynamoViewViewMenuPanUp" xml:space="preserve">
-    <value>Pan Up (Mouse wheel drag up)</value>
+    <value />
   </data>
   <data name="DynamoViewViewMenuPreviewNavigate" xml:space="preserve">
     <value>_Navigate Background 3D Preview</value>
   </data>
   <data name="DynamoViewViewMenuShowBackground3DPreview" xml:space="preserve">
-    <value>Showing Background 3D Preview</value>
+    <value />
   </data>
   <data name="DynamoViewViewMenuShowConnectors" xml:space="preserve">
     <value>Show _Connectors</value>
@@ -819,64 +819,64 @@ Don't worry, you'll have the option to save your work.</value>
     <value>_Show Helpers</value>
   </data>
   <data name="DynamoViewViewMenuZoom" xml:space="preserve">
-    <value>_Zoom</value>
+    <value />
   </data>
   <data name="DynamoViewViewMenuZoomIn" xml:space="preserve">
-    <value>Zoom In (Mouse wheel down)</value>
+    <value />
   </data>
   <data name="DynamoViewViewMenuZoomOut" xml:space="preserve">
-    <value>Zoom Out (Mouse wheel up)</value>
+    <value />
   </data>
   <data name="EditAnnotationTitle" xml:space="preserve">
-    <value>Edit Group Title</value>
+    <value />
   </data>
   <data name="EditNodeWindowTitle" xml:space="preserve">
-    <value>Edit Node Name</value>
+    <value />
   </data>
   <data name="EditWindowAcceptButton" xml:space="preserve">
-    <value>Accept</value>
+    <value />
   </data>
   <data name="EditWindowTitle" xml:space="preserve">
-    <value>Set value...</value>
+    <value />
   </data>
   <data name="FileDialogAllFiles" xml:space="preserve">
-    <value>All Files ({0})|{0}</value>
+    <value />
   </data>
   <data name="FileDialogAssemblyFiles" xml:space="preserve">
-    <value>Assembly Library Files ({0})|{0}</value>
+    <value />
   </data>
   <data name="FileDialogCustomNodeDLLXML" xml:space="preserve">
-    <value>Custom Node, DLL, XML ({0})|{0}</value>
+    <value />
   </data>
   <data name="FileDialogDefaultPNGName" xml:space="preserve">
-    <value>Capture.png</value>
+    <value />
   </data>
   <data name="FileDialogDefaultSTLModelName" xml:space="preserve">
-    <value>model.stl</value>
+    <value />
   </data>
   <data name="FileDialogDesignScriptFiles" xml:space="preserve">
-    <value>DesignScript Files ({0})|{0}</value>
+    <value />
   </data>
   <data name="FileDialogDynamoCustomNode" xml:space="preserve">
-    <value>{0} Custom Node ({1})|{1}</value>
+    <value />
   </data>
   <data name="FileDialogDynamoDefinitions" xml:space="preserve">
-    <value>{0} Definitions ({1})|{1}</value>
+    <value />
   </data>
   <data name="FileDialogDynamoWorkspace" xml:space="preserve">
-    <value>{0} Workspace ({1})|{1}</value>
+    <value />
   </data>
   <data name="FileDialogLibraryFiles" xml:space="preserve">
-    <value>Library Files ({0})|{0}</value>
+    <value />
   </data>
   <data name="FileDialogManualMode" xml:space="preserve">
-    <value>Open in Manual Execution Mode</value>
+    <value />
   </data>
   <data name="FileDialogPNGFiles" xml:space="preserve">
-    <value>PNG Image|{0}</value>
+    <value />
   </data>
   <data name="FileDialogSTLModels" xml:space="preserve">
-    <value>STL Models|{0}</value>
+    <value />
   </data>
   <data name="FileNotPublishCaption" xml:space="preserve">
     <value>Publish Fail!</value>
@@ -888,31 +888,31 @@ Failed to publish file(s):
 {0}</value>
   </data>
   <data name="FilePathConverterNoFileSelected" xml:space="preserve">
-    <value>No file selected.</value>
+    <value />
   </data>
   <data name="FilterIconTooltip" xml:space="preserve">
     <value>Filter results</value>
   </data>
   <data name="FolderNotWritableError" xml:space="preserve">
-    <value>You do not have write permission to {0}.</value>
+    <value />
   </data>
   <data name="GenericTaskDialogSampleLeftButton" xml:space="preserve">
-    <value>Sample Left Button</value>
+    <value />
   </data>
   <data name="GenericTaskDialogSampleRightButton" xml:space="preserve">
-    <value>Sample Right Button</value>
+    <value />
   </data>
   <data name="GenericTaskDialogTitle" xml:space="preserve">
-    <value>Generic Task Dialog</value>
+    <value />
   </data>
   <data name="GroupContextMenuBackground" xml:space="preserve">
-    <value>Select Background</value>
+    <value />
   </data>
   <data name="GroupContextMenuDeleteGroup" xml:space="preserve">
-    <value>Delete Group</value>
+    <value />
   </data>
   <data name="GroupContextMenuFont" xml:space="preserve">
-    <value>Font Size</value>
+    <value />
   </data>
   <data name="GroupContextMenuGraphLayout" xml:space="preserve">
     <value>Cleanup Node Layout</value>
@@ -921,19 +921,19 @@ Failed to publish file(s):
     <value>Ungr_oup</value>
   </data>
   <data name="HideClassicNodeLibrary" xml:space="preserve">
-    <value>Hide Classic Node Library</value>
+    <value />
   </data>
   <data name="ImportLibraryDialogTitle" xml:space="preserve">
-    <value>Import Library</value>
+    <value />
   </data>
   <data name="InCanvasFitViewButtonToolTip" xml:space="preserve">
     <value>Zoom to Fit</value>
   </data>
   <data name="InCanvasGeomButtonToolTip" xml:space="preserve">
-    <value>Enable background 3D preview navigation (Ctrl + B)</value>
+    <value />
   </data>
   <data name="InCanvasNodeButtonToolTip" xml:space="preserve">
-    <value>Enable graph view navigation (Ctrl + B)</value>
+    <value />
   </data>
   <data name="InCanvasOrbitButtonToolTip" xml:space="preserve">
     <value>Orbit</value>
@@ -954,58 +954,58 @@ Failed to publish file(s):
     <value>Warning: </value>
   </data>
   <data name="InstalledPackageViewAdditionalFileLabel" xml:space="preserve">
-    <value>Additional Files</value>
+    <value />
   </data>
   <data name="InstalledPackageViewAdditionalLabel" xml:space="preserve">
-    <value>Additional Libraries</value>
+    <value />
   </data>
   <data name="InstalledPackageViewContextMenuDeprecate" xml:space="preserve">
-    <value>Deprecate</value>
+    <value />
   </data>
   <data name="InstalledPackageViewContextMenuDeprecateTooltip" xml:space="preserve">
-    <value>Set this package as deprecated.  Only allowed if you're a current maintainer of the package.</value>
+    <value />
   </data>
   <data name="InstalledPackageViewContextMenuGetLatest" xml:space="preserve">
-    <value>Get Latest Version</value>
+    <value />
   </data>
   <data name="InstalledPackageViewContextMenuGetLatestTooltip" xml:space="preserve">
-    <value>Check if there is a newer version of this package and download it.</value>
+    <value />
   </data>
   <data name="InstalledPackageViewContextMenuPublish" xml:space="preserve">
-    <value>Publish...</value>
+    <value />
   </data>
   <data name="InstalledPackageViewContextMenuPublishTooltip" xml:space="preserve">
-    <value>Publish this package, if it has yet to be published.</value>
+    <value />
   </data>
   <data name="InstalledPackageViewContextMenuPublishVersion" xml:space="preserve">
-    <value>Publish Version...</value>
+    <value />
   </data>
   <data name="InstalledPackageViewContextMenuPublishVersionTooltip" xml:space="preserve">
-    <value>Publish a new version of this package, assuming it has already been published. Only allowed if you're a current maintainer of the package.</value>
+    <value />
   </data>
   <data name="InstalledPackageViewContextMenuRemoveDeprecation" xml:space="preserve">
-    <value>Remove deprecation</value>
+    <value />
   </data>
   <data name="InstalledPackageViewContextMenuRemoveDeprecationTooltip" xml:space="preserve">
-    <value>Remove package deprecation. Only allowed if you're a current maintainer of the package.</value>
+    <value />
   </data>
   <data name="InstalledPackageViewContextMenuShowRootDir" xml:space="preserve">
-    <value>Show Root Directory</value>
+    <value />
   </data>
   <data name="InstalledPackageViewContextMenuShowRootDirTooltip" xml:space="preserve">
-    <value>Go to the root folder of this package</value>
+    <value />
   </data>
   <data name="InstalledPackageViewCustomNodesLabel" xml:space="preserve">
-    <value>Custom Nodes</value>
+    <value />
   </data>
   <data name="InstalledPackageViewNodeLibrariesLabel" xml:space="preserve">
-    <value>Node Libraries</value>
+    <value />
   </data>
   <data name="InstalledPackageViewPendingInstallButton" xml:space="preserve">
-    <value>Pending uninstall</value>
+    <value />
   </data>
   <data name="InstalledPackageViewTitle" xml:space="preserve">
-    <value>Installed Packages</value>
+    <value />
   </data>
   <data name="InstalledPackagePartialTextMessage" xml:space="preserve">
     <value>View your installed packages in the </value>
@@ -1014,10 +1014,10 @@ Failed to publish file(s):
     <value>Package Manager</value>
   </data>
   <data name="InstallMessageCaption" xml:space="preserve">
-    <value>Install Dynamo</value>
+    <value />
   </data>
   <data name="InvalidLoginUrl" xml:space="preserve">
-    <value>Invalid URL for login page!</value>
+    <value />
   </data>
   <data name="InvalidTimeZoneMessage" xml:space="preserve">
     <value>Could not sign in at this moment. Check the date, time and time zone settings and try to sign in again.</value>
@@ -1029,7 +1029,7 @@ Failed to publish file(s):
     <value>For two lists [a,b,c][1,2,3] returns [a1,a2,a3][b1,b2,b3][c1,c2,c3].</value>
   </data>
   <data name="LacingDisabledToolTip" xml:space="preserve">
-    <value>Argument lacing is disabled for this node.</value>
+    <value />
   </data>
   <data name="LacingFirstToolTip" xml:space="preserve">
     <value>For two lists [a,b,c][1,2,3] returns {a1}.</value>
@@ -1044,25 +1044,25 @@ Failed to publish file(s):
     <value>View layout</value>
   </data>
   <data name="LearnMore" xml:space="preserve">
-    <value>Learn more</value>
+    <value />
   </data>
   <data name="LibraryViewContextMenuEditNode" xml:space="preserve">
-    <value>Edit...</value>
+    <value />
   </data>
   <data name="LibraryViewNoMatchesFound" xml:space="preserve">
-    <value>No matches found</value>
+    <value />
   </data>
   <data name="LibraryViewSearchText" xml:space="preserve">
-    <value>Search</value>
+    <value />
   </data>
   <data name="LibraryViewTitle" xml:space="preserve">
-    <value>Library</value>
+    <value />
   </data>
   <data name="MajorVersionNonNegative" xml:space="preserve">
     <value>Provide major, minor, and build version number.</value>
   </data>
   <data name="Manual" xml:space="preserve">
-    <value>Manual</value>
+    <value />
   </data>
   <data name="MessageAlreadyInstallDynamo" xml:space="preserve">
     <value>Package {1} is already installed.
@@ -1070,20 +1070,16 @@ Failed to publish file(s):
 {0} will attempt to uninstall this package before installing {2}.</value>
   </data>
   <data name="MessageConfirmToInstallPackage" xml:space="preserve">
-    <value>Are you sure you want to install {0} {1} ?</value>
+    <value />
   </data>
   <data name="MessageConfirmToInstallPackageToFolder" xml:space="preserve">
     <value>Are you sure you want to install {0} {1} to {2} ?</value>
   </data>
   <data name="MessageConfirmToSaveCustomNode" xml:space="preserve">
-    <value>You have unsaved changes to custom node workspace: "{0}".
-
-Would you like to save your changes?</value>
+    <value />
   </data>
   <data name="MessageConfirmToSaveHomeWorkSpace" xml:space="preserve">
-    <value>You have unsaved changes to the Home workspace.
-
-Would you like to save your changes?</value>
+    <value />
   </data>
   <data name="MessageFileInUseByApplication" xml:space="preserve">
     <value>The file is currently in use by another application.
@@ -1094,9 +1090,7 @@ Please close the file before trying to overwrite it.</value>
     <value>File in use</value>
   </data>
   <data name="MessageConfirmToSaveNamedHomeWorkSpace" xml:space="preserve">
-    <value>You have unsaved changes to {0}.
-
-Would you like to save your changes?</value>
+    <value />
   </data>
   <data name="MessageConfirmToSaveReadOnlyCustomNode" xml:space="preserve">
     <value>We can't save "{0}" because the file is read-only or contains unresolved or invalid nodes. To keep changes, would you like to "Save As..." with a different name or path?</value>
@@ -1113,13 +1107,13 @@ You can always redownload the package.</value>
     <value>Still loading</value>
   </data>
   <data name="MessageCustomNodeNameExist" xml:space="preserve">
-    <value>A built-in node with the given name already exists.</value>
+    <value />
   </data>
   <data name="MessageCustomNodeNeedNewCategory" xml:space="preserve">
-    <value>You must enter a new category or choose one from the existing categories.</value>
+    <value />
   </data>
   <data name="MessageCustomNodeNoName" xml:space="preserve">
-    <value>You must supply a name.</value>
+    <value />
   </data>
   <data name="MessageCustomNodeNameInvalid" xml:space="preserve">
     <value>Custom Node name cannot contain any of the following special characters:
@@ -1135,19 +1129,19 @@ You can always redownload the package.</value>
     <value>Failed to add the following files:\n\n {0}</value>
   </data>
   <data name="MessageFailedToApplyCustomization" xml:space="preserve">
-    <value>Failed to apply NodeViewCustomization for {0}</value>
+    <value />
   </data>
   <data name="MessageFailedToAttachToRowColumn" xml:space="preserve">
-    <value>'AttachmentToRowColumnConverter' expects a 'ConverterParameter' value to be either 'Row' or 'Column'</value>
+    <value />
   </data>
   <data name="MessageFailedToDownloadPackage" xml:space="preserve">
-    <value>Failed to download package with id: {0}.  Please try again and report the package if you continue to have problems.</value>
+    <value />
   </data>
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>Failed to load an invalid package.</value>
   </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
-    <value>No node could be found with that Id.</value>
+    <value />
   </data>
   <data name="MessageFailedToFindGroupById" xml:space="preserve">
     <value>No group could be found with that Id.</value>
@@ -1156,45 +1150,43 @@ You can always redownload the package.</value>
     <value>Error opening corrupted file: {0}</value>
   </data>
   <data name="MessageFailedToSaveAsImage" xml:space="preserve">
-    <value>Failed to save the Workspace as image.</value>
+    <value />
   </data>
   <data name="MessageFailedToDelete" xml:space="preserve">
     <value>{0} failed to delete the package.  You may need to delete the package's root directory manually.</value>
   </data>
   <data name="MessageFailToUninstallPackage" xml:space="preserve">
-    <value>{0} failed to uninstall the package: {1}.  The package may need to be reinstalled manually.</value>
+    <value />
   </data>
   <data name="MessageGettingNodeError" xml:space="preserve">
-    <value>There was a problem getting the node from the workspace.</value>
+    <value />
   </data>
   <data name="MessageLoadingTime" xml:space="preserve">
-    <value>{0} elapsed for loading {1} main window.</value>
+    <value />
   </data>
   <data name="MessageNeedToRestartAfterDelete" xml:space="preserve">
     <value>{0} and its host application must restart before delete takes effect.</value>
   </data>
   <data name="MessageNodeWithNullFunction" xml:space="preserve">
-    <value>There is a null function definition for this node.</value>
+    <value />
   </data>
   <data name="MessageNoNodeDescription" xml:space="preserve">
-    <value>No description provided</value>
+    <value />
   </data>
   <data name="MessagePackageContainPythonScript" xml:space="preserve">
-    <value>The package or one of its dependencies contains Python scripts or binaries. Do you want to continue?</value>
+    <value />
   </data>
   <data name="MessagePackageNewerDynamo" xml:space="preserve">
     <value>This package or one of its dependencies were created for a newer version of Dynamo. It may not work in this version. Do you want to continue?</value>
   </data>
   <data name="MessageSelectAtLeastOneNode" xml:space="preserve">
-    <value>You must select at least one custom node.</value>
+    <value />
   </data>
   <data name="MessageSelectSymbolNotFound" xml:space="preserve">
-    <value>The selected symbol was not found in the workspace</value>
+    <value />
   </data>
   <data name="MessageSubmitSameNamePackage" xml:space="preserve">
-    <value>The node is part of the {0} package called "{1}" - do you want to submit a new version of this package?
-
-If not, this node will be moved to the new package you are creating."</value>
+    <value />
   </data>
   <data name="MessageToDeprecatePackage" xml:space="preserve">
     <value>Are you sure you want to deprecate {0} ?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will no longer support the package, although the package will still appear when explicitly searched for. 
@@ -1202,9 +1194,7 @@ If not, this node will be moved to the new package you are creating."</value>
 You can always undeprecate the package.</value>
   </data>
   <data name="MessageToUndeprecatePackage" xml:space="preserve">
-    <value>Are you sure you want to undeprecate {0} ?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will continue to support the package and the package will appear when users are browsing packages.
-
-You can always re-deprecate the package.</value>
+    <value />
   </data>
   <data name="MessageForceInstallOrUninstallToContinue" xml:space="preserve">
     <value>Package {0} has one or more dependencies that conflict with the following packages that are in use in the workspace: {1}. Dependency conflicts could cause unintended behavior to occur.
@@ -1226,16 +1216,16 @@ To avoid unintended behavior, uninstall the conflicting loaded package(s), resta
     <value>Unknown error opening file: {0}</value>
   </data>
   <data name="MessageUnsavedChanges0" xml:space="preserve">
-    <value>The following workspaces have not been saved:</value>
+    <value />
   </data>
   <data name="MessageUnsavedChanges1" xml:space="preserve">
-    <value>. Please save them and try again.</value>
+    <value />
   </data>
   <data name="MinorVersionNonNegative" xml:space="preserve">
-    <value>You must provide a Minor version as a non-negative integer.</value>
+    <value />
   </data>
   <data name="MoreButton" xml:space="preserve">
-    <value>More</value>
+    <value />
   </data>
   <data name="NameNeedMoreCharacters" xml:space="preserve">
     <value>Must be at least 3 characters</value>
@@ -1259,13 +1249,13 @@ To avoid unintended behavior, uninstall the conflicting loaded package(s), resta
     <value>Provide file(s)</value>
   </data>
   <data name="NodeContextMenuEnablePeriodicUpdate" xml:space="preserve">
-    <value>Enable Periodic Update</value>
+    <value />
   </data>
   <data name="NodeContextMenuHelp" xml:space="preserve">
     <value>Help...</value>
   </data>
   <data name="NodeContextMenuIsInput" xml:space="preserve">
-    <value>Is Input</value>
+    <value />
   </data>
   <data name="NodeContextMenuIsOutput" xml:space="preserve">
     <value>Is Output</value>
@@ -1277,22 +1267,22 @@ To avoid unintended behavior, uninstall the conflicting loaded package(s), resta
     <value>Rename</value>
   </data>
   <data name="NodeContextMenuShowLabels" xml:space="preserve">
-    <value>Show Labels</value>
+    <value />
   </data>
   <data name="NodeHelpWindowNodeCategory" xml:space="preserve">
-    <value>CATEGORY</value>
+    <value />
   </data>
   <data name="NodeHelpWindowNodeDescription" xml:space="preserve">
-    <value>DESCRIPTION</value>
+    <value />
   </data>
   <data name="NodeHelpWindowNodeInput" xml:space="preserve">
-    <value>INPUTS</value>
+    <value />
   </data>
   <data name="NodeHelpWindowNodeOutput" xml:space="preserve">
-    <value>OUTPUTS</value>
+    <value />
   </data>
   <data name="NodeHelpWindowNodeType" xml:space="preserve">
-    <value>NODE TYPE</value>
+    <value />
   </data>
   <data name="NodesRunStatus" xml:space="preserve">
     <value>Freeze</value>
@@ -1301,19 +1291,19 @@ To avoid unintended behavior, uninstall the conflicting loaded package(s), resta
     <value>There was an error while finding node view customizations for {0}. Contact the author of this assembly for more information.</value>
   </data>
   <data name="NoneString" xml:space="preserve">
-    <value>none</value>
+    <value />
   </data>
   <data name="NoteViewContextMenuDelete" xml:space="preserve">
-    <value>Delete</value>
+    <value />
   </data>
   <data name="NoteViewContextMenuEdit" xml:space="preserve">
-    <value>Edit...</value>
+    <value />
   </data>
   <data name="NullString" xml:space="preserve">
     <value>null</value>
   </data>
   <data name="OKButton" xml:space="preserve">
-    <value>OK</value>
+    <value />
   </data>
   <data name="OneAssemblyWasLoadedSeveralTimesErrorMessage" xml:space="preserve">
     <value>Please, load assembly just one time.
@@ -1327,46 +1317,46 @@ Next assemblies were loaded several times:
     <value>only</value>
   </data>
   <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
-    <value>Open {0} Definition...</value>
+    <value />
   </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
-    <value>Package Download Confirmation</value>
+    <value />
   </data>
   <data name="PackageDownloadErrorMessageBoxTitle" xml:space="preserve">
-    <value>Package Download Error</value>
+    <value />
   </data>
   <data name="PackageDownloadMessageBoxTitle" xml:space="preserve">
-    <value>Package Download</value>
+    <value />
   </data>
   <data name="PackageDownloadStateDownloaded" xml:space="preserve">
-    <value>Downloaded</value>
+    <value />
   </data>
   <data name="PackageDownloadStateDownloading" xml:space="preserve">
-    <value>Downloading</value>
+    <value />
   </data>
   <data name="PackageDownloadStateError" xml:space="preserve">
-    <value>Error</value>
+    <value />
   </data>
   <data name="PackageDownloadStateInstalled" xml:space="preserve">
-    <value>Installed</value>
+    <value />
   </data>
   <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
     <value> (installed)</value>
   </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
-    <value>Installing</value>
+    <value />
   </data>
   <data name="PackageDownloadStateStarting" xml:space="preserve">
-    <value>Starting</value>
+    <value />
   </data>
   <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
-    <value>Due to limitations in the .NET framework, it is not possible to update your package assembly while it is already loaded.  Please update the assembly while {0} is not running and try again.</value>
+    <value />
   </data>
   <data name="PackageDuplicateAssembliesFoundMessage" xml:space="preserve">
     <value>\n\nDuplicate assemblies found: {0}</value>
   </data>
   <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
-    <value>Cannot update assembly</value>
+    <value />
   </data>
   <data name="PackageFolderNotAccessible" xml:space="preserve">
     <value>A problem occurred when trying to install the package. Dynamo is unable to obtain read/write access to
@@ -1376,7 +1366,7 @@ Next assemblies were loaded several times:
     <value>The name of the package cannot contain</value>
   </data>
   <data name="PackageNeedAtLeastOneFile" xml:space="preserve">
-    <value>Your package must contain at least one file.</value>
+    <value />
   </data>
   <data name="PackageCompatibilityMatrixMissing" xml:space="preserve">
     <value>Provide compatibility information for the package..</value>
@@ -1385,28 +1375,28 @@ Next assemblies were loaded several times:
     <value>The root directory of the package does not exist. Please try and re-install the package.</value>
   </data>
   <data name="PackagePathViewAccept" xml:space="preserve">
-    <value>Accept Changes</value>
+    <value />
   </data>
   <data name="PackagePathViewHeading" xml:space="preserve">
-    <value>Paths:</value>
+    <value />
   </data>
   <data name="PackagePathViewSummary1" xml:space="preserve">
-    <value>Add paths to make nodes and packages show up in the library.</value>
+    <value />
   </data>
   <data name="PackagePathViewTitle" xml:space="preserve">
-    <value>Manage Node and Package Paths</value>
+    <value />
   </data>
   <data name="PackagePathViewToolTipDown" xml:space="preserve">
-    <value>Move the selected path downward</value>
+    <value />
   </data>
   <data name="PackagePathViewToolTipMinus" xml:space="preserve">
-    <value>Remove the selected path from list</value>
+    <value />
   </data>
   <data name="PackagePathViewToolTipPlus" xml:space="preserve">
-    <value>Add a new path to the list</value>
+    <value />
   </data>
   <data name="PackagePathViewToolTipUp" xml:space="preserve">
-    <value>Move the selected path upward</value>
+    <value />
   </data>
   <data name="PackageManagerFinishedPackagePackagePath" xml:space="preserve">
     <value>Package Path</value>
@@ -1427,52 +1417,52 @@ Next assemblies were loaded several times:
     <value>The import path "{0}" was added to "Node and Package Paths". If you want to update or remove this path, please open "Dynamo &gt; Preferences &gt;Package Manager &gt; Node and Package Paths..."</value>
   </data>
   <data name="PackageSearchStateNoResult" xml:space="preserve">
-    <value>Search returned no results!</value>
+    <value />
   </data>
   <data name="PackageSearchStateSearching" xml:space="preserve">
-    <value>Searching...</value>
+    <value />
   </data>
   <data name="PackageSearchStateSyncingWithServer" xml:space="preserve">
-    <value>Syncing with server...</value>
+    <value />
   </data>
   <data name="PackageSearchViewClearButton" xml:space="preserve">
-    <value>Clear</value>
+    <value />
   </data>
   <data name="PackageSearchViewClearButtonTooltip" xml:space="preserve">
-    <value>Clear Downloads</value>
+    <value />
   </data>
   <data name="PackageSearchViewContextMenuOrderAscending" xml:space="preserve">
-    <value>Ascending</value>
+    <value />
   </data>
   <data name="PackageSearchViewContextMenuOrderDescending" xml:space="preserve">
-    <value>Descending</value>
+    <value />
   </data>
   <data name="PackageSearchViewContextMenuSortByAuthor" xml:space="preserve">
-    <value>Author</value>
+    <value />
   </data>
   <data name="PackageSearchViewContextMenuSortByDownloads" xml:space="preserve">
-    <value>Downloads</value>
+    <value />
   </data>
   <data name="PackageSearchViewContextMenuSortByName" xml:space="preserve">
-    <value>Name</value>
+    <value />
   </data>
   <data name="PackageSearchViewContextMenuSortByVotes" xml:space="preserve">
-    <value>Votes</value>
+    <value />
   </data>
   <data name="PackageSearchViewContextMenuSortyByUpdate" xml:space="preserve">
-    <value>Most Recent Update</value>
+    <value />
   </data>
   <data name="PackageManagerPackageDeprecated" xml:space="preserve">
     <value>Deprecated</value>
   </data>
   <data name="PackageSearchViewDeprecatedTooltip" xml:space="preserve">
-    <value>The maintainers of this package have indicated that they will no longer be updating it.  Use at your own risk!</value>
+    <value />
   </data>
   <data name="PackageSearchViewDescription" xml:space="preserve">
-    <value>Description</value>
+    <value />
   </data>
   <data name="PackageSearchViewInstallButton" xml:space="preserve">
-    <value>⇓ Install</value>
+    <value />
   </data>
   <data name="PackageSearchViewInstallLatestVersion" xml:space="preserve">
     <value>Install latest version</value>
@@ -1487,55 +1477,55 @@ Next assemblies were loaded several times:
     <value>Install this version to folder...</value>
   </data>
   <data name="PackageSearchViewKeywords" xml:space="preserve">
-    <value>Keywords</value>
+    <value />
   </data>
   <data name="PackageSearchViewSearchTextBox" xml:space="preserve">
-    <value>Search...</value>
+    <value />
   </data>
   <data name="PackageSearchViewSortByButton" xml:space="preserve">
-    <value>Sort by</value>
+    <value />
   </data>
   <data name="PackageSearchViewTitle" xml:space="preserve">
-    <value>Online Package Search</value>
+    <value />
   </data>
   <data name="PackageSearchViewUpvoteButtonTooltip" xml:space="preserve">
-    <value>Vote in support of this package</value>
+    <value />
   </data>
   <data name="PackageSearchViewVersions" xml:space="preserve">
-    <value>Versions</value>
+    <value />
   </data>
   <data name="PackageSearchViewVisitRepositoryBuutton" xml:space="preserve">
-    <value>Visit package repository</value>
+    <value />
   </data>
   <data name="PackageSearchViewVisitWebSiteButton" xml:space="preserve">
-    <value>Visit package website</value>
+    <value />
   </data>
   <data name="PackageStateUnknown" xml:space="preserve">
-    <value>Unknown</value>
+    <value />
   </data>
   <data name="PackageTypeShortString" xml:space="preserve">
-    <value>PKG</value>
+    <value />
   </data>
   <data name="PackageUploadNoDependency" xml:space="preserve">
-    <value>None</value>
+    <value />
   </data>
   <data name="PackageUploadStateCompressing" xml:space="preserve">
-    <value>Compressing...</value>
+    <value />
   </data>
   <data name="PackageUploadStateCopying" xml:space="preserve">
-    <value>Copying...</value>
+    <value />
   </data>
   <data name="PackageUploadStateError" xml:space="preserve">
-    <value>Error!</value>
+    <value />
   </data>
   <data name="PackageUploadStateReady" xml:space="preserve">
-    <value>Ready</value>
+    <value />
   </data>
   <data name="PackageUploadStateUploaded" xml:space="preserve">
-    <value>Uploaded</value>
+    <value />
   </data>
   <data name="PackageUploadStateUploading" xml:space="preserve">
-    <value>Uploading...</value>
+    <value />
   </data>
   <data name="PackageFilterByHost" xml:space="preserve">
     <value>HOST</value>
@@ -1577,49 +1567,49 @@ Next assemblies were loaded several times:
     <value>Package may not work in this version of {0}!</value>
   </data>
   <data name="PackageWarningMessageBoxTitle" xml:space="preserve">
-    <value>Package Warning</value>
+    <value />
   </data>
   <data name="PackageManagerClearAllButtonText" xml:space="preserve">
     <value>Clear all</value>
   </data>
   <data name="Periodic" xml:space="preserve">
-    <value>Periodic</value>
+    <value />
   </data>
   <data name="PortViewContextMenuUserDefaultValue" xml:space="preserve">
-    <value>Use Default Value</value>
+    <value />
   </data>
   <data name="PresetOverwrite" xml:space="preserve">
-    <value>A preset by this name already exists, do you wish to overwrite?</value>
+    <value />
   </data>
   <data name="PresetPromptDescriptionTooltip" xml:space="preserve">
-    <value>A description of the preset state.</value>
+    <value />
   </data>
   <data name="PresetPromptNameTooltip" xml:space="preserve">
-    <value>A unique name for the preset.</value>
+    <value />
   </data>
   <data name="PresetsWindowDescription" xml:space="preserve">
-    <value>Description</value>
+    <value />
   </data>
   <data name="PresetsWindowDescriptionHint" xml:space="preserve">
-    <value>Enter a description for this preset.</value>
+    <value />
   </data>
   <data name="PresetsWindowName" xml:space="preserve">
-    <value>Name</value>
+    <value />
   </data>
   <data name="PresetsWindowTitle" xml:space="preserve">
-    <value>Preset State Properties</value>
+    <value />
   </data>
   <data name="PresetTextRemaining" xml:space="preserve">
-    <value>Characters Remaining</value>
+    <value />
   </data>
   <data name="PresetWarningMessage" xml:space="preserve">
-    <value>No input nodes selected. Select at least one input node to create a preset.</value>
+    <value />
   </data>
   <data name="PreviewListLabel" xml:space="preserve">
     <value>List</value>
   </data>
   <data name="PublishPackage" xml:space="preserve">
-    <value>Publish Online</value>
+    <value />
   </data>
   <data name="PublishPackageDialogCaption" xml:space="preserve">
     <value>Published Successfully</value>
@@ -1631,7 +1621,7 @@ Next assemblies were loaded several times:
     <value>Preview package contents (read only)</value>
   </data>
   <data name="PublishPackageLocally" xml:space="preserve">
-    <value>Publish Locally</value>
+    <value />
   </data>
   <data name="PublishPackageResetButton" xml:space="preserve">
     <value>Reset</value>
@@ -1641,7 +1631,7 @@ Next assemblies were loaded several times:
 Want to publish a different package?</value>
   </data>
   <data name="PublishPackagePackageContent" xml:space="preserve">
-    <value>Package Contents</value>
+    <value />
   </data>
   <data name="PublishPackageViewAddFileButton" xml:space="preserve">
     <value>Add Files</value>
@@ -1653,34 +1643,34 @@ Want to publish a different package?</value>
     <value>Remove from package</value>
   </data>
   <data name="PublishPackageViewContextMenuIsNodeLibrary" xml:space="preserve">
-    <value>Is Node Library</value>
+    <value />
   </data>
   <data name="PublishPackageViewLicense" xml:space="preserve">
     <value>License (optional)</value>
   </data>
   <data name="PublishPackageViewPackageDependencies" xml:space="preserve">
-    <value>Dependencies</value>
+    <value />
   </data>
   <data name="PublishPackageViewPackageDescriptionTooltip" xml:space="preserve">
-    <value>A description that helps people understand what the package might be used for.</value>
+    <value />
   </data>
   <data name="PublishPackageViewPackageGroup" xml:space="preserve">
-    <value>Group (optional)</value>
+    <value />
   </data>
   <data name="PublishPackageViewPackageGroupTooltip" xml:space="preserve">
-    <value>A group to help categorize this package.  Might be useful for a collection of packages related to a firm, school, etc.</value>
+    <value />
   </data>
   <data name="PublishPackageViewPackageKeywords" xml:space="preserve">
-    <value>Keywords (optional)</value>
+    <value />
   </data>
   <data name="PublishPackageViewPackageKeywordsTooltip" xml:space="preserve">
-    <value>Keywords help find your package in the database.  Separate them by spaces.</value>
+    <value />
   </data>
   <data name="PublishPackageViewPackageName" xml:space="preserve">
-    <value>Name</value>
+    <value />
   </data>
   <data name="PublishPackageViewPackageNameTooltip" xml:space="preserve">
-    <value>A unique name for the package.</value>
+    <value />
   </data>
   <data name="PublishPackageViewPackageVersion" xml:space="preserve">
     <value>Version</value>
@@ -1713,16 +1703,16 @@ Want to publish a different package?</value>
     <value>The copyright year for the package.</value>
   </data>
   <data name="PublishPackageViewPublish" xml:space="preserve">
-    <value>Publish a Package</value>
+    <value />
   </data>
   <data name="PublishPackageViewPublisherWebiSite" xml:space="preserve">
     <value>Website Url (optional)</value>
   </data>
   <data name="PublishPackageViewRepositoryUrl" xml:space="preserve">
-    <value>Repository Url (optional)</value>
+    <value />
   </data>
   <data name="PublishPackageViewTitle" xml:space="preserve">
-    <value>Publish a {0} Package</value>
+    <value />
   </data>
   <data name="QueryMember" xml:space="preserve">
     <value>Query</value>
@@ -1731,7 +1721,7 @@ Want to publish a different package?</value>
     <value>Apply Changes</value>
   </data>
   <data name="RunCompletedMessage" xml:space="preserve">
-    <value>Run completed.</value>
+    <value />
   </data>
   <data name="RunCompletedWithScaleChangeAndWarningsMessage" xml:space="preserve">
     <value>Run completed with warnings on setting new working range.</value>
@@ -1740,10 +1730,10 @@ Want to publish a different package?</value>
     <value>Run completed with new working range.</value>
   </data>
   <data name="RunCompletedWithWarningsMessage" xml:space="preserve">
-    <value>Run completed with warnings.</value>
+    <value />
   </data>
   <data name="RunStartedMessage" xml:space="preserve">
-    <value>Run started...</value>
+    <value />
   </data>
   <data name="RunStartedWithScaleChangeMessage" xml:space="preserve">
     <value>Run started with new working range...</value>
@@ -1755,7 +1745,7 @@ Want to publish a different package?</value>
     <value>Graph changes are executed when you click Run. Use this mode when working in large graphs, unfamiliar graphs, or host applications.</value>
   </data>
   <data name="RunTypeToolTipPeriodicallyDisabled" xml:space="preserve">
-    <value>Periodic running is disabled when there are no nodes in your graph that support it.</value>
+    <value />
   </data>
   <data name="RunTypeToolTipPeriodicallyEnabled" xml:space="preserve">
     <value>Graph changes are executed at a specified interval. Only available when the graph contains specific nodes, such as DateTime.Now or WebRequest.</value>
@@ -1764,10 +1754,10 @@ Want to publish a different package?</value>
     <value>Unsaved changes</value>
   </data>
   <data name="SaveModelToSTLDialogTitle" xml:space="preserve">
-    <value>Save your model to STL.</value>
+    <value />
   </data>
   <data name="SaveWorkbenToImageDialogTitle" xml:space="preserve">
-    <value>Save your Workbench to an Image</value>
+    <value />
   </data>
   <data name="ScalingExtraLargeButton" xml:space="preserve">
     <value>Extra large</value>
@@ -1788,55 +1778,55 @@ Want to publish a different package?</value>
     <value>screenshot_3D_shortcut</value>
   </data>
   <data name="SearchViewTopResult" xml:space="preserve">
-    <value>Top Result</value>
+    <value />
   </data>
   <data name="SelectAllTitle" xml:space="preserve">
     <value>Select All</value>
   </data>
   <data name="SelectionErrorMessageBoxTitle" xml:space="preserve">
-    <value>Selection Error</value>
+    <value />
   </data>
   <data name="SelectNodeButtonChange" xml:space="preserve">
-    <value>Change</value>
+    <value />
   </data>
   <data name="SelectNodeButtonSelect" xml:space="preserve">
-    <value>Select</value>
+    <value />
   </data>
   <data name="ShowClassicNodeLibrary" xml:space="preserve">
-    <value>Show Classic Node Library</value>
+    <value />
   </data>
   <data name="ShowHideLibraryIconTooltip" xml:space="preserve">
     <value>Show/hide</value>
   </data>
   <data name="ShowRunPreviewDisableToolTip" xml:space="preserve">
-    <value>Preview the execution state of your graph. Nodes that are scheduled for execution will highlight in the graph</value>
+    <value />
   </data>
   <data name="ShowRunPreviewEnableToolTip" xml:space="preserve">
-    <value>Execution preview is not available when running automatically</value>
+    <value />
   </data>
   <data name="SolutionToFolderNotWritatbleError" xml:space="preserve">
     <value>Please update the permissions or go to Preferences &gt;Node and Package Paths...' to change your default directory.</value>
   </data>
   <data name="StartPageAdvancedTutorials" xml:space="preserve">
-    <value>Advanced Tutorials</value>
+    <value />
   </data>
   <data name="StartPageAsk" xml:space="preserve">
-    <value>ASK</value>
+    <value />
   </data>
   <data name="StartPageBackupLocation" xml:space="preserve">
-    <value>Backup location</value>
+    <value />
   </data>
   <data name="StartPageBackupNoCrash" xml:space="preserve">
-    <value>BACKUP</value>
+    <value />
   </data>
   <data name="StartPageBackupOnCrash" xml:space="preserve">
-    <value>RECOVER FROM BACKUP</value>
+    <value />
   </data>
   <data name="StartPageCode" xml:space="preserve">
-    <value>CODE</value>
+    <value />
   </data>
   <data name="StartPageDiscussionForum" xml:space="preserve">
-    <value>Discussion forum</value>
+    <value />
   </data>
   <data name="StartPageDynamoDictionary" xml:space="preserve">
     <value>Dynamo Dictionary</value>
@@ -1845,70 +1835,70 @@ Want to publish a different package?</value>
     <value>Dynamo Primer</value>
   </data>
   <data name="StartPageFiles" xml:space="preserve">
-    <value>FILES</value>
+    <value />
   </data>
   <data name="StartPageGithubRepository" xml:space="preserve">
-    <value>Github repository</value>
+    <value />
   </data>
   <data name="StartPageMoreSamples" xml:space="preserve">
-    <value>More Samples</value>
+    <value />
   </data>
   <data name="StartPageNewCustomNode" xml:space="preserve">
-    <value>Custom Node</value>
+    <value />
   </data>
   <data name="StartPageNewFile" xml:space="preserve">
-    <value>New</value>
+    <value />
   </data>
   <data name="StartPageOpenFile" xml:space="preserve">
-    <value>Open</value>
+    <value />
   </data>
   <data name="StartPageRecent" xml:space="preserve">
-    <value>RECENT</value>
+    <value />
   </data>
   <data name="StartPageReference" xml:space="preserve">
-    <value>REFERENCE</value>
+    <value />
   </data>
   <data name="StartPageSamples" xml:space="preserve">
-    <value>SAMPLES</value>
+    <value />
   </data>
   <data name="StartPageSendIssues" xml:space="preserve">
-    <value>Send issues</value>
+    <value />
   </data>
   <data name="StartPageShowSamples" xml:space="preserve">
-    <value>Show Samples In Folder</value>
+    <value />
   </data>
   <data name="StartPageVideoTutorials" xml:space="preserve">
-    <value>Video Tutorials</value>
+    <value />
   </data>
   <data name="StartPageVisitWebsite" xml:space="preserve">
-    <value>{0} website</value>
+    <value />
   </data>
   <data name="StartPageWhatsNew" xml:space="preserve">
     <value>Getting Started</value>
   </data>
   <data name="StringInputNodeEditMenu" xml:space="preserve">
-    <value>Edit...</value>
+    <value />
   </data>
   <data name="TabFileNameReadOnlyPrefix" xml:space="preserve">
     <value>[Read-Only] </value>
   </data>
   <data name="TermsOfUseAcceptButton" xml:space="preserve">
-    <value>I Accept</value>
+    <value />
   </data>
   <data name="TermsOfUseDeclineButton" xml:space="preserve">
-    <value>I Decline</value>
+    <value />
   </data>
   <data name="TermsOfUseViewTitle" xml:space="preserve">
-    <value>Package Manager Terms of Use</value>
+    <value />
   </data>
   <data name="TooltipCurrentIndex" xml:space="preserve">
-    <value>{0} of {1}</value>
+    <value />
   </data>
   <data name="UnableToAccessPackageDirectory" xml:space="preserve">
     <value>Unable To Access Package Directory</value>
   </data>
   <data name="UndeprecatingPackageMessageBoxTitle" xml:space="preserve">
-    <value>Removing Package Deprecation</value>
+    <value />
   </data>
   <data name="DeleteFailureMessageBoxTitle" xml:space="preserve">
     <value>Delete Failure</value>
@@ -1917,87 +1907,85 @@ Want to publish a different package?</value>
     <value>Deleting Package</value>
   </data>
   <data name="UnitAcres" xml:space="preserve">
-    <value>Acres</value>
+    <value />
   </data>
   <data name="UnitArea" xml:space="preserve">
-    <value>Area</value>
+    <value />
   </data>
   <data name="UnitCentimeters" xml:space="preserve">
-    <value>Centimeters</value>
+    <value />
   </data>
   <data name="UnitCubicCentimeter" xml:space="preserve">
-    <value>CubicCentimeter</value>
+    <value />
   </data>
   <data name="UnitCubicFoot" xml:space="preserve">
-    <value>CubicFoot</value>
+    <value />
   </data>
   <data name="UnitCubicInches" xml:space="preserve">
-    <value>CubicInches</value>
+    <value />
   </data>
   <data name="UnitCubicMeters" xml:space="preserve">
-    <value>CubicMeters</value>
+    <value />
   </data>
   <data name="UnitCubicMillimeter" xml:space="preserve">
-    <value>CubicMillimeter</value>
+    <value />
   </data>
   <data name="UnitCubicYards" xml:space="preserve">
-    <value>CubicYards</value>
+    <value />
   </data>
   <data name="UnitDecimeters" xml:space="preserve">
-    <value>Decimeters</value>
+    <value />
   </data>
   <data name="UnitFeet" xml:space="preserve">
-    <value>Feet</value>
+    <value />
   </data>
   <data name="UnitHectares" xml:space="preserve">
-    <value>Hectares</value>
+    <value />
   </data>
   <data name="UnitInches" xml:space="preserve">
-    <value>Inches</value>
+    <value />
   </data>
   <data name="UnitLength" xml:space="preserve">
-    <value>Length</value>
+    <value />
   </data>
   <data name="UnitLitres" xml:space="preserve">
-    <value>Litres</value>
+    <value />
   </data>
   <data name="UnitMeters" xml:space="preserve">
-    <value>Meters</value>
+    <value />
   </data>
   <data name="UnitMillimeters" xml:space="preserve">
-    <value>Millimeters</value>
+    <value />
   </data>
   <data name="Units" xml:space="preserve">
-    <value>Units:</value>
+    <value />
   </data>
   <data name="UnitSquareCentimeter" xml:space="preserve">
-    <value>SquareCentimeter</value>
+    <value />
   </data>
   <data name="UnitSquareFoot" xml:space="preserve">
-    <value>SquareFoot</value>
+    <value />
   </data>
   <data name="UnitSquareInch" xml:space="preserve">
-    <value>SquareInch</value>
+    <value />
   </data>
   <data name="UnitSquareMeter" xml:space="preserve">
-    <value>SquareMeter</value>
+    <value />
   </data>
   <data name="UnitSquareMillimeter" xml:space="preserve">
-    <value>SquareMillimeter</value>
+    <value />
   </data>
   <data name="UnitUSGallons" xml:space="preserve">
-    <value>USGallons</value>
+    <value />
   </data>
   <data name="UnitVolume" xml:space="preserve">
-    <value>Volume</value>
+    <value />
   </data>
   <data name="UnknowDateFormat" xml:space="preserve">
-    <value>Unknown date format</value>
+    <value />
   </data>
   <data name="UpdateMessage" xml:space="preserve">
-    <value>An update is available for Dynamo.
-Installing the latest update requires Dynamo and any host applications to close.
-Do you want to install the latest Dynamo update?</value>
+    <value />
   </data>
   <data name="UsageReportPromptDialogTitle" xml:space="preserve">
     <value>Agreements for Data Collection</value>
@@ -2015,25 +2003,25 @@ Do you want to install the latest Dynamo update?</value>
     <value>Use Levels</value>
   </data>
   <data name="VersionValueGreaterThan0" xml:space="preserve">
-    <value>At least one of your version values must be greater than 0.</value>
+    <value />
   </data>
   <data name="Watch3DViewContextMenuPan" xml:space="preserve">
-    <value>_Pan</value>
+    <value />
   </data>
   <data name="Watch3DViewContextMenuRotate" xml:space="preserve">
-    <value>_Rotate</value>
+    <value />
   </data>
   <data name="Watch3DViewContextMenuSwitchView" xml:space="preserve">
-    <value>Switch to Node _View</value>
+    <value />
   </data>
   <data name="Watch3DViewContextMenuZoomToFit" xml:space="preserve">
-    <value>_Zoom to Fit</value>
+    <value />
   </data>
   <data name="WatchNodeRawDataMenu" xml:space="preserve">
-    <value>Show Raw Data</value>
+    <value />
   </data>
   <data name="ZeroTouchTypeShortString" xml:space="preserve">
-    <value>DLL</value>
+    <value />
   </data>
   <data name="RerunButtonToolTip" xml:space="preserve">
     <value>Rerun the graph.</value>
@@ -2621,7 +2609,7 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>0</value>
   </data>
   <data name="PublishPackageViewPackageDescription" xml:space="preserve">
-    <value>Description</value>
+    <value />
   </data>
   <data name="PublishPackageViewPackageNameWatermark" xml:space="preserve">
     <value>Package name</value>
@@ -2809,6 +2797,9 @@ This package will be unloaded after the next Dynamo restart.</value>
   </data>
   <data name="PackageDetailsPackage" xml:space="preserve">
     <value>Package</value>
+  </data>
+  <data name="PackageDetailsPackageApprovedTooltip" xml:space="preserve">
+    <value>Published by Autodesk</value>
   </data>
   <data name="PackageSortToolTip" xml:space="preserve">
     <value>Sort Packages.</value>

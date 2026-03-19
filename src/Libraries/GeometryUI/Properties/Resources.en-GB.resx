@@ -121,13 +121,13 @@
     <value>Exports the given geometry to the given SAT file path</value>
   </data>
   <data name="ExportToSatFilePathDescription" xml:space="preserve">
-    <value>File to export the geometry to.</value>
+    <value />
   </data>
   <data name="ExportToSatFilePathOutputDescription" xml:space="preserve">
-    <value>The file path of the exported file. Note this may change from the input in it contains non-ASCII characters.</value>
+    <value />
   </data>
   <data name="ExportToSatGeometryInputDescription" xml:space="preserve">
-    <value>Geometry to export into a SAT file.</value>
+    <value />
   </data>
   <data name="ExportWithUnitsSearchTags" xml:space="preserve">
     <value>Export;SAT</value>

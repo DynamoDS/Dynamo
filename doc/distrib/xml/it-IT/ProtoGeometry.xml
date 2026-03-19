@@ -924,20 +924,18 @@
             <returns>Una serie di punti</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
-            <summary>I punti di controllo veramente periodici di NurbsCurve se periodici.
-            Tenere presente che questa funzione non può essere utilizzata insieme a PeriodicKnots() per ricostruire la NurbsCurve periodica originale.
-            Genera (o è indefinita) quando la curva non è periodica.</summary>
-            <returns>Una serie di punti</returns>
+            <summary>The truly periodic control points of a periodic NurbsCurve.
+            Note: This operation only works for periodic curves and will fail if the curve is not periodic.</summary>
+            <returns>Periodic Control Points of a NURBS curve</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
             <summary>I nodi della curva. I nodi sono una serie di valori dei parametri (double) utilizzati per determinare dove e come i punti di controllo influiscono sulla curva.</summary>
             <returns>I nodi della curva NURBS</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots">
-            <summary>I nodi non bloccati della curva se periodici. I nodi sono una serie di valori dei parametri (double) utilizzati per determinare dove e come i punti di controllo influiscono sulla curva.
-            Tenere presente che questa funzione non può essere utilizzata insieme a PeriodicControlPoints() per ricostruire la NurbsCurve periodica originale.
-            Genera (o è indefinita) quando la curva non è periodica.</summary>
-            <returns>Il vettore del nodo periodico della curva NURBS</returns>
+            <summary>The unclamped knots of a periodic NurbsCurve.
+            Note: This operation only works for periodic curves and will fail if the curve is not periodic.</summary>
+            <returns>The periodic knot vector of the NURBS curve</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Weights">
             <summary>Restituisce i pesi dei punti di controllo della NurbsCurve. I pesi determinano l'influenza di ciascuno dei punti di controllo sulla forma della curva.</summary>

@@ -118,16 +118,16 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ExcelCommunicationError" xml:space="preserve">
-    <value>Error setting up communication with Excel.  Try closing any open Excel instances.</value>
+    <value />
   </data>
   <data name="ExcelNotInstalled" xml:space="preserve">
     <value>Excel is not installed. href=ExcelNotInstalled.html</value>
   </data>
   <data name="kMethodResolutionFailureWithTypes" xml:space="preserve">
-    <value>One or more of the input types are not matching. Couldn't find a version of {0} that takes arguments of type {1}</value>
+    <value />
   </data>
   <data name="ReadObsolete" xml:space="preserve">
-    <value>Use File.FromPath -&gt; Excel.ReadFromFile node instead.</value>
+    <value />
   </data>
   <data name="WorkbookNotFound" xml:space="preserve">
     <value>A workbook was not found in the provided path.</value>

@@ -121,25 +121,25 @@
     <value>The supplied color data is too large to fit in the image bounds.</value>
   </data>
   <data name="EnumDateOfWeekFriday" xml:space="preserve">
-    <value>Friday</value>
+    <value />
   </data>
   <data name="EnumDateOfWeekMonday" xml:space="preserve">
-    <value>Monday</value>
+    <value />
   </data>
   <data name="EnumDateOfWeekSaturday" xml:space="preserve">
-    <value>Saturday</value>
+    <value />
   </data>
   <data name="EnumDateOfWeekSunday" xml:space="preserve">
-    <value>Sunday</value>
+    <value />
   </data>
   <data name="EnumDateOfWeekThursday" xml:space="preserve">
-    <value>Thursday</value>
+    <value />
   </data>
   <data name="EnumDateOfWeekTuesday" xml:space="preserve">
-    <value>Tuesday</value>
+    <value />
   </data>
   <data name="EnumDateOfWeekWednesday" xml:space="preserve">
-    <value>Wednesday</value>
+    <value />
   </data>
   <data name="Exception_Deserialize_Bad_Format" xml:space="preserve">
     <value>The json for the type {0} was not formatted correctly</value>
@@ -163,10 +163,10 @@
     <value>The return value of Math.Factorial is out of range.</value>
   </data>
   <data name="FindPointsWithinRadiusNullPointMessage" xml:space="preserve">
-    <value>You must provide a center point.</value>
+    <value />
   </data>
   <data name="FindPointsWithinRadiusSearchRadiusMessage" xml:space="preserve">
-    <value>The search radius cannot be zero.</value>
+    <value />
   </data>
   <data name="IntegerOverflow" xml:space="preserve">
     <value>The operation resulted in an integer overflow. Its result may be unexpected.</value>
@@ -187,10 +187,10 @@
     <value>Object cannot be null, please provide appropriate value.</value>
   </data>
   <data name="QuadtreeConstructionEmptyUVSetMessage" xml:space="preserve">
-    <value>You cannot construct a quadtree from an empty set of points.</value>
+    <value />
   </data>
   <data name="QuadtreeConstructionNullUVSetMessage" xml:space="preserve">
-    <value>A Quadtree cannot be constructed from a null set of UVs.</value>
+    <value />
   </data>
   <data name="StringRemoveCountOutOfRangeMessage" xml:space="preserve">
     <value>Count is out of range!</value>

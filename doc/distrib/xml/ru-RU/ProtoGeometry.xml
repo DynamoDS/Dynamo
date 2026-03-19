@@ -925,20 +925,18 @@
             <returns>Массив точек</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
-            <summary>Истинно периодические управляющие точки NURBS-кривой, если она является периодической.
-            Обратите внимание, что этот метод нельзя использовать вместе с PeriodicKnots() для воссоздания исходной периодической NURBS-кривой.
-            Отбрасывается (или считается неопределенной) в случае с непериодической кривой.</summary>
-            <returns>Массив точек</returns>
+            <summary>The truly periodic control points of a periodic NurbsCurve.
+            Note: This operation only works for periodic curves and will fail if the curve is not periodic.</summary>
+            <returns>Periodic Control Points of a NURBS curve</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
             <summary>Узлы кривой. Узлы представляют собой серию значений параметров (двойных значений), используемых для определения места и способа воздействия управляющих точек на кривую.</summary>
             <returns>Узлы NURBS-кривой</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots">
-            <summary>Нефиксированные узлы кривой, если она является периодической. Узлы представляют собой серию значений параметров (двойных значений), которые позволяют определить, где и как управляющие точки воздействуют на кривую.
-            Учтите, что этот параметр нельзя использовать вместе с PeriodicControlPoints() для воссоздания исходной периодической NURBS-кривой.
-            Отбрасывается (или считается неопределенной) в случае с непериодической кривой.</summary>
-            <returns>Периодический узловой вектор NURBS-кривой</returns>
+            <summary>The unclamped knots of a periodic NurbsCurve.
+            Note: This operation only works for periodic curves and will fail if the curve is not periodic.</summary>
+            <returns>The periodic knot vector of the NURBS curve</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Weights">
             <summary>Возврат весов управляющих точек объекта NurbsCurve. Веса определяют влияние каждой управляющей точки на форму кривой.</summary>

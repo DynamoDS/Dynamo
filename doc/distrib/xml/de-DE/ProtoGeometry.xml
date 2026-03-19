@@ -925,20 +925,18 @@
             <returns>Array von Punkten</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
-            <summary>Die tatsächlich periodischen Steuerpunkte der NurbsCurve, wenn sie periodisch ist.
-            Beachten Sie, dass dies nicht zusammen mit PeriodicKnots() verwendet werden kann, um die ursprüngliche periodische NurbsCurve zu rekonstruieren.
-            Wird ausgelöst (oder ist nicht definiert), wenn die Kurve nicht periodisch ist.</summary>
-            <returns>Array von Punkten</returns>
+            <summary>The truly periodic control points of a periodic NurbsCurve.
+            Note: This operation only works for periodic curves and will fail if the curve is not periodic.</summary>
+            <returns>Periodic Control Points of a NURBS curve</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
             <summary>Die Knoten der Kurve. Knoten sind eine Reihe von Parameterwerten (doubles), die verwendet werden, um festzulegen, wo und wie die Kontrollpunkte sich auf die Kurve auswirken.</summary>
             <returns>Die Knoten der NURBS-Kurve</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots">
-            <summary>Die ungeklammerten Knoten der Kurve, wenn sie periodisch ist. Knoten sind eine Reihe von Parameterwerten (doubles), die verwendet werden, um zu bestimmen, wo und wie sich die Steuerpunkte auf die Kurve auswirken.
-            Beachten Sie, dass dies nicht zusammen mit PeriodicControlPoints() verwendet werden kann, um die ursprüngliche periodische NurbsCurve zu rekonstruieren.
-            Wird ausgelöst (oder ist nicht definiert), wenn die Kurve nicht periodisch ist.</summary>
-            <returns>Der periodische Knotenvektor der Nurbs-Kurve</returns>
+            <summary>The unclamped knots of a periodic NurbsCurve.
+            Note: This operation only works for periodic curves and will fail if the curve is not periodic.</summary>
+            <returns>The periodic knot vector of the NURBS curve</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Weights">
             <summary>Gibt die Gewichtungen des NurbsCurve-Kontrollpunkts zurück. Gewichtungen bestimmen den Einfluss jedes Kontrollpunkts auf die Form der Kurve.</summary>

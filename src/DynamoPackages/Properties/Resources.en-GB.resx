@@ -127,7 +127,7 @@
     <value>Package download is disabled in no-network mode.</value>
   </data>
   <data name="InvalidPackageFolderWarning" xml:space="preserve">
-    <value>The folder '{0}' does not exist</value>
+    <value />
   </data>
   <data name="InvalidPackageMalformedNodeLibraryDefinition" xml:space="preserve">
     <value>"A package called {0} found at {1} has improperly defined its node libraries in the package manifest.  Ignoring it."</value>

@@ -924,20 +924,18 @@
             <returns>Szyk punktów</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
-            <summary>Prawdziwie okresowe punkty sterujące krzywej NURBS, jeśli są okresowe.
-            Nie można użyć tej metody razem z metodą PeriodicKnots() w celu zrekonstruowania oryginalnej okresowej krzywej NURBS.
-            Generuje wyjątek (lub ma wartość niezdefiniowaną), gdy krzywa nie jest okresowa.</summary>
-            <returns>Szyk punktów</returns>
+            <summary>The truly periodic control points of a periodic NurbsCurve.
+            Note: This operation only works for periodic curves and will fail if the curve is not periodic.</summary>
+            <returns>Periodic Control Points of a NURBS curve</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
             <summary>Węzły krzywej. Węzły to seria wartości parametrów (typu double) służących do określenia, gdzie i jak punkty sterujące wpływają na krzywą.</summary>
             <returns>Węzły krzywej nurbs</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots">
-            <summary>Nieprzycięte węzły krzywej, jeśli jest okresowa. Węzły to seria wartości parametrów (typu double) używanych do określenia, gdzie i jak punkty kontrolne wpływają na krzywą.
-            Nie można użyć tej metody razem z metodą PeriodicKnots() w celu zrekonstruowania oryginalnej okresowej krzywej NURBS.
-            Generuje wyjątek (lub ma wartość niezdefiniowaną), gdy krzywa nie jest okresowa.</summary>
-            <returns>Wektor węzła okresowego krzywej NURBS</returns>
+            <summary>The unclamped knots of a periodic NurbsCurve.
+            Note: This operation only works for periodic curves and will fail if the curve is not periodic.</summary>
+            <returns>The periodic knot vector of the NURBS curve</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Weights">
             <summary>Zwraca wagi punktów sterujących NurbsCurve. Wagi określają wpływ każdego z punktów sterujących na kształt krzywej.</summary>
