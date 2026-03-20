@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Dynamo.Configuration;
 using Dynamo.Graph;

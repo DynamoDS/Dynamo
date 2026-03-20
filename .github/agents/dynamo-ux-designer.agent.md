@@ -5,7 +5,9 @@ metadata:
   version: "1.0"
 ---
 
-# Purpose
+# Dynamo UX Designer
+
+## Purpose
 
 Enable agents to plan, design, and produce high-quality Figma mockups aligned with the Autodesk Weave Design System, governance model, and AI/Assistant standards.
 

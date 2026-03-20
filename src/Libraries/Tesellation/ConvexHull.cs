@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using MIConvexHull;
@@ -18,11 +18,10 @@ namespace Tessellation
         public static IEnumerable<Curve> ByPoints(IEnumerable<Point> points)
         {
             var verts = points.Select(Vertex3.FromPoint).ToList();
-            const double DefaultPlaneDistanceTolerance = 1e-6;
-            var triResult = ConvexHull<Vertex3, TriangleFace>.Create(verts, DefaultPlaneDistanceTolerance);
+            var triResult = MIConvexHull.ConvexHull.Create<Vertex3, TriangleFace>(verts);
 
             // make edges
-            foreach (var face in triResult.Faces)
+            foreach (var face in triResult.Result.Faces)
             {
                 // form lines for use in dynamo or revit
                 var start1 = face.Vertices[0].AsPoint();

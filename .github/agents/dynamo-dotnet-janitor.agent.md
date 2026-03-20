@@ -1,9 +1,10 @@
 ---
-description: 'Perform janitorial tasks on C#/.NET code including cleanup, modernization, and tech debt remediation.'
-name: 'C#/.NET Janitor'
+name: Dynamo dotNET Janitor
+description: Perform janitorial tasks on C#/.NET code including cleanup, modernization, and tech debt remediation.
 tools: ['changes', 'codebase', 'edit/editFiles', 'extensions', 'web/fetch', 'findTestFiles', 'githubRepo', 'new', 'openSimpleBrowser', 'problems', 'runCommands', 'runTasks', 'runTests', 'search', 'searchResults', 'terminalLastCommand', 'terminalSelection', 'testFailure', 'usages', 'vscodeAPI', 'microsoft.docs.mcp', 'github']
 ---
-# C#/.NET Janitor
+
+# Dynamo dotNET Janitor
 
 Perform janitorial tasks on C#/.NET codebases. Focus on code cleanup, modernization, and technical debt remediation.
 
