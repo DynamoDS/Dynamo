@@ -3,7 +3,7 @@ name: dynamo-pr-description
 description: Generate PR descriptions for Dynamo that align with the team template section names and order. Use this skill whenever writing a pull request description, cleaning up a PR body, or generating a review-ready summary from a diff in the Dynamo repo. Also use when the user says "write a PR", "PR description", or "prep this for review."
 ---
 
-# Dynamo PR Description Writer
+# Dynamo PR Description
 
 ## When to use
 
@@ -14,7 +14,7 @@ description: Generate PR descriptions for Dynamo that align with the team templa
 ## When not to use
 
 - PRs targeting the DynamoMCP repo -- that repo has its own PR description skill.
-- Jira ticket triage -- use [template](../dynamo-jira-ticket/template.md) instead.
+- Jira ticket triage -- use [template](../dynamo-jira-ticket/assets/template.md) instead.
 
 ## Inputs expected
 

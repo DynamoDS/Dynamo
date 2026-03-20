@@ -1,9 +1,3 @@
-<!--
-AUTO-GENERATED FILE. Do not edit directly.
-Canonical source: .agents/skills/dynamo-pr-description/SKILL.md
-Regenerate with: ./tools/agents/sync-agent-wrappers.ps1
--->
-
 ---
 name: Dynamo PR Description
 description: Generate PR descriptions for Dynamo that align with the team template section names and order. Use this skill whenever writing a pull request description, cleaning up a PR body, or generating a review-ready summary from a diff in the Dynamo repo. Also use when the user says "write a PR", "PR description", or "prep this for review."
@@ -22,3 +16,9 @@ Usage guidance:
 
 Maintenance note:
 - Keep this file lightweight to avoid drift across tools (Copilot/Cursor/Claude).
+
+<!--
+AUTO-GENERATED FILE. Do not edit directly.
+Canonical source: .agents/skills/dynamo-pr-description/SKILL.md
+Regenerate with: ./.github/scripts/sync_agent_wrappers.ps1
+-->

@@ -1,9 +1,3 @@
-<!--
-AUTO-GENERATED FILE. Do not edit directly.
-Canonical source: .agents/skills/dynamo-skill-writer/SKILL.md
-Regenerate with: ./tools/agents/sync-agent-wrappers.ps1
--->
-
 ---
 name: Dynamo Skill Writer
 description: Author and maintain Dynamo agent skills while enforcing cross-tool sync between canonical .agents skills and generated wrappers for GitHub Copilot, Cursor, and Claude Code.
@@ -22,3 +16,9 @@ Usage guidance:
 
 Maintenance note:
 - Keep this file lightweight to avoid drift across tools (Copilot/Cursor/Claude).
+
+<!--
+AUTO-GENERATED FILE. Do not edit directly.
+Canonical source: .agents/skills/dynamo-skill-writer/SKILL.md
+Regenerate with: ./.github/scripts/sync_agent_wrappers.ps1
+-->

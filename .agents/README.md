@@ -15,13 +15,13 @@ Use the wrapper sync script to keep `.github/agents/` aligned with canonical ski
 
 ```powershell
 # Regenerate wrappers from canonical skills
-./tools/agents/sync-agent-wrappers.ps1
+./.github/scripts/sync_agent_wrappers.ps1
 
 # Validate wrappers are in sync (non-zero exit code on drift)
-./tools/agents/sync-agent-wrappers.ps1 -Check
+./.github/scripts/sync_agent_wrappers.ps1 -Check
 
 # Print a compact diagnostics summary (does not change pass/fail)
-./tools/agents/sync-agent-wrappers.ps1 -Check -VerboseReport
+./.github/scripts/sync_agent_wrappers.ps1 -Check -VerboseReport
 ```
 
 Check mode validates:
@@ -43,7 +43,7 @@ This matrix documents how canonical skills in `.agents/skills/` are exposed in e
 
 Notes:
 - Skill logic lives only in `.agents/skills/`.
-- Copilot wrappers are generated/validated by `tools/agents/sync-agent-wrappers.ps1`.
+- Copilot wrappers are generated/validated by `.github/scripts/sync_agent_wrappers.ps1`.
 - If mirrors differ from canonical files, canonical files win.
 
 ## Quick Reference
@@ -59,6 +59,7 @@ Each skill lives in its own folder with a `SKILL.md` and optionally a `template.
 | [dynamo-pr-description](skills/dynamo-pr-description/SKILL.md) | Writing PR descriptions matching the Dynamo template. | Repo-specific variant |
 | [dynamo-jira-ticket](skills/dynamo-jira-ticket/SKILL.md) | Creating or refining Jira tickets from bugs, test failures, or feature requests. | Repo-specific variant |
 | [dynamo-skill-writer](skills/dynamo-skill-writer/SKILL.md) | Authoring/updating skills and enforcing sync across Copilot, Cursor, and Claude surfaces. | Repo-specific variant |
+| [dynamo-unit-testing](skills/dynamo-unit-testing/SKILL.md) | Writing NUnit tests following Dynamo patterns. Test classes, setup/teardown, .dyn file testing. | Repo-specific variant |
 
 ### Templates (bundled with skills)
 
@@ -67,13 +68,13 @@ Templates are co-located inside the skill folder that uses them:
 | Template | Location | Purpose |
 |----------|----------|---------|
 | PR description | [.github/PULL_REQUEST_TEMPLATE.md](../../.github/PULL_REQUEST_TEMPLATE.md) | GitHub PR template (referenced by PR description skill) |
-| Jira triage | [dynamo-jira-ticket/template.md](skills/dynamo-jira-ticket/template.md) | Triage a Jira ticket into a structured issue |
+| Jira triage | [dynamo-jira-ticket/template.md](./skills/dynamo-jira-ticket/template.md) | Triage a Jira ticket into a structured issue |
 
 ### Rules (short guardrails -- always applicable)
 
 | Rule | Scope | Repo scope |
 |------|-------|------------|
-| [dynamo-core-rules](rules/dynamo-core-rules.md) | C#/.NET coding standards, NUnit, PublicAPI, security, quality checks. | Repo-specific variant |
+| [dynamo-core-rules](./rules/dynamo-core-rules.md) | C#/.NET coding standards, NUnit, PublicAPI, security, quality checks. | Repo-specific variant |
 
 ## Folder Structure
 
@@ -85,12 +86,19 @@ Templates are co-located inside the skill folder that uses them:
 │   ├── dynamo-onboarding/
 │   │   └── SKILL.md
 │   ├── dynamo-pr-description/
-│   │   ├── SKILL.md          ← workflow for writing PR descriptions
+│   │   └── SKILL.md
 │   ├── dynamo-jira-ticket/
-│       ├── SKILL.md          ← workflow for writing Jira tickets
-│       └── template.md       ← copy/paste Jira template
-│   └── dynamo-skill-writer/
-│       └── SKILL.md          ← workflow for authoring and syncing skills
+│   │   ├── SKILL.md
+│   │   └── assets/
+│   │       └── template.md       ← copy/paste Jira template
+│   ├── dynamo-skill-writer/
+│   │   └── SKILL.md
+│   └── dynamo-unit-testing/
+│       ├── SKILL.md
+│       ├── assets/
+│       │   └── test-patterns.md     ← code templates & examples
+│       └── references/
+│           └── quality-checklist.md ← guidelines & best practices
 ├── rules/
 │   └── dynamo-core-rules.md
 └── README.md                  ← you are here
@@ -108,7 +116,8 @@ Templates are co-located inside the skill folder that uses them:
 .cursor/skills/      <-- Cursor skill mirror/pointers
 .github/copilot-instructions.md  <-- Copilot guidance + pointers here
 .github/agents/      <-- existing Copilot agents (Janitor, UX Designer, ContentDesigner)
-CLAUDE.md            <-- Claude guidance + pointers here
+../AGENTS.md            <-- AI Agents guidance overview + pointers here
+../CLAUDE.md            <-- Claude guidance + pointers here
 ```
 
 ## For Cursor users

@@ -3,7 +3,7 @@ name: dynamo-jira-ticket
 description: Create structured Jira tickets for Dynamo from bug reports, failing tests, or feature requests. Use this skill whenever writing a Jira ticket, triaging a bug, turning a vague issue into an actionable ticket, or writing acceptance criteria. Also use when the user mentions "file a ticket", "write a bug report", or "create a Jira issue" for Dynamo.
 ---
 
-# Dynamo Jira Ticket Writer
+# Dynamo Jira Ticket
 
 ## When to use
 
@@ -22,7 +22,7 @@ A bug description, error log, failing test output, feature request, or code inve
 
 ## Output format
 
-A complete Jira ticket body ready to paste, following the canonical template in `template.md`.
+A complete Jira ticket body ready to paste, following the canonical template in [template](./assets/template.md).
 
 ---
 
@@ -34,7 +34,7 @@ A complete Jira ticket body ready to paste, following the canonical template in 
    - For UI issues: check `src/DynamoCoreWpf/` and the relevant view extension.
    - For PublicAPI errors: check `PublicAPI.Unshipped.txt` / `PublicAPI.Shipped.txt` in the affected project.
    - For test failures: read the NUnit test output and the relevant test file.
-2. **Write the ticket** using `template.md` in this folder.
+2. **Write the ticket** using `./assets/template.md` in this folder.
 3. **Review** -- ensure every section has concrete, verifiable content. No vague language.
 
 ## Writing Rules
@@ -47,7 +47,7 @@ A complete Jira ticket body ready to paste, following the canonical template in 
 
 ## Ticket Template
 
-Use the canonical template at `template.md` in this folder.
+Use the canonical template at `./assets/template.md` in this folder.
 
 Required sections in each generated ticket:
 - Title

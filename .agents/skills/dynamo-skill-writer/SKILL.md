@@ -25,7 +25,7 @@ A request to add/update a skill, or a request to sync skill surfaces across Copi
 
 A concrete set of file edits and validation steps that:
 - updates canonical skill content in `.agents/skills/`
-- updates sync metadata in `tools/agents/sync-agent-wrappers.ps1` when Copilot exposure is needed
+- updates sync metadata in `.github/scripts/sync_agent_wrappers.ps1` when Copilot exposure is needed
 - regenerates and validates wrappers in `.github/agents/`
 - updates index/docs references in `.agents/README.md`, `.github/copilot-instructions.md`, and `CLAUDE.md` when applicable
 
@@ -35,11 +35,11 @@ A concrete set of file edits and validation steps that:
 
 1. Determine whether this is a **new skill** or an **update to an existing skill**.
 2. Author or update canonical content in `.agents/skills/<skill-name>/SKILL.md`.
-3. If the skill should be available as a Copilot agent, add an entry to the wrapper map in `tools/agents/sync-agent-wrappers.ps1`.
+3. If the skill should be available as a Copilot agent, add an entry to the `canonicalSkills` array in `.github/scripts/sync_agent_wrappers.ps1`.
 4. Regenerate wrappers:
-   - `./tools/agents/sync-agent-wrappers.ps1`
+   - `./.github/scripts/sync_agent_wrappers.ps1`
 5. Validate sync:
-   - `./tools/agents/sync-agent-wrappers.ps1 -Check -VerboseReport`
+   - `./.github/scripts/sync_agent_wrappers.ps1 -Check -VerboseReport`
 6. Update discovery docs when skill inventory changed:
    - `.agents/README.md`
    - `.github/copilot-instructions.md`
@@ -59,9 +59,9 @@ A concrete set of file edits and validation steps that:
 - [ ] Created `.agents/skills/<skill-name>/SKILL.md` with frontmatter (`name`, `description`)
 - [ ] Added skill to `.agents/README.md` Quick Reference table
 - [ ] Added skill to `.agents/README.md` parity matrix (if cross-tool surfaced)
-- [ ] Added skill to `tools/agents/sync-agent-wrappers.ps1` wrapper map (if Copilot surfaced)
+- [ ] Added skill to `.github/scripts/sync_agent_wrappers.ps1` wrapper map (if Copilot surfaced)
 - [ ] Regenerated `.github/agents/*` wrappers
-- [ ] Ran `./tools/agents/sync-agent-wrappers.ps1 -Check -VerboseReport`
+- [ ] Ran `./.github/scripts/sync_agent_wrappers.ps1 -Check -VerboseReport`
 - [ ] Updated `.github/copilot-instructions.md` skill list
 - [ ] Updated `CLAUDE.md` skill list
 

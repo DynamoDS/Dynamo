@@ -1,0 +1,42 @@
+name: Validate Agent Skills
+
+on:
+  pull_request:
+    paths:
+      - ".agents/skills/**"
+      - ".github/agents/**"
+
+env:
+  SKILLS_DIR: .agents/skills
+
+jobs:
+  validate_agent_skills:
+    name: Validate Agent Skills
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: stable
+          cache: false
+      - name: Install skill-validator
+        run: go install github.com/agent-ecosystem/skill-validator/cmd/skill-validator@v1.2.1
+      - name: Validate changed skills
+        run: bash .github/scripts/validate_skills.sh "${{ github.base_ref }}" "$SKILLS_DIR"
+
+  validate_agent_skill_wrappers:
+    name: Validate Agent Skill Wrappers
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Validate generated wrappers
+        shell: pwsh
+        run: ./.github/scripts/sync_agent_wrappers.ps1 -Check -Report
