@@ -1,11 +1,11 @@
 # Dynamo Agent Guidance
 
-Shared skills, rules, and templates for AI-assisted development in the Dynamo repo. These files are the **canonical source of truth** -- tool-specific mirrors (`.cursor/skills/`, `.github/copilot-instructions.md`, `CLAUDE.md`, `.github/agents/`) point back here.
+Shared skills, rules, and templates for AI-assisted development in the Dynamo repo. These files are the **canonical source of truth** -- tool-specific mirrors (`.github/copilot-instructions.md`, `CLAUDE.md`, `.github/agents/`) point back here.
 
 ## Canonical Policy
 
 - Edit behavior and workflow guidance in `.agents/` only.
-- Tool-specific files (`.github/agents/`, `.github/copilot-instructions.md`, `CLAUDE.md`, `.cursor/skills/`) are mirrors or wrappers.
+- Tool-specific files (`.github/agents/`, `.github/copilot-instructions.md`, `CLAUDE.md`) are mirrors or wrappers.
 - If any mirror/wrapper conflicts with `.agents/`, `.agents/` wins.
 - For generated wrappers, do not hand-edit generated sections.
 
@@ -35,22 +35,22 @@ This matrix documents how canonical skills in `.agents/skills/` are exposed in e
 
 | Canonical skill | Cursor | Copilot (VS Code/GitHub) | Claude Code |
 |---|---|---|---|
-| `dynamo-codebase-patterns` | Loaded from `.github/agents/dynamo-codebase-patterns.agent.md` | Wrapper: `.github/agents/dynamo-codebase-patterns.agent.md` | Referenced from `CLAUDE.md` via `.agents/` |
-| `dynamo-content-designer` | Loaded from `.github/agents/dynamo-content-designer.agent.md` | Wrapper: `.github/agents/dynamo-content-designer.agent.md` | Referenced from `CLAUDE.md` via `.agents/` |
-| `dynamo-dotnet-expert` | Loaded from `.github/agents/dynamo-dotnet-expert.agent.md` | Wrapper: `.github/agents/dynamo-dotnet-expert.agent.md` | Referenced from `CLAUDE.md` via `.agents/` |
-| `dynamo-dotnet-janitor` | Loaded from `.github/agents/dynamo-dotnet-janitor.agent.md` | Wrapper: `.github/agents/dynamo-dotnet-janitor.agent.md` | Referenced from `CLAUDE.md` via `.agents/` |
-| `dynamo-ecosystem-reviewer` | Loaded from `.github/agents/dynamo-ecosystem-reviewer.agent.md` | Wrapper: `.github/agents/dynamo-ecosystem-reviewer.agent.md` | Referenced from `CLAUDE.md` via `.agents/` |
-| `dynamo-onboarding` | Loaded from `.github/agents/dynamo-onboarding.agent.md` | Wrapper: `.github/agents/dynamo-onboarding.agent.md` | Referenced from `CLAUDE.md` via `.agents/` |
-| `dynamo-pr-description` | Loaded from `.github/agents/dynamo-pr-description.agent.md` | Wrapper: `.github/agents/dynamo-pr-description.agent.md` | Referenced from `CLAUDE.md` via `.agents/` |
-| `dynamo-jira-ticket` | Loaded from `.github/agents/dynamo-jira-ticket.agent.md` | Wrapper: `.github/agents/dynamo-jira-ticket.agent.md` | Referenced from `CLAUDE.md` via `.agents/` |
-| `dynamo-skill-writer` | Loaded from `.github/agents/dynamo-skill-writer.agent.md` | Wrapper: `.github/agents/dynamo-skill-writer.agent.md` | Referenced from `CLAUDE.md` via `.agents/` |
-| `dynamo-unit-testing` | Loaded from `.github/agents/dynamo-unit-testing.agent.md` | Wrapper: `.github/agents/dynamo-unit-testing.agent.md` | Referenced from `CLAUDE.md` via `.agents/` |
-| `dynamo-ux-designer` | Loaded from `.github/agents/dynamo-ux-designer.agent.md` | Wrapper: `.github/agents/dynamo-ux-designer.agent.md` | Referenced from `CLAUDE.md` via `.agents/` |
-| `dynamo-webview-component-scaffold` | Loaded from `.github/agents/dynamo-webview-component-scaffold.agent.md` | Wrapper: `.github/agents/dynamo-webview-component-scaffold.agent.md` | Referenced from `CLAUDE.md` via `.agents/` |
+| `dynamo-codebase-patterns` | Loaded directly from `.agents/skills/dynamo-codebase-patterns/SKILL.md` | Wrapper: `.github/agents/dynamo-codebase-patterns.agent.md` | Loaded directly from `.agents/skills/dynamo-codebase-patterns/SKILL.md` |
+| `dynamo-content-designer` | Loaded directly from `.agents/skills/dynamo-content-designer/SKILL.md` | Wrapper: `.github/agents/dynamo-content-designer.agent.md` | Loaded directly from `.agents/skills/dynamo-content-designer/SKILL.md` |
+| `dynamo-dotnet-expert` | Loaded directly from `.agents/skills/dynamo-dotnet-expert/SKILL.md` | Wrapper: `.github/agents/dynamo-dotnet-expert.agent.md` | Loaded directly from `.agents/skills/dynamo-dotnet-expert/SKILL.md` |
+| `dynamo-dotnet-janitor` | Loaded directly from `.agents/skills/dynamo-dotnet-janitor/SKILL.md` | Wrapper: `.github/agents/dynamo-dotnet-janitor.agent.md` | Loaded directly from `.agents/skills/dynamo-dotnet-janitor/SKILL.md` |
+| `dynamo-ecosystem-reviewer` | Loaded directly from `.agents/skills/dynamo-ecosystem-reviewer/SKILL.md` | Wrapper: `.github/agents/dynamo-ecosystem-reviewer.agent.md` | Loaded directly from `.agents/skills/dynamo-ecosystem-reviewer/SKILL.md` |
+| `dynamo-onboarding` | Loaded directly from `.agents/skills/dynamo-onboarding/SKILL.md` | Wrapper: `.github/agents/dynamo-onboarding.agent.md` | Loaded directly from `.agents/skills/dynamo-onboarding/SKILL.md` |
+| `dynamo-pr-description` | Loaded directly from `.agents/skills/dynamo-pr-description/SKILL.md` | Wrapper: `.github/agents/dynamo-pr-description.agent.md` | Loaded directly from `.agents/skills/dynamo-pr-description/SKILL.md` |
+| `dynamo-jira-ticket` | Loaded directly from `.agents/skills/dynamo-jira-ticket/SKILL.md` | Wrapper: `.github/agents/dynamo-jira-ticket.agent.md` | Loaded directly from `.agents/skills/dynamo-jira-ticket/SKILL.md` |
+| `dynamo-skill-writer` | Loaded directly from `.agents/skills/dynamo-skill-writer/SKILL.md` | Wrapper: `.github/agents/dynamo-skill-writer.agent.md` | Loaded directly from `.agents/skills/dynamo-skill-writer/SKILL.md` |
+| `dynamo-unit-testing` | Loaded directly from `.agents/skills/dynamo-unit-testing/SKILL.md` | Wrapper: `.github/agents/dynamo-unit-testing.agent.md` | Loaded directly from `.agents/skills/dynamo-unit-testing/SKILL.md` |
+| `dynamo-ux-designer` | Loaded directly from `.agents/skills/dynamo-ux-designer/SKILL.md` | Wrapper: `.github/agents/dynamo-ux-designer.agent.md` | Loaded directly from `.agents/skills/dynamo-ux-designer/SKILL.md` |
+| `dynamo-webview-component-scaffold` | Loaded directly from `.agents/skills/dynamo-webview-component-scaffold/SKILL.md` | Wrapper: `.github/agents/dynamo-webview-component-scaffold.agent.md` | Loaded directly from `.agents/skills/dynamo-webview-component-scaffold/SKILL.md` |
 
 Notes:
 - Skill logic lives only in `.agents/skills/`.
-- Copilot wrappers are generated/validated by `.github/scripts/sync_agent_wrappers.ps1`. Cursor loads the same `.github/agents/` files natively.
+- Copilot (VS Code) wrappers are generated/validated by `.github/scripts/sync_agent_wrappers.ps1`. Cursor and Claude Code load directly from `.agents/`.
 - If mirrors differ from canonical files, canonical files win.
 
 ## Quick Reference
@@ -139,17 +139,16 @@ Templates are co-located inside the skill folder that uses them:
 ## How this relates to other guidance files
 
 ```
-.agents/             <-- canonical source of truth (you are here)
-.cursor/skills/      <-- Cursor skill mirror/pointers
-.github/copilot-instructions.md  <-- Copilot guidance + pointers here
-.github/agents/      <-- generated Copilot wrappers that mirror canonical skills
+.agents/             <-- canonical source of truth (you are here); loaded directly by Cursor and Claude Code
+.github/copilot-instructions.md  <-- Copilot (VS Code) guidance + pointers here
+.github/agents/      <-- generated Copilot (VS Code) wrappers that mirror canonical skills
 ../AGENTS.md            <-- AI Agents guidance overview + pointers here
 ../CLAUDE.md            <-- Claude guidance + pointers here
 ```
 
 ## For Cursor users
 
-Cursor loads agent skills directly from `.github/agents/`. No additional configuration needed — agents are available by name in the Cursor chat.
+Cursor loads agent skills directly from `.agents/`. No additional configuration needed — agents are available by name in the Cursor chat.
 
 ## For Copilot users
 
