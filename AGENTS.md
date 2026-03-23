@@ -85,12 +85,18 @@ For each new node, add to `doc/distrib/NodeHelpFiles/`:
 Read `.agents/` for comprehensive skills, rules, and templates:
 
 - **Skills** (task workflows): `.agents/skills/<skill-name>/SKILL.md`
+  - `dynamo-codebase-patterns` -- Discover and enforce Dynamo-specific architectural patterns
+  - `dynamo-content-designer` -- Technical content for docs, guides, and release notes
   - `dynamo-dotnet-expert` -- C#/.NET patterns, testing, PublicAPI
+  - `dynamo-dotnet-janitor` -- Janitorial cleanup and modernization for C#/.NET code
+  - `dynamo-ecosystem-reviewer` -- Cross-repo compatibility and platform constraints review
   - `dynamo-jira-ticket` -- creating/refining Jira tickets (includes template.md)
   - `dynamo-onboarding` -- Dynamo architecture, ecosystem, debugging
   - `dynamo-pr-description` -- PR descriptions matching Dynamo template (uses `.github/PULL_REQUEST_TEMPLATE.md`)
   - `dynamo-skill-writer` -- Author and maintain Dynamo agent skills
   - `dynamo-unit-testing` -- NUnit test writing following Dynamo patterns
+  - `dynamo-ux-designer` -- UX planning and Weave-aligned interface design guidance
+  - `dynamo-webview-component-scaffold` -- Scaffold Dynamo WebView2 view-extension repos
 - **Rules** (constraints): `.agents/rules/`
   - `dynamo-core-rules.md` -- .NET/Dynamo constraints
 

@@ -21,12 +21,18 @@ $githubAgentsDir = Join-Path $repoRoot ".github/agents"
 
 # List of canonical skills to generate wrappers for
 $canonicalSkills = @(
+    ".agents/skills/dynamo-codebase-patterns/SKILL.md",
+    ".agents/skills/dynamo-content-designer/SKILL.md",
     ".agents/skills/dynamo-dotnet-expert/SKILL.md",
+    ".agents/skills/dynamo-dotnet-janitor/SKILL.md",
+    ".agents/skills/dynamo-ecosystem-reviewer/SKILL.md",
     ".agents/skills/dynamo-onboarding/SKILL.md",
     ".agents/skills/dynamo-pr-description/SKILL.md",
     ".agents/skills/dynamo-jira-ticket/SKILL.md",
     ".agents/skills/dynamo-skill-writer/SKILL.md",
-    ".agents/skills/dynamo-unit-testing/SKILL.md"
+    ".agents/skills/dynamo-unit-testing/SKILL.md",
+    ".agents/skills/dynamo-ux-designer/SKILL.md",
+    ".agents/skills/dynamo-webview-component-scaffold/SKILL.md"
 )
 
 function Get-SkillName {

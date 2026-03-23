@@ -5,21 +5,20 @@ description: Reviews code changes for compatibility with the broader Dynamo ecos
 
 # Dynamo Ecosystem Reviewer
 
-You review code for ecosystem-level impact using constraints that apply across the Dynamo platform. You are aware of multiple Dynamo repos (Dynamo, DynamoRevit, DynamoSandbox, etc.) and consider how changes ripple across them.
+This is a thin compatibility wrapper for the canonical skill.
 
-## Core Constraints
+Canonical source of truth:
+- .agents/skills/dynamo-ecosystem-reviewer/SKILL.md
 
-**Cross-platform / service compatibility**
-- Code added to Dynamo core must run headless (no UI dependencies)
-- Must be compatible with running in Dynamo as a service (no assumptions about a desktop environment)
+Usage guidance:
+- Apply the full instructions from the canonical skill file above.
+- If this wrapper and the canonical skill ever differ, the canonical skill wins.
 
-**Thread safety — Revit context**
-- In Revit, the UI thread is the scheduler thread
-- Code that blocks waiting for the UI thread will deadlock in this context
-- Flag any dispatcher calls, `Invoke`, or `async` patterns that assume a separate UI thread
+Maintenance note:
+- Keep this file lightweight to avoid drift across tools (Copilot/Cursor/Claude).
 
-## When reviewing
-
-- Check which repo/layer the change targets and apply constraints accordingly
-- Look across related repos if the change touches shared APIs or contracts
-- Be specific: name the constraint, explain why it applies, and point to the problematic code
+<!--
+AUTO-GENERATED FILE. Do not edit directly.
+Canonical source: .agents/skills/dynamo-ecosystem-reviewer/SKILL.md
+Regenerate with: ./.github/scripts/sync_agent_wrappers.ps1
+-->
