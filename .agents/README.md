@@ -117,11 +117,11 @@ Templates are co-located inside the skill folder that uses them:
 │   ├── dynamo-skill-writer/
 │   │   └── SKILL.md
 │   ├── dynamo-unit-testing/
-│       ├── SKILL.md
-│       ├── assets/
-│       │   └── test-patterns.md     ← code templates & examples
-│       └── references/
-│           └── quality-checklist.md ← guidelines & best practices
+│   │   ├── SKILL.md
+│   │   ├── assets/
+│   │   │   └── test-patterns.md     ← code templates & examples
+│   │   └── references/
+│   │       └── quality-checklist.md ← guidelines & best practices
 │   ├── dynamo-ux-designer/
 │   │   └── SKILL.md
 │   └── dynamo-webview-component-scaffold/
