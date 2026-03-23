@@ -117,34 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ArraySizeOverflow" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ClassNameAsVariableError" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ConstantExpectedInArrayDeclaration" xml:space="preserve">
-    <value />
-  </data>
-  <data name="FunctionAsVaribleError" xml:space="preserve">
-    <value />
-  </data>
   <data name="FunctionPointerNotAllowedAtBinaryExpression" xml:space="preserve">
     <value>Function pointer is not allowed at binary expression other than assignment.</value>
   </data>
-  <data name="IdentifierRedefinition" xml:space="preserve">
-    <value />
-  </data>
   <data name="ImperativeSymbolsAreReadOnly" xml:space="preserve">
     <value>Variables declared in an outer scope cannot be changed inside an imperative block.</value>
-  </data>
-  <data name="InvalidArrayInitializer" xml:space="preserve">
-    <value />
-  </data>
-  <data name="InvalidNestedImperativeBlock" xml:space="preserve">
-    <value />
-  </data>
-  <data name="OnlyIdentifierOrIdentifierListCanBeOnLeftSide" xml:space="preserve">
-    <value />
   </data>
 </root>
