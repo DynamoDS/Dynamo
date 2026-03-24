@@ -61,6 +61,8 @@ static Dynamo.Wpf.Properties.Resources.PackageManagerUninstall.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerUpdate.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewShowPythonEngineChangeNotifications.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewShowPythonEngineChangeNotificationsTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.ResetStylesButton.get -> string
+static Dynamo.Wpf.Properties.Resources.ResetStylesButtonToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.ResetPythonNet3ButtonText.get -> string
 static Dynamo.Wpf.Properties.Resources.ResetPythonNet3ButtonToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.SplashScreenResetSettingsTooltip.get -> string
