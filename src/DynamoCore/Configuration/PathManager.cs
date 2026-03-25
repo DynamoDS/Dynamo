@@ -503,10 +503,11 @@ namespace Dynamo.Core
         ///
         /// Resolution order:
         /// 1) First assembly on the current managed call stack under hostApplicationDirectory.
-        /// 2) First non-system, non-test assembly on the current managed call stack.
-        /// 3) Entry assembly location.
-        /// 4) Current process main module path.
-        /// 5) Fallback to DynamoCore assembly location.
+        /// 2) First non-system, non-test assembly on the current managed call stack
+        ///    that resides outside the DynamoCore directory.
+        /// 3) DynamoCore assembly location (preferred over external process assemblies).
+        /// 4) Entry assembly location.
+        /// 5) Current process main module path.
         /// </summary>
         /// <returns>
         /// The file path of the assembly used to determine the data directory version.
@@ -519,8 +520,11 @@ namespace Dynamo.Core
                 return hostAssemblyPath;
 
             // Option 2: Use the first non-system, non-test assembly on the current
-            // managed call stack. This helps when PathManager is created before host
-            // directories are assigned, as in some integrations.
+            // managed call stack that resides outside the DynamoCore directory.
+            // This helps when PathManager is created before host directories are
+            // assigned, as in some integrations. Assemblies co-located with
+            // DynamoCore (e.g. nunit.framework, test assemblies) are skipped
+            // because only a true host assembly carries the desired version.
             var currentAssembly = typeof(PathManager).Assembly;
             var stackTrace = new StackTrace(skipFrames: 1, fNeedFileInfo: false);
 
@@ -544,19 +548,36 @@ namespace Dynamo.Core
                 }
 
                 var candidatePath = assembly.Location;
+
+                // Skip assemblies that live in the same directory as DynamoCore.
+                // Host assemblies (e.g. Civil3D, Revit) reside in their own install
+                // directories; anything co-located with DynamoCore (e.g. nunit.framework)
+                // is not a host and may carry an unrelated version.
+                if (IsPathUnderDirectory(candidatePath, dynamoCoreDir))
+                    continue;
+
                 if (HasNonZeroFileVersion(candidatePath))
                     return candidatePath;
             }
 
-            // Option 3: Use the process entry assembly when available and versioned.
+            // Option 3: Prefer DynamoCore assembly over external process assemblies
+            // (e.g. testhost.exe, dotnet.exe) which may carry unrelated versions.
+            var dynamoCoreAssemblyPath = Assembly.GetExecutingAssembly().Location;
+            if (HasNonZeroFileVersion(dynamoCoreAssemblyPath))
+                return dynamoCoreAssemblyPath;
+
+            // Option 4: Use the process entry assembly when available and versioned.
             var entryAssemblyPath = Assembly.GetEntryAssembly()?.Location;
             if (HasNonZeroFileVersion(entryAssemblyPath))
                 return entryAssemblyPath;
 
-            // Option 4: Use the current process main module path as a hosted fallback.
+            // Option 5: Use the current process main module path as a hosted fallback.
             var processMainModulePath = TryGetCurrentProcessMainModulePath();
             if (HasNonZeroFileVersion(processMainModulePath))
                 return processMainModulePath;
+
+            if (PathHelper.IsValidPath(dynamoCoreAssemblyPath))
+                return dynamoCoreAssemblyPath;
 
             if (PathHelper.IsValidPath(entryAssemblyPath))
                 return entryAssemblyPath;
@@ -564,8 +585,8 @@ namespace Dynamo.Core
             if (PathHelper.IsValidPath(processMainModulePath))
                 return processMainModulePath;
 
-            // Option 5: Final fallback to DynamoCore assembly location.
-            return Assembly.GetExecutingAssembly().Location;
+            // Final fallback (should not be reached).
+            return dynamoCoreAssemblyPath;
         }
 
         private bool TryGetAssemblyPathFromHostDirectory(out string hostAssemblyPath)
@@ -618,7 +639,13 @@ namespace Dynamo.Core
 
         private static bool IsPathUnderDirectory(string candidatePath, string directoryPath)
         {
-            if (!PathHelper.IsValidPath(candidatePath) || !PathHelper.IsValidPath(directoryPath))
+            if (string.IsNullOrEmpty(candidatePath) || string.IsNullOrEmpty(directoryPath))
+                return false;
+
+            if (!File.Exists(candidatePath) && !Directory.Exists(candidatePath))
+                return false;
+
+            if (!Directory.Exists(directoryPath))
                 return false;
 
             var fullCandidatePath = Path.GetFullPath(candidatePath);
