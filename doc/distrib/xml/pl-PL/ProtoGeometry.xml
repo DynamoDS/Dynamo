@@ -924,19 +924,17 @@
             <returns>Szyk punktów</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
-            <summary>Prawdziwie okresowe punkty sterujące krzywej NURBS, jeśli są okresowe.
-            Nie można użyć tej metody razem z metodą PeriodicKnots() w celu zrekonstruowania oryginalnej okresowej krzywej NURBS.
-            Generuje wyjątek (lub ma wartość niezdefiniowaną), gdy krzywa nie jest okresowa.</summary>
-            <returns>Szyk punktów</returns>
+            <summary>Prawdziwie okresowe punkty sterujące krzywej NURBS.
+            Uwaga: Ta operacja działa tylko w przypadku krzywych okresowych. Gdy krzywa jest innego rodzaju, kończy się niepowodzeniem.</summary>
+            <returns>Okresowe punkty sterujące krzywej NURBS</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
             <summary>Węzły krzywej. Węzły to seria wartości parametrów (typu double) służących do określenia, gdzie i jak punkty sterujące wpływają na krzywą.</summary>
             <returns>Węzły krzywej nurbs</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots">
-            <summary>Nieprzycięte węzły krzywej, jeśli jest okresowa. Węzły to seria wartości parametrów (typu double) używanych do określenia, gdzie i jak punkty kontrolne wpływają na krzywą.
-            Nie można użyć tej metody razem z metodą PeriodicKnots() w celu zrekonstruowania oryginalnej okresowej krzywej NURBS.
-            Generuje wyjątek (lub ma wartość niezdefiniowaną), gdy krzywa nie jest okresowa.</summary>
+            <summary>Nieprzycięte węzły krzywej okresowej NURBS.
+            Uwaga: Ta operacja działa tylko w przypadku krzywych okresowych. Gdy krzywa jest innego rodzaju, kończy się niepowodzeniem.</summary>
             <returns>Wektor węzła okresowego krzywej NURBS</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Weights">

@@ -2285,6 +2285,12 @@ Voulez-vous désinstaller {1}? Redémarrez {2} pour terminer la désinstallation
   <data name="AddStyleButton" xml:space="preserve">
     <value>Aj. style</value>
   </data>
+  <data name="ResetStylesButton" xml:space="preserve">
+    <value>Reset Styles</value>
+  </data>
+  <data name="ResetStylesButtonToolTip" xml:space="preserve">
+    <value>Restores the default group styles and removes user-created styles. This does not affect groups in existing graphs and cannot be undone.</value>
+  </data>
   <data name="ResetPythonNet3ButtonText" xml:space="preserve">
     <value>Réinitialiser PythonNet3</value>
   </data>
@@ -2807,6 +2813,9 @@ Ce package sera déchargé après le prochain redémarrage de Dynamo.</value>
   </data>
   <data name="PackageDetailsPackage" xml:space="preserve">
     <value>Package</value>
+  </data>
+  <data name="PackageDetailsPackageApprovedTooltip" xml:space="preserve">
+    <value>Publié par Autodesk</value>
   </data>
   <data name="PackageSortToolTip" xml:space="preserve">
     <value>Trier les packages</value>
@@ -3379,7 +3388,7 @@ Vous pouvez gérer ce paramètre dans Préférences -&gt; Sécurité.</value>
     <value>Une erreur s'est produite lors de l'importation de votre fichier. Réessayez ou poursuivez avec les paramètres par défaut.</value>
   </data>
   <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
-    <value>Settings imported. To apply the settings, launch Dynamo, then close it and restart it.</value>
+    <value>Paramètres importés. Pour appliquer les paramètres, lancez Dynamo, puis fermez-le et redémarrez-le.</value>
   </data>
   <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
     <value>Réinitialiser les paramètres importés</value>

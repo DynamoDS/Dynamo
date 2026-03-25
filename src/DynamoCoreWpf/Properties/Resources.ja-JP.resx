@@ -2286,6 +2286,12 @@ Dynamo を再起動してアンインストールを完了します。
   <data name="AddStyleButton" xml:space="preserve">
     <value>スタイルを追加</value>
   </data>
+  <data name="ResetStylesButton" xml:space="preserve">
+    <value>Reset Styles</value>
+  </data>
+  <data name="ResetStylesButtonToolTip" xml:space="preserve">
+    <value>Restores the default group styles and removes user-created styles. This does not affect groups in existing graphs and cannot be undone.</value>
+  </data>
   <data name="ResetPythonNet3ButtonText" xml:space="preserve">
     <value>PythonNet3 をリセット</value>
   </data>
@@ -2809,6 +2815,9 @@ Dynamo を再起動してアンインストールを完了します。
   </data>
   <data name="PackageDetailsPackage" xml:space="preserve">
     <value>パッケージ</value>
+  </data>
+  <data name="PackageDetailsPackageApprovedTooltip" xml:space="preserve">
+    <value>発行元: Autodesk</value>
   </data>
   <data name="PackageSortToolTip" xml:space="preserve">
     <value>パッケージを並べ替えます。</value>
@@ -3385,7 +3394,7 @@ Dynamo を再起動してアンインストールを完了します。
     <value>カスタム設定ファイルの読み込み時に問題が発生しました。もう一度試すか、既定の設定で続行してください。</value>
   </data>
   <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
-    <value>Settings imported. To apply the settings, launch Dynamo, then close it and restart it.</value>
+    <value>設定が読み込まれました。設定を適用するには、Dynamo を起動して終了し、再起動してください。</value>
   </data>
   <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
     <value>読み込まれた設定をリセット</value>

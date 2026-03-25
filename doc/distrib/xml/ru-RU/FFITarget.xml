@@ -66,8 +66,8 @@
             <param name="failWithException">Сбой отправки с исключением, а не</param>
         </member>
         <member name="T:FFITarget.NodeCategoryAttributeTest">
-            <summary>Test class for NodeCategoryAttribute type-forwarded to DynamoServices.
-            CreateFromAttribute is a static method (not a constructor) but is forced into the "Create" category via the attribute.</summary>
+            <summary>Тестовый класс для типа NodeCategoryAttribute, перенаправленный в DynamoServices.
+            CreateFromAttribute является статическим методом (не конструктором), но принудительно перемещается в категорию «Создание» через атрибут.</summary>
         </member>
         <member name="T:FFITarget.OverloadTarget">
             <summary>Цель тестирования для перегруженных методов</summary>
@@ -79,6 +79,12 @@
             <returns name="num">number</returns>
             <returns name="wt">weight</returns>
             <returns name="ok">okay</returns>
+        </member>
+        <member name="M:FFITarget.TestVersionedInfoMessage.WithVersion">
+            <summary>Возврат значения и запись в журнал информационного сообщения с указанием версии 3.0.0</summary>
+        </member>
+        <member name="M:FFITarget.TestVersionedInfoMessage.WithoutVersion">
+            <summary>Возврат значения и запись в журнал информационного сообщения без указания версии</summary>
         </member>
     </members>
 </doc>

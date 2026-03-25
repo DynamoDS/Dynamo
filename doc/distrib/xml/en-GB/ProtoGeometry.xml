@@ -925,20 +925,18 @@
             <returns>An Array of Points</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
-            <summary>The truly periodic control points of the NurbsCurve if periodic.
-            Note that this cannot be used together with PeriodicKnots() to reconstruct the original periodic NurbsCurve.
-            Throws (or is undefined) when the curve is not periodic.</summary>
-            <returns>An Array of Points</returns>
+            <summary>The truly periodic control points of a periodic NurbsCurve.
+            Note: This operation only works for periodic curves and will fail if the curve is not periodic.</summary>
+            <returns>Periodic Control Points of a NURBS curve</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
             <summary>The knots of the Curve. Knots is a series of parameter values (doubles) used to determine where and how the control points affect the curve.</summary>
             <returns>The knots of the nurbs curve</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots">
-            <summary>The unclamped knots of the Curve if Periodic. Knots is a series of parameter values (doubles) used to determine where and how the control points affect the curve.
-            Note that this cannot be used together with PeriodicControlPoints() to reconstruct the original periodic NurbsCurve.
-            Throws (or is undefined) when the curve is not periodic.</summary>
-            <returns>The periodic knot vector of the nurbs curve</returns>
+            <summary>The unclamped knots of a periodic NurbsCurve.
+            Note: This operation only works for periodic curves and will fail if the curve is not periodic.</summary>
+            <returns>The periodic knot vector of the NURBS curve</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Weights">
             <summary>Returns NurbsCurve control point weights. Weights determine the influence of each of the control points on the shape of the curve.</summary>

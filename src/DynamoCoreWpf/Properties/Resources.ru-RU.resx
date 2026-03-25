@@ -2286,6 +2286,12 @@
   <data name="AddStyleButton" xml:space="preserve">
     <value>Доб. стиль</value>
   </data>
+  <data name="ResetStylesButton" xml:space="preserve">
+    <value>Reset Styles</value>
+  </data>
+  <data name="ResetStylesButtonToolTip" xml:space="preserve">
+    <value>Restores the default group styles and removes user-created styles. This does not affect groups in existing graphs and cannot be undone.</value>
+  </data>
   <data name="ResetPythonNet3ButtonText" xml:space="preserve">
     <value>Сбросить PythonNet3</value>
   </data>
@@ -2809,6 +2815,9 @@
   </data>
   <data name="PackageDetailsPackage" xml:space="preserve">
     <value>Пакет</value>
+  </data>
+  <data name="PackageDetailsPackageApprovedTooltip" xml:space="preserve">
+    <value>Опубликовано Autodesk</value>
   </data>
   <data name="PackageSortToolTip" xml:space="preserve">
     <value>Сортировка пакетов.</value>
@@ -3385,7 +3394,7 @@
     <value>При импорте файла пользовательских параметров произошла ошибка. Повторите попытку или используйте параметры по умолчанию.</value>
   </data>
   <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
-    <value>Settings imported. To apply the settings, launch Dynamo, then close it and restart it.</value>
+    <value>Параметры импортированы. Для их применения запустите Dynamo, затем закройте программу и повторно запустите ее.</value>
   </data>
   <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
     <value>Сброс импортированных параметров</value>

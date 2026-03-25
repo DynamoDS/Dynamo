@@ -925,19 +925,17 @@
             <returns>一组点</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
-            <summary>NurbsCurve 真正的周期性控制点(如果是周期性的)。
-            请注意，此选项不能与 PeriodicKnots() 一起使用来重建原始周期性 NurbsCurve。
-            当曲线不具有周期性时引发(或未定义)。</summary>
-            <returns>一组点</returns>
+            <summary>周期性 NurbsCurve 真正的周期性控制点。
+            注意: 此操作仅适用于周期性曲线，如果曲线不是周期性的，此操作将失败。</summary>
+            <returns>NURBS 曲线的周期性控制点</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
             <summary>曲线的节点。节点是一系列参数值(双精度值)，用于确定控制点影响曲线的位置和方式。</summary>
             <returns>NURBS 曲线的节点</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots">
-            <summary>曲线的未钳制结(如果是周期性的)。结是一系列参数值(双精度值)，用于确定控制点影响曲线的位置和方式。
-            请注意，这不能与 PeriodicControlPoints() 一起使用来重建原始周期性 NurbsCurve。
-            当曲线不具有周期性时引发(或未定义)。</summary>
+            <summary>周期性 NurbsCurve 的未钳制结。
+            注意: 此操作仅适用于周期性曲线，如果曲线不是周期性的，此操作将失败。</summary>
             <returns>NURBS 曲线的周期性结向量</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Weights">

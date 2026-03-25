@@ -52,6 +52,18 @@
             <summary>创建点集的 Delaunay 三角剖分。</summary>
             <param name="points">点集。</param>
         </member>
+        <member name="T:Tessellation.UvScalingUtilities">
+            <summary>用于曲面上 UV 缩放的实用程序函数。</summary>
+        </member>
+        <member name="M:Tessellation.UvScalingUtilities.GetNormalizedUvScales(Autodesk.DesignScript.Geometry.Surface)">
+            <summary>为曲面计算规格化 UV 比例因子以处理各向异性参数空间。
+                缩放将保留纵横比，同时将值保持在合理的数值范围内。</summary>
+            <param name="face">要计算比例因子的曲面。</param>
+            <returns>在 U 和 V 方向包含归一化比例因子的元组，以及
+            跨越 U 和 V 的曲面的最小物理弧长(世界单位)。
+            使用两个平均 iso 曲线长度中较短的比例
+            推导随曲面正确缩放的世界空间距离阈值。</returns>
+        </member>
         <member name="T:Tessellation.Voronoi">
             <summary>用于创建 Voronoi 细分函数。</summary>
         </member>

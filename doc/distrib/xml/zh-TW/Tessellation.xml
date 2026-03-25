@@ -52,6 +52,18 @@
             <summary>建立一組點的 Delaunay 三角法。</summary>
             <param name="points">一組點。</param>
         </member>
+        <member name="T:Tessellation.UvScalingUtilities">
+            <summary>用於在曲面上調整 UV 比例的公用程式函數。</summary>
+        </member>
+        <member name="M:Tessellation.UvScalingUtilities.GetNormalizedUvScales(Autodesk.DesignScript.Geometry.Surface)">
+            <summary>計算曲面的標準化 UV 比例係數，以處理非等向性參數空間。
+                比例可維持縱橫比，同時讓值維持在合理的數值範圍內。</summary>
+            <param name="face">要為其計算比例係數的曲面。</param>
+            <returns>包含 U 方向和 V 方向標準化比例係數的元組，以及
+            穿過 U 和 V 的曲面最小實體弧長 (世界單位)。
+            最小比例是兩個平均等角曲線長度中較短的一個，用來
+            導出隨曲面正確縮放的世界空間距離閾值。</returns>
+        </member>
         <member name="T:Tessellation.Voronoi">
             <summary>用於建立 Voronoi 鑲嵌的函數。</summary>
         </member>

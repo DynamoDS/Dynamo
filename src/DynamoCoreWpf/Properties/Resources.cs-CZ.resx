@@ -2285,6 +2285,12 @@ Chcete {1} odinstalovat? Restartujte {2}, aby se dokončila odinstalace, a zkust
   <data name="AddStyleButton" xml:space="preserve">
     <value>Přidat styl</value>
   </data>
+  <data name="ResetStylesButton" xml:space="preserve">
+    <value>Reset Styles</value>
+  </data>
+  <data name="ResetStylesButtonToolTip" xml:space="preserve">
+    <value>Restores the default group styles and removes user-created styles. This does not affect groups in existing graphs and cannot be undone.</value>
+  </data>
   <data name="ResetPythonNet3ButtonText" xml:space="preserve">
     <value>Obnovit PythonNet3</value>
   </data>
@@ -2808,6 +2814,9 @@ Tento balíček bude uvolněn po dalším restartování aplikace Dynamo.</value
   </data>
   <data name="PackageDetailsPackage" xml:space="preserve">
     <value>Balíček</value>
+  </data>
+  <data name="PackageDetailsPackageApprovedTooltip" xml:space="preserve">
+    <value>Vydáno společností Autodesk</value>
   </data>
   <data name="PackageSortToolTip" xml:space="preserve">
     <value>Třídit balíčky.</value>
@@ -3384,7 +3393,7 @@ V určitém kontextu složitých grafů nebo hostitelských režimů může auto
     <value>Při importu souboru uživatelských nastavení došlo k chybě. Zkuste to znovu nebo pokračujte s výchozím nastavením.</value>
   </data>
   <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
-    <value>Settings imported. To apply the settings, launch Dynamo, then close it and restart it.</value>
+    <value>Nastavení byla importována. Chcete-li nastavení použít, spusťte aplikaci Dynamo, poté ji zavřete a restartujte.</value>
   </data>
   <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
     <value>Obnovit importovaná nastavení</value>
