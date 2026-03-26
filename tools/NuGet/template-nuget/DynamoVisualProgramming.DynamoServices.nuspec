@@ -18,26 +18,21 @@
             <group targetFramework="netstandard2.0">
                 <dependency id="System.Reflection.MetadataLoadContext" version="8.0.0" />
             </group>
-            <!--when targeting .net8 metadataloadcontext's transitive deps can be loaded from the runtime-->
+            <!-- net8.0/net10.0: runtime carries the transitive deps, no DLL needed -->
             <group targetFramework="net8.0">
                 <dependency id="System.Reflection.MetadataLoadContext" version="8.0.0" exclude="build,analyzers,runtime" />
             </group>
-            <!-- when targeting net10, runtime carries the transitive deps -->
             <group targetFramework="net10.0">
                 <dependency id="System.Reflection.MetadataLoadContext" version="8.0.0" exclude="build,analyzers,runtime" />
             </group>
         </dependencies>
     </metadata>
     <!--these binaries are pulled from the intermediate build
-    path because the install harvest path will only include the net8/net10 version-->
+    path because the install harvest path will only include the net10 version-->
     <files>
         <!-- netstandard2.0 -->
         <file src="..\..\NodeServices\obj\netstandard2.0\DynamoServices.dll" target="lib\netstandard2.0" />
         <file src="DynamoServices.xml" target="lib\netstandard2.0" />
-
-        <!-- net8.0 -->
-        <file src="..\..\NodeServices\obj\net8.0\DynamoServices.dll" target="lib\net8.0" />
-        <file src="DynamoServices.xml" target="lib\net8.0" />
 
         <!-- net10.0 -->
         <file src="..\..\NodeServices\obj\net10.0\DynamoServices.dll" target="lib\net10.0" />
