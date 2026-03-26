@@ -17,6 +17,7 @@ using System.Threading;
 namespace Dynamo.Tests
 {
     [TestFixture]
+    [Category("ExcelTestInterop")]
     public class ExcelTests : DynamoViewModelUnitTest
     {
 

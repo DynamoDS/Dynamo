@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Dynamo.Tests
 {
+    [Category("ExcelTestInterop")]
     internal class ExcelTests
     {
         [Category("DSExecution")]
