@@ -120,7 +120,7 @@ namespace Dynamo.UI.Controls
         ObservableCollection<SampleFileEntry> sampleFiles = null;
         ObservableCollection<StartPageListItem> recentFiles = null;
         ObservableCollection<StartPageListItem> backupFiles = null;
-        ObservableCollection<StartPageListItem> templateFiles = null;
+        readonly ObservableCollection<StartPageListItem> templateFiles;
         internal readonly DynamoViewModel DynamoViewModel;
         private readonly bool isFirstRun;
 
