@@ -189,7 +189,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         internal void RecordCreatedModels(List<ModelBase> models)
-            {
+        {
             if (!ShouldProceedWithRecording(models))
                 return; // There's nothing created.
 
