@@ -511,7 +511,7 @@ namespace DynamoCoreWpfTests
 
         /// <summary>
         /// DYN-10262: Undo after deleting a node with a pinned note should restore
-        /// both the node and the note in their pinned state, both selected.
+        /// both the node and the note in their pinned state.
         /// </summary>
         [Test]
         public void UndoDeleteNodeRestoresPinnedNote()
