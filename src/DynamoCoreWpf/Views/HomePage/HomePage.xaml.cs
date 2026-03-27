@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Autodesk.DesignScript.Runtime;
@@ -272,9 +273,9 @@ namespace Dynamo.UI.Views
             if (startPage == null) { return; }
 
             SendGuidesData();
-            SendSamplesData();
-            SendTemplateData();
-            SendRecentGraphsData();
+            _ = SendSamplesData();
+            _ = SendTemplateData();
+            _ = SendRecentGraphsData();
             SendVideoData();
             SetLocale();
         }
@@ -282,7 +283,7 @@ namespace Dynamo.UI.Views
         private void RecentFiles_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             var recentFiles = startPage.RecentFiles?.DistinctBy(x => x.ContextData).ToList();
-            LoadGraphs(recentFiles);  
+            _ = LoadGraphs(recentFiles);
         }
 
         #region FrontEnd Initialization Calls
@@ -290,7 +291,7 @@ namespace Dynamo.UI.Views
         /// Sends graph data to react app
         /// </summary>
         /// <param name="data"></param>
-        private async void LoadGraphs(List<StartPageListItem> data)
+        private async Task LoadGraphs(List<StartPageListItem> data)
         {
             if (data == null) { return; }
             string jsonData = JsonSerializer.Serialize(data);
@@ -306,7 +307,7 @@ namespace Dynamo.UI.Views
         /// Sends graph data to react app
         /// </summary>
         /// <param name="data"></param>
-        private async void LoadTemplates(List<StartPageListItem> data)
+        private async Task LoadTemplates(List<StartPageListItem> data)
         {
             if (data == null) { return; }
             string jsonData = JsonSerializer.Serialize(data);
@@ -320,7 +321,7 @@ namespace Dynamo.UI.Views
         /// <summary>
         /// Sends samples data to react app
         /// </summary>
-        private async void SendSamplesData()
+        private async Task SendSamplesData()
         {
             if (!this.startPage.SampleFiles.Any()) return;
 
@@ -335,17 +336,16 @@ namespace Dynamo.UI.Views
         /// <summary>
         /// Sends samples data to react app
         /// </summary>
-        private async void SendTemplateData()
+        private async Task SendTemplateData()
         {
-            // Load template files
-            var templateFiles = startPage.TemplateFiles?.DistinctBy(x => x.ContextData).ToList();
-            if (templateFiles != null && templateFiles.Any())
+            var items = startPage.TemplateFiles?.DistinctBy(x => x.ContextData).ToList();
+            if (items != null && items.Any())
             {
-                LoadTemplates(templateFiles);
+                await LoadTemplates(items);
             }
         }
 
-        private async void SendRecentGraphsData()
+        private async Task SendRecentGraphsData()
         {
             // Send user preferences
             // TODO: move preferecnes in a separate call, not as a side-effect of sending Recent files
@@ -365,7 +365,7 @@ namespace Dynamo.UI.Views
             var recentFiles = startPage.RecentFiles?.DistinctBy(x => x.ContextData).ToList();
             if (recentFiles != null && recentFiles.Any())
             {
-                LoadGraphs(recentFiles);
+                await LoadGraphs(recentFiles);
             }
 
             if (startPage.DynamoViewModel != null && startPage.DynamoViewModel.RecentFiles != null)

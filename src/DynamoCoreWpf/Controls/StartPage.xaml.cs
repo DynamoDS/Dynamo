@@ -120,7 +120,7 @@ namespace Dynamo.UI.Controls
         ObservableCollection<SampleFileEntry> sampleFiles = null;
         ObservableCollection<StartPageListItem> recentFiles = null;
         ObservableCollection<StartPageListItem> backupFiles = null;
-        ObservableCollection<StartPageListItem> templateFiles = null;
+        readonly ObservableCollection<StartPageListItem> templateFiles;
         internal readonly DynamoViewModel DynamoViewModel;
         private readonly bool isFirstRun;
 
@@ -230,7 +230,7 @@ namespace Dynamo.UI.Controls
 
             if (Directory.Exists(templatesDirectory))
             {
-                var templateFiles = new List<string>();
+                var rootDynPaths = new List<string>();
                 string[] dirPaths = Directory.GetDirectories(templatesDirectory);
                 string[] filePaths = Directory.GetFiles(templatesDirectory, "*.dyn");   // This could change if we move to *dyt
 
@@ -239,41 +239,45 @@ namespace Dynamo.UI.Controls
                 {
                     foreach (string path in filePaths)
                     {
-                        templateFiles.Add(path);
+                        rootDynPaths.Add(path);
                     }
                 }
 
                 // Make comment on legacy use of StartPage.xaml.cs
-                if (templateFiles.Any() && this != null)
+                if (rootDynPaths.Any())
                 {
-                    foreach (var filePath in templateFiles)
+                    foreach (var filePath in rootDynPaths)
                     {
-                        var extension = Path.GetExtension(filePath).ToUpper();
-                        // If not extension specified and code reach here, this means this is still a valid file
-                        // only without file type. Otherwise, simply take extension substring skipping the 'dot'.
-                        var subScript = extension.StartsWith(".") ? extension.Substring(1) : "";
-                        var caption = Path.GetFileNameWithoutExtension(filePath);
-
-                        // deserializes the file only once
-                        var properties = GetFileProperties(filePath);
-
-                        var templateItem = new StartPageListItem(caption)
-                        {
-                            ContextData = filePath,
-                            ToolTip = filePath,
-                            SubScript = subScript,
-                            Description = properties.description,
-                            Thumbnail = properties.thumbnail,
-                            Author = properties.author,
-                            DateModified = properties.date,
-                            ClickAction = StartPageListItem.Action.FilePath,
-                        };
-
-                        // Finally fill in the collection
-                        this.TemplateFiles.Add(templateItem);
+                        AddTemplateListItemFromPath(filePath);
                     }
                 }
             }
+        }
+
+        private void AddTemplateListItemFromPath(string filePath)
+        {
+            var extension = Path.GetExtension(filePath).ToUpper();
+            // If not extension specified and code reach here, this means this is still a valid file
+            // only without file type. Otherwise, simply take extension substring skipping the 'dot'.
+            var subScript = extension.StartsWith(".") ? extension.Substring(1) : "";
+            var caption = Path.GetFileNameWithoutExtension(filePath);
+
+            // deserializes the file only once
+            var properties = GetFileProperties(filePath);
+
+            var templateItem = new StartPageListItem(caption)
+            {
+                ContextData = filePath,
+                ToolTip = filePath,
+                SubScript = subScript,
+                Description = properties.description,
+                Thumbnail = properties.thumbnail,
+                Author = properties.author,
+                DateModified = properties.date,
+                ClickAction = StartPageListItem.Action.FilePath,
+            };
+
+            this.TemplateFiles.Add(templateItem);
         }
 
         internal void WalkDirectoryTree(System.IO.DirectoryInfo root, SampleFileEntry rootProperty)
