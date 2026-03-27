@@ -1,8 +1,6 @@
 using System;
 using System.Linq;
 using System.Windows.Input;
-using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Notes;
 using Dynamo.Selection;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
