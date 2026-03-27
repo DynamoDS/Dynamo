@@ -161,7 +161,6 @@
     <None Remove="Controls\Docs\zh-TW\NodeAutocompleteDocumentation.html" />
     <None Remove="Packages\SplashScreen\build\index.bundle.js" />
     <None Remove="Packages\SplashScreen\build\index.html" />
-    <None Remove="Packages\DynamoHome\index.bundle.js" />
     <None Remove="Packages\DynamoHome\build\index.bundle.js" />
     <None Remove="Packages\DynamoHome\build\index.html" />
     <None Remove="UI\Images\adsk-logo-16px.png" />
@@ -331,7 +330,6 @@
     <EmbeddedResource Include="Controls\Docs\zh-CN\NodeAutocompleteDocumentation.html" />
     <EmbeddedResource Include="Controls\Docs\zh-TW\FileTrustWarningDocumentation.html" />
     <EmbeddedResource Include="Controls\Docs\zh-TW\NodeAutocompleteDocumentation.html" />
-    <EmbeddedResource Include="Packages\DynamoHome\index.bundle.js" />
     <EmbeddedResource Include="Packages\SplashScreen\build\index.bundle.js" />
     <EmbeddedResource Include="Packages\SplashScreen\build\index.html" />
     <EmbeddedResource Include="Properties\Resources.en-GB.resx" />
@@ -801,9 +799,7 @@
     <Compile Include="Views\GuidedTour\SurveyPopupWindow.xaml.cs">
       <DependentUpon>SurveyPopupWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\HomePage\HomePage.xaml.cs" />
     <Compile Include="Views\Input\ParameterEditor.cs" />
-    <Compile Include="Views\PackageManager\Components\PackageManagerWizard\PackageManagerWizard.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\CustomBrowserControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\FilterTagControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml.cs" />
