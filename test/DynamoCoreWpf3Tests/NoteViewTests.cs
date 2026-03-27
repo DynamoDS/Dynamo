@@ -553,7 +553,12 @@ namespace DynamoCoreWpfTests
 
         /// <summary>
         /// DYN-10262: Redo after undoing a delete of a node with a pinned note
-        /// should delete both again and clear the selection.
+        /// should delete both again.
+        /// Note: selection cleanup on redo is not asserted — the redo path replays
+        /// recorded actions without going through DeleteModelInternal's selection.Remove()
+        /// loop, so DynamoSelection may retain stale references. This is a pre-existing
+        /// framework behavior affecting all redo-of-delete operations, not specific to
+        /// cascade deletes.
         /// </summary>
         [Test]
         public void RedoDeleteNodeDeletesPinnedNoteAgain()
