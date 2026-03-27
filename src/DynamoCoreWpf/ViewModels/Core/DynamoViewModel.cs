@@ -2240,10 +2240,10 @@ namespace Dynamo.ViewModels
                 if (displayTrustWarning && (currentWorkspaceViewModel?.IsHomeSpace ?? false))
                 {
                     // Skip these when opening dyf
+                    FileTrustViewModel.AllowOneTimeTrust = false;
                     FileTrustViewModel.DynFileDirectoryName = directoryName;
                     FileTrustViewModel.ShowWarningPopup = true;
-                    (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
-                    FileTrustViewModel.AllowOneTimeTrust = false;
+                    (HomeSpaceViewModel as HomeWorkspaceViewModel)?.UpdateRunStatusMsgBasedOnStates();
                 }
             }
             catch (Exception e)
@@ -2331,10 +2331,10 @@ namespace Dynamo.ViewModels
                 if (displayTrustWarning && (currentWorkspaceViewModel?.IsHomeSpace ?? false))
                 {
                     // Skip these when opening dyf
+                    FileTrustViewModel.AllowOneTimeTrust = false;
                     FileTrustViewModel.DynFileDirectoryName = directoryName;
                     FileTrustViewModel.ShowWarningPopup = true;
-                    (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
-                    FileTrustViewModel.AllowOneTimeTrust = false;
+                    (HomeSpaceViewModel as HomeWorkspaceViewModel)?.UpdateRunStatusMsgBasedOnStates();
                 }
             }
             catch (Exception e)
@@ -3608,12 +3608,14 @@ namespace Dynamo.ViewModels
 
         private void Save3DImage(object parameters)
         {
-            // Save the parameters
-            OnRequestSave3DImage(this, new ImageSaveEventArgs(parameters.ToString()));
+            var args = new ImageSaveEventArgs(parameters.ToString());
+            OnRequestSave3DImage(this, args);
 
-            string message = String.Concat(WpfResources.ExportWorkspaceAs3DImage, parameters.ToString());
-
-            ToastManager?.CreateRealTimeInfoWindow(message, true);
+            if (args.Success)
+            {
+                string message = String.Concat(WpfResources.ExportWorkspaceAs3DImage, parameters.ToString());
+                ToastManager?.CreateRealTimeInfoWindow(message, true);
+            }
         }
 
         internal bool CanSaveImage(object parameters)

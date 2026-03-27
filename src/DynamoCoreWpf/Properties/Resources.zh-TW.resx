@@ -2285,6 +2285,12 @@
   <data name="AddStyleButton" xml:space="preserve">
     <value>加入型式</value>
   </data>
+  <data name="ResetStylesButton" xml:space="preserve">
+    <value>Reset Styles</value>
+  </data>
+  <data name="ResetStylesButtonToolTip" xml:space="preserve">
+    <value>Restores the default group styles and removes user-created styles. This does not affect groups in existing graphs and cannot be undone.</value>
+  </data>
   <data name="ResetPythonNet3ButtonText" xml:space="preserve">
     <value>重設 PythonNet3</value>
   </data>
@@ -2808,6 +2814,9 @@
   </data>
   <data name="PackageDetailsPackage" xml:space="preserve">
     <value>套件</value>
+  </data>
+  <data name="PackageDetailsPackageApprovedTooltip" xml:space="preserve">
+    <value>由 Autodesk 發佈</value>
   </data>
   <data name="PackageSortToolTip" xml:space="preserve">
     <value>排序套件。</value>
@@ -3384,7 +3393,7 @@
     <value>匯入您的自訂設定檔時發生錯誤。請再試一次，或繼續使用預設設定。</value>
   </data>
   <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
-    <value>Settings imported. To apply the settings, launch Dynamo, then close it and restart it.</value>
+    <value>已匯入設定。若要套用設定，請啟動 Dynamo，然後關閉，再重新啟動。</value>
   </data>
   <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
     <value>重設匯入的設定</value>

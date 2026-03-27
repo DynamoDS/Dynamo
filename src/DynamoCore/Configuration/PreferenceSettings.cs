@@ -1208,7 +1208,10 @@ namespace Dynamo.Configuration
                 }
             }
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
-            settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
+            settings.GroupStyleItemsList = (settings.GroupStyleItemsList ?? GroupStyleItem.CloneDefaultGroupStyleItems())
+                .GroupBy(entry => entry.Name)
+                .Select(result => result.First())
+                .ToList();
             MigrateStdLibTokenToBuiltInToken(settings);
 
             settings.DeserializeInternalPrefs(filePath);
@@ -1247,7 +1250,10 @@ namespace Dynamo.Configuration
             }
                 
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
-            settings.GroupStyleItemsList = settings.GroupStyleItemsList.GroupBy(entry => entry.Name).Select(result => result.First()).ToList();
+            settings.GroupStyleItemsList = (settings.GroupStyleItemsList ?? GroupStyleItem.CloneDefaultGroupStyleItems())
+                .GroupBy(entry => entry.Name)
+                .Select(result => result.First())
+                .ToList();
             MigrateStdLibTokenToBuiltInToken(settings);
 
             settings.DeserializeInternalPrefsContent(content);

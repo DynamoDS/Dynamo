@@ -6081,6 +6081,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Published by Autodesk.
+        /// </summary>
+        public static string PackageDetailsPackageApprovedTooltip {
+            get {
+                return ResourceManager.GetString("PackageDetailsPackageApprovedTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Python.
         /// </summary>
         public static string PackageDetailsPython {
@@ -9778,6 +9787,24 @@ namespace Dynamo.Wpf.Properties {
         public static string ResetPythonNet3ButtonToolTip {
             get {
                 return ResourceManager.GetString("ResetPythonNet3ButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset Styles.
+        /// </summary>
+        public static string ResetStylesButton {
+            get {
+                return ResourceManager.GetString("ResetStylesButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restores the default group styles and removes user-created styles. This does not affect groups in existing graphs and cannot be undone..
+        /// </summary>
+        public static string ResetStylesButtonToolTip {
+            get {
+                return ResourceManager.GetString("ResetStylesButtonToolTip", resourceCulture);
             }
         }
         

@@ -1369,15 +1369,15 @@ namespace Dynamo.Controls
                         dynamoViewModel.BackgroundPreviewViewModel.ZoomToFitCommand.Execute(null);
                         return;
                     }
-                    BackgroundPreview.View.ZoomExtents();
+                    BackgroundPreview?.View?.ZoomExtents();
                     break;
 
                 case ViewOperationEventArgs.Operation.ZoomIn:
-                    BackgroundPreview.View.AddZoomForce(-0.5);
+                    BackgroundPreview?.View?.AddZoomForce(-0.5);
                     break;
 
                 case ViewOperationEventArgs.Operation.ZoomOut:
-                    BackgroundPreview.View.AddZoomForce(0.5);
+                    BackgroundPreview?.View?.AddZoomForce(0.5);
                     break;
             }
         }
@@ -1879,6 +1879,11 @@ namespace Dynamo.Controls
                 dpiY = 96;
             }
 
+            if (BackgroundPreview == null)
+            {
+                e.Success = false;
+                return;
+            }
             var bitmapSource = BackgroundPreview.View.RenderBitmap();
             // this image only really needs 24bits per pixel but to match previous implementation we'll use 32bit images.
             var rtBitmap = new RenderTargetBitmap(bitmapSource.PixelWidth, bitmapSource.PixelHeight, dpiX, dpiY, PixelFormats.Pbgra32);

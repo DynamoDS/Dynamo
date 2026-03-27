@@ -213,19 +213,15 @@ namespace Dynamo.Manipulation
         {
             if (Node == null || !indexedAxisNodePairs.Any()) return false;
 
-            if (origin == null)
-            {
-                origin = Point.Origin(); //First time initialization
-            }
-
             //Node output could be a collection, consider the first item as origin.
             Point pt = GetFirstValueFromNode(Node) as Point;
             if (null == pt) return false; //The node output is not Point, could be a function object.
 
-            //Don't cache pt directly here, we need to create a copy, because 
+            //Don't cache pt directly here, we need to create a copy, because
             //pt may be GC'ed by VM.
+            origin?.Dispose();
             origin = Point.ByCoordinates(pt.X, pt.Y, pt.Z);
-            
+
             return true;
         }
 

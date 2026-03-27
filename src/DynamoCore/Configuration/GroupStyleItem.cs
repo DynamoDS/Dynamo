@@ -1,6 +1,8 @@
-using System;
-using System.Collections.ObjectModel;
 using Dynamo.Properties;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Dynamo.Configuration
 {
@@ -20,5 +22,22 @@ namespace Dynamo.Configuration
                 new GroupStyleItem() { Name = Resources.GroupStyleDefaultOutputs, HexColorString = Resources.GroupStyleDefaultOutputsColor, FontSize = 36, IsDefault = true, GroupStyleId = new Guid("07655dc1-2d65-4fed-8d6a-37235d3e3a8d") },
                 new GroupStyleItem() { Name = Resources.GroupStyleDefaultReview, HexColorString = Resources.GroupStyleDefaultReviewColor, FontSize = 36 ,IsDefault = true, GroupStyleId = new Guid("bc688959-ce34-4bf5-90f8-6ddd23f80989") }
             };
+
+        /// <summary>
+        /// Creates a new list with clones of the default group styles.
+        /// </summary>
+        internal static List<GroupStyleItem> CloneDefaultGroupStyleItems()
+        {
+            return DefaultGroupStyleItems
+                .Select(defaultStyle => new GroupStyleItem
+                {
+                    Name = defaultStyle.Name,
+                    HexColorString = defaultStyle.HexColorString,
+                    FontSize = defaultStyle.FontSize,
+                    GroupStyleId = defaultStyle.GroupStyleId,
+                    IsDefault = true
+                })
+                .ToList();
+        }
     }
 }

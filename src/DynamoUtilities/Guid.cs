@@ -127,7 +127,7 @@ namespace Dynamo.Utilities
         /// Performs an update to workspace-element Guids inside the json string before deserialization.
         /// Remaps compact ("N") workspace ids globally, and additionally remaps
         /// View.ConnectorPins[].ConnectorGuid when it is in hyphenated ("D") format,
-        /// so connector-pin links remain valid after SaveAs.
+        /// so connector-pin links remain valid after Insert and SaveAs operations.
         /// </summary>
         /// <param name="jsonData">Json representation of workspace.</param>
         /// <returns>String representation of workspace after all Guid values are remapped.</returns>

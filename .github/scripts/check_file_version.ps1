@@ -45,7 +45,7 @@ $excludedFiles = @(
     "libSkiaSharp.dll",     # https://jira.autodesk.com/browse/DYN-6598
     "LiveChartsCore*.dll",
     "Lucene.Net*.dll",
-    "MIConvexHull.NET Standard.dll",
+    "MIConvexHull.dll",
     "Microsoft.*",
     "MimeMapping.dll",
     "Moq.dll",

@@ -200,6 +200,14 @@ namespace Dynamo.Wpf.Views
             Logging.Analytics.TrackEvent(Actions.New, Categories.GroupStyleOperations, nameof(GroupStyleItem));
         }
 
+        private void ResetStylesButton_Click(object sender, RoutedEventArgs e)
+        {
+            viewModel.ResetCustomGroupStyles();
+            viewModel.ResetAddStyleControl();
+            stylesCustomColors?.Clear();
+            Logging.Analytics.TrackEvent(Actions.Delete, Categories.GroupStyleOperations, nameof(GroupStyleItem));
+        }
+
         private void ResetGroupStyleForm()
         {
             viewModel.CurrentWarningMessage = string.Empty;
@@ -284,9 +292,16 @@ namespace Dynamo.Wpf.Views
                 {
                     GroupStyleItem selectedGroupStyle = (GroupStyleItem)colorButtonSelected.DataContext;
                     selectedGroupStyle.HexColorString = viewModel.ColorPickerSelectedColor.Value.R.ToString("X2") + viewModel.ColorPickerSelectedColor.Value.G.ToString("X2") + viewModel.ColorPickerSelectedColor.Value.B.ToString("X2");
+                    this.viewModel.NotifyGroupStyleEdited();
                 }
             }
             groupStyleItemExisting = false;
+        }
+
+        private void ExistingStyleFontSize_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.RemovedItems.Count == 0 || this.viewModel == null) return;
+            this.viewModel.NotifyGroupStyleEdited();
         }
 
         private void ButtonColorPicker_Click(object sender, RoutedEventArgs e)

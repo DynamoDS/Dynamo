@@ -8,6 +8,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace Dynamo.Graph.Connectors
 {
@@ -120,6 +121,21 @@ namespace Dynamo.Graph.Connectors
             {
                 base.GUID = value;
             }
+        }
+
+        /// <summary>
+        /// Returns a snapshot of pin top-left canvas coordinates for this connector.
+        /// </summary>
+        internal List<(double X, double Y)> GetPinLocations()
+        {
+            if (ConnectorPinModels == null || ConnectorPinModels.Count == 0)
+            {
+                return new List<(double X, double Y)>();
+            }
+
+            return ConnectorPinModels
+                .Select(pin => (pin.Position.X, pin.Position.Y))
+                .ToList();
         }
 
         #endregion 

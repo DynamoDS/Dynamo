@@ -66,8 +66,8 @@
             <param name="failWithException">分派失敗，發生例外狀況，而不是</param>
         </member>
         <member name="T:FFITarget.NodeCategoryAttributeTest">
-            <summary>Test class for NodeCategoryAttribute type-forwarded to DynamoServices.
-            CreateFromAttribute is a static method (not a constructor) but is forced into the "Create" category via the attribute.</summary>
+            <summary>轉送到 DynamoServices 的 NodeCategoryAttribute 類型的測試類別。
+            CreateFromAttribute 是靜態方法 (不是建構函式)，但會透過屬性強制加入「Create」品類。</summary>
         </member>
         <member name="T:FFITarget.OverloadTarget">
             <summary>多載方法的測試目標</summary>
@@ -79,6 +79,12 @@
             <returns name="num">number</returns>
             <returns name="wt">weight</returns>
             <returns name="ok">okay</returns>
+        </member>
+        <member name="M:FFITarget.TestVersionedInfoMessage.WithVersion">
+            <summary>傳回值並記錄版本 3.0.0 的資訊訊息</summary>
+        </member>
+        <member name="M:FFITarget.TestVersionedInfoMessage.WithoutVersion">
+            <summary>傳回值並記錄沒有版本的資訊訊息</summary>
         </member>
     </members>
 </doc>

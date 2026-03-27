@@ -925,19 +925,17 @@
             <returns>点の配列</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
-            <summary>NURBS 曲線の真に周期的な制御点です(周期的である場合)。
-            これを PeriodicKnots()と一緒に使用して元の周期的な NURBS 曲線を再構築することはできません。
-            曲線が周期的でない場合はスローします(または、未定義になります)。</summary>
-            <returns>点の配列</returns>
+            <summary>周期的 NURBS 曲線の真に周期的な制御点です。
+            注: この操作は周期的な曲線に対してのみ可能であり、曲線が周期的でない場合は失敗します。</summary>
+            <returns>NURBS 曲線の周期的な制御点</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
             <summary>曲線のノット。ノットは、制御点が曲線に影響を与える位置とその影響の程度を判断するために使用される、一連のパラメータ値(倍精度浮動小数点数)です。</summary>
             <returns>NURBS 曲線のノット</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots">
-            <summary>曲線の未固定ノット(周期的である場合)。ノットは一連のパラメータ値(倍精度浮動小数点数)で、制御点が曲線に影響を与える場所と方法を決定するのに使用されます。
-            これを PeriodicControlPoints()と一緒に使用して元の周期的な NURBS 曲線を再構築することはできません。
-            曲線が周期的でない場合はスローします(または、未定義になります)。</summary>
+            <summary>周期的な NURBS 曲線の未固定ノットです。
+            注: この操作は周期的な曲線に対してのみ可能であり、曲線が周期的でない場合は失敗します。</summary>
             <returns>NURBS 曲線の周期的ノット ベクトル</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Weights">
