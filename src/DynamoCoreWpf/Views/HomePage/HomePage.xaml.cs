@@ -347,8 +347,7 @@ namespace Dynamo.UI.Views
 
         private async Task SendRecentGraphsData()
         {
-            // Send user preferences
-            // TODO: move preferecnes in a separate call, not as a side-effect of sending Recent files
+            // Send user preferences (could be split to a separate call later instead of coupling with recent files).
             if (dynWebView?.CoreWebView2 != null)
             {
                 if (startPage.DynamoViewModel.PreferenceSettings.HomePageSettings != null)

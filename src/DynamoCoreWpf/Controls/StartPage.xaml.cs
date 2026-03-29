@@ -231,7 +231,6 @@ namespace Dynamo.UI.Controls
             if (Directory.Exists(templatesDirectory))
             {
                 var rootDynPaths = new List<string>();
-                string[] dirPaths = Directory.GetDirectories(templatesDirectory);
                 string[] filePaths = Directory.GetFiles(templatesDirectory, "*.dyn");   // This could change if we move to *dyt
 
                 // We only collect the files in the root
@@ -259,7 +258,7 @@ namespace Dynamo.UI.Controls
             var extension = Path.GetExtension(filePath).ToUpper();
             // If not extension specified and code reach here, this means this is still a valid file
             // only without file type. Otherwise, simply take extension substring skipping the 'dot'.
-            var subScript = extension.StartsWith(".") ? extension.Substring(1) : "";
+            var subScript = extension.StartsWith('.') ? extension.Substring(1) : "";
             var caption = Path.GetFileNameWithoutExtension(filePath);
 
             // deserializes the file only once
@@ -543,7 +542,7 @@ namespace Dynamo.UI.Controls
                     var extension = Path.GetExtension(filePath).ToUpper();
                     // If not extension specified and code reach here, this means this is still a valid file
                     // only without file type. Otherwise, simply take extension substring skipping the 'dot'.
-                    var subScript = extension.StartsWith(".") ? extension.Substring(1) : "";
+                    var subScript = extension.StartsWith('.') ? extension.Substring(1) : "";
                     var caption = Path.GetFileNameWithoutExtension(filePath);
 
                     // deserializes the file only once
