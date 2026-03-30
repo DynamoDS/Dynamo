@@ -925,19 +925,17 @@
             <returns>點陣列</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
-            <summary>NurbsCurve (如果為週期性) 的真正週期性控制點。
-            請注意，這無法與 PeriodicKnots() 一起使用，來重新建構原始的週期性 NurbsCurve。
-            當曲線不是週期性時擲出 (或未定義)。</summary>
-            <returns>點陣列</returns>
+            <summary>週期性 NurbsCurve 的真正週期性控制點。
+            注意: 此作業只適用於週期性曲線，如果曲線不是週期性，將會失敗。</summary>
+            <returns>NURBS 曲線的週期性控制點</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
             <summary>曲線的節點。節點是一系列用來決定控制點在哪以及如何影響曲線的參數值 (double)。</summary>
             <returns>NURBS 曲線的節點</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots">
-            <summary>曲線 (如果為週期性) 的未鎖模節點。節點是一系列用來決定控制點在哪以及如何影響曲線的參數值 (double)。
-            請注意，這無法與 PeriodicControlPoints() 一起使用，來重新建構原始的週期性 NurbsCurve。
-            當曲線不是週期性時擲出 (或未定義)。</summary>
+            <summary>週期性 NurbsCurve 的未鎖模節點。
+            注意: 此作業只適用於週期性曲線，如果曲線不是週期性，將會失敗。</summary>
             <returns>NURBS 曲線的週期性節點向量</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Weights">

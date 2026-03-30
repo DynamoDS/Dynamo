@@ -924,20 +924,18 @@
             <returns>Uma matriz de pontos</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
-            <summary>Os pontos de controle verdadeiramente periódicos da NurbsCurve, se for periódica.
-            Observe que isso não pode ser usado junto com PeriodicKnots() para reconstruir a NurbsCurve periódica original.
-            Gera uma exceção (ou é indefinida) quando a curva não é periódica.</summary>
-            <returns>Uma matriz de pontos</returns>
+            <summary>Os pontos de controle verdadeiramente periódicos de uma NurbsCurve periódica.
+            Observação: Essa operação só funcionará para curvas periódicas e falhará se a curva não for periódica.</summary>
+            <returns>Pontos de controle periódicos de uma curva NURBS</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
             <summary>Os nós da curva. Os nós são uma série de valores de parâmetros (duplos) usados para determinar onde e como os pontos de controle afetam a curva.</summary>
             <returns>Os nós da curva nurbs</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots">
-            <summary>Os nós desafixados da curva, se for periódica. Os nós são uma série de valores de parâmetros (duplos) usados para determinar onde e como os pontos de controle afetam a curva.
-            Observe que isso não pode ser usado junto com PeriodicControlPoints() para reconstruir a NurbsCurve periódica original.
-            Gera uma exceção (ou é indefinida) quando a curva não é periódica.</summary>
-            <returns>O vetor de nós periódico da NurbsCurve</returns>
+            <summary>Os nós sem fixação de uma NurbsCurve periódica.
+            Observação: Essa operação só funcionará para curvas periódicas e falhará se a curva não for periódica.</summary>
+            <returns>O vetor de nó periódico da curva NURBS</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Weights">
             <summary>Retorna os pesos dos pontos de controle da NurbsCurve. Os pesos determinam a influência de cada ponto de controle no formato da curva.</summary>

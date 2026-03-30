@@ -2284,6 +2284,12 @@
   <data name="AddStyleButton" xml:space="preserve">
     <value>스타일 추가</value>
   </data>
+  <data name="ResetStylesButton" xml:space="preserve">
+    <value>Reset Styles</value>
+  </data>
+  <data name="ResetStylesButtonToolTip" xml:space="preserve">
+    <value>Restores the default group styles and removes user-created styles. This does not affect groups in existing graphs and cannot be undone.</value>
+  </data>
   <data name="ResetPythonNet3ButtonText" xml:space="preserve">
     <value>PythonNet3 재설정</value>
   </data>
@@ -2807,6 +2813,9 @@
   </data>
   <data name="PackageDetailsPackage" xml:space="preserve">
     <value>패키지</value>
+  </data>
+  <data name="PackageDetailsPackageApprovedTooltip" xml:space="preserve">
+    <value>Autodesk에서 게시</value>
   </data>
   <data name="PackageSortToolTip" xml:space="preserve">
     <value>패키지 정렬</value>
@@ -3383,7 +3392,7 @@
     <value>사용자 설정 파일을 가져올 때 문제가 발생했습니다. 다시 시도하거나 기본 설정으로 계속하십시오.</value>
   </data>
   <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
-    <value>Settings imported. To apply the settings, launch Dynamo, then close it and restart it.</value>
+    <value>설정을 가져왔습니다. 가져온 설정을 적용하려면 Dynamo를 시작한 다음 닫은 후 다시 시작하십시오.</value>
   </data>
   <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
     <value>가져온 설정 재설정</value>

@@ -66,8 +66,8 @@
             <param name="failWithException">Échec de la distribution avec une exception plutôt qu'avec</param>
         </member>
         <member name="T:FFITarget.NodeCategoryAttributeTest">
-            <summary>Test class for NodeCategoryAttribute type-forwarded to DynamoServices.
-            CreateFromAttribute is a static method (not a constructor) but is forced into the "Create" category via the attribute.</summary>
+            <summary>Classe de test pour l'attribut NodeCategoryAttribute transféré vers DynamoServices.
+            CreateFromAttribute est une méthode statique (pas un constructeur), mais elle est forcée dans la catégorie "Create" via l'attribut.</summary>
         </member>
         <member name="T:FFITarget.OverloadTarget">
             <summary>Cible de test pour les méthodes surchargées</summary>
@@ -79,6 +79,12 @@
             <returns name="num">number</returns>
             <returns name="wt">weight</returns>
             <returns name="ok">okay</returns>
+        </member>
+        <member name="M:FFITarget.TestVersionedInfoMessage.WithVersion">
+            <summary>Renvoie une valeur et consigne un message d'information associé à la version 3.0.0</summary>
+        </member>
+        <member name="M:FFITarget.TestVersionedInfoMessage.WithoutVersion">
+            <summary>Renvoie une valeur et consigne un message d'information sans version</summary>
         </member>
     </members>
 </doc>

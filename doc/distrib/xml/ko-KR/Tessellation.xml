@@ -52,6 +52,18 @@
             <summary>점 세트의 Delaunay 삼각형을 만듭니다.</summary>
             <param name="points">점 세트.</param>
         </member>
+        <member name="T:Tessellation.UvScalingUtilities">
+            <summary>표면의 UV 배율을 위한 유틸리티 함수입니다.</summary>
+        </member>
+        <member name="M:Tessellation.UvScalingUtilities.GetNormalizedUvScales(Autodesk.DesignScript.Geometry.Surface)">
+            <summary>비등방성 매개변수 공간을 처리하기 위해 표면에 대한 정규화된 UV 축척 비율을 계산합니다.
+                배율 조정은 적절한 숫자 범위 내의 값을 유지하면서 종횡비를 유지합니다.</summary>
+            <param name="face">축척 비율을 계산할 지표면입니다.</param>
+            <returns>U 및 V 방향의 정규화된 축척 비율을 포함하는 튜플 및
+            U와 V를 가로지르는 표면의 최소 물리적 호 길이(표준 단위)입니다.
+            최소 축척은 평균 Iso 곡선 길이 2개 중 더 짧은 길이로, 표면에 맞춰
+            적절하게 배율이 조정되는 표준 공간 거리 임계값을 파생하는 데 사용됩니다.</returns>
+        </member>
         <member name="T:Tessellation.Voronoi">
             <summary>Voronoi 다듬기 작성 함수.</summary>
         </member>

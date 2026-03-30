@@ -52,6 +52,18 @@
             <summary>Cria uma triangulação de Delaunay de um conjunto de pontos.</summary>
             <param name="points">Um conjunto de pontos.</param>
         </member>
+        <member name="T:Tessellation.UvScalingUtilities">
+            <summary>Funções do utilitário para a escala de UV em superfícies.</summary>
+        </member>
+        <member name="M:Tessellation.UvScalingUtilities.GetNormalizedUvScales(Autodesk.DesignScript.Geometry.Surface)">
+            <summary>Calcula fatores de escala UV normalizados em uma superfície para lidar com espaços de parâmetros anisotrópicos.
+                A escala preserva a proporção mantendo os valores em um intervalo numérico razoável.</summary>
+            <param name="face">Superfície para a qual calcular os fatores de escala.</param>
+            <returns>Tupla contendo fatores de escala normalizados nas direções U e V e o
+            comprimento mínimo do arco físico da superfície (unidades universais) através de U e V.
+            A escala mínima é a menor dos dois comprimentos médios de isocurva e é usada
+            para derivar limites de distância do espaço universal que são dimensionados corretamente com a superfície.</returns>
+        </member>
         <member name="T:Tessellation.Voronoi">
             <summary>Funções para a criação de suavização de serrilhado Voronoi.</summary>
         </member>

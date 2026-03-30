@@ -925,19 +925,17 @@
             <returns>Un réseau de points</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
-            <summary>Les points de contrôle vraiment périodiques de la courbe NurbsCurve si elle est périodique.
-            Notez que cette fonctionnalité ne peut pas être utilisée avec PeriodicKnots() pour reconstruire la courbe NurbsCurve périodique d'origine.
-            Génère une exception (ou n'est pas définie) lorsque la courbe n'est pas périodique.</summary>
-            <returns>Un réseau de points</returns>
+            <summary>Les points de contrôle vraiment périodiques d'une courbe NurbsCurve périodique.
+            Remarque: cette opération fonctionne uniquement pour les courbes périodiques et échoue si la courbe n'est pas périodique.</summary>
+            <returns>Points de contrôle périodiques d'une courbe NURBS</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
             <summary>Noeuds de la courbe. Les noeuds sont une série de valeurs de paramètres (doubles) servant à déterminer où et comment les points de contrôle affectent la courbe.</summary>
             <returns>Les noeuds de la courbe NURBS</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots">
-            <summary>Les noeuds non bloqués de la courbe si elle est périodique. Les noeuds constituent une série de valeurs de paramètres (doubles) utilisées pour déterminer où et comment les points de contrôle affectent la courbe.
-            Notez que cette fonctionnalité ne peut pas être utilisée avec PeriodicControlPoints() pour reconstruire la courbe NurbsCurve périodique d'origine.
-            Génère une exception (ou n'est pas définie) lorsque la courbe n'est pas périodique.</summary>
+            <summary>Les noeuds non bloqués d'une courbe NurbsCurve périodique.
+            Remarque: cette opération fonctionne uniquement pour les courbes périodiques et échoue si la courbe n'est pas périodique.</summary>
             <returns>Le vecteur de noeuds périodiques de la courbe NURBS</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Weights">

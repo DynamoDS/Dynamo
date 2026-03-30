@@ -52,6 +52,18 @@
             <summary>Vytvoří Delaunayovu triangulaci množiny bodů.</summary>
             <param name="points">Množina bodů</param>
         </member>
+        <member name="T:Tessellation.UvScalingUtilities">
+            <summary>Pomocné funkce pro změnu měřítka UV u povrchů.</summary>
+        </member>
+        <member name="M:Tessellation.UvScalingUtilities.GetNormalizedUvScales(Autodesk.DesignScript.Geometry.Surface)">
+            <summary>Vypočítá normalizované faktory měřítka UV povrchu pro zpracování anizotropních parametrických prostorů.
+                Změna měřítka zachovává poměr stran a hodnoty udržuje v rozumném číselném rozsahu.</summary>
+            <param name="face">Povrch, pro který se vypočítají faktory měřítka.</param>
+            <returns>Část obsahující normalizované faktory měřítka ve směru U a V a
+            minimální fyzická délka oblouku povrchu (světové jednotky) napříč U a V.
+            Minimální měřítko je kratší ze dvou průměrných délek izokřivek a je použito
+            k odvození prahů vzdálenosti v prostoru se správným měřítkem podle povrchu.</returns>
+        </member>
         <member name="T:Tessellation.Voronoi">
             <summary>Funkce pro vytváření Voronoiových mozajek</summary>
         </member>

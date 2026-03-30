@@ -2286,6 +2286,12 @@ Puede intentar desactivar la carga de paquetes desde las rutas de paquetes integ
   <data name="AddStyleButton" xml:space="preserve">
     <value>Añadir estilo</value>
   </data>
+  <data name="ResetStylesButton" xml:space="preserve">
+    <value>Reset Styles</value>
+  </data>
+  <data name="ResetStylesButtonToolTip" xml:space="preserve">
+    <value>Restores the default group styles and removes user-created styles. This does not affect groups in existing graphs and cannot be undone.</value>
+  </data>
   <data name="ResetPythonNet3ButtonText" xml:space="preserve">
     <value>Restablecer PythonNet3</value>
   </data>
@@ -2809,6 +2815,9 @@ Este paquete se descargará después del siguiente reinicio de Dynamo.</value>
   </data>
   <data name="PackageDetailsPackage" xml:space="preserve">
     <value>Paquete</value>
+  </data>
+  <data name="PackageDetailsPackageApprovedTooltip" xml:space="preserve">
+    <value>Publicado por Autodesk</value>
   </data>
   <data name="PackageSortToolTip" xml:space="preserve">
     <value>Ordene los paquetes.</value>
@@ -3385,7 +3394,7 @@ En determinados gráficos complejos o al usar programas anfitriones, el modo Aut
     <value>Se ha producido un error al importar el archivo de configuración personalizada. Inténtelo de nuevo o continúe con la configuración por defecto.</value>
   </data>
   <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
-    <value>Settings imported. To apply the settings, launch Dynamo, then close it and restart it.</value>
+    <value>Configuración importada. Para aplicar la configuración, inicie Dynamo, ciérrelo y vuelva a iniciarlo.</value>
   </data>
   <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
     <value>Restablecer parámetros importados</value>

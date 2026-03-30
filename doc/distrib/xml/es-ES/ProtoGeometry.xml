@@ -925,19 +925,17 @@
             <returns>Una matriz de puntos</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints">
-            <summary>Los puntos de control verdaderamente periódicos de la NurbsCurve si son periódicos.
-            Tenga en cuenta que esto no se puede utilizar junto con PeriodicKnots() para reconstruir la NurbsCurve periódica original.
-            Genera una excepción (o queda sin definir) cuando la curva no es periódica.</summary>
-            <returns>Una matriz de puntos</returns>
+            <summary>Los puntos de control verdaderamente periódicos de una NurbsCurve periódica.
+            Nota: Esta operación solo funciona con curvas periódicas y generará un error si la curva no lo es.</summary>
+            <returns>Puntos de control periódicos de una curva NURBS</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Knots">
             <summary>Los nudos de la curva. Los nudos son una serie de valores de parámetros (dobles) utilizados para determinar dónde y cómo los puntos de control afectan a la curva.</summary>
             <returns>Los nudos de la curva NURBS</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots">
-            <summary>Los nudos no sujetos de la curva si son periódicos. Los nudos son una serie de valores de parámetros (dobles) que se utilizan para determinar dónde y cómo afectan los puntos de control a la curva.
-            Tenga en cuenta que no se puede utilizar junto con PeriodicControlPoints() para reconstruir la NurbsCurve periódica original.
-            Genera una excepción (o queda sin definir) cuando la curva no es periódica.</summary>
+            <summary>Los nudos no sujetos de una NurbsCurve periódica.
+            Nota: Esta operación solo funciona con curvas periódicas y generará un error si la curva no lo es.</summary>
             <returns>El vector de nudo periódico de la curva NURBS</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.Weights">
