@@ -224,7 +224,7 @@ namespace Dynamo.Tests
         public void PackageInstallationPathTest()
         {
             int CurrentMajorFileVersion = 4;
-            int CurrentMinorFileVersion = 1;
+            int CurrentMinorFileVersion = 2;
 
             //The PathManager was already created with empty parameters when PreferenceSettings is created.
             PathManager singletonPathManager = PathManager.Instance;
