@@ -1329,6 +1329,9 @@ Die nächsten Assemblys wurden mehrmals geladen:
   <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
     <value>{0} Definition öffnen...</value>
   </data>
+  <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
+    <value>New Graph from Template...</value>
+  </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>Bestätigung für Download von Paket</value>
   </data>

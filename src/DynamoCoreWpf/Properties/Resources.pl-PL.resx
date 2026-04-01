@@ -1329,6 +1329,9 @@ Poniższe zespoły zostały wczytane wiele razy:
   <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
     <value>Otwórz definicję {0}…</value>
   </data>
+  <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
+    <value>New Graph from Template...</value>
+  </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>Potwierdzenie pobrania pakietu</value>
   </data>

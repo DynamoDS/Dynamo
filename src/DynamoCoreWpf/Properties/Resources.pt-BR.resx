@@ -1329,6 +1329,9 @@ As montagens a seguir foram carregadas diversas vezes:
   <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
     <value>Abrir a definição {0}...</value>
   </data>
+  <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
+    <value>New Graph from Template...</value>
+  </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>Confirmação do download do pacote</value>
   </data>

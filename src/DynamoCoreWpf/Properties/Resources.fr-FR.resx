@@ -1329,6 +1329,9 @@ Les ensembles suivants ont été chargés plusieurs fois:
   <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
     <value>Ouvrir la définition {0} ...</value>
   </data>
+  <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
+    <value>New Graph from Template...</value>
+  </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>Confirmation du téléchargement du package</value>
   </data>
