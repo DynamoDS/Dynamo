@@ -2287,10 +2287,10 @@ Deseja desinstalar o {1}? Reinicie o {2} para concluir a desinstalação e tente
     <value>Adic estilo</value>
   </data>
   <data name="ResetStylesButton" xml:space="preserve">
-    <value>Reset Styles</value>
+    <value>Redefinir estilos</value>
   </data>
   <data name="ResetStylesButtonToolTip" xml:space="preserve">
-    <value>Restores the default group styles and removes user-created styles. This does not affect groups in existing graphs and cannot be undone.</value>
+    <value>Restaura os estilos dos grupos padrão e remove os estilos criados pelo usuário. Isso não afeta os grupos em gráficos existentes e não pode ser desfeito.</value>
   </data>
   <data name="ResetPythonNet3ButtonText" xml:space="preserve">
     <value>Redefinir PythonNet3</value>

@@ -2287,10 +2287,10 @@ Dynamo を再起動してアンインストールを完了します。
     <value>スタイルを追加</value>
   </data>
   <data name="ResetStylesButton" xml:space="preserve">
-    <value>Reset Styles</value>
+    <value>スタイルをリセット</value>
   </data>
   <data name="ResetStylesButtonToolTip" xml:space="preserve">
-    <value>Restores the default group styles and removes user-created styles. This does not affect groups in existing graphs and cannot be undone.</value>
+    <value>既定のグループ スタイルを復元し、ユーザ作成のスタイルを削除します。この操作は既存のグラフ内のグループには影響せず、元に戻すことはできません。</value>
   </data>
   <data name="ResetPythonNet3ButtonText" xml:space="preserve">
     <value>PythonNet3 をリセット</value>

@@ -2287,10 +2287,10 @@ Puede intentar desactivar la carga de paquetes desde las rutas de paquetes integ
     <value>Añadir estilo</value>
   </data>
   <data name="ResetStylesButton" xml:space="preserve">
-    <value>Reset Styles</value>
+    <value>Restablecer estilos</value>
   </data>
   <data name="ResetStylesButtonToolTip" xml:space="preserve">
-    <value>Restores the default group styles and removes user-created styles. This does not affect groups in existing graphs and cannot be undone.</value>
+    <value>Restablece los estilos de grupo por defecto y elimina los estilos creados por el usuario. Esta acción no afecta a los grupos de los gráficos existentes y no se puede deshacer.</value>
   </data>
   <data name="ResetPythonNet3ButtonText" xml:space="preserve">
     <value>Restablecer PythonNet3</value>

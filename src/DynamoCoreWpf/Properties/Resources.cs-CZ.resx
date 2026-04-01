@@ -2286,10 +2286,10 @@ Chcete {1} odinstalovat? Restartujte {2}, aby se dokončila odinstalace, a zkust
     <value>Přidat styl</value>
   </data>
   <data name="ResetStylesButton" xml:space="preserve">
-    <value>Reset Styles</value>
+    <value>Obnovit styly</value>
   </data>
   <data name="ResetStylesButtonToolTip" xml:space="preserve">
-    <value>Restores the default group styles and removes user-created styles. This does not affect groups in existing graphs and cannot be undone.</value>
+    <value>Obnoví výchozí styly skupin a odebere styly vytvořené uživatelem. Tato možnost neovlivní skupiny v existujících grafech a nelze ji vrátit zpět.</value>
   </data>
   <data name="ResetPythonNet3ButtonText" xml:space="preserve">
     <value>Obnovit PythonNet3</value>

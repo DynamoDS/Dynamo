@@ -2287,10 +2287,10 @@
     <value>Доб. стиль</value>
   </data>
   <data name="ResetStylesButton" xml:space="preserve">
-    <value>Reset Styles</value>
+    <value>Сбросить стили</value>
   </data>
   <data name="ResetStylesButtonToolTip" xml:space="preserve">
-    <value>Restores the default group styles and removes user-created styles. This does not affect groups in existing graphs and cannot be undone.</value>
+    <value>Восстановление стилей групп по умолчанию и удаление созданных пользователем стилей. Это действие не влияет на группы в существующих графах и не может быть отменено.</value>
   </data>
   <data name="ResetPythonNet3ButtonText" xml:space="preserve">
     <value>Сбросить PythonNet3</value>

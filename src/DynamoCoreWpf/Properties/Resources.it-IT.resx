@@ -2279,10 +2279,10 @@ Disinstallare {1}? Riavviare {2} per completare la disinstallazione e provare a 
     <value>Agg. stile</value>
   </data>
   <data name="ResetStylesButton" xml:space="preserve">
-    <value>Reset Styles</value>
+    <value>Ripristina stili</value>
   </data>
   <data name="ResetStylesButtonToolTip" xml:space="preserve">
-    <value>Restores the default group styles and removes user-created styles. This does not affect groups in existing graphs and cannot be undone.</value>
+    <value>Ripristina gli stili dei gruppi di default e rimuove gli stili creati dall'utente. Questo comando non influisce sui gruppi nei grafici esistenti e non può essere annullato.</value>
   </data>
   <data name="ResetPythonNet3ButtonText" xml:space="preserve">
     <value>Reimposta PythonNet3</value>
