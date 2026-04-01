@@ -464,9 +464,6 @@ namespace Dynamo.ViewModels
             // so that this note is added to the selection
             PinnedNode.Selected += PinnedNodeViewModel_OnPinnedNodeSelected;
 
-            //Subscribed to PinnedNode.Removed event of Node to remove pinned note when node is removed.
-            PinnedNode.Removed += PinnedNodeViewModel_OnPinnedNodeRemoved;
-
             Analytics.TrackEvent(
                 Actions.Pin,
                 Categories.NoteOperations, subscribedPinnedNode.Name);
@@ -487,7 +484,6 @@ namespace Dynamo.ViewModels
             {
                 pinnedNodeVM.PropertyChanged -= PinnedNodeViewModel_PropertyChanged;
                 pinnedNodeVM.Selected -= PinnedNodeViewModel_OnPinnedNodeSelected;
-                pinnedNodeVM.Removed -= PinnedNodeViewModel_OnPinnedNodeRemoved;
 
                 Analytics.TrackEvent(
                     Actions.Unpin,
@@ -495,11 +491,6 @@ namespace Dynamo.ViewModels
             }
 
             subscribedPinnedNode = null;
-        }
-
-        private void PinnedNodeViewModel_OnPinnedNodeRemoved(object sender, EventArgs e)
-        {
-            WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
         }
 
         private void PinnedNodeModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
