@@ -104,7 +104,7 @@ namespace Dynamo.UI.Controls
             var recorder = nodeViewModel.WorkspaceViewModel.Model.UndoRecorder;
 
             if (string.IsNullOrEmpty(InnerTextEditor.Text))
-                DiscardChangesAndOptionallyRemoveNode(recorder);
+                DiscardChangesAndOptionallyRemoveNode();
             else
                 CommitChanges(recorder);
 
@@ -208,7 +208,7 @@ namespace Dynamo.UI.Controls
             base.OnPreviewKeyDown(e);
         }
 
-        private void DiscardChangesAndOptionallyRemoveNode(UndoRedoRecorder recorder)
+        private void DiscardChangesAndOptionallyRemoveNode()
         {
             if (!string.IsNullOrEmpty(InnerTextEditor.Text))
             {
