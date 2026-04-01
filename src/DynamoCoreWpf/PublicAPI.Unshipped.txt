@@ -42,6 +42,7 @@ Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkText.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkUri.get -> System.Uri
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HyperlinkUri.set -> void
 override Dynamo.PackageManager.UI.PackageManagerTabControl.OnKeyDown(System.Windows.Input.KeyEventArgs e) -> void
+override Dynamo.UI.Controls.CodeBlockEditor.OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e) -> void
 override Dynamo.PackageManager.UI.PackageManagerTabControl.OnSelectionChanged(System.Windows.Controls.SelectionChangedEventArgs e) -> void
 static Dynamo.PackageManager.UI.PackageManagerTabControl.GetSuppressHomeEndWhenSelected(System.Windows.DependencyObject element) -> bool
 static Dynamo.PackageManager.UI.PackageManagerTabControl.SetSuppressHomeEndWhenSelected(System.Windows.DependencyObject element, bool value) -> void

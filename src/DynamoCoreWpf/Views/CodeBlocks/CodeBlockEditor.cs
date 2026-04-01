@@ -182,6 +182,28 @@ namespace Dynamo.UI.Controls
             }
         }
 
+        /// <summary>
+        /// Intercepts Ctrl-Z when the editor is empty and was created for a new
+        /// code block node. AvalonEdit's TextArea registers its own Undo command
+        /// binding and marks the event Handled even when its undo stack is empty,
+        /// so without this intercept the keystroke never reaches DynamoView's
+        /// workspace undo key binding.
+        /// </summary>
+        protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Z
+                && e.KeyboardDevice.Modifiers == System.Windows.Input.ModifierKeys.Control
+                && createdForNewCodeBlock
+                && string.IsNullOrEmpty(InnerTextEditor.Text))
+            {
+                nodeViewModel.DynamoViewModel.UndoCommand.Execute(null);
+                e.Handled = true;
+                return;
+            }
+
+            base.OnPreviewKeyDown(e);
+        }
+
         private void DiscardChangesAndOptionallyRemoveNode(UndoRedoRecorder recorder)
         {
             if (!string.IsNullOrEmpty(InnerTextEditor.Text))
@@ -192,24 +214,17 @@ namespace Dynamo.UI.Controls
 
             if (createdForNewCodeBlock)
             {
-                // If this editing was started due to a new code block node, 
-                // then by this point the creation of the node would have been 
-                // recorded, we need to pop that off the undo stack. Note that 
-                // due to various external factors a code block node loaded 
-                // from file may be created empty. In such cases, the creation 
-                // step would not have been recorded (there was no explicit 
-                // creation of the node, it was created from loading of a file),
-                // and nothing should be popped off of the undo stack.
-                // 
-                if (recorder.CanUndo)
-                    recorder.PopFromUndoGroup(); // Pop off creation action.               
+                // Leave the creation action group on the undo stack so that
+                // Ctrl-Z can remove the node. Previously this popped the
+                // creation entry and left the node orphaned on the canvas with
+                // no undo record.
             }
             else
             {
                 // If the editing was started for an existing code block node,
-                // and user deletes the text contents, it should be restored to 
+                // and user deletes the text contents, it should be restored to
                 // the original codes.
-                InnerTextEditor.Text = codeBlockNode.Code;               
+                InnerTextEditor.Text = codeBlockNode.Code;
             }
         }
     }
