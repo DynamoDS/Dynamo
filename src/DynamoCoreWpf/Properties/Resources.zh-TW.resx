@@ -2286,10 +2286,10 @@
     <value>加入型式</value>
   </data>
   <data name="ResetStylesButton" xml:space="preserve">
-    <value>Reset Styles</value>
+    <value>重設型式</value>
   </data>
   <data name="ResetStylesButtonToolTip" xml:space="preserve">
-    <value>Restores the default group styles and removes user-created styles. This does not affect groups in existing graphs and cannot be undone.</value>
+    <value>還原為預設的群組型式，並移除使用者建立的型式。此動作不會影響現有圖表中的群組，且無法退回。</value>
   </data>
   <data name="ResetPythonNet3ButtonText" xml:space="preserve">
     <value>重設 PythonNet3</value>

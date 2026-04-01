@@ -2287,10 +2287,10 @@ Möchten Sie {1} deinstallieren? Starten Sie {2} neu, um die Deinstallation abzu
     <value>Neuer Stil</value>
   </data>
   <data name="ResetStylesButton" xml:space="preserve">
-    <value>Reset Styles</value>
+    <value>Stile zurücksetzen</value>
   </data>
   <data name="ResetStylesButtonToolTip" xml:space="preserve">
-    <value>Restores the default group styles and removes user-created styles. This does not affect groups in existing graphs and cannot be undone.</value>
+    <value>Stellt die vorgabemäßigen Gruppenstile wieder her und entfernt benutzerdefinierte Stile. Dies wirkt sich nicht auf Gruppen in vorhandenen Diagrammen aus und kann nicht rückgängig gemacht werden.</value>
   </data>
   <data name="ResetPythonNet3ButtonText" xml:space="preserve">
     <value>PythonNet3 zurücksetzen</value>

@@ -2286,10 +2286,10 @@ Voulez-vous désinstaller {1}? Redémarrez {2} pour terminer la désinstallation
     <value>Aj. style</value>
   </data>
   <data name="ResetStylesButton" xml:space="preserve">
-    <value>Reset Styles</value>
+    <value>Réinitialiser les styles</value>
   </data>
   <data name="ResetStylesButtonToolTip" xml:space="preserve">
-    <value>Restores the default group styles and removes user-created styles. This does not affect groups in existing graphs and cannot be undone.</value>
+    <value>Rétablit les styles de groupe par défaut et supprime les styles créés par l'utilisateur. Cette opération n'affecte pas les groupes des graphiques existants et elle ne peut pas être annulée.</value>
   </data>
   <data name="ResetPythonNet3ButtonText" xml:space="preserve">
     <value>Réinitialiser PythonNet3</value>

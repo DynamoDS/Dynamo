@@ -2285,10 +2285,10 @@
     <value>스타일 추가</value>
   </data>
   <data name="ResetStylesButton" xml:space="preserve">
-    <value>Reset Styles</value>
+    <value>스타일 재설정</value>
   </data>
   <data name="ResetStylesButtonToolTip" xml:space="preserve">
-    <value>Restores the default group styles and removes user-created styles. This does not affect groups in existing graphs and cannot be undone.</value>
+    <value>기본 그룹 스타일을 복원하고 사용자 작성 스타일을 제거합니다. 이 작업은 기존 그래프의 그룹에 영향을 주지 않으며 실행 취소할 수 없습니다.</value>
   </data>
   <data name="ResetPythonNet3ButtonText" xml:space="preserve">
     <value>PythonNet3 재설정</value>
