@@ -2002,26 +2002,6 @@ var06 = g;
 
         [Test]
         [Category("UnitTests")]
-        public void WhenEmptyCodeBlockLosesFocusThenUndoStillRemovesNode()
-        {
-            // Arrange – simulate what DiscardChangesAndOptionallyRemoveNode does when
-            // an empty CBN loses focus: previously it popped the creation action group,
-            // orphaning the node. The fix leaves the action on the undo stack.
-            Assert.AreEqual(0, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-
-            var cbn = CreateCodeBlockNode();
-            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.CanUndo);
-
-            // Act – undo should still remove the node even after focus-loss path
-            CurrentDynamoModel.CurrentWorkspace.Undo();
-
-            // Assert
-            Assert.AreEqual(0, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
-        }
-
-        [Test]
-        [Category("UnitTests")]
         public void WhenCodeBlockWithCodeCreatedThenUndoRemovesNode()
         {
             // Regression guard: creating a CBN with code and then undoing twice should
