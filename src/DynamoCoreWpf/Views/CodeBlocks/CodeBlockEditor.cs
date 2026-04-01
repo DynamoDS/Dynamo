@@ -183,18 +183,22 @@ namespace Dynamo.UI.Controls
         }
 
         /// <summary>
-        /// Intercepts Ctrl-Z when the editor is empty and was created for a new
-        /// code block node. AvalonEdit's TextArea registers its own Undo command
-        /// binding and marks the event Handled even when its undo stack is empty,
-        /// so without this intercept the keystroke never reaches DynamoView's
-        /// workspace undo key binding.
+        /// Intercepts Ctrl-Z when the editor is empty, has no AvalonEdit undo
+        /// history, and was created for a new code block node. AvalonEdit's
+        /// TextArea registers its own Undo command binding and marks the event
+        /// Handled even when its undo stack is empty, so without this intercept
+        /// the keystroke never reaches DynamoView's workspace undo key binding.
+        /// The AvalonEdit CanUndo check ensures that if the user typed and then
+        /// deleted back to empty, Ctrl-Z restores the text rather than removing
+        /// the node from the canvas.
         /// </summary>
         protected override void OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == System.Windows.Input.Key.Z
                 && e.KeyboardDevice.Modifiers == System.Windows.Input.ModifierKeys.Control
                 && createdForNewCodeBlock
-                && string.IsNullOrEmpty(InnerTextEditor.Text))
+                && string.IsNullOrEmpty(InnerTextEditor.Text)
+                && !InnerTextEditor.Document.UndoStack.CanUndo)
             {
                 nodeViewModel.DynamoViewModel.UndoCommand.Execute(null);
                 e.Handled = true;
