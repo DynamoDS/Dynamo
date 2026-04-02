@@ -525,39 +525,45 @@ namespace Dynamo.Core
             // assigned, as in some integrations. Assemblies co-located with
             // DynamoCore (e.g. nunit.framework, test assemblies) are skipped
             // because only a true host assembly carries the desired version.
-            var currentAssembly = typeof(PathManager).Assembly;
-            var stackTrace = new StackTrace(skipFrames: 1, fNeedFileInfo: false);
-
-            foreach (var frame in stackTrace.GetFrames() ?? Array.Empty<StackFrame>())
+            // Only attempt this when a host directory is configured; for standalone
+            // Sandbox there is no host, and the stack walk may pick up unrelated
+            // assemblies (e.g. .NET runtime) with misleading version numbers.
+            if (PathHelper.IsValidPath(hostApplicationDirectory))
             {
-                var assembly = frame.GetMethod()?.DeclaringType?.Assembly;
-                if (assembly == null || assembly == currentAssembly || assembly.IsDynamic)
-                    continue;
+                var currentAssembly = typeof(PathManager).Assembly;
+                var stackTrace = new StackTrace(skipFrames: 1, fNeedFileInfo: false);
 
-                var assemblyName = assembly.GetName().Name;
-                if (string.IsNullOrEmpty(assemblyName))
-                    continue;
-
-                if (assemblyName.StartsWith("System", StringComparison.OrdinalIgnoreCase) ||
-                    assemblyName.StartsWith("Microsoft", StringComparison.OrdinalIgnoreCase) ||
-                    assemblyName.Equals("mscorlib", StringComparison.OrdinalIgnoreCase) ||
-                    assemblyName.Equals("netstandard", StringComparison.OrdinalIgnoreCase) ||
-                    assemblyName.IndexOf("test", StringComparison.OrdinalIgnoreCase) >= 0)
+                foreach (var frame in stackTrace.GetFrames() ?? Array.Empty<StackFrame>())
                 {
-                    continue;
+                    var assembly = frame.GetMethod()?.DeclaringType?.Assembly;
+                    if (assembly == null || assembly == currentAssembly || assembly.IsDynamic)
+                        continue;
+
+                    var assemblyName = assembly.GetName().Name;
+                    if (string.IsNullOrEmpty(assemblyName))
+                        continue;
+
+                    if (assemblyName.StartsWith("System", StringComparison.OrdinalIgnoreCase) ||
+                        assemblyName.StartsWith("Microsoft", StringComparison.OrdinalIgnoreCase) ||
+                        assemblyName.Equals("mscorlib", StringComparison.OrdinalIgnoreCase) ||
+                        assemblyName.Equals("netstandard", StringComparison.OrdinalIgnoreCase) ||
+                        assemblyName.IndexOf("test", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        continue;
+                    }
+
+                    var candidatePath = assembly.Location;
+
+                    // Skip assemblies that live in the same directory as DynamoCore.
+                    // Host assemblies (e.g. Civil3D, Revit) reside in their own install
+                    // directories; anything co-located with DynamoCore (e.g. nunit.framework)
+                    // is not a host and may carry an unrelated version.
+                    if (IsPathUnderDirectory(candidatePath, dynamoCoreDir))
+                        continue;
+
+                    if (HasNonZeroFileVersion(candidatePath))
+                        return candidatePath;
                 }
-
-                var candidatePath = assembly.Location;
-
-                // Skip assemblies that live in the same directory as DynamoCore.
-                // Host assemblies (e.g. Civil3D, Revit) reside in their own install
-                // directories; anything co-located with DynamoCore (e.g. nunit.framework)
-                // is not a host and may carry an unrelated version.
-                if (IsPathUnderDirectory(candidatePath, dynamoCoreDir))
-                    continue;
-
-                if (HasNonZeroFileVersion(candidatePath))
-                    return candidatePath;
             }
 
             // Option 3: Prefer DynamoCore assembly over external process assemblies
