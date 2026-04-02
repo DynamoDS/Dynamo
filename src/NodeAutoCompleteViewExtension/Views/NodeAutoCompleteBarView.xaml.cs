@@ -111,32 +111,7 @@ namespace Dynamo.NodeAutoComplete.Views
         private void OnNodeAutoCompleteBarClosed(object sender, EventArgs e)
         {
             Closed -= OnNodeAutoCompleteBarClosed;
-
-            if (ReferenceEquals(_controlInstance, this))
-            {
-                _controlInstance = null;
-            }
-
-            try
-            {
-                UnsubscribeFromAppEvents();
-            }
-            catch
-            {
-                // ViewModel or model may be invalid during teardown.
-            }
-
-            try
-            {
-                if (ViewModel != null)
-                {
-                    UnsubscribeFromOtherEvents();
-                }
-            }
-            catch
-            {
-                // PortViewModel may already be null.
-            }
+            Closing -= OnNodeAutoCompleteBarClosing;
         }
 
         private void OnRefocusSearchbox()
