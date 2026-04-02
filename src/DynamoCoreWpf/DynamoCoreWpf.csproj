@@ -799,7 +799,9 @@
     <Compile Include="Views\GuidedTour\SurveyPopupWindow.xaml.cs">
       <DependentUpon>SurveyPopupWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\HomePage\HomePage.xaml.cs" />
     <Compile Include="Views\Input\ParameterEditor.cs" />
+    <Compile Include="Views\PackageManager\Components\PackageManagerWizard\PackageManagerWizard.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\CustomBrowserControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\FilterTagControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml.cs" />

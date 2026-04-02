@@ -9,7 +9,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Autodesk.DesignScript.Runtime;
@@ -273,9 +272,8 @@ namespace Dynamo.UI.Views
             if (startPage == null) { return; }
 
             SendGuidesData();
-            _ = SendSamplesData();
-            _ = SendTemplateData();
-            _ = SendRecentGraphsData();
+            SendSamplesData();
+            SendRecentGraphsData();
             SendVideoData();
             SetLocale();
         }
@@ -283,7 +281,7 @@ namespace Dynamo.UI.Views
         private void RecentFiles_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             var recentFiles = startPage.RecentFiles?.DistinctBy(x => x.ContextData).ToList();
-            _ = LoadGraphs(recentFiles);
+            LoadGraphs(recentFiles);  
         }
 
         #region FrontEnd Initialization Calls
@@ -291,7 +289,7 @@ namespace Dynamo.UI.Views
         /// Sends graph data to react app
         /// </summary>
         /// <param name="data"></param>
-        private async Task LoadGraphs(List<StartPageListItem> data)
+        private async void LoadGraphs(List<StartPageListItem> data)
         {
             if (data == null) { return; }
             string jsonData = JsonSerializer.Serialize(data);
@@ -302,26 +300,10 @@ namespace Dynamo.UI.Views
             }
         }
 
-
-        /// <summary>
-        /// Sends graph data to react app
-        /// </summary>
-        /// <param name="data"></param>
-        private async Task LoadTemplates(List<StartPageListItem> data)
-        {
-            if (data == null) { return; }
-            string jsonData = JsonSerializer.Serialize(data);
-
-            if (dynWebView?.CoreWebView2 != null)
-            {
-                await dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.receiveTemplatesDataFromDotNet({jsonData})");
-            }
-        }
-
         /// <summary>
         /// Sends samples data to react app
         /// </summary>
-        private async Task SendSamplesData()
+        private async void SendSamplesData()
         {
             if (!this.startPage.SampleFiles.Any()) return;
 
@@ -333,21 +315,9 @@ namespace Dynamo.UI.Views
             }
         }
 
-        /// <summary>
-        /// Sends samples data to react app
-        /// </summary>
-        private async Task SendTemplateData()
+        private async void SendRecentGraphsData()
         {
-            var items = startPage.TemplateFiles?.DistinctBy(x => x.ContextData).ToList();
-            if (items != null && items.Any())
-            {
-                await LoadTemplates(items);
-            }
-        }
-
-        private async Task SendRecentGraphsData()
-        {
-            // Send user preferences (could be split to a separate call later instead of coupling with recent files).
+            // Send user preferences
             if (dynWebView?.CoreWebView2 != null)
             {
                 if (startPage.DynamoViewModel.PreferenceSettings.HomePageSettings != null)
@@ -364,7 +334,7 @@ namespace Dynamo.UI.Views
             var recentFiles = startPage.RecentFiles?.DistinctBy(x => x.ContextData).ToList();
             if (recentFiles != null && recentFiles.Any())
             {
-                await LoadGraphs(recentFiles);
+                LoadGraphs(recentFiles);
             }
 
             if (startPage.DynamoViewModel != null && startPage.DynamoViewModel.RecentFiles != null)
