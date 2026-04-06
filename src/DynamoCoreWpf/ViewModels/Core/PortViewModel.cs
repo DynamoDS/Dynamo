@@ -765,7 +765,7 @@ namespace Dynamo.ViewModels
             var wsViewModel = node.WorkspaceViewModel;
 
             // Hide the popup, we no longer need it
-            wsViewModel.OnRequestPortContextMenu(ShowHideFlags.Show, this);
+            wsViewModel.OnRequestPortContextMenu(ShowHideFlags.Hide, this);
 
             // Collect sibling port names (same port type) to prevent duplicates.
             var siblingPorts = port.PortType == PortType.Input ? node.InPorts : node.OutPorts;

@@ -228,11 +228,10 @@ namespace PythonNodeModels
                 {
                     var indexAttr = portInfo.GetAttribute("index");
                     if (int.TryParse(indexAttr, NumberStyles.Integer, CultureInfo.InvariantCulture, out int index)
-                        && index < InPorts.Count)
+                        && index >= 0 && index < InPorts.Count)
                     {
-                        var portNameAttr = portInfo.GetAttribute("portName");
-                        if (!string.IsNullOrEmpty(portNameAttr))
-                            InPorts[index].Name = portNameAttr;
+                        if (portInfo.HasAttribute("portName"))
+                            InPorts[index].Name = portInfo.GetAttribute("portName");
 
                         if (portInfo.HasAttribute("portToolTip"))
                             InPorts[index].ToolTip = portInfo.GetAttribute("portToolTip");
@@ -242,11 +241,10 @@ namespace PythonNodeModels
                 {
                     var indexAttr = outPortInfo.GetAttribute("index");
                     if (int.TryParse(indexAttr, NumberStyles.Integer, CultureInfo.InvariantCulture, out int outIndex)
-                        && outIndex < OutPorts.Count)
+                        && outIndex >= 0 && outIndex < OutPorts.Count)
                     {
-                        var portNameAttr = outPortInfo.GetAttribute("portName");
-                        if (!string.IsNullOrEmpty(portNameAttr))
-                            OutPorts[outIndex].Name = portNameAttr;
+                        if (outPortInfo.HasAttribute("portName"))
+                            OutPorts[outIndex].Name = outPortInfo.GetAttribute("portName");
 
                         if (outPortInfo.HasAttribute("portToolTip"))
                             OutPorts[outIndex].ToolTip = outPortInfo.GetAttribute("portToolTip");
