@@ -635,8 +635,8 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check the number of nodes and connectors
-            Assert.AreEqual(77, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(57, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(75, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(55, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             // check Curve.SweepAsSolid
             var solid1 = "ceda65ffdae3498697c99d5403816e2d";
