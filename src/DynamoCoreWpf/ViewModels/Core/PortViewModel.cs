@@ -500,7 +500,7 @@ namespace Dynamo.ViewModels
                 case nameof(PortType):
                     RaisePropertyChanged(nameof(PortType));
                     break;
-                case nameof(PortName):
+                case nameof(PortModel.Name):
                     RaisePropertyChanged(nameof(PortName));
                     break;
                 case nameof(IsConnected):
