@@ -234,9 +234,8 @@ namespace PythonNodeModels
                         if (!string.IsNullOrEmpty(portNameAttr))
                             InPorts[index].Name = portNameAttr;
 
-                        var portToolTipAttr = portInfo.GetAttribute("portToolTip");
-                        if (!string.IsNullOrEmpty(portToolTipAttr))
-                            InPorts[index].ToolTip = portToolTipAttr;
+                        if (portInfo.HasAttribute("portToolTip"))
+                            InPorts[index].ToolTip = portInfo.GetAttribute("portToolTip");
                     }
                 }
                 else if (child.Name == "OutPortInfo" && child is XmlElement outPortInfo)
@@ -249,9 +248,8 @@ namespace PythonNodeModels
                         if (!string.IsNullOrEmpty(portNameAttr))
                             OutPorts[outIndex].Name = portNameAttr;
 
-                        var portToolTipAttr = outPortInfo.GetAttribute("portToolTip");
-                        if (!string.IsNullOrEmpty(portToolTipAttr))
-                            OutPorts[outIndex].ToolTip = portToolTipAttr;
+                        if (outPortInfo.HasAttribute("portToolTip"))
+                            OutPorts[outIndex].ToolTip = outPortInfo.GetAttribute("portToolTip");
                     }
                 }
             }
