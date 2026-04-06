@@ -590,8 +590,8 @@
         },
         {
           "Id": "8862cc2a60224749b96571709b694a70",
-          "Name": "fromCoordinateSystem",
-          "Description": "CoordinateSystem",
+          "Name": "targetCoordinateSystem",
+          "Description": "The CoordinateSystem to express the geometry relative to.\n\nCoordinateSystem",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -599,8 +599,8 @@
         },
         {
           "Id": "b6b2484a816e4ef082700aa595cd5055",
-          "Name": "contextCoordinateSystem",
-          "Description": "CoordinateSystem",
+          "Name": "sourceCoordinateSystem",
+          "Description": "The CoordinateSystem the geometry is currently expressed in. Pass CoordinateSystem.Identity() to work in world space.\n\nCoordinateSystem",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -620,7 +620,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Transform@Autodesk.DesignScript.Geometry.CoordinateSystem,Autodesk.DesignScript.Geometry.CoordinateSystem",
       "Replication": "Auto",
-      "Description": "Transforms this geometry from source CoordinateSystem to a new context CoordinateSystem.\n\nGeometry.Transform (fromCoordinateSystem: CoordinateSystem, contextCoordinateSystem: CoordinateSystem): Geometry"
+      "Description": "Returns this geometry with its position expressed relative to the targetCoordinateSystem, placed into the frame of the sourceCoordinateSystem. The local position of the result within the sourceCoordinateSystem matches the local position of the input within the targetCoordinateSystem. To obtain the coordinates of a geometry in world-space within a given coordinate system, pass CoordinateSystem.Identity as the sourceCoordinateSystem and the given CS as the targetCoordinateSystem. The resulting geometry coordinates will equal the coordinates of the input relative to that target frame.\n\nGeometry.Transform (targetCoordinateSystem: CoordinateSystem, sourceCoordinateSystem: CoordinateSystem): Geometry"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1618,36 +1618,6 @@
       "Description": "Flattens a nested list of lists by a certain amount.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
     },
     {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "3dd9d2d6b5044131b7cff59b109ba2f4",
-      "NodeType": "FunctionNode",
-      "Inputs": [
-        {
-          "Id": "b32ed1a53da84c45a13ef98e7a191cd4",
-          "Name": "file",
-          "Description": "File object representing the SAT file\n\nvar",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "378fa25f56d84b20ba2791ec60956a69",
-          "Name": "Geometry[]..[]",
-          "Description": "List of imported geometries",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.ImportFromSAT@var",
-      "Replication": "Auto",
-      "Description": "Imports a SAT file and returns an array of imported geometries\n\nGeometry.ImportFromSAT (file: var): Geometry[]..[]"
-    },
-    {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
       "Id": "56a1bc0a58d146989f012d782d80b986",
       "NodeType": "ExtensionNode",
@@ -1667,36 +1637,6 @@
       "Description": "Allows you to select a file on the system and returns its file path",
       "HintPath": "D:\\Github\\Dynamo\\test\\core\\WorkflowTestFiles\\GeometryDefects\\SweepAsSolid\\profile.sat",
       "InputValue": ".\\profile.sat"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "03b97230e4df4ac08e6354a4cc2f9897",
-      "NodeType": "FunctionNode",
-      "Inputs": [
-        {
-          "Id": "809ff5b1831b4f29b6bc9d1d70359cf9",
-          "Name": "file",
-          "Description": "File object representing the SAT file\n\nvar",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "f83a35e50001466e9fc68b51ec5b8331",
-          "Name": "Geometry[]..[]",
-          "Description": "List of imported geometries",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.ImportFromSAT@var",
-      "Replication": "Auto",
-      "Description": "Imports a SAT file and returns an array of imported geometries\n\nGeometry.ImportFromSAT (file: var): Geometry[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
@@ -1941,7 +1881,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves@Autodesk.DesignScript.Geometry.Curve[],double,bool,double",
       "Replication": "Auto",
-      "Description": "Make PolyCurve by joining curves. Flips curve as needed for connectivity. Choose a preferred join tolerance between 1e-6 and 1e-3 units.\n\nPolyCurve.ByJoinedCurves (curves: Curve[], joinTolerance: double = 0.001, trimCurves: bool = false, trimLength: double = 0): PolyCurve"
+      "Description": "Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity. PolyCurve direction is based on the first curve in the input array. Choose a preferred join tolerance between 1e-6 and 1e-3 units. Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.\n\nPolyCurve.ByJoinedCurves (curves: Curve[], joinTolerance: double = 0.001, trimCurves: bool = false, trimLength: double = 0): PolyCurve"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1998,7 +1938,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves@Autodesk.DesignScript.Geometry.Curve[],double,bool,double",
       "Replication": "Auto",
-      "Description": "Make PolyCurve by joining curves. Flips curve as needed for connectivity. Choose a preferred join tolerance between 1e-6 and 1e-3 units.\n\nPolyCurve.ByJoinedCurves (curves: Curve[], joinTolerance: double = 0.001, trimCurves: bool = false, trimLength: double = 0): PolyCurve"
+      "Description": "Make PolyCurve by joining curves. Input curves need not be specified in order of connectivity. PolyCurve direction is based on the first curve in the input array. Choose a preferred join tolerance between 1e-6 and 1e-3 units. Lower values may be too strict and prevent curves that should connect from joining; higher values may cause short curves to be unintentionally merged or to collapse to degenerate points.\n\nPolyCurve.ByJoinedCurves (curves: Curve[], joinTolerance: double = 0.001, trimCurves: bool = false, trimLength: double = 0): PolyCurve"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -2047,6 +1987,124 @@
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.SweepAsSolid@Autodesk.DesignScript.Geometry.Curve,bool",
       "Replication": "Auto",
       "Description": "Sweeps this closed Curve along the path Curve, creating a Solid\n\nCurve.SweepAsSolid (path: Curve, cutEndOff: bool = false): Solid"
+    },
+    {
+      "ConcreteType": "GeometryUI.ImportFromSATWithUnits, GeometryUI",
+      "Id": "737ae85c6a6d4dcab893d67be2bd6f5c",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "d0c4b3e527b94809a37f8e2f98c8da25",
+          "Name": "file|filePath",
+          "Description": "Filepath or File object to import .SAT from.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "86220e446f024fc9852c778e7c0a675d",
+          "Name": "dynamoUnit",
+          "Description": "A forge unit length, if left null, geometry will be imported as unitless.",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f1f80173f61648d79d19bd4377c68fe2",
+          "Name": "geometry",
+          "Description": "Loaded geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Imports geometry from SAT filepath. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file."
+    },
+    {
+      "ConcreteType": "UnitsUI.Units, UnitsNodeModels",
+      "SelectedIndex": 234,
+      "SelectedString": "Meters",
+      "Id": "3f31b790ae344236968ed6960ca5e56f",
+      "NodeType": "ExtensionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e5bd46762b874ab0bd811fa752ac2954",
+          "Name": "Unit",
+          "Description": "The selected Unit",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Unit type"
+    },
+    {
+      "ConcreteType": "UnitsUI.Units, UnitsNodeModels",
+      "SelectedIndex": 234,
+      "SelectedString": "Meters",
+      "Id": "1870bc1bf0804ada9d2a127935513ebe",
+      "NodeType": "ExtensionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "458e579d0cbf4cb7827a65f26c616d91",
+          "Name": "Unit",
+          "Description": "The selected Unit",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Unit type"
+    },
+    {
+      "ConcreteType": "GeometryUI.ImportFromSATWithUnits, GeometryUI",
+      "Id": "e712498e75db472bb7b301228f96b9e2",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "711852383def4470ad36009236da7a36",
+          "Name": "file|filePath",
+          "Description": "Filepath or File object to import .SAT from.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d1c332f2a7f34f47ba7f1c9c7c808624",
+          "Name": "dynamoUnit",
+          "Description": "A forge unit length, if left null, geometry will be imported as unitless.",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "90c0c6e35c094285a097a2c1e143a8ad",
+          "Name": "geometry",
+          "Description": "Loaded geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Imports geometry from SAT filepath. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file."
     }
   ],
   "Connectors": [
@@ -2381,57 +2439,15 @@
       "IsHidden": "False"
     },
     {
-      "Start": "378fa25f56d84b20ba2791ec60956a69",
-      "End": "0a5b6efc88c142b18972fd8362a24471",
-      "Id": "efb9906649b44b6aa338e90604510d3c",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "378fa25f56d84b20ba2791ec60956a69",
-      "End": "9321f36d221b4a7abb19fa68f088d016",
-      "Id": "2091134dac7440938da09e29dc34aaa4",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "378fa25f56d84b20ba2791ec60956a69",
-      "End": "d6bd7eb0a2694fe9b229814fdc585e0b",
-      "Id": "64ee196016b74444b79ece0a6d2877ec",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "378fa25f56d84b20ba2791ec60956a69",
-      "End": "fccfb157f58e47bbbf3ae1a0b576f392",
-      "Id": "c067cdb53f584d13bb8aa4188f1c873f",
-      "IsHidden": "False"
-    },
-    {
       "Start": "951d830fc04043c38d40711b887ef37f",
-      "End": "b32ed1a53da84c45a13ef98e7a191cd4",
-      "Id": "e287fb2ea7974781abc725be812245cd",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "f83a35e50001466e9fc68b51ec5b8331",
-      "End": "91014f2685244b02bacc53f746bf0970",
-      "Id": "38847101bea247869714ea1dbb194874",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "f83a35e50001466e9fc68b51ec5b8331",
-      "End": "4e8b7a30b98644928a290ab6a7fea462",
-      "Id": "9ad91471176e453db1595954b8219753",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "f83a35e50001466e9fc68b51ec5b8331",
-      "End": "2fea428eff2f478e98412f29b9b0b82f",
-      "Id": "c8470151308a44d98160955979584b80",
+      "End": "d0c4b3e527b94809a37f8e2f98c8da25",
+      "Id": "51e28f8c34fa4f2791aae173142a0f70",
       "IsHidden": "False"
     },
     {
       "Start": "a2905e7ac1764c62ac92b682a3d7396e",
-      "End": "809ff5b1831b4f29b6bc9d1d70359cf9",
-      "Id": "7432369112994c80a59f5932de773a07",
+      "End": "711852383def4470ad36009236da7a36",
+      "Id": "e3ffae0897d34478b85cfba972689e10",
       "IsHidden": "False"
     },
     {
@@ -2499,6 +2515,60 @@
       "End": "2dd14bed0800498d913ba3e5d5e8466d",
       "Id": "1bf62d06695548338f73a3c09a3b79d4",
       "IsHidden": "False"
+    },
+    {
+      "Start": "f1f80173f61648d79d19bd4377c68fe2",
+      "End": "fccfb157f58e47bbbf3ae1a0b576f392",
+      "Id": "1dd1e113d7ea499fa30498826b82c824",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f1f80173f61648d79d19bd4377c68fe2",
+      "End": "d6bd7eb0a2694fe9b229814fdc585e0b",
+      "Id": "64aa5b2ab91243ba8d3bb3605b018d7d",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f1f80173f61648d79d19bd4377c68fe2",
+      "End": "9321f36d221b4a7abb19fa68f088d016",
+      "Id": "5b908712ce31476384461d29b7933785",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f1f80173f61648d79d19bd4377c68fe2",
+      "End": "0a5b6efc88c142b18972fd8362a24471",
+      "Id": "254d57f02f72438c9f65e768422e85d5",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e5bd46762b874ab0bd811fa752ac2954",
+      "End": "86220e446f024fc9852c778e7c0a675d",
+      "Id": "9869e2d7476c4a718ed07d75a0a7678c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "458e579d0cbf4cb7827a65f26c616d91",
+      "End": "d1c332f2a7f34f47ba7f1c9c7c808624",
+      "Id": "13e9aa25a6f84057a106dbf0f98a0d87",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "90c0c6e35c094285a097a2c1e143a8ad",
+      "End": "91014f2685244b02bacc53f746bf0970",
+      "Id": "cc9927f017a743bc8f9d3b646e4ca276",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "90c0c6e35c094285a097a2c1e143a8ad",
+      "End": "4e8b7a30b98644928a290ab6a7fea462",
+      "Id": "03d5e7bd921e423db734413d18cf5c4e",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "90c0c6e35c094285a097a2c1e143a8ad",
+      "End": "2fea428eff2f478e98412f29b9b0b82f",
+      "Id": "65212beaf04d4a91b8c83cba27d6a659",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
@@ -2542,21 +2612,21 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "4.1.0.3165",
-      "RunType": "Automatic",
+      "Version": "4.1.0.2940",
+      "RunType": "Manual",
       "RunPeriod": "1000"
     },
     "Camera": {
       "Name": "_Background Preview",
-      "EyeX": 10.575164794921875,
-      "EyeY": 3.049563407897949,
-      "EyeZ": 4.670543670654297,
-      "LookX": -5.561014175415039,
-      "LookY": -4.535475730895996,
-      "LookZ": -3.204988956451416,
-      "UpX": -0.49999499320983887,
-      "UpY": 0.8166804313659668,
-      "UpZ": -0.28816330432891846
+      "EyeX": 13.865877151489258,
+      "EyeY": 4.975520133972168,
+      "EyeZ": 4.915135860443115,
+      "LookX": -8.70370864868164,
+      "LookY": -6.755664348602295,
+      "LookZ": -4.124657154083252,
+      "UpX": -0.5189154744148254,
+      "UpY": 0.8186899423599243,
+      "UpZ": -0.24591349065303802
     },
     "ConnectorPins": [],
     "NodeViews": [
@@ -2991,16 +3061,6 @@
         "Y": 51.48710665083854
       },
       {
-        "Id": "3dd9d2d6b5044131b7cff59b109ba2f4",
-        "Name": "Geometry.ImportFromSAT",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": 3473.3149706232734,
-        "Y": 606.5177880479139
-      },
-      {
         "Id": "56a1bc0a58d146989f012d782d80b986",
         "Name": "File Path",
         "IsSetAsInput": false,
@@ -3009,16 +3069,6 @@
         "ShowGeometry": true,
         "X": 1546.5149706232733,
         "Y": 606.5177880479139
-      },
-      {
-        "Id": "03b97230e4df4ac08e6354a4cc2f9897",
-        "Name": "Geometry.ImportFromSAT",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": -488.3021946538123,
-        "Y": 248.2524473493761
       },
       {
         "Id": "fc4cf110bb674f9bbf4e53325dbece13",
@@ -3077,8 +3127,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 8088.62750303099,
-        "Y": 346.0177880479139
+        "X": 8153.723976830672,
+        "Y": 258.52812726114223
       },
       {
         "Id": "b100c45a891b445ca1b7cbb0682b1776",
@@ -3109,6 +3159,46 @@
         "ShowGeometry": true,
         "X": 7752.788629704741,
         "Y": 346.01778804791377
+      },
+      {
+        "Id": "737ae85c6a6d4dcab893d67be2bd6f5c",
+        "Name": "Geometry.ImportFromSATWithUnits",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 2793.618106411287,
+        "Y": 837.818604075758
+      },
+      {
+        "Id": "3f31b790ae344236968ed6960ca5e56f",
+        "Name": "Units",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2432.8844237147755,
+        "Y": 946.6738201002262
+      },
+      {
+        "Id": "1870bc1bf0804ada9d2a127935513ebe",
+        "Name": "Units",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -876.5723146206361,
+        "Y": 845.7797740810313
+      },
+      {
+        "Id": "e712498e75db472bb7b301228f96b9e2",
+        "Name": "Geometry.ImportFromSATWithUnits",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": -515.8386319241246,
+        "Y": 736.9245580565632
       }
     ],
     "Annotations": [
@@ -3355,12 +3445,12 @@
         "HasNestedGroups": false,
         "Left": 7332.370682692542,
         "Top": -140.5939715573573,
-        "Width": 353.60000000000036,
+        "Width": 348.8000000000002,
         "Height": 353.79999999999995,
         "FontSize": 36.0,
         "GroupStyleId": "00000000-0000-0000-0000-000000000000",
         "InitialTop": 19.0060284426427,
-        "InitialHeight": 145.00000000000003,
+        "InitialHeight": 145.0,
         "TextblockHeight": 149.6,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
@@ -3389,7 +3479,7 @@
         "FontSize": 36.0,
         "GroupStyleId": "00000000-0000-0000-0000-000000000000",
         "InitialTop": 157.3217055684262,
-        "InitialHeight": 160.6960824794876,
+        "InitialHeight": 160.69608247948756,
         "TextblockHeight": 106.4,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
@@ -3599,8 +3689,8 @@
         "Background": "#FFC1D676"
       }
     ],
-    "X": -5777.684195109927,
-    "Y": 27.21895801194097,
-    "Zoom": 0.8151534622484311
+    "X": -5644.391121096435,
+    "Y": 66.46414985430306,
+    "Zoom": 0.7680907594758961
   }
 }
