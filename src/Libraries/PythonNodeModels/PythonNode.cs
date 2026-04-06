@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -172,6 +173,85 @@ namespace PythonNodeModels
             }
             return base.UpdateValueCore(updateValueParams);
         }
+
+        #region SerializeCore/DeserializeCore
+
+        /// <summary>
+        /// Preserves custom input and output port names during copy and undo operations.
+        /// The base NodeModel serialization writes PortInfo elements for input ports;
+        /// this override adds a "portName" attribute to each of those elements and appends
+        /// OutPortInfo elements for output ports.
+        /// </summary>
+        [Obsolete]
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context);
+
+            // Add portName attribute to each PortInfo element that was written by NodeModel.SerializeCore.
+            foreach (XmlNode child in element.ChildNodes)
+            {
+                if (child.Name == "PortInfo" && child is XmlElement portInfo)
+                {
+                    var indexAttr = portInfo.GetAttribute("index");
+                    if (int.TryParse(indexAttr, NumberStyles.Integer, CultureInfo.InvariantCulture, out int index)
+                        && index < InPorts.Count)
+                    {
+                        portInfo.SetAttribute("portName", InPorts[index].Name);
+                    }
+                }
+            }
+
+            // Write output port names as separate elements (NodeModel does not serialize output PortInfo).
+            for (int i = 0; i < OutPorts.Count; i++)
+            {
+                XmlElement outPortInfo = element.OwnerDocument.CreateElement("OutPortInfo");
+                outPortInfo.SetAttribute("index", i.ToString(CultureInfo.InvariantCulture));
+                outPortInfo.SetAttribute("portName", OutPorts[i].Name);
+                element.AppendChild(outPortInfo);
+            }
+        }
+
+        /// <summary>
+        /// Restores custom input and output port names after base deserialization has
+        /// recreated the ports with their default names.
+        /// </summary>
+        [Obsolete]
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
+        {
+            base.DeserializeCore(nodeElement, context);
+
+            // After base.DeserializeCore, all ports exist with default names.
+            // Re-apply any custom names that were serialized.
+            foreach (XmlNode child in nodeElement.ChildNodes)
+            {
+                if (child.Name == "PortInfo" && child is XmlElement portInfo)
+                {
+                    var portNameAttr = portInfo.GetAttribute("portName");
+                    if (!string.IsNullOrEmpty(portNameAttr))
+                    {
+                        var indexAttr = portInfo.GetAttribute("index");
+                        if (int.TryParse(indexAttr, NumberStyles.Integer, CultureInfo.InvariantCulture, out int index)
+                            && index < InPorts.Count)
+                        {
+                            InPorts[index].Name = portNameAttr;
+                        }
+                    }
+                }
+                else if (child.Name == "OutPortInfo" && child is XmlElement outPortInfo)
+                {
+                    var portNameAttr = outPortInfo.GetAttribute("portName");
+                    var indexAttr = outPortInfo.GetAttribute("index");
+                    if (!string.IsNullOrEmpty(portNameAttr)
+                        && int.TryParse(indexAttr, NumberStyles.Integer, CultureInfo.InvariantCulture, out int outIndex)
+                        && outIndex < OutPorts.Count)
+                    {
+                        OutPorts[outIndex].Name = portNameAttr;
+                    }
+                }
+            }
+        }
+
+        #endregion
 
     }
 

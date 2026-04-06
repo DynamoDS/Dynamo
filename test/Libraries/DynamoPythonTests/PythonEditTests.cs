@@ -917,5 +917,53 @@ OUT = {modName}.value";
                 File.WriteAllText(modulePath, originalContents);
             }
         }
+
+        [Test]
+        public void WhenPythonNodeCopied_CustomPortNamesArePreserved()
+        {
+            // Arrange: create a PythonNode with two inputs and set custom port names.
+            var pythonNode = new PythonNode();
+            ViewModel.CurrentSpace.AddAndRegisterNode(pythonNode);
+            // HandleModelEvent("AddInPort") uses the internal VariableInputNode mechanism to add a port.
+            pythonNode.HandleModelEvent("AddInPort", 0, null);
+
+            // Set custom names directly (PythonNodeModels has InternalsVisibleTo DynamoCore).
+            pythonNode.InPorts[0].Name = "myInput0";
+            pythonNode.InPorts[1].Name = "myInput1";
+            pythonNode.OutPorts[0].Name = "myOutput";
+
+            // Act: simulate copy by serializing then deserializing with SaveContext.Copy.
+            var xmlDoc = new System.Xml.XmlDocument();
+            var xmlElement = pythonNode.Serialize(xmlDoc, Dynamo.Graph.SaveContext.Copy);
+            var copiedNode = ViewModel.Model.NodeFactory.CreateNodeFromXml(
+                xmlElement, Dynamo.Graph.SaveContext.Copy, ViewModel.CurrentSpace.ElementResolver) as PythonNode;
+
+            // Assert: copied node has the same custom port names.
+            Assert.IsNotNull(copiedNode);
+            Assert.AreEqual("myInput0", copiedNode.InPorts[0].Name);
+            Assert.AreEqual("myInput1", copiedNode.InPorts[1].Name);
+            Assert.AreEqual("myOutput", copiedNode.OutPorts[0].Name);
+        }
+
+        [Test]
+        public void WhenPythonNodeUndone_CustomPortNamesArePreserved()
+        {
+            // Arrange: create a PythonNode with a custom-named input port.
+            var pythonNode = new PythonNode();
+            ViewModel.CurrentSpace.AddAndRegisterNode(pythonNode);
+            pythonNode.InPorts[0].Name = "undoInput";
+            pythonNode.OutPorts[0].Name = "undoOutput";
+
+            // Act: simulate undo serialization round-trip.
+            var xmlDoc = new System.Xml.XmlDocument();
+            var xmlElement = pythonNode.Serialize(xmlDoc, Dynamo.Graph.SaveContext.Undo);
+            var restoredNode = ViewModel.Model.NodeFactory.CreateNodeFromXml(
+                xmlElement, Dynamo.Graph.SaveContext.Undo, ViewModel.CurrentSpace.ElementResolver) as PythonNode;
+
+            // Assert: restored node retains custom port names.
+            Assert.IsNotNull(restoredNode);
+            Assert.AreEqual("undoInput", restoredNode.InPorts[0].Name);
+            Assert.AreEqual("undoOutput", restoredNode.OutPorts[0].Name);
+        }
     }
 }
