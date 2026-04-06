@@ -187,7 +187,7 @@ namespace PythonNodeModels
         {
             base.SerializeCore(element, context);
 
-            // Add portName attribute to each PortInfo element that was written by NodeModel.SerializeCore.
+            // Add portName and portToolTip attributes to each PortInfo element written by NodeModel.SerializeCore.
             foreach (XmlNode child in element.ChildNodes)
             {
                 if (child.Name == "PortInfo" && child is XmlElement portInfo)
@@ -197,16 +197,18 @@ namespace PythonNodeModels
                         && index < InPorts.Count)
                     {
                         portInfo.SetAttribute("portName", InPorts[index].Name);
+                        portInfo.SetAttribute("portToolTip", InPorts[index].ToolTip);
                     }
                 }
             }
 
-            // Write output port names as separate elements (NodeModel does not serialize output PortInfo).
+            // Write output port names and tooltips as separate elements (NodeModel does not serialize output PortInfo).
             for (int i = 0; i < OutPorts.Count; i++)
             {
                 XmlElement outPortInfo = element.OwnerDocument.CreateElement("OutPortInfo");
                 outPortInfo.SetAttribute("index", i.ToString(CultureInfo.InvariantCulture));
                 outPortInfo.SetAttribute("portName", OutPorts[i].Name);
+                outPortInfo.SetAttribute("portToolTip", OutPorts[i].ToolTip);
                 element.AppendChild(outPortInfo);
             }
         }
@@ -220,32 +222,38 @@ namespace PythonNodeModels
         {
             base.DeserializeCore(nodeElement, context);
 
-            // After base.DeserializeCore, all ports exist with default names.
-            // Re-apply any custom names that were serialized.
+            // After base.DeserializeCore, all ports exist with default names and tooltips.
+            // Re-apply any custom values that were serialized.
             foreach (XmlNode child in nodeElement.ChildNodes)
             {
                 if (child.Name == "PortInfo" && child is XmlElement portInfo)
                 {
-                    var portNameAttr = portInfo.GetAttribute("portName");
-                    if (!string.IsNullOrEmpty(portNameAttr))
+                    var indexAttr = portInfo.GetAttribute("index");
+                    if (int.TryParse(indexAttr, NumberStyles.Integer, CultureInfo.InvariantCulture, out int index)
+                        && index < InPorts.Count)
                     {
-                        var indexAttr = portInfo.GetAttribute("index");
-                        if (int.TryParse(indexAttr, NumberStyles.Integer, CultureInfo.InvariantCulture, out int index)
-                            && index < InPorts.Count)
-                        {
+                        var portNameAttr = portInfo.GetAttribute("portName");
+                        if (!string.IsNullOrEmpty(portNameAttr))
                             InPorts[index].Name = portNameAttr;
-                        }
+
+                        var portToolTipAttr = portInfo.GetAttribute("portToolTip");
+                        if (!string.IsNullOrEmpty(portToolTipAttr))
+                            InPorts[index].ToolTip = portToolTipAttr;
                     }
                 }
                 else if (child.Name == "OutPortInfo" && child is XmlElement outPortInfo)
                 {
-                    var portNameAttr = outPortInfo.GetAttribute("portName");
                     var indexAttr = outPortInfo.GetAttribute("index");
-                    if (!string.IsNullOrEmpty(portNameAttr)
-                        && int.TryParse(indexAttr, NumberStyles.Integer, CultureInfo.InvariantCulture, out int outIndex)
+                    if (int.TryParse(indexAttr, NumberStyles.Integer, CultureInfo.InvariantCulture, out int outIndex)
                         && outIndex < OutPorts.Count)
                     {
-                        OutPorts[outIndex].Name = portNameAttr;
+                        var portNameAttr = outPortInfo.GetAttribute("portName");
+                        if (!string.IsNullOrEmpty(portNameAttr))
+                            OutPorts[outIndex].Name = portNameAttr;
+
+                        var portToolTipAttr = outPortInfo.GetAttribute("portToolTip");
+                        if (!string.IsNullOrEmpty(portToolTipAttr))
+                            OutPorts[outIndex].ToolTip = portToolTipAttr;
                     }
                 }
             }

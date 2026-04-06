@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.UI;
 using Dynamo.UI.Commands;
@@ -342,8 +343,14 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            port.Name = dialog.PortName;
-            port.ToolTip = dialog.Description;
+            var workspaceModel = node.WorkspaceViewModel.Model;
+            using (workspaceModel.UndoRecorder.BeginActionGroup())
+            {
+                WorkspaceModel.RecordModelForModification(port.Owner, workspaceModel.UndoRecorder);
+                port.Name = dialog.PortName;
+                port.ToolTip = dialog.Description;
+            }
+            workspaceModel.HasUnsavedChanges = true;
 
             RaisePropertyChanged(nameof(PortName));
         }
