@@ -182,7 +182,6 @@ namespace PythonNodeModels
         /// this override adds a "portName" attribute to each of those elements and appends
         /// OutPortInfo elements for output ports.
         /// </summary>
-        [Obsolete]
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             base.SerializeCore(element, context);
@@ -217,7 +216,6 @@ namespace PythonNodeModels
         /// Restores custom input and output port names after base deserialization has
         /// recreated the ports with their default names.
         /// </summary>
-        [Obsolete]
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             base.DeserializeCore(nodeElement, context);
