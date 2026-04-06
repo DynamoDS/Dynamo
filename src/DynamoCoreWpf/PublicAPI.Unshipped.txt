@@ -16,7 +16,6 @@ Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsInstalle
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsInstalledVersionSelected.get -> bool
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsPublishedByDynamoTeam.get -> bool
 Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsUninstallState.get -> bool
-Dynamo.UI.Controls.StartPageViewModel.TemplateFiles.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.UI.Controls.StartPageListItem>
 Dynamo.UI.Views.ScriptObject.ResetSettings() -> void
 Dynamo.UI.Views.ScriptObject.ScriptObject(System.Action<bool> requestLaunchDynamo, System.Action<string> requestImportSettings, System.Func<bool> requestSignIn, System.Func<bool> requestSignOut, System.Action requestResetSettings) -> void
 Dynamo.ViewModels.DynamoViewModel.OnlineAccess.get -> bool
