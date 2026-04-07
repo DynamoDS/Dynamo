@@ -47,7 +47,7 @@ test/
 └── Libraries/           # Per-library test projects (CoreNodesTests, etc.)
 ```
 
-Key relationships: `DynamoCore` is the graph model and execution engine. `DynamoCoreWpf` depends on it for UI. The `Engine/` DesignScript runtime (`ProtoCore`) is the low-level evaluator that `DynamoCore` drives. Node libraries in `Libraries/` expose zero-touch or explicit node models consumed by both.
+Key relationships: `DynamoCore` is the graph model and execution engine. `DynamoCoreWpf` depends on it for UI. The `Engine/` DesignScript runtime (`ProtoCore`) is the low-level evaluator that `DynamoCore` drives. Node libraries in `Libraries/` expose zero-touch or explicit node models consumed by both. The full UI (`Dynamo.All.sln`) is Windows-only; `DynamoCore.sln` builds cross-platform (Windows, Linux, macOS).
 
 ## Key Conventions
 
@@ -59,7 +59,7 @@ Key relationships: `DynamoCore` is the graph model and execution engine. `Dynamo
 - Test naming: `WhenConditionThenExpectedBehavior`. One behavior per test, Arrange-Act-Assert.
 - User-facing strings in `.resx` files.
 - No files > 50 MB.
-- Line endings are **CRLF** — never convert CRLF to LF.
+- Preserve existing line endings when editing — do not convert. The `.editorconfig` specifies LF, but many files have CRLF from Windows development. New files should follow `.editorconfig` (LF); the Write tool on macOS may need explicit attention.
 
 ## Running a Single Test
 
@@ -118,6 +118,8 @@ Use `[AlsoKnownAs("OldName")]` to preserve backward compatibility when renaming 
 - No empty `catch { }` blocks — log and rethrow or handle explicitly.
 - No `#pragma warning disable` without a justification comment.
 - No weakened assertions (e.g., replacing `Assert.AreEqual` with `Assert.IsNotNull`).
+- Do not introduce new network connections without explicit documentation and no-network mode testing.
+- Do not add data collection without proper user consent checks and documentation.
 
 ## Commits and PRs
 
