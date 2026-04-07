@@ -1,6 +1,6 @@
 ---
 name: Dynamo Skill Writer
-description: Author and maintain Dynamo agent skills while enforcing cross-tool sync between canonical .agents skills and generated wrappers for GitHub Copilot, Cursor, and Claude Code.
+description: Author and maintain Dynamo agent skills. Use this skill whenever creating a new skill in .agents/skills/, updating an existing skill, fixing drift between canonical skills and Copilot/Cursor/Claude wrappers, or asking how to write effective skill instructions for the Dynamo repo.
 ---
 
 # Dynamo Skill Writer
