@@ -83,7 +83,7 @@ UI tests are split across `DynamoCoreWpfTests`, `DynamoCoreWpfTests2`, and `Dyna
 ```csharp
 /// <summary>Brief description.</summary>
 /// <param name="x">Input description.</param>
-/// <returns name="result">Output description.</returns>
+/// <returns>Output description.</returns>
 /// <search>keyword1,keyword2</search>
 public static double MyFunction(double x) { ... }
 ```
