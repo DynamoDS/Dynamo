@@ -177,10 +177,11 @@ namespace PythonNodeModels
         #region SerializeCore/DeserializeCore
 
         /// <summary>
-        /// Preserves custom input and output port names during copy and undo operations.
+        /// Preserves custom input and output port names and tooltips during XML serialization.
         /// The base NodeModel serialization writes PortInfo elements for input ports;
-        /// this override adds a "portName" attribute to each of those elements and appends
-        /// OutPortInfo elements for output ports.
+        /// this override adds "portName" and "portToolTip" attributes to each of those
+        /// elements and appends OutPortInfo elements for output ports.
+        /// These fields are emitted and consumed for all SaveContext values (Copy, Undo, Save, etc.).
         /// </summary>
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
@@ -193,7 +194,7 @@ namespace PythonNodeModels
                 {
                     var indexAttr = portInfo.GetAttribute("index");
                     if (int.TryParse(indexAttr, NumberStyles.Integer, CultureInfo.InvariantCulture, out int index)
-                        && index < InPorts.Count)
+                        && index >= 0 && index < InPorts.Count)
                     {
                         portInfo.SetAttribute("portName", InPorts[index].Name);
                         portInfo.SetAttribute("portToolTip", InPorts[index].ToolTip);
