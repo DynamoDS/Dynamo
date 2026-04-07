@@ -917,5 +917,90 @@ OUT = {modName}.value";
                 File.WriteAllText(modulePath, originalContents);
             }
         }
+
+        [Test]
+        public void WhenPythonNodeCopied_CustomPortNamesArePreserved()
+        {
+            // Arrange: create a PythonNode with two inputs and set custom port names.
+            var pythonNode = new PythonNode();
+            ViewModel.CurrentSpace.AddAndRegisterNode(pythonNode);
+            // HandleModelEvent("AddInPort") uses the internal VariableInputNode mechanism to add a port.
+            pythonNode.HandleModelEvent("AddInPort", 0, null);
+
+            // Set custom names directly; test access is enabled via InternalsVisibleTo on the relevant assemblies for DynamoPythonTests.
+            pythonNode.InPorts[0].Name = "myInput0";
+            pythonNode.InPorts[0].ToolTip = "inputTip0";
+            pythonNode.InPorts[1].Name = "myInput1";
+            pythonNode.InPorts[1].ToolTip = "inputTip1";
+            pythonNode.OutPorts[0].Name = "myOutput";
+            pythonNode.OutPorts[0].ToolTip = "outputTip";
+
+            // Act: simulate copy by serializing then deserializing with SaveContext.Copy.
+            var xmlDoc = new System.Xml.XmlDocument();
+            var xmlElement = pythonNode.Serialize(xmlDoc, Dynamo.Graph.SaveContext.Copy);
+            var copiedNode = ViewModel.Model.NodeFactory.CreateNodeFromXml(
+                xmlElement, Dynamo.Graph.SaveContext.Copy, ViewModel.CurrentSpace.ElementResolver) as PythonNode;
+
+            // Assert: copied node has the same custom port names and tooltips.
+            Assert.IsNotNull(copiedNode);
+            Assert.AreEqual("myInput0", copiedNode.InPorts[0].Name);
+            Assert.AreEqual("inputTip0", copiedNode.InPorts[0].ToolTip);
+            Assert.AreEqual("myInput1", copiedNode.InPorts[1].Name);
+            Assert.AreEqual("inputTip1", copiedNode.InPorts[1].ToolTip);
+            Assert.AreEqual("myOutput", copiedNode.OutPorts[0].Name);
+            Assert.AreEqual("outputTip", copiedNode.OutPorts[0].ToolTip);
+        }
+
+        [Test]
+        public void WhenPythonNodeUndone_CustomPortNamesArePreserved()
+        {
+            // Arrange: create a PythonNode with a custom-named input port.
+            var pythonNode = new PythonNode();
+            ViewModel.CurrentSpace.AddAndRegisterNode(pythonNode);
+            pythonNode.InPorts[0].Name = "undoInput";
+            pythonNode.InPorts[0].ToolTip = "undoInputTip";
+            pythonNode.OutPorts[0].Name = "undoOutput";
+            pythonNode.OutPorts[0].ToolTip = "undoOutputTip";
+
+            // Act: simulate undo serialization round-trip.
+            var xmlDoc = new System.Xml.XmlDocument();
+            var xmlElement = pythonNode.Serialize(xmlDoc, Dynamo.Graph.SaveContext.Undo);
+            var restoredNode = ViewModel.Model.NodeFactory.CreateNodeFromXml(
+                xmlElement, Dynamo.Graph.SaveContext.Undo, ViewModel.CurrentSpace.ElementResolver) as PythonNode;
+
+            // Assert: restored node retains custom port names and tooltips.
+            Assert.IsNotNull(restoredNode);
+            Assert.AreEqual("undoInput", restoredNode.InPorts[0].Name);
+            Assert.AreEqual("undoInputTip", restoredNode.InPorts[0].ToolTip);
+            Assert.AreEqual("undoOutput", restoredNode.OutPorts[0].Name);
+            Assert.AreEqual("undoOutputTip", restoredNode.OutPorts[0].ToolTip);
+        }
+
+        [Test]
+        public void WhenPythonStringNodeCopied_CustomPortNamesAndTooltipsArePreserved()
+        {
+            // Arrange: PythonStringNode also derives from PythonNodeBase; verify the shared
+            // SerializeCore/DeserializeCore path works for it too.
+            var pythonStringNode = new PythonStringNode();
+            ViewModel.CurrentSpace.AddAndRegisterNode(pythonStringNode);
+            // Set custom names directly; test access is enabled via InternalsVisibleTo on the relevant assemblies for DynamoPythonTests.
+            pythonStringNode.InPorts[0].Name = "stringInput";
+            pythonStringNode.InPorts[0].ToolTip = "stringInputTip";
+            pythonStringNode.OutPorts[0].Name = "stringOutput";
+            pythonStringNode.OutPorts[0].ToolTip = "stringOutputTip";
+
+            // Act: simulate copy by serializing then deserializing with SaveContext.Copy.
+            var xmlDoc = new System.Xml.XmlDocument();
+            var xmlElement = pythonStringNode.Serialize(xmlDoc, Dynamo.Graph.SaveContext.Copy);
+            var copiedNode = ViewModel.Model.NodeFactory.CreateNodeFromXml(
+                xmlElement, Dynamo.Graph.SaveContext.Copy, ViewModel.CurrentSpace.ElementResolver) as PythonStringNode;
+
+            // Assert: copied node has the same custom port names and tooltips.
+            Assert.IsNotNull(copiedNode);
+            Assert.AreEqual("stringInput", copiedNode.InPorts[0].Name);
+            Assert.AreEqual("stringInputTip", copiedNode.InPorts[0].ToolTip);
+            Assert.AreEqual("stringOutput", copiedNode.OutPorts[0].Name);
+            Assert.AreEqual("stringOutputTip", copiedNode.OutPorts[0].ToolTip);
+        }
     }
 }

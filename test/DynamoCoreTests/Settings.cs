@@ -60,6 +60,32 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("UnitTests")]
+        public void WhenPreferencesHaveEmptyGroupStylesListThenDefaultsArePopulated()
+        {
+            // Arrange — provide preferences with no group styles configured
+            var emptyPrefs = new PreferenceSettings();
+            Assert.IsEmpty(emptyPrefs.GroupStyleItemsList, "Precondition: constructor should produce empty list");
+
+            var config = new DynamoModel.DefaultStartConfiguration()
+            {
+                Preferences = emptyPrefs,
+                StartInTestMode = true
+            };
+
+            // Act
+            var model = DynamoModel.Start(config);
+
+            // Assert — defaults should be injected by CreateOrLoadPreferences
+            Assert.IsNotEmpty(model.PreferenceSettings.GroupStyleItemsList,
+                "GroupStyleItemsList should be populated with default styles");
+            Assert.AreEqual(
+                GroupStyleItem.DefaultGroupStyleItems.Count,
+                model.PreferenceSettings.GroupStyleItemsList.Count,
+                "GroupStyleItemsList should contain exactly the default styles");
+        }
+
+        [Test]
         public void SetPythonTemplateFromConfigWithValidPath()
         {
             var templatePath = Path.Combine(SettingDirectory, "PythonTemplate-initial.py");

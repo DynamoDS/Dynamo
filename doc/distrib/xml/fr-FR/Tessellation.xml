@@ -52,6 +52,18 @@
             <summary>Crée une triangulation Delaunay d'un jeu de points.</summary>
             <param name="points">Jeu de points.</param>
         </member>
+        <member name="T:Tessellation.UvScalingUtilities">
+            <summary>Fonctions utilitaires pour la mise à l’échelle UV sur les surfaces.</summary>
+        </member>
+        <member name="M:Tessellation.UvScalingUtilities.GetNormalizedUvScales(Autodesk.DesignScript.Geometry.Surface)">
+            <summary>Calcule les facteurs de mise à l'échelle UV normalisés d'une surface pour gérer les espaces de paramètres anisotropes.
+                La mise à l'échelle préserve les proportions tout en conservant les valeurs dans une plage numérique raisonnable.</summary>
+            <param name="face">Surface pour calculer les facteurs de mise à l'échelle.</param>
+            <returns>Tuple contenant des facteurs d'échelle normalisés dans les directions U et V, et la
+            longueur d'arc physique minimale de la surface (unités mondiales) à travers U et V.
+            L'échelle minimale est la plus courte des deux longueurs moyennes d'iso-courbe et est utilisée
+            pour déduire des seuils de distance de l'espace univers qui assurent une mise à l'échelle adaptée à la surface.</returns>
+        </member>
         <member name="T:Tessellation.Voronoi">
             <summary>Fonctions de création de maillages par approximation de Voronoï.</summary>
         </member>

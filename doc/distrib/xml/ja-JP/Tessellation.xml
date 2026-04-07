@@ -52,6 +52,18 @@
             <summary>一連の点からなるドローネー三角形分割を作成します。</summary>
             <param name="points">点のセット。</param>
         </member>
+        <member name="T:Tessellation.UvScalingUtilities">
+            <summary>サーフェス上の UV スケーリングのユーティリティ関数。</summary>
+        </member>
+        <member name="M:Tessellation.UvScalingUtilities.GetNormalizedUvScales(Autodesk.DesignScript.Geometry.Surface)">
+            <summary>異方性パラメータ空間を処理するために、サーフェスの正規化された UV スケール係数を計算します。
+                スケーリングでは、縦横比を維持しながら、値を妥当な数値範囲内に保ちます。</summary>
+            <param name="face">スケール係数を計算するサーフェス。</param>
+            <returns>U 方向と V 方向の正規化されたスケール係数を含むタプル、および
+            U と V を横断するサーフェスの最小物理円弧の長さ(ワールド単位)。
+            最小スケールは、2 つの平均アイソカーブの長さのうち短い方のスケールであり、
+            サーフェスに対して正しくスケールされるワールド空間の距離しきい値の導出に使用されます。</returns>
+        </member>
         <member name="T:Tessellation.Voronoi">
             <summary>Voronoi テッセレーションを作成するための関数。</summary>
         </member>

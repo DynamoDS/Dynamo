@@ -439,5 +439,206 @@ namespace DynamoCoreWpfTests
             // The undo stack should now be exhausted (no prior actions before the pin)
             Assert.IsFalse(this.Model.CurrentWorkspace.CanUndo);
         }
+
+        /// <summary>
+        /// DYN-10262: Deleting a node that has a pinned note should also delete the note.
+        /// The note should not be left behind in a broken pinned state.
+        /// </summary>
+        [Test]
+        public void DeleteNodeAlsoDeletesPinnedNote()
+        {
+            Open(@"UI\UINotes.dyn");
+            var nodeGUID = "bbc16882-75c2-4a50-a4e4-5e50e191af8f";
+            var noteGUID = "4677e999-d5f5-4bb2-9706-a97bf3a86711";
+            var nodeView = NodeViewWithGuid(nodeGUID);
+            var noteView = NoteViewWithGuid(noteGUID);
+            var nodeModel = nodeView.ViewModel.NodeModel;
+            var noteModel = noteView.ViewModel.Model;
+
+            // Pin the note to the node
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.AddUnique(nodeModel);
+            DynamoSelection.Instance.Selection.AddUnique(noteModel);
+            noteView.ViewModel.PinToNodeCommand.Execute(null);
+            Assert.IsNotNull(noteModel.PinnedNode, "Pre-condition: note should be pinned.");
+
+            // Select only the node and delete it
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.AddUnique(nodeModel);
+            ViewModel.DeleteCommand.Execute(null);
+
+            // Both node and note should be removed from the workspace
+            Assert.IsFalse(Model.CurrentWorkspace.Nodes.Any(n => n.GUID.ToString() == nodeGUID),
+                "Node should be deleted.");
+            Assert.IsFalse(Model.CurrentWorkspace.Notes.Any(n => n.GUID.ToString() == noteGUID),
+                "Pinned note should also be deleted when its node is deleted.");
+        }
+
+        /// <summary>
+        /// DYN-10262: Deleting a node should also delete its pinned note even when
+        /// the note is already part of the selection.
+        /// </summary>
+        [Test]
+        public void DeleteNodeDeletesPinnedNote_NoteAlsoSelected()
+        {
+            Open(@"UI\UINotes.dyn");
+            var nodeGUID = "bbc16882-75c2-4a50-a4e4-5e50e191af8f";
+            var noteGUID = "4677e999-d5f5-4bb2-9706-a97bf3a86711";
+            var nodeView = NodeViewWithGuid(nodeGUID);
+            var noteView = NoteViewWithGuid(noteGUID);
+            var nodeModel = nodeView.ViewModel.NodeModel;
+            var noteModel = noteView.ViewModel.Model;
+
+            // Pin the note to the node
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.AddUnique(nodeModel);
+            DynamoSelection.Instance.Selection.AddUnique(noteModel);
+            noteView.ViewModel.PinToNodeCommand.Execute(null);
+            Assert.IsNotNull(noteModel.PinnedNode, "Pre-condition: note should be pinned.");
+
+            // Select both node and note, then delete
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.AddUnique(nodeModel);
+            DynamoSelection.Instance.Selection.AddUnique(noteModel);
+            ViewModel.DeleteCommand.Execute(null);
+
+            // Both should be removed
+            Assert.IsFalse(Model.CurrentWorkspace.Nodes.Any(n => n.GUID.ToString() == nodeGUID),
+                "Node should be deleted.");
+            Assert.IsFalse(Model.CurrentWorkspace.Notes.Any(n => n.GUID.ToString() == noteGUID),
+                "Pinned note should be deleted when both node and note are selected.");
+        }
+
+        /// <summary>
+        /// DYN-10262: Undo after deleting a node with a pinned note should restore
+        /// both the node and the note in their pinned state.
+        /// </summary>
+        [Test]
+        public void UndoDeleteNodeRestoresPinnedNote()
+        {
+            Open(@"UI\UINotes.dyn");
+            var nodeGUID = "bbc16882-75c2-4a50-a4e4-5e50e191af8f";
+            var noteGUID = "4677e999-d5f5-4bb2-9706-a97bf3a86711";
+            var nodeView = NodeViewWithGuid(nodeGUID);
+            var noteView = NoteViewWithGuid(noteGUID);
+            var nodeModel = nodeView.ViewModel.NodeModel;
+            var noteModel = noteView.ViewModel.Model;
+
+            // Pin the note to the node
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.AddUnique(nodeModel);
+            DynamoSelection.Instance.Selection.AddUnique(noteModel);
+            noteView.ViewModel.PinToNodeCommand.Execute(null);
+            Assert.IsNotNull(noteModel.PinnedNode, "Pre-condition: note should be pinned.");
+
+            // Select only the node and delete
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.AddUnique(nodeModel);
+            ViewModel.DeleteCommand.Execute(null);
+
+            // Verify both are gone
+            Assert.IsFalse(Model.CurrentWorkspace.Nodes.Any(n => n.GUID.ToString() == nodeGUID));
+            Assert.IsFalse(Model.CurrentWorkspace.Notes.Any(n => n.GUID.ToString() == noteGUID));
+
+            // Undo should restore both
+            Model.CurrentWorkspace.Undo();
+            var restoredNode = Model.CurrentWorkspace.Nodes.FirstOrDefault(n => n.GUID.ToString() == nodeGUID);
+            var restoredNote = Model.CurrentWorkspace.Notes.FirstOrDefault(n => n.GUID.ToString() == noteGUID);
+            Assert.IsNotNull(restoredNode, "Node should be restored after undo.");
+            Assert.IsNotNull(restoredNote, "Pinned note should be restored after undo.");
+            Assert.IsNotNull(restoredNote.PinnedNode, "Note should still be pinned after undo.");
+            Assert.AreEqual(restoredNode.GUID, restoredNote.PinnedNode.GUID,
+                "Note should be pinned to the same node after undo.");
+        }
+
+        /// <summary>
+        /// DYN-10262: Redo after undoing a delete of a node with a pinned note
+        /// should delete both again.
+        /// Note: selection cleanup on redo is not asserted — the redo path replays
+        /// recorded actions without going through DeleteModelInternal's selection.Remove()
+        /// loop, so DynamoSelection may retain stale references. This is a pre-existing
+        /// framework behavior affecting all redo-of-delete operations, not specific to
+        /// cascade deletes.
+        /// </summary>
+        [Test]
+        public void RedoDeleteNodeDeletesPinnedNoteAgain()
+        {
+            Open(@"UI\UINotes.dyn");
+            var nodeGUID = "bbc16882-75c2-4a50-a4e4-5e50e191af8f";
+            var noteGUID = "4677e999-d5f5-4bb2-9706-a97bf3a86711";
+            var nodeView = NodeViewWithGuid(nodeGUID);
+            var noteView = NoteViewWithGuid(noteGUID);
+            var nodeModel = nodeView.ViewModel.NodeModel;
+            var noteModel = noteView.ViewModel.Model;
+
+            // Pin the note to the node
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.AddUnique(nodeModel);
+            DynamoSelection.Instance.Selection.AddUnique(noteModel);
+            noteView.ViewModel.PinToNodeCommand.Execute(null);
+            Assert.IsNotNull(noteModel.PinnedNode, "Pre-condition: note should be pinned.");
+
+            // Delete the node (note should cascade)
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.AddUnique(nodeModel);
+            ViewModel.DeleteCommand.Execute(null);
+
+            // Undo
+            Model.CurrentWorkspace.Undo();
+            Assert.IsTrue(Model.CurrentWorkspace.Nodes.Any(n => n.GUID.ToString() == nodeGUID));
+            Assert.IsTrue(Model.CurrentWorkspace.Notes.Any(n => n.GUID.ToString() == noteGUID));
+
+            // Redo should delete both again
+            Model.CurrentWorkspace.Redo();
+            Assert.IsFalse(Model.CurrentWorkspace.Nodes.Any(n => n.GUID.ToString() == nodeGUID),
+                "Node should be deleted again after redo.");
+            Assert.IsFalse(Model.CurrentWorkspace.Notes.Any(n => n.GUID.ToString() == noteGUID),
+                "Pinned note should be deleted again after redo.");
+        }
+
+        /// <summary>
+        /// DYN-10262: Deleting a pinned note (only the note selected, not the node)
+        /// should also cascade-delete the node it is pinned to.
+        /// Undo should restore both in the pinned state.
+        /// </summary>
+        [Test]
+        public void DeletePinnedNoteAlsoDeletesNode()
+        {
+            Open(@"UI\UINotes.dyn");
+            var nodeGUID = "bbc16882-75c2-4a50-a4e4-5e50e191af8f";
+            var noteGUID = "4677e999-d5f5-4bb2-9706-a97bf3a86711";
+            var nodeView = NodeViewWithGuid(nodeGUID);
+            var noteView = NoteViewWithGuid(noteGUID);
+            var nodeModel = nodeView.ViewModel.NodeModel;
+            var noteModel = noteView.ViewModel.Model;
+
+            // Pin the note to the node
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.AddUnique(nodeModel);
+            DynamoSelection.Instance.Selection.AddUnique(noteModel);
+            noteView.ViewModel.PinToNodeCommand.Execute(null);
+            Assert.IsNotNull(noteModel.PinnedNode, "Pre-condition: note should be pinned.");
+
+            // Select only the note and delete it
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.AddUnique(noteModel);
+            ViewModel.DeleteCommand.Execute(null);
+
+            // Both note and its pinned node should be removed
+            Assert.IsFalse(Model.CurrentWorkspace.Notes.Any(n => n.GUID.ToString() == noteGUID),
+                "Note should be deleted.");
+            Assert.IsFalse(Model.CurrentWorkspace.Nodes.Any(n => n.GUID.ToString() == nodeGUID),
+                "Pinned node should also be deleted when its pinned note is deleted.");
+
+            // Undo should restore both in pinned state
+            Model.CurrentWorkspace.Undo();
+            var restoredNode = Model.CurrentWorkspace.Nodes.FirstOrDefault(n => n.GUID.ToString() == nodeGUID);
+            var restoredNote = Model.CurrentWorkspace.Notes.FirstOrDefault(n => n.GUID.ToString() == noteGUID);
+            Assert.IsNotNull(restoredNode, "Node should be restored after undo.");
+            Assert.IsNotNull(restoredNote, "Note should be restored after undo.");
+            Assert.IsNotNull(restoredNote.PinnedNode, "Note should still be pinned after undo.");
+            Assert.AreEqual(restoredNode.GUID, restoredNote.PinnedNode.GUID,
+                "Note should be pinned to the same node after undo.");
+        }
     }
 }

@@ -206,6 +206,36 @@ namespace Dynamo.Graph.Workspaces
             if (!ShouldProceedWithRecording(models))
                 return; // There's nothing for deletion.
 
+            // If a pinned note is deleted, also delete the node it is pinned to.
+            // Normalize to the node instance owned by this workspace (by GUID)
+            // to avoid deleting stale/foreign node references.
+            var pinnedNodesFromNotes = models
+                .OfType<NoteModel>()
+                .Select(n => n.PinnedNode)
+                .Where(n => n != null)
+                .Select(n => Nodes.FirstOrDefault(wn => wn.GUID == n.GUID))
+                .Where(n => n != null)
+                .Cast<ModelBase>()
+                .ToList();
+
+            foreach (var pinnedNode in pinnedNodesFromNotes)
+            {
+                if (!models.Contains(pinnedNode))
+                    models.Add(pinnedNode);
+            }
+
+            // When deleting nodes, also cascade-delete any notes pinned to them.
+            var nodesToDelete = models.OfType<NodeModel>().ToList();
+            if (nodesToDelete.Any())
+            {
+                var pinnedNotes = Notes
+                    .Where(n => n.PinnedNode != null && nodesToDelete.Contains(n.PinnedNode))
+                    .Where(n => !models.Contains(n))
+                    .ToList();
+                // Insert pinned notes at the front so they are removed before their nodes.
+                models.InsertRange(0, pinnedNotes);
+            }
+
             HashSet<Guid> nodesScheduledForDeletion = new HashSet<Guid>(models.OfType<NodeModel>().Select(node => node.GUID));
             // Deleting inline watch nodes can preserve data flow (rewire pass-through connectors),
             // so we can defer execution until the next explicit graph run.
@@ -259,7 +289,12 @@ namespace Dynamo.Graph.Workspaces
                         // or the selection set was not quite set up properly.
                         //
                         var node = model as NodeModel;
-                        Debug.Assert(Nodes.Contains(node));
+                        if (node != null && !Nodes.Contains(node))
+                            node = Nodes.FirstOrDefault(n => n.GUID == node.GUID);
+
+                        Debug.Assert(node != null && Nodes.Contains(node));
+                        if (node == null)
+                            continue;
 
                         bool silentFlag = node.RaisesModificationEvents;
                         node.RaisesModificationEvents = false;
