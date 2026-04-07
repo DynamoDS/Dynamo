@@ -1330,7 +1330,7 @@ Poniższe zespoły zostały wczytane wiele razy:
     <value>Otwórz definicję {0}…</value>
   </data>
   <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
-    <value>New Graph from Template...</value>
+    <value>Nowy wykres z szablonu...</value>
   </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>Potwierdzenie pobrania pakietu</value>

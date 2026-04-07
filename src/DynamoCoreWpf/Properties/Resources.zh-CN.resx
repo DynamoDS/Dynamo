@@ -1330,7 +1330,7 @@
     <value>打开 {0} 定义...</value>
   </data>
   <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
-    <value>New Graph from Template...</value>
+    <value>从模板新建图表...</value>
   </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>软件包下载确认</value>
@@ -3651,25 +3651,25 @@
     <value>启用嵌板节点</value>
   </data>
   <data name="PreferencesSettingTemplateLocationLabel" xml:space="preserve">
-    <value>样板路径</value>
+    <value>模板路径</value>
   </data>
   <data name="PreferencesSettingResetTemplateLocationTooltip" xml:space="preserve">
-    <value>重置样板位置</value>
+    <value>重置模板位置</value>
   </data>
   <data name="PreferencesSettingsTemplateFailedMessage" xml:space="preserve">
-    <value>无法更新样板位置</value>
+    <value>无法更新模板位置</value>
   </data>
   <data name="PreferencesSettingsTemplateFailedTitle" xml:space="preserve">
-    <value>样板位置无效</value>
+    <value>模板位置无效</value>
   </data>
   <data name="PreferencesSettingsTemplateLocationDialogTitle" xml:space="preserve">
-    <value>选择样板的文件夹</value>
+    <value>选择模板的文件夹</value>
   </data>
   <data name="PreferencesSettingUpdateTemplateLocationTooltip" xml:space="preserve">
-    <value>编辑样板位置</value>
+    <value>编辑模板位置</value>
   </data>
   <data name="PreferencesViewGeneralSettingsTemplate" xml:space="preserve">
-    <value>样板</value>
+    <value>模板</value>
   </data>
   <data name="DynamoXmlFileFormat" xml:space="preserve">
     <value>Dynamo 1.x 文件格式</value>

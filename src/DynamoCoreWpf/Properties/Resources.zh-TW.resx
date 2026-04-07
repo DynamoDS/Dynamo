@@ -1330,7 +1330,7 @@
     <value>開啟 {0} 定義...</value>
   </data>
   <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
-    <value>New Graph from Template...</value>
+    <value>樣板中的新圖表...</value>
   </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>確認套件下載</value>

@@ -1330,7 +1330,7 @@ As montagens a seguir foram carregadas diversas vezes:
     <value>Abrir a definição {0}...</value>
   </data>
   <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
-    <value>New Graph from Template...</value>
+    <value>Novo gráfico do modelo...</value>
   </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>Confirmação do download do pacote</value>

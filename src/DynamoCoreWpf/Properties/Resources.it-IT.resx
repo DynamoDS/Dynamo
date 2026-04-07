@@ -1322,7 +1322,7 @@ Gli assiemi successivi sono stati caricati più volte:
     <value>Apri definizione di {0}...</value>
   </data>
   <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
-    <value>New Graph from Template...</value>
+    <value>Nuovo grafico da modello...</value>
   </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>Conferma download pacchetto</value>
