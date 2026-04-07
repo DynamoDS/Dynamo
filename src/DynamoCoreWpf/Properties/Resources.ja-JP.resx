@@ -1330,7 +1330,7 @@
     <value>{0} 設定を開く...</value>
   </data>
   <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
-    <value>New Graph from Template...</value>
+    <value>テンプレートから新しいグラフを作成...</value>
   </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>パッケージのダウンロードの確認</value>

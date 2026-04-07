@@ -1329,7 +1329,7 @@
     <value>{0} 정의 열기...</value>
   </data>
   <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
-    <value>New Graph from Template...</value>
+    <value>템플릿을 기반으로 새 그래프 생성...</value>
   </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>패키지 다운로드 확인</value>

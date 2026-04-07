@@ -1330,7 +1330,7 @@ Les ensembles suivants ont été chargés plusieurs fois:
     <value>Ouvrir la définition {0} ...</value>
   </data>
   <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
-    <value>New Graph from Template...</value>
+    <value>Nouveau graphique à partir du modèle...</value>
   </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>Confirmation du téléchargement du package</value>
@@ -3109,7 +3109,7 @@ Essayez de placer le noeud **ByOrigin** mis en surbrillance.</value>
     <value>Non, fermer le fichier</value>
   </data>
   <data name="DiscardChangesWarningPopupCaption" xml:space="preserve">
-    <value>Supprimer les modifications ?</value>
+    <value>Ignorer les modifications?</value>
   </data>
   <data name="DiscardChangesWarningPopupMessage" xml:space="preserve">
     <value>Vos modifications seront perdues si vous quittez l'écran de chargement du package.</value>

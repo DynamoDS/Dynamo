@@ -1330,7 +1330,7 @@ Několikrát byly načteny i další sestavy:
     <value>Otevřít definici aplikace {0}...</value>
   </data>
   <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
-    <value>New Graph from Template...</value>
+    <value>Nový graf ze šablony…</value>
   </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>Potvrzení stažení balíčku</value>
@@ -3815,7 +3815,7 @@ Chcete-li vytvořit z tohoto souboru novou šablonu, uložte ho do jiné složky
     <value>Uložit</value>
   </data>
   <data name="DiscardButton" xml:space="preserve">
-    <value>Vyřadit</value>
+    <value>Zrušit</value>
   </data>
   <data name="PreferencesViewGroupStylesHeader" xml:space="preserve">
     <value>Styly skupin</value>

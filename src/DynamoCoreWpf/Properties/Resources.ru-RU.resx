@@ -1330,7 +1330,7 @@
     <value>Открыть определение {0}...</value>
   </data>
   <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
-    <value>New Graph from Template...</value>
+    <value>Создать граф из шаблона...</value>
   </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>Подтверждение загрузки пакета</value>
