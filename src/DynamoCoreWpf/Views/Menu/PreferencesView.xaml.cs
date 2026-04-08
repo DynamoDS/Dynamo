@@ -76,6 +76,7 @@ namespace Dynamo.Wpf.Views
 
             Owner = dynamoView;
             dynViewModel.Owner = this;
+            this.Closed += PreferencesView_Closed;
             if (DataContext is PreferencesViewModel viewModelTemp)
             {
                 this.viewModel = viewModelTemp;
@@ -173,6 +174,15 @@ namespace Dynamo.Wpf.Views
             (this.Owner as DynamoView).EnableOverlayBlocker(false);
 
             Close();
+        }
+
+        private void PreferencesView_Closed(object sender, EventArgs e)
+        {
+            this.Closed -= PreferencesView_Closed;
+            // Reset owner back to the main Dynamo window so that dialogs opened after
+            // Preferences closes do not attempt to use the now-closed window as owner.
+            // This runs regardless of how the window was closed (button, Alt+F4, programmatic).
+            dynViewModel.Owner = this.Owner;
         }
 
         /// <summary>
