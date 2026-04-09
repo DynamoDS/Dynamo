@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using MIConvexHull;
@@ -19,16 +19,47 @@ namespace Tessellation
         /// <search>uvs</search>
         public static IEnumerable<Curve> ByParametersOnSurface(IEnumerable<UV> uvs, Surface face)
         {
-            var verts = uvs.Select(Vertex2.FromUV).ToList();
+            var uvList = uvs?.ToList();
+            if (uvList == null || uvList.Count == 0 || face == null)
+                yield break;
+
+            // Get normalized UV scaling factors to handle anisotropic parameter spaces
+            var (normU, normV, minPhysicalScale) = UvScalingUtilities.GetNormalizedUvScales(face);
+
+            // Minimum edge length threshold in world units: 0.1% of the shorter physical dimension
+            // of the surface. Filters degenerate near-zero Voronoi edges arising from nearly
+            // coincident circumcenters without affecting valid geometry under normal usage.
+            var minEdgeLength = minPhysicalScale * 1e-3;
+
+            // Anisotropic scaling only by aspect ratio
+            var verts = uvList.Select(uv => new Vertex2(uv.U * normU, uv.V * normV)).ToList();
             var voronoiMesh = VoronoiMesh.Create<Vertex2, Cell2>(verts);
 
-            return from edge in voronoiMesh.Edges
-                   let _from = edge.Source.Circumcenter
-                   let to = edge.Target.Circumcenter
-                   let start = face.PointAtParameter(_from.X, _from.Y)
-                   let end = face.PointAtParameter(to.X, to.Y)
-                   where start.DistanceTo(end) > 0.1
-                   select Line.ByStartPointEndPoint(start, end);
+            static bool IsOutsideDomain(double u, double v) =>
+                    u < 0.0 || u > 1.0 || v < 0.0 || v > 1.0;
+
+            foreach (var edge in voronoiMesh.Edges)
+            {
+                // Map circumcenters back to UV
+                var cFrom = edge.Source.Circumcenter;
+                var cTo = edge.Target.Circumcenter;
+
+                var u1 = cFrom.X / normU;
+                var v1 = cFrom.Y / normV;
+                var u2 = cTo.X / normU;
+                var v2 = cTo.Y / normV;
+
+                // Discard edges where both circumcenters lie outside the UV domain [0,1].
+                // These are purely external Voronoi rays with no valid surface intersection.
+                if (IsOutsideDomain(u1, v1) && IsOutsideDomain(u2, v2))
+                    continue;
+
+                using var start = face.PointAtParameter(u1, v1);
+                using var end = face.PointAtParameter(u2, v2);
+
+                if (start.DistanceTo(end) > minEdgeLength)
+                    yield return Line.ByStartPointEndPoint(start, end);
+            }
         }
     }
 }

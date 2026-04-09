@@ -216,17 +216,22 @@ namespace Dynamo.Graph.Workspaces
         internal class DelayedGraphExecution : IDisposable
         {
             private readonly WorkspaceModel workspace;
+            private readonly bool requestRunOnDispose;
 
-            public DelayedGraphExecution(WorkspaceModel wModel)
+            public DelayedGraphExecution(WorkspaceModel wModel, bool requestRunOnDispose = true)
             {
                 workspace = wModel;
+                this.requestRunOnDispose = requestRunOnDispose;
                 Interlocked.Increment(ref workspace.delayGraphExecutionCounter);
             }
 
             public virtual void Dispose()
             {
                 Interlocked.Decrement(ref workspace.delayGraphExecutionCounter);
-                workspace.RequestRun();
+                if (requestRunOnDispose)
+                {
+                    workspace.RequestRun();
+                }
             }
         }
         #endregion
@@ -468,6 +473,17 @@ namespace Dynamo.Graph.Workspaces
         {
             var handler = NodesCleared;
             if (handler != null) handler();
+        }
+
+        /// <summary>
+        ///     Event that is fired before connectors are deleted during workspace clear.
+        ///     Allows the ViewModel layer to dispose NodeViewModels early, detaching
+        ///     PortPropertyChanged handlers before the expensive connector deletion loop.
+        /// </summary>
+        internal event Action NodesClearingConnectors;
+        protected virtual void OnNodesClearingConnectors()
+        {
+            NodesClearingConnectors?.Invoke();
         }
 
         /// <summary>
@@ -1414,6 +1430,8 @@ namespace Dynamo.Graph.Workspaces
 
             this.nodes = new List<NodeModel>(nodes);
             this.notes = new List<NoteModel>(notes);
+            foreach (var note in this.notes)
+                note.Workspace = this;
 
             this.annotations = new List<AnnotationModel>(annotations);
 
@@ -1553,6 +1571,11 @@ namespace Dynamo.Graph.Workspaces
                 // to delete events when an input connector is deleted.
                 node.Dispose();
             }
+
+            // Signal the ViewModel layer to dispose NodeViewModels before connector deletion.
+            // This detaches all PortPropertyChanged handlers, preventing expensive cascading
+            // UI updates (port color refreshes, WPF binding updates) during bulk connector removal.
+            OnNodesClearingConnectors();
 
             foreach (NodeModel el in Nodes)
             {
@@ -1708,6 +1731,13 @@ namespace Dynamo.Graph.Workspaces
                 if (!nodes.Remove(model)) return;
             }
 
+            // Ensure the node is removed from the global selection set. In the undo path,
+            // only RemoveAndDisposeNode is called — DynamoModel.DeleteModelInternal's
+            // explicit selection.Remove() is never reached — leaving the disposed NodeModel
+            // in DynamoSelection with its Rect intact. GetSelectableFromPoint would then
+            // find it at the old position and block a new double-click CBN creation there.
+            DynamoSelection.Instance.Selection.Remove(model);
+
             OnNodeRemoved(model);
             // Force this change to address the edge case that user deleting the right edge
             // node and do not see unsaved changes, e.g. the watch node at end of the graph
@@ -1738,6 +1768,8 @@ namespace Dynamo.Graph.Workspaces
 
         private void AddNote(NoteModel note)
         {
+            note.Workspace = this;
+
             lock (notes)
             {
                 notes.Add(note);
@@ -2776,9 +2808,9 @@ namespace Dynamo.Graph.Workspaces
         /// <summary>
         ///     Returns a DelayedGraphExecution object.
         /// </summary>
-        internal DelayedGraphExecution BeginDelayedGraphExecution()
+        internal DelayedGraphExecution BeginDelayedGraphExecution(bool requestRunOnDispose = true)
         {
-            return new DelayedGraphExecution(this);
+            return new DelayedGraphExecution(this, requestRunOnDispose);
         }
     }
 }

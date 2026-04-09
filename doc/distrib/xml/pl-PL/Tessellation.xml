@@ -52,6 +52,18 @@
             <summary>Tworzy triangulację Delaunaya z zestawu punktów.</summary>
             <param name="points">Zestaw punktów.</param>
         </member>
+        <member name="T:Tessellation.UvScalingUtilities">
+            <summary>Funkcje narzędziowe do skalowania UV na powierzchniach.</summary>
+        </member>
+        <member name="M:Tessellation.UvScalingUtilities.GetNormalizedUvScales(Autodesk.DesignScript.Geometry.Surface)">
+            <summary>Oblicza znormalizowane współczynniki skalowania UV dla powierzchni w celu obsługi anizotropowych przestrzeni parametrów.
+                Skalowanie zachowuje współczynnik proporcji, utrzymując wartości w rozsądnym zakresie liczbowym.</summary>
+            <param name="face">Powierzchnia do obliczenia współczynników skalowania.</param>
+            <returns>Krotność zawierająca znormalizowane współczynniki skali w kierunkach U i V oraz
+            minimalna fizyczna długość łuku powierzchni (jednostki globalne) w poprzek U i V.
+            Minimalna skala jest krótszą z dwóch średnich długości krzywej izometrycznej i służy
+            do obliczania progów odległości od świata i przestrzeni, które są skalowane poprawnie z powierzchnią.</returns>
+        </member>
         <member name="T:Tessellation.Voronoi">
             <summary>Funkcje do tworzenia diagramów Woronoja.</summary>
         </member>

@@ -1350,6 +1350,9 @@ Die nächsten Assemblys wurden mehrmals geladen:
   <data name="PackageDownloadStateInstalled" xml:space="preserve">
     <value>Installiert</value>
   </data>
+  <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
+    <value> (installiert)</value>
+  </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>Installation</value>
   </data>
@@ -2283,6 +2286,12 @@ Möchten Sie {1} deinstallieren? Starten Sie {2} neu, um die Deinstallation abzu
   <data name="AddStyleButton" xml:space="preserve">
     <value>Neuer Stil</value>
   </data>
+  <data name="ResetStylesButton" xml:space="preserve">
+    <value>Stile zurücksetzen</value>
+  </data>
+  <data name="ResetStylesButtonToolTip" xml:space="preserve">
+    <value>Stellt die vorgabemäßigen Gruppenstile wieder her und entfernt benutzerdefinierte Stile. Dies wirkt sich nicht auf Gruppen in vorhandenen Diagrammen aus und kann nicht rückgängig gemacht werden.</value>
+  </data>
   <data name="ResetPythonNet3ButtonText" xml:space="preserve">
     <value>PythonNet3 zurücksetzen</value>
   </data>
@@ -2706,8 +2715,17 @@ Dieses Paket wird nach dem nächsten Neustart von Dynamo entfernt.</value>
   <data name="PackageManagerInstall" xml:space="preserve">
     <value>Installieren</value>
   </data>
+  <data name="PackageManagerUpdate" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="PackageManagerUninstall" xml:space="preserve">
+    <value>Deinstallieren</value>
+  </data>
   <data name="PackageManagerPackageUpdated" xml:space="preserve">
     <value>Aktualisiert</value>
+  </data>
+  <data name="PackageManagerPackageUpdateAvailable" xml:space="preserve">
+    <value>Neue Version verfügbar</value>
   </data>
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>Neu</value>
@@ -2795,6 +2813,9 @@ Dieses Paket wird nach dem nächsten Neustart von Dynamo entfernt.</value>
   </data>
   <data name="PackageDetailsPackage" xml:space="preserve">
     <value>Paket</value>
+  </data>
+  <data name="PackageDetailsPackageApprovedTooltip" xml:space="preserve">
+    <value>Veröffentlicht von Autodesk</value>
   </data>
   <data name="PackageSortToolTip" xml:space="preserve">
     <value>Pakete sortieren.</value>
@@ -3370,6 +3391,15 @@ In bestimmten komplexen Diagrammen oder Host-Programmszenarien kann der automati
   <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
     <value>Beim Importieren der benutzerdefinierten Einstellungsdatei ist ein Fehler aufgetreten. Versuchen Sie es erneut, oder fahren Sie mit den Vorgabeeinstellungen fort.</value>
   </data>
+  <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
+    <value>Einstellungen importiert. Starten Sie Dynamo, schließen und starten Sie die Anwendung neu, um die Einstellungen zu übernehmen.</value>
+  </data>
+  <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
+    <value>Importierte Einstellungen zurücksetzen</value>
+  </data>
+  <data name="SplashScreenSettingsResetSuccess" xml:space="preserve">
+    <value>Importierte Einstellungen wurden zurückgesetzt.</value>
+  </data>
   <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
     <value>Dynamo-Ansicht wird gestartet...</value>
   </data>
@@ -3879,6 +3909,12 @@ Installieren Sie das PythonNet-Paket aus dem Package Manager, um dieses Diagramm
   </data>
   <data name="DynamoSplashScreenFailed" xml:space="preserve">
     <value>Fehler beim Laden des Dynamo-Startbildschirms. Starten Sie Dynamo neu</value>
+  </data>
+  <data name="DocumentationBrowserPreferences" xml:space="preserve">
+    <value>Dokumentationsbrowser</value>
+  </data>
+  <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
+    <value>Automatisch mit Blockauswahl synchronisieren.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

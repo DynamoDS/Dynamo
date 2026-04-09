@@ -76,7 +76,8 @@ namespace Dynamo.ViewModels
         private const string dynamoMLDataFileName = "DynamoMLDataPipeline.json";
 
         private bool onlineAccess = true;
-
+        //2px tolerance range for node filtering during Home and End key press
+        private readonly int tolerance = 2;
         // Can the user run the graph
         private bool CanRunGraph => HomeSpace.RunSettings.RunEnabled && !HomeSpace.GraphRunInProgress;
         private ObservableCollection<DefaultWatch3DViewModel> watch3DViewModels = new ObservableCollection<DefaultWatch3DViewModel>();
@@ -1479,6 +1480,9 @@ namespace Dynamo.ViewModels
                 case "EnablePresetOptions":
                     RaisePropertyChanged("EnablePresetOptions");
                     break;
+                case "CanUndoRedoCommand":
+                    RaiseCanExecuteUndoRedo();
+                    break;
             }
         }
 
@@ -2236,10 +2240,10 @@ namespace Dynamo.ViewModels
                 if (displayTrustWarning && (currentWorkspaceViewModel?.IsHomeSpace ?? false))
                 {
                     // Skip these when opening dyf
+                    FileTrustViewModel.AllowOneTimeTrust = false;
                     FileTrustViewModel.DynFileDirectoryName = directoryName;
                     FileTrustViewModel.ShowWarningPopup = true;
-                    (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
-                    FileTrustViewModel.AllowOneTimeTrust = false;
+                    (HomeSpaceViewModel as HomeWorkspaceViewModel)?.UpdateRunStatusMsgBasedOnStates();
                 }
             }
             catch (Exception e)
@@ -2327,10 +2331,10 @@ namespace Dynamo.ViewModels
                 if (displayTrustWarning && (currentWorkspaceViewModel?.IsHomeSpace ?? false))
                 {
                     // Skip these when opening dyf
+                    FileTrustViewModel.AllowOneTimeTrust = false;
                     FileTrustViewModel.DynFileDirectoryName = directoryName;
                     FileTrustViewModel.ShowWarningPopup = true;
-                    (HomeSpaceViewModel as HomeWorkspaceViewModel).UpdateRunStatusMsgBasedOnStates();
-                    FileTrustViewModel.AllowOneTimeTrust = false;
+                    (HomeSpaceViewModel as HomeWorkspaceViewModel)?.UpdateRunStatusMsgBasedOnStates();
                 }
             }
             catch (Exception e)
@@ -2481,14 +2485,22 @@ namespace Dynamo.ViewModels
                     return;
             }
 
-            bool isTemplate = parameter != null && (parameter as string).Equals("Template");
+            bool isTemplate = parameter is string s && string.Equals(s, "Template", StringComparison.Ordinal);
+            var fileExtensions = isTemplate ? "*.dyn" : "*.dyn;*.dyf";
+            var dialogTitle = isTemplate
+                ? Resources.OpenDynamoTemplateDialogTitle
+                : string.Format(Resources.OpenDynamoDefinitionDialogTitle, BrandingResourceProvider.ProductName);
+            var fileFilter = string.Format(Resources.FileDialogDynamoDefinitions,
+                BrandingResourceProvider.ProductName, fileExtensions);
+            if (!isTemplate)
+            {
+                fileFilter += "|" + string.Format(Resources.FileDialogAllFiles, "*.*");
+            }
 
             DynamoOpenFileDialog _fileDialog = new DynamoOpenFileDialog(this)
             {
-                Filter = string.Format(Resources.FileDialogDynamoDefinitions,
-                         BrandingResourceProvider.ProductName, "*.dyn;*.dyf") + "|" +
-                         string.Format(Resources.FileDialogAllFiles, "*.*"),
-                Title = string.Format(Resources.OpenDynamoDefinitionDialogTitle,BrandingResourceProvider.ProductName)
+                Filter = fileFilter,
+                Title = dialogTitle
             };
 
             // If opening a template, use templates dir as the initial dir
@@ -3604,12 +3616,14 @@ namespace Dynamo.ViewModels
 
         private void Save3DImage(object parameters)
         {
-            // Save the parameters
-            OnRequestSave3DImage(this, new ImageSaveEventArgs(parameters.ToString()));
+            var args = new ImageSaveEventArgs(parameters.ToString());
+            OnRequestSave3DImage(this, args);
 
-            string message = String.Concat(WpfResources.ExportWorkspaceAs3DImage, parameters.ToString());
-
-            ToastManager?.CreateRealTimeInfoWindow(message, true);
+            if (args.Success)
+            {
+                string message = String.Concat(WpfResources.ExportWorkspaceAs3DImage, parameters.ToString());
+                ToastManager?.CreateRealTimeInfoWindow(message, true);
+            }
         }
 
         internal bool CanSaveImage(object parameters)
@@ -4498,6 +4512,53 @@ namespace Dynamo.ViewModels
         {
             return true;
         }
+
+        #region "Home And End key press events in Canvas"
+        /// <summary>
+        /// Enable the shortcut key events when there is no selection.
+        /// </summary>
+        /// <returns></returns>
+        private bool IsHomeAndEndKeyEnabled()
+        {
+            return BackgroundPreviewViewModel != null &&
+                    !CurrentSpaceViewModel.HasSelection;
+        }
+        private void FitCanvasToSelectedNodes(List<NodeViewModel> nodes)
+        {
+            var nodeSet = new HashSet<NodeModel>(nodes.Select(nvm => nvm.NodeModel));
+            var groups = CurrentSpaceViewModel.Annotations.Where(a => a.Nodes.Any(n => nodeSet.Contains(n)));
+            nodes.ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
+            groups.ToList().ForEach((grp) => DynamoSelection.Instance.Selection.Add(grp.AnnotationModel));
+            FitViewCommand.Execute(true);
+            DynamoSelection.Instance.ClearSelection();
+        }
+        internal void GoToLeftMostNode(object parameter)
+        {
+            if (CurrentSpaceViewModel.Nodes.Count > 0)
+            {
+                double minX = CurrentSpaceViewModel.Nodes.Min(x => x.X);
+                var nodes = CurrentSpaceViewModel.Nodes.Where(x => x.X <= minX + tolerance).ToList();
+                FitCanvasToSelectedNodes(nodes);
+            }
+        }
+        internal bool CanGoToLeftMostNode(object obj)
+        {
+            return IsHomeAndEndKeyEnabled();
+        }
+        internal void GoToRightMostNode(object parameter)
+        {
+            if (CurrentSpaceViewModel.Nodes.Count > 0)
+            {
+                double maxX = CurrentSpaceViewModel.Nodes.Max(x => x.X + x.ActualWidth);
+                var nodes = CurrentSpaceViewModel.Nodes.Where(x => x.X + x.ActualWidth >= maxX - tolerance).ToList();
+                FitCanvasToSelectedNodes(nodes);         
+            }
+        }
+        internal bool CanGoToRightMostNode(object obj)
+        {
+            return IsHomeAndEndKeyEnabled();
+        }
+        #endregion
 
         #region Shutdown related methods
 

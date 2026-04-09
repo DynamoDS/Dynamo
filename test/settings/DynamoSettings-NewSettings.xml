@@ -84,6 +84,7 @@
   <MLRecommendationConfidenceLevel>99</MLRecommendationConfidenceLevel>
   <MLRecommendationNumberOfResults>5</MLRecommendationNumberOfResults>
   <HideAutocompleteMethodOptions>true</HideAutocompleteMethodOptions>
+  <IsAutoSyncDocumentBrowser>false</IsAutoSyncDocumentBrowser>
   <EnableNotificationCenter>false</EnableNotificationCenter>
   <EnableStaticSplashScreen>false</EnableStaticSplashScreen>
   <IsMLAutocompleteTOUApproved>false</IsMLAutocompleteTOUApproved>

@@ -1,0 +1,864 @@
+{
+  "Uuid": "d43c86fb-da94-47ad-b5e6-355200bd1629",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "b2ddd976b8964dbcb09856b887e6c14e",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "762f6960bcf6491291ca64f1712b2d45",
+          "Name": "list",
+          "Description": "[Autodesk.DesignScript.Geometry.Point.ByCoordinates(2.677775, 4.638042, 0), Autodesk.DesignScript.Geometry.Point.ByCoordinates(4.638042, 2.677775, 0), Autodesk.DesignScript.Geometry.Point.ByCoordinates(5.35555, 0, 0), Autodesk.DesignScript.Geometry.Point.ByCoordinates(4.638042, -2.677775, 0), Autodesk.DesignScript.Geometry.Point.ByCoordinates(2.677775, -4.638042, 0), Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, -5.35555, 0), Autodesk.DesignScript.Geometry.Point.ByCoordinates(-2.67777...",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "[Point.ByCoordinates( 2.677775, 4.638042, 0.000000 ),\nPoint.ByCoordinates( 4.638042, 2.677775, 0.000000    ),\nPoint.ByCoordinates( 5.355550, 0.000000, 0.000000    ),\nPoint.ByCoordinates( 4.638042, -2.677775, 0.000000   ),\nPoint.ByCoordinates( 2.677775, -4.638042, 0.000000   ),\nPoint.ByCoordinates( 0.000000, -5.355550, 0.000000   ),\nPoint.ByCoordinates( -2.677775, -4.638042, 0.000000  ),\nPoint.ByCoordinates( -4.638042, -2.677775, 0.000000  ),\nPoint.ByCoordinates( -5.355550, 0.000000, 0.000000   ),\nPoint.ByCoordinates( -4.638042, 2.677775, 0.000000   ),\nPoint.ByCoordinates( -2.677775, 4.638042, 0.000000   ),\nPoint.ByCoordinates( 0.000000, 5.355550, 0.000000    ),\nPoint.ByCoordinates( 2.677775, 4.638042, 0.000000    ),\nPoint.ByCoordinates( 4.638042, 2.677775, 0.000000    ),\nPoint.ByCoordinates( 5.355550, 0.000000, 0.000000    ),\nPoint.ByCoordinates( 4.638042, -2.677775, 0.000000   ),\nPoint.ByCoordinates( 2.677775, -4.638042, 0.000000   )];"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "cfc82d26f1b34acd8af6a62eab93edc7",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "58ca85cbf25e47d08368d53fb2964213",
+          "Name": "list",
+          "Description": "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "[0.000000,\n1.000000,\n2.000000,\n3.000000,\n4.000000,\n5.000000,\n6.000000,\n7.000000,\n8.000000,\n9.000000,\n10.000000,\n11.000000,\n12.000000,\n13.000000,\n14.000000,\n15.000000,\n16.000000,\n17.000000,\n18.000000,\n19.000000,\n20.000000,\n21,\n22];"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "adb55c2667b84723938a0ee7c0190766",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "91dc681543d44131bf47d9de2c5d2f97",
+          "Name": "list",
+          "Description": "[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "[1.000000,\n1.000000,\n1.000000,\n1.000000,\n1.000000,\n1.000000,\n1.000000,\n1.000000,\n1.000000,\n1.000000,\n1.000000,\n1.000000,\n1.000000,\n1.000000,\n1.000000,\n1.000000,\n1.000000];"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "0a70ba8bfe754d2286343d4e792ecc5e",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "790b934adae24e8d996d2679a5d2d42e",
+          "Name": "points",
+          "Description": "Point[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6c82b876287c4ff39e1baaba820a01eb",
+          "Name": "weights",
+          "Description": "double[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3a30a240139942f68e478328911e04b2",
+          "Name": "knots",
+          "Description": "double[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0c662d6a1aff48b397d967dc7fa06c88",
+          "Name": "degree",
+          "Description": "int\nDefault value : 3",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "577dbaf79a5d4284a74a7e68a7a32c75",
+          "Name": "NurbsCurve",
+          "Description": "NurbsCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPointsWeightsKnots@Autodesk.DesignScript.Geometry.Point[],double[],double[],int",
+      "Replication": "Auto",
+      "Description": "Create a BSplineCurve by from control vertices, weights, and knots. FROM ASM DOCS: Degree: Should be greater than 1 (piecewise-linear spline) and less than 26 (the maximum B-spline basis degree supported by ASM). Weights: All weight values (if supplied) should be strictly positive. Weights smaller than 1e-11 will be rejected and the function will fail. Knots: The knot vector should be a non-decreasing sequence. Interior knot multiplicity should be no larger than degree + 1 at the start/end knot and degree at an internal knot (this allows curves with G1 discontinuities to be represented). Note that non-clamped knot vectors are supported, but will be converted to clamped ones, with the corresponding changes applied to the control point/weight data. knot array: the array size must be num_control_points + degree + 1\n\nNurbsCurve.ByControlPointsWeightsKnots (points: Point[], weights: double[], knots: double[], degree: int = 3): NurbsCurve"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "191e4d2e19f043e5a0795903635a5f30",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "43fcb2a2aac54527bda24e3fc2877725",
+          "Name": "nurbsCurve",
+          "Description": "Autodesk.DesignScript.Geometry.NurbsCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2bc008c215a44f34878902ecb08776d5",
+          "Name": "Point[]",
+          "Description": "An Array of Points",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ControlPoints",
+      "Replication": "Auto",
+      "Description": "Get the control points of the NurbsCurve.\n\nNurbsCurve.ControlPoints ( ): Point[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "14bf96d0eeb44b5691925d5fd38b40f9",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "e1d289279cad4257a39e92d9b9bb267a",
+          "Name": "nurbsCurve",
+          "Description": "Autodesk.DesignScript.Geometry.NurbsCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ed0452e63ea4443a9e4ccc778c6cc0ba",
+          "Name": "double[]",
+          "Description": "The knots of the nurbs curve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.Knots",
+      "Replication": "Auto",
+      "Description": "The knots of the Curve. Knots is a series of parameter values (doubles) used to determine where and how the control points affect the curve.\n\nNurbsCurve.Knots ( ): double[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "119da0a19b68454eb86e1233aaecca88",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "23eb6901d6c945d2a62fe5db1b0a3b3f",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number.",
+      "InputValue": 5.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 378.0,
+      "WatchHeight": 388.8,
+      "Id": "e7dc65b7ffc24c749447fc9fb88e7abb",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "192158abb31142d7bc889daf599025fb",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "afb93bbc4d0f4c66b3f91c057e9a7970",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "c0dbaaabe00b4dbca32e182f9cb9e821",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "db7403ade8f44909a4f394bbfff857f4",
+          "Name": "geometry",
+          "Description": "The geometry to which you would like to apply color.\n\nGeometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d5655690b5ce4005b22f53575bc7ca54",
+          "Name": "color",
+          "Description": "The color.\n\nColor",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "07a263834c134304a994f45659fb29d9",
+          "Name": "GeometryColor",
+          "Description": "A Display object.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Modifiers.GeometryColor.ByGeometryColor@Autodesk.DesignScript.Geometry.Geometry,DSCore.Color",
+      "Replication": "Auto",
+      "Description": "Display geometry using a color.\n\nGeometryColor.ByGeometryColor (geometry: Geometry, color: Color): GeometryColor"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "955f8b85f7d04cd8a363308160743f29",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "568fd31cabc5498fa0a0ff914ea6c44e",
+          "Name": "alpha",
+          "Description": "Alpha value (between 0 and 255 inclusive)\n\nint\nDefault value : 255",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1c02f92a440f47ab90c5889f82cf6917",
+          "Name": "red",
+          "Description": "Red value for RGB color model (between 0 and 255 inclusive)\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "52f2b9eb8eec406ea8ce4fcf7ea0b6ca",
+          "Name": "green",
+          "Description": "Green value for RGB color model (between 0 and 255 inclusive)\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c9cb481fea4448c9a96e5b3aa80c0dc9",
+          "Name": "blue",
+          "Description": "Blue value for RGB color model (between 0 and 255 inclusive)\n\nint\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "83525a83f58b4a2d85be1370948b3aec",
+          "Name": "color",
+          "Description": "Color created from ARGB",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.Color.ByARGB@int,int,int,int",
+      "Replication": "Auto",
+      "Description": "Construct a color by alpha, red, green, and blue components.\n\nColor.ByARGB (alpha: int = 255, red: int = 0, green: int = 0, blue: int = 0): Color"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "383c730165a94251b00367520ffbd272",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0528dcae16f544d0b2574f0f48fbbba6",
+          "Name": "integer",
+          "Description": "255",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "255;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "50a65d9e797f493db45a990df6fb3776",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "edaaf394d530451f9304a1af0edbc604",
+          "Name": "nurbsCurve",
+          "Description": "Autodesk.DesignScript.Geometry.NurbsCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0b1d6b15c7ff4d55a0a728a5ee3bcd7f",
+          "Name": "bool",
+          "Description": "bool",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.IsPeriodic",
+      "Replication": "Auto",
+      "Description": "Whether the NurbsCurve is periodic or not, a periodic curve is a closed curve in which deformation does not cause the appearance of kinks.\n\nNurbsCurve.IsPeriodic: bool"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "ae54e601623542fa97610a49cafe37c0",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "23867fbcbced4bafb32bb3f5ac5dcaa4",
+          "Name": "nurbsCurve",
+          "Description": "Autodesk.DesignScript.Geometry.NurbsCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f35695fe4a2949289f48ad3356ff426b",
+          "Name": "Point[]",
+          "Description": "An Array of Points",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicControlPoints",
+      "Replication": "Auto",
+      "Description": "The truly periodic control points of the NurbsCurve if periodic. Note that this cannot be used together with PeriodicKnots() to reconstruct the original periodic NurbsCurve. Throws (or is undefined) when the curve is not periodic.\n\nNurbsCurve.PeriodicControlPoints ( ): Point[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "06a81abe5b4443cfbe3338a9244f78d5",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "c75a9c270b904af8a47a1edbc148fc14",
+          "Name": "nurbsCurve",
+          "Description": "Autodesk.DesignScript.Geometry.NurbsCurve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "de896df47e734a64b5b373b80caa9e2c",
+          "Name": "double[]",
+          "Description": "The periodic knot vector of the nurbs curve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.PeriodicKnots",
+      "Replication": "Auto",
+      "Description": "The unclamped knots of the Curve if Periodic. Knots is a series of parameter values (doubles) used to determine where and how the control points affect the curve. Note that this cannot be used together with PeriodicControlPoints() to reconstruct the original periodic NurbsCurve. Throws (or is undefined) when the curve is not periodic.\n\nNurbsCurve.PeriodicKnots ( ): double[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 227.2,
+      "WatchHeight": 527.2,
+      "Id": "9f9214f6c3ef4b5aa1fb60b56f1f3de0",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "ab72b2c719c041558c9182add53db895",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a1f21c039e74420097b2ef6f839741d0",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 222.8,
+      "WatchHeight": 504.8,
+      "Id": "20869be9e8194c859c5b1cce1b6d6f19",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "387ae835bc114f3697cf093e8a4dbb36",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c52a44e68687425a95002d958cf1d77a",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 390.8,
+      "WatchHeight": 387.2,
+      "Id": "680c5df652984f69a0434a7048fc9640",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "8582775b943d4ebaae8327252f5a1020",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7dd5c2c7c668429484d803769ba71cc5",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "762f6960bcf6491291ca64f1712b2d45",
+      "End": "790b934adae24e8d996d2679a5d2d42e",
+      "Id": "489ea07d49f64b6bb8bb3d9e9a8112f7",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "58ca85cbf25e47d08368d53fb2964213",
+      "End": "3a30a240139942f68e478328911e04b2",
+      "Id": "ec3c41e353d240c5ba5a0d7d599151c2",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "91dc681543d44131bf47d9de2c5d2f97",
+      "End": "6c82b876287c4ff39e1baaba820a01eb",
+      "Id": "29f0a62db4784eefa07e29ee805ae3a9",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "577dbaf79a5d4284a74a7e68a7a32c75",
+      "End": "43fcb2a2aac54527bda24e3fc2877725",
+      "Id": "b890829687664bd598f730ec5a11f7c2",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "577dbaf79a5d4284a74a7e68a7a32c75",
+      "End": "e1d289279cad4257a39e92d9b9bb267a",
+      "Id": "8fcc85e55a6a44bdab913b99705343a7",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "577dbaf79a5d4284a74a7e68a7a32c75",
+      "End": "edaaf394d530451f9304a1af0edbc604",
+      "Id": "82a2314fc0e141ae86d82502461d439f",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "577dbaf79a5d4284a74a7e68a7a32c75",
+      "End": "23867fbcbced4bafb32bb3f5ac5dcaa4",
+      "Id": "4e9ef44e24ce4c3ea0a3e9341dd436a6",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "577dbaf79a5d4284a74a7e68a7a32c75",
+      "End": "c75a9c270b904af8a47a1edbc148fc14",
+      "Id": "4311a2927cc84aa5860ce524b6f70e20",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2bc008c215a44f34878902ecb08776d5",
+      "End": "192158abb31142d7bc889daf599025fb",
+      "Id": "a8c7317dcd9c4fa1b826bb92b01292d7",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2bc008c215a44f34878902ecb08776d5",
+      "End": "db7403ade8f44909a4f394bbfff857f4",
+      "Id": "8f973f2e66c44b7ea1b514b45c28d46e",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ed0452e63ea4443a9e4ccc778c6cc0ba",
+      "End": "387ae835bc114f3697cf093e8a4dbb36",
+      "Id": "3a7f5cb1dfc6465aa3f62f2055f05518",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "23eb6901d6c945d2a62fe5db1b0a3b3f",
+      "End": "0c662d6a1aff48b397d967dc7fa06c88",
+      "Id": "1827fd5bd6814a4999522ff09f292021",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "83525a83f58b4a2d85be1370948b3aec",
+      "End": "d5655690b5ce4005b22f53575bc7ca54",
+      "Id": "9e72a6c7ca054bf1bf11f798c160d793",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "0528dcae16f544d0b2574f0f48fbbba6",
+      "End": "1c02f92a440f47ab90c5889f82cf6917",
+      "Id": "fd9872fe549146be9f4f2077701ed3c7",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f35695fe4a2949289f48ad3356ff426b",
+      "End": "8582775b943d4ebaae8327252f5a1020",
+      "Id": "9bd3018ca41d41ae831b29ce61ce5a82",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "de896df47e734a64b5b373b80caa9e2c",
+      "End": "ab72b2c719c041558c9182add53db895",
+      "Id": "0f968dbee4074156964189d9010b39e0",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": true,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.15",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "4.1.0.2940",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -11.870511054992676,
+      "EyeY": 23.07320785522461,
+      "EyeZ": 14.29176139831543,
+      "LookX": -6.705080986022949,
+      "LookY": -23.592079162597656,
+      "LookZ": -16.33993911743164,
+      "UpX": -0.3038983941078186,
+      "UpY": 0.5993115305900574,
+      "UpZ": -0.7405886054039001
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "b2ddd976b8964dbcb09856b887e6c14e",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 512.3898404950596,
+        "Y": -782.1794774215697
+      },
+      {
+        "Id": "cfc82d26f1b34acd8af6a62eab93edc7",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 512.3898404950596,
+        "Y": 22.8205225784302
+      },
+      {
+        "Id": "adb55c2667b84723938a0ee7c0190766",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 512.3898404950596,
+        "Y": -380.1794774215697
+      },
+      {
+        "Id": "0a70ba8bfe754d2286343d4e792ecc5e",
+        "Name": "NurbsCurve.ByControlPointsWeightsKnots",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1152.4456081926735,
+        "Y": 105.90205417112475
+      },
+      {
+        "Id": "191e4d2e19f043e5a0795903635a5f30",
+        "Name": "NurbsCurve.ControlPoints",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 1856.3747837829685,
+        "Y": -648.5434629186241
+      },
+      {
+        "Id": "14bf96d0eeb44b5691925d5fd38b40f9",
+        "Name": "NurbsCurve.Knots",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1834.2029793711554,
+        "Y": 295.3936117683238
+      },
+      {
+        "Id": "119da0a19b68454eb86e1233aaecca88",
+        "Name": "Number",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 512.3898404950596,
+        "Y": 522.9930225784303
+      },
+      {
+        "Id": "e7dc65b7ffc24c749447fc9fb88e7abb",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2273.923531949285,
+        "Y": -642.9170660061542
+      },
+      {
+        "Id": "c0dbaaabe00b4dbca32e182f9cb9e821",
+        "Name": "GeometryColor.ByGeometryColor",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2225.5747837829686,
+        "Y": -831.5434629186241
+      },
+      {
+        "Id": "955f8b85f7d04cd8a363308160743f29",
+        "Name": "Color.ByARGB",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1856.3747837829685,
+        "Y": -892.5434629186241
+      },
+      {
+        "Id": "383c730165a94251b00367520ffbd272",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1365.5747837829686,
+        "Y": -858.715962918624
+      },
+      {
+        "Id": "50a65d9e797f493db45a990df6fb3776",
+        "Name": "NurbsCurve.IsPeriodic",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1877.4267730310946,
+        "Y": 499.64606959380467
+      },
+      {
+        "Id": "ae54e601623542fa97610a49cafe37c0",
+        "Name": "NurbsCurve.PeriodicControlPoints",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1806.0078821181055,
+        "Y": -462.72863292778993
+      },
+      {
+        "Id": "06a81abe5b4443cfbe3338a9244f78d5",
+        "Name": "NurbsCurve.PeriodicKnots",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1825.7251846422841,
+        "Y": 124.77471871089335
+      },
+      {
+        "Id": "9f9214f6c3ef4b5aa1fb60b56f1f3de0",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2215.3582507360734,
+        "Y": -140.0692533509158
+      },
+      {
+        "Id": "20869be9e8194c859c5b1cce1b6d6f19",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2603.029223332349,
+        "Y": -131.8575607127176
+      },
+      {
+        "Id": "680c5df652984f69a0434a7048fc9640",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2814.739183308221,
+        "Y": -647.5483033273204
+      }
+    ],
+    "Annotations": [],
+    "X": -166.96869490779773,
+    "Y": 444.3633334598602,
+    "Zoom": 0.4053879519812414
+  }
+}

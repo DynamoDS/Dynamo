@@ -115,25 +115,29 @@ namespace Dynamo.Notifications
             LoadNotificationCenter();
 
             //If TrustedLocations contain paths pointing to ProgramData, log a warning notification.
-            string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-            var unsafeLocations = new System.Collections.Generic.List<string>();
-            foreach (var location in viewModel.Model.PreferenceSettings.TrustedLocations)
+            //This can be disabled by the host via EnableUnTrustedLocationsNotifications.
+            if (viewModel.Model.PreferenceSettings.EnableUnTrustedLocationsNotifications)
             {
-                var fullChildPath = Path.GetFullPath(location);
-                if (fullChildPath.StartsWith(programDataPath, StringComparison.OrdinalIgnoreCase))
+                string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+                var unsafeLocations = new System.Collections.Generic.List<string>();
+                foreach (var location in viewModel.Model.PreferenceSettings.TrustedLocations)
                 {
-                    unsafeLocations.Add(location);
+                    var fullChildPath = Path.GetFullPath(location);
+                    if (fullChildPath.StartsWith(programDataPath, StringComparison.OrdinalIgnoreCase))
+                    {
+                        unsafeLocations.Add(location);
+                    }
                 }
-            }
-            if (unsafeLocations.Count > 0)
-            {
-                foreach (var unsafePath in unsafeLocations)
+                if (unsafeLocations.Count > 0)
                 {
-                    string detail = Properties.Resources.UnsafePathDetectedDetail + "\n" + unsafePath;
-                    Notifications.Add(new NotificationMessage("Preference Settings", Properties.Resources.UnsafePathDetectedTitle, detail));
-                }
+                    foreach (var unsafePath in unsafeLocations)
+                    {
+                        string detail = Properties.Resources.UnsafePathDetectedDetail + "\n" + unsafePath;
+                        Notifications.Add(new NotificationMessage("Preference Settings", Properties.Resources.UnsafePathDetectedTitle, detail));
+                    }
 
-                notificationsMenuItem.NotificationsChangeHandler.Invoke(this, null);
+                    notificationsMenuItem.NotificationsChangeHandler.Invoke(this, null);
+                }
             }
         }
 

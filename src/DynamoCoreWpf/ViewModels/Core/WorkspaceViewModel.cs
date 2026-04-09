@@ -630,6 +630,7 @@ namespace Dynamo.ViewModels
             Model.NodeAdded += Model_NodeAdded;
             Model.NodeRemoved += Model_NodeRemoved;
             Model.NodesCleared += Model_NodesCleared;
+            Model.NodesClearingConnectors += Model_NodesClearingConnectors;
 
             Model.NoteAdded += Model_NoteAdded;
             Model.NoteRemoved += Model_NoteRemoved;
@@ -724,6 +725,7 @@ namespace Dynamo.ViewModels
             Model.NodeAdded -= Model_NodeAdded;
             Model.NodeRemoved -= Model_NodeRemoved;
             Model.NodesCleared -= Model_NodesCleared;
+            Model.NodesClearingConnectors -= Model_NodesClearingConnectors;
             Model.NoteAdded -= Model_NoteAdded;
             Model.NoteRemoved -= Model_NoteRemoved;
             Model.NotesCleared -= Model_NotesCleared;
@@ -908,9 +910,10 @@ namespace Dynamo.ViewModels
 
         void Connectors_ConnectorAdded(ConnectorModel c)
         {
+            if (Connectors.Any(x => x.ConnectorModel == c)) return;
+
             var viewModel = new ConnectorViewModel(this, c);
-            if (Connectors.All(x => x.ConnectorModel != c))
-                Connectors.Add(viewModel);
+            Connectors.Add(viewModel);
         }
 
         void Connectors_ConnectorDeleted(ConnectorModel c)
@@ -926,9 +929,48 @@ namespace Dynamo.ViewModels
         private void Model_NoteAdded(NoteModel note)
         {
             var viewModel = new NoteViewModel(this, note);
+            ResolvePinnedNodeReference(note);
             Notes.Add(viewModel);
         }
+        /// <summary>
+        /// Resolves the pinned note references with node during Undo operation.
+        /// During undo, the note model is recreated with the pinned node guid but without the reference to the pinned node.
+        /// This function resolves the reference by looking for the node with the same guid as stored in note model and re-establishes the pin relationship in view model.
+        /// Executed if node is created before the note during undo operation.
+        /// </summary>
+        /// <param name="note"></param>
+        private void ResolvePinnedNodeReference(NoteModel note)
+        {
+            if (!note.PinnedNodeGuid.Equals(Guid.Empty) &&
+              note.PinnedNode == null)
+            {
+                var pinnedNode = Nodes.Where(x => x.Id.Equals(note.PinnedNodeGuid));
+                if (pinnedNode.Any())
+                {
+                    note.TryToSubscribeUndoNote(recordForUndo: false);                    
+                }
+            }
+        }
 
+        /// <summary>
+        /// Resolves the pinned note references with node during Undo operation.
+        /// During undo, the note model is recreated with the pinned node guid but without the reference to the pinned node.
+        /// This function resolves the reference by looking for the node with the same guid as stored in note model and re-establishes the pin relationship in view model.
+        /// Executed if note is created before the pinned node during undo operation.
+        /// </summary>
+        /// <param name="node"></param>
+        private void ResolvePinnedNodeReference(NodeModel node)
+        {
+            var pinnedNotes = Notes.Where(x => x.Model.PinnedNodeGuid.Equals(node.GUID) &&
+                x.Model.PinnedNode == null);
+            if (pinnedNotes.Any())
+            {
+                foreach (NoteViewModel note in pinnedNotes)
+                {
+                    note.Model.TryToSubscribeUndoNote(recordForUndo: false);                                     
+                }
+            }
+        }
         private void Model_NoteRemoved(NoteModel note)
         {
             var matchingNoteViewModel = Notes.First(x => x.Model == note);
@@ -968,7 +1010,12 @@ namespace Dynamo.ViewModels
             Annotations.Clear();
         }
 
-        void Model_NodesCleared()
+        /// <summary>
+        /// Fired before connectors are deleted during workspace clear.
+        /// Disposes NodeViewModels early to detach PortPropertyChanged handlers,
+        /// preventing expensive cascading UI updates during bulk connector removal.
+        /// </summary>
+        void Model_NodesClearingConnectors()
         {
             lock (Nodes)
             {
@@ -977,6 +1024,29 @@ namespace Dynamo.ViewModels
                     this.unsubscribeNodeEvents(nodeViewModel);
                     nodeViewModel.Dispose();
                 }
+                nodeViewModelsPreDisposed = true;
+            }
+        }
+
+        /// <summary>
+        /// Tracks whether NodeViewModels have already been disposed by
+        /// Model_NodesClearingConnectors during workspace clear.
+        /// </summary>
+        private bool nodeViewModelsPreDisposed;
+
+        void Model_NodesCleared()
+        {
+            lock (Nodes)
+            {
+                if (!nodeViewModelsPreDisposed)
+                {
+                    foreach (var nodeViewModel in Nodes)
+                    {
+                        this.unsubscribeNodeEvents(nodeViewModel);
+                        nodeViewModel.Dispose();
+                    }
+                }
+                nodeViewModelsPreDisposed = false;
                 Nodes.Clear();
             }
             Errors.Clear();
@@ -1019,6 +1089,7 @@ namespace Dynamo.ViewModels
             {
                 Nodes.Add(nodeViewModel);
             }
+            ResolvePinnedNodeReference(node);
             if (nodeViewModel.ErrorBubble != null)
                 Errors.Add(nodeViewModel.ErrorBubble);
 

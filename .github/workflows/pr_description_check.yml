@@ -22,7 +22,9 @@ jobs:
     - name: Extract Release Notes
       id: extract_notes
       run: |
-        release_notes=$(grep -oP '(?s)(?<=### Release Notes)\s*([\s\S]*?)\s*(?=###)' pr_description.txt)
+        # The PR body was collapsed to a single line by the previous step,
+        # so use grep -oP to extract text after "### Release Notes" up to the next "###" or end of string.
+        release_notes=$(grep -oP '### Release Notes\s*\K.*?(?=\s*###|$)' pr_description.txt || true)
         echo "$release_notes" > release_notes.txt
         cat release_notes.txt
       
@@ -46,6 +48,10 @@ jobs:
           else
             echo "Error: Release notes must have at least 6 words."
             echo "Author: Please add more context of your changes."
+            echo "Extracted release notes (word count: $word_count):"
+            echo "---"
+            echo "$release_notes"
+            echo "---"
             exit 1
           fi
         fi

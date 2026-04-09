@@ -23,6 +23,11 @@ namespace Dynamo.PackageManager
         public bool? IsCompatible { get; set; }
 
         /// <summary>
+        /// Indicates whether this version is currently installed locally.
+        /// </summary>
+        public bool IsInstalled { get; set; }
+
+        /// <summary>
         /// A helper method to determine the compatibility of a specific package version from the provided version details.
         /// </summary>
         /// <param name="versionDetails">A collection of VersionInformation </param>

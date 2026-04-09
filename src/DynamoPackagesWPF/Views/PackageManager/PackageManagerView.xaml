@@ -164,7 +164,7 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <TabControl x:Name="projectManagerTabControl"
+                    <local:PackageManagerTabControl x:Name="packageManagerTabControl"
                                 Padding="0"
                                 Background="{StaticResource PreferencesWindowBackgroundColor}"
                                 BorderThickness="0"
@@ -251,6 +251,7 @@
 
                         <TabItem x:Name="publishTab"
                                  Header="{x:Static p:Resources.PackageManagerPublishTab}"
+                                 local:PackageManagerTabControl.SuppressHomeEndWhenSelected="{Binding IsNewPMPublishWizardEnabled, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"
                                  PreviewMouseDown="tab_PreviewMouseDown"
                                  Style="{StaticResource PackageManagerTab}">
                             <!--  Publish Packages Tab  -->
@@ -561,7 +562,7 @@
                             </Border>
                         </TabItem>
 
-                    </TabControl>
+                    </local:PackageManagerTabControl>
                 </Grid>
             </Grid>
 

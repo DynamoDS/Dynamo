@@ -151,6 +151,112 @@ namespace Dynamo.Tests.Models
             Assert.AreEqual(0, cbn.Infos.Count);
         }
 
+        /// <summary>
+        /// This test verifies that Warning and Info messages can coexist on a node.
+        /// After Info() is called on a node in Warning state, both entries should remain
+        /// in Infos and the State should be restored to Warning (not downgraded to Info).
+        /// ClearInfoMessages should remove info entries without affecting warnings.
+        /// ClearErrorsAndWarnings should remove warning entries without affecting persistent info.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WarningAndInfoCoexistOnNode()
+        {
+            var cbn = new CodeBlockNodeModel(CurrentDynamoModel.LibraryServices);
+            var command = new DynamoModel.CreateNodeCommand(cbn, 0, 0, true, false);
+            CurrentDynamoModel.ExecuteCommand(command);
+            Assert.IsNotNull(cbn);
+
+            // Add a transient warning, then a transient info
+            cbn.Warning("TestWarning0", false);
+            Assert.AreEqual(ElementState.Warning, cbn.State);
+            Assert.AreEqual(1, cbn.Infos.Count);
+
+            cbn.Info("TestInfo0", false);
+
+            // Both should coexist; State should be restored to Warning (higher priority)
+            Assert.AreEqual(ElementState.Warning, cbn.State);
+            Assert.AreEqual(2, cbn.Infos.Count);
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestWarning0") && x.State == ElementState.Warning));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestInfo0") && x.State == ElementState.Info));
+
+            // ClearInfoMessages should remove info but preserve warning
+            cbn.ClearInfoMessages();
+            Assert.AreEqual(ElementState.Warning, cbn.State);
+            Assert.AreEqual(1, cbn.Infos.Count);
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestWarning0") && x.State == ElementState.Warning));
+
+            // Clean up
+            cbn.ClearErrorsAndWarnings();
+            Assert.AreEqual(ElementState.Active, cbn.State);
+            Assert.AreEqual(0, cbn.Infos.Count);
+        }
+
+        /// <summary>
+        /// This test verifies that persistent warning and persistent info can coexist,
+        /// and that Error state takes priority over both.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void PersistentWarningAndInfoCoexistOnNode()
+        {
+            var cbn = new CodeBlockNodeModel(CurrentDynamoModel.LibraryServices);
+            var command = new DynamoModel.CreateNodeCommand(cbn, 0, 0, true, false);
+            CurrentDynamoModel.ExecuteCommand(command);
+            Assert.IsNotNull(cbn);
+
+            // Add persistent warning, then persistent info
+            cbn.Warning("TestPersistentWarning", true);
+            Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
+
+            cbn.Info("TestPersistentInfo", true);
+
+            // Both should coexist; State restored to PersistentWarning
+            Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
+            Assert.AreEqual(2, cbn.Infos.Count);
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPersistentWarning") && x.State == ElementState.PersistentWarning));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPersistentInfo") && x.State == ElementState.PersistentInfo));
+
+            // Error takes priority over everything
+            cbn.Error("TestError");
+            Assert.AreEqual(ElementState.Error, cbn.State);
+            Assert.AreEqual(3, cbn.Infos.Count);
+
+            // ClearErrorsAndWarnings clears warnings and errors but preserves persistent info
+            cbn.ClearErrorsAndWarnings();
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestPersistentInfo") && x.State == ElementState.PersistentInfo));
+            Assert.IsFalse(cbn.Infos.Any(x => x.State == ElementState.Error));
+            Assert.IsFalse(cbn.Infos.Any(x => x.State == ElementState.PersistentWarning));
+        }
+
+        /// <summary>
+        /// This test verifies that Error state restoration in Info() preserves error entries.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void ErrorAndInfoCoexistOnNode()
+        {
+            var cbn = new CodeBlockNodeModel(CurrentDynamoModel.LibraryServices);
+            var command = new DynamoModel.CreateNodeCommand(cbn, 0, 0, true, false);
+            CurrentDynamoModel.ExecuteCommand(command);
+            Assert.IsNotNull(cbn);
+
+            // Add error, then transient info
+            cbn.Error("TestError0");
+            Assert.AreEqual(ElementState.Error, cbn.State);
+
+            cbn.Info("TestInfo0", false);
+
+            // Both should coexist; State restored to Error (highest priority)
+            Assert.AreEqual(ElementState.Error, cbn.State);
+            Assert.AreEqual(2, cbn.Infos.Count);
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestError0") && x.State == ElementState.Error));
+            Assert.IsTrue(cbn.Infos.Any(x => x.Message.Equals("TestInfo0") && x.State == ElementState.Info));
+
+            cbn.ClearErrorsAndWarnings();
+            Assert.AreEqual(ElementState.Active, cbn.State);
+        }
+
         [Test]
         [Category("UnitTests")]
         public void CombinedBuildAndRuntimeWarnings()

@@ -158,7 +158,8 @@ namespace Dynamo.Scheduler
                             node.ClearErrorsAndWarnings();
                         }
                     }
-                    if (node.State == ElementState.Info)
+                    if (node.State == ElementState.Info ||
+                        node.Infos.Any(x => x.State == ElementState.Info))
                     {
                         using (node.PropertyChangeManager.SetPropsToSuppress(nameof(NodeModel.Infos), nameof(NodeModel.State)))
                         {

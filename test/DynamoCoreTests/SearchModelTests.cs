@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
+using FFITarget;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -472,6 +475,26 @@ namespace Dynamo.Tests
             category = "Core.List.Create";
             Assert.AreEqual("Core.List", search.ProcessNodeCategory(category, ref group));
             Assert.AreEqual(SearchElementGroup.Create, group);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void NodeCategoryAttribute_StaticMethodWithCreateAttribute_IsInCreateCategory()
+        {
+            // In test mode DynamoModel skips AddZeroTouchNodesToSearch at startup, so preloaded ZT libraries
+            // never appear in SearchModel. Load FFITarget explicitly with suppressZeroTouchLibraryLoad: false
+            // so it is fully imported and the LibraryLoaded handler adds its nodes to SearchModel.
+            var ffiTargetAssembly = Assembly.GetAssembly(typeof(NodeCategoryAttributeTest));
+            CurrentDynamoModel.LoadNodeLibrary(ffiTargetAssembly, suppressZeroTouchLibraryLoad: false);
+
+            const string creationNamePrefix = "FFITarget.NodeCategoryAttributeTest.CreateFromAttribute";
+            var entry = CurrentDynamoModel.SearchModel.Entries
+                .OfType<NodeSearchElement>()
+                .FirstOrDefault(e => e.CreationName != null && e.CreationName.StartsWith(creationNamePrefix));
+
+            Assert.IsNotNull(entry, $"Search model should contain a node with CreationName starting with '{creationNamePrefix}' (FFITarget with [NodeCategory(\"Create\")] on static method).");
+
+            Assert.AreEqual(SearchElementGroup.Create, entry.Group, "Node with [NodeCategory(\"Create\")] on a static method should be grouped under Create.");
         }
 
         #region Remove Nodes

@@ -52,6 +52,18 @@
             <summary>Erstellt eine Delaunay-Triangulation einer Punktmenge.</summary>
             <param name="points">Eine Punktmenge.</param>
         </member>
+        <member name="T:Tessellation.UvScalingUtilities">
+            <summary>Dienstprogrammfunktionen für die UV-Skalierung auf Oberflächen.</summary>
+        </member>
+        <member name="M:Tessellation.UvScalingUtilities.GetNormalizedUvScales(Autodesk.DesignScript.Geometry.Surface)">
+            <summary>Berechnet normalisierte UV-Skalierungsfaktoren für eine Oberfläche, um anisotrope Parameterräume zu verarbeiten.
+                Die Skalierung behält das Seitenverhältnis bei, während die Werte in einem angemessenen numerischen Bereich bleiben.</summary>
+            <param name="face">Oberfläche, für die Skalierungsfaktoren berechnet werden sollen.</param>
+            <returns>Tupel mit normalisierten Skalierungsfaktoren in U- und V-Richtung und
+            minimaler physischer Bogenlänge der Oberfläche (Welteinheiten) über U und V.
+            Das Skalierungsminimum ist die kürzere der beiden durchschnittlichen Isokurvenlängen und wird verwendet,
+            um Grenzwerte für den Weltabstand abzuleiten, die korrekt mit der Oberfläche skaliert werden.</returns>
+        </member>
         <member name="T:Tessellation.Voronoi">
             <summary>Funktionen zum Erstellen von Voronoi-Tessellationen</summary>
         </member>

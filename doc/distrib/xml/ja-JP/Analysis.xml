@@ -51,20 +51,6 @@
             <param name="label"/>
             <returns/>
         </member>
-        <member name="T:Analysis.PointData">
-            <summary>構造点の解析データを格納するためのクラス。</summary>
-        </member>
-        <member name="P:Analysis.PointData.ValueLocations">
-            <summary>点群のリスト。</summary>
-        </member>
-        <member name="P:Analysis.PointData.Values">
-            <summary>倍精度値リストの辞書。</summary>
-        </member>
-        <member name="M:Analysis.PointData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{System.Double})">
-            <summary>PointAnalysisData オブジェクトを作成します。</summary>
-            <param name="points">点群のリスト。</param>
-            <param name="values">倍精度値のリスト。</param>
-        </member>
         <member name="T:Analysis.Properties.Resources">
             <summary>ローカライズ文字列などを検索するための、厳密に型指定されたリソース クラス。</summary>
         </member>
@@ -102,52 +88,8 @@
         <member name="P:Analysis.Properties.Resources.VectorValueObsolete">
             <summary>「これまでは VectorData ノードを使用していたノードへの直接入力として Vector ノードと Number ノードを使用します」に類似するローカライズ文字列を検索します。</summary>
         </member>
-        <member name="T:Analysis.SurfaceData">
-            <summary>構造化されたサーフェス解析データを格納するためのクラス。</summary>
-        </member>
-        <member name="P:Analysis.SurfaceData.Surface">
-            <summary>位置を含むサーフェス。</summary>
-        </member>
-        <member name="P:Analysis.SurfaceData.ValueLocations">
-            <summary>サーフェス上の UV 位置のリスト。</summary>
-        </member>
-        <member name="P:Analysis.SurfaceData.Values">
-            <summary>倍精度浮動小数点のリストの辞書。</summary>
-        </member>
-        <member name="M:Analysis.SurfaceData.BySurfaceAndPoints(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV})">
-            <summary>値を指定せずに SurfaceData オブジェクトを作成します。</summary>
-            <param name="surface">位置を含むサーフェス。</param>
-            <param name="uvs">サーフェス上の UV 位置のリスト。</param>
-            <returns/>
-        </member>
-        <member name="M:Analysis.SurfaceData.BySurfacePointsAndValues(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},System.Collections.Generic.IList{System.Double})">
-            <summary>SurfaceData オブジェクトを作成します。</summary>
-            <param name="surface">位置を含むサーフェス。</param>
-            <param name="uvs">サーフェス上の UV 位置のリスト。</param>
-            <param name="values">倍精度値のリスト。</param>
-        </member>
-        <member name="M:Analysis.AnalysisExtensions.IsAlmostEqualTo(Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
-            <summary>2 つの面(タイプ UV)を取得し、それらの面の差異が 1.0e-6 未満の場合は True を返し、それ以外の場合は False を返します。</summary>
-            <param name="a"/>
-            <param name="b"/>
-            <returns/>
-        </member>
         <member name="T:Analysis.Utils.ValueLocation`1">
             <summary>位置の値を格納するためのクラス。</summary>
-        </member>
-        <member name="T:Analysis.VectorData">
-            <summary>構造化されたベクトル解析データを格納するためのクラス。</summary>
-        </member>
-        <member name="P:Analysis.VectorData.ValueLocations">
-            <summary>計算位置のリスト。</summary>
-        </member>
-        <member name="P:Analysis.VectorData.Values">
-            <summary>結果の辞書。</summary>
-        </member>
-        <member name="M:Analysis.VectorData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{Autodesk.DesignScript.Geometry.Vector})">
-            <summary>VectorAnalysisData オブジェクトを作成します。</summary>
-            <param name="points">点群のリスト。</param>
-            <param name="values">Vector 値のリスト。</param>
         </member>
     </members>
 </doc>

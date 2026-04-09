@@ -68,6 +68,9 @@ launchSettings.json
 ###############
 .idea
 .vscode/
+.claude
+.agent
+.cursor
 
 #documentation files
 doc/html/

@@ -104,6 +104,12 @@ namespace Dynamo.ViewModels
     {
         public string Path { get; set; }
 
+        /// <summary>
+        /// Set by the event handler to indicate whether the image was saved successfully.
+        /// Defaults to true for backwards compatibility.
+        /// </summary>
+        public bool Success { get; set; } = true;
+
         public ImageSaveEventArgs(string path)
         {
             Path = path;

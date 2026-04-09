@@ -51,20 +51,6 @@
             <param name="label"/>
             <returns/>
         </member>
-        <member name="T:Analysis.PointData">
-            <summary>Třída pro ukládání dat analýzy konstrukčního bodu</summary>
-        </member>
-        <member name="P:Analysis.PointData.ValueLocations">
-            <summary>Seznam bodů</summary>
-        </member>
-        <member name="P:Analysis.PointData.Values">
-            <summary>Slovník ze seznamů hodnot typu double.</summary>
-        </member>
-        <member name="M:Analysis.PointData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{System.Double})">
-            <summary>Umožňuje vytvořit objekt PointAnalysisData.</summary>
-            <param name="points">Seznam bodů</param>
-            <param name="values">Seznam hodnot typu double</param>
-        </member>
         <member name="T:Analysis.Properties.Resources">
             <summary>Třída prostředků silného typu k vyhledávání lokalizovaných řetězců apod.</summary>
         </member>
@@ -102,52 +88,8 @@
         <member name="P:Analysis.Properties.Resources.VectorValueObsolete">
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Použijte uzly vektorů a čísel jako přímé vstupy k uzlům, u kterých byly dříve použity uzly VectorData.“.</summary>
         </member>
-        <member name="T:Analysis.SurfaceData">
-            <summary>Třída pro ukládání dat analýzy strukturovaného povrchu</summary>
-        </member>
-        <member name="P:Analysis.SurfaceData.Surface">
-            <summary>Povrch, který obsahuje umístění</summary>
-        </member>
-        <member name="P:Analysis.SurfaceData.ValueLocations">
-            <summary>Seznam umístění na povrchu určených souřadnicemi UV</summary>
-        </member>
-        <member name="P:Analysis.SurfaceData.Values">
-            <summary>Slovník ze seznamů hodnot typu double</summary>
-        </member>
-        <member name="M:Analysis.SurfaceData.BySurfaceAndPoints(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV})">
-            <summary>Umožňuje vytvořit objekt SurfaceData bez hodnot.</summary>
-            <param name="surface">Povrch, který obsahuje umístění</param>
-            <param name="uvs">Seznam umístění na povrchu určených souřadnicemi UV</param>
-            <returns/>
-        </member>
-        <member name="M:Analysis.SurfaceData.BySurfacePointsAndValues(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},System.Collections.Generic.IList{System.Double})">
-            <summary>Umožňuje vytvořit objekt SurfaceData.</summary>
-            <param name="surface">Povrch, který obsahuje umístění</param>
-            <param name="uvs">Seznam umístění na povrchu určených souřadnicemi UV</param>
-            <param name="values">Seznam hodnot typu double</param>
-        </member>
-        <member name="M:Analysis.AnalysisExtensions.IsAlmostEqualTo(Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
-            <summary>Pokud jsou dány dvě roviny (typu UV) a rozdíl mezi nimi je menší než 1.0e-6, vrátí hodnotu True. Jinak vrátí hodnotu False.</summary>
-            <param name="a"/>
-            <param name="b"/>
-            <returns/>
-        </member>
         <member name="T:Analysis.Utils.ValueLocation`1">
             <summary>Třída pro uložení hodnoty v určitém umístění</summary>
-        </member>
-        <member name="T:Analysis.VectorData">
-            <summary>Třída pro ukládání dat analýzy strukturovaného vektoru</summary>
-        </member>
-        <member name="P:Analysis.VectorData.ValueLocations">
-            <summary>Seznam umístění pro výpočty</summary>
-        </member>
-        <member name="P:Analysis.VectorData.Values">
-            <summary>Slovník výsledků</summary>
-        </member>
-        <member name="M:Analysis.VectorData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{Autodesk.DesignScript.Geometry.Vector})">
-            <summary>Umožňuje vytvořit objekt VectorAnalysisData.</summary>
-            <param name="points">Seznam bodů</param>
-            <param name="values">Seznam hodnot vektoru</param>
         </member>
     </members>
 </doc>

@@ -546,6 +546,16 @@ namespace Dynamo.Models
             /// Configuration object that contains host information like Host name, parent id and session id.
             /// </summary>
             HostAnalyticsInfo HostAnalyticsInfo { get; set; }
+
+            /// <summary>
+            /// Enables or disables notifications about untrusted file locations.
+            /// When true (default), notifications are shown in the notification center when trusted locations
+            /// contain paths pointing to the common application data (ProgramData) directory.
+            /// When false, no notifications are displayed for untrusted locations.
+            /// Default value is true to maintain backward compatibility.
+            /// Note: This does not affect the file trust warning popup when opening files from untrusted locations.
+            /// </summary>
+            bool EnableUnTrustedLocationsNotifications => true;
         }
 
         /// <summary>
@@ -622,6 +632,20 @@ namespace Dynamo.Models
             /// to enable logging during the initialization and runtime of Dynamo.
             /// </summary>
             public DynamoLogger Logger { get; set; }
+
+            /// <summary>
+            /// Enables or disables notifications about untrusted file locations.
+            /// When true (default), notifications are shown in the notification center.
+            /// When false, no notifications are displayed for untrusted locations.
+            /// </summary>
+            public bool EnableUnTrustedLocationsNotifications { get; set; } = true;
+
+            /// <summary>
+            /// Initializes a new instance of the DefaultStartConfiguration struct.
+            /// </summary>
+            public DefaultStartConfiguration()
+            {
+            }
         }
 
         /// <summary>
@@ -728,6 +752,8 @@ namespace Dynamo.Models
 
             if (PreferenceSettings != null)
             {
+                // Pass EnableUnTrustedLocationsNotifications from config to PreferenceSettings
+                PreferenceSettings.EnableUnTrustedLocationsNotifications = config.EnableUnTrustedLocationsNotifications;
                 SetUICulture(CLILocale ?? PreferenceSettings.Locale);
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
                 PreferenceSettings.MessageLogged += LogMessage;
@@ -1157,7 +1183,14 @@ namespace Dynamo.Models
         private IPreferences CreateOrLoadPreferences(IPreferences preferences)
         {
             if (preferences != null) // If there is preference settings provided...
+            {
+                // Ensure default group styles are populated if none are present
+                // (e.g. when a host or test provides a fresh PreferenceSettings with no styles configured).
+                if (preferences is PreferenceSettings prefs &&
+                    (prefs.GroupStyleItemsList == null || !prefs.GroupStyleItemsList.Any()))
+                    prefs.GroupStyleItemsList = GroupStyleItem.CloneDefaultGroupStyleItems();
                 return preferences;
+            }
 
             //Skip file handling and trust location in service mode.
             if (IsServiceMode)
@@ -1183,7 +1216,10 @@ namespace Dynamo.Models
             }
 
             // Otherwise make a default preference settings object.
-            return new PreferenceSettings();
+            // Create default group styles only for brand-new settings
+            var defaultSettings = new PreferenceSettings();
+            defaultSettings.GroupStyleItemsList = GroupStyleItem.CloneDefaultGroupStyleItems();
+            return defaultSettings;
         }
 
         private void SetDefaultPythonTemplate()
@@ -1934,7 +1970,8 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// This warning message is displayed on the node associated with the FFI dll
+        /// This warning message is displayed on the node associated with the FFI dll.
+        /// Warning messages are always displayed regardless of workspace version.
         /// </summary>
         /// <param name="args"></param>
         private void LogWarningMessage(LogWarningMessageEventArgs args)
@@ -1944,13 +1981,35 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// This info message is displayed on the node associated with the FFI dll
+        /// This info message is displayed on the node associated with the FFI dll.
+        /// Info messages are filtered based on workspace version if IntroducedInVersion is specified.
         /// </summary>
         /// <param name="args"></param>
         private void LogInfoMessage(LogWarningMessageEventArgs args)
         {
+            if (!ShouldLogVersionedInfoMessage(args))
+                return;
             Validity.Assert(EngineController.LiveRunnerRuntimeCore != null);
             EngineController.LiveRunnerRuntimeCore.RuntimeStatus.LogInfo(InfoID.Default, args.message);
+        }
+
+        private bool ShouldLogVersionedInfoMessage(LogWarningMessageEventArgs args)
+        {
+            //If CurrentWorkspace is null(unexpected state), the info message is silently dropped. A safer default is return true
+            if (CurrentWorkspace == null)
+                return true;
+
+            var introducedInVersion = args?.IntroducedInVersion;
+            if (introducedInVersion == null)
+                return true;
+
+            if (string.IsNullOrEmpty(CurrentWorkspace.FileName))
+                return false;
+            var workspaceVersion = EngineController.CurrentWorkspaceVersion;
+            if (workspaceVersion == null)
+                return true;
+
+            return workspaceVersion < introducedInVersion;
         }
 
         #endregion
@@ -2022,7 +2081,18 @@ namespace Dynamo.Models
             // depend on it get executed, or those tasks are thrown away if safe to
             // do that.
 
+            // Save the current workspace version before resetting the engine
+            // so it doesn't get overwritten with the running Dynamo version
+            var workspaceVersion = EngineController?.CurrentWorkspaceVersion;
+
             ResetEngineInternal();
+
+            // Restore the workspace version after creating the new EngineController
+            if (workspaceVersion != null)
+            {
+                EngineController.CurrentWorkspaceVersion = workspaceVersion;
+            }
+
             foreach (var workspaceModel in Workspaces.OfType<HomeWorkspaceModel>())
             {
                 workspaceModel.ResetEngine(EngineController, markNodesAsDirty);
@@ -2449,7 +2519,15 @@ namespace Dynamo.Models
                 // TODO: #4258
                 // Remove this ResetEngine call when multiple home workspaces is supported.
                 // This call formerly lived in DynamoViewModel
+                
+                // Save the workspace version before resetting the engine
+                var workspaceVersion = EngineController.CurrentWorkspaceVersion;
                 ResetEngine(false);
+                // Restore the workspace version after engine reset
+                if (workspaceVersion != null)
+                {
+                    EngineController.CurrentWorkspaceVersion = workspaceVersion;
+                }
 
                 if (hws.RunSettings.RunType == RunType.Periodic)
                 {
@@ -3118,6 +3196,15 @@ namespace Dynamo.Models
 
                 ClipBoard.AddRange(connectors);
             }
+
+            var connectorPins = ClipBoard
+                    .OfType<ConnectorModel>()
+                    .SelectMany(connector => connector.ConnectorPinModels)
+                    .Where(pin => !ClipBoard.Contains(pin))
+                    .Cast<ModelBase>()
+                    .ToList();
+
+            ClipBoard.AddRange(connectorPins);
         }
 
         /// <summary>
@@ -3167,6 +3254,7 @@ namespace Dynamo.Models
 
             var nodes = ClipBoard.OfType<NodeModel>();
             var connectors = ClipBoard.OfType<ConnectorModel>();
+            var connectorPins = ClipBoard.OfType<ConnectorPinModel>();
             var notes = ClipBoard.OfType<NoteModel>();
             // we only want to get groups that either has nested groups
             // or does not belong to a group here.
@@ -3261,26 +3349,58 @@ namespace Dynamo.Models
 
                 ModelBase start;
                 ModelBase end;
-                var newConnectors =
-                    from c in connectors
 
-                        // If the guid is in nodeLookup, then we connect to the new pasted node. Otherwise we
-                        // re-connect to the original.
-                    let startNode =
+                var newConnectors = new List<ConnectorModel>();
+                var connectorLookup = new Dictionary<Guid, ConnectorModel>();
+                foreach (var c in connectors)
+                {
+                    // If the guid is in nodeLookup, then we connect to the new pasted node. Otherwise we
+                    // re-connect to the original.
+                    var startNode =
                             modelLookup.TryGetValue(c.Start.Owner.GUID, out start)
                                 ? start as NodeModel
-                                : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == c.Start.Owner.GUID)
-                    let endNode =
+                                : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == c.Start.Owner.GUID);
+                    var endNode =
                         modelLookup.TryGetValue(c.End.Owner.GUID, out end)
                             ? end as NodeModel
-                            : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == c.End.Owner.GUID)
+                            : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == c.End.Owner.GUID);
 
                     // Don't make a connector if either end is null.
-                    where startNode != null && endNode != null
-                    select
-                        ConnectorModel.Make(startNode, endNode, c.Start.Index, c.End.Index);
+                    if (startNode == null || endNode == null)
+                    {
+                        continue;
+                    }
+                    var newConnector = ConnectorModel.Make(startNode, endNode, c.Start.Index, c.End.Index);
+                    if (newConnector != null)
+                    {
+                        newConnectors.Add(newConnector);
+                        connectorLookup.Add(c.GUID, newConnector);
+                    }
+                }
 
                 createdModels.AddRange(newConnectors);
+
+                var newConnectorPins = new List<ConnectorPinModel>();
+                foreach (var pin in connectorPins)
+                {
+                    if (!connectorLookup.TryGetValue(pin.ConnectorId, out var connector))
+                    {
+                        continue;
+                    }
+
+                    var copiedPin = new ConnectorPinModel
+                        (
+                        pin.Position.X + shiftX + offset,
+                        pin.Position.Y + shiftY + offset,
+                        Guid.NewGuid(),
+                        connector.GUID
+                        );
+
+                    connector.AddPin(copiedPin);
+                    newConnectorPins.Add(copiedPin);
+                }
+
+                createdModels.AddRange(newConnectorPins);
 
                 //Grouping depends on the selected node models.
                 //so adding the group after nodes / notes are added to workspace.
@@ -3329,6 +3449,12 @@ namespace Dynamo.Models
                 foreach (var item in newItems)
                 {
                     AddToSelection(item);
+                }
+
+                // Keep connector pins selected together with the pasted graph chunk
+                foreach (var connectorPin in newConnectorPins)
+                {
+                    AddToSelection(connectorPin);
                 }
 
                 DynamoSelection.Instance.ClearSelectionDisabled = false;
@@ -3743,6 +3869,9 @@ namespace Dynamo.Models
 
             if (args.PropertyName == "EnablePresetOptions")
                 OnPropertyChanged("EnablePresetOptions");
+
+            if (args.PropertyName == "CanUndoRedoCommand")
+                OnPropertyChanged("CanUndoRedoCommand");
         }
 
         #region insert private methods

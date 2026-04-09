@@ -55,6 +55,11 @@ namespace Dynamo.Core
         /// UndoRedoRecorder requires for serialization purposes.</param>
         /// <returns>Returns the model that modelData corresponds to.</returns>
         ModelBase GetModelForElement(XmlElement modelData);
+
+        /// <summary>
+        /// Notifies the UI that the undo/redo state has changed so that undo/redo buttons can be enabled/disabled.
+        /// </summary>
+        void UpdateUndoRedoStack();
     }
 
     internal class UndoRedoRecorder : LogSourceBase
@@ -106,14 +111,19 @@ namespace Dynamo.Core
         /// one undo command.</para>
         /// <para>It is mandatory for the caller of this method to call 
         /// EndActionGroup when the undo recording is done for the current 
-        /// action group. Failing to do so will result in subsequent calls to 
-        /// BeginActionGroup to throw an exception.</para>
+        /// action group. Failing to do so will result in the recorder
+        /// being stuck in an invalid state.</para>
         /// </summary>
         public IDisposable BeginActionGroup()
         {
-            EnsureValidRecorderStates();
-            currentActionGroup = document.CreateElement(ActionGroup);
-            return new ActionGroupDisposable(this);
+            bool isRoot = currentActionGroup == null;
+            //if its not root, then we are already in an action group, so we should reuse that one and just return a disposable that does nothing on dispose
+            //this allows us to have nested "action" groups by flattening them into the parent groups.
+            if (isRoot)
+            {
+                currentActionGroup = document.CreateElement(ActionGroup);
+            }
+            return new ActionGroupDisposable(this, isRoot);
         }
 
         /// <summary>
@@ -133,6 +143,7 @@ namespace Dynamo.Core
                 undoStack.Push(currentActionGroup);
 
             currentActionGroup = null;
+            undoClient.UpdateUndoRedoStack();
         }
 
         public void Undo()
@@ -266,7 +277,7 @@ namespace Dynamo.Core
         /// <summary>
         /// This method is called at the beginning of any method that requires 
         /// any existing undo group to be closed before proceeding. For example,
-        /// UndoRedoRecorder.OpenGroup cannot be called again while there is an
+        /// UndoRedoRecorder.Undo or UndoRedoRecorder.Redo cannot be called again while there is an
         /// existing undo group that is left open.
         /// </summary>
         private void EnsureValidRecorderStates()
@@ -466,14 +477,19 @@ namespace Dynamo.Core
         private sealed class ActionGroupDisposable : IDisposable
         {
             private readonly UndoRedoRecorder recorder;
-            public ActionGroupDisposable(UndoRedoRecorder recorder)
+            private readonly bool isRoot;
+            public ActionGroupDisposable(UndoRedoRecorder recorder, bool isRoot)
             {
                 this.recorder = recorder;
+                this.isRoot = isRoot;
             }
 
             public void Dispose()
             {
-                recorder.EndActionGroup();
+                if (isRoot)
+                {
+                    recorder.EndActionGroup();
+                }
             }
         }
 

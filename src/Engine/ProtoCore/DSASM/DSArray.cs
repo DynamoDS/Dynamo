@@ -37,22 +37,6 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
-        /// Enqueue all reference-typed element.
-        /// Note: it is only used by heap manager to do garbage collection.
-        /// </summary>
-        /// <returns></returns>
-        public void CollectElementsForGC(Queue<StackValue> gcQueue)
-        {
-            foreach (var item in Values)
-            {
-                if (item.IsReferenceType)
-                {
-                    gcQueue.Enqueue(item);
-                }
-            }
-        }
-
-        /// <summary>
         /// Returns true if array contain key or not.
         /// </summary>
         public bool ContainsKey(StackValue key)

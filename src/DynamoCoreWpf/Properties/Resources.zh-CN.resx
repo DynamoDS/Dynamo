@@ -1350,6 +1350,9 @@
   <data name="PackageDownloadStateInstalled" xml:space="preserve">
     <value>已安装</value>
   </data>
+  <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
+    <value> (已安装)</value>
+  </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>安装</value>
   </data>
@@ -2282,6 +2285,12 @@
   <data name="AddStyleButton" xml:space="preserve">
     <value>添加样式</value>
   </data>
+  <data name="ResetStylesButton" xml:space="preserve">
+    <value>重置样式</value>
+  </data>
+  <data name="ResetStylesButtonToolTip" xml:space="preserve">
+    <value>恢复默认组样式并删除用户创建的样式。这不会影响现有图表中的组，并且无法撤消。</value>
+  </data>
   <data name="ResetPythonNet3ButtonText" xml:space="preserve">
     <value>重置 PythonNet3</value>
   </data>
@@ -2707,8 +2716,17 @@
   <data name="PackageManagerInstall" xml:space="preserve">
     <value>安装</value>
   </data>
+  <data name="PackageManagerUpdate" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="PackageManagerUninstall" xml:space="preserve">
+    <value>卸载</value>
+  </data>
   <data name="PackageManagerPackageUpdated" xml:space="preserve">
     <value>已更新</value>
+  </data>
+  <data name="PackageManagerPackageUpdateAvailable" xml:space="preserve">
+    <value>新版本可用</value>
   </data>
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>新建</value>
@@ -2796,6 +2814,9 @@
   </data>
   <data name="PackageDetailsPackage" xml:space="preserve">
     <value>软件包</value>
+  </data>
+  <data name="PackageDetailsPackageApprovedTooltip" xml:space="preserve">
+    <value>由 Autodesk 发布</value>
   </data>
   <data name="PackageSortToolTip" xml:space="preserve">
     <value>对软件包排序。</value>
@@ -3370,6 +3391,15 @@
   <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
     <value>输入自定义设置文件时出现错误。请重试或继续使用默认设置。</value>
   </data>
+  <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
+    <value>设置已输入。要应用设置，请启动 Dynamo，然后关闭它并重新启动它。</value>
+  </data>
+  <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
+    <value>重置输入的设置</value>
+  </data>
+  <data name="SplashScreenSettingsResetSuccess" xml:space="preserve">
+    <value>已重置输入的设置。</value>
+  </data>
   <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
     <value>正在启动 Dynamo 视图...</value>
   </data>
@@ -3879,6 +3909,12 @@
   </data>
   <data name="DynamoSplashScreenFailed" xml:space="preserve">
     <value>无法加载 Dynamo 启动屏幕，请重新启动 Dynamo</value>
+  </data>
+  <data name="DocumentationBrowserPreferences" xml:space="preserve">
+    <value>文档浏览器</value>
+  </data>
+  <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
+    <value>与节点选择自动同步。</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

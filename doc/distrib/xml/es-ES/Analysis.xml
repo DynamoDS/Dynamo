@@ -52,20 +52,6 @@
             <param name="label"/>
             <returns/>
         </member>
-        <member name="T:Analysis.PointData">
-            <summary>Una clase para almacenar datos de análisis de puntos estructurados.</summary>
-        </member>
-        <member name="P:Analysis.PointData.ValueLocations">
-            <summary>Una lista de puntos.</summary>
-        </member>
-        <member name="P:Analysis.PointData.Values">
-            <summary>Un diccionario de listas de valores dobles.</summary>
-        </member>
-        <member name="M:Analysis.PointData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{System.Double})">
-            <summary>Crea un objeto PointAnalysisData.</summary>
-            <param name="points">Una lista de puntos.</param>
-            <param name="values">Una lista de valores dobles.</param>
-        </member>
         <member name="T:Analysis.Properties.Resources">
             <summary>Una clase de recurso con tipado fuerte que permite buscar cadenas localizadas, etc.</summary>
         </member>
@@ -104,52 +90,8 @@
         <member name="P:Analysis.Properties.Resources.VectorValueObsolete">
             <summary>Busca una cadena localizada similar a Utiliza nodos de vectores y nodos de números como entradas directas a nodos que ya utilizaron nodos VectorData.</summary>
         </member>
-        <member name="T:Analysis.SurfaceData">
-            <summary>Una clase para almacenar datos de análisis de superficie estructurados.</summary>
-        </member>
-        <member name="P:Analysis.SurfaceData.Surface">
-            <summary>La superficie que contiene las ubicaciones.</summary>
-        </member>
-        <member name="P:Analysis.SurfaceData.ValueLocations">
-            <summary>Una lista de ubicaciones de UV en la superficie.</summary>
-        </member>
-        <member name="P:Analysis.SurfaceData.Values">
-            <summary>Un diccionario de listas de dobles.</summary>
-        </member>
-        <member name="M:Analysis.SurfaceData.BySurfaceAndPoints(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV})">
-            <summary>Crea un objeto SurfaceData sin valores.</summary>
-            <param name="surface">La superficie que contiene las ubicaciones.</param>
-            <param name="uvs">Una lista de ubicaciones de UV en la superficie.</param>
-            <returns/>
-        </member>
-        <member name="M:Analysis.SurfaceData.BySurfacePointsAndValues(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},System.Collections.Generic.IList{System.Double})">
-            <summary>Crea un objeto SurfaceData.</summary>
-            <param name="surface">La superficie que contiene las ubicaciones.</param>
-            <param name="uvs">Una lista de ubicaciones de UV en la superficie.</param>
-            <param name="values">Una lista de valores dobles.</param>
-        </member>
-        <member name="M:Analysis.AnalysisExtensions.IsAlmostEqualTo(Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
-            <summary>Toma dos planos (de tipo UV) y devuelve True si la diferencia entre los dos planos es menor que 1.0e-6 y devuelve False en caso contrario.</summary>
-            <param name="a"/>
-            <param name="b"/>
-            <returns/>
-        </member>
         <member name="T:Analysis.Utils.ValueLocation`1">
             <summary>Una clase para almacenar un valor en una ubicación.</summary>
-        </member>
-        <member name="T:Analysis.VectorData">
-            <summary>Una clase para almacenar datos de análisis de vectores estructurados.</summary>
-        </member>
-        <member name="P:Analysis.VectorData.ValueLocations">
-            <summary>Una lista de ubicaciones de cálculo.</summary>
-        </member>
-        <member name="P:Analysis.VectorData.Values">
-            <summary>Un diccionario de resultados.</summary>
-        </member>
-        <member name="M:Analysis.VectorData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{Autodesk.DesignScript.Geometry.Vector})">
-            <summary>Crea un objeto VectorAnalysisData.</summary>
-            <param name="points">Una lista de puntos.</param>
-            <param name="values">Una lista de valores de vectores.</param>
         </member>
     </members>
 </doc>

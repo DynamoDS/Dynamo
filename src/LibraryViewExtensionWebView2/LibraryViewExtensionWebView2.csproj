@@ -17,7 +17,7 @@
   
   <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
       <PropertyGroup>
-          <PackageVersion>1.0.7</PackageVersion>
+          <PackageVersion>1.1.0</PackageVersion>
           <PackageName>LibrarieJS</PackageName>
       </PropertyGroup>
       <Exec Command="&quot;$(PowerShellCommand)&quot; -ExecutionPolicy ByPass -Command &quot;&amp; '$(SolutionDir)pkgexist.ps1' '$(PackageName)' '$(PackageVersion)'&quot;" ConsoleToMSBuild="true">

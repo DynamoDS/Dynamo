@@ -65,6 +65,7 @@ namespace Dynamo.Controls
     {
         public const string BackgroundPreviewName = "BackgroundPreview";
         private const int SideBarCollapseThreshold = 20;
+        private const int RightSideBarCollapseThreshold = 100;
         private const int navigationInterval = 100;
         private const string GraphMetadataExtensionId = "28992e1d-abb9-417f-8b1b-05e053bee670";
         // This is used to determine whether ESC key is being held down
@@ -109,7 +110,8 @@ namespace Dynamo.Controls
 
         internal ShortcutToolbar ShortcutBar { get { return shortcutBar; } }
 
-        internal PreferencesView PreferencesWindow {
+        internal PreferencesView PreferencesWindow
+        {
             get { return preferencesWindow; }
         }
 
@@ -149,7 +151,7 @@ namespace Dynamo.Controls
             _timer = new Stopwatch();
             _timer.Start();
 
-            InitializeComponent();  
+            InitializeComponent();
 
             Loaded += DynamoView_Loaded;
             Unloaded += DynamoView_Unloaded;
@@ -172,7 +174,7 @@ namespace Dynamo.Controls
                 {
                     leftLimit += screen.Bounds.Width;
                     topLimit += screen.Bounds.Height;
-                }   
+                }
 
                 Left = dynamoViewModel.Model.PreferenceSettings.WindowX;
                 Top = dynamoViewModel.Model.PreferenceSettings.WindowY;
@@ -372,12 +374,12 @@ namespace Dynamo.Controls
         }
 
         private void OnWorkspaceHidden(WorkspaceModel workspace)
-        {            
+        {
             CalculateWindowMinWidth();
         }
 
         private void OnWorkspaceAdded(WorkspaceModel workspace)
-        {            
+        {
             CalculateWindowMinWidth();
         }
 
@@ -386,7 +388,7 @@ namespace Dynamo.Controls
             var workspace = this.ChildOfType<WorkspaceView>();
             WorkspaceView.ExportImageResult isCurrentWorkSpaceValidForImage = workspace.IsWorkSpaceRenderValidAsImage(true);
 
-            if (isCurrentWorkSpaceValidForImage== WorkspaceView.ExportImageResult.IsValidAsImage)
+            if (isCurrentWorkSpaceValidForImage == WorkspaceView.ExportImageResult.IsValidAsImage)
             {
                 dynamoViewModel.ShowSaveImageDialogAndSave(parameter);
             }
@@ -419,7 +421,7 @@ namespace Dynamo.Controls
             {
                 exportMenu.IsEnabled = enable;
             }
-           
+
             if (!(shortcutBar is null))
             {
                 shortcutBar.IsNewButtonEnabled = enable;
@@ -463,12 +465,12 @@ namespace Dynamo.Controls
             }
 
             if (!(workspace is HomeWorkspaceModel hws))
-            return;
-            
+                return;
+
             foreach (var extension in viewExtensionManager.StorageAccessViewExtensions)
             {
                 DynamoModel.RaiseIExtensionStorageAccessWorkspaceOpened(hws, extension, dynamoViewModel.Model.Logger);
-            }            
+            }
         }
 
         private void OnWorkspaceSaving(WorkspaceModel workspace, Graph.SaveContext saveContext)
@@ -592,7 +594,7 @@ namespace Dynamo.Controls
                     window.ShouldMaximize = true;
                 }
             }
-            
+
             // Setting the content of the undocked window
             // Icon is passed from DynamoView (respecting Host integrator icon)
             SetApplicationIcon();
@@ -746,7 +748,7 @@ namespace Dynamo.Controls
             CloseRightSideBarTab(tabitem);
             CloseExtensionWindow(tabName);
         }
- 
+
         /// <summary>
         /// Event handler for the CloseButton.
         /// This method triggers the close operation on the selected tab.
@@ -921,7 +923,8 @@ namespace Dynamo.Controls
                 {
                     pythonNode.OnNodeEdited(textEditor.Text);
                 }
-                else {
+                else
+                {
                     pythonNode.OnNodeEdited(null);
                 }
 
@@ -992,7 +995,7 @@ namespace Dynamo.Controls
         // This event is triggered when the tabitems list is changed and will show/hide the right side bar accordingly.
         private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            this.HideOrShowRightSideBar();
+            this.HideOrShowRightSideBar(e.Action);
         }
 
         private TabItem FindExtensionTab(IViewExtension viewExtension)
@@ -1026,7 +1029,7 @@ namespace Dynamo.Controls
 
             var locatableModels = clipBoard.Where(item => item is NoteModel || item is NodeModel);
             var modelsExcludingConnectorPins = locatableModels.Where(model => !(model is ConnectorPinModel));
-            if(modelsExcludingConnectorPins is null || modelsExcludingConnectorPins.Count()<1) { return; }
+            if (modelsExcludingConnectorPins is null || modelsExcludingConnectorPins.Count() < 1) { return; }
 
             var modelBounds = modelsExcludingConnectorPins.Select(lm =>
                 new Rect { X = lm.X, Y = lm.Y, Height = lm.Height, Width = lm.Width });
@@ -1200,7 +1203,7 @@ namespace Dynamo.Controls
             }
 
             UpdateGeometryScalingPopupLocation();
-            
+
             CalculateWindowThreshold();
         }
 
@@ -1218,8 +1221,8 @@ namespace Dynamo.Controls
         /// <summary>
         /// Calculates the Window threshold to display the text or only icons in the shortcut toolbar
         internal void CalculateWindowThreshold()
-        {            
-            dynamoViewModel.OnWindowResized(dynamoViewModel.Model.PreferenceSettings.WindowW <= GetSumOfControlsWidth());            
+        {
+            dynamoViewModel.OnWindowResized(dynamoViewModel.Model.PreferenceSettings.WindowW <= GetSumOfControlsWidth());
         }
 
         /// <summary>
@@ -1245,7 +1248,7 @@ namespace Dynamo.Controls
             if (workspaceView != null && workspaceView.GeoScalingPopup != null)
             {
                 workspaceView.GeoScalingPopup.UpdatePopupLocation();
-            }               
+            }
         }
 
         private void InitializeShortcutBar()
@@ -1312,7 +1315,7 @@ namespace Dynamo.Controls
             shortcutBar.ShortcutBarItems.Add(saveButton);
             shortcutBar.ShortcutBarItems.Add(undoButton);
             shortcutBar.ShortcutBarItems.Add(redoButton);
-            
+
             shortcutBarGrid.Children.Add(shortcutBar);
         }
 
@@ -1364,15 +1367,15 @@ namespace Dynamo.Controls
                         dynamoViewModel.BackgroundPreviewViewModel.ZoomToFitCommand.Execute(null);
                         return;
                     }
-                    BackgroundPreview.View.ZoomExtents();
+                    BackgroundPreview?.View?.ZoomExtents();
                     break;
 
                 case ViewOperationEventArgs.Operation.ZoomIn:
-                    BackgroundPreview.View.AddZoomForce(-0.5);
+                    BackgroundPreview?.View?.AddZoomForce(-0.5);
                     break;
 
                 case ViewOperationEventArgs.Operation.ZoomOut:
-                    BackgroundPreview.View.AddZoomForce(0.5);
+                    BackgroundPreview?.View?.AddZoomForce(0.5);
                     break;
             }
         }
@@ -1425,7 +1428,7 @@ namespace Dynamo.Controls
 
             // If first run, Collect Info Prompt will appear
             UsageReportingManager.Instance.CheckIsFirstRun(this, dynamoViewModel.BrandingResourceProvider);
-            
+
 
             WorkspaceTabs.SelectedIndex = 0;
             dynamoViewModel = (DataContext as DynamoViewModel);
@@ -1568,7 +1571,7 @@ namespace Dynamo.Controls
 
         private void GuideFlowEvents_GuidedTourStart(GuidedTourStateEventArgs args)
         {
-            if(sidebarGrid.Visibility != Visibility.Visible || sidebarGrid.ActualWidth < 2)
+            if (sidebarGrid.Visibility != Visibility.Visible || sidebarGrid.ActualWidth < 2)
             {
                 OnCollapsedLeftSidebarClick(null, null);
             }
@@ -1779,7 +1782,12 @@ namespace Dynamo.Controls
                 dpiX = 96;
                 dpiY = 96;
             }
-            
+
+            if (BackgroundPreview == null)
+            {
+                e.Success = false;
+                return;
+            }
             var bitmapSource = BackgroundPreview.View.RenderBitmap();
             // this image only really needs 24bits per pixel but to match previous implementation we'll use 32bit images.
             var rtBitmap = new RenderTargetBitmap(bitmapSource.PixelWidth, bitmapSource.PixelHeight, dpiX, dpiY, PixelFormats.Pbgra32);
@@ -2085,7 +2093,7 @@ namespace Dynamo.Controls
 
             // Force application shutdown when dynamo (in standalone mode) is closed, to prevent process hanging
             bool isStandaloneMode = string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName);
-            
+
             if (!DynamoModel.IsTestMode && isStandaloneMode && Application.Current != null)
             {
                 try
@@ -2116,7 +2124,7 @@ namespace Dynamo.Controls
 
             dynamoViewModel.RequestPythonEngineChangeNotice -= DynamoViewModel_RequestPythonEngineChangeNotice;
             dynamoViewModel.PythonEngineUpgradeToastRequested -= OnPythonEngineUpgradeToastRequested;
-            
+
             if (graphPropsExtensionMenuItem != null)
             {
                 graphPropsExtensionMenuItem.Checked -= OnGraphMetadataChecked;
@@ -2152,10 +2160,10 @@ namespace Dynamo.Controls
                 }
                 catch (Exception exc)
                 {
-                    Log($"{ext.Name} :  {exc.Message} during shutdown" );
+                    Log($"{ext.Name} :  {exc.Message} during shutdown");
                 }
             }
-          
+
 
             viewExtensionManager.MessageLogged -= Log;
             BackgroundPreview = null;
@@ -2412,8 +2420,6 @@ namespace Dynamo.Controls
             preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             preferencesWindow.Show();
         }
-
-
 
         /// <summary>
         /// Adds/Removes an overlay so the user won't be able to interact with the background (this behavior was implemented for Dynamo and for Library)
@@ -2703,6 +2709,8 @@ namespace Dynamo.Controls
 
         // Default side bar width
         private const int defaultSideBarWidth = 200;
+        //By default the extension bar width in px;
+        private const int defaultRightSideBarWidth = 455;
         // By default the extension bar over canvas size ratio is 2/5
         private const int DefaultExtensionBarWidthMultiplier = 2;
 
@@ -2731,18 +2739,14 @@ namespace Dynamo.Controls
         {
             get
             {
-                // Special case: when the extension bar was never resized its size will be 2.
-                // While 2 is a valid size for the extension bar, 5 is not one for the canvas,
-                // so that's a safer check to be made.
                 if (CanvasColumn.Width.Value == 5)
                 {
                     extensionsCollapsed = RightExtensionsViewColumn.Width.Value == 0;
                 }
                 else
                 {
-                    extensionsCollapsed = RightExtensionsViewColumn.Width.Value < SideBarCollapseThreshold;
+                    extensionsCollapsed = RightExtensionsViewColumn.ActualWidth < RightSideBarCollapseThreshold;
                 }
-
                 return extensionsCollapsed;
             }
         }
@@ -2774,11 +2778,12 @@ namespace Dynamo.Controls
         }
 
         // Show the extensions right side bar when there is atleast one extension
-        private void HideOrShowRightSideBar()
+        private void HideOrShowRightSideBar(NotifyCollectionChangedAction action = NotifyCollectionChangedAction.Reset)
         {
             if (dynamoViewModel.SideBarTabItems.Count == 0)
             {
-                if (RightExtensionsViewColumn.Width.Value != 0)
+                if (RightExtensionsViewColumn.Width.Value != 0
+                    && RightExtensionsViewColumn.ActualWidth > RightSideBarCollapseThreshold)
                 {
                     extensionsColumnWidth = RightExtensionsViewColumn.Width;
                 }
@@ -2787,19 +2792,14 @@ namespace Dynamo.Controls
             }
             else
             {
-                // The introduction of extensionsColumnWidth is two-fold:
-                // 1. It allows the resized width to be remembered which is nice to have.
-                // 2. It allows to avoid a slider glitch which sets the panels size in pixel amount but using star,
-                // changing the proportions so that the initial value is counted as pixels after the first resize.
-                if (extensionsColumnWidth == null)
+                if (action.Equals(NotifyCollectionChangedAction.Add))
                 {
-                    RightExtensionsViewColumn.Width = new GridLength(DefaultExtensionBarWidthMultiplier, GridUnitType.Star);
+                    if (ExtensionsCollapsed)
+                    {
+                        ExpandRightExtensionView(true);
+                    }
+                    collapsedExtensionSidebar.Visibility = Visibility.Visible;
                 }
-                else
-                {
-                    RightExtensionsViewColumn.Width = extensionsColumnWidth.Value;
-                }
-                collapsedExtensionSidebar.Visibility = Visibility.Visible;
             }
         }
 
@@ -2830,26 +2830,42 @@ namespace Dynamo.Controls
         {
             if (ExtensionsCollapsed)
             {
-                if (extensionsColumnWidth == null)
+                ExpandRightExtensionView();
+            }
+            else
+            {
+                extensionsColumnWidth = RightExtensionsViewColumn.Width;
+                RightExtensionsViewColumn.Width = new GridLength(0, GridUnitType.Star);
+            }
+            // TODO: Maynot need this depending on tab design
+            UpdateLibraryCollapseIcon();
+        }
+        /// <summary>
+        /// To set the widht of the Right Extension side bar to the default value or to the last value before it was collapsed based on the current width of the extension bar.
+        /// The forceDefaultWidth parameter is used when the extension bar is being collapsed/resized beyond the threshold, in that case we want to reset the width of the extension bar to the default value instead of the last value before it was collapsed.
+        /// </summary>
+        /// <param name="forceDefaultWidth">true - to set the width to the default width value</param>
+        private void ExpandRightExtensionView(bool forceDefaultWidth = false)
+        {
+            if (extensionsColumnWidth == null)
+            {
+                RightExtensionsViewColumn.Width = new GridLength(DefaultExtensionBarWidthMultiplier, GridUnitType.Star);
+            }
+            else if (!extensionsColumnWidth.Value.Value.Equals(DefaultExtensionBarWidthMultiplier))
+            {
+                if (extensionsColumnWidth.Value.Value <= RightSideBarCollapseThreshold || forceDefaultWidth)
                 {
-                    RightExtensionsViewColumn.Width = new GridLength(DefaultExtensionBarWidthMultiplier, GridUnitType.Star);
+                    RightExtensionsViewColumn.Width = new GridLength(defaultRightSideBarWidth, GridUnitType.Star);
                 }
                 else
                 {
-                    RightExtensionsViewColumn.Width = extensionsColumnWidth.Value;
+                    RightExtensionsViewColumn.Width = new GridLength(extensionsColumnWidth.Value.Value, GridUnitType.Star);
                 }
             }
             else
             {
-                if (RightExtensionsViewColumn.Width.Value != 0)
-                {
-                    extensionsColumnWidth = RightExtensionsViewColumn.Width;
-                }
-                RightExtensionsViewColumn.Width = new GridLength(0, GridUnitType.Star);
+                RightExtensionsViewColumn.Width = new GridLength(extensionsColumnWidth.Value.Value, GridUnitType.Star);
             }
-
-            // TODO: Maynot need this depending on tab design
-            UpdateLibraryCollapseIcon();
         }
 
         private void LibraryHandle_MouseLeave(object sender, MouseEventArgs e)
@@ -2956,7 +2972,7 @@ namespace Dynamo.Controls
         private void WorkspaceTabs_TargetUpdated(object sender, DataTransferEventArgs e)
         {
             if (WorkspaceTabs.SelectedIndex >= 0)
-            ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
+                ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
             UpdateWorkspaceTabSizes();
         }
 
@@ -2982,10 +2998,10 @@ namespace Dynamo.Controls
         /// </summary>
         private void UpdateWorkspaceTabSizes()
         {
-            
+
             // We measure the full library width at runtime.
             int fullLibraryWidth = dynamoViewModel.LibraryWidth + LibraryScrollBarWidth;
-            
+
             // Difference between the full library width (at runtime) and the minimum offset required
             // by the TabItems to not overlap the 5 icon buttons.
             int difference = fullLibraryWidth - FirstTabItemMinimumLeftMarginOffset;
@@ -3045,13 +3061,13 @@ namespace Dynamo.Controls
         }
         private void LogNotification(NotificationMessage notification)
         {
-            dynamoViewModel.Model.Logger.LogNotification(notification.Sender, notification.Title,notification.ShortMessage, notification.DetailedMessage);
+            dynamoViewModel.Model.Logger.LogNotification(notification.Sender, notification.Title, notification.ShortMessage, notification.DetailedMessage);
         }
 
         private void Window_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             //if original sender was scroll bar(i.e Thumb) don't close the popup.
-            if(!(e.OriginalSource is Thumb) && !(e.OriginalSource is TextBox))
+            if (!(e.OriginalSource is Thumb) && !(e.OriginalSource is TextBox))
             {
                 HidePopupWhenWindowDeactivated(sender);
             }
@@ -3079,7 +3095,7 @@ namespace Dynamo.Controls
         {
             //We pass the root UIElement to the GuidesManager so we can found other child UIElements
             try
-            {                
+            {
                 dynamoViewModel.MainGuideManager.LaunchTour(GuidesManager.GetStartedGuideName);
             }
             catch (Exception)
@@ -3090,15 +3106,20 @@ namespace Dynamo.Controls
 
         private void RightExtensionSidebar_DragCompleted(object sender, DragCompletedEventArgs e)
         {
-            //Setting the width of right extension after resize to
-            extensionsColumnWidth = RightExtensionsViewColumn.Width;
+            //This line will make the width of the right extension bar to be proportional.
+            RightExtensionsViewColumn.Width = new GridLength(RightExtensionsViewColumn.ActualWidth, GridUnitType.Star);
+            //Setting the width of right extension after resize to only if extension bar width is greater than threshold value.
+            if (RightExtensionsViewColumn.ActualWidth > RightSideBarCollapseThreshold)
+            {
+                extensionsColumnWidth = RightExtensionsViewColumn.Width;
+            }
         }
 
         private void PackagesMenuGuide_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                dynamoViewModel.MainGuideManager.LaunchTour(GuidesManager.PackagesGuideName);                
+                dynamoViewModel.MainGuideManager.LaunchTour(GuidesManager.PackagesGuideName);
             }
             catch (Exception)
             {
@@ -3114,7 +3135,7 @@ namespace Dynamo.Controls
         }
 
         private void DynamoView_Activated(object sender, EventArgs e)
-        {            
+        {
             if (fileTrustWarningPopup != null && dynamoViewModel.ViewingHomespace)
             {
                 fileTrustWarningPopup.ManagePopupActivation(true);
@@ -3123,7 +3144,7 @@ namespace Dynamo.Controls
 
         private void DynamoView_Deactivated(object sender, EventArgs e)
         {
-            if(fileTrustWarningPopup != null)
+            if (fileTrustWarningPopup != null)
                 fileTrustWarningPopup.ManagePopupActivation(false);
         }
 

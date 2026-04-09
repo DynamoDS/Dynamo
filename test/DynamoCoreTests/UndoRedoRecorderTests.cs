@@ -155,6 +155,11 @@ namespace Dynamo.Tests
             return (models.Find((x) => (x.Identifier == identifier)));
         }
 
+        public void UpdateUndoRedoStack()
+        {
+            
+        }
+
         #endregion
     }
 
@@ -200,11 +205,13 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void TestBeginActionGroup00()
         {
-            Assert.Throws<InvalidOperationException>(() =>
+            using (recorder.BeginActionGroup())
             {
-                recorder.BeginActionGroup();
-                recorder.BeginActionGroup(); // Exception.
-            });
+                using (recorder.BeginActionGroup())
+                {
+                    //inner actinon gorup gets flattened into the parent
+                }
+            }
         }
 
         [Test]
@@ -213,6 +220,66 @@ namespace Dynamo.Tests
         {
             using (recorder.BeginActionGroup()) { }
             using (recorder.BeginActionGroup()) { }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestBeginActionGroupNestedOne()
+        {
+            // Ensure the recorder is in its default states.
+            Assert.AreEqual(false, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo);
+
+            //this should get flattened into a single undo group of two actions
+            using (recorder.BeginActionGroup())
+            {
+                workspace.AddModel(new DummyModel(1, 10)); //nested undo group, gets flattened into parent
+                using (recorder.BeginActionGroup())
+                {
+                    workspace.AddModel(new DummyModel(1, 10)); //further nested undo group, gets flattened together too
+                }
+            }
+
+            // Make sure we can now undo.
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo);
+
+            recorder.Undo(); // Undo the creation.
+            Assert.AreEqual(false, recorder.CanUndo);
+            Assert.AreEqual(true, recorder.CanRedo);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestBeginActionGroupNestedTwo()
+        {
+            // Ensure the recorder is in its default states.
+            Assert.AreEqual(false, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo);
+
+            workspace.AddModel(new DummyModel(1, 10)); // this is itself an undo group
+
+            //this should get flattened into a single undo group of two actions
+            using (recorder.BeginActionGroup())
+            {
+                workspace.AddModel(new DummyModel(1, 10)); //nested undo group, gets flattened into parent
+                using (recorder.BeginActionGroup())
+                {
+                    workspace.AddModel(new DummyModel(1, 10)); //further nested undo group, gets flattened together too
+                }
+            }
+
+            // Make sure we can now undo.
+            Assert.AreEqual(true, recorder.CanUndo);
+            Assert.AreEqual(false, recorder.CanRedo);
+
+            recorder.Undo(); // Undo the creation.
+            Assert.AreEqual(true, recorder.CanUndo); //there should be two undo groups, one undo still leaves another in the stack
+            Assert.AreEqual(true, recorder.CanRedo);
+
+            recorder.Undo(); // Undo the creation.
+            Assert.AreEqual(false, recorder.CanUndo); //no more actions to be undone
+            Assert.AreEqual(true, recorder.CanRedo);
         }
 
         [Test]

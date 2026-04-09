@@ -76,6 +76,7 @@ namespace Dynamo.Wpf.Views
 
             Owner = dynamoView;
             dynViewModel.Owner = this;
+            this.Closed += PreferencesView_Closed;
             if (DataContext is PreferencesViewModel viewModelTemp)
             {
                 this.viewModel = viewModelTemp;
@@ -175,6 +176,15 @@ namespace Dynamo.Wpf.Views
             Close();
         }
 
+        private void PreferencesView_Closed(object sender, EventArgs e)
+        {
+            this.Closed -= PreferencesView_Closed;
+            // Reset owner back to the main Dynamo window so that dialogs opened after
+            // Preferences closes do not attempt to use the now-closed window as owner.
+            // This runs regardless of how the window was closed (button, Alt+F4, programmatic).
+            dynViewModel.Owner = this.Owner;
+        }
+
         /// <summary>
         /// handler for preferences dialog dragging action. When the TitleBar is clicked this method will be executed.
         /// </summary>
@@ -198,6 +208,14 @@ namespace Dynamo.Wpf.Views
             viewModel.IsEnabledAddStyleButton = false;
             groupNameBox.Focus();
             Logging.Analytics.TrackEvent(Actions.New, Categories.GroupStyleOperations, nameof(GroupStyleItem));
+        }
+
+        private void ResetStylesButton_Click(object sender, RoutedEventArgs e)
+        {
+            viewModel.ResetCustomGroupStyles();
+            viewModel.ResetAddStyleControl();
+            stylesCustomColors?.Clear();
+            Logging.Analytics.TrackEvent(Actions.Delete, Categories.GroupStyleOperations, nameof(GroupStyleItem));
         }
 
         private void ResetGroupStyleForm()
@@ -284,9 +302,16 @@ namespace Dynamo.Wpf.Views
                 {
                     GroupStyleItem selectedGroupStyle = (GroupStyleItem)colorButtonSelected.DataContext;
                     selectedGroupStyle.HexColorString = viewModel.ColorPickerSelectedColor.Value.R.ToString("X2") + viewModel.ColorPickerSelectedColor.Value.G.ToString("X2") + viewModel.ColorPickerSelectedColor.Value.B.ToString("X2");
+                    this.viewModel.NotifyGroupStyleEdited();
                 }
             }
             groupStyleItemExisting = false;
+        }
+
+        private void ExistingStyleFontSize_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.RemovedItems.Count == 0 || this.viewModel == null) return;
+            this.viewModel.NotifyGroupStyleEdited();
         }
 
         private void ButtonColorPicker_Click(object sender, RoutedEventArgs e)

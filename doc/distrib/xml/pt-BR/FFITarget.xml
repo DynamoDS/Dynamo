@@ -65,6 +65,10 @@
             <param name="x">Variável fictícia usada para forçar o envio replicado</param>
             <param name="failWithException">Falha no envio com uma exceção em vez de</param>
         </member>
+        <member name="T:FFITarget.NodeCategoryAttributeTest">
+            <summary>Classe de teste para o tipo NodeCategoryAttribute encaminhado para o DynamoServices.
+            CreateFromAttribute é um método estático (não um construtor), mas é forçado para a categoria “Criar” por meio do atributo.</summary>
+        </member>
         <member name="T:FFITarget.OverloadTarget">
             <summary>Testar destino de métodos sobrecarregados</summary>
         </member>
@@ -75,6 +79,12 @@
             <returns name="num">number</returns>
             <returns name="wt">weight</returns>
             <returns name="ok">okay</returns>
+        </member>
+        <member name="M:FFITarget.TestVersionedInfoMessage.WithVersion">
+            <summary>Retorna um valor e registra uma mensagem informativa com a versão 3.0.0</summary>
+        </member>
+        <member name="M:FFITarget.TestVersionedInfoMessage.WithoutVersion">
+            <summary>Retorna um valor e registra uma mensagem informativa sem versão</summary>
         </member>
     </members>
 </doc>

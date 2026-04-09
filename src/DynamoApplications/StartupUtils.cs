@@ -151,6 +151,7 @@ namespace Dynamo.Applications
 #if NET6_0_OR_GREATER
         [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
+        [Obsolete("The API has been deprecated and will be removed in a future release of Dynamo. Use the overload that returns asmVersion and asmPath out parameters for better diagnostics.")]
         public static void PreloadShapeManager(ref string geometryFactoryPath, ref string preloaderLocation)
         {
             var exePath = Assembly.GetExecutingAssembly().Location;
@@ -169,6 +170,52 @@ namespace Dynamo.Applications
         }
 
         /// <summary>
+        /// Attempts to load the geometry library binaries and returns ASM version information.
+        /// </summary>
+        /// <param name="geometryFactoryPath">libG ProtoInterface path</param>
+        /// <param name="preloaderLocation">libG folder path</param>
+        /// <param name="asmVersion">Version of the loaded ASM, or null if version cannot be determined</param>
+        /// <param name="asmPath">Path where ASM binaries are located, or empty string if not found</param>
+#if NET6_0_OR_GREATER
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
+        public static void PreloadShapeManager(
+            ref string geometryFactoryPath,
+            ref string preloaderLocation,
+            out Version asmVersion,
+            out string asmPath)
+        {
+            var exePath = Assembly.GetExecutingAssembly().Location;
+            var rootFolder = Path.GetDirectoryName(exePath);
+
+            var versions = new[]
+            {
+                new Version(232,0,0),
+                new Version(231,0,0),
+            };
+
+            var preloader = new Preloader(rootFolder, versions);
+            preloader.Preload();
+            geometryFactoryPath = preloader.GeometryFactoryPath;
+            preloaderLocation = preloader.PreloaderLocation;
+            asmVersion = preloader.Version2;
+            asmPath = preloader.ShapeManagerPath;
+
+            // If version wasn't detected but we have a path, try to extract version from the ASM binaries
+            if (asmVersion == null && !string.IsNullOrEmpty(asmPath))
+            {
+                try
+                {
+                    asmVersion = DynamoShapeManager.Utilities.GetVersionFromPath(asmPath);
+                }
+                catch
+                {
+                    Console.WriteLine("ASM Version extraction failed");
+                }
+            }
+        }
+
+        /// <summary>
         /// Use this overload to construct a DynamoModel in CLI context when the location of ASM to use is known, host analytics info is known and you want to set data paths.
         /// </summary>
         /// <param name="asmPath">Path to directory containing geometry library binaries</param>
@@ -180,8 +227,8 @@ namespace Dynamo.Applications
         {
             // Preload ASM and display corresponding message on splash screen
             DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenPreLoadingAsm, 10));
-            var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
-            var model = StartDynamoWithDefaultConfig(true, userDataFolder, commonDataFolder, geometryFactoryPath, preloaderLocation, false, info);
+            var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation, out Version asmVersion, out string asmLoadedFrom);
+            var model = StartDynamoWithDefaultConfig(true, userDataFolder, commonDataFolder, geometryFactoryPath, preloaderLocation, false, info, asmVersion: asmVersion, asmPath: asmLoadedFrom, isASMLoaded: isASMloaded);
             model.IsASMLoaded = isASMloaded;
             return model;
         }
@@ -204,7 +251,7 @@ namespace Dynamo.Applications
 
             // Preload ASM and display corresponding message on splash screen
             DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenPreLoadingAsm, 10));
-            var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
+            var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation, out Version asmVersion, out string asmLoadedFrom);
             var model = StartDynamoWithDefaultConfig(
                 CLImode: cliMode,
                 userDataFolder: userDataFolder,
@@ -214,7 +261,10 @@ namespace Dynamo.Applications
                 noNetworkMode: noNetworkMode,
                 info: analyticsInfo,
                 isServiceMode: serviceMode,
-                cliLocale: normalizedCLILocale
+                cliLocale: normalizedCLILocale,
+                asmVersion: asmVersion,
+                asmPath: asmLoadedFrom,
+                isASMLoaded: isASMloaded
             );
             model.IsASMLoaded = isASMloaded;
             return model;
@@ -311,7 +361,7 @@ namespace Dynamo.Applications
             return pathResolver;
         }
         
-        private static bool PreloadASM(string asmPath, out string geometryFactoryPath, out string preloaderLocation )
+        private static bool PreloadASM(string asmPath, out string geometryFactoryPath, out string preloaderLocation, out Version asmVersion, out string asmLoadedFrom)
         {
             if (string.IsNullOrEmpty(asmPath) && OSHelper.IsWindows())
             {
@@ -319,10 +369,12 @@ namespace Dynamo.Applications
                 preloaderLocation = string.Empty;
                 try
                 {
-                    PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
+                    PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation, out asmVersion, out asmLoadedFrom);
                 }
                 catch (Exception e)
                 {
+                    asmVersion = null;
+                    asmLoadedFrom = string.Empty;
                     ASMPreloadFailure?.Invoke(e.Message);
                     return false;
                 }
@@ -354,10 +406,14 @@ namespace Dynamo.Applications
 
                 //load asm and libG.
                 DynamoShapeManager.Utilities.PreloadAsmFromPath(preloaderLocation, asmPath);
+                asmVersion = asmBinariesVersion;
+                asmLoadedFrom = asmPath;
                 return true;
             }
             catch (Exception e)
             {
+                asmVersion = null;
+                asmLoadedFrom = string.Empty;
                 Console.WriteLine("A problem occurred while trying to load ASM or LibG");
                 Console.WriteLine($"{e?.Message} : {e?.StackTrace}");
                 return false;
@@ -372,7 +428,10 @@ namespace Dynamo.Applications
             bool noNetworkMode,
             HostAnalyticsInfo info = new HostAnalyticsInfo(),
             bool isServiceMode = false,
-            string cliLocale = null)
+            string cliLocale = null,
+            Version asmVersion = null,
+            string asmPath = null,
+            bool isASMLoaded = true)
         {
 
             var config = new DynamoModel.DefaultStartConfiguration
@@ -392,6 +451,22 @@ namespace Dynamo.Applications
                 //IsHeadless = CLImode
             };
             var model = DynamoModel.Start(config);
+
+            // Log ASM version and path
+            if (asmVersion != null)
+            {
+                model.Logger.Log(string.Format("ASM version {0} loaded from: {1}",
+                    asmVersion, string.IsNullOrEmpty(asmPath) ? "unknown location" : asmPath));
+            }
+            else if (isASMLoaded)
+            {
+                model.Logger.Log("ASM loaded successfully (version could not be determined)");
+            }
+            else
+            {
+                model.Logger.LogWarning("ASM could not be loaded", WarningLevel.Moderate);
+            }
+
             return model;
         }
 

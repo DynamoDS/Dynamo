@@ -254,15 +254,17 @@ namespace Dynamo.DocumentationBrowser
                         .First(x => x.AnnotationModel == annotation);
 
                 GroupStyleItem styleItem = null;
-                //This will try to find the GroupStyle review 
+                //This will try to find the GroupStyle review
                 styleItem =  annotationViewModel.GroupStyleList.OfType<GroupStyleItem>().FirstOrDefault(x => x.Name.Equals(DynamoProperties.Resources.GroupStyleDefaultReview));
                 if(styleItem == null)
                 {
-                    //If no GroupStyle is found matching the specific criteria we will use the first one
-                    styleItem = annotationViewModel.GroupStyleList.OfType<GroupStyleItem>().First();
+                    //If no GroupStyle is found matching the specific criteria we will use the first one available
+                    styleItem = annotationViewModel.GroupStyleList.OfType<GroupStyleItem>().FirstOrDefault();
                 }
-                var groupStyleItem = new GroupStyleItem {Name = styleItem.Name, HexColorString = styleItem.HexColorString};
-                annotationViewModel.UpdateGroupStyle(groupStyleItem);
+                if (styleItem != null)
+                {
+                    annotationViewModel.UpdateGroupStyle(styleItem);
+                }
 
                 DynamoSelection.Instance.ClearSelection();
                 DynamoSelection.Instance.Selection.AddRange(annotation.Nodes);

@@ -1,3 +1,9 @@
+using Dynamo.Configuration;
+using Dynamo.Logging;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.Properties;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,12 +16,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Dynamo.Configuration;
-using Dynamo.Logging;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using Dynamo.Wpf.Properties;
-using Newtonsoft.Json;
+using static Dynamo.Wpf.Interfaces.ResourceNames;
 using NotificationObject = Dynamo.Core.NotificationObject;
 
 namespace Dynamo.UI.Controls
@@ -119,6 +120,7 @@ namespace Dynamo.UI.Controls
         ObservableCollection<SampleFileEntry> sampleFiles = null;
         ObservableCollection<StartPageListItem> recentFiles = null;
         ObservableCollection<StartPageListItem> backupFiles = null;
+        readonly ObservableCollection<StartPageListItem> templateFiles;
         internal readonly DynamoViewModel DynamoViewModel;
         private readonly bool isFirstRun;
 
@@ -130,6 +132,7 @@ namespace Dynamo.UI.Controls
             this.recentFiles = new ObservableCollection<StartPageListItem>();
             this.sampleFiles = new ObservableCollection<SampleFileEntry>();
             this.backupFiles = new ObservableCollection<StartPageListItem>();
+            this.templateFiles = new ObservableCollection<StartPageListItem>();
 
 
             #region File Operations
@@ -213,7 +216,67 @@ namespace Dynamo.UI.Controls
             var dvm = this.DynamoViewModel;
             RefreshRecentFileList(dvm.RecentFiles, true);
             RefreshBackupFileList(dvm.Model.PreferenceSettings.BackupFiles);
+            LoadTemplates();
             dvm.RecentFiles.CollectionChanged += OnRecentFilesChanged;
+
+
+        }
+
+
+        private void LoadTemplates()
+        {
+            // Retrieve the current Temlates location from Dynamo properties
+            var templatesDirectory = DynamoViewModel.Model.PathManager.TemplatesDirectory;
+
+            if (Directory.Exists(templatesDirectory))
+            {
+                var rootDynPaths = new List<string>();
+                string[] filePaths = Directory.GetFiles(templatesDirectory, "*.dyn");   // This could change if we move to *dyt
+
+                // We only collect the files in the root
+                if (filePaths.Length != 0)
+                {
+                    foreach (string path in filePaths)
+                    {
+                        rootDynPaths.Add(path);
+                    }
+                }
+
+                // Make comment on legacy use of StartPage.xaml.cs
+                if (rootDynPaths.Any())
+                {
+                    foreach (var filePath in rootDynPaths)
+                    {
+                        AddTemplateListItemFromPath(filePath);
+                    }
+                }
+            }
+        }
+
+        private void AddTemplateListItemFromPath(string filePath)
+        {
+            var extension = Path.GetExtension(filePath).ToUpper();
+            // If not extension specified and code reach here, this means this is still a valid file
+            // only without file type. Otherwise, simply take extension substring skipping the 'dot'.
+            var subScript = extension.StartsWith('.') ? extension.Substring(1) : "";
+            var caption = Path.GetFileNameWithoutExtension(filePath);
+
+            // deserializes the file only once
+            var properties = GetFileProperties(filePath);
+
+            var templateItem = new StartPageListItem(caption)
+            {
+                ContextData = filePath,
+                ToolTip = filePath,
+                SubScript = subScript,
+                Description = properties.description,
+                Thumbnail = properties.thumbnail,
+                Author = properties.author,
+                DateModified = properties.date,
+                ClickAction = StartPageListItem.Action.FilePath,
+            };
+
+            this.TemplateFiles.Add(templateItem);
         }
 
         internal void WalkDirectoryTree(System.IO.DirectoryInfo root, SampleFileEntry rootProperty)
@@ -385,6 +448,15 @@ namespace Dynamo.UI.Controls
             get { return this.sampleFiles; }
         }
 
+        /// <summary>
+        /// A collection of Dynamo Template files
+        /// Fetched at load time from the current Dynamo Templates Propoerties location
+        /// </summary>
+        public ObservableCollection<StartPageListItem> TemplateFiles
+        {
+            get { return this.templateFiles; }
+        }
+
         public string BackupTitle
         {
             get
@@ -470,7 +542,7 @@ namespace Dynamo.UI.Controls
                     var extension = Path.GetExtension(filePath).ToUpper();
                     // If not extension specified and code reach here, this means this is still a valid file
                     // only without file type. Otherwise, simply take extension substring skipping the 'dot'.
-                    var subScript = extension.StartsWith(".") ? extension.Substring(1) : "";
+                    var subScript = extension.StartsWith('.') ? extension.Substring(1) : "";
                     var caption = Path.GetFileNameWithoutExtension(filePath);
 
                     // deserializes the file only once

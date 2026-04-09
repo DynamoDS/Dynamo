@@ -33,11 +33,23 @@ namespace Dynamo.UI.Prompts
             InitializeComponent();
             this.dynamoViewModel = dynamoViewModel;
 
-            Owner = dynamoViewModel.Owner;
-            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            var ownerWindow = dynamoViewModel.Owner;
+            if (ownerWindow != null && ownerWindow.IsVisible)
+            {
+                Owner = ownerWindow;
+                this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            }
+            else
+            {
+                var mainWindow = Application.Current?.MainWindow;
+                if (mainWindow != null && mainWindow.IsVisible)
+                {
+                    Owner = mainWindow;
+                    this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                }
+            }
 
-            // do not accept value if user closes 
-            this.Closing += (sender, args) => this.DialogResult = false;
+            this.Closing += EditWindow_Closing;
             if (false != updateSourceOnTextChange)
             {
                 this.editText.TextChanged += delegate
@@ -200,9 +212,19 @@ namespace Dynamo.UI.Prompts
             DragMove();
         }
 
+        // Do not accept value if user closes without confirming.
+        // DialogResult is only settable when opened via ShowDialog(); guard with try/catch
+        // since WPF provides no public API to distinguish dialog vs non-dialog mode.
+        private void EditWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            try { this.DialogResult = false; }
+            catch (InvalidOperationException) { }
+        }
+
         private void EditWindow_Closed(object sender, EventArgs e)
         {
             this.editText.PreviewKeyDown -= EditText_PreviewKeyDown;
+            this.Closing -= EditWindow_Closing;
             this.Closed -= EditWindow_Closed;
         }
 

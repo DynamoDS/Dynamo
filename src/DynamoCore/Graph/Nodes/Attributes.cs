@@ -19,29 +19,7 @@ namespace Dynamo.Graph.Nodes
     }
 
     /// <summary>
-    ///     The NodeCategoryAttribute attribute allows the node implementer
-    ///     to define in which category node will appear. 
-    /// </summary>
-    [AttributeUsage(AttributeTargets.All)]
-    public class NodeCategoryAttribute : Attribute
-    {
-        /// <summary>
-        /// Creates NodeCategoryAttribute.
-        /// </summary>
-        /// <param name="category">Full name of the category. E.g. Core.List.Create</param>
-        public NodeCategoryAttribute(string category)
-        {
-            ElementCategory = category;
-        }
-
-        /// <summary>
-        /// Full name of the category. E.g. Core.List.Create
-        /// </summary>
-        public string ElementCategory { get; set; }
-    }
-
-    /// <summary>
-    ///     The NodeCategoryAttribute attribute allows the node implementer
+    ///     The NodeSearchTagsAttribute attribute allows the node implementer
     ///     to define search tags.
     /// </summary>
     [AttributeUsage(AttributeTargets.All)]

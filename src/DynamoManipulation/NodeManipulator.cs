@@ -620,6 +620,11 @@ namespace Dynamo.Manipulation
 
         public void Dispose()
         {
+            // Detach first to ensure no in-flight callbacks can access geometry
+            // after it starts being disposed (use-after-dispose race condition).
+            DetachHandlers();
+            DeleteGizmos();
+
             Dispose(true);
 
             // We only show the manipulator warning while the manipulator is alive.
@@ -633,12 +638,9 @@ namespace Dynamo.Manipulation
 
             if (originBeforeMove != null)
                 originBeforeMove.Dispose();
-     
+
             if (originAfterMove != null)
                 originAfterMove.Dispose();
-
-            DeleteGizmos();
-            DetachHandlers();
         }
 
         /// <summary>

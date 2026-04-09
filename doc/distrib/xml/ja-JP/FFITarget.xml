@@ -65,6 +65,10 @@
             <param name="x">複製されたディスパッチを強制するために使用されるダミー変数</param>
             <param name="failWithException">次の代わりに、例外を発生させるディスパッチの失敗:</param>
         </member>
+        <member name="T:FFITarget.NodeCategoryAttributeTest">
+            <summary>DynamoServices に型転送された NodeCategoryAttribute のテスト クラスです。
+           CreateFromAttribute は(コンストラクタではない)静的メソッドですが、属性を介して強制的に "Create" カテゴリに入れられます。</summary>
+        </member>
         <member name="T:FFITarget.OverloadTarget">
             <summary>オーバーロードされたメソッドのテスト対象</summary>
         </member>
@@ -75,6 +79,12 @@
             <returns name="num">number</returns>
             <returns name="wt">weight</returns>
             <returns name="ok">okay</returns>
+        </member>
+        <member name="M:FFITarget.TestVersionedInfoMessage.WithVersion">
+            <summary>値を返し、バージョン 3.0.0 で情報メッセージを記録します</summary>
+        </member>
+        <member name="M:FFITarget.TestVersionedInfoMessage.WithoutVersion">
+            <summary>値を返し、バージョンのない情報メッセージを記録します</summary>
         </member>
     </members>
 </doc>

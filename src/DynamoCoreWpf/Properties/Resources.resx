@@ -1052,6 +1052,9 @@ To avoid unintended behavior, uninstall the conflicting loaded package(s), resta
   <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
     <value>Open {0} Definition...</value>
   </data>
+  <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
+    <value>New Graph from Template...</value>
+  </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>Package Download Confirmation</value>
     <comment>Message box title</comment>
@@ -1291,9 +1294,21 @@ Don't worry, you'll have the option to save your work.</value>
     <value>Install</value>
     <comment>Used on the package manager search result card. If the package is not installed, the button will say 'Install'.</comment>
   </data>
+  <data name="PackageManagerUpdate" xml:space="preserve">
+    <value>Update</value>
+    <comment>Used on the package manager search result card when a different version is selected.</comment>
+  </data>
+  <data name="PackageManagerUninstall" xml:space="preserve">
+    <value>Uninstall</value>
+    <comment>Used on the package manager search result card when the installed version is selected.</comment>
+  </data>
   <data name="PackageManagerPackageUpdated" xml:space="preserve">
     <value>Updated</value>
     <comment>Displays next to the package name in the Package Search window if the package has been updated in the last 30 days.</comment>
+  </data>
+  <data name="PackageManagerPackageUpdateAvailable" xml:space="preserve">
+    <value>New version available</value>
+      <comment>Displays next to the package name in the Package Search window if a newer version of the package is available.</comment>
   </data>
   <data name="PackageManagerPackageNew" xml:space="preserve">
     <value>New</value>
@@ -1392,6 +1407,9 @@ Don't worry, you'll have the option to save your work.</value>
     <value>Package</value>
     <comment>Datagrid Column Header in the PackageDetailsViewExtension.</comment>
   </data>
+  <data name="PackageDetailsPackageApprovedTooltip" xml:space="preserve">
+    <value>Published by Autodesk</value>
+  </data>
   <data name="PackageDownloadStateDownloaded" xml:space="preserve">
     <value>Downloaded</value>
   </data>
@@ -1403,6 +1421,9 @@ Don't worry, you'll have the option to save your work.</value>
   </data>
   <data name="PackageDownloadStateInstalled" xml:space="preserve">
     <value>Installed</value>
+  </data>
+  <data name="PackageDropdownInstalledVersionLabel" xml:space="preserve">
+    <value> (installed)</value>
   </data>
   <data name="PackageDownloadStateInstalling" xml:space="preserve">
     <value>Installing</value>
@@ -2889,6 +2910,12 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
   <data name="AddStyleButton" xml:space="preserve">
     <value>Add Style</value>
   </data>
+  <data name="ResetStylesButton" xml:space="preserve">
+    <value>Reset Styles</value>
+  </data>
+  <data name="ResetStylesButtonToolTip" xml:space="preserve">
+    <value>Restores the default group styles and removes user-created styles. This does not affect groups in existing graphs and cannot be undone.</value>
+  </data>
   <data name="ResetPythonNet3ButtonText" xml:space="preserve">
     <value>Reset PythonNet3</value>
   </data>
@@ -3715,6 +3742,15 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
     <value>Something went wrong when importing your custom setting file. Please try again or proceed with default settings.</value>
   </data>
+  <data name="SplashScreenSettingsImportedRestartMessage" xml:space="preserve">
+    <value>Settings imported. To apply the settings, launch Dynamo, then close it and restart it.</value>
+  </data>
+  <data name="SplashScreenResetSettingsTooltip" xml:space="preserve">
+    <value>Reset imported settings</value>
+  </data>
+  <data name="SplashScreenSettingsResetSuccess" xml:space="preserve">
+    <value>Imported settings have been reset.</value>
+  </data>
   <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
     <value>Launching Dynamo View...</value>
   </data>
@@ -4233,5 +4269,11 @@ To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the
   </data>
   <data name="DynamoSplashScreenFailed" xml:space="preserve">
     <value>Failed to load Dynamo SplashScreen, please re-launch Dynamo</value>
+  </data>
+  <data name="DocumentationBrowserPreferences" xml:space="preserve">
+    <value>Documentation Browser</value>
+  </data>
+  <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
+    <value>Auto‑sync with node selection.</value>
   </data>
 </root>

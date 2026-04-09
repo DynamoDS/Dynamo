@@ -5,10 +5,17 @@ namespace DynamoServices
     public class LogWarningMessageEventArgs : EventArgs
     {
         public string message { get; internal set; }
+        public Version IntroducedInVersion { get; internal set; }
 
         public LogWarningMessageEventArgs(string msg)
         {
             message = msg;
+        }
+
+        public LogWarningMessageEventArgs(string msg, Version introducedInVersion)
+            : this(msg)
+        {
+            IntroducedInVersion = introducedInVersion;
         }
     }
 
@@ -43,6 +50,19 @@ namespace DynamoServices
         public static void OnLogInfoMessage(string message)
         {
             LogInfoMessage?.Invoke(new LogWarningMessageEventArgs(message));
+        }
+
+        /// <summary>
+        /// Log node info message with the Dynamo version it was introduced in.
+        /// Info messages with a version will only be displayed if the workspace was created
+        /// in a Dynamo version older than the specified introducedInVersion.
+        /// For new unsaved workspaces, versioned messages are always suppressed.
+        /// </summary>
+        /// <param name="message">info message</param>
+        /// <param name="introducedInVersion">Dynamo version the message was introduced in</param>
+        public static void OnLogInfoMessage(string message, Version introducedInVersion)
+        {
+            LogInfoMessage?.Invoke(new LogWarningMessageEventArgs(message, introducedInVersion));
         }
     }
 

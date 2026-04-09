@@ -65,6 +65,10 @@
             <param name="x">복제된 디스패치를 강제하는 데 사용되는 더미 변수</param>
             <param name="failWithException">다음이 아닌 예외로 인한 디스패치 실패</param>
         </member>
+        <member name="T:FFITarget.NodeCategoryAttributeTest">
+            <summary>DynamoServices로 유형이 전달된 NodeCategoryAttribute에 대한 테스트 클래스입니다.
+            CreateFromAttribute는 생성자가 아니라 정적 방법인데도 이 특성을 통해 "Create" 카테고리로 강제로 적용됩니다.</summary>
+        </member>
         <member name="T:FFITarget.OverloadTarget">
             <summary>오버로드된 메서드에 대한 대상을 테스트합니다.</summary>
         </member>
@@ -75,6 +79,12 @@
             <returns name="num">number</returns>
             <returns name="wt">weight</returns>
             <returns name="ok">okay</returns>
+        </member>
+        <member name="M:FFITarget.TestVersionedInfoMessage.WithVersion">
+            <summary>값을 반환하고 버전 정보(버전 3.0.0)를 포함하여 정보 메시지를 기록합니다.</summary>
+        </member>
+        <member name="M:FFITarget.TestVersionedInfoMessage.WithoutVersion">
+            <summary>값을 반환하며 버전 정보를 제외한 정보 메시지를 기록합니다.</summary>
         </member>
     </members>
 </doc>

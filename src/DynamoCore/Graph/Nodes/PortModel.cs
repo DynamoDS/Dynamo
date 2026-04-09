@@ -38,6 +38,7 @@ namespace Dynamo.Graph.Nodes
         private bool keepListStructure = false;
         private int level = 1;
         private string toolTip;
+        private string name;
 
         #endregion
 
@@ -74,8 +75,15 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public string Name
         {
-            get;
-            internal set;
+            get => name;
+            internal set
+            {
+                if (name != value)
+                {
+                    name = value;
+                    RaisePropertyChanged(nameof(Name));
+                }
+            }
         }
 
         /// <summary>

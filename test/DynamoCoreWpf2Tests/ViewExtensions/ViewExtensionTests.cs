@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,6 +8,8 @@ using Dynamo.Engine;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Wpf.Extensions;
+using Dynamo.Wpf.UI.GuidedTour;
+using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
@@ -397,6 +400,69 @@ namespace DynamoCoreWpfTests
             viewExtension.OnOpenEvaluationStarted -= startedEvent;
             viewExtension.OnOpenEvaluationEnded -= finishedEvent;
         }
+
+
+        [Test]
+        public void LaunchTourClosesSidePanelViewExtensions()
+        {
+            var initialTabsOpen = ViewModel.SideBarTabItems.OfType<TabItem>()
+                .Count(tab => tab.Tag is IViewExtension);
+
+            var dockedExtension = new GuidedTourSidePanelTestViewExtension();
+            var added = View.AddOrFocusExtensionControl(dockedExtension, new UserControl());
+            Assert.IsTrue(added);
+
+            var hasAddedExtensionTab = ViewModel.SideBarTabItems.OfType<TabItem>().Any(tab =>
+                tab.Tag is IViewExtension extension &&
+                extension.UniqueId == dockedExtension.UniqueId);
+            Assert.IsTrue(hasAddedExtensionTab);
+
+            var guidesManager = new GuidesManager(View, ViewModel);
+            Assert.DoesNotThrow(() => guidesManager.CloseAllViewExtensions(View));
+
+            hasAddedExtensionTab = ViewModel.SideBarTabItems.OfType<TabItem>().Any(tab =>
+                tab.Tag is IViewExtension extension &&
+                extension.UniqueId == dockedExtension.UniqueId);
+            Assert.IsFalse(hasAddedExtensionTab);
+
+            var finalTabsOpen = ViewModel.SideBarTabItems.OfType<TabItem>()
+                .Count(tab => tab.Tag is IViewExtension);
+            Assert.LessOrEqual(finalTabsOpen, initialTabsOpen);
+        }
+
+        [Test]
+        public void CloseAllViewExtensions_ClosesOwnerOwnedExtensionWindows()
+        {
+            var extension = new GuidedTourSidePanelTestViewExtension();
+            View.viewExtensionManager.Add(extension);
+
+            Window ownerOwnedWindow = null;
+            try
+            {
+                ownerOwnedWindow = new Window
+                {
+                    Owner = View,
+                    Tag = extension,
+                    Title = "OwnerOwnedExtensionWindow",
+                    Content = new TextBlock { Text = "OwnerOwnedExtensionWindow" }
+                };
+                ownerOwnedWindow.Show();
+                Assert.IsTrue(ownerOwnedWindow.IsVisible);
+
+                var guidesManager = new GuidesManager(View, ViewModel);
+                Assert.DoesNotThrow(() => guidesManager.CloseAllViewExtensions(View));
+                DispatcherUtil.DoEvents();
+
+                Assert.IsFalse(ownerOwnedWindow.IsVisible);
+            }
+            finally
+            {
+                if (ownerOwnedWindow != null && ownerOwnedWindow.IsVisible)
+                {
+                    ownerOwnedWindow.Close();
+                }
+            }
+        }
     }
 
     public class DummyViewExtension : IViewExtension
@@ -532,6 +598,28 @@ namespace DynamoCoreWpfTests
         public void Dispose()
         {
 
+        }
+    }
+
+    internal class GuidedTourSidePanelTestViewExtension : IViewExtension
+    {
+        public string UniqueId { get; } = Guid.NewGuid().ToString("N");
+        public string Name => $"GuidedTourSidePanelTestViewExtension_{UniqueId}";
+
+        public void Startup(ViewStartupParams viewStartupParams)
+        {
+        }
+
+        public void Loaded(ViewLoadedParams p)
+        {
+        }
+
+        public void Shutdown()
+        {
+        }
+
+        public void Dispose()
+        {
         }
     }
 }
