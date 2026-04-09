@@ -2582,6 +2582,9 @@ namespace Dynamo.Controls
         {
             packageManagerWindow.Closed -= HandlePackageManagerWindowClosed;
             packageManagerWindow = null;
+            // Reset owner back to the main Dynamo window so that dialogs opened after
+            // the Package Manager closes do not attempt to use the now-closed window as owner.
+            dynamoViewModel.Owner = this;
 
             var cmd = Analytics.TrackCommandEvent("PackageManager");
             cmd.Dispose();

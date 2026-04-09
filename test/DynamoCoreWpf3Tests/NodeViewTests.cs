@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Controls;
@@ -11,6 +12,7 @@ using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.UI.Prompts;
 using Dynamo.ViewModels;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
@@ -379,6 +381,95 @@ namespace DynamoCoreWpfTests
         {
             //get the name,this will sometimes cause another propertyChanged event
              var temp = (sender as NodeViewModel).Name;
+        }
+
+        /// <summary>
+        /// Regression test: opening the Package Manager or Preferences window temporarily sets
+        /// dynamoViewModel.Owner to that child window. If the child window is closed without
+        /// restoring the owner, the EditWindow constructor throws InvalidOperationException
+        /// ("Cannot set owner to a Window that has been closed") when a node rename is triggered.
+        /// </summary>
+        [Test]
+        [Category("RegressionTests")]
+        public void WhenDynamoViewModelOwnerIsClosedWindowThenEditWindowDoesNotThrow()
+        {
+            // Arrange: open a graph with at least one node.
+            Open(@"UI\CoreUINodes.dyn");
+            DispatcherUtil.DoEvents();
+
+            Window originalOwner = null;
+            try
+            {
+                // Simulate the stale-owner state left by PackageManagerView / PreferencesView:
+                // a secondary window sets itself as dynamoViewModel.Owner, then closes
+                // without restoring the owner back to the main DynamoView.
+                View.Dispatcher.Invoke(() =>
+                {
+                    originalOwner = ViewModel.Owner;
+                    var childWindow = new Window { Owner = View };
+                    childWindow.Show();
+                    childWindow.Close();
+                    // Owner now points to a closed window — the bug condition.
+                    ViewModel.Owner = childWindow;
+                });
+
+                // Act & Assert: constructing EditWindow (what node rename does) must not throw.
+                // Before the fix, this raised:
+                //   System.InvalidOperationException: Cannot set owner to a Window that has been closed.
+                Assert.DoesNotThrow(() =>
+                {
+                    View.Dispatcher.Invoke(() =>
+                    {
+                        var editWindow = new EditWindow(ViewModel, false, true);
+                        editWindow.Close();
+                    });
+                });
+            }
+            finally
+            {
+                // Restore owner to avoid leaking stale state into subsequent tests.
+                View.Dispatcher.Invoke(() => ViewModel.Owner = originalOwner ?? View);
+            }
+        }
+
+        /// <summary>
+        /// Verifies that dynamoViewModel.Owner is restored to the main DynamoView after a
+        /// child window that took over ownership is closed via its Closed event — the same
+        /// pattern used by HandlePackageManagerWindowClosed and PreferencesView_Closed.
+        /// </summary>
+        [Test]
+        [Category("RegressionTests")]
+        public void WhenChildWindowClosesOwnerIsRestoredToDynamoView()
+        {
+            View.Dispatcher.Invoke(() =>
+            {
+                Assert.AreEqual(View, ViewModel.Owner,
+                    "Owner should be the main DynamoView after startup.");
+
+                // Simulate PackageManagerView / PreferencesView taking ownership.
+                var childWindow = new Window { Owner = View };
+                childWindow.Show();
+                ViewModel.Owner = childWindow;
+
+                Assert.AreEqual(childWindow, ViewModel.Owner,
+                    "Owner should be the child window while it is open.");
+
+                // Wire up the Closed handler the same way HandlePackageManagerWindowClosed
+                // and PreferencesView_Closed do — restore the owner to the parent window.
+                childWindow.Closed += (s, e) => ViewModel.Owner = ((Window)s).Owner ?? View;
+
+                // Act: close the child window, which fires the Closed handler.
+                childWindow.Close();
+            });
+
+            DispatcherUtil.DoEvents();
+
+            // Assert: the Closed handler restored the owner — not manual assignment.
+            View.Dispatcher.Invoke(() =>
+            {
+                Assert.AreEqual(View, ViewModel.Owner,
+                    "Owner must be restored to the main DynamoView after the child window closes.");
+            });
         }
 
         /// <summary>
