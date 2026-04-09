@@ -42,6 +42,20 @@ dotnet build src/DynamoCore.sln -c Release /p:Platform=NET_Linux
 
 Tests are located in the `test/` directory. Use Visual Studio Test Explorer or dotnet test CLI to run tests.
 
+**Running a single test:**
+```bash
+# Filter by test name (substring match)
+dotnet test src/DynamoCoreTests/DynamoCoreTests.csproj --filter "Name~MyTestClass"
+
+# Filter by NUnit category
+dotnet test src/DynamoCoreTests/DynamoCoreTests.csproj --filter "Category=UnitTests"
+
+# Combine with & (AND) or | (OR)
+dotnet test src/DynamoCoreTests/DynamoCoreTests.csproj --filter "Name~WhenCondition&Category=UnitTests"
+```
+
+UI tests are split across `DynamoCoreWpfTests`, `DynamoCoreWpfTests2`, and `DynamoCoreWpfTests3`.
+
 ## Code Style and Formatting
 
 ### Follow Existing Standards
@@ -100,12 +114,11 @@ Dynamo/
 
 ### Pull Requests
 
+- PR title must include the Jira ticket: `DYN-1234 concise summary`
 - Use one of the [Dynamo PR templates](https://github.com/DynamoDS/Dynamo/wiki/Choosing-a-Pull-Request-Template)
-- All template declarations must be satisfied
+- All template declarations must be satisfied; Release Notes section is mandatory (use `N/A` if not user-facing)
 - Include unit tests when adding new features
 - Start with a test that highlights broken behavior when fixing bugs
-- PRs are reviewed monthly, oldest to newest
-- PR owners have 30 days to respond to feedback
 
 ### API Compatibility
 
@@ -115,6 +128,37 @@ Dynamo/
 - File an issue before proposing API changes
 
 ## Node Development
+
+### Node Registration Patterns
+
+**Zero-touch** (static methods) — preferred for pure computation. Place static methods in a class under `src/Libraries/`. Namespace becomes the library category. Use XML `<search>` tags for keywords:
+
+```csharp
+/// <summary>Brief description.</summary>
+/// <returns name="result">Output description.</returns>
+/// <search>keyword1,keyword2</search>
+public static double MyFunction(double x) { ... }
+```
+
+**Explicit NodeModel** — required for custom UI, dynamic ports, or multi-output nodes. Inherit from `NodeModel` in `src/Libraries/CoreNodeModels/`. Requires two constructors — a `[JsonConstructor]` private one and a public parameterless one:
+
+```csharp
+[NodeName("Display Name"), NodeCategory("Category.Sub")]
+[IsDesignScriptCompatible]
+public class MyNode : NodeModel
+{
+    [JsonConstructor]
+    private MyNode(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
+        : base(inPorts, outPorts) { }
+
+    public MyNode() { /* AddPorts(); RegisterAllPorts(); */ }
+
+    public override IEnumerable<AssociativeNode> BuildOutputAst(
+        List<AssociativeNode> inputAstNodes) { ... }
+}
+```
+
+Use `[AlsoKnownAs("OldName")]` when renaming nodes to preserve backward compatibility.
 
 ### Detecting New Node Additions
 

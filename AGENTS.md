@@ -47,7 +47,7 @@ test/
 └── Libraries/           # Per-library test projects (CoreNodesTests, etc.)
 ```
 
-Key relationships: `DynamoCore` is the graph model and execution engine. `DynamoCoreWpf` depends on it for UI. The `Engine/` DesignScript runtime (`ProtoCore`) is the low-level evaluator that `DynamoCore` drives. Node libraries in `Libraries/` expose zero-touch or explicit node models consumed by both.
+Key relationships: `DynamoCore` is the graph model and execution engine. `DynamoCoreWpf` depends on it for UI. The `Engine/` DesignScript runtime (`ProtoCore`) is the low-level evaluator that `DynamoCore` drives. Node libraries in `Libraries/` expose zero-touch or explicit node models consumed by both. The full UI (`Dynamo.All.sln`) is Windows-only; `DynamoCore.sln` builds cross-platform (Windows, Linux, macOS).
 
 ## Key Conventions
 
@@ -59,6 +59,58 @@ Key relationships: `DynamoCore` is the graph model and execution engine. `Dynamo
 - Test naming: `WhenConditionThenExpectedBehavior`. One behavior per test, Arrange-Act-Assert.
 - User-facing strings in `.resx` files.
 - No files > 50 MB.
+- Preserve existing line endings when editing — do not convert. The `.editorconfig` specifies LF, but many files have CRLF from Windows development. New files should follow `.editorconfig` (LF); the Write tool on macOS may need explicit attention.
+
+## Running a Single Test
+
+```bash
+# Filter by test name (substring match)
+dotnet test src/DynamoCoreTests/DynamoCoreTests.csproj --filter "Name~MyTestClass"
+
+# Filter by NUnit category
+dotnet test src/DynamoCoreTests/DynamoCoreTests.csproj --filter "Category=UnitTests"
+
+# Combine with & (AND) or | (OR)
+dotnet test src/DynamoCoreTests/DynamoCoreTests.csproj --filter "Name~WhenCondition&Category=UnitTests"
+```
+
+UI tests are split across `DynamoCoreWpfTests`, `DynamoCoreWpfTests2`, and `DynamoCoreWpfTests3`.
+
+## Node Registration Patterns
+
+**Zero-touch** (static methods) — preferred for pure computation. Place static methods in a class under `src/Libraries/`. The namespace becomes the library category. Use XML `<search>` tags for keywords and `[IsVisibleInDynamoLibrary(false)]` to hide helpers:
+
+```csharp
+/// <summary>Brief description.</summary>
+/// <param name="x">Input description.</param>
+/// <returns>Output description.</returns>
+/// <search>keyword1,keyword2</search>
+public static double MyFunction(double x) { ... }
+```
+
+**Explicit NodeModel** — required for custom UI, dynamic ports, or multi-output nodes. Inherit from `NodeModel` in `src/Libraries/CoreNodeModels/`. Two constructors are required — a `[JsonConstructor]` private one (deserialization) and a public parameterless one (creation):
+
+```csharp
+[NodeName("Display Name")]
+[NodeCategory("Category.Subcategory")]
+[NodeDescription("DescKey", typeof(Resources))]
+[InPortNames("x"), InPortTypes("double")]
+[OutPortTypes("bool")]
+[IsDesignScriptCompatible]
+public class MyNode : NodeModel
+{
+    [JsonConstructor]
+    private MyNode(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts)
+        : base(inPorts, outPorts) { }
+
+    public MyNode() { /* AddPorts(); RegisterAllPorts(); */ }
+
+    public override IEnumerable<AssociativeNode> BuildOutputAst(
+        List<AssociativeNode> inputAstNodes) { ... }
+}
+```
+
+Use `[AlsoKnownAs("OldName")]` to preserve backward compatibility when renaming nodes.
 
 ## Quality Gates
 
@@ -66,6 +118,8 @@ Key relationships: `DynamoCore` is the graph model and execution engine. `Dynamo
 - No empty `catch { }` blocks — log and rethrow or handle explicitly.
 - No `#pragma warning disable` without a justification comment.
 - No weakened assertions (e.g., replacing `Assert.AreEqual` with `Assert.IsNotNull`).
+- Do not introduce new network connections without explicit documentation and no-network mode testing.
+- Do not add data collection without proper user consent checks and documentation.
 
 ## Commits and PRs
 

@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
+using UI.Prompts;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI.Commands;
@@ -27,6 +28,7 @@ namespace Dynamo.ViewModels
         protected readonly NodeViewModel node;
         private DelegateCommand useLevelsCommand;
         private DelegateCommand keepListStructureCommand;
+        private DelegateCommand editPortPropertiesCommand;
         private bool showUseLevelMenu;
         private const double autocompletePopupSpacing = 2.5;
         private const double proxyPortContextMenuOffset = 20;
@@ -500,7 +502,7 @@ namespace Dynamo.ViewModels
                 case nameof(PortType):
                     RaisePropertyChanged(nameof(PortType));
                     break;
-                case nameof(PortName):
+                case nameof(PortModel.Name):
                     RaisePropertyChanged(nameof(PortName));
                     break;
                 case nameof(IsConnected):
@@ -739,6 +741,60 @@ namespace Dynamo.ViewModels
                 }
             }
             return ">";
+        }
+
+        /// <summary>
+        /// Used by the 'Edit Port Properties' button in the node port context menu.
+        /// Opens the Port Properties dialog to rename the port and edit its description.
+        /// </summary>
+        public DelegateCommand EditPortPropertiesCommand
+        {
+            get
+            {
+                return editPortPropertiesCommand ??
+                       (editPortPropertiesCommand = new DelegateCommand(EditPortProperties));
+            }
+        }
+
+        /// <summary>
+        /// Opens the Port Properties dialog and, on confirmation, records the owning node
+        /// for undo before applying the new name and description.
+        /// </summary>
+        private void EditPortProperties(object parameter)
+        {
+            var wsViewModel = node.WorkspaceViewModel;
+
+            // Hide the popup, we no longer need it
+            wsViewModel.OnRequestPortContextMenu(ShowHideFlags.Hide, this);
+
+            // Collect sibling port names (same port type) to prevent duplicates.
+            var siblingPorts = port.PortType == PortType.Input ? node.InPorts : node.OutPorts;
+
+            var dialog = new PortPropertiesEditPrompt()
+            {
+                DescriptionInput = { Text = port.ToolTip },
+                nameBox = { Text = port.Name },
+                PortType = port.PortType,
+                OutPortNames = siblingPorts.Where(p => !p.PortName.Equals(PortName))
+                                           .Select(p => p.PortName)
+                                           .ToList(),
+            };
+
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            var workspaceModel = node.WorkspaceViewModel.Model;
+            using (workspaceModel.UndoRecorder.BeginActionGroup())
+            {
+                WorkspaceModel.RecordModelForModification(port.Owner, workspaceModel.UndoRecorder);
+                port.Name = dialog.PortName;
+                port.ToolTip = dialog.Description;
+            }
+            workspaceModel.HasUnsavedChanges = true;
+
+            RaisePropertyChanged(nameof(PortName));
         }
     }
 }
