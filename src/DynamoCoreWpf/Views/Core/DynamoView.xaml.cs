@@ -2316,7 +2316,7 @@ namespace Dynamo.Controls
 
             // Handle Ctrl+Shift+Left: Toggle library sidebar
             if (e.Key == Key.Left &&
-                Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
+                Keyboard.Modifiers == (System.Windows.Input.ModifierKeys.Control | System.Windows.Input.ModifierKeys.Shift))
             {
                 ToggleLibrarySidebarCollapseStatus();
                 e.Handled = true;
@@ -2325,7 +2325,7 @@ namespace Dynamo.Controls
 
             // Handle Ctrl+Shift+Right: Toggle extensions sidebar
             if (e.Key == Key.Right &&
-                Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
+                Keyboard.Modifiers == (System.Windows.Input.ModifierKeys.Control | System.Windows.Input.ModifierKeys.Shift))
             {
                 ToggleExtensionBarCollapseStatus();
                 e.Handled = true;
