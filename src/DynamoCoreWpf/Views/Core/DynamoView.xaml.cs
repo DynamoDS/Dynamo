@@ -2313,6 +2313,25 @@ namespace Dynamo.Controls
         private void DynamoView_KeyDown(object sender, KeyEventArgs e)
         {
             Analytics.TrackActivityStatus(HeartBeatType.User.ToString());
+
+            // Handle Ctrl+Shift+Left: Toggle library sidebar
+            if (e.Key == Key.Left &&
+                Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
+            {
+                ToggleLibrarySidebarCollapseStatus();
+                e.Handled = true;
+                return;
+            }
+
+            // Handle Ctrl+Shift+Right: Toggle extensions sidebar
+            if (e.Key == Key.Right &&
+                Keyboard.Modifiers == (ModifierKeys.Control | ModifierKeys.Shift))
+            {
+                ToggleExtensionBarCollapseStatus();
+                e.Handled = true;
+                return;
+            }
+
             if (e.Key != Key.Escape || !IsMouseOver) return;
 
             var vm = dynamoViewModel.BackgroundPreviewViewModel;
@@ -2976,6 +2995,14 @@ namespace Dynamo.Controls
 
         private void OnCollapsedLeftSidebarClick(object sender, EventArgs e)
         {
+            ToggleLibrarySidebarCollapseStatus();
+        }
+
+        /// <summary>
+        /// Made internal for testing purposes only.
+        /// </summary>
+        internal void ToggleLibrarySidebarCollapseStatus()
+        {
             if (LibraryCollapsed)
             {
                 // Restore extension view to default width (200)
@@ -2990,6 +3017,16 @@ namespace Dynamo.Controls
         }
 
         private void OnCollapsedRightSidebarClick(object sender, EventArgs e)
+        {
+            ToggleExtensionBarCollapseStatus();
+        }
+
+        private void ToggleLibrarySidebarMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleLibrarySidebarCollapseStatus();
+        }
+
+        private void ToggleExtensionsSidebarMenuItem_Click(object sender, RoutedEventArgs e)
         {
             ToggleExtensionBarCollapseStatus();
         }
