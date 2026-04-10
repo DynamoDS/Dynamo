@@ -1329,6 +1329,9 @@ Los siguientes montajes se han cargado varias veces:
   <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
     <value>Abrir definición de {0}...</value>
   </data>
+  <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
+    <value>Nuevo gráfico a partir de plantilla...</value>
+  </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>Confirmación de descarga de paquete</value>
   </data>
@@ -3798,7 +3801,7 @@ Para convertir este archivo en una nueva plantilla, guárdelo en una carpeta dif
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>Parece que Autodesk Identity Manager no está configurado en el sistema. Para garantizar el acceso completo a todas las funciones, inicie sesión en su cuenta de Autodesk Account mediante Autodesk Identity Manager.
-#Descargue e instale este componente=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html desde aquí o mediante Autodesk Access y, a continuación, inicie sesión.</value>
+#Descargue e instale este componente=https://www.autodesk.com/es/support/technical/article/caas/tsarticles/tsarticles/ESP/ts/7zbgTemIhA3ltRs4eACL0g.html desde aquí o mediante Autodesk Access y, a continuación, inicie sesión.</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Descargar Autodesk Identity Manager</value>
