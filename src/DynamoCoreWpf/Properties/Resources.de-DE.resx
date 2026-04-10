@@ -3799,7 +3799,7 @@ Um diese Datei als neue Vorlage zu speichern, speichern Sie sie in einem anderen
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>Autodesk Identity Manager ist offenbar nicht auf Ihrem System eingerichtet. Um vollen Zugriff auf alle Funktionen zu haben, melden Sie sich mit Autodesk Identity Manager bei Ihrem Autodesk-Konto an.
-Führen Sie #Download und Installation=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html hier oder über Autodesk Access durch, und melden Sie sich dann an.</value>
+Führen Sie #Download und Installation=https://www.autodesk.com/de/support/technical/article/caas/tsarticles/tsarticles/DEU/ts/7zbgTemIhA3ltRs4eACL0g.html hier oder über Autodesk Access durch, und melden Sie sich dann an.</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Autodesk Identity Manager herunterladen</value>

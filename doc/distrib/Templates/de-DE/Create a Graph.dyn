@@ -507,7 +507,7 @@
         {
           "Id": "6c5113c4d1e84e33961cc481224d9c27",
           "Name": "string",
-          "Description": "\"Damit die Diagramme in Dynamo übersichtlich und lesbar bleiben, empfehlen wir, eine klare\nStruktur zu verwenden.\n\nWeitere Informationen finden Sie auf der Dynamo Primer-Seite zu bewährten Diagrammstrategien:\nhttps://primer2.dynamobim.org/9_best_practices/1-graph-strategies\"",
+          "Description": "\"Damit die Diagramme in Dynamo übersichtlich und lesbar bleiben, empfehlen wir, eine klare\nStruktur zu verwenden.\n\nWeitere Informationen finden Sie auf der Dynamo Primer-Seite zu bewährten Diagrammstrategien:\nhttps://primer2.dynamobim.org/de/9_best_practices/1-graph-strategies\"",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,

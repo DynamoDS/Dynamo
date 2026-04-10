@@ -507,7 +507,7 @@
         {
           "Id": "6c5113c4d1e84e33961cc481224d9c27",
           "Name": "string",
-          "Description": "\"Aby byly grafy aplikace Dynamo přehledné a čitelné, doporučujeme postupovat podle jasné\nstruktury.\n\nDalší informace naleznete na stránce Dynamo Primer o nejlepších metodách strategií grafů:\nhttps://primer2.dynamobim.org/9_best_practices/1-graph-strategies\"",
+          "Description": "\"Aby byly grafy aplikace Dynamo přehledné a čitelné, doporučujeme postupovat podle jasné\nstruktury.\n\nDalší informace naleznete na stránce Dynamo Primer o nejlepších metodách strategií grafů:\nhttps://primer2.dynamobim.org/cs/9_best_practices/1-graph-strategies\"",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,

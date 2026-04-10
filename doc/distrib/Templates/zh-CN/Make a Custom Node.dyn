@@ -3692,7 +3692,7 @@
       },
       {
         "Id": "0f6aa09a7fb747069992b2c9f878daf8",
-        "Title": "描述\n_____________________________________________________\n\n本文档将帮助您熟悉如何创建自定义节点。\n\n要使 Dynamo 脚本保持整洁可读，我们建议遵循清晰的\n结构。\n\n在 Dynamo Primer 页面上阅读有关创建自定义节点的详细信息:\nhttps://primer2.dynamobim.org/6_custom_nodes_and_packages/6-1_custom-nodes/2-creating",
+        "Title": "描述\n_____________________________________________________\n\n本文档将帮助您熟悉如何创建自定义节点。\n\n要使 Dynamo 脚本保持整洁可读，我们建议遵循清晰的\n结构。\n\n在 Dynamo Primer 页面上阅读有关创建自定义节点的详细信息:\nhttps://primer2.dynamobim.org/zh-cn/6_custom_nodes_and_packages/6-1_custom-nodes/2-creating",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

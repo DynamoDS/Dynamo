@@ -3692,7 +3692,7 @@
       },
       {
         "Id": "0f6aa09a7fb747069992b2c9f878daf8",
-        "Title": "POPIS\n_____________________________________________________ \n\nTento dokument vám pomůže seznámit se s tvorbou vlastního uzlu.\n\nAby byly skripty aplikace Dynamo přehledné a čitelné, doporučujeme dodržovat čistou\nstrukturu při tvorbě grafů.\n\nDalší informace o tvorbě vlastních uzlů naleznete na stránce Dynamo Prime o tvorbě vlastních uzlů:\nhttps://primer2.dynamobim.org/6_custom_nodes_and_packages/6-1_custom-nodes/2-creating",
+        "Title": "POPIS\n_____________________________________________________ \n\nTento dokument vám pomůže seznámit se s tvorbou vlastního uzlu.\n\nAby byly skripty aplikace Dynamo přehledné a čitelné, doporučujeme dodržovat čistou\nstrukturu při tvorbě grafů.\n\nDalší informace o tvorbě vlastních uzlů naleznete na stránce Dynamo Prime o tvorbě vlastních uzlů:\nhttps://primer2.dynamobim.org/cs/6_custom_nodes_and_packages/6-1_custom-nodes/2-creating",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

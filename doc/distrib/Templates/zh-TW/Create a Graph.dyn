@@ -507,7 +507,7 @@
         {
           "Id": "6c5113c4d1e84e33961cc481224d9c27",
           "Name": "string",
-          "Description": "\"為了讓 Dynamo 圖表乾淨易讀，我們建議您使用清楚的\n結構。\n\n如需更多資訊，請閱讀有關最佳實踐圖表策略的 Dynamo Primer 頁面:\nhttps://primer2.dynamobim.org/9_best_practices/1-graph-strategies\"",
+          "Description": "\"為了讓 Dynamo 圖表乾淨易讀，我們建議您使用清楚的\n結構。\n\n如需更多資訊，請閱讀有關最佳實踐圖表策略的 Dynamo Primer 頁面:\nhttps://primer2.dynamobim.org/zh-tw/9_best_practices/1-graph-strategies\"",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
