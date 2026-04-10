@@ -545,9 +545,14 @@ namespace DSCore
             /// </summary>
             public string Name { get; private set; } = name ?? type.Name;
             /// <summary>
-            /// Canonical Forge Data Schema $typeid (e.g. "autodesk.math:point3d-1.0.0").
+            /// Wire-format $typeid as emitted by ProtoGeometry's ToJson() / DSCore.Data.StringifyJSON
+            /// (e.g. "autodesk.math:point3d-1.0.0", "autodesk.geometry.curve:bcurve-1.0.0").
             /// Null for primitive types (bool, string, Number, etc.) that don't use $typeid serialization.
-            /// Must match the identifiers recognised by <see cref="DynamoJObjectToNative"/>.
+            /// Must match the identifiers recognised by <see cref="DynamoJObjectToNative"/>
+            /// and the actual $typeid values produced by ProtoGeometry serialization.
+            /// Exposed to external consumers via <see cref="IValueSchemaProvider.ValueTypeId"/>
+            /// (implemented by DefineData), which DynamoPlayer reads to populate
+            /// ValueSchema.TypeId and DynamoMCP uses to resolve JSON Schemas for LLM inputs.
             /// </summary>
             public string TypeId { get; private set; } = typeId;
             /// <summary>
@@ -583,17 +588,17 @@ namespace DSCore
         /// </summary>
         static Data()
         {
-            var curve = new DataNodeDynamoType(typeof(Curve), 0, false, null, null, "autodesk.geometry.curve:curve-1.0.0");
-            var polyCurve = new DataNodeDynamoType(typeof(PolyCurve), 1, false, null, curve, "autodesk.geometry.curve:polycurve-1.0.0");
-            var polygon = new DataNodeDynamoType(typeof(Polygon), 2, false, null, polyCurve, "autodesk.geometry.curve:polygon-1.0.0");  // polygon is subtype of polyCurve
-            var rectangle = new DataNodeDynamoType(typeof(Autodesk.DesignScript.Geometry.Rectangle), 3, true, null, polyCurve, "dynamo.geometry:rectangle-1.0.0");    // rectangle is subtype of polygon
-            var solid = new DataNodeDynamoType(typeof(Solid), 0, false, null, null, "dynamo.geometry:solid-1.0.0");
-            var cone = new DataNodeDynamoType(typeof(Cone), 1, false, null, solid, "autodesk.geometry:cone-1.0.0");    // cone is subtype of solid
-            var cylinder = new DataNodeDynamoType(typeof(Cylinder), 2, false, null, cone, "autodesk.geometry:cylinder-1.0.0"); // cylinder is subtype of cone 
-            var cuboid = new DataNodeDynamoType(typeof(Cuboid), 1, false, null, solid, "dynamo.geometry:cuboid-1.0.0");    // cuboid is subtype of solid
-            var sphere = new DataNodeDynamoType(typeof(Sphere), 1, true, null, solid, "autodesk.geometry:sphere-1.0.0");    // sphere is subtype of solid
+            var curve = new DataNodeDynamoType(typeof(Curve), 0, false, null, null, "dynamo.geometry:sab-1.0.0");
+            var polyCurve = new DataNodeDynamoType(typeof(PolyCurve), 1, false, null, curve, "autodesk.geometry.curve:compositecurve-1.0.0");
+            var polygon = new DataNodeDynamoType(typeof(Polygon), 2, false, null, polyCurve, "autodesk.geometry.curve:polyline-1.0.0");
+            var rectangle = new DataNodeDynamoType(typeof(Autodesk.DesignScript.Geometry.Rectangle), 3, true, null, polyCurve, "dynamo.geometry:rectangle-1.0.0");
+            var solid = new DataNodeDynamoType(typeof(Solid), 0, false, null, null, "dynamo.geometry:sab-1.0.0");
+            var cone = new DataNodeDynamoType(typeof(Cone), 1, false, null, solid, "dynamo.geometry:cone-1.0.0");
+            var cylinder = new DataNodeDynamoType(typeof(Cylinder), 2, false, null, cone, "autodesk.geometry.surface:cylinder-2.0.0");
+            var cuboid = new DataNodeDynamoType(typeof(Cuboid), 1, false, null, solid, "dynamo.geometry:cuboid-1.0.0");
+            var sphere = new DataNodeDynamoType(typeof(Sphere), 1, true, null, solid, "autodesk.geometry.surface:sphere-1.0.0");
 
-            var surface = new DataNodeDynamoType(typeof(Surface), 0, false, null, null, "autodesk.geometry.surface:surface-1.0.0");
+            var surface = new DataNodeDynamoType(typeof(Surface), 0, false, null, null, "dynamo.geometry:sab-1.0.0");
 
             var typeList = new List<DataNodeDynamoType>
             {
@@ -601,13 +606,13 @@ namespace DSCore
                 new(typeof(BoundingBox), typeId: "autodesk.geometry:boundingbox3d-1.0.0"),
                 new(typeof(CoordinateSystem), typeId: "autodesk.math:matrix44d-1.0.0"),
                 curve,
-                new(typeof(Arc), 1, false, null, curve, "autodesk.geometry.curve:arc-1.0.0"),
+                new(typeof(Arc), 1, false, null, curve, "autodesk.geometry.curve:circle-1.0.0"),
                 new(typeof(Circle), 1, false, null, curve, "autodesk.geometry.curve:circle-1.0.0"),
                 new(typeof(Ellipse), 1, false, null, curve, "autodesk.geometry.curve:ellipse-1.0.0"),
-                new(typeof(EllipseArc), 1, false, null, curve, "autodesk.geometry.curve:ellipsearc-1.0.0"),
-                new(typeof(Helix), 1, false, null, curve, "autodesk.geometry.curve:helix-1.0.0"),
+                new(typeof(EllipseArc), 1, false, null, curve, "autodesk.geometry.curve:ellipse-1.0.0"),
+                new(typeof(Helix), 1, false, null, curve, "dynamo.geometry:sab-1.0.0"),
                 new(typeof(Line), 1, false, null, curve, "autodesk.geometry.curve:line-1.0.0"),
-                new(typeof(NurbsCurve), 1, false, null, curve, "autodesk.geometry.curve:nurbscurve-1.0.0"),
+                new(typeof(NurbsCurve), 1, false, null, curve, "autodesk.geometry.curve:bcurve-1.0.0"),
                 polyCurve,
                 polygon,
                 rectangle,
@@ -616,7 +621,7 @@ namespace DSCore
                 new(typeof(long), "Integer"),
                 new(typeof(Location), typeId: "dynamo.data:location-1.0.0"),
                 new(typeof(Mesh), typeId: "dynamo.geometry:mesh-1.0.0"),
-                new(typeof(Plane), typeId: "autodesk.geometry:plane-1.0.0"),
+                new(typeof(Plane), typeId: "autodesk.geometry.surface:plane-1.0.0"),
                 new(typeof(Autodesk.DesignScript.Geometry.Point), typeId: "autodesk.math:point3d-1.0.0"),
                 solid,
                 cone,
@@ -625,8 +630,8 @@ namespace DSCore
                 sphere,
                 new(typeof(string)),
                 surface,
-                new(typeof(NurbsSurface), 1, false, null, surface, "autodesk.geometry.surface:nurbssurface-1.0.0"),
-                new(typeof(PolySurface), 1, true, null, surface, "autodesk.geometry.surface:polysurface-1.0.0"),
+                new(typeof(NurbsSurface), 1, false, null, surface, "autodesk.geometry.curve:bsurface-1.0.0"),
+                new(typeof(PolySurface), 1, true, null, surface, "dynamo.geometry:sab-1.0.0"),
                 new(typeof(System.TimeSpan)),
                 new(typeof(UV), typeId: "autodesk.math:uv-1.0.0"),
                 new(typeof(Vector), typeId: "autodesk.math:vector3d-1.0.0")
