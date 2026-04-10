@@ -331,9 +331,16 @@ namespace Dynamo.UI.Views
                 viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
             }
             currentCloseMode = CloseMode.ByStartingDynamo;
-            Close();
+
             dynamoView?.Show();
             dynamoView?.Activate();
+
+            // Defer closing the splash screen until the dispatcher is idle.
+            // This method is invoked from a WebView2 JS-to-.NET callback, so calling Close()
+            // synchronously can trigger webView.Dispose() while still inside that callback,
+            // causing re-entrancy crashes. Showing dynamoView first ensures WPF always has a
+            // visible window, preventing ShutdownMode.OnLastWindowClose from terminating the app.
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ApplicationIdle, () => Close());
         }
 
         private void OnLoginStateChanged(LoginState state)
