@@ -507,7 +507,7 @@
         {
           "Id": "6c5113c4d1e84e33961cc481224d9c27",
           "Name": "string",
-          "Description": "\"Чтобы графы Dynamo были аккуратными и удобными для чтения, рекомендуем следовать четкой\nструктуре.\n\nДополнительные сведения см. на странице Dynamo Primer с советами по работе с графами:\nhttps://primer2.dynamobim.org/9_best_practices/1-graph-strategies\"",
+          "Description": "\"Чтобы графы Dynamo были аккуратными и удобными для чтения, рекомендуем следовать четкой\nструктуре.\n\nДополнительные сведения см. на странице Dynamo Primer с советами по работе с графами:\nhttps://primer2.dynamobim.org/ru/9_best_practices/1-graph-strategies\"",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,

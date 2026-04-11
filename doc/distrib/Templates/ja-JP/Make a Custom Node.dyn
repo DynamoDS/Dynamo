@@ -3692,7 +3692,7 @@
       },
       {
         "Id": "0f6aa09a7fb747069992b2c9f878daf8",
-        "Title": "説明\n_____________________________________________________ \n\nこのドキュメントは、カスタム ノードの作成に慣れるのに役立ちます。\n\nDynamo スクリプトを整った読み取りやすい状態に保つには、グラフ作成の際に\n明確な構造を使用することをお勧めします。\n\n詳細については、Dynamo Primer のカスタム ノード作成のページを参照してください。\nhttps://primer2.dynamobim.org/6_custom_nodes_and_packages/6-1_custom-nodes/2-creating",
+        "Title": "説明\n_____________________________________________________ \n\nこのドキュメントは、カスタム ノードの作成に慣れるのに役立ちます。\n\nDynamo スクリプトを整った読み取りやすい状態に保つには、グラフ作成の際に\n明確な構造を使用することをお勧めします。\n\n詳細については、Dynamo Primer のカスタム ノード作成のページを参照してください。\nhttps://primer2.dynamobim.org/ja/6_custom_nodes_and_packages/6-1_custom-nodes/2-creating",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

@@ -3692,7 +3692,7 @@
       },
       {
         "Id": "0f6aa09a7fb747069992b2c9f878daf8",
-        "Title": "BESCHREIBUNG\n_____________________________________________________ \n\nDieses Dokument hilft Ihnen, sich mit der Erstellung von benutzerdefinierten Blöcken vertraut zu machen.\n\nDamit die Diagramme in Dynamo übersichtlich und lesbar bleiben, empfehlen wir, beim\nErstellen von Diagrammen eine klare Struktur zu verwenden.\n\nWeitere Informationen zum Erstellen von benutzerdefinierten Blöcken finden Sie auf der folgenden Dynamo Primer-Seite:\nhttps://primer2.dynamobim.org/6_custom_nodes_and_packages/6-1_custom-nodes/2-creating",
+        "Title": "BESCHREIBUNG\n_____________________________________________________ \n\nDieses Dokument hilft Ihnen, sich mit der Erstellung von benutzerdefinierten Blöcken vertraut zu machen.\n\nDamit die Diagramme in Dynamo übersichtlich und lesbar bleiben, empfehlen wir, beim\nErstellen von Diagrammen eine klare Struktur zu verwenden.\n\nWeitere Informationen zum Erstellen von benutzerdefinierten Blöcken finden Sie auf der folgenden Dynamo Primer-Seite:\nhttps://primer2.dynamobim.org/de/6_custom_nodes_and_packages/6-1_custom-nodes/2-creating",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
