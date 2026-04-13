@@ -640,5 +640,93 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(restoredNode.GUID, restoredNote.PinnedNode.GUID,
                 "Note should be pinned to the same node after undo.");
         }
+        /// <summary>
+        /// DYN-10380: Unpinning a note that belongs to a group should not eject
+        /// it from the group. Only the pin relationship should be broken.
+        /// </summary>
+        [Test]
+        public void UnpinGroupedNote_NoteRemainsInGroup()
+        {
+            Open(@"UI\UINotes.dyn");
+            var nodeGUID = "bbc16882-75c2-4a50-a4e4-5e50e191af8f";
+            var noteGUID = "4677e999-d5f5-4bb2-9706-a97bf3a86711";
+            var nodeView = NodeViewWithGuid(nodeGUID);
+            var noteView = NoteViewWithGuid(noteGUID);
+            var nodeModel = nodeView.ViewModel.NodeModel;
+            var noteModel = noteView.ViewModel.Model;
+
+            // Pin note to node
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.AddUnique(nodeModel);
+            DynamoSelection.Instance.Selection.AddUnique(noteModel);
+            noteView.ViewModel.PinToNodeCommand.Execute(null);
+            Assert.IsNotNull(noteModel.PinnedNode, "Pre-condition: note should be pinned.");
+
+            // Group the pinned pair
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.AddUnique(nodeModel);
+            DynamoSelection.Instance.Selection.AddUnique(noteModel);
+            ViewModel.AddAnnotationCommand.Execute(null);
+            DispatcherUtil.DoEvents();
+            var annotation = ViewModel.HomeSpaceViewModel.Annotations.First();
+            Assert.IsTrue(annotation.AnnotationModel.ContainsModel(noteModel),
+                "Pre-condition: note should be in the group.");
+
+            // Unpin the note
+            noteView.ViewModel.UnpinFromNodeCommand.Execute(null);
+
+            // Note should be unpinned but still in the group
+            Assert.IsNull(noteModel.PinnedNode, "Note should be unpinned.");
+            Assert.IsTrue(annotation.AnnotationModel.ContainsModel(noteModel),
+                "Note should remain in the group after unpinning.");
+        }
+
+        /// <summary>
+        /// DYN-10380: Undo/redo of unpin on a grouped note should preserve group
+        /// membership throughout the entire cycle.
+        /// </summary>
+        [Test]
+        public void UnpinGroupedNote_UndoRedo_PreservesGroupMembership()
+        {
+            Open(@"UI\UINotes.dyn");
+            var nodeGUID = "bbc16882-75c2-4a50-a4e4-5e50e191af8f";
+            var noteGUID = "4677e999-d5f5-4bb2-9706-a97bf3a86711";
+            var nodeView = NodeViewWithGuid(nodeGUID);
+            var noteView = NoteViewWithGuid(noteGUID);
+            var nodeModel = nodeView.ViewModel.NodeModel;
+            var noteModel = noteView.ViewModel.Model;
+
+            // Pin note to node
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.AddUnique(nodeModel);
+            DynamoSelection.Instance.Selection.AddUnique(noteModel);
+            noteView.ViewModel.PinToNodeCommand.Execute(null);
+
+            // Group the pinned pair
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.AddUnique(nodeModel);
+            DynamoSelection.Instance.Selection.AddUnique(noteModel);
+            ViewModel.AddAnnotationCommand.Execute(null);
+            DispatcherUtil.DoEvents();
+            var annotation = ViewModel.HomeSpaceViewModel.Annotations.First();
+
+            // Unpin the note
+            noteView.ViewModel.UnpinFromNodeCommand.Execute(null);
+            Assert.IsNull(noteModel.PinnedNode, "Note should be unpinned.");
+            Assert.IsTrue(annotation.AnnotationModel.ContainsModel(noteModel),
+                "Note should remain in group after unpin.");
+
+            // Undo the unpin — note should be re-pinned and still in the group
+            Model.CurrentWorkspace.Undo();
+            Assert.IsNotNull(noteModel.PinnedNode, "Undo should restore the pin.");
+            Assert.IsTrue(annotation.AnnotationModel.ContainsModel(noteModel),
+                "Note should remain in group after undo of unpin.");
+
+            // Redo the unpin — note should be unpinned and still in the group
+            Model.CurrentWorkspace.Redo();
+            Assert.IsNull(noteModel.PinnedNode, "Redo should unpin the note.");
+            Assert.IsTrue(annotation.AnnotationModel.ContainsModel(noteModel),
+                "Note should remain in group after redo of unpin.");
+        }
     }
 }
