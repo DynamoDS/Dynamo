@@ -29,8 +29,16 @@ namespace CoreNodeModels
     {
         /// <inheritdoc/>
         [JsonIgnore]
-        public string ValueTypeId =>
-            (Items[SelectedIndex].Item as Data.DataNodeDynamoType)?.TypeId ?? SelectedString;
+        public string ValueTypeId
+        {
+            get
+            {
+                if (SelectedIndex < 0 || SelectedIndex >= Items.Count)
+                    return SelectedString;
+
+                return (Items[SelectedIndex].Item as Data.DataNodeDynamoType)?.TypeId ?? SelectedString;
+            }
+        }
 
         /// <inheritdoc/>
         [JsonIgnore]

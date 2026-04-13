@@ -550,7 +550,7 @@ namespace DSCore
             /// Null for primitive types (bool, string, Number, etc.) that don't use $typeid serialization.
             /// Must match the identifiers recognised by <see cref="DynamoJObjectToNative"/>
             /// and the actual $typeid values produced by ProtoGeometry serialization.
-            /// Exposed to external consumers via <see cref="IValueSchemaProvider.ValueTypeId"/>
+            /// Exposed to external consumers via <see cref="Dynamo.Graph.Nodes.IValueSchemaProvider.ValueTypeId"/>
             /// (implemented by DefineData), which DynamoPlayer reads to populate
             /// ValueSchema.TypeId and DynamoMCP uses to resolve JSON Schemas for LLM inputs.
             /// </summary>
