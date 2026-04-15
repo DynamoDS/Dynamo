@@ -3518,7 +3518,7 @@
             "contextData": "Autodesk.DesignScript.Geometry.IndexGroup.ByIndices@int,int,int",
             "parameters": "(a, b, c)",
             "itemType": "create",
-            "keywords": "quad, polygon, mesh, meshes"
+            "keywords": "tri, polygon, mesh, meshes"
         },
         {
             "fullyQualifiedName": "Autodesk.DesignScript.Geometry.IndexGroup.Count",

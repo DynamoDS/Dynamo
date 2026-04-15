@@ -7116,11 +7116,11 @@
     "FullName": "ProtoGeometry.Autodesk.DesignScript.Geometry.IndexGroup.ByIndices",
     "FullCategoryName": "Geometry.IndexGroup",
     "CreationName": "Autodesk.DesignScript.Geometry.IndexGroup.ByIndices@int,int,int",
-    "Description": "Create an IndexGroup storing four indices",
+    "Description": "Create an IndexGroup storing three indices",
     "ElementType": 65537,
     "Group": 1,
     "SearchKeywords": [
-      "quad",
+      "tri",
       "polygon",
       "mesh",
       "meshes"
