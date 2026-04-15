@@ -21,8 +21,14 @@ namespace Dynamo.Tests.Nodes
             var node = new DefineData();
             CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(node, false);
 
-            var firstType = DSCore.Data.DataNodeDynamoTypeList.First();
-            Assert.AreEqual(firstType.TypeId, node.ValueTypeId);
+            // Find a type with a non-null TypeId for testing
+            var pointType = DSCore.Data.DataNodeDynamoTypeList.First(t => t.Type == typeof(Autodesk.DesignScript.Geometry.Point));
+            Assert.IsNotNull(pointType.TypeId, "Point type should have a valid TypeId");
+            
+            // Set the node to Point type
+            node.SelectedIndex = DSCore.Data.DataNodeDynamoTypeList.IndexOf(pointType);
+            
+            Assert.AreEqual(pointType.TypeId, node.ValueTypeId);
             Assert.IsFalse(node.IsListValue);
         }
 
@@ -32,6 +38,21 @@ namespace Dynamo.Tests.Nodes
         {
             var node = new DefineData();
             Assert.DoesNotThrow(() => { var _ = node.ValueTypeId; });
+            Assert.AreEqual(node.SelectedString, node.ValueTypeId);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ValueTypeIdHandlesNullTypeId()
+        {
+            var node = new DefineData();
+            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(node, false);
+
+            // Default selection (bool) has null TypeId
+            var firstType = DSCore.Data.DataNodeDynamoTypeList.First();
+            Assert.IsNull(firstType.TypeId, "First type (bool) should have null TypeId");
+            
+            // Should fall back to SelectedString when TypeId is null
             Assert.AreEqual(node.SelectedString, node.ValueTypeId);
         }
     }
