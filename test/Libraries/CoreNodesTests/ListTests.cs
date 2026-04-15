@@ -248,21 +248,21 @@ namespace DSCoreNodesTests
         [Category("UnitTests")]
         public static void SortIndexByValue()
         {
-            Assert.AreEqual(new ArrayList { 4, 2, 3, 1, 0 }, List.SortIndexByValue(new List<object> { 8.0, 4.1, 2.0, 4.0, 0.0 }));
+            Assert.AreEqual(new ArrayList { 4, 2, 3, 1, 0 }, List.SortIndexByValue(new List<double> { 8.0, 4.1, 2.0, 4.0, 0.0 }));
         }
 
         [Test]
         [Category("UnitTests")]
         public static void SortIndexByValue_WithIntegers()
         {
-            Assert.AreEqual(new ArrayList { 4, 2, 3, 1, 0 }, List.SortIndexByValue(new List<object> { 8, 4, 2, 4, 0 }));
+            Assert.AreEqual(new ArrayList { 4, 2, 1, 3, 0 }, List.SortIndexByValue(new List<int> { 8, 4, 2, 4, 0 }));
         }
 
         [Test]
         [Category("UnitTests")]
         public static void SortIndexByValue_WithMixedNumericTypes()
         {
-            Assert.AreEqual(new ArrayList { 4, 2, 3, 1, 0 }, List.SortIndexByValue(new List<object> { 8.0, 4, 2.0, 4, 0 }));
+            Assert.AreEqual(new ArrayList { 4, 2, 1, 3, 0 }, List.SortIndexByValue(new List<object> { 8.0, 4, 2.0, 4, 0 }));
         }
         
         [Test]

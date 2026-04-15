@@ -244,9 +244,9 @@ namespace DSCore
         /// <returns name="int[]">The indices of the items in the sorted list</returns>
         /// <search>sort,index,value</search>
         [IsVisibleInDynamoLibrary(true)]
-        public static IEnumerable SortIndexByValue(IEnumerable<object> list)
+        public static IEnumerable SortIndexByValue(IList list)
         {
-            IEnumerable<int> newList = list
+            IEnumerable<int> newList = list.Cast<object>()
                 .Select((value, index) => new Tuple<int, object>(index, value))
                 .OrderBy(x => x.Item2, new ObjectComparer())
                 .Select(y => y.Item1);
