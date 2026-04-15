@@ -61,7 +61,15 @@ namespace Dynamo.GraphNodeManager
         {
             if (parameter == null) return;
             var type = parameter.ToString();
-            var promptName = System.IO.Path.GetFileNameWithoutExtension(viewModel.CurrentWorkspace.FileName);
+            var workspaceFileName = viewModel.CurrentWorkspace?.FileName;
+            var promptName = !string.IsNullOrWhiteSpace(workspaceFileName)
+                ? System.IO.Path.GetFileNameWithoutExtension(workspaceFileName)
+                : viewModel.CurrentWorkspace?.Name;
+
+            if (string.IsNullOrWhiteSpace(promptName))
+            {
+                promptName = "GraphNodes";
+            }
 
             var filteredNodes = NodesInfoDataGrid.ItemsSource.Cast<GridNodeViewModel>().ToArray();
 

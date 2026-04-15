@@ -235,6 +235,18 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(nullNodesCount, nullNodesImageCount);
         }
 
+        [Test]
+        public void JsonToCsvWithEmptyArrayReturnsNoRows()
+        {
+            Assert.DoesNotThrow(() =>
+            {
+                var csvLines = Dynamo.GraphNodeManager.Utilities.Utilities.jsonToCSV("[]");
+
+                Assert.IsNotNull(csvLines);
+                Assert.IsEmpty(csvLines);
+            });
+        }
+
         #region EnablePersistExtensions Tests
         /// <summary>
         /// Test if the Extension loads correctly when remembered
