@@ -390,6 +390,42 @@ namespace DSCoreNodesTests
 
         [Test]
         [Category("UnitTests")]
+        public static void ListMaximumItemPreservesInt64Type()
+        {
+            var result = List.MaximumItem(new List<object> { 8L, 4L, 0L, 66L, 10L });
+            Assert.IsInstanceOf<long>(result);
+            Assert.AreEqual(66L, result);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ListMinimumItemPreservesInt64Type()
+        {
+            var result = List.MinimumItem(new List<object> { 8L, 4L, 0L, 66L, 10L });
+            Assert.IsInstanceOf<long>(result);
+            Assert.AreEqual(0L, result);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ListMaximumItemPreservesIntType()
+        {
+            var result = List.MaximumItem(new List<object> { 8, 4, 0, 66, 10 });
+            Assert.IsInstanceOf<int>(result);
+            Assert.AreEqual(66, result);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ListMinimumItemPreservesIntType()
+        {
+            var result = List.MinimumItem(new List<object> { 8, 4, 0, 66, 10 });
+            Assert.IsInstanceOf<int>(result);
+            Assert.AreEqual(0, result);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public static void FilterListByMask()
         {
             Assert.AreEqual(
