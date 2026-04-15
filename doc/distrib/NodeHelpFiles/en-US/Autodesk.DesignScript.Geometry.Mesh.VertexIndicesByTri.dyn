@@ -271,7 +271,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Create an IndexGroup storing four indices\n\nIndexGroup.ByIndices (a: int, b: int, c: int): IndexGroup"
+      "Description": "Create an IndexGroup storing three indices\n\nIndexGroup.ByIndices (a: int, b: int, c: int): IndexGroup"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
