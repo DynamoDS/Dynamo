@@ -34,7 +34,10 @@ namespace DynamoSandbox
         public DynamoCoreSetup(string[] args)
         {
             var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
-            StartupUtils.SetLocale(cmdLineArgs);
+            if (!string.IsNullOrEmpty(cmdLineArgs.Locale))
+            {
+                DynamoModel.SetUICulture(cmdLineArgs.Locale);
+            }
 
             cmdLineArgs.SetDisableAnalytics();
 

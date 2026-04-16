@@ -468,23 +468,18 @@ namespace Dynamo.Applications
             return model;
         }
 
-        private static void SetLocale(string locale)
-        {
-            if (!string.IsNullOrEmpty(locale))
-            {
-                DynamoModel.SetUICulture(locale);
-            }
-        }
-
         /// <summary>
         /// Sets the application locale from parsed command-line arguments.
         /// </summary>
         /// <param name="cmdLineArgs">Parsed command-line arguments.</param>
         /// <returns>Always returns <see cref="string.Empty"/>.</returns>
-        [Obsolete("Use SetLocale(string locale) instead. This overload no longer returns a useful value.")]
+        [Obsolete("This method no longer returns a useful value and will be removed in a future Dynamo version.")]
         public static string SetLocale(CommandLineArguments cmdLineArgs)
         {
-            SetLocale(cmdLineArgs.Locale);
+            if (!string.IsNullOrEmpty(cmdLineArgs.Locale))
+            {
+                DynamoModel.SetUICulture(cmdLineArgs.Locale);
+            }
             return string.Empty;
         }
 
