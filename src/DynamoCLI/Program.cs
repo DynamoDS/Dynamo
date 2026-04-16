@@ -20,6 +20,8 @@ namespace DynamoCLI
             {
                 var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
                 useConsole = !cmdLineArgs.NoConsole;
+                // Set locale early so the splash screen renders in the correct language;
+                // DynamoModel construction will also call SetUICulture from preferences.
                 if (!string.IsNullOrEmpty(cmdLineArgs.Locale))
                 {
                     DynamoModel.SetUICulture(cmdLineArgs.Locale);

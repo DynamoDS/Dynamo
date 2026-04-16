@@ -473,7 +473,7 @@ namespace Dynamo.Applications
         /// </summary>
         /// <param name="cmdLineArgs">Parsed command-line arguments.</param>
         /// <returns>Always returns <see cref="string.Empty"/>.</returns>
-        [Obsolete("This method no longer returns a useful value and will be removed in a future Dynamo version.")]
+        [Obsolete("The API has been deprecated and will be removed in a future release of Dynamo. Make a direct call to DynamoModel.SetUICulture instead.")]
         public static string SetLocale(CommandLineArguments cmdLineArgs)
         {
             if (!string.IsNullOrEmpty(cmdLineArgs.Locale))
