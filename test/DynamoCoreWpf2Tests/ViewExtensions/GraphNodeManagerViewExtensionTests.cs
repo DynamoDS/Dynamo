@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -245,6 +246,34 @@ namespace DynamoCoreWpfTests
                 Assert.IsNotNull(csvLines);
                 Assert.IsEmpty(csvLines);
             });
+        }
+
+        [Test]
+        public void SanitizePromptNameForFile_ConvertsInvalidCharacters()
+        {
+            var method = typeof(GraphNodeManagerView).GetMethod(
+                "SanitizePromptNameForFile",
+                BindingFlags.NonPublic | BindingFlags.Static);
+
+            Assert.IsNotNull(method);
+
+            var sanitized = method.Invoke(null, new object[] { "Graph:Name*?" }) as string;
+
+            Assert.AreEqual("Graph_Name__", sanitized);
+        }
+
+        [Test]
+        public void SanitizePromptNameForFile_UsesFallbackForReservedNames()
+        {
+            var method = typeof(GraphNodeManagerView).GetMethod(
+                "SanitizePromptNameForFile",
+                BindingFlags.NonPublic | BindingFlags.Static);
+
+            Assert.IsNotNull(method);
+
+            var sanitized = method.Invoke(null, new object[] { "CON" }) as string;
+
+            Assert.AreEqual("GraphNodes", sanitized);
         }
 
         #region EnablePersistExtensions Tests
