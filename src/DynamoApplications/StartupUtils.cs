@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
+using System.Text;
 using System.Threading;
 using CommandLine;
 using Dynamo.Configuration;
@@ -476,11 +478,27 @@ namespace Dynamo.Applications
         [Obsolete("The API has been deprecated and will be removed in a future release of Dynamo. Make a direct call to DynamoModel.SetUICulture instead.")]
         public static string SetLocale(CommandLineArguments cmdLineArgs)
         {
+            var supportedLocale = new HashSet<string>(Configurations.SupportedLocaleDic.Values);
+            string locale = string.Empty;
+
             if (!string.IsNullOrEmpty(cmdLineArgs.Locale))
             {
                 DynamoModel.SetUICulture(cmdLineArgs.Locale);
+                locale = cmdLineArgs.Locale;
             }
-            return string.Empty;
+            else
+            {
+                locale = CultureInfo.InstalledUICulture.ToString();
+            }
+
+            // If locale is not supported by Dynamo, default to en-US.
+            if (!supportedLocale.Any(s => s.Equals(locale, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                locale = "en-US";
+            }
+            StringBuilder sb = new StringBuilder("LANGUAGE=");
+            sb.Append(locale.Replace("-", "_"));
+            return sb.ToString();
         }
 
         /// <summary>
