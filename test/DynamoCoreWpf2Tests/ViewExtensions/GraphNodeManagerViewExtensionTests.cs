@@ -239,13 +239,10 @@ namespace DynamoCoreWpfTests
         [Test]
         public void JsonToCsvWithEmptyArrayReturnsNoRows()
         {
-            Assert.DoesNotThrow(() =>
-            {
-                var csvLines = Dynamo.GraphNodeManager.Utilities.Utilities.jsonToCSV("[]");
+            var csvLines = Dynamo.GraphNodeManager.Utilities.Utilities.jsonToCSV("[]");
 
-                Assert.IsNotNull(csvLines);
-                Assert.IsEmpty(csvLines);
-            });
+            Assert.IsNotNull(csvLines);
+            Assert.IsEmpty(csvLines);
         }
 
         [Test]
