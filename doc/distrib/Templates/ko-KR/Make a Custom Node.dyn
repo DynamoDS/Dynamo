@@ -3692,7 +3692,7 @@
       },
       {
         "Id": "0f6aa09a7fb747069992b2c9f878daf8",
-        "Title": "설명\n_____________________________________________________ \n\n이 문서는 사용자 노드 작성 방법을 익히는 데 도움이 됩니다.\n\nDynamo 스크립트를 깔끔하고 읽기 쉽게 유지하려면 그래프를 작성할 때\n깔끔한 구조를 따르는 것이 좋습니다.\n\n사용자 노드 작성에 대한 자세한 내용은 Dynamo Primer 페이지를 참조하십시오.\nhttps://primer2.dynamobim.org/6_custom_nodes_and_packages/6-1_custom-nodes/2-creating",
+        "Title": "설명\n_____________________________________________________ \n\n이 문서는 사용자 노드 작성 방법을 익히는 데 도움이 됩니다.\n\nDynamo 스크립트를 깔끔하고 읽기 쉽게 유지하려면 그래프를 작성할 때\n깔끔한 구조를 따르는 것이 좋습니다.\n\n사용자 노드 작성에 대한 자세한 내용은 Dynamo Primer 페이지를 참조하십시오.\nhttps://primer2.dynamobim.org/ko/6_custom_nodes_and_packages/6-1_custom-nodes/2-creating",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

@@ -507,7 +507,7 @@
         {
           "Id": "6c5113c4d1e84e33961cc481224d9c27",
           "Name": "string",
-          "Description": "\"Aby wykresy dodatku Dynamo były schludne i czytelne, zalecamy utrzymywanie przejrzystej\nstruktury.\n\nAby uzyskać więcej informacji, zapoznaj się stroną Dynamo Primer, którą poświęcono najlepszym praktykom dotyczącym wykresów:\nhttps://primer2.dynamobim.org/9_best_practices/1-graph-strategies\"",
+          "Description": "\"Aby wykresy dodatku Dynamo były schludne i czytelne, zalecamy utrzymywanie przejrzystej\nstruktury.\n\nAby uzyskać więcej informacji, zapoznaj się stroną Dynamo Primer, którą poświęcono najlepszym praktykom dotyczącym wykresów:\nhttps://primer2.dynamobim.org/pl/9_best_practices/1-graph-strategies\"",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,

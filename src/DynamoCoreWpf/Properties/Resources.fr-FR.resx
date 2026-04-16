@@ -1329,6 +1329,9 @@ Les ensembles suivants ont été chargés plusieurs fois:
   <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
     <value>Ouvrir la définition {0} ...</value>
   </data>
+  <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
+    <value>Nouveau graphique à partir du modèle...</value>
+  </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>Confirmation du téléchargement du package</value>
   </data>
@@ -3106,7 +3109,7 @@ Essayez de placer le noeud **ByOrigin** mis en surbrillance.</value>
     <value>Non, fermer le fichier</value>
   </data>
   <data name="DiscardChangesWarningPopupCaption" xml:space="preserve">
-    <value>Supprimer les modifications ?</value>
+    <value>Ignorer les modifications?</value>
   </data>
   <data name="DiscardChangesWarningPopupMessage" xml:space="preserve">
     <value>Vos modifications seront perdues si vous quittez l'écran de chargement du package.</value>
@@ -3792,7 +3795,7 @@ Pour transformer ce fichier en nouveau gabarit, enregistrez-le dans un autre dos
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>Il semble qu’Autodesk Identity Manager n’est pas configuré sur votre système. Pour garantir un accès complet à toutes les fonctionnalités, connectez-vous à votre compte Autodesk à l’aide d’Autodesk Identity Manager.
-#Téléchargez et installez=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html ici ou via Autodesk Access, puis connectez-vous.</value>
+#Téléchargez et installez=https://www.autodesk.com/fr/support/technical/article/caas/tsarticles/tsarticles/FRA/ts/7zbgTemIhA3ltRs4eACL0g.html ici ou via Autodesk Access, puis connectez-vous.</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Télécharger Autodesk Identity Manager</value>
