@@ -169,7 +169,11 @@ namespace ProtoFFI
 
             if (null != extensionApp)
             {
-                extensionApp.StartUp(new ExtensionStartupParams { DisableADP = Analytics.DisableAnalytics });
+                extensionApp.StartUp(new ExtensionStartupParams
+                {
+                    DisableADP = Analytics.DisableAnalytics,
+                    Locale = System.Threading.Thread.CurrentThread.CurrentUICulture.Name
+                });
             }
         }
         

@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows;
 using Dynamo.Applications;
 using Dynamo.Controls;
@@ -28,9 +27,6 @@ namespace DynamoSandbox
         private const string sandboxWikiPage = @"https://github.com/DynamoDS/Dynamo/wiki/How-to-Utilize-Dynamo-Builds";
         private DynamoViewModel viewModel = null;
 
-        [DllImport("msvcrt.dll")]
-        public static extern int _putenv(string env);
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -38,8 +34,7 @@ namespace DynamoSandbox
         public DynamoCoreSetup(string[] args)
         {
             var cmdLineArgs = StartupUtils.CommandLineArguments.Parse(args);
-            var locale = StartupUtils.SetLocale(cmdLineArgs);
-            _putenv(locale);
+            StartupUtils.SetLocale(cmdLineArgs);
 
             cmdLineArgs.SetDisableAnalytics();
 

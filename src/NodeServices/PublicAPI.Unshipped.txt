@@ -1,3 +1,5 @@
+Autodesk.DesignScript.Interfaces.ExtensionStartupParams.Locale.get -> string
+Autodesk.DesignScript.Interfaces.ExtensionStartupParams.Locale.set -> void
 Dynamo.Graph.Nodes.NodeCategoryAttribute
 Dynamo.Graph.Nodes.NodeCategoryAttribute.ElementCategory.get -> string
 Dynamo.Graph.Nodes.NodeCategoryAttribute.ElementCategory.set -> void

@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
-using System.Text;
 using System.Threading;
 using CommandLine;
 using Dynamo.Configuration;
@@ -472,31 +470,14 @@ namespace Dynamo.Applications
 
         public static string SetLocale(CommandLineArguments cmdLineArgs)
         {
-            var supportedLocale = new HashSet<string>(Configuration.Configurations.SupportedLocaleDic.Values);
-            string libgLocale = string.Empty;
-
             if (!string.IsNullOrEmpty(cmdLineArgs.Locale))
             {
                 // Change the application locale, if a locale information is supplied.
+                // This early call ensures the splash screen displays in the correct language
+                // before the DynamoModel is constructed (which also calls SetUICulture).
                 DynamoModel.SetUICulture(cmdLineArgs.Locale);
-                libgLocale = cmdLineArgs.Locale;
             }
-            else
-            {
-                // In case no language is specified, libG's locale should be that of the OS.
-                // There is no need to set Dynamo's locale in this case.
-                libgLocale = CultureInfo.InstalledUICulture.ToString();
-            }
-
-            // If locale is not supported by Dynamo, default to en-US.
-            if (!supportedLocale.Any(s => s.Equals(libgLocale, StringComparison.InvariantCultureIgnoreCase)))
-            {
-                libgLocale = "en-US";
-            }
-            // Change the locale that LibG depends on.
-            StringBuilder sb = new StringBuilder("LANGUAGE=");
-            sb.Append(libgLocale.Replace("-", "_"));
-            return sb.ToString();
+            return string.Empty;
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Autodesk.DesignScript.Interfaces
@@ -154,6 +154,8 @@ namespace Autodesk.DesignScript.Interfaces
             get;
             set;
         }
+
+        public string Locale { get; set; }
     }
 
     /// <summary>
