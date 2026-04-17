@@ -566,14 +566,6 @@
                                   IsCheckable="True"
                                   IsChecked="{Binding Path=ConsoleHeight, Converter={StaticResource ConsoleHeightToBoolConverter}, Mode=TwoWay}" />
 
-                        <MenuItem Click="ToggleLibrarySidebarMenuItem_Click"
-                                  Header="{x:Static p:Resources.DynamoViewViewMenuShowLibrarySidebar}"
-                                  InputGestureText="Ctrl + Shift + Left" />
-
-                        <MenuItem Click="ToggleExtensionsSidebarMenuItem_Click"
-                                  Header="{x:Static p:Resources.DynamoViewViewMenuShowExtensionsSidebar}"
-                                  InputGestureText="Ctrl + Shift + Right" />
-
                         <MenuItem Name="connectorMenu" Header="{x:Static p:Resources.DynamoViewViewMenuConnector}">
                             <MenuItem Name="ShowHideConnectorsMenuItem"
                                       Header="{x:Static p:Resources.DynamoViewViewMenuShowConnectors}"
