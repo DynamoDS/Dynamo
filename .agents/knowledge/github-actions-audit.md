@@ -80,7 +80,6 @@ permissions:
 # check_file_size.yml
 permissions:
   contents: read
-  pull-requests: write   # to write the step summary (uses $GITHUB_STEP_SUMMARY)
 
 # dynamo_bin_diff.yml
 permissions:
