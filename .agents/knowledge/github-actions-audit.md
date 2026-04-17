@@ -23,7 +23,7 @@ For the durable "never do this" rules derived from this audit, see [`rules/ci-ru
 |----|----------|----------|-------------|
 | BUG-01 | `build_dynamo_core.yml` | Line 93 | Linux binary check **always passes** — `test "./DynamoCLI.exe"` evaluates the non-empty string, not the file. Also checks for `.exe` which doesn't exist on Linux. |
 | BUG-02 | `auto_cherrypick.yml` | Line 48 | `if [[ $milestone -eq "" ]]` uses arithmetic `-eq` to compare a string; always evaluates as equal when milestone is non-numeric — null milestone check silently never fires. |
-| BUG-03 | `Issues_workflow.yml` | Lines 61, 137, 144, 150 | `curl -u admin:${{ secrets.GITHUB_TOKEN }}` is the wrong format for GitHub API auth. Will return 401 silently because `--fail` is absent. |
+| BUG-03 | `Issues_workflow.yml` | Lines 61, 137, 144, 150 | `curl -u admin:${{ secrets.*TOKEN }}` uses basic auth with token secrets (`DYNAMOBOTTOKEN` at line 61, `GITHUB_TOKEN` in the others); this is the wrong format for GitHub API auth and can return 401 silently because `--fail` is absent. |
 
 **Fixes:**
 
