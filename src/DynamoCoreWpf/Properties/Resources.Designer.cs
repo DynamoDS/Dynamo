@@ -2874,29 +2874,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show _Extensions Sidebar.
-        /// </summary>
-        public static string DynamoViewViewMenuShowExtensionsSidebar {
-            get {
-                return ResourceManager.GetString("DynamoViewViewMenuShowExtensionsSidebar", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to _Show Helpers.
         /// </summary>
         public static string DynamoViewViewMenuShowGrid {
             get {
                 return ResourceManager.GetString("DynamoViewViewMenuShowGrid", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Show _Library Sidebar.
-        /// </summary>
-        public static string DynamoViewViewMenuShowLibrarySidebar {
-            get {
-                return ResourceManager.GetString("DynamoViewViewMenuShowLibrarySidebar", resourceCulture);
             }
         }
         

@@ -29,6 +29,7 @@ using Dynamo.PythonServices;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Services;
+using Dynamo.UI.Commands;
 using Dynamo.UI.Controls;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
@@ -125,6 +126,16 @@ namespace Dynamo.Controls
         internal double DefaultMinWidth = 0;
 
         /// <summary>
+        /// Command to toggle the library (left) sidebar visibility.
+        /// </summary>
+        public ICommand ToggleLibrarySidebarCommand { get; private set; }
+
+        /// <summary>
+        /// Command to toggle the extensions (right) sidebar visibility.
+        /// </summary>
+        public ICommand ToggleExtensionsSidebarCommand { get; private set; }
+
+        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="dynamoViewModel">Dynamo view model</param>
@@ -152,6 +163,9 @@ namespace Dynamo.Controls
 
             _timer = new Stopwatch();
             _timer.Start();
+
+            ToggleLibrarySidebarCommand = new DelegateCommand(_ => ToggleLibrarySidebarCollapseStatus());
+            ToggleExtensionsSidebarCommand = new DelegateCommand(_ => ToggleExtensionBarCollapseStatus());
 
             InitializeComponent();
 
@@ -2314,24 +2328,6 @@ namespace Dynamo.Controls
         {
             Analytics.TrackActivityStatus(HeartBeatType.User.ToString());
 
-            // Handle Ctrl+Shift+Left: Toggle library sidebar
-            if (e.Key == Key.Left &&
-                Keyboard.Modifiers == (System.Windows.Input.ModifierKeys.Control | System.Windows.Input.ModifierKeys.Shift))
-            {
-                ToggleLibrarySidebarCollapseStatus();
-                e.Handled = true;
-                return;
-            }
-
-            // Handle Ctrl+Shift+Right: Toggle extensions sidebar
-            if (e.Key == Key.Right &&
-                Keyboard.Modifiers == (System.Windows.Input.ModifierKeys.Control | System.Windows.Input.ModifierKeys.Shift))
-            {
-                ToggleExtensionBarCollapseStatus();
-                e.Handled = true;
-                return;
-            }
-
             if (e.Key != Key.Escape || !IsMouseOver) return;
 
             var vm = dynamoViewModel.BackgroundPreviewViewModel;
@@ -3017,16 +3013,6 @@ namespace Dynamo.Controls
         }
 
         private void OnCollapsedRightSidebarClick(object sender, EventArgs e)
-        {
-            ToggleExtensionBarCollapseStatus();
-        }
-
-        private void ToggleLibrarySidebarMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            ToggleLibrarySidebarCollapseStatus();
-        }
-
-        private void ToggleExtensionsSidebarMenuItem_Click(object sender, RoutedEventArgs e)
         {
             ToggleExtensionBarCollapseStatus();
         }
