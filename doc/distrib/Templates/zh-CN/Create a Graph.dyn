@@ -507,7 +507,7 @@
         {
           "Id": "6c5113c4d1e84e33961cc481224d9c27",
           "Name": "string",
-          "Description": "“要使 Dynamo 图形保持整洁可读，我们建议遵循清晰的\n结构。\n\n有关详细信息，请阅读有关最佳实践图形策略的 Dynamo Primer 页面:\nhttps://primer2.dynamobim.org/9_best_practices/1-graph-strategies\"",
+          "Description": "“要使 Dynamo 图形保持整洁可读，我们建议遵循清晰的\n结构。\n\n有关详细信息，请阅读有关最佳实践图形策略的 Dynamo Primer 页面:\nhttps://primer2.dynamobim.org/zh-cn/9_best_practices/1-graph-strategies\"",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,

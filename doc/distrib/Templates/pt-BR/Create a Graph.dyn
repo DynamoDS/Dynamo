@@ -507,7 +507,7 @@
         {
           "Id": "6c5113c4d1e84e33961cc481224d9c27",
           "Name": "string",
-          "Description": "“Para manter os gráficos do Dynamo organizados e legíveis, recomendamos seguir uma\nestrutura clara.\n\nPara obter mais informações, leia a página do Dynamo Primer sobre as estratégias de gráficos com as melhores práticas:\nhttps://primer2.dynamobim.org/9_best_practices/1-graph-strategies\"",
+          "Description": "“Para manter os gráficos do Dynamo organizados e legíveis, recomendamos seguir uma\nestrutura clara.\n\nPara obter mais informações, leia a página do Dynamo Primer sobre as estratégias de gráficos com as melhores práticas:\nhttps://primer2.dynamobim.org/pt-br/9_best_practices/1-graph-strategies\"",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,

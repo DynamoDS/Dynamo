@@ -1321,6 +1321,9 @@ Gli assiemi successivi sono stati caricati più volte:
   <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
     <value>Apri definizione di {0}...</value>
   </data>
+  <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
+    <value>Nuovo grafico da modello...</value>
+  </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>Conferma download pacchetto</value>
   </data>
@@ -3780,7 +3783,7 @@ Per trasformare questo file in un nuovo modello, salvarlo in un'altra cartella e
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>Autodesk Identity Manager non è impostato nel sistema in uso. Per garantire l'accesso completo a tutte le funzionalità, accedere ad Autodesk Account utilizzando Autodesk Identity Manager.
-#Scaricarlo e installarlo=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html qui o tramite Autodesk Access, quindi accedere.</value>
+#Scaricarlo e installarlo=https://www.autodesk.com/it/support/technical/article/caas/tsarticles/tsarticles/ITA/ts/7zbgTemIhA3ltRs4eACL0g.html qui o tramite Autodesk Access, quindi accedere.</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Scarica Autodesk Identity Manager</value>

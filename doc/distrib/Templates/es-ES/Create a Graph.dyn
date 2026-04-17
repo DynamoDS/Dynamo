@@ -507,7 +507,7 @@
         {
           "Id": "6c5113c4d1e84e33961cc481224d9c27",
           "Name": "cadena",
-          "Description": "\"Para mantener los gráficos de Dynamo ordenados y legibles, recomendamos seguir una clara\nestructura.\n\nPara obtener más información, consulte la página de Dynamo Primer sobre las estrategias de gráficos de prácticas recomendadas:\nhttps://primer2.dynamobim.org/9_best_practices/1-graph-strategies\"",
+          "Description": "\"Para mantener los gráficos de Dynamo ordenados y legibles, recomendamos seguir una clara\nestructura.\n\nPara obtener más información, consulte la página de Dynamo Primer sobre las estrategias de gráficos de prácticas recomendadas:\nhttps://primer2.dynamobim.org/es/9_best_practices/1-graph-strategies\"",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
