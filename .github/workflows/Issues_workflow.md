@@ -4,6 +4,7 @@ description: Agentic issue triage workflow for Dynamo repository issues.
 on:
   issues:
     types: [opened, reopened, edited]
+  # Allow triage runs for all repository roles, including external reporters.
   roles: all
 permissions:
   contents: read
@@ -36,7 +37,7 @@ Goals:
 
 Triage process:
 1. Read the issue title, body, current labels, current assignees, and recent comments.
-2. Classify issue type from repository conventions (for example: bug, enhancement/feature, question, documentation, regression, wishlist, host-specific labels like Revit).
+2. Classify issue type from repository conventions (use labels that exist in this repository, such as `Wishlist`, `Revit`, `Advance-Steel`, `needs more info`, plus common type labels when present).
 3. Determine priority (critical/high/medium/low or p0/p1/p2/p3 style used by this repository).
 4. Search for potentially duplicate open/closed issues using strong title keywords, stack trace fragments, host/version details, and key symptoms.
 5. Determine whether information is missing (especially repro steps, expected vs actual behavior, environment/version, and supporting artifacts).

@@ -22,4 +22,5 @@
 *.RTF	 diff=astextplain
 
 # Generated gh-aw lock files should be regenerated, not line-merged.
+# On conflicts keep our branch copy (merge=ours), then re-run `gh aw compile`.
 .github/workflows/*.lock.yml linguist-generated=true merge=ours
