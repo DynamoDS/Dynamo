@@ -20,4 +20,5 @@
 *.PDF	 diff=astextplain
 *.rtf	 diff=astextplain
 *.RTF	 diff=astextplain
+# Agentic workflow lock files are generated artifacts; keep ours and recompile on conflicts.
 .github/workflows/*.lock.yml linguist-generated=true merge=ours

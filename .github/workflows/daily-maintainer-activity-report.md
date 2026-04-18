@@ -12,7 +12,7 @@ tools:
 safe-outputs:
   noop:
   jobs:
-    send-daily-maintainer-report:
+    send_daily_maintainer_report:
       description: Send the daily activity report email to repository maintainers
       runs-on: ubuntu-latest
       output: Daily maintainer activity report email sent.
@@ -72,6 +72,7 @@ safe-outputs:
           run: |
             python - <<'PY'
             import os
+            import ssl
             import smtplib
             from email.message import EmailMessage
 
@@ -81,11 +82,20 @@ safe-outputs:
             message["To"] = os.environ["MAINTAINERS_EMAILS"]
             message.set_content(os.environ["REPORT_BODY"])
 
-            server = smtplib.SMTP(os.environ["SMTP_SERVER"], int(os.environ["SMTP_PORT"]))
-            server.starttls()
-            server.login(os.environ["SMTP_USERNAME"], os.environ["SMTP_PASSWORD"])
-            server.send_message(message)
-            server.quit()
+            try:
+                server = smtplib.SMTP(
+                    os.environ["SMTP_SERVER"],
+                    int(os.environ["SMTP_PORT"]),
+                    timeout=30,
+                )
+                server.starttls(context=ssl.create_default_context())
+                server.login(os.environ["SMTP_USERNAME"], os.environ["SMTP_PASSWORD"])
+                server.send_message(message)
+                server.quit()
+            except Exception as error:
+                raise RuntimeError(
+                    f"Failed to send daily maintainer report email ({type(error).__name__})."
+                ) from error
             PY
 ---
 
@@ -100,14 +110,15 @@ You produce a concise daily status report for maintainers covering repository ac
 3. Identify current open blockers:
    - Open issues with labels like `blocker`, `blocked`, `critical`, or `priority:high`
    - Open pull requests with labels like `blocked` or `do-not-merge`
+   - Treat label matching as case-insensitive exact label-name matching after normalization (trim whitespace and lowercase only)
 4. Attribute bot activity to the humans behind it whenever possible:
-   - If a PR was authored by a bot account, identify the human assignee, reviewer, merger, or triggering actor and credit them.
+   - If a PR was authored by a bot account, credit humans in this order: merger, reviewer, assignee, then triggering actor.
    - Present automation as team leverage, not independent actors.
 
 ## Output requirements
 
 - If there is meaningful activity, call `send_daily_maintainer_report` exactly once with:
-  - `subject`: A clear subject like `Daily Repository Report - YYYY-MM-DD`
+  - `subject`: A clear subject like `Daily Repository Report - 2026-04-18` using UTC ISO date format
   - `body`: GitHub-flavored markdown containing:
     - `### New Issues`
     - `### Pull Requests Merged`
