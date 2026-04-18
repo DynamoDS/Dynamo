@@ -19,6 +19,11 @@ network: defaults
 safe-outputs:
   create-pull-request:
     max: 1
+    allowed-files:
+      - doc/**
+      - README.md
+      - CONTRIBUTING.md
+      - "*.md"
 
 ---
 
