@@ -1,115 +1,84 @@
 ---
-# Trigger - when should this workflow run?
+name: Weekly AGENTS.md Maintenance
+description: Reviews merged PRs and source updates since the previous run, updates AGENTS.md, and opens or updates a maintenance PR
 on:
-  workflow_dispatch:  # Manual trigger
+  schedule: weekly
+  workflow_dispatch:
 
-# Alternative triggers (uncomment to use):
-# on:
-#   issues:
-#     types: [opened, reopened]
-#   pull_request:
-#     types: [opened, synchronize]
-#   schedule: daily  # Fuzzy daily schedule (scattered execution time)
-#   # schedule: weekly on monday  # Fuzzy weekly schedule
-
-# Permissions - what can this workflow access?
-# Write operations (creating issues, PRs, comments, etc.) are handled
-# automatically by the safe-outputs job with its own scoped permissions.
 permissions:
   contents: read
   issues: read
   pull-requests: read
+  actions: read
 
-# AI engine to use for this workflow
+concurrency:
+  group: weekly-update-agents-md
+  cancel-in-progress: true
+
 engine: copilot
-
-# Tools - GitHub API access via toolsets (context, repos, issues, pull_requests)
-# tools:
-#   github:
-#     toolsets: [default]
-
-# Network access
 network: defaults
+strict: true
+timeout-minutes: 30
 
-# Outputs - what APIs and tools can the AI use?
+tools:
+  github:
+    toolsets: [default, actions]
+  edit:
+  bash:
+    - "git status"
+    - "git diff -- AGENTS.md"
+    - "cat AGENTS.md"
+
 safe-outputs:
-  create-issue:          # Creates issues (default max: 1)
-    max: 5               # Optional: specify maximum number
-  # actions:
-  # activation-comments:
-  # add-comment:
-  # add-labels:
-  # add-reviewer:
-  # allowed-github-references:
-  # assign-milestone:
-  # assign-to-agent:
-  # assign-to-user:
-  # autofix-code-scanning-alert:
-  # call-workflow:
-  # close-discussion:
-  # close-issue:
-  # close-pull-request:
-  # concurrency-group:
-  # create-agent-session:
-  # create-agent-task:
-  # create-code-scanning-alert:
-  # create-discussion:
-  # create-project:
-  # create-project-status-update:
-  # create-pull-request:
-  # create-pull-request-review-comment:
-  # dispatch-workflow:
-  # dispatch_repository:
-  # environment:
-  # failure-issue-repo:
-  # footer:
-  # group-reports:
-  # hide-comment:
-  # id-token:
-  # link-sub-issue:
-  # mark-pull-request-as-ready-for-review:
-  # max-bot-mentions:
-  # mentions:
-  # missing-data:
-  # missing-tool:
-  # noop:
-  # push-to-pull-request-branch:
-  # remove-labels:
-  # reply-to-pull-request-review-comment:
-  # report-failure-as-issue:
-  # report-incomplete:
-  # resolve-pull-request-review-thread:
-  # scripts:
-  # set-issue-type:
-  # steps:
-  # submit-pull-request-review:
-  # threat-detection:
-  # unassign-from-user:
-  # update-discussion:
-  # update-issue:
-  # update-project:
-  # update-pull-request:
-  # update-release:
-  # upload-artifact:
-  # upload-asset:
-
+  create-pull-request:
+    expires: 7d
+    title-prefix: "[agents-maintenance] "
+    labels: [automation, documentation]
+    draft: false
+  push-to-pull-request-branch:
+  noop:
+  missing-tool:
 ---
 
-# weekly-update-agents-md
+# Weekly AGENTS.md Maintenance
 
-Describe what you want the AI to do when this workflow runs.
+You maintain `/AGENTS.md` so it accurately reflects current repository architecture, workflows, tooling, and constraints.
 
-## Instructions
+## Mission
 
-Replace this section with specific instructions for the AI. For example:
+Every run, review changes since the previous successful run and keep `AGENTS.md` current. If updates are needed, commit only `AGENTS.md` and open or update a pull request.
 
-1. Read the issue description and comments
-2. Analyze the request and gather relevant information
-3. Provide a helpful response or take appropriate action
+## Process
 
-Be clear and specific about what the AI should accomplish.
+1. Determine the comparison window:
+   - Identify the previous successful run of this workflow using Actions data.
+   - If no prior successful run exists, use the last 7 days as the baseline.
 
-## Notes
+2. Collect repository changes since the baseline:
+   - Merged pull requests.
+   - Source and config file changes that affect developer guidance (for example: `src/**`, `test/**`, `.github/workflows/**`, `.agents/**`, build/test scripts, and top-level engineering docs).
 
-- Run `gh aw compile` to generate the GitHub Actions workflow
-- See https://github.github.com/gh-aw/ for complete configuration options and tools documentation
+3. Review the current `AGENTS.md` and assess whether any sections are stale, missing, or inaccurate based on the collected changes.
+
+4. Update `AGENTS.md` only when needed:
+   - Keep edits factual, concise, and derived from repository evidence.
+   - Preserve existing structure and tone.
+   - Do not add speculative guidance.
+
+5. Validate the result:
+   - Confirm `AGENTS.md` remains internally consistent.
+   - Confirm no unrelated files are modified.
+
+6. Open or update PR:
+   - If no `AGENTS.md` changes are required, call `noop` with a short explanation.
+   - If changes are required:
+     - Reuse an existing open maintenance PR if one exists with title prefix `[agents-maintenance]` by pushing to its branch.
+     - Otherwise create a new PR.
+     - PR title must clearly state this is a weekly AGENTS.md refresh and summarize what changed.
+     - PR description must list: baseline time window, merged PRs reviewed, and key AGENTS.md updates.
+
+## Guardrails
+
+- Never modify files other than `AGENTS.md`.
+- Do not use direct GitHub write permissions; use safe outputs only.
+- If required context cannot be retrieved, report with `noop` and explain what is missing.
