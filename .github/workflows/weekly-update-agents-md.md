@@ -35,7 +35,11 @@ safe-outputs:
     title-prefix: "[agents-maintenance] "
     labels: [automation, documentation]
     draft: false
+    protected-files: allowed
+    allowed-files: [AGENTS.md]
   push-to-pull-request-branch:
+    protected-files: allowed
+    allowed-files: [AGENTS.md]
   noop:
   missing-tool:
 ---
