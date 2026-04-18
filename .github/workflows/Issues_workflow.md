@@ -8,6 +8,7 @@ on:
 permissions:
   contents: read
   issues: read
+  pull-requests: read
 tools:
   github:
     toolsets: [default]
