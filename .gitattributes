@@ -21,4 +21,5 @@
 *.rtf	 diff=astextplain
 *.RTF	 diff=astextplain
 
+# Generated gh-aw lock files should be regenerated, not line-merged.
 .github/workflows/*.lock.yml linguist-generated=true merge=ours
