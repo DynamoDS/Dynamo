@@ -23,7 +23,6 @@ safe-outputs:
       - doc/**
       - README.md
       - CONTRIBUTING.md
-      - "*.md"
 
 ---
 
@@ -38,7 +37,7 @@ Keep repository documentation synchronized with recent source changes.
    - `/doc/**`
    - `/README.md`
    - `/CONTRIBUTING.md`
-   - Other markdown docs in the repository root.
+   - Other user-facing markdown docs in the repository root, excluding protected agent-instruction files.
 3. For each candidate doc file, verify if its current content is out of date relative to the code changes.
 4. Update only the documentation files that are actually out of sync. Keep edits minimal, accurate, and consistent with existing style.
 5. If no documentation changes are needed, finish without creating a pull request.
