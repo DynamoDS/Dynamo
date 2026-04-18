@@ -38,7 +38,9 @@ Keep repository documentation synchronized with recent source changes.
 4. Update only the documentation files that are actually out of sync. Keep edits minimal, accurate, and consistent with existing style.
 5. If no documentation changes are needed, finish without creating a pull request.
 6. If changes are needed, create exactly one pull request using safe outputs with:
-   - Title: `DYN-9484 - Update documentation from recent code changes`
+   - Title:
+     - If recent related commits/PRs reference a `DYN-####` ticket, use that ticket in the PR title.
+     - Otherwise use `DYN-9484 - Update documentation from recent code changes`.
    - A concise summary of what changed and why.
    - A list of updated doc files and the related code areas.
 7. Do not modify non-documentation files.
