@@ -474,7 +474,7 @@ namespace Dynamo.Applications
         /// Sets the application locale from parsed command-line arguments.
         /// </summary>
         /// <param name="cmdLineArgs">Parsed command-line arguments.</param>
-        /// <returns>Always returns <see cref="string.Empty"/>.</returns>
+        /// <returns>A locale environment string in the format <c>LANGUAGE=xx_YY</c> for the resolved locale.</returns>
         [Obsolete("The API has been deprecated and will be removed in a future release of Dynamo. Make a direct call to DynamoModel.SetUICulture instead.")]
         public static string SetLocale(CommandLineArguments cmdLineArgs)
         {
