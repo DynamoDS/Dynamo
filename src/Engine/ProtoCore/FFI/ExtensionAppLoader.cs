@@ -169,7 +169,15 @@ namespace ProtoFFI
 
             if (null != extensionApp)
             {
-                extensionApp.StartUp(new ExtensionStartupParams { DisableADP = Analytics.DisableAnalytics });
+                extensionApp.StartUp(new ExtensionStartupParams
+                {
+                    DisableADP = Analytics.DisableAnalytics,
+                    //  If the extension app is initialized on a thread that hasn’t had DynamoModel.SetUICulture applied
+                    //  (or had it changed later), Locale can differ from Dynamo’s resolved UI culture and
+                    //  LibG/gettext will be set to the wrong language. This therefore assumes that the extension app is
+                    //  initialized on the same thread as DynamoModel.SetUICulture, which is currently the case.
+                    Locale = System.Threading.Thread.CurrentThread.CurrentUICulture.Name
+                });
             }
         }
         
