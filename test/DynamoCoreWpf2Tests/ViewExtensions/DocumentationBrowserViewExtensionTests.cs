@@ -877,6 +877,46 @@ namespace DynamoCoreWpfTests
             Assert.That(graphPathValue.Contains(Path.Combine("PackageWithNodeDocumentation", "doc", dynFileName)));
         }
 
+        [Test]
+        public void StringInputNodeDocumentationShowsInputBasicBreadcrumbs()
+        {
+            // Arrange
+            var nodeName = "String";
+            this.ViewModel.ExecuteCommand(
+                new DynamoModel.CreateNodeCommand(
+                    Guid.NewGuid().ToString(), nodeName, 0, 0, false, false)
+            );
+
+            var node = ViewModel.Model.CurrentWorkspace.Nodes
+                .LastOrDefault(x => x.GetType().FullName == "CoreNodeModels.Input.StringInput");
+            Assert.IsNotNull(node, "Expected to create CoreNodeModels.Input.StringInput node.");
+
+            var nodeAnnotationEventArgs = new OpenNodeAnnotationEventArgs(node, this.ViewModel)
+            {
+                // Simulate the exact ambiguity that previously resolved to DateTime / FromString.
+                OriginalName = "String"
+            };
+
+            var docsViewModel = new DocumentationBrowserViewModel
+            {
+                BreadCrumbsDictionary = new Dictionary<string, string>
+                {
+                    { "DateTime.FromString", "Input / DateTime" },
+                    { "Input.String", "Input / Basic" }
+                }
+            };
+
+            var method = typeof(DocumentationBrowserViewModel).GetMethod(
+                "GetBreadCrumbsValue",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+
+            // Act
+            var breadCrumbs = method.Invoke(docsViewModel, new object[] { nodeAnnotationEventArgs }) as string;
+
+            // Assert
+            Assert.AreEqual("Input / Basic", breadCrumbs);
+        }
+
         #region Helpers
 
         private DocumentationBrowserViewExtension SetupNewViewExtension(bool runLoadedMethod = false)
