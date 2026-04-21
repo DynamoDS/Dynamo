@@ -868,6 +868,27 @@ namespace WpfVisualizationTests
             Assert.IsTrue((dynGeometry.FirstOrDefault().SceneNode.RenderCore as DynamoGeometryMeshCore).dataCore.IsFrozenData);
         }
 
+        [Test]
+        public void WhenFrozenNodeIsDeletedThenItsGeometryIsCleared()
+        {
+            // Arrange: open a graph with mesh geometry, run it, freeze a node
+            OpenVisualizationTest("Display.ByGeometryColor.dyn");
+            RunCurrentModel();
+            Assert.Greater(BackgroundPreviewGeometry.TotalMeshes(), 0);
+
+            var nodeToDelete = Model.CurrentWorkspace.Nodes
+                .First(x => x.Name.Contains("ByGeometryColor"));
+            nodeToDelete.IsFrozen = true;
+            DispatcherUtil.DoEvents();
+
+            // Act: delete the frozen node
+            Model.DeleteModelInternal(new List<ModelBase> { nodeToDelete });
+            DispatcherUtil.DoEvents();
+
+            // Assert: geometry must be cleared despite the node having been frozen
+            Assert.AreEqual(0, BackgroundPreviewGeometry.TotalMeshes());
+        }
+
        [Test]
         public void Display_ByGeometryColor_HasColoredMesh()
         {
