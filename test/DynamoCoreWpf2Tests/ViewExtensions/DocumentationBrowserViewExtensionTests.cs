@@ -910,6 +910,9 @@ namespace DynamoCoreWpfTests
                 "GetBreadCrumbsValue",
                 BindingFlags.NonPublic | BindingFlags.Instance);
 
+            Assert.IsNotNull(method, "GetBreadCrumbsValue method not found on DocumentationBrowserViewModel. " +
+                "If the method was renamed or its accessibility changed, update this test accordingly.");
+
             // Act
             var breadCrumbs = method.Invoke(docsViewModel, new object[] { nodeAnnotationEventArgs }) as string;
 

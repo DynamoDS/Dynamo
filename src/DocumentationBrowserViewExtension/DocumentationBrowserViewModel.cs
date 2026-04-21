@@ -455,18 +455,12 @@ namespace Dynamo.DocumentationBrowser
                     // Prefer exact node-name matches at the end of a key (e.g. Input.String)
                     // before using broader substring matching.
                     var keySuffix = "." + e.OriginalName;
-                    foreach (var pair in BreadCrumbsDictionary)
-                    {
-                        if (pair.Key.EndsWith(keySuffix, StringComparison.Ordinal))
-                        {
-                            breadCrumbs = pair.Value;
-                            break;
-                        }
-                    }
+                    var exactSuffixMatch = BreadCrumbsDictionary
+                        .FirstOrDefault(pair => pair.Key.EndsWith(keySuffix, StringComparison.Ordinal));
 
-                    if (breadCrumbs != null)
+                    if (exactSuffixMatch.Key != null)
                     {
-                        return breadCrumbs;
+                        return exactSuffixMatch.Value;
                     }
 
                     foreach (var pair in BreadCrumbsDictionary)
