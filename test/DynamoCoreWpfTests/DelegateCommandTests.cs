@@ -37,7 +37,7 @@ namespace DynamoCoreWpfTests
             Task.Run(() => command.RaiseCanExecuteChanged()).Wait();
 
             // Pump the dispatcher so any BeginInvoke posted by the fix has a chance to run.
-            DispatcherUtil.DoEventsLoop(() => handlerThreadId != -1);
+            DispatcherUtil.DoEventsLoop(() => handlerThreadId != -1, timeoutSeconds: 5);
 
             Assert.AreNotEqual(-1, handlerThreadId, "CanExecuteChanged handler was never invoked");
             Assert.AreEqual(uiThreadId, handlerThreadId,
@@ -87,7 +87,7 @@ namespace DynamoCoreWpfTests
             Assert.DoesNotThrow(() => Task.WaitAll(tasks),
                 "RaiseCanExecuteChanged must not throw when called from multiple background threads");
 
-            DispatcherUtil.DoEventsLoop(() => invocationCount >= threadCount);
+            DispatcherUtil.DoEventsLoop(() => invocationCount >= threadCount, timeoutSeconds: 5);
             Assert.AreEqual(threadCount, invocationCount,
                 "All CanExecuteChanged invocations should be delivered");
         }

@@ -49,13 +49,10 @@ namespace Dynamo.UI.Commands
         /// </summary>
         public void RaiseCanExecuteChanged()
         {
-            var handler = CanExecuteChanged;
-            if (handler == null) return;
-
             if (!_dispatcher.CheckAccess())
-                _dispatcher.BeginInvoke(new Action(() => handler(this, EventArgs.Empty)));
+                _dispatcher.BeginInvoke(new Action(() => CanExecuteChanged?.Invoke(this, EventArgs.Empty)));
             else
-                handler(this, EventArgs.Empty);
+                CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
 
     }
