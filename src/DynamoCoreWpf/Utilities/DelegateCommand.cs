@@ -1,6 +1,6 @@
 using System;
-using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace Dynamo.UI.Commands
 {
@@ -13,6 +13,7 @@ namespace Dynamo.UI.Commands
 
         private readonly Predicate<object> _canExecute;
         private readonly Action<object> _execute;
+        private readonly Dispatcher _dispatcher;
 
         public event EventHandler CanExecuteChanged;
 
@@ -26,6 +27,7 @@ namespace Dynamo.UI.Commands
         {
             _execute = execute;
             _canExecute = canExecute;
+            _dispatcher = Dispatcher.CurrentDispatcher;
         }
 
         public bool CanExecute(object parameter)
@@ -50,9 +52,8 @@ namespace Dynamo.UI.Commands
             var handler = CanExecuteChanged;
             if (handler == null) return;
 
-            var dispatcher = Application.Current?.Dispatcher;
-            if (dispatcher != null && !dispatcher.CheckAccess())
-                dispatcher.BeginInvoke(new Action(() => handler(this, EventArgs.Empty)));
+            if (!_dispatcher.CheckAccess())
+                _dispatcher.BeginInvoke(new Action(() => handler(this, EventArgs.Empty)));
             else
                 handler(this, EventArgs.Empty);
         }
