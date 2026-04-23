@@ -3000,7 +3000,7 @@
             <summary>Return the radius of the Sphere.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>Create a Solid Sphere cetered at the input Point, with given radius.</summary>
+            <summary>Create a Solid Sphere centered at the input Point, with given radius.</summary>
             <search>Brep,brep</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByFourPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
@@ -3968,7 +3968,7 @@
             <search>tspline,cone,radius,cs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BySphereCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Create a T-Spline Sphere cetered at the input Point, with given radius.</summary>
+            <summary>Create a T-Spline Sphere centered at the input Point, with given radius.</summary>
             <param name="centerPoint">Center of a sphere</param>
             <param name="radius">Radius of a sphere</param>
             <param name="radiusSpans">Number of radial spans</param>
