@@ -1,3 +1,4 @@
+using System;
 using Autodesk.DesignScript.Geometry;
 
 namespace Tessellation
@@ -18,7 +19,7 @@ namespace Tessellation
         /// to derive world-space distance thresholds that scale correctly with the surface.</returns>
         internal static (double normU, double normV, double minPhysicalScale) GetNormalizedUvScales(Surface face)
         {
-            // Physical arc length per unit U/V based on the maximum iso-curve length across
+            // Physical arc length per unit U/V based on the average iso-curve length across
             // three interior sample positions. Sampling at boundary extrema (0 or 1) fails for
             // surfaces where those extrema are degenerate points — sphere poles, cone apex —
             // because the isoline length collapses to near-zero there. Interior sampling avoids
@@ -27,7 +28,7 @@ namespace Tessellation
             // result is unchanged from the previous boundary-average approach.
             double scaleU = 0.0;
             double scaleV = 0.0;
-            double[] interiorSamples = { 0.25, 0.5, 0.75 };
+            ReadOnlySpan<double> interiorSamples = [0.25, 0.5, 0.75];
             foreach (var t in interiorSamples)
             {
                 using var uCurve = face.GetIsoline(0, t);
