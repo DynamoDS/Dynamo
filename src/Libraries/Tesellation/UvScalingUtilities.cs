@@ -36,7 +36,7 @@ namespace Tessellation
                 scaleV += vCurve.Length;
             }
             scaleU /= interiorSamples.Length;
-            scaleV /= interiorSamples.Length; 
+            scaleV /= interiorSamples.Length;
 
             // Normalize scales to preserve aspect ratio; keep values in a reasonable numerical range.
             var max = System.Math.Max(scaleU, scaleV);
