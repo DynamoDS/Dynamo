@@ -18,17 +18,25 @@ namespace Tessellation
         /// to derive world-space distance thresholds that scale correctly with the surface.</returns>
         internal static (double normU, double normV, double minPhysicalScale) GetNormalizedUvScales(Surface face)
         {
-            // Physical arc length per unit U/V based on average iso-curve lengths along the surface edges.
-            double scaleU;
-            double scaleV;
-            using (var uCurveV0 = face.GetIsoline(0, 0))
-            using (var uCurveV1 = face.GetIsoline(0, 1))
-            using (var vCurveU0 = face.GetIsoline(1, 0))
-            using (var vCurveU1 = face.GetIsoline(1, 1))
+            // Physical arc length per unit U/V based on the maximum iso-curve length across
+            // three interior sample positions. Sampling at boundary extrema (0 or 1) fails for
+            // surfaces where those extrema are degenerate points — sphere poles, cone apex —
+            // because the isoline length collapses to near-zero there. Interior sampling avoids
+            // this: for a sphere the equatorial isoline (t=0.5) gives the correct scale, and
+            // for a non-degenerate surface all interior isolines have similar length so the
+            // result is unchanged from the previous boundary-average approach.
+            double scaleU = 0.0;
+            double scaleV = 0.0;
+            double[] interiorSamples = { 0.25, 0.5, 0.75 };
+            foreach (var t in interiorSamples)
             {
-                scaleU = (uCurveV0.Length + uCurveV1.Length) / 2.0;
-                scaleV = (vCurveU0.Length + vCurveU1.Length) / 2.0;
+                using var uCurve = face.GetIsoline(0, t);
+                using var vCurve = face.GetIsoline(1, t);
+                scaleU += uCurve.Length;
+                scaleV += vCurve.Length;
             }
+            scaleU /= interiorSamples.Length;
+            scaleV /= interiorSamples.Length; 
 
             // Normalize scales to preserve aspect ratio; keep values in a reasonable numerical range.
             var max = System.Math.Max(scaleU, scaleV);
