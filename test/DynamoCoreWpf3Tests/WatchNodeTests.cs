@@ -500,11 +500,13 @@ namespace DynamoCoreWpfTests
                 "test_tag",
                 false);
 
-            // Assert that ViewPath of each child returns the full key, including any ':' characters
+            // Assert that ViewPath of each child returns the full key, including any ':' characters.
+            // Use a set-based check to be independent of the dictionary iteration order.
             Assert.AreEqual(3, watchVM.Children.Count);
-            Assert.AreEqual("Hope:", watchVM.Children[0].ViewPath.Trim());
-            Assert.AreEqual(":This Isn't Right:", watchVM.Children[1].ViewPath.Trim());
-            Assert.AreEqual("help", watchVM.Children[2].ViewPath.Trim());
+            var viewPaths = watchVM.Children.Select(c => c.ViewPath.Trim()).ToList();
+            CollectionAssert.Contains(viewPaths, "Hope:");
+            CollectionAssert.Contains(viewPaths, ":This Isn't Right:");
+            CollectionAssert.Contains(viewPaths, "help");
         }
 
         [Test]
