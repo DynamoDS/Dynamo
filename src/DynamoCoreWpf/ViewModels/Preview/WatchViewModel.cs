@@ -101,8 +101,9 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Returns the last index of the Path, 
-        /// surrounded with square brackets.
+        /// Returns the last segment of <see cref="Path"/> for display.
+        /// For list items, the segment is returned as-is; for non-list items, the segment
+        /// is returned with surrounding spaces.
         /// When this item is a dictionary child, returns the dictionary key directly
         /// (without splitting on ':') so that keys containing ':' are displayed correctly.
         /// </summary>
