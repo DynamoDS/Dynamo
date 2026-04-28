@@ -1,17 +1,31 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
 using MIConvexHull;
 using NUnit.Framework;
 using Tessellation;
 using Tessellation.Adapters;
+using static Lucene.Net.Documents.Field;
 
 namespace Dynamo.Tests
 {
     [TestFixture]
     public class DelaunayVoronoiOnSurfaceTests : DynamoModelTestBase
     {
+
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("VMDataBridge.dll");
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DesignScriptBuiltin.dll");
+            libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FunctionObject.ds");
+            libraries.Add("BuiltIn.ds");
+            libraries.Add("Tessellation.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
 
         // Validates that Delaunay.ByParametersOnSurface produces the expected triangulation edges
         // (in world space) on a strongly anisotropic surface, and that the triangulation satisfies
@@ -61,6 +75,32 @@ namespace Dynamo.Tests
 
             // Validate that the API output matches the Voronoi edges implied by the Delaunay dual.
             AssertVoronoiEdgesMatchDelaunayDual(uvs, triangles, surface, edges);
+        }
+
+        [Test]
+        public void Voronoi_ByParametersOnSurface_WorksWithSphericalSurface()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\GeometryTestFiles\tesselationwithcoincidentgridsRemember.dyn");
+            RunModel(openPath);
+
+            var guid = "293e4004-d728-45b1-9b7f-448c53adf3c0";
+            var node1 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace(guid);
+            Assert.NotNull(node1);
+
+            //BeginRun();
+
+            // check the output values are correctly computed
+            AssertPreviewCount(guid, 968);
+
+            var obj = GetPreviewValueAtIndex(guid, 0);
+            Assert.IsInstanceOf<Line>(obj);
+
+            Assert.AreEqual(-8.256, ((Line)obj).StartPoint.X, 1e-3);
+            Assert.AreEqual(62.260, ((Line)obj).StartPoint.Y, 1e-3);
+            Assert.AreEqual(-43.304, ((Line)obj).StartPoint.Z, 1e-3);
+            Assert.AreEqual(-9.973, ((Line)obj).EndPoint.X, 1e-3);
+            Assert.AreEqual(63.845, ((Line)obj).EndPoint.Y, 1e-3);
+            Assert.AreEqual(-32.462, ((Line)obj).EndPoint.Z, 1e-3); 
         }
 
         private static Surface CreateSurface(double width, double height)
