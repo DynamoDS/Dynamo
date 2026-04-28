@@ -470,32 +470,34 @@ namespace Dynamo.Applications
             return model;
         }
 
+        /// <summary>
+        /// Sets the application locale from parsed command-line arguments.
+        /// </summary>
+        /// <param name="cmdLineArgs">Parsed command-line arguments.</param>
+        /// <returns>A locale environment string in the format <c>LANGUAGE=xx_YY</c> for the resolved locale.</returns>
+        [Obsolete("The API has been deprecated and will be removed in a future release of Dynamo. Make a direct call to DynamoModel.SetUICulture instead.")]
         public static string SetLocale(CommandLineArguments cmdLineArgs)
         {
-            var supportedLocale = new HashSet<string>(Configuration.Configurations.SupportedLocaleDic.Values);
-            string libgLocale = string.Empty;
+            var supportedLocale = new HashSet<string>(Configurations.SupportedLocaleDic.Values);
+            string locale = string.Empty;
 
             if (!string.IsNullOrEmpty(cmdLineArgs.Locale))
             {
-                // Change the application locale, if a locale information is supplied.
                 DynamoModel.SetUICulture(cmdLineArgs.Locale);
-                libgLocale = cmdLineArgs.Locale;
+                locale = cmdLineArgs.Locale;
             }
             else
             {
-                // In case no language is specified, libG's locale should be that of the OS.
-                // There is no need to set Dynamo's locale in this case.
-                libgLocale = CultureInfo.InstalledUICulture.ToString();
+                locale = CultureInfo.InstalledUICulture.ToString();
             }
 
             // If locale is not supported by Dynamo, default to en-US.
-            if (!supportedLocale.Any(s => s.Equals(libgLocale, StringComparison.InvariantCultureIgnoreCase)))
+            if (!supportedLocale.Any(s => s.Equals(locale, StringComparison.InvariantCultureIgnoreCase)))
             {
-                libgLocale = "en-US";
+                locale = "en-US";
             }
-            // Change the locale that LibG depends on.
             StringBuilder sb = new StringBuilder("LANGUAGE=");
-            sb.Append(libgLocale.Replace("-", "_"));
+            sb.Append(locale.Replace("-", "_"));
             return sb.ToString();
         }
 
