@@ -1698,7 +1698,6 @@ namespace Dynamo.PackageManager.Wpf.Tests
             }
             pmCVM.SetupProperty(p => p.CachedPackageList, cachedPackages);
 
-            LuceneSearch.LuceneUtilityPackageManager = null;
             var packageManagerSearchVM = new PackageManagerSearchViewModel(pmCVM.Object);
             packageManagerSearchVM.RegisterTransientHandlers();
             packageManagerSearchVM.LastSync = cachedPackages;
