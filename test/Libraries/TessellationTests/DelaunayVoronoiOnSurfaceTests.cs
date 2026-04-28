@@ -7,7 +7,6 @@ using MIConvexHull;
 using NUnit.Framework;
 using Tessellation;
 using Tessellation.Adapters;
-using static Lucene.Net.Documents.Field;
 
 namespace Dynamo.Tests
 {
@@ -86,8 +85,6 @@ namespace Dynamo.Tests
             var guid = "293e4004-d728-45b1-9b7f-448c53adf3c0";
             var node1 = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace(guid);
             Assert.NotNull(node1);
-
-            //BeginRun();
 
             // check the output values are correctly computed
             AssertPreviewCount(guid, 968);
