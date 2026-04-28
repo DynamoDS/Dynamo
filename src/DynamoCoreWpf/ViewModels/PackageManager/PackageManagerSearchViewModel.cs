@@ -1796,6 +1796,11 @@ namespace Dynamo.PackageManager
         {
             if (useLucene)
             {
+                if (LuceneUtility == null)
+                {
+                    return GetAllPackages();
+                }
+
                 string searchTerm = searchText.Trim();
                 var packages = new List<PackageManagerSearchElementViewModel>();
 

@@ -144,10 +144,8 @@ namespace Dynamo.Utilities
 
             addedFields = new List<string>();
 
-            DirectoryInfo luceneUserDataFolder;
             var userDataDir = new DirectoryInfo(dynamoModel.PathManager.UserDataDirectory);
-            luceneUserDataFolder = userDataDir.Exists ? userDataDir : null;
-            string indexPath = Path.Combine(luceneUserDataFolder.FullName, LuceneConfig.Index, startConfig.Directory);
+            string indexPath = Path.Combine(userDataDir.FullName, LuceneConfig.Index, startConfig.Directory);
 
             if (startConfig.StorageType == LuceneStorage.RAM)
             {

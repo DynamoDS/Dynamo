@@ -1669,5 +1669,48 @@ namespace Dynamo.PackageManager.Wpf.Tests
             Assert.IsTrue(vm.IsPublishedByDynamoTeam);
         }
 
+        /// <summary>
+        /// Verifies that Search() does not throw a NullReferenceException when LuceneUtility is null,
+        /// and falls back to returning all packages instead. This scenario occurs when Lucene
+        /// initialization fails, e.g. because the user data directory does not exist.
+        /// </summary>
+        [Test]
+        public void Search_WhenLuceneUtilityIsNull_ReturnsAllPackagesWithoutThrowing()
+        {
+            // Arrange
+            var packageNames = new List<string> { "Package A", "Package B" };
+            string packageVersionNumber = "1.0.0.0";
+            string packageCreatedDateString = "2016-10-02T13:13:20.135000+00:00";
+
+            var mockGreg = new Mock<IGregClient>();
+            var clientMock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty, false);
+            var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientMock.Object) { CallBase = true };
+
+            var cachedPackages = new List<PackageManagerSearchElement>();
+            foreach (var packageName in packageNames)
+            {
+                var tmpVersion = new PackageVersion { version = packageVersionNumber, created = packageCreatedDateString };
+                cachedPackages.Add(new PackageManagerSearchElement(new PackageHeader()
+                {
+                    name = packageName,
+                    versions = new List<PackageVersion> { tmpVersion }
+                }));
+            }
+            pmCVM.SetupProperty(p => p.CachedPackageList, cachedPackages);
+
+            LuceneSearch.LuceneUtilityPackageManager = null;
+            var packageManagerSearchVM = new PackageManagerSearchViewModel(pmCVM.Object);
+            packageManagerSearchVM.RegisterTransientHandlers();
+            packageManagerSearchVM.LastSync = cachedPackages;
+
+            // Simulate Lucene initialization failure by forcing LuceneUtility to null after VM creation
+            LuceneSearch.LuceneUtilityPackageManager = null;
+
+            // Act & Assert - should not throw NullReferenceException
+            IEnumerable<PackageManagerSearchElementViewModel> results = null;
+            Assert.DoesNotThrow(() => results = packageManagerSearchVM.Search("Package", true));
+            Assert.IsNotNull(results);
+        }
+
     }
 }
