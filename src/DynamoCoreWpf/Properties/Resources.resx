@@ -700,14 +700,6 @@
     <value>_Show Console</value>
     <comment>View menu | Show console</comment>
   </data>
-  <data name="DynamoViewViewMenuShowLibrarySidebar" xml:space="preserve">
-    <value>Show _Library Sidebar</value>
-    <comment>View menu | Toggle library sidebar visibility</comment>
-  </data>
-  <data name="DynamoViewViewMenuShowExtensionsSidebar" xml:space="preserve">
-    <value>Show _Extensions Sidebar</value>
-    <comment>View menu | Toggle extensions sidebar visibility</comment>
-  </data>
   <data name="DynamoViewViewMenuZoom" xml:space="preserve">
     <value>_Zoom</value>
     <comment>View menu | Zoom</comment>
