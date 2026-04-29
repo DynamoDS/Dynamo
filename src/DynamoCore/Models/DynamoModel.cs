@@ -1144,7 +1144,12 @@ namespace Dynamo.Models
         /// <returns></returns>
         internal PathManager CreatePathManager(IStartConfiguration config)
         {
-            var pathManagerParams = new PathManagerParams();
+            var pathManagerParams = new PathManagerParams
+            {
+                // Always supply HostPath so TraverseForExecutableAssembly can locate host
+                // assemblies on the call stack even when version is not explicitly provided.
+                HostPath = config.DynamoHostPath
+            };
 
             var version = config.HostAnalyticsInfo.HostVersion;
             if (version != null)
@@ -1152,9 +1157,11 @@ namespace Dynamo.Models
                 // Use host versions if provided
                 pathManagerParams.MajorFileVersion = version.Major;
                 pathManagerParams.MinorFileVersion = version.Minor;
-
-                Dynamo.Core.PathManager.Initialize(pathManagerParams);
             }
+
+            // Always initialize so the singleton is created with host context before
+            // Instance is first accessed. Initialize is a no-op if already set.
+            Dynamo.Core.PathManager.Initialize(pathManagerParams);
 
             if (!config.StartInTestMode)
             {
