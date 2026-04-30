@@ -10,7 +10,8 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Canonical type identifier in Forge Data Schema format.
         /// Examples: "autodesk.math:point3d-1.0.0", "String", "Float64".
-        /// Returns null if the type is unknown or not yet determined.
+        /// Returns a non-null type identifier. If the type is not yet determined,
+        /// implementations should return their existing non-null fallback value.
         /// </summary>
         string ValueTypeId { get; }
 
