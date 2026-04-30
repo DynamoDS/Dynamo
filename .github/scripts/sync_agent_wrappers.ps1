@@ -1,8 +1,8 @@
 <#
-Synchronizes and validates generated Copilot agent wrapper files.
+Synchronizes and validates generated Copilot agent wrapper files in .github/agents/.
 
 Modes:
-- default: regenerate mapped wrappers in .github/agents from canonical skills in .agents/skills
+- default: regenerate mapped wrappers in .github/agents from canonical skills in .claude/skills
 - -Check: validate mapped wrappers exist and match generated output, then detect orphan generated wrappers
 - -Report: print summary counters; does not change pass/fail behavior
 #>
@@ -21,18 +21,18 @@ $githubAgentsDir = Join-Path $repoRoot ".github/agents"
 
 # List of canonical skills to generate wrappers for
 $canonicalSkills = @(
-    ".agents/skills/dynamo-codebase-patterns/SKILL.md",
-    ".agents/skills/dynamo-content-designer/SKILL.md",
-    ".agents/skills/dynamo-dotnet-expert/SKILL.md",
-    ".agents/skills/dynamo-dotnet-janitor/SKILL.md",
-    ".agents/skills/dynamo-ecosystem-reviewer/SKILL.md",
-    ".agents/skills/dynamo-onboarding/SKILL.md",
-    ".agents/skills/dynamo-pr-description/SKILL.md",
-    ".agents/skills/dynamo-jira-ticket/SKILL.md",
-    ".agents/skills/dynamo-skill-writer/SKILL.md",
-    ".agents/skills/dynamo-unit-testing/SKILL.md",
-    ".agents/skills/dynamo-ux-designer/SKILL.md",
-    ".agents/skills/dynamo-webview-component-scaffold/SKILL.md"
+    ".claude/skills/dynamo-codebase-patterns/SKILL.md",
+    ".claude/skills/dynamo-content-designer/SKILL.md",
+    ".claude/skills/dynamo-dotnet-expert/SKILL.md",
+    ".claude/skills/dynamo-dotnet-janitor/SKILL.md",
+    ".claude/skills/dynamo-ecosystem-reviewer/SKILL.md",
+    ".claude/skills/dynamo-onboarding/SKILL.md",
+    ".claude/skills/dynamo-pr-description/SKILL.md",
+    ".claude/skills/dynamo-jira-ticket/SKILL.md",
+    ".claude/skills/dynamo-skill-writer/SKILL.md",
+    ".claude/skills/dynamo-unit-testing/SKILL.md",
+    ".claude/skills/dynamo-ux-designer/SKILL.md",
+    ".claude/skills/dynamo-webview-component-scaffold/SKILL.md"
 )
 
 function Get-SkillName {
@@ -102,19 +102,7 @@ name: $name
 description: $description
 ---
 
-# $title
-
-This is a thin compatibility wrapper for the canonical skill.
-
-Canonical source of truth:
-- $canonicalPath
-
-Usage guidance:
-- Apply the full instructions from the canonical skill file above.
-- If this wrapper and the canonical skill ever differ, the canonical skill wins.
-
-Maintenance note:
-- Keep this file lightweight to avoid drift across tools (Copilot/Cursor/Claude).
+[$title]($canonicalPath)
 
 <!--
 AUTO-GENERATED FILE. Do not edit directly.
