@@ -508,7 +508,7 @@
     </Reference> 
       <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4">
           <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <IncludeAssets>build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
     <PackageReference Include="Prism.Core" Version="8.1.97" />
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />

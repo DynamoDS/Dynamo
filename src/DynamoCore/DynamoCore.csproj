@@ -22,7 +22,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4">
       <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <IncludeAssets>build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
@@ -212,7 +212,8 @@
     <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <ItemGroup>
-      <LibGProtoGeometryUICultureAllLanguages Include="$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\**\*.resources.dll;$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\**\*.resx" />
+      <LibGProtoGeometryUICultureAllLanguages Include="$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\**\*.resources.dll;$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\**\*.resx"
+                                             Exclude="$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\**\Microsoft.CodeAnalysis*.resources.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(LibGProtoGeometryUICultureAllLanguages)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" />
     <Copy SourceFiles="@(LibGMainDeps)" DestinationFolder="$(OutputPath)$(LIBGVerMain)\asm_deps\" />
