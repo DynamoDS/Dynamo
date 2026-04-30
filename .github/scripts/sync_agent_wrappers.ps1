@@ -93,8 +93,13 @@ function New-WrapperContent {
         [string]$name,
         [string]$description,
         [string]$title,
-        [string]$canonicalPath
+        [string]$canonicalPath,
+        [string]$wrapperRelativePath
     )
+
+    # Compute a link path relative to the wrapper file so GitHub resolves it correctly.
+    $wrapperDir = Split-Path -Parent $wrapperRelativePath
+    $linkPath = [System.IO.Path]::GetRelativePath($wrapperDir, $canonicalPath).Replace("\", "/")
 
 @"
 ---
@@ -102,7 +107,7 @@ name: $name
 description: $description
 ---
 
-[$title]($canonicalPath)
+[$title]($linkPath)
 
 <!--
 AUTO-GENERATED FILE. Do not edit directly.
@@ -170,7 +175,7 @@ foreach ($canonicalPath in $canonicalSkills) {
     $title = Get-SkillTitle -skillContent $skillContent -skillName $name
 
     # using title as the wrapper name since it's used as display name in GitHub web UI
-    $expected = New-WrapperContent -name $title -description $description -title $title -canonicalPath $canonicalPath
+    $expected = New-WrapperContent -name $title -description $description -title $title -canonicalPath $canonicalPath -wrapperRelativePath $wrapperRelativePath
 
     if ($Check) {
         if (-not (Test-Path $wrapperFullPath)) {

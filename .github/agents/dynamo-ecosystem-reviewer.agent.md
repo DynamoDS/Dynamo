@@ -3,7 +3,7 @@ name: Dynamo Ecosystem Reviewer
 description: Reviews code changes for compatibility with the broader Dynamo ecosystem. Applies known platform constraints — cross-platform portability, service compatibility, thread safety — across Dynamo's multiple repos.
 ---
 
-[Dynamo Ecosystem Reviewer](.claude/skills/dynamo-ecosystem-reviewer/SKILL.md)
+[Dynamo Ecosystem Reviewer](../../.claude/skills/dynamo-ecosystem-reviewer/SKILL.md)
 
 <!--
 AUTO-GENERATED FILE. Do not edit directly.
