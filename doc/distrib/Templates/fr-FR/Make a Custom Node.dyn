@@ -3692,7 +3692,7 @@
       },
       {
         "Id": "0f6aa09a7fb747069992b2c9f878daf8",
-        "Title": "DESCRIPTION\n_____________________________________________________ \n\nCe document vous aidera à vous familiariser avec la création d'un noeud personnalisé.\n\nPour que les scripts Dynamo restent propres et lisibles, nous vous recommandons de suivre une\nstructure claire lors de la création de graphiques.\n\nPour en savoir plus, consultez la page Dynamo Primer sur la création d'un noeud personnalisé :\nhttps://primer2.dynamobim.org/6_custom_nodes_and_packages/6-1_custom-nodes/2-creating",
+        "Title": "DESCRIPTION\n_____________________________________________________ \n\nCe document vous aidera à vous familiariser avec la création d'un noeud personnalisé.\n\nPour que les scripts Dynamo restent propres et lisibles, nous vous recommandons de suivre une\nstructure claire lors de la création de graphiques.\n\nPour en savoir plus, consultez la page Dynamo Primer sur la création d'un noeud personnalisé :\nhttps://primer2.dynamobim.org/fr/6_custom_nodes_and_packages/6-1_custom-nodes/2-creating",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

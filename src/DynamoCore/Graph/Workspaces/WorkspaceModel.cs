@@ -1731,6 +1731,13 @@ namespace Dynamo.Graph.Workspaces
                 if (!nodes.Remove(model)) return;
             }
 
+            // Ensure the node is removed from the global selection set. In the undo path,
+            // only RemoveAndDisposeNode is called — DynamoModel.DeleteModelInternal's
+            // explicit selection.Remove() is never reached — leaving the disposed NodeModel
+            // in DynamoSelection with its Rect intact. GetSelectableFromPoint would then
+            // find it at the old position and block a new double-click CBN creation there.
+            DynamoSelection.Instance.Selection.Remove(model);
+
             OnNodeRemoved(model);
             // Force this change to address the edge case that user deleting the right edge
             // node and do not see unsaved changes, e.g. the watch node at end of the graph

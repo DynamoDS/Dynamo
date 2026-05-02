@@ -507,7 +507,7 @@
         {
           "Id": "6c5113c4d1e84e33961cc481224d9c27",
           "Name": "문자열",
-          "Description": "\"Dynamo 그래프를 깔끔하고 읽기 쉽게 유지하기 위해 다음과 같은 깔끔한\n구조를 사용하는 것이 좋습니다.\n\n자세한 내용은 모범 사례 그래프 전략에 관한 Dynamo Primer 페이지를 참고하십시오.\nhttps://primer2.dynamobim.org/9_best_practices/1-graph-strategies\"",
+          "Description": "\"Dynamo 그래프를 깔끔하고 읽기 쉽게 유지하기 위해 다음과 같은 깔끔한\n구조를 사용하는 것이 좋습니다.\n\n자세한 내용은 모범 사례 그래프 전략에 관한 Dynamo Primer 페이지를 참고하십시오.\nhttps://primer2.dynamobim.org/ko/9_best_practices/1-graph-strategies\"",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,

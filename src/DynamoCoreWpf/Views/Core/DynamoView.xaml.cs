@@ -29,6 +29,7 @@ using Dynamo.PythonServices;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Services;
+using Dynamo.UI.Commands;
 using Dynamo.UI.Controls;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
@@ -66,7 +67,7 @@ namespace Dynamo.Controls
     {
         public const string BackgroundPreviewName = "BackgroundPreview";
         private const int SideBarCollapseThreshold = 20;
-        private const int RightSideBarCollapseThreshold = 30;
+        private const int RightSideBarCollapseThreshold = 100;
         private const int navigationInterval = 100;
         private const string GraphMetadataExtensionId = "28992e1d-abb9-417f-8b1b-05e053bee670";
         // This is used to determine whether ESC key is being held down
@@ -125,6 +126,16 @@ namespace Dynamo.Controls
         internal double DefaultMinWidth = 0;
 
         /// <summary>
+        /// Command to toggle the library (left) sidebar visibility.
+        /// </summary>
+        public ICommand ToggleLibrarySidebarCommand { get; private set; }
+
+        /// <summary>
+        /// Command to toggle the extensions (right) sidebar visibility.
+        /// </summary>
+        public ICommand ToggleExtensionsSidebarCommand { get; private set; }
+
+        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="dynamoViewModel">Dynamo view model</param>
@@ -152,6 +163,9 @@ namespace Dynamo.Controls
 
             _timer = new Stopwatch();
             _timer.Start();
+
+            ToggleLibrarySidebarCommand = new DelegateCommand(_ => ToggleLibrarySidebarCollapseStatus());
+            ToggleExtensionsSidebarCommand = new DelegateCommand(_ => ToggleExtensionBarCollapseStatus());
 
             InitializeComponent();
 
@@ -2313,6 +2327,7 @@ namespace Dynamo.Controls
         private void DynamoView_KeyDown(object sender, KeyEventArgs e)
         {
             Analytics.TrackActivityStatus(HeartBeatType.User.ToString());
+
             if (e.Key != Key.Escape || !IsMouseOver) return;
 
             var vm = dynamoViewModel.BackgroundPreviewViewModel;
@@ -2582,6 +2597,9 @@ namespace Dynamo.Controls
         {
             packageManagerWindow.Closed -= HandlePackageManagerWindowClosed;
             packageManagerWindow = null;
+            // Reset owner back to the main Dynamo window so that dialogs opened after
+            // the Package Manager closes do not attempt to use the now-closed window as owner.
+            dynamoViewModel.Owner = this;
 
             var cmd = Analytics.TrackCommandEvent("PackageManager");
             cmd.Dispose();
@@ -2972,6 +2990,14 @@ namespace Dynamo.Controls
         }
 
         private void OnCollapsedLeftSidebarClick(object sender, EventArgs e)
+        {
+            ToggleLibrarySidebarCollapseStatus();
+        }
+
+        /// <summary>
+        /// Made internal for testing purposes only.
+        /// </summary>
+        internal void ToggleLibrarySidebarCollapseStatus()
         {
             if (LibraryCollapsed)
             {

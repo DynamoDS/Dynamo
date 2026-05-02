@@ -22,6 +22,13 @@ namespace Dynamo.NodeAutoComplete.Views
 
         private static NodeAutoCompleteBarView _controlInstance;
 
+        /// <summary>
+        /// When false, user-initiated close (e.g. Alt+F4) is cancelled and we hide + run
+        /// <see cref="OnHideNodeAutoCompleteBar"/> so transient nodes are discarded like Escape.
+        /// Set true only around <see cref="ResetNodeAutoCompleteBar"/>'s intentional <see cref="Window.Close"/>.
+        /// </summary>
+        private bool _allowClose;
+
         // Prepare the autocomplete bar window and reuse it whenever possible.
         // Only a single instance of the window will be allowed at any given time.
         static internal void PrepareAndShowNodeAutoCompleteBar(Window window, NodeAutoCompleteBarViewModel viewModel, PortViewModel newPortViewModel)
@@ -83,6 +90,28 @@ namespace Dynamo.NodeAutoComplete.Views
             DataContext = viewModel;
             InitializeComponent();
             SubscribeToAppEvents();
+            Closing += OnNodeAutoCompleteBarClosing;
+            Closed += OnNodeAutoCompleteBarClosed;
+        }
+
+        private void OnNodeAutoCompleteBarClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (_allowClose)
+                return;
+
+            e.Cancel = true;
+            OnHideNodeAutoCompleteBar();
+        }
+
+        /// <summary>
+        /// Clears the static instance and unsubscribes when the window is closed programmatically
+        /// (see <see cref="ResetNodeAutoCompleteBar"/>). Otherwise <see cref="PrepareAndShowNodeAutoCompleteBar"/>
+        /// would call <see cref="Window.Show"/> on a closed window and crash.
+        /// </summary>
+        private void OnNodeAutoCompleteBarClosed(object sender, EventArgs e)
+        {
+            Closed -= OnNodeAutoCompleteBarClosed;
+            Closing -= OnNodeAutoCompleteBarClosing;
         }
 
         private void OnRefocusSearchbox()
@@ -245,8 +274,17 @@ namespace Dynamo.NodeAutoComplete.Views
             {
                 OnHideNodeAutoCompleteBar();
             }
-            
-            Close();
+
+            _allowClose = true;
+            try
+            {
+                Close();
+            }
+            finally
+            {
+                _allowClose = false;
+            }
+
             _controlInstance = null;
         }
 

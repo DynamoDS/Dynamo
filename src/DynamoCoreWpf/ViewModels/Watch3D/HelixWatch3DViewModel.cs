@@ -969,7 +969,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             OnSceneItemsChanged();
         }
 
-        private void DeleteGeometries(KeyValuePair<string, Element3D>[] geometryModels, bool requestUpdate)
+        private void DeleteGeometries(KeyValuePair<string, Element3D>[] geometryModels, bool requestUpdate, bool forceDelete = false)
         {
             lock (element3DDictionaryMutex)
             {
@@ -980,12 +980,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                 foreach (var kvp in geometryModels)
                 {
-                    
+
                     var model3D = Element3DDictionary[kvp.Key] as GeometryModel3D;
-                    // check if the geometry is frozen. if the gemoetry is frozen 
-                    // then do not detach from UI.
-                    var frozenModel = AttachedProperties.GetIsFrozen(model3D);
-                    if (frozenModel) continue;
+                    // Skip deletion for frozen geometry during re-evaluation so that
+                    // frozen nodes retain their cached visuals. When forceDelete is true
+                    // (node permanently removed from workspace) we always clean up.
+                    if (!forceDelete)
+                    {
+                        var frozenModel = AttachedProperties.GetIsFrozen(model3D);
+                        if (frozenModel) continue;
+                    }
 
                     Element3DDictionary.Remove(kvp.Key);
                     model3D.Dispose();
@@ -1010,7 +1014,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public override void DeleteGeometryForNode(NodeModel node, bool requestUpdate = true)
         {
             var geometryModels = FindAllGeometryModel3DsForNode(node);
-            DeleteGeometries(geometryModels, requestUpdate);
+            DeleteGeometries(geometryModels, requestUpdate, forceDelete: true);
         }
 
         /// <summary>

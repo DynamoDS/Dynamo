@@ -503,11 +503,14 @@ namespace Dynamo.Core
         ///
         /// Resolution order:
         /// 1) First assembly on the current managed call stack under hostApplicationDirectory.
-        /// 2) First non-system, non-test assembly on the current managed call stack
-        ///    that resides outside the DynamoCore directory.
-        /// 3) DynamoCore assembly location (preferred over external process assemblies).
-        /// 4) Entry assembly location.
-        /// 5) Current process main module path.
+        /// 2) If a host directory is configured, first non-system, non-test assembly on
+        ///    the current managed call stack that resides outside the DynamoCore directory.
+        ///    Skipped when no host directory is set (e.g. standalone Sandbox).
+        /// 3) If no host directory is configured, first non-system, non-test assembly
+        ///    on the current managed call stack that resides outside the DynamoCore directory.
+        /// 4) DynamoCore assembly location (preferred over external process assemblies).
+        /// 5) Entry assembly location.
+        /// 6) Current process main module path.
         /// </summary>
         /// <returns>
         /// The file path of the assembly used to determine the data directory version.
@@ -521,57 +524,105 @@ namespace Dynamo.Core
 
             // Option 2: Use the first non-system, non-test assembly on the current
             // managed call stack that resides outside the DynamoCore directory.
-            // This helps when PathManager is created before host directories are
-            // assigned, as in some integrations. Assemblies co-located with
-            // DynamoCore (e.g. nunit.framework, test assemblies) are skipped
-            // because only a true host assembly carries the desired version.
-            var currentAssembly = typeof(PathManager).Assembly;
-            var stackTrace = new StackTrace(skipFrames: 1, fNeedFileInfo: false);
-
-            foreach (var frame in stackTrace.GetFrames() ?? Array.Empty<StackFrame>())
+            // Only attempt this when a host directory is configured, as a fallback
+            // for integrations where Option 1 didn't match (e.g. host directory
+            // assigned but no matching assembly on the stack yet). For standalone
+            // Sandbox there is no host, and the stack walk may pick up unrelated
+            // assemblies (e.g. .NET runtime) with misleading version numbers.
+            if (!string.IsNullOrEmpty(hostApplicationDirectory))
             {
-                var assembly = frame.GetMethod()?.DeclaringType?.Assembly;
-                if (assembly == null || assembly == currentAssembly || assembly.IsDynamic)
-                    continue;
+                var currentAssembly = typeof(PathManager).Assembly;
+                var stackTrace = new StackTrace(skipFrames: 1, fNeedFileInfo: false);
 
-                var assemblyName = assembly.GetName().Name;
-                if (string.IsNullOrEmpty(assemblyName))
-                    continue;
-
-                if (assemblyName.StartsWith("System", StringComparison.OrdinalIgnoreCase) ||
-                    assemblyName.StartsWith("Microsoft", StringComparison.OrdinalIgnoreCase) ||
-                    assemblyName.Equals("mscorlib", StringComparison.OrdinalIgnoreCase) ||
-                    assemblyName.Equals("netstandard", StringComparison.OrdinalIgnoreCase) ||
-                    assemblyName.IndexOf("test", StringComparison.OrdinalIgnoreCase) >= 0)
+                foreach (var frame in stackTrace.GetFrames() ?? Array.Empty<StackFrame>())
                 {
-                    continue;
+                    var assembly = frame.GetMethod()?.DeclaringType?.Assembly;
+                    if (assembly == null || assembly == currentAssembly || assembly.IsDynamic)
+                        continue;
+
+                    var assemblyName = assembly.GetName().Name;
+                    if (string.IsNullOrEmpty(assemblyName))
+                        continue;
+
+                    if (assemblyName.StartsWith("System", StringComparison.OrdinalIgnoreCase) ||
+                        assemblyName.StartsWith("Microsoft", StringComparison.OrdinalIgnoreCase) ||
+                        assemblyName.Equals("mscorlib", StringComparison.OrdinalIgnoreCase) ||
+                        assemblyName.Equals("netstandard", StringComparison.OrdinalIgnoreCase) ||
+                        assemblyName.IndexOf("test", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        continue;
+                    }
+
+                    var candidatePath = assembly.Location;
+
+                    // Skip assemblies that live in the same directory as DynamoCore.
+                    // Host assemblies (e.g. Civil3D, Revit) reside in their own install
+                    // directories; anything co-located with DynamoCore (e.g. nunit.framework)
+                    // is not a host and may carry an unrelated version.
+                    if (IsPathUnderDirectory(candidatePath, dynamoCoreDir))
+                        continue;
+
+                    if (HasNonZeroFileVersion(candidatePath))
+                        return candidatePath;
                 }
-
-                var candidatePath = assembly.Location;
-
-                // Skip assemblies that live in the same directory as DynamoCore.
-                // Host assemblies (e.g. Civil3D, Revit) reside in their own install
-                // directories; anything co-located with DynamoCore (e.g. nunit.framework)
-                // is not a host and may carry an unrelated version.
-                if (IsPathUnderDirectory(candidatePath, dynamoCoreDir))
-                    continue;
-
-                if (HasNonZeroFileVersion(candidatePath))
-                    return candidatePath;
             }
 
-            // Option 3: Prefer DynamoCore assembly over external process assemblies
+            // Option 3: When there is no configured host directory yet, still try
+            // to discover a likely host integration assembly on the current call stack.
+            if (string.IsNullOrEmpty(hostApplicationDirectory))
+            {
+                var currentAssembly = typeof(PathManager).Assembly;
+                var stackTrace = new StackTrace(skipFrames: 1, fNeedFileInfo: false);
+
+                foreach (var frame in stackTrace.GetFrames() ?? Array.Empty<StackFrame>())
+                {
+                    var assembly = frame.GetMethod()?.DeclaringType?.Assembly;
+                    if (assembly == null || assembly == currentAssembly || assembly.IsDynamic)
+                        continue;
+
+                    var assemblyName = assembly.GetName().Name;
+                    if (string.IsNullOrEmpty(assemblyName))
+                        continue;
+
+                    if (assemblyName.StartsWith("System", StringComparison.OrdinalIgnoreCase) ||
+                        assemblyName.StartsWith("Microsoft", StringComparison.OrdinalIgnoreCase) ||
+                        assemblyName.Equals("mscorlib", StringComparison.OrdinalIgnoreCase) ||
+                        assemblyName.Equals("netstandard", StringComparison.OrdinalIgnoreCase) ||
+                        assemblyName.IndexOf("test", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        continue;
+                    }
+
+                    // Without a configured host directory, only consider likely
+                    // Dynamo integration assemblies to avoid selecting framework
+                    // assemblies (e.g. WPF/.NET) that can carry unrelated versions
+                    // such as 10.0 for Sandbox startup.
+                    if (assemblyName.IndexOf("Dynamo", StringComparison.OrdinalIgnoreCase) < 0)
+                        continue;
+
+                    var candidatePath = assembly.Location;
+
+                    // Skip assemblies that live in the same directory as DynamoCore.
+                    if (IsPathUnderDirectory(candidatePath, dynamoCoreDir))
+                        continue;
+
+                    if (HasNonZeroFileVersion(candidatePath))
+                        return candidatePath;
+                }
+            }
+
+            // Option 4: Prefer DynamoCore assembly over external process assemblies
             // (e.g. testhost.exe, dotnet.exe) which may carry unrelated versions.
             var dynamoCoreAssemblyPath = Assembly.GetExecutingAssembly().Location;
             if (HasNonZeroFileVersion(dynamoCoreAssemblyPath))
                 return dynamoCoreAssemblyPath;
 
-            // Option 4: Use the process entry assembly when available and versioned.
+            // Option 5: Use the process entry assembly when available and versioned.
             var entryAssemblyPath = Assembly.GetEntryAssembly()?.Location;
             if (HasNonZeroFileVersion(entryAssemblyPath))
                 return entryAssemblyPath;
 
-            // Option 5: Use the current process main module path as a hosted fallback.
+            // Option 6: Use the current process main module path as a hosted fallback.
             var processMainModulePath = TryGetCurrentProcessMainModulePath();
             if (HasNonZeroFileVersion(processMainModulePath))
                 return processMainModulePath;

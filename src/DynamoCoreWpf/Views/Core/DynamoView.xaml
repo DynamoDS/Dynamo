@@ -185,6 +185,12 @@
         <KeyBinding Key="F1" Command="{Binding Path=DataContext.ShowNodeDocumentationCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="Home" Command="{Binding Path=DataContext.GoToLeftMostNodeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
         <KeyBinding Key="End" Command="{Binding Path=DataContext.GoToRightMostNodeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+        <KeyBinding Key="Left"
+                    Command="{Binding ElementName=_this, Path=ToggleLibrarySidebarCommand}"
+                    Modifiers="Control+Shift" />
+        <KeyBinding Key="Right"
+                    Command="{Binding ElementName=_this, Path=ToggleExtensionsSidebarCommand}"
+                    Modifiers="Control+Shift" />
     </Window.InputBindings>
 
     <Grid Name="mainGrid"

@@ -420,18 +420,11 @@ namespace Dynamo.ViewModels
 
         private void UnpinFromNode(object parameters)
         {
-            // Find the group containing this note before recording so we
-            // can include its AnnotationModel in the same undo action group.
-            AnnotationViewModel noteGroup = WorkspaceViewModel.Annotations
-                .FirstOrDefault(x => x.AnnotationModel.ContainsModel(Model));
-
             if (!Model.SuppressUndoRecording)
             {
-                List<ModelBase> modelsToRecord = new List<ModelBase> { Model };
-                if (noteGroup != null)
-                    modelsToRecord.Add(noteGroup.AnnotationModel);
-
-                WorkspaceModel.RecordModelsForModification(modelsToRecord, WorkspaceViewModel.Model.UndoRecorder);
+                WorkspaceModel.RecordModelsForModification(
+                    new List<ModelBase> { Model },
+                    WorkspaceViewModel.Model.UndoRecorder);
             }
             Model.SuppressUndoRecording = false;
 
@@ -439,12 +432,6 @@ namespace Dynamo.ViewModels
             // can still access the node reference via subscribedPinnedNode.
             UnsuscribeFromPinnedNode();
             Model.PinnedNode = null;
-
-            if (noteGroup != null)
-            {
-                noteGroup.AnnotationModel.Nodes = noteGroup.AnnotationModel.Nodes
-                    .Where(n => n.GUID != Model.GUID);
-            }
 
             DynamoSelection.Instance.ClearSelection();
             WorkspaceViewModel.HasUnsavedChanges = true;

@@ -1981,6 +1981,48 @@ var06 = g;
 
         #endregion
 
+        #region Undo empty code block creation (DYN-10023)
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenEmptyCodeBlockCreatedThenUndoRemovesNode()
+        {
+            // Arrange
+            Assert.AreEqual(0, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            // Act – create an empty CBN then undo
+            var cbn = CreateCodeBlockNode();
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            CurrentDynamoModel.CurrentWorkspace.Undo();
+
+            // Assert – node should be gone
+            Assert.AreEqual(0, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenCodeBlockWithCodeCreatedThenUndoRemovesNode()
+        {
+            // Regression guard: creating a CBN with code and then undoing twice should
+            // remove the node. (The UpdateModelValueCommand and the CreateNodeCommand are
+            // separate undo entries when issued programmatically, so two undos are needed.)
+            Assert.AreEqual(0, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var cbn = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(cbn, "42;");
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            // First undo reverts the code update; node still exists.
+            CurrentDynamoModel.CurrentWorkspace.Undo();
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            // Second undo removes the creation.
+            CurrentDynamoModel.CurrentWorkspace.Undo();
+            Assert.AreEqual(0, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+        }
+
+        #endregion
 
         private CodeBlockNodeModel CreateCodeBlockNode()
         {
