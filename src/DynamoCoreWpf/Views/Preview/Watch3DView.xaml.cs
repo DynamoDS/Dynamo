@@ -456,7 +456,7 @@ namespace Dynamo.Controls
         /// </summary>
         internal void ReleaseViewportMouseCapture()
         {
-            if (watch_view?.IsMouseCaptureWithin == true)
+            if (watch_view?.IsMouseCaptureWithin ?? false)
             {
                 Mouse.Capture(null);
             }
