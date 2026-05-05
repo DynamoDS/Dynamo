@@ -228,9 +228,6 @@
             <return>Arc created from start, end point, and tangent</return>
             <search>arc,tangent,arcs</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Arc.ToString">
-            <summary>取得 Arc 的字串表現法</summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.FromJson(System.String)">
             <summary>剖析使用 autodesk.geometry:boundingbox3d-1.0.0 資料架構格式化的進入 JSON 字串。</summary>
             <param name="json">要剖析的 JSON 字串</param>
@@ -318,18 +315,6 @@
             from a Revit BoundingBox without any conversions.</summary>
             <search>bounding,bound,bymaxmin,max,min,bypoints</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.Equals(Autodesk.DesignScript.Geometry.DesignScriptEntity)">
-            <summary>比較兩個邊界框</summary>
-            <param name="other">其他邊界框</param>
-            <returns>兩個物件是否相等</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ComputeHashCode">
-            <summary>取得此類型的雜湊碼</summary>
-            <returns>此物件的唯一雜湊碼</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ToString">
-            <summary>取得 BoundingBox 的字串表現法</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Circle.CenterPoint">
             <summary>圓的中心</summary>
         </member>
@@ -374,9 +359,6 @@
             <returns>從點建立的圓</returns>
             <search>circle,approximate</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Circle.ToString">
-            <summary>取得 Circle 的字串表現法</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoEdge.Previous">
             <summary>包含迴路中的前一個「共有邊」</summary>
             <returns/>
@@ -412,9 +394,6 @@
         <member name="P:Autodesk.DesignScript.Geometry.CoEdge.ParameterCurve">
             <summary>曲線在參數式空間表面的擁有者。 「 曲線」會在 2D 形式，因此 Z 座標的此曲線為 0。</summary>
             <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.CoEdge.ToString">
-            <summary>取得 CoEdge 的字串表現法</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cone.StartPoint">
             <summary>起點</summary>
@@ -473,9 +452,6 @@
             in the CoordinateSystem Z axis deriction length amount, with a
             circular bases in the CoordinateSystem XY Plane.</summary>
             <search>cone,cone by height,cones</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Cone.ToString">
-            <summary>取得 Cone 的字串表現法</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByMatrix(System.Double[])">
             <summary>Create a CoordinateSystem from a 4x4 matrix. This method is deprecated; prefer other constructors where possible.</summary>
@@ -570,7 +546,7 @@
             direction.</summary>
             <param name="direction">位移方向。</param>
             <param name="distance">沿著指定方向的位移距離。</param>
-            <returns>轉換幾何圖形。</returns>
+            <returns>已轉換的幾何圖形。</returns>
             <search>move,along vector,distance</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem)">
@@ -668,18 +644,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.BySphericalCoordinates(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
             <summary>Creates a CoordinateSystem at the specified spherical coordinate parameters with respect to the specified coordinate system.</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Equals(Autodesk.DesignScript.Geometry.DesignScriptEntity)">
-            <summary>Compare two CoordinateSystem's</summary>
-            <param name="other">The other CoordinateSystem</param>
-            <returns>兩個物件是否相等</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ComputeHashCode">
-            <summary>取得此類型的雜湊碼</summary>
-            <returns>此物件的唯一雜湊碼</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ToString">
-            <summary>取得 CoordinateSystem 的字串表現法</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cuboid.Length">
             <summary>Returns length distance.
             Note: This return the input dimensions of the Cuboid, NOT the
@@ -740,9 +704,6 @@
             <param name="highPoint">立方體的高角點</param>
             <returns>透過角點建立的立方體</returns>
             <search>box,cube,byminmax,by corners,by points,cubes</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Cuboid.ToString">
-            <summary>取得 Cuboid 的字串表現法</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Curve.Length">
             <summary>傳回曲線的總弧長</summary>
@@ -1134,9 +1095,6 @@
             <search>isocurve,curvebydir,lines</search>
             <weights>0.5,0.5,0.4</weights>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ToString">
-            <summary>取得 Curve 的字串表現法</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cylinder.Radius">
             <summary>圓柱的半徑</summary>
         </member>
@@ -1167,9 +1125,6 @@
             <param name="radius">圓柱的半徑</param>
             <returns>透過點和半徑建立的圓柱</returns>
             <search>cylinder,tube,by center points</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Cylinder.ToString">
-            <summary>取得 Cylinder 的字串表現法</summary>
         </member>
         <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.constructorThreadId">
             <summary>儲存呼叫此建構函式之執行緒的受管理執行緒 ID。
@@ -1212,9 +1167,6 @@
         <member name="P:Autodesk.DesignScript.Geometry.Edge.CoEdges">
             <summary>與此邊相關聯的「共有邊」</summary>
             <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Edge.ToString">
-            <summary>取得 Edge 的字串表現法</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Ellipse.CenterPoint">
             <summary>橢圓的中心</summary>
@@ -1263,9 +1215,6 @@
             <returns>從平面和半徑建立的橢圓</returns>
             <search>ellipse,aligned ellipse,ellipsebylengths</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ToString">
-            <summary>取得 Ellipse 的字串表現法</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.EllipseArc.CenterPoint">
             <summary>橢圓的中心</summary>
             <search>
@@ -1312,9 +1261,6 @@
             <returns>透過平面半徑和角度建立的橢圓弧</returns>
             <search>ellipsearc,arcs</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.EllipseArc.ToString">
-            <summary>取得 EllipseArc 的字串表現法</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Face.Edges">
             <summary>以逆時鐘次序圍繞此面的所有邊</summary>
             <search>faces</search>
@@ -1334,9 +1280,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.Face.SurfaceGeometry">
             <summary>組成面的基本曲面</summary>
             <returns>面的曲面表現法</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Face.ToString">
-            <summary>取得 Face 的字串表現法</summary>
         </member>
         <member name="F:Autodesk.DesignScript.Geometry.Geometry.mGeometryContructors">
             <summary>IGeometryEntity 類型與使用主體的幾何圖形建構函式之間的對映。</summary>
@@ -1456,10 +1399,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale2D(Autodesk.DesignScript.Geometry.Plane,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
             <summary>Scale in two dimensions by base and 2 pick points  The two pick points are projected onto the base plane in order to determine the 2d scale factors</summary>
             <search>resize,size,from,to,scale2d,2d</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Clone">
-            <summary>Copy the given Geometry</summary>
-            <returns>A new copy</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.DistanceTo(Autodesk.DesignScript.Geometry.Geometry)">
             <summary>取得這個幾何圖形到另一個幾何圖形的距離</summary>
@@ -1583,9 +1522,6 @@
             <param name="projectionDirection">Projection direction.</param>
             <returns>Flat array of resulting Geometry.</returns>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ToString">
-            <summary>Get a string representation of the Geometry</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Helix.Angle">
             <summary>螺旋線翻轉其長度的角度 (以度為單位)</summary>
         </member>
@@ -1615,9 +1551,6 @@
             <param name="angleTurns">旋轉次數 (以度表示)</param>
             <returns>透過軸建立的螺旋線</returns>
             <search>helix,screw,corkscrew,thread</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Helix.ToString">
-            <summary>取得 Helix 的字串表現法</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.IndexGroup.Count">
             <summary>3 或 4，視其表示三角形還是四邊形而定</summary>
@@ -1650,18 +1583,6 @@
             <param name="b">索引 b</param>
             <param name="c">索引 c</param>
             <returns>IndexGroup</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.IndexGroup.Equals(System.Object)">
-            <summary>比較兩個 IndexGroup</summary>
-            <param name="other">其他 IndexGroup</param>
-            <returns>兩個物件是否相等</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.IndexGroup.GetHashCode">
-            <summary>取得此類型的雜湊碼</summary>
-            <returns>此物件的唯一雜湊碼</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.IndexGroup.ToString">
-            <summary>取得 IndexGroup 的字串表現法</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Line.Direction">
             <summary>曲線的方向</summary>
@@ -1697,9 +1618,6 @@
             <returns>從起始方向和長度建立的線</returns>
             <search>linebyvector,lines</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Line.ToString">
-            <summary>取得 Line 的字串表現法</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Loop.Face">
             <summary>迴路的包含面</summary>
             <returns/>
@@ -1710,9 +1628,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Loop.IsExternal">
             <summary>循環是邊界還是內部</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Loop.ToString">
-            <summary>取得 Loop 的字串表現法</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Mesh.VerticesAsThreeNumbers">
             <summary>以數字清單傳回此網格的原始頂點。每三個
@@ -1904,10 +1819,6 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Translate(System.Double,System.Double,System.Double)">
             <summary>將網格平移輸入距離</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Mesh.MeshToJson(System.Double)">
-            <summary>Convert the mesh into a JSON object formatted with dynamo.geometry:mesh-1.0.0 schema.</summary>
-            <returns>產生的 JSON 字串</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsFaceIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.IndexGroup})">
             <summary>從點集合和參考點集合的 IndexGroups 集合建立網面</summary>
@@ -2130,9 +2041,6 @@
             <search>spline by tangent,tangents,lines</search>
             <weights>0.5,0.5,0.45</weights>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ToString">
-            <summary>取得 NurbsCurve 的字串表現法</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.NurbsSurface.DegreeU">
             <summary>傳回 U 方向的曲面次數。</summary>
             <search>surface smoothness,continuity</search>
@@ -2226,9 +2134,6 @@
             control point/weight data.</summary>
             <search>lines</search>
             <weights>0.4</weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ToString">
-            <summary>取得 NurbsSurface 的字串表現法</summary>
         </member>
         <member name="T:Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition">
             <summary>套用至網格中嵌板的邊界條件類型。</summary>
@@ -2397,9 +2302,6 @@
             <returns/>
             <search>panel, surface, custom, orthogonal, lattice</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.ToString">
-            <summary>取得 PanelSurface 的字串表現法</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Plane.Origin">
             <summary>傳回平面的原點。</summary>
             <search>position,planecenter</search>
@@ -2484,9 +2386,6 @@
             <summary>在世界 YZ 建立平面</summary>
             <returns>位於世界 YZ 平面的平面</returns>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Plane.ToString">
-            <summary>取得 Plane 的字串表現法</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Point.X">
             <summary>取得點的 X 元件</summary>
         </member>
@@ -2564,18 +2463,6 @@
             <param name="tolerance">用於修剪的公差</param>
             <returns>唯一點</returns>
             <search>unique,duplicates,remove duplicates,distinct,near</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Point.Equals(Autodesk.DesignScript.Geometry.DesignScriptEntity)">
-            <summary>比較兩個點</summary>
-            <param name="other">其他點</param>
-            <returns>兩個物件是否相等</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Point.ComputeHashCode">
-            <summary>取得此類型的雜湊碼</summary>
-            <returns>此物件的唯一雜湊碼</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Point.ToString">
-            <summary>取得 Point 的字串表現法</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.Points">
             <summary>傳回第一條組成曲線的起點和每條組成曲線的終點。如果是封閉的 PolyCurve，由於起點和終點相同，因此會排除終點。</summary>
@@ -2709,9 +2596,6 @@
             <param name="normal">垂直於增厚方向的法線。如果未提供法線 (為空)，依預設會使用曲線法線。</param>
             <search>offset,thicken</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ToString">
-            <summary>取得 PolyCurve 的字串表現法</summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Polygon.Corners">
             <summary>傳回多邊形的轉角</summary>
         </member>
@@ -2740,9 +2624,6 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Polygon.RegularPolygon(Autodesk.DesignScript.Geometry.Circle,System.Int32)">
             <summary>在圓形內建構內接多邊形曲線。</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ToString">
-            <summary>取得 Polygon 的字串表現法</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.Surfaces">
             <summary>傳回表示基本曲面的新曲面。</summary>
@@ -2816,9 +2697,6 @@
             <param name="crossSection">掃掠輪廓</param>
             <search>sweep,rail,guide,sweep1</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ToString">
-            <summary>取得 PolySurface 的字串表現法</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Rectangle.Width">
             <summary>矩形的寬度</summary>
             <search>rectX,rectx</search>
@@ -2868,9 +2746,6 @@
             <param name="length">矩形的長度</param>
             <returns>從寬度和長度建立的矩形</returns>
             <search>rectbylengths</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ToString">
-            <summary>取得 Rectangle 的字串表現法</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Solid.Area">
             <summary>傳回表面積 -- 所有面的所有區域總和</summary>
@@ -2984,9 +2859,6 @@
             <returns/>
             <search>Brep,brep,boolean,addition</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Solid.ToString">
-            <summary>取得 Solid 的字串表現法</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Sphere.CenterPoint">
             <summary>傳回圓球的中心點。</summary>
         </member>
@@ -3004,9 +2876,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByBestFit(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
             <summary>將圓球儘可能擬合至輸入點。</summary>
             <search>Brep,brep</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Sphere.ToString">
-            <summary>取得 Sphere 的字串表現法</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Surface.Area">
             <summary>傳回總表面積。</summary>
@@ -3271,9 +3140,6 @@
             <returns>透過修補建立的曲面</returns>
             <search>edgesrf,edgesurface,patch,fill</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToString">
-            <summary>取得 Surface 的字串表現法</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Topology.Vertices">
             <summary>拓樸的頂點</summary>
             <returns/>
@@ -3285,9 +3151,6 @@
         <member name="P:Autodesk.DesignScript.Geometry.Topology.Faces">
             <summary>拓樸的面</summary>
             <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Topology.ToString">
-            <summary>取得 Topology 的字串表現法</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineEdge.AdjacentFaces">
             <summary>與此邊相鄰的 TSplineFaces</summary>
@@ -3313,9 +3176,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineEdge.Info">
             <summary>一組 TSEdge 性質: uvnFrame 和索引、TSEdge 是否位於邊界、是否為流形</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineEdge.ToString">
-            <summary>取得 TSplineEdge 的字串表現法</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineFace.Edges">
             <summary>以逆時鐘順序圍繞此面的所有 TSplineEdges</summary>
             <returns/>
@@ -3339,9 +3199,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineFace.Info">
             <summary>一組 TSplineFace 性質: uvnFrame、索引、價和邊數</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineFace.ToString">
-            <summary>取得 TSplineFace 的字串表現法</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.IsRadial">
             <summary>新建立的 T 雲形線是否具有徑向對稱。</summary>
         </member>
@@ -3364,9 +3221,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.ByAxial(System.Boolean,System.Boolean,System.Boolean)">
             <summary>建立具有指定對稱軸的軸向 TSplineInitialSymmetry。</summary>
             <search>tspline,symmetry</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.ToString">
-            <summary>取得 TSplineInitialSymmetry 的字串表現法</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineReflection.IsRadial">
             <summary>反射是否為徑向</summary>
@@ -3397,9 +3251,6 @@
             <param name="segmentAngle">徑向對稱的每對段之間的角度 (以度為單位)。若設為 0，則由 (360/segmentsCount) 定義</param>
             <returns>T 雲形線徑向反射</returns>
             <search>tspline,symmetry,reflection,radial</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineReflection.ToString">
-            <summary>取得 TSplineReflection 的字串表現法</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Double,System.Collections.Generic.IEnumerable{System.Int32},System.Boolean,System.Boolean,System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Boolean)">
             <inheritdoc cref="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.TSplineSurfaceBuildPipes(Autodesk.DesignScript.Interfaces.ICurveEntity[],System.Double,System.Double,System.Int32[],System.Boolean,System.Boolean,System.Double[],System.Double[],System.Double[],System.Double[],System.Double[],System.Double[],System.Boolean)"/>
@@ -3632,7 +3483,7 @@
             若傳遞 true，則進行平滑視覺化，否則使用框。</summary>
             <param name="enable">啟用或停用平滑視覺化</param>
             <returns>具有所選視覺型式的 T 雲形線</returns>
-            <search>tspline,visulization,mode,smooth,box</search>
+            <search>tspline,visualization,mode,smooth,box</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ExtrudeEdges(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},Autodesk.DesignScript.Geometry.Vector,System.Int32)">
             <summary>在一組邊上執行一或多項對稱擠出，然後根據指定向量移動新邊。</summary>
@@ -3964,7 +3815,7 @@
             <search>tspline,cone,radius,cs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BySphereCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>建立定心至輸入點並具有指定半徑的 T 雲形線圓球。</summary>
+            <summary>Create a T-Spline Sphere centered at the input Point, with given radius.</summary>
             <param name="centerPoint">圓球的中心</param>
             <param name="radius">圓球的半徑</param>
             <param name="radiusSpans">徑向跨越的數量</param>
@@ -4176,9 +4027,6 @@
             <param name="tSplineSurfaces">要結合的 T 雲形線曲面</param>
             <search>tspline,combine</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ToString">
-            <summary>取得 TSplineSurface 的字串表現法</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.Vertices">
             <summary>此 T 雲形線曲面中包含的頂點。</summary>
         </member>
@@ -4266,9 +4114,6 @@
             <search>tspline,face,byindex</search>
             <returns>T 雲形線面</returns>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.ToString">
-            <summary>取得 TSplineTopology 的字串表現法</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineUVNFrame.Position">
             <summary>關聯線上的 TopologyItem 點</summary>
         </member>
@@ -4280,9 +4125,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineUVNFrame.Normal">
             <summary>TopologyItem 的法線</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineUVNFrame.ToString">
-            <summary>取得 TSplineUVNFrame 的字串表現法</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineVertex.AdjacentEdges">
             <summary>從此頂點引出的 TSplineEdges</summary>
@@ -4314,9 +4156,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineVertex.Info">
             <summary>一組 TSVertex 性質: uvnFrame、索引、價和 functionalValence，TSVertex 是否為 StarPoint、TPoint、流形</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineVertex.ToString">
-            <summary>取得 TSplineVertex 的字串表現法</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.UV.U">
             <summary>取得 UV 的 U 元件</summary>
             <search>
@@ -4335,18 +4174,6 @@
             <param name="v">V 值</param>
             <returns>透過座標建立的 UV</returns>
             <search>surfaceparam,parameters,uv,uvs</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.UV.Equals(System.Object)">
-            <summary>比較兩個 UV</summary>
-            <param name="other">其他 UV</param>
-            <returns>兩個物件是否相等</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.UV.GetHashCode">
-            <summary>取得此類型的雜湊碼</summary>
-            <returns>此物件的唯一雜湊碼</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.UV.ToString">
-            <summary>取得 UV 的字串表現法</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.FromJson(System.String)">
             <summary>剖析使用 autodesk.math:vector3d-1.0.0 資料架構格式化的進入 JSON 字串。</summary>
@@ -4482,18 +4309,6 @@
             <returns>Canonical Z axis vector (0,0,1)</returns>
             <search>z, basis,up</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Vector.Equals(Autodesk.DesignScript.Geometry.DesignScriptEntity)">
-            <summary>比較兩個向量</summary>
-            <param name="other">其他向量</param>
-            <returns>兩個物件是否相等</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Vector.ComputeHashCode">
-            <summary>取得此類型的雜湊碼</summary>
-            <returns>此物件的唯一雜湊碼</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Vector.ToString">
-            <summary>取得 Vector 的字串表現法</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Vertex.PointGeometry">
             <summary>此頂點所在的點</summary>
             <returns/>
@@ -4505,9 +4320,6 @@
         <member name="P:Autodesk.DesignScript.Geometry.Vertex.AdjacentFaces">
             <summary>與此頂點相鄰的面</summary>
             <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Vertex.ToString">
-            <summary>取得 Vertex 的字串表現法</summary>
         </member>
         <member name="T:Autodesk.DesignScript.Geometry.Properties.Resources">
             <summary>一種強型別資源類別，用於查找本土化的字串，等等。</summary>
@@ -4733,108 +4545,6 @@
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.tsplinesurface_buildpipes_deprecated">
              <summary>查找類似於「此方法已棄用，未來版本的 Dynamo 將移除。請改用 TSplineSurfaceBuildPipes(ICurveEntity[] curves, double defaultRadius, double snappingTolerance, int[] segmentCounts, bool autoHandleStart, bool autoHandleEnd, double[] startRotations, double[] endRotations, double[] startRadii, double[] endRadii, double[] startPositions, double[] endPositions, bool inSmoothMode)」
             的本土化字串。</summary>
-        </member>
-        <member name="T:ProtoGeometryGenerator.GenerateFromInterfaceAttribute">
-            <summary>The <see cref="T:ProtoGeometryGenerator.GenerateFromInterfaceAttribute"/> is the main attribute the generator looks for when it is
-            deciding the classes to auto implement. The <paramref name="protoInterface"/> type should
-            be a type from Autodesk.DesignScript.Interfaces and <paramref name="geometryFactoryInterface"/> should
-            be the source of all the static constructor methods for the interface.
-            <br/><br/>
-            The attribute must be attached to a class that matches the protoInterface name, i.e. if the interface
-            is named IPointEntity, then the class must be named Point for the generator to work correctly.
-            <br/><br/>
-            The generator will implement wrappers for every property and method on protoInterface
-            using ProtoGeometry as instance methods. In addition, all methods that start with the class name
-            (Point) on the factory interface will be implemented as static methods.
-            <br/><br/>
-            Generated implementations can be overriden by implementing a property or method that exactly matches the
-            interface method signature. See <see cref="T:ProtoGeometryGenerator.GenerateShadowingAttribute"/> and <see cref="T:ProtoGeometryGenerator.GenerateOverrideAttribute"/> for
-            other ways to override automatic implementations.</summary>
-        </member>
-        <member name="M:ProtoGeometryGenerator.GenerateFromInterfaceAttribute.#ctor(System.Type,System.Type,System.Type[])">
-            <summary>The <see cref="T:ProtoGeometryGenerator.GenerateFromInterfaceAttribute"/> is the main attribute the generator looks for when it is
-            deciding the classes to auto implement. The <paramref name="protoInterface"/> type should
-            be a type from Autodesk.DesignScript.Interfaces and <paramref name="geometryFactoryInterface"/> should
-            be the source of all the static constructor methods for the interface.
-            <br/><br/>
-            The attribute must be attached to a class that matches the protoInterface name, i.e. if the interface
-            is named IPointEntity, then the class must be named Point for the generator to work correctly.
-            <br/><br/>
-            The generator will implement wrappers for every property and method on protoInterface
-            using ProtoGeometry as instance methods. In addition, all methods that start with the class name
-            (Point) on the factory interface will be implemented as static methods.
-            <br/><br/>
-            Generated implementations can be overriden by implementing a property or method that exactly matches the
-            interface method signature. See <see cref="T:ProtoGeometryGenerator.GenerateShadowingAttribute"/> and <see cref="T:ProtoGeometryGenerator.GenerateOverrideAttribute"/> for
-            other ways to override automatic implementations.</summary>
-        </member>
-        <member name="T:ProtoGeometryGenerator.GenerateOverrideAttribute">
-            <summary>Replace the body of the named property or method with this implementation.</summary>
-            <remarks>
-            Properties and methods implemented by the generator using the <see cref="T:ProtoGeometryGenerator.GenerateFromInterfaceAttribute"/> can
-            be overriden. This attribute will replace the body of the generated method, but let the generator handle
-            documentation, scaling, ASM extents checks and the required boilerplate.
-            </remarks>
-            <param name="overrideName">The method or property to override</param>
-            <param name="virtualKeyword">Implement the generated function as virtual</param>
-        </member>
-        <member name="M:ProtoGeometryGenerator.GenerateOverrideAttribute.#ctor(System.String,System.Boolean)">
-            <summary>Replace the body of the named property or method with this implementation.</summary>
-            <remarks>
-            Properties and methods implemented by the generator using the <see cref="T:ProtoGeometryGenerator.GenerateFromInterfaceAttribute"/> can
-            be overriden. This attribute will replace the body of the generated method, but let the generator handle
-            documentation, scaling, ASM extents checks and the required boilerplate.
-            </remarks>
-            <param name="overrideName">The method or property to override</param>
-            <param name="virtualKeyword">Implement the generated function as virtual</param>
-        </member>
-        <member name="T:ProtoGeometryGenerator.GenerateShadowingAttribute">
-            <summary>Properties and methods implemented by the generator using the <see cref="T:ProtoGeometryGenerator.GenerateFromInterfaceAttribute"/> can
-            be overriden. This attribute will prevent the generation of a method named <paramref name="overrideName"/> 
-            whose params exactly matches the <paramref name="parameterTypes"/> array.
-            <br/><br/>
-            Some of the methods in the library don't match the generated output exactly, meaning the generator can't see
-            them as overrides. This attribute lets a method take the place of another method, by explicitly shadowing
-            what the generator would have implemented.
-            <br/><br/>
-            Several [class]es implement a static FromJson method that takes a single <see langword="string"/>, where
-            the factory interface has a method [class]FromJson that takes <see langword="string"/> and <see langword="double"/>.
-            This attribute lets the single <see langword="string"/> version override the automatic one.</summary>
-        </member>
-        <member name="M:ProtoGeometryGenerator.GenerateShadowingAttribute.#ctor(System.String,System.Type[])">
-            <summary>Properties and methods implemented by the generator using the <see cref="T:ProtoGeometryGenerator.GenerateFromInterfaceAttribute"/> can
-            be overriden. This attribute will prevent the generation of a method named <paramref name="overrideName"/> 
-            whose params exactly matches the <paramref name="parameterTypes"/> array.
-            <br/><br/>
-            Some of the methods in the library don't match the generated output exactly, meaning the generator can't see
-            them as overrides. This attribute lets a method take the place of another method, by explicitly shadowing
-            what the generator would have implemented.
-            <br/><br/>
-            Several [class]es implement a static FromJson method that takes a single <see langword="string"/>, where
-            the factory interface has a method [class]FromJson that takes <see langword="string"/> and <see langword="double"/>.
-            This attribute lets the single <see langword="string"/> version override the automatic one.</summary>
-        </member>
-        <member name="T:ProtoGeometryGenerator.PropertyReplacementFieldAttribute">
-            <summary>This attribute lets an interface property be auto generated from a backing field, letting that
-            field take the property's place in the ToString, Equals and HashCode methods.
-            Special handling is added for Point and Vector types when backed by a Coordinate.
-            This also lets the generator handle documentation for the property.</summary>
-        </member>
-        <member name="M:ProtoGeometryGenerator.PropertyReplacementFieldAttribute.#ctor(System.String,System.String)">
-            <summary>This attribute lets an interface property be auto generated from a backing field, letting that
-            field take the property's place in the ToString, Equals and HashCode methods.
-            Special handling is added for Point and Vector types when backed by a Coordinate.
-            This also lets the generator handle documentation for the property.</summary>
-        </member>
-        <member name="T:ProtoGeometryGenerator.OverrideCompareUsingAttribute">
-            <summary>This attribute lets a class override the CompareUsing attribute on the defining interface
-            (or set one at all if it is missing). This in turn lets the generator create the
-            (Get|Compute)HashCode and Equals methods for the class based on the supplied property names.</summary>
-        </member>
-        <member name="M:ProtoGeometryGenerator.OverrideCompareUsingAttribute.#ctor(System.String[])">
-            <summary>This attribute lets a class override the CompareUsing attribute on the defining interface
-            (or set one at all if it is missing). This in turn lets the generator create the
-            (Get|Compute)HashCode and Equals methods for the class based on the supplied property names.</summary>
         </member>
     </members>
 </doc>
