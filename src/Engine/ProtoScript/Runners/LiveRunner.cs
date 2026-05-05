@@ -691,6 +691,29 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
+        /// Returns true if the subtree's AST nodes differ from the cached version.
+        /// Used to distinguish structural changes (reconnect) from identity changes (slider value).
+        /// </summary>
+        private bool SubtreeHasActualChanges(Subtree subtree)
+        {
+            Subtree cached;
+            if (!currentSubTreeList.TryGetValue(subtree.GUID, out cached) || cached.AstNodes == null)
+                return subtree.AstNodes != null && subtree.AstNodes.Any();
+            if (subtree.AstNodes == null)
+                return false;
+            foreach (var node in subtree.AstNodes)
+            {
+                bool found = false;
+                foreach (var prevNode in cached.AstNodes)
+                {
+                    if (prevNode.Equals(node)) { found = true; break; }
+                }
+                if (!found) return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Update the cached ASTs in the subtree given the modified ASTs
         /// </summary>
         /// <param name="st"></param>
@@ -816,6 +839,16 @@ namespace ProtoScript.Runners
                 }
             }
 
+            // When any non-input subtree has structural changes (e.g. a reconnect), delta
+            // compilation recompiles that node at a new, higher PC. Unchanged downstream nodes
+            // keep their old, lower PCs. ApplyUpdate then finds them first (lower PC = earlier
+            // in the graph list) and runs them with stale upstream values, then the upstream
+            // node executes and marks them dirty again — causing each downstream node to execute
+            // twice. To prevent this, force-recompile all unchanged non-input subtrees so they
+            // receive new, higher PCs that respect the topological execution order.
+            bool anyNonInputActuallyModified = modifiedSubTrees.Any(
+                st => !st.IsInput && st.AstNodes != null && SubtreeHasActualChanges(st));
+
             for (int n = 0; n < modifiedSubTrees.Count(); ++n)
             {
                 var modifiedSubTree = modifiedSubTrees[n];
@@ -831,6 +864,34 @@ namespace ProtoScript.Runners
                     List<AssociativeNode> modifiedInputAST;
                     var modifiedASTList = GetModifiedNodes(modifiedSubTree, redefinitionAllowed, out modifiedInputAST);
                     csData.ModifiedNodesForRuntimeSetValue.AddRange(modifiedInputAST);
+
+                    // If another non-input subtree was structurally modified and this non-input
+                    // subtree appears unchanged, force-recompile it so its new graph node lands
+                    // at a PC higher than the recompiled upstream node. Also deactivate the old
+                    // graph nodes so they do not co-execute with the new ones in ApplyUpdate.
+                    if (!modifiedSubTree.IsInput && anyNonInputActuallyModified
+                        && !modifiedASTList.Any() && !modifiedInputAST.Any())
+                    {
+                        Subtree cachedSubTree;
+                        if (currentSubTreeList.TryGetValue(modifiedSubTree.GUID, out cachedSubTree)
+                            && cachedSubTree.AstNodes != null)
+                        {
+                            var cachedBinaryNodes = cachedSubTree.AstNodes.OfType<BinaryExpressionNode>().ToList();
+                            // Deactivate the old graph nodes so they are replaced by freshly compiled ones.
+                            csData.RemovedBinaryNodesFromModification.AddRange(cachedBinaryNodes);
+                            // Stamp the GUID and inject directly into the delta list so the compiler
+                            // assigns new, higher PCs — keeping modifiedASTList empty so
+                            // UpdateCachedASTList does not see these as modifications and double
+                            // the cached AST list.
+                            foreach (var bnode in cachedBinaryNodes)
+                            {
+                                bnode.guid = modifiedSubTree.GUID;
+                                bnode.IsInputExpression = false;
+                                SetNestedLanguageBlockASTGuids(modifiedSubTree.GUID, new List<ProtoCore.AST.Node>() { bnode });
+                            }
+                            deltaAstList.AddRange(cachedBinaryNodes);
+                        }
+                    }
 
                     modifiedSubTree.ModifiedAstNodes.Clear();
                     modifiedSubTree.ModifiedAstNodes.AddRange(modifiedASTList);
