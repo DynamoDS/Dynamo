@@ -448,6 +448,19 @@ namespace Dynamo.Controls
         {
             return View.GetCameraPosition();
         }
+
+        /// <summary>
+        /// Releases mouse capture from the 3D viewport if it (or any of its children)
+        /// currently holds the mouse. This stops any ongoing camera gesture such as
+        /// orbit and hides the orbit indicator when switching back to graph view.
+        /// </summary>
+        internal void ReleaseViewportMouseCapture()
+        {
+            if (watch_view?.IsMouseCaptureWithin == true)
+            {
+                Mouse.Capture(null);
+            }
+        }
     }
 
     
