@@ -450,15 +450,25 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// Releases mouse capture from the 3D viewport if it (or any of its children)
-        /// currently holds the mouse. This stops any ongoing camera gesture such as
-        /// orbit and hides the orbit indicator when switching back to graph view.
+        /// Ends any active HelixToolkit camera gesture (e.g. right-click orbit) and
+        /// hides the orbit indicator when switching back to graph view.
         /// </summary>
+        /// <remarks>
+        /// HelixToolkit's MouseGestureHandler has no LostMouseCapture handler, so
+        /// calling Mouse.Capture(null) alone releases WPF capture but never invokes
+        /// Completed() / HideTargetAdorner(). Raising a synthetic MouseUp causes
+        /// HelixToolkit's OnMouseUp to run, which properly ends the gesture.
+        /// </remarks>
         internal void ReleaseViewportMouseCapture()
         {
             if (watch_view?.IsMouseCaptureWithin ?? false)
             {
                 Mouse.Capture(null);
+                var args = new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Right)
+                {
+                    RoutedEvent = UIElement.MouseUpEvent
+                };
+                watch_view.RaiseEvent(args);
             }
         }
     }
