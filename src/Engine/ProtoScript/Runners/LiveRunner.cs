@@ -703,12 +703,7 @@ namespace ProtoScript.Runners
                 return false;
             foreach (var node in subtree.AstNodes)
             {
-                bool found = false;
-                foreach (var prevNode in cached.AstNodes)
-                {
-                    if (prevNode.Equals(node)) { found = true; break; }
-                }
-                if (!found) return true;
+                if (!cached.AstNodes.Any(prevNode => prevNode.Equals(node))) return true;
             }
             return false;
         }
