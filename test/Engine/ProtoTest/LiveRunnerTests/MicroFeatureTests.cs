@@ -6095,7 +6095,57 @@ s = 1;
             // There should be no warnings
             Assert.AreEqual(0, liveRunner.RuntimeCore.RuntimeStatus.WarningCount);
         }
-     
+
+        /// <summary>
+        /// Regression test for DYN-5128.
+        /// When an upstream node is structurally modified (e.g. a wire reconnect), downstream
+        /// nodes that are included in the update with unchanged ASTs must receive new, higher PCs
+        /// so that the runtime executes them after the upstream node. Without the fix, unchanged
+        /// downstream nodes kept their original lower PCs and ran before the upstream, consuming
+        /// stale output and executing a second time after the upstream completed.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenUpstreamNodeReconnectedThenDownstreamNodesReceiveUpdatedValues()
+        {
+            // Arrange: three nodes in a chain A -> B -> C
+            var guidA = Guid.NewGuid();
+            var guidB = Guid.NewGuid();
+            var guidC = Guid.NewGuid();
+
+            var addedA = TestFrameWork.CreateSubTreeFromCode(guidA, "a = 1;");
+            addedA.DeltaComputation = true;
+            var addedB = TestFrameWork.CreateSubTreeFromCode(guidB, "b = a + 10;");
+            addedB.DeltaComputation = true;
+            var addedC = TestFrameWork.CreateSubTreeFromCode(guidC, "c = b + 100;");
+            addedC.DeltaComputation = true;
+
+            liveRunner.UpdateGraph(new GraphSyncData(null, new List<Subtree> { addedA, addedB, addedC }, null));
+
+            AssertValue("a", 1);
+            AssertValue("b", 11);
+            AssertValue("c", 111);
+
+            // Act: simulate reconnect — A changes structurally; B and C are included with their
+            // unchanged ASTs in topological order, as AstBuilder now does after the DYN-5128 fix.
+            // The LiveRunner force-recompile path gives B and C new PCs higher than A's new PC
+            // so the runtime executes them in the correct order.
+            var modA = TestFrameWork.CreateSubTreeFromCode(guidA, "a = 2;");
+            modA.DeltaComputation = true;
+            var modB = TestFrameWork.CreateSubTreeFromCode(guidB, "b = a + 10;");
+            modB.DeltaComputation = true;
+            var modC = TestFrameWork.CreateSubTreeFromCode(guidC, "c = b + 100;");
+            modC.DeltaComputation = true;
+
+            liveRunner.UpdateGraph(new GraphSyncData(null, null,
+                new List<Subtree> { modA, modB, modC }));
+
+            // Assert: B and C must reflect A's new value, not the stale one
+            AssertValue("a", 2);
+            AssertValue("b", 12);
+            AssertValue("c", 112);
+        }
+
     }
 
 }

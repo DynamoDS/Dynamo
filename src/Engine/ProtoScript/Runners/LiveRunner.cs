@@ -693,19 +693,27 @@ namespace ProtoScript.Runners
         /// <summary>
         /// Returns true if the subtree's AST nodes differ from the cached version.
         /// Used to distinguish structural changes (reconnect) from identity changes (slider value).
+        /// Detects both additions (new nodes not in cache) and removals (cached nodes no longer present).
         /// </summary>
         private bool SubtreeHasActualChanges(Subtree subtree)
         {
             Subtree cached;
             if (!currentSubTreeList.TryGetValue(subtree.GUID, out cached) || cached.AstNodes == null)
                 return subtree.AstNodes != null && subtree.AstNodes.Any();
-            if (subtree.AstNodes == null)
-                return false;
-            foreach (var node in subtree.AstNodes)
-            {
-                if (!cached.AstNodes.Any(prevNode => prevNode.Equals(node))) return true;
-            }
-            return false;
+
+            var newNodes = subtree.AstNodes;
+            var cachedNodes = cached.AstNodes;
+
+            // Null or empty new AST when cache had content means all nodes were removed.
+            if (newNodes == null || !newNodes.Any())
+                return cachedNodes.Any();
+
+            // Different count means nodes were added or removed.
+            if (newNodes.Count() != cachedNodes.Count())
+                return true;
+
+            // Same count: any new node absent from the cache indicates a structural change.
+            return newNodes.Any(node => !cachedNodes.Any(prev => prev.Equals(node)));
         }
 
         /// <summary>
@@ -842,7 +850,7 @@ namespace ProtoScript.Runners
             // twice. To prevent this, force-recompile all unchanged non-input subtrees so they
             // receive new, higher PCs that respect the topological execution order.
             bool anyNonInputActuallyModified = modifiedSubTrees.Any(
-                st => !st.IsInput && st.AstNodes != null && SubtreeHasActualChanges(st));
+                st => !st.IsInput && SubtreeHasActualChanges(st));
 
             for (int n = 0; n < modifiedSubTrees.Count(); ++n)
             {
