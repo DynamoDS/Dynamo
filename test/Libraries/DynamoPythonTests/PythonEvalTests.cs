@@ -314,10 +314,11 @@ clr.AddReference('FFITarget')
 from Autodesk.DesignScript.Geometry import *
 from FFITarget import *
 
+initial = ClassFunctionality.StaticProp
 with ClassFunctionality(999) as cf:
     cf.Set(20)
 
-OUT = cf.StaticProp
+OUT = ClassFunctionality.StaticProp - initial
 ";
             var empty = new ArrayList();
             var output = evaluator(code, empty, empty);
