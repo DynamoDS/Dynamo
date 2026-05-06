@@ -873,7 +873,8 @@ namespace ProtoScript.Runners
                     // at a PC higher than the recompiled upstream node. Also deactivate the old
                     // graph nodes so they do not co-execute with the new ones in ApplyUpdate.
                     if (!modifiedSubTree.IsInput && anyNonInputActuallyModified
-                        && !modifiedASTList.Any() && !modifiedInputAST.Any())
+                        && !modifiedASTList.Any() && !modifiedInputAST.Any()
+                        && !SubtreeHasActualChanges(modifiedSubTree))
                     {
                         Subtree cachedSubTree;
                         if (currentSubTreeList.TryGetValue(modifiedSubTree.GUID, out cachedSubTree)

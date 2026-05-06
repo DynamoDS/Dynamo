@@ -335,16 +335,20 @@ namespace Dynamo.Engine.CodeGeneration
 
             if (context == CompilationContext.DeltaExecution)
             {
-                // If any non-input node has been structurally modified (e.g. a wire reconnect),
-                // the DesignScript compiler will assign it a new, higher PC. Downstream nodes
-                // that are not recompiled keep their old, lower PCs. Because ApplyUpdate iterates
-                // graph nodes in ascending PC order, those downstream nodes execute before the
-                // upstream node that just changed, consuming stale values. The upstream then runs,
-                // changes its output, and marks them dirty again — causing every affected node to
-                // execute twice. To prevent this, compile all non-input downstream nodes whenever a
-                // non-input node is structurally modified. The LiveRunner force-recompile path then
-                // injects their (structurally unchanged) ASTs into the delta with new, higher PCs
-                // that respect topological execution order.
+                // When any non-input node in sortedNodes is marked IsModified, the DesignScript
+                // compiler will assign it a new, higher PC. Other non-input nodes in sortedNodes
+                // (which are already limited to downstream nodes of the modified set by
+                // ComputeModifiedNodes) keep their old, lower PCs. Because ApplyUpdate iterates
+                // graph nodes in ascending PC order, those nodes execute before the modified
+                // upstream node, consuming stale values. The upstream then runs, changes its
+                // output, and marks them dirty again — causing every affected node to execute
+                // twice. To prevent this, when any non-input node is IsModified, include all
+                // non-input nodes from sortedNodes in the compilation pass. The LiveRunner
+                // force-recompile path injects their ASTs into the delta with new, higher PCs,
+                // restoring topological execution order.
+                // Note: IsModified covers any pending re-evaluation, not only structural changes
+                // (e.g. reconnects). Non-structural triggers cause harmless extra compilation;
+                // the LiveRunner skips the force-recompile for subtrees whose AST is unchanged.
                 bool hasModifiedNonInputNode = sortedNodes.Any(n => n.IsModified && !n.IsInputNode);
                 sortedNodes = hasModifiedNonInputNode
                     ? sortedNodes.Where(n => n.IsModified || !n.IsInputNode)

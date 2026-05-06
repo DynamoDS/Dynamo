@@ -6128,22 +6128,40 @@ s = 1;
 
             // Act: simulate reconnect — A changes structurally; B and C are included with their
             // unchanged ASTs in topological order, as AstBuilder now does after the DYN-5128 fix.
-            // The LiveRunner force-recompile path gives B and C new PCs higher than A's new PC
-            // so the runtime executes them in the correct order.
+            // Reuse the same AstNodes object references from the initial add so that
+            // BinaryExpressionNode.Equals returns true in GetModifiedNodes, leaving modifiedASTList
+            // empty for B and C. The LiveRunner force-recompile path then gives B and C new PCs
+            // higher than A's new PC so the runtime executes them in the correct topological order.
             var modA = TestFrameWork.CreateSubTreeFromCode(guidA, "a = 2;");
             modA.DeltaComputation = true;
-            var modB = TestFrameWork.CreateSubTreeFromCode(guidB, "b = a + 10;");
-            modB.DeltaComputation = true;
-            var modC = TestFrameWork.CreateSubTreeFromCode(guidC, "c = b + 100;");
-            modC.DeltaComputation = true;
+            var modB = new Subtree(addedB.AstNodes, guidB) { DeltaComputation = true };
+            var modC = new Subtree(addedC.AstNodes, guidC) { DeltaComputation = true };
 
             liveRunner.UpdateGraph(new GraphSyncData(null, null,
                 new List<Subtree> { modA, modB, modC }));
 
-            // Assert: B and C must reflect A's new value, not the stale one
+            // Assert values: B and C must reflect A's new value, not the stale one.
             AssertValue("a", 2);
             AssertValue("b", 12);
             AssertValue("c", 112);
+
+            // Assert PC ordering: after the reconnect the active graph nodes for A, B, C must
+            // be ordered A.startpc < B.startpc < C.startpc.  If the fix regresses, B and C keep
+            // their original low PCs (below A's new PC) and the runtime executes them before A,
+            // causing double execution.
+            var graphNodes = runtimeCore.DSExecutable.instrStreamList[0].dependencyGraph.GraphList;
+
+            // OriginalAstID == 0 identifies auto-generated infrastructure nodes (null-assignments,
+            // dependency tracking stubs). All user-expression graph nodes have OriginalAstID > 0
+            // because BinaryExpressionNode constructors always set OriginalAstID = ID and
+            // Node.ID = ++sID (starts at 1). Exclude them so PC ordering reflects only the
+            // actual expression evaluation nodes for A, B, and C.
+            int pcA = graphNodes.Where(n => n.guid == guidA && n.isActive && n.OriginalAstID != 0).Min(n => n.updateBlock.startpc);
+            int pcB = graphNodes.Where(n => n.guid == guidB && n.isActive && n.OriginalAstID != 0).Min(n => n.updateBlock.startpc);
+            int pcC = graphNodes.Where(n => n.guid == guidC && n.isActive && n.OriginalAstID != 0).Min(n => n.updateBlock.startpc);
+
+            Assert.Less(pcA, pcB, "Node A must have a lower PC than node B");
+            Assert.Less(pcB, pcC, "Node B must have a lower PC than node C");
         }
 
     }
