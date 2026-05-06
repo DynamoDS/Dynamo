@@ -694,8 +694,6 @@ namespace Dynamo.Tests
         /// causing early failure before assertions. Unblock suite until parity fix.
         /// </summary>
         [Test]
-        [Category("Failure")]
-        [Category("TechDebt")]
         public void Test_With_Exception_IDisposeCheck_Python()
         {
             //This piece of code will generate an exception in PythonScript node
