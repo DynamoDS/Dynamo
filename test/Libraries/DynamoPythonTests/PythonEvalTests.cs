@@ -302,6 +302,28 @@ OUT = s,fs,dk,dv,di
             var output = evaluator(code, empty, empty);
             Assert.AreEqual(expected, output);
         }
+
+        [Test]
+        public void ConcreteType_Returned_For_IDisposableType()
+        {
+            var code = @"
+import sys
+import clr
+clr.AddReference('ProtoGeometry')
+clr.AddReference('FFITarget')
+from Autodesk.DesignScript.Geometry import *
+from FFITarget import *
+
+with ClassFunctionality(999) as cf:
+    cf.Set(20)
+
+OUT = cf.StaticProp
+";
+            var empty = new ArrayList();
+            var output = evaluator(code, empty, empty);
+            Assert.AreEqual(1, output);
+        }
+
         [Test]
         public void ImportedLibrariesReloadedOnNewEvaluation()
         {
