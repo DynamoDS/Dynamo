@@ -321,6 +321,11 @@
                                       Command="{Binding NewHomeWorkspaceCommand}"
                                       Header="{x:Static p:Resources.DynamoViewFileMenuNewHomeWorkSpace}"
                                       InputGestureText="Ctrl + N" />
+                            <MenuItem Name="newFromTemplateMenuItem"
+                                      Command="{Binding ShowOpenTemplateDialogCommand}"
+                                      CommandParameter="Template"
+                                      Header="{x:Static p:Resources.DynamoViewFileMenuOpenTemplate}"
+                                      InputGestureText="Ctrl + T" />
                             <MenuItem Name="newFuncButton"
                                       Command="{Binding ShowNewFunctionDialogCommand}"
                                       Header="{x:Static p:Resources.DynamoViewFileMenuNewCustomNode}"
@@ -331,11 +336,6 @@
                                       Command="{Binding ShowOpenDialogAndOpenResultCommand}"
                                       Header="{x:Static p:Resources.DynamoViewFileMenuOpenFile}"
                                       InputGestureText="Ctrl + O" />
-                            <MenuItem Name="openTemplateMenuItem"
-                                      Command="{Binding ShowOpenTemplateDialogCommand}"
-                                      CommandParameter="Template"
-                                      Header="{x:Static p:Resources.DynamoViewFileMenuOpenTemplate}"
-                                      InputGestureText="Ctrl + T" />
                         </MenuItem>
                         <MenuItem Name="insertButton"
                                   Command="{Binding ShowInsertDialogAndInsertResultCommand}"
