@@ -43,17 +43,28 @@ namespace Dynamo.Tests.Nodes
 
         [Test]
         [Category("UnitTests")]
-        public void ValueTypeIdHandlesNullTypeId()
+        public void ValueTypeIdReturnsPrimitiveTypeId()
         {
             var node = new DefineData();
             CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(node, false);
 
-            // Default selection (bool) has null TypeId
-            var firstType = DSCore.Data.DataNodeDynamoTypeList.First();
-            Assert.IsNull(firstType.TypeId, "First type (bool) should have null TypeId");
-            
-            // Should fall back to SelectedString when TypeId is null
-            Assert.AreEqual(node.SelectedString, node.ValueTypeId);
+            var boolType = DSCore.Data.DataNodeDynamoTypeList.First(t => t.Type == typeof(bool));
+            node.SelectedIndex = DSCore.Data.DataNodeDynamoTypeList.IndexOf(boolType);
+
+            Assert.AreEqual("Bool", node.ValueTypeId);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ValueTypeIdReturnsFloat64ForNumber()
+        {
+            var node = new DefineData();
+            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(node, false);
+
+            var numberType = DSCore.Data.DataNodeDynamoTypeList.First(t => t.Type == typeof(double));
+            node.SelectedIndex = DSCore.Data.DataNodeDynamoTypeList.IndexOf(numberType);
+
+            Assert.AreEqual("Float64", node.ValueTypeId);
         }
     }
 }

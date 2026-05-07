@@ -596,7 +596,7 @@ namespace DSCore
 
             var typeList = new List<DataNodeDynamoType>
             {
-                new(typeof(bool)),
+                new(typeof(bool), typeId: "Bool"),
                 new(typeof(BoundingBox), typeId: "autodesk.geometry:boundingbox3d-1.0.0"),
                 new(typeof(CoordinateSystem), typeId: "autodesk.math:matrix44d-1.0.0"),
                 new(typeof(DSCore.Color), typeId: "dynamo.graphics:color-1.0.0"),
@@ -612,9 +612,9 @@ namespace DSCore
                 polyCurve,
                 polygon,
                 rectangle,
-                new(typeof(System.DateTime)),
-                new(typeof(double), "Number"),
-                new(typeof(long), "Integer"),
+                new(typeof(System.DateTime), typeId: "DateTime"),
+                new(typeof(double), "Number", typeId: "Float64"),
+                new(typeof(long), "Integer", typeId: "Int64"),
                 new(typeof(Location), typeId: "dynamo.data:location-1.0.0"),
                 new(typeof(Mesh), typeId: "dynamo.geometry:mesh-1.0.0"),
                 new(typeof(Plane), typeId: "autodesk.geometry.surface:plane-1.0.0"),
@@ -624,11 +624,11 @@ namespace DSCore
                 cylinder,
                 cuboid,
                 sphere,
-                new(typeof(string)),
+                new(typeof(string), typeId: "String"),
                 surface,
                 new(typeof(NurbsSurface), 1, false, null, surface, "autodesk.geometry.curve:bsurface-1.0.0"),
                 new(typeof(PolySurface), 1, true, null, surface, "dynamo.geometry:sab-1.0.0"),
-                new(typeof(System.TimeSpan)),
+                new(typeof(System.TimeSpan), typeId: "TimeSpan"),
                 new(typeof(UV), typeId: "autodesk.math:uv-1.0.0"),
                 new(typeof(Vector), typeId: "autodesk.math:vector3d-1.0.0")
             };

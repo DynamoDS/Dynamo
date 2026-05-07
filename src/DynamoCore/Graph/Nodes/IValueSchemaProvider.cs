@@ -8,8 +8,9 @@ namespace Dynamo.Graph.Nodes
     public interface IValueSchemaProvider
     {
         /// <summary>
-        /// Canonical type identifier in Forge Data Schema format.
-        /// Examples: "autodesk.math:point3d-1.0.0", "String", "Float64".
+        /// Type identifier matching the Player ValueSchema.TypeId wire format.
+        /// For geometry/complex types: Forge Data Schema URN (e.g. "autodesk.math:point3d-1.0.0").
+        /// For primitives: ForgeDataSchemaType values (e.g. "Float64", "String", "Bool", "Int64").
         /// Returns a non-null type identifier. If the type is not yet determined,
         /// implementations should return their existing non-null fallback value.
         /// </summary>
