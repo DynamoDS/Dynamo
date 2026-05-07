@@ -370,6 +370,7 @@ Dynamo.Core.CustomNodeManager.TryGetCustomNodeData(System.Guid id, string name, 
 Dynamo.Core.CustomNodeManager.TryGetFunctionDefinition(System.Guid id, bool isTestMode, out Dynamo.CustomNodeDefinition definition) -> bool
 Dynamo.Core.CustomNodeManager.TryGetFunctionWorkspace(System.Guid id, bool isTestMode, out Dynamo.Graph.Workspaces.CustomNodeWorkspaceModel ws) -> bool
 Dynamo.Core.CustomNodeManager.TryGetFunctionWorkspace(System.Guid id, bool isTestMode, out Dynamo.Graph.Workspaces.ICustomNodeWorkspaceModel ws) -> bool
+Dynamo.Core.CustomNodeManager.TryGetConflictingPackageCustomNodeInfo(string customNodeDirectory, bool isTestMode, Dynamo.Graph.Workspaces.PackageInfo incomingPackageInfo, out Dynamo.CustomNodeInfo conflictingExistingInfo) -> bool
 Dynamo.Core.IDSDKManager
 Dynamo.Core.IDSDKManager.Dispose() -> void
 Dynamo.Core.IDSDKManager.GetAccessToken() -> string

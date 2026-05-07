@@ -287,7 +287,7 @@ namespace Dynamo.PackageManager
             {
                 Package originalPackage =
                     localPackages.FirstOrDefault(x => x.CustomNodeDirectory == e.InstalledPath);
-                OnConflictingPackageLoaded(originalPackage, package);
+                NotifyUserOfConflictingCustomNodePackage(originalPackage, package);
 
                 package.LoadState.SetAsError(e.Message);
             }
@@ -307,12 +307,37 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Event raised when a custom node package containing conflicting node definition
         /// with an existing package is tried to load.
+        /// Handlers return true if the user accepts replacing the installed package after restart (Yes).
         /// </summary>
-        public event Action<Package, Package> ConflictingCustomNodePackageLoaded;
-        private void OnConflictingPackageLoaded(Package installed, Package conflicting)
+        public event Func<Package, Package, bool> ConflictingCustomNodePackageLoaded;
+
+        private bool OnConflictingPackageLoaded(Package installed, Package conflicting)
         {
             var handler = ConflictingCustomNodePackageLoaded;
-            handler?.Invoke(installed, conflicting);
+            if (handler == null)
+            {
+                return false;
+            }
+
+            var acceptReplace = false;
+            foreach (Func<Package, Package, bool> del in handler.GetInvocationList())
+            {
+                if (del.Invoke(installed, conflicting))
+                {
+                    acceptReplace = true;
+                }
+            }
+
+            return acceptReplace;
+        }
+
+        /// <summary>
+        /// Runs the same conflict UI as a failed custom node load, without mutating package load state.
+        /// </summary>
+        /// <returns>True if the user chose to replace the installed package after restart.</returns>
+        public bool NotifyUserOfConflictingCustomNodePackage(Package installedPackage, Package conflictingPackage)
+        {
+            return OnConflictingPackageLoaded(installedPackage, conflictingPackage);
         }
 
         /// <summary>

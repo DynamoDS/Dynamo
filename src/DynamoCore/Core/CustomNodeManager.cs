@@ -597,6 +597,51 @@ namespace Dynamo.Core
         }
 
         /// <summary>
+        /// Determines whether custom nodes under <paramref name="customNodeDirectory"/> would conflict
+        /// with definitions already registered from a different package (the case that throws
+        /// <see cref="CustomNodePackageLoadException"/> in <see cref="SetNodeInfo"/>).
+        /// </summary>
+        /// <returns>True if any <c>.dyf</c> in the directory shares a function id with an existing
+        /// package member from another package name.</returns>
+        public bool TryGetConflictingPackageCustomNodeInfo(
+            string customNodeDirectory,
+            bool isTestMode,
+            PackageInfo incomingPackageInfo,
+            out CustomNodeInfo conflictingExistingInfo)
+        {
+            conflictingExistingInfo = null;
+            if (string.IsNullOrEmpty(customNodeDirectory) || !Directory.Exists(customNodeDirectory) || incomingPackageInfo == null)
+            {
+                return false;
+            }
+
+            foreach (var file in Directory.EnumerateFiles(customNodeDirectory, "*.dyf"))
+            {
+                CustomNodeInfo newInfo;
+                if (!TryGetInfoFromPath(file, isTestMode, out newInfo))
+                {
+                    continue;
+                }
+
+                CustomNodeInfo existingInfo;
+                if (!NodeInfos.TryGetValue(newInfo.FunctionId, out existingInfo))
+                {
+                    continue;
+                }
+
+                if (existingInfo.IsPackageMember
+                    && existingInfo.PackageInfo != null
+                    && incomingPackageInfo.Name != existingInfo.PackageInfo.Name)
+                {
+                    conflictingExistingInfo = existingInfo;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         ///     Enumerates all of the files in the search path and get's their guids.
         ///     Does not instantiate the nodes.
         /// </summary>
