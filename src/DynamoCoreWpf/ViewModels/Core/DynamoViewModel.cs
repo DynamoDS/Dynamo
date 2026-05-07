@@ -2046,7 +2046,7 @@ namespace Dynamo.ViewModels
             }
             fltr += "|" + string.Format(Resources.FileDialogAllFiles, "*.*");
 
-            fileDialog.FileName = workspace.Name + ext;
+            fileDialog.FileName = (workspace.IsTemplate ? "Untitled" : workspace.Name) + ext;
             fileDialog.AddExtension = true;
             fileDialog.DefaultExt = ext;
             fileDialog.Filter = fltr;
