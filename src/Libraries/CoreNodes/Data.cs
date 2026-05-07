@@ -545,14 +545,8 @@ namespace DSCore
             /// </summary>
             public string Name { get; private set; } = name ?? type.Name;
             /// <summary>
-            /// Wire-format $typeid as emitted by ProtoGeometry's ToJson() / DSCore.Data.StringifyJSON
-            /// (e.g. "autodesk.math:point3d-1.0.0", "autodesk.geometry.curve:bcurve-1.0.0").
-            /// Null for primitive types (bool, string, Number, etc.) that don't use $typeid serialization.
-            /// Must match the identifiers recognised by <see cref="DynamoJObjectToNative"/>
-            /// and the actual $typeid values produced by ProtoGeometry serialization.
-            /// Exposed to external consumers via <see cref="Dynamo.Graph.Nodes.IValueSchemaProvider.ValueTypeId"/>
-            /// (implemented by DefineData), which DynamoPlayer reads to populate
-            /// ValueSchema.TypeId and DynamoMCP uses to resolve JSON Schemas for LLM inputs.
+            /// Wire-format $typeid (e.g. "autodesk.math:point3d-1.0.0").
+            /// Null for primitive types that don't use $typeid serialization.
             /// </summary>
             public string TypeId { get; private set; } = typeId;
             /// <summary>
@@ -605,12 +599,14 @@ namespace DSCore
                 new(typeof(bool)),
                 new(typeof(BoundingBox), typeId: "autodesk.geometry:boundingbox3d-1.0.0"),
                 new(typeof(CoordinateSystem), typeId: "autodesk.math:matrix44d-1.0.0"),
+                new(typeof(DSCore.Color), typeId: "dynamo.graphics:color-1.0.0"),
                 curve,
                 new(typeof(Arc), 1, false, null, curve, "autodesk.geometry.curve:circle-1.0.0"),
                 new(typeof(Circle), 1, false, null, curve, "autodesk.geometry.curve:circle-1.0.0"),
                 new(typeof(Ellipse), 1, false, null, curve, "autodesk.geometry.curve:ellipse-1.0.0"),
                 new(typeof(EllipseArc), 1, false, null, curve, "autodesk.geometry.curve:ellipse-1.0.0"),
                 new(typeof(Helix), 1, false, null, curve, "dynamo.geometry:sab-1.0.0"),
+                new(typeof(System.Drawing.Bitmap), "Image", typeId: "dynamo.graphics:png-1.0.0"),
                 new(typeof(Line), 1, false, null, curve, "autodesk.geometry.curve:line-1.0.0"),
                 new(typeof(NurbsCurve), 1, false, null, curve, "autodesk.geometry.curve:bcurve-1.0.0"),
                 polyCurve,
