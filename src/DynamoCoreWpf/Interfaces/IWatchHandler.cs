@@ -81,7 +81,9 @@ namespace Dynamo.Interfaces
 
                 foreach (var e in keys.Zip(values, (key, val) => new { key, val }))
                 {
-                    node.Children.Add(ProcessThing(e.val, runtimeCore, tag + ":" + e.key, showRawData, callback));
+                    var child = ProcessThing(e.val, runtimeCore, tag + ":" + e.key, showRawData, callback);
+                    child.DictionaryKey = e.key;
+                    node.Children.Add(child);
                 }
 
                 return node;
@@ -93,7 +95,9 @@ namespace Dynamo.Interfaces
 
                 foreach (var e in dict.Keys.Zip(dict.Values, (key, val) => new { key, val }))
                 {
-                    node.Children.Add(ProcessThing(e.val, runtimeCore, tag + ":" + e.key, showRawData, callback));
+                    var child = ProcessThing(e.val, runtimeCore, tag + ":" + e.key, showRawData, callback);
+                    child.DictionaryKey = e.key;
+                    node.Children.Add(child);
                 }
 
                 return node;
@@ -204,7 +208,9 @@ namespace Dynamo.Interfaces
 
                 foreach (var e in keys.Zip(values, (key, value) => new { key, value }))
                 {
-                    node.Children.Add(ProcessThing(e.value, runtimeCore, tag + ":" + e.key, showRawData, callback));
+                    var child = ProcessThing(e.value, runtimeCore, tag + ":" + e.key, showRawData, callback);
+                    child.DictionaryKey = e.key;
+                    node.Children.Add(child);
                 }
 
                 return node;

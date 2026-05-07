@@ -69,7 +69,7 @@ Each skill lives in its own folder with a `SKILL.md` and optionally a `template.
 | [dynamo-onboarding](skills/dynamo-onboarding/SKILL.md) | Learning the Dynamo codebase, architecture briefings, finding where to start on a Jira ticket. | Repo-specific variant |
 | [dynamo-pr-description](skills/dynamo-pr-description/SKILL.md) | Writing PR descriptions matching the Dynamo template. | Repo-specific variant |
 | [dynamo-jira-ticket](skills/dynamo-jira-ticket/SKILL.md) | Creating or refining Jira tickets from bugs, test failures, or feature requests. | Repo-specific variant |
-| [dynamo-skill-writer](skills/dynamo-skill-writer/SKILL.md) | Authoring/updating skills and enforcing sync across Copilot, Cursor, and Claude surfaces. | Repo-specific variant |
+| [dynamo-skill-writer](skills/dynamo-skill-writer/SKILL.md) | Authoring and updating skills; writing high-quality skill instructions; managing sync across Copilot, Cursor, and Claude surfaces. | Repo-specific variant |
 | [dynamo-unit-testing](skills/dynamo-unit-testing/SKILL.md) | Writing NUnit tests following Dynamo patterns. Test classes, setup/teardown, .dyn file testing. | Repo-specific variant |
 | [dynamo-ux-designer](skills/dynamo-ux-designer/SKILL.md) | Planning UX flows and producing Weave-aligned interface designs and mockups. | Repo-specific variant |
 | [dynamo-webview-component-scaffold](skills/dynamo-webview-component-scaffold/SKILL.md) | Scaffolding new Dynamo WebView2 view-extension package repositories. | Repo-specific variant |

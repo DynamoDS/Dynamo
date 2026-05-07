@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -11,7 +9,6 @@ using Dynamo.Nodes;
 using Dynamo.UI;
 using Dynamo.UI.Commands;
 using ProtoCore.Utils;
-using UI.Prompts;
 using Color = System.Windows.Media.Color;
 
 namespace Dynamo.ViewModels
@@ -22,7 +19,7 @@ namespace Dynamo.ViewModels
 
         private DelegateCommand breakConnectionsCommand;
         private DelegateCommand hideConnectionsCommand;
-        private DelegateCommand editPortPropertiesCommand;
+
         private DelegateCommand portMouseLeftButtonOnContextCommand;
 
         private SolidColorBrush portValueMarkerColor = new SolidColorBrush(Color.FromArgb(255, 204, 204, 204));
@@ -279,19 +276,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Used by the 'Edit Port Properties' button in the node output context menu.
-        /// Triggers the Port Properties Panel
-        /// </summary>
-        public DelegateCommand EditPortPropertiesCommand
-        {
-            get
-            {
-                return editPortPropertiesCommand ??
-                       (editPortPropertiesCommand = new DelegateCommand(EditPortProperties)); 
-            }
-        }
-
-        /// <summary>
         /// Used by the 'Break Connections' button in the node output context menu.
         /// Removes any current connections this port has.
         /// </summary>
@@ -338,41 +322,6 @@ namespace Dynamo.ViewModels
                 Analytics.TrackEvent(Actions.Hide, Categories.ConnectorOperations, port.PortType.ToString(), port.Connectors.Count);
             }
             RefreshHideWiresState();
-        }
-
-        /// <summary>
-        /// Used by the 'Edit Port Properties' button in the node output context menu.
-        /// Triggers the Port Properties Panel
-        /// </summary>
-        private void EditPortProperties(object parameter)
-        {
-            var wsViewModel = node.WorkspaceViewModel;
-
-            // Hide the popup, we no longer need it
-            wsViewModel.OnRequestPortContextMenu(ShowHideFlags.Show, this);
-
-            var dialog = new PortPropertiesEditPrompt()
-            {
-                DescriptionInput = { Text = port.ToolTip },
-                nameBox = { Text = port.Name },
-                PortType = PortType.Output,
-                OutPortNames = ListOutportNames(this.NodeViewModel.OutPorts),
-            };
-
-            if (dialog.ShowDialog() != true)
-            {
-                return;
-            }
-
-            port.Name = dialog.PortName;
-            port.ToolTip = dialog.Description;
-
-            RaisePropertyChanged(nameof(PortName));
-        }
-
-        private List<string> ListOutportNames(ObservableCollection<PortViewModel> outPorts)
-        {
-            return outPorts.Where(x => !x.PortName.Equals(this.PortName)).Select(x => x.PortName).ToList();
         }
 
         /// <summary>

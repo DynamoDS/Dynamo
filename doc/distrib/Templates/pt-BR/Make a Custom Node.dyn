@@ -3692,7 +3692,7 @@
       },
       {
         "Id": "0f6aa09a7fb747069992b2c9f878daf8",
-        "Title": "DESCRIÇÃO\n_____________________________________________________ \n\nEste documento ajudará você a se familiarizar com a criação de nós personalizados.\n\nPara manter os scripts do Dynamo organizados e legíveis, recomendamos seguir uma\nestrutura clara durante a criação de gráficos.\n\nLeia mais na página do Dynamo Primer sobre como criar um nó personalizado:\nhttps://primer2.dynamobim.org/6_custom_nodes_and_packages/6-1_custom-nodes/2-creating",
+        "Title": "DESCRIÇÃO\n_____________________________________________________ \n\nEste documento ajudará você a se familiarizar com a criação de nós personalizados.\n\nPara manter os scripts do Dynamo organizados e legíveis, recomendamos seguir uma\nestrutura clara durante a criação de gráficos.\n\nLeia mais na página do Dynamo Primer sobre como criar um nó personalizado:\nhttps://primer2.dynamobim.org/pt-br/6_custom_nodes_and_packages/6-1_custom-nodes/2-creating",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

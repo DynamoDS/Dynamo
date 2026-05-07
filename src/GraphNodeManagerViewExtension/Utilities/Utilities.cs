@@ -8,6 +8,7 @@ using System.Xml;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.Properties;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.GraphNodeManager.Utilities
 {
@@ -47,6 +48,12 @@ namespace Dynamo.GraphNodeManager.Utilities
                     string output = JsonConvert.SerializeObject(exportObject);
 
                     var csv = jsonToCSV(output);
+
+                    if (csv.Count == 0)
+                    {
+                        File.WriteAllText(saveFileDialog.FileName, string.Empty);
+                        return;
+                    }
 
                     //write csv file into file stream
                     File.WriteAllLines(saveFileDialog.FileName, csv);
@@ -95,6 +102,17 @@ namespace Dynamo.GraphNodeManager.Utilities
         /// <returns></returns>
         public static List<string> jsonToCSV(string jsonContent)
         {
+            if (string.IsNullOrWhiteSpace(jsonContent))
+            {
+                return new List<string>();
+            }
+
+            var jsonToken = JToken.Parse(jsonContent);
+            if ((jsonToken is JArray jsonArray && !jsonArray.HasValues) || jsonToken.Type == JTokenType.Null)
+            {
+                return new List<string>();
+            }
+
             XmlNode xml = JsonConvert.DeserializeXmlNode("{records:{record:" + jsonContent + "}}");
             XmlDocument xmldoc = new XmlDocument();
 
@@ -104,6 +122,11 @@ namespace Dynamo.GraphNodeManager.Utilities
             DataSet dataSet = new DataSet();
 
             dataSet.ReadXml(xmlReader);
+            if (dataSet.Tables.Count == 0)
+            {
+                return new List<string>();
+            }
+
             var dataTable = dataSet.Tables[0];
 
             //Datatable to CSV

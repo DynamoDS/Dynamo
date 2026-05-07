@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -172,6 +173,88 @@ namespace PythonNodeModels
             }
             return base.UpdateValueCore(updateValueParams);
         }
+
+        #region SerializeCore/DeserializeCore
+
+        /// <summary>
+        /// Preserves custom input and output port names and tooltips during XML serialization.
+        /// The base NodeModel serialization writes PortInfo elements for input ports;
+        /// this override adds "portName" and "portToolTip" attributes to each of those
+        /// elements and appends OutPortInfo elements for output ports.
+        /// These fields are emitted and consumed for all SaveContext values (Copy, Undo, Save, etc.).
+        /// </summary>
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context);
+
+            // Add portName and portToolTip attributes to each PortInfo element written by NodeModel.SerializeCore.
+            foreach (XmlNode child in element.ChildNodes)
+            {
+                if (child.Name == "PortInfo" && child is XmlElement portInfo)
+                {
+                    var indexAttr = portInfo.GetAttribute("index");
+                    if (int.TryParse(indexAttr, NumberStyles.Integer, CultureInfo.InvariantCulture, out int index)
+                        && index >= 0 && index < InPorts.Count)
+                    {
+                        portInfo.SetAttribute("portName", InPorts[index].Name);
+                        portInfo.SetAttribute("portToolTip", InPorts[index].ToolTip);
+                    }
+                }
+            }
+
+            // Write output port names and tooltips as separate elements (NodeModel does not serialize output PortInfo).
+            for (int i = 0; i < OutPorts.Count; i++)
+            {
+                XmlElement outPortInfo = element.OwnerDocument.CreateElement("OutPortInfo");
+                outPortInfo.SetAttribute("index", i.ToString(CultureInfo.InvariantCulture));
+                outPortInfo.SetAttribute("portName", OutPorts[i].Name);
+                outPortInfo.SetAttribute("portToolTip", OutPorts[i].ToolTip);
+                element.AppendChild(outPortInfo);
+            }
+        }
+
+        /// <summary>
+        /// Restores custom input and output port names after base deserialization has
+        /// recreated the ports with their default names.
+        /// </summary>
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
+        {
+            base.DeserializeCore(nodeElement, context);
+
+            // After base.DeserializeCore, all ports exist with default names and tooltips.
+            // Re-apply any custom values that were serialized.
+            foreach (XmlNode child in nodeElement.ChildNodes)
+            {
+                if (child.Name == "PortInfo" && child is XmlElement portInfo)
+                {
+                    var indexAttr = portInfo.GetAttribute("index");
+                    if (int.TryParse(indexAttr, NumberStyles.Integer, CultureInfo.InvariantCulture, out int index)
+                        && index >= 0 && index < InPorts.Count)
+                    {
+                        if (portInfo.HasAttribute("portName"))
+                            InPorts[index].Name = portInfo.GetAttribute("portName");
+
+                        if (portInfo.HasAttribute("portToolTip"))
+                            InPorts[index].ToolTip = portInfo.GetAttribute("portToolTip");
+                    }
+                }
+                else if (child.Name == "OutPortInfo" && child is XmlElement outPortInfo)
+                {
+                    var indexAttr = outPortInfo.GetAttribute("index");
+                    if (int.TryParse(indexAttr, NumberStyles.Integer, CultureInfo.InvariantCulture, out int outIndex)
+                        && outIndex >= 0 && outIndex < OutPorts.Count)
+                    {
+                        if (outPortInfo.HasAttribute("portName"))
+                            OutPorts[outIndex].Name = outPortInfo.GetAttribute("portName");
+
+                        if (outPortInfo.HasAttribute("portToolTip"))
+                            OutPorts[outIndex].ToolTip = outPortInfo.GetAttribute("portToolTip");
+                    }
+                }
+            }
+        }
+
+        #endregion
 
     }
 

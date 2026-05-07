@@ -507,7 +507,7 @@
         {
           "Id": "6c5113c4d1e84e33961cc481224d9c27",
           "Name": "string",
-          "Description": "\"Dynamo グラフを整った読み取りやすい状態に保つには、明確な構造を使用することを\nお勧めします。\n\n詳細については、Dynamo Primer のグラフ戦略のベスト プラクティスに関するページを参照してください。\nhttps://primer2.dynamobim.org/9_best_practices/1-graph-strategies\"",
+          "Description": "\"Dynamo グラフを整った読み取りやすい状態に保つには、明確な構造を使用することを\nお勧めします。\n\n詳細については、Dynamo Primer のグラフ戦略のベスト プラクティスに関するページを参照してください。\nhttps://primer2.dynamobim.org/ja/9_best_practices/1-graph-strategies\"",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
