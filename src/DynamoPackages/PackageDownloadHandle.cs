@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Dynamo.Core;
+using Dynamo.Logging;
 using Dynamo.Models;
 
 using Greg.Responses;
@@ -98,11 +99,8 @@ namespace Dynamo.PackageManager
 
         /// <summary>
         /// Unzips the downloaded package to a staging directory and parses <c>pkg.json</c>.
-        /// The caller must delete <paramref name="stagingDirectory"/> with
-        /// <see cref="DiscardStagingDirectory"/> when installation is aborted or after
-        /// <see cref="CompleteInstallation"/> (which leaves the staging folder in place — discard afterward).
         /// </summary>
-        public bool TryPrepareInstallation(DynamoModel dynamoModel, out Package pkg, out string stagingDirectory)
+        internal bool TryPrepareInstallation(DynamoModel dynamoModel, out Package pkg, out string stagingDirectory)
         {
             pkg = null;
             stagingDirectory = null;
@@ -120,12 +118,12 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Copies a staged package into the Dynamo packages directory tree and sets <paramref name="pkg"/>.RootDirectory.
+        /// Copies a staged package into the Dynamo packages directory and sets <paramref name="pkg"/>.RootDirectory.
         /// </summary>
         /// <param name="pkg">Package metadata (initially rooted at the staging folder).</param>
         /// <param name="stagingDirectory">Path returned from <see cref="TryPrepareInstallation"/>.</param>
         /// <param name="packagesRootDirectory">Root packages folder (e.g. default or custom package path).</param>
-        public void CompleteInstallation(Package pkg, string stagingDirectory, string packagesRootDirectory)
+        internal void CompleteInstallation(Package pkg, string stagingDirectory, string packagesRootDirectory)
         {
             if (pkg == null)
             {
@@ -155,20 +153,22 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Deletes a staging directory created by <see cref="TryPrepareInstallation"/>.
         /// </summary>
-        public static void DiscardStagingDirectory(string stagingDirectory)
+        internal static void DiscardStagingDirectory(string stagingDirectory, ILogger logger)
         {
             if (string.IsNullOrEmpty(stagingDirectory) || !Directory.Exists(stagingDirectory))
-            {
                 return;
-            }
 
             try
             {
                 Directory.Delete(stagingDirectory, true);
             }
-            catch
+            catch (IOException ex)
             {
-                // Best-effort cleanup; avoid blocking package manager UX on locked files.
+                logger?.Log($"Failed to delete package directory {stagingDirectory}. {ex.Message}");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                logger?.Log($"Failed to delete package directory {stagingDirectory}. {ex.Message}");
             }
         }
 
@@ -185,21 +185,17 @@ namespace Dynamo.PackageManager
             try
             {
                 if (!TryPrepareInstallation(dynamoModel, out pkg, out stagingDirectory))
-                {
                     return false;
-                }
 
                 if (String.IsNullOrEmpty(installDirectory))
-                {
                     installDirectory = dynamoModel.PathManager.DefaultPackagesDirectory;
-                }
 
                 CompleteInstallation(pkg, stagingDirectory, installDirectory);
                 return true;
             }
             finally
             {
-                DiscardStagingDirectory(stagingDirectory);
+                DiscardStagingDirectory(stagingDirectory, dynamoModel.Logger);
             }
         }
 

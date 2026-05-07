@@ -1343,7 +1343,10 @@ You can always redownload the package.</value>
     <value>Failed to load an invalid package.</value>
   </data>
   <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
-    <value>Package installation was cancelled because one or more custom nodes conflict with another installed package.</value>
+    <value>Installation cancelled due to custom node conflict.</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>Restart Dynamo to remove the conflicting package and load this one.</value>
   </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>No node could be found with that Id.</value>

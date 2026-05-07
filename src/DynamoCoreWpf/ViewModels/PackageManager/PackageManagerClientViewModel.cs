@@ -1141,21 +1141,20 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="packageDownloadHandle">package download handle</param>
         /// <param name="downloadPath">package download path</param>
-        internal void SetPackageState(PackageDownloadHandle packageDownloadHandle, string packagesRootDirectory)
+        internal void SetPackageState(PackageDownloadHandle packageDownloadHandle, string downloadPath)
         {
             string stagingDirectory = null;
             try
             {
                 if (!packageDownloadHandle.TryPrepareInstallation(DynamoViewModel.Model, out var dynPkg, out stagingDirectory))
                 {
-                    packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Error;
                     packageDownloadHandle.Error(Resources.MessageInvalidPackage);
                     return;
                 }
 
-                var packagesRoot = string.IsNullOrEmpty(packagesRootDirectory)
+                var packagesRoot = string.IsNullOrEmpty(downloadPath)
                     ? DynamoViewModel.Model.PathManager.DefaultPackagesDirectory
-                    : packagesRootDirectory;
+                    : downloadPath;
 
                 if (Directory.Exists(dynPkg.CustomNodeDirectory))
                 {
@@ -1172,23 +1171,22 @@ namespace Dynamo.ViewModels
 
                         if (installedPkg == null)
                         {
-                            packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Error;
                             packageDownloadHandle.Error(Resources.MessagePackageInstallCancelledDueToCustomNodeConflict);
                             return;
                         }
 
                         var userChoseReplace =
-                            PackageManagerExtension.PackageLoader.NotifyUserOfConflictingCustomNodePackage(installedPkg, dynPkg);
+                            PackageManagerExtension.PackageLoader.OnConflictingPackageLoaded(installedPkg, dynPkg);
 
                         if (!userChoseReplace)
                         {
-                            packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Error;
                             packageDownloadHandle.Error(Resources.MessagePackageInstallCancelledDueToCustomNodeConflict);
                             return;
                         }
 
                         packageDownloadHandle.CompleteInstallation(dynPkg, stagingDirectory, packagesRoot);
                         packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
+                        packageDownloadHandle.ErrorString = Resources.MessagePackageInstallRestartToCompleteCustomNodeReplace;
                         return;
                     }
                 }
@@ -1199,7 +1197,7 @@ namespace Dynamo.ViewModels
             }
             finally
             {
-                PackageDownloadHandle.DiscardStagingDirectory(stagingDirectory);
+                PackageDownloadHandle.DiscardStagingDirectory(stagingDirectory, DynamoViewModel.Model.Logger);
             }
         }
 

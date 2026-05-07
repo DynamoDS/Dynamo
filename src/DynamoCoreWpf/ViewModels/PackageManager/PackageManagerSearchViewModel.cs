@@ -1489,9 +1489,7 @@ namespace Dynamo.PackageManager
         private bool ConflictingCustomNodePackageLoaded(Package installed, Package conflicting)
         {
             if (installed == null || conflicting == null)
-            {
                 return false;
-            }
 
             var message = string.Format(Resources.MessageUninstallCustomNodeToContinue,
                 installed.Name + " " + installed.VersionName, conflicting.Name + " " + conflicting.VersionName);

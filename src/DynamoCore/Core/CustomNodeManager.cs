@@ -603,7 +603,7 @@ namespace Dynamo.Core
         /// </summary>
         /// <returns>True if any <c>.dyf</c> in the directory shares a function id with an existing
         /// package member from another package name.</returns>
-        public bool TryGetConflictingPackageCustomNodeInfo(
+        internal bool TryGetConflictingPackageCustomNodeInfo(
             string customNodeDirectory,
             bool isTestMode,
             PackageInfo incomingPackageInfo,
@@ -611,23 +611,17 @@ namespace Dynamo.Core
         {
             conflictingExistingInfo = null;
             if (string.IsNullOrEmpty(customNodeDirectory) || !Directory.Exists(customNodeDirectory) || incomingPackageInfo == null)
-            {
                 return false;
-            }
 
             foreach (var file in Directory.EnumerateFiles(customNodeDirectory, "*.dyf"))
             {
                 CustomNodeInfo newInfo;
                 if (!TryGetInfoFromPath(file, isTestMode, out newInfo))
-                {
                     continue;
-                }
 
                 CustomNodeInfo existingInfo;
                 if (!NodeInfos.TryGetValue(newInfo.FunctionId, out existingInfo))
-                {
                     continue;
-                }
 
                 if (existingInfo.IsPackageMember
                     && existingInfo.PackageInfo != null
@@ -637,7 +631,6 @@ namespace Dynamo.Core
                     return true;
                 }
             }
-
             return false;
         }
 
