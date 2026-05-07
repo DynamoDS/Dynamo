@@ -4971,6 +4971,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Restart Dynamo to remove the conflicting package..
+        /// </summary>
+        public static string MessagePackageInstallRestartToCompleteCustomNodeReplace {
+            get {
+                return ResourceManager.GetString("MessagePackageInstallRestartToCompleteCustomNodeReplace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This package or one of its dependencies were created for a newer version of Dynamo. It may not work in this version. Do you want to continue?.
         /// </summary>
         public static string MessagePackageNewerDynamo {

@@ -983,7 +983,7 @@ You can always redownload the package.</value>
     <value>Installation cancelled due to custom node conflict.</value>
   </data>
   <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
-    <value>Restart Dynamo to remove the conflicting package and load this one.</value>
+    <value>Restart Dynamo to remove the conflicting package.</value>
   </data>
   <data name="MessageFailedToDelete" xml:space="preserve">
     <value>{0} failed to delete the package.  You may need to delete the package's root directory manually.</value>
