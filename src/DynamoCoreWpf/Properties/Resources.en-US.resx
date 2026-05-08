@@ -4000,7 +4000,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
     <value>_File</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>_Template</value>
+    <value>From Template...</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>Workspaces cannot be saved directly to the Templates folder. Please choose a different folder to save your file.
