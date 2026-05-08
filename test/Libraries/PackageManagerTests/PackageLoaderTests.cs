@@ -668,7 +668,7 @@ namespace Dynamo.PackageManager.Tests
             var zipFileControl = compressor.Zip(new RealDirectoryInfo(new DirectoryInfo(evenOdd2Source)));
             var downloadHandleControl = new PackageDownloadHandle { DownloadPath = zipFileControl.Name };
             Assert.IsTrue(downloadHandleControl.TryPrepareInstallation(CurrentDynamoModel, out var stagedPkgControl, out var stagingDirControl));
-            downloadHandleControl.CompleteInstallation(stagedPkgControl, stagingDirControl, packagesInstallRoot);
+            PackageDownloadHandle.CompleteInstallation(stagedPkgControl, stagingDirControl, packagesInstallRoot);
             PackageDownloadHandle.DiscardStagingDirectory(stagingDirControl, CurrentDynamoModel.Logger);
             Assert.IsTrue(Directory.Exists(committedPath));
             Assert.IsTrue(File.Exists(Path.Combine(committedPath, "pkg.json")));
@@ -728,7 +728,7 @@ namespace Dynamo.PackageManager.Tests
             // User chose Yes, same as ConflictingCustomNodePackageLoaded handler — mark existing for removal after restart
             evenOddInstalled.MarkForUninstall(prefs);
             // Commit to disk
-            downloadHandle.CompleteInstallation(stagedPkg, stagingDir, packagesInstallRoot);
+            PackageDownloadHandle.CompleteInstallation(stagedPkg, stagingDir, packagesInstallRoot);
             PackageDownloadHandle.DiscardStagingDirectory(stagingDir, CurrentDynamoModel.Logger);
 
             var committedPath = Path.Combine(packagesInstallRoot, "EvenOdd2");

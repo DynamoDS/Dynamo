@@ -123,7 +123,7 @@ namespace Dynamo.PackageManager
         /// <param name="pkg">Package metadata (initially rooted at the staging folder).</param>
         /// <param name="stagingDirectory">Path returned from <see cref="TryPrepareInstallation"/>.</param>
         /// <param name="packagesRootDirectory">Root packages folder (e.g. default or custom package path).</param>
-        internal void CompleteInstallation(Package pkg, string stagingDirectory, string packagesRootDirectory)
+        internal static void CompleteInstallation(Package pkg, string stagingDirectory, string packagesRootDirectory)
         {
             if (pkg == null)
             {

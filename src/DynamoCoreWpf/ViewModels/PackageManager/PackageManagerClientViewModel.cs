@@ -1184,14 +1184,14 @@ namespace Dynamo.ViewModels
                             return;
                         }
 
-                        packageDownloadHandle.CompleteInstallation(dynPkg, stagingDirectory, packagesRoot);
+                        PackageDownloadHandle.CompleteInstallation(dynPkg, stagingDirectory, packagesRoot);
                         packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
                         packageDownloadHandle.ErrorString = Resources.MessagePackageInstallRestartToCompleteCustomNodeReplace;
                         return;
                     }
                 }
 
-                packageDownloadHandle.CompleteInstallation(dynPkg, stagingDirectory, packagesRoot);
+                PackageDownloadHandle.CompleteInstallation(dynPkg, stagingDirectory, packagesRoot);
                 PackageManagerExtension.PackageLoader.LoadPackages(new List<Package> { dynPkg });
                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
             }
