@@ -691,16 +691,23 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Compares two AST nodes by textual content rather than object identity.
+        /// Compares two AST nodes by structural content rather than object identity.
         /// BuildAst always creates fresh objects, so reference equality fails even for
-        /// semantically unchanged nodes. ToString() produces a stable, identity-independent
-        /// representation that reflects the actual code the node will generate.
+        /// semantically unchanged nodes. The AssociativeNode subclasses (BinaryExpressionNode,
+        /// IdentifierNode, FunctionCallNode, ArrayNameNode, ...) override Equals() to do
+        /// recursive structural comparison — including replication guides on identifiers,
+        /// which is what distinguishes an IfNode with Auto lacing from one with Longest lacing.
+        ///
+        /// Note: do not use ToString() for this comparison. FunctionCallNode.ToString() returns
+        /// the literal "null" for internal methods (those starting with '%') whose unprefixed
+        /// name doesn't parse as a binary or unary operator (e.g. "%conditionalIf"), which would
+        /// make all IfNode ASTs compare equal regardless of their actual contents.
         /// </summary>
         private static bool AreAstNodesContentEqual(AssociativeNode a, AssociativeNode b)
         {
             if (ReferenceEquals(a, b)) return true;
             if (a == null || b == null) return false;
-            return a.ToString() == b.ToString();
+            return a.Equals(b);
         }
 
         /// <summary>
@@ -940,7 +947,7 @@ namespace ProtoScript.Runners
                 }
                 else
                 {
-                    // No delta computation. 
+                    // No delta computation.
                     // Right now it is only disabled for code block node, but we may
                     // completely disable it. Details about why doing so:
                     // https://github.com/DynamoDS/Dynamo/pull/7282
@@ -1178,7 +1185,7 @@ namespace ProtoScript.Runners
                 bool prevNodeFoundInNewList = false;
                 foreach (AssociativeNode newNode in newASTList)
                 {
-                    if (prevNode.Equals(newNode))
+                    if (AreAstNodesContentEqual(prevNode, newNode))
                     {
                         // prev node still exists in the new list
                         prevNodeFoundInNewList = true;

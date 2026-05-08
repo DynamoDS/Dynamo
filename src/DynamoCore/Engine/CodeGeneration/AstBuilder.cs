@@ -238,7 +238,7 @@ namespace Dynamo.Engine.CodeGeneration
 #endif
 
             var scopedNode = node as ScopedNodeModel;
-            IEnumerable<AssociativeNode> astNodes = 
+            IEnumerable<AssociativeNode> astNodes =
                 scopedNode != null
                     ? scopedNode.BuildAstInScope(inputAstNodes, verboseLogging, this)
                     : node.BuildAst(inputAstNodes, context);
