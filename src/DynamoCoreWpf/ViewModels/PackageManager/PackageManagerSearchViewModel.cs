@@ -1639,7 +1639,7 @@ namespace Dynamo.PackageManager
         {
             SearchResults.CollectionChanged += SearchResultsOnCollectionChanged;
             PackageManagerClientViewModel.Downloads.CollectionChanged += DownloadsOnCollectionChanged;
-            PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.ConflictingCustomNodePackageLoaded +=
+            PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.ConflictingCustomNodePackageResolutionCallback +=
                 ConflictingCustomNodePackageLoaded;
         }
 
@@ -1647,7 +1647,7 @@ namespace Dynamo.PackageManager
         {
             SearchResults.CollectionChanged -= SearchResultsOnCollectionChanged;
             PackageManagerClientViewModel.Downloads.CollectionChanged -= DownloadsOnCollectionChanged;
-            PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.ConflictingCustomNodePackageLoaded -=
+            PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.ConflictingCustomNodePackageResolutionCallback -=
                 ConflictingCustomNodePackageLoaded;
         }
 

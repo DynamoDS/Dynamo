@@ -177,7 +177,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="dynamoModel">Dynamo model</param>
         /// <param name="installDirectory">If specified, overrides Dynamo's default base folder for packages</param>
-        /// <param name="pkg">Metatda parsed from the package</param>
+        /// <param name="pkg">Metadata parsed from the package</param>
         /// <returns>Whether the operation succeeded or not</returns>
         public bool Extract(DynamoModel dynamoModel, string installDirectory, out Package pkg)
         {

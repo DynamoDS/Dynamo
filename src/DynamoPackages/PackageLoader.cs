@@ -307,38 +307,27 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Event raised when a custom node package containing conflicting node definition
         /// with an existing package is tried to load.
-        /// Handlers return true if the user accepts replacing the installed package after restart (Yes).
         /// </summary>
-        public event Func<Package, Package, bool> ConflictingCustomNodePackageLoaded;
+        public event Action<Package, Package> ConflictingCustomNodePackageLoaded;
 
         /// <summary>
-        /// Invokes <see cref="ConflictingCustomNodePackageLoaded"/> (e.g. conflict dialog). Does not change package load state.
+        /// Resolver wchich runs instead of only firing <see cref="ConflictingCustomNodePackageLoaded"/>
+        /// </summary>
+        public Func<Package, Package, bool> ConflictingCustomNodePackageResolutionCallback { get; set;  }
+
+        /// <summary>
+        /// Invokes conflict resolution / notification. Does not change package load state.
         /// </summary>
         /// <returns>True if the user accepts replacing the installed package after restart.</returns>
         internal bool OnConflictingPackageLoaded(Package installed, Package conflicting)
         {
-            var handler = ConflictingCustomNodePackageLoaded;
-            if (handler == null) return false;
-
-            var acceptReplace = false;
-            foreach (Func<Package, Package, bool> del in handler.GetInvocationList())
+            if (ConflictingCustomNodePackageResolutionCallback != null)
             {
-                if (del.Invoke(installed, conflicting))
-                {
-                    acceptReplace = true;
-                }
+                return ConflictingCustomNodePackageResolutionCallback(installed, conflicting);
             }
 
-            return acceptReplace;
-        }
-
-        /// <summary>
-        /// Runs the same conflict UI as a failed custom node load, without mutating package load state.
-        /// </summary>
-        /// <returns>True if the user chose to replace the installed package after restart.</returns>
-        public bool NotifyUserOfConflictingCustomNodePackage(Package installedPackage, Package conflictingPackage)
-        {
-            return OnConflictingPackageLoaded(installedPackage, conflictingPackage);
+            ConflictingCustomNodePackageLoaded?.Invoke(installed, conflicting);
+            return false;
         }
 
         /// <summary>
