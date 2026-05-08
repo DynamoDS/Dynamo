@@ -25,8 +25,25 @@ namespace CoreNodeModels
     [OutPortDescriptions(typeof(Properties.Resources), nameof(Properties.Resources.DefineDataOutputTooltip))]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("Data.DefineData")]
-    public class DefineData : DSDropDownBase
+    public class DefineData : DSDropDownBase, IValueSchemaProvider
     {
+        /// <inheritdoc/>
+        [JsonIgnore]
+        public string ValueTypeId
+        {
+            get
+            {
+                if (SelectedIndex < 0 || SelectedIndex >= Items.Count)
+                    return SelectedString;
+
+                return (Items[SelectedIndex].Item as Data.DataNodeDynamoType)?.TypeId ?? SelectedString;
+            }
+        }
+
+        /// <inheritdoc/>
+        [JsonIgnore]
+        public bool IsListValue => IsList;
+
         private bool isAutoMode = true; // default start with auto-detect 'on'
         private bool isList;
         private string displayValue = Properties.Resources.DefineDataDisplayValueMessage;
