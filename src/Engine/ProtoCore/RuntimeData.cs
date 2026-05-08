@@ -138,13 +138,16 @@ namespace ProtoCore
                 csInstance.UpdateCallSite(classScope, methodName);
                 if (runtimeCore.Options.IsDeltaExecution)
                 {
-                    // Clear warnings for the specific Dynamo node being executed (by GUID).
-                    // Using exprUID is unsafe because unrelated nodes can share the same exprUID
+                    // Clear warnings for the specific Dynamo node being executed (by GUID + exprUID).
+                    // Using exprUID alone is unsafe because unrelated nodes can share the same exprUID
                     // in delta compilation (e.g. force-recompiled downstream nodes), causing one
                     // node's ClearWarningForExpression call to accidentally wipe another node's
-                    // runtime warnings. Fall back to exprUID for internal graph nodes (guid=Empty).
+                    // runtime warnings. Using GUID alone is unsafe when a single Dynamo node compiles
+                    // to multiple AST expressions with distinct exprUIDs — clearing all warnings for
+                    // the GUID would remove a sibling expression's warning before it re-executes.
+                    // Fall back to exprUID for internal graph nodes (guid=Empty).
                     if (!graphNode.guid.Equals(System.Guid.Empty))
-                        runtimeCore.RuntimeStatus.ClearWarningsForGraph(graphNode.guid);
+                        runtimeCore.RuntimeStatus.ClearWarningsForGraphNode(graphNode.guid, graphNode.exprUID);
                     else
                         runtimeCore.RuntimeStatus.ClearWarningForExpression(graphNode.exprUID);
                 }
