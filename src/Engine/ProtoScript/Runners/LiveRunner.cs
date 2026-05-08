@@ -691,9 +691,24 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
+        /// Compares two AST nodes by textual content rather than object identity.
+        /// BuildAst always creates fresh objects, so reference equality fails even for
+        /// semantically unchanged nodes. ToString() produces a stable, identity-independent
+        /// representation that reflects the actual code the node will generate.
+        /// </summary>
+        private static bool AreAstNodesContentEqual(AssociativeNode a, AssociativeNode b)
+        {
+            if (ReferenceEquals(a, b)) return true;
+            if (a == null || b == null) return false;
+            return a.ToString() == b.ToString();
+        }
+
+        /// <summary>
         /// Returns true if the subtree's AST nodes differ from the cached version.
         /// Used to distinguish structural changes (reconnect) from identity changes (slider value).
         /// Detects both additions (new nodes not in cache) and removals (cached nodes no longer present).
+        /// Uses content-based comparison so that freshly compiled but semantically unchanged nodes
+        /// are correctly detected as unmodified.
         /// </summary>
         private bool SubtreeHasActualChanges(Subtree subtree)
         {
@@ -713,7 +728,7 @@ namespace ProtoScript.Runners
                 return true;
 
             // Same count: any new node absent from the cache indicates a structural change.
-            return newNodes.Any(node => !cachedNodes.Any(prev => prev.Equals(node)));
+            return newNodes.Any(node => !cachedNodes.Any(prev => AreAstNodesContentEqual(prev, node)));
         }
 
         /// <summary>
@@ -1062,7 +1077,7 @@ namespace ProtoScript.Runners
                 bool nodeFound = false;
                 foreach (AssociativeNode prevNode in st.AstNodes)
                 {
-                    if (prevNode.Equals(node))
+                    if (AreAstNodesContentEqual(prevNode, node))
                     {
                         nodeFound = true;
                         break;
@@ -1192,7 +1207,7 @@ namespace ProtoScript.Runners
             {
                 foreach (AssociativeNode newNode in newASTList)
                 {
-                    if (prevNode.Equals(newNode))
+                    if (AreAstNodesContentEqual(prevNode, newNode))
                     {
                         existingList.Add(prevNode);
                         break;
