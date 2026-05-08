@@ -2,7 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using Dynamo.Logging;
+using Dynamo.PackageManager.ViewModels;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Properties;
@@ -12,13 +16,20 @@ namespace Dynamo.PackageManager.UI
 {
     /// <summary>
     /// The View layer of the packageManagerExtension.
-    /// Currently its only responsibility is to request the loading of ViewExtensions which it finds in packages.
-    /// In the future packageManager functionality should be moved from DynamoCoreWPF to this ViewExtension.
+    /// Manages PackageManager UI including PackageManagerView and PackageManagerSearchView windows.
     /// </summary>
     public class PackageManagerViewExtension : IViewExtension, IViewExtensionSource, ILayoutSpecSource, INotificationSource
     {
         private readonly List<IViewExtension> requestedExtensions = new List<IViewExtension>();
         private PackageManagerExtension packageManager;
+        private ViewLoadedParams viewLoadedParams;
+        private DynamoViewModel dynamoViewModel;
+        
+        // Package Manager UI state
+        private PackageManagerView packageManagerWindow;
+        private PackageManagerSearchView searchPackagesView;
+        private PackageManagerSearchViewModel pkgSearchVM;
+        private PackageManagerViewModel pkgVM;
         public string Name
         {
             get
@@ -83,10 +94,37 @@ namespace Dynamo.PackageManager.UI
             {
                 packageManager.PackageLoader.PackgeLoaded -= packageLoadedHandler;
             }
+            
+            // Unsubscribe from DynamoViewModel events
+            if (dynamoViewModel != null)
+            {
+                dynamoViewModel.RequestPackageManagerDialog -= OnRequestPackageManagerDialog;
+                dynamoViewModel.RequestPackageManagerSearchDialog -= OnRequestPackageManagerSearchDialog;
+                dynamoViewModel.RequestPackagePublishDialog -= OnRequestPackagePublishDialog;
+            }
+            
+            // Clean up view models
+            pkgSearchVM?.Dispose();
+            pkgVM?.Dispose();
+            
+            // Close windows if open
+            packageManagerWindow?.Close();
+            searchPackagesView?.Close();
         }
 
-        public void Loaded(ViewLoadedParams viewLoadedParams)
+        public void Loaded(ViewLoadedParams p)
         {
+            viewLoadedParams = p;
+            dynamoViewModel = p.DynamoWindow.DataContext as DynamoViewModel;
+            
+            // Subscribe to PackageManager dialog events from DynamoViewModel
+            if (dynamoViewModel != null)
+            {
+                dynamoViewModel.RequestPackageManagerDialog += OnRequestPackageManagerDialog;
+                dynamoViewModel.RequestPackageManagerSearchDialog += OnRequestPackageManagerSearchDialog;
+                dynamoViewModel.RequestPackagePublishDialog += OnRequestPackagePublishDialog;
+            }
+            
             RequestLoadLayoutSpecs(packageManager?.PackageLoader.LocalPackages);
             var packagesToCheck = packageManager?.PackageLoader.LocalPackages;
             if(packagesToCheck != null)
@@ -193,6 +231,149 @@ namespace Dynamo.PackageManager.UI
             
         }
 
+        #region PackageManager UI Event Handlers
+
+        private void OnRequestPackageManagerDialog(object sender, EventArgs e)
+        {
+            if (!DisplayTermsOfUseForAcceptance())
+                return; // Terms of use not accepted.
+
+            InitializePackageManagerViewModels();
+
+            if (packageManagerWindow == null)
+            {
+                if (e is PackageManagerSizeEventArgs sizeArgs)
+                {
+                    pkgVM.Width = sizeArgs.Width;
+                    pkgVM.Height = sizeArgs.Height;
+                }
+
+                packageManagerWindow = new PackageManagerView(viewLoadedParams.DynamoWindow, pkgVM)
+                {
+                    Owner = viewLoadedParams.DynamoWindow,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+
+                dynamoViewModel.Owner = packageManagerWindow;
+                packageManagerWindow.Closed += HandlePackageManagerWindowClosed;
+                packageManagerWindow.Show();
+
+                if (packageManagerWindow.IsLoaded && viewLoadedParams.DynamoWindow.IsLoaded)
+                    packageManagerWindow.Owner = viewLoadedParams.DynamoWindow;
+            }
+
+            packageManagerWindow.Focus();
+            if (e is OpenPackageManagerEventArgs openArgs)
+            {
+                packageManagerWindow.Navigate(openArgs.Tab);
+            }
+
+            pkgSearchVM.RefreshAndSearchAsync();
+        }
+
+        private void OnRequestPackageManagerSearchDialog(object sender, EventArgs e)
+        {
+            if (!DisplayTermsOfUseForAcceptance())
+                return; // Terms of use not accepted.
+
+            var cmd = Analytics.TrackTaskCommandEvent("SearchPackage");
+
+            if (pkgSearchVM == null)
+            {
+                pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
+            }
+            else
+            {
+                pkgSearchVM.InitializeLuceneForPackageManager();
+            }
+
+            if (searchPackagesView == null)
+            {
+                searchPackagesView = new PackageManagerSearchView(pkgSearchVM)
+                {
+                    Owner = viewLoadedParams.DynamoWindow,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+
+                searchPackagesView.Closed += (s, args) =>
+                {
+                    searchPackagesView = null;
+                    Analytics.EndTaskCommandEvent(cmd);
+                };
+                searchPackagesView.Show();
+
+                if (searchPackagesView.IsLoaded && viewLoadedParams.DynamoWindow.IsLoaded)
+                    searchPackagesView.Owner = viewLoadedParams.DynamoWindow;
+            }
+
+            searchPackagesView.Focus();
+            pkgSearchVM.RefreshAndSearchAsync();
+        }
+
+        private void OnRequestPackagePublishDialog(PublishPackageViewModel model)
+        {
+            InitializePackageManagerViewModels();
+
+            if (packageManagerWindow == null)
+            {
+                packageManagerWindow = new PackageManagerView(viewLoadedParams.DynamoWindow, pkgVM)
+                {
+                    Owner = viewLoadedParams.DynamoWindow,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+
+                dynamoViewModel.Owner = packageManagerWindow;
+                packageManagerWindow.Closed += HandlePackageManagerWindowClosed;
+                packageManagerWindow.Show();
+
+                if (packageManagerWindow.IsLoaded && viewLoadedParams.DynamoWindow.IsLoaded)
+                    packageManagerWindow.Owner = viewLoadedParams.DynamoWindow;
+            }
+
+            if (pkgVM != null)
+            {
+                pkgVM.PublishPackageViewModel = model;
+            }
+
+            packageManagerWindow.Focus();
+            packageManagerWindow.Navigate(Resources.PackageManagerPublishTab);
+        }
+
+        private void HandlePackageManagerWindowClosed(object sender, EventArgs e)
+        {
+            packageManagerWindow.Closed -= HandlePackageManagerWindowClosed;
+            packageManagerWindow = null;
+
+            var cmd = Analytics.TrackCommandEvent("PackageManager");
+            cmd.Dispose();
+
+            viewLoadedParams?.DynamoWindow?.Activate();
+        }
+
+        private void InitializePackageManagerViewModels()
+        {
+            if (pkgSearchVM == null)
+            {
+                pkgSearchVM = new PackageManagerSearchViewModel(dynamoViewModel.PackageManagerClientViewModel);
+            }
+
+            if (pkgVM == null)
+            {
+                pkgVM = new PackageManagerViewModel(dynamoViewModel, pkgSearchVM);
+            }
+        }
+
+        private bool DisplayTermsOfUseForAcceptance()
+        {
+            var prefSettings = dynamoViewModel.Model.PreferenceSettings;
+            if (prefSettings.PackageDownloadTouAccepted)
+                return true;
+
+            prefSettings.PackageDownloadTouAccepted = TermsOfUseHelper.ShowTermsOfUseDialog(false, null, viewLoadedParams.DynamoWindow);
+            return prefSettings.PackageDownloadTouAccepted;
+        }
+
+        #endregion
 
     }
 }
