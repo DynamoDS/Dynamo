@@ -1,3 +1,6 @@
+Dynamo.Graph.Nodes.IValueSchemaProvider
+Dynamo.Graph.Nodes.IValueSchemaProvider.IsListValue.get -> bool
+Dynamo.Graph.Nodes.IValueSchemaProvider.ValueTypeId.get -> string
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.EnableUnTrustedLocationsNotifications.get -> bool
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.EnableUnTrustedLocationsNotifications.set -> void
 Dynamo.Models.DynamoModel.IStartConfiguration.EnableUnTrustedLocationsNotifications.get -> bool
