@@ -691,23 +691,32 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Compares two AST nodes by structural content rather than object identity.
+        /// Compares two AST nodes by textual content rather than object identity.
         /// BuildAst always creates fresh objects, so reference equality fails even for
-        /// semantically unchanged nodes. The AssociativeNode subclasses (BinaryExpressionNode,
-        /// IdentifierNode, FunctionCallNode, ArrayNameNode, ...) override Equals() to do
-        /// recursive structural comparison — including replication guides on identifiers,
-        /// which is what distinguishes an IfNode with Auto lacing from one with Longest lacing.
+        /// semantically unchanged nodes. ToString() produces a stable, identity-independent
+        /// representation that reflects the actual code the node will generate.
         ///
-        /// Note: do not use ToString() for this comparison. FunctionCallNode.ToString() returns
-        /// the literal "null" for internal methods (those starting with '%') whose unprefixed
-        /// name doesn't parse as a binary or unary operator (e.g. "%conditionalIf"), which would
-        /// make all IfNode ASTs compare equal regardless of their actual contents.
+        /// ToString() alone is not always sufficient: FunctionCallNode.ToString() returns the
+        /// literal "null" for internal methods (those starting with '%') whose unprefixed name
+        /// doesn't parse as a binary or unary operator (e.g. "%conditionalIf" used by the If
+        /// node), hiding the actual arguments and their replication guides. When the stringified
+        /// form contains "null" — the narrow case where the textual form may be lossy — fall
+        /// back to the structural Equals operator (overridden on each AssociativeNode subclass
+        /// to do recursive content comparison) to confirm the match. ASTs that don't stringify
+        /// to a form containing "null" use only the fast textual comparison.
         /// </summary>
         private static bool AreAstNodesContentEqual(AssociativeNode a, AssociativeNode b)
         {
             if (ReferenceEquals(a, b)) return true;
             if (a == null || b == null) return false;
-            return a.Equals(b);
+            var sa = a.ToString();
+            var sb = b.ToString();
+            if (sa != sb) return false;
+            if (sa.Contains(ProtoCore.DSDefinitions.Keyword.Null))
+            {
+                return a.Equals(b);
+            }
+            return true;
         }
 
         /// <summary>
