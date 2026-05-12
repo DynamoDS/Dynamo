@@ -2181,6 +2181,18 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Resets trust warning state when a preemptively shown popup should be dismissed.
+        /// </summary>
+        /// <param name="trustWarningWasShown">True when this open/insert flow displayed the trust warning before command execution.</param>
+        private void ResetTrustWarningStateIfNeeded(bool trustWarningWasShown)
+        {
+            if (!trustWarningWasShown || FileTrustViewModel == null) return;
+
+            FileTrustViewModel.ShowWarningPopup = false;
+            RunSettings.ForceBlockRun = false;
+        }
+
+        /// <summary>
         /// Open a definition or workspace.
         /// For most cases, parameters variable refers to the file path to open
         /// However, when this command is used in OpenFileDialog, the variable is
@@ -2246,6 +2258,7 @@ namespace Dynamo.ViewModels
 
                 if (trustWarningWasShown)
                 {
+                    // Hide the preemptively shown popup if trust is now satisfied (trusted path or warnings disabled).
                     ShowHideFileTrustWarningIfCurrentWorkspaceTrusted();
                 }
 
@@ -2254,11 +2267,7 @@ namespace Dynamo.ViewModels
             }
             catch (Exception e)
             {
-                if (trustWarningWasShown)
-                {
-                    FileTrustViewModel.ShowWarningPopup = false;
-                    RunSettings.ForceBlockRun = false;
-                }
+                ResetTrustWarningStateIfNeeded(trustWarningWasShown);
 
                 if (!DynamoModel.IsTestMode)
                 {
@@ -2356,11 +2365,7 @@ namespace Dynamo.ViewModels
             }
             catch (Exception e)
             {
-                if (trustWarningWasShown)
-                {
-                    FileTrustViewModel.ShowWarningPopup = false;
-                    RunSettings.ForceBlockRun = false;
-                }
+                ResetTrustWarningStateIfNeeded(trustWarningWasShown);
 
                 if (!DynamoModel.IsTestMode)
                 {
