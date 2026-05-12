@@ -107,6 +107,34 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void OpeningWorkspaceShowsTrustWarningBeforeOpenCommandStarts()
+        {
+            DynamoModel.IsTestMode = false;
+            bool? popupStateWhenOpenStarts = null;
+
+            void OnCommandStarting(DynamoModel.RecordableCommand command)
+            {
+                if (command is DynamoModel.OpenFileCommand)
+                {
+                    popupStateWhenOpenStarts = ViewModel.FileTrustViewModel.ShowWarningPopup;
+                }
+            }
+
+            Model.CommandStarting += OnCommandStarting;
+            try
+            {
+                Open(@"core\CustomNodes\TestAdd.dyn");
+            }
+            finally
+            {
+                Model.CommandStarting -= OnCommandStarting;
+                DynamoModel.IsTestMode = true;
+            }
+
+            Assert.IsTrue(popupStateWhenOpenStarts.GetValueOrDefault(false));
+        }
+
+        [Test]
         public void TestHomeWorkspaceClosedBeforeCustomNode()
         {
             Open(@"core\CustomNodes\TestAdd.dyn");

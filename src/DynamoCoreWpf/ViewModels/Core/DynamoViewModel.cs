@@ -2203,6 +2203,7 @@ namespace Dynamo.ViewModels
             fileContents = string.Empty;
             bool forceManualMode = false;
             bool isTemplate = false;
+            bool trustWarningWasShown = false;
             try
             {
                 if (parameters is Tuple<string, bool> packedParams)
@@ -2229,25 +2230,36 @@ namespace Dynamo.ViewModels
                     && !DynamoModel.IsTestMode
                     && !PreferenceSettings.DisableTrustWarnings
                     && FileTrustViewModel != null;
-                RunSettings.ForceBlockRun = displayTrustWarning;
-                // Execute graph open command
-                ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode, isTemplate));
 
-                // Apply annotation updates based on the preference setting
-                RefreshAnnotationDescriptions();
-
-                // Only show trust warning popop when current opened workspace is homeworkspace and not custom node workspace
-                if (displayTrustWarning && (currentWorkspaceViewModel?.IsHomeSpace ?? false))
+                if (displayTrustWarning)
                 {
-                    // Skip these when opening dyf
                     FileTrustViewModel.AllowOneTimeTrust = false;
                     FileTrustViewModel.DynFileDirectoryName = directoryName;
                     FileTrustViewModel.ShowWarningPopup = true;
                     (HomeSpaceViewModel as HomeWorkspaceViewModel)?.UpdateRunStatusMsgBasedOnStates();
+                    trustWarningWasShown = true;
                 }
+
+                RunSettings.ForceBlockRun = displayTrustWarning;
+                // Execute graph open command
+                ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode, isTemplate));
+
+                if (trustWarningWasShown)
+                {
+                    ShowHideFileTrustWarningIfCurrentWorkspaceTrusted();
+                }
+
+                // Apply annotation updates based on the preference setting
+                RefreshAnnotationDescriptions();
             }
             catch (Exception e)
             {
+                if (trustWarningWasShown)
+                {
+                    FileTrustViewModel.ShowWarningPopup = false;
+                    RunSettings.ForceBlockRun = false;
+                }
+
                 if (!DynamoModel.IsTestMode)
                 {
                     string commandString = String.Format(Resources.MessageErrorOpeningFileGeneral);
@@ -2301,6 +2313,7 @@ namespace Dynamo.ViewModels
             filePath = string.Empty;
             fileContents = string.Empty;
             bool forceManualMode = true;
+            bool trustWarningWasShown = false;
             try
             {
                 if (parameters is Tuple<string, bool> packedParams)
@@ -2321,24 +2334,34 @@ namespace Dynamo.ViewModels
                     && !DynamoModel.IsTestMode
                     && !PreferenceSettings.DisableTrustWarnings
                     && FileTrustViewModel != null;
+
+                if (displayTrustWarning)
+                {
+                    FileTrustViewModel.AllowOneTimeTrust = false;
+                    FileTrustViewModel.DynFileDirectoryName = directoryName;
+                    FileTrustViewModel.ShowWarningPopup = true;
+                    (HomeSpaceViewModel as HomeWorkspaceViewModel)?.UpdateRunStatusMsgBasedOnStates();
+                    trustWarningWasShown = true;
+                }
+
                 RunSettings.ForceBlockRun = displayTrustWarning;
                 // Execute graph open command
                 ExecuteCommand(new DynamoModel.InsertFileCommand(filePath, forceManualMode));
 
                 this.FitViewCommand.Execute(null);
-
-                // Only show trust warning popup when current opened workspace is homeworkspace and not custom node workspace
-                if (displayTrustWarning && (currentWorkspaceViewModel?.IsHomeSpace ?? false))
+                if (trustWarningWasShown)
                 {
-                    // Skip these when opening dyf
-                    FileTrustViewModel.AllowOneTimeTrust = false;
-                    FileTrustViewModel.DynFileDirectoryName = directoryName;
-                    FileTrustViewModel.ShowWarningPopup = true;
-                    (HomeSpaceViewModel as HomeWorkspaceViewModel)?.UpdateRunStatusMsgBasedOnStates();
+                    ShowHideFileTrustWarningIfCurrentWorkspaceTrusted();
                 }
             }
             catch (Exception e)
             {
+                if (trustWarningWasShown)
+                {
+                    FileTrustViewModel.ShowWarningPopup = false;
+                    RunSettings.ForceBlockRun = false;
+                }
+
                 if (!DynamoModel.IsTestMode)
                 {
                     string commandString = String.Format(Resources.MessageErrorOpeningFileGeneral);
