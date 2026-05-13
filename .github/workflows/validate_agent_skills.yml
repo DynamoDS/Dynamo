@@ -31,7 +31,7 @@ jobs:
 
   validate_agent_skill_wrappers:
     name: Validate Agent Skill Wrappers
-    runs-on: windows-2022
+    runs-on: windows-2025-vs2026
     permissions:
       contents: read
     steps:
