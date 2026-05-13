@@ -10,7 +10,7 @@ on:
 jobs:
   build_current:
     name: Build Current
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - name: Checkout Dynamo Repo
         uses: actions/checkout@v6
@@ -47,7 +47,7 @@ jobs:
           key: ${{ github.run_id }}-${{ github.run_attempt }}-current
   build_master:
     name: Build Master
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - name: Checkout Dynamo Repo
         uses: actions/checkout@v6
@@ -84,7 +84,7 @@ jobs:
   bin_diff:
     name: Binary Diff
     needs: [build_current, build_master]
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - name: Restore Current Build
         uses: actions/cache/restore@v5

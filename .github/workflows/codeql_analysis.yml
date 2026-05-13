@@ -14,7 +14,7 @@ on:
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
-    runs-on: windows-latest
+    runs-on: windows-2022
     permissions:
       security-events: write
       packages: read
