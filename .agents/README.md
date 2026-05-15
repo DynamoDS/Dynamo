@@ -88,6 +88,13 @@ Templates are co-located inside the skill folder that uses them:
 | Rule | Scope | Repo scope |
 |------|-------|------------|
 | [dynamo-core-rules](./rules/dynamo-core-rules.md) | C#/.NET coding standards, NUnit, PublicAPI, security, quality checks. | Repo-specific variant |
+| [ci-rules](./rules/ci-rules.md) | Durable GitHub Actions constraints: shell correctness, API auth, action pinning, permissions, and auto-generated content. | Repo-specific variant |
+
+### Knowledge (reference documents and audit findings)
+
+| Document | Contents | Repo scope |
+|----------|----------|------------|
+| [github-actions-audit](./knowledge/github-actions-audit.md) | Full audit of all 18 workflows (2026-04-15): bug inventory with fix snippets, security gaps, consistency/performance/maintainability issues, and a three-phase remediation plan. | Repo-specific variant |
 
 ## Folder Structure
 
@@ -127,7 +134,10 @@ Templates are co-located inside the skill folder that uses them:
 │   └── dynamo-webview-component-scaffold/
 │       └── SKILL.md
 ├── rules/
-│   └── dynamo-core-rules.md
+│   ├── dynamo-core-rules.md
+│   └── ci-rules.md
+├── knowledge/
+│   └── github-actions-audit.md  ← audit findings, fix snippets, remediation plan
 └── README.md                  ← you are here
 ```
 
