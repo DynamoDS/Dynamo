@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Dynamo.Core;
+using Dynamo.Logging;
 using Dynamo.Models;
 
 using Greg.Responses;
@@ -97,49 +98,105 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Extracts and parses the metadata of a downloaded package
+        /// Unzips the downloaded package to a staging directory and parses <c>pkg.json</c>.
         /// </summary>
-        /// <param name="dynamoModel">Dynamo model</param>
-        /// <param name="installDirectory">If specified, overrides Dynamo's default base folder for packages</param>
-        /// <param name="pkg">Metatda parsed from the package</param>
-        /// <returns>Whether the operation succeeded or not</returns>
-        public bool Extract(DynamoModel dynamoModel, string installDirectory, out Package pkg)
+        internal bool TryPrepareInstallation(DynamoModel dynamoModel, out Package pkg, out string stagingDirectory)
         {
+            pkg = null;
+            stagingDirectory = null;
             this.DownloadState = State.Installing;
 
-            // unzip, place files
             var unzipPath = Greg.Utility.FileUtilities.UnZip(DownloadPath);
             if (!Directory.Exists(unzipPath))
             {
                 throw new Exception(Properties.Resources.PackageEmpty);
             }
 
-            // provide handle to installed package 
+            stagingDirectory = unzipPath;
             pkg = Package.FromDirectory(unzipPath, dynamoModel.Logger);
+            return pkg != null;
+        }
 
+        /// <summary>
+        /// Copies a staged package into the Dynamo packages directory and sets <paramref name="pkg"/>.RootDirectory.
+        /// </summary>
+        /// <param name="pkg">Package metadata (initially rooted at the staging folder).</param>
+        /// <param name="stagingDirectory">Path returned from <see cref="TryPrepareInstallation"/>.</param>
+        /// <param name="packagesRootDirectory">Root packages folder (e.g. default or custom package path).</param>
+        internal static void CompleteInstallation(Package pkg, string stagingDirectory, string packagesRootDirectory)
+        {
             if (pkg == null)
             {
-                return false;
+                throw new ArgumentNullException(nameof(pkg));
+            }
+            if (string.IsNullOrEmpty(stagingDirectory))
+            {
+                throw new ArgumentException("Staging directory is required.", nameof(stagingDirectory));
             }
 
-            if (String.IsNullOrEmpty(installDirectory))
-                installDirectory = dynamoModel.PathManager.DefaultPackagesDirectory;
-
-            var installedPath = BuildInstallDirectoryString(installDirectory, pkg.Name);
+            var installedPath = BuildInstallDirectoryString(packagesRootDirectory, pkg.Name);
             Directory.CreateDirectory(installedPath);
 
-            // Now create all of the directories
-            foreach (string dirPath in Directory.GetDirectories(unzipPath, "*", SearchOption.AllDirectories))
-                Directory.CreateDirectory(dirPath.Replace(unzipPath, installedPath));
+            foreach (string dirPath in Directory.GetDirectories(stagingDirectory, "*", SearchOption.AllDirectories))
+            {
+                Directory.CreateDirectory(dirPath.Replace(stagingDirectory, installedPath));
+            }
 
-            // Copy all the files
-            foreach (string newPath in Directory.GetFiles(unzipPath, "*.*", SearchOption.AllDirectories))
-                File.Copy(newPath, newPath.Replace(unzipPath, installedPath));
+            foreach (string newPath in Directory.GetFiles(stagingDirectory, "*.*", SearchOption.AllDirectories))
+            {
+                File.Copy(newPath, newPath.Replace(stagingDirectory, installedPath));
+            }
 
-            // Update root directory to final path
             pkg.RootDirectory = installedPath;
+        }
 
-            return true;
+        /// <summary>
+        /// Deletes a staging directory created by <see cref="TryPrepareInstallation"/>.
+        /// </summary>
+        internal static void DiscardStagingDirectory(string stagingDirectory, ILogger logger)
+        {
+            if (string.IsNullOrEmpty(stagingDirectory) || !Directory.Exists(stagingDirectory))
+                return;
+
+            try
+            {
+                Directory.Delete(stagingDirectory, true);
+            }
+            catch (IOException ex)
+            {
+                logger?.Log($"Failed to delete package directory {stagingDirectory}. {ex.Message}");
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                logger?.Log($"Failed to delete package directory {stagingDirectory}. {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Extracts and parses the metadata of a downloaded package
+        /// </summary>
+        /// <param name="dynamoModel">Dynamo model</param>
+        /// <param name="installDirectory">If specified, overrides Dynamo's default base folder for packages</param>
+        /// <param name="pkg">Metadata parsed from the package</param>
+        /// <returns>Whether the operation succeeded or not</returns>
+        public bool Extract(DynamoModel dynamoModel, string installDirectory, out Package pkg)
+        {
+            string stagingDirectory = null;
+            try
+            {
+                if (!TryPrepareInstallation(dynamoModel, out pkg, out stagingDirectory))
+                    return false;
+
+                if (String.IsNullOrEmpty(installDirectory))
+                    installDirectory = dynamoModel.PathManager.DefaultPackagesDirectory;
+
+                CompleteInstallation(pkg, stagingDirectory, installDirectory);
+                return true;
+            }
+            finally
+            {
+                DiscardStagingDirectory(stagingDirectory, dynamoModel.Logger);
+            }
         }
 
         // cancel, install, redownload
