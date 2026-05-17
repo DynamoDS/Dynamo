@@ -1028,10 +1028,10 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.HorizontalFrameAtParameter(System.Double)">
             <summary>
-            Get a CoordinateSystem with origin at the point at the given parameter
+            Returns a CoordinateSystem at the given parameter on the curve, with its ZAxis aligned to world Z and its YAxis aligned to the curve tangent at that parameter. The XAxis is the cross-product completion (perpendicular to both YAxis and ZAxis).
             </summary>
             <param name="param">The parameter at which to evaluate</param>
-            <returns>The axis-aligned CoordinateSystem at the point</returns>
+            <returns>CoordinateSystem with ZAxis = world Z, YAxis = curve tangent at param</returns>
             <search>frame,axisaligned,aa,coordcurve,framecurve,curveframe,coordoncurve</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.PlaneAtParameter(System.Double)">
