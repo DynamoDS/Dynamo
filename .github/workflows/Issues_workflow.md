@@ -45,8 +45,11 @@ Triage process:
 
 Rules:
 - Use existing repository labels only; do not invent new labels.
-- Keep exactly one type label and one priority label whenever possible:
-  - Remove outdated type/priority labels before adding the final selection.
+- Keep exactly one priority label whenever possible:
+  - Only remove labels that are clearly part of the same priority family as the final selection (for example, `critical`/`high`/`medium`/`low` or `p0`/`p1`/`p2`/`p3`).
+- Apply one type label only when the repository already uses a clearly mutually exclusive generic triage type set.
+  - Only remove an existing type label if it is another label from that same generic type set.
+  - Do **not** remove component, host, product, routing, workflow, or automation-driving labels as part of type cleanup. Labels such as `Revit`, `Advance-Steel`, `Wishlist`, and `NotMLEvaluated` must be preserved unless the issue explicitly indicates they are incorrect and there is clear repository precedent to replace them.
 - If a likely duplicate exists:
   - Add an appropriate duplicate-related label if available.
   - Add a concise comment linking candidate duplicate issues and confidence.
