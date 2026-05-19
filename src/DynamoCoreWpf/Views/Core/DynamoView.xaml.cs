@@ -2365,6 +2365,10 @@ namespace Dynamo.Controls
             if (dynamoViewModel.BackgroundPreviewViewModel.CanNavigateBackground)
             {
                 dynamoViewModel.BackgroundPreviewViewModel.NavigationKeyIsDown = false;
+                // Release any mouse capture held by the 3D preview viewport
+                // (e.g., during a right-click orbit gesture) so the orbit wheel
+                // indicator disappears immediately when returning to graph view.
+                BackgroundPreview?.ReleaseViewportMouseCapture();
                 dynamoViewModel.EscapeCommand.Execute(null);
                 e.Handled = true;
             }
