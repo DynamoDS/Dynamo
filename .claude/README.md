@@ -1,6 +1,6 @@
 # Dynamo Claude Configuration
 
-Skills, rules, and subagents for AI-assisted development in the Dynamo repo.
+Skills and rules for AI-assisted development in the Dynamo repo.
 Canonical source of truth for Claude Code, claude.com, and Copilot (via generated wrappers).
 
 ## Directory structure
