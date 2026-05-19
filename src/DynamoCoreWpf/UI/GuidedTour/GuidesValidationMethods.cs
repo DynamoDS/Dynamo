@@ -697,9 +697,12 @@ namespace Dynamo.Wpf.UI.GuidedTour
             //Once we have the ItemsControl we get the ContentPresenter
             var inputViewModel = inPorts.FirstOrDefault(x => x.PortName == (string)uiAutomationData.Parameters[3]);
             var dependencyObject = itemsControlPort.ItemContainerGenerator.ContainerFromItem(inputViewModel);
-
-
             Grid mainGrid = dependencyObject.ChildOfType<Grid>();
+
+            // ContainerFromItem returns null when the ItemsControl hasn't generated the
+            // container yet (e.g. timing race during guided-tour initialization). Skip the
+            // highlight rather than crash — the tour can continue without it.
+            if (mainGrid == null) return;
 
             if (enableFunction)
             {
