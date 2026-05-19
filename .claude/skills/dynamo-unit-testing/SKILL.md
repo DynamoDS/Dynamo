@@ -14,9 +14,9 @@ description: Write comprehensive NUnit tests for the Dynamo codebase following D
 - Debugging test failures or flaky tests
 
 ## When not to use
-- General coding questions -- use [dynamo-dotnet-expert](../dynamo-dotnet-expert/SKILL.md) instead
-- Architecture questions -- use [dynamo-onboarding](../dynamo-onboarding/SKILL.md) instead
-- PR descriptions -- use [dynamo-pr-description](../dynamo-pr-description/SKILL.md) instead
+- General coding questions -- use dynamo-dotnet-expert instead
+- Architecture questions -- use dynamo-onboarding instead
+- PR descriptions -- use dynamo-pr-description instead
 
 ## Inputs expected
 Test requirements, failing functionality to test, existing code to cover, or test code to review.
@@ -56,4 +56,5 @@ One behavior per test, descriptive names, Arrange-Act-Assert structure.
 - **[quality-checklist.md](./references/quality-checklist.md)** - Quality guidelines, anti-patterns, best practices
 
 **Related Skills:**
-[dynamo-dotnet-expert](../dynamo-dotnet-expert/SKILL.md) • [dynamo-onboarding](../dynamo-onboarding/SKILL.md)
+- dynamo-dotnet-expert
+- dynamo-onboarding

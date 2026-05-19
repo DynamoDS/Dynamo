@@ -7,11 +7,14 @@ Canonical source of truth for Claude Code, claude.com, and Copilot (via generate
 
 ```
 .claude/
+├── settings.json    # Shared Claude configuration tracked in source control
 ├── skills/          # Canonical agent skills (agentskills.io format)
 │   └── <name>/
 │       └── SKILL.md
 ├── rules/           # Always-on coding rules
 │   └── <rule-name>.md
+├── agents/          # Additional tracked agent configuration/assets
+├── agent-memory/    # Tracked shared memory/context files
 └── README.md        # This file
 ```
 
