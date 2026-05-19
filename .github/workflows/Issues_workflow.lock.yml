@@ -63,7 +63,7 @@ run-name: "Issue Workflow"
 
 jobs:
   activation:
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-24.04
     permissions:
       actions: read
       contents: read
