@@ -14,7 +14,7 @@ description: Navigate the Dynamo codebase and produce architecture briefings. Us
 
 ## When not to use
 
-- Writing or reviewing C# code -- use [dynamo-dotnet-expert](../dynamo-dotnet-expert/SKILL.md).
+- Writing or reviewing C# code -- use dynamo-dotnet-expert.
 - Architecture / onboarding for DynamoMCP -- that lives in the DynamoMCP repo.
 
 ## Inputs expected

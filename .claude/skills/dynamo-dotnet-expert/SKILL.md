@@ -15,9 +15,9 @@ description: Write and review C#/.NET code in Dynamo following Dynamo coding sta
 
 ## When not to use
 
-- Writing NUnit tests -- use [dynamo-unit-testing](../dynamo-unit-testing/SKILL.md) instead.
-- Architecture / onboarding questions -- use [dynamo-onboarding](../dynamo-onboarding/SKILL.md) instead.
-- PR descriptions -- use [dynamo-pr-description](../dynamo-pr-description/SKILL.md) instead.
+- Writing NUnit tests -- use dynamo-unit-testing instead.
+- Architecture / onboarding questions -- use dynamo-onboarding instead.
+- PR descriptions -- use dynamo-pr-description instead.
 
 ## Inputs expected
 
@@ -94,4 +94,4 @@ Comments explain *why*, not what.
 ---
 
 **Related Skills:**
-[dynamo-unit-testing](../dynamo-unit-testing/SKILL.md) • [dynamo-onboarding](../dynamo-onboarding/SKILL.md) • [dynamo-pr-description](../dynamo-pr-description/SKILL.md)
+dynamo-unit-testing • dynamo-onboarding • dynamo-pr-description
