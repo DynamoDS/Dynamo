@@ -115,6 +115,15 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void CanOpenTemplateTupleWithValidPath()
+        {
+            var examplePath = Path.Combine(SampleDirectory, @"en-US\Basics\Basics_Basic01.dyn");
+            var openParams = Tuple.Create(examplePath, false, true);
+
+            Assert.IsTrue(ViewModel.OpenCommand.CanExecute(openParams));
+        }
+
+        [Test]
         public void OpeningXMLWorkspaceShouldSetDeterministicId()
         {
             var ws = OpenWorkspaceFromSampleFile();
