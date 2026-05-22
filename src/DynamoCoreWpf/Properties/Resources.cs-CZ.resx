@@ -3235,6 +3235,12 @@ Tato umístění můžete spravovat v části Předvolby -&gt; Zabezpečení.</v
   <data name="PreferencesViewEnableNotificationCenter" xml:space="preserve">
     <value>Přijímat oznámení</value>
   </data>
+  <data name="PreferencesViewEnableAutoSave" xml:space="preserve">
+    <value>Enable AutoSave</value>
+  </data>
+  <data name="PreferencesViewAutoSaveTooltip" xml:space="preserve">
+    <value>Automatically save your graph to its original file after a period of inactivity. Only applies to graphs that have already been saved to disk.</value>
+  </data>
   <data name="PreferencesViewNotificationCenter" xml:space="preserve">
     <value>Centrum upozornění</value>
   </data>
