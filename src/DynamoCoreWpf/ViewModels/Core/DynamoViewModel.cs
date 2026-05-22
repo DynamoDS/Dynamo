@@ -75,6 +75,10 @@ namespace Dynamo.ViewModels
         private string dynamoMLDataPath = string.Empty;
         private const string dynamoMLDataFileName = "DynamoMLDataPipeline.json";
 
+        private const int AutoSaveDebounceMs = 30_000;
+        private readonly Dictionary<Guid, ActionDebouncer> autoSaveDebouncers = new Dictionary<Guid, ActionDebouncer>();
+        private readonly Dictionary<Guid, PropertyChangedEventHandler> autoSaveHandlers = new Dictionary<Guid, PropertyChangedEventHandler>();
+
         private bool onlineAccess = true;
         //2px tolerance range for node filtering during Home and End key press
         private readonly int tolerance = 2;
@@ -877,6 +881,8 @@ namespace Dynamo.ViewModels
             var homespaceViewModel = new HomeWorkspaceViewModel(model.CurrentWorkspace as HomeWorkspaceModel, this);
             workspaces.Add(homespaceViewModel);
             currentWorkspaceViewModel = homespaceViewModel;
+
+            SubscribeAutoSaveForWorkspace(model.CurrentWorkspace);
 
             model.WorkspaceAdded += WorkspaceAdded;
             model.WorkspaceRemoved += WorkspaceRemoved;
@@ -1882,6 +1888,8 @@ namespace Dynamo.ViewModels
 
         private void WorkspaceAdded(WorkspaceModel item)
         {
+            SubscribeAutoSaveForWorkspace(item);
+
             if (item is HomeWorkspaceModel)
             {
                 var newVm = new HomeWorkspaceViewModel(item as HomeWorkspaceModel, this);
@@ -1915,6 +1923,8 @@ namespace Dynamo.ViewModels
 
         private void WorkspaceRemoved(WorkspaceModel item)
         {
+            UnsubscribeAutoSaveForWorkspace(item);
+
             var viewModel = workspaces.First(x => x.Model == item);
             if (currentWorkspaceViewModel == viewModel)
                 if(currentWorkspaceViewModel != null)
@@ -1923,6 +1933,106 @@ namespace Dynamo.ViewModels
                 }
                 currentWorkspaceViewModel = null;
             workspaces.Remove(viewModel);
+        }
+
+        /// <summary>
+        /// Subscribes to the workspace's <see cref="WorkspaceModel.PropertyChanged"/> event so that
+        /// AutoSave can be triggered when <c>HasUnsavedChanges</c> becomes true. A per-workspace
+        /// <see cref="ActionDebouncer"/> coalesces rapid edits into a single save after a period of inactivity.
+        /// </summary>
+        private void SubscribeAutoSaveForWorkspace(WorkspaceModel workspace)
+        {
+            if (workspace == null || autoSaveHandlers.ContainsKey(workspace.Guid))
+            {
+                return;
+            }
+
+            var debouncer = new ActionDebouncer(Model.Logger);
+            autoSaveDebouncers[workspace.Guid] = debouncer;
+
+            var workspaceGuid = workspace.Guid;
+            PropertyChangedEventHandler handler = (sender, e) =>
+            {
+                if (e.PropertyName != nameof(WorkspaceModel.HasUnsavedChanges))
+                {
+                    return;
+                }
+
+                if (sender is not WorkspaceModel ws)
+                {
+                    return;
+                }
+
+                if (!ws.HasUnsavedChanges)
+                {
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(ws.FileName))
+                {
+                    return;
+                }
+
+                if (!PreferenceSettings.EnableAutoSave)
+                {
+                    return;
+                }
+
+                debouncer.Debounce(AutoSaveDebounceMs, () => TriggerAutoSave(workspaceGuid));
+            };
+
+            autoSaveHandlers[workspace.Guid] = handler;
+            workspace.PropertyChanged += handler;
+        }
+
+        /// <summary>
+        /// Cancels and disposes the per-workspace AutoSave debouncer and detaches the property-changed handler.
+        /// Called when a workspace is removed so that no stale save fires after close.
+        /// </summary>
+        private void UnsubscribeAutoSaveForWorkspace(WorkspaceModel workspace)
+        {
+            if (workspace == null)
+            {
+                return;
+            }
+
+            if (autoSaveHandlers.TryGetValue(workspace.Guid, out var handler))
+            {
+                workspace.PropertyChanged -= handler;
+                autoSaveHandlers.Remove(workspace.Guid);
+            }
+
+            if (autoSaveDebouncers.TryGetValue(workspace.Guid, out var debouncer))
+            {
+                debouncer.Dispose();
+                autoSaveDebouncers.Remove(workspace.Guid);
+            }
+        }
+
+        /// <summary>
+        /// Resolves the workspace by GUID and writes it to its current <see cref="WorkspaceModel.FileName"/>
+        /// using <see cref="SaveContext.AutoSave"/>. Re-reads <c>FileName</c> at trigger time so that a Save As
+        /// performed during the debounce window writes to the new path.
+        /// </summary>
+        private void TriggerAutoSave(Guid workspaceGuid)
+        {
+            var workspace = Model.Workspaces.FirstOrDefault(w => w.Guid == workspaceGuid);
+            if (workspace == null)
+            {
+                return;
+            }
+
+            if (!PreferenceSettings.EnableAutoSave)
+            {
+                return;
+            }
+
+            if (string.IsNullOrEmpty(workspace.FileName))
+            {
+                return;
+            }
+
+            SaveAs(workspaceGuid, workspace.FileName, isBackup: false, SaveContext.AutoSave);
         }
 
         private void OnRuleEvaluationResultsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -4662,6 +4772,14 @@ namespace Dynamo.ViewModels
             {
                 wsvm.Dispose();
             }
+
+            foreach (var debouncer in autoSaveDebouncers.Values)
+            {
+                debouncer.Dispose();
+            }
+            autoSaveDebouncers.Clear();
+            autoSaveHandlers.Clear();
+
             ToastManager?.CloseRealTimeInfoWindow();
 
             model.ShutDown(shutdownParams.ShutdownHost);
