@@ -4,3 +4,4 @@ Dynamo.Graph.Nodes.IValueSchemaProvider.ValueTypeId.get -> string
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.EnableUnTrustedLocationsNotifications.get -> bool
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.EnableUnTrustedLocationsNotifications.set -> void
 Dynamo.Models.DynamoModel.IStartConfiguration.EnableUnTrustedLocationsNotifications.get -> bool
+Dynamo.Graph.SaveContext.AutoSave = 7 -> Dynamo.Graph.SaveContext
