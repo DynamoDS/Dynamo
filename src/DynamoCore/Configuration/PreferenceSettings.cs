@@ -73,6 +73,7 @@ namespace Dynamo.Configuration
         private double defaultScaleFactor;
         private bool disableTrustWarnings = false;
         private bool isNotificationCenterEnabled;
+        private bool isAutoSaveEnabled;
         private bool isEnablePersistExtensionsEnabled;
         private bool isAutoSyncDocumentBrowser = true;
         private bool isStaticSplashScreenEnabled;
@@ -779,6 +780,23 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
+        /// This defines if user wants to enable AutoSave: automatically save edited graphs
+        /// to their original file on disk after a period of inactivity. The default value is false.
+        /// </summary>
+        public bool EnableAutoSave
+        {
+            get
+            {
+                return isAutoSaveEnabled;
+            }
+            set
+            {
+                isAutoSaveEnabled = value;
+                RaisePropertyChanged(nameof(EnableAutoSave));
+            }
+        }
+
+        /// <summary>
         /// This defines if user wants the Extensions settings to persist across sessions.
         /// </summary>
         public bool EnablePersistExtensions
@@ -1099,6 +1117,7 @@ namespace Dynamo.Configuration
             MLRecommendationNumberOfResults = 10;
             HideAutocompleteMethodOptions = false;
             EnableNotificationCenter = true;
+            EnableAutoSave = false;
             isStaticSplashScreenEnabled = true;
             isTimeStampIncludedInExportFilePath = true;
             DefaultPythonEngine = string.Empty;

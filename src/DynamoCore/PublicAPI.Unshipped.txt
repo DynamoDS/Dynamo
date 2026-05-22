@@ -5,3 +5,5 @@ Dynamo.Models.DynamoModel.DefaultStartConfiguration.EnableUnTrustedLocationsNoti
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.EnableUnTrustedLocationsNotifications.set -> void
 Dynamo.Models.DynamoModel.IStartConfiguration.EnableUnTrustedLocationsNotifications.get -> bool
 Dynamo.Graph.SaveContext.AutoSave = 7 -> Dynamo.Graph.SaveContext
+Dynamo.Configuration.PreferenceSettings.EnableAutoSave.get -> bool
+Dynamo.Configuration.PreferenceSettings.EnableAutoSave.set -> void
