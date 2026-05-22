@@ -1740,5 +1740,135 @@ namespace Dynamo.Tests
             Assert.AreEqual("65b395b9874b9d82e088093f30234c496704006030ecf35471404f62b62a6442", checksumString);
         }
         #endregion
+
+        #region AutoSave
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenAutoSaveEnabledAndWorkspaceIsDirtyAndHasFileNameThenSaveIsCalledAfterDebounce()
+        {
+            ViewModel.Model.PreferenceSettings.EnableAutoSave = true;
+
+            var workspace = ViewModel.Model.CurrentWorkspace;
+            var savePath = GetNewFileNameOnTempPath("dyn");
+            workspace.Save(savePath);
+            Assert.IsTrue(File.Exists(savePath));
+
+            var originalTimestamp = File.GetLastWriteTimeUtc(savePath);
+            // Make the on-disk timestamp distinct from the autosave write.
+            File.SetLastWriteTimeUtc(savePath, originalTimestamp.AddSeconds(-5));
+
+            workspace.HasUnsavedChanges = true;
+            Assert.IsTrue(workspace.HasUnsavedChanges);
+
+            ViewModel.TriggerAutoSave(workspace.Guid);
+
+            Assert.IsTrue(File.Exists(savePath));
+            Assert.IsFalse(workspace.HasUnsavedChanges);
+            Assert.Greater(File.GetLastWriteTimeUtc(savePath), originalTimestamp.AddSeconds(-5));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenAutoSaveEnabledAndWorkspaceHasNoFileNameThenSaveIsNotCalled()
+        {
+            ViewModel.Model.PreferenceSettings.EnableAutoSave = true;
+
+            var workspace = ViewModel.Model.CurrentWorkspace;
+            Assert.IsTrue(string.IsNullOrEmpty(workspace.FileName));
+
+            var savingFired = false;
+            Action<SaveContext> handler = _ => savingFired = true;
+            workspace.WorkspaceSaving += handler;
+            try
+            {
+                workspace.HasUnsavedChanges = true;
+                ViewModel.TriggerAutoSave(workspace.Guid);
+
+                Assert.IsFalse(savingFired);
+            }
+            finally
+            {
+                workspace.WorkspaceSaving -= handler;
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenAutoSaveEnabledAndSaveFiredThenSaveContextIsAutoSave()
+        {
+            ViewModel.Model.PreferenceSettings.EnableAutoSave = true;
+
+            var workspace = ViewModel.Model.CurrentWorkspace;
+            var savePath = GetNewFileNameOnTempPath("dyn");
+            workspace.Save(savePath);
+
+            SaveContext? capturedContext = null;
+            Action<SaveContext> handler = ctx => capturedContext = ctx;
+            workspace.WorkspaceSaving += handler;
+            try
+            {
+                workspace.HasUnsavedChanges = true;
+                ViewModel.TriggerAutoSave(workspace.Guid);
+
+                Assert.IsTrue(capturedContext.HasValue);
+                Assert.AreEqual(SaveContext.AutoSave, capturedContext.Value);
+            }
+            finally
+            {
+                workspace.WorkspaceSaving -= handler;
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenAutoSaveDisabledAndWorkspaceIsDirtyThenSaveIsNotCalled()
+        {
+            ViewModel.Model.PreferenceSettings.EnableAutoSave = false;
+
+            var workspace = ViewModel.Model.CurrentWorkspace;
+            var savePath = GetNewFileNameOnTempPath("dyn");
+            workspace.Save(savePath);
+
+            workspace.HasUnsavedChanges = true;
+
+            var savingFired = false;
+            Action<SaveContext> handler = _ => savingFired = true;
+            workspace.WorkspaceSaving += handler;
+            try
+            {
+                ViewModel.TriggerAutoSave(workspace.Guid);
+
+                Assert.IsFalse(savingFired);
+                Assert.IsTrue(workspace.HasUnsavedChanges);
+            }
+            finally
+            {
+                workspace.WorkspaceSaving -= handler;
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenWorkspaceRemovedThenAutoSaveDebouncerIsDisposed()
+        {
+            var funcguid = GuidUtility.Create(GuidUtility.UrlNamespace, "AutoSaveDebouncerDisposedTest");
+            ViewModel.ExecuteCommand(new DynamoModel.CreateCustomNodeCommand(funcguid, "AutoSaveNode", "Custom Nodes", "", true));
+            ViewModel.FocusCustomNodeWorkspace(funcguid);
+
+            var customNodeWorkspace = ViewModel.CurrentSpace;
+            Assert.IsTrue(customNodeWorkspace is CustomNodeWorkspaceModel);
+            var workspaceGuid = customNodeWorkspace.Guid;
+
+            Assert.IsTrue(ViewModel.autoSaveDebouncers.ContainsKey(workspaceGuid));
+            Assert.IsTrue(ViewModel.autoSaveHandlers.ContainsKey(workspaceGuid));
+
+            ViewModel.Model.RemoveWorkspace(customNodeWorkspace);
+
+            Assert.IsFalse(ViewModel.autoSaveDebouncers.ContainsKey(workspaceGuid));
+            Assert.IsFalse(ViewModel.autoSaveHandlers.ContainsKey(workspaceGuid));
+        }
+
+        #endregion
     }
 }

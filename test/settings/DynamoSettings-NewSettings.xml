@@ -86,6 +86,7 @@
   <HideAutocompleteMethodOptions>true</HideAutocompleteMethodOptions>
   <IsAutoSyncDocumentBrowser>false</IsAutoSyncDocumentBrowser>
   <EnableNotificationCenter>false</EnableNotificationCenter>
+  <EnableAutoSave>true</EnableAutoSave>
   <EnableStaticSplashScreen>false</EnableStaticSplashScreen>
   <IsMLAutocompleteTOUApproved>false</IsMLAutocompleteTOUApproved>
   <IsTimeStampIncludedInExportFilePath>false</IsTimeStampIncludedInExportFilePath>

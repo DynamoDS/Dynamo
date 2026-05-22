@@ -187,6 +187,29 @@ namespace Dynamo.Tests.Configuration
 
         [Test]
         [Category("UnitTests")]
+        public void WhenDefaultSettingsThenAutoSaveIsDisabled()
+        {
+            var settings = new PreferenceSettings();
+
+            Assert.IsFalse(settings.EnableAutoSave);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenSettingsSavedAndLoadedThenAutoSaveRoundTrips()
+        {
+            var tempPath = GetNewFileNameOnTempPath(".xml");
+
+            var settings = new PreferenceSettings { EnableAutoSave = true };
+            settings.Save(tempPath);
+
+            var loaded = PreferenceSettings.Load(tempPath);
+
+            Assert.IsTrue(loaded.EnableAutoSave);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void TestMigrateStdLibTokenToBuiltInToken()
         {
             string settingDirectory = Path.Combine(TestDirectory, "settings");

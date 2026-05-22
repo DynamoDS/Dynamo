@@ -75,9 +75,9 @@ namespace Dynamo.ViewModels
         private string dynamoMLDataPath = string.Empty;
         private const string dynamoMLDataFileName = "DynamoMLDataPipeline.json";
 
-        private const int AutoSaveDebounceMs = 30_000;
-        private readonly Dictionary<Guid, ActionDebouncer> autoSaveDebouncers = new Dictionary<Guid, ActionDebouncer>();
-        private readonly Dictionary<Guid, PropertyChangedEventHandler> autoSaveHandlers = new Dictionary<Guid, PropertyChangedEventHandler>();
+        internal const int AutoSaveDebounceMs = 30_000;
+        internal readonly Dictionary<Guid, ActionDebouncer> autoSaveDebouncers = new Dictionary<Guid, ActionDebouncer>();
+        internal readonly Dictionary<Guid, PropertyChangedEventHandler> autoSaveHandlers = new Dictionary<Guid, PropertyChangedEventHandler>();
 
         private bool onlineAccess = true;
         //2px tolerance range for node filtering during Home and End key press
@@ -2014,7 +2014,7 @@ namespace Dynamo.ViewModels
         /// using <see cref="SaveContext.AutoSave"/>. Re-reads <c>FileName</c> at trigger time so that a Save As
         /// performed during the debounce window writes to the new path.
         /// </summary>
-        private void TriggerAutoSave(Guid workspaceGuid)
+        internal void TriggerAutoSave(Guid workspaceGuid)
         {
             var workspace = Model.Workspaces.FirstOrDefault(w => w.Guid == workspaceGuid);
             if (workspace == null)
