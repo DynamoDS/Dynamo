@@ -1117,6 +1117,23 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Controls the IsChecked property in the "Enable AutoSave" toggle button
+        /// in the Preferences > Backup section.
+        /// </summary>
+        public bool AutoSaveIsChecked
+        {
+            get
+            {
+                return preferenceSettings.EnableAutoSave;
+            }
+            set
+            {
+                preferenceSettings.EnableAutoSave = value;
+                RaisePropertyChanged(nameof(AutoSaveIsChecked));
+            }
+        }
+
+        /// <summary>
         /// Controls the IsChecked property in the "Extensions" toggle button, to enable persisted extensions, that will remember
         /// extensions setting as per the last session.
         /// </summary>

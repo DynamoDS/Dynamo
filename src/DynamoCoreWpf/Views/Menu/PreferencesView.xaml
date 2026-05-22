@@ -579,6 +579,23 @@
                                           IsExpanded="{Binding PreferencesTabs[General].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=BackupSettingsExpander}"
                                           Header="{x:Static p:Resources.PreferencesViewGeneralSettingsBackup}">
                                             <StackPanel x:Name="BackupSettingsPanel">
+                                                <!--AutoSave toggle-->
+                                                <StackPanel Orientation="Horizontal" Margin="0,8,0,8">
+                                                    <ToggleButton Name="AutoSaveToggle"
+                                                                  Width="{StaticResource ToggleButtonWidth}"
+                                                                  Height="{StaticResource ToggleButtonHeight}"
+                                                                  VerticalAlignment="Center"
+                                                                  IsChecked="{Binding Path=AutoSaveIsChecked}"
+                                                                  Style="{StaticResource EllipseToggleButton1}">
+                                                        <ToggleButton.ToolTip>
+                                                            <ToolTip Content="{x:Static p:Resources.PreferencesViewAutoSaveTooltip}" Style="{StaticResource GenericToolTipLight}"/>
+                                                        </ToggleButton.ToolTip>
+                                                    </ToggleButton>
+                                                    <Label Content="{x:Static p:Resources.PreferencesViewEnableAutoSave}"
+                                                           Margin="10,0,0,0"
+                                                           VerticalAlignment="Center"
+                                                           Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                                </StackPanel>
                                                 <Grid HorizontalAlignment="Stretch">
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="Auto" />

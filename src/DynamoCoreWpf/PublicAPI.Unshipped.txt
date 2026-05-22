@@ -26,6 +26,8 @@ Dynamo.ViewModels.DynamoViewModel.PythonEngineUpgradeToastRequested -> System.Ac
 Dynamo.ViewModels.DynamoViewModel.ToastManager.get -> Dynamo.Wpf.UI.ToastManager
 Dynamo.ViewModels.DynamoViewModel.ToastManager.set -> void
 Dynamo.ViewModels.DynamoViewModel.ShowPythonEngineUpgradeCanvasToast(string message, bool stayOpen = true, string filePath = null) -> void
+Dynamo.ViewModels.PreferencesViewModel.AutoSaveIsChecked.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.AutoSaveIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.AutoSyncDocumentBrowserIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.AutoSyncDocumentBrowserIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowPythonAutoMigrationNotificationIsChecked.get -> bool
