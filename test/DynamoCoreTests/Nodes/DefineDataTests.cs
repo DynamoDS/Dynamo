@@ -10,6 +10,7 @@ namespace Dynamo.Tests.Nodes
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
+            libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
         }
@@ -37,6 +38,7 @@ namespace Dynamo.Tests.Nodes
         public void ValueTypeIdSafeWhenNoSelection()
         {
             var node = new DefineData();
+            node.SelectedIndex = -1;
             Assert.DoesNotThrow(() => { var _ = node.ValueTypeId; });
             Assert.AreEqual(node.SelectedString, node.ValueTypeId);
         }
