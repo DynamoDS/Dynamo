@@ -55,7 +55,7 @@
         <member name="T:Tessellation.UvScalingUtilities">
             <summary>Fonctions utilitaires pour la mise à l’échelle UV sur les surfaces.</summary>
         </member>
-        <member name="M:Tessellation.UvScalingUtilities.GetNormalizedUvScales(Autodesk.DesignScript.Geometry.Surface)">
+        <member name="F:Tessellation.UvScalingUtilities.NonUniformityThreshold">
             <summary>Calcule les facteurs de mise à l'échelle UV normalisés d'une surface pour gérer les espaces de paramètres anisotropes.
                 La mise à l'échelle préserve les proportions tout en conservant les valeurs dans une plage numérique raisonnable.</summary>
             <param name="face">Surface pour calculer les facteurs de mise à l'échelle.</param>

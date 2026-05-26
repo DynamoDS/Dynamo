@@ -1146,6 +1146,12 @@ You can always redownload the package.</value>
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>Failed to load an invalid package.</value>
   </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>Installation cancelled due to custom node conflict.</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>Restart Dynamo to remove the conflicting package.</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>No node could be found with that Id.</value>
   </data>
@@ -3634,7 +3640,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
     <value>_File</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>_Template</value>
+    <value>From Template...</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>Workspaces cannot be saved directly to the Templates folder. Please choose a different folder to save your file.

@@ -55,7 +55,7 @@
         <member name="T:Tessellation.UvScalingUtilities">
             <summary>サーフェス上の UV スケーリングのユーティリティ関数。</summary>
         </member>
-        <member name="M:Tessellation.UvScalingUtilities.GetNormalizedUvScales(Autodesk.DesignScript.Geometry.Surface)">
+        <member name="F:Tessellation.UvScalingUtilities.NonUniformityThreshold">
             <summary>異方性パラメータ空間を処理するために、サーフェスの正規化された UV スケール係数を計算します。
                 スケーリングでは、縦横比を維持しながら、値を妥当な数値範囲内に保ちます。</summary>
             <param name="face">スケール係数を計算するサーフェス。</param>

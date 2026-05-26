@@ -1146,6 +1146,12 @@
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>Не удалось загрузить недопустимый пакет.</value>
   </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>Установка отменена из-за конфликта пользовательских узлов.</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>Перезапустите Dynamo, чтобы удалить конфликтующий пакет.</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>Не удается найти узел с таким идентификатором.</value>
   </data>
@@ -3634,7 +3640,7 @@
     <value>_Файл</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>_Шаблон</value>
+    <value>Из шаблона...</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>Рабочие пространства невозможно сохранить непосредственно в папке шаблонов. Выберите другую папку для сохранения файла.
