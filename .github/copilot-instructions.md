@@ -210,10 +210,10 @@ Alert contributors if changes include:
 
 ## Agent Skills and Templates
 
-For detailed task workflows, rules, and templates, see `.agents/README.md`:
+For detailed task workflows, rules, and templates, see `.claude/README.md`:
 
-- **Skills**: each in `.agents/skills/<name>/SKILL.md` -- dynamo-codebase-patterns, dynamo-content-designer, dynamo-dotnet-expert, dynamo-dotnet-janitor, dynamo-ecosystem-reviewer, dynamo-onboarding, dynamo-pr-description, dynamo-jira-ticket, dynamo-skill-writer, dynamo-unit-testing, dynamo-ux-designer, dynamo-webview-component-scaffold
-- **Rules**: `.agents/rules/` -- dynamo-core-rules
+- **Skills**: each in `.claude/skills/<name>/SKILL.md` -- dynamo-codebase-patterns, dynamo-content-designer, dynamo-dotnet-expert, dynamo-dotnet-janitor, dynamo-ecosystem-reviewer, dynamo-onboarding, dynamo-pr-description, dynamo-jira-ticket, dynamo-skill-writer, dynamo-unit-testing, dynamo-ux-designer, dynamo-webview-component-scaffold
+- **Rules**: `.claude/rules/` -- dynamo-core-rules
 - **Templates**: bundled inside skill folders as `template.md` (Jira)
 
 ## Important Documentation

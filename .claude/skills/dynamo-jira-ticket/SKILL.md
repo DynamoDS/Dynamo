@@ -13,8 +13,8 @@ description: Create structured Jira tickets for Dynamo from bug reports, failing
 
 ## When not to use
 
-- PR descriptions -- use [dynamo-pr-description](../dynamo-pr-description/SKILL.md) instead.
-- Architecture questions -- use [dynamo-onboarding](../dynamo-onboarding/SKILL.md) instead.
+- PR descriptions -- use dynamo-pr-description instead.
+- Architecture questions -- use dynamo-onboarding instead.
 
 ## Inputs expected
 

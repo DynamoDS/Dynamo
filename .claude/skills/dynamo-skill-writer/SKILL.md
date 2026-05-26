@@ -1,15 +1,15 @@
 ---
 name: dynamo-skill-writer
-description: Author and maintain Dynamo agent skills. Use this skill whenever creating a new skill in .agents/skills/, updating an existing skill, fixing drift between canonical skills and Copilot/Cursor/Claude wrappers, or asking how to write effective skill instructions for the Dynamo repo.
+description: Author and maintain Dynamo agent skills. Use this skill whenever creating a new skill in .claude/skills/, updating an existing skill, fixing drift between canonical skills and Copilot/Cursor/Claude wrappers, or asking how to write effective skill instructions for the Dynamo repo.
 ---
 
 # Dynamo Skill Writer
 
 ## When to use
 
-- Creating a new skill in `.agents/skills/`.
+- Creating a new skill in `.claude/skills/`.
 - Updating an existing skill and ensuring tool mirrors remain aligned.
-- Adding or updating Copilot agent wrappers generated from canonical skills.
+- Adding or updating Copilot or Claude Code agent wrappers generated from canonical skills.
 - Fixing drift between canonical skill content and generated wrappers.
 
 ## When not to use
@@ -24,48 +24,49 @@ A request to add/update a skill, or a request to sync skill surfaces across Copi
 ## Output format
 
 A concrete set of file edits and validation steps that:
-- updates canonical skill content in `.agents/skills/`
-- updates sync metadata in `.github/scripts/sync_agent_wrappers.ps1` when Copilot exposure is needed
-- regenerates and validates wrappers in `.github/agents/`
-- updates index/docs references in `.agents/README.md`, `.github/copilot-instructions.md`, and `AGENTS.md` when applicable
+- updates canonical skill content in `.claude/skills/`
+- updates sync metadata in `.github/scripts/sync_agent_wrappers.ps1` when Copilot surfacing is needed
+- regenerates and validates Copilot wrappers in `.github/agents/`
+- updates index/docs references in `.claude/README.md`, `.github/copilot-instructions.md`, and `AGENTS.md` when applicable
 
 ---
 
 ## Workflow
 
 1. Determine whether this is a **new skill** or an **update to an existing skill**.
-2. Author or update canonical content in `.agents/skills/<skill-name>/SKILL.md`.
-3. **Ask the user** whether the skill should be surfaced as a Copilot agent before touching any wrapper files. The sync steps below are optional — skip them unless the user confirms.
+2. Author or update canonical content in `.claude/skills/<skill-name>/SKILL.md`.
+3. **Ask the user** whether the skill should be surfaced as a Copilot and Claude Code agent before touching any wrapper files. The sync steps below are optional — skip them unless the user confirms.
 4. *(If confirmed)* Add an entry to the `canonicalSkills` array in `.github/scripts/sync_agent_wrappers.ps1`.
 5. *(If confirmed)* Regenerate wrappers: `./.github/scripts/sync_agent_wrappers.ps1`
-6. *(If confirmed)* Validate sync: `./.github/scripts/sync_agent_wrappers.ps1 -Check -VerboseReport`
+6. *(If confirmed)* Validate sync: `./.github/scripts/sync_agent_wrappers.ps1 -Check -Report`
 7. Update discovery docs when skill inventory changed:
-   - `.agents/README.md`
+   - `.claude/README.md`
    - `.github/copilot-instructions.md`
    - `AGENTS.md`
 8. Ensure no contradictions between canonical and mirrored surfaces.
 
 ## Boundaries
 
-- ✅ **Always**: edit `.agents/skills/<skill>/SKILL.md` and its `assets/`/`references/` files; update `.agents/README.md` and `AGENTS.md`
-- ⚠️ **Ask first**: touch `.github/scripts/sync_agent_wrappers.ps1` or trigger wrapper regeneration — confirm Copilot surfacing intent before running the sync script
+- ✅ **Always**: edit `.claude/skills/<skill>/SKILL.md` and its `assets/`/`references/` files; update `.claude/README.md` and `AGENTS.md`
+- ⚠️ **Ask first**: touch `.github/scripts/sync_agent_wrappers.ps1` or trigger wrapper regeneration — confirm cross-tool surfacing intent before running the sync script
 - 🚫 **Never**: hand-edit generated wrappers in `.github/agents/` — they are always overwritten by the sync script, so manual edits are lost and create drift
 
 ## Rules
 
-- `.agents/` is the canonical source of truth for skill logic. When mirrors conflict with canonical files, canonical wins.
+- `.claude/` is the canonical source of truth for skill logic. When mirrors conflict with canonical files, canonical wins.
 - Generated wrappers in `.github/agents/` must never be hand-edited — they exist only as outputs of the sync script.
+- Skills in `.claude/skills/` are loaded natively by Claude Code — no `.claude/agents/` wrapper is needed for them.
 - Skill metadata (`name`/`description`) should be concise and stable; churn in these fields breaks triggering accuracy.
 - Keep changes deterministic so `-Check` mode stays reliable in CI.
 
 ## New Skill Checklist
 
-- [ ] Created `.agents/skills/<skill-name>/SKILL.md` with frontmatter (`name`, `description`)
-- [ ] Added skill to `.agents/README.md` Quick Reference table
-- [ ] Added skill to `.agents/README.md` parity matrix (if cross-tool surfaced)
+- [ ] Created `.claude/skills/<skill-name>/SKILL.md` with frontmatter (`name`, `description`)
+- [ ] Added skill to `.claude/README.md` Quick Reference table
+- [ ] Added skill to `.claude/README.md` parity matrix (if cross-tool surfaced)
 - [ ] *(If Copilot-surfaced)* Added skill to `.github/scripts/sync_agent_wrappers.ps1` wrapper map
 - [ ] *(If Copilot-surfaced)* Regenerated `.github/agents/*` wrappers
-- [ ] *(If Copilot-surfaced)* Ran `./.github/scripts/sync_agent_wrappers.ps1 -Check -VerboseReport`
+- [ ] *(If Copilot-surfaced)* Ran `./.github/scripts/sync_agent_wrappers.ps1 -Check -Report`
 - [ ] Updated `.github/copilot-instructions.md` skill list
 - [ ] Updated `AGENTS.md` skill list
 
@@ -79,10 +80,10 @@ A concrete set of file edits and validation steps that:
 > "Create a skill that enforces consistent skill-sync behavior across Copilot, Cursor, and Claude."
 
 Expected result:
-- New canonical skill in `.agents/skills/`
+- New canonical skill in `.claude/skills/`
 - User asked whether Copilot wrapper is needed before any sync steps run
 - *(If yes)* New generated wrapper in `.github/agents/`, sync script updated and passing in check mode
-- `AGENTS.md`, `.agents/README.md`, and `.github/copilot-instructions.md` skill indexes updated
+- `AGENTS.md`, `.claude/README.md`, and `.github/copilot-instructions.md` skill indexes updated
 
 ---
 
@@ -160,10 +161,10 @@ When a skill touches multiple directories, state which it reads vs. writes. This
 
 | Path | Access |
 |---|---|
-| `.agents/skills/<skill>/SKILL.md` | Read + Write (canonical) |
+| `.claude/skills/<skill>/SKILL.md` | Read + Write (canonical) |
 | `.github/agents/*.md` | Read only (generated — never hand-edit) |
 | `.github/scripts/sync_agent_wrappers.ps1` | Read + Write (sync map) |
-| `.agents/README.md` | Read + Write (index) |
+| `.claude/README.md` | Read + Write (index) |
 
 ### Reference assets, don't inline everything
 
