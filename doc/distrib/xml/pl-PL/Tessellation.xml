@@ -55,7 +55,7 @@
         <member name="T:Tessellation.UvScalingUtilities">
             <summary>Funkcje narzędziowe do skalowania UV na powierzchniach.</summary>
         </member>
-        <member name="M:Tessellation.UvScalingUtilities.GetNormalizedUvScales(Autodesk.DesignScript.Geometry.Surface)">
+        <member name="F:Tessellation.UvScalingUtilities.NonUniformityThreshold">
             <summary>Oblicza znormalizowane współczynniki skalowania UV dla powierzchni w celu obsługi anizotropowych przestrzeni parametrów.
                 Skalowanie zachowuje współczynnik proporcji, utrzymując wartości w rozsądnym zakresie liczbowym.</summary>
             <param name="face">Powierzchnia do obliczenia współczynników skalowania.</param>

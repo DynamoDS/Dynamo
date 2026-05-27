@@ -1146,6 +1146,12 @@ Sie können das Paket jederzeit erneut herunterladen.</value>
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>Ungültiges Paket konnte nicht geladen werden.</value>
   </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>Installation wurde aufgrund eines Konflikts bei benutzerdefinierten Blöcken abgebrochen.</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>Starten Sie Dynamo neu, um das in Konflikt stehende Paket zu entfernen.</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>Kein Block mit dieser ID gefunden</value>
   </data>
@@ -3632,7 +3638,7 @@ In bestimmten komplexen Diagrammen oder Host-Programmszenarien kann der automati
     <value>_Datei</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>_Vorlage</value>
+    <value>Von Vorlage...</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>Arbeitsbereiche können nicht direkt im Vorlagenordner gespeichert werden. Wählen Sie einen anderen Ordner, um die Datei zu speichern.

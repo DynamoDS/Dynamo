@@ -1145,6 +1145,12 @@
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>잘못된 패키지를 로드하지 못했습니다.</value>
   </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>사용자 노드 충돌로 인해 설치가 취소되었습니다.</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>충돌하는 패키지를 제거하려면 Dynamo를 다시 시작하십시오.</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>해당 ID로 노드를 찾을 수 없습니다.</value>
   </data>
@@ -3632,7 +3638,7 @@
     <value>파일(_F)</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>템플릿(&amp;T)</value>
+    <value>템플릿으로부터...</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>작업공간을 템플릿 폴더에 바로 저장할 수 없습니다. 다른 폴더를 선택하여 파일을 저장하십시오.

@@ -1146,6 +1146,12 @@ Można później ponownie pobrać pakiet.</value>
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>Nie można wczytać nieprawidłowego pakietu.</value>
   </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>Anulowano instalację z powodu konfliktu węzłów niestandardowych.</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>Uruchom ponownie dodatek Dynamo, aby usunąć pakiet powodujący konflikt.</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>Nie można odnaleźć węzła z tym identyfikatorem.</value>
   </data>
@@ -3634,7 +3640,7 @@ W niektórych sytuacjach ze złożonymi wykresami lub programami nadrzędnymi tr
     <value>_Plik</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>_Szablon</value>
+    <value>Z szablonu…</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>Obszarów roboczych nie można zapisać bezpośrednio w folderze szablonów. Wybierz inny folder, aby zapisać plik.
