@@ -40,7 +40,12 @@ jobs:
           ISSUE_BODY: ${{ github.event.issue.body }}
         run: |
           response=$(pwsh ./.github/scripts/issue_analyzer.ps1 "${{ env.template }}" "${{ env.acceptable_missing_info }}")
-          echo "analysis_response=$response" >> "$GITHUB_ENV"
+          delimiter="GHA_EOF_$(openssl rand -hex 16)"
+          {
+            printf 'analysis_response<<%s\n' "$delimiter"
+            printf '%s\n' "$response"
+            printf '%s\n' "$delimiter"
+          } >> "$GITHUB_ENV"
 
       # Remove sections in the issue body like "Dynamo version", "Stack Trace" because won't be used to predict the issue type
       - name: Clean Issue Body
@@ -49,7 +54,13 @@ jobs:
           ISSUE_BODY_PARSED: ${{ github.event.issue.body }}
         run: |
           parsed=$(pwsh ./.github/scripts/issue_body_cleaner.ps1)
-          echo "parsed_issue_body=$parsed" >> "$GITHUB_ENV"
+          # issue_body_cleaner.ps1 emits one line per parsed section — always multi-line.
+          delimiter="GHA_EOF_$(openssl rand -hex 16)"
+          {
+            printf 'parsed_issue_body<<%s\n' "$delimiter"
+            printf '%s\n' "$parsed"
+            printf '%s\n' "$delimiter"
+          } >> "$GITHUB_ENV"
 
       # Create json string from the issue body
       - name: Create Issue JSON String
@@ -59,7 +70,12 @@ jobs:
           ISSUE_TITLE: ${{ github.event.issue.title }}
         run: |
           json=$(pwsh ./.github/scripts/get_issue_json_body.ps1 "$ISSUE_NUMBER")
-          echo "issue_json_string=$json" >> "$GITHUB_ENV"
+          delimiter="GHA_EOF_$(openssl rand -hex 16)"
+          {
+            printf 'issue_json_string<<%s\n' "$delimiter"
+            printf '%s\n' "$json"
+            printf '%s\n' "$delimiter"
+          } >> "$GITHUB_ENV"
 
       # Checkout the IssuesTypePredicter repo (https://github.com/DynamoDS/IssuesTypePredicter)
       - name: Checkout IssuesTypePredicter Repo
@@ -89,7 +105,12 @@ jobs:
           ISSUE_JSON: ${{ env.issue_json_string }}
         run: |
           result=$(dotnet run --project ./IssuesTypePredicter/IssuesTypePredicterML.ConsoleApp/IssuesTypePredicterML.ConsoleApp.csproj -v q "$ISSUE_JSON")
-          echo "is_wish_list=$result" >> "$GITHUB_ENV"
+          delimiter="GHA_EOF_$(openssl rand -hex 16)"
+          {
+            printf 'is_wish_list<<%s\n' "$delimiter"
+            printf '%s\n' "$result"
+            printf '%s\n' "$delimiter"
+          } >> "$GITHUB_ENV"
 
       #  If the is_wish_list variable contains 1, label the issue as "Wishlist"
       - name: Label issue as 'Wishlist'
