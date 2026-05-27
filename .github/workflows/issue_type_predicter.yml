@@ -54,7 +54,7 @@ jobs:
           ISSUE_BODY_PARSED: ${{ github.event.issue.body }}
         run: |
           parsed=$(pwsh ./.github/scripts/issue_body_cleaner.ps1)
-          # issue_body_cleaner.ps1 emits one line per parsed section — always multi-line.
+          # issue_body_cleaner.ps1 emits one line per parsed section, so the output can be multi-line.
           delimiter="GHA_EOF_$(openssl rand -hex 16)"
           {
             printf 'parsed_issue_body<<%s\n' "$delimiter"
