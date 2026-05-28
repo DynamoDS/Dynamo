@@ -2255,7 +2255,6 @@ namespace Dynamo.Models
             if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
             {
                 InsertJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
-                return;
             }
             else
             {
@@ -2271,7 +2270,6 @@ namespace Dynamo.Models
                     if (DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex))
                     {
                         InsertXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
-                        return;
                     }
                 }
                 else
@@ -2314,8 +2312,7 @@ namespace Dynamo.Models
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
         /// <param name="isTemplate">Set this to true to indicate that the file is a template</param>
-        /// <returns>True if workspace was opened successfully</returns>
-        internal bool OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool isTemplate = false)
+        internal void OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool isTemplate = false)
         {
             try
             {
@@ -2337,7 +2334,6 @@ namespace Dynamo.Models
                         }
                     }
                 }
-                return true;
             }
             catch (Exception e)
             {
