@@ -2384,7 +2384,15 @@ namespace Dynamo.Controls
                 Value = true
             };
             isMouseOverTrueTrigger.Setters.Add(new Setter(TextBlock.ForegroundProperty, Brushes.White, "ContentPresenter"));
+            isMouseOverTrueTrigger.Setters.Add(new Setter(Label.ForegroundProperty, Brushes.White, "subMenuArrow"));
             isMouseOverTrueTrigger.Setters.Add(new Setter(DockPanel.BackgroundProperty, nodeContextMenuBackgroundHighlight, "dockPanel"));
+
+            var isSubmenuOpenTrigger = new Trigger
+            {
+                Property = MenuItem.IsSubmenuOpenProperty,
+                Value = true
+            };
+            isSubmenuOpenTrigger.Setters.Add(new Setter(Label.ForegroundProperty, Brushes.White, "subMenuArrow"));
 
             // Trigger for IsMouseOver property (false)
             var isMouseOverFalseTrigger = new Trigger
