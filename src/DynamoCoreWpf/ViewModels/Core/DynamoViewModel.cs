@@ -843,6 +843,7 @@ namespace Dynamo.ViewModels
 
             // initialize core data structures
             this.model = startConfiguration.DynamoModel;
+            this.model.GraphLockManager?.SetPrompt(new WpfGraphLockUserPrompt(() => Owner));
             this.model.CommandStarting += OnModelCommandStarting;
             this.model.CommandCompleted += OnModelCommandCompleted;
             this.model.RequestsCrashPrompt += CrashReportTool.ShowCrashWindow;
@@ -2221,6 +2222,21 @@ namespace Dynamo.ViewModels
                     filePath = parameters as string;
                 }
 
+                // Execute graph open command
+                ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode, isTemplate));
+
+                // If graph-lock cancelled the open, refresh Home so its loading state clears,
+                // then stop the oprn flow.
+                if (Model.LastOpenFileOperationWasCancelled)
+                {
+                    if (ShowStartPage)
+                    {
+                        RaisePropertyChanged(nameof(ShowStartPage));
+                    }
+
+                    return;
+                }
+
                 var directoryName = Path.GetDirectoryName(filePath);
 
                 // Display trust warning when file is not among trust location and warning feature is on
@@ -2229,9 +2245,7 @@ namespace Dynamo.ViewModels
                     && !DynamoModel.IsTestMode
                     && !PreferenceSettings.DisableTrustWarnings
                     && FileTrustViewModel != null;
-                RunSettings.ForceBlockRun = displayTrustWarning;
-                // Execute graph open command
-                ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode, isTemplate));
+                RunSettings.ForceBlockRun = displayTrustWarning;                
 
                 // Apply annotation updates based on the preference setting
                 RefreshAnnotationDescriptions();
