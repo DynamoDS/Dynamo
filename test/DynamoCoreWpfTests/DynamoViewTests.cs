@@ -107,6 +107,66 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void WhenOpeningWorkspaceThenTrustWarningIsShownBeforeCommand()
+        {
+            DynamoModel.IsTestMode = false;
+            bool? popupStateWhenOpenStarts = null;
+
+            void OnCommandStarting(DynamoModel.RecordableCommand command)
+            {
+                if (command is DynamoModel.OpenFileCommand)
+                {
+                    popupStateWhenOpenStarts = ViewModel.FileTrustViewModel.ShowWarningPopup;
+                }
+            }
+
+            Model.CommandStarting += OnCommandStarting;
+            try
+            {
+                Open(@"core\CustomNodes\TestAdd.dyn");
+            }
+            finally
+            {
+                Model.CommandStarting -= OnCommandStarting;
+                DynamoModel.IsTestMode = true;
+            }
+
+            Assert.IsTrue(popupStateWhenOpenStarts.GetValueOrDefault(false));
+        }
+
+        [Test]
+        public void WhenInsertingWorkspaceThenTrustWarningIsShownBeforeCommand()
+        {
+            DynamoModel.IsTestMode = false;
+            bool? popupStateWhenInsertStarts = null;
+
+            void OnCommandStarting(DynamoModel.RecordableCommand command)
+            {
+                if (command is DynamoModel.InsertFileCommand)
+                {
+                    popupStateWhenInsertStarts = ViewModel.FileTrustViewModel.ShowWarningPopup;
+                }
+            }
+
+            Model.CommandStarting += OnCommandStarting;
+            try
+            {
+                var insertMethod = typeof(DynamoViewModel).GetMethod("Insert", BindingFlags.NonPublic | BindingFlags.Instance);
+                Assert.NotNull(insertMethod);
+
+                var insertPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\CustomNodes\TestAdd.dyn");
+                insertMethod.Invoke(ViewModel, new object[] { insertPath });
+            }
+            finally
+            {
+                Model.CommandStarting -= OnCommandStarting;
+                DynamoModel.IsTestMode = true;
+            }
+
+            Assert.IsTrue(popupStateWhenInsertStarts.GetValueOrDefault(false));
+        }
+
+        [Test]
         public void TestHomeWorkspaceClosedBeforeCustomNode()
         {
             Open(@"core\CustomNodes\TestAdd.dyn");
