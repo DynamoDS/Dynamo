@@ -1402,6 +1402,11 @@ namespace Dynamo.Controls
             {
                 try
                 {
+                    //if(ext.Name.Equals("Autodesk Assistant"))
+                    //{
+                    //    continue;
+                    //}
+
                     ext.Loaded(loadedParams);
                     ReOpenSavedExtensionOnDynamoStartup(ext);
                 }
