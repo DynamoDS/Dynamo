@@ -228,9 +228,6 @@
             <return>Arc created from start, end point, and tangent</return>
             <search>arc,tangent,arcs</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Arc.ToString">
-            <summary>Получение строчного представления дуги</summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.FromJson(System.String)">
             <summary>Проанализируйте входящую строку JSON, отформатированную с помощью схемы autodesk.geometry:boundingbox3d-1.0.0.</summary>
             <param name="json">Строка JSON для анализа</param>
@@ -318,18 +315,6 @@
             from a Revit BoundingBox without any conversions.</summary>
             <search>bounding,bound,bymaxmin,max,min,bypoints</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.Equals(Autodesk.DesignScript.Geometry.DesignScriptEntity)">
-            <summary>Сравнение двух объектов BoundingBox</summary>
-            <param name="other">Другой объект BoundingBox</param>
-            <returns>Являются ли два объекта одинаковыми</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ComputeHashCode">
-            <summary>Получение хэш-кода для данного типа</summary>
-            <returns>Уникальный хэш-код для данного объекта</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ToString">
-            <summary>Получение строчного представления объекта BoundingBox</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Circle.CenterPoint">
             <summary>Центр окружности</summary>
         </member>
@@ -374,9 +359,6 @@
             <returns>Окружность, созданная по точкам</returns>
             <search>circle,approximate</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Circle.ToString">
-            <summary>Получение строчного представления окружности</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoEdge.Previous">
             <summary>Предыдущее смежное ребро в содержащем контуре</summary>
             <returns/>
@@ -412,9 +394,6 @@
         <member name="P:Autodesk.DesignScript.Geometry.CoEdge.ParameterCurve">
             <summary>Кривая в параметрическом пространстве поверхности владельца. Кривая представлена в 2D-форме, поэтому координаты Z данной кривой равны 0.</summary>
             <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.CoEdge.ToString">
-            <summary>Получение строчного представления смежного ребра</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cone.StartPoint">
             <summary>Начальная точка</summary>
@@ -473,9 +452,6 @@
             in the CoordinateSystem Z axis deriction length amount, with a
             circular bases in the CoordinateSystem XY Plane.</summary>
             <search>cone,cone by height,cones</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Cone.ToString">
-            <summary>Получение строчного представления конуса</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByMatrix(System.Double[])">
             <summary>Create a CoordinateSystem from a 4x4 matrix. This method is deprecated; prefer other constructors where possible.</summary>
@@ -672,18 +648,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.BySphericalCoordinates(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
             <summary>Creates a CoordinateSystem at the specified spherical coordinate parameters with respect to the specified coordinate system.</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Equals(Autodesk.DesignScript.Geometry.DesignScriptEntity)">
-            <summary>Compare two CoordinateSystem's</summary>
-            <param name="other">The other CoordinateSystem</param>
-            <returns>Являются ли два объекта одинаковыми</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ComputeHashCode">
-            <summary>Получение хэш-кода для данного типа</summary>
-            <returns>Уникальный хэш-код для данного объекта</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ToString">
-            <summary>Получение строчного представления системы координат</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cuboid.Length">
             <summary>Returns length distance.
             Note: This return the input dimensions of the Cuboid, NOT the
@@ -744,9 +708,6 @@
             <param name="highPoint">Верхняя точка угла кубоида</param>
             <returns>Кубоид, созданный по углам</returns>
             <search>box,cube,byminmax,by corners,by points,cubes</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Cuboid.ToString">
-            <summary>Получение строчного представления кубоида</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Curve.Length">
             <summary>Возврат общей длины дуги кривой</summary>
@@ -1138,9 +1099,6 @@
             <search>isocurve,curvebydir,lines</search>
             <weights>0.5,0.5,0.4</weights>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ToString">
-            <summary>Получение строчного представления кривой</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cylinder.Radius">
             <summary>Радиус цилиндра</summary>
         </member>
@@ -1171,9 +1129,6 @@
             <param name="radius">Радиус цилиндра</param>
             <returns>Цилиндр, созданный по точкам и радиусу</returns>
             <search>cylinder,tube,by center points</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Cylinder.ToString">
-            <summary>Получение строчного представления цилиндра</summary>
         </member>
         <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.constructorThreadId">
             <summary>хранение идентификатора управляемого потока, вызвавшего этот конструктор.
@@ -1216,9 +1171,6 @@
         <member name="P:Autodesk.DesignScript.Geometry.Edge.CoEdges">
             <summary>Смежные ребра, связанные с данным ребром</summary>
             <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Edge.ToString">
-            <summary>Получение строчного представления ребра</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Ellipse.CenterPoint">
             <summary>Центр эллипса</summary>
@@ -1267,9 +1219,6 @@
             <returns>Эллипс, созданный по плоскости и радиусам</returns>
             <search>ellipse,aligned ellipse,ellipsebylengths</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ToString">
-            <summary>Получение строчного представления эллипса</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.EllipseArc.CenterPoint">
             <summary>Центр эллипса</summary>
             <search>
@@ -1316,9 +1265,6 @@
             <returns>Дуга эллипса, созданная по радиусам и углам плоскости</returns>
             <search>ellipsearc,arcs</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.EllipseArc.ToString">
-            <summary>Получение строчного представления объекта EllipseArc</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Face.Edges">
             <summary>Все ребра вокруг этой грани против часовой стрелки</summary>
             <search>faces</search>
@@ -1338,9 +1284,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.Face.SurfaceGeometry">
             <summary>Базовая поверхность, образующая грань</summary>
             <returns>Представление поверхности грани</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Face.ToString">
-            <summary>Получение строчного представления грани</summary>
         </member>
         <member name="F:Autodesk.DesignScript.Geometry.Geometry.mGeometryContructors">
             <summary>Карта между типами IGeometryEntity и геометрическими конструкциями, для которой используется основа.</summary>
@@ -1461,10 +1404,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Scale2D(Autodesk.DesignScript.Geometry.Plane,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point)">
             <summary>Scale in two dimensions by base and 2 pick points  The two pick points are projected onto the base plane in order to determine the 2d scale factors</summary>
             <search>resize,size,from,to,scale2d,2d</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Clone">
-            <summary>Copy the given Geometry</summary>
-            <returns>A new copy</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.DistanceTo(Autodesk.DesignScript.Geometry.Geometry)">
             <summary>Получение расстояния от этой геометрии до другой</summary>
@@ -1589,9 +1528,6 @@
             <param name="projectionDirection">Projection direction.</param>
             <returns>Flat array of resulting Geometry.</returns>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ToString">
-            <summary>Get a string representation of the Geometry</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Helix.Angle">
             <summary>Угол (в градусах), с которым спираль проходит витки по всей длине</summary>
         </member>
@@ -1621,9 +1557,6 @@
             <param name="angleTurns">Количество витков в градусах</param>
             <returns>Спираль, созданная по оси</returns>
             <search>helix,screw,corkscrew,thread</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Helix.ToString">
-            <summary>Получение строчного представления спирали</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.IndexGroup.Count">
             <summary>Либо 3 или 4, в зависимости от фигуры — треугольника или квадрата</summary>
@@ -1656,18 +1589,6 @@
             <param name="b">Индекс b</param>
             <param name="c">Индекс c</param>
             <returns>Группа индексов</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.IndexGroup.Equals(System.Object)">
-            <summary>Сравнение двух объектов IndexGroup</summary>
-            <param name="other">Другие объекты IndexGroup</param>
-            <returns>Являются ли два объекта одинаковыми</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.IndexGroup.GetHashCode">
-            <summary>Получение хэш-кода для данного типа</summary>
-            <returns>Уникальный хэш-код для данного объекта</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.IndexGroup.ToString">
-            <summary>Получение строчного представления объекта IndexGroup</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Line.Direction">
             <summary>Направление кривой</summary>
@@ -1703,9 +1624,6 @@
             <returns>Линия по начальному направлению и длине</returns>
             <search>linebyvector,lines</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Line.ToString">
-            <summary>Получение строчного представления линии</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Loop.Face">
             <summary>Содержащая грань контура</summary>
             <returns/>
@@ -1716,9 +1634,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Loop.IsExternal">
             <summary>Является ли контур граничным или внутренним</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Loop.ToString">
-            <summary>Получение строчного представления контура</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Mesh.VerticesAsThreeNumbers">
             <summary>Возврат исходных вершин данной сети в виде списка чисел. Каждый набор
@@ -1910,10 +1825,6 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Translate(System.Double,System.Double,System.Double)">
             <summary>Преобразование сети в соответствии с заданными значениями расстояний</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Mesh.MeshToJson(System.Double)">
-            <summary>Convert the mesh into a JSON object formatted with dynamo.geometry:mesh-1.0.0 schema.</summary>
-            <returns>Итоговая строка JSON</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsFaceIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.IndexGroup})">
             <summary>Создание сетки на основе набора точек и набора элементов IndexGroups, ссылающихся на набор точек</summary>
@@ -2136,9 +2047,6 @@
             <search>spline by tangent,tangents,lines</search>
             <weights>0.5,0.5,0.45</weights>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ToString">
-            <summary>Получение строчного представления объекта NurbsCurve</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.NurbsSurface.DegreeU">
             <summary>Возврат кривизны поверхности в направлении U.</summary>
             <search>surface smoothness,continuity</search>
@@ -2232,9 +2140,6 @@
             control point/weight data.</summary>
             <search>lines</search>
             <weights>0.4</weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ToString">
-            <summary>Получение строчного представления объекта NurbsSurface</summary>
         </member>
         <member name="T:Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition">
             <summary>Тип граничного условия, применяемого к панелям в сети.</summary>
@@ -2403,9 +2308,6 @@
             <returns/>
             <search>panel, surface, custom, orthogonal, lattice</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.ToString">
-            <summary>Получение строчного представления объекта PanelSurface</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Plane.Origin">
             <summary>Получение начала координат плоскости.</summary>
             <search>position,planecenter</search>
@@ -2490,9 +2392,6 @@
             <summary>Создание плоскости в YZ МСК</summary>
             <returns>Плоскость в плоскости YZ МСК</returns>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Plane.ToString">
-            <summary>Получение строчного представления плоскости</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Point.X">
             <summary>Получение координаты точки по оси X</summary>
         </member>
@@ -2570,18 +2469,6 @@
             <param name="tolerance">Допуск, используемый для отсечения</param>
             <returns>Уникальные точки</returns>
             <search>unique,duplicates,remove duplicates,distinct,near</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Point.Equals(Autodesk.DesignScript.Geometry.DesignScriptEntity)">
-            <summary>Сравнение двух точек:</summary>
-            <param name="other">Другая точка</param>
-            <returns>Являются ли два объекта одинаковыми</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Point.ComputeHashCode">
-            <summary>Получение хэш-кода для данного типа</summary>
-            <returns>Уникальный хэш-код для данного объекта</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Point.ToString">
-            <summary>Получение строчного представления точки</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.Points">
             <summary>Возврат начальной точки первого компонента и конечных точек всех компонентов кривой. У замкнутой сложной кривой начальная и конечная точки совпадают, поэтому конечная точка исключается.</summary>
@@ -2715,9 +2602,6 @@
             <param name="normal">Нормаль, перпендикулярная направлению утолщения. Если нормаль не указана (является нулевой), по умолчанию используется нормаль кривой.</param>
             <search>offset,thicken</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ToString">
-            <summary>Получение строчного представления объекта PolyCurve</summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Polygon.Corners">
             <summary>Получение углов полигона</summary>
         </member>
@@ -2746,9 +2630,6 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Polygon.RegularPolygon(Autodesk.DesignScript.Geometry.Circle,System.Int32)">
             <summary>Построение вписанной кривой полигона в окружности.</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ToString">
-            <summary>Получение строчного представления полигона</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.Surfaces">
             <summary>Получение новых поверхностей, представляющих собой базовые поверхности.</summary>
@@ -2822,9 +2703,6 @@
             <param name="crossSection">Профиль сдвига</param>
             <search>sweep,rail,guide,sweep1</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ToString">
-            <summary>Получение строчного представления объекта PolySurface</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Rectangle.Width">
             <summary>Ширина прямоугольника</summary>
             <search>rectX,rectx</search>
@@ -2874,9 +2752,6 @@
             <param name="length">Длина прямоугольника</param>
             <returns>Прямоугольник, созданный по ширине и длине</returns>
             <search>rectbylengths</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ToString">
-            <summary>Получение строчного представления прямоугольника</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Solid.Area">
             <summary>Получение площади поверхности — суммы площадей всех граней</summary>
@@ -2991,9 +2866,6 @@
             <returns/>
             <search>Brep,brep,boolean,addition</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Solid.ToString">
-            <summary>Получение строчного представления тела</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Sphere.CenterPoint">
             <summary>Получение центральной точки сферы.</summary>
         </member>
@@ -3011,9 +2883,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByBestFit(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
             <summary>Поместить сферу как можно ближе к входным точкам.</summary>
             <search>Brep,brep</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Sphere.ToString">
-            <summary>Получение строчного представления сферы</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Surface.Area">
             <summary>Получение общей площади поверхности.</summary>
@@ -3278,9 +3147,6 @@
             <returns>Поверхность, созданная путем замыкания</returns>
             <search>edgesrf,edgesurface,patch,fill</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToString">
-            <summary>Получение строчного представления поверхности</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Topology.Vertices">
             <summary>Вершины топологии</summary>
             <returns/>
@@ -3292,9 +3158,6 @@
         <member name="P:Autodesk.DesignScript.Geometry.Topology.Faces">
             <summary>Грани топологии</summary>
             <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Topology.ToString">
-            <summary>Получение строчного представления топологии</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineEdge.AdjacentFaces">
             <summary>Объекты TSplineFace, примыкающие к этому объекту Edge</summary>
@@ -3320,9 +3183,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineEdge.Info">
             <summary>Ряд свойств объекта TSEdge: uvnFrame и индекс, находится ли TSEdge на границе, является ли однородным</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineEdge.ToString">
-            <summary>Получение строчного представления для объекта TSplineEdge</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineFace.Edges">
             <summary>Положение всех объектов TSplineEdge вокруг этой грани направлено против часовой стрелки</summary>
             <returns/>
@@ -3346,9 +3206,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineFace.Info">
             <summary>Ряд свойств объекта TSplineFace: uvnFrame, индекс, степень и количество сторон</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineFace.ToString">
-            <summary>Получение строчного представления для объекта TSplineFace</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.IsRadial">
             <summary>Задана ли для вновь созданного Т-сплайна радиальная симметрия.</summary>
         </member>
@@ -3371,9 +3228,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.ByAxial(System.Boolean,System.Boolean,System.Boolean)">
             <summary>Создание осевого объекта TSplineInitialSymmetry с заданными осями симметрии.</summary>
             <search>tspline,symmetry</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.ToString">
-            <summary>Получение строчного представления объекта TSplineInitialSymmetry</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineReflection.IsRadial">
             <summary>Является ли отражение радиальным</summary>
@@ -3404,9 +3258,6 @@
             <param name="segmentAngle">Угол между каждой парой сегментов радиальной симметрии (в градусах). Если задано значение 0, он определяется следующим образом: (360/количество сегментов)</param>
             <returns>Радиальное отражение Т-сплайна</returns>
             <search>tspline,symmetry,reflection,radial</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineReflection.ToString">
-            <summary>Получение строчного представления TSplineReflection</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Double,System.Collections.Generic.IEnumerable{System.Int32},System.Boolean,System.Boolean,System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Boolean)">
             <inheritdoc cref="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.TSplineSurfaceBuildPipes(Autodesk.DesignScript.Interfaces.ICurveEntity[],System.Double,System.Double,System.Int32[],System.Boolean,System.Boolean,System.Double[],System.Double[],System.Double[],System.Double[],System.Double[],System.Double[],System.Boolean)"/>
@@ -3639,7 +3490,7 @@
             Сглаживание визуализации, если передано значение true, или без сглаживания, если передано значение false.</summary>
             <param name="enable">Включение или отключение сглаживания при визуализации</param>
             <returns>Т-сплайн с выбранным стилем визуализации</returns>
-            <search>tspline,visulization,mode,smooth,box</search>
+            <search>tspline,visualization,mode,smooth,box</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ExtrudeEdges(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},Autodesk.DesignScript.Geometry.Vector,System.Int32)">
             <summary>Выполните одну или несколько операций симметричного выдавливания для набора ребер и переместите новые ребра по заданному вектору.</summary>
@@ -3969,7 +3820,7 @@
             <search>tspline,cone,radius,cs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BySphereCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Создание Т-сплайновой сферы, центрированной во входной точке с заданным радиусом.</summary>
+            <summary>Create a T-Spline Sphere centered at the input Point, with given radius.</summary>
             <param name="centerPoint">Центр сферы</param>
             <param name="radius">Радиус сферы</param>
             <param name="radiusSpans">Количество радиальных пролетов</param>
@@ -4181,9 +4032,6 @@
             <param name="tSplineSurfaces">Т-сплайновые поверхности для объединения</param>
             <search>tspline,combine</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ToString">
-            <summary>Получение строчного представления TSplineSurface</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.Vertices">
             <summary>Вершины, содержащиеся на этой T-сплайновой поверхности.</summary>
         </member>
@@ -4271,9 +4119,6 @@
             <search>tspline,face,byindex</search>
             <returns>Грань Т-сплайна</returns>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.ToString">
-            <summary>Получение строчного представления TSplineTopology</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineUVNFrame.Position">
             <summary>Точка TopologyItem на выпуклой оболочке</summary>
         </member>
@@ -4285,9 +4130,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineUVNFrame.Normal">
             <summary>Нормаль объекта TopologyItem</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineUVNFrame.ToString">
-            <summary>Получение строчного представления TSplineUVNFrame</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineVertex.AdjacentEdges">
             <summary>Объекты TSplineEdge, выходящие из этой вершины</summary>
@@ -4319,9 +4161,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineVertex.Info">
             <summary>Ряд свойств объекта TSVertex: uvnFrame, индекс, степень и свойство functionalValence; является ли TSVertex объектом StarPoint, TPoint, является ли он однородным.</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineVertex.ToString">
-            <summary>Получение строчного представления TSplineVertex</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.UV.U">
             <summary>Получение U-компонента для UV</summary>
             <search>
@@ -4340,18 +4179,6 @@
             <param name="v">Значение V</param>
             <returns>UV-плоскость, созданная по координатам</returns>
             <search>surfaceparam,parameters,uv,uvs</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.UV.Equals(System.Object)">
-            <summary>Сравнение двух UV:</summary>
-            <param name="other">Другое значение UV</param>
-            <returns>Являются ли два объекта одинаковыми</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.UV.GetHashCode">
-            <summary>Получение хэш-кода для данного типа</summary>
-            <returns>Уникальный хэш-код для данного объекта</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.UV.ToString">
-            <summary>Получение строчного представления UV</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.FromJson(System.String)">
             <summary>Проанализируйте входящую строку JSON, отформатированную по схеме autodesk.math:vector3d-1.0.0.</summary>
@@ -4487,18 +4314,6 @@
             <returns>Canonical Z axis vector (0,0,1)</returns>
             <search>z, basis,up</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Vector.Equals(Autodesk.DesignScript.Geometry.DesignScriptEntity)">
-            <summary>Сравнение двух векторов:</summary>
-            <param name="other">Другой вектор</param>
-            <returns>Являются ли два объекта одинаковыми</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Vector.ComputeHashCode">
-            <summary>Получение хэш-кода для данного типа</summary>
-            <returns>Уникальный хэш-код для данного объекта</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Vector.ToString">
-            <summary>Получение строчного представления вектора</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Vertex.PointGeometry">
             <summary>Точка, в которой расположена данная вершина</summary>
             <returns/>
@@ -4510,9 +4325,6 @@
         <member name="P:Autodesk.DesignScript.Geometry.Vertex.AdjacentFaces">
             <summary>Грани, смежные с данной вершиной</summary>
             <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Vertex.ToString">
-            <summary>Получение строчного представления вершины</summary>
         </member>
         <member name="T:Autodesk.DesignScript.Geometry.Properties.Resources">
             <summary>Класс ресурса со строгим контролем типа, используемый для поиска локализованных строк и т. п.</summary>
@@ -4735,108 +4547,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.tsplinesurface_buildpipes_deprecated">
              <summary>Поиск локализованной строки, аналогичной строке «Этот метод исключен и в следующей версии Dynamo будет удален. Используйте вместо него TSplineSurfaceBuildPipes(ICurveEntity[] curves, double defaultRadius, double snappingTolerance, int[] segmentCounts, bool autoHandleStart, bool autoHandleEnd, double[] startRotations, double[] endRotations, double[] startRadii, double[] endRadii, double[] startPositions, double[] endPositions, bool inSmoothMode)».</summary>
-        </member>
-        <member name="T:ProtoGeometryGenerator.GenerateFromInterfaceAttribute">
-            <summary>The <see cref="T:ProtoGeometryGenerator.GenerateFromInterfaceAttribute"/> is the main attribute the generator looks for when it is
-            deciding the classes to auto implement. The <paramref name="protoInterface"/> type should
-            be a type from Autodesk.DesignScript.Interfaces and <paramref name="geometryFactoryInterface"/> should
-            be the source of all the static constructor methods for the interface.
-            <br/><br/>
-            The attribute must be attached to a class that matches the protoInterface name, i.e. if the interface
-            is named IPointEntity, then the class must be named Point for the generator to work correctly.
-            <br/><br/>
-            The generator will implement wrappers for every property and method on protoInterface
-            using ProtoGeometry as instance methods. In addition, all methods that start with the class name
-            (Point) on the factory interface will be implemented as static methods.
-            <br/><br/>
-            Generated implementations can be overriden by implementing a property or method that exactly matches the
-            interface method signature. See <see cref="T:ProtoGeometryGenerator.GenerateShadowingAttribute"/> and <see cref="T:ProtoGeometryGenerator.GenerateOverrideAttribute"/> for
-            other ways to override automatic implementations.</summary>
-        </member>
-        <member name="M:ProtoGeometryGenerator.GenerateFromInterfaceAttribute.#ctor(System.Type,System.Type,System.Type[])">
-            <summary>The <see cref="T:ProtoGeometryGenerator.GenerateFromInterfaceAttribute"/> is the main attribute the generator looks for when it is
-            deciding the classes to auto implement. The <paramref name="protoInterface"/> type should
-            be a type from Autodesk.DesignScript.Interfaces and <paramref name="geometryFactoryInterface"/> should
-            be the source of all the static constructor methods for the interface.
-            <br/><br/>
-            The attribute must be attached to a class that matches the protoInterface name, i.e. if the interface
-            is named IPointEntity, then the class must be named Point for the generator to work correctly.
-            <br/><br/>
-            The generator will implement wrappers for every property and method on protoInterface
-            using ProtoGeometry as instance methods. In addition, all methods that start with the class name
-            (Point) on the factory interface will be implemented as static methods.
-            <br/><br/>
-            Generated implementations can be overriden by implementing a property or method that exactly matches the
-            interface method signature. See <see cref="T:ProtoGeometryGenerator.GenerateShadowingAttribute"/> and <see cref="T:ProtoGeometryGenerator.GenerateOverrideAttribute"/> for
-            other ways to override automatic implementations.</summary>
-        </member>
-        <member name="T:ProtoGeometryGenerator.GenerateOverrideAttribute">
-            <summary>Replace the body of the named property or method with this implementation.</summary>
-            <remarks>
-            Properties and methods implemented by the generator using the <see cref="T:ProtoGeometryGenerator.GenerateFromInterfaceAttribute"/> can
-            be overriden. This attribute will replace the body of the generated method, but let the generator handle
-            documentation, scaling, ASM extents checks and the required boilerplate.
-            </remarks>
-            <param name="overrideName">The method or property to override</param>
-            <param name="virtualKeyword">Implement the generated function as virtual</param>
-        </member>
-        <member name="M:ProtoGeometryGenerator.GenerateOverrideAttribute.#ctor(System.String,System.Boolean)">
-            <summary>Replace the body of the named property or method with this implementation.</summary>
-            <remarks>
-            Properties and methods implemented by the generator using the <see cref="T:ProtoGeometryGenerator.GenerateFromInterfaceAttribute"/> can
-            be overriden. This attribute will replace the body of the generated method, but let the generator handle
-            documentation, scaling, ASM extents checks and the required boilerplate.
-            </remarks>
-            <param name="overrideName">The method or property to override</param>
-            <param name="virtualKeyword">Implement the generated function as virtual</param>
-        </member>
-        <member name="T:ProtoGeometryGenerator.GenerateShadowingAttribute">
-            <summary>Properties and methods implemented by the generator using the <see cref="T:ProtoGeometryGenerator.GenerateFromInterfaceAttribute"/> can
-            be overriden. This attribute will prevent the generation of a method named <paramref name="overrideName"/> 
-            whose params exactly matches the <paramref name="parameterTypes"/> array.
-            <br/><br/>
-            Some of the methods in the library don't match the generated output exactly, meaning the generator can't see
-            them as overrides. This attribute lets a method take the place of another method, by explicitly shadowing
-            what the generator would have implemented.
-            <br/><br/>
-            Several [class]es implement a static FromJson method that takes a single <see langword="string"/>, where
-            the factory interface has a method [class]FromJson that takes <see langword="string"/> and <see langword="double"/>.
-            This attribute lets the single <see langword="string"/> version override the automatic one.</summary>
-        </member>
-        <member name="M:ProtoGeometryGenerator.GenerateShadowingAttribute.#ctor(System.String,System.Type[])">
-            <summary>Properties and methods implemented by the generator using the <see cref="T:ProtoGeometryGenerator.GenerateFromInterfaceAttribute"/> can
-            be overriden. This attribute will prevent the generation of a method named <paramref name="overrideName"/> 
-            whose params exactly matches the <paramref name="parameterTypes"/> array.
-            <br/><br/>
-            Some of the methods in the library don't match the generated output exactly, meaning the generator can't see
-            them as overrides. This attribute lets a method take the place of another method, by explicitly shadowing
-            what the generator would have implemented.
-            <br/><br/>
-            Several [class]es implement a static FromJson method that takes a single <see langword="string"/>, where
-            the factory interface has a method [class]FromJson that takes <see langword="string"/> and <see langword="double"/>.
-            This attribute lets the single <see langword="string"/> version override the automatic one.</summary>
-        </member>
-        <member name="T:ProtoGeometryGenerator.PropertyReplacementFieldAttribute">
-            <summary>This attribute lets an interface property be auto generated from a backing field, letting that
-            field take the property's place in the ToString, Equals and HashCode methods.
-            Special handling is added for Point and Vector types when backed by a Coordinate.
-            This also lets the generator handle documentation for the property.</summary>
-        </member>
-        <member name="M:ProtoGeometryGenerator.PropertyReplacementFieldAttribute.#ctor(System.String,System.String)">
-            <summary>This attribute lets an interface property be auto generated from a backing field, letting that
-            field take the property's place in the ToString, Equals and HashCode methods.
-            Special handling is added for Point and Vector types when backed by a Coordinate.
-            This also lets the generator handle documentation for the property.</summary>
-        </member>
-        <member name="T:ProtoGeometryGenerator.OverrideCompareUsingAttribute">
-            <summary>This attribute lets a class override the CompareUsing attribute on the defining interface
-            (or set one at all if it is missing). This in turn lets the generator create the
-            (Get|Compute)HashCode and Equals methods for the class based on the supplied property names.</summary>
-        </member>
-        <member name="M:ProtoGeometryGenerator.OverrideCompareUsingAttribute.#ctor(System.String[])">
-            <summary>This attribute lets a class override the CompareUsing attribute on the defining interface
-            (or set one at all if it is missing). This in turn lets the generator create the
-            (Get|Compute)HashCode and Equals methods for the class based on the supplied property names.</summary>
         </member>
     </members>
 </doc>

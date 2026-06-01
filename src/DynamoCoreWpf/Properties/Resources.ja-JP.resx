@@ -1146,6 +1146,12 @@
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>無効なパッケージのロードに失敗しました。</value>
   </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>カスタム ノードの競合により、インストールがキャンセルされました。</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>競合するパッケージを削除するには、Dynamo を再起動してください。</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>この ID のノードが見つかりませんでした。</value>
   </data>
@@ -3634,7 +3640,7 @@ Dynamo を再起動してアンインストールを完了します。
     <value>ファイル(_F)</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>テンプレート(_T)</value>
+    <value>テンプレートから...</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>テンプレート フォルダにはワークスペースを直接保存できません。ファイルを保存するには、別のフォルダを選択してください。

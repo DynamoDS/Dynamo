@@ -277,7 +277,7 @@
         <member name="T:DSCore.Data.DataNodeDynamoType">
             <summary>Klasa reprezentująca typ danych (DataType) obsługiwany przez dodatek Dynamo</summary>
         </member>
-        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String)">
+        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String,System.String)">
             <summary>Klasa reprezentująca typ danych (DataType) obsługiwany przez dodatek Dynamo</summary>
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Type">
@@ -285,6 +285,10 @@
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Name">
             <summary>Opcjonalna nazwa do zastąpienia nazwy typu (`Number` zamiast `long`)</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.TypeId">
+            <summary>Format przewodu $typeid (np. „autodesk.math:point3d-1.0.0”).
+            Ma wartość null dla typów podstawowych, w których nie występuje serializacja $typeid.</summary>
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Level">
             <summary>Poziom hierarchiczny, który ma być wyświetlany w interfejsie użytkownika</summary>

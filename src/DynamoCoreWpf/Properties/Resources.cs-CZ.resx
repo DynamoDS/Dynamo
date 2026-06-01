@@ -1146,6 +1146,12 @@ Balíček můžete kdykoli znovu stáhnout.</value>
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>Nepodařilo se načíst neplatný balíček.</value>
   </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>Instalace byla zrušena z důvodu konfliktu vlastních uzlů.</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>Restartováním aplikace Dynamo odeberete konfliktní balíček.</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>Nebyl nalezen žádný uzel s daným ID.</value>
   </data>
@@ -3633,7 +3639,7 @@ V určitém kontextu složitých grafů nebo hostitelských režimů může auto
     <value>_Soubor</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>_Šablona</value>
+    <value>Ze šablony…</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>Pracovní prostory není možné uložit do složky Templates. Uložte soubor výběrem jiné složky.

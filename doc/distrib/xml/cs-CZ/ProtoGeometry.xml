@@ -228,9 +228,6 @@
             <return>Arc created from start, end point, and tangent</return>
             <search>arc,tangent,arcs</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Arc.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Arc</summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.FromJson(System.String)">
             <summary>Analyzujte importovaný řetězec JSON naformátovaný pomocí schématu autodesk.geometry:boundingbox3d-1.0.0.</summary>
             <param name="json">Řetězec JSON, který chcete analyzovat</param>
@@ -318,18 +315,6 @@
             from a Revit BoundingBox without any conversions.</summary>
             <search>bounding,bound,bymaxmin,max,min,bypoints</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.Equals(Autodesk.DesignScript.Geometry.DesignScriptEntity)">
-            <summary>Umožňuje porovnat dva objekty BoundingBox.</summary>
-            <param name="other">Druhý objekt BoundingBox</param>
-            <returns>Rozhodnutí, zda jsou dva objekty stejné</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ComputeHashCode">
-            <summary>Umožňuje získat pro tento typ hodnotu hash.</summary>
-            <returns>Jedinečná hodnota hash pro tento objekt</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.BoundingBox.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku BoundingBox</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Circle.CenterPoint">
             <summary>Střed kružnice</summary>
         </member>
@@ -374,9 +359,6 @@
             <returns>Kružnice vytvořená z bodů</returns>
             <search>circle,approximate</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Circle.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Circle</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.CoEdge.Previous">
             <summary>Předchozí objekt CoEdge v nadřazené smyčce</summary>
             <returns/>
@@ -412,9 +394,6 @@
         <member name="P:Autodesk.DesignScript.Geometry.CoEdge.ParameterCurve">
             <summary>Křivka v parametrickém prostoru povrchu vlastníka. Křivka je ve 2D podobě, takže souřadnice Z této křivky mají hodnotu 0.</summary>
             <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.CoEdge.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku CoEdge</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cone.StartPoint">
             <summary>Počáteční bod</summary>
@@ -473,9 +452,6 @@
             in the CoordinateSystem Z axis deriction length amount, with a
             circular bases in the CoordinateSystem XY Plane.</summary>
             <search>cone,cone by height,cones</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Cone.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Cone</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ByMatrix(System.Double[])">
             <summary>Create a CoordinateSystem from a 4x4 matrix. This method is deprecated; prefer other constructors where possible.</summary>
@@ -672,18 +648,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.BySphericalCoordinates(Autodesk.DesignScript.Geometry.CoordinateSystem,System.Double,System.Double,System.Double)">
             <summary>Creates a CoordinateSystem at the specified spherical coordinate parameters with respect to the specified coordinate system.</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Equals(Autodesk.DesignScript.Geometry.DesignScriptEntity)">
-            <summary>Compare two CoordinateSystem's</summary>
-            <param name="other">The other CoordinateSystem</param>
-            <returns>Rozhodnutí, zda jsou dva objekty stejné</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ComputeHashCode">
-            <summary>Umožňuje získat pro tento typ hodnotu hash.</summary>
-            <returns>Jedinečná hodnota hash pro tento objekt</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku CoordinateSystem</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cuboid.Length">
             <summary>Returns length distance.
             Note: This return the input dimensions of the Cuboid, NOT the
@@ -744,9 +708,6 @@
             <param name="highPoint">Nejvyšší bod rohu kvádru</param>
             <returns>Kvádr vytvořený pomocí rohů</returns>
             <search>box,cube,byminmax,by corners,by points,cubes</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Cuboid.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Cuboid</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Curve.Length">
             <summary>Vrací celkovou délku oblouku křivky</summary>
@@ -1138,9 +1099,6 @@
             <search>isocurve,curvebydir,lines</search>
             <weights>0.5,0.5,0.4</weights>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Curve.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Curve</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Cylinder.Radius">
             <summary>Poloměr válce</summary>
         </member>
@@ -1171,9 +1129,6 @@
             <param name="radius">Poloměr válce</param>
             <returns>Válec vytvořený pomocí bodů a poloměru</returns>
             <search>cylinder,tube,by center points</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Cylinder.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Cylinder</summary>
         </member>
         <member name="F:Autodesk.DesignScript.Geometry.DesignScriptEntity.constructorThreadId">
             <summary>uchovává id spravovaného vlákna, které zavolalo tento konstruktor.
@@ -1216,9 +1171,6 @@
         <member name="P:Autodesk.DesignScript.Geometry.Edge.CoEdges">
             <summary>Objekty CoEdge přiřazené k této hraně</summary>
             <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Edge.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Edge</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Ellipse.CenterPoint">
             <summary>Střed elipsy</summary>
@@ -1267,9 +1219,6 @@
             <returns>Elipsa vytvořená z roviny a poloměrů</returns>
             <search>ellipse,aligned ellipse,ellipsebylengths</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Ellipse.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Ellipse</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.EllipseArc.CenterPoint">
             <summary>Střed elipsy</summary>
             <search>
@@ -1316,9 +1265,6 @@
             <returns>Oblouk elipsy vytvořený pomocí poloměrů a úhlů roviny</returns>
             <search>ellipsearc,arcs</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.EllipseArc.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku EllipseArc</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Face.Edges">
             <summary>Všechny hrany kolem této plochy v pořadí proti směru hodinových ručiček</summary>
             <search>faces</search>
@@ -1338,9 +1284,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.Face.SurfaceGeometry">
             <summary>Základní povrch, který tvoří plochu</summary>
             <returns>Reprezentace povrchu plochy</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Face.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Face</summary>
         </member>
         <member name="F:Autodesk.DesignScript.Geometry.Geometry.mGeometryContructors">
             <summary>Mapa mezi typy entity IGeometryEntity a konstruktory geometrie používajícími hostitele</summary>
@@ -1462,10 +1405,6 @@
             <summary>Scale in two dimensions by base and 2 pick points  The two pick points are projected onto the base plane in order to determine the 2d scale factors</summary>
             <search>resize,size,from,to,scale2d,2d</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.Clone">
-            <summary>Copy the given Geometry</summary>
-            <returns>A new copy</returns>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.DistanceTo(Autodesk.DesignScript.Geometry.Geometry)">
             <summary>Získat vzdálenost z této geometrie do jiné</summary>
             <param name="entity">Jiná geometrie</param>
@@ -1584,9 +1523,6 @@
             <param name="projectionDirection">Projection direction.</param>
             <returns>Flat array of resulting Geometry.</returns>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Geometry.ToString">
-            <summary>Get a string representation of the Geometry</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Helix.Angle">
             <summary>Úhel ve stupních, o který se šroubovice otočí přes svoji délku</summary>
         </member>
@@ -1616,9 +1552,6 @@
             <param name="angleTurns">Počet otočení ve stupních</param>
             <returns>Šroubovice vytvořená pomocí osy</returns>
             <search>helix,screw,corkscrew,thread</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Helix.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Helix</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.IndexGroup.Count">
             <summary>Buď 3, nebo 4, v závislosti na tom, zda představuje trojúhelník nebo čtyřúhelník</summary>
@@ -1651,18 +1584,6 @@
             <param name="b">Index b</param>
             <param name="c">Index c</param>
             <returns>IndexGroup</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.IndexGroup.Equals(System.Object)">
-            <summary>Umožňuje porovnat dva objekty IndexGroup.</summary>
-            <param name="other">Druhý objekt IndexGroup</param>
-            <returns>Rozhodnutí, zda jsou dva objekty stejné</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.IndexGroup.GetHashCode">
-            <summary>Umožňuje získat pro tento typ hodnotu hash.</summary>
-            <returns>Jedinečná hodnota hash pro tento objekt</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.IndexGroup.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku IndexGroup</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Line.Direction">
             <summary>Směr křivky</summary>
@@ -1698,9 +1619,6 @@
             <returns>Čára od počátečního směru a délka</returns>
             <search>linebyvector,lines</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Line.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Line</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Loop.Face">
             <summary>Celková plocha smyčky</summary>
             <returns/>
@@ -1711,9 +1629,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Loop.IsExternal">
             <summary>Určuje, zda je smyčka hraniční nebo vnitřní.</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Loop.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Loop</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Mesh.VerticesAsThreeNumbers">
             <summary>Vrátí nezpracované vrcholy této sítě jako seznam čísel. Každá sada
@@ -1905,10 +1820,6 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Translate(System.Double,System.Double,System.Double)">
             <summary>Posune síť podle vstupních vzdáleností.</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Mesh.MeshToJson(System.Double)">
-            <summary>Convert the mesh into a JSON object formatted with dynamo.geometry:mesh-1.0.0 schema.</summary>
-            <returns>Výsledný řetězec JSON</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsFaceIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.IndexGroup})">
             <summary>Vytvořit síť z kolekce bodů a kolekce objektů IndexGroup odkazujících na kolekci bodů</summary>
@@ -2131,9 +2042,6 @@
             <search>spline by tangent,tangents,lines</search>
             <weights>0.5,0.5,0.45</weights>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.NurbsCurve.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku NurbsCurve</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.NurbsSurface.DegreeU">
             <summary>Vrací stupeň povrchu ve směru U.</summary>
             <search>surface smoothness,continuity</search>
@@ -2227,9 +2135,6 @@
             control point/weight data.</summary>
             <search>lines</search>
             <weights>0.4</weights>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.NurbsSurface.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku NurbsSurface</summary>
         </member>
         <member name="T:Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition">
             <summary>Typ okrajové podmínky použité na panely v síti.</summary>
@@ -2398,9 +2303,6 @@
             <returns/>
             <search>panel, surface, custom, orthogonal, lattice</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku PanelSurface</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Plane.Origin">
             <summary>Vrací počátek roviny.</summary>
             <search>position,planecenter</search>
@@ -2485,9 +2387,6 @@
             <summary>Vytvoří rovinu v prostoru YZ.</summary>
             <returns>Rovina v globální rovině YZ</returns>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Plane.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Plane</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Point.X">
             <summary>Získat komponentu X bodu</summary>
         </member>
@@ -2565,18 +2464,6 @@
             <param name="tolerance">Tolerance použitá při redukování</param>
             <returns>Jedinečné body</returns>
             <search>unique,duplicates,remove duplicates,distinct,near</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Point.Equals(Autodesk.DesignScript.Geometry.DesignScriptEntity)">
-            <summary>Umožňuje porovnat dva objekty Point.</summary>
-            <param name="other">Druhý objekt Point</param>
-            <returns>Rozhodnutí, zda jsou dva objekty stejné</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Point.ComputeHashCode">
-            <summary>Umožňuje získat pro tento typ hodnotu hash.</summary>
-            <returns>Jedinečná hodnota hash pro tento objekt</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Point.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Point</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.PolyCurve.Points">
             <summary>Vrací počáteční bod první komponenty a koncové body každé křivky komponenty. U uzavřeného objektu PolyCurve je koncový bod vynechán, protože počáteční a koncový bod jsou stejné.</summary>
@@ -2710,9 +2597,6 @@
             <param name="normal">normála kolmá ke směru zesílení. Pokud normála není zadána (má parametr null), bude ve výchozím nastavení použita normála křivky.</param>
             <search>offset,thicken</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolyCurve.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku PolyCurve</summary>
-        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Polygon.Corners">
             <summary>Vrátí rohy mnohoúhelníku.</summary>
         </member>
@@ -2741,9 +2625,6 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Polygon.RegularPolygon(Autodesk.DesignScript.Geometry.Circle,System.Int32)">
             <summary>Sestaví křivku vepsaného mnohoúhelníku v kružnici.</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Polygon.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Polygon</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PolySurface.Surfaces">
             <summary>Vraťte nové povrchy představující základní povrchy.</summary>
@@ -2817,9 +2698,6 @@
             <param name="crossSection">Profil tažení</param>
             <search>sweep,rail,guide,sweep1</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.PolySurface.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku PolySurface</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Rectangle.Width">
             <summary>Šířka obdélníku</summary>
             <search>rectX,rectx</search>
@@ -2869,9 +2747,6 @@
             <param name="length">Délka obdélníku</param>
             <returns>Obdélník vytvořený z šířky a délky</returns>
             <search>rectbylengths</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Rectangle.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Rectangle</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Solid.Area">
             <summary>Vrací oblast plochy -- součet všech oblastí všech ploch.</summary>
@@ -2985,9 +2860,6 @@
             <returns/>
             <search>Brep,brep,boolean,addition</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Solid.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Solid</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Sphere.CenterPoint">
             <summary>Vraťte střed koule.</summary>
         </member>
@@ -3005,9 +2877,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByBestFit(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
             <summary>Umístěte kouli co nejblíže vstupním bodům.</summary>
             <search>Brep,brep</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Sphere.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Sphere</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Surface.Area">
             <summary>Vrací celkovou plochu povrchu.</summary>
@@ -3272,9 +3141,6 @@
             <returns>Povrch vytvořený záplatou</returns>
             <search>edgesrf,edgesurface,patch,fill</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Surface.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Surface</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Topology.Vertices">
             <summary>Vrcholy topologie</summary>
             <returns/>
@@ -3286,9 +3152,6 @@
         <member name="P:Autodesk.DesignScript.Geometry.Topology.Faces">
             <summary>Plochy topologie</summary>
             <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Topology.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Topology</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineEdge.AdjacentFaces">
             <summary>Objekt TSplineFaces přilehlý k této hraně</summary>
@@ -3314,9 +3177,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineEdge.Info">
             <summary>Skupina vlastností objektu TSEdge: objekt uvnFrame a index, zda je objekt TSEdge na hranici, zda je rozložený či nikoli.</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineEdge.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku TSplineEdge</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineFace.Edges">
             <summary>Všechny objekty TSplineEdge kolem této plochy v pořadí proti směru hodinových ručiček</summary>
             <returns/>
@@ -3340,9 +3200,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineFace.Info">
             <summary>Skupina vlastností objektu TSplineFace: objekt uvnFrame, index, valence a počet stran</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineFace.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku TSplineFace</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.IsRadial">
             <summary>Určuje, zda nově vytvořená křivka t-spline obsahuje radiální symetrii.</summary>
         </member>
@@ -3365,9 +3222,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.ByAxial(System.Boolean,System.Boolean,System.Boolean)">
             <summary>Umožňuje vytvořit osový objekt TSplineInitialSymmetry s danými osami symetrie.</summary>
             <search>tspline,symmetry</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku TSplineInitialSymmetry</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineReflection.IsRadial">
             <summary>Určuje, zda je odraz radiální.</summary>
@@ -3398,9 +3252,6 @@
             <param name="segmentAngle">Úhel mezi každým párem segmentů radiální symetrie (ve stupních). Pokud je nastaven na hodnotu 0, je definován hodnotou (360 / segmentsCount).</param>
             <returns>Radiální odraz křivky t-spline</returns>
             <search>tspline,symmetry,reflection,radial</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineReflection.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku TSplineReflection</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Curve},System.Double,System.Double,System.Collections.Generic.IEnumerable{System.Int32},System.Boolean,System.Boolean,System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Collections.Generic.IEnumerable{System.Double},System.Boolean)">
             <inheritdoc cref="M:Autodesk.DesignScript.Interfaces.IGeometryFactory.TSplineSurfaceBuildPipes(Autodesk.DesignScript.Interfaces.ICurveEntity[],System.Double,System.Double,System.Int32[],System.Boolean,System.Boolean,System.Double[],System.Double[],System.Double[],System.Double[],System.Double[],System.Double[],System.Boolean)"/>
@@ -3554,7 +3405,7 @@
             Vrcholy druhé skupiny mohou být z tohoto povrchu nebo z libovolného jiného povrchu.
             V případě různých křivek t-spline je před svařováním provedeno sloučení.</summary>
             <param name="firstGroup">První skupina vrcholů, které mají být svařeny</param>
-            <param name="secondGroup">Druhá skupina vrcholů, které mají být svařeny</param>
+            <param name="secondGroup">Druhá skupina vrcholů ke svaření</param>
             <param name="keepSubdCreases">Zachovat vyostření úseků vstupní topologie</param>
             <returns>Povrch TSpline se svařenými vrcholy</returns>
             <search>tspline,weld,vertex</search>
@@ -3633,7 +3484,7 @@
             Pokud je předána hodnota true, použije se hladká vizualizace. V opačném případě se použije kvádrová.</summary>
             <param name="enable">Povolit nebo zakázat hladkou vizualizaci</param>
             <returns>Křivka t-spline s vybraným stylem vizualizace</returns>
-            <search>tspline,visulization,mode,smooth,box</search>
+            <search>tspline,visualization,mode,smooth,box</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ExtrudeEdges(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.TSpline.TSplineEdge},Autodesk.DesignScript.Geometry.Vector,System.Int32)">
             <summary>Umožňuje provést jedno nebo více symetrických vysunutí u sady hran a přesunout nové hany podle daného vektoru.</summary>
@@ -3963,7 +3814,7 @@
             <search>tspline,cone,radius,cs</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BySphereCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.TSpline.TSplineInitialSymmetry,System.Boolean)">
-            <summary>Umožňuje vytvořit kouli T-Spline vystředěnou na vstupní bod, s daným poloměrem.</summary>
+            <summary>Create a T-Spline Sphere centered at the input Point, with given radius.</summary>
             <param name="centerPoint">Střed koule</param>
             <param name="radius">Poloměr koule</param>
             <param name="radiusSpans">Počet radiálních rozpětí</param>
@@ -4175,9 +4026,6 @@
             <param name="tSplineSurfaces">Povrchy T-Spline, které mají být sloučeny</param>
             <search>tspline,combine</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku TSplineSurface</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.Vertices">
             <summary>Vrcholy obsažené v tomto povrchu T-Spline</summary>
         </member>
@@ -4265,9 +4113,6 @@
             <search>tspline,face,byindex</search>
             <returns>Plocha T-Spline</returns>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku TSplineTopology</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineUVNFrame.Position">
             <summary>Bod objektu TopologyItem na kostře</summary>
         </member>
@@ -4279,9 +4124,6 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineUVNFrame.Normal">
             <summary>Normála objektu TopologyItem</summary>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineUVNFrame.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku TSplineUVNFrame</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.TSpline.TSplineVertex.AdjacentEdges">
             <summary>Objekty TSplineEdge vycházející z tohoto vrcholu</summary>
@@ -4313,9 +4155,6 @@
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineVertex.Info">
             <summary>Skupina vlastností objektu TSVertex: objekt uvnFrame, index, valence a funkční valence, zda je objekt TSVertex neutrální bod, T bod, zda je rozložený či nikoli.</summary>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineVertex.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku TSplineVertex</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.UV.U">
             <summary>Získat komponentu U z UV</summary>
             <search>
@@ -4334,18 +4173,6 @@
             <param name="v">Hodnota V</param>
             <returns>Hodnota UV vytvořena pomocí souřadnic</returns>
             <search>surfaceparam,parameters,uv,uvs</search>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.UV.Equals(System.Object)">
-            <summary>Umožňuje porovnat dva objekty UV.</summary>
-            <param name="other">Druhý objekt UV</param>
-            <returns>Rozhodnutí, zda jsou dva objekty stejné</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.UV.GetHashCode">
-            <summary>Umožňuje získat pro tento typ hodnotu hash.</summary>
-            <returns>Jedinečná hodnota hash pro tento objekt</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.UV.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku UV</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Vector.FromJson(System.String)">
             <summary>Analyzujte vstupní řetězec JSON naformátovaný pomocí schématu autodesk.math:vector3d-1.0.0.</summary>
@@ -4481,18 +4308,6 @@
             <returns>Canonical Z axis vector (0,0,1)</returns>
             <search>z, basis,up</search>
         </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Vector.Equals(Autodesk.DesignScript.Geometry.DesignScriptEntity)">
-            <summary>Umožňuje porovnat dva objekty Vector.</summary>
-            <param name="other">Druhý objekt Vector</param>
-            <returns>Rozhodnutí, zda jsou dva objekty stejné</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Vector.ComputeHashCode">
-            <summary>Umožňuje získat pro tento typ hodnotu hash.</summary>
-            <returns>Jedinečná hodnota hash pro tento objekt</returns>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Vector.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Vector</summary>
-        </member>
         <member name="P:Autodesk.DesignScript.Geometry.Vertex.PointGeometry">
             <summary>Bod, kde se nachází tento vrchol</summary>
             <returns/>
@@ -4504,9 +4319,6 @@
         <member name="P:Autodesk.DesignScript.Geometry.Vertex.AdjacentFaces">
             <summary>Plochy přilehlé k tomuto vrcholu</summary>
             <returns/>
-        </member>
-        <member name="M:Autodesk.DesignScript.Geometry.Vertex.ToString">
-            <summary>Získat řetězcovou reprezentaci prvku Vertex</summary>
         </member>
         <member name="T:Autodesk.DesignScript.Geometry.Properties.Resources">
             <summary>Třída prostředků silného typu k vyhledávání lokalizovaných řetězců apod.</summary>
@@ -4732,108 +4544,6 @@
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.tsplinesurface_buildpipes_deprecated">
              <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato metoda je vyřazena a bude odebrána v budoucí verzi aplikace Dynamo. Použijte místo ní metodu TSplineSurfaceBuildPipes(ICurveEntity[] curves, double defaultRadius, double snappingTolerance, int[] segmentCounts, bool autoHandleStart, bool autoHandleEnd, double[] startRotations, double[] endRotations, double[] startRadii, double[] endRadii, double[] startPositions, double[] endPositions, bool inSmoothMode).
             “.</summary>
-        </member>
-        <member name="T:ProtoGeometryGenerator.GenerateFromInterfaceAttribute">
-            <summary>The <see cref="T:ProtoGeometryGenerator.GenerateFromInterfaceAttribute"/> is the main attribute the generator looks for when it is
-            deciding the classes to auto implement. The <paramref name="protoInterface"/> type should
-            be a type from Autodesk.DesignScript.Interfaces and <paramref name="geometryFactoryInterface"/> should
-            be the source of all the static constructor methods for the interface.
-            <br/><br/>
-            The attribute must be attached to a class that matches the protoInterface name, i.e. if the interface
-            is named IPointEntity, then the class must be named Point for the generator to work correctly.
-            <br/><br/>
-            The generator will implement wrappers for every property and method on protoInterface
-            using ProtoGeometry as instance methods. In addition, all methods that start with the class name
-            (Point) on the factory interface will be implemented as static methods.
-            <br/><br/>
-            Generated implementations can be overriden by implementing a property or method that exactly matches the
-            interface method signature. See <see cref="T:ProtoGeometryGenerator.GenerateShadowingAttribute"/> and <see cref="T:ProtoGeometryGenerator.GenerateOverrideAttribute"/> for
-            other ways to override automatic implementations.</summary>
-        </member>
-        <member name="M:ProtoGeometryGenerator.GenerateFromInterfaceAttribute.#ctor(System.Type,System.Type,System.Type[])">
-            <summary>The <see cref="T:ProtoGeometryGenerator.GenerateFromInterfaceAttribute"/> is the main attribute the generator looks for when it is
-            deciding the classes to auto implement. The <paramref name="protoInterface"/> type should
-            be a type from Autodesk.DesignScript.Interfaces and <paramref name="geometryFactoryInterface"/> should
-            be the source of all the static constructor methods for the interface.
-            <br/><br/>
-            The attribute must be attached to a class that matches the protoInterface name, i.e. if the interface
-            is named IPointEntity, then the class must be named Point for the generator to work correctly.
-            <br/><br/>
-            The generator will implement wrappers for every property and method on protoInterface
-            using ProtoGeometry as instance methods. In addition, all methods that start with the class name
-            (Point) on the factory interface will be implemented as static methods.
-            <br/><br/>
-            Generated implementations can be overriden by implementing a property or method that exactly matches the
-            interface method signature. See <see cref="T:ProtoGeometryGenerator.GenerateShadowingAttribute"/> and <see cref="T:ProtoGeometryGenerator.GenerateOverrideAttribute"/> for
-            other ways to override automatic implementations.</summary>
-        </member>
-        <member name="T:ProtoGeometryGenerator.GenerateOverrideAttribute">
-            <summary>Replace the body of the named property or method with this implementation.</summary>
-            <remarks>
-            Properties and methods implemented by the generator using the <see cref="T:ProtoGeometryGenerator.GenerateFromInterfaceAttribute"/> can
-            be overriden. This attribute will replace the body of the generated method, but let the generator handle
-            documentation, scaling, ASM extents checks and the required boilerplate.
-            </remarks>
-            <param name="overrideName">The method or property to override</param>
-            <param name="virtualKeyword">Implement the generated function as virtual</param>
-        </member>
-        <member name="M:ProtoGeometryGenerator.GenerateOverrideAttribute.#ctor(System.String,System.Boolean)">
-            <summary>Replace the body of the named property or method with this implementation.</summary>
-            <remarks>
-            Properties and methods implemented by the generator using the <see cref="T:ProtoGeometryGenerator.GenerateFromInterfaceAttribute"/> can
-            be overriden. This attribute will replace the body of the generated method, but let the generator handle
-            documentation, scaling, ASM extents checks and the required boilerplate.
-            </remarks>
-            <param name="overrideName">The method or property to override</param>
-            <param name="virtualKeyword">Implement the generated function as virtual</param>
-        </member>
-        <member name="T:ProtoGeometryGenerator.GenerateShadowingAttribute">
-            <summary>Properties and methods implemented by the generator using the <see cref="T:ProtoGeometryGenerator.GenerateFromInterfaceAttribute"/> can
-            be overriden. This attribute will prevent the generation of a method named <paramref name="overrideName"/> 
-            whose params exactly matches the <paramref name="parameterTypes"/> array.
-            <br/><br/>
-            Some of the methods in the library don't match the generated output exactly, meaning the generator can't see
-            them as overrides. This attribute lets a method take the place of another method, by explicitly shadowing
-            what the generator would have implemented.
-            <br/><br/>
-            Several [class]es implement a static FromJson method that takes a single <see langword="string"/>, where
-            the factory interface has a method [class]FromJson that takes <see langword="string"/> and <see langword="double"/>.
-            This attribute lets the single <see langword="string"/> version override the automatic one.</summary>
-        </member>
-        <member name="M:ProtoGeometryGenerator.GenerateShadowingAttribute.#ctor(System.String,System.Type[])">
-            <summary>Properties and methods implemented by the generator using the <see cref="T:ProtoGeometryGenerator.GenerateFromInterfaceAttribute"/> can
-            be overriden. This attribute will prevent the generation of a method named <paramref name="overrideName"/> 
-            whose params exactly matches the <paramref name="parameterTypes"/> array.
-            <br/><br/>
-            Some of the methods in the library don't match the generated output exactly, meaning the generator can't see
-            them as overrides. This attribute lets a method take the place of another method, by explicitly shadowing
-            what the generator would have implemented.
-            <br/><br/>
-            Several [class]es implement a static FromJson method that takes a single <see langword="string"/>, where
-            the factory interface has a method [class]FromJson that takes <see langword="string"/> and <see langword="double"/>.
-            This attribute lets the single <see langword="string"/> version override the automatic one.</summary>
-        </member>
-        <member name="T:ProtoGeometryGenerator.PropertyReplacementFieldAttribute">
-            <summary>This attribute lets an interface property be auto generated from a backing field, letting that
-            field take the property's place in the ToString, Equals and HashCode methods.
-            Special handling is added for Point and Vector types when backed by a Coordinate.
-            This also lets the generator handle documentation for the property.</summary>
-        </member>
-        <member name="M:ProtoGeometryGenerator.PropertyReplacementFieldAttribute.#ctor(System.String,System.String)">
-            <summary>This attribute lets an interface property be auto generated from a backing field, letting that
-            field take the property's place in the ToString, Equals and HashCode methods.
-            Special handling is added for Point and Vector types when backed by a Coordinate.
-            This also lets the generator handle documentation for the property.</summary>
-        </member>
-        <member name="T:ProtoGeometryGenerator.OverrideCompareUsingAttribute">
-            <summary>This attribute lets a class override the CompareUsing attribute on the defining interface
-            (or set one at all if it is missing). This in turn lets the generator create the
-            (Get|Compute)HashCode and Equals methods for the class based on the supplied property names.</summary>
-        </member>
-        <member name="M:ProtoGeometryGenerator.OverrideCompareUsingAttribute.#ctor(System.String[])">
-            <summary>This attribute lets a class override the CompareUsing attribute on the defining interface
-            (or set one at all if it is missing). This in turn lets the generator create the
-            (Get|Compute)HashCode and Equals methods for the class based on the supplied property names.</summary>
         </member>
     </members>
 </doc>
