@@ -7,7 +7,7 @@
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
         Title="{x:Static p:Resources.GenericTaskDialogTitle}"
         MinWidth="400"
-        MaxWidth="500"
+        MaxWidth="600"
         AllowsTransparency="True"
         ResizeMode="NoResize"
         SizeToContent="WidthAndHeight"

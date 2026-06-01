@@ -10,6 +10,9 @@ using System.Threading;
 
 namespace Dynamo.Graph.Workspaces.Locking
 {
+    /// <summary>
+    /// Coordinates graph lock acquisition, heartbeat, and release for a Dynamo model.
+    /// </summary>
     internal sealed class GraphLockManager : IDisposable
     {
 
@@ -23,9 +26,7 @@ namespace Dynamo.Graph.Workspaces.Locking
         private readonly Guid sessionId;
         private readonly int processId;
         private readonly DateTime processStartTimeUtc;
-        private readonly string userName;
         private readonly string machineName;
-        private readonly string dynamoVersion;
         private readonly int heartbeatMilliseconds;
         private readonly bool enabled;
         private Timer heartbeatTimer;
@@ -39,6 +40,13 @@ namespace Dynamo.Graph.Workspaces.Locking
             internal WorkspaceModel Workspace { get; set; }
         }
 
+        /// <summary>
+        /// Initializes a graph lock manager for a Dynamo model.
+        /// </summary>
+        /// <param name="dynamoModel">The Dynamo model whose workspaces are tracked.</param>
+        /// <param name="prompt">The UI prompt used when a graph lock conflict is found.</param>
+        /// <param name="heartbeatMilliseconds">The heartbeat interval for owned locks.</param>
+        /// <param name="forceEnable">True to enable locking in modes that normally skip it.</param>
         internal GraphLockManager(DynamoModel dynamoModel, IGraphLockUserPrompt prompt = null, int heartbeatMilliseconds = DefaultHeartbeatMilliseconds, bool forceEnable = false)
         {
             this.dynamoModel = dynamoModel;
@@ -48,9 +56,7 @@ namespace Dynamo.Graph.Workspaces.Locking
             locks = new ConcurrentDictionary<string, OwnedLock>(pathComparer);
             openingPaths = new ConcurrentDictionary<string, byte>(pathComparer);
             sessionId = Guid.NewGuid();
-            userName = Environment.UserName;
             machineName = Environment.MachineName;
-            dynamoVersion = DynamoModel.Version;
 
             using (var process = Process.GetCurrentProcess())
             {
@@ -76,11 +82,21 @@ namespace Dynamo.Graph.Workspaces.Locking
             heartbeatTimer = new Timer(OnHeartbeat, null, this.heartbeatMilliseconds, this.heartbeatMilliseconds);
         }
 
+        /// <summary>
+        /// Sets the UI prompt used when a graph lock conflict is detected.
+        /// </summary>
+        /// <param name="userPrompt">The prompt implementation, or null to cancel conflicts silently.</param>
         internal void SetPrompt(IGraphLockUserPrompt userPrompt)
         {
             prompt = userPrompt;
         }
 
+        /// <summary>
+        /// Attempts to acquire a graph lock before opening a graph file.
+        /// </summary>
+        /// <param name="graphPath">The graph path requested by the user.</param>
+        /// <param name="allowPromptUI">True to allow user interaction when a conflict is found.</param>
+        /// <returns>The lock acquisition result and graph path to open.</returns>
         internal GraphLockAcquireResult TryAcquire(string graphPath, bool allowPromptUI)
         {
             if (!enabled || string.IsNullOrEmpty(graphPath))
@@ -100,6 +116,11 @@ namespace Dynamo.Graph.Workspaces.Locking
             return result;
         }
 
+        /// <summary>
+        /// Completes a graph open attempt and releases the lock if opening failed.
+        /// </summary>
+        /// <param name="graphPath">The graph path that was opened.</param>
+        /// <param name="succeeded">Whether the graph opened successfully.</param>
         internal void CompleteOpen(string graphPath, bool succeeded)
         {
             if (!enabled || string.IsNullOrEmpty(graphPath))
@@ -116,6 +137,10 @@ namespace Dynamo.Graph.Workspaces.Locking
             }
         }
 
+        /// <summary>
+        /// Releases the lock for a graph path.
+        /// </summary>
+        /// <param name="graphPath">The graph path whose lock should be released.</param>
         internal void Release(string graphPath)
         {
             if (!enabled || string.IsNullOrEmpty(graphPath))
@@ -135,6 +160,11 @@ namespace Dynamo.Graph.Workspaces.Locking
             }
         }
 
+        /// <summary>
+        /// Releases every lock owned by this manager.
+        /// </summary>
+        /// <param name="sender">Optional event sender.</param>
+        /// <param name="args">Optional event arguments.</param>
         internal void ReleaseAll(object sender = null, EventArgs args = null)
         {
             foreach (var path in locks.Keys.ToList())
@@ -146,6 +176,7 @@ namespace Dynamo.Graph.Workspaces.Locking
             heartbeatTimer = null;
         }
 
+        // Performs the actual sidecar creation/read conflict flow for a normalized graph path
         private GraphLockAcquireResult TryAcquireCore(string normalizedPath, bool allowPromptUI, WorkspaceModel workspace)
         {
             var sidecarPath = GraphLockFile.PathFor(normalizedPath);
@@ -174,13 +205,12 @@ namespace Dynamo.Graph.Workspaces.Locking
                     }
 
                     var response = PromptIfAllowed(normalizedPath, readable ? existingLock : null, isStale, allowPromptUI);
-                    switch (response.Decision)
+                    if (response.ShouldSaveAs)
                     {
-                        case GraphLockUserDecision.Cancel:
-                            return GraphLockAcquireResult.Cancelled(existingLock);
-                        case GraphLockUserDecision.SaveAs:
-                            return TryCopyToSaveAsPath(normalizedPath, response.SaveAsPath, workspace, existingLock);
+                        return TryCopyToSaveAsPath(normalizedPath, response.SaveAsPath, workspace, existingLock);
                     }
+
+                    return GraphLockAcquireResult.Cancelled(existingLock);
                 }
                 catch (UnauthorizedAccessException ex)
                 {
@@ -199,6 +229,7 @@ namespace Dynamo.Graph.Workspaces.Locking
             return GraphLockAcquireResult.Unavailable(normalizedPath);
         }
 
+        // Copies a locked graph to a user-selected path and locks that copy before opening
         private GraphLockAcquireResult TryCopyToSaveAsPath(
             string sourcePath,
             string saveAsPath,
@@ -263,6 +294,7 @@ namespace Dynamo.Graph.Workspaces.Locking
             }
         }
 
+        // Tracks a lock that this Dynamo process owns
         private void RegisterOwnedLock(string normalizedPath, string sidecarPath, GraphLockInfo info, WorkspaceModel workspace)
         {
             locks[normalizedPath] = new OwnedLock
@@ -273,6 +305,7 @@ namespace Dynamo.Graph.Workspaces.Locking
             };
         }
 
+        // Refreshes heartbeat timestamps for all locks still owned by this session
         private void OnHeartbeat(object state)
         {
             foreach (var pair in locks.ToList())
@@ -298,6 +331,7 @@ namespace Dynamo.Graph.Workspaces.Locking
             }
         }
 
+        // Deletes a sidecar only when it still belongs to this session
         private void ReleaseOwnedLock(string normalizedPath, OwnedLock owned)
         {
             try
@@ -315,6 +349,7 @@ namespace Dynamo.Graph.Workspaces.Locking
             }
         }
 
+        // Associates a newly opened workspace with its already acquired lock
         private void OnWorkspaceAdded(WorkspaceModel workspace)
         {
             if (workspace == null || string.IsNullOrEmpty(workspace.FileName))
@@ -400,11 +435,8 @@ namespace Dynamo.Graph.Workspaces.Locking
             }
         }
 
-        private GraphLockUserResponse PromptIfAllowed(
-            string graphPath,
-            GraphLockInfo existingLock,
-            bool isStale,
-            bool allowPromptUI)
+        // Asks the WPF layer for a user decision only when UI prompts are allowed
+        private GraphLockUserResponse PromptIfAllowed(string graphPath, GraphLockInfo existingLock, bool isStale, bool allowPromptUI)
         {
             if (!allowPromptUI || prompt == null)
             {
@@ -434,6 +466,7 @@ namespace Dynamo.Graph.Workspaces.Locking
                      existingLock.ProcessStartUtc == processStartTimeUtc));
         }
 
+        // Builds the lock metadata written by this Dynamo session
         private GraphLockInfo BuildSelfInfo(string normalizedPath)
         {
             var now = DateTime.UtcNow;
@@ -443,16 +476,14 @@ namespace Dynamo.Graph.Workspaces.Locking
                 SchemaVersion = 1,
                 SessionId = sessionId,
                 GraphPath = normalizedPath,
-                UserName = userName,
                 MachineName = machineName,
                 ProcessId = processId,
                 ProcessStartUtc = processStartTimeUtc,
-                DynamoVersion = dynamoVersion,
-                AcquiredUtc = now,
                 LastHeartbeatUtc = now
             };
         }
 
+        // Detects stale locks from dead processes on the same machine
         private bool IsDeadLocalProcess(GraphLockInfo existingLock)
         {
             if (existingLock == null ||
@@ -493,6 +524,7 @@ namespace Dynamo.Graph.Workspaces.Locking
             return pathComparer.Equals(Path.GetFullPath(firstPath), Path.GetFullPath(secondPath));
         }
 
+        // Reads process start time safely because some platforms/processes can deny it
         private static DateTime GetProcessStartTimeUtc(Process process)
         {
             try
@@ -505,6 +537,9 @@ namespace Dynamo.Graph.Workspaces.Locking
             }
         }
 
+        /// <summary>
+        /// Releases owned graph locks and unsubscribes from Dynamo model events.
+        /// </summary>
         public void Dispose()
         {
             if (disposed)

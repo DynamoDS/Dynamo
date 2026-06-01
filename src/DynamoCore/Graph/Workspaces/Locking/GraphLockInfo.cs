@@ -3,7 +3,10 @@ using System;
 
 namespace Dynamo.Graph.Workspaces.Locking
 {
-    internal sealed class GraphLockInfo         // DO WE NEED ALL THOSE?
+    /// <summary>
+    /// Serializable metadata stored in a graph lock sidecar file.
+    /// </summary>
+    internal sealed class GraphLockInfo
     {
         [JsonProperty("schemaVersion")]
         internal int SchemaVersion { get; set; }
@@ -14,9 +17,6 @@ namespace Dynamo.Graph.Workspaces.Locking
         [JsonProperty("graphPath")]
         internal string GraphPath { get; set; }
 
-        [JsonProperty("userName")]
-        internal string UserName { get; set; }
-
         [JsonProperty("machinename")]
         internal string MachineName { get; set; }
 
@@ -25,12 +25,6 @@ namespace Dynamo.Graph.Workspaces.Locking
 
         [JsonProperty("processStartUtc")]
         internal DateTime ProcessStartUtc { get; set; }
-
-        [JsonProperty("dynamoVersion")]
-        internal string DynamoVersion { get; set; }
-
-        [JsonProperty("acquiredUtc")]
-        internal DateTime AcquiredUtc { get; set; }
 
         [JsonProperty("lastHeartbeatUtc")]
         internal DateTime LastHeartbeatUtc { get; set; }

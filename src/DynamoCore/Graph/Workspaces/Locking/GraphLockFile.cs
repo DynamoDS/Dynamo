@@ -9,6 +9,9 @@ namespace Dynamo.Graph.Workspaces.Locking
 {
     internal static class GraphLockFile
     {
+        /// <summary>
+        /// Provides file-system operations for graph lock sidecar files.
+        /// </summary>
         private static readonly JsonSerializer Serializer = JsonSerializer.Create(new JsonSerializerSettings
         {
             Culture = System.Globalization.CultureInfo.InvariantCulture,
@@ -20,6 +23,11 @@ namespace Dynamo.Graph.Workspaces.Locking
             TypeNameHandling = TypeNameHandling.None
         });
 
+        /// <summary>
+        /// Gets the hidden sidecar lock path for a graph file.
+        /// </summary>
+        /// <param name="graphPath">The graph file path.</param>
+        /// <returns>The sidecar lock file path.</returns>
         internal static string PathFor(string graphPath)
         {
             var fullPath = Path.GetFullPath(graphPath);
@@ -29,6 +37,12 @@ namespace Dynamo.Graph.Workspaces.Locking
             return Path.Combine(directory, "." + fileName + ".dynlock");
         }
 
+        /// <summary>
+        /// Attempts to create a lock file only if it does not already exist.
+        /// </summary>
+        /// <param name="sidecarPath">The sidecar lock file path.</param>
+        /// <param name="info">The lock metadata to write.</param>
+        /// <returns>True if the lock file was created; false if one already exists.</returns>
         internal static bool TryCreateExclusive(string sidecarPath, GraphLockInfo info)
         {
             try
@@ -45,20 +59,15 @@ namespace Dynamo.Graph.Workspaces.Locking
             {
                 return false;
             }
-            catch (UnauthorizedAccessException)
-            {
-                throw;
-            }
-            catch (SecurityException)
-            {
-                throw;
-            }
-            catch (IOException)
-            {
-                throw;
-            }
         }
 
+
+        /// <summary>
+        /// Attempts to read graph-lock metadata from a sidecar file.
+        /// </summary>
+        /// <param name="sidecarPath">The sidecar lock file path.</param>
+        /// <param name="info">The parsed lock metadata when reading succeeds.</param>
+        /// <returns>True if metadata was read; otherwise false.</returns>
         internal static bool TryRead(string sidecarPath, out GraphLockInfo info)
         {
             info = null;
@@ -100,6 +109,11 @@ namespace Dynamo.Graph.Workspaces.Locking
             return false;
         }
 
+        /// <summary>
+        /// Updates a lock file heartbeat using a temp file and replace operation.
+        /// </summary>
+        /// <param name="sidecarPath">The sidecar lock file path.</param>
+        /// <param name="info">The lock metadata to write.</param>
         internal static void WriteHeartbeat(string sidecarPath, GraphLockInfo info)
         {
             var tempPath = sidecarPath + "temp";
@@ -124,6 +138,10 @@ namespace Dynamo.Graph.Workspaces.Locking
             }
         }
 
+        /// <summary>
+        /// Attempts to delete a sidecar lock file without throwing.
+        /// </summary>
+        /// <param name="sidecarPath">The sidecar lock file path.</param>
         internal static void TryDelete(string sidecarPath)
         {
             try

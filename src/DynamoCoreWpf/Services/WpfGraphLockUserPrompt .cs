@@ -8,11 +8,19 @@ using System.Windows;
 
 namespace Dynamo.Wpf.Services
 {
+    /// <summary>
+    /// Shows WPF UI for graph-lock conflicts.
+    /// </summary>
     internal sealed class WpfGraphLockUserPrompt : IGraphLockUserPrompt
     {
         private readonly Func<Window> ownerProvider;
         private readonly Func<string> productNameProvider;
 
+        /// <summary>
+        /// Initializes a WPF graph-lock prompt.
+        /// </summary>
+        /// <param name="ownerProvider">Provides the owner window when a prompt is shown.</param>
+        /// <param name="productNameProvider">Provides the product name for save-dialog filters.</param>
         internal WpfGraphLockUserPrompt(Func<Window> ownerProvider, Func<string> productNameProvider)
         {
             this.ownerProvider = ownerProvider;
@@ -20,31 +28,23 @@ namespace Dynamo.Wpf.Services
         }
 
         /// <summary>
-        /// Asks the user whether to cancel opening the locked graph or save a copy to open instead.
+        /// Shows a Dynamo message box for a graph-lock conflict and optionally collects a copy destination.
         /// </summary>
-        /// <param name="graphPath">The path of the graph that is already locked.</param>
-        /// <param name="existingLock">The existing lock metadata, or null if the lock file could not be read.</param>
+        /// <param name="graphPath">The locked graph path.</param>
+        /// <param name="existingLock">The existing lock metadata, or null if unavailable.</param>
         /// <param name="isStale">Whether the existing lock appears stale.</param>
         /// <returns>The user's graph-lock decision.</returns>
         public GraphLockUserResponse AskUser(string graphPath, GraphLockInfo existingLock, bool isStale)
         {
-            var owner = ownerProvider?.Invoke();
-            var message =
-@"This file is currently open in another instance of Dynamo.
-To avoid data loss or corruption, please choose one of the following actions:
- • Save the graph with a different name to create a new version of the file.
- • Cancel to return to the workspace and close the other instance of Dynamo.";
-            var header = "File already open in another Dynamo instance";                        // LOCALISE THAT STRING
-
             var result = DynamoMessageBox.Show(
-                owner,
-                message,
-                header,                                                                         // LOCALISE THAT STRING
+                ownerProvider?.Invoke(),
+                Resources.GraphLockFileAlreadyOpenMessage,
+                Resources.GraphLockFileAlreadyOpenTitle,
                 MessageBoxButton.OKCancel,
                 new[]
                 {
-                    "Save as",                                                                  // LOCALISE THAT STRING
-                    "Cancel"                                                                    // LOCALISE THAT STRING
+                    Resources.GraphLockSaveAsButton,
+                    Resources.CancelButton
                 },
                 MessageBoxImage.Warning);
 
@@ -57,6 +57,7 @@ To avoid data loss or corruption, please choose one of the following actions:
             return string.IsNullOrEmpty(saveAsPath) ? GraphLockUserResponse.Cancel() : GraphLockUserResponse.SaveAs(saveAsPath);
         }
 
+        // Shows a Save As dialog for the copy path, matching the graph file extension
         private string ShowSaveAsDialog(string graphPath)
         {
             var extension = Path.GetExtension(graphPath);
@@ -75,6 +76,11 @@ To avoid data loss or corruption, please choose one of the following actions:
                 Filter = filter,
                 FileName = Path.GetFileName(graphPath),
             };
+
+            if (Directory.Exists(directory))
+            {
+                dialog.InitialDirectory = directory;
+            }
 
             return dialog.ShowDialog() == true ? dialog.FileName : null;
         }
