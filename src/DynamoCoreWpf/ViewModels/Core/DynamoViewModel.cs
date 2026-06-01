@@ -47,6 +47,7 @@ using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using Dynamo.Wpf.Services;
 using DynamoMLDataPipeline;
 using DynamoServices;
 using DynamoUtilities;
@@ -843,10 +844,10 @@ namespace Dynamo.ViewModels
 
             // initialize core data structures
             this.model = startConfiguration.DynamoModel;
-            this.model.GraphLockManager?.SetPrompt(new WpfGraphLockUserPrompt(() => Owner));
             this.model.CommandStarting += OnModelCommandStarting;
             this.model.CommandCompleted += OnModelCommandCompleted;
             this.model.RequestsCrashPrompt += CrashReportTool.ShowCrashWindow;
+            this.model.GraphLockManager?.SetPrompt(new WpfGraphLockUserPrompt(() => Owner, () => BrandingResourceProvider.ProductName));
 
             this.HideReportOptions = startConfiguration.HideReportOptions || model.NoNetworkMode;
             UsageReportingManager.Instance.InitializeCore(this);
