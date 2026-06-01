@@ -8,19 +8,16 @@ namespace Dynamo.Graph.Workspaces.Locking
     /// </summary>
     internal sealed class GraphLockInfo
     {
-        [JsonProperty("schemaVersion")]
-        internal int SchemaVersion { get; set; }
-
         [JsonProperty("sessionId")]
         internal Guid SessionId { get; set; }
 
         [JsonProperty("graphPath")]
         internal string GraphPath { get; set; }
 
-        [JsonProperty("machinename")]
+        [JsonProperty("machineName")]
         internal string MachineName { get; set; }
 
-        [JsonProperty("processid")]
+        [JsonProperty("processId")]
         internal int ProcessId { get; set; }
 
         [JsonProperty("processStartUtc")]

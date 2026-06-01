@@ -32,9 +32,8 @@ namespace Dynamo.Wpf.Services
         /// </summary>
         /// <param name="graphPath">The locked graph path.</param>
         /// <param name="existingLock">The existing lock metadata, or null if unavailable.</param>
-        /// <param name="isStale">Whether the existing lock appears stale.</param>
         /// <returns>The user's graph-lock decision.</returns>
-        public GraphLockUserResponse AskUser(string graphPath, GraphLockInfo existingLock, bool isStale)
+        public GraphLockUserResponse AskUser(string graphPath, GraphLockInfo existingLock)
         {
             var result = DynamoMessageBox.Show(
                 ownerProvider?.Invoke(),
@@ -46,7 +45,8 @@ namespace Dynamo.Wpf.Services
                     Resources.GraphLockSaveAsButton,
                     Resources.CancelButton
                 },
-                MessageBoxImage.Warning);
+                MessageBoxImage.Warning,
+                maxWidth: 600);
 
             if (result != MessageBoxResult.OK)
             {

@@ -7,11 +7,11 @@ using Newtonsoft.Json;
 
 namespace Dynamo.Graph.Workspaces.Locking
 {
+    /// <summary>
+    /// Provides file-system operations for graph lock sidecar files.
+    /// </summary>
     internal static class GraphLockFile
-    {
-        /// <summary>
-        /// Provides file-system operations for graph lock sidecar files.
-        /// </summary>
+    {        
         private static readonly JsonSerializer Serializer = JsonSerializer.Create(new JsonSerializerSettings
         {
             Culture = System.Globalization.CultureInfo.InvariantCulture,
@@ -24,17 +24,13 @@ namespace Dynamo.Graph.Workspaces.Locking
         });
 
         /// <summary>
-        /// Gets the hidden sidecar lock path for a graph file.
+        /// Gets the sidecar lock path for a graph file.
         /// </summary>
         /// <param name="graphPath">The graph file path.</param>
         /// <returns>The sidecar lock file path.</returns>
         internal static string PathFor(string graphPath)
         {
-            var fullPath = Path.GetFullPath(graphPath);
-            var directory = Path.GetDirectoryName(fullPath);
-            var fileName = Path.GetFileName(fullPath);
-
-            return Path.Combine(directory, "." + fileName + ".dynlock");
+            return Path.GetFullPath(graphPath) + ".dynlock";
         }
 
         /// <summary>
@@ -48,9 +44,9 @@ namespace Dynamo.Graph.Workspaces.Locking
             try
             {
                 using (var stream = new FileStream(sidecarPath, FileMode.CreateNew, FileAccess.Write, FileShare.Read))
-                using (var writter = new StreamWriter(stream, new UTF8Encoding(false)))
+                using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
                 {
-                    Serializer.Serialize(writter, info);
+                    Serializer.Serialize(writer, info);
                 }
 
                 return true;
@@ -116,25 +112,35 @@ namespace Dynamo.Graph.Workspaces.Locking
         /// <param name="info">The lock metadata to write.</param>
         internal static void WriteHeartbeat(string sidecarPath, GraphLockInfo info)
         {
-            var tempPath = sidecarPath + "temp";
-
-            using (var stream = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None))
-            using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
-            {
-                Serializer.Serialize(writer, info);
-            }
+            var tempPath = sidecarPath + ".tmp";
+            var replaced = false;
 
             try
             {
-                File.Replace(tempPath, sidecarPath, null, true);
+                using (var stream = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
+                {
+                    Serializer.Serialize(writer, info);
+                }
+
+                try
+                {
+                    File.Replace(tempPath, sidecarPath, null, true);
+                }
+                catch (Exception ex) when (ex is IOException || ex is PlatformNotSupportedException || ex is UnauthorizedAccessException)
+                {
+                    File.Move(tempPath, sidecarPath, true);
+                }
+
+                replaced = true;
             }
-            catch (IOException)
+            finally
             {
-                File.Move(tempPath, sidecarPath, true);
-            }
-            catch (PlatformNotSupportedException)
-            {
-                File.Move(tempPath, sidecarPath, true);
+                // If the swap never completed (e.g. serialization threw), don't leave a stray scratch file.
+                if (!replaced && File.Exists(tempPath))
+                {
+                    TryDelete(tempPath);
+                }
             }
         }
 

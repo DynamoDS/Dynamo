@@ -161,7 +161,7 @@ namespace Dynamo.Models
         internal Dictionary<string, List<string>> GraphChecksumDictionary { get; set; }
 
         /// <summary>
-        /// Coordinates a graph locks for graph files opened by this Dynamo model.
+        /// Coordinates graph locks for graph files opened by this Dynamo model.
         /// </summary>
         internal GraphLockManager GraphLockManager { get; private set; }
 
@@ -169,6 +169,12 @@ namespace Dynamo.Models
         /// Indicates whether the last file open request was cancelled before a workspace was loaded.
         /// </summary>
         internal bool LastOpenFileOperationWasCancelled { get; private set; }
+
+        /// <summary>
+        /// Indicates whether the last file open was redirected to a copy because the requested
+        /// graph was already locked by another Dynamo instance (the Save As flow).
+        /// </summary>
+        internal bool LastOpenFileWasGraphLockRedirect { get; private set; }
 
         // Get ProgramData folder path (usually C:\ProgramData)
         static readonly string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
@@ -2191,6 +2197,7 @@ namespace Dynamo.Models
         public void OpenFileFromPath(string filePath, bool forceManualExecutionMode = false)
         {
             LastOpenFileOperationWasCancelled = false;
+            LastOpenFileWasGraphLockRedirect = false;
 
             var graphLockResult = GraphLockManager?.TryAcquire(filePath, true) ?? GraphLockAcquireResult.Acquired();
             if (!graphLockResult.ShouldOpen)
@@ -2201,6 +2208,15 @@ namespace Dynamo.Models
             }
 
             var filePathToOpen = string.IsNullOrEmpty(graphLockResult.GraphPath) ? filePath : graphLockResult.GraphPath;
+
+            // If the lock manager redirected us to a different file (a Save As copy made because the
+            // original was locked), remember it so the UI can skip the trust warning for the copy.
+            if (!string.IsNullOrEmpty(filePathToOpen) &&
+                !string.Equals(Path.GetFullPath(filePathToOpen), Path.GetFullPath(filePath), StringComparison.OrdinalIgnoreCase))
+            {
+                LastOpenFileWasGraphLockRedirect = true;
+            }
+
             var openedSuccessfully = false;
 
             Exception ex;

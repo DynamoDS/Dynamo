@@ -569,7 +569,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Services\WpfGraphLockUserPrompt .cs" />
+    <Compile Include="Services\WpfGraphLockUserPrompt.cs" />
     <Compile Include="UI\CustomSaveFileDialog.cs" />
     <Compile Include="UI\ToastManager.cs" />
     <Compile Include="UI\GuidedTour\CustomRichTextBox.cs" />

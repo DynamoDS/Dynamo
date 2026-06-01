@@ -2223,35 +2223,50 @@ namespace Dynamo.ViewModels
                     filePath = parameters as string;
                 }
 
-                // Execute graph open command
-                ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode, isTemplate));
-
-                // If graph-lock cancelled the open, refresh Home so its loading state clears,
-                // then stop the oprn flow.
-                if (Model.LastOpenFileOperationWasCancelled)
-                {
-                    if (ShowStartPage)
-                    {
-                        RaisePropertyChanged(nameof(ShowStartPage));
-                    }
-
-                    return;
-                }
+                // Remember whether we are on the start page so we can return to it if the user cancels.
+                bool startPageVisibleBeforeOpen = ShowStartPage;
 
                 var directoryName = Path.GetDirectoryName(filePath);
 
-                // Display trust warning when file is not among trust location and warning feature is on
+                // Decide whether the trust warning is needed and block the run BEFORE opening, so an
+                // untrusted graph cannot start running before the user has accepted the warning.
                 bool displayTrustWarning = !PreferenceSettings.IsTrustedLocation(directoryName)
                     && !filePath.EndsWith("dyf")
                     && !DynamoModel.IsTestMode
                     && !PreferenceSettings.DisableTrustWarnings
                     && FileTrustViewModel != null;
-                RunSettings.ForceBlockRun = displayTrustWarning;                
+                RunSettings.ForceBlockRun = displayTrustWarning;
+
+                // Execute graph open command
+                ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode, isTemplate));
+
+                // The file is already open in another Dynamo instance and the user pressed Cancel:
+                // nothing was opened, so undo the run block, make sure no trust warning is shown,
+                // restore the previous start-page state, and stop.
+                if (Model.LastOpenFileOperationWasCancelled)
+                {
+                    RunSettings.ForceBlockRun = false;
+
+                    if (FileTrustViewModel != null)
+                    {
+                        FileTrustViewModel.ShowWarningPopup = false;
+                    }
+                    ShowStartPage = startPageVisibleBeforeOpen;
+                    return;
+                }
+
+                // The open was redirected to a Save As copy because of a graph-lock conflict:
+                // don't show the trust warning and don't leave the run blocked.
+                if (Model.LastOpenFileWasGraphLockRedirect)
+                {
+                    RunSettings.ForceBlockRun = false;
+                    displayTrustWarning = false;
+                }
 
                 // Apply annotation updates based on the preference setting
                 RefreshAnnotationDescriptions();
 
-                // Only show trust warning popop when current opened workspace is homeworkspace and not custom node workspace
+                // Only show trust warning popup when current opened workspace is homeworkspace and not custom node workspace
                 if (displayTrustWarning && (currentWorkspaceViewModel?.IsHomeSpace ?? false))
                 {
                     // Skip these when opening dyf

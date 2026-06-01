@@ -3,7 +3,7 @@ namespace Dynamo.Graph.Workspaces.Locking
     /// <summary>
     /// Describes the result of trying to acquire a graph lock
     /// </summary>
-    internal enum GraphLockConflict
+    internal enum GraphLockResults
     {
         Acquired,
         Cancelled,
@@ -13,26 +13,26 @@ namespace Dynamo.Graph.Workspaces.Locking
     /// <summary>
     /// Contains the outcome of a graph-lock acquisition attempt
     /// </summary>
-    internal sealed record GraphLockAcquireResult(GraphLockConflict Conflict, string GraphPath = null, GraphLockInfo ExistingLock = null)
+    internal sealed record GraphLockAcquireResult(GraphLockResults Conflict, string GraphPath = null, GraphLockInfo ExistingLock = null)
     {
-        internal bool ShouldOpen => Conflict is GraphLockConflict.Acquired or GraphLockConflict.Unavailable;
+        internal bool ShouldOpen => Conflict is GraphLockResults.Acquired or GraphLockResults.Unavailable;
 
         // Creates a successful graph-lock result
         internal static GraphLockAcquireResult Acquired(string graphPath = null)
         {
-            return new GraphLockAcquireResult(GraphLockConflict.Acquired, graphPath);
+            return new GraphLockAcquireResult(GraphLockResults.Acquired, graphPath);
         }
 
         // Creates a cancelled graph-lock result
         internal static GraphLockAcquireResult Cancelled(GraphLockInfo existingLock)
         {
-            return new GraphLockAcquireResult(GraphLockConflict.Cancelled, ExistingLock: existingLock);
+            return new GraphLockAcquireResult(GraphLockResults.Cancelled, ExistingLock: existingLock);
         }
 
         // Creates a result for lock-file access failures
         internal static GraphLockAcquireResult Unavailable(string graphPath = null)
         {
-            return new GraphLockAcquireResult(GraphLockConflict.Unavailable, graphPath);
+            return new GraphLockAcquireResult(GraphLockResults.Unavailable, graphPath);
         }
     }
 
