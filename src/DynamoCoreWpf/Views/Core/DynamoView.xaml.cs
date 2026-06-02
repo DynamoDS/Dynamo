@@ -1388,6 +1388,12 @@ namespace Dynamo.Controls
             {
                 try
                 {
+                    if (dynamoViewModel.Model.NoNetworkMode &&
+                        (ext.Name.Equals("Autodesk Assistant") || ext.Name.Equals("Dynamo MCP View Extension")))
+                    {
+                        continue;
+                    }
+
                     ext.Loaded(loadedParams);
                     ReOpenSavedExtensionOnDynamoStartup(ext);
                 }
