@@ -24,6 +24,7 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Graph.Workspaces.Locking;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -2243,7 +2244,7 @@ namespace Dynamo.ViewModels
                 // The file is already open in another Dynamo instance
                 // On cancel: nothing is opened, so undo the run block, make sure no trust warning is shown,
                 // restore the previous start-page state and stop.
-                if (Model.LastOpenFileOperationWasCancelled)
+                if (Model.LastGraphLockOpenOutcome == GraphLockOutcome.Cancelled)
                 {
                     RunSettings.ForceBlockRun = false;
 
@@ -2257,7 +2258,7 @@ namespace Dynamo.ViewModels
 
                 // On Save as: the model is opened as a copy at a different location,
                 // re-evaluate the trust state for that copy.
-                if (Model.LastOpenFileWasGraphLockRedirect)
+                if (Model.LastGraphLockOpenOutcome == GraphLockOutcome.RedirectedToCopy)
                 {
                     var openedPath = Model.CurrentWorkspace?.FileName;
                     if (!string.IsNullOrEmpty(openedPath))

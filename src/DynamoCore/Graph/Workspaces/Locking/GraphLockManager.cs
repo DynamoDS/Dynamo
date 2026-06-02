@@ -15,7 +15,6 @@ namespace Dynamo.Graph.Workspaces.Locking
     /// </summary>
     internal sealed class GraphLockManager : IDisposable
     {
-
         internal const int DefaultHeartbeatMilliseconds = 30000;
         private const int StaleFactor = 5;
 
@@ -395,7 +394,6 @@ namespace Dynamo.Graph.Workspaces.Locking
                 TryAcquireCore(normalizedPath, false, workspace);
             }
 
-            // Track future renames/saves for this workspace. Unsubscribe first to stay idempotent.
             workspace.PropertyChanged -= OnWorkspacePropertyChanged;
             workspace.PropertyChanged += OnWorkspacePropertyChanged;
         }
@@ -410,6 +408,7 @@ namespace Dynamo.Graph.Workspaces.Locking
             if (workspace != null)
             {
                 workspace.PropertyChanged -= OnWorkspacePropertyChanged;
+                ReleaseWorkspace(workspace);
             }
         }
 

@@ -5,12 +5,12 @@ namespace Dynamo.Graph.Workspaces.Locking
     /// </summary>
     internal sealed record GraphLockAcquireResult(GraphLockOutcome Conflict, string GraphPath = null, GraphLockInfo ExistingLock = null)
     {
-        internal bool ShouldOpen => Conflict is GraphLockOutcome.Acquired or GraphLockOutcome.Unavailable;
+        internal bool ShouldOpen => Conflict is GraphLockOutcome.Opened or GraphLockOutcome.RedirectedToCopy;
 
         // Creates a successful graph-lock result
         internal static GraphLockAcquireResult Acquired(string graphPath = null)
         {
-            return new GraphLockAcquireResult(GraphLockOutcome.Acquired, graphPath);
+            return new GraphLockAcquireResult(GraphLockOutcome.Opened, graphPath);
         }
 
         // Creates a cancelled graph-lock result
@@ -22,7 +22,7 @@ namespace Dynamo.Graph.Workspaces.Locking
         // Creates a result for lock-file access failures
         internal static GraphLockAcquireResult Unavailable(string graphPath = null)
         {
-            return new GraphLockAcquireResult(GraphLockOutcome.Unavailable, graphPath);
+            return new GraphLockAcquireResult(GraphLockOutcome.RedirectedToCopy, graphPath);
         }
     }
 }

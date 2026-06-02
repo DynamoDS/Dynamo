@@ -166,15 +166,10 @@ namespace Dynamo.Models
         internal GraphLockManager GraphLockManager { get; private set; }
 
         /// <summary>
-        /// Indicates whether the last file open request was cancelled before a workspace was loaded.
+        /// Describes how the most recent file-open attempt interacted with the graph-lock feature
+        /// (opened normally, cancelled at the conflict prompt, or redirected to a Save As copy).
         /// </summary>
-        internal bool LastOpenFileOperationWasCancelled { get; private set; }
-
-        /// <summary>
-        /// Indicates whether the last file open was redirected to a copy because the requested
-        /// graph was already locked by another Dynamo instance (the Save As flow).
-        /// </summary>
-        internal bool LastOpenFileWasGraphLockRedirect { get; private set; }
+        internal GraphLockOutcome LastGraphLockOpenOutcome { get; private set; }
 
         // Get ProgramData folder path (usually C:\ProgramData)
         static readonly string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
@@ -2196,13 +2191,12 @@ namespace Dynamo.Models
         /// execution mode specified in the file and set manual mode</param>
         public void OpenFileFromPath(string filePath, bool forceManualExecutionMode = false)
         {
-            LastOpenFileOperationWasCancelled = false;
-            LastOpenFileWasGraphLockRedirect = false;
+            LastGraphLockOpenOutcome = GraphLockOutcome.Opened;
 
             var graphLockOutcome = GraphLockManager?.TryAcquire(filePath, true) ?? GraphLockAcquireResult.Acquired();
             if (!graphLockOutcome.ShouldOpen)
             {
-                LastOpenFileOperationWasCancelled = true;
+                LastGraphLockOpenOutcome = GraphLockOutcome.Cancelled;
                 GraphLockManager?.CompleteOpen(filePath, false);
                 return;
             }
@@ -2216,13 +2210,13 @@ namespace Dynamo.Models
                 if (!string.IsNullOrEmpty(filePathToOpen) &&
                     !string.Equals(Path.GetFullPath(filePathToOpen), Path.GetFullPath(filePath), StringComparison.OrdinalIgnoreCase))
                 {
-                    LastOpenFileWasGraphLockRedirect = true;
+                    LastGraphLockOpenOutcome = GraphLockOutcome.RedirectedToCopy;
                 }
             }
             catch (Exception pathEx) when (pathEx is ArgumentException || pathEx is NotSupportedException || pathEx is PathTooLongException)
             {
                 // If either path cannot be normalized, treat this as a non-redirect open.
-                LastOpenFileWasGraphLockRedirect = false;
+                LastGraphLockOpenOutcome = GraphLockOutcome.Opened;
             }
 
             var openedSuccessfully = false;
@@ -2273,7 +2267,7 @@ namespace Dynamo.Models
         /// execution mode specified in the file and set manual mode</param>
         public void OpenTemplateFromPath(string filePath, bool forceManualExecutionMode = false)
         {
-            LastOpenFileOperationWasCancelled = false;
+            LastGraphLockOpenOutcome = GraphLockOutcome.Opened;
 
             if (DynamoUtilities.PathHelper.isValidJson(filePath, out string fileContents, out Exception ex))
             {

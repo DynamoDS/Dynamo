@@ -5,8 +5,8 @@ namespace Dynamo.Graph.Workspaces.Locking
     /// </summary>
     internal enum GraphLockOutcome
     {
-        Acquired,
+        Opened,
         Cancelled,
-        Unavailable
+        RedirectedToCopy
     }
 }

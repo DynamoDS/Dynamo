@@ -11,7 +11,7 @@ namespace Dynamo.Graph.Workspaces.Locking
     /// Provides file-system operations for graph lock sidecar files.
     /// </summary>
     internal static class GraphLockFile
-    {        
+    {
         private static readonly JsonSerializer Serializer = JsonSerializer.Create(new JsonSerializerSettings
         {
             Culture = System.Globalization.CultureInfo.InvariantCulture,
