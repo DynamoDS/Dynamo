@@ -2240,9 +2240,9 @@ namespace Dynamo.ViewModels
                 // Execute graph open command
                 ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode, isTemplate));
 
-                // The file is already open in another Dynamo instance and the user pressed Cancel:
-                // nothing was opened, so undo the run block, make sure no trust warning is shown,
-                // restore the previous start-page state, and stop.
+                // The file is already open in another Dynamo instance
+                // On cancel: nothing is opened, so undo the run block, make sure no trust warning is shown,
+                // restore the previous start-page state and stop.
                 if (Model.LastOpenFileOperationWasCancelled)
                 {
                     RunSettings.ForceBlockRun = false;
@@ -2255,12 +2255,21 @@ namespace Dynamo.ViewModels
                     return;
                 }
 
-                // The open was redirected to a Save As copy because of a graph-lock conflict:
-                // don't show the trust warning and don't leave the run blocked.
+                // On Save as: the model is opened as a copy at a different location,
+                // re-evaluate the trust state for that copy.
                 if (Model.LastOpenFileWasGraphLockRedirect)
                 {
-                    RunSettings.ForceBlockRun = false;
-                    displayTrustWarning = false;
+                    var openedPath = Model.CurrentWorkspace?.FileName;
+                    if (!string.IsNullOrEmpty(openedPath))
+                    {
+                        directoryName = Path.GetDirectoryName(openedPath);
+                        displayTrustWarning = !PreferenceSettings.IsTrustedLocation(directoryName)
+                            && !openedPath.EndsWith("dyf")
+                            && !DynamoModel.IsTestMode
+                            && !PreferenceSettings.DisableTrustWarnings
+                            && FileTrustViewModel != null;
+                    }
+                    RunSettings.ForceBlockRun = displayTrustWarning;
                 }
 
                 // Apply annotation updates based on the preference setting

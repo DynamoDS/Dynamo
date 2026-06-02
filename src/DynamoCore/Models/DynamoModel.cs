@@ -2199,22 +2199,30 @@ namespace Dynamo.Models
             LastOpenFileOperationWasCancelled = false;
             LastOpenFileWasGraphLockRedirect = false;
 
-            var graphLockResult = GraphLockManager?.TryAcquire(filePath, true) ?? GraphLockAcquireResult.Acquired();
-            if (!graphLockResult.ShouldOpen)
+            var graphLockOutcome = GraphLockManager?.TryAcquire(filePath, true) ?? GraphLockAcquireResult.Acquired();
+            if (!graphLockOutcome.ShouldOpen)
             {
                 LastOpenFileOperationWasCancelled = true;
                 GraphLockManager?.CompleteOpen(filePath, false);
                 return;
             }
 
-            var filePathToOpen = string.IsNullOrEmpty(graphLockResult.GraphPath) ? filePath : graphLockResult.GraphPath;
+            var filePathToOpen = string.IsNullOrEmpty(graphLockOutcome.GraphPath) ? filePath : graphLockOutcome.GraphPath;
 
             // If the lock manager redirected us to a different file (a Save As copy made because the
-            // original was locked), remember it so the UI can skip the trust warning for the copy.
-            if (!string.IsNullOrEmpty(filePathToOpen) &&
-                !string.Equals(Path.GetFullPath(filePathToOpen), Path.GetFullPath(filePath), StringComparison.OrdinalIgnoreCase))
+            // original was locked), remember it so the UI can re-evaluate the trust warning for the copy
+            try
             {
-                LastOpenFileWasGraphLockRedirect = true;
+                if (!string.IsNullOrEmpty(filePathToOpen) &&
+                    !string.Equals(Path.GetFullPath(filePathToOpen), Path.GetFullPath(filePath), StringComparison.OrdinalIgnoreCase))
+                {
+                    LastOpenFileWasGraphLockRedirect = true;
+                }
+            }
+            catch (Exception pathEx) when (pathEx is ArgumentException || pathEx is NotSupportedException || pathEx is PathTooLongException)
+            {
+                // If either path cannot be normalized, treat this as a non-redirect open.
+                LastOpenFileWasGraphLockRedirect = false;
             }
 
             var openedSuccessfully = false;
@@ -2358,6 +2366,8 @@ namespace Dynamo.Models
         {
             try
             {
+                var workspaceOpened = false;
+
                 DynamoPreferencesData dynamoPreferences = DynamoPreferencesDataFromJson(fileContents);
                 if (dynamoPreferences != null)
                 {
@@ -2373,10 +2383,15 @@ namespace Dynamo.Models
                             OnComputeModelDeserialized();
 
                             SetPeriodicEvaluation(ws);
+                            workspaceOpened = true;
                         }
                     }
                 }
-                return true;
+
+                // Report whether a workspace was actually opened (not merely that no exception was
+                // thrown), so callers such as the graph-lock manager do not retain a lock for a
+                // graph that never opened.
+                return workspaceOpened;
             }
             catch (Exception e)
             {
@@ -2442,6 +2457,8 @@ namespace Dynamo.Models
                     }
                 }
 
+                var workspaceOpened = false;
+
                 WorkspaceInfo workspaceInfo;
                 if (WorkspaceInfo.FromXmlDocument(xmlDoc, filePath, IsTestMode, forceManualExecutionMode, Logger, out workspaceInfo))
                 {
@@ -2455,10 +2472,11 @@ namespace Dynamo.Models
                             // Set up workspace cameras here
                             OnWorkspaceOpening(xmlDoc);
                             SetPeriodicEvaluation(ws);
+                            workspaceOpened = true;
                         }
                     }
                 }
-                return true;
+                return workspaceOpened;
             }
             catch (Exception)
             {
