@@ -124,11 +124,20 @@ namespace Dynamo.UI.Views
             }
         }
 
-        private void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private async void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if(e.PropertyName == nameof(startPage.DynamoViewModel.ShowStartPage) && dynWebView?.CoreWebView2 != null)
             {
-                dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.setShowStartPageChanged('{startPage.DynamoViewModel.ShowStartPage}')");
+                if (startPage.DynamoViewModel.ShowStartPage)
+                {
+                    startPage.RefreshTemplateFiles();
+                    startPage.RefreshRecentFiles();
+
+                    await SendTemplateData();
+                    await SendRecentGraphsData();
+                }
+
+                await dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.setShowStartPageChanged('{startPage.DynamoViewModel.ShowStartPage}')");
             }
         }
 
@@ -338,11 +347,8 @@ namespace Dynamo.UI.Views
         /// </summary>
         private async Task SendTemplateData()
         {
-            var items = startPage.TemplateFiles?.DistinctBy(x => x.ContextData).ToList();
-            if (items != null && items.Any())
-            {
-                await LoadTemplates(items);
-            }
+            var items = startPage.TemplateFiles?.DistinctBy(x => x.ContextData).ToList() ?? new List<StartPageListItem>();
+            await LoadTemplates(items);
         }
 
         private async Task SendRecentGraphsData()
@@ -361,14 +367,12 @@ namespace Dynamo.UI.Views
             }
 
             // Load recent files
-            var recentFiles = startPage.RecentFiles?.DistinctBy(x => x.ContextData).ToList();
-            if (recentFiles != null && recentFiles.Any())
-            {
-                await LoadGraphs(recentFiles);
-            }
+            var recentFiles = startPage.RecentFiles?.DistinctBy(x => x.ContextData).ToList() ?? new List<StartPageListItem>();
+            await LoadGraphs(recentFiles);
 
             if (startPage.DynamoViewModel != null && startPage.DynamoViewModel.RecentFiles != null)
             {
+                startPage.DynamoViewModel.RecentFiles.CollectionChanged -= RecentFiles_CollectionChanged;
                 startPage.DynamoViewModel.RecentFiles.CollectionChanged += RecentFiles_CollectionChanged;
             }
         }

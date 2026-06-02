@@ -280,6 +280,17 @@ namespace Dynamo.UI.Controls
             this.TemplateFiles.Add(templateItem);
         }
 
+        internal void RefreshTemplateFiles()
+        {
+            TemplateFiles.Clear();
+            LoadTemplates();
+        }
+
+        internal void RefreshRecentFiles()
+        {
+            RefreshRecentFileList(DynamoViewModel.RecentFiles, true);
+        }
+
         internal void WalkDirectoryTree(System.IO.DirectoryInfo root, SampleFileEntry rootProperty)
         {
             try
