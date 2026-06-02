@@ -542,6 +542,16 @@ namespace Dynamo.UI.Views
                 return;
             }
 
+            if (startPage.HandleMissingFilePath(path))
+            {
+                var recentFiles = startPage.RecentFiles?.DistinctBy(x => x.ContextData).ToList() ?? new List<StartPageListItem>();
+                var templateFiles = startPage.TemplateFiles?.DistinctBy(x => x.ContextData).ToList() ?? new List<StartPageListItem>();
+
+                _ = LoadGraphs(recentFiles);
+                _ = LoadTemplates(templateFiles);
+                return;
+            }
+
             if (this.startPage.DynamoViewModel.OpenCommand.CanExecute(path))
                 this.startPage.DynamoViewModel.OpenCommand.Execute(path);
         }

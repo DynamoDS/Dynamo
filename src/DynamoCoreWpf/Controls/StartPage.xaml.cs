@@ -1,5 +1,6 @@
 using Dynamo.Configuration;
 using Dynamo.Logging;
+using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
@@ -654,7 +655,44 @@ namespace Dynamo.UI.Controls
         private void HandleFilePath(StartPageListItem item)
         {
             var path = item.ContextData;
+            if (HandleMissingFilePath(path))
+            {
+                return;
+            }
+
             this.DynamoViewModel.OpenCommand.Execute(path);
+        }
+
+        internal bool HandleMissingFilePath(string path)
+        {
+            if (File.Exists(path))
+            {
+                return false;
+            }
+
+            DynamoMessageBox.Show(
+                DynamoViewModel.Owner,
+                string.Format(Resources.MessageHomeFileMissing.Replace("\\n", Environment.NewLine), path),
+                Resources.MessageErrorOpeningFileGeneral,
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+
+            RemoveMissingFilePath(RecentFiles, path);
+            RemoveMissingFilePath(TemplateFiles, path);
+
+            return true;
+        }
+
+        private static void RemoveMissingFilePath(ObservableCollection<StartPageListItem> files, string path)
+        {
+            var missingFiles = files
+                .Where(file => string.Equals(file.ContextData, path, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            foreach (var missingFile in missingFiles)
+            {
+                files.Remove(missingFile);
+            }
         }
 
         private void HandleExternalUrl(StartPageListItem item)
