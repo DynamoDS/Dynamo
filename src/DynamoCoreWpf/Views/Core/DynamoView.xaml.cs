@@ -69,8 +69,6 @@ namespace Dynamo.Controls
         private const int RightSideBarCollapseThreshold = 100;
         private const int navigationInterval = 100;
         private const string GraphMetadataExtensionId = "28992e1d-abb9-417f-8b1b-05e053bee670";
-        private const string AutodeskAssistantViewExtensionName = "Autodesk Assistant";
-        private const string McpViewExtensionName = "Dynamo MCP View Extension";
         // This is used to determine whether ESC key is being held down
         private bool IsEscKeyPressed = false;
         // internal for testing.
@@ -1391,7 +1389,7 @@ namespace Dynamo.Controls
                 try
                 {
                     if (dynamoViewModel.Model.NoNetworkMode &&
-                        (ext.Name.Equals(AutodeskAssistantViewExtensionName) || ext.Name.Equals(McpViewExtensionName)))
+                        (ext.Name.Equals("Autodesk Assistant") || ext.Name.Equals("Dynamo MCP View Extension")))
                     {
                         continue;
                     }
