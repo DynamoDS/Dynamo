@@ -3742,6 +3742,36 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This file is currently open in another instance of Dynamo.
+        ///To avoid data loss or corruption, please choose one of the following actions:
+        /// • Save As — opens an independent copy you can edit safely.
+        /// • Cancel — does not open the file..
+        /// </summary>
+        public static string GraphLockFileAlreadyOpenMessage {
+            get {
+                return ResourceManager.GetString("GraphLockFileAlreadyOpenMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File already open in another Dynamo instance.
+        /// </summary>
+        public static string GraphLockFileAlreadyOpenTitle {
+            get {
+                return ResourceManager.GetString("GraphLockFileAlreadyOpenTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save As.
+        /// </summary>
+        public static string GraphLockSaveAsButton {
+            get {
+                return ResourceManager.GetString("GraphLockSaveAsButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add Group to This Group.
         /// </summary>
         public static string GroupContextMenuAddGroupToGroup {
