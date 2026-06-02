@@ -1,7 +1,7 @@
 namespace Dynamo.Graph.Workspaces.Locking
 {
     /// <summary>
-    /// Describes the outcome of trying to acquire a graph lock.
+    /// Describes the possible outcome of trying to lock a graph.
     /// </summary>
     internal enum GraphLockOutcome
     {

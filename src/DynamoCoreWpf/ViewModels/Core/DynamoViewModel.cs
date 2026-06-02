@@ -848,7 +848,6 @@ namespace Dynamo.ViewModels
             this.model.CommandStarting += OnModelCommandStarting;
             this.model.CommandCompleted += OnModelCommandCompleted;
             this.model.RequestsCrashPrompt += CrashReportTool.ShowCrashWindow;
-            this.model.GraphLockManager?.SetPrompt(new WpfGraphLockUserPrompt(() => Owner, () => BrandingResourceProvider.ProductName));
 
             this.HideReportOptions = startConfiguration.HideReportOptions || model.NoNetworkMode;
             UsageReportingManager.Instance.InitializeCore(this);
@@ -866,6 +865,8 @@ namespace Dynamo.ViewModels
             this.ShowStartPage = !DynamoModel.IsTestMode;
 
             this.BrandingResourceProvider = startConfiguration.BrandingResourceProvider ?? new DefaultBrandingResourceProvider();
+
+            this.model.GraphLockManager?.SetPrompt(new WpfGraphLockUserPrompt(() => Owner, BrandingResourceProvider.ProductName));
 
             // commands should be initialized before adding any WorkspaceViewModel
             InitializeDelegateCommands();
@@ -2229,15 +2230,13 @@ namespace Dynamo.ViewModels
 
                 var directoryName = Path.GetDirectoryName(filePath);
 
-                // Decide whether the trust warning is needed and block the run BEFORE opening, so an
-                // untrusted graph cannot start running before the user has accepted the warning.
+                // Display trust warning when file is not among trust location and warning feature is on
                 bool displayTrustWarning = !PreferenceSettings.IsTrustedLocation(directoryName)
                     && !filePath.EndsWith("dyf")
                     && !DynamoModel.IsTestMode
                     && !PreferenceSettings.DisableTrustWarnings
                     && FileTrustViewModel != null;
                 RunSettings.ForceBlockRun = displayTrustWarning;
-
                 // Execute graph open command
                 ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode, isTemplate));
 

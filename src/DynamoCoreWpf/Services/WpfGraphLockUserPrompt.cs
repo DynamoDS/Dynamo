@@ -14,14 +14,14 @@ namespace Dynamo.Wpf.Services
     internal sealed class WpfGraphLockUserPrompt : IGraphLockUserPrompt
     {
         private readonly Func<Window> ownerProvider;
-        private readonly Func<string> productNameProvider;
+        private readonly string productNameProvider;
 
         /// <summary>
         /// Initializes a WPF graph-lock prompt.
         /// </summary>
         /// <param name="ownerProvider">Provides the owner window when a prompt is shown.</param>
         /// <param name="productNameProvider">Provides the product name for save-dialog filters.</param>
-        internal WpfGraphLockUserPrompt(Func<Window> ownerProvider, Func<string> productNameProvider)
+        internal WpfGraphLockUserPrompt(Func<Window> ownerProvider, string productNameProvider)
         {
             this.ownerProvider = ownerProvider;
             this.productNameProvider = productNameProvider;
@@ -63,7 +63,7 @@ namespace Dynamo.Wpf.Services
             var extension = Path.GetExtension(graphPath);
             var directory = Path.GetDirectoryName(graphPath);
             var isCustomNode = extension.Equals(".dyf", StringComparison.OrdinalIgnoreCase);
-            var productName = productNameProvider?.Invoke() ?? "Dynamo";
+            var productName = productNameProvider ?? "Dynamo";
             var defaultExt = isCustomNode ? ".dyf" : ".dyn";
             var filter = isCustomNode
                 ? string.Format(Resources.FileDialogDynamoCustomNode, productName, "*.dyf")
