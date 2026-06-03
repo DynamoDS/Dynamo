@@ -63,6 +63,11 @@ namespace Dynamo.Utilities
 			throw new NotImplementedException ();
 		}
 
+		/// <summary>
+		/// Determines whether the specified rectangle is entirely contained within this rectangle.
+		/// </summary>
+		/// <param name="rect">The rectangle to test for containment.</param>
+		/// <returns><c>true</c> if every point of <paramref name="rect"/> lies within or on the boundary of this rectangle; otherwise, <c>false</c>.</returns>
 		public bool Contains (Rect2D rect)
 		{
 			if (rect.Left < this.Left ||
