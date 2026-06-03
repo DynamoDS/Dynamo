@@ -23,6 +23,7 @@ using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
@@ -4521,6 +4522,21 @@ namespace Dynamo.ViewModels
         }
 
         #region "Home And End key press events in Canvas"
+
+        private readonly struct HomeEndCandidate
+        {
+            public HomeEndCandidate(double left, double right, IReadOnlyList<ISelectable> models)
+            {
+                Left = left;
+                Right = right;
+                Models = models;
+            }
+
+            public double Left { get; }
+            public double Right { get; }
+            public IReadOnlyList<ISelectable> Models { get; }
+        }
+
         /// <summary>
         /// Enable the shortcut key events when there is no selection.
         /// </summary>
@@ -4530,23 +4546,68 @@ namespace Dynamo.ViewModels
             return BackgroundPreviewViewModel != null &&
                     !CurrentSpaceViewModel.HasSelection;
         }
-        private void FitCanvasToSelectedNodes(List<NodeViewModel> nodes)
+
+        private IEnumerable<HomeEndCandidate> BuildHomeEndCandidates()
         {
-            var nodeSet = new HashSet<NodeModel>(nodes.Select(nvm => nvm.NodeModel));
-            var groups = CurrentSpaceViewModel.Annotations.Where(a => a.Nodes.Any(n => nodeSet.Contains(n)));
-            nodes.ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
-            groups.ToList().ForEach((grp) => DynamoSelection.Instance.Selection.Add(grp.AnnotationModel));
+            var annotations = CurrentSpaceViewModel.Annotations;
+
+            foreach (var nvm in CurrentSpaceViewModel.Nodes)
+            {
+                var node = nvm.NodeModel;
+                var models = new List<ISelectable> { node };
+                foreach (var avm in annotations)
+                {
+                    if (avm.AnnotationModel.ContainsModel(node))
+                    {
+                        models.Add(avm.AnnotationModel);
+                    }
+                }
+                yield return new HomeEndCandidate(nvm.X, nvm.X + nvm.ActualWidth, models);
+            }
+
+            foreach (var noteVM in CurrentSpaceViewModel.Notes)
+            {
+                var noteModel = noteVM.Model;
+                if (annotations.Any(a => a.AnnotationModel.ContainsModel(noteModel)))
+                {
+                    continue;
+                }
+                yield return new HomeEndCandidate(noteVM.Left, noteVM.Left + noteModel.Width, new ISelectable[] { noteModel });
+            }
+
+            foreach (var avm in annotations)
+            {
+                var hasNodes = avm.Nodes.OfType<NodeModel>().Any();
+                var hasNotes = avm.Nodes.OfType<NoteModel>().Any();
+                if (hasNodes || !hasNotes)
+                {
+                    continue;
+                }
+                yield return new HomeEndCandidate(avm.Left, avm.Left + avm.Width, new ISelectable[] { avm.AnnotationModel });
+            }
+        }
+
+        private void FitCanvasToSelectedCandidates(IEnumerable<HomeEndCandidate> candidates)
+        {
+            foreach (var candidate in candidates)
+            {
+                foreach (var model in candidate.Models)
+                {
+                    DynamoSelection.Instance.Selection.Add(model);
+                }
+            }
             FitViewCommand.Execute(true);
             DynamoSelection.Instance.ClearSelection();
         }
+
         internal void GoToLeftMostNode(object parameter)
         {
-            if (CurrentSpaceViewModel.Nodes.Count > 0)
-            {
-                double minX = CurrentSpaceViewModel.Nodes.Min(x => x.X);
-                var nodes = CurrentSpaceViewModel.Nodes.Where(x => x.X <= minX + tolerance).ToList();
-                FitCanvasToSelectedNodes(nodes);
-            }
+            var candidates = BuildHomeEndCandidates().ToList();
+            if (candidates.Count == 0) return;
+
+            double minX = candidates.Min(c => c.Left);
+            var winners = candidates.Where(c => c.Left <= minX + tolerance);
+            FitCanvasToSelectedCandidates(winners);
         }
         internal bool CanGoToLeftMostNode(object obj)
         {
@@ -4554,12 +4615,12 @@ namespace Dynamo.ViewModels
         }
         internal void GoToRightMostNode(object parameter)
         {
-            if (CurrentSpaceViewModel.Nodes.Count > 0)
-            {
-                double maxX = CurrentSpaceViewModel.Nodes.Max(x => x.X + x.ActualWidth);
-                var nodes = CurrentSpaceViewModel.Nodes.Where(x => x.X + x.ActualWidth >= maxX - tolerance).ToList();
-                FitCanvasToSelectedNodes(nodes);         
-            }
+            var candidates = BuildHomeEndCandidates().ToList();
+            if (candidates.Count == 0) return;
+
+            double maxRight = candidates.Max(c => c.Right);
+            var winners = candidates.Where(c => c.Right >= maxRight - tolerance);
+            FitCanvasToSelectedCandidates(winners);
         }
         internal bool CanGoToRightMostNode(object obj)
         {
