@@ -1,19 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Input;
-using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
@@ -49,6 +33,22 @@ using Dynamo.Wpf.Windows;
 using HelixToolkit.Wpf.SharpDX;
 using ICSharpCode.AvalonEdit;
 using PythonNodeModels;
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
+using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Brush = System.Windows.Media.Brush;
 using Exception = System.Exception;
 using Image = System.Windows.Controls.Image;
@@ -236,6 +236,11 @@ namespace Dynamo.Controls
             {
                 try
                 {
+                    if (DisableExtensionWhenNoNetworkMode(ext.Name, "added"))
+                    {
+                        continue;
+                    }
+
                     if (ext is ILogSource logSource)
                     {
                         logSource.MessageLogged += Log;
@@ -1404,8 +1409,7 @@ namespace Dynamo.Controls
             {
                 try
                 {
-                    if (dynamoViewModel.Model.NoNetworkMode &&
-                        (ext.Name.Equals(AutodeskAssistantViewExtensionName) || ext.Name.Equals(McpViewExtensionName)))
+                    if (DisableExtensionWhenNoNetworkMode(ext.Name, "loaded"))
                     {
                         continue;
                     }
@@ -3399,6 +3403,19 @@ namespace Dynamo.Controls
             //TODO code smell.
             var workspaceView = this.ChildOfType<WorkspaceView>();
             workspaceView?.Dispose();
+        }
+
+        private bool DisableExtensionWhenNoNetworkMode(string extensionName, string action)
+        {
+            if (dynamoViewModel.Model.NoNetworkMode &&
+                (extensionName.Equals(AutodeskAssistantViewExtensionName) || extensionName.Equals(McpViewExtensionName)))
+            {
+                Log($"Package/Extension {extensionName} not {action} because NoNetworkMode flag is active");
+
+                return true;
+            }
+
+            return false;
         }
     }
 }
