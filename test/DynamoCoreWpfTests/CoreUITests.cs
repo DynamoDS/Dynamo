@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -12,9 +13,12 @@ using CoreNodeModels.Input;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Extensions;
+using Dynamo.Graph;
+using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Linting.Interfaces;
 using Dynamo.Linting.Rules;
@@ -435,6 +439,280 @@ namespace DynamoCoreWpfTests
             // Create number node
             var numNode = new DoubleInput { X = 100, Y = 100 };
             ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(numNode, true);
+        }
+
+        #endregion
+
+        #region Home and End Key Navigation
+
+        private DoubleInput AddNodeAt(double x, double y)
+        {
+            var node = new DoubleInput { X = x, Y = y };
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(node, false);
+            return node;
+        }
+
+        private NoteModel AddNoteAt(double x, double y, double width = 100, double height = 50)
+        {
+            var note = ViewModel.Model.CurrentWorkspace.AddNote(
+                false, x, y, "n", Guid.NewGuid());
+            note.Width = width;
+            note.Height = height;
+            return note;
+        }
+
+        private AnnotationModel GroupAround(params ModelBase[] models)
+        {
+            DynamoSelection.Instance.ClearSelection();
+            foreach (var m in models)
+            {
+                DynamoSelection.Instance.Selection.Add(m);
+            }
+            ViewModel.AddAnnotationCommand.Execute(null);
+            var annotation = ViewModel.Model.CurrentWorkspace.Annotations.Last();
+            DynamoSelection.Instance.ClearSelection();
+            return annotation;
+        }
+
+        private List<ISelectable> CaptureSelectionDuring(Action action)
+        {
+            var captured = new List<ISelectable>();
+            NotifyCollectionChangedEventHandler handler = (s, e) =>
+            {
+                if (e.NewItems == null) return;
+                foreach (ISelectable item in e.NewItems)
+                {
+                    captured.Add(item);
+                }
+            };
+            DynamoSelection.Instance.Selection.CollectionChanged += handler;
+            try
+            {
+                action();
+            }
+            finally
+            {
+                DynamoSelection.Instance.Selection.CollectionChanged -= handler;
+            }
+            return captured;
+        }
+
+        [Test, Apartment(ApartmentState.STA)]
+        [Category("DynamoUI")]
+        public void WhenWorkspaceIsEmpty_HomeAndEndCommands_DoNothing()
+        {
+            // Arrange
+            var workspaceVM = ViewModel.CurrentSpaceViewModel;
+            var initZoom = workspaceVM.Zoom;
+            var initX = workspaceVM.X;
+            var initY = workspaceVM.Y;
+
+            // Act + Assert (does not throw, view unchanged)
+            Assert.DoesNotThrow(() => ViewModel.GoToLeftMostNodeCommand.Execute(null));
+            Assert.DoesNotThrow(() => ViewModel.GoToRightMostNodeCommand.Execute(null));
+
+            Assert.AreEqual(initZoom, workspaceVM.Zoom);
+            Assert.AreEqual(initX, workspaceVM.X);
+            Assert.AreEqual(initY, workspaceVM.Y);
+        }
+
+        [Test, Apartment(ApartmentState.STA)]
+        [Category("DynamoUI")]
+        public void WhenWorkspaceHasOnlyNodes_HomeSelectsLeftmostNodeAndFits()
+        {
+            // Arrange
+            var leftNode = AddNodeAt(100, 100);
+            var rightNode = AddNodeAt(500, 100);
+            var workspaceVM = ViewModel.CurrentSpaceViewModel;
+            var initZoom = workspaceVM.Zoom;
+
+            // Act
+            var selected = CaptureSelectionDuring(
+                () => ViewModel.GoToLeftMostNodeCommand.Execute(null));
+
+            // Assert
+            CollectionAssert.Contains(selected, leftNode);
+            CollectionAssert.DoesNotContain(selected, rightNode);
+            Assert.AreNotEqual(initZoom, workspaceVM.Zoom);
+            Assert.IsEmpty(DynamoSelection.Instance.Selection);
+        }
+
+        [Test, Apartment(ApartmentState.STA)]
+        [Category("DynamoUI")]
+        public void WhenWorkspaceHasOnlyNodes_EndSelectsRightmostNodeAndFits()
+        {
+            // Arrange
+            var leftNode = AddNodeAt(100, 100);
+            var rightNode = AddNodeAt(500, 100);
+            var workspaceVM = ViewModel.CurrentSpaceViewModel;
+            var initZoom = workspaceVM.Zoom;
+
+            // Act
+            var selected = CaptureSelectionDuring(
+                () => ViewModel.GoToRightMostNodeCommand.Execute(null));
+
+            // Assert
+            CollectionAssert.Contains(selected, rightNode);
+            CollectionAssert.DoesNotContain(selected, leftNode);
+            Assert.AreNotEqual(initZoom, workspaceVM.Zoom);
+            Assert.IsEmpty(DynamoSelection.Instance.Selection);
+        }
+
+        [Test, Apartment(ApartmentState.STA)]
+        [Category("DynamoUI")]
+        public void WhenWorkspaceContainsOrphanedNoteLeftOfNodes_HomeTargetsTheNote()
+        {
+            // Arrange
+            var node = AddNodeAt(500, 100);
+            var orphanNote = AddNoteAt(50, 100);
+
+            // Act
+            var selected = CaptureSelectionDuring(
+                () => ViewModel.GoToLeftMostNodeCommand.Execute(null));
+
+            // Assert
+            CollectionAssert.Contains(selected, orphanNote);
+            CollectionAssert.DoesNotContain(selected, node);
+        }
+
+        [Test, Apartment(ApartmentState.STA)]
+        [Category("DynamoUI")]
+        public void WhenWorkspaceContainsOrphanedNoteRightOfNodes_EndTargetsTheNote()
+        {
+            // Arrange
+            var node = AddNodeAt(50, 100);
+            var orphanNote = AddNoteAt(1000, 100);
+
+            // Act
+            var selected = CaptureSelectionDuring(
+                () => ViewModel.GoToRightMostNodeCommand.Execute(null));
+
+            // Assert
+            CollectionAssert.Contains(selected, orphanNote);
+            CollectionAssert.DoesNotContain(selected, node);
+        }
+
+        [Test, Apartment(ApartmentState.STA)]
+        [Category("DynamoUI")]
+        public void WhenWorkspaceContainsNoteInsideNodeContainingGroup_HomeIgnoresTheNote()
+        {
+            // Arrange: a group containing both a node and a note where note.X < node.X.
+            // The note rides along with its parent group via the node-candidate path;
+            // it should not contribute its own (smaller) X to the leftmost ranking.
+            var node = AddNodeAt(500, 100);
+            var noteInsideGroup = AddNoteAt(50, 100);
+            var group = GroupAround(node, noteInsideGroup);
+
+            // Act
+            var selected = CaptureSelectionDuring(
+                () => ViewModel.GoToLeftMostNodeCommand.Execute(null));
+
+            // Assert: the note is not the target. The group accompanies the node.
+            CollectionAssert.Contains(selected, node);
+            CollectionAssert.Contains(selected, group);
+            CollectionAssert.DoesNotContain(selected, noteInsideGroup);
+        }
+
+        [Test, Apartment(ApartmentState.STA)]
+        [Category("DynamoUI")]
+        public void WhenLeftmostItemIsNotesOnlyGroup_HomeTargetsTheGroup()
+        {
+            // Arrange
+            var node = AddNodeAt(800, 100);
+            var noteA = AddNoteAt(50, 100);
+            var noteB = AddNoteAt(120, 200);
+            var notesOnlyGroup = GroupAround(noteA, noteB);
+
+            // Act
+            var selected = CaptureSelectionDuring(
+                () => ViewModel.GoToLeftMostNodeCommand.Execute(null));
+
+            // Assert: the notes-only group is the leftmost candidate.
+            CollectionAssert.Contains(selected, notesOnlyGroup);
+            CollectionAssert.DoesNotContain(selected, node);
+        }
+
+        [Test, Apartment(ApartmentState.STA)]
+        [Category("DynamoUI")]
+        public void WhenRightmostItemIsNotesOnlyGroup_EndTargetsTheGroup()
+        {
+            // Arrange
+            var node = AddNodeAt(50, 100);
+            var noteA = AddNoteAt(800, 100);
+            var noteB = AddNoteAt(900, 200);
+            var notesOnlyGroup = GroupAround(noteA, noteB);
+
+            // Act
+            var selected = CaptureSelectionDuring(
+                () => ViewModel.GoToRightMostNodeCommand.Execute(null));
+
+            // Assert
+            CollectionAssert.Contains(selected, notesOnlyGroup);
+            CollectionAssert.DoesNotContain(selected, node);
+        }
+
+        [Test, Apartment(ApartmentState.STA)]
+        [Category("DynamoUI")]
+        public void WhenWorkspaceHasOnlyNotes_HomeAndEndStillNavigate()
+        {
+            // Arrange
+            var leftNote = AddNoteAt(50, 100);
+            var rightNote = AddNoteAt(800, 100);
+            var workspaceVM = ViewModel.CurrentSpaceViewModel;
+            var initZoom = workspaceVM.Zoom;
+
+            // Act + Assert: Home targets the left note
+            var leftSelected = CaptureSelectionDuring(
+                () => ViewModel.GoToLeftMostNodeCommand.Execute(null));
+            CollectionAssert.Contains(leftSelected, leftNote);
+            CollectionAssert.DoesNotContain(leftSelected, rightNote);
+            Assert.AreNotEqual(initZoom, workspaceVM.Zoom);
+
+            // Act + Assert: End targets the right note
+            var rightSelected = CaptureSelectionDuring(
+                () => ViewModel.GoToRightMostNodeCommand.Execute(null));
+            CollectionAssert.Contains(rightSelected, rightNote);
+            CollectionAssert.DoesNotContain(rightSelected, leftNote);
+        }
+
+        [Test, Apartment(ApartmentState.STA)]
+        [Category("DynamoUI")]
+        public void WhenSelectionContainsNode_CanGoToLeftMostNodeReturnsFalse()
+        {
+            var node = AddNodeAt(100, 100);
+            DynamoSelection.Instance.Selection.Add(node);
+
+            Assert.IsFalse(ViewModel.GoToLeftMostNodeCommand.CanExecute(null));
+            Assert.IsFalse(ViewModel.GoToRightMostNodeCommand.CanExecute(null));
+
+            DynamoSelection.Instance.ClearSelection();
+        }
+
+        [Test, Apartment(ApartmentState.STA)]
+        [Category("DynamoUI")]
+        public void WhenSelectionContainsNote_CanGoToLeftMostNodeReturnsFalse()
+        {
+            var note = AddNoteAt(100, 100);
+            DynamoSelection.Instance.Selection.Add(note);
+
+            Assert.IsFalse(ViewModel.GoToLeftMostNodeCommand.CanExecute(null));
+            Assert.IsFalse(ViewModel.GoToRightMostNodeCommand.CanExecute(null));
+
+            DynamoSelection.Instance.ClearSelection();
+        }
+
+        [Test, Apartment(ApartmentState.STA)]
+        [Category("DynamoUI")]
+        public void WhenSelectionContainsAnnotation_CanGoToLeftMostNodeReturnsFalse()
+        {
+            var node = AddNodeAt(100, 100);
+            var group = GroupAround(node);
+            DynamoSelection.Instance.Selection.Add(group);
+
+            Assert.IsFalse(ViewModel.GoToLeftMostNodeCommand.CanExecute(null));
+            Assert.IsFalse(ViewModel.GoToRightMostNodeCommand.CanExecute(null));
+
+            DynamoSelection.Instance.ClearSelection();
         }
 
         #endregion
