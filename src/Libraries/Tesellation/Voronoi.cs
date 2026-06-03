@@ -16,6 +16,7 @@ namespace Tessellation
         /// </summary>
         /// <param name="uvs">Set of UV parameters.</param>
         /// <param name="face">Surface to tesselate.</param>
+        /// <returns>An enumerable collection of curves representing the Voronoi edges on the surface.</returns>
         /// <search>uvs</search>
         public static IEnumerable<Curve> ByParametersOnSurface(IEnumerable<UV> uvs, Surface face)
         {

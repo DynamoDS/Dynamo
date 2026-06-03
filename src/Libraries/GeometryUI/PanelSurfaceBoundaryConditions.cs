@@ -40,6 +40,11 @@ namespace GeometryUI
             return item == null ? string.Empty : item.Item.ToString();
         }
 
+        /// <summary>
+        /// Populates the dropdown items with PanelSurfaceBoundaryCondition enumeration values, sorted alphabetically.
+        /// </summary>
+        /// <param name="currentSelection">The current selection value to restore if available.</param>
+        /// <returns>The selection state indicating how to handle the current selection.</returns>
         protected override SelectionState PopulateItemsCore(string currentSelection)
         {
             Items.Clear();
