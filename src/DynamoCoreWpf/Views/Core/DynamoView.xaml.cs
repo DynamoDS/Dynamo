@@ -70,8 +70,8 @@ namespace Dynamo.Controls
         private const int RightSideBarCollapseThreshold = 100;
         private const int navigationInterval = 100;
         private const string GraphMetadataExtensionId = "28992e1d-abb9-417f-8b1b-05e053bee670";
-        private const string AutodeskAssistantViewExtensionName = "Autodesk Assistant";
-        private const string McpViewExtensionName = "Dynamo MCP View Extension";
+        private const string AutodeskAssistantExtensionId = "d2599b24-88a6-47e6-be0c-25df5702f5a7";
+        private const string McpViewExtensionId = "FAB268A8-6C83-4389-8AB8-F9AE92D6091E";
         // This is used to determine whether ESC key is being held down
         private bool IsEscKeyPressed = false;
         // internal for testing.
@@ -236,7 +236,7 @@ namespace Dynamo.Controls
             {
                 try
                 {
-                    if (DisableExtensionWhenNoNetworkMode(ext.Name, "added"))
+                    if (DisableExtensionWhenNoNetworkMode(ext.UniqueId, ext.Name, "added"))
                     {
                         continue;
                     }
@@ -1409,7 +1409,7 @@ namespace Dynamo.Controls
             {
                 try
                 {
-                    if (DisableExtensionWhenNoNetworkMode(ext.Name, "loaded"))
+                    if (DisableExtensionWhenNoNetworkMode(ext.UniqueId, ext.Name, "loaded"))
                     {
                         continue;
                     }
@@ -3405,10 +3405,10 @@ namespace Dynamo.Controls
             workspaceView?.Dispose();
         }
 
-        private bool DisableExtensionWhenNoNetworkMode(string extensionName, string action)
+        private bool DisableExtensionWhenNoNetworkMode(string extensionId, string extensionName, string action)
         {
             if (dynamoViewModel.Model.NoNetworkMode &&
-                (extensionName.Equals(AutodeskAssistantViewExtensionName) || extensionName.Equals(McpViewExtensionName)))
+                (extensionId.Equals(AutodeskAssistantExtensionId) || extensionId.Equals(McpViewExtensionId)))
             {
                 Log($"Package/Extension {extensionName} not {action} because NoNetworkMode flag is active");
 
