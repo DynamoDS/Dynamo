@@ -867,6 +867,8 @@ namespace Dynamo.ViewModels
 
             this.BrandingResourceProvider = startConfiguration.BrandingResourceProvider ?? new DefaultBrandingResourceProvider();
 
+            this.model.GraphLockManager?.SetPrompt(new WpfGraphLockUserPrompt(() => Owner, BrandingResourceProvider.ProductName));
+
             // commands should be initialized before adding any WorkspaceViewModel
             InitializeDelegateCommands();
 

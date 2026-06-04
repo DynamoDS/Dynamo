@@ -28,7 +28,7 @@ namespace Dynamo.Graph.Workspaces.Locking
         /// </summary>
         /// <param name="graphPath">The graph file path.</param>
         /// <returns>The sidecar lock file path.</returns>
-        internal static string PathFor(string graphPath)
+        internal static string GetLockFilePath(string graphPath)
         {
             return Path.GetFullPath(graphPath) + ".dynlock";
         }
@@ -38,8 +38,8 @@ namespace Dynamo.Graph.Workspaces.Locking
         /// </summary>
         /// <param name="sidecarPath">The sidecar lock file path.</param>
         /// <param name="info">The lock metadata to write.</param>
-        /// <returns>True if the lock file was created; false if one already exists.</returns>
-        internal static bool TryCreateExclusive(string sidecarPath, GraphLockInfo info)
+        /// <returns>True if the lock file was created, false if one already exists.</returns>
+        internal static bool TryCreateNewLockFile(string sidecarPath, GraphLockInfo info)
         {
             try
             {

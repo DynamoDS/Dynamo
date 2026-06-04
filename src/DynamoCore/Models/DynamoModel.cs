@@ -161,7 +161,7 @@ namespace Dynamo.Models
         internal Dictionary<string, List<string>> GraphChecksumDictionary { get; set; }
 
         /// <summary>
-        /// Coordinates graph locks for graph files opened by this Dynamo model.
+        /// Coordinates graph locks for files opened by this Dynamo model.
         /// </summary>
         internal GraphLockManager GraphLockManager { get; private set; }
 
@@ -2193,7 +2193,7 @@ namespace Dynamo.Models
         {
             LastGraphLockOpenOutcome = GraphLockOutcome.Opened;
 
-            var graphLockOutcome = GraphLockManager?.TryAcquire(filePath, true) ?? GraphLockAcquireResult.Acquired();
+            var graphLockOutcome = GraphLockManager?.AcquireLock(filePath, true) ?? GraphLockAcquireResult.Acquired();
             if (!graphLockOutcome.ShouldOpen)
             {
                 LastGraphLockOpenOutcome = GraphLockOutcome.Cancelled;

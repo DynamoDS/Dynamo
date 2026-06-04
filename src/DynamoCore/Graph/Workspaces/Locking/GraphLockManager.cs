@@ -16,7 +16,7 @@ namespace Dynamo.Graph.Workspaces.Locking
     internal sealed class GraphLockManager : IDisposable
     {
         internal const int DefaultHeartbeatMilliseconds = 30000;
-        private const int StaleFactor = 5;
+        private const int StaleFactor = 3;
 
         private readonly DynamoModel dynamoModel;
         private readonly StringComparer pathComparer;
@@ -78,7 +78,7 @@ namespace Dynamo.Graph.Workspaces.Locking
             AppDomain.CurrentDomain.ProcessExit += ReleaseAll;
             AppDomain.CurrentDomain.UnhandledException += ReleaseAll;
 
-            heartbeatTimer = new Timer(OnHeartbeat, null, this.heartbeatMilliseconds, this.heartbeatMilliseconds);
+            heartbeatTimer = new Timer(RefreshHeartbeats, null, this.heartbeatMilliseconds, this.heartbeatMilliseconds);
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace Dynamo.Graph.Workspaces.Locking
         /// <param name="graphPath">The graph path requested by the user.</param>
         /// <param name="allowPromptUI">True to allow user interaction when a conflict is found.</param>
         /// <returns>The lock acquisition result and graph path to open.</returns>
-        internal GraphLockAcquireResult TryAcquire(string graphPath, bool allowPromptUI)
+        internal GraphLockAcquireResult AcquireLock(string graphPath, bool allowPromptUI)
         {
             if (!enabled || string.IsNullOrEmpty(graphPath))
             {
@@ -106,7 +106,7 @@ namespace Dynamo.Graph.Workspaces.Locking
             var normalizedPath = Path.GetFullPath(graphPath);
             openingPaths[normalizedPath] = 0;
 
-            var result = TryAcquireCore(normalizedPath, allowPromptUI, null);
+            var result = AcquireLockInternal(normalizedPath, allowPromptUI, null);
             if (!IsSamePath(normalizedPath, result.GraphPath))
             {
                 openingPaths.TryRemove(normalizedPath, out _);
@@ -175,10 +175,10 @@ namespace Dynamo.Graph.Workspaces.Locking
             heartbeatTimer = null;
         }
 
-        private GraphLockAcquireResult TryAcquireCore(string normalizedPath, bool allowPromptUI, WorkspaceModel workspace)
+        private GraphLockAcquireResult AcquireLockInternal(string normalizedPath, bool allowPromptUI, WorkspaceModel workspace)
         {
-            var sidecarPath = GraphLockFile.PathFor(normalizedPath);
-            var info = BuildSelfInfo(normalizedPath);
+            var sidecarPath = GraphLockFile.GetLockFilePath(normalizedPath);
+            var info = BuildLockInfoForThisSession(normalizedPath);
             var attempt = 0;
 
             while (attempt < 2)
@@ -187,7 +187,7 @@ namespace Dynamo.Graph.Workspaces.Locking
                 try
                 {
                     // No lock yet: create one and we are done
-                    if (GraphLockFile.TryCreateExclusive(sidecarPath, info))
+                    if (GraphLockFile.TryCreateNewLockFile(sidecarPath, info))
                     {
                         RegisterOwnedLock(normalizedPath, sidecarPath, info, workspace);
                         return GraphLockAcquireResult.Acquired(normalizedPath);
@@ -198,7 +198,7 @@ namespace Dynamo.Graph.Workspaces.Locking
                     var readable = GraphLockFile.TryRead(sidecarPath, out existingLock);
 
                     // It is our own lock (same machine + process): reuse it
-                    if (readable && IsSelf(existingLock))
+                    if (readable && IsOwnedByThisSession(existingLock))
                     {
                         RegisterOwnedLock(normalizedPath, sidecarPath, existingLock, workspace);
                         return GraphLockAcquireResult.Acquired(normalizedPath);
@@ -223,7 +223,7 @@ namespace Dynamo.Graph.Workspaces.Locking
                         var response = prompt.AskUser(normalizedPath, existingLock);
                         if (response.ShouldSaveAs)
                         {
-                            return TryCopyToSaveAsPath(normalizedPath, response.SaveAsPath, workspace, existingLock);
+                            return CreateAndOpenCopy(normalizedPath, response.SaveAsPath, workspace, existingLock);
                         }
 
                         return GraphLockAcquireResult.Cancelled(existingLock);
@@ -257,11 +257,7 @@ namespace Dynamo.Graph.Workspaces.Locking
         }
 
         // Copies a locked graph to a user-selected path and locks that copy before opening
-        private GraphLockAcquireResult TryCopyToSaveAsPath(
-            string sourcePath,
-            string saveAsPath,
-            WorkspaceModel workspace,
-            GraphLockInfo existingLock)
+        private GraphLockAcquireResult CreateAndOpenCopy( string sourcePath, string saveAsPath, WorkspaceModel workspace, GraphLockInfo existingLock)
         {
             if (string.IsNullOrWhiteSpace(saveAsPath))
             {
@@ -274,13 +270,13 @@ namespace Dynamo.Graph.Workspaces.Locking
                 return GraphLockAcquireResult.Cancelled(existingLock);
             }
 
-            var sidecarPath = GraphLockFile.PathFor(normalizedSaveAsPath);
-            var info = BuildSelfInfo(normalizedSaveAsPath);
+            var sidecarPath = GraphLockFile.GetLockFilePath(normalizedSaveAsPath);
+            var info = BuildLockInfoForThisSession(normalizedSaveAsPath);
             var ownsSaveAsLock = false;
 
             try
             {
-                if (GraphLockFile.TryCreateExclusive(sidecarPath, info))
+                if (GraphLockFile.TryCreateNewLockFile(sidecarPath, info))
                 {
                     ownsSaveAsLock = true;
                 }
@@ -288,7 +284,7 @@ namespace Dynamo.Graph.Workspaces.Locking
                 {
                     GraphLockInfo saveAsLock;
                     var readable = GraphLockFile.TryRead(sidecarPath, out saveAsLock);
-                    if (readable && IsSelf(saveAsLock))
+                    if (readable && IsOwnedByThisSession(saveAsLock))
                     {
                         info = saveAsLock;
                         ownsSaveAsLock = true;
@@ -331,7 +327,7 @@ namespace Dynamo.Graph.Workspaces.Locking
             };
         }
 
-        private void OnHeartbeat(object state)
+        private void RefreshHeartbeats(object state)
         {
             foreach (var pair in locks.ToList())
             {
@@ -391,7 +387,7 @@ namespace Dynamo.Graph.Workspaces.Locking
             {
                 // The workspace was added with Save As: acquire and register a lock so the saved
                 // file is protected against being opened by another Dynamo instance
-                TryAcquireCore(normalizedPath, false, workspace);
+                AcquireLockInternal(normalizedPath, false, workspace);
             }
 
             workspace.PropertyChanged -= OnWorkspacePropertyChanged;
@@ -442,7 +438,7 @@ namespace Dynamo.Graph.Workspaces.Locking
 
             if (!locks.ContainsKey(normalizedPath))
             {
-                TryAcquireCore(normalizedPath, false, workspace);
+                AcquireLockInternal(normalizedPath, false, workspace);
             }
         }
 
@@ -480,7 +476,7 @@ namespace Dynamo.Graph.Workspaces.Locking
             return ageSeconds > (heartbeatMilliseconds / 1000.0) * StaleFactor;
         }
 
-        private bool IsSelf(GraphLockInfo existingLock)
+        private bool IsOwnedByThisSession(GraphLockInfo existingLock)
         {
             return existingLock != null &&
                    (existingLock.SessionId == sessionId ||
@@ -490,7 +486,7 @@ namespace Dynamo.Graph.Workspaces.Locking
         }
 
         // Builds the lock metadata written by this Dynamo session
-        private GraphLockInfo BuildSelfInfo(string normalizedPath)
+        private GraphLockInfo BuildLockInfoForThisSession(string normalizedPath)
         {
             var now = DateTime.UtcNow;
 
