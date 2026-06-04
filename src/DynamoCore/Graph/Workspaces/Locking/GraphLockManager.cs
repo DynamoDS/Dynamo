@@ -179,11 +179,9 @@ namespace Dynamo.Graph.Workspaces.Locking
         {
             var sidecarPath = GraphLockFile.GetLockFilePath(normalizedPath);
             var info = BuildLockInfoForThisSession(normalizedPath);
-            var attempt = 0;
 
-            while (attempt < 2)
+            for (var attempt = 0; attempt < 2; attempt++)
             {
-                attempt++;
                 try
                 {
                     // No lock yet: create one and we are done
@@ -197,63 +195,79 @@ namespace Dynamo.Graph.Workspaces.Locking
                     GraphLockInfo existingLock;
                     var readable = GraphLockFile.TryRead(sidecarPath, out existingLock);
 
-                    // It is our own lock (same machine + process): reuse it
-                    if (readable && IsOwnedByThisSession(existingLock))
+                    var lockResult = TryAcquireReadableLock(normalizedPath, sidecarPath, info, workspace, readable, existingLock);
+                    if (lockResult != null)
                     {
-                        RegisterOwnedLock(normalizedPath, sidecarPath, existingLock, workspace);
-                        return GraphLockAcquireResult.Acquired(normalizedPath);
-                    }
-
-                    // The lock is expired (no recent heartbeat) or owned by a process on this machine
-                    // that is no longer running. In these cases the previous owner is gone, so we
-                    // silently take the lock over. A present-but-unreadable lock is NOT reclaimed here;
-                    // it is treated as a real conflict below, so that a transient read failure cannot
-                    // make us steal a lock that a live instance still owns.
-                    if (readable && (IsStale(existingLock) || IsDeadLocalProcess(existingLock)))
-                    {
-                        GraphLockFile.WriteHeartbeat(sidecarPath, info);
-                        RegisterOwnedLock(normalizedPath, sidecarPath, info, workspace);
-                        return GraphLockAcquireResult.Acquired(normalizedPath);
+                        return lockResult;
                     }
 
                     // A live (or currently unreadable) lock owns the path.
-                    if (allowPromptUI && prompt != null)
-                    {
-                        // Ask the user to cancel or save a copy to open instead
-                        var response = prompt.AskUser(normalizedPath, existingLock);
-                        if (response.ShouldSaveAs)
-                        {
-                            return CreateAndOpenCopy(normalizedPath, response.SaveAsPath, workspace, existingLock);
-                        }
-
-                        return GraphLockAcquireResult.Cancelled(existingLock);
-                    }
-
-                    if (allowPromptUI)
-                    {
-                        // UI prompts are allowed but no prompt is wired yet (for example, a file opened
-                        // before the view model attached its prompt). Do not block the open: proceed
-                        // without a lock rather than silently aborting the open
-                        return GraphLockAcquireResult.Unavailable(normalizedPath);
-                    }
-
-                    return GraphLockAcquireResult.Cancelled(existingLock);
+                    return ResolveLockConflict(normalizedPath, allowPromptUI, workspace, existingLock);
                 }
-                catch (UnauthorizedAccessException ex)
+                catch (Exception ex) when (ex is UnauthorizedAccessException || ex is SecurityException || ex is IOException)
                 {
                     dynamoModel.Logger?.Log("GraphLock unavailable: " + ex.Message);
-                }
-                catch (SecurityException ex)
-                {
-                    dynamoModel.Logger?.Log("GraphLock unavailable: " + ex.Message);
-                }
-                catch (IOException ex)
-                {
-                    dynamoModel.Logger?.Log("GraphLock unavailable: " + ex.Message);
-                }
+                }                
             }
 
             return GraphLockAcquireResult.Unavailable(normalizedPath);
+        }
+
+        private GraphLockAcquireResult TryAcquireReadableLock(
+            string normalizedPath,
+            string sidecarPath,
+            GraphLockInfo info,
+            WorkspaceModel workspace,
+            bool readable,
+            GraphLockInfo existingLock)
+        {
+            if (!readable)
+            {
+                return null;
+            }
+
+            // It is our own lock (same machine + process): reuse it
+            if (IsOwnedByThisSession(existingLock))
+            {
+                RegisterOwnedLock(normalizedPath, sidecarPath, existingLock, workspace);
+                return GraphLockAcquireResult.Acquired(normalizedPath);
+            }
+
+            // The lock is expired (no recent heartbeat) or owned by a process on this machine
+            // that is no longer running. In these cases the previous owner is gone, so we
+            // silently take the lock over. A present but unreadable lock is not reclaimed here,
+            // it is treated as a real conflict below, so that a transient read failure cannot
+            // make us steal a lock that a live instance still owns.
+            if (IsStale(existingLock) || IsDeadLocalProcess(existingLock))
+            {
+                GraphLockFile.WriteHeartbeat(sidecarPath, info);
+                RegisterOwnedLock(normalizedPath, sidecarPath, info, workspace);
+                return GraphLockAcquireResult.Acquired(normalizedPath);
+            }
+
+            return null;
+        }
+
+        private GraphLockAcquireResult ResolveLockConflict(string normalizedPath, bool allowPromptUI, WorkspaceModel workspace, GraphLockInfo existingLock)
+        {
+            if (allowPromptUI && prompt != null)
+            {
+                // Ask the user to cancel or save a copy to open instead
+                var response = prompt.AskUser(normalizedPath, existingLock);
+                return response.ShouldSaveAs
+                    ? CreateAndOpenCopy(normalizedPath, response.SaveAsPath, workspace, existingLock)
+                    : GraphLockAcquireResult.Cancelled(existingLock);
+            }
+
+            if (allowPromptUI)
+            {
+                // UI prompts are allowed but no prompt is wired yet (for example, a file opened
+                // before the view model attached its prompt). Do not block the open: proceed
+                // without a lock rather than silently aborting the open
+                return GraphLockAcquireResult.Unavailable(normalizedPath);
+            }
+
+            return GraphLockAcquireResult.Cancelled(existingLock);
         }
 
         // Copies a locked graph to a user-selected path and locks that copy before opening

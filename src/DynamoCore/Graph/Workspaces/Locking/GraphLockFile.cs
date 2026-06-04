@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Security;
 using System.Text;
@@ -154,17 +155,9 @@ namespace Dynamo.Graph.Workspaces.Locking
             {
                 File.Delete(sidecarPath);
             }
-            catch (IOException)
+            catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException || ex is SecurityException)
             {
-                return;
-            }
-            catch (UnauthorizedAccessException)
-            {
-                return;
-            }
-            catch (SecurityException)
-            {
-                return;
+                Debug.WriteLine("GraphLock cleanup delete failed: " + ex.Message);
             }
         }
     }
