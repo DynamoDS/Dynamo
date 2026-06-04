@@ -848,7 +848,6 @@ namespace Dynamo.ViewModels
             this.model.CommandStarting += OnModelCommandStarting;
             this.model.CommandCompleted += OnModelCommandCompleted;
             this.model.RequestsCrashPrompt += CrashReportTool.ShowCrashWindow;
-            this.model.GraphLockManager?.SetPrompt(new WpfGraphLockUserPrompt(() => Owner, () => BrandingResourceProvider.ProductName));
 
             this.HideReportOptions = startConfiguration.HideReportOptions || model.NoNetworkMode;
             UsageReportingManager.Instance.InitializeCore(this);
