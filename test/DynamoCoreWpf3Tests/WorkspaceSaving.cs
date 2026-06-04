@@ -573,6 +573,19 @@ namespace Dynamo.Tests
             Assert.AreEqual("dummy description", ViewModel.Model.CurrentWorkspace.Description);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void CanOpenLegacyXmlTemplateAsNewWorkspace()
+        {
+            var templatePath = Path.Combine(TestDirectory, @"core\math", "Round.dyn");
+
+            ViewModel.Model.OpenTemplateFromPath(templatePath);
+
+            Assert.IsTrue(!string.IsNullOrEmpty(ViewModel.Model.CurrentWorkspace.FileName));
+            Assert.IsTrue(ViewModel.Model.CurrentWorkspace.IsTemplate);
+            Assert.AreEqual(3, ViewModel.Model.CurrentWorkspace.Nodes.Count());
+        }
+
         /// <summary>
         /// This test validates that when a template is opened as a new workspace, it does not save the template (replacing it with new changes)
         /// The Business Rule says that we should not allow the user to modify templates and save them in the defined templates folder.

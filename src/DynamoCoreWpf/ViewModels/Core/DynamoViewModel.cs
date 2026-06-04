@@ -2419,8 +2419,15 @@ namespace Dynamo.ViewModels
 
         private bool CanOpen(object parameters)
         {
-
-            var filePath = parameters as string;
+            string filePath = parameters as string;
+            if (filePath == null && parameters is Tuple<string, bool> packedTwo)
+            {
+                filePath = packedTwo.Item1;
+            }
+            else if (filePath == null && parameters is Tuple<string, bool, bool> packedThree)
+            {
+                filePath = packedThree.Item1;
+            }
 
             if (!PathHelper.IsValidPath(filePath))
             {

@@ -2261,6 +2261,7 @@ namespace Dynamo.Models
 
         /// <summary>
         /// Opens a Dynamo workspace from a path to a template on disk.
+        /// Supports JSON workspaces and legacy XML-format graphs
         /// </summary>
         /// <param name="filePath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
@@ -2272,11 +2273,23 @@ namespace Dynamo.Models
             if (DynamoUtilities.PathHelper.isValidJson(filePath, out string fileContents, out Exception ex))
             {
                 OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode, true);
+                return;
             }
             else
             {
-                // These kind of exceptions indicate that file is not accessible
-                if (ex is IOException || ex is UnauthorizedAccessException || ex is JsonReaderException)
+                if (ex is IOException || ex is UnauthorizedAccessException)
+                {
+                    throw ex;
+                }
+
+                XmlDocument xmlDoc;
+
+                if (ex is JsonReaderException && DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex))
+                {
+                    OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode, isTemplate: true);
+                    return;
+                }
+                else
                 {
                     throw ex;
                 }
@@ -2296,7 +2309,6 @@ namespace Dynamo.Models
             if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
             {
                 InsertJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
-                return;
             }
             else
             {
@@ -2312,7 +2324,6 @@ namespace Dynamo.Models
                     if (DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex))
                     {
                         InsertXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
-                        return;
                     }
                 }
                 else
@@ -2355,8 +2366,7 @@ namespace Dynamo.Models
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
         /// <param name="isTemplate">Set this to true to indicate that the file is a template</param>
-        /// <returns>True if workspace was opened successfully</returns>
-        internal bool OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool isTemplate = false)
+        internal void OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool isTemplate = false)
         {
             try
             {
@@ -2436,8 +2446,9 @@ namespace Dynamo.Models
         /// <param name="filePath">Path to file</param>
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
+        /// <param name="isTemplate">When true, marks the opened workspace as a template (for example when opened via <see cref="OpenTemplateFromPath"/>).</param>
         /// <returns>True if workspace was opened successfully</returns>
-        private bool OpenXmlFileFromPath(XmlDocument xmlDoc, string filePath, bool forceManualExecutionMode)
+        private bool OpenXmlFileFromPath(XmlDocument xmlDoc, string filePath, bool forceManualExecutionMode, bool isTemplate = false)
         {
             try
             {
@@ -2461,6 +2472,7 @@ namespace Dynamo.Models
                         WorkspaceModel ws;
                         if (OpenXmlFile(workspaceInfo, xmlDoc, out ws))
                         {
+                            ws.IsTemplate = isTemplate;
                             OpenWorkspace(ws);
 
                             // Set up workspace cameras here

@@ -2007,6 +2007,7 @@ namespace Dynamo.Nodes
                 Foreground = _blue300Brush,
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Right,
+                RenderTransformOrigin = new Point(0.5, 0.5),
                 RenderTransform = new ScaleTransform(1, 1.5)
             };
 
@@ -2041,6 +2042,7 @@ namespace Dynamo.Nodes
                 popup.PlacementTarget = border;
                 popup.IsOpen = true;
                 border.Background = _nodeContextMenuBackgroundHighlight;
+                arrow.Foreground = Brushes.White;
             };
 
             border.MouseLeave += (s, e) =>
@@ -2050,6 +2052,7 @@ namespace Dynamo.Nodes
                 {
                     popup.IsOpen = false;
                     border.Background = Brushes.Transparent;
+                    arrow.Foreground = _blue300Brush;
                 }
             };
 
