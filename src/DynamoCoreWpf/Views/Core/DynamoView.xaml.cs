@@ -3408,8 +3408,9 @@ namespace Dynamo.Controls
         private bool DisableExtensionWhenNoNetworkMode(string extensionId, string extensionName, string action)
         {
             if (dynamoViewModel.Model.NoNetworkMode &&
-                (string.Equals(extensionName, AutodeskAssistantViewExtensionName, StringComparison.Ordinal) ||
-                 string.Equals(extensionName, McpViewExtensionName, StringComparison.Ordinal)))
+                (string.Equals(extensionId, AutodeskAssistantExtensionId, StringComparison.Ordinal) ||
+                 string.Equals(extensionId, McpViewExtensionId, StringComparison.Ordinal)))
+            {
                 Log($"Package/Extension {extensionName} not {action} because NoNetworkMode flag is active");
 
                 return true;

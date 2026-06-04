@@ -25,7 +25,7 @@ namespace DynamoCoreWpfTests
 
             Assert.IsNotNull(method);
 
-            var shouldDisable = (bool)method.Invoke(View, new object[] { "Autodesk Assistant", "added" });
+            var shouldDisable = (bool)method.Invoke(View, new object[] { "d2599b24-88a6-47e6-be0c-25df5702f5a7", "Autodesk Assistant", "added" });
             Assert.IsTrue(shouldDisable);
         }
 
@@ -37,7 +37,7 @@ namespace DynamoCoreWpfTests
 
             Assert.IsNotNull(method);
 
-            var shouldDisable = (bool)method.Invoke(View, new object[] { "Dynamo MCP View Extension", "added" });
+            var shouldDisable = (bool)method.Invoke(View, new object[] { "FAB268A8-6C83-4389-8AB8-F9AE92D6091E", "Dynamo MCP View Extension", "added" });
             Assert.IsTrue(shouldDisable);
         }
     }
