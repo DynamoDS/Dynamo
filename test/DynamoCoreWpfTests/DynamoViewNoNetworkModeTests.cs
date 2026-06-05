@@ -1,3 +1,4 @@
+using Dynamo.Controls;
 using Dynamo.Models;
 using NUnit.Framework;
 
@@ -20,24 +21,22 @@ namespace DynamoCoreWpfTests
         [Test]
         public void AutodeskAssistantExtensionIsDisabledWhenNoNetworkModeIsEnabled()
         {
-            var method = typeof(Dynamo.Controls.DynamoView).GetMethod("DisableExtensionWhenNoNetworkMode",
-                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            var shouldDisable = View.DisableExtensionWhenNoNetworkMode(
+                DynamoView.AutodeskAssistantExtensionId,
+                "Autodesk Assistant",
+                "added");
 
-            Assert.IsNotNull(method);
-
-            var shouldDisable = (bool)method.Invoke(View, new object[] { "d2599b24-88a6-47e6-be0c-25df5702f5a7", "Autodesk Assistant", "added" });
             Assert.IsTrue(shouldDisable);
         }
 
         [Test]
         public void McpViewExtensionIsDisabledWhenNoNetworkModeIsEnabled()
         {
-            var method = typeof(Dynamo.Controls.DynamoView).GetMethod("DisableExtensionWhenNoNetworkMode",
-                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            var shouldDisable = View.DisableExtensionWhenNoNetworkMode(
+                DynamoView.McpViewExtensionId,
+                "Dynamo MCP View Extension",
+                "added");
 
-            Assert.IsNotNull(method);
-
-            var shouldDisable = (bool)method.Invoke(View, new object[] { "FAB268A8-6C83-4389-8AB8-F9AE92D6091E", "Dynamo MCP View Extension", "added" });
             Assert.IsTrue(shouldDisable);
         }
     }
