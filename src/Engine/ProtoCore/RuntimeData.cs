@@ -147,9 +147,14 @@ namespace ProtoCore
                     // the GUID would remove a sibling expression's warning before it re-executes.
                     // Fall back to exprUID for internal graph nodes (guid=Empty).
                     if (!graphNode.guid.Equals(System.Guid.Empty))
+                    {
                         runtimeCore.RuntimeStatus.ClearWarningsForGraphNode(graphNode.guid, graphNode.exprUID);
+                    }                      
                     else
+                    {
                         runtimeCore.RuntimeStatus.ClearWarningForExpression(graphNode.exprUID);
+                    }
+                        
                 }
             }
 
