@@ -209,7 +209,16 @@ namespace Dynamo.WorkspaceDependency.Properties {
                 return ResourceManager.GetString("InstallButtonText", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Enable Network Mode to be able to install packages..
+        /// </summary>
+        public static string InstallButtonNoNetworkModeToolTip {
+            get {
+                return ResourceManager.GetString("InstallButtonNoNetworkModeToolTip", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>

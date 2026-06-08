@@ -10248,7 +10248,16 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("SignInOfflineButtonContentToolTip", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Enable Network Mode to be able to use Package Manager..
+        /// </summary>
+        public static string PackageManagerNoNetworkModeToolTip {
+            get {
+                return ResourceManager.GetString("PackageManagerNoNetworkModeToolTip", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Signing out of Dynamo will sign you out of all Autodesk desktop products..
         /// </summary>
