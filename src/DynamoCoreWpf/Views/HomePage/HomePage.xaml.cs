@@ -64,6 +64,8 @@ namespace Dynamo.UI.Views
 
         private bool _disposed = false;
 
+        private bool templateSubscribed = false;
+
         /// <summary>
         /// A helper tool to let us test flows without relying on side-effects
         /// </summary>
@@ -286,6 +288,12 @@ namespace Dynamo.UI.Views
             _ = LoadGraphs(recentFiles);
         }
 
+        private void TemplateFiles_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            var templateFiles = startPage.TemplateFiles?.DistinctBy(x => x.ContextData).ToList();
+            _ = LoadTemplates(templateFiles);
+        }
+
         #region FrontEnd Initialization Calls
         /// <summary>
         /// Sends graph data to react app
@@ -342,6 +350,12 @@ namespace Dynamo.UI.Views
             if (items != null && items.Any())
             {
                 await LoadTemplates(items);
+            }
+
+            if (!templateSubscribed && startPage.TemplateFiles != null)
+            {
+                startPage.TemplateFiles.CollectionChanged += TemplateFiles_CollectionChanged;
+                templateSubscribed = true;
             }
         }
 
@@ -761,6 +775,12 @@ namespace Dynamo.UI.Views
                             {
                                 startPage.DynamoViewModel.RecentFiles.CollectionChanged -= RecentFiles_CollectionChanged;
                             }
+                        }
+
+                        if (templateSubscribed && startPage.TemplateFiles != null)
+                        {
+                            startPage.TemplateFiles.CollectionChanged -= TemplateFiles_CollectionChanged;
+                            templateSubscribed = false;
                         }
                     }
 
