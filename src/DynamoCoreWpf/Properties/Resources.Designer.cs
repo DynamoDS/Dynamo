@@ -6568,6 +6568,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable Network Mode to be able to use Package Manager..
+        /// </summary>
+        public static string PackageManagerNoNetworkModeToolTip {
+            get {
+                return ResourceManager.GetString("PackageManagerNoNetworkModeToolTip", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to No validation errors.
         /// </summary>
         public static string PackageManagerNoValidationErrors {

@@ -154,6 +154,9 @@
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
     <value>Enable Network Mode to be able to sign in.</value>
   </data>
+  <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
+    <value>Enable Network Mode to be able to use Package Manager.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
