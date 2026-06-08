@@ -595,6 +595,41 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Removes entries from <see cref="RecentFiles"/> whose underlying file no
+        /// longer exists on disk. Existing <see cref="ObservableCollection{T}.CollectionChanged"/>
+        /// subscribers propagate the changes (e.g. the Home view's WebView).
+        /// </summary>
+        internal void PruneInvalidRecentFiles()
+        {
+            if (recentFiles == null || recentFiles.Count == 0)
+            {
+                return;
+            }
+
+            var invalid = recentFiles.Where(p => !PathHelper.IsValidPath(p)).ToList();
+            foreach (var path in invalid)
+            {
+                recentFiles.Remove(path);
+            }
+        }
+
+        /// <summary>
+        /// Removes a single entry from <see cref="RecentFiles"/>. Used to surgically
+        /// drop a stale entry without re-scanning the whole list.
+        /// </summary>
+        /// <param name="path">The recent-file path to remove.</param>
+        /// <returns>True if the entry was present and removed; otherwise false.</returns>
+        internal bool TryRemoveRecentFile(string path)
+        {
+            if (string.IsNullOrEmpty(path) || recentFiles == null)
+            {
+                return false;
+            }
+
+            return recentFiles.Remove(path);
+        }
+
         public bool WatchIsResizable { get; set; }
 
         public string Version

@@ -1197,6 +1197,15 @@ Don't worry, you'll have the option to save your work.</value>
   <data name="FilePathConverterNoFileSelected" xml:space="preserve">
     <value>No file selected.</value>
   </data>
+  <data name="HomeFileNoLongerExistsAtPath" xml:space="preserve">
+    <value>This file no longer exists at the following location and will be removed from your list.
+{0}</value>
+    <comment>Home page | Shown when the user clicks a Templates/Recent Files tile whose file has been deleted. {0} is the missing file path.</comment>
+  </data>
+  <data name="HomeFileNoLongerExistsAtPathTitle" xml:space="preserve">
+    <value>File Not Found</value>
+    <comment>Home page | Title of the dialog shown when a Templates/Recent Files tile points at a missing file.</comment>
+  </data>
   <data name="HideClassicNodeLibrary" xml:space="preserve">
     <value>Hide Classic Node Library</value>
   </data>

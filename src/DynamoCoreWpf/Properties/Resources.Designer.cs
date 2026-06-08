@@ -3911,6 +3911,25 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("HideClassicNodeLibrary", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This file no longer exists at the following location and will be removed from your list.
+        ///{0}.
+        /// </summary>
+        public static string HomeFileNoLongerExistsAtPath {
+            get {
+                return ResourceManager.GetString("HomeFileNoLongerExistsAtPath", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to File Not Found.
+        /// </summary>
+        public static string HomeFileNoLongerExistsAtPathTitle {
+            get {
+                return ResourceManager.GetString("HomeFileNoLongerExistsAtPathTitle", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Hide Wires.

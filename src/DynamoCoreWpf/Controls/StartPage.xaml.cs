@@ -216,7 +216,7 @@ namespace Dynamo.UI.Controls
             var dvm = this.DynamoViewModel;
             RefreshRecentFileList(dvm.RecentFiles, true);
             RefreshBackupFileList(dvm.Model.PreferenceSettings.BackupFiles);
-            LoadTemplates();
+            LoadTemplatesFromDisk(clearFirst: false);
             dvm.RecentFiles.CollectionChanged += OnRecentFilesChanged;
 
 
@@ -225,7 +225,26 @@ namespace Dynamo.UI.Controls
 
         private void LoadTemplates()
         {
-            // Retrieve the current Temlates location from Dynamo properties
+            LoadTemplatesFromDisk(clearFirst: false);
+        }
+
+        /// <summary>
+        /// Re-reads the templates directory from disk and refreshes
+        /// <see cref="TemplateFiles"/>. Safe to call multiple times.
+        /// </summary>
+        internal void RefreshTemplates()
+        {
+            LoadTemplatesFromDisk(clearFirst: true);
+        }
+
+        private void LoadTemplatesFromDisk(bool clearFirst)
+        {
+            if (clearFirst)
+            {
+                templateFiles.Clear();
+            }
+
+            // Retrieve the current Templates location from Dynamo properties
             var templatesDirectory = DynamoViewModel.Model.PathManager.TemplatesDirectory;
 
             if (Directory.Exists(templatesDirectory))
