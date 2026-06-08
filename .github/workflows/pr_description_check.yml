@@ -29,29 +29,29 @@ jobs:
         cat release_notes.txt
       
     - name: Validate Release Notes
-      id: validate_notes
-      run: |
-        release_notes=$(cat release_notes.txt)
-        if [[ "$release_notes" == *"(FILL ME IN)"* ]]; then
-          echo "Error: Release notes must be filled in."
-          echo "Author: Please check if the text in Release Notes is the default text."
-          exit 1
-        elif [[ "$release_notes" == *"N/A"* ]]; then
-          echo "Release notes are not applicable for this pull request."
-          echo "Reviewer: Please check if this pull request have non-applicable Release notes."
-          exit 0
-        else
-          word_count=$(wc -w <<< "$release_notes")
-          if [ $word_count -ge 6 ]; then
-            echo "Release notes have at least 6 words."
-            exit 0
-          else
-            echo "Error: Release notes must have at least 6 words."
-            echo "Author: Please add more context of your changes."
-            echo "Extracted release notes (word count: $word_count):"
-            echo "---"
-            echo "$release_notes"
-            echo "---"
-            exit 1
-          fi
-        fi
+  id: validate_notes
+  run: |
+    release_notes=$(cat release_notes.txt)
+    if [[ "$release_notes" == *"(FILL ME IN)"* ]]; then
+      echo "Error: Release notes must be filled in."
+      echo "Author: Please check if the text in Release Notes is the default text."
+      exit 1
+    elif [[ "$release_notes" == *"N/A"* ]]; then
+      echo "Release notes are not applicable for this pull request."
+      echo "Reviewer: Please check if this pull request have non-applicable Release notes."
+      exit 0
+    else
+      word_count=$(echo "$release_notes" | wc -w)
+      if [ "$word_count" -ge 6 ]; then
+        echo "Release notes have at least 6 words."
+        exit 0
+      else
+        echo "Error: Release notes must have at least 6 words."
+        echo "Author: Please add more context of your changes."
+        echo "Extracted release notes (word count: $word_count):"
+        echo "---"
+        echo "$release_notes"
+        echo "---"
+        exit 1
+      fi
+    fi
