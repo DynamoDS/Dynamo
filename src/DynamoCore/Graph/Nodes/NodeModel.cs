@@ -1643,7 +1643,15 @@ namespace Dynamo.Graph.Nodes
             if (inputs == null || !inputs.Any())
                 return;
 
-            for (int i = 0; i < inputs.Count; i++)
+            // Variadic nodes pack tail inputs into a single argument, so per-port
+            // level/lacing handling for the variadic slots must happen before packing.
+            // The hook lets such nodes scope this post-pack pass to the non-variadic
+            // prefix, preventing double-wrap.
+            int boundedCount = Math.Min(inputs.Count, LevelAndReplicationGuideInputCount(inputs.Count));
+            if (boundedCount <= 0)
+                return;
+
+            for (int i = 0; i < boundedCount; i++)
             {
                 if (InPorts[i].UseLevels)
                 {
@@ -1654,7 +1662,7 @@ namespace Dynamo.Graph.Nodes
             switch (ArgumentLacing)
             {
                 case LacingStrategy.Auto:
-                    for (int i = 0; i < inputs.Count(); ++i)
+                    for (int i = 0; i < boundedCount; ++i)
                     {
                         if (InPorts[i].UseLevels)
                             inputs[i] = AstFactory.AddReplicationGuide(inputs[i], new List<int> { 1 }, false);
@@ -1662,7 +1670,7 @@ namespace Dynamo.Graph.Nodes
                     break;
 
                 case LacingStrategy.Shortest:
-                    for (int i = 0; i < inputs.Count(); ++i)
+                    for (int i = 0; i < boundedCount; ++i)
                     {
                         inputs[i] = AstFactory.AddReplicationGuide(inputs[i], new List<int> { 1 }, false);
                     }
@@ -1671,7 +1679,7 @@ namespace Dynamo.Graph.Nodes
 
                 case LacingStrategy.Longest:
 
-                    for (int i = 0; i < inputs.Count(); ++i)
+                    for (int i = 0; i < boundedCount; ++i)
                     {
                         inputs[i] = AstFactory.AddReplicationGuide(inputs[i], new List<int> { 1 }, true);
                     }
@@ -1680,7 +1688,7 @@ namespace Dynamo.Graph.Nodes
                 case LacingStrategy.CrossProduct:
 
                     int guide = 1;
-                    for (int i = 0; i < inputs.Count(); ++i)
+                    for (int i = 0; i < boundedCount; ++i)
                     {
                         inputs[i] = AstFactory.AddReplicationGuide(inputs[i], new List<int> { guide }, false);
                         guide++;
@@ -1688,6 +1696,21 @@ namespace Dynamo.Graph.Nodes
                     break;
             }
         }
+
+        /// <summary>
+        /// Returns the number of leading inputs that <see cref="UseLevelAndReplicationGuide"/>
+        /// should wrap with <c>AtLevel</c> / replication guides.
+        /// </summary>
+        /// <remarks>
+        /// Variadic nodes (e.g. <c>DSVarArgFunction</c>) pack their tail inputs into a single
+        /// packed argument before this post-pack pass runs. Wrapping the packed slot here would
+        /// be either a no-op or a double-wrap, so variadic nodes override this hook to expose only
+        /// the non-variadic prefix and handle per-port level / lacing on the unpacked variadic
+        /// inputs themselves.
+        /// </remarks>
+        /// <param name="rawInputCount">Number of raw input AST nodes available to the pass.</param>
+        /// <returns>Number of inputs (counted from index 0) that should be wrapped.</returns>
+        protected virtual int LevelAndReplicationGuideInputCount(int rawInputCount) => rawInputCount;
         #endregion
 
         #region Input and Output Connections
