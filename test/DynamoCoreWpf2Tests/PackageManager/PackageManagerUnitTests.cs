@@ -1,5 +1,6 @@
 ﻿using Dynamo;
 using Dynamo.PackageManager;
+using Dynamo.Wpf.Properties;
 using NUnit.Framework;
 
 namespace DynamoCoreWpfTests.PackageManager
@@ -33,6 +34,14 @@ namespace DynamoCoreWpfTests.PackageManager
             var message = "Unknown error";
             var actual = PublishPackageViewModel.TranslatePackageManagerError(message);
             Assert.AreEqual(message, actual);
+        }
+
+        [Test]
+        public void WhenNoNetworkModeTooltipResourceRequestedThenItResolvesToNonEmpty()
+        {
+            // Guards against accidental deletion of the no-network mode tooltip resource string
+            // that the PM menu items in DynamoView.xaml depend on.
+            Assert.IsFalse(string.IsNullOrWhiteSpace(Resources.PackageManagerNoNetworkModeToolTip));
         }
 
         #endregion

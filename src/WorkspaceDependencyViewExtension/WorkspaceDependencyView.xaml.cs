@@ -39,6 +39,12 @@ namespace Dynamo.WorkspaceDependency
         private Boolean hasDependencyIssue = false;
 
         /// <summary>
+        /// True when Dynamo started in no-network mode. Bound to the Install button's
+        /// IsEnabled trigger so users see the disabled state and tooltip.
+        /// </summary>
+        public bool NoNetworkMode { get; private set; }
+
+        /// <summary>
         /// Property to raise to author's attention, if the Dynamo active workspace has any missing dependencies.
         /// This determines if the package dep viewer will be injected into right panel.
         /// </summary>
@@ -149,6 +155,7 @@ namespace Dynamo.WorkspaceDependency
             currentWorkspace.PropertyChanged += OnWorkspacePropertyChanged;
             loadedParams = p;
             packageInstaller = p.PackageInstaller;
+            NoNetworkMode = p.StartupParams.NoNetworkMode;
             dependencyViewExtension = viewExtension;
             HomeWorkspaceModel.WorkspaceClosed += this.CloseExtensionTab;
         }

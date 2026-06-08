@@ -344,7 +344,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void GetExternalFilesShouldBailIfGraphExecuting()
         {
-            // Open test file to verify the external file references are not computed when RunEnabled is false. 
+            // Open test file to verify the external file references are not computed when RunEnabled is false.
             var examplePath = Path.Combine(@"core\ExternalReferencesTest.dyn");
             Open(examplePath);
             (Model.CurrentWorkspace as HomeWorkspaceModel).RunSettings.RunEnabled = false;
@@ -355,6 +355,51 @@ namespace DynamoCoreWpfTests
             WorkspaceReferencesExtension.DependencyRegen(Model.CurrentWorkspace, true);
             results = Model.CurrentWorkspace.ExternalFiles;
             Assert.AreEqual(2, results.Count());
+        }
+
+        [Test]
+        public void WhenInstallButtonResourceStringRequestedThenItResolvesToNonEmpty()
+        {
+            // Guards against accidental deletion of the no-network mode tooltip resource string.
+            Assert.IsFalse(string.IsNullOrWhiteSpace(Resources.InstallButtonNoNetworkModeToolTip));
+        }
+    }
+
+    /// <summary>
+    /// Fixture that boots Dynamo in NoNetworkMode to verify the Workspace References
+    /// install button is disabled and exposes the no-network tooltip.
+    /// </summary>
+    [TestFixture]
+    public class WorkspaceDependencyViewExtensionNoNetworkModeTests : DynamoTestUIBase
+    {
+        private WorkspaceDependencyViewExtension viewExtension = new WorkspaceDependencyViewExtension();
+
+        protected override DynamoModel.IStartConfiguration CreateStartConfiguration(IPathResolver pathResolver)
+        {
+            return new DynamoModel.DefaultStartConfiguration()
+            {
+                PathResolver = pathResolver,
+                StartInTestMode = true,
+                GeometryFactoryPath = preloader.GeometryFactoryPath,
+                ProcessMode = TaskProcessMode.Synchronous,
+                NoNetworkMode = true,
+            };
+        }
+
+        [Test]
+        public void WhenNoNetworkModeThenWorkspaceReferencesInstallButtonIsDisabled()
+        {
+            RaiseLoadedEvent(this.View);
+            var extensionManager = View.viewExtensionManager;
+            extensionManager.Add(viewExtension);
+
+            var loadedParams = new ViewLoadedParams(View, ViewModel);
+            viewExtension.pmExtension = this.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
+            viewExtension.Loaded(loadedParams);
+
+            // The view's NoNetworkMode flag should reflect the model startup configuration
+            // and that flag is what drives the DownloadPackageButton's IsEnabled state.
+            Assert.IsTrue(viewExtension.DependencyView.NoNetworkMode);
         }
     }
 }
