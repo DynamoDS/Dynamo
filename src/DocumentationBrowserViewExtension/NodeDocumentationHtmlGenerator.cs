@@ -292,6 +292,7 @@ namespace Dynamo.DocumentationBrowser
                 sb.AppendLine(" <tr class=\"table--border\">");
                 sb.AppendLine($"<td class=\"table--border\">{e.OutputNames.ElementAt(i)}</td>");
                 sb.AppendLine($"<td class=\"table--border\">{GetNthRowFromStringSplit(e.OutputDescriptions.ElementAt(i), 0)}</td>");
+                sb.AppendLine($"<td class=\"table--border\">{GetTypeFromDescription(e.OutputDescriptions.ElementAt(i))}</td>");
                 sb.AppendLine(@"</tr>");
             }
 
