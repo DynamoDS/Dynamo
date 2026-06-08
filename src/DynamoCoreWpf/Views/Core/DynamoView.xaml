@@ -615,13 +615,64 @@
                               IsEnabled="True">
                         <MenuItem Name="publishSelected"
                                   Command="{Binding Path=DataContext.PublishSelectedNodesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
-                                  Header="{x:Static p:Resources.DynamoViewPackageMenuPublishNodes}" />
+                                  Header="{x:Static p:Resources.DynamoViewPackageMenuPublishNodes}"
+                                  ToolTipService.ShowOnDisabled="True">
+                            <MenuItem.ToolTip>
+                                <ToolTip>
+                                    <ToolTip.Style>
+                                        <Style TargetType="ToolTip" BasedOn="{StaticResource GenericToolTipLight}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding PlacementTarget.IsEnabled, RelativeSource={RelativeSource Self}}" Value="False">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                    <Setter Property="Content" Value="{x:Static p:Resources.PackageManagerNoNetworkModeToolTip}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ToolTip.Style>
+                                </ToolTip>
+                            </MenuItem.ToolTip>
+                        </MenuItem>
                         <MenuItem Name="publishCurrent"
                                   Command="{Binding Path=DataContext.PublishCurrentWorkspaceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
-                                  Header="{x:Static p:Resources.DynamoViewPackageMenuPublishWorkspace}" />
+                                  Header="{x:Static p:Resources.DynamoViewPackageMenuPublishWorkspace}"
+                                  ToolTipService.ShowOnDisabled="True">
+                            <MenuItem.ToolTip>
+                                <ToolTip>
+                                    <ToolTip.Style>
+                                        <Style TargetType="ToolTip" BasedOn="{StaticResource GenericToolTipLight}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding PlacementTarget.IsEnabled, RelativeSource={RelativeSource Self}}" Value="False">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                    <Setter Property="Content" Value="{x:Static p:Resources.PackageManagerNoNetworkModeToolTip}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ToolTip.Style>
+                                </ToolTip>
+                            </MenuItem.ToolTip>
+                        </MenuItem>
                         <MenuItem Name="showPM"
                                   Command="{Binding Path=DataContext.ShowPackageManagerCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
-                                  Header="{x:Static p:Resources.DynamoViewPackageMenuPackageManager}" />
+                                  Header="{x:Static p:Resources.DynamoViewPackageMenuPackageManager}"
+                                  ToolTipService.ShowOnDisabled="True">
+                            <MenuItem.ToolTip>
+                                <ToolTip>
+                                    <ToolTip.Style>
+                                        <Style TargetType="ToolTip" BasedOn="{StaticResource GenericToolTipLight}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding PlacementTarget.IsEnabled, RelativeSource={RelativeSource Self}}" Value="False">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                    <Setter Property="Content" Value="{x:Static p:Resources.PackageManagerNoNetworkModeToolTip}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ToolTip.Style>
+                                </ToolTip>
+                            </MenuItem.ToolTip>
+                        </MenuItem>
                     </MenuItem>
 
                     <MenuItem Name="HelpMenu"
