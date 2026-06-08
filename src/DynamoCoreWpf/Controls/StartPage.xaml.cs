@@ -1,5 +1,7 @@
 using Dynamo.Configuration;
 using Dynamo.Logging;
+using Dynamo.Models;
+using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
@@ -673,6 +675,31 @@ namespace Dynamo.UI.Controls
         private void HandleFilePath(StartPageListItem item)
         {
             var path = item.ContextData;
+
+            if (!DynamoUtilities.PathHelper.IsValidPath(path))
+            {
+                if (IsTemplateFilePath(path))
+                {
+                    RefreshTemplates();
+                }
+                else
+                {
+                    this.DynamoViewModel.TryRemoveRecentFile(path);
+                }
+
+                if (!DynamoModel.IsTestMode)
+                {
+                    DynamoMessageBox.Show(
+                        this.DynamoViewModel.Owner,
+                        string.Format(Resources.HomeFileNoLongerExistsAtPath, path),
+                        Resources.HomeFileNoLongerExistsAtPathTitle,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                }
+
+                return;
+            }
+
             // Listed templates: use the same open path as the template file-picker (ShowOpenTemplateDialog),
             // i.e. open as a new graph from the file contents, not as the saved template path on disk.
             object openArg = IsTemplateFilePath(path)

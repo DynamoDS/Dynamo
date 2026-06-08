@@ -15,6 +15,7 @@ using System.Windows.Controls;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Models;
 using Dynamo.UI.Controls;
+using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
@@ -65,6 +66,8 @@ namespace Dynamo.UI.Views
         private bool _disposed = false;
 
         private bool templateSubscribed = false;
+
+        private bool? lastShowStartPage;
 
         /// <summary>
         /// A helper tool to let us test flows without relying on side-effects
@@ -130,7 +133,16 @@ namespace Dynamo.UI.Views
         {
             if(e.PropertyName == nameof(startPage.DynamoViewModel.ShowStartPage) && dynWebView?.CoreWebView2 != null)
             {
-                dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.setShowStartPageChanged('{startPage.DynamoViewModel.ShowStartPage}')");
+                var showStartPage = startPage.DynamoViewModel.ShowStartPage;
+                dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.setShowStartPageChanged('{showStartPage}')");
+
+                if (showStartPage && lastShowStartPage != true)
+                {
+                    startPage.RefreshTemplates();
+                    startPage.DynamoViewModel.PruneInvalidRecentFiles();
+                }
+
+                lastShowStartPage = showStartPage;
             }
         }
 
@@ -550,6 +562,13 @@ namespace Dynamo.UI.Views
         internal void OpenFile(string path)
         {
             if (String.IsNullOrEmpty(path)) return;
+
+            if (!PathHelper.IsValidPath(path))
+            {
+                HandleMissingFile(path);
+                return;
+            }
+
             if (DynamoModel.IsTestMode)
             {
                 TestHook?.Invoke(path);
@@ -564,6 +583,36 @@ namespace Dynamo.UI.Views
             {
                 dvm.OpenCommand.Execute(openArg);
             }
+        }
+
+        /// <summary>
+        /// Drops the stale entry (template or recent file) and notifies the user
+        /// that the underlying file no longer exists. Invoked from <see cref="OpenFile"/>
+        /// before <see cref="DynamoViewModel.OpenCommand"/> is reached, so the
+        /// side-effecting modal dialog inside <c>CanOpen</c> is never triggered from
+        /// the WebView2 host-object thread.
+        /// </summary>
+        internal void HandleMissingFile(string path)
+        {
+            if (startPage == null) return;
+
+            if (IsListedHomePageTemplate(path))
+            {
+                startPage.RefreshTemplates();
+            }
+            else
+            {
+                startPage.DynamoViewModel.TryRemoveRecentFile(path);
+            }
+
+            if (DynamoModel.IsTestMode) return;
+
+            DynamoMessageBox.Show(
+                startPage.DynamoViewModel.Owner,
+                string.Format(Wpf.Properties.Resources.HomeFileNoLongerExistsAtPath, path),
+                Wpf.Properties.Resources.HomeFileNoLongerExistsAtPathTitle,
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
         }
 
         private bool IsListedHomePageTemplate(string path)
