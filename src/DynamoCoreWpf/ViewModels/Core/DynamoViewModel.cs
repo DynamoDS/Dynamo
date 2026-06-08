@@ -2227,6 +2227,7 @@ namespace Dynamo.ViewModels
 
                 // Remember whether we are on the start page so we can return to it if the user cancels.
                 bool startPageVisibleBeforeOpen = ShowStartPage;
+                bool forceBlockRunBeforeOpen = RunSettings.ForceBlockRun;
 
                 var directoryName = Path.GetDirectoryName(filePath);
 
@@ -2247,7 +2248,7 @@ namespace Dynamo.ViewModels
                 // restore the previous start-page state and stop.
                 if (Model.LastGraphLockOpenOutcome == GraphLockOutcome.Cancelled)
                 {
-                    RunSettings.ForceBlockRun = false;
+                    RunSettings.ForceBlockRun = forceBlockRunBeforeOpen;
 
                     if (FileTrustViewModel != null)
                     {
