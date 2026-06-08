@@ -755,7 +755,24 @@
                     <MenuItem Name="Publish"
                               Command="{Binding DynamoViewModel.PublishCurrentWorkspaceCommand}"
                               Header="{x:Static p:Resources.ContextMenuPublishCustomNode}"
-                              Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
+                              ToolTipService.ShowOnDisabled="True"
+                              Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
+                        <MenuItem.ToolTip>
+                            <ToolTip>
+                                <ToolTip.Style>
+                                    <Style TargetType="ToolTip" BasedOn="{StaticResource GenericToolTipLight}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding PlacementTarget.IsEnabled, RelativeSource={RelativeSource Self}}" Value="False">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                                <Setter Property="Content" Value="{x:Static p:Resources.PackageManagerNoNetworkModeToolTip}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ToolTip.Style>
+                            </ToolTip>
+                        </MenuItem.ToolTip>
+                    </MenuItem>
 
                     <Separator />
 
