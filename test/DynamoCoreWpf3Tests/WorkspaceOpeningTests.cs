@@ -1,9 +1,12 @@
 using System;
 using System.IO;
+using System.Linq;
+using Dynamo.Configuration;
 using Dynamo.Events;
 using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.ViewModels;
 
 using NUnit.Framework;
 
@@ -187,6 +190,137 @@ namespace Dynamo.Tests
             // See QNTM-2839 and OpeningWorksapceWithManualRunState test above
             ViewModel.OpenCommand.Execute(openParams);
             return ViewModel.Model.CurrentWorkspace;
+        }
+
+        [Test]
+        public void PruneInvalidRecentFilesRemovesMissingPathsWhenInvoked()
+        {
+            // Arrange
+            var validPath = Path.Combine(SampleDirectory, @"en-US\Basics\Basics_Basic01.dyn");
+            var missingPath = Path.Combine(TempFolder, "definitely-not-on-disk.dyn");
+            ViewModel.RecentFiles.Clear();
+            ViewModel.RecentFiles.Add(validPath);
+            ViewModel.RecentFiles.Add(missingPath);
+
+            // Act
+            ViewModel.PruneInvalidRecentFiles();
+
+            // Assert
+            Assert.AreEqual(1, ViewModel.RecentFiles.Count);
+            Assert.AreEqual(validPath, ViewModel.RecentFiles[0]);
+        }
+
+        [Test]
+        public void PruneInvalidRecentFilesPreservesValidPathsWhenAllValid()
+        {
+            // Arrange
+            var first = Path.Combine(SampleDirectory, @"en-US\Basics\Basics_Basic01.dyn");
+            var second = Path.Combine(SampleDirectory, @"en-US\Basics\Basics_Basic02.dyn");
+            ViewModel.RecentFiles.Clear();
+            ViewModel.RecentFiles.Add(first);
+            ViewModel.RecentFiles.Add(second);
+
+            // Act
+            ViewModel.PruneInvalidRecentFiles();
+
+            // Assert
+            Assert.AreEqual(2, ViewModel.RecentFiles.Count);
+            CollectionAssert.AreEqual(new[] { first, second }, ViewModel.RecentFiles);
+        }
+
+        [Test]
+        public void TryRemoveRecentFileReturnsTrueWhenEntryExists()
+        {
+            // Arrange
+            var path = Path.Combine(TempFolder, "anything.dyn");
+            ViewModel.RecentFiles.Clear();
+            ViewModel.RecentFiles.Add(path);
+
+            // Act
+            var removed = ViewModel.TryRemoveRecentFile(path);
+
+            // Assert
+            Assert.IsTrue(removed);
+            Assert.IsEmpty(ViewModel.RecentFiles);
+        }
+
+        [Test]
+        public void TryRemoveRecentFileReturnsFalseWhenEntryMissing()
+        {
+            // Arrange
+            ViewModel.RecentFiles.Clear();
+
+            // Act
+            var removed = ViewModel.TryRemoveRecentFile(Path.Combine(TempFolder, "missing.dyn"));
+
+            // Assert
+            Assert.IsFalse(removed);
+        }
+
+        [Test]
+        public void RefreshTemplatesPicksUpNewlyAddedTemplateWhenInvokedAfterAdd()
+        {
+            // Arrange
+            var templatesDir = Path.Combine(TempFolder, "templates-add-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(templatesDir);
+            try
+            {
+                ViewModel.Model.UpdatePreferenceItemLocation(
+                    PathManager.PreferenceItem.Templates, templatesDir);
+
+                var startPage = new StartPageViewModel(ViewModel, isFirstRun: true);
+                Assert.AreEqual(0, startPage.TemplateFiles.Count, "Sanity: empty templates dir starts with zero items.");
+
+                var newTemplate = Path.Combine(templatesDir, "NewTemplate.dyn");
+                File.WriteAllText(newTemplate, "{}");
+
+                // Act
+                startPage.RefreshTemplates();
+
+                // Assert
+                Assert.AreEqual(1, startPage.TemplateFiles.Count);
+                Assert.AreEqual(newTemplate, startPage.TemplateFiles[0].ContextData);
+            }
+            finally
+            {
+                if (Directory.Exists(templatesDir))
+                {
+                    Directory.Delete(templatesDir, recursive: true);
+                }
+            }
+        }
+
+        [Test]
+        public void RefreshTemplatesDropsDeletedTemplateWhenInvokedAfterDelete()
+        {
+            // Arrange
+            var templatesDir = Path.Combine(TempFolder, "templates-delete-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(templatesDir);
+            var templatePath = Path.Combine(templatesDir, "DoomedTemplate.dyn");
+            File.WriteAllText(templatePath, "{}");
+            try
+            {
+                ViewModel.Model.UpdatePreferenceItemLocation(
+                    PathManager.PreferenceItem.Templates, templatesDir);
+
+                var startPage = new StartPageViewModel(ViewModel, isFirstRun: true);
+                Assert.AreEqual(1, startPage.TemplateFiles.Count, "Sanity: template loaded on construction.");
+
+                File.Delete(templatePath);
+
+                // Act
+                startPage.RefreshTemplates();
+
+                // Assert
+                Assert.AreEqual(0, startPage.TemplateFiles.Count);
+            }
+            finally
+            {
+                if (Directory.Exists(templatesDir))
+                {
+                    Directory.Delete(templatesDir, recursive: true);
+                }
+            }
         }
     }
 }

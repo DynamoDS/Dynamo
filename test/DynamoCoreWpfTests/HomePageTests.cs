@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Dynamo.Controls;
@@ -53,6 +54,73 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(homePage.RequestShowSampleDatasetsInFolder);
             Assert.IsNotNull(homePage.RequestShowBackupFilesInFolder);
             Assert.IsNotNull(homePage.RequestShowTemplate);
+        }
+
+        [Test]
+        public void OpenFileWithMissingPathDoesNotInvokeTestHook()
+        {
+            // Arrange
+            var vm = View.DataContext as DynamoViewModel;
+            var startPage = new StartPageViewModel(vm, true);
+            var homePage = new HomePage { DataContext = startPage };
+            var missingPath = Path.Combine(Path.GetTempPath(), "definitely-missing-" + Guid.NewGuid().ToString("N") + ".dyn");
+
+            var testHookInvoked = false;
+            HomePage.TestHook = (_) => testHookInvoked = true;
+
+            // Act
+            homePage.OpenFile(missingPath);
+
+            // Assert
+            Assert.IsFalse(testHookInvoked, "TestHook (proxy for OpenCommand) must not run when the path is invalid.");
+
+            // Clean up
+            HomePage.TestHook = null;
+        }
+
+        [Test]
+        public void OpenFileWithMissingRecentFilePathRemovesItFromRecentFiles()
+        {
+            // Arrange
+            var vm = View.DataContext as DynamoViewModel;
+            var startPage = new StartPageViewModel(vm, true);
+            var homePage = new HomePage { DataContext = startPage };
+            var missingPath = Path.Combine(Path.GetTempPath(), "stale-recent-" + Guid.NewGuid().ToString("N") + ".dyn");
+
+            vm.RecentFiles.Clear();
+            vm.RecentFiles.Add(missingPath);
+            HomePage.TestHook = null;
+
+            // Act
+            homePage.OpenFile(missingPath);
+
+            // Assert
+            CollectionAssert.DoesNotContain(vm.RecentFiles, missingPath);
+        }
+
+        [Test]
+        public void HandleMissingFileWithListedTemplateRefreshesTemplatesInsteadOfRecentFiles()
+        {
+            // Arrange
+            var vm = View.DataContext as DynamoViewModel;
+            var startPage = new StartPageViewModel(vm, true);
+            var homePage = new HomePage { DataContext = startPage };
+            var ghostTemplate = Path.Combine(Path.GetTempPath(), "ghost-template-" + Guid.NewGuid().ToString("N") + ".dyn");
+
+            // Inject a fake template entry so the missing path is treated as a template, not a recent file.
+            startPage.TemplateFiles.Add(new StartPageListItem("Ghost Template") { ContextData = ghostTemplate });
+            vm.RecentFiles.Clear();
+            vm.RecentFiles.Add(ghostTemplate);
+
+            // Act
+            homePage.HandleMissingFile(ghostTemplate);
+
+            // Assert
+            // Template path: RecentFiles should be untouched (no surgical remove); RefreshTemplates clears the fake.
+            Assert.IsFalse(startPage.TemplateFiles.Any(t => t.ContextData == ghostTemplate),
+                "RefreshTemplates should clear the stale template entry.");
+            CollectionAssert.Contains(vm.RecentFiles, ghostTemplate,
+                "Template-path branch must not touch RecentFiles.");
         }
 
         [Test]
