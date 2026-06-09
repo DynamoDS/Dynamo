@@ -900,6 +900,28 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void EvaluateDefineDataNodeAppliesPlayerValueWhenInputValueIsNull()
+        {
+            var booleanString = typeof(bool).ToString();
+            var result = DSCore.Data.EvaluateDefineDataNode(null, booleanString, false, false, "true");
+
+            Assert.AreEqual(true, result[">"]);
+            Assert.IsNotNull(result["Validation"]);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EvaluateDefineDataNodeReturnsNullWhenInputValueAndPlayerValueAreEmpty()
+        {
+            var booleanString = typeof(bool).ToString();
+            var result = DSCore.Data.EvaluateDefineDataNode(null, booleanString, false, false, string.Empty);
+
+            Assert.IsNull(result[">"]);
+            Assert.IsNull(result["Validation"]);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void ThrowsCorrectErrorTypes()
         {
             // Arrange
