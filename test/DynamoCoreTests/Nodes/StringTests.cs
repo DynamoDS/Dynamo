@@ -126,6 +126,25 @@ namespace Dynamo.Tests
                 });
         }
 
+        // DYN-8473: Variadic String.Concat ports should be labelled list0, list1, ...
+        // (derived from the renamed `lists` parameter) instead of the older
+        // string0/string1 scheme that users reported as confusing.
+        [Test]
+        public void TestConcatStringPortsAreNamedListN()
+        {
+            string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestConcatString_nestedList.dyn");
+
+            OpenModel(testFilePath);
+
+            var concatNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSVarArgFunction>(
+                "3a9b8f01-1111-2222-3333-444455556666");
+
+            Assert.IsNotNull(concatNode, "Expected String.Concat node in fixture.");
+            Assert.GreaterOrEqual(concatNode.InPorts.Count, 2, "Fixture has at least two variadic inputs.");
+            Assert.AreEqual("list0", concatNode.InPorts[0].Name);
+            Assert.AreEqual("list1", concatNode.InPorts[1].Name);
+        }
+
         #endregion
 
         #region substring test cases  
