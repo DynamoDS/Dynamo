@@ -8390,6 +8390,24 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("PreferencesViewEnablePersistExtensions", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Start the MCP server when Dynamo launches.
+        /// </summary>
+        public static string PreferencesViewEnableMcpServerOnStartup {
+            get {
+                return ResourceManager.GetString("PreferencesViewEnableMcpServerOnStartup", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to When enabled, the Dynamo MCP server starts automatically with Dynamo. When disabled, you can still turn it on at any time from the Extensions menu without restarting Dynamo.
+        /// </summary>
+        public static string PreferencesViewEnableMcpServerOnStartupTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesViewEnableMcpServerOnStartupTooltip", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Enable T-Spline nodes.

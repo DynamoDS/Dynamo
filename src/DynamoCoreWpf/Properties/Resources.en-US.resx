@@ -740,6 +740,14 @@ Don't worry, you'll have the option to save your work.</value>
     <value>Experimental</value>
     <comment>Preferences | Features | Experimental</comment>
   </data>
+  <data name="PreferencesViewEnableMcpServerOnStartup" xml:space="preserve">
+    <value>Start the MCP server when Dynamo launches</value>
+    <comment>Preferences | Features | Experimental</comment>
+  </data>
+  <data name="PreferencesViewEnableMcpServerOnStartupTooltip" xml:space="preserve">
+    <value>When enabled, the Dynamo MCP server starts automatically with Dynamo. When disabled, you can still turn it on at any time from the Extensions menu without restarting Dynamo.</value>
+    <comment>Preferences | Features | Experimental</comment>
+  </data>
   <data name="DynamoViewSettingMenu" xml:space="preserve">
     <value>_Settings</value>
     <comment>Setting menu</comment>

@@ -76,6 +76,7 @@ namespace Dynamo.Configuration
         private bool isEnablePersistExtensionsEnabled;
         private bool isAutoSyncDocumentBrowser = true;
         private bool isStaticSplashScreenEnabled;
+        private bool isMcpServerEnabledOnStartup;
         private bool isTimeStampIncludedInExportFilePath;
         private bool isCreatedFromValidFile = true;
         private string backupLocation;
@@ -826,6 +827,24 @@ namespace Dynamo.Configuration
         }
 
         /// <summary>
+        /// This defines whether the Dynamo MCP (Model Context Protocol) server starts
+        /// automatically when Dynamo launches. When false, the server stays off until the
+        /// user enables it from the MCP extension's Extensions-menu toggle (DYN-9355).
+        /// </summary>
+        public bool EnableMcpServerOnStartup
+        {
+            get
+            {
+                return isMcpServerEnabledOnStartup;
+            }
+            set
+            {
+                isMcpServerEnabledOnStartup = value;
+                RaisePropertyChanged(nameof(EnableMcpServerOnStartup));
+            }
+        }
+
+        /// <summary>
         /// This defines if the user is agree to the ML Automcomplete Terms of Use
         /// </summary>
         public bool IsMLAutocompleteTOUApproved
@@ -1100,6 +1119,7 @@ namespace Dynamo.Configuration
             HideAutocompleteMethodOptions = false;
             EnableNotificationCenter = true;
             isStaticSplashScreenEnabled = true;
+            isMcpServerEnabledOnStartup = false;
             isTimeStampIncludedInExportFilePath = true;
             DefaultPythonEngine = string.Empty;
             ViewExtensionSettings = new List<ViewExtensionSettings>();

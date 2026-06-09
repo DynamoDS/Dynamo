@@ -402,6 +402,24 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Controls the IsChecked property in the "start MCP server on launch" toggle button.
+        /// When enabled, the Dynamo MCP server starts automatically with Dynamo; otherwise it
+        /// stays off until enabled from the MCP extension's Extensions-menu toggle (DYN-9355).
+        /// </summary>
+        public bool McpServerEnabledOnStartup
+        {
+            get
+            {
+                return preferenceSettings.EnableMcpServerOnStartup;
+            }
+            set
+            {
+                preferenceSettings.EnableMcpServerOnStartup = value;
+                RaisePropertyChanged(nameof(McpServerEnabledOnStartup));
+            }
+        }
+
+        /// <summary>
         /// Controls the IsChecked property in the selecting to include timestamp for export path section
         /// </summary>
         public bool IsTimeStampIncludedInExportFilePath
@@ -1287,9 +1305,9 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                // Hide for now since panel nodes are OOTB and no other experimental features
-                // Keep infrastructure for future experimental features
-                return false;
+                // Visible now that the Experimental section hosts the MCP server startup
+                // toggle (DYN-9355). Previously hidden when the section had no features.
+                return true;
             }
         }
 
