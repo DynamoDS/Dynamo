@@ -33,6 +33,7 @@ namespace Dynamo.Graph.Workspaces
         private PulseMaker pulseMaker;
         private bool verboseLogging;
         private bool graphExecuted;
+        private bool blockRunDuringEvaluationStarted;
 
         // Event to handle closing of the workspace references extension when the workspace is closed. 
         internal static event Action WorkspaceClosed;
@@ -227,13 +228,13 @@ namespace Dynamo.Graph.Workspaces
             try
             {
                 // Do not allow graph runs to be triggered from the EvaluationStarted event. We want to avoid potential infinite loops.
-                // Use a simple internal flag like ForceBlockRun (RunEnabled would notify WPF of changes and that would incur peformance penalties without any benefit)
-                RunSettings.ForceBlockRun = true;
+                // RunEnabled would notify WPF of changes and incur performance penalties without benefit.
+                blockRunDuringEvaluationStarted = true;
                 EvaluationStarted?.Invoke(this, e);
             }
             finally
             {
-                RunSettings.ForceBlockRun = false;
+                blockRunDuringEvaluationStarted = false;
             }
         }
 
@@ -776,7 +777,9 @@ namespace Dynamo.Graph.Workspaces
         {
             if (!RunSettings.RunEnabled) return;
 
-            // ForceBlockRun (an internal flag) has higher priority than RunEnabled. Mostly used by the FileTrust feature.
+            if (blockRunDuringEvaluationStarted) return;
+
+            // ForceBlockRun has higher priority than RunEnabled. Mostly used by the FileTrust feature.
             if (RunSettings.ForceBlockRun) return;
 
             graphExecuted = true;
