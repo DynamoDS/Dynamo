@@ -7,6 +7,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Models;
 using NUnit.Framework;
+using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
 {
@@ -97,6 +98,59 @@ namespace Dynamo.Tests
             RunModel(testFilePath);
 
             AssertPreviewValue("a105ad39-9b1c-44aa-a2cb-37866ea48dd0", new string[] { "0a", "10a", "20a", "30a", "40a", "50a" });
+        }
+
+        // DYN-8473: When a nested list is connected to one input of a String.Concat,
+        // each subsequent input should remain independent — a scalar second input
+        // should replicate against the nested first input rather than being packed
+        // into the same params array. The current implementation packs all ports
+        // into one string[] argument, so the nested structure of port 0 controls
+        // how ports 1..N are interpreted. Enable once TASK 2 lands the fix.
+        [Test]
+        [Ignore("DYN-8473: pending list-level fix for String.Concat (enabled by TASK 2)")]
+        public void TestConcatStringNestedListInputIsIndependentOfScalarInput()
+        {
+            // Build the graph programmatically: a String.Concat with two ports, a code block
+            // feeding a nested list of strings into port 0, and a code block feeding a single
+            // scalar string into port 1.
+            var stringConcat = new DSVarArgFunction(
+                CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("DSCore.String.Concat@string[]"));
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.CreateNodeCommand(stringConcat, 0, 0, true, false));
+            // String.Concat defaults to a single input port; add a second to mimic the repro graph.
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.ModelEventCommand(stringConcat.GUID, "AddInPort", 1));
+            Assert.AreEqual(2, stringConcat.InPorts.Count);
+
+            var nestedCbn = new CodeBlockNodeModel(CurrentDynamoModel.LibraryServices);
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.CreateNodeCommand(nestedCbn, 0, 0, true, false));
+            CurrentDynamoModel.ExecuteCommand(
+                new DynCmd.UpdateModelValueCommand(System.Guid.Empty, nestedCbn.GUID, "Code", "{{\"a\",\"b\"},{\"c\",\"d\"}};"));
+
+            var scalarCbn = new CodeBlockNodeModel(CurrentDynamoModel.LibraryServices);
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.CreateNodeCommand(scalarCbn, 0, 0, true, false));
+            CurrentDynamoModel.ExecuteCommand(
+                new DynCmd.UpdateModelValueCommand(System.Guid.Empty, scalarCbn.GUID, "Code", "\"X\";"));
+
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
+                nestedCbn.GUID, 0, PortType.Output, DynCmd.MakeConnectionCommand.Mode.Begin));
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
+                stringConcat.GUID, 0, PortType.Input, DynCmd.MakeConnectionCommand.Mode.End));
+
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
+                scalarCbn.GUID, 0, PortType.Output, DynCmd.MakeConnectionCommand.Mode.Begin));
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
+                stringConcat.GUID, 1, PortType.Input, DynCmd.MakeConnectionCommand.Mode.End));
+
+            RunCurrentModel();
+
+            // Expected: scalar input replicates against the nested-list input so each leaf is
+            // concatenated with "X", preserving the nested-list shape and keeping ports
+            // independent of each other.
+            AssertPreviewValue(stringConcat.GUID.ToString(),
+                new object[]
+                {
+                    new[] { "aX", "bX" },
+                    new[] { "cX", "dX" }
+                });
         }
 
         #endregion
