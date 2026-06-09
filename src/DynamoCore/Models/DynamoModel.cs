@@ -2685,7 +2685,7 @@ namespace Dynamo.Models
                 int runPeriod;
                 if (!Int32.TryParse(dynamoPreferences.RunPeriod, out runPeriod))
                     runPeriod = RunSettings.DefaultRunPeriod;
-                homeWorkspace.RunSettings = new RunSettings(runType, runPeriod);
+                homeWorkspace.RunSettings.ForceBlockRun = ShouldForceBlockRun(filePath);
 
                 RegisterHomeWorkspace(homeWorkspace);
             }
@@ -2696,6 +2696,24 @@ namespace Dynamo.Models
 
             return true;
         }
+
+        /// <summary>
+        /// Returns true when grahp execution shoudl be blocked pending file trust aknowledgement
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        internal bool ShouldForceBlockRun(string filePath)
+        {
+            if (IsTestMode || PreferenceSettings.DisableTrustWarnings) return false;
+
+            if (string.IsNullOrEmpty(filePath) || filePath.EndsWith(".dyf")) return false;
+
+            var directoryPath = Path.GetDirectoryName(filePath);
+            if (string.IsNullOrEmpty(directoryPath)) return false;
+
+            return !PreferenceSettings.IsTrustedLocation(directoryPath);
+        }
+
 
         // Attempts to reload all the dummy nodes in the current workspace and replaces them with resolved version.
         private void ReloadDummyNodes()
