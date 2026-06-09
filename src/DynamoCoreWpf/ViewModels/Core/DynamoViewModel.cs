@@ -2348,8 +2348,6 @@ namespace Dynamo.ViewModels
             filePath = string.Empty;
             fileContents = string.Empty;
             bool forceManualMode = true;
-            var homeRunSettings = HomeRunSettings;
-            bool forceBlockRunBeforeInsert = homeRunSettings?.ForceBlockRun ?? false;
             try
             {
                 if (parameters is Tuple<string, bool> packedParams)

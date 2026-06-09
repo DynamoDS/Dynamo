@@ -2679,12 +2679,21 @@ namespace Dynamo.Models
                     workspace.HasUnsavedChanges = true;
                 }
 
-                RunType runType;
-                if (!homeWorkspace.HasRunWithoutCrash || !Enum.TryParse(dynamoPreferences.RunType, false, out runType) || forceManualExecutionMode)
-                    runType = RunType.Manual;
-                int runPeriod;
-                if (!Int32.TryParse(dynamoPreferences.RunPeriod, out runPeriod))
-                    runPeriod = RunSettings.DefaultRunPeriod;
+                RunType runType = RunType.Manual;
+                if (homeWorkspace.HasRunWithoutCrash
+                    && !forceManualExecutionMode
+                    && Enum.TryParse(dynamoPreferences.RunType, false, out RunType parsedRunType))
+                {
+                    runType = parsedRunType;
+                }
+
+                int runPeriod = RunSettings.DefaultRunPeriod;
+                if (Int32.TryParse(dynamoPreferences.RunPeriod, out int parserRunPeriod))
+                {
+                    runPeriod = parserRunPeriod;
+                }
+
+                homeWorkspace.RunSettings = new RunSettings(runType, runPeriod);
                 homeWorkspace.RunSettings.ForceBlockRun = ShouldForceBlockRun(filePath);
 
                 RegisterHomeWorkspace(homeWorkspace);
