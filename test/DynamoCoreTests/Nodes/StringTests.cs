@@ -2,12 +2,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CoreNodeModels;
-using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
-using Dynamo.Models;
 using NUnit.Framework;
-using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
 {
@@ -66,20 +63,26 @@ namespace Dynamo.Tests
             AssertPreviewValue("8c7c1a80-021b-4064-b9d1-873a0538bb0b", "yesterday today.tomorrow");
         }
 
+        // DYN-8473: String.Concat now lowers to a chain of binary `+` operations.
+        // DesignScript's overloaded `+` accepts a (string, int) pair and coerces the
+        // integer, so the node concatenates "a" and 1 into "a1" rather than raising a
+        // node-level warning as the old `params string[]` path used to.
         [Test]
         public void TestConcatStringInvalidInput()
         {
-            string testFilePath = Path.Combine(localDynamoStringTestFolder, 
+            string testFilePath = Path.Combine(localDynamoStringTestFolder,
                 "TestConcatString_invalidInput.dyn");
 
             RunModel(testFilePath);
 
-            var stringConcat = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSVarArgFunction>
-                ("eb4d8a34-5437-4064-ad52-db5c58a95451");
-            Assert.AreEqual(ElementState.Warning, stringConcat.State);
-
+            AssertPreviewValue("eb4d8a34-5437-4064-ad52-db5c58a95451", "a1");
         }
 
+        // DYN-8473: Each input port participates in Dynamo's per-input replication
+        // independently. Two parallel flat lists ({"ab","cd"} and {"ef","gh"}) now
+        // pair element-wise via the chain-of-`+` AST, producing {"abef","cdgh"}.
+        // Prior to the fix, the inputs were packed into a single string[] which
+        // caused per-port replication ({"abcd","efgh"}) — the bug behaviour.
         [Test]
         public void TestConcatStringMultipleInput()
         {
@@ -87,7 +90,7 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath);
 
-            AssertPreviewValue("fbc947fb-460b-49b9-8460-b223bffb63d5", new string[] { "abcd", "efgh" });
+            AssertPreviewValue("fbc947fb-460b-49b9-8460-b223bffb63d5", new string[] { "abef", "cdgh" });
         }
 
         [Test]
@@ -101,51 +104,21 @@ namespace Dynamo.Tests
         }
 
         // DYN-8473: When a nested list is connected to one input of a String.Concat,
-        // each subsequent input should remain independent — a scalar second input
-        // should replicate against the nested first input rather than being packed
-        // into the same params array. The current implementation packs all ports
-        // into one string[] argument, so the nested structure of port 0 controls
-        // how ports 1..N are interpreted. Enable once TASK 2 lands the fix.
+        // each subsequent input remains independent — a scalar second input replicates
+        // against the nested first input rather than being packed into the same params
+        // array.
         [Test]
-        [Ignore("DYN-8473: pending list-level fix for String.Concat (enabled by TASK 2)")]
         public void TestConcatStringNestedListInputIsIndependentOfScalarInput()
         {
-            // Build the graph programmatically: a String.Concat with two ports, a code block
-            // feeding a nested list of strings into port 0, and a code block feeding a single
-            // scalar string into port 1.
-            var stringConcat = new DSVarArgFunction(
-                CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("DSCore.String.Concat@string[]"));
-            CurrentDynamoModel.ExecuteCommand(new DynCmd.CreateNodeCommand(stringConcat, 0, 0, true, false));
-            // String.Concat defaults to a single input port; add a second to mimic the repro graph.
-            CurrentDynamoModel.ExecuteCommand(new DynCmd.ModelEventCommand(stringConcat.GUID, "AddInPort", 1));
-            Assert.AreEqual(2, stringConcat.InPorts.Count);
+            string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestConcatString_nestedList.dyn");
 
-            var nestedCbn = new CodeBlockNodeModel(CurrentDynamoModel.LibraryServices);
-            CurrentDynamoModel.ExecuteCommand(new DynCmd.CreateNodeCommand(nestedCbn, 0, 0, true, false));
-            CurrentDynamoModel.ExecuteCommand(
-                new DynCmd.UpdateModelValueCommand(System.Guid.Empty, nestedCbn.GUID, "Code", "{{\"a\",\"b\"},{\"c\",\"d\"}};"));
+            RunModel(testFilePath);
 
-            var scalarCbn = new CodeBlockNodeModel(CurrentDynamoModel.LibraryServices);
-            CurrentDynamoModel.ExecuteCommand(new DynCmd.CreateNodeCommand(scalarCbn, 0, 0, true, false));
-            CurrentDynamoModel.ExecuteCommand(
-                new DynCmd.UpdateModelValueCommand(System.Guid.Empty, scalarCbn.GUID, "Code", "\"X\";"));
-
-            CurrentDynamoModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
-                nestedCbn.GUID, 0, PortType.Output, DynCmd.MakeConnectionCommand.Mode.Begin));
-            CurrentDynamoModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
-                stringConcat.GUID, 0, PortType.Input, DynCmd.MakeConnectionCommand.Mode.End));
-
-            CurrentDynamoModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
-                scalarCbn.GUID, 0, PortType.Output, DynCmd.MakeConnectionCommand.Mode.Begin));
-            CurrentDynamoModel.ExecuteCommand(new DynCmd.MakeConnectionCommand(
-                stringConcat.GUID, 1, PortType.Input, DynCmd.MakeConnectionCommand.Mode.End));
-
-            RunCurrentModel();
-
-            // Expected: scalar input replicates against the nested-list input so each leaf is
-            // concatenated with "X", preserving the nested-list shape and keeping ports
-            // independent of each other.
-            AssertPreviewValue(stringConcat.GUID.ToString(),
+            // Port 0: {{"a","b"},{"c","d"}}  (nested 2D list of strings)
+            // Port 1: "X"                    (scalar string)
+            // Expected: the scalar replicates against every leaf of the nested list,
+            // preserving the nested shape and keeping ports independent of each other.
+            AssertPreviewValue("3a9b8f01-1111-2222-3333-444455556666",
                 new object[]
                 {
                     new[] { "aX", "bX" },
