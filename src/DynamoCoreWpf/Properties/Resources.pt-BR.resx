@@ -1146,6 +1146,12 @@ Sempre é possível fazer o download do pacote novamente.</value>
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>Falha ao carregar um pacote inválido.</value>
   </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>Instalação cancelada devido a um conflito de nós personalizados.</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>Reinicie o Dynamo para remover o pacote conflitante.</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>Nenhum nó pôde ser encontrado com essa ID.</value>
   </data>
@@ -3634,7 +3640,7 @@ Em alguns gráficos complexos ou cenários de programas hospedeiros, o modo Auto
     <value>_Arquivo</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>_Modelo</value>
+    <value>Do modelo...</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>Não é possível salvar os espaços de trabalho na pasta Modelos. Escolha uma pasta diferente para salvar o arquivo.

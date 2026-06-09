@@ -277,7 +277,7 @@
         <member name="T:DSCore.Data.DataNodeDynamoType">
             <summary>Dynamo でサポートされる DataType を表すクラス</summary>
         </member>
-        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String)">
+        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String,System.String)">
             <summary>Dynamo でサポートされる DataType を表すクラス</summary>
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Type">
@@ -285,6 +285,10 @@
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Name">
             <summary>タイプ名を上書きする任意の名前(「長整数型」ではなく「数字」)</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.TypeId">
+            <summary>ワイヤ形式の $typeid (例: "autodesk.math:point3d-1.0.0")。
+            $typeid シリアル化を使用しないプリミティブ タイプの場合は null。</summary>
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Level">
             <summary>UI に表示される階層レベル</summary>

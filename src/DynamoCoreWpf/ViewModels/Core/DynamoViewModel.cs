@@ -24,6 +24,7 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Graph.Workspaces.Locking;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -47,6 +48,7 @@ using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using Dynamo.Wpf.Services;
 using DynamoMLDataPipeline;
 using DynamoServices;
 using DynamoUtilities;
@@ -863,6 +865,8 @@ namespace Dynamo.ViewModels
             this.ShowStartPage = !DynamoModel.IsTestMode;
 
             this.BrandingResourceProvider = startConfiguration.BrandingResourceProvider ?? new DefaultBrandingResourceProvider();
+
+            this.model.GraphLockManager?.SetPrompt(new WpfGraphLockUserPrompt(() => Owner, BrandingResourceProvider.ProductName));
 
             // commands should be initialized before adding any WorkspaceViewModel
             InitializeDelegateCommands();
@@ -2221,22 +2225,60 @@ namespace Dynamo.ViewModels
                     filePath = parameters as string;
                 }
 
+                // Remember whether we are on the start page so we can return to it if the user cancels.
+                bool startPageVisibleBeforeOpen = ShowStartPage;
+                bool forceBlockRunBeforeOpen = RunSettings.ForceBlockRun;
+
                 var directoryName = Path.GetDirectoryName(filePath);
 
-                // Display trust warning when file is not among trust location and warning feature is on
+                // Decide whether the trust warning is needed and block the run BEFORE opening, so an
+                // untrusted graph cannot start running before the user has accepted the warning.
                 bool displayTrustWarning = !PreferenceSettings.IsTrustedLocation(directoryName)
                     && !filePath.EndsWith("dyf")
                     && !DynamoModel.IsTestMode
                     && !PreferenceSettings.DisableTrustWarnings
                     && FileTrustViewModel != null;
                 RunSettings.ForceBlockRun = displayTrustWarning;
+
                 // Execute graph open command
                 ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode, isTemplate));
+
+                // The file is already open in another Dynamo instance
+                // On cancel: nothing is opened, so undo the run block, make sure no trust warning is shown,
+                // restore the previous start-page state and stop.
+                if (Model.LastGraphLockOpenOutcome == GraphLockOutcome.Cancelled)
+                {
+                    RunSettings.ForceBlockRun = forceBlockRunBeforeOpen;
+
+                    if (FileTrustViewModel != null)
+                    {
+                        FileTrustViewModel.ShowWarningPopup = false;
+                    }
+                    ShowStartPage = startPageVisibleBeforeOpen;
+                    return;
+                }
+
+                // On Save as: the model is opened as a copy at a different location,
+                // re-evaluate the trust state for that copy.
+                if (Model.LastGraphLockOpenOutcome == GraphLockOutcome.RedirectedToCopy)
+                {
+                    var openedPath = Model.CurrentWorkspace?.FileName;
+                    if (!string.IsNullOrEmpty(openedPath))
+                    {
+                        directoryName = Path.GetDirectoryName(openedPath);
+                        displayTrustWarning = !PreferenceSettings.IsTrustedLocation(directoryName)
+                            && !openedPath.EndsWith("dyf")
+                            && !DynamoModel.IsTestMode
+                            && !PreferenceSettings.DisableTrustWarnings
+                            && FileTrustViewModel != null;
+                    }
+                    RunSettings.ForceBlockRun = displayTrustWarning;
+                }
 
                 // Apply annotation updates based on the preference setting
                 RefreshAnnotationDescriptions();
 
-                // Only show trust warning popop when current opened workspace is homeworkspace and not custom node workspace
+                // Only show trust warning popup when current opened workspace is homeworkspace and not custom node workspace
                 if (displayTrustWarning && (currentWorkspaceViewModel?.IsHomeSpace ?? false))
                 {
                     // Skip these when opening dyf
@@ -2378,8 +2420,15 @@ namespace Dynamo.ViewModels
 
         private bool CanOpen(object parameters)
         {
-
-            var filePath = parameters as string;
+            string filePath = parameters as string;
+            if (filePath == null && parameters is Tuple<string, bool> packedTwo)
+            {
+                filePath = packedTwo.Item1;
+            }
+            else if (filePath == null && parameters is Tuple<string, bool, bool> packedThree)
+            {
+                filePath = packedThree.Item1;
+            }
 
             if (!PathHelper.IsValidPath(filePath))
             {

@@ -1146,6 +1146,12 @@ Siempre puede volver a descargar el paquete.</value>
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>No se ha podido cargar un paquete no válido.</value>
   </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>La instalación se ha cancelado debido a un conflicto de nodos personalizados.</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>Reinicie Dynamo para eliminar el paquete en conflicto.</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>No se ha podido encontrar ningún nodo con ese ID</value>
   </data>
@@ -3634,7 +3640,7 @@ En determinados gráficos complejos o al usar programas anfitriones, el modo Aut
     <value>_Archivo</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>_Plantilla</value>
+    <value>Desde plantilla...</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>Los espacios de trabajo no se pueden guardar en la carpeta de plantillas. Elija otra carpeta para guardar el archivo.

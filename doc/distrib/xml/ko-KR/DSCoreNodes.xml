@@ -277,7 +277,7 @@
         <member name="T:DSCore.Data.DataNodeDynamoType">
             <summary>Dynamo에서 지원하는 DataType을 나타내는 클래스</summary>
         </member>
-        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String)">
+        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String,System.String)">
             <summary>Dynamo에서 지원하는 DataType을 나타내는 클래스</summary>
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Type">
@@ -285,6 +285,10 @@
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Name">
             <summary>Type 이름을 재지정할 선택적 Name(`long` 대신 Number`)</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.TypeId">
+            <summary>와이어 형식 $typeid(예: "autodesk.math:point3d-1.0.0").
+            $typeid 직렬화를 사용하지 않는' 기본체 유형의 경우 null.</summary>
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Level">
             <summary>UI에 표시할 계층 레벨</summary>
