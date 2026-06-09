@@ -2252,7 +2252,7 @@ namespace Dynamo.ViewModels
                 }
 
                 // On Save as: the model is opened as a copy at a different location,
-                // re-evaluate the trust state for that copy (popup only)
+                // re-evaluate the trust state for that copy (popup only).
                 if (Model.LastGraphLockOpenOutcome == GraphLockOutcome.RedirectedToCopy)
                 {
                     var openedPath = Model.CurrentWorkspace?.FileName;
@@ -2306,7 +2306,6 @@ namespace Dynamo.ViewModels
                     throw e;
 #pragma warning restore CA2200 // Rethrow to preserve stack details
                 }
-
                 return;
             }
             this.ShowStartPage = false; // Hide start page if there's one.
@@ -2406,11 +2405,6 @@ namespace Dynamo.ViewModels
 #pragma warning disable CA2200 // Rethrow to preserve stack details
                     throw e;
 #pragma warning restore CA2200 // Rethrow to preserve stack details
-                }
-
-                if (homeRunSettings != null)
-                {
-                    homeRunSettings.ForceBlockRun = forceBlockRunBeforeInsert;
                 }
                 return;
             }
