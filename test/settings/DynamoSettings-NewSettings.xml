@@ -87,6 +87,7 @@
   <IsAutoSyncDocumentBrowser>false</IsAutoSyncDocumentBrowser>
   <EnableNotificationCenter>false</EnableNotificationCenter>
   <EnableStaticSplashScreen>false</EnableStaticSplashScreen>
+  <EnableMcpServerOnStartup>true</EnableMcpServerOnStartup>
   <IsMLAutocompleteTOUApproved>false</IsMLAutocompleteTOUApproved>
   <IsTimeStampIncludedInExportFilePath>false</IsTimeStampIncludedInExportFilePath>
   <EnablePersistExtensions>true</EnablePersistExtensions>

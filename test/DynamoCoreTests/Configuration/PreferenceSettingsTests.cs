@@ -429,6 +429,31 @@ namespace Dynamo.Tests.Configuration
 
         [Test]
         [Category("UnitTests")]
+        public void WhenSettingsAreNewThenMcpServerOnStartupDefaultsToFalse()
+        {
+            // The MCP server must stay off unless the user opts in (DYN-9355).
+            var settings = new PreferenceSettings();
+
+            Assert.IsFalse(settings.EnableMcpServerOnStartup);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenMcpServerOnStartupIsEnabledThenItPersistsAcrossSaveAndLoad()
+        {
+            string tempPath = Path.Combine(Path.GetTempPath(), "mcpServerStartupPreference.xml");
+
+            var settings = new PreferenceSettings();
+            settings.EnableMcpServerOnStartup = true;
+
+            settings.Save(tempPath);
+            var loadedSettings = PreferenceSettings.Load(tempPath);
+
+            Assert.IsTrue(loadedSettings.EnableMcpServerOnStartup);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void TestTaintedFile()
         {
             string settingDirectory = Path.Combine(TestDirectory, "settings");
