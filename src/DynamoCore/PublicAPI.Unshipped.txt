@@ -1,3 +1,5 @@
+Dynamo.Configuration.PreferenceSettings.EnableMcpServerOnStartup.get -> bool
+Dynamo.Configuration.PreferenceSettings.EnableMcpServerOnStartup.set -> void
 Dynamo.Graph.Nodes.IValueSchemaProvider
 Dynamo.Graph.Nodes.IValueSchemaProvider.IsListValue.get -> bool
 Dynamo.Graph.Nodes.IValueSchemaProvider.ValueTypeId.get -> string

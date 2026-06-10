@@ -441,7 +441,8 @@ namespace Dynamo.Tests.Configuration
         [Category("UnitTests")]
         public void WhenMcpServerOnStartupIsEnabledThenItPersistsAcrossSaveAndLoad()
         {
-            string tempPath = Path.Combine(Path.GetTempPath(), "mcpServerStartupPreference.xml");
+            // Use a unique file under the per-test TempFolder, which UnitTestBase cleans up on teardown.
+            string tempPath = GetNewFileNameOnTempPath("xml");
 
             var settings = new PreferenceSettings();
             settings.EnableMcpServerOnStartup = true;
