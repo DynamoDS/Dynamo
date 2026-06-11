@@ -1887,44 +1887,37 @@ namespace Dynamo.Controls
 
         private void DynamoViewModelRequestSave3DImage(object sender, ImageSaveEventArgs e)
         {
-            var dpiX = 0.0;
-            var dpiY = 0.0;
-
-            // dpi aware, otherwise incorrect images are created
-            try
-            {
-                var scale = VisualTreeHelper.GetDpi(this);
-                dpiX = scale.PixelsPerInchX;
-                dpiY = scale.PixelsPerInchY;
-            }
-            catch (Exception ex)
-            {
-                Log(ex.ToString());
-
-                dpiX = 96;
-                dpiY = 96;
-            }
-
             if (BackgroundPreview == null)
             {
                 e.Success = false;
                 return;
             }
-            var bitmapSource = BackgroundPreview.View.RenderBitmap();
-            // this image only really needs 24bits per pixel but to match previous implementation we'll use 32bit images.
-            var rtBitmap = new RenderTargetBitmap(bitmapSource.PixelWidth, bitmapSource.PixelHeight, dpiX, dpiY, PixelFormats.Pbgra32);
-            rtBitmap.Render(BackgroundPreview.View);
-            var encoder = new PngBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(rtBitmap));
 
-            if (File.Exists(e.Path))
+            if (!dynamoViewModel.BackgroundPreviewViewModel.Active)
             {
-                File.Delete(e.Path);
+                e.Success = false;
+                dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(
+                    Res.CantExportBackground3DPreviewInactiveMessage, true);
+                return;
             }
 
-            using (var stream = File.Create(e.Path))
+            try
             {
-                encoder.Save(stream);
+                Watch3DImageExporter.TrySaveViewportToPng(BackgroundPreview.View, e.Path);
+            }
+            catch (OutOfMemoryException ex)
+            {
+                e.Success = false;
+                Log(ex.ToString());
+                dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(
+                    Res.CantExportBackground3DPreviewMessage, true);
+            }
+            catch (Exception ex)
+            {
+                e.Success = false;
+                Log(ex.ToString());
+                dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(
+                    Res.CantExportBackground3DPreviewMessage, true);
             }
         }
 

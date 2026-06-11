@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using Dynamo.Controls;
 using Dynamo.Selection;
 using Dynamo.Utilities;
+using Dynamo.Wpf.Utilities;
 using DynamoCoreWpfTests.Utility;
 using HelixToolkit.Wpf.SharpDX;
 using NUnit.Framework;
@@ -43,28 +44,17 @@ namespace WpfVisualizationTests
         private static BitmapSource DynamoRenderBitmap(
              Viewport3DX view, int width, int height)
         {
-            var w = view.RenderHost.ActualWidth;
-            var h = view.RenderHost.ActualHeight;
-            var dpiscaling = view.RenderHost.DpiScale;
-            view.RenderHost.Resize((int)(width/ dpiscaling), (int)(height/dpiscaling));
-            var rtb = view.RenderBitmap();
-            view.RenderHost.Resize((int)w, (int)h);
-            return rtb;
+            return Watch3DImageExporter.RenderViewportBitmapAtSize(view, width, height);
         }
 
         private static void UpdateTestData(string pathToUpdate, BitmapSource imageFileSource)
         {
-            SaveBitMapSourceAsPNG(pathToUpdate, imageFileSource);
+            Watch3DImageExporter.SaveBitmapSourceAsPng(imageFileSource, pathToUpdate);
         }
 
         private static void SaveBitMapSourceAsPNG(string filePath, BitmapSource bitmapSource)
         {
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                BitmapEncoder encoder = new PngBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
-                encoder.Save(fileStream);
-            }
+            Watch3DImageExporter.SaveBitmapSourceAsPng(bitmapSource, filePath);
         }
 
         private static System.Drawing.Bitmap BitmapFromSource(BitmapSource bitmapsource)

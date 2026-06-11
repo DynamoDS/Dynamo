@@ -3921,6 +3921,12 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
   <data name="CantExportWorkspaceAsImageNotValidMessage" xml:space="preserve">
     <value>The workspace cannot be exported as an image because it contains nodes that are too far away from each other.</value>
   </data>
+  <data name="CantExportBackground3DPreviewMessage" xml:space="preserve">
+    <value>The Background 3D Preview could not be exported as an image. Try reducing the amount of geometry in the graph or closing other applications to free memory.</value>
+  </data>
+  <data name="CantExportBackground3DPreviewInactiveMessage" xml:space="preserve">
+    <value>The Background 3D Preview cannot be exported because it is not active.</value>
+  </data>
   <data name="PreferencesViewSettingIncludeTimestampExportPath" xml:space="preserve">
     <value>Include Timestamp in Export Image Path</value>
   </data>

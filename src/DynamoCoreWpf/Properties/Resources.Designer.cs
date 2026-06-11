@@ -374,6 +374,24 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("CantExportWorkspaceAsImageNotValidMessage", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The Background 3D Preview could not be exported as an image. Try reducing the amount of geometry in the graph or closing other applications to free memory..
+        /// </summary>
+        public static string CantExportBackground3DPreviewMessage {
+            get {
+                return ResourceManager.GetString("CantExportBackground3DPreviewMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The Background 3D Preview cannot be exported because it is not active..
+        /// </summary>
+        public static string CantExportBackground3DPreviewInactiveMessage {
+            get {
+                return ResourceManager.GetString("CantExportBackground3DPreviewInactiveMessage", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to To ensure accurate geometry rendering and calculation, select the range of geometry sizes that you will be working on:.

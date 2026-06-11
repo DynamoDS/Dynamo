@@ -891,6 +891,7 @@
     <Compile Include="Views\PackageManager\Components\PackageManagerWizard\PackageManagerWizard.xaml.cs">
         <DependentUpon>PackageManagerWizard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\Watch3DImageExporter.cs" />
     <Compile Include="Utilities\WpfUtilities.cs" />
     <Compile Include="Controls\ZoomBorder.cs" />
     <Compile Include="Utilities\CursorLibrary.cs" />
