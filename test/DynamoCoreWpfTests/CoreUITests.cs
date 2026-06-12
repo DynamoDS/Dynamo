@@ -62,6 +62,29 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("DynamoUI")]
+        public void CannotSaveImageWhenWorkspaceImageWouldBeTooLarge()
+        {
+            var firstNode = new DoubleInput { X = 0, Y = 0 };
+            var secondNode = new DoubleInput { X = WorkspaceView.MaxWorkspaceImagePixelDimension + 1000, Y = 0 };
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(firstNode, true);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(secondNode, true);
+            DispatcherUtil.DoEvents();
+
+            var workspace = View.ChildOfType<WorkspaceView>();
+            Assert.IsNotNull(workspace, "DynamoView does not have any WorkspaceView");
+
+            Assert.AreEqual(
+                WorkspaceView.ExportImageResult.NotValidAsImage,
+                workspace.IsWorkSpaceRenderValidAsImage(true));
+
+            string path = Path.Combine(TempFolder, "oversized-output.png");
+            ViewModel.SaveImageCommand.Execute(path);
+
+            Assert.False(File.Exists(path));
+        }
+
+        [Test]
+        [Category("DynamoUI")]
         public void CannotSaveImageWithBadPath()
         {
             string path = "W;\aelout put.png";

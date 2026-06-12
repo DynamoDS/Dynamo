@@ -68,6 +68,8 @@ namespace Dynamo.Views
         private List<DependencyObject> hitResultsList = new List<DependencyObject>();
 
         static internal event Action<Window, ViewModelBase> RequestShowNodeAutoCompleteBar;
+        internal const int MaxWorkspaceImagePixelDimension = 16384;
+        internal const long MaxWorkspaceImagePixelCount = 67108864;
         private double currentRenderScale = -1;
 
         public WorkspaceViewModel ViewModel
@@ -343,94 +345,107 @@ namespace Dynamo.Views
             return new Rect(topLeft, bottomRight);
         }
 
-        private RenderTargetBitmap GetRender()
+        private bool TryGetRenderBounds(out Rect bounds, out double minX, out double minY)
         {
-            RenderTargetBitmap rtb;
-            try
+            var initialized = false;
+            bounds = new Rect();
+            minX = 0.0;
+            minY = 0.0;
+
+            var dragCanvas = WpfUtilities.ChildOfType<DragCanvas>(this);
+            if (dragCanvas == null) return false;
+
+            var childrenCount = VisualTreeHelper.GetChildrenCount(dragCanvas);
+            for (int index = 0; index < childrenCount; ++index)
             {
-                var initialized = false;
-                var bounds = new Rect();
+                ContentPresenter contentPresenter = VisualTreeHelper.GetChild(dragCanvas, index) as ContentPresenter;
+                if (contentPresenter.Children().Count() < 1) continue;
 
-                double minX = 0.0, minY = 0.0;
-                var dragCanvas = WpfUtilities.ChildOfType<DragCanvas>(this);
-                var childrenCount = VisualTreeHelper.GetChildrenCount(dragCanvas);
-                for (int index = 0; index < childrenCount; ++index)
+                var firstChild = VisualTreeHelper.GetChild(contentPresenter, 0);
+
+                switch (firstChild.GetType().Name)
                 {
-                    ContentPresenter contentPresenter = VisualTreeHelper.GetChild(dragCanvas, index) as ContentPresenter;
-                    if (contentPresenter.Children().Count() < 1) continue;
+                    case "NodeView":
+                    case "NoteView":
+                    case "AnnotationView":
+                        break;
 
-                    var firstChild = VisualTreeHelper.GetChild(contentPresenter, 0);
-
-                    switch (firstChild.GetType().Name)
-                    {
-                        case "NodeView":
-                        case "NoteView":
-                        case "AnnotationView":
-                            break;
-
-                        // Until we completely removed InfoBubbleView (or fixed its broken 
-                        // size calculation), we will not be including it in our size 
-                        // calculation here. This means that the info bubble, if any, will 
-                        // still go beyond the boundaries of the final PNG file. I would 
-                        // prefer not to add this hack here as it introduces multiple issues 
-                        // (including NaN for Grid inside the view and the fix would be too 
-                        // ugly to type in). Suffice to say that InfoBubbleView is not 
-                        // included in the size calculation for screen capture (work-around 
-                        // should be obvious).
-                        // 
-                        // case "InfoBubbleView":
-                        //     child = WpfUtilities.ChildOfType<Grid>(child);
-                        //     break;
-
-                        // We do not take anything other than those above 
-                        // into consideration when the canvas size is measured.
-                        default:
-                            continue;
-                    }
-
-                    // Determine the smallest corner of all given visual elements on the 
-                    // graph. This smallest top-left corner value will be useful in making 
-                    // the offset later on.
+                    // Until we completely removed InfoBubbleView (or fixed its broken 
+                    // size calculation), we will not be including it in our size 
+                    // calculation here. This means that the info bubble, if any, will 
+                    // still go beyond the boundaries of the final PNG file. I would 
+                    // prefer not to add this hack here as it introduces multiple issues 
+                    // (including NaN for Grid inside the view and the fix would be too 
+                    // ugly to type in). Suffice to say that InfoBubbleView is not 
+                    // included in the size calculation for screen capture (work-around 
+                    // should be obvious).
                     // 
-                    var childBounds = VisualTreeHelper.GetDescendantBounds(contentPresenter as Visual);
-                    minX = childBounds.X < minX ? childBounds.X : minX;
-                    minY = childBounds.Y < minY ? childBounds.Y : minY;
-                    childBounds.X = (double)(contentPresenter as Visual).GetValue(Canvas.LeftProperty);
-                    childBounds.Y = (double)(contentPresenter as Visual).GetValue(Canvas.TopProperty);
+                    // case "InfoBubbleView":
+                    //     child = WpfUtilities.ChildOfType<Grid>(child);
+                    //     break;
 
-                    if (initialized)
-                    {
-                        bounds.Union(childBounds);
-                    }
-                    else
-                    {
-                        initialized = true;
-                        bounds = childBounds;
-                    }
+                    // We do not take anything other than those above 
+                    // into consideration when the canvas size is measured.
+                    default:
+                        continue;
                 }
 
-                // Nothing found in the canvas, bail out.
-                if (!initialized) return null;
+                // Determine the smallest corner of all given visual elements on the 
+                // graph. This smallest top-left corner value will be useful in making 
+                // the offset later on.
+                // 
+                var childBounds = VisualTreeHelper.GetDescendantBounds(contentPresenter as Visual);
+                minX = childBounds.X < minX ? childBounds.X : minX;
+                minY = childBounds.Y < minY ? childBounds.Y : minY;
+                childBounds.X = (double)(contentPresenter as Visual).GetValue(Canvas.LeftProperty);
+                childBounds.Y = (double)(contentPresenter as Visual).GetValue(Canvas.TopProperty);
 
-                // Add padding to the edge and make them multiples of two (pad 10px on each side).
-                bounds.Width = 20 + ((((int)Math.Ceiling(bounds.Width)) + 1) & ~0x01);
-                bounds.Height = 20 + ((((int)Math.Ceiling(bounds.Height)) + 1) & ~0x01);
+                if (initialized)
+                {
+                    bounds.Union(childBounds);
+                }
+                else
+                {
+                    initialized = true;
+                    bounds = childBounds;
+                }
+            }
 
-                var currentTransformGroup = WorkspaceElements.RenderTransform as TransformGroup;
-                WorkspaceElements.RenderTransform = new TranslateTransform(10.0 - bounds.X - minX, 10.0 - bounds.Y - minY);
+            if (!initialized) return false;
+
+            // Add padding to the edge and make them multiples of two (pad 10px on each side).
+            bounds.Width = 20 + ((((int)Math.Ceiling(bounds.Width)) + 1) & ~0x01);
+            bounds.Height = 20 + ((((int)Math.Ceiling(bounds.Height)) + 1) & ~0x01);
+            return true;
+        }
+
+        private bool IsRenderBoundsValidAsImage(Rect bounds)
+        {
+            if (bounds.Width <= 0 || bounds.Height <= 0) return false;
+            if (bounds.Width > MaxWorkspaceImagePixelDimension || bounds.Height > MaxWorkspaceImagePixelDimension) return false;
+
+            return bounds.Width * bounds.Height <= MaxWorkspaceImagePixelCount;
+        }
+
+        private RenderTargetBitmap GetRender(Rect bounds, double minX, double minY)
+        {
+            Transform currentTransform = WorkspaceElements.RenderTransform;
+            WorkspaceElements.RenderTransform = new TranslateTransform(10.0 - bounds.X - minX, 10.0 - bounds.Y - minY);
+
+            try
+            {
                 WorkspaceElements.UpdateLayout();
 
-                rtb = new RenderTargetBitmap(((int)bounds.Width),
+                var rtb = new RenderTargetBitmap(((int)bounds.Width),
                     ((int)bounds.Height), 96, 96, PixelFormats.Default);
 
                 rtb.Render(WorkspaceElements);
-                WorkspaceElements.RenderTransform = currentTransformGroup;
+                return rtb;
             }
-            catch (Exception)
+            finally
             {
-                throw;
+                WorkspaceElements.RenderTransform = currentTransform;
             }
-            return rtb;
         }
 
         /// <summary>
@@ -443,8 +458,8 @@ namespace Dynamo.Views
         internal ExportImageResult IsWorkSpaceRenderValidAsImage(bool validating, string path = null)
         {
             ExportImageResult result = ExportImageResult.EmptyDrawing;
-            RenderTargetBitmap workSpaceRender = GetRender();
-            if (workSpaceRender == null) return result;
+            if (!TryGetRenderBounds(out var bounds, out var minX, out var minY)) return result;
+            if (!IsRenderBoundsValidAsImage(bounds)) return ExportImageResult.NotValidAsImage;
 
             result = ExportImageResult.IsValidAsImage;
             if (validating)
@@ -454,6 +469,7 @@ namespace Dynamo.Views
 
             try
             {
+                RenderTargetBitmap workSpaceRender = GetRender(bounds, minX, minY);
                 using (var stm = System.IO.File.Create(path))
                 {
                     // Encode as PNG format
