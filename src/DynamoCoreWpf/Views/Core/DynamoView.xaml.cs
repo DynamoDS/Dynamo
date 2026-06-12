@@ -1896,8 +1896,6 @@ namespace Dynamo.Controls
             if (!dynamoViewModel.BackgroundPreviewViewModel.Active)
             {
                 e.Success = false;
-                dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(
-                    Res.CantExportBackground3DPreviewInactiveMessage, true);
                 return;
             }
 
@@ -1909,15 +1907,11 @@ namespace Dynamo.Controls
             {
                 e.Success = false;
                 Log(ex.ToString());
-                dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(
-                    Res.CantExportBackground3DPreviewMessage, true);
             }
             catch (Exception ex)
             {
                 e.Success = false;
                 Log(ex.ToString());
-                dynamoViewModel.ToastManager?.CreateRealTimeInfoWindow(
-                    Res.CantExportBackground3DPreviewMessage, true);
             }
         }
 
