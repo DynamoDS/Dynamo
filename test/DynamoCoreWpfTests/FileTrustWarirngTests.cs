@@ -39,18 +39,18 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(homeWorkspace);
 
             // Replicate the state the real untrusted file open would have produced
-            // via DynamoModel.ShoudlForceBlockRun + UpdateFileTrustWarnirngUi
+            // via DynamoModel.ShouldForceBlockRun + UpdateFileTrustWarningUi
             homeWorkspace.RunSettings.ForceBlockRun = true;
             ViewModel.FileTrustViewModel.ShowWarningPopup = true;
             ViewModel.FileTrustViewModel.DynFileDirectoryName = Path.GetDirectoryName(fileAPath);
 
-            // Assert that the precondition is fully armed before similating the race
+            // Assert that the precondition is fully armed before simulating the race
             Assert.IsTrue(homeWorkspace.RunSettings.ForceBlockRun);
             Assert.IsTrue(ViewModel.FileTrustViewModel.ShowWarningPopup);
             Assert.IsFalse(string.IsNullOrEmpty(ViewModel.FileTrustViewModel.DynFileDirectoryName));
 
             // Arrange - place file B in a dedicated trusted subcategory
-            var trustedDir = Path.Combine(TempFolder, trustedDirName);
+            trustedDir = Path.Combine(TempFolder, trustedDirName);
             Directory.CreateDirectory(trustedDir);
             var fileBPath = Path.Combine(trustedDir, trustedFileName);
             File.Copy(fileAPath, fileBPath);
@@ -60,7 +60,7 @@ namespace DynamoCoreWpfTests
             // Assert that the trusted path was registered
             Assert.IsTrue(ViewModel.PreferenceSettings.IsTrustedLocation(trustedDir));
 
-            // Open file B while file A's trust warnirng is still active
+            // Open file B while file A's trust warning is still active
             ViewModel.OpenCommand.Execute(fileBPath);
 
             // Assert that file B is now the active workspace, ForceBlockRun is reset,
