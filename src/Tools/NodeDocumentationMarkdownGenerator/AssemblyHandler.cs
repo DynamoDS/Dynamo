@@ -422,7 +422,7 @@ namespace NodeDocumentationMarkdownGenerator
                     }
                 }
 
-                typeParams.Add(new TypedParameter(name));
+                typeParams.Add(new TypedParameter(name, arg.ArgumentType));
             }
 
             return typeParams;
