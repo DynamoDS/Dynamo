@@ -2186,6 +2186,18 @@ namespace Dynamo.ViewModels
             this.ShowStartPage = false; // Hide start page if there's one.
         }
 
+        private bool ShouldForceBlockRun(string filePath)
+        {
+            if (DynamoModel.IsTestMode || Model.PreferenceSettings.DisableTrustWarnings) return false;
+
+            if (string.IsNullOrEmpty(filePath) || filePath.EndsWith(".dyf")) return false;
+
+            var directoryPath = Path.GetDirectoryName(filePath);
+            if (string.IsNullOrEmpty(directoryPath)) return false;
+
+            return !Model.PreferenceSettings.IsTrustedLocation(directoryPath);
+        }
+
         /// <summary>
         /// Open a definition or workspace.
         /// For most cases, parameters variable refers to the file path to open
@@ -2234,10 +2246,10 @@ namespace Dynamo.ViewModels
 
                 // Decide whether the trust warning is needed and block the run BEFORE opening, so an
                 // untrusted graph cannot start running before the user has accepted the warning.
-                bool displayTrustWarning = Model.ShouldForceBlockRun(filePath);
+                bool displayTrustWarning = ShouldForceBlockRun(filePath);
 
                 // Execute graph open command
-                ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode, isTemplate));
+                ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode, isTemplate, displayTrustWarning));
 
                 // The file is already open in another Dynamo instance
                 // On cancel: nothing is opened, so hide any trust warnings and restore the start-page state
@@ -2259,7 +2271,7 @@ namespace Dynamo.ViewModels
                     if (!string.IsNullOrEmpty(openedPath))
                     {
                         directoryName = Path.GetDirectoryName(openedPath);
-                        displayTrustWarning = Model.ShouldForceBlockRun(openedPath);
+                        displayTrustWarning = ShouldForceBlockRun(openedPath);
                     }
                 }
 
@@ -2363,10 +2375,10 @@ namespace Dynamo.ViewModels
                 var directoryName = Path.GetDirectoryName(filePath);
 
                 // Display trust warning when file is not among trust location and warning feature is on
-                bool displayTrustWarning = Model.ShouldForceBlockRun(filePath);
+                bool displayTrustWarning = ShouldForceBlockRun(filePath);
 
                 // Execute graph open command
-                ExecuteCommand(new DynamoModel.InsertFileCommand(filePath, forceManualMode));
+                ExecuteCommand(new DynamoModel.InsertFileCommand(filePath, forceManualMode, displayTrustWarning));
 
                 this.FitViewCommand.Execute(null);
 

@@ -2191,6 +2191,18 @@ namespace Dynamo.Models
         /// execution mode specified in the file and set manual mode</param>
         public void OpenFileFromPath(string filePath, bool forceManualExecutionMode = false)
         {
+            OpenFileFromPathCore(filePath, forceManualExecutionMode, forceBlockRun: false);
+        }
+
+        /// <summary>
+        /// Opens a Dynamo workspace from a path to a file on disk.
+        /// </summary>
+        /// <param name="filePath">Path to file</param>
+        /// <param name="forceManualExecutionMode">Set this to true to discard
+        /// execution mode specified in the file and set manual mode</param>
+        /// <param name="forceBlockRun">Set this to true to block the graph from running after opening</param>
+        internal void OpenFileFromPathCore(string filePath, bool forceManualExecutionMode, bool forceBlockRun)
+        {
             LastGraphLockOpenOutcome = GraphLockOutcome.Opened;
 
             var graphLockOutcome = GraphLockManager?.AcquireLock(filePath, true) ?? GraphLockAcquireResult.Acquired();
@@ -2228,7 +2240,7 @@ namespace Dynamo.Models
             {
                 if (DynamoUtilities.PathHelper.isValidJson(filePathToOpen, out fileContents, out ex))
                 {
-                    openedSuccessfully = OpenJsonFileFromPath(fileContents, filePathToOpen, forceManualExecutionMode);
+                    openedSuccessfully = OpenJsonFileFromPath(fileContents, filePathToOpen, forceManualExecutionMode, forceBlockRun: forceBlockRun);
                     return;
                 }
                 else
@@ -2303,12 +2315,23 @@ namespace Dynamo.Models
         /// <param name="forceManualExecutionMode"></param>
         public void InsertFileFromPath(string filePath, bool forceManualExecutionMode = false)
         {
+            InsertFileFromPathCore(filePath, forceManualExecutionMode, forceBlockRun: false);
+        }
+
+        /// <summary>
+        /// Inserts a Dynamo graph or Custom Node inside the current workspace from a file path
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="forceManualExecutionMode"></param>
+        /// <param name="forceBlockRun">Set this to true to block the graph from running after opening</param>
+        internal void InsertFileFromPathCore(string filePath, bool forceManualExecutionMode, bool forceBlockRun)
+        {
             Exception ex;
             string fileContents;
 
             if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
             {
-                InsertJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
+                InsertJsonFileFromPath(fileContents, filePath, forceManualExecutionMode, forceBlockRun);
             }
             else
             {
@@ -2366,8 +2389,9 @@ namespace Dynamo.Models
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
         /// <param name="isTemplate">Set this to true to indicate that the file is a template</param>
+        /// <param name="forceBlockRun">Set this to true to block the graph from running after opening</param>
         /// <returns>True if workspace was opened successfully</returns>
-        internal bool OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool isTemplate = false)
+        internal bool OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool isTemplate = false, bool forceBlockRun = false)
         {
             try
             {
@@ -2380,7 +2404,7 @@ namespace Dynamo.Models
                     if (true) //MigrationManager.ProcessWorkspace(dynamoPreferences.Version, xmlDoc, IsTestMode, NodeFactory))
                     {
                         WorkspaceModel ws;
-                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, isTemplate, out ws))
+                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, isTemplate, forceBlockRun, out ws))
                         {
                             OpenWorkspace(ws);
                             //Raise an event to deserialize the view parameters before
@@ -2407,7 +2431,7 @@ namespace Dynamo.Models
             }
         }
 
-        private bool InsertJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode)
+        private bool InsertJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool forceBlockRun = false)
         {
             try
             {
@@ -2421,7 +2445,7 @@ namespace Dynamo.Models
                 {
                     if (true) //MigrationManager.ProcessWorkspace(dynamoPreferences.Version, xmlDoc, IsTestMode, NodeFactory))
                     {
-                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, false, out WorkspaceModel ws))
+                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, false, forceBlockRun, out WorkspaceModel ws))
                         {
                             ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfo.ExtraWorkspaceViewInfoFromJson(fileContents);
 
@@ -2627,6 +2651,7 @@ namespace Dynamo.Models
           DynamoPreferencesData dynamoPreferences,
           bool forceManualExecutionMode,
           bool isTemplate,
+          bool forceBlockRun,
           out WorkspaceModel workspace)
         {
             if (!string.IsNullOrEmpty(filePath))
@@ -2694,7 +2719,7 @@ namespace Dynamo.Models
                 }
 
                 homeWorkspace.RunSettings = new RunSettings(runType, runPeriod);
-                homeWorkspace.RunSettings.ForceBlockRun = ShouldForceBlockRun(filePath);
+                homeWorkspace.RunSettings.ForceBlockRun = forceBlockRun;
 
                 RegisterHomeWorkspace(homeWorkspace);
             }
@@ -2705,24 +2730,6 @@ namespace Dynamo.Models
 
             return true;
         }
-
-        /// <summary>
-        /// Returns true when grahp execution shoudl be blocked pending file trust aknowledgement
-        /// </summary>
-        /// <param name="filePath"></param>
-        /// <returns></returns>
-        internal bool ShouldForceBlockRun(string filePath)
-        {
-            if (IsTestMode || PreferenceSettings.DisableTrustWarnings) return false;
-
-            if (string.IsNullOrEmpty(filePath) || filePath.EndsWith(".dyf")) return false;
-
-            var directoryPath = Path.GetDirectoryName(filePath);
-            if (string.IsNullOrEmpty(directoryPath)) return false;
-
-            return !PreferenceSettings.IsTrustedLocation(directoryPath);
-        }
-
 
         // Attempts to reload all the dummy nodes in the current workspace and replaces them with resolved version.
         private void ReloadDummyNodes()
