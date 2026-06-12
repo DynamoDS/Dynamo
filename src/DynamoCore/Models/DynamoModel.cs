@@ -2431,7 +2431,7 @@ namespace Dynamo.Models
             }
         }
 
-        private bool InsertJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool forceBlockRun = false)
+        private void InsertJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool forceBlockRun = false)
         {
             try
             {
@@ -2441,19 +2441,12 @@ namespace Dynamo.Models
                 fileContents = GuidUtility.UpdateWorkspaceGUIDs(fileContents);
 
                 DynamoPreferencesData dynamoPreferences = DynamoPreferencesDataFromJson(fileContents);
-                if (dynamoPreferences != null)
+                if (dynamoPreferences != null &&
+                    OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, false, forceBlockRun, out WorkspaceModel ws))
                 {
-                    if (true) //MigrationManager.ProcessWorkspace(dynamoPreferences.Version, xmlDoc, IsTestMode, NodeFactory))
-                    {
-                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, false, forceBlockRun, out WorkspaceModel ws))
-                        {
-                            ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfo.ExtraWorkspaceViewInfoFromJson(fileContents);
-
-                            InsertWorkspace(ws, viewInfo);
-                        }
-                    }
+                    ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfo.ExtraWorkspaceViewInfoFromJson(fileContents);
+                    InsertWorkspace(ws, viewInfo);
                 }
-                return true;
             }
             catch (Exception e)
             {

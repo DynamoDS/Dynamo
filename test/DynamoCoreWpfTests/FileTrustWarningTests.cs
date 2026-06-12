@@ -5,7 +5,7 @@ using System.IO;
 namespace DynamoCoreWpfTests
 {
     [TestFixture]
-    public class FileTrustWarirngTests : DynamoTestUIBase
+    public class FileTrustWarningTests : DynamoTestUIBase
     {
         private string trustedDir;
 

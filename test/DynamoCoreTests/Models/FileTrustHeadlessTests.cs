@@ -1,11 +1,10 @@
-using System;
-using System.IO;
 using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using NUnit.Framework;
+using System.IO;
 
 namespace Dynamo.Tests.ModelsTests
 {
