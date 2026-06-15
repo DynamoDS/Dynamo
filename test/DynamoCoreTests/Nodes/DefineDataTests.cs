@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CoreNodeModels;
+using Dynamo.Graph.Nodes;
 using NUnit.Framework;
 
 namespace Dynamo.Tests.Nodes
@@ -65,6 +66,43 @@ namespace Dynamo.Tests.Nodes
             node.SelectedIndex = DSCore.Data.DataNodeDynamoTypeList.IndexOf(numberType);
 
             Assert.AreEqual("Float64", node.ValueTypeId);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenUnconnectedThenShowsMissingUpstreamConnectionInfo()
+        {
+            var node = new DefineData();
+            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(node, false);
+
+            Assert.AreEqual(ElementState.PersistentInfo, node.State);
+            Assert.IsTrue(node.Infos.Any(x =>
+                x.State == ElementState.PersistentInfo &&
+                x.Message.Equals(CoreNodeModels.Properties.Resources.DefineDataMissingUpstreamConnectionInfoMessage)));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenConnectedThenClearsMissingUpstreamConnectionInfo()
+        {
+            var defineData = new DefineData();
+            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(defineData, false);
+
+            CurrentDynamoModel.NodeFactory.CreateNodeFromTypeName("CoreNodeModels.Input.DoubleInput", out NodeModel numberNode);
+            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(numberNode, false);
+            defineData.ConnectInput(0, 0, numberNode);
+
+            Assert.IsFalse(defineData.Infos.Any(x => x.State == ElementState.PersistentInfo));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenPlayerValueIsSetThenDoesNotShowMissingUpstreamConnectionInfo()
+        {
+            var node = new DefineData { Value = "1.0" };
+            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(node, false);
+
+            Assert.IsFalse(node.Infos.Any(x => x.State == ElementState.PersistentInfo));
         }
     }
 }

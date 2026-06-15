@@ -128,6 +128,7 @@ namespace CoreNodeModels
                     this.value = value ?? "";
                     MarkNodeAsModified();
                     RaisePropertyChanged(nameof(Value));
+                    SetNodeStateBasedOnConnectionAndDefaults();
                 }
             }
         }
@@ -172,6 +173,36 @@ namespace CoreNodeModels
             PropertyChanged -= OnPropertyChanged;
             base.Dispose();
             DataBridge.Instance.UnregisterCallback(GUID.ToString());
+        }
+
+        protected override void SetNodeStateBasedOnConnectionAndDefaults()
+        {
+            base.SetNodeStateBasedOnConnectionAndDefaults();
+
+            if (HasUpstreamDataSource())
+            {
+                ClearMissingUpstreamConnectionInfo();
+                return;
+            }
+
+            Info(Properties.Resources.DefineDataMissingUpstreamConnectionInfoMessage, true);
+        }
+
+        private bool HasUpstreamDataSource()
+        {
+            return InPorts.Count > 0 && (InPorts[0].IsConnected || !string.IsNullOrEmpty(Value));
+        }
+
+        private void ClearMissingUpstreamConnectionInfo()
+        {
+            var message = Properties.Resources.DefineDataMissingUpstreamConnectionInfoMessage;
+            if (!NodeInfos.Any(x => x.State == ElementState.PersistentInfo && x.Message.Equals(message)))
+            {
+                return;
+            }
+
+            ClearInfoMessages();
+            base.SetNodeStateBasedOnConnectionAndDefaults();
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -222,6 +253,7 @@ namespace CoreNodeModels
 
             //Now we reset this value to empty string so that the next time a value is set from upstream nodes we can know that it is not coming from the player
             value = "";
+            SetNodeStateBasedOnConnectionAndDefaults();
 
             if (data == null)
             {
