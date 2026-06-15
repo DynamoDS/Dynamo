@@ -3736,6 +3736,13 @@ namespace Dynamo.ViewModels
 
         public void ValidateWorkSpaceBeforeToExportAsImage(object parameter)
         {
+            if (parameter?.ToString() == Resources.ScreenShotFrom3DParameter ||
+                (parameter?.ToString() == Resources.ScreenShotFrom3DShortcutParameter && BackgroundPreviewViewModel.CanNavigateBackground))
+            {
+                ShowSaveImageDialogAndSave(parameter);
+                return;
+            }
+
             OnRequestExportWorkSpaceAsImage(parameter);
         }
 
