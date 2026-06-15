@@ -498,7 +498,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No upstream connection. Connect a node to the input port to provide and validate data. To choose a type without upstream data, turn off Auto-detect type and use the drop-down menu..
+        ///   Looks up a localized string similar to No upstream connection. Connect a node to the input port to provide a default value and to set the data type. To choose a type without upstream data, turn off Auto-detect type and use the drop-down menu..
         /// </summary>
         public static string DefineDataMissingUpstreamConnectionInfoMessage {
             get {
