@@ -1146,6 +1146,12 @@ You can always redownload the package.</value>
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>Failed to load an invalid package.</value>
   </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>Installation cancelled due to custom node conflict.</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>Restart Dynamo to remove the conflicting package.</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>No node could be found with that Id.</value>
   </data>
@@ -3634,7 +3640,7 @@ In certain complex graphs or host program scenarios, Automatic mode may cause in
     <value>_File</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>_Template</value>
+    <value>From Template...</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>Workspaces cannot be saved directly to the Templates folder. Please choose a different folder to save your file.
@@ -3920,6 +3926,18 @@ To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>Auto‑sync with node selection.</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
+    <value>This file is currently open in another instance of Dynamo.
+To avoid data loss or corruption, please choose one of the following actions:
+ • Save As — opens an independent copy you can edit safely.
+ • Cancel — does not open the file.</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
+    <value>File already open in another Dynamo instance</value>
+  </data>
+  <data name="GraphLockSaveAsButton" xml:space="preserve">
+    <value>Save As</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

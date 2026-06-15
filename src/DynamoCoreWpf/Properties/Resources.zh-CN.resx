@@ -1146,6 +1146,12 @@
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>无法加载无效的软件包。</value>
   </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>由于自定义节点冲突，安装已取消。</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>重新启动 Dynamo 以删除冲突的软件包。</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>找不到具有该 ID 的任何节点。</value>
   </data>
@@ -3632,7 +3638,7 @@
     <value>文件(_F)</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>模板(_T)</value>
+    <value>从模板…</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>工作空间无法直接保存到“Templates”文件夹。请选择其他文件夹以保存文件。
@@ -3918,6 +3924,18 @@
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>与节点选择自动同步。</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
+    <value>This file is currently open in another instance of Dynamo.
+To avoid data loss or corruption, please choose one of the following actions:
+ • Save As — opens an independent copy you can edit safely.
+ • Cancel — does not open the file.</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
+    <value>File already open in another Dynamo instance</value>
+  </data>
+  <data name="GraphLockSaveAsButton" xml:space="preserve">
+    <value>另存为</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

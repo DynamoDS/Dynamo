@@ -50,7 +50,8 @@ namespace Dynamo.Models
             string filePath = command.FilePath;
             bool forceManualMode = command.ForceManualExecutionMode;
             bool isTemplate = command.IsTemplate;
-            OpenFileFromPath(filePath, forceManualMode);
+            bool forceBlockRun = command.ForceBlockRun;
+            OpenFileFromPathCore(filePath, forceManualMode, forceBlockRun);
 
             //clear the clipboard to avoid copying between dyns
             //ClipBoard.Clear();
@@ -74,7 +75,8 @@ namespace Dynamo.Models
         {
             string filePath = command.FilePath;
             bool forceManualMode = command.ForceManualExecutionMode;
-            InsertFileFromPath(filePath, forceManualMode);
+            bool forceBlockRun = command.ForceBlockRun;
+            InsertFileFromPathCore(filePath, forceManualMode, forceBlockRun);
         }
 
         private void RunCancelImpl(RunCancelCommand command)

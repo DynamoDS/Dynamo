@@ -1146,6 +1146,12 @@
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>無効なパッケージのロードに失敗しました。</value>
   </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>カスタム ノードの競合により、インストールがキャンセルされました。</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>競合するパッケージを削除するには、Dynamo を再起動してください。</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>この ID のノードが見つかりませんでした。</value>
   </data>
@@ -3634,7 +3640,7 @@ Dynamo を再起動してアンインストールを完了します。
     <value>ファイル(_F)</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>テンプレート(_T)</value>
+    <value>テンプレートから...</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>テンプレート フォルダにはワークスペースを直接保存できません。ファイルを保存するには、別のフォルダを選択してください。
@@ -3920,6 +3926,18 @@ Dynamo を再起動してアンインストールを完了します。
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>ノード選択による自動同期。</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
+    <value>This file is currently open in another instance of Dynamo.
+To avoid data loss or corruption, please choose one of the following actions:
+ • Save As — opens an independent copy you can edit safely.
+ • Cancel — does not open the file.</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
+    <value>File already open in another Dynamo instance</value>
+  </data>
+  <data name="GraphLockSaveAsButton" xml:space="preserve">
+    <value>名前を付けて保存</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

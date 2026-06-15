@@ -23,5 +23,18 @@ namespace Dynamo.Tests.ModelsTest
             Assert.AreEqual(runSettings.RunType, RunType.Manual);
             Assert.AreEqual(runSettings.RunEnabled, true);
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void ForceBlockRunIsScopedToRunSettingsInstance()
+        {
+            var firstRunSettings = new RunSettings();
+            var secondRunSettings = new RunSettings();
+
+            firstRunSettings.ForceBlockRun = true;
+
+            Assert.IsTrue(firstRunSettings.ForceBlockRun);
+            Assert.IsFalse(secondRunSettings.ForceBlockRun);
+        }
     }
 }

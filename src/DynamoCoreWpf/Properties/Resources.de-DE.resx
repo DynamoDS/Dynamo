@@ -1146,6 +1146,12 @@ Sie können das Paket jederzeit erneut herunterladen.</value>
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>Ungültiges Paket konnte nicht geladen werden.</value>
   </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>Installation wurde aufgrund eines Konflikts bei benutzerdefinierten Blöcken abgebrochen.</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>Starten Sie Dynamo neu, um das in Konflikt stehende Paket zu entfernen.</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>Kein Block mit dieser ID gefunden</value>
   </data>
@@ -3632,7 +3638,7 @@ In bestimmten komplexen Diagrammen oder Host-Programmszenarien kann der automati
     <value>_Datei</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>_Vorlage</value>
+    <value>Von Vorlage...</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>Arbeitsbereiche können nicht direkt im Vorlagenordner gespeichert werden. Wählen Sie einen anderen Ordner, um die Datei zu speichern.
@@ -3918,6 +3924,18 @@ Installieren Sie das PythonNet-Paket aus dem Package Manager, um dieses Diagramm
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>Automatisch mit Blockauswahl synchronisieren.</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
+    <value>This file is currently open in another instance of Dynamo.
+To avoid data loss or corruption, please choose one of the following actions:
+ • Save As — opens an independent copy you can edit safely.
+ • Cancel — does not open the file.</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
+    <value>File already open in another Dynamo instance</value>
+  </data>
+  <data name="GraphLockSaveAsButton" xml:space="preserve">
+    <value>Speichern unter</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

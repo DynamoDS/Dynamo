@@ -1146,6 +1146,12 @@ Balíček můžete kdykoli znovu stáhnout.</value>
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>Nepodařilo se načíst neplatný balíček.</value>
   </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>Instalace byla zrušena z důvodu konfliktu vlastních uzlů.</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>Restartováním aplikace Dynamo odeberete konfliktní balíček.</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>Nebyl nalezen žádný uzel s daným ID.</value>
   </data>
@@ -3633,7 +3639,7 @@ V určitém kontextu složitých grafů nebo hostitelských režimů může auto
     <value>_Soubor</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>_Šablona</value>
+    <value>Ze šablony…</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>Pracovní prostory není možné uložit do složky Templates. Uložte soubor výběrem jiné složky.
@@ -3919,6 +3925,18 @@ Otevření tohoto grafu v aplikaci Dynamo 3.3–3.6.x: Ze správce balíčků na
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>Automaticky synchronizovat s výběrem uzlů.</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
+    <value>This file is currently open in another instance of Dynamo.
+To avoid data loss or corruption, please choose one of the following actions:
+ • Save As — opens an independent copy you can edit safely.
+ • Cancel — does not open the file.</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
+    <value>File already open in another Dynamo instance</value>
+  </data>
+  <data name="GraphLockSaveAsButton" xml:space="preserve">
+    <value>Uložit jako</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

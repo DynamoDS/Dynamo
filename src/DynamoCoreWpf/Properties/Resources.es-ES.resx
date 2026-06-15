@@ -1146,6 +1146,12 @@ Siempre puede volver a descargar el paquete.</value>
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>No se ha podido cargar un paquete no válido.</value>
   </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>La instalación se ha cancelado debido a un conflicto de nodos personalizados.</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>Reinicie Dynamo para eliminar el paquete en conflicto.</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>No se ha podido encontrar ningún nodo con ese ID</value>
   </data>
@@ -3634,7 +3640,7 @@ En determinados gráficos complejos o al usar programas anfitriones, el modo Aut
     <value>_Archivo</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>_Plantilla</value>
+    <value>Desde plantilla...</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>Los espacios de trabajo no se pueden guardar en la carpeta de plantillas. Elija otra carpeta para guardar el archivo.
@@ -3920,6 +3926,18 @@ Para abrir este gráfico en Dynamo 3.3–3.6.x, instale el paquete PythonNet des
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>Sincronización automática con selección de nodos.</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
+    <value>This file is currently open in another instance of Dynamo.
+To avoid data loss or corruption, please choose one of the following actions:
+ • Save As — opens an independent copy you can edit safely.
+ • Cancel — does not open the file.</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
+    <value>File already open in another Dynamo instance</value>
+  </data>
+  <data name="GraphLockSaveAsButton" xml:space="preserve">
+    <value>Guardar como</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
