@@ -67,6 +67,7 @@ $excludedFiles = @(
     "testhost.exe",
     "TuneUp.dll",
     "TuneUp.resources.dll",
+    "MCPExtension.dll",
     "Units.dll",
     "Webview2Loader.dll",
     "DSPythonNet3.dll",

@@ -1,0 +1,23 @@
+{
+    "license": "Apache-2.0",
+    "copyright_holder": "DynamoTeam",
+    "copyright_year": "2026",
+    "file_hash": null,
+    "name": "DynamoMCP",
+    "version": "7.7.7.7",
+    "description": "DynamoMCP exposes Dynamo workspace operations through the Model Context Protocol (MCP), enabling AI agents and external tools to query nodes, packages, and workspace data. The MCP server starts automatically when Dynamo loads this built-in package.",
+    "group": "",
+    "keywords": [
+        "mcp"
+    ],
+    "dependencies": [],
+    "host_dependencies": [],
+    "node_libraries": [],
+    "contents": "",
+    "contains_binaries": true,
+    "engine_version": "4.0",
+    "engine": "dynamo",
+    "engine_metadata": "",
+    "site_url": "https://dynamobim.org/",
+    "repository_url": "https://git.autodesk.com/Dynamo/DynamoMCP"
+}

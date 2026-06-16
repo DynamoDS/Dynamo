@@ -72,6 +72,7 @@ namespace DynamoCoreWpfTests.PackageManager
                         "Python Migration",
                         "Sample View Extension",
                         "TuneUp",
+                        "Dynamo MCP View Extension",
                         "Workspace References",
                         "Node Auto Complete"
                     }

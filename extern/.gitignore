@@ -5,3 +5,9 @@
 !TuneUp/bin
 TuneUp/bin/**/*Test*.dll
 
+# For DynamoMCP allow dlls, but not Test dlls or debug artifacts
+!DynamoMCP/bin
+DynamoMCP/bin/**/*Test*.dll
+DynamoMCP/bin/**/*.pdb
+DynamoMCP/bin/**/*.deps.json
+

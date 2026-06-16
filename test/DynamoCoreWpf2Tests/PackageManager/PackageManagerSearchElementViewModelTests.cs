@@ -849,7 +849,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
         [Test]
         public void PackageSearchWithWhitespaceInName()
         {
-            var packagesListNames =  new List<string> { "Dynamo Samples", "archi-lab.net", "LunchBox for Dynamo", "DynamoSap", "TuneUp" };
+            var packagesListNames =  new List<string> { "Dynamo Samples", "archi-lab.net", "LunchBox for Dynamo", "DynamoSap", "TuneUp", "DynamoMCP" };
             string packageId = Guid.NewGuid().ToString();
             string packageVersionNumber = "1.0.0.0";
             string packageCreatedDateString = "2016 - 10 - 02T13:13:20.135000 + 00:00";

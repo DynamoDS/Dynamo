@@ -11,6 +11,7 @@ ProtoGeometry.customization.dll
 .\Built-In Packages\packages\PythonNet3Engine\extra\Python.Included.dll
 .\Built-In Packages\packages\PythonNet3Engine\extra\Python.Deployment.dll
 .\Built-In Packages\packages\PythonNet3Engine\extra\Python.Runtime.dll
+.\Built-In Packages\packages\DynamoMCP\bin\MCPExtension.dll
 Dynamo.Microsoft.Xaml.Behaviors.dll
 ## DynamoServices.dll is multi-targeted, we sign the binaries for the nuget package separately.
 ..\..\NodeServices\obj\netstandard2.0\DynamoServices.dll

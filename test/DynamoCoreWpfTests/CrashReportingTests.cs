@@ -173,9 +173,11 @@ namespace Dynamo.Tests
 
             // At least one built-in package is always loaded
             var expectedString = "- TuneUp";
+            var expectedMcpString = "- DynamoMCP";
 
             // Verify request contains the packages information
             Assert.True(decoded.Contains(expectedString));
+            Assert.True(decoded.Contains(expectedMcpString));
         }
 
         [Test]
