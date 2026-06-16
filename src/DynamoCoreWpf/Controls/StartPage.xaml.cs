@@ -671,7 +671,21 @@ namespace Dynamo.UI.Controls
                 return;
             }
 
-            this.DynamoViewModel.OpenCommand.Execute(path);
+            // Listed templates: use the same open path as the template file-picker (ShowOpenTemplateDialog),
+            // i.e. open as a new graph from the file contents, not as the saved template path on disk.
+            object openArg = IsTemplateFilePath(path)
+                ? Tuple.Create(path, false, true)
+                : path;
+            if (this.DynamoViewModel.OpenCommand.CanExecute(openArg))
+            {
+                this.DynamoViewModel.OpenCommand.Execute(openArg);
+            }
+        }
+
+        private bool IsTemplateFilePath(string path)
+        {
+            return TemplateFiles.Any(template =>
+                string.Equals(template.ContextData, path, StringComparison.OrdinalIgnoreCase));
         }
 
         internal bool HandleMissingFilePath(string path)

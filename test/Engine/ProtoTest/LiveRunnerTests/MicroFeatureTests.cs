@@ -6095,7 +6095,75 @@ s = 1;
             // There should be no warnings
             Assert.AreEqual(0, liveRunner.RuntimeCore.RuntimeStatus.WarningCount);
         }
-     
+
+        /// <summary>
+        /// Regression test for DYN-5128.
+        /// When an upstream node is structurally modified (e.g. a wire reconnect), downstream
+        /// nodes that are included in the update with unchanged ASTs must receive new, higher PCs
+        /// so that the runtime executes them after the upstream node. Without the fix, unchanged
+        /// downstream nodes kept their original lower PCs and ran before the upstream, consuming
+        /// stale output and executing a second time after the upstream completed.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenUpstreamNodeReconnectedThenDownstreamNodesReceiveUpdatedValues()
+        {
+            // Arrange: three nodes in a chain A -> B -> C
+            var guidA = Guid.NewGuid();
+            var guidB = Guid.NewGuid();
+            var guidC = Guid.NewGuid();
+
+            var addedA = TestFrameWork.CreateSubTreeFromCode(guidA, "a = 1;");
+            addedA.DeltaComputation = true;
+            var addedB = TestFrameWork.CreateSubTreeFromCode(guidB, "b = a + 10;");
+            addedB.DeltaComputation = true;
+            var addedC = TestFrameWork.CreateSubTreeFromCode(guidC, "c = b + 100;");
+            addedC.DeltaComputation = true;
+
+            liveRunner.UpdateGraph(new GraphSyncData(null, new List<Subtree> { addedA, addedB, addedC }, null));
+
+            AssertValue("a", 1);
+            AssertValue("b", 11);
+            AssertValue("c", 111);
+
+            // Act: simulate reconnect — A changes structurally; B and C are included with their
+            // unchanged ASTs in topological order, as AstBuilder now does after the DYN-5128 fix.
+            // Reuse the same AstNodes object references from the initial add so that
+            // BinaryExpressionNode.Equals returns true in GetModifiedNodes, leaving modifiedASTList
+            // empty for B and C. The LiveRunner force-recompile path then gives B and C new PCs
+            // higher than A's new PC so the runtime executes them in the correct topological order.
+            var modA = TestFrameWork.CreateSubTreeFromCode(guidA, "a = 2;");
+            modA.DeltaComputation = true;
+            var modB = new Subtree(addedB.AstNodes, guidB) { DeltaComputation = true };
+            var modC = new Subtree(addedC.AstNodes, guidC) { DeltaComputation = true };
+
+            liveRunner.UpdateGraph(new GraphSyncData(null, null,
+                new List<Subtree> { modA, modB, modC }));
+
+            // Assert values: B and C must reflect A's new value, not the stale one.
+            AssertValue("a", 2);
+            AssertValue("b", 12);
+            AssertValue("c", 112);
+
+            // Assert PC ordering: after the reconnect the active graph nodes for A, B, C must
+            // be ordered A.startpc < B.startpc < C.startpc.  If the fix regresses, B and C keep
+            // their original low PCs (below A's new PC) and the runtime executes them before A,
+            // causing double execution.
+            var graphNodes = runtimeCore.DSExecutable.instrStreamList[0].dependencyGraph.GraphList;
+
+            // OriginalAstID == 0 identifies auto-generated infrastructure nodes (null-assignments,
+            // dependency tracking stubs). All user-expression graph nodes have OriginalAstID > 0
+            // because BinaryExpressionNode constructors always set OriginalAstID = ID and
+            // Node.ID = ++sID (starts at 1). Exclude them so PC ordering reflects only the
+            // actual expression evaluation nodes for A, B, and C.
+            int pcA = graphNodes.Where(n => n.guid == guidA && n.isActive && n.OriginalAstID != 0).Min(n => n.updateBlock.startpc);
+            int pcB = graphNodes.Where(n => n.guid == guidB && n.isActive && n.OriginalAstID != 0).Min(n => n.updateBlock.startpc);
+            int pcC = graphNodes.Where(n => n.guid == guidC && n.isActive && n.OriginalAstID != 0).Min(n => n.updateBlock.startpc);
+
+            Assert.Less(pcA, pcB, "Node A must have a lower PC than node B");
+            Assert.Less(pcB, pcC, "Node B must have a lower PC than node C");
+        }
+
     }
 
 }

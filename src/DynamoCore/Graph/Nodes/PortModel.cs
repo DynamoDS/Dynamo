@@ -515,12 +515,23 @@ namespace Dynamo.Graph.Nodes
 
                 try
                 {
-                    return inPortAttribute?.PortTypes.ElementAt(Index);
+                    var attrType = inPortAttribute?.PortTypes.ElementAt(Index);
+                    if (attrType != null) return attrType;
                 }
                 catch (Exception e)
                 {
                     Log(e.Message);
                 }
+
+                // Fallback: infer from the port's default value node type.
+                return DefaultValue switch
+                {
+                    IntNode     _ => "int",
+                    DoubleNode  _ => "double",
+                    BooleanNode _ => "bool",
+                    StringNode  _ => "string",
+                    _ => null
+                };
             }
             return null;
         }

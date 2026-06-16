@@ -150,6 +150,24 @@ namespace ProtoCore
             }
         }
 
+        /// <summary>
+        /// Clears runtime warnings and infos that belong to a specific graph node GUID
+        /// AND a specific expression ID. This is more precise than <see cref="ClearWarningsForGraph"/>
+        /// and is needed when a single Dynamo node compiles to multiple AST expressions that each
+        /// get a distinct exprUID — clearing by GUID alone would remove warnings from sibling
+        /// expressions that have not yet been re-executed.
+        /// </summary>
+        /// <param name="guid">The graph-node GUID of the Dynamo node being re-executed.</param>
+        /// <param name="exprUID">The expression UID of the specific AST expression being re-executed.</param>
+        public void ClearWarningsForGraphNode(Guid guid, int exprUID)
+        {
+            using (rwl.CreateWriteLock())
+            {
+                warnings.RemoveAll(w => w.GraphNodeGuid.Equals(guid) && w.ExpressionID == exprUID);
+                infos.RemoveAll(w => w.GraphNodeGuid.Equals(guid) && w.ExpressionID == exprUID);
+            }
+        }
+
         public void ClearWarningsForAst(int astID)
         {
             using (rwl.CreateWriteLock())

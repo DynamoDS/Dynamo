@@ -556,8 +556,20 @@ namespace Dynamo.UI.Views
                 return;
             }
 
-            if (this.startPage.DynamoViewModel.OpenCommand.CanExecute(path))
-                this.startPage.DynamoViewModel.OpenCommand.Execute(path);
+            var dvm = this.startPage.DynamoViewModel;
+            var openArg = IsListedHomePageTemplate(path)
+                ? (object)Tuple.Create(path, false, true)
+                : path;
+            if (dvm.OpenCommand.CanExecute(openArg))
+            {
+                dvm.OpenCommand.Execute(openArg);
+            }
+        }
+
+        private bool IsListedHomePageTemplate(string path)
+        {
+            return startPage?.TemplateFiles?.Any(t =>
+                string.Equals(t.ContextData, path, StringComparison.OrdinalIgnoreCase)) == true;
         }
 
         internal void StartGuidedTour(string path)
