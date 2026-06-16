@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CoreNodeModels;
+using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using NUnit.Framework;
 
@@ -92,7 +93,7 @@ namespace Dynamo.Tests.Nodes
 
             CurrentDynamoModel.NodeFactory.CreateNodeFromTypeName("CoreNodeModels.Input.DoubleInput", out NodeModel numberNode);
             CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(numberNode, false);
-            defineData.ConnectInput(0, 0, numberNode);
+            ConnectorModel.Make(numberNode, defineData, 0, 0);
 
             Assert.IsFalse(defineData.Infos.Any(x => x.State == ElementState.PersistentInfo));
         }
