@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using HelixToolkit.Wpf.SharpDX;
 
@@ -88,45 +89,28 @@ namespace Dynamo.Wpf.Utilities
 
             view.InvalidateRender();
 
-            var originalWidth = view.RenderHost.ActualWidth;
-            var originalHeight = view.RenderHost.ActualHeight;
+            var bitmap = view.RenderBitmap();
+            return ScaleBitmapSourceToMaxDimension(bitmap, maxExportDimension);
+        }
 
-            if (originalWidth <= 0 || originalHeight <= 0)
+        private static BitmapSource ScaleBitmapSourceToMaxDimension(BitmapSource bitmapSource, int maxExportDimension)
+        {
+            if (bitmapSource == null) throw new ArgumentNullException(nameof(bitmapSource));
+            if (maxExportDimension <= 0)
             {
-                return view.RenderBitmap();
+                return bitmapSource;
             }
 
-            var dpiScale = view.RenderHost.DpiScale;
-            var pixelWidth = (int)(originalWidth * dpiScale);
-            var pixelHeight = (int)(originalHeight * dpiScale);
-            var resizeApplied = false;
-            var captureWidth = (int)originalWidth;
-            var captureHeight = (int)originalHeight;
-
-            if (maxExportDimension > 0)
+            var maxPixelDimension = Math.Max(bitmapSource.PixelWidth, bitmapSource.PixelHeight);
+            if (maxPixelDimension <= maxExportDimension)
             {
-                var maxPixelDimension = Math.Max(pixelWidth, pixelHeight);
-                if (maxPixelDimension > maxExportDimension)
-                {
-                    var scale = maxExportDimension / (double)maxPixelDimension;
-                    captureWidth = Math.Max(1, (int)(originalWidth * scale));
-                    captureHeight = Math.Max(1, (int)(originalHeight * scale));
-                    view.RenderHost.Resize(captureWidth, captureHeight);
-                    resizeApplied = true;
-                }
+                return bitmapSource;
             }
 
-            try
-            {
-                return view.RenderBitmap();
-            }
-            finally
-            {
-                if (resizeApplied)
-                {
-                    view.RenderHost.Resize((int)originalWidth, (int)originalHeight);
-                }
-            }
+            var scale = maxExportDimension / (double)maxPixelDimension;
+            var transformedBitmap = new TransformedBitmap(bitmapSource, new ScaleTransform(scale, scale));
+            transformedBitmap.Freeze();
+            return transformedBitmap;
         }
 
         /// <summary>
