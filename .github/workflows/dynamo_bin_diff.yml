@@ -38,13 +38,15 @@ jobs:
           } else {
             Write-Error "DynamoCLI.exe was not found!"
           }
-      - name: Cache Current Build
-        uses: actions/cache/save@v5
+      - name: Upload Current Build
+        uses: actions/upload-artifact@v7
         with:
+          name: current_build
           path: |
             ${{ github.workspace }}\Dynamo\bin\AnyCPU\Release
             ${{ github.workspace }}\Dynamo\.github\scripts
-          key: ${{ github.run_id }}-${{ github.run_attempt }}-current
+          retention-days: 3
+
   build_master:
     name: Build Master
     runs-on: windows-latest
@@ -76,30 +78,28 @@ jobs:
           } else {
             Write-Error "DynamoCLI.exe was not found!"
           }
-      - name: Cache Master Build
-        uses: actions/cache/save@v5
+      - name: Upload Master Build
+        uses: actions/upload-artifact@v7
         with:
+          name: master_build
           path: ${{ github.workspace }}\master\bin\AnyCPU\Release
-          key: ${{ github.run_id }}-${{ github.run_attempt }}-master
+          retention-days: 3
+
   bin_diff:
     name: Binary Diff
     needs: [build_current, build_master]
     runs-on: windows-latest
     steps:
-      - name: Restore Current Build
-        uses: actions/cache/restore@v5
+      - name: Download Current Build
+        uses: actions/download-artifact@v3
         with:
-          fail-on-cache-miss: true
-          path: |
-            ${{ github.workspace }}\Dynamo\bin\AnyCPU\Release
-            ${{ github.workspace }}\Dynamo\.github\scripts
-          key: ${{ github.run_id }}-${{ github.run_attempt }}-current
-      - name: Restore Master Build
-        uses: actions/cache/restore@v5
+          name: current_build
+          path: ${{ github.workspace }}
+      - name: Download Master Build
+        uses: actions/download-artifact@v3
         with:
-          fail-on-cache-miss: true
-          path: ${{ github.workspace }}\master\bin\AnyCPU\Release
-          key: ${{ github.run_id }}-${{ github.run_attempt }}-master
+          name: master_build
+          path: ${{ github.workspace }}
       - name: Run Binary Diff Job
         id: diff
         run: |
@@ -112,6 +112,7 @@ jobs:
         with:
           name: bin_diff_result
           path: ${{ github.workspace }}\Dynamo\.github\scripts\result.txt
+
   save_pr_data:
     name: Save PR Data
     runs-on: ubuntu-latest
