@@ -667,7 +667,7 @@ namespace DSCore
             string typeString, bool isList, bool isAutoMode, string playerValue)
         {
 
-            if (inputValue == null && string.IsNullOrEmpty(playerValue))
+            if (IsUnusedDefineDataInput(inputValue) && string.IsNullOrEmpty(playerValue))
             {
                 // Don't raise a warning if the node is unused
                 return new Dictionary<string, object>
@@ -918,6 +918,26 @@ namespace DSCore
                 }
             }
             return typeList;
+        }
+
+        /// <summary>
+        /// Checks whether the Define Data input is unused (null or an empty list).
+        /// </summary>
+        /// <param name="inputValue">The input value from the graph.</param>
+        /// <returns>True when the input should be treated as unconnected or unused.</returns>
+        private static bool IsUnusedDefineDataInput(object inputValue)
+        {
+            if (inputValue == null)
+            {
+                return true;
+            }
+
+            if (inputValue is ArrayList arrayList && arrayList.Count == 0)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>

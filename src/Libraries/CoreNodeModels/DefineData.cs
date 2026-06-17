@@ -185,7 +185,22 @@ namespace CoreNodeModels
                 return;
             }
 
-            Info(Properties.Resources.DefineDataMissingUpstreamConnectionInfoMessage, true);
+            ShowMissingUpstreamConnectionInfo();
+        }
+
+        private void ShowMissingUpstreamConnectionInfo()
+        {
+            var message = Properties.Resources.DefineDataMissingUpstreamConnectionInfoMessage;
+            Info(message, true);
+
+            // Match ClearErrorsAndWarnings: reflect PersistentInfo in node state when no higher-priority issues exist.
+            if (NodeInfos.Any(x => x.State == ElementState.PersistentInfo && x.Message.Equals(message)) &&
+                !NodeInfos.Any(x => x.State == ElementState.Error ||
+                                    x.State == ElementState.PersistentWarning ||
+                                    x.State == ElementState.Warning))
+            {
+                State = ElementState.PersistentInfo;
+            }
         }
 
         private bool HasUpstreamDataSource()
@@ -206,7 +221,15 @@ namespace CoreNodeModels
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
-        {   
+        {
+            if (!HasUpstreamDataSource())
+            {
+                return
+                [
+                    AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), new NullNode())
+                ];
+            }
+
             var resultAst = new List<AssociativeNode>();
 
             // function call inputs - reference to the function, and the function arguments coming from the inputs
