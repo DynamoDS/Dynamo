@@ -2215,10 +2215,11 @@
     to the team Dynamo Artifactory feed (mirrors PythonNet3Engine's NuGet-consume pattern):
       * ExcludeAssets="all"      -> files only, no compile/runtime refs (preserves MCPServer's isolated ALC)
       * GeneratePathProperty="true" -> exposes $(PkgDynamoMCP)
-    TODO: pin Version to the published DynamoMCP NuGet that matches this Dynamo release.
+    Hard-pinned to an exact version so a transitive bump can't pull a DynamoMCP built against a
+    different DynamoVisualProgramming.* API. Bump in lockstep with the DynamoMCP release for this line.
   -->
   <ItemGroup>
-    <PackageReference Include="DynamoMCP" Version="[1.0.0]" GeneratePathProperty="true" ExcludeAssets="all" />
+    <PackageReference Include="DynamoMCP" Version="[0.3.0]" GeneratePathProperty="true" ExcludeAssets="all" />
   </ItemGroup>
   <!--
     The DynamoMCP NuGet wraps the assembled package under bin\, so $(PkgDynamoMCP)\bin IS the package
