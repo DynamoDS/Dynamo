@@ -50,14 +50,16 @@ namespace DSCore
             return sb.ToString();
         }
         /// <summary>
-        ///     Concatenates multiple strings into a single string.
+        ///     Concatenates multiple strings into a single string. Each input port participates
+        ///     in Dynamo's normal per-input replication, so list levels are honoured and the
+        ///     shape of one input does not constrain the others.
         /// </summary>
-        /// <param name="strings">List of strings to concatenate.</param>
-        /// <returns name="string">String made from list of strings.</returns>
+        /// <param name="lists">A string or list of strings to concatenate.</param>
+        /// <returns name="string">String made from the joined inputs.</returns>
         /// <search>concatenate,join,combine strings</search>
-        public static string Concat(params string[] strings)
+        public static string Concat(params string[] lists)
         {
-            return string.Concat(strings);
+            return string.Concat(lists);
         }
 
         /// <summary>

@@ -2,10 +2,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CoreNodeModels;
-using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
-using Dynamo.Models;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -65,20 +63,26 @@ namespace Dynamo.Tests
             AssertPreviewValue("8c7c1a80-021b-4064-b9d1-873a0538bb0b", "yesterday today.tomorrow");
         }
 
+        // DYN-8473: String.Concat now lowers to a chain of binary `+` operations.
+        // DesignScript's overloaded `+` accepts a (string, int) pair and coerces the
+        // integer, so the node concatenates "a" and 1 into "a1" rather than raising a
+        // node-level warning as the old `params string[]` path used to.
         [Test]
         public void TestConcatStringInvalidInput()
         {
-            string testFilePath = Path.Combine(localDynamoStringTestFolder, 
+            string testFilePath = Path.Combine(localDynamoStringTestFolder,
                 "TestConcatString_invalidInput.dyn");
 
             RunModel(testFilePath);
 
-            var stringConcat = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSVarArgFunction>
-                ("eb4d8a34-5437-4064-ad52-db5c58a95451");
-            Assert.AreEqual(ElementState.Warning, stringConcat.State);
-
+            AssertPreviewValue("eb4d8a34-5437-4064-ad52-db5c58a95451", "a1");
         }
 
+        // DYN-8473: Each input port participates in Dynamo's per-input replication
+        // independently. Two parallel flat lists ({"ab","cd"} and {"ef","gh"}) now
+        // pair element-wise via the chain-of-`+` AST, producing {"abef","cdgh"}.
+        // Prior to the fix, the inputs were packed into a single string[] which
+        // caused per-port replication ({"abcd","efgh"}) — the bug behaviour.
         [Test]
         public void TestConcatStringMultipleInput()
         {
@@ -86,7 +90,7 @@ namespace Dynamo.Tests
 
             RunModel(testFilePath);
 
-            AssertPreviewValue("fbc947fb-460b-49b9-8460-b223bffb63d5", new string[] { "abcd", "efgh" });
+            AssertPreviewValue("fbc947fb-460b-49b9-8460-b223bffb63d5", new string[] { "abef", "cdgh" });
         }
 
         [Test]
@@ -97,6 +101,48 @@ namespace Dynamo.Tests
             RunModel(testFilePath);
 
             AssertPreviewValue("a105ad39-9b1c-44aa-a2cb-37866ea48dd0", new string[] { "0a", "10a", "20a", "30a", "40a", "50a" });
+        }
+
+        // DYN-8473: When a nested list is connected to one input of a String.Concat,
+        // each subsequent input remains independent — a scalar second input replicates
+        // against the nested first input rather than being packed into the same params
+        // array.
+        [Test]
+        public void TestConcatStringNestedListInputIsIndependentOfScalarInput()
+        {
+            string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestConcatString_nestedList.dyn");
+
+            RunModel(testFilePath);
+
+            // Port 0: {{"a","b"},{"c","d"}}  (nested 2D list of strings)
+            // Port 1: "X"                    (scalar string)
+            // Expected: the scalar replicates against every leaf of the nested list,
+            // preserving the nested shape and keeping ports independent of each other.
+            AssertPreviewValue("3a9b8f01-1111-2222-3333-444455556666",
+                new object[]
+                {
+                    new[] { "aX", "bX" },
+                    new[] { "cX", "dX" }
+                });
+        }
+
+        // DYN-8473: Variadic String.Concat ports should be labelled list0, list1, ...
+        // (derived from the renamed `lists` parameter) instead of the older
+        // string0/string1 scheme that users reported as confusing.
+        [Test]
+        public void TestConcatStringPortsAreNamedListN()
+        {
+            string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestConcatString_nestedList.dyn");
+
+            OpenModel(testFilePath);
+
+            var concatNode = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSVarArgFunction>(
+                "3a9b8f01-1111-2222-3333-444455556666");
+
+            Assert.IsNotNull(concatNode, "Expected String.Concat node in fixture.");
+            Assert.GreaterOrEqual(concatNode.InPorts.Count, 2, "Fixture has at least two variadic inputs.");
+            Assert.AreEqual("list0", concatNode.InPorts[0].Name);
+            Assert.AreEqual("list1", concatNode.InPorts[1].Name);
         }
 
         #endregion

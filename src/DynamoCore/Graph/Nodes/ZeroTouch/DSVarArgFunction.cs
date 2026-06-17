@@ -7,6 +7,7 @@ using Dynamo.Engine;
 using Dynamo.Library;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.DSASM;
 
 namespace Dynamo.Graph.Nodes.ZeroTouch
 {
@@ -164,8 +165,37 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             }
         }
 
+        // Mangled name of DSCore.String.Concat. Treated specially so that each input
+        // port participates in Dynamo's natural per-input replication rather than being
+        // packed into a single string[] whose first element dictates how the rest of the
+        // inputs are interpreted. See DYN-8473.
+        private const string StringConcatMangledName = "DSCore.String.Concat@string[]";
+
         protected override void BuildOutputAst(NodeModel model, List<AssociativeNode> inputAstNodes, List<AssociativeNode> resultAst)
         {
+            if (!model.IsPartiallyApplied
+                && Definition.MangledName == StringConcatMangledName
+                && inputAstNodes.Count >= 2)
+            {
+                // For String.Concat with multiple ports, build a chain of binary
+                // string-concatenation operators (s0 + s1 + s2 + ...) so each port
+                // participates in Dynamo's normal replication independently. The
+                // operator is emitted as a call to its internal function (matching
+                // the way the DesignScript parser lowers infix `+`), so the engine
+                // routes through the usual op-function dispatcher.
+                var addOpFunction = Op.GetOpFunction(Operator.add);
+                AssociativeNode chain = inputAstNodes[0];
+                for (int i = 1; i < inputAstNodes.Count; i++)
+                {
+                    chain = AstFactory.BuildFunctionCall(
+                        addOpFunction,
+                        new List<AssociativeNode> { chain, inputAstNodes[i] });
+                }
+
+                AssignIdentifiersForFunctionCall(model, chain, resultAst);
+                return;
+            }
+
             // All inputs are provided, then we should pack all inputs that
             // belong to variable input parameter into a single array.
             if (!model.IsPartiallyApplied)

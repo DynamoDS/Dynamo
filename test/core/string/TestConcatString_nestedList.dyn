@@ -1,0 +1,15 @@
+<Workspace Version="1.0.1.1743" X="0" Y="0" zoom="1" Name="Home" Description="" RunType="Manual" RunPeriod="1000" HasRunWithoutCrash="False">
+  <NamespaceResolutionMap />
+  <Elements>
+    <Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction guid="3a9b8f01-1111-2222-3333-444455556666" type="Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction" nickname="String.Concat" x="300" y="100" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" assembly="DSCoreNodes.dll" function="DSCore.String.Concat@string[]" inputcount="2" />
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="11111111-aaaa-bbbb-cccc-000000000001" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Nested" x="50" y="80" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="{{&quot;a&quot;,&quot;b&quot;},{&quot;c&quot;,&quot;d&quot;}};" ShouldFocus="false" />
+    <Dynamo.Graph.Nodes.CodeBlockNodeModel guid="22222222-aaaa-bbbb-cccc-000000000002" type="Dynamo.Graph.Nodes.CodeBlockNodeModel" nickname="Scalar" x="50" y="160" isVisible="true" isUpstreamVisible="true" lacing="Disabled" isSelectedInput="False" IsFrozen="false" isPinned="false" CodeText="&quot;X&quot;;" ShouldFocus="false" />
+  </Elements>
+  <Connectors>
+    <Dynamo.Graph.Connectors.ConnectorModel start="11111111-aaaa-bbbb-cccc-000000000001" start_index="0" end="3a9b8f01-1111-2222-3333-444455556666" end_index="0" portType="0" />
+    <Dynamo.Graph.Connectors.ConnectorModel start="22222222-aaaa-bbbb-cccc-000000000002" start_index="0" end="3a9b8f01-1111-2222-3333-444455556666" end_index="1" portType="0" />
+  </Connectors>
+  <Notes />
+  <Annotations />
+  <Presets />
+</Workspace>
