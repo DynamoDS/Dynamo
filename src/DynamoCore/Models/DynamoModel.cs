@@ -2465,6 +2465,7 @@ namespace Dynamo.Models
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
         /// <param name="isTemplate">When true, marks the opened workspace as a template (for example when opened via <see cref="OpenTemplateFromPath"/>).</param>
+        /// <param name="forceBlockRun">Set this to true to block the graph from running after opening.</param>
         /// <returns>True if workspace was opened successfully</returns>
         private bool OpenXmlFileFromPath(XmlDocument xmlDoc, string filePath, bool forceManualExecutionMode, bool isTemplate = false, bool forceBlockRun = false)
         {
