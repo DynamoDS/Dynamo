@@ -677,18 +677,6 @@ namespace DSCore
                 };
             }
 
-            // Unconnected var[]..[] ports can receive an empty sequence default.
-            if (string.IsNullOrEmpty(playerValue)
-                && inputValue is IEnumerable enumerable and not string
-                && !enumerable.Cast<object>().Any())
-            {
-                return new Dictionary<string, object>
-                {
-                    { ">", inputValue },
-                    { "Validation", null }
-                };
-            }
-
             // If the playerValue is not empty, then we assume it was set by the player.
             // In that case, we need to parse it to get the actual value replace the inputValue.
             if (!string.IsNullOrEmpty(playerValue))
@@ -704,17 +692,6 @@ namespace DSCore
                     var warning = Properties.Resources.Exception_Deserialize_Unsupported_Cache;
                     return DefineDataResult(inputValue, false, false, DataNodeDynamoTypeList.First(), warning);
                 }
-            }
-
-            // A player value can deserialize to null (e.g. "null"), which should
-            // follow the same behavior as an unused Define Data input.
-            if (inputValue == null)
-            {
-                return new Dictionary<string, object>
-                {
-                    { ">", inputValue },
-                    { "Validation", null }
-                };
             }
 
             if (!IsSingleValueOrSingleLevelArrayList(inputValue))
