@@ -2256,7 +2256,7 @@ namespace Dynamo.Models
                     // When Json opening failed, either this file is corrupted or file might be XML
                     if (ex is JsonReaderException && DynamoUtilities.PathHelper.isValidXML(filePathToOpen, out xmlDoc, out ex))
                     {
-                        openedSuccessfully = OpenXmlFileFromPath(xmlDoc, filePathToOpen, forceManualExecutionMode);
+                        openedSuccessfully = OpenXmlFileFromPath(xmlDoc, filePathToOpen, forceManualExecutionMode, forceBlockRun: forceBlockRun);
                         return;
                     }
                     else
@@ -2466,7 +2466,7 @@ namespace Dynamo.Models
         /// execution mode specified in the file and set manual mode</param>
         /// <param name="isTemplate">When true, marks the opened workspace as a template (for example when opened via <see cref="OpenTemplateFromPath"/>).</param>
         /// <returns>True if workspace was opened successfully</returns>
-        private bool OpenXmlFileFromPath(XmlDocument xmlDoc, string filePath, bool forceManualExecutionMode, bool isTemplate = false)
+        private bool OpenXmlFileFromPath(XmlDocument xmlDoc, string filePath, bool forceManualExecutionMode, bool isTemplate = false, bool forceBlockRun = false)
         {
             try
             {
@@ -2491,6 +2491,8 @@ namespace Dynamo.Models
                         if (OpenXmlFile(workspaceInfo, xmlDoc, out ws))
                         {
                             ws.IsTemplate = isTemplate;
+                            if (ws is HomeWorkspaceModel homeWs && homeWs.RunSettings != null)
+                                homeWs.RunSettings.ForceBlockRun = forceBlockRun;
                             OpenWorkspace(ws);
 
                             // Set up workspace cameras here
