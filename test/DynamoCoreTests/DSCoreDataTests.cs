@@ -905,7 +905,7 @@ namespace Dynamo.Tests
             var booleanString = typeof(bool).ToString();
             var result = DSCore.Data.EvaluateDefineDataNode(null, booleanString, false, false, "true");
 
-            Assert.AreEqual(true, result[">"]);
+            Assert.IsTrue((bool)result[">"]);
             Assert.IsNotNull(result["Validation"]);
         }
 
