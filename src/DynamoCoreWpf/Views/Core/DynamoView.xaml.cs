@@ -1,19 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Input;
-using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
@@ -49,6 +33,22 @@ using Dynamo.Wpf.Windows;
 using HelixToolkit.Wpf.SharpDX;
 using ICSharpCode.AvalonEdit;
 using PythonNodeModels;
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
+using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Brush = System.Windows.Media.Brush;
 using Exception = System.Exception;
 using Image = System.Windows.Controls.Image;
@@ -70,6 +70,8 @@ namespace Dynamo.Controls
         private const int RightSideBarCollapseThreshold = 100;
         private const int navigationInterval = 100;
         private const string GraphMetadataExtensionId = "28992e1d-abb9-417f-8b1b-05e053bee670";
+        internal const string AutodeskAssistantExtensionId = "d2599b24-88a6-47e6-be0c-25df5702f5a7";
+        internal const string McpViewExtensionId = "FAB268A8-6C83-4389-8AB8-F9AE92D6091E";
         // This is used to determine whether ESC key is being held down
         private bool IsEscKeyPressed = false;
         // internal for testing.
@@ -234,6 +236,11 @@ namespace Dynamo.Controls
             {
                 try
                 {
+                    if (DisableExtensionWhenNoNetworkMode(ext.UniqueId, ext.Name, "added"))
+                    {
+                        continue;
+                    }
+
                     if (ext is ILogSource logSource)
                     {
                         logSource.MessageLogged += Log;
@@ -1402,6 +1409,11 @@ namespace Dynamo.Controls
             {
                 try
                 {
+                    if (DisableExtensionWhenNoNetworkMode(ext.UniqueId, ext.Name, "loaded"))
+                    {
+                        continue;
+                    }
+
                     ext.Loaded(loadedParams);
                     ReOpenSavedExtensionOnDynamoStartup(ext);
                 }
@@ -3391,6 +3403,20 @@ namespace Dynamo.Controls
             //TODO code smell.
             var workspaceView = this.ChildOfType<WorkspaceView>();
             workspaceView?.Dispose();
+        }
+
+        internal bool DisableExtensionWhenNoNetworkMode(string extensionId, string extensionName, string action)
+        {
+            if (dynamoViewModel.Model.NoNetworkMode &&
+                (string.Equals(extensionId, AutodeskAssistantExtensionId, StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(extensionId, McpViewExtensionId, StringComparison.OrdinalIgnoreCase)))
+            {
+                Log($"Package/Extension {extensionName} not {action} because NoNetworkMode flag is active");
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

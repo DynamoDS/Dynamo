@@ -27,6 +27,8 @@ Dynamo.ViewModels.DynamoViewModel.PythonEngineUpgradeToastRequested -> System.Ac
 Dynamo.ViewModels.DynamoViewModel.ToastManager.get -> Dynamo.Wpf.UI.ToastManager
 Dynamo.ViewModels.DynamoViewModel.ToastManager.set -> void
 Dynamo.ViewModels.DynamoViewModel.ShowPythonEngineUpgradeCanvasToast(string message, bool stayOpen = true, string filePath = null) -> void
+Dynamo.ViewModels.OpenNodeAnnotationEventArgs.InputTypes.get -> System.Collections.Generic.IEnumerable<string>
+Dynamo.ViewModels.OpenNodeAnnotationEventArgs.OutputTypes.get -> System.Collections.Generic.IEnumerable<string>
 Dynamo.ViewModels.PreferencesViewModel.AutoSyncDocumentBrowserIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.AutoSyncDocumentBrowserIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowPythonAutoMigrationNotificationIsChecked.get -> bool
@@ -57,6 +59,9 @@ static Dynamo.Wpf.Properties.Resources.DynamoSplashScreenFailed.get -> string
 static Dynamo.Wpf.Properties.Resources.DocumentationBrowserAutoSyncLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.DocumentationBrowserPreferences.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoSplashScreen.get -> string
+static Dynamo.Wpf.Properties.Resources.GraphLockFileAlreadyOpenMessage.get -> string
+static Dynamo.Wpf.Properties.Resources.GraphLockFileAlreadyOpenTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.GraphLockSaveAsButton.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageBoxDontShowAgainLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.OfflineStatusTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.OnlineStatusTooltip.get -> string

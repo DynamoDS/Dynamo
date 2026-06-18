@@ -217,6 +217,14 @@ namespace Dynamo.ViewModels
         /// </summary>
         public IEnumerable<string> OutputDescriptions { get; private set; }
         /// <summary>
+        /// Collection of the nodes input port types.
+        /// </summary>
+        public IEnumerable<string> InputTypes { get; private set; }
+        /// <summary>
+        /// Collection of the nodes output port types.
+        /// </summary>
+        public IEnumerable<string> OutputTypes { get; private set; }
+        /// <summary>
         /// Collection of the nodes collection of warnings/errors/infos.
         /// </summary>
         public IEnumerable<Info> NodeInfos { get; private set; }
@@ -247,33 +255,38 @@ namespace Dynamo.ViewModels
         {
             var outputNames = new List<string>();
             var outputDescriptions = new List<string>();
+            var outputTypes = new List<string>();
 
             var outputs = nodeModel.OutPorts;
             foreach (var output in outputs)
             {
                 outputNames.Add(output.Name);
                 outputDescriptions.Add(output.ToolTip);
+                outputTypes.Add(output.GetOutPortType() ?? string.Empty);
             }
 
             OutputNames = outputNames;
             OutputDescriptions = outputDescriptions;
+            OutputTypes = outputTypes;
         }
 
         private void SetInputs(NodeModel nodeModel)
         {
             var inputNames = new List<string>();
             var inputDescriptions = new List<string>();
+            var inputTypes = new List<string>();
 
             var inputs = nodeModel.InPorts;
             foreach (var input in inputs)
             {
                 inputNames.Add(input.Name);
                 inputDescriptions.Add(input.ToolTip);
+                inputTypes.Add(input.GetInputPortType() ?? string.Empty);
             }
 
             InputNames = inputNames;
             InputDescriptions = inputDescriptions;
-
+            InputTypes = inputTypes;
         }
     }
 

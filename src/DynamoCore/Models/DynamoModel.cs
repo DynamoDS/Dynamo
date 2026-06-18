@@ -25,6 +25,7 @@ using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Graph.Workspaces.Locking;
 using Dynamo.Interfaces;
 using Dynamo.Linting;
 using Dynamo.Logging;
@@ -158,6 +159,17 @@ namespace Dynamo.Models
         /// Key will be the workspace guid and its value will be a list of saved checksums(sha256 hash) for that workspace.
         /// </summary>
         internal Dictionary<string, List<string>> GraphChecksumDictionary { get; set; }
+
+        /// <summary>
+        /// Coordinates graph locks for files opened by this Dynamo model.
+        /// </summary>
+        internal GraphLockManager GraphLockManager { get; private set; }
+
+        /// <summary>
+        /// Describes how the most recent file-open attempt interacted with the graph-lock feature
+        /// (opened normally, cancelled at the conflict prompt, or redirected to a Save As copy).
+        /// </summary>
+        internal GraphLockOutcome LastGraphLockOpenOutcome { get; private set; }
 
         // Get ProgramData folder path (usually C:\ProgramData)
         static readonly string programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
@@ -758,6 +770,8 @@ namespace Dynamo.Models
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
                 PreferenceSettings.MessageLogged += LogMessage;
             }
+
+            GraphLockManager = new GraphLockManager(this);
 
             HostName = HostAnalyticsInfo.HostName;
             HostVersion = HostAnalyticsInfo.HostVersion?.ToString();
@@ -1533,6 +1547,9 @@ namespace Dynamo.Models
             EngineController.VMLibrariesReset -= ReloadDummyNodes;
             DynamoFeatureFlagsManager.FlagsRetrieved -= HandleFeatureFlags;
 
+            GraphLockManager?.Dispose();
+            GraphLockManager = null;
+
             Logger.Dispose();
 
             EngineController.Dispose();
@@ -2174,34 +2191,83 @@ namespace Dynamo.Models
         /// execution mode specified in the file and set manual mode</param>
         public void OpenFileFromPath(string filePath, bool forceManualExecutionMode = false)
         {
+            OpenFileFromPathCore(filePath, forceManualExecutionMode, forceBlockRun: false);
+        }
+
+        /// <summary>
+        /// Opens a Dynamo workspace from a path to a file on disk.
+        /// </summary>
+        /// <param name="filePath">Path to file</param>
+        /// <param name="forceManualExecutionMode">Set this to true to discard
+        /// execution mode specified in the file and set manual mode</param>
+        /// <param name="forceBlockRun">Set this to true to block the graph from running after opening</param>
+        internal void OpenFileFromPathCore(string filePath, bool forceManualExecutionMode, bool forceBlockRun)
+        {
+            LastGraphLockOpenOutcome = GraphLockOutcome.Opened;
+
+            var graphLockOutcome = GraphLockManager?.AcquireLock(filePath, true) ?? GraphLockAcquireResult.Acquired();
+            if (!graphLockOutcome.ShouldOpen)
+            {
+                LastGraphLockOpenOutcome = GraphLockOutcome.Cancelled;
+                GraphLockManager?.CompleteOpen(filePath, false);
+                return;
+            }
+
+            var filePathToOpen = string.IsNullOrEmpty(graphLockOutcome.GraphPath) ? filePath : graphLockOutcome.GraphPath;
+
+            // If the lock manager redirected us to a different file (a Save As copy made because the
+            // original was locked), remember it so the UI can re-evaluate the trust warning for the copy
+            try
+            {
+                if (!string.IsNullOrEmpty(filePathToOpen) &&
+                    !string.Equals(Path.GetFullPath(filePathToOpen), Path.GetFullPath(filePath), StringComparison.OrdinalIgnoreCase))
+                {
+                    LastGraphLockOpenOutcome = GraphLockOutcome.RedirectedToCopy;
+                }
+            }
+            catch (Exception pathEx) when (pathEx is ArgumentException || pathEx is NotSupportedException || pathEx is PathTooLongException)
+            {
+                // If either path cannot be normalized, treat this as a non-redirect open.
+                LastGraphLockOpenOutcome = GraphLockOutcome.Opened;
+            }
+
+            var openedSuccessfully = false;
 
             Exception ex;
             string fileContents;
-            if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
-            {
-                OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
-                return;
-            }
-            else
-            {
-                // These kind of exceptions indicate that file is not accessible
-                if (ex is IOException || ex is UnauthorizedAccessException)
-                {
-                    throw ex;
-                }
 
-                XmlDocument xmlDoc;
-
-                // When Json opening failed, either this file is corrupted or file might be XML
-                if (ex is JsonReaderException && DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex))
+            try
+            {
+                if (DynamoUtilities.PathHelper.isValidJson(filePathToOpen, out fileContents, out ex))
                 {
-                    OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode);
+                    openedSuccessfully = OpenJsonFileFromPath(fileContents, filePathToOpen, forceManualExecutionMode, forceBlockRun: forceBlockRun);
                     return;
                 }
                 else
                 {
-                    throw ex;
+                    // These kind of exceptions indicate that file is not accessible
+                    if (ex is IOException || ex is UnauthorizedAccessException)
+                    {
+                        throw ex;
+                    }
+
+                    XmlDocument xmlDoc;
+
+                    // When Json opening failed, either this file is corrupted or file might be XML
+                    if (ex is JsonReaderException && DynamoUtilities.PathHelper.isValidXML(filePathToOpen, out xmlDoc, out ex))
+                    {
+                        openedSuccessfully = OpenXmlFileFromPath(xmlDoc, filePathToOpen, forceManualExecutionMode, forceBlockRun: forceBlockRun);
+                        return;
+                    }
+                    else
+                    {
+                        throw ex;
+                    }
                 }
+            }
+            finally
+            {
+                GraphLockManager?.CompleteOpen(filePathToOpen, openedSuccessfully);
             }
         }
 
@@ -2214,9 +2280,9 @@ namespace Dynamo.Models
         /// execution mode specified in the file and set manual mode</param>
         public void OpenTemplateFromPath(string filePath, bool forceManualExecutionMode = false)
         {
-            Exception ex;
-            string fileContents;
-            if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
+            LastGraphLockOpenOutcome = GraphLockOutcome.Opened;
+
+            if (DynamoUtilities.PathHelper.isValidJson(filePath, out string fileContents, out Exception ex))
             {
                 OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode, true);
                 return;
@@ -2249,12 +2315,23 @@ namespace Dynamo.Models
         /// <param name="forceManualExecutionMode"></param>
         public void InsertFileFromPath(string filePath, bool forceManualExecutionMode = false)
         {
+            InsertFileFromPathCore(filePath, forceManualExecutionMode, forceBlockRun: false);
+        }
+
+        /// <summary>
+        /// Inserts a Dynamo graph or Custom Node inside the current workspace from a file path
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="forceManualExecutionMode"></param>
+        /// <param name="forceBlockRun">Set this to true to block the graph from running after opening</param>
+        internal void InsertFileFromPathCore(string filePath, bool forceManualExecutionMode, bool forceBlockRun)
+        {
             Exception ex;
             string fileContents;
 
             if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
             {
-                InsertJsonFileFromPath(fileContents, filePath, forceManualExecutionMode);
+                InsertJsonFileFromPath(fileContents, filePath, forceManualExecutionMode, forceBlockRun);
             }
             else
             {
@@ -2312,10 +2389,14 @@ namespace Dynamo.Models
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
         /// <param name="isTemplate">Set this to true to indicate that the file is a template</param>
-        internal void OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool isTemplate = false)
+        /// <param name="forceBlockRun">Set this to true to block the graph from running after opening</param>
+        /// <returns>True if workspace was opened successfully</returns>
+        internal bool OpenJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool isTemplate = false, bool forceBlockRun = false)
         {
             try
             {
+                var workspaceOpened = false;
+
                 DynamoPreferencesData dynamoPreferences = DynamoPreferencesDataFromJson(fileContents);
                 if (dynamoPreferences != null)
                 {
@@ -2323,7 +2404,7 @@ namespace Dynamo.Models
                     if (true) //MigrationManager.ProcessWorkspace(dynamoPreferences.Version, xmlDoc, IsTestMode, NodeFactory))
                     {
                         WorkspaceModel ws;
-                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, isTemplate, out ws))
+                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, isTemplate, forceBlockRun, out ws))
                         {
                             OpenWorkspace(ws);
                             //Raise an event to deserialize the view parameters before
@@ -2331,9 +2412,15 @@ namespace Dynamo.Models
                             OnComputeModelDeserialized();
 
                             SetPeriodicEvaluation(ws);
+                            workspaceOpened = true;
                         }
                     }
                 }
+
+                // Report whether a workspace was actually opened (not merely that no exception was
+                // thrown), so callers such as the graph-lock manager do not retain a lock for a
+                // graph that never opened.
+                return workspaceOpened;
             }
             catch (Exception e)
             {
@@ -2344,7 +2431,7 @@ namespace Dynamo.Models
             }
         }
 
-        private bool InsertJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode)
+        private void InsertJsonFileFromPath(string fileContents, string filePath, bool forceManualExecutionMode, bool forceBlockRun = false)
         {
             try
             {
@@ -2354,19 +2441,12 @@ namespace Dynamo.Models
                 fileContents = GuidUtility.UpdateWorkspaceGUIDs(fileContents);
 
                 DynamoPreferencesData dynamoPreferences = DynamoPreferencesDataFromJson(fileContents);
-                if (dynamoPreferences != null)
+                if (dynamoPreferences != null &&
+                    OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, false, forceBlockRun, out WorkspaceModel ws))
                 {
-                    if (true) //MigrationManager.ProcessWorkspace(dynamoPreferences.Version, xmlDoc, IsTestMode, NodeFactory))
-                    {
-                        if (OpenJsonFile(filePath, fileContents, dynamoPreferences, forceManualExecutionMode, false, out WorkspaceModel ws))
-                        {
-                            ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfo.ExtraWorkspaceViewInfoFromJson(fileContents);
-
-                            InsertWorkspace(ws, viewInfo);
-                        }
-                    }
+                    ExtraWorkspaceViewInfo viewInfo = ExtraWorkspaceViewInfo.ExtraWorkspaceViewInfoFromJson(fileContents);
+                    InsertWorkspace(ws, viewInfo);
                 }
-                return true;
             }
             catch (Exception e)
             {
@@ -2385,8 +2465,9 @@ namespace Dynamo.Models
         /// <param name="forceManualExecutionMode">Set this to true to discard
         /// execution mode specified in the file and set manual mode</param>
         /// <param name="isTemplate">When true, marks the opened workspace as a template (for example when opened via <see cref="OpenTemplateFromPath"/>).</param>
+        /// <param name="forceBlockRun">Set this to true to block the graph from running after opening.</param>
         /// <returns>True if workspace was opened successfully</returns>
-        private bool OpenXmlFileFromPath(XmlDocument xmlDoc, string filePath, bool forceManualExecutionMode, bool isTemplate = false)
+        private bool OpenXmlFileFromPath(XmlDocument xmlDoc, string filePath, bool forceManualExecutionMode, bool isTemplate = false, bool forceBlockRun = false)
         {
             try
             {
@@ -2400,6 +2481,8 @@ namespace Dynamo.Models
                     }
                 }
 
+                var workspaceOpened = false;
+
                 WorkspaceInfo workspaceInfo;
                 if (WorkspaceInfo.FromXmlDocument(xmlDoc, filePath, IsTestMode, forceManualExecutionMode, Logger, out workspaceInfo))
                 {
@@ -2409,15 +2492,18 @@ namespace Dynamo.Models
                         if (OpenXmlFile(workspaceInfo, xmlDoc, out ws))
                         {
                             ws.IsTemplate = isTemplate;
+                            if (ws is HomeWorkspaceModel homeWs && homeWs.RunSettings != null)
+                                homeWs.RunSettings.ForceBlockRun = forceBlockRun;
                             OpenWorkspace(ws);
 
                             // Set up workspace cameras here
                             OnWorkspaceOpening(xmlDoc);
                             SetPeriodicEvaluation(ws);
+                            workspaceOpened = true;
                         }
                     }
                 }
-                return true;
+                return workspaceOpened;
             }
             catch (Exception)
             {
@@ -2561,6 +2647,7 @@ namespace Dynamo.Models
           DynamoPreferencesData dynamoPreferences,
           bool forceManualExecutionMode,
           bool isTemplate,
+          bool forceBlockRun,
           out WorkspaceModel workspace)
         {
             if (!string.IsNullOrEmpty(filePath))
@@ -2613,13 +2700,22 @@ namespace Dynamo.Models
                     workspace.HasUnsavedChanges = true;
                 }
 
-                RunType runType;
-                if (!homeWorkspace.HasRunWithoutCrash || !Enum.TryParse(dynamoPreferences.RunType, false, out runType) || forceManualExecutionMode)
-                    runType = RunType.Manual;
-                int runPeriod;
-                if (!Int32.TryParse(dynamoPreferences.RunPeriod, out runPeriod))
-                    runPeriod = RunSettings.DefaultRunPeriod;
+                RunType runType = RunType.Manual;
+                if (homeWorkspace.HasRunWithoutCrash
+                    && !forceManualExecutionMode
+                    && Enum.TryParse(dynamoPreferences.RunType, false, out RunType parsedRunType))
+                {
+                    runType = parsedRunType;
+                }
+
+                int runPeriod = RunSettings.DefaultRunPeriod;
+                if (Int32.TryParse(dynamoPreferences.RunPeriod, out int parserRunPeriod))
+                {
+                    runPeriod = parserRunPeriod;
+                }
+
                 homeWorkspace.RunSettings = new RunSettings(runType, runPeriod);
+                homeWorkspace.RunSettings.ForceBlockRun = forceBlockRun;
 
                 RegisterHomeWorkspace(homeWorkspace);
             }
