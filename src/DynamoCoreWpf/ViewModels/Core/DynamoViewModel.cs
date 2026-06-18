@@ -277,6 +277,12 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Indicates whether Dynamo was started in no-network mode.
+        /// When true, all Package Manager entry points are disabled.
+        /// </summary>
+        public bool NoNetworkMode => model.NoNetworkMode;
+
+        /// <summary>
         /// Check for online access and update OnlineAccess property.
         /// </summary>
         internal void CheckOnlineAccess()
