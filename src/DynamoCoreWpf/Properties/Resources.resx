@@ -2147,6 +2147,9 @@ Do you want to install the latest Dynamo update?</value>
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
     <value>Enable Network Mode to be able to sign in.</value>
   </data>
+  <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
+    <value>Enable Network Mode to be able to use Package Manager.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -4281,5 +4284,17 @@ To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>Auto‑sync with node selection.</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
+    <value>This file is currently open in another instance of Dynamo.
+To avoid data loss or corruption, please choose one of the following actions:
+ • Save As — opens an independent copy you can edit safely.
+ • Cancel — does not open the file.</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
+    <value>File already open in another Dynamo instance</value>
+  </data>
+  <data name="GraphLockSaveAsButton" xml:space="preserve">
+    <value>Save As</value>
   </data>
 </root>

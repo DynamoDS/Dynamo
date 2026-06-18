@@ -280,7 +280,7 @@ namespace Dynamo.Wpf.ViewModels.Core
                 SetCurrentWarning(NotificationLevel.Mild, string.Empty);
                 return;
             }
-            if (RunSettings.ForceBlockRun)
+            if (((HomeWorkspaceModel)Model).RunSettings.ForceBlockRun)
             {
                 SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunBlockedMessage);
                 return;

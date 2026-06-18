@@ -225,6 +225,9 @@
   <data name="InstallButtonText" xml:space="preserve">
     <value>Install Specified Version</value>
   </data>
+  <data name="InstallButtonNoNetworkModeToolTip" xml:space="preserve">
+    <value>Enable Network Mode to be able to install packages.</value>
+  </data>
   <data name="JsonIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
