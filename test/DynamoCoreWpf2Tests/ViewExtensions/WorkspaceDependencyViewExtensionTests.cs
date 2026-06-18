@@ -370,7 +370,7 @@ namespace DynamoCoreWpfTests
     [TestFixture]
     public class WorkspaceDependencyViewExtensionNoNetworkModeTests : DynamoTestUIBase
     {
-        private WorkspaceDependencyViewExtension viewExtension = new WorkspaceDependencyViewExtension();
+        private readonly WorkspaceDependencyViewExtension viewExtension = new WorkspaceDependencyViewExtension();
 
         protected override DynamoModel.IStartConfiguration CreateStartConfiguration(IPathResolver pathResolver)
         {
