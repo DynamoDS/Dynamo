@@ -4554,12 +4554,9 @@ namespace Dynamo.ViewModels
             foreach (var nvm in workspace.Nodes)
             {
                 var models = new List<ISelectable> { nvm.NodeModel };
-                foreach (var avm in annotations)
+                foreach (var avm in annotations.Where(a => a.AnnotationModel.ContainsModel(nvm.NodeModel)))
                 {
-                    if (avm.AnnotationModel.ContainsModel(nvm.NodeModel))
-                    {
-                        models.Add(avm.AnnotationModel);
-                    }
+                    models.Add(avm.AnnotationModel);
                 }
                 yield return new HomeEndCandidate(nvm.X, nvm.X + nvm.ActualWidth, models);
             }
