@@ -59,7 +59,6 @@
 
     <Target Name="NpmRunBuildHomePage" BeforeTargets="BeforeBuild">
         <PropertyGroup>
-            <PackageVersion>1.0.31</PackageVersion>
             <PackageVersion>1.0.32</PackageVersion>
             <PackageName>DynamoHome</PackageName>
         </PropertyGroup>
