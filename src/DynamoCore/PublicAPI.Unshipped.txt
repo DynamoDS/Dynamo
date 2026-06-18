@@ -4,3 +4,6 @@ Dynamo.Graph.Nodes.IValueSchemaProvider.ValueTypeId.get -> string
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.EnableUnTrustedLocationsNotifications.get -> bool
 Dynamo.Models.DynamoModel.DefaultStartConfiguration.EnableUnTrustedLocationsNotifications.set -> void
 Dynamo.Models.DynamoModel.IStartConfiguration.EnableUnTrustedLocationsNotifications.get -> bool
+Dynamo.Models.DynamoModel.OpenFileCommand.OpenFileCommand(System.String filePath, System.Boolean forceManualExecutionMode, System.Boolean isTemplate, System.Boolean forceBlockRun) -> void
+Dynamo.Models.DynamoModel.InsertFileCommand.InsertFileCommand(System.String filePath, System.Boolean forceManualExecutionMode, System.Boolean forceBlockRun) -> void
+virtual Dynamo.Graph.Nodes.NodeModel.LevelAndReplicationGuideInputCount(int rawInputCount) -> int

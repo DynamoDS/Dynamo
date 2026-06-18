@@ -128,6 +128,7 @@ namespace CoreNodeModels
                     this.value = value ?? "";
                     MarkNodeAsModified();
                     RaisePropertyChanged(nameof(Value));
+                    SetNodeStateBasedOnConnectionAndDefaults();
                 }
             }
         }
@@ -174,8 +175,61 @@ namespace CoreNodeModels
             DataBridge.Instance.UnregisterCallback(GUID.ToString());
         }
 
+        protected override void SetNodeStateBasedOnConnectionAndDefaults()
+        {
+            base.SetNodeStateBasedOnConnectionAndDefaults();
+
+            if (HasUpstreamDataSource())
+            {
+                ClearMissingUpstreamConnectionInfo();
+                return;
+            }
+
+            ShowMissingUpstreamConnectionInfo();
+        }
+
+        private void ShowMissingUpstreamConnectionInfo()
+        {
+            var message = Properties.Resources.DefineDataMissingUpstreamConnectionInfoMessage;
+            Info(message, true);
+
+            // Match ClearErrorsAndWarnings: reflect PersistentInfo in node state when no higher-priority issues exist.
+            if (NodeInfos.Any(x => x.State == ElementState.PersistentInfo && x.Message.Equals(message)) &&
+                !NodeInfos.Any(x => x.State == ElementState.Error ||
+                                    x.State == ElementState.PersistentWarning ||
+                                    x.State == ElementState.Warning))
+            {
+                State = ElementState.PersistentInfo;
+            }
+        }
+
+        private bool HasUpstreamDataSource()
+        {
+            return InPorts.Count > 0 && (InPorts[0].IsConnected || !string.IsNullOrEmpty(Value));
+        }
+
+        private void ClearMissingUpstreamConnectionInfo()
+        {
+            var message = Properties.Resources.DefineDataMissingUpstreamConnectionInfoMessage;
+            if (!NodeInfos.Any(x => x.State == ElementState.PersistentInfo && x.Message.Equals(message)))
+            {
+                return;
+            }
+
+            ClearInfoMessages();
+            base.SetNodeStateBasedOnConnectionAndDefaults();
+        }
+
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
-        {   
+        {
+            if (!HasUpstreamDataSource())
+            {
+                return
+                [
+                    AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), new NullNode())
+                ];
+            }
+
             var resultAst = new List<AssociativeNode>();
 
             // function call inputs - reference to the function, and the function arguments coming from the inputs
@@ -222,6 +276,7 @@ namespace CoreNodeModels
 
             //Now we reset this value to empty string so that the next time a value is set from upstream nodes we can know that it is not coming from the player
             value = "";
+            SetNodeStateBasedOnConnectionAndDefaults();
 
             if (data == null)
             {

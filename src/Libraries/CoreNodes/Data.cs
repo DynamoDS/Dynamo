@@ -667,7 +667,7 @@ namespace DSCore
             string typeString, bool isList, bool isAutoMode, string playerValue)
         {
 
-            if (inputValue == null)
+            if (IsUnusedDefineDataInput(inputValue) && string.IsNullOrEmpty(playerValue))
             {
                 // Don't raise a warning if the node is unused
                 return new Dictionary<string, object>
@@ -675,12 +675,6 @@ namespace DSCore
                     { ">", inputValue },
                     { "Validation", null }
                 };
-            }
-
-            if (!IsSingleValueOrSingleLevelArrayList(inputValue))
-            {
-                var warning = Properties.Resources.DefineDataSupportedInputValueExceptionMessage;
-                return DefineDataResult(inputValue, false, false, DataNodeDynamoTypeList.First(), warning);
             }
 
             // If the playerValue is not empty, then we assume it was set by the player.
@@ -698,6 +692,12 @@ namespace DSCore
                     var warning = Properties.Resources.Exception_Deserialize_Unsupported_Cache;
                     return DefineDataResult(inputValue, false, false, DataNodeDynamoTypeList.First(), warning);
                 }
+            }
+
+            if (!IsSingleValueOrSingleLevelArrayList(inputValue))
+            {
+                var warning = Properties.Resources.DefineDataSupportedInputValueExceptionMessage;
+                return DefineDataResult(inputValue, false, false, DataNodeDynamoTypeList.First(), warning);
             }
 
             // Currently working around passing the type as a string from the node - can be developed further to pass directly the type value
@@ -918,6 +918,26 @@ namespace DSCore
                 }
             }
             return typeList;
+        }
+
+        /// <summary>
+        /// Checks whether the Define Data input is unused (null or an empty list).
+        /// </summary>
+        /// <param name="inputValue">The input value from the graph.</param>
+        /// <returns>True when the input should be treated as unconnected or unused.</returns>
+        private static bool IsUnusedDefineDataInput(object inputValue)
+        {
+            if (inputValue == null)
+            {
+                return true;
+            }
+
+            if (inputValue is ArrayList arrayList && arrayList.Count == 0)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
