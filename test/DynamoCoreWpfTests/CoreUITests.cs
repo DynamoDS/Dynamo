@@ -43,6 +43,13 @@ namespace DynamoCoreWpfTests
     [TestFixture]
     public class CoreUserInterfaceTests : SystemTestBase
     {
+        [TearDown]
+        public override void TearDown()
+        {
+            DynamoSelection.Instance.ClearSelection();
+            base.TearDown();
+        }
+
         #region SaveImageCommand
 
         [Test]
@@ -916,12 +923,6 @@ namespace DynamoCoreWpfTests
             return added;
         }
 
-        private void ClearHomeEndState()
-        {
-            DynamoSelection.Instance.ClearSelection();
-            ViewModel.CurrentSpaceViewModel.Model.HasUnsavedChanges = false;
-        }
-
         [Test, Apartment(ApartmentState.STA)]
         [Category("DynamoUI")]
         public void WhenWorkspaceIsEmptyThenGoToLeftMostNodeIsNoOp()
@@ -938,7 +939,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(initY, workspaceVM.Y);
             Assert.IsEmpty(DynamoSelection.Instance.Selection);
 
-            ClearHomeEndState();
         }
 
         [Test, Apartment(ApartmentState.STA)]
@@ -957,7 +957,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(initY, workspaceVM.Y);
             Assert.IsEmpty(DynamoSelection.Instance.Selection);
 
-            ClearHomeEndState();
         }
 
         [Test, Apartment(ApartmentState.STA)]
@@ -974,7 +973,6 @@ namespace DynamoCoreWpfTests
             CollectionAssert.DoesNotContain(added, rightNode);
             Assert.IsEmpty(DynamoSelection.Instance.Selection);
 
-            ClearHomeEndState();
         }
 
         [Test, Apartment(ApartmentState.STA)]
@@ -991,7 +989,6 @@ namespace DynamoCoreWpfTests
             CollectionAssert.DoesNotContain(added, leftNode);
             Assert.IsEmpty(DynamoSelection.Instance.Selection);
 
-            ClearHomeEndState();
         }
 
         [Test, Apartment(ApartmentState.STA)]
@@ -1007,7 +1004,6 @@ namespace DynamoCoreWpfTests
             CollectionAssert.Contains(added, orphanNote);
             CollectionAssert.DoesNotContain(added, node);
 
-            ClearHomeEndState();
         }
 
         [Test, Apartment(ApartmentState.STA)]
@@ -1023,7 +1019,6 @@ namespace DynamoCoreWpfTests
             CollectionAssert.Contains(added, orphanNote);
             CollectionAssert.DoesNotContain(added, node);
 
-            ClearHomeEndState();
         }
 
         [Test, Apartment(ApartmentState.STA)]
@@ -1043,7 +1038,6 @@ namespace DynamoCoreWpfTests
             CollectionAssert.Contains(added, group);
             CollectionAssert.DoesNotContain(added, noteInsideGroup);
 
-            ClearHomeEndState();
         }
 
         [Test, Apartment(ApartmentState.STA)]
@@ -1061,7 +1055,6 @@ namespace DynamoCoreWpfTests
             CollectionAssert.Contains(added, notesOnlyGroup);
             CollectionAssert.DoesNotContain(added, node);
 
-            ClearHomeEndState();
         }
 
         [Test, Apartment(ApartmentState.STA)]
@@ -1079,7 +1072,6 @@ namespace DynamoCoreWpfTests
             CollectionAssert.Contains(added, notesOnlyGroup);
             CollectionAssert.DoesNotContain(added, node);
 
-            ClearHomeEndState();
         }
 
         [Test, Apartment(ApartmentState.STA)]
@@ -1099,7 +1091,6 @@ namespace DynamoCoreWpfTests
             CollectionAssert.Contains(rightAdded, rightNote);
             CollectionAssert.DoesNotContain(rightAdded, leftNote);
 
-            ClearHomeEndState();
         }
 
         [Test, Apartment(ApartmentState.STA)]
@@ -1112,7 +1103,6 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(ViewModel.GoToLeftMostNodeCommand.CanExecute(null));
             Assert.IsFalse(ViewModel.GoToRightMostNodeCommand.CanExecute(null));
 
-            ClearHomeEndState();
         }
 
         [Test, Apartment(ApartmentState.STA)]
@@ -1125,7 +1115,6 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(ViewModel.GoToLeftMostNodeCommand.CanExecute(null));
             Assert.IsFalse(ViewModel.GoToRightMostNodeCommand.CanExecute(null));
 
-            ClearHomeEndState();
         }
 
         [Test, Apartment(ApartmentState.STA)]
@@ -1139,7 +1128,6 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(ViewModel.GoToLeftMostNodeCommand.CanExecute(null));
             Assert.IsFalse(ViewModel.GoToRightMostNodeCommand.CanExecute(null));
 
-            ClearHomeEndState();
         }
 
         #endregion
