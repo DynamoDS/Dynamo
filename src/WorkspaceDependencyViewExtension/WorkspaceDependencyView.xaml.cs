@@ -146,6 +146,10 @@ namespace Dynamo.WorkspaceDependency
         /// <param name="p">ViewLoadedParams</param>
         public WorkspaceDependencyView(WorkspaceDependencyViewExtension viewExtension, ViewLoadedParams p)
         {
+            // NoNetworkMode must be set before InitializeComponent so the XAML DataTrigger
+            // that disables the Install button reads the correct value on first evaluation.
+            // A plain CLR property has no change notification, so the trigger only fires once.
+            NoNetworkMode = p.StartupParams.NoNetworkMode;
             InitializeComponent();
             this.DataContext = this;
             currentWorkspace = p.CurrentWorkspaceModel as WorkspaceModel;
@@ -156,7 +160,6 @@ namespace Dynamo.WorkspaceDependency
             currentWorkspace.PropertyChanged += OnWorkspacePropertyChanged;
             loadedParams = p;
             packageInstaller = p.PackageInstaller;
-            NoNetworkMode = p.StartupParams.NoNetworkMode;
             dependencyViewExtension = viewExtension;
             HomeWorkspaceModel.WorkspaceClosed += this.CloseExtensionTab;
         }
