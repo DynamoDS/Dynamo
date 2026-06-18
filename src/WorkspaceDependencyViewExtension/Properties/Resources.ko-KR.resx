@@ -147,6 +147,9 @@
   <data name="InstallButtonText" xml:space="preserve">
     <value>지정한 버전 설치</value>
   </data>
+  <data name="InstallButtonNoNetworkModeToolTip" xml:space="preserve">
+    <value>Enable Network Mode to be able to install packages.</value>
+  </data>
   <data name="KeepLocalButtonText" xml:space="preserve">
     <value>설치된 버전 유지</value>
   </data>

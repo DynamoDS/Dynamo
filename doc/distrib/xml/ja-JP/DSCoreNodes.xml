@@ -347,6 +347,11 @@
             <param name="list">再形式化するオブジェクトの ArrayList</param>
             <returns/>
         </member>
+        <member name="M:DSCore.Data.IsUnusedDefineDataInput(System.Object)">
+            <summary>Checks whether the Define Data input is unused (null or an empty list).</summary>
+            <param name="inputValue">The input value from the graph.</param>
+            <returns>True when the input should be treated as unconnected or unused.</returns>
+        </member>
         <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
             <summary>入力オブジェクトが単一の値または単一レベルの ArrayList かを確認します。</summary>
             <param name="obj">評価する入力オブジェクトです</param>

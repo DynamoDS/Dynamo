@@ -347,6 +347,11 @@
             <param name="list">Список объектов ArrayList для переформатирования</param>
             <returns/>
         </member>
+        <member name="M:DSCore.Data.IsUnusedDefineDataInput(System.Object)">
+            <summary>Checks whether the Define Data input is unused (null or an empty list).</summary>
+            <param name="inputValue">The input value from the graph.</param>
+            <returns>True when the input should be treated as unconnected or unused.</returns>
+        </member>
         <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
             <summary>Проверьте, является ли входной объект отдельным значением или одноуровневым списком ArrayList.</summary>
             <param name="obj">Входной объект для оценки</param>

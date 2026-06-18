@@ -347,6 +347,11 @@
             <param name="list">要重新格式化之物件的 ArrayList</param>
             <returns/>
         </member>
+        <member name="M:DSCore.Data.IsUnusedDefineDataInput(System.Object)">
+            <summary>Checks whether the Define Data input is unused (null or an empty list).</summary>
+            <param name="inputValue">The input value from the graph.</param>
+            <returns>True when the input should be treated as unconnected or unused.</returns>
+        </member>
         <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
             <summary>檢查輸入物件是單一值還是單層 ArrayList。</summary>
             <param name="obj">要演算的輸入物件</param>
