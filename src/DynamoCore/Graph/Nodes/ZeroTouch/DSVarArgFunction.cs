@@ -99,6 +99,25 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
         [JsonIgnore]
         public VariableInputNodeController VarInputController { get; private set; }
 
+        /// <summary>
+        /// Scopes <see cref="NodeModel.UseLevelAndReplicationGuide"/> to the non-variadic
+        /// prefix of this node's inputs.
+        /// </summary>
+        /// <remarks>
+        /// Variadic zero-touch functions pack their tail inputs into a single
+        /// <c>ExprListNode</c> argument before <see cref="NodeModel.UseLevelAndReplicationGuide"/>
+        /// runs. AtLevel / replication-guide annotations on an <c>ExprListNode</c> are inert
+        /// at runtime, so per-port Use Levels and lacing on the variadic slots must be applied
+        /// pre-pack inside <c>ZeroTouchVarArgNodeController.BuildOutputAst</c>. This override
+        /// limits the post-pack pass to the non-variadic prefix so the packed variadic slot
+        /// is not touched twice.
+        /// </remarks>
+        protected override int LevelAndReplicationGuideInputCount(int rawInputCount)
+        {
+            int prefix = Controller.Definition.Parameters.Count() - 1;
+            return prefix < 0 ? 0 : prefix;
+        }
+
         #region VarInput Controller
         private sealed class ZeroTouchVarInputController : VariableInputNodeController
         {
@@ -172,7 +191,7 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             {
                 var paramCount = Definition.Parameters.Count();
 
-                // Suppose a fucntion foo() with var args, its signature is:
+                // Suppose a function foo() with var args, its signature is:
                 //
                 //    foo(x1, x2, ..., xn, params y)
                 //
@@ -180,6 +199,77 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
                 //
                 //        i1, i2, ...., in, y1, y2, ..., ym
                 //
+                // Why: per-port Use Levels and lacing-driven replication guides
+                // on the variadic inputs (y1..ym) must be applied *before* we
+                // pack them into an ExprListNode. AtLevel / replication-guide
+                // annotations carried inside an ExprListNode are inert at runtime,
+                // so packing first would silently drop per-port settings on every
+                // variadic port (the original DYN-10572 defect). The non-variadic
+                // prefix (i1..in) is handled by the post-pack
+                // NodeModel.UseLevelAndReplicationGuide pass, which DSVarArgFunction
+                // scopes to indices [0, paramCount - 1) via the
+                // LevelAndReplicationGuideInputCount override -- preventing the
+                // packed slot from being wrapped twice.
+                int variadicStart = paramCount - 1;
+                if (variadicStart >= 0 && variadicStart < inputAstNodes.Count)
+                {
+                    for (int i = variadicStart; i < inputAstNodes.Count; i++)
+                    {
+                        if (model.InPorts[i].UseLevels)
+                        {
+                            inputAstNodes[i] = AstFactory.AddAtLevel(
+                                inputAstNodes[i],
+                                -model.InPorts[i].Level,
+                                model.InPorts[i].KeepListStructure);
+                        }
+                    }
+
+                    switch (model.ArgumentLacing)
+                    {
+                        case LacingStrategy.Auto:
+                            for (int i = variadicStart; i < inputAstNodes.Count; i++)
+                            {
+                                if (model.InPorts[i].UseLevels)
+                                {
+                                    inputAstNodes[i] = AstFactory.AddReplicationGuide(
+                                        inputAstNodes[i], new List<int> { 1 }, false);
+                                }
+                            }
+                            break;
+
+                        case LacingStrategy.Shortest:
+                            for (int i = variadicStart; i < inputAstNodes.Count; i++)
+                            {
+                                inputAstNodes[i] = AstFactory.AddReplicationGuide(
+                                    inputAstNodes[i], new List<int> { 1 }, false);
+                            }
+                            break;
+
+                        case LacingStrategy.Longest:
+                            for (int i = variadicStart; i < inputAstNodes.Count; i++)
+                            {
+                                inputAstNodes[i] = AstFactory.AddReplicationGuide(
+                                    inputAstNodes[i], new List<int> { 1 }, true);
+                            }
+                            break;
+
+                        case LacingStrategy.CrossProduct:
+                            // Continue cross-product indices from where the prefix
+                            // pass would have stopped: the prefix uses guides
+                            // 1..paramCount-1, so the first variadic port starts at
+                            // paramCount and each subsequent variadic port gets a
+                            // distinct rank.
+                            int guide = paramCount;
+                            for (int i = variadicStart; i < inputAstNodes.Count; i++)
+                            {
+                                inputAstNodes[i] = AstFactory.AddReplicationGuide(
+                                    inputAstNodes[i], new List<int> { guide }, false);
+                                guide++;
+                            }
+                            break;
+                    }
+                }
+
                 // Here we pack all var arguments in an array {y1, y2, ..., ym}
                 // (skipping the first n == paramCount - 1 inputs)
                 var argPack = AstFactory.BuildExprList(inputAstNodes.Skip(paramCount - 1).ToList());
