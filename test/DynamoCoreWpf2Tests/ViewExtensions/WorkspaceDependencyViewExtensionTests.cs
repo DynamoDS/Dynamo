@@ -387,9 +387,10 @@ namespace DynamoCoreWpfTests
         // NoNetworkMode on the view is what drives the XAML DataTrigger that disables the
         // Install Specified Version button. Asserting the property directly is intentional:
         // WPF triggers do not fire until the visual tree is fully realized, which is not
-        // guaranteed in a headless NUnit run.
+        // guaranteed in a headless NUnit run. See WhenNoNetworkModeThenWorkspaceReferencesInstallButtonIsDisabled
+        // in AGT tests for the UI-level assertion.
         [Test]
-        public void WhenNoNetworkModeThenWorkspaceReferencesInstallButtonIsDisabled()
+        public void WhenNoNetworkModeThenDependencyViewNoNetworkModeIsTrue()
         {
             RaiseLoadedEvent(this.View);
             var extensionManager = View.viewExtensionManager;
