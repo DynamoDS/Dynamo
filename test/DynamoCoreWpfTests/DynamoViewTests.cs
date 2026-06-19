@@ -236,9 +236,9 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void TestToastAutoCloses()
+        public void WhenToastIsStickyThenItStaysVisibleAfterAutoCloseDuration()
         {
-            // Create a toast
+            // A sticky toast (stayOpen: true) must remain visible until dismissed; it must not auto-close.
             ViewModel.UIDispatcher.Invoke(() =>
             {
                 ViewModel.ToastManager.CreateRealTimeInfoWindow(
@@ -249,18 +249,45 @@ namespace DynamoCoreWpfTests
             // It should be visible immediately
             Assert.IsTrue(ViewModel.ToastManager.PopupIsVisible, "Toast should be visible right after showing.");
 
-            // Pump the dispatcher for a little longer than the set auto-close time
-            var sw = System.Diagnostics.Stopwatch.StartNew();
-            var waitTime = TimeSpan.FromSeconds(ToastManager.AutoCloseSeconds + 2);
+            // Pump the dispatcher for a little longer than the auto-close time
+            PumpDispatcherFor(TimeSpan.FromSeconds(ToastManager.AutoCloseSeconds + 2));
 
-            while (sw.Elapsed < waitTime)
+            // Sticky toast should still be visible (no auto-close timer was started)
+            Assert.IsTrue(ViewModel.ToastManager.PopupIsVisible, "Sticky toast should remain visible after the auto-close duration.");
+
+            // Cleanup so the open popup does not leak into other tests.
+            ViewModel.UIDispatcher.Invoke(() => ViewModel.ToastManager.CloseRealTimeInfoWindow());
+        }
+
+        [Test]
+        public void WhenToastIsNotStickyThenItAutoCloses()
+        {
+            // A non-sticky toast (stayOpen: false) auto-closes after AutoCloseSeconds.
+            ViewModel.UIDispatcher.Invoke(() =>
+            {
+                ViewModel.ToastManager.CreateRealTimeInfoWindow(
+                    content: "Test auto-close toast",
+                    stayOpen: false);
+            });
+
+            // It should be visible immediately
+            Assert.IsTrue(ViewModel.ToastManager.PopupIsVisible, "Toast should be visible right after showing.");
+
+            // Pump the dispatcher for a little longer than the auto-close time
+            PumpDispatcherFor(TimeSpan.FromSeconds(ToastManager.AutoCloseSeconds + 2));
+
+            // Toast should have auto-closed
+            Assert.IsFalse(ViewModel.ToastManager.PopupIsVisible, "Non-sticky toast should auto-close after the auto-close duration.");
+        }
+
+        private void PumpDispatcherFor(TimeSpan duration)
+        {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            while (sw.Elapsed < duration)
             {
                 ViewModel.UIDispatcher.Invoke(() => { }, System.Windows.Threading.DispatcherPriority.Background);
                 System.Threading.Thread.Sleep(10);
             }
-
-            // Toast should have auto-closed
-            Assert.IsFalse(ViewModel.ToastManager.PopupIsVisible, "Toast should auto-close.");
         }
     }
 }

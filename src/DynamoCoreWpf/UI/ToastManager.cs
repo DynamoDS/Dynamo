@@ -98,7 +98,8 @@ namespace Dynamo.Wpf.UI
         /// </summary>
         private CustomPopupPlacement[] PlaceTopRight(Size popupSize, Size targetSize, Point offset)
         {
-            var x = targetSize.Width - popupSize.Width - RightInset;
+            // Clamp so a canvas narrower than the popup does not push the toast off the left edge.
+            var x = Math.Max(RightInset, targetSize.Width - popupSize.Width - RightInset);
             var y = TopInset;
             return new[] { new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None) };
         }
