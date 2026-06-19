@@ -105,6 +105,22 @@ namespace Dynamo.Tests
 
 		}
 
+		[Test]
+		public void TestListJoinUseLevelsOnVariadicPort()
+		{
+			// DYN-10572: List.Join is a pure-variadic DSVarArgFunction (no non-variadic
+			// prefix). With [IsLacingDisabled] on the C# method the node's lacing is
+			// Disabled, so per-port Use Levels must still be honored pre-pack even
+			// though no replication guides are applied. This test confirms the
+			// variadic Use Levels path runs without breaking the post-pack pass
+			// (which is a no-op here because LevelAndReplicationGuideInputCount is 0).
+			string testFilePath = Path.Combine(listTestFolder, "TestListJoinUseLevelsOnVariadicPort.dyn");
+
+			RunModel(testFilePath);
+
+			AssertPreviewValue("dddd11110000222200003333dddd4444", new object[] { 1, 2, 3, 4 });
+		}
+
 		#endregion
 
 		#region Test DiagonalLeftList  
