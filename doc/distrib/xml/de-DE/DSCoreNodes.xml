@@ -347,6 +347,11 @@
             <param name="list">ArrayList der neu zu formatierenden Objekte</param>
             <returns/>
         </member>
+        <member name="M:DSCore.Data.IsUnusedDefineDataInput(System.Object)">
+            <summary>Checks whether the Define Data input is unused (null or an empty list).</summary>
+            <param name="inputValue">The input value from the graph.</param>
+            <returns>True when the input should be treated as unconnected or unused.</returns>
+        </member>
         <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
             <summary>Überprüft, ob das Eingabeobjekt ein einzelner Wert oder eine ArrayList mit einer einzigen Ebene ist.</summary>
             <param name="obj">Das auszuwertende Eingabeobjekt</param>
