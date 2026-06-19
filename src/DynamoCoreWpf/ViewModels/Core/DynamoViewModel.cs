@@ -2837,7 +2837,7 @@ namespace Dynamo.ViewModels
             {
                 Model.Logger.Log(string.Format(Properties.Resources.SavingInProgress, path));
                 var hasSaved = false;
-                if (path.Contains(Model.PathManager.TemplatesDirectory))
+                if (IsPathInTemplateDirectoryTree(path, Model.PathManager.TemplatesDirectory))
                 {
                     // Give user notifications
                     DynamoMessageBox.Show(Owner, WpfResources.WorkspaceSaveTemplateDirectoryBlockMsg, WpfResources.WorkspaceSaveTemplateDirectoryBlockTitle,
@@ -2882,6 +2882,49 @@ namespace Dynamo.ViewModels
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning);
             }
+        }
+
+        internal static bool IsPathInTemplateDirectoryTree(string path, string templatesDirectory)
+        {
+            if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(templatesDirectory))
+            {
+                return false;
+            }
+
+            try
+            {
+                var templateRootDirectory = GetTemplateRootDirectory(templatesDirectory);
+                var templateRootPath = Path.GetFullPath(templateRootDirectory).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                var savePath = Path.GetFullPath(path);
+
+                return savePath.Equals(templateRootPath, StringComparison.OrdinalIgnoreCase) ||
+                    savePath.StartsWith(templateRootPath + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) ||
+                    savePath.StartsWith(templateRootPath + Path.AltDirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
+            }
+            catch (ArgumentException)
+            {
+                return false;
+            }
+            catch (IOException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
+        }
+
+        private static string GetTemplateRootDirectory(string templatesDirectory)
+        {
+            var directoryInfo = new DirectoryInfo(templatesDirectory);
+            if (directoryInfo.Parent != null &&
+                string.Equals(directoryInfo.Parent.Name, Configurations.TemplatesAsString, StringComparison.OrdinalIgnoreCase))
+            {
+                return directoryInfo.Parent.FullName;
+            }
+
+            return directoryInfo.FullName;
         }
 
         /// <summary>
