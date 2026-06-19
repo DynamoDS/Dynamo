@@ -2230,7 +2230,7 @@
       <DynamoMcpDestRoot>$(OutputPath)\Built-In Packages\packages\DynamoMCP\</DynamoMcpDestRoot>
     </PropertyGroup>
     <ItemGroup>
-      <DynamoMcpPkg Include="$(PkgDynamoVisualProgramming_DynamoMCP)\bin\**\*.*" />
+      <DynamoMcpPkg Include="$(PkgDynamoVisualProgramming_DynamoMCP)\bin\**\*" />
     </ItemGroup>
     <Copy SourceFiles="@(DynamoMcpPkg)" DestinationFolder="$(DynamoMcpDestRoot)%(RecursiveDir)" SkipUnchangedFiles="True" />
   </Target>
