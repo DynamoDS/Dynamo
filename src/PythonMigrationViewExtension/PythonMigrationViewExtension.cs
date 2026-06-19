@@ -252,7 +252,12 @@ namespace Dynamo.PythonMigration
             SubscribeToWorkspaceEvents();
 
             CurrentWorkspace.HasShownPythonAutoMigrationNotification = false;
-            DynamoViewModel.ToastManager?.CloseRealTimeInfoWindow();
+
+            // Only close toast notification if the previous workspace had shown a Python migration notification
+            if (previous != null && previous.HasShownPythonAutoMigrationNotification)
+            {
+                DynamoViewModel.ToastManager?.CloseRealTimeInfoWindow();
+            }
 
             if (previous != null)
             {

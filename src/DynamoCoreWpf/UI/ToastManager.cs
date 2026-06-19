@@ -10,11 +10,14 @@ namespace Dynamo.Wpf.UI
     public class ToastManager
     {
 
-        //The popup will be shown at the top-right section of the Dynamo window (at the left side of the statusBarPanel element)
-        //The VerticalOffset is used to move vertically the popup (using as a reference the statusBarPanel position)
-        private const double VerticalOffset = 10;
-        //The HorizontalOffset is used to move horizontally the popup (using as a reference the statusBarPanel position)
-        private const double HorizontalOffset = 110;
+        //The popup is shown at the top-right of the canvas, anchored to the persistent background_grid
+        //(which survives workspace swaps, unlike the per-workspace viewControlPanel). Its top-right
+        //corner coincides with the old viewControlPanel anchor, so these insets reproduce the original
+        //popup position.
+        //Distance from the popup's right edge to the canvas right edge.
+        private const double RightInset = 9;
+        //Distance from the popup's top edge to the canvas top edge.
+        private const double TopInset = 10;
         internal const int AutoCloseSeconds = 5;
 
         private RealTimeInfoWindow toastPopup;
@@ -32,8 +35,8 @@ namespace Dynamo.Wpf.UI
         /// </summary>
         /// <param name="content">The target content to display.</param>
         /// <param name="stayOpen">
-        /// boolean indicates if the popup will stay open until user dismiss it
-        /// note: all toasts are still auto-closed after a certain duration.</param>
+        /// When true the popup stays open until it is dismissed (by the user or by a caller). When
+        /// false the popup auto-closes after <see cref="AutoCloseSeconds"/> seconds.</param>
         /// <param name="headerText">The header text to display.</param>
         /// <param name="hyperlinkText">The hyperlink text to display.</param>
         /// <param name="hyperlinkUri">The hyperlink uri to navigate to.</param>
@@ -46,9 +49,6 @@ namespace Dynamo.Wpf.UI
             Uri hyperlinkUri = null,
             Uri fileLinkUri = null)
         {
-            //Search a UIElement with the Name "statusBarPanel" inside the Dynamo VisualTree
-            UIElement hostUIElement = GuideUtilities.FindChild(mainRootElement, "statusBarPanel");
-
             // When popup already exist, replace it
             CloseRealTimeInfoWindow();
             StopAutoCloseTimer();
@@ -56,9 +56,6 @@ namespace Dynamo.Wpf.UI
             // Create the popup
             toastPopup = new RealTimeInfoWindow()
             {
-                VerticalOffset = VerticalOffset,
-                HorizontalOffset = HorizontalOffset,
-                Placement = PlacementMode.Left,
                 StaysOpen = stayOpen,
                 HeaderContent = headerText,
                 HyperlinkText = hyperlinkText,
@@ -70,10 +67,40 @@ namespace Dynamo.Wpf.UI
             toastPopup.SetToastMessage(content, showFileLink, fileLinkUri);
             toastPopup.UpdateVisualState();
 
+            // Custom placement pins the popup to the top-right corner of the background_grid canvas
+            // regardless of the popup's width. background_grid is the canvas background declared
+            // directly in DynamoView, so it persists across workspace swaps (only the WorkspaceView
+            // content inside it changes) - unlike the per-workspace viewControlPanel, which gets torn
+            // out of the visual tree during file open and used to leave the popup orphaned. Its
+            // top-right corner coincides with the old viewControlPanel anchor. It is always laid out
+            // by the time a toast can be shown, since ToastManager is created in DynamoView_Loaded.
+            toastPopup.Placement = PlacementMode.Custom;
+            toastPopup.CustomPopupPlacementCallback = PlaceTopRight;
+
+            var hostUIElement = GuideUtilities.FindChild(mainRootElement, "background_grid");
             if (hostUIElement != null)
+            {
                 toastPopup.PlacementTarget = hostUIElement;
+            }
+
             toastPopup.IsOpen = true;
-            StartAutoCloseTimer(AutoCloseSeconds);
+
+            // Only start auto-close timer if the notification should not stay open
+            if (!stayOpen)
+            {
+                StartAutoCloseTimer(AutoCloseSeconds);
+            }
+        }
+
+        /// <summary>
+        /// Custom placement callback that positions the popup just inside the top-right corner of the
+        /// placement target (background_grid), independent of the popup's width.
+        /// </summary>
+        private CustomPopupPlacement[] PlaceTopRight(Size popupSize, Size targetSize, Point offset)
+        {
+            var x = targetSize.Width - popupSize.Width - RightInset;
+            var y = TopInset;
+            return new[] { new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None) };
         }
 
         /// <summary>
@@ -88,6 +115,7 @@ namespace Dynamo.Wpf.UI
                 toastPopup.IsOpen = false;
             }
         }
+
         /// <summary>
         /// This method will be used when the PlacementTarget element of the Popup was moved or resize so we need to update the popup
         /// </summary>
