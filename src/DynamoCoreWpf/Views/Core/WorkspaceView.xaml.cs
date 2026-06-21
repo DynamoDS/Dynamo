@@ -65,7 +65,7 @@ namespace Dynamo.Views
         private PortViewModel snappedPort;
         private double currentNodeCascadeOffset;
         private Point inCanvasSearchPosition;
-        private List<DependencyObject> hitResultsList = new List<DependencyObject>();
+        private Window ownerWindow;
 
         static internal event Action<Window, ViewModelBase> RequestShowNodeAutoCompleteBar;
         private double currentRenderScale = -1;
@@ -916,26 +916,23 @@ namespace Dynamo.Views
         }
         private void WorkspaceView_Loaded(object sender, RoutedEventArgs e)
         {
-            var ownerWindow = Window.GetWindow(this);
             if (ownerWindow != null)
-            {
+                ownerWindow.Deactivated -= OwnerWindow_Deactivated;
+
+            ownerWindow = Window.GetWindow(this);
+            if (ownerWindow != null)
                 ownerWindow.Deactivated += OwnerWindow_Deactivated;
-            }
         }
 
         private void WorkspaceView_Unloaded(object sender, RoutedEventArgs e)
         {
-            var ownerWindow = Window.GetWindow(this);
             if (ownerWindow != null)
             {
                 ownerWindow.Deactivated -= OwnerWindow_Deactivated;
+                ownerWindow = null;
             }
         }
 
-        /// <summary>
-        /// If the Dynamo window loses focus, the port context menu must close,
-        /// otherwise it will remain open and be visible in other applications.
-        /// </summary>
         private void OwnerWindow_Deactivated(object sender, EventArgs e)
         {
             DestroyPortContextMenu();
