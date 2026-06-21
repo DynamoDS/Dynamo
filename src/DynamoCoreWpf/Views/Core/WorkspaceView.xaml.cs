@@ -109,6 +109,8 @@ namespace Dynamo.Views
             InitializeComponent();
 
             DataContextChanged += OnWorkspaceViewDataContextChanged;
+            Loaded += WorkspaceView_Loaded;
+            Unloaded += WorkspaceView_Unloaded;
 
             // view of items to drag
             draggedSelectionTemplate = (DataTemplate)FindResource("DraggedSelectionTemplate");
@@ -912,6 +914,32 @@ namespace Dynamo.Views
                 ViewModel.RequestTogglePanMode();
             }
         }
+        private void WorkspaceView_Loaded(object sender, RoutedEventArgs e)
+        {
+            var ownerWindow = Window.GetWindow(this);
+            if (ownerWindow != null)
+            {
+                ownerWindow.Deactivated += OwnerWindow_Deactivated;
+            }
+        }
+
+        private void WorkspaceView_Unloaded(object sender, RoutedEventArgs e)
+        {
+            var ownerWindow = Window.GetWindow(this);
+            if (ownerWindow != null)
+            {
+                ownerWindow.Deactivated -= OwnerWindow_Deactivated;
+            }
+        }
+
+        /// <summary>
+        /// If the Dynamo window loses focus, the port context menu must close,
+        /// otherwise it will remain open and be visible in other applications.
+        /// </summary>
+        private void OwnerWindow_Deactivated(object sender, EventArgs e)
+        {
+            DestroyPortContextMenu();
+        }
 
         /// <summary>
         /// Closes the port's context menu and sets its references to null.
@@ -1260,6 +1288,8 @@ namespace Dynamo.Views
         {
             RemoveViewModelsubscriptions(ViewModel);
             DataContextChanged -= OnWorkspaceViewDataContextChanged;
+            Loaded -= WorkspaceView_Loaded;
+            Unloaded -= WorkspaceView_Unloaded;
         }
     }
 }
