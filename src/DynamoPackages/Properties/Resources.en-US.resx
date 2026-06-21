@@ -143,4 +143,8 @@
     <value>{0} was not scanned for packages because a preference setting disabled loading from that location."</value>
     <comment>This warning message is shown when a package directory is skipped due to a preference setting disabling loads from that location type.</comment>
   </data>
+  <data name="BuiltInPackageDisabledInHostContext" xml:space="preserve">
+    <value>The built-in package '{0}' was not loaded because Dynamo is running inside the host application '{1}', which registers this package itself.</value>
+    <comment>This message is shown when a built-in package is skipped because Dynamo is running inside a host application that owns the package's registration. {0} is the package name, {1} is the host application name.</comment>
+  </data>
 </root>

@@ -122,5 +122,14 @@ namespace DynamoPackages.Properties {
                 return ResourceManager.GetString("PackagesDirectorySkipped", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The built-in package &apos;{0}&apos; was not loaded because Dynamo is running inside the host application &apos;{1}&apos;, which registers this package itself..
+        /// </summary>
+        public static string BuiltInPackageDisabledInHostContext {
+            get {
+                return ResourceManager.GetString("BuiltInPackageDisabledInHostContext", resourceCulture);
+            }
+        }
     }
 }

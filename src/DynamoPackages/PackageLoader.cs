@@ -71,6 +71,32 @@ namespace Dynamo.PackageManager
         public IEnumerable<Package> LocalPackages { get { return localPackages; } }
 
         /// <summary>
+        /// Names of built-in packages that must not be loaded when Dynamo is running inside a host
+        /// application (e.g. Revit, Civil 3D). In those contexts the host registers these packages
+        /// itself (for example, the Revit Addin owns DynamoMCP registration), so loading the built-in
+        /// copy would result in duplicate or conflicting registration. In standalone DynamoSandbox
+        /// these packages load normally. See DYN-10636 (DynamoMCP) and DYN-10591 (DynamoAA).
+        /// </summary>
+        private static readonly HashSet<string> builtInPackagesDisabledInHostContext = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "DynamoMCP",
+            "DynamoAA",
+        };
+
+        /// <summary>
+        /// Determines whether a built-in package must be skipped because Dynamo is running inside a
+        /// host application that registers the package itself. Returns false in standalone contexts
+        /// (e.g. DynamoSandbox) where <see cref="DynamoModel.HostAnalyticsInfo"/> has no host name.
+        /// </summary>
+        /// <param name="packageName">The name of the package being scanned.</param>
+        /// <returns>True if the built-in package should not be loaded in the current host context.</returns>
+        private static bool IsBuiltInPackageDisabledInHostContext(string packageName)
+        {
+            return !string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName)
+                && builtInPackagesDisabledInHostContext.Contains(packageName);
+        }
+
+        /// <summary>
         /// Combines the extension with the root path and returns it if the path exists. 
         /// If not, the root path is returned unchanged.
         /// </summary>
@@ -526,13 +552,23 @@ namespace Dynamo.PackageManager
                             // If the built-in package's package root dir was contained in the uninstall list in preferences,
                             // then we set it directly to Unloaded state.
                             pkg.LoadState.SetAsUnloaded();
-                        } 
+                        }
                         else
                         {
                             pkg.LoadState.SetScheduledForDeletion();
                         }
                     }
-                    
+
+                    // When Dynamo is running inside a host application (e.g. Revit, Civil 3D), certain
+                    // built-in packages must not be loaded because the host registers them itself.
+                    // Marking the package as Unloaded keeps it visible in the package list but prevents
+                    // it from being loaded into the library (see TryLoadPackageIntoLibrary).
+                    if (pkg != null && pkg.BuiltInPackage && IsBuiltInPackageDisabledInHostContext(pkg.Name))
+                    {
+                        pkg.LoadState.SetAsUnloaded();
+                        Log(string.Format(Resources.BuiltInPackageDisabledInHostContext, pkg.Name, DynamoModel.HostAnalyticsInfo.HostName));
+                    }
+
                 }
             }
             catch (UnauthorizedAccessException) { }

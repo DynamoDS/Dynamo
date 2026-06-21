@@ -290,6 +290,111 @@ namespace Dynamo.PackageManager.Tests
             loader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;
         }
 
+        /// <summary>
+        /// Writes a minimal valid built-in package (pkg.json only, no binaries) into the given
+        /// packages root directory so it can be discovered by the PackageLoader during a scan.
+        /// </summary>
+        private static void CreateMinimalBuiltInPackage(string packagesRoot, string packageName)
+        {
+            var packageDir = Path.Combine(packagesRoot, packageName);
+            Directory.CreateDirectory(packageDir);
+            var header = "{\"name\":\"" + packageName + "\",\"version\":\"1.0.0\",\"engine_version\":\"2.1.0.7840\","
+                + "\"engine\":\"dynamo\",\"contains_binaries\":false,\"node_libraries\":[]}";
+            File.WriteAllText(Path.Combine(packageDir, "pkg.json"), header);
+        }
+
+        [Test]
+        public void WhenRunningInHostThenConfiguredBuiltInPackagesAreNotLoaded()
+        {
+            // Arrange: a built-in packages location containing two packages that must be disabled
+            // in host context (DynamoMCP, DynamoAA) plus an unrelated built-in package.
+            var originalBuiltInDir = PathManager.BuiltinPackagesDirectory;
+            var originalHostInfo = Dynamo.Models.DynamoModel.HostAnalyticsInfo;
+            var tempPackagesRoot = Path.Combine(Path.GetTempPath(), "DynamoHostBuiltInTest_" + Guid.NewGuid().ToString("N"), "Packages");
+
+            try
+            {
+                Directory.CreateDirectory(tempPackagesRoot);
+                CreateMinimalBuiltInPackage(tempPackagesRoot, "DynamoMCP");
+                CreateMinimalBuiltInPackage(tempPackagesRoot, "DynamoAA");
+                CreateMinimalBuiltInPackage(tempPackagesRoot, "RegularBuiltInPackage");
+
+                PathManager.BuiltinPackagesDirectory = tempPackagesRoot;
+                // Simulate Dynamo running inside a host application (e.g. Revit).
+                Dynamo.Models.DynamoModel.HostAnalyticsInfo = new Dynamo.Models.HostAnalyticsInfo { HostName = "DynamoRevit" };
+
+                var pathManager = new Mock<IPathManager>();
+                pathManager.SetupGet(x => x.PackagesDirectories).Returns(() => new List<string> { tempPackagesRoot });
+
+                var loader = new PackageLoader(pathManager.Object);
+
+                CurrentDynamoModel.PreferenceSettings.CustomPackageFolders = new List<string>();
+                var loadPackageParams = new LoadPackageParams { Preferences = CurrentDynamoModel.PreferenceSettings };
+
+                // Act
+                loader.LoadAll(loadPackageParams);
+
+                // Assert: all three packages are discovered, but the host-owned ones are not loaded.
+                Assert.AreEqual(3, loader.LocalPackages.Count());
+
+                var mcp = loader.LocalPackages.First(x => x.Name == "DynamoMCP");
+                var aa = loader.LocalPackages.First(x => x.Name == "DynamoAA");
+                var regular = loader.LocalPackages.First(x => x.Name == "RegularBuiltInPackage");
+
+                Assert.AreEqual(PackageLoadState.StateTypes.Unloaded, mcp.LoadState.State);
+                Assert.AreEqual(PackageLoadState.StateTypes.Unloaded, aa.LoadState.State);
+                Assert.AreEqual(PackageLoadState.StateTypes.Loaded, regular.LoadState.State);
+            }
+            finally
+            {
+                PathManager.BuiltinPackagesDirectory = originalBuiltInDir;
+                Dynamo.Models.DynamoModel.HostAnalyticsInfo = originalHostInfo;
+                try { Directory.Delete(Path.GetDirectoryName(tempPackagesRoot), true); } catch (IOException) { }
+            }
+        }
+
+        [Test]
+        public void WhenRunningInSandboxThenConfiguredBuiltInPackagesAreLoaded()
+        {
+            // Arrange: same built-in packages, but no host (standalone DynamoSandbox).
+            var originalBuiltInDir = PathManager.BuiltinPackagesDirectory;
+            var originalHostInfo = Dynamo.Models.DynamoModel.HostAnalyticsInfo;
+            var tempPackagesRoot = Path.Combine(Path.GetTempPath(), "DynamoSandboxBuiltInTest_" + Guid.NewGuid().ToString("N"), "Packages");
+
+            try
+            {
+                Directory.CreateDirectory(tempPackagesRoot);
+                CreateMinimalBuiltInPackage(tempPackagesRoot, "DynamoMCP");
+                CreateMinimalBuiltInPackage(tempPackagesRoot, "DynamoAA");
+
+                PathManager.BuiltinPackagesDirectory = tempPackagesRoot;
+                // Standalone Sandbox: no host name set.
+                Dynamo.Models.DynamoModel.HostAnalyticsInfo = new Dynamo.Models.HostAnalyticsInfo { HostName = string.Empty };
+
+                var pathManager = new Mock<IPathManager>();
+                pathManager.SetupGet(x => x.PackagesDirectories).Returns(() => new List<string> { tempPackagesRoot });
+
+                var loader = new PackageLoader(pathManager.Object);
+
+                CurrentDynamoModel.PreferenceSettings.CustomPackageFolders = new List<string>();
+                var loadPackageParams = new LoadPackageParams { Preferences = CurrentDynamoModel.PreferenceSettings };
+
+                // Act
+                loader.LoadAll(loadPackageParams);
+
+                // Assert: both packages load normally outside of a host.
+                Assert.AreEqual(2, loader.LocalPackages.Count());
+                Assert.AreEqual(PackageLoadState.StateTypes.Loaded, loader.LocalPackages.First(x => x.Name == "DynamoMCP").LoadState.State);
+                Assert.AreEqual(PackageLoadState.StateTypes.Loaded, loader.LocalPackages.First(x => x.Name == "DynamoAA").LoadState.State);
+            }
+            finally
+            {
+                PathManager.BuiltinPackagesDirectory = originalBuiltInDir;
+                Dynamo.Models.DynamoModel.HostAnalyticsInfo = originalHostInfo;
+                try { Directory.Delete(Path.GetDirectoryName(tempPackagesRoot), true); } catch (IOException) { }
+            }
+        }
+
         [Test]
         public void DisableCustomPackagePath_DoesNotLoadCustomPackages()
         {
