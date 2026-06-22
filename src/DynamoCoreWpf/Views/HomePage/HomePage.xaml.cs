@@ -545,7 +545,12 @@ namespace Dynamo.UI.Views
         #endregion
 
         #region Relay Commands
-        internal async void OpenFile(string path)
+        internal void OpenFile(string path)
+        {
+            _ = OpenFileAsync(path);
+        }
+
+        private async Task OpenFileAsync(string path)
         {
             if (String.IsNullOrEmpty(path)) return;
             if (DynamoModel.IsTestMode)
