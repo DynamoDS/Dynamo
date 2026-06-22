@@ -1,0 +1,61 @@
+---
+name: Issue Workflow
+description: Agentic issue triage workflow for Dynamo repository issues.
+on:
+  issues:
+    types: [opened, reopened, edited]
+  # Allow triage runs for all repository roles, including external reporters.
+  roles: all
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+tools:
+  github:
+    toolsets: [default]
+safe-outputs:
+  add-labels:
+    max: 4
+  remove-labels:
+    max: 4
+  add-comment:
+    max: 1
+    hide-older-comments: true
+  assign-to-user:
+    max: 2
+---
+
+# Issue Triage
+
+Triage issue #${{ github.event.issue.number }} in `${{ github.repository }}`.
+
+Goals:
+1. Apply one issue **type** label and one **priority** label.
+2. Identify likely duplicates.
+3. Ask clarifying questions when details are incomplete.
+4. Assign to the most appropriate team member.
+
+Triage process:
+1. Read the issue title, body, current labels, current assignees, and recent comments.
+2. Classify issue type from repository conventions (use labels that exist in this repository, such as `Wishlist`, `Revit`, `Advance-Steel`, `needs more info`, plus common type labels when present).
+3. Determine priority (critical/high/medium/low or p0/p1/p2/p3 style used by this repository).
+4. Search for potentially duplicate open/closed issues using strong title keywords, stack trace fragments, host/version details, and key symptoms.
+5. Determine whether information is missing (especially repro steps, expected vs actual behavior, environment/version, and supporting artifacts).
+6. Assign to the most suitable team member by matching component/host area and ownership patterns from similar recently triaged issues.
+
+Rules:
+- Use existing repository labels only; do not invent new labels.
+- Keep exactly one priority label whenever possible:
+  - Only remove labels that are clearly part of the same priority family as the final selection (for example, `critical`/`high`/`medium`/`low` or `p0`/`p1`/`p2`/`p3`).
+- Apply one type label only when the repository already uses a clearly mutually exclusive generic triage type set.
+  - Only remove an existing type label if it is another label from that same generic type set.
+  - Do **not** remove component, host, product, routing, workflow, or automation-driving labels as part of type cleanup. Labels such as `Revit`, `Advance-Steel`, `Wishlist`, and `NotMLEvaluated` must be preserved unless the issue explicitly indicates they are incorrect and there is clear repository precedent to replace them.
+- If a likely duplicate exists:
+  - Add an appropriate duplicate-related label if available.
+  - Add a concise comment linking candidate duplicate issues and confidence.
+- If the description is unclear or incomplete:
+  - Add `needs more info` if available.
+  - Post a short clarifying comment with specific questions needed to unblock triage.
+- If the issue is clear, avoid unnecessary comments.
+- Assign to one or two maintainers with relevant ownership; do not assign bots or the issue author unless they are explicitly a maintainer for that area.
+- Be conservative: if uncertain between options, explain uncertainty briefly in the comment and choose the best available label/assignee from repository patterns.
