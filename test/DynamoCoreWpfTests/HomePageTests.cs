@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Dynamo.Controls;
@@ -82,6 +83,31 @@ namespace DynamoCoreWpfTests
 
             // Assert
             Assert.AreEqual(preferences.HomePageSettings.Count, 2);
+        }
+
+        [Test]
+        public void HandleMissingFilePathRemovesPathFromAuthoritativeRecentFiles()
+        {
+            // Arrange
+            var missingPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.dyn");
+            var vm = View.DataContext as DynamoViewModel;
+            var startPage = new StartPageViewModel(vm, true);
+            startPage.RecentFiles.Add(new StartPageListItem(missingPath) { ContextData = missingPath });
+            vm.RecentFiles.Add(missingPath);
+
+            Assert.IsFalse(File.Exists(missingPath));
+            Assert.IsTrue(vm.RecentFiles.Contains(missingPath));
+            Assert.IsTrue(vm.Model.PreferenceSettings.RecentFiles.Contains(missingPath));
+
+            // Act
+            var wasMissing = startPage.HandleMissingFilePath(missingPath, false);
+
+            // Assert
+            Assert.IsTrue(wasMissing);
+            Assert.IsFalse(startPage.RecentFiles.Any(file =>
+                string.Equals(file.ContextData, missingPath, StringComparison.OrdinalIgnoreCase)));
+            Assert.IsFalse(vm.RecentFiles.Contains(missingPath));
+            Assert.IsFalse(vm.Model.PreferenceSettings.RecentFiles.Contains(missingPath));
         }
 
         #endregion

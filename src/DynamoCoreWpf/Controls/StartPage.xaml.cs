@@ -17,6 +17,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Threading.Tasks;
 using static Dynamo.Wpf.Interfaces.ResourceNames;
 using NotificationObject = Dynamo.Core.NotificationObject;
 
@@ -226,35 +227,33 @@ namespace Dynamo.UI.Controls
 
         private void LoadTemplates()
         {
-            // Retrieve the current Temlates location from Dynamo properties
-            var templatesDirectory = DynamoViewModel.Model.PathManager.TemplatesDirectory;
-
-            if (Directory.Exists(templatesDirectory))
+            foreach (var templateItem in BuildTemplateListItems())
             {
-                var rootDynPaths = new List<string>();
-                string[] filePaths = Directory.GetFiles(templatesDirectory, "*.dyn");   // This could change if we move to *dyt
-
-                // We only collect the files in the root
-                if (filePaths.Length != 0)
-                {
-                    foreach (string path in filePaths)
-                    {
-                        rootDynPaths.Add(path);
-                    }
-                }
-
-                // Make comment on legacy use of StartPage.xaml.cs
-                if (rootDynPaths.Any())
-                {
-                    foreach (var filePath in rootDynPaths)
-                    {
-                        AddTemplateListItemFromPath(filePath);
-                    }
-                }
+                this.TemplateFiles.Add(templateItem);
             }
         }
 
-        private void AddTemplateListItemFromPath(string filePath)
+        private List<StartPageListItem> BuildTemplateListItems()
+        {
+            // Retrieve the current Temlates location from Dynamo properties
+            var templatesDirectory = DynamoViewModel.Model.PathManager.TemplatesDirectory;
+            var templateItems = new List<StartPageListItem>();
+
+            if (Directory.Exists(templatesDirectory))
+            {
+                string[] filePaths = Directory.GetFiles(templatesDirectory, "*.dyn");   // This could change if we move to *dyt
+
+                // Make comment on legacy use of StartPage.xaml.cs
+                foreach (var filePath in filePaths)
+                {
+                    templateItems.Add(CreateTemplateListItemFromPath(filePath));
+                }
+            }
+
+            return templateItems;
+        }
+
+        private StartPageListItem CreateTemplateListItemFromPath(string filePath)
         {
             var extension = Path.GetExtension(filePath).ToUpper();
             // If not extension specified and code reach here, this means this is still a valid file
@@ -277,13 +276,24 @@ namespace Dynamo.UI.Controls
                 ClickAction = StartPageListItem.Action.FilePath,
             };
 
-            this.TemplateFiles.Add(templateItem);
+            return templateItem;
         }
 
         internal void RefreshTemplateFiles()
         {
             TemplateFiles.Clear();
             LoadTemplates();
+        }
+
+        internal async Task RefreshTemplateFilesAsync()
+        {
+            var templateItems = await Task.Run(BuildTemplateListItems);
+
+            TemplateFiles.Clear();
+            foreach (var templateItem in templateItems)
+            {
+                TemplateFiles.Add(templateItem);
+            }
         }
 
         internal void RefreshRecentFiles()
@@ -688,30 +698,51 @@ namespace Dynamo.UI.Controls
                 string.Equals(template.ContextData, path, StringComparison.OrdinalIgnoreCase));
         }
 
-        internal bool HandleMissingFilePath(string path)
+        internal bool HandleMissingFilePath(string path, bool showWarning = true)
         {
             if (File.Exists(path))
             {
                 return false;
             }
 
-            DynamoMessageBox.Show(
-                DynamoViewModel.Owner,
-                string.Format(Resources.MessageHomeFileMissing.Replace("\\n", Environment.NewLine), path),
-                Resources.MessageErrorOpeningFileGeneral,
-                MessageBoxButton.OK,
-                MessageBoxImage.Warning);
+            if (showWarning)
+            {
+                DynamoMessageBox.Show(
+                    DynamoViewModel.Owner,
+                    string.Format(Resources.MessageHomeFileMissing.Replace("\\n", Environment.NewLine), path),
+                    Resources.MessageErrorOpeningFileGeneral,
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+            }
 
-            RemoveMissingFilePath(RecentFiles, path);
-            RemoveMissingFilePath(TemplateFiles, path);
+            RemoveMissingFilePath(path);
 
             return true;
+        }
+
+        private void RemoveMissingFilePath(string path)
+        {
+            RemoveMissingFilePath(RecentFiles, path);
+            RemoveMissingFilePath(TemplateFiles, path);
+            RemoveMissingFilePath(DynamoViewModel.RecentFiles, path);
         }
 
         private static void RemoveMissingFilePath(ObservableCollection<StartPageListItem> files, string path)
         {
             var missingFiles = files
                 .Where(file => string.Equals(file.ContextData, path, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            foreach (var missingFile in missingFiles)
+            {
+                files.Remove(missingFile);
+            }
+        }
+
+        private static void RemoveMissingFilePath(ObservableCollection<string> files, string path)
+        {
+            var missingFiles = files
+                .Where(file => string.Equals(file, path, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
             foreach (var missingFile in missingFiles)

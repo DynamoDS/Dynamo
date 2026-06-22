@@ -128,16 +128,24 @@ namespace Dynamo.UI.Views
         {
             if(e.PropertyName == nameof(startPage.DynamoViewModel.ShowStartPage) && dynWebView?.CoreWebView2 != null)
             {
-                if (startPage.DynamoViewModel.ShowStartPage)
+                try
                 {
-                    startPage.RefreshTemplateFiles();
-                    startPage.RefreshRecentFiles();
+                    if (startPage.DynamoViewModel.ShowStartPage)
+                    {
+                        await startPage.RefreshTemplateFilesAsync();
+                        startPage.RefreshRecentFiles();
 
-                    await SendTemplateData();
-                    await SendRecentGraphsData();
+                        await SendTemplateData();
+                        await SendRecentGraphsData();
+                    }
+
+                    await dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.setShowStartPageChanged('{startPage.DynamoViewModel.ShowStartPage}')");
                 }
-
-                await dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.setShowStartPageChanged('{startPage.DynamoViewModel.ShowStartPage}')");
+                catch (Exception ex)
+                {
+                    startPage?.DynamoViewModel?.Model?.Logger?.Log("Failed to update Dynamo Home visibility state.");
+                    startPage?.DynamoViewModel?.Model?.Logger?.Log(ex);
+                }
             }
         }
 
@@ -537,7 +545,7 @@ namespace Dynamo.UI.Views
         #endregion
 
         #region Relay Commands
-        internal void OpenFile(string path)
+        internal async void OpenFile(string path)
         {
             if (String.IsNullOrEmpty(path)) return;
             if (DynamoModel.IsTestMode)
@@ -546,23 +554,31 @@ namespace Dynamo.UI.Views
                 return;
             }
 
-            if (startPage.HandleMissingFilePath(path))
+            try
             {
-                var recentFiles = startPage.RecentFiles?.DistinctBy(x => x.ContextData).ToList() ?? new List<StartPageListItem>();
-                var templateFiles = startPage.TemplateFiles?.DistinctBy(x => x.ContextData).ToList() ?? new List<StartPageListItem>();
+                if (startPage.HandleMissingFilePath(path))
+                {
+                    var recentFiles = startPage.RecentFiles?.DistinctBy(x => x.ContextData).ToList() ?? new List<StartPageListItem>();
+                    var templateFiles = startPage.TemplateFiles?.DistinctBy(x => x.ContextData).ToList() ?? new List<StartPageListItem>();
 
-                _ = LoadGraphs(recentFiles);
-                _ = LoadTemplates(templateFiles);
-                return;
+                    await LoadGraphs(recentFiles);
+                    await LoadTemplates(templateFiles);
+                    return;
+                }
+
+                var dvm = this.startPage.DynamoViewModel;
+                var openArg = IsListedHomePageTemplate(path)
+                    ? (object)Tuple.Create(path, false, true)
+                    : path;
+                if (dvm.OpenCommand.CanExecute(openArg))
+                {
+                    dvm.OpenCommand.Execute(openArg);
+                }
             }
-
-            var dvm = this.startPage.DynamoViewModel;
-            var openArg = IsListedHomePageTemplate(path)
-                ? (object)Tuple.Create(path, false, true)
-                : path;
-            if (dvm.OpenCommand.CanExecute(openArg))
+            catch (Exception ex)
             {
-                dvm.OpenCommand.Execute(openArg);
+                startPage?.DynamoViewModel?.Model?.Logger?.Log("Failed to open file from Dynamo Home.");
+                startPage?.DynamoViewModel?.Model?.Logger?.Log(ex);
             }
         }
 
