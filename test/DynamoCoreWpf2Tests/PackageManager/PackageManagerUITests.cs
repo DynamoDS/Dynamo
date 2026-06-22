@@ -38,7 +38,7 @@ namespace DynamoCoreWpfTests.PackageManager
 
         internal string BuiltinPackagesTestDir { get { return Path.Combine(TestDirectory, "builtinpackages testdir", "Packages"); } }
 
-        internal int ExpectedNumberOfBuiltInPackages { get { return 3; } }
+        internal int ExpectedNumberOfBuiltInPackages { get { return 4; } }
 
         #region Utility functions
 
