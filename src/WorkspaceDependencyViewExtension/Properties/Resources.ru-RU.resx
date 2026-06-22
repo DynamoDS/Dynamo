@@ -148,7 +148,7 @@
     <value>Установить указанную версию</value>
   </data>
   <data name="InstallButtonNoNetworkModeToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to install packages.</value>
+    <value>Для установки пакетов включите сетевой режим.</value>
   </data>
   <data name="KeepLocalButtonText" xml:space="preserve">
     <value>Оставить установленную версию</value>
