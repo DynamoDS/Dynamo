@@ -73,15 +73,7 @@ $excludedFiles = @(
     "DSPythonNet3.resources.dll",
     "DSPythonNet3Extension.dll",
     "DSPythonNet3Empty.dll",
-    "DSPythonNet3Wheels.dll",
-    # DynamoMCP built-in package (DYN-10553) — versioned independently of Dynamo, signed in its own pipeline.
-    "MCPExtension.dll",
-    "MCPServer.dll",
-    "ModelContextProtocol*.dll",
-    "JsonSchema.Net.dll",
-    "JsonPointer.Net.dll",
-    "Json.More.dll",
-    "DynamoPlayer.*.dll"
+    "DSPythonNet3Wheels.dll"
 )
 $noVersion = @()
 $wrongVersion = @()
