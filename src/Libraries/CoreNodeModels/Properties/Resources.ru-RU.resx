@@ -621,6 +621,9 @@
   <data name="DefineDataDisplayValueMessage" xml:space="preserve">
     <value>Выберите типы</value>
   </data>
+  <data name="DefineDataMissingUpstreamConnectionInfoMessage" xml:space="preserve">
+    <value>No upstream connection. Connect a node to the input port to provide a default value and to set the data type. To choose a type without upstream data, turn off Auto-detect type and use the drop-down menu.</value>
+  </data>
   <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
     <value>Спецификатор формата для числовых значений, дополнительные сведения см. в расширенной справке по узлу.
 Значение по умолчанию: G</value>
