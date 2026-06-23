@@ -621,6 +621,9 @@
   <data name="DefineDataDisplayValueMessage" xml:space="preserve">
     <value>型を選択</value>
   </data>
+  <data name="DefineDataMissingUpstreamConnectionInfoMessage" xml:space="preserve">
+    <value>上流接続がありません。ノードを入力ポートに接続して既定値を指定し、データ タイプを設定します。上流データなしでタイプを選択するには、[自動検出タイプ]をオフにしてドロップダウン メニューを使用します。</value>
+  </data>
   <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
     <value>数値の書式指定子の詳細については、拡張ノードのヘルプを参照してください。
 既定値: G</value>

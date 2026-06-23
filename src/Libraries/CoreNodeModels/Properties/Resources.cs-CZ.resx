@@ -621,6 +621,9 @@ V pracovních postupech generativního návrhu by tento uzel měl být použit k
   <data name="DefineDataDisplayValueMessage" xml:space="preserve">
     <value>Vybrat typy</value>
   </data>
+  <data name="DefineDataMissingUpstreamConnectionInfoMessage" xml:space="preserve">
+    <value>Žádné nadřazené připojení. Připojením uzlu ke vstupnímu portu zadejte výchozí hodnotu a nastavte datový typ. Chcete-li vybrat typ bez nadřazených dat, vypněte možnost Automatická detekce typu a použijte rozevírací nabídku.</value>
+  </data>
   <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
     <value>Specifikátor formátu pro číselné hodnoty, další informace najdete v nápovědě k rozšířenému uzlu.
 výchozí hodnota: G</value>

@@ -621,6 +621,9 @@ Nei workflow di Progettazione generativa, questo nodo deve essere utilizzato per
   <data name="DefineDataDisplayValueMessage" xml:space="preserve">
     <value>Seleziona tipi</value>
   </data>
+  <data name="DefineDataMissingUpstreamConnectionInfoMessage" xml:space="preserve">
+    <value>Nessuna connessione a monte. Connettere un nodo alla porta di input per fornire un valore di default e impostare il tipo di dati. Per scegliere un tipo senza dati a monte, disattivare Rileva automaticamente tipo e utilizzare il menu a discesa.</value>
+  </data>
   <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
     <value>Identificatore di formato per i valori numerici. Per ulteriori informazioni, vedere la Guida estesa del nodo.
 Valore di default: G</value>

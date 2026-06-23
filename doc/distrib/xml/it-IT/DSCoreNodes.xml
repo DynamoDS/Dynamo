@@ -347,6 +347,11 @@
             <param name="list">ArrayList di oggetti da riformattare</param>
             <returns/>
         </member>
+        <member name="M:DSCore.Data.IsUnusedDefineDataInput(System.Object)">
+            <summary>Verifica se l'input Define Data è inutilizzato (nullo o un elenco vuoto).</summary>
+            <param name="inputValue">Il valore di input del grafico.</param>
+            <returns>True quando l'input deve essere considerato non connesso o inutilizzato.</returns>
+        </member>
         <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
             <summary>Verificare se l'oggetto di input è un valore singolo o un oggetto ArrayList a livello singolo.</summary>
             <param name="obj">Oggetto di input da valutare</param>
