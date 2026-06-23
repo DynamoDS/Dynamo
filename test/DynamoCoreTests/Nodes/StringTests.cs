@@ -230,10 +230,10 @@ namespace Dynamo.Tests
         public void TestJoinStringUseLevelsOnVariadicPort()
         {
             // DYN-10572: String.Join has both a non-variadic prefix port (separator)
-            // and variadic ports. Set UseLevels on the separator port to exercise the
-            // bounded post-pack pass (LevelAndReplicationGuideInputCount == 1) AND on
-            // a variadic port to exercise the new pre-pack handling, confirming both
-            // code paths cooperate correctly.
+            // and variadic ports. The separator (prefix port) broadcasts unchanged while
+            // Use Levels on a variadic port (string1 = ["a","b"] @L1) replicates the join,
+            // confirming the prefix port passes through correctly and per-port Use Levels
+            // is honored on the variadic ports.
             string testFilePath = Path.Combine(localDynamoStringTestFolder, "TestJoinStringUseLevelsOnVariadicPort.dyn");
 
             RunModel(testFilePath);
