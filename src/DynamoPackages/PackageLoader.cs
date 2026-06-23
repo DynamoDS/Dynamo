@@ -74,7 +74,7 @@ namespace Dynamo.PackageManager
         /// Names of built-in packages that must not be loaded when Dynamo is running inside a host
         /// application (e.g. Revit, Civil 3D). In those contexts the host registers these packages itself
         /// </summary>
-        private static readonly HashSet<string> builtInPackagesDisabledInHostContext = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        internal static readonly HashSet<string> BuiltInPackagesDisabledInHostContext = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
             "DynamoMCP",
             "DynamoAssistant",
@@ -89,7 +89,7 @@ namespace Dynamo.PackageManager
         private static bool IsBuiltInPackageDisabledInHostContext(string packageName)
         {
             return !string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName)
-                && builtInPackagesDisabledInHostContext.Contains(packageName);
+                && BuiltInPackagesDisabledInHostContext.Contains(packageName);
         }
 
         /// <summary>

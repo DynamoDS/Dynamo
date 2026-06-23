@@ -306,8 +306,11 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void WhenRunningInHostThenConfiguredBuiltInPackagesAreNotLoaded()
         {
-            // Arrange: a built-in packages location containing two packages that must be disabled
-            // in host context (DynamoMCP, DynamoAssistant) plus an unrelated built-in package.
+            // Arrange: a built-in packages location containing every package that must be disabled
+            // in host context (PackageLoader.BuiltInPackagesDisabledInHostContext)
+            const string regularPackageName = "RegularBuiltInPackage";
+            var disabledNames = PackageLoader.BuiltInPackagesDisabledInHostContext.ToList();
+
             var originalBuiltInDir = PathManager.BuiltinPackagesDirectory;
             var originalHostInfo = Dynamo.Models.DynamoModel.HostAnalyticsInfo;
             var tempPackagesRoot = Path.Combine(Path.GetTempPath(), "DynamoHostBuiltInTest_" + Guid.NewGuid().ToString("N"), "Packages");
@@ -315,9 +318,11 @@ namespace Dynamo.PackageManager.Tests
             try
             {
                 Directory.CreateDirectory(tempPackagesRoot);
-                CreateMinimalBuiltInPackage(tempPackagesRoot, "DynamoMCP");
-                CreateMinimalBuiltInPackage(tempPackagesRoot, "DynamoAssistant");
-                CreateMinimalBuiltInPackage(tempPackagesRoot, "RegularBuiltInPackage");
+                foreach (var name in disabledNames)
+                {
+                    CreateMinimalBuiltInPackage(tempPackagesRoot, name);
+                }
+                CreateMinimalBuiltInPackage(tempPackagesRoot, regularPackageName);
 
                 PathManager.BuiltinPackagesDirectory = tempPackagesRoot;
                 // Simulate Dynamo running inside a host application (e.g. Revit).
@@ -334,15 +339,17 @@ namespace Dynamo.PackageManager.Tests
                 // Act
                 loader.LoadAll(loadPackageParams);
 
-                // Assert: all three packages are discovered, but the host-owned ones are not loaded.
-                Assert.AreEqual(3, loader.LocalPackages.Count());
+                // Assert: all packages are discovered, but the host-owned ones are not loaded.
+                Assert.AreEqual(disabledNames.Count + 1, loader.LocalPackages.Count());
 
-                var mcp = loader.LocalPackages.First(x => x.Name == "DynamoMCP");
-                var aa = loader.LocalPackages.First(x => x.Name == "DynamoAssistant");
-                var regular = loader.LocalPackages.First(x => x.Name == "RegularBuiltInPackage");
+                foreach (var name in disabledNames)
+                {
+                    var disabled = loader.LocalPackages.First(x => x.Name == name);
+                    Assert.AreEqual(PackageLoadState.StateTypes.Unloaded, disabled.LoadState.State,
+                        $"Built-in package '{name}' should be unloaded when running in a host.");
+                }
 
-                Assert.AreEqual(PackageLoadState.StateTypes.Unloaded, mcp.LoadState.State);
-                Assert.AreEqual(PackageLoadState.StateTypes.Unloaded, aa.LoadState.State);
+                var regular = loader.LocalPackages.First(x => x.Name == regularPackageName);
                 Assert.AreEqual(PackageLoadState.StateTypes.Loaded, regular.LoadState.State);
             }
             finally
@@ -357,6 +364,8 @@ namespace Dynamo.PackageManager.Tests
         public void WhenRunningInSandboxThenConfiguredBuiltInPackagesAreLoaded()
         {
             // Arrange: same built-in packages, but no host (standalone DynamoSandbox).
+            var disabledNames = PackageLoader.BuiltInPackagesDisabledInHostContext.ToList();
+
             var originalBuiltInDir = PathManager.BuiltinPackagesDirectory;
             var originalHostInfo = Dynamo.Models.DynamoModel.HostAnalyticsInfo;
             var tempPackagesRoot = Path.Combine(Path.GetTempPath(), "DynamoSandboxBuiltInTest_" + Guid.NewGuid().ToString("N"), "Packages");
@@ -364,8 +373,10 @@ namespace Dynamo.PackageManager.Tests
             try
             {
                 Directory.CreateDirectory(tempPackagesRoot);
-                CreateMinimalBuiltInPackage(tempPackagesRoot, "DynamoMCP");
-                CreateMinimalBuiltInPackage(tempPackagesRoot, "DynamoAssistant");
+                foreach (var name in disabledNames)
+                {
+                    CreateMinimalBuiltInPackage(tempPackagesRoot, name);
+                }
 
                 PathManager.BuiltinPackagesDirectory = tempPackagesRoot;
                 // Standalone Sandbox: no host name set.
@@ -382,10 +393,14 @@ namespace Dynamo.PackageManager.Tests
                 // Act
                 loader.LoadAll(loadPackageParams);
 
-                // Assert: both packages load normally outside of a host.
-                Assert.AreEqual(2, loader.LocalPackages.Count());
-                Assert.AreEqual(PackageLoadState.StateTypes.Loaded, loader.LocalPackages.First(x => x.Name == "DynamoMCP").LoadState.State);
-                Assert.AreEqual(PackageLoadState.StateTypes.Loaded, loader.LocalPackages.First(x => x.Name == "DynamoAssistant").LoadState.State);
+                // Assert: every package loads normally outside of a host.
+                Assert.AreEqual(disabledNames.Count, loader.LocalPackages.Count());
+                foreach (var name in disabledNames)
+                {
+                    var pkg = loader.LocalPackages.First(x => x.Name == name);
+                    Assert.AreEqual(PackageLoadState.StateTypes.Loaded, pkg.LoadState.State,
+                        $"Built-in package '{name}' should load normally in standalone Sandbox.");
+                }
             }
             finally
             {
