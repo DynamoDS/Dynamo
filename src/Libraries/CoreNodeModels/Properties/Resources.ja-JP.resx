@@ -622,7 +622,7 @@
     <value>型を選択</value>
   </data>
   <data name="DefineDataMissingUpstreamConnectionInfoMessage" xml:space="preserve">
-    <value>No upstream connection. Connect a node to the input port to provide a default value and to set the data type. To choose a type without upstream data, turn off Auto-detect type and use the drop-down menu.</value>
+    <value>上流接続がありません。ノードを入力ポートに接続して既定値を指定し、データ タイプを設定します。上流データなしでタイプを選択するには、[自動検出タイプ]をオフにしてドロップダウン メニューを使用します。</value>
   </data>
   <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
     <value>数値の書式指定子の詳細については、拡張ノードのヘルプを参照してください。

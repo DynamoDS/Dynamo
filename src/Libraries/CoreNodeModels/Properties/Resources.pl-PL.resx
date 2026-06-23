@@ -622,7 +622,7 @@ W procesach roboczych projektowania generatywnego ten węzeł powinien służyć
     <value>Wybierz typy</value>
   </data>
   <data name="DefineDataMissingUpstreamConnectionInfoMessage" xml:space="preserve">
-    <value>No upstream connection. Connect a node to the input port to provide a default value and to set the data type. To choose a type without upstream data, turn off Auto-detect type and use the drop-down menu.</value>
+    <value>Brak połączenia nadrzędnego. Połącz węzeł z portem wejściowym, aby podać wartość domyślną i ustawić typ danych. Aby wybrać typ bez wysyłania danych, wyłącz opcję Automatyczne wykrywanie typu i użyj menu rozwijanego.</value>
   </data>
   <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
     <value>Specyfikator formatu dla wartości liczbowych, zobacz rozszerzoną pomoc węzła, aby uzyskać więcej informacji.

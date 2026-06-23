@@ -1332,7 +1332,7 @@
             <search>move,by amount</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Translate(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Przekształć obiekt zgodnie z kierunkiem i wielkością wektora wejściowego.</summary>
+            <summary>Przekształć obiekt zgodnie z kierunkiem i modułem wektora wejściowego.</summary>
             <search>move,along vector,movebyvector</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Translate(Autodesk.DesignScript.Geometry.Vector,System.Double)">

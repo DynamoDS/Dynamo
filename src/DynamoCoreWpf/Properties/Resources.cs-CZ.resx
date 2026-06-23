@@ -151,7 +151,7 @@
     <value>Chcete-li se přihlásit, povolte režim sítě.</value>
   </data>
   <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to use Package Manager.</value>
+    <value>Chcete-li používat aplikaci Package Manager, povolte režim sítě.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
@@ -3930,13 +3930,13 @@ Otevření tohoto grafu v aplikaci Dynamo 3.3–3.6.x: Ze správce balíčků na
     <value>Automaticky synchronizovat s výběrem uzlů.</value>
   </data>
   <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
-    <value>This file is currently open in another instance of Dynamo.
-To avoid data loss or corruption, please choose one of the following actions:
- • Save As — opens an independent copy you can edit safely.
- • Cancel — does not open the file.</value>
+    <value>Tento soubor je otevřen v jiné instanci aplikace Dynamo.
+Chcete-li zabránit ztrátě nebo poškození dat, zvolte jednu z následujících akcí:
+ • Uložit jako – otevře nezávislou kopii, kterou můžete bezpečně upravovat.
+ • Storno – neotevře soubor vůbec.</value>
   </data>
   <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
-    <value>File already open in another Dynamo instance</value>
+    <value>Soubor je již otevřen v jiné instanci aplikace Dynamo.</value>
   </data>
   <data name="GraphLockSaveAsButton" xml:space="preserve">
     <value>Uložit jako</value>
