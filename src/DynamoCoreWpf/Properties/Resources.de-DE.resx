@@ -150,6 +150,9 @@
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
     <value>Aktivieren Sie den Netzwerkmodus, um sich anmelden zu können.</value>
   </data>
+  <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
+    <value>Aktivieren Sie den Netzwerkmodus, um Package Manager verwenden zu können.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -3926,13 +3929,13 @@ Installieren Sie das PythonNet-Paket aus dem Package Manager, um dieses Diagramm
     <value>Automatisch mit Blockauswahl synchronisieren.</value>
   </data>
   <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
-    <value>This file is currently open in another instance of Dynamo.
-To avoid data loss or corruption, please choose one of the following actions:
- • Save As — opens an independent copy you can edit safely.
- • Cancel — does not open the file.</value>
+    <value>Diese Datei ist derzeit in einer anderen Instanz von Dynamo geöffnet.
+Um Datenverlust oder -beschädigung zu vermeiden, wählen Sie eine der folgenden Maßnahmen:
+ • Speichern unter: Öffnet eine unabhängige Kopie, die Sie sicher bearbeiten können.
+ • Abbrechen: Die Datei wird nicht geöffnet.</value>
   </data>
   <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
-    <value>File already open in another Dynamo instance</value>
+    <value>Datei ist bereits in einer anderen Dynamo-Instanz geöffnet</value>
   </data>
   <data name="GraphLockSaveAsButton" xml:space="preserve">
     <value>Speichern unter</value>

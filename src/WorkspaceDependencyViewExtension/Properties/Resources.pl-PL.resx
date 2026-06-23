@@ -147,6 +147,9 @@
   <data name="InstallButtonText" xml:space="preserve">
     <value>Zainstaluj wskazaną wersję</value>
   </data>
+  <data name="InstallButtonNoNetworkModeToolTip" xml:space="preserve">
+    <value>Aby móc instalować pakiety, włącz tryb sieciowy.</value>
+  </data>
   <data name="KeepLocalButtonText" xml:space="preserve">
     <value>Zachowaj zainstalowaną wersję</value>
   </data>

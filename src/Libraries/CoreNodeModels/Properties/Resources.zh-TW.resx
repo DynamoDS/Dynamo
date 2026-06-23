@@ -621,6 +621,9 @@
   <data name="DefineDataDisplayValueMessage" xml:space="preserve">
     <value>選取類型</value>
   </data>
+  <data name="DefineDataMissingUpstreamConnectionInfoMessage" xml:space="preserve">
+    <value>上游未連接。請將節點連接到輸入埠，以提供預設值並設定資料類型。若要選擇沒有上游資料的類型，請關閉「自動偵測類型」，然後使用下拉式功能表。</value>
+  </data>
   <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
     <value>如需數值的格式指定字，請參閱延伸的節點說明以取得更多資訊。
 預設值: G</value>

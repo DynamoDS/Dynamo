@@ -150,6 +150,9 @@
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
     <value>启用网络模式以便能够登录。</value>
   </data>
+  <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
+    <value>启用网络模式以便能够使用 Package Manager。</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -3926,13 +3929,13 @@
     <value>与节点选择自动同步。</value>
   </data>
   <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
-    <value>This file is currently open in another instance of Dynamo.
-To avoid data loss or corruption, please choose one of the following actions:
- • Save As — opens an independent copy you can edit safely.
- • Cancel — does not open the file.</value>
+    <value>此文件当前已在 Dynamo 的其他实例中打开。
+为避免数据丢失或损坏，请选择以下操作之一:
+ • 另存为 — 打开可以安全编辑的独立副本。
+ • 取消 — 不打开文件。</value>
   </data>
   <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
-    <value>File already open in another Dynamo instance</value>
+    <value>文件已在其他 Dynamo 实例中打开</value>
   </data>
   <data name="GraphLockSaveAsButton" xml:space="preserve">
     <value>另存为</value>

@@ -347,6 +347,11 @@
             <param name="list">형식을 다시 지정할 객체의 ArrayList</param>
             <returns/>
         </member>
+        <member name="M:DSCore.Data.IsUnusedDefineDataInput(System.Object)">
+            <summary>데이터 정의 입력이 사용되지 않는지(null 또는 빈 리스트) 확인합니다.</summary>
+            <param name="inputValue">그래프의 입력 값입니다.</param>
+            <returns>입력을 연결되지 않았거나 사용되지 않은 상태로 처리해야 하는 경우 True입니다.</returns>
+        </member>
         <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
             <summary>입력 객체가 단일 값인지 또는 단일 레벨 ArrayList인지 확인합니다.</summary>
             <param name="obj">평가할 입력 객체</param>
