@@ -613,6 +613,13 @@ namespace Dynamo.Tests
                 Path.Combine(customTemplateDirectory, "Nested", "Template.dyn"), customTemplateDirectory));
             Assert.IsFalse(DynamoViewModel.IsPathInTemplateDirectoryTree(
                 Path.Combine(TempFolder, "Template.dyn"), customTemplateDirectory));
+
+            // Custom path whose parent happens to be named "templates" should not climb to the parent
+            var customUnderTemplatesParent = Path.Combine(TempFolder, "templates", "CustomTemplates");
+            Assert.IsFalse(DynamoViewModel.IsPathInTemplateDirectoryTree(
+                Path.Combine(TempFolder, "templates", "other.dyn"), customUnderTemplatesParent));
+            Assert.IsTrue(DynamoViewModel.IsPathInTemplateDirectoryTree(
+                Path.Combine(customUnderTemplatesParent, "Template.dyn"), customUnderTemplatesParent));
         }
 
         [Test]

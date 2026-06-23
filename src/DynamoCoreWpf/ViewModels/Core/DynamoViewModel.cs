@@ -2919,6 +2919,7 @@ namespace Dynamo.ViewModels
         {
             var directoryInfo = new DirectoryInfo(templatesDirectory);
             if (directoryInfo.Parent != null &&
+                directoryInfo.Name.Length == 5 && directoryInfo.Name[2] == '-' &&
                 string.Equals(directoryInfo.Parent.Name, Configurations.TemplatesAsString, StringComparison.OrdinalIgnoreCase))
             {
                 return directoryInfo.Parent.FullName;
