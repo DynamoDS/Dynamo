@@ -1654,7 +1654,7 @@ namespace Dynamo.Graph.Nodes
             switch (ArgumentLacing)
             {
                 case LacingStrategy.Auto:
-                    for (int i = 0; i < inputs.Count(); ++i)
+                    for (int i = 0; i < inputs.Count; ++i)
                     {
                         if (InPorts[i].UseLevels)
                             inputs[i] = AstFactory.AddReplicationGuide(inputs[i], new List<int> { 1 }, false);
@@ -1662,7 +1662,7 @@ namespace Dynamo.Graph.Nodes
                     break;
 
                 case LacingStrategy.Shortest:
-                    for (int i = 0; i < inputs.Count(); ++i)
+                    for (int i = 0; i < inputs.Count; ++i)
                     {
                         inputs[i] = AstFactory.AddReplicationGuide(inputs[i], new List<int> { 1 }, false);
                     }
@@ -1671,7 +1671,7 @@ namespace Dynamo.Graph.Nodes
 
                 case LacingStrategy.Longest:
 
-                    for (int i = 0; i < inputs.Count(); ++i)
+                    for (int i = 0; i < inputs.Count; ++i)
                     {
                         inputs[i] = AstFactory.AddReplicationGuide(inputs[i], new List<int> { 1 }, true);
                     }
@@ -1680,7 +1680,7 @@ namespace Dynamo.Graph.Nodes
                 case LacingStrategy.CrossProduct:
 
                     int guide = 1;
-                    for (int i = 0; i < inputs.Count(); ++i)
+                    for (int i = 0; i < inputs.Count; ++i)
                     {
                         inputs[i] = AstFactory.AddReplicationGuide(inputs[i], new List<int> { guide }, false);
                         guide++;
