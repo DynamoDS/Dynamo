@@ -970,7 +970,7 @@ namespace Dynamo.ViewModels
 
                 // If the compatibility matrix already indicates compatibility, skip the engine_version heuristic.
                 // Only perform engine_version based warnings when compatibility is not explicitly true.
-                if (compatible == false)
+                if (compatible != true)
                 {
                     //wrap in try catch as it's possible version info could be missing. If so, we install the package and log an error.
                     try
