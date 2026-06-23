@@ -72,21 +72,17 @@ namespace Dynamo.PackageManager
 
         /// <summary>
         /// Names of built-in packages that must not be loaded when Dynamo is running inside a host
-        /// application (e.g. Revit, Civil 3D). In those contexts the host registers these packages
-        /// itself (for example, the Revit Addin owns DynamoMCP registration), so loading the built-in
-        /// copy would result in duplicate or conflicting registration. In standalone DynamoSandbox
-        /// these packages load normally. See DYN-10636 (DynamoMCP) and DYN-10591 (DynamoAA).
+        /// application (e.g. Revit, Civil 3D). In those contexts the host registers these packages itself
         /// </summary>
         private static readonly HashSet<string> builtInPackagesDisabledInHostContext = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
             "DynamoMCP",
-            "DynamoAA",
+            "DynamoAssistant",
+            "AutodeskAssistant"
         };
 
         /// <summary>
-        /// Determines whether a built-in package must be skipped because Dynamo is running inside a
-        /// host application that registers the package itself. Returns false in standalone contexts
-        /// (e.g. DynamoSandbox) where <see cref="DynamoModel.HostAnalyticsInfo"/> has no host name.
+        /// Determines whether a built-in package must be skipped because Dynamo is running inside a host application
         /// </summary>
         /// <param name="packageName">The name of the package being scanned.</param>
         /// <returns>True if the built-in package should not be loaded in the current host context.</returns>
@@ -559,10 +555,7 @@ namespace Dynamo.PackageManager
                         }
                     }
 
-                    // When Dynamo is running inside a host application (e.g. Revit, Civil 3D), certain
-                    // built-in packages must not be loaded because the host registers them itself.
-                    // Marking the package as Unloaded keeps it visible in the package list but prevents
-                    // it from being loaded into the library (see TryLoadPackageIntoLibrary).
+                    // When Dynamo is running inside a host application the built-in packages must not be loaded because the host registers them itself.
                     if (pkg != null && pkg.BuiltInPackage && IsBuiltInPackageDisabledInHostContext(pkg.Name))
                     {
                         pkg.LoadState.SetAsUnloaded();

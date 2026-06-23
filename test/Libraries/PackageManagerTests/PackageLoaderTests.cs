@@ -307,7 +307,7 @@ namespace Dynamo.PackageManager.Tests
         public void WhenRunningInHostThenConfiguredBuiltInPackagesAreNotLoaded()
         {
             // Arrange: a built-in packages location containing two packages that must be disabled
-            // in host context (DynamoMCP, DynamoAA) plus an unrelated built-in package.
+            // in host context (DynamoMCP, DynamoAssistant) plus an unrelated built-in package.
             var originalBuiltInDir = PathManager.BuiltinPackagesDirectory;
             var originalHostInfo = Dynamo.Models.DynamoModel.HostAnalyticsInfo;
             var tempPackagesRoot = Path.Combine(Path.GetTempPath(), "DynamoHostBuiltInTest_" + Guid.NewGuid().ToString("N"), "Packages");
@@ -316,7 +316,7 @@ namespace Dynamo.PackageManager.Tests
             {
                 Directory.CreateDirectory(tempPackagesRoot);
                 CreateMinimalBuiltInPackage(tempPackagesRoot, "DynamoMCP");
-                CreateMinimalBuiltInPackage(tempPackagesRoot, "DynamoAA");
+                CreateMinimalBuiltInPackage(tempPackagesRoot, "DynamoAssistant");
                 CreateMinimalBuiltInPackage(tempPackagesRoot, "RegularBuiltInPackage");
 
                 PathManager.BuiltinPackagesDirectory = tempPackagesRoot;
@@ -338,7 +338,7 @@ namespace Dynamo.PackageManager.Tests
                 Assert.AreEqual(3, loader.LocalPackages.Count());
 
                 var mcp = loader.LocalPackages.First(x => x.Name == "DynamoMCP");
-                var aa = loader.LocalPackages.First(x => x.Name == "DynamoAA");
+                var aa = loader.LocalPackages.First(x => x.Name == "DynamoAssistant");
                 var regular = loader.LocalPackages.First(x => x.Name == "RegularBuiltInPackage");
 
                 Assert.AreEqual(PackageLoadState.StateTypes.Unloaded, mcp.LoadState.State);
@@ -365,7 +365,7 @@ namespace Dynamo.PackageManager.Tests
             {
                 Directory.CreateDirectory(tempPackagesRoot);
                 CreateMinimalBuiltInPackage(tempPackagesRoot, "DynamoMCP");
-                CreateMinimalBuiltInPackage(tempPackagesRoot, "DynamoAA");
+                CreateMinimalBuiltInPackage(tempPackagesRoot, "DynamoAssistant");
 
                 PathManager.BuiltinPackagesDirectory = tempPackagesRoot;
                 // Standalone Sandbox: no host name set.
@@ -385,7 +385,7 @@ namespace Dynamo.PackageManager.Tests
                 // Assert: both packages load normally outside of a host.
                 Assert.AreEqual(2, loader.LocalPackages.Count());
                 Assert.AreEqual(PackageLoadState.StateTypes.Loaded, loader.LocalPackages.First(x => x.Name == "DynamoMCP").LoadState.State);
-                Assert.AreEqual(PackageLoadState.StateTypes.Loaded, loader.LocalPackages.First(x => x.Name == "DynamoAA").LoadState.State);
+                Assert.AreEqual(PackageLoadState.StateTypes.Loaded, loader.LocalPackages.First(x => x.Name == "DynamoAssistant").LoadState.State);
             }
             finally
             {
