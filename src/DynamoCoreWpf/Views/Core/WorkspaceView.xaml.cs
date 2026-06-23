@@ -1287,6 +1287,11 @@ namespace Dynamo.Views
             DataContextChanged -= OnWorkspaceViewDataContextChanged;
             Loaded -= WorkspaceView_Loaded;
             Unloaded -= WorkspaceView_Unloaded;
+            if (ownerWindow != null)
+            {
+                ownerWindow.Deactivated -= OwnerWindow_Deactivated;
+                ownerWindow = null;
+            }
         }
     }
 }
