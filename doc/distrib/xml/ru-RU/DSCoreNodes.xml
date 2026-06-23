@@ -348,9 +348,9 @@
             <returns/>
         </member>
         <member name="M:DSCore.Data.IsUnusedDefineDataInput(System.Object)">
-            <summary>Checks whether the Define Data input is unused (null or an empty list).</summary>
-            <param name="inputValue">The input value from the graph.</param>
-            <returns>True when the input should be treated as unconnected or unused.</returns>
+            <summary>Проверка того, является ли входной параметр Define Data неиспользуемым (нулевым или пустым списком).</summary>
+            <param name="inputValue">Входное значение из графа.</param>
+            <returns>Принимает значение True, если входные данные следует считать неприсоединенными или неиспользуемыми.</returns>
         </member>
         <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
             <summary>Проверьте, является ли входной объект отдельным значением или одноуровневым списком ArrayList.</summary>

@@ -622,7 +622,7 @@ Nos fluxos de trabalho do Projeto generativo, esse nó deve ser usado para contr
     <value>Selecionar tipos</value>
   </data>
   <data name="DefineDataMissingUpstreamConnectionInfoMessage" xml:space="preserve">
-    <value>No upstream connection. Connect a node to the input port to provide a default value and to set the data type. To choose a type without upstream data, turn off Auto-detect type and use the drop-down menu.</value>
+    <value>Nenhuma conexão a montante. Conecte um nó à porta de entrada para fornecer um valor padrão e definir o tipo dos dados. Para escolher um tipo sem dados a montante, desative a Detecção automática de tipo e use o menu suspenso.</value>
   </data>
   <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
     <value>Especificador de formato para valores numéricos, consulte a ajuda do nó estendido para obter mais informações.

@@ -151,7 +151,7 @@
     <value>啟用網路模式以便登入。</value>
   </data>
   <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to use Package Manager.</value>
+    <value>啟用網路模式，才能使用 Package Manager。</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
@@ -3930,16 +3930,16 @@
     <value>與節點選取自動同步。</value>
   </data>
   <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
-    <value>This file is currently open in another instance of Dynamo.
-To avoid data loss or corruption, please choose one of the following actions:
- • Save As — opens an independent copy you can edit safely.
- • Cancel — does not open the file.</value>
+    <value>此檔案目前在另一個 Dynamo 例證中開啟。
+為避免資料遺失或損毀，請選擇下列其中一項動作:
+ • 另存新檔 - 開啟一個獨立的複本，您就可以安全地編輯。
+ • 取消 - 不開啟檔案。</value>
   </data>
   <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
-    <value>File already open in another Dynamo instance</value>
+    <value>檔案已在另一個 Dynamo 例證中開啟</value>
   </data>
   <data name="GraphLockSaveAsButton" xml:space="preserve">
-    <value>另存</value>
+    <value>另存新檔</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
