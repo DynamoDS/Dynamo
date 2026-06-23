@@ -277,7 +277,7 @@
         <member name="T:DSCore.Data.DataNodeDynamoType">
             <summary>Uma classe representando um DataType suportado pelo Dynamo</summary>
         </member>
-        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String)">
+        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String,System.String)">
             <summary>Uma classe representando um DataType suportado pelo Dynamo</summary>
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Type">
@@ -285,6 +285,10 @@
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Name">
             <summary>Um nome opcional para substituir o nome do tipo (`Number` em vez de `long`)</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.TypeId">
+            <summary>Formato de fio $typeid (por exemplo, “autodesk.math:point3d-1.0.0”).
+            Nulo para tipos de primitivos que não usam serialização $typeid.</summary>
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Level">
             <summary>O nível hierárquico a ser exibido na interface do usuário</summary>
@@ -342,6 +346,11 @@
             <summary>Retornar uma lista de DataNodeDynamoTypes de uma ArrayList de objetos</summary>
             <param name="list">A ArrayList de objetos a serem reformatados</param>
             <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsUnusedDefineDataInput(System.Object)">
+            <summary>Verifica se a entrada Definir dados não é usada (nula ou uma vista vazia).</summary>
+            <param name="inputValue">O valor de entrada proveniente do gráfico.</param>
+            <returns>True quando a entrada deve ser tratada como não conectada ou não usada.</returns>
         </member>
         <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
             <summary>Verificar se o objeto de entrada é um valor único ou uma ArrayList de nível único.</summary>

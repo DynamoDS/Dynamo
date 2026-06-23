@@ -150,6 +150,9 @@
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
     <value>Chcete-li se přihlásit, povolte režim sítě.</value>
   </data>
+  <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
+    <value>Chcete-li používat aplikaci Package Manager, povolte režim sítě.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -1146,6 +1149,12 @@ Balíček můžete kdykoli znovu stáhnout.</value>
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>Nepodařilo se načíst neplatný balíček.</value>
   </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>Instalace byla zrušena z důvodu konfliktu vlastních uzlů.</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>Restartováním aplikace Dynamo odeberete konfliktní balíček.</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>Nebyl nalezen žádný uzel s daným ID.</value>
   </data>
@@ -1328,6 +1337,9 @@ Několikrát byly načteny i další sestavy:
   </data>
   <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
     <value>Otevřít definici aplikace {0}...</value>
+  </data>
+  <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
+    <value>Nový graf ze šablony…</value>
   </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>Potvrzení stažení balíčku</value>
@@ -3630,7 +3642,7 @@ V určitém kontextu složitých grafů nebo hostitelských režimů může auto
     <value>_Soubor</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>_Šablona</value>
+    <value>Ze šablony…</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>Pracovní prostory není možné uložit do složky Templates. Uložte soubor výběrem jiné složky.
@@ -3812,7 +3824,7 @@ Chcete-li vytvořit z tohoto souboru novou šablonu, uložte ho do jiné složky
     <value>Uložit</value>
   </data>
   <data name="DiscardButton" xml:space="preserve">
-    <value>Vyřadit</value>
+    <value>Zrušit</value>
   </data>
   <data name="PreferencesViewGroupStylesHeader" xml:space="preserve">
     <value>Styly skupin</value>
@@ -3916,6 +3928,18 @@ Otevření tohoto grafu v aplikaci Dynamo 3.3–3.6.x: Ze správce balíčků na
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>Automaticky synchronizovat s výběrem uzlů.</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
+    <value>Tento soubor je otevřen v jiné instanci aplikace Dynamo.
+Chcete-li zabránit ztrátě nebo poškození dat, zvolte jednu z následujících akcí:
+ • Uložit jako – otevře nezávislou kopii, kterou můžete bezpečně upravovat.
+ • Storno – neotevře soubor vůbec.</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
+    <value>Soubor je již otevřen v jiné instanci aplikace Dynamo.</value>
+  </data>
+  <data name="GraphLockSaveAsButton" xml:space="preserve">
+    <value>Uložit jako</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

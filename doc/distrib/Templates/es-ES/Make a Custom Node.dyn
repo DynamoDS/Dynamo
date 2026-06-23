@@ -3692,7 +3692,7 @@
       },
       {
         "Id": "0f6aa09a7fb747069992b2c9f878daf8",
-        "Title": "DESCRIPCIÓN\n_____________________________________________________ \n\nEste documento le ayudará a familiarizarse con la creación de un nodo personalizado.\n\nPara mantener las secuencias de comandos de Dynamo ordenadas y legibles, es recomendable seguir una\nestructura clara al crear gráficos.\n\nObtenga más información en la página de Dynamo Primer sobre la creación de un nodo personalizado:\nhttps://primer2.dynamobim.org/6_custom_nodes_and_packages/6-1_custom-nodes/2-creating",
+        "Title": "DESCRIPCIÓN\n_____________________________________________________ \n\nEste documento le ayudará a familiarizarse con la creación de un nodo personalizado.\n\nPara mantener las secuencias de comandos de Dynamo ordenadas y legibles, es recomendable seguir una\nestructura clara al crear gráficos.\n\nObtenga más información en la página de Dynamo Primer sobre la creación de un nodo personalizado:\nhttps://primer2.dynamobim.org/es/6_custom_nodes_and_packages/6-1_custom-nodes/2-creating",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

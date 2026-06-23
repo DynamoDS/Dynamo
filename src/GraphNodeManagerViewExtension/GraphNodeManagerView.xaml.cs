@@ -61,7 +61,11 @@ namespace Dynamo.GraphNodeManager
         {
             if (parameter == null) return;
             var type = parameter.ToString();
-            var promptName = System.IO.Path.GetFileNameWithoutExtension(viewModel.CurrentWorkspace.FileName);
+            var workspaceFileName = viewModel.CurrentWorkspace?.FileName;
+            var rawPromptName = !string.IsNullOrWhiteSpace(workspaceFileName)
+                ? System.IO.Path.GetFileNameWithoutExtension(workspaceFileName)
+                : viewModel.CurrentWorkspace?.Name;
+            var promptName = SanitizePromptNameForFile(rawPromptName);
 
             var filteredNodes = NodesInfoDataGrid.ItemsSource.Cast<GridNodeViewModel>().ToArray();
 
@@ -74,6 +78,42 @@ namespace Dynamo.GraphNodeManager
                     Utilities.Utilities.ExportToJson(filteredNodes, promptName);
                     break;
             }
+        }
+
+        private static string SanitizePromptNameForFile(string promptName)
+        {
+            const string fallbackName = "GraphNodes";
+
+            if (string.IsNullOrWhiteSpace(promptName))
+            {
+                return fallbackName;
+            }
+
+            var invalidChars = System.IO.Path.GetInvalidFileNameChars();
+            var sanitized = new string(promptName
+                .Select(ch => invalidChars.Contains(ch) ? '_' : ch)
+                .ToArray())
+                .Trim()
+                .TrimEnd('.');
+
+            if (string.IsNullOrWhiteSpace(sanitized))
+            {
+                return fallbackName;
+            }
+
+            var windowsReservedNames = new[]
+            {
+                "CON", "PRN", "AUX", "NUL",
+                "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
+                "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9",
+            };
+
+            if (windowsReservedNames.Contains(sanitized, StringComparer.OrdinalIgnoreCase))
+            {
+                return fallbackName;
+            }
+
+            return sanitized;
         }
 
         private void ViewModel_OnPropertyChanged(object? sender, PropertyChangedEventArgs e)

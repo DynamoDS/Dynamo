@@ -277,7 +277,7 @@
         <member name="T:DSCore.Data.DataNodeDynamoType">
             <summary>Classe représentant un type de données pris en charge par Dynamo</summary>
         </member>
-        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String)">
+        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String,System.String)">
             <summary>Classe représentant un type de données pris en charge par Dynamo</summary>
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Type">
@@ -285,6 +285,10 @@
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Name">
             <summary>Nom facultatif remplaçant le nom du type (`Numéro` au lieu de `long`)</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.TypeId">
+            <summary>$typeid au format filaire (par exemple, "autodesk.math:point3d-1.0.0").
+            Null pour les types primitifs qui n'utilisent pas la sérialisation $typeid.</summary>
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Level">
             <summary>Niveau hiérarchique à afficher dans l'interface utilisateur</summary>
@@ -342,6 +346,11 @@
             <summary>Renvoyer une liste de DataNodeDynamoTypes à partir d'une ArrayList d'objets</summary>
             <param name="list">ArrayList des objets à reformater</param>
             <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsUnusedDefineDataInput(System.Object)">
+            <summary>Vérifie si l'entrée de Define Data est inutilisée (valeur nulle ou liste vide).</summary>
+            <param name="inputValue">Valeur d'entrée du graphique.</param>
+            <returns>True lorsque l'entrée doit être traitée comme non connectée ou inutilisée.</returns>
         </member>
         <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
             <summary>Vérifier si l'objet d'entrée est une valeur unique ou une ArrayList de niveau unique.</summary>

@@ -150,6 +150,9 @@
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
     <value>Active el modo de red para poder iniciar sesión.</value>
   </data>
+  <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
+    <value>Active el modo de red para poder utilizar Package Manager.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -1146,6 +1149,12 @@ Siempre puede volver a descargar el paquete.</value>
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>No se ha podido cargar un paquete no válido.</value>
   </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>La instalación se ha cancelado debido a un conflicto de nodos personalizados.</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>Reinicie Dynamo para eliminar el paquete en conflicto.</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>No se ha podido encontrar ningún nodo con ese ID</value>
   </data>
@@ -1328,6 +1337,9 @@ Los siguientes montajes se han cargado varias veces:
   </data>
   <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
     <value>Abrir definición de {0}...</value>
+  </data>
+  <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
+    <value>Nuevo gráfico a partir de plantilla...</value>
   </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>Confirmación de descarga de paquete</value>
@@ -3631,7 +3643,7 @@ En determinados gráficos complejos o al usar programas anfitriones, el modo Aut
     <value>_Archivo</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>_Plantilla</value>
+    <value>Desde plantilla...</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>Los espacios de trabajo no se pueden guardar en la carpeta de plantillas. Elija otra carpeta para guardar el archivo.
@@ -3798,7 +3810,7 @@ Para convertir este archivo en una nueva plantilla, guárdelo en una carpeta dif
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>Parece que Autodesk Identity Manager no está configurado en el sistema. Para garantizar el acceso completo a todas las funciones, inicie sesión en su cuenta de Autodesk Account mediante Autodesk Identity Manager.
-#Descargue e instale este componente=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html desde aquí o mediante Autodesk Access y, a continuación, inicie sesión.</value>
+#Descargue e instale este componente=https://www.autodesk.com/es/support/technical/article/caas/tsarticles/tsarticles/ESP/ts/7zbgTemIhA3ltRs4eACL0g.html desde aquí o mediante Autodesk Access y, a continuación, inicie sesión.</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Descargar Autodesk Identity Manager</value>
@@ -3917,6 +3929,18 @@ Para abrir este gráfico en Dynamo 3.3–3.6.x, instale el paquete PythonNet des
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>Sincronización automática con selección de nodos.</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
+    <value>Este archivo está abierto en otra instancia de Dynamo.
+Para evitar la pérdida o el deterioro de los datos, elija una de las siguientes opciones:
+ • Guardar como: abre una copia independiente que puede editar de forma segura.
+ • Cancelar: no se abre el archivo.</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
+    <value>El archivo ya está abierto en otra instancia de Dynamo</value>
+  </data>
+  <data name="GraphLockSaveAsButton" xml:space="preserve">
+    <value>Guardar como</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

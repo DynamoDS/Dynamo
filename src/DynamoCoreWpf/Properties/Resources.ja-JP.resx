@@ -150,6 +150,9 @@
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
     <value>サインインできるようにするには、ネットワーク モードを有効にします。</value>
   </data>
+  <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
+    <value>Package Manager を使用できるようにするには、ネットワーク モードを有効にします。</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -1146,6 +1149,12 @@
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>無効なパッケージのロードに失敗しました。</value>
   </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>カスタム ノードの競合により、インストールがキャンセルされました。</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>競合するパッケージを削除するには、Dynamo を再起動してください。</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>この ID のノードが見つかりませんでした。</value>
   </data>
@@ -1328,6 +1337,9 @@
   </data>
   <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
     <value>{0} 設定を開く...</value>
+  </data>
+  <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
+    <value>テンプレートから新しいグラフを作成...</value>
   </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>パッケージのダウンロードの確認</value>
@@ -3631,7 +3643,7 @@ Dynamo を再起動してアンインストールを完了します。
     <value>ファイル(_F)</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>テンプレート(_T)</value>
+    <value>テンプレートから...</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>テンプレート フォルダにはワークスペースを直接保存できません。ファイルを保存するには、別のフォルダを選択してください。
@@ -3798,7 +3810,7 @@ Dynamo を再起動してアンインストールを完了します。
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>Autodesk Identity Manager がシステムに設定されていないようです。すべての機能に完全にアクセスするには、Autodesk Identity Manager を使用してオートデスク アカウントにサインインしてください。
-#ダウンロードとインストール=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html をここで行うか、Autodesk Access からサインインしてください。</value>
+#ダウンロードとインストール=https://www.autodesk.com/jp/support/technical/article/caas/tsarticles/tsarticles/JPN/ts/7zbgTemIhA3ltRs4eACL0g.html をここで行うか、Autodesk Access からサインインしてください。</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Autodesk Identity Manager をダウンロードする</value>
@@ -3917,6 +3929,18 @@ Dynamo を再起動してアンインストールを完了します。
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>ノード選択による自動同期。</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
+    <value>このファイルは現在、Dynamo の別のインスタンスで開かれています。
+データの損失や破損を回避できるように、次のいずれかの操作を選択してください。
+ • 名前を付けて保存: 安全に編集できる独立したコピーが開かれます。
+ • キャンセル: ファイルは開かれません。</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
+    <value>ファイルは既に別の Dynamo インスタンスで開かれています</value>
+  </data>
+  <data name="GraphLockSaveAsButton" xml:space="preserve">
+    <value>名前を付けて保存</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

@@ -150,6 +150,9 @@
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
     <value>Aby móc się zalogować, włącz tryb sieciowy.</value>
   </data>
+  <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
+    <value>Aby móc korzystać z Menedżera pakietów, włącz tryb sieciowy.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -1146,6 +1149,12 @@ Można później ponownie pobrać pakiet.</value>
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>Nie można wczytać nieprawidłowego pakietu.</value>
   </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>Anulowano instalację z powodu konfliktu węzłów niestandardowych.</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>Uruchom ponownie dodatek Dynamo, aby usunąć pakiet powodujący konflikt.</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>Nie można odnaleźć węzła z tym identyfikatorem.</value>
   </data>
@@ -1328,6 +1337,9 @@ Poniższe zespoły zostały wczytane wiele razy:
   </data>
   <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
     <value>Otwórz definicję {0}…</value>
+  </data>
+  <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
+    <value>Nowy wykres z szablonu...</value>
   </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>Potwierdzenie pobrania pakietu</value>
@@ -3631,7 +3643,7 @@ W niektórych sytuacjach ze złożonymi wykresami lub programami nadrzędnymi tr
     <value>_Plik</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>_Szablon</value>
+    <value>Z szablonu…</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>Obszarów roboczych nie można zapisać bezpośrednio w folderze szablonów. Wybierz inny folder, aby zapisać plik.
@@ -3917,6 +3929,18 @@ Aby otworzyć ten wykres w dodatku Dynamo w wersji od 3.3 do 3.6.x, zainstaluj p
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>Synchronizuje automatycznie z wyborem węzła.</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
+    <value>Ten plik jest obecnie otwarty w innym wystąpieniu dodatku Dynamo.
+Aby uniknąć utraty lub uszkodzenia danych, wybierz jedną z następujących czynności:
+ • Zapisz jako — otwiera niezależną kopię, którą można bezpiecznie edytować.
+ • Anuluj — nie otwiera pliku.</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
+    <value>Plik już otwarty w innym wystąpieniu dodatku Dynamo</value>
+  </data>
+  <data name="GraphLockSaveAsButton" xml:space="preserve">
+    <value>Zapisz jako</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

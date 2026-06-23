@@ -150,6 +150,9 @@
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
     <value>Включите сетевой режим, чтобы иметь возможность входить в систему.</value>
   </data>
+  <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
+    <value>Включите сетевой режим, чтобы использовать Package Manager.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -1146,6 +1149,12 @@
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>Не удалось загрузить недопустимый пакет.</value>
   </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>Установка отменена из-за конфликта пользовательских узлов.</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>Перезапустите Dynamo, чтобы удалить конфликтующий пакет.</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>Не удается найти узел с таким идентификатором.</value>
   </data>
@@ -1328,6 +1337,9 @@
   </data>
   <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
     <value>Открыть определение {0}...</value>
+  </data>
+  <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
+    <value>Создать граф из шаблона...</value>
   </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>Подтверждение загрузки пакета</value>
@@ -3631,7 +3643,7 @@
     <value>_Файл</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>_Шаблон</value>
+    <value>Из шаблона...</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>Рабочие пространства невозможно сохранить непосредственно в папке шаблонов. Выберите другую папку для сохранения файла.
@@ -3917,6 +3929,18 @@
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>Автоматическая синхронизация с выбором узла.</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
+    <value>Этот файл сейчас открыт в другом экземпляре Dynamo.
+Во избежание потери или повреждения данных выберите одно из следующих действий:
+ • «Сохранить как» — будет открыта отдельная копия, которую можно безопасно редактировать.
+ • «Отмена» — файл не будет открыт.</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
+    <value>Файл уже открыт в другом экземпляре Dynamo</value>
+  </data>
+  <data name="GraphLockSaveAsButton" xml:space="preserve">
+    <value>Сохранить как</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

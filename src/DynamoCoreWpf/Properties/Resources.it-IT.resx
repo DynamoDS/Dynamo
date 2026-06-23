@@ -150,6 +150,9 @@
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
     <value>Attivare la modalità di rete per poter accedere.</value>
   </data>
+  <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
+    <value>Attivare la modalità di rete per poter utilizzare Package Manager.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -1144,6 +1147,12 @@ Salvare le modifiche?</value>
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>Impossibile caricare un pacchetto non valido.</value>
   </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>Installazione annullata a causa di un conflitto di nodi personalizzati.</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>Riavviare Dynamo per rimuovere il pacchetto in conflitto.</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>Nessun nodo trovato con l'ID specificato.</value>
   </data>
@@ -1320,6 +1329,9 @@ Gli assiemi successivi sono stati caricati più volte:
   </data>
   <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
     <value>Apri definizione di {0}...</value>
+  </data>
+  <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
+    <value>Nuovo grafico da modello...</value>
   </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>Conferma download pacchetto</value>
@@ -3613,7 +3625,7 @@ In alcuni scenari complessi di programmi host o grafici, la modalità Automatico
     <value>_File</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>_Modello</value>
+    <value>Da modello...</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>Impossibile salvare le aree di lavoro direttamente nella cartella Modelli. Scegliere una cartella diversa per salvare il file.
@@ -3780,7 +3792,7 @@ Per trasformare questo file in un nuovo modello, salvarlo in un'altra cartella e
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>Autodesk Identity Manager non è impostato nel sistema in uso. Per garantire l'accesso completo a tutte le funzionalità, accedere ad Autodesk Account utilizzando Autodesk Identity Manager.
-#Scaricarlo e installarlo=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html qui o tramite Autodesk Access, quindi accedere.</value>
+#Scaricarlo e installarlo=https://www.autodesk.com/it/support/technical/article/caas/tsarticles/tsarticles/ITA/ts/7zbgTemIhA3ltRs4eACL0g.html qui o tramite Autodesk Access, quindi accedere.</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Scarica Autodesk Identity Manager</value>
@@ -3899,6 +3911,18 @@ Per aprire questo grafico in Dynamo 3.3-3.6.x: installare il pacchetto PythonNet
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>Sincronizzazione automatica con selezione del nodo.</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
+    <value>Questo file è attualmente aperto in un'altra istanza di Dynamo.
+Per evitare la perdita o il danneggiamento dei dati, scegliere una delle seguenti operazioni:
+ • Salva con nome: apre una copia indipendente che è possibile modificare in modo sicuro.
+ • Annulla: non apre il file.</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
+    <value>File già aperto in un'altra istanza di Dynamo</value>
+  </data>
+  <data name="GraphLockSaveAsButton" xml:space="preserve">
+    <value>Salva con nome</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

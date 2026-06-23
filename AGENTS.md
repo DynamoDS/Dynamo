@@ -136,9 +136,9 @@ For each new node, add to `doc/distrib/NodeHelpFiles/`:
 
 ## Detailed Guidance
 
-Read `.agents/` for comprehensive skills, rules, and templates:
+Read `.claude/` for comprehensive skills, rules, and templates:
 
-- **Skills** (task workflows): `.agents/skills/<skill-name>/SKILL.md`
+- **Skills** (task workflows): `.claude/skills/<skill-name>/SKILL.md`
   - `dynamo-codebase-patterns` -- Discover and enforce Dynamo-specific architectural patterns
   - `dynamo-content-designer` -- Technical content for docs, guides, and release notes
   - `dynamo-dotnet-expert` -- C#/.NET patterns, testing, PublicAPI
@@ -151,7 +151,7 @@ Read `.agents/` for comprehensive skills, rules, and templates:
   - `dynamo-unit-testing` -- NUnit test writing following Dynamo patterns
   - `dynamo-ux-designer` -- UX planning and Weave-aligned interface design guidance
   - `dynamo-webview-component-scaffold` -- Scaffold Dynamo WebView2 view-extension repos
-- **Rules** (constraints): `.agents/rules/`
+- **Rules** (constraints): `.claude/rules/`
   - `dynamo-core-rules.md` -- .NET/Dynamo constraints
 
 ## Important Links

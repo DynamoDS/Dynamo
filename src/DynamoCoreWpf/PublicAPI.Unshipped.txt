@@ -2,6 +2,8 @@ Dynamo.Controls.NetworkStatusIconConverter
 Dynamo.Controls.NetworkStatusIconConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NetworkStatusIconConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NetworkStatusIconConverter.NetworkStatusIconConverter() -> void
+Dynamo.Controls.DynamoView.ToggleExtensionsSidebarCommand.get -> System.Windows.Input.ICommand
+Dynamo.Controls.DynamoView.ToggleLibrarySidebarCommand.get -> System.Windows.Input.ICommand
 Dynamo.Controls.OnlineStatusTextConverter
 Dynamo.Controls.OnlineStatusTextConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.OnlineStatusTextConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -19,11 +21,14 @@ Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsUninstal
 Dynamo.UI.Controls.StartPageViewModel.TemplateFiles.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.UI.Controls.StartPageListItem>
 Dynamo.UI.Views.ScriptObject.ResetSettings() -> void
 Dynamo.UI.Views.ScriptObject.ScriptObject(System.Action<bool> requestLaunchDynamo, System.Action<string> requestImportSettings, System.Func<bool> requestSignIn, System.Func<bool> requestSignOut, System.Action requestResetSettings) -> void
+Dynamo.ViewModels.DynamoViewModel.NoNetworkMode.get -> bool
 Dynamo.ViewModels.DynamoViewModel.OnlineAccess.get -> bool
 Dynamo.ViewModels.DynamoViewModel.PythonEngineUpgradeToastRequested -> System.Action<string, bool, string>
 Dynamo.ViewModels.DynamoViewModel.ToastManager.get -> Dynamo.Wpf.UI.ToastManager
 Dynamo.ViewModels.DynamoViewModel.ToastManager.set -> void
 Dynamo.ViewModels.DynamoViewModel.ShowPythonEngineUpgradeCanvasToast(string message, bool stayOpen = true, string filePath = null) -> void
+Dynamo.ViewModels.OpenNodeAnnotationEventArgs.InputTypes.get -> System.Collections.Generic.IEnumerable<string>
+Dynamo.ViewModels.OpenNodeAnnotationEventArgs.OutputTypes.get -> System.Collections.Generic.IEnumerable<string>
 Dynamo.ViewModels.PreferencesViewModel.AutoSyncDocumentBrowserIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.AutoSyncDocumentBrowserIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowPythonAutoMigrationNotificationIsChecked.get -> bool
@@ -54,6 +59,9 @@ static Dynamo.Wpf.Properties.Resources.DynamoSplashScreenFailed.get -> string
 static Dynamo.Wpf.Properties.Resources.DocumentationBrowserAutoSyncLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.DocumentationBrowserPreferences.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoSplashScreen.get -> string
+static Dynamo.Wpf.Properties.Resources.GraphLockFileAlreadyOpenMessage.get -> string
+static Dynamo.Wpf.Properties.Resources.GraphLockFileAlreadyOpenTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.GraphLockSaveAsButton.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageBoxDontShowAgainLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.OfflineStatusTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.OnlineStatusTooltip.get -> string

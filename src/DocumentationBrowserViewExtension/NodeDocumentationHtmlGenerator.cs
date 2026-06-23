@@ -268,7 +268,7 @@ namespace Dynamo.DocumentationBrowser
             {
                 sb.AppendLine("<tr class=\"table--border\">");
                 sb.AppendLine($"<td class=\"table--border\">{e.InputNames.ElementAt(i)}</td>");
-                sb.AppendLine($"<td class=\"table--border\">{GetTypeFromDescription(e.InputDescriptions.ElementAt(i))}</td>");
+                sb.AppendLine($"<td class=\"table--border\">{e.InputTypes.ElementAt(i)}</td>");
                 sb.AppendLine($"<td class=\"table--border\">{GetNthRowFromStringSplit(e.InputDescriptions.ElementAt(i), 0)}</td>");
                 sb.AppendLine($"<td class=\"table--border broken\">{GetDefaultValueFromDescription(e.InputDescriptions.ElementAt(i))}</td>");
                 sb.AppendLine(@"</tr>");
@@ -292,6 +292,7 @@ namespace Dynamo.DocumentationBrowser
                 sb.AppendLine(" <tr class=\"table--border\">");
                 sb.AppendLine($"<td class=\"table--border\">{e.OutputNames.ElementAt(i)}</td>");
                 sb.AppendLine($"<td class=\"table--border\">{GetNthRowFromStringSplit(e.OutputDescriptions.ElementAt(i), 0)}</td>");
+                sb.AppendLine($"<td class=\"table--border\">{e.OutputTypes.ElementAt(i)}</td>");
                 sb.AppendLine(@"</tr>");
             }
 
@@ -301,13 +302,6 @@ namespace Dynamo.DocumentationBrowser
 
             return sb.ToString();
         }
-
-         private static string GetTypeFromDescription(string element)
-         {
-             var stringArr = element.Split(new string[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
-             if(stringArr.Length > 2) return stringArr[2];
-             return string.Empty;
-         }
 
          private static string GetDefaultValueFromDescription(string element)
          {

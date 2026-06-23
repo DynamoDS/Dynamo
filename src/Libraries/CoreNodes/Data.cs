@@ -534,7 +534,7 @@ namespace DSCore
         /// <summary>
         /// A class representing a DataType supported by Dynamo
         /// </summary>
-        internal class DataNodeDynamoType(Type type, string name = null)
+        internal class DataNodeDynamoType(Type type, string name = null, string typeId = null)
         {
             /// <summary>
             /// The underlying Type
@@ -544,6 +544,11 @@ namespace DSCore
             /// An optional Name to override the Type name (`Number` instead of `long`)
             /// </summary>
             public string Name { get; private set; } = name ?? type.Name;
+            /// <summary>
+            /// Wire-format $typeid (e.g. "autodesk.math:point3d-1.0.0").
+            /// Null for primitive types that don't use $typeid serialization.
+            /// </summary>
+            public string TypeId { get; private set; } = typeId;
             /// <summary>
             /// The hierarchical level to be displayed in the UI
             /// </summary>
@@ -557,8 +562,8 @@ namespace DSCore
             /// </summary>
             public DataNodeDynamoType Parent { get; private set; }
 
-            public DataNodeDynamoType(Type type, int level, bool isLastChild = false, string name = null, DataNodeDynamoType parent = null)
-            : this(type, name)
+            public DataNodeDynamoType(Type type, int level, bool isLastChild = false, string name = null, DataNodeDynamoType parent = null, string typeId = null)
+            : this(type, name, typeId)
             {
                 Level = level;
                 IsLastChild = isLastChild;
@@ -577,53 +582,55 @@ namespace DSCore
         /// </summary>
         static Data()
         {
-            var curve = new DataNodeDynamoType(typeof(Curve), 0, false, null, null);
-            var polyCurve = new DataNodeDynamoType(typeof(PolyCurve), 1, false, null, curve);
-            var polygon = new DataNodeDynamoType(typeof(Polygon), 2, false, null, polyCurve);  // polygon is subtype of polyCurve
-            var rectangle = new DataNodeDynamoType(typeof(Autodesk.DesignScript.Geometry.Rectangle), 3, true, null, polyCurve);    // rectangle is subtype of polygon
-            var solid = new DataNodeDynamoType(typeof(Solid), 0, false, null, null);
-            var cone = new DataNodeDynamoType(typeof(Cone), 1, false, null, solid);    // cone is subtype of solid
-            var cylinder = new DataNodeDynamoType(typeof(Cylinder), 2, false, null, cone); // cylinder is subtype of cone 
-            var cuboid = new DataNodeDynamoType(typeof(Cuboid), 1, false, null, solid);    // cuboid is subtype of solid
-            var sphere = new DataNodeDynamoType(typeof(Sphere), 1, true, null, solid);    // sphere is subtype of solid
+            var curve = new DataNodeDynamoType(typeof(Curve), 0, false, null, null, "dynamo.geometry:sab-1.0.0");
+            var polyCurve = new DataNodeDynamoType(typeof(PolyCurve), 1, false, null, curve, "autodesk.geometry.curve:compositecurve-1.0.0");
+            var polygon = new DataNodeDynamoType(typeof(Polygon), 2, false, null, polyCurve, "autodesk.geometry.curve:polyline-1.0.0");
+            var rectangle = new DataNodeDynamoType(typeof(Autodesk.DesignScript.Geometry.Rectangle), 3, true, null, polyCurve, "dynamo.geometry:rectangle-1.0.0");
+            var solid = new DataNodeDynamoType(typeof(Solid), 0, false, null, null, "dynamo.geometry:sab-1.0.0");
+            var cone = new DataNodeDynamoType(typeof(Cone), 1, false, null, solid, "dynamo.geometry:cone-1.0.0");
+            var cylinder = new DataNodeDynamoType(typeof(Cylinder), 2, false, null, cone, "autodesk.geometry.surface:cylinder-2.0.0");
+            var cuboid = new DataNodeDynamoType(typeof(Cuboid), 1, false, null, solid, "dynamo.geometry:cuboid-1.0.0");
+            var sphere = new DataNodeDynamoType(typeof(Sphere), 1, true, null, solid, "autodesk.geometry.surface:sphere-1.0.0");
 
-            var surface = new DataNodeDynamoType(typeof(Surface), 0, false, null, null);
+            var surface = new DataNodeDynamoType(typeof(Surface), 0, false, null, null, "dynamo.geometry:sab-1.0.0");
 
             var typeList = new List<DataNodeDynamoType>
             {
-                new(typeof(bool)),
-                new(typeof(BoundingBox)),
-                new(typeof(CoordinateSystem)),
+                new(typeof(bool), typeId: "Bool"),
+                new(typeof(BoundingBox), typeId: "autodesk.geometry:boundingbox3d-1.0.0"),
+                new(typeof(CoordinateSystem), typeId: "autodesk.math:matrix44d-1.0.0"),
+                new(typeof(DSCore.Color), typeId: "dynamo.graphics:color-1.0.0"),
                 curve,
-                new(typeof(Arc), 1, false, null, curve),
-                new(typeof(Circle), 1, false, null, curve),
-                new(typeof(Ellipse), 1, false, null, curve),
-                new(typeof(EllipseArc), 1, false, null, curve),
-                new(typeof(Helix), 1, false, null, curve),
-                new(typeof(Line), 1, false, null, curve),
-                new(typeof(NurbsCurve), 1, false, null, curve),
+                new(typeof(Arc), 1, false, null, curve, "autodesk.geometry.curve:circle-1.0.0"),
+                new(typeof(Circle), 1, false, null, curve, "autodesk.geometry.curve:circle-1.0.0"),
+                new(typeof(Ellipse), 1, false, null, curve, "autodesk.geometry.curve:ellipse-1.0.0"),
+                new(typeof(EllipseArc), 1, false, null, curve, "autodesk.geometry.curve:ellipse-1.0.0"),
+                new(typeof(Helix), 1, false, null, curve, "dynamo.geometry:sab-1.0.0"),
+                new(typeof(System.Drawing.Bitmap), "Image", typeId: "dynamo.graphics:png-1.0.0"),
+                new(typeof(Line), 1, false, null, curve, "autodesk.geometry.curve:line-1.0.0"),
+                new(typeof(NurbsCurve), 1, false, null, curve, "autodesk.geometry.curve:bcurve-1.0.0"),
                 polyCurve,
                 polygon,
                 rectangle,
-                new(typeof(System.DateTime)),
-                new(typeof(double), "Number"),
-                new(typeof(long), "Integer"),
-                new(typeof(Location)),
-                new(typeof(Mesh)),
-                new(typeof(Plane)),
-                new(typeof(Autodesk.DesignScript.Geometry.Point)),
+                new(typeof(System.DateTime), typeId: "DateTime"),
+                new(typeof(double), "Number", typeId: "Float64"),
+                new(typeof(long), "Integer", typeId: "Int64"),
+                new(typeof(Location), typeId: "dynamo.data:location-1.0.0"),
+                new(typeof(Mesh), typeId: "dynamo.geometry:mesh-1.0.0"),
+                new(typeof(Plane), typeId: "autodesk.geometry.surface:plane-1.0.0"),
+                new(typeof(Autodesk.DesignScript.Geometry.Point), typeId: "autodesk.math:point3d-1.0.0"),
                 solid,
                 cone,
                 cylinder,
                 cuboid,
                 sphere,
-                new(typeof(string)),
+                new(typeof(string), typeId: "String"),
                 surface,
-                new(typeof(NurbsSurface), 1, false, null, surface),
-                new(typeof(PolySurface), 1, true, null, surface),
-                new(typeof(System.TimeSpan)),
-                new(typeof(UV)),
-                new(typeof(Vector))
+                new(typeof(NurbsSurface), 1, false, null, surface, "autodesk.geometry.curve:bsurface-1.0.0"),
+                new(typeof(PolySurface), 1, true, null, surface, "dynamo.geometry:sab-1.0.0"),
+                new(typeof(System.TimeSpan), typeId: "TimeSpan"),
+                new(typeof(UV), typeId: "autodesk.math:uv-1.0.0"),
+                new(typeof(Vector), typeId: "autodesk.math:vector3d-1.0.0")
             };
 
             DataNodeDynamoTypeList = new ReadOnlyCollection<DataNodeDynamoType>(typeList);
@@ -660,7 +667,7 @@ namespace DSCore
             string typeString, bool isList, bool isAutoMode, string playerValue)
         {
 
-            if (inputValue == null)
+            if (IsUnusedDefineDataInput(inputValue) && string.IsNullOrEmpty(playerValue))
             {
                 // Don't raise a warning if the node is unused
                 return new Dictionary<string, object>
@@ -668,12 +675,6 @@ namespace DSCore
                     { ">", inputValue },
                     { "Validation", null }
                 };
-            }
-
-            if (!IsSingleValueOrSingleLevelArrayList(inputValue))
-            {
-                var warning = Properties.Resources.DefineDataSupportedInputValueExceptionMessage;
-                return DefineDataResult(inputValue, false, false, DataNodeDynamoTypeList.First(), warning);
             }
 
             // If the playerValue is not empty, then we assume it was set by the player.
@@ -691,6 +692,12 @@ namespace DSCore
                     var warning = Properties.Resources.Exception_Deserialize_Unsupported_Cache;
                     return DefineDataResult(inputValue, false, false, DataNodeDynamoTypeList.First(), warning);
                 }
+            }
+
+            if (!IsSingleValueOrSingleLevelArrayList(inputValue))
+            {
+                var warning = Properties.Resources.DefineDataSupportedInputValueExceptionMessage;
+                return DefineDataResult(inputValue, false, false, DataNodeDynamoTypeList.First(), warning);
             }
 
             // Currently working around passing the type as a string from the node - can be developed further to pass directly the type value
@@ -911,6 +918,26 @@ namespace DSCore
                 }
             }
             return typeList;
+        }
+
+        /// <summary>
+        /// Checks whether the Define Data input is unused (null or an empty list).
+        /// </summary>
+        /// <param name="inputValue">The input value from the graph.</param>
+        /// <returns>True when the input should be treated as unconnected or unused.</returns>
+        private static bool IsUnusedDefineDataInput(object inputValue)
+        {
+            if (inputValue == null)
+            {
+                return true;
+            }
+
+            if (inputValue is ArrayList arrayList && arrayList.Count == 0)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>

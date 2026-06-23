@@ -22,7 +22,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4">
       <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <IncludeAssets>build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
@@ -32,15 +32,15 @@
   <ItemGroup Label="Common dependencies">
     <PackageReference Include="Autodesk.IDSDK" Version="1.2.5" />
     <PackageReference Include="Greg" Version="3.0.2.8780" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="4.0.0.4686" GeneratePathProperty="true" ExcludeAssets="all"/>
-    <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.4690" Condition=" '$(Configuration)' == 'Release' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
-    <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0_debug" Version="4.0.0.4690" Condition=" '$(Configuration)' == 'Debug' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="4.0.0.5336" GeneratePathProperty="true" ExcludeAssets="all"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.5334" Condition=" '$(Configuration)' == 'Release' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0_debug" Version="4.0.0.5334" Condition=" '$(Configuration)' == 'Debug' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" CopyXML="true" />
     <PackageReference Include="RestSharp" Version="112.0.0" CopyXML="true" />
     <PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00016" />
     <PackageReference Include="Lucene.Net.QueryParser" Version="4.8.0-beta00016" />
-    <PackageReference Include="DynamoVisualProgramming.PythonEngine.PythonNet3" Version="1.4.7" GeneratePathProperty="true" ExcludeAssets="all" />
+    <PackageReference Include="DynamoVisualProgramming.PythonEngine.PythonNet3" Version="1.4.8" GeneratePathProperty="true" ExcludeAssets="all" />
     <PackageReference Include="DynamoVisualProgramming.Analytics" Version="4.2.4.11548" />
   </ItemGroup>
   <ItemGroup>
@@ -130,6 +130,7 @@
         <LibGMain Include="$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\$(LIBGVerMain)\*" />
         <LibGSecondary Include="$(LibGSecondaryPackagePath)\tools\netstandard2.1\$(LibGOsToken)\$(LIBGVerSecondary)\*" />
         <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
+        <TemplateFiles Include="$(SolutionDir)..\doc\distrib\Templates\**\*.*" />
 		<NodeHelpCsCZMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\cs-CZ\**\*.md" />
 		<NodeHelpDeDEMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\de-DE\**\*.md" />
 		<NodeHelpEnUSMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\en-US\**\*.md" />
@@ -212,7 +213,8 @@
     <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <ItemGroup>
-      <LibGProtoGeometryUICultureAllLanguages Include="$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\**\*.resources.dll;$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\**\*.resx" />
+      <LibGProtoGeometryUICultureAllLanguages Include="$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\**\*.resources.dll;$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\**\*.resx"
+                                             Exclude="$(LibGMainPackagePath)\tools\netstandard2.1\$(LibGOsToken)\**\Microsoft.CodeAnalysis*.resources.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(LibGProtoGeometryUICultureAllLanguages)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" />
     <Copy SourceFiles="@(LibGMainDeps)" DestinationFolder="$(OutputPath)$(LIBGVerMain)\asm_deps\" />
@@ -220,6 +222,7 @@
     <Copy SourceFiles="@(LibGSecondary)" DestinationFolder="$(OutputPath)$(LIBGVerSecondary)\" />
     <Copy SourceFiles="@(LibGMain)" DestinationFolder="$(OutputPath)$(LIBGVerMain)\" />
     <Copy SourceFiles="@(SampleFiles)" DestinationFolder="$(OutputPath)samples\%(RecursiveDir)" />
+    <Copy SourceFiles="@(TemplateFiles)" DestinationFolder="$(OutputPath)templates\%(RecursiveDir)" />
     <Copy SourceFiles="@(LocalizedResources)" DestinationFolder="$(OutputPath)%(RecursiveDir)" />
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\Operators.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />

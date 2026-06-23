@@ -277,7 +277,7 @@
         <member name="T:DSCore.Data.DataNodeDynamoType">
             <summary>Classe che rappresenta un DataType supportato da Dynamo</summary>
         </member>
-        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String)">
+        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String,System.String)">
             <summary>Classe che rappresenta un DataType supportato da Dynamo</summary>
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Type">
@@ -285,6 +285,10 @@
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Name">
             <summary>Nome facoltativo che consente di sostituire il nome del tipo (`Number` anziché `long`)</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.TypeId">
+            <summary>Formato di filo $typeid (ad esempio, "autodesk.math:point3d-1.0.0").
+            Null per' tipi primitivi che non utilizzano la serializzazione $typeid.</summary>
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Level">
             <summary>Livello gerarchico da visualizzare nell'interfaccia utente</summary>
@@ -342,6 +346,11 @@
             <summary>Restituisce un elenco di DataNodeDynamoTypes da un ArrayList di oggetti.</summary>
             <param name="list">ArrayList di oggetti da riformattare</param>
             <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsUnusedDefineDataInput(System.Object)">
+            <summary>Verifica se l'input Define Data è inutilizzato (nullo o un elenco vuoto).</summary>
+            <param name="inputValue">Il valore di input del grafico.</param>
+            <returns>True quando l'input deve essere considerato non connesso o inutilizzato.</returns>
         </member>
         <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
             <summary>Verificare se l'oggetto di input è un valore singolo o un oggetto ArrayList a livello singolo.</summary>

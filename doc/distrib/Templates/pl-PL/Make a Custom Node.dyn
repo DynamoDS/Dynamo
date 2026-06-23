@@ -3692,7 +3692,7 @@
       },
       {
         "Id": "0f6aa09a7fb747069992b2c9f878daf8",
-        "Title": "OPIS\n_____________________________________________________ \n\nTen dokument pomaga zapoznać się z tworzeniem węzła niestandardowego.\n\nAby zachować porządek i czytelność skryptów w dodatku Dynamo, zalecamy przestrzeganie przejrzystej\nstruktury podczas tworzenia wykresów.\n\nWięcej informacji na temat tworzenia węzłów niestandardowych można znaleźć na stronie przewodnika Dynamo Primer:\nhttps://primer2.dynamobim.org/6_custom_nodes_and_packages/6-1_custom-nodes/2-creating",
+        "Title": "OPIS\n_____________________________________________________ \n\nTen dokument pomaga zapoznać się z tworzeniem węzła niestandardowego.\n\nAby zachować porządek i czytelność skryptów w dodatku Dynamo, zalecamy przestrzeganie przejrzystej\nstruktury podczas tworzenia wykresów.\n\nWięcej informacji na temat tworzenia węzłów niestandardowych można znaleźć na stronie przewodnika Dynamo Primer:\nhttps://primer2.dynamobim.org/pl/6_custom_nodes_and_packages/6-1_custom-nodes/2-creating",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

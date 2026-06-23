@@ -691,6 +691,85 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
+        /// Compares two AST nodes by textual content rather than object identity.
+        /// BuildAst always creates fresh objects, so reference equality fails even for
+        /// semantically unchanged nodes. ToString() produces a stable, identity-independent
+        /// representation that reflects the actual code the node will generate.
+        ///
+        /// ToString() alone is not always sufficient: FunctionCallNode.ToString() returns the
+        /// literal "null" for internal methods (those starting with '%') whose unprefixed name
+        /// doesn't parse as a binary or unary operator (e.g. "%conditionalIf" used by the If
+        /// node), hiding the actual arguments and their replication guides. When the stringified
+        /// form contains "null" — the narrow case where the textual form may be lossy — fall
+        /// back to the structural Equals operator (overridden on each AssociativeNode subclass
+        /// to do recursive content comparison) to confirm the match. ASTs that don't stringify
+        /// to a form containing "null" use only the fast textual comparison.
+        /// </summary>
+        private static bool AreAstNodesContentEqual(AssociativeNode a, AssociativeNode b)
+        {
+            if (ReferenceEquals(a, b)) return true;
+            if (a == null || b == null) return false;
+            var sa = a.ToString();
+            var sb = b.ToString();
+            if (sa != sb) return false;
+            if (sa.Contains(ProtoCore.DSDefinitions.Keyword.Null))
+            {
+                return a.Equals(b);
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Returns true if the subtree's AST nodes differ from the cached version.
+        /// Used to distinguish structural changes (reconnect) from identity changes (slider value).
+        /// Detects both additions (new nodes not in cache) and removals (cached nodes no longer present).
+        /// Uses content-based comparison so that freshly compiled but semantically unchanged nodes
+        /// are correctly detected as unmodified.
+        /// </summary>
+        private bool SubtreeHasActualChanges(Subtree subtree)
+        {
+            Subtree cached;
+            if (!currentSubTreeList.TryGetValue(subtree.GUID, out cached) || cached.AstNodes == null)
+                return subtree.AstNodes != null && subtree.AstNodes.Any();
+
+            var newNodes = subtree.AstNodes;
+            var cachedNodes = cached.AstNodes;
+
+            // Null or empty new AST when cache had content means all nodes were removed.
+            if (newNodes == null || !newNodes.Any())
+                return cachedNodes.Any();
+
+            // Different count means nodes were added or removed.
+            if (newNodes.Count() != cachedNodes.Count())
+                return true;
+
+            // Same count: any new node absent from the cache indicates a structural change.
+            // Build a lookup of cached nodes by their textual form (each stringified once) so the
+            // scan below is O(n+m) rather than a nested O(n*m) re-stringification. Buckets keep the
+            // actual nodes so the lossy "null" case can confirm via the structural Equals operator,
+            // preserving AreAstNodesContentEqual's semantics.
+            var cachedByString = new Dictionary<string, List<AssociativeNode>>();
+            foreach (var prev in cachedNodes)
+            {
+                var key = prev.ToString();
+                if (!cachedByString.TryGetValue(key, out var bucket))
+                    cachedByString[key] = bucket = new List<AssociativeNode>();
+                bucket.Add(prev);
+            }
+
+            // A new node is "present" if some cached node matches it by content.
+            return newNodes.Any(node =>
+            {
+                var key = node.ToString();
+                if (!cachedByString.TryGetValue(key, out var bucket))
+                    return true;                                // no textual match -> structural change
+                if (!key.Contains(ProtoCore.DSDefinitions.Keyword.Null))
+                    return false;                               // textual match is sufficient -> present
+                return !bucket.Any(prev => node.Equals(prev));  // lossy form -> confirm structurally
+            });
+        }
+
+        /// <summary>
         /// Update the cached ASTs in the subtree given the modified ASTs
         /// </summary>
         /// <param name="st"></param>
@@ -816,6 +895,23 @@ namespace ProtoScript.Runners
                 }
             }
 
+            // When any non-input subtree has structural changes (e.g. a reconnect), delta
+            // compilation recompiles that node at a new, higher PC. Unchanged downstream nodes
+            // keep their old, lower PCs. ApplyUpdate then finds them first (lower PC = earlier
+            // in the graph list) and runs them with stale upstream values, then the upstream
+            // node executes and marks them dirty again — causing each downstream node to execute
+            // twice. To prevent this, force-recompile all unchanged non-input subtrees so they
+            // receive new, higher PCs that respect the topological execution order.
+            // Precompute structural-change status once per subtree; reused in the loop below
+            // to avoid recomputing the (ToString-based) comparison for each unchanged subtree.
+            var nonInputStructurallyChanged = new HashSet<Guid>();
+            foreach (var st in modifiedSubTrees)
+            {
+                if (!st.IsInput && SubtreeHasActualChanges(st))
+                    nonInputStructurallyChanged.Add(st.GUID);
+            }
+            bool anyNonInputActuallyModified = nonInputStructurallyChanged.Count > 0;
+
             for (int n = 0; n < modifiedSubTrees.Count(); ++n)
             {
                 var modifiedSubTree = modifiedSubTrees[n];
@@ -831,6 +927,43 @@ namespace ProtoScript.Runners
                     List<AssociativeNode> modifiedInputAST;
                     var modifiedASTList = GetModifiedNodes(modifiedSubTree, redefinitionAllowed, out modifiedInputAST);
                     csData.ModifiedNodesForRuntimeSetValue.AddRange(modifiedInputAST);
+
+                    // If another non-input subtree was structurally modified and this non-input
+                    // subtree appears unchanged, force-recompile it so its new graph node lands
+                    // at a PC higher than the recompiled upstream node. Also deactivate the old
+                    // graph nodes so they do not co-execute with the new ones in ApplyUpdate.
+                    if (!modifiedSubTree.IsInput && anyNonInputActuallyModified
+                        && !modifiedASTList.Any() && !modifiedInputAST.Any()
+                        && !nonInputStructurallyChanged.Contains(modifiedSubTree.GUID))
+                    {
+                        Subtree cachedSubTree;
+                        if (currentSubTreeList.TryGetValue(modifiedSubTree.GUID, out cachedSubTree)
+                            && cachedSubTree.AstNodes != null)
+                        {
+                            var cachedBinaryNodes = cachedSubTree.AstNodes.OfType<BinaryExpressionNode>().ToList();
+                            // Deactivate the old graph nodes so they are replaced by freshly compiled ones.
+                            // These originals stay untouched: DeactivateGraphnodes/ReActivateGraphNodesInCycle
+                            // only read OriginalAstID, which clones preserve, so deactivation still matches.
+                            csData.RemovedBinaryNodesFromModification.AddRange(cachedBinaryNodes);
+                            // Clone before stamping/injecting. cachedBinaryNodes are the live objects held in
+                            // currentSubTreeList; mutating them or handing them to the compiler (which writes
+                            // back UIDs and SSA-transforms in place) would corrupt the cached subtree and leak
+                            // into the next delta compile. The copy constructor preserves guid, OriginalAstID
+                            // and ExpressionUID, so the clone compiles identically to the original object.
+                            foreach (var bnode in cachedBinaryNodes)
+                            {
+                                var clone = (BinaryExpressionNode)NodeUtils.Clone(bnode);
+                                // Stamp the GUID and inject directly into the delta list so the compiler
+                                // assigns new, higher PCs — keeping modifiedASTList empty so
+                                // UpdateCachedASTList does not see these as modifications and double
+                                // the cached AST list.
+                                clone.guid = modifiedSubTree.GUID;
+                                clone.IsInputExpression = false;
+                                SetNestedLanguageBlockASTGuids(modifiedSubTree.GUID, new List<ProtoCore.AST.Node>() { clone });
+                                deltaAstList.Add(clone);
+                            }
+                        }
+                    }
 
                     modifiedSubTree.ModifiedAstNodes.Clear();
                     modifiedSubTree.ModifiedAstNodes.AddRange(modifiedASTList);
@@ -860,7 +993,7 @@ namespace ProtoScript.Runners
                 }
                 else
                 {
-                    // No delta computation. 
+                    // No delta computation.
                     // Right now it is only disabled for code block node, but we may
                     // completely disable it. Details about why doing so:
                     // https://github.com/DynamoDS/Dynamo/pull/7282
@@ -997,7 +1130,7 @@ namespace ProtoScript.Runners
                 bool nodeFound = false;
                 foreach (AssociativeNode prevNode in st.AstNodes)
                 {
-                    if (prevNode.Equals(node))
+                    if (AreAstNodesContentEqual(prevNode, node))
                     {
                         nodeFound = true;
                         break;
@@ -1098,7 +1231,7 @@ namespace ProtoScript.Runners
                 bool prevNodeFoundInNewList = false;
                 foreach (AssociativeNode newNode in newASTList)
                 {
-                    if (prevNode.Equals(newNode))
+                    if (AreAstNodesContentEqual(prevNode, newNode))
                     {
                         // prev node still exists in the new list
                         prevNodeFoundInNewList = true;
@@ -1127,7 +1260,7 @@ namespace ProtoScript.Runners
             {
                 foreach (AssociativeNode newNode in newASTList)
                 {
-                    if (prevNode.Equals(newNode))
+                    if (AreAstNodesContentEqual(prevNode, newNode))
                     {
                         existingList.Add(prevNode);
                         break;

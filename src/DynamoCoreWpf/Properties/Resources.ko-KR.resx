@@ -150,6 +150,9 @@
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
     <value>로그인하려면 네트워크 모드를 활성화합니다.</value>
   </data>
+  <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
+    <value>패키지 관리자를 사용하려면 네트워크 모드를 활성화합니다.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -1145,6 +1148,12 @@
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>잘못된 패키지를 로드하지 못했습니다.</value>
   </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>사용자 노드 충돌로 인해 설치가 취소되었습니다.</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>충돌하는 패키지를 제거하려면 Dynamo를 다시 시작하십시오.</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>해당 ID로 노드를 찾을 수 없습니다.</value>
   </data>
@@ -1327,6 +1336,9 @@
   </data>
   <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
     <value>{0} 정의 열기...</value>
+  </data>
+  <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
+    <value>템플릿을 기반으로 새 그래프 생성...</value>
   </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>패키지 다운로드 확인</value>
@@ -3629,7 +3641,7 @@
     <value>파일(_F)</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>템플릿(&amp;T)</value>
+    <value>템플릿으로부터...</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>작업공간을 템플릿 폴더에 바로 저장할 수 없습니다. 다른 폴더를 선택하여 파일을 저장하십시오.
@@ -3795,7 +3807,7 @@
     <value>이 버전과 사용 중인 설정의 호환성이 확인되지 않았습니다. 예상대로 작동할 수도 있고 예상대로 작동하지 않을 수도 있습니다.</value>
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
-    <value>Autodesk Identity Manager가 시스템에 설정되어 있지 않은 것 같습니다. 모든 기능에 대한 전체 액세스 권한을 확보하려면 Autodesk Identity Manager를 사용하여 Autodesk 계정에 로그인하십시오. 또는 Autodesk Access를 통해 Autodesk Identity Manager를 #다운로드한 후 설치=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html 한 다음 로그인하십시오.</value>
+    <value>Autodesk Identity Manager가 시스템에 설정되어 있지 않은 것 같습니다. 모든 기능에 대한 전체 액세스 권한을 확보하려면 Autodesk Identity Manager를 사용하여 Autodesk 계정에 로그인하십시오. 또는 Autodesk Access를 통해 Autodesk Identity Manager를 #다운로드한 후 설치=https://www.autodesk.com/kr/support/technical/article/caas/tsarticles/tsarticles/KOR/ts/7zbgTemIhA3ltRs4eACL0g.html 한 다음 로그인하십시오.</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Autodesk Identity Manager 다운로드</value>
@@ -3914,6 +3926,18 @@ Dynamo 3.3–3.6.x에서 이 그래프를 열려면 패키지 관리자에서 Py
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>노드 선택과 자동 동기화됩니다.</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
+    <value>이 파일은 현재 다른 Dynamo 인스턴스에서 열려 있습니다.
+데이터 손실 또는 손상을 방지하려면 다음 작업 중 하나를 선택하십시오.
+ • 다른 이름으로 저장 — 안전하게 편집할 수 있는 독립된 사본을 엽니다.
+ • 취소 — 파일을 열지 않습니다.</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
+    <value>파일이 다른 Dynamo 인스턴스에서 이미 열려 있음</value>
+  </data>
+  <data name="GraphLockSaveAsButton" xml:space="preserve">
+    <value>다른 이름으로 저장</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

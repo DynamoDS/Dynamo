@@ -396,7 +396,7 @@
             A class representing a DataType supported by Dynamo
             </summary>
         </member>
-        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String)">
+        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String,System.String)">
             <summary>
             A class representing a DataType supported by Dynamo
             </summary>
@@ -409,6 +409,12 @@
         <member name="P:DSCore.Data.DataNodeDynamoType.Name">
             <summary>
             An optional Name to override the Type name (`Number` instead of `long`)
+            </summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.TypeId">
+            <summary>
+            Wire-format $typeid (e.g. "autodesk.math:point3d-1.0.0").
+            Null for primitive types that don't use $typeid serialization.
             </summary>
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Level">
@@ -491,6 +497,13 @@
             </summary>
             <param name="list">The ArrayList of objects to reformat</param>
             <returns></returns>
+        </member>
+        <member name="M:DSCore.Data.IsUnusedDefineDataInput(System.Object)">
+            <summary>
+            Checks whether the Define Data input is unused (null or an empty list).
+            </summary>
+            <param name="inputValue">The input value from the graph.</param>
+            <returns>True when the input should be treated as unconnected or unused.</returns>
         </member>
         <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
             <summary>

@@ -150,6 +150,9 @@
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
     <value>启用网络模式以便能够登录。</value>
   </data>
+  <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
+    <value>启用网络模式以便能够使用 Package Manager。</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -1146,6 +1149,12 @@
   <data name="MessageInvalidPackage" xml:space="preserve">
     <value>无法加载无效的软件包。</value>
   </data>
+  <data name="MessagePackageInstallCancelledDueToCustomNodeConflict" xml:space="preserve">
+    <value>由于自定义节点冲突，安装已取消。</value>
+  </data>
+  <data name="MessagePackageInstallRestartToCompleteCustomNodeReplace" xml:space="preserve">
+    <value>重新启动 Dynamo 以删除冲突的软件包。</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>找不到具有该 ID 的任何节点。</value>
   </data>
@@ -1328,6 +1337,9 @@
   </data>
   <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
     <value>打开 {0} 定义...</value>
+  </data>
+  <data name="OpenDynamoTemplateDialogTitle" xml:space="preserve">
+    <value>从模板新建图表...</value>
   </data>
   <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
     <value>软件包下载确认</value>
@@ -3629,7 +3641,7 @@
     <value>文件(_F)</value>
   </data>
   <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
-    <value>模板(_T)</value>
+    <value>从模板…</value>
   </data>
   <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
     <value>工作空间无法直接保存到“Templates”文件夹。请选择其他文件夹以保存文件。
@@ -3648,25 +3660,25 @@
     <value>启用嵌板节点</value>
   </data>
   <data name="PreferencesSettingTemplateLocationLabel" xml:space="preserve">
-    <value>样板路径</value>
+    <value>模板路径</value>
   </data>
   <data name="PreferencesSettingResetTemplateLocationTooltip" xml:space="preserve">
-    <value>重置样板位置</value>
+    <value>重置模板位置</value>
   </data>
   <data name="PreferencesSettingsTemplateFailedMessage" xml:space="preserve">
-    <value>无法更新样板位置</value>
+    <value>无法更新模板位置</value>
   </data>
   <data name="PreferencesSettingsTemplateFailedTitle" xml:space="preserve">
-    <value>样板位置无效</value>
+    <value>模板位置无效</value>
   </data>
   <data name="PreferencesSettingsTemplateLocationDialogTitle" xml:space="preserve">
-    <value>选择样板的文件夹</value>
+    <value>选择模板的文件夹</value>
   </data>
   <data name="PreferencesSettingUpdateTemplateLocationTooltip" xml:space="preserve">
-    <value>编辑样板位置</value>
+    <value>编辑模板位置</value>
   </data>
   <data name="PreferencesViewGeneralSettingsTemplate" xml:space="preserve">
-    <value>样板</value>
+    <value>模板</value>
   </data>
   <data name="DynamoXmlFileFormat" xml:space="preserve">
     <value>Dynamo 1.x 文件格式</value>
@@ -3796,7 +3808,7 @@
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>您的系统上似乎未设置 Autodesk Identity Manager。要确保完全访问所有功能，请使用 Autodesk Identity Manager 登录您的 Autodesk 帐户。
-请在此处或通过 Autodesk Access #下载并安装=https://www.autodesk.com/support/technical/article/caas/tsarticles/ts/7zbgTemIhA3ltRs4eACL0g.html 然后登录。</value>
+请在此处或通过 Autodesk Access #下载并安装=https://www.autodesk.com.cn/support/technical/article/caas/tsarticles/tsarticles/CHS/ts/7zbgTemIhA3ltRs4eACL0g.html 然后登录。</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>下载 Autodesk Identity Manager</value>
@@ -3915,6 +3927,18 @@
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>与节点选择自动同步。</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
+    <value>此文件当前已在 Dynamo 的其他实例中打开。
+为避免数据丢失或损坏，请选择以下操作之一:
+ • 另存为 — 打开可以安全编辑的独立副本。
+ • 取消 — 不打开文件。</value>
+  </data>
+  <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
+    <value>文件已在其他 Dynamo 实例中打开</value>
+  </data>
+  <data name="GraphLockSaveAsButton" xml:space="preserve">
+    <value>另存为</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace Dynamo.UI.Commands
 {
@@ -12,6 +13,7 @@ namespace Dynamo.UI.Commands
 
         private readonly Predicate<object> _canExecute;
         private readonly Action<object> _execute;
+        private readonly Dispatcher _dispatcher;
 
         public event EventHandler CanExecuteChanged;
 
@@ -25,6 +27,7 @@ namespace Dynamo.UI.Commands
         {
             _execute = execute;
             _canExecute = canExecute;
+            _dispatcher = Dispatcher.CurrentDispatcher;
         }
 
         public bool CanExecute(object parameter)
@@ -38,12 +41,18 @@ namespace Dynamo.UI.Commands
             _execute(parameter);
         }
 
+        /// <summary>
+        /// Raises <see cref="CanExecuteChanged"/>, marshalling to the UI thread if necessary.
+        /// Calling from a non-UI thread without this guard causes
+        /// <see cref="System.Threading.SynchronizationLockException"/> inside WPF's
+        /// CommandManager.FindCommandBinding (DYN-10409).
+        /// </summary>
         public void RaiseCanExecuteChanged()
         {
-            if (CanExecuteChanged != null)
-            {
-                CanExecuteChanged(this, EventArgs.Empty);
-            }
+            if (!_dispatcher.CheckAccess())
+                _dispatcher.BeginInvoke(new Action(() => CanExecuteChanged?.Invoke(this, EventArgs.Empty)));
+            else
+                CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
 
     }

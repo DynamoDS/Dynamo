@@ -507,7 +507,11 @@
                                     </Trigger>
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="White" />
+                                        <Setter TargetName="subMenuArrow" Property="Foreground" Value="White" />
                                         <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
+                                    </Trigger>
+                                    <Trigger Property="IsSubmenuOpen" Value="True">
+                                        <Setter TargetName="subMenuArrow" Property="Foreground" Value="White" />
                                     </Trigger>
                                     <Trigger Property="IsMouseOver" Value="False">
                                         <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackground}" />
@@ -751,7 +755,24 @@
                     <MenuItem Name="Publish"
                               Command="{Binding DynamoViewModel.PublishCurrentWorkspaceCommand}"
                               Header="{x:Static p:Resources.ContextMenuPublishCustomNode}"
-                              Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
+                              ToolTipService.ShowOnDisabled="True"
+                              Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
+                        <MenuItem.ToolTip>
+                            <ToolTip>
+                                <ToolTip.Style>
+                                    <Style TargetType="ToolTip" BasedOn="{StaticResource GenericToolTipLight}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding PlacementTarget.DataContext.DynamoViewModel.NoNetworkMode, RelativeSource={RelativeSource Self}}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                                <Setter Property="Content" Value="{x:Static p:Resources.PackageManagerNoNetworkModeToolTip}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ToolTip.Style>
+                            </ToolTip>
+                        </MenuItem.ToolTip>
+                    </MenuItem>
 
                     <Separator />
 

@@ -201,7 +201,7 @@ Al hacer clic en "Continuar", acepta la implementación de los cambios de sintax
     <value>Antes de aplicar la migración de código de Python, se ha guardado una copia de seguridad de este gráfico en la ubicación de copia de seguridad configurada: {0}</value>
   </data>
   <data name="CPythonMigrationBackupFileCreatedMessage" xml:space="preserve">
-    <value>Antes de llevar a cabo la actualización, se ha guardado un archivo de copia de seguridad. </value>
+    <value>Antes de llevar a cabo la actualización, se ha guardado un archivo de copia de seguridad </value>
   </data>
   <data name="RejectButtonTooltip" xml:space="preserve">
     <value>Rechace los cambios de código actuales.</value>

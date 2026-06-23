@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Autodesk.DesignScript.Interfaces
@@ -154,6 +154,15 @@ namespace Autodesk.DesignScript.Interfaces
             get;
             set;
         }
+
+        /// <summary>
+        /// Gets the locale to use during extension startup, expressed as a
+        /// BCP 47 culture name such as <c>en-US</c>
+        /// (see <see cref="System.Globalization.CultureInfo.Name"/>).
+        /// A <see langword="null"/> or empty value indicates that no explicit
+        /// locale was provided by the host.
+        /// </summary>
+        public string Locale { get; internal set; }
     }
 
     /// <summary>

@@ -277,7 +277,7 @@
         <member name="T:DSCore.Data.DataNodeDynamoType">
             <summary>Dynamo でサポートされる DataType を表すクラス</summary>
         </member>
-        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String)">
+        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String,System.String)">
             <summary>Dynamo でサポートされる DataType を表すクラス</summary>
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Type">
@@ -285,6 +285,10 @@
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Name">
             <summary>タイプ名を上書きする任意の名前(「長整数型」ではなく「数字」)</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.TypeId">
+            <summary>ワイヤ形式の $typeid (例: "autodesk.math:point3d-1.0.0")。
+            $typeid シリアル化を使用しないプリミティブ タイプの場合は null。</summary>
         </member>
         <member name="P:DSCore.Data.DataNodeDynamoType.Level">
             <summary>UI に表示される階層レベル</summary>
@@ -342,6 +346,11 @@
             <summary>オブジェクトの ArrayList から DataNodeDynamoTypes のリストを返します</summary>
             <param name="list">再形式化するオブジェクトの ArrayList</param>
             <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsUnusedDefineDataInput(System.Object)">
+            <summary>Define Data の入力が未使用(null または空のリスト)かどうかを確認します。</summary>
+            <param name="inputValue">グラフからの入力値。</param>
+            <returns>入力を未接続または未使用として扱う必要がある場合は true です。</returns>
         </member>
         <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
             <summary>入力オブジェクトが単一の値または単一レベルの ArrayList かを確認します。</summary>
