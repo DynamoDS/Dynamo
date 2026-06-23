@@ -32,7 +32,7 @@ jobs:
     steps:
       # Checkout Dynamo repo
       - name: Checkout Dynamo Repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       # Analyze for missing information inside the issue content
       - name: Analyze Issue Body
@@ -80,7 +80,7 @@ jobs:
       # Checkout the IssuesTypePredicter repo (https://github.com/DynamoDS/IssuesTypePredicter)
       - name: Checkout IssuesTypePredicter Repo
         if: env.analysis_response == 'Valid'
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: DynamoDS/IssuesTypePredicter
           path: IssuesTypePredicter
