@@ -575,6 +575,55 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void TemplateSavePathCheckBlocksTemplateRootAndChildren()
+        {
+            var templateRoot = Path.Combine(TempFolder, "templates");
+            var localizedTemplateDirectory = Path.Combine(templateRoot, "en-US");
+
+            Assert.IsTrue(DynamoViewModel.IsPathInTemplateDirectoryTree(
+                Path.Combine(templateRoot, "Template.dyn"), localizedTemplateDirectory));
+            Assert.IsTrue(DynamoViewModel.IsPathInTemplateDirectoryTree(
+                Path.Combine(localizedTemplateDirectory, "Template.dyn"), localizedTemplateDirectory));
+            Assert.IsTrue(DynamoViewModel.IsPathInTemplateDirectoryTree(
+                Path.Combine(templateRoot, "fr-FR", "Template.dyn"), localizedTemplateDirectory));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TemplateSavePathCheckAllowsPathsOutsideTemplateRoot()
+        {
+            var templateRoot = Path.Combine(TempFolder, "templates");
+            var localizedTemplateDirectory = Path.Combine(templateRoot, "en-US");
+
+            Assert.IsFalse(DynamoViewModel.IsPathInTemplateDirectoryTree(
+                Path.Combine(TempFolder, "templates-other", "Template.dyn"), localizedTemplateDirectory));
+            Assert.IsFalse(DynamoViewModel.IsPathInTemplateDirectoryTree(
+                Path.Combine(TempFolder, "Template.dyn"), localizedTemplateDirectory));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TemplateSavePathCheckUsesCustomTemplateFolderAsRoot()
+        {
+            var customTemplateDirectory = Path.Combine(TempFolder, "CustomTemplates");
+
+            Assert.IsTrue(DynamoViewModel.IsPathInTemplateDirectoryTree(
+                Path.Combine(customTemplateDirectory, "Template.dyn"), customTemplateDirectory));
+            Assert.IsTrue(DynamoViewModel.IsPathInTemplateDirectoryTree(
+                Path.Combine(customTemplateDirectory, "Nested", "Template.dyn"), customTemplateDirectory));
+            Assert.IsFalse(DynamoViewModel.IsPathInTemplateDirectoryTree(
+                Path.Combine(TempFolder, "Template.dyn"), customTemplateDirectory));
+
+            // Custom path whose parent happens to be named "templates" should not climb to the parent
+            var customUnderTemplatesParent = Path.Combine(TempFolder, "templates", "CustomTemplates");
+            Assert.IsFalse(DynamoViewModel.IsPathInTemplateDirectoryTree(
+                Path.Combine(TempFolder, "templates", "other.dyn"), customUnderTemplatesParent));
+            Assert.IsTrue(DynamoViewModel.IsPathInTemplateDirectoryTree(
+                Path.Combine(customUnderTemplatesParent, "Template.dyn"), customUnderTemplatesParent));
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void CanOpenLegacyXmlTemplateAsNewWorkspace()
         {
             var templatePath = Path.Combine(TestDirectory, @"core\math", "Round.dyn");
