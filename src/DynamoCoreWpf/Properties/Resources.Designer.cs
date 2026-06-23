@@ -4693,6 +4693,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localised string similar to This file is no longer available. It may have been moved, renamed, or deleted.\n{0}.
+        /// </summary>
+        public static string MessageHomeFileMissing {
+            get {
+                return ResourceManager.GetString("MessageHomeFileMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading the packages is taking longer than expected. What would you like to do?.
         /// </summary>
         public static string MessageExcessiveLoadTime {
