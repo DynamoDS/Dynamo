@@ -384,7 +384,9 @@ if (!string.IsNullOrEmpty(tempRoot))
 
             var originalBuiltInDir = PathManager.BuiltinPackagesDirectory;
             var originalHostInfo = Dynamo.Models.DynamoModel.HostAnalyticsInfo;
-            var tempPackagesRoot = Path.Combine(Path.GetTempPath(), "DynamoSandboxBuiltInTest_" + Guid.NewGuid().ToString("N"), "Packages");
+            var tempRoot = Path.GetTempPath().TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var testFolderName = "DynamoSandboxBuiltInTest_" + Guid.NewGuid().ToString("N");
+            var tempPackagesRoot = Path.Combine(Path.Combine(tempRoot, testFolderName), "Packages");
 
             try
             {
