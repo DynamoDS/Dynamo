@@ -38,7 +38,7 @@ namespace DynamoCoreWpfTests.PackageManager
 
         internal string BuiltinPackagesTestDir { get { return Path.Combine(TestDirectory, "builtinpackages testdir", "Packages"); } }
 
-        internal int ExpectedNumberOfBuiltInPackages { get { return 2; } }
+        internal int ExpectedNumberOfBuiltInPackages { get { return 3; } }
 
         #region Utility functions
 
@@ -1625,6 +1625,152 @@ namespace DynamoCoreWpfTests.PackageManager
                        true,
                         MessageBoxButton.OKCancel,MessageBoxImage.Exclamation), Times.Exactly(1));
 
+        }
+
+        [Test]
+        [Description("If the package compatibility matrix explicitly marks the package as compatible, do NOT show engine_version newer/older warnings even when engine_version differs.")]
+        public void PackageManagerDoesNotShowEngineVersionWarningWhenCompatibilityMatrixIsCompatible()
+        {
+            var mockGreg = new Mock<IGregClient>();
+            var clientMock = new Mock<Dynamo.PackageManager.PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty, false);
+            var pmVmMock = new Mock<PackageManagerClientViewModel>(ViewModel, clientMock.Object);
+            var pmMock = new Mock<PackageManagerExtension>();
+
+            // When we attempt a download, return a valid download path so we never hit the real Greg client.
+            pmVmMock.Setup(x => x.Download(It.IsAny<PackageDownloadHandle>())).Returns<PackageDownloadHandle>(h => Task.Factory.StartNew(() => (h, h.Name)));
+            pmVmMock.Setup(x => x.InstallPackage(It.IsAny<PackageDownloadHandle>(), It.IsAny<string>(), It.IsAny<string>()));
+
+            var pkgVer = new Version(1, 0, 0).ToString();
+            // An engine_version that would normally trip the older/newer Dynamo warning heuristic.
+            var pkgEngineVersion = "1.0.0";
+            var id =Guid.NewGuid().ToString();
+            var name = "test-123-name";
+            var deps = new List<Dependency>() { new Dependency() { _id = id, name = name } };
+            var depVersions = new List<string>() { pkgVer };
+
+            // A compatibility matrix that explicitly marks the package as compatible with the current Dynamo version.
+            var compatibilityMatrix = new List<Greg.Responses.Compatibility>
+            {
+                new Greg.Responses.Compatibility { name = "Dynamo", min = "1.0", max = "100.0" }
+            };
+
+            var pkgVersionObject = new PackageVersion()
+            {
+                version = pkgVer,
+                engine_version = pkgEngineVersion,
+                name = name,
+                id = id,
+                full_dependency_ids = deps,
+                full_dependency_versions = depVersions,
+                compatibility_matrix = compatibilityMatrix
+            };
+
+            // When headers are retrieved for the package, return the correct header (carrying the compatibility matrix).
+            clientMock.Setup(x => x.GetPackageVersionHeader(It.IsAny<string>(), It.IsAny<string>())).Returns<string, string>((i, v) =>
+            {
+                return i == id ? pkgVersionObject : null;
+            });
+
+            // Wire up the PackageManagerExtension so CheckIfPackagesTargetOtherHosts can resolve known hosts.
+            clientMock.Setup(x => x.GetKnownHosts()).Returns(new List<string>() { "Revit", "Civil 3D", "FormIt" });
+            pmMock.Setup(x => x.PackageManagerClient).Returns(clientMock.Object);
+            pmMock.Setup(x => x.Host).Returns("");
+            pmVmMock.Setup(x => x.PackageManagerExtension).Returns(pmMock.Object);
+            var dlgMock = new Mock<MessageBoxService.IMessageBox>();
+
+            // Click OK on the download consent dialog.
+            dlgMock.Setup(m => m.Show(It.IsAny<Window>(), It.IsAny<string>(), It.IsAny<string>(),
+                It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.OK);
+            dlgMock.Setup(m => m.Show(It.IsAny<Window>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(),
+                It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.OK);
+            MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
+
+            var productName = ViewModel.BrandingResourceProvider.ProductName;
+            var newerDynamoMessage = $"{string.Format(Dynamo.Wpf.Properties.Resources.MessagePackageNewerDynamo, productName)} {Dynamo.Wpf.Properties.Resources.MessagePackOlderDynamoLink}";
+            var olderDynamoMessage = $"{string.Format(Dynamo.Wpf.Properties.Resources.MessagePackageOlderDynamo, productName)} {Dynamo.Wpf.Properties.Resources.MessagePackOlderDynamoLink}";
+
+            // Actually perform the download & install operations.
+            pmVmMock.Object.ExecutePackageDownload(id, pkgVersionObject, "");
+
+            // Because the compatibility matrix marks the package as compatible (compatible == true),
+            // the engine_version heuristic is skipped entirely, so neither
+            // the "newer Dynamo" nor the "older/legacy Dynamo" warning should be shown.
+            dlgMock.Verify(x => x.Show(It.IsAny<Window>(), newerDynamoMessage, It.IsAny<string>(),
+                It.IsAny<bool>(), It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Never);
+            dlgMock.Verify(x => x.Show(It.IsAny<Window>(), olderDynamoMessage, It.IsAny<string>(),
+                It.IsAny<bool>(), It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Never);
+        }
+
+        [Test]
+        [Description("If the package compatibility matrix is null, engine_version warnings should still appear when engine_version differs from the current Dynamo version.")]
+        public void PackageManagerShowsEngineVersionWarningWhenCompatibilityMatrixIsNull()
+        {
+            var mockGreg = new Mock<IGregClient>();
+            var clientMock = new Mock<Dynamo.PackageManager.PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty, false);
+            var pmVmMock = new Mock<PackageManagerClientViewModel>(ViewModel, clientMock.Object);
+            var pmMock = new Mock<PackageManagerExtension>();
+
+            // When we attempt a download, return a valid download path so we never hit the real Greg client.
+            pmVmMock.Setup(x => x.Download(It.IsAny<PackageDownloadHandle>())).Returns<PackageDownloadHandle>(h => Task.Factory.StartNew(() => (h, h.Name)));
+            pmVmMock.Setup(x => x.InstallPackage(It.IsAny<PackageDownloadHandle>(), It.IsAny<string>(), It.IsAny<string>()));
+
+            var pkgVer = new Version(1, 0, 0).ToString();
+            // An engine_version that would normally trip the older/newer Dynamo warning heuristic.
+            var pkgEngineVersion = "1.0.0";
+            var id = Guid.NewGuid().ToString();
+            var name = "test-123-name";
+            var deps = new List<Dependency>() { new Dependency() { _id = id, name = name } };
+            var depVersions = new List<string>() { pkgVer };
+
+            // No compatibility matrix — the engine_version heuristic should still fire.
+            var pkgVersionObject = new PackageVersion()
+            {
+                version = pkgVer,
+                engine_version = pkgEngineVersion,
+                name = name,
+                id = id,
+                full_dependency_ids = deps,
+                full_dependency_versions = depVersions,
+                compatibility_matrix = null
+            };
+
+            // When headers are retrieved for the package, return the correct header (carrying the compatibility matrix).
+            clientMock.Setup(x => x.GetPackageVersionHeader(It.IsAny<string>(), It.IsAny<string>())).Returns<string, string>((i, v) =>
+            {
+                return i == id ? pkgVersionObject : null;
+            });
+
+            // Wire up the PackageManagerExtension so CheckIfPackagesTargetOtherHosts can resolve known hosts.
+            clientMock.Setup(x => x.GetKnownHosts()).Returns(new List<string>() { "Revit", "Civil 3D", "FormIt" });
+            pmMock.Setup(x => x.PackageManagerClient).Returns(clientMock.Object);
+            pmMock.Setup(x => x.Host).Returns("");
+            pmVmMock.Setup(x => x.PackageManagerExtension).Returns(pmMock.Object);
+            var dlgMock = new Mock<MessageBoxService.IMessageBox>();
+
+            // Click OK on the download consent dialog.
+            dlgMock.Setup(m => m.Show(It.IsAny<Window>(), It.IsAny<string>(), It.IsAny<string>(),
+                It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.OK);
+            dlgMock.Setup(m => m.Show(It.IsAny<Window>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>(),
+                It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.OK);
+            MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
+
+            var productName = ViewModel.BrandingResourceProvider.ProductName;
+            var newerDynamoMessage = $"{string.Format(Dynamo.Wpf.Properties.Resources.MessagePackageNewerDynamo, productName)} {Dynamo.Wpf.Properties.Resources.MessagePackOlderDynamoLink}";
+            var olderDynamoMessage = $"{string.Format(Dynamo.Wpf.Properties.Resources.MessagePackageOlderDynamo, productName)} {Dynamo.Wpf.Properties.Resources.MessagePackOlderDynamoLink}";
+
+            // Actually perform the download & install operations.
+            pmVmMock.Object.ExecutePackageDownload(id, pkgVersionObject, "");
+
+            // Because the compatibility matrix is null, the engine_version heuristic is NOT skipped,
+            // so either the "newer Dynamo" or the "older/legacy Dynamo" warning should be shown exactly once.
+            var newerShown = dlgMock.Invocations.Any(i => i.Method.Name == "Show" && i.Arguments.Count > 1 && i.Arguments[1]?.ToString() == newerDynamoMessage);
+            var olderShown = dlgMock.Invocations.Any(i => i.Method.Name == "Show" && i.Arguments.Count > 1 && i.Arguments[1]?.ToString() == olderDynamoMessage);
+
+            Assert.IsTrue(newerShown || olderShown, "Neither the newer-Dynamo or older-Dynamo engine_version warning were shown when compatibility_matrix is null.");
         }
         #endregion
 

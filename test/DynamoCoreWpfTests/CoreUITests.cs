@@ -1504,5 +1504,44 @@ namespace DynamoCoreWpfTests
             //Wait 3 seconds until the Click Right context menu is opened
             Task.WaitAll(new Task[] { Task.Delay(2000) });
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void PortContextMenu_ClosesWhenOwnerWindowIsDeactivated()
+        {
+            // Open a new workspace.
+            ViewModel.NewHomeWorkspaceCommand.Execute(null);
+            DispatcherUtil.DoEvents();
+
+            // Grab the WorkspaceView of the new workspace (it must be loaded so it has
+            // subscribed to the owner window's Deactivated event).
+            var currentWs = View.ChildOfType<WorkspaceView>();
+            Assert.IsNotNull(currentWs, "DynamoView does not have any WorkspaceView");
+            DispatcherUtil.DoEvents();
+
+            // The port context menu should not be open on a fresh workspace.
+            Assert.IsFalse(currentWs.PortContextMenu.IsOpen, "Port context menu should not be open on a new workspace");
+
+            // Open the port context menu popup.
+            currentWs.PortContextMenu.IsOpen = true;
+            DispatcherUtil.DoEvents();
+            Assert.IsTrue(currentWs.PortContextMenu.IsOpen, "Port context menu popup was not opened");
+
+            // Simulate the Dynamo window losing focus (e.g. the user switching to another application).
+            var ownerWindow = Window.GetWindow(currentWs);
+            Assert.IsNotNull(ownerWindow, "WorkspaceView does not have an owner window");
+            RaiseDeactivatedEvent(ownerWindow);
+            DispatcherUtil.DoEvents();
+
+            // The port context menu popup must close so it is not left visible on top of other applications.
+            Assert.IsFalse(currentWs.PortContextMenu.IsOpen, "Port context menu should close when the owner window is deactivated");
+        }
+
+        private static void RaiseDeactivatedEvent(Window window)
+        {
+            System.Reflection.MethodInfo onDeactivated = typeof(Window).GetMethod("OnDeactivated",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            onDeactivated.Invoke(window, new object[] { EventArgs.Empty });
+        }
     }
 }

@@ -151,7 +151,7 @@
     <value>로그인하려면 네트워크 모드를 활성화합니다.</value>
   </data>
   <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to use Package Manager.</value>
+    <value>패키지 관리자를 사용하려면 네트워크 모드를 활성화합니다.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
@@ -3928,13 +3928,13 @@ Dynamo 3.3–3.6.x에서 이 그래프를 열려면 패키지 관리자에서 Py
     <value>노드 선택과 자동 동기화됩니다.</value>
   </data>
   <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
-    <value>This file is currently open in another instance of Dynamo.
-To avoid data loss or corruption, please choose one of the following actions:
- • Save As — opens an independent copy you can edit safely.
- • Cancel — does not open the file.</value>
+    <value>이 파일은 현재 다른 Dynamo 인스턴스에서 열려 있습니다.
+데이터 손실 또는 손상을 방지하려면 다음 작업 중 하나를 선택하십시오.
+ • 다른 이름으로 저장 — 안전하게 편집할 수 있는 독립된 사본을 엽니다.
+ • 취소 — 파일을 열지 않습니다.</value>
   </data>
   <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
-    <value>File already open in another Dynamo instance</value>
+    <value>파일이 다른 Dynamo 인스턴스에서 이미 열려 있음</value>
   </data>
   <data name="GraphLockSaveAsButton" xml:space="preserve">
     <value>다른 이름으로 저장</value>

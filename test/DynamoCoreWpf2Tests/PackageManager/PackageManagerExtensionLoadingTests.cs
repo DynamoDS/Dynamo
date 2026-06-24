@@ -61,6 +61,7 @@ namespace DynamoCoreWpfTests.PackageManager
                     new List<string>
                     {
                         "Documentation Browser",
+                        "Dynamo MCP View Extension",
                         "DynamoManipulationExtension",
                         "Graph Node Manager",
                         "Graph Status",

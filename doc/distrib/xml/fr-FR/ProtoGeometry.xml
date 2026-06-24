@@ -1333,7 +1333,7 @@
             <search>move,by amount</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Translate(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Convertir l'objet dans la direction et la magnitude du vecteur d'entrée.</summary>
+            <summary>Convertit l'objet dans la direction et la magnitude du vecteur d'entrée.</summary>
             <search>move,along vector,movebyvector</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Translate(Autodesk.DesignScript.Geometry.Vector,System.Double)">

@@ -148,7 +148,7 @@
     <value>Instalovat určenou verzi</value>
   </data>
   <data name="InstallButtonNoNetworkModeToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to install packages.</value>
+    <value>Chcete-li instalovat balíčky, povolte režim sítě.</value>
   </data>
   <data name="KeepLocalButtonText" xml:space="preserve">
     <value>Ponechat instalovanou verzi</value>
