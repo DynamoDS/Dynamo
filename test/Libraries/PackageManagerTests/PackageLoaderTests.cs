@@ -414,7 +414,11 @@ if (!string.IsNullOrEmpty(tempRoot))
             {
                 PathManager.BuiltinPackagesDirectory = originalBuiltInDir;
                 Dynamo.Models.DynamoModel.HostAnalyticsInfo = originalHostInfo;
-                try { Directory.Delete(Path.GetDirectoryName(tempPackagesRoot), true); } catch (IOException) { }
+                try { Directory.Delete(Path.GetDirectoryName(tempPackagesRoot), true); }
+                catch (IOException ex)
+                {
+                    TestContext.WriteLine($"Cleanup failed for temporary test directory '{Path.GetDirectoryName(tempPackagesRoot)}': {ex.Message}");
+                }
             }
         }
 
