@@ -534,7 +534,7 @@ namespace Dynamo.PythonMigration
             if (node is PythonNodeBase pyNode && pyNode.EngineName == PythonEngineManager.CPython3EngineName)
             {
                 pyNode.EngineName = PythonEngineManager.PythonNet3EngineName;
-                pyNode.OnNodeModified();
+                pyNode.MarkNodeAsModified();
 
                 if (pyNode is PythonNode py)
                 {
