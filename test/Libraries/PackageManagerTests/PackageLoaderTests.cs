@@ -296,6 +296,11 @@ namespace Dynamo.PackageManager.Tests
         /// </summary>
         private static void CreateMinimalBuiltInPackage(string packagesRoot, string packageName)
         {
+            if (Path.IsPathRooted(packageName))
+            {
+                throw new ArgumentException("packageName must be a relative path.", nameof(packageName));
+            }
+
             var packageDir = Path.Combine(packagesRoot, packageName);
             Directory.CreateDirectory(packageDir);
             // dependencies must be present (non-null) because Package.FromJson enumerates it.
