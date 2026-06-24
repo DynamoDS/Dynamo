@@ -320,7 +320,10 @@ namespace Dynamo.PackageManager.Tests
 
             var originalBuiltInDir = PathManager.BuiltinPackagesDirectory;
             var originalHostInfo = Dynamo.Models.DynamoModel.HostAnalyticsInfo;
-            var tempPackagesRoot = Path.Combine(Path.GetTempPath(), "DynamoHostBuiltInTest_" + Guid.NewGuid().ToString("N"), "Packages");
+            var testFolderName = ("DynamoHostBuiltInTest_" + Guid.NewGuid().ToString("N"))
+                .TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var packagesFolderName = "Packages".TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var tempPackagesRoot = Path.Combine(Path.GetTempPath(), testFolderName, packagesFolderName);
 
             try
             {
