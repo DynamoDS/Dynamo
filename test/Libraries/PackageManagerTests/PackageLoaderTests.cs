@@ -298,7 +298,9 @@ namespace Dynamo.PackageManager.Tests
         {
             var packageDir = Path.Combine(packagesRoot, packageName);
             Directory.CreateDirectory(packageDir);
-            var header = "{\"name\":\"" + packageName + "\",\"version\":\"1.0.0\",\"engine_version\":\"2.1.0.7840\","
+            // dependencies must be present (non-null) because Package.FromJson enumerates it.
+            var header = "{\"license\":\"\",\"name\":\"" + packageName + "\",\"version\":\"1.0.0\",\"group\":\"\","
+                + "\"keywords\":null,\"dependencies\":[],\"contents\":\"\",\"engine_version\":\"2.1.0.7840\","
                 + "\"engine\":\"dynamo\",\"contains_binaries\":false,\"node_libraries\":[]}";
             File.WriteAllText(Path.Combine(packageDir, "pkg.json"), header);
         }
