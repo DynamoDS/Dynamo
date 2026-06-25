@@ -410,7 +410,7 @@ namespace Dynamo.Views
             return true;
         }
 
-        private bool IsRenderBoundsValidForExport(Rect bounds)
+        private static bool IsRenderBoundsValidForExport(Rect bounds)
         {
             if (bounds.Width > MaxExportDimension || bounds.Height > MaxExportDimension)
                 return false;
