@@ -3812,6 +3812,9 @@ Pour transformer ce fichier en nouveau gabarit, enregistrez-le dans un autre dos
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>Le chemin d'accès fourni est incorrect. Si le fichier est archivé, assurez-vous de l'extraire avant de l'ouvrir.\n{0}</value>
   </data>
+  <data name="MessageHomeFileMissing" xml:space="preserve">
+    <value>This file is no longer available. It may have been moved, renamed, or deleted.\n{0}</value>
+  </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>Geler le groupe</value>
   </data>

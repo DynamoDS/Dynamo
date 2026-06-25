@@ -3818,6 +3818,9 @@ Para convertir este archivo en una nueva plantilla, guárdelo en una carpeta dif
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>Se ha especificado una ruta de archivo no válida. En caso de que se haya guardado el archivo, asegúrese de extraerlo antes de abrirlo.\n{0}</value>
   </data>
+  <data name="MessageHomeFileMissing" xml:space="preserve">
+    <value>This file is no longer available. It may have been moved, renamed, or deleted.\n{0}</value>
+  </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>Inmovilizar grupo</value>
   </data>

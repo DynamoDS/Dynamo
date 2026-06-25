@@ -3815,6 +3815,9 @@
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>잘못된 파일 경로가 제공되었습니다. 파일이 보관된 경우 열기 전에 압축을 해제하십시오.\n{0}</value>
   </data>
+  <data name="MessageHomeFileMissing" xml:space="preserve">
+    <value>This file is no longer available. It may have been moved, renamed, or deleted.\n{0}</value>
+  </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>그룹 고정</value>
   </data>
