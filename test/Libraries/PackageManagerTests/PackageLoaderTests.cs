@@ -364,15 +364,15 @@ namespace Dynamo.PackageManager.Tests
             }
             finally
             {
-PathManager.BuiltinPackagesDirectory = originalBuiltInDir;
-Dynamo.Models.DynamoModel.HostAnalyticsInfo = originalHostInfo;
-var tempRoot = Path.GetDirectoryName(tempPackagesRoot);
-if (!string.IsNullOrEmpty(tempRoot))
-{
-    try { Directory.Delete(tempRoot, true); }
-    catch (IOException) { }
-    catch (UnauthorizedAccessException) { }
-}
+                PathManager.BuiltinPackagesDirectory = originalBuiltInDir;
+                Dynamo.Models.DynamoModel.HostAnalyticsInfo = originalHostInfo;
+                var tempRoot = Path.GetDirectoryName(tempPackagesRoot);
+                if (!string.IsNullOrEmpty(tempRoot))
+                {
+                    try { Directory.Delete(tempRoot, true); }
+                    catch (IOException) { }
+                    catch (UnauthorizedAccessException) { }
+                }
             }
         }
 
