@@ -66,11 +66,10 @@ namespace Dynamo.Views
         private double currentNodeCascadeOffset;
         private Point inCanvasSearchPosition;
         private Window ownerWindow;
-        private const double MaxExportDimension = 16384;
-        private const double MaxExportTotalPixels = 96_000_000;
 
         static internal event Action<Window, ViewModelBase> RequestShowNodeAutoCompleteBar;
         private double currentRenderScale = -1;
+        internal const double MaxExportDimension = 16384;
 
         public WorkspaceViewModel ViewModel
         {
@@ -413,24 +412,10 @@ namespace Dynamo.Views
 
         private bool IsRenderBoundsValidForExport(Rect bounds)
         {
-            var width = bounds.Width;
-            var height = bounds.Height;
-
-            // Must be a real, positive area.
-            if (double.IsNaN(width) || double.IsNaN(height) ||
-                double.IsInfinity(width) || double.IsInfinity(height) ||
-                width <= 0 || height <= 0)
-            {
+            if (bounds.Width > MaxExportDimension || bounds.Height > MaxExportDimension)
                 return false;
-            }
 
-            // Reject total pixel counts that exceed what RenderTargetBitmap can realistically allocate.
-            if (width > MaxExportDimension || height > MaxExportDimension)
-            {
-                return false;
-            }
-
-            return width * height <= MaxExportTotalPixels;
+            return true;
         }
 
         private RenderTargetBitmap GetRender(Rect bounds, double minX, double minY)
@@ -491,9 +476,9 @@ namespace Dynamo.Views
                 return ExportImageResult.NotValidAsImage;
             }
 
-            if (workSpaceRender == null) return ExportImageResult.EmptyDrawing;
+            if (workSpaceRender == null) return ExportImageResult.NotValidAsImage;
 
-            ExportImageResult result = ExportImageResult.EmptyDrawing;
+            ExportImageResult result = ExportImageResult.IsValidAsImage;
             if (validating)
             {
                 path = $"{ViewModel.DynamoViewModel.PreferencesViewModel.BackupLocation}\\{System.DateTime.Now.Ticks.ToString()}.png";
