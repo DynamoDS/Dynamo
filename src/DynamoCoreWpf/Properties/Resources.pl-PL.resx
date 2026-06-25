@@ -3818,6 +3818,9 @@ Aby ustawić ten plik jako nowy szablon, zapisz go w innym folderze, a następni
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>Podano nieprawidłową ścieżkę pliku. Jeśli plik jest zarchiwizowany, należy go rozpakować przed otwarciem.\n{0}</value>
   </data>
+  <data name="MessageHomeFileMissing" xml:space="preserve">
+    <value>This file is no longer available. It may have been moved, renamed, or deleted.\n{0}</value>
+  </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>Zablokuj grupę</value>
   </data>

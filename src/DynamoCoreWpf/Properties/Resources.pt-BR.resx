@@ -3818,6 +3818,9 @@ Para transformar este arquivo em um novo modelo, salve-o em uma pasta diferente 
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>Caminho de arquivo inválido fornecido. Caso o arquivo esteja arquivado, certifique-se de extraí-lo antes de o abrir.\n{0}</value>
   </data>
+  <data name="MessageHomeFileMissing" xml:space="preserve">
+    <value>This file is no longer available. It may have been moved, renamed, or deleted.\n{0}</value>
+  </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>Congelar grupo</value>
   </data>
