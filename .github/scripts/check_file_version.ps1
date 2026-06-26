@@ -81,7 +81,13 @@ $excludedFiles = @(
     "JsonSchema.Net.dll",
     "JsonPointer.Net.dll",
     "Json.More.dll",
-    "DynamoPlayer.*.dll"
+    "DynamoPlayer.*.dll",
+    # DynamoAssistant built-in package (DYN-10450) — versioned independently of Dynamo, signed in its own pipeline.
+    "AutodeskAssistantViewExtension.dll",
+    "AutodeskAssistantViewExtension.resources.dll",
+    "AdpSDKCSharpWrapper.dll",
+    "Analytics.NET.ADP.dll",
+    "Analytics.NET.Core.dll"
 )
 $noVersion = @()
 $wrongVersion = @()

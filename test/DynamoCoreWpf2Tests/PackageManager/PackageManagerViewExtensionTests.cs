@@ -159,7 +159,7 @@ namespace DynamoCoreWpfTests.PackageManager
         public void PackageManagerViewExtensionHasCorrectNumberOfRequestedExtensions()
         {
             var pkgViewExtension = View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault();
-            Assert.AreEqual(pkgViewExtension.RequestedExtensions.Count(), 3);
+            Assert.AreEqual(pkgViewExtension.RequestedExtensions.Count(), 4);
         }
 
         [Test]
@@ -208,7 +208,7 @@ namespace DynamoCoreWpfTests.PackageManager
                 var pkg = loader.ScanPackageDirectory(pkgDir);
                 loader.LoadPackages(new List<Package> { pkg });
                 Assert.AreEqual(1, loader.RequestedExtensions.Count());
-                Assert.AreEqual(4, View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault().RequestedExtensions.Count());
+                Assert.AreEqual(5, View.viewExtensionManager.ViewExtensions.OfType<PackageManagerViewExtension>().FirstOrDefault().RequestedExtensions.Count());
                 Assert.IsTrue(viewExtensionLoadStart);
                 Assert.IsTrue(viewExtensionAdd);
                 Assert.IsTrue(viewExtensionLoaded);
