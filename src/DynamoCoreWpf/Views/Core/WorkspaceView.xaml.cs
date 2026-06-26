@@ -465,17 +465,7 @@ namespace Dynamo.Views
             if (!TryGetRenderBounds(out var bounds, out var minX, out var minY)) return ExportImageResult.EmptyDrawing;
             if (!IsRenderBoundsValidForExport(bounds)) return ExportImageResult.NotValidAsImage;
 
-            RenderTargetBitmap workSpaceRender;
-            try
-            {
-                workSpaceRender = GetRender(bounds, minX, minY);
-            }
-            catch (Exception ex)
-            {
-                ViewModel?.DynamoViewModel?.Model?.Logger?.Log("Failed to render the workspace as an image: " + ex);
-                return ExportImageResult.NotValidAsImage;
-            }
-
+            var workSpaceRender = GetRender(bounds, minX, minY);
             if (workSpaceRender == null) return ExportImageResult.NotValidAsImage;
 
             ExportImageResult result = ExportImageResult.IsValidAsImage;
