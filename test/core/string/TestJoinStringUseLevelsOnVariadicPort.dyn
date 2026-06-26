@@ -82,7 +82,7 @@
           "Description": "String used to separate strings.\n\nstring",
           "UsingDefaultValue": false,
           "Level": 1,
-          "UseLevels": true,
+          "UseLevels": false,
           "KeepListStructure": false
         },
         {

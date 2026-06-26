@@ -1333,7 +1333,7 @@
             <search>move,by amount</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Translate(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>入力 Vector の方向と大きさでオブジェクトを変換します。</summary>
+            <summary>入力された Vector の方向と大きさでオブジェクトを移動します。</summary>
             <search>move,along vector,movebyvector</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Translate(Autodesk.DesignScript.Geometry.Vector,System.Double)">

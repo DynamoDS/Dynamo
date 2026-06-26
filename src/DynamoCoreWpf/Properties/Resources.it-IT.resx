@@ -151,7 +151,7 @@
     <value>Attivare la modalità di rete per poter accedere.</value>
   </data>
   <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to use Package Manager.</value>
+    <value>Attivare la modalità di rete per poter utilizzare Package Manager.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
@@ -3800,6 +3800,9 @@ Per trasformare questo file in un nuovo modello, salvarlo in un'altra cartella e
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>Percorso del file specificato non valido. Se il file è archiviato, assicurarsi di estrarlo prima di aprirlo.\n{0}</value>
   </data>
+  <data name="MessageHomeFileMissing" xml:space="preserve">
+    <value>This file is no longer available. It may have been moved, renamed, or deleted.\n{0}</value>
+  </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>Congela gruppo</value>
   </data>
@@ -3913,13 +3916,13 @@ Per aprire questo grafico in Dynamo 3.3-3.6.x: installare il pacchetto PythonNet
     <value>Sincronizzazione automatica con selezione del nodo.</value>
   </data>
   <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
-    <value>This file is currently open in another instance of Dynamo.
-To avoid data loss or corruption, please choose one of the following actions:
- • Save As — opens an independent copy you can edit safely.
- • Cancel — does not open the file.</value>
+    <value>Questo file è attualmente aperto in un'altra istanza di Dynamo.
+Per evitare la perdita o il danneggiamento dei dati, scegliere una delle seguenti operazioni:
+ • Salva con nome: apre una copia indipendente che è possibile modificare in modo sicuro.
+ • Annulla: non apre il file.</value>
   </data>
   <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
-    <value>File already open in another Dynamo instance</value>
+    <value>File già aperto in un'altra istanza di Dynamo</value>
   </data>
   <data name="GraphLockSaveAsButton" xml:space="preserve">
     <value>Salva con nome</value>

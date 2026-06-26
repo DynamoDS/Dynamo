@@ -148,7 +148,7 @@
     <value>安装指定的版本</value>
   </data>
   <data name="InstallButtonNoNetworkModeToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to install packages.</value>
+    <value>启用网络模式以便能够安装软件包。</value>
   </data>
   <data name="KeepLocalButtonText" xml:space="preserve">
     <value>保留安装的版本</value>

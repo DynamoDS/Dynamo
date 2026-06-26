@@ -148,7 +148,7 @@
     <value>Angegebene Version installieren</value>
   </data>
   <data name="InstallButtonNoNetworkModeToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to install packages.</value>
+    <value>Aktivieren Sie den Netzwerkmodus, um Pakete installieren zu können.</value>
   </data>
   <data name="KeepLocalButtonText" xml:space="preserve">
     <value>Installierte Version beibehalten</value>

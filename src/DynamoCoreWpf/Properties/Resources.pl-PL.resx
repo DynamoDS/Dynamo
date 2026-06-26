@@ -151,7 +151,7 @@
     <value>Aby móc się zalogować, włącz tryb sieciowy.</value>
   </data>
   <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to use Package Manager.</value>
+    <value>Aby móc korzystać z Menedżera pakietów, włącz tryb sieciowy.</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
@@ -3818,6 +3818,9 @@ Aby ustawić ten plik jako nowy szablon, zapisz go w innym folderze, a następni
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>Podano nieprawidłową ścieżkę pliku. Jeśli plik jest zarchiwizowany, należy go rozpakować przed otwarciem.\n{0}</value>
   </data>
+  <data name="MessageHomeFileMissing" xml:space="preserve">
+    <value>This file is no longer available. It may have been moved, renamed, or deleted.\n{0}</value>
+  </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>Zablokuj grupę</value>
   </data>
@@ -3931,13 +3934,13 @@ Aby otworzyć ten wykres w dodatku Dynamo w wersji od 3.3 do 3.6.x, zainstaluj p
     <value>Synchronizuje automatycznie z wyborem węzła.</value>
   </data>
   <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
-    <value>This file is currently open in another instance of Dynamo.
-To avoid data loss or corruption, please choose one of the following actions:
- • Save As — opens an independent copy you can edit safely.
- • Cancel — does not open the file.</value>
+    <value>Ten plik jest obecnie otwarty w innym wystąpieniu dodatku Dynamo.
+Aby uniknąć utraty lub uszkodzenia danych, wybierz jedną z następujących czynności:
+ • Zapisz jako — otwiera niezależną kopię, którą można bezpiecznie edytować.
+ • Anuluj — nie otwiera pliku.</value>
   </data>
   <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
-    <value>File already open in another Dynamo instance</value>
+    <value>Plik już otwarty w innym wystąpieniu dodatku Dynamo</value>
   </data>
   <data name="GraphLockSaveAsButton" xml:space="preserve">
     <value>Zapisz jako</value>

@@ -622,7 +622,7 @@ In Arbeitsabläufen mit generativem Design sollte dieser Block verwendet werden,
     <value>Typen auswählen</value>
   </data>
   <data name="DefineDataMissingUpstreamConnectionInfoMessage" xml:space="preserve">
-    <value>No upstream connection. Connect a node to the input port to provide a default value and to set the data type. To choose a type without upstream data, turn off Auto-detect type and use the drop-down menu.</value>
+    <value>Keine vorgelagerten Verbindungen. Verbinden Sie einen Block mit dem Eingabeanschluss, um einen Vorgabewert bereitzustellen und den Datentyp festzulegen. Um einen Typ ohne vorgelagerte Daten auszuwählen, deaktivieren Sie die Option Typ automatisch erkennen und verwenden das Dropdown-Menü.</value>
   </data>
   <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
     <value>Formatangaben für numerische Werte. Weitere Informationen finden Sie in der Hilfe zu erweiterten Blöcken.

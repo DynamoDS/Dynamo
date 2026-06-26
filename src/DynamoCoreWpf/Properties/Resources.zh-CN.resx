@@ -151,7 +151,7 @@
     <value>启用网络模式以便能够登录。</value>
   </data>
   <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
-    <value>Enable Network Mode to be able to use Package Manager.</value>
+    <value>启用网络模式以便能够使用 Package Manager。</value>
   </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
@@ -3816,6 +3816,9 @@
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>提供的文件路径无效。如果文件已存档，请确保在打开之前将其解压缩。\n{0}</value>
   </data>
+  <data name="MessageHomeFileMissing" xml:space="preserve">
+    <value>This file is no longer available. It may have been moved, renamed, or deleted.\n{0}</value>
+  </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>冻结组</value>
   </data>
@@ -3929,13 +3932,13 @@
     <value>与节点选择自动同步。</value>
   </data>
   <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
-    <value>This file is currently open in another instance of Dynamo.
-To avoid data loss or corruption, please choose one of the following actions:
- • Save As — opens an independent copy you can edit safely.
- • Cancel — does not open the file.</value>
+    <value>此文件当前已在 Dynamo 的其他实例中打开。
+为避免数据丢失或损坏，请选择以下操作之一:
+ • 另存为 — 打开可以安全编辑的独立副本。
+ • 取消 — 不打开文件。</value>
   </data>
   <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
-    <value>File already open in another Dynamo instance</value>
+    <value>文件已在其他 Dynamo 实例中打开</value>
   </data>
   <data name="GraphLockSaveAsButton" xml:space="preserve">
     <value>另存为</value>
