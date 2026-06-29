@@ -9,6 +9,17 @@ using Newtonsoft.Json;
 namespace Dynamo.Graph.Workspaces.Locking
 {
     /// <summary>
+    /// Describes the outcome of a <see cref="GraphLockFile.TryRead"/> call.
+    /// </summary>
+    internal enum GraphLockReadResult
+    {
+        NotFound,
+        Ok,
+        Corrupt,
+        TransientFailure
+    }
+
+    /// <summary>
     /// Provides file-system operations for graph lock sidecar files.
     /// </summary>
     internal static class GraphLockFile
@@ -23,6 +34,12 @@ namespace Dynamo.Graph.Workspaces.Locking
             NullValueHandling = NullValueHandling.Ignore,
             TypeNameHandling = TypeNameHandling.None
         });
+
+        private static bool IsValidLockInfo(GraphLockInfo info) =>
+            info != null
+            && info.SessionId != Guid.Empty
+            && !string.IsNullOrEmpty(info.GraphPath)
+            && info.ProcessId > 0;
 
         /// <summary>
         /// Gets the sidecar lock path for a graph file.
@@ -65,9 +82,12 @@ namespace Dynamo.Graph.Workspaces.Locking
         /// <param name="sidecarPath">The sidecar lock file path.</param>
         /// <param name="info">The parsed lock metadata when reading succeeds.</param>
         /// <returns>True if metadata was read; otherwise false.</returns>
-        internal static bool TryRead(string sidecarPath, out GraphLockInfo info)
+        internal static GraphLockReadResult TryRead(string sidecarPath, out GraphLockInfo info)
         {
             info = null;
+
+            if (!File.Exists(sidecarPath))
+                return GraphLockReadResult.NotFound;
 
             const int maxAttempts = 2;
             for (var attempt = 0; attempt < maxAttempts; attempt++)
@@ -81,29 +101,25 @@ namespace Dynamo.Graph.Workspaces.Locking
                         info = Serializer.Deserialize<GraphLockInfo>(jsonReader);
                     }
 
-                    return info != null;
+                    return IsValidLockInfo(info) ? GraphLockReadResult.Ok : GraphLockReadResult.Corrupt;
                 }
-                catch (Exception ex) when (ex is IOException || ex is JsonException)
+                catch (Exception ex) when (ex is JsonException)
+                {
+                    return GraphLockReadResult.Corrupt;
+                }
+                catch (Exception ex) when (ex is IOException)
                 {
                     if (attempt == maxAttempts - 1)
-                    {
-                        return false;
-                    }
-
-                    // Wait for 50 milliseconds before retrying
+                        return GraphLockReadResult.TransientFailure;
                     Thread.Sleep(50);
                 }
-                catch (UnauthorizedAccessException)
+                catch (Exception ex) when (ex is UnauthorizedAccessException || ex is SecurityException)
                 {
-                    return false;
-                }
-                catch (SecurityException)
-                {
-                    return false;
+                    return GraphLockReadResult.TransientFailure;
                 }
             }
 
-            return false;
+            return GraphLockReadResult.TransientFailure;
         }
 
         /// <summary>

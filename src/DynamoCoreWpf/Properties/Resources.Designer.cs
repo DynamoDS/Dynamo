@@ -520,8 +520,8 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  already exists.
-        /// Do you want to replace it?.
+        ///   Looks up a localized string similar to  {0} already exists.
+        ///Do you want to replace it?.
         /// </summary>
         public static string ConfirmReplaceFileMessage {
             get {
@@ -3792,7 +3792,7 @@ namespace Dynamo.Wpf.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to This file is currently open in another instance of Dynamo.
-        /// To avoid data loss or corruption, please choose a different file name..
+        ///To avoid data loss or corruption, please choose a different file name..
         /// </summary>
         public static string GraphLockSaveAsSameFileMessage {
             get {

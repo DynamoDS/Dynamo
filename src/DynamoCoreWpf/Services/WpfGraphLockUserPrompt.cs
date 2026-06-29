@@ -23,16 +23,17 @@ namespace Dynamo.Wpf.Services
         /// Initializes a WPF graph-lock prompt.
         /// </summary>
         /// <param name="ownerProvider">Provides the owner window when a prompt is shown.</param>
-        /// <param name="productNameProvider">Provides the product name for save-dialog filters.</param>
+        /// <param name="productName">The product name for save-dialog filters.</param>
         /// <param name="dialogFactory">Optional factory for the save dialog; defaults to <see cref="CustomSaveFileDialog"/>.</param>
         /// <param name="showMessageBox">Optional message box function used for conflict and overwrite prompts.</param>
+        internal WpfGraphLockUserPrompt(
             Func<Window> ownerProvider,
-            string productNameProvider,
+            string productName,
             Func<IFileSaver> dialogFactory = null,
             Func<string, string, MessageBoxButtons, MessageBoxIcon, DialogResult> showMessageBox = null)
         {
             this.ownerProvider = ownerProvider;
-            this.productNameProvider = productNameProvider;
+            this.productNameProvider = productName;
             this.dialogFactory = dialogFactory ?? (() => new CustomSaveFileDialog());
             this.showMessageBox = showMessageBox ?? System.Windows.Forms.MessageBox.Show;
         }
@@ -114,7 +115,7 @@ namespace Dynamo.Wpf.Services
                 if (File.Exists(chosenPath))
                 {
                     var confirm = showMessageBox(
-                        Path.GetFileName(chosenPath) + Resources.ConfirmReplaceFileMessage,
+                        string.Format(Resources.ConfirmReplaceFileMessage, Path.GetFileName(chosenPath)),
                         Resources.ConfirmReplaceFileTitle,
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Warning);

@@ -181,7 +181,8 @@ namespace Dynamo.Tests
 
         private static GraphLockInfo ReadLockInfo(string lockPath)
         {
-            Assert.IsTrue(GraphLockFile.TryRead(lockPath, out var lockInfo));
+            Assert.AreEqual(GraphLockReadResult.Ok, GraphLockFile.TryRead(lockPath, out var lockInfo),
+                "Expected lock file to be readable at: " + lockPath);
             return lockInfo;
         }
 
@@ -269,22 +270,23 @@ namespace Dynamo.Tests
             var lockPath = GraphLockFile.GetLockFilePath(graphPath);
             var stolenLock = CreateForeignLockInfo(graphPath, DateTime.UtcNow);
 
-            using (var manager = CreateManager(heartbeatMilliseconds: 100))
+            using (var manager = CreateManager(heartbeatMilliseconds: int.MaxValue))
             {
                 var result = manager.AcquireLock(graphPath, true);
                 manager.CompleteOpen(graphPath, true);
                 Assert.AreEqual(GraphLockOutcome.Opened, result.Conflict);
 
-                // Overwrite the sidecar to simulate another instance stealing the lock
+                // Simulate another instance overwriting our sidecar
                 GraphLockFile.WriteHeartbeat(lockPath, stolenLock);
 
-                // Wait for at least two heartbeat ticks so the mismatch is detected
-                System.Threading.Thread.Sleep(350);
+                // Trigger one heartbeat cycle directly
+                manager.RefreshHeartbeats();
             }
 
             // Assert - manager must not delete a sidecar it no longer owns
             Assert.IsTrue(File.Exists(lockPath));
-            Assert.IsTrue(GraphLockFile.TryRead(lockPath, out var remaining));
+            Assert.AreEqual(GraphLockReadResult.Ok, GraphLockFile.TryRead(lockPath, out var remaining),
+                "Expected stolen lock sidecar to still be readable after session mismatch.");
             Assert.AreEqual(stolenLock.SessionId, remaining.SessionId);
         }
 

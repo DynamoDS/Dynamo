@@ -36,7 +36,7 @@ namespace DynamoCoreWpfTests
         {
             return new WpfGraphLockUserPrompt(
                 ownerProvider: () => null,
-                productNameProvider: "Dynamo",
+                productName: "Dynamo",
                 dialogFactory: () => dialog,
                 showMessageBox: msgBox ?? ((_, __, ___, ____) => DialogResult.OK));
         }

@@ -4302,7 +4302,7 @@ To avoid data loss or corruption, please choose one of the following actions:
 To avoid data loss or corruption, please choose a different file name.</value>
   </data>
   <data name="ConfirmReplaceFileMessage" xml:space="preserve">
-    <value> already exists.
+    <value> {0} already exists.
 Do you want to replace it?</value>
   </data>
   <data name="ConfirmReplaceFileTitle" xml:space="preserve">
