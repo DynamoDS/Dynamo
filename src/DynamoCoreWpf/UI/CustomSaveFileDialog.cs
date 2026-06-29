@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace Dynamo.Wpf.UI
@@ -12,7 +13,9 @@ namespace Dynamo.Wpf.UI
         string FileName { get; set; }
         public bool AddExtension { get; set; }
         public string InitialDirectory { get; set; }
-        bool? ShowDialog(); // Returns true if OK, false if Cancel, null for other cases
+        event CancelEventHandler FileOk;
+        bool OverwritePrompt { get; set; }
+        bool? ShowDialog(); // Returns true if OK, false if Cancel, null for other cases        
     }
 
     /// <summary>
@@ -52,6 +55,18 @@ namespace Dynamo.Wpf.UI
             set => _dialog.InitialDirectory = value;
         }
       
+        public event CancelEventHandler FileOk
+        {
+            add => _dialog.FileOk += value;
+            remove => _dialog.FileOk -= value;
+        }
+
+        public bool OverwritePrompt
+        {
+            get => _dialog.OverwritePrompt;
+            set => _dialog.OverwritePrompt = value;
+        }
+
         public bool? ShowDialog()
         {
             DialogResult result = _dialog.ShowDialog();

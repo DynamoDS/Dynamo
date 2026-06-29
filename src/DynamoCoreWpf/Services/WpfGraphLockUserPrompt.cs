@@ -5,6 +5,7 @@ using Dynamo.Wpf.UI;
 using System;
 using System.IO;
 using System.Windows;
+using System.Windows.Forms;
 
 namespace Dynamo.Wpf.Services
 {
@@ -75,12 +76,27 @@ namespace Dynamo.Wpf.Services
                 DefaultExt = defaultExt,
                 Filter = filter,
                 FileName = Path.GetFileName(graphPath),
+                OverwritePrompt = false,
             };
 
             if (Directory.Exists(directory))
             {
                 dialog.InitialDirectory = directory;
             }
+
+            // Prevent the dialog from closing as long as the chosen path matches the original.
+            dialog.FileOk += (sender, e) =>
+            {
+                if (string.Equals(dialog.FileName, graphPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    System.Windows.Forms.MessageBox.Show(
+                        "This file is currently open in another instance of Dynamo.\nTo avoid data loss or corruption, please choose a different file name.",
+                        "File already open in another Dynamo instance",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    e.Cancel = true;
+                }
+            };
 
             return dialog.ShowDialog() == true ? dialog.FileName : null;
         }
