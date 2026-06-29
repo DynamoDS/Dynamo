@@ -208,5 +208,110 @@ namespace Dynamo.Tests
                 return response;
             }
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenLockFileIsCorruptThenAcquireSucceedsWithoutPrompt()
+        {
+            // Arrange - write a sidecar that cannot be parsed as JSON so TryRead returns false
+            var graphPath = CreateGraphFile("corrupt-lock.dyn");
+            var lockPath = GraphLockFile.GetLockFilePath(graphPath);
+            File.WriteAllText(lockPath, "{ this is not valid json {{{{");
+            var prompt = new TestGraphLockUserPrompt(GraphLockUserResponse.Cancel());
+
+            using (var manager = CreateManager(prompt))
+            {
+                // Act
+                var result = manager.AcquireLock(graphPath, true);
+
+                // Assert - corrupt sidecar is treated as stale, not shown to the user as a conflict
+                Assert.AreEqual(GraphLockOutcome.Opened, result.Conflict);
+                Assert.IsTrue(result.ShouldOpen);
+                Assert.AreEqual(0, prompt.CallCount, "Prompt must not fire for a corrupt lock file");
+
+                manager.CompleteOpen(graphPath, true);
+                manager.Release(graphPath);
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenLockFileIsCorruptThenOwnershipIsTransferredToCurrentSession()
+        {
+            // Arrange
+            var graphPath = CreateGraphFile("corrupt-lock-ownership.dyn");
+            var lockPath = GraphLockFile.GetLockFilePath(graphPath);
+            File.WriteAllText(lockPath, "not valid json at all");
+
+            using (var manager = CreateManager())
+            {
+                // Act
+                var result = manager.AcquireLock(graphPath, true);
+                manager.CompleteOpen(graphPath, true);
+
+                // Assert - sidecar is overwritten with a valid lock owned by this session
+                Assert.AreEqual(GraphLockOutcome.Opened, result.Conflict);
+                var lockInfo = ReadLockInfo(lockPath);
+                Assert.AreEqual(Path.GetFullPath(graphPath), lockInfo.GraphPath);
+                Assert.That(lockInfo.SessionId, Is.Not.EqualTo(Guid.Empty));
+                Assert.That(lockInfo.LastHeartbeatUtc, Is.GreaterThan(DateTime.UtcNow.AddSeconds(-5)));
+
+                manager.Release(graphPath);
+            }
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenHeartbeatDetectsSessionMismatchThenForeignLockIsNotDeleted()
+        {
+            // Arrange - acquire, then simulate another instance overwriting the sidecar
+            var graphPath = CreateGraphFile("heartbeat-mismatch.dyn");
+            var lockPath = GraphLockFile.GetLockFilePath(graphPath);
+            var stolenLock = CreateForeignLockInfo(graphPath, DateTime.UtcNow);
+
+            using (var manager = CreateManager(heartbeatMilliseconds: 100))
+            {
+                var result = manager.AcquireLock(graphPath, true);
+                manager.CompleteOpen(graphPath, true);
+                Assert.AreEqual(GraphLockOutcome.Opened, result.Conflict);
+
+                // Overwrite the sidecar to simulate another instance stealing the lock
+                GraphLockFile.WriteHeartbeat(lockPath, stolenLock);
+
+                // Wait for at least two heartbeat ticks so the mismatch is detected
+                System.Threading.Thread.Sleep(350);
+            }
+
+            // Assert - manager must not delete a sidecar it no longer owns
+            Assert.IsTrue(File.Exists(lockPath));
+            Assert.IsTrue(GraphLockFile.TryRead(lockPath, out var remaining));
+            Assert.AreEqual(stolenLock.SessionId, remaining.SessionId);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenLiveLockExistsOnRemoteMachineThenPromptIsCalledWithNonNullLockInfo()
+        {
+            // Arrange - verifies that ResolveLockConflict only fires with a fully readable lock,
+            // guarding against the null-prompt bug from a corrupt sidecar
+            var graphPath = CreateGraphFile("live-remote-lock.dyn");
+            var lockPath = GraphLockFile.GetLockFilePath(graphPath);
+            var existingLock = CreateForeignLockInfo(graphPath, DateTime.UtcNow);
+            Assert.IsTrue(GraphLockFile.TryCreateNewLockFile(lockPath, existingLock));
+
+            var prompt = new TestGraphLockUserPrompt(GraphLockUserResponse.Cancel());
+
+            using (var manager = CreateManager(prompt))
+            {
+                // Act
+                manager.AcquireLock(graphPath, true);
+                manager.CompleteOpen(graphPath, false);
+            }
+
+            // Assert - prompt received a non-null, readable lock (not null from a corrupt file)
+            Assert.AreEqual(1, prompt.CallCount);
+            Assert.IsNotNull(prompt.ExistingLock, "Prompt must never receive a null ExistingLock");
+            Assert.AreEqual(existingLock.SessionId, prompt.ExistingLock.SessionId);
+        }
     }
 }

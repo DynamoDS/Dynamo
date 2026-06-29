@@ -17,6 +17,7 @@ namespace Dynamo.Wpf.Services
         private readonly Func<Window> ownerProvider;
         private readonly string productNameProvider;
         private readonly Func<IFileSaver> dialogFactory;
+        private readonly Func<string, string, MessageBoxButtons, MessageBoxIcon, DialogResult> showMessageBox;
 
         /// <summary>
         /// Initializes a WPF graph-lock prompt.
@@ -24,11 +25,17 @@ namespace Dynamo.Wpf.Services
         /// <param name="ownerProvider">Provides the owner window when a prompt is shown.</param>
         /// <param name="productNameProvider">Provides the product name for save-dialog filters.</param>
         /// <param name="dialogFactory">Optional factory for the save dialog; defaults to <see cref="CustomSaveFileDialog"/>.</param>
-        internal WpfGraphLockUserPrompt(Func<Window> ownerProvider, string productNameProvider, Func<IFileSaver> dialogFactory = null)
+        /// <param name="showMessageBox">Optional message box function used for conflict and overwrite prompts/>.</param>
+        internal WpfGraphLockUserPrompt(
+            Func<Window> ownerProvider,
+            string productNameProvider,
+            Func<IFileSaver> dialogFactory = null,
+            Func<string, string, MessageBoxButtons, MessageBoxIcon, DialogResult> showMessageBox = null)
         {
             this.ownerProvider = ownerProvider;
             this.productNameProvider = productNameProvider;
             this.dialogFactory = dialogFactory ?? (() => new CustomSaveFileDialog());
+            this.showMessageBox = showMessageBox ?? System.Windows.Forms.MessageBox.Show;
         }
 
         /// <summary>
@@ -62,7 +69,7 @@ namespace Dynamo.Wpf.Services
         }
 
         // Shows a Save As dialog for the copy path, matching the graph file extension
-        private string ShowSaveAsDialog(string graphPath)
+        internal string ShowSaveAsDialog(string graphPath)
         {
             var extension = Path.GetExtension(graphPath);
             var directory = Path.GetDirectoryName(graphPath);
@@ -94,7 +101,7 @@ namespace Dynamo.Wpf.Services
                 // Block saving over the locked source file
                 if (string.Equals(chosenPath, normalizedSourcePath, StringComparison.OrdinalIgnoreCase))
                 {
-                    System.Windows.Forms.MessageBox.Show(
+                    showMessageBox(
                         Resources.GraphLockSaveAsSameFileMessage,
                         Resources.GraphLockFileAlreadyOpenTitle,
                         MessageBoxButtons.OK,
@@ -107,7 +114,7 @@ namespace Dynamo.Wpf.Services
                 // for any other existing file the user may have chosen.
                 if (File.Exists(chosenPath))
                 {
-                    var confirm = System.Windows.Forms.MessageBox.Show(
+                    var confirm = showMessageBox(
                         Path.GetFileName(chosenPath) + Resources.ConfirmReplaceFileMessage,
                         Resources.ConfirmReplaceFileTitle,
                         MessageBoxButtons.YesNo,
