@@ -15,8 +15,9 @@ namespace Dynamo.Graph.Workspaces.Locking
     /// </summary>
     internal sealed class GraphLockManager : IDisposable
     {
-        internal const int DefaultHeartbeatMilliseconds = 30000;
+        internal const int DefaultHeartbeatMilliseconds = 15000;
         private const int StaleFactor = 3;
+        private const int MaxConsecutiveReadFailures = 3;
 
         private readonly DynamoModel dynamoModel;
         private readonly StringComparer pathComparer;
@@ -37,6 +38,7 @@ namespace Dynamo.Graph.Workspaces.Locking
             internal string SidecarPath { get; set; }
             internal GraphLockInfo Info { get; set; }
             internal WorkspaceModel Workspace { get; set; }
+            internal int ConsecutiveReadFailures { get; set; }
         }
 
         /// <summary>
@@ -201,7 +203,7 @@ namespace Dynamo.Graph.Workspaces.Locking
                         return lockResult;
                     }
 
-                    // A live (or currently unreadable) lock owns the path.
+                    // ExistingLock is readable and live — a real conflict with another session.
                     return ResolveLockConflict(normalizedPath, allowPromptUI, workspace, existingLock);
                 }
                 catch (Exception ex) when (ex is UnauthorizedAccessException || ex is SecurityException || ex is IOException)
@@ -223,7 +225,12 @@ namespace Dynamo.Graph.Workspaces.Locking
         {
             if (!readable)
             {
-                return null;
+                // The lock file exists but could not be parsed after all retry attempts.
+                // This indicates a corrupt file rather than a live owner.
+                // Treat it the same as a stale lock: overwrite and take ownership.
+                GraphLockFile.WriteHeartbeat(sidecarPath, info);
+                RegisterOwnedLock(normalizedPath, sidecarPath, info, workspace);
+                return GraphLockAcquireResult.Acquired(normalizedPath);
             }
 
             // It is our own lock (same machine + process): reuse it
@@ -349,9 +356,34 @@ namespace Dynamo.Graph.Workspaces.Locking
                 try
                 {
                     GraphLockInfo current;
-                    if (!GraphLockFile.TryRead(owned.SidecarPath, out current) ||
-                        current.SessionId != owned.Info.SessionId)
+                    if (!GraphLockFile.TryRead(owned.SidecarPath, out current))
                     {
+                        // Transient IO failure (antivirus, NAS hiccup) — don't drop the lock immediately.
+                        // Only abandon after MaxConsecutiveReadFailures consecutive misses.                        
+                        owned.ConsecutiveReadFailures++;
+
+                        if (owned.ConsecutiveReadFailures >= MaxConsecutiveReadFailures)
+                        {
+                            dynamoModel.Logger?.Log(
+                                $"GraphLock heartbeat read failed {MaxConsecutiveReadFailures} consecutive times, " +
+                                $"dropping lock: {owned.SidecarPath}");
+                            locks.TryRemove(pair.Key, out _);
+                        }
+                        else
+                        {
+                            dynamoModel.Logger?.Log(
+                                $"GraphLock heartbeat read failed (attempt {owned.ConsecutiveReadFailures}), " +
+                                $"will retry: {owned.SidecarPath}");
+                        }
+                        continue;
+                    }
+
+                    // Successful read — reset the failure counter
+                    owned.ConsecutiveReadFailures = 0;
+
+                    if (current.SessionId != owned.Info.SessionId)
+                    {
+                        // Lock was genuinely stolen by another instance — stop tracking
                         locks.TryRemove(pair.Key, out _);
                         continue;
                     }
