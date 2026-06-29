@@ -25,8 +25,7 @@ namespace Dynamo.Wpf.Services
         /// <param name="ownerProvider">Provides the owner window when a prompt is shown.</param>
         /// <param name="productNameProvider">Provides the product name for save-dialog filters.</param>
         /// <param name="dialogFactory">Optional factory for the save dialog; defaults to <see cref="CustomSaveFileDialog"/>.</param>
-        /// <param name="showMessageBox">Optional message box function used for conflict and overwrite prompts/>.</param>
-        internal WpfGraphLockUserPrompt(
+        /// <param name="showMessageBox">Optional message box function used for conflict and overwrite prompts.</param>
             Func<Window> ownerProvider,
             string productNameProvider,
             Func<IFileSaver> dialogFactory = null,
