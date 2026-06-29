@@ -150,6 +150,9 @@
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
     <value>サインインできるようにするには、ネットワーク モードを有効にします。</value>
   </data>
+  <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
+    <value>Package Manager を使用できるようにするには、ネットワーク モードを有効にします。</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -3815,6 +3818,9 @@ Dynamo を再起動してアンインストールを完了します。
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>指定されたファイル パスが無効です。ファイルがアーカイブされている場合は、開く前に必ず解凍してください。\n{0}</value>
   </data>
+  <data name="MessageHomeFileMissing" xml:space="preserve">
+    <value>This file is no longer available. It may have been moved, renamed, or deleted.\n{0}</value>
+  </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>グループをフリーズ</value>
   </data>
@@ -3928,13 +3934,13 @@ Dynamo を再起動してアンインストールを完了します。
     <value>ノード選択による自動同期。</value>
   </data>
   <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
-    <value>This file is currently open in another instance of Dynamo.
-To avoid data loss or corruption, please choose one of the following actions:
- • Save As — opens an independent copy you can edit safely.
- • Cancel — does not open the file.</value>
+    <value>このファイルは現在、Dynamo の別のインスタンスで開かれています。
+データの損失や破損を回避できるように、次のいずれかの操作を選択してください。
+ • 名前を付けて保存: 安全に編集できる独立したコピーが開かれます。
+ • キャンセル: ファイルは開かれません。</value>
   </data>
   <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
-    <value>File already open in another Dynamo instance</value>
+    <value>ファイルは既に別の Dynamo インスタンスで開かれています</value>
   </data>
   <data name="GraphLockSaveAsButton" xml:space="preserve">
     <value>名前を付けて保存</value>

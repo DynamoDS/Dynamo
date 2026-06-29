@@ -60,7 +60,9 @@ namespace DynamoCoreWpfTests.PackageManager
                 Is.EquivalentTo(
                     new List<string>
                     {
+                        "Autodesk Assistant",
                         "Documentation Browser",
+                        "Dynamo MCP View Extension",
                         "DynamoManipulationExtension",
                         "Graph Node Manager",
                         "Graph Status",

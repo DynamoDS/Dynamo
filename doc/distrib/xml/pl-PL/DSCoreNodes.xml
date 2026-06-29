@@ -347,6 +347,11 @@
             <param name="list">Lista ArrayList obiektów do zmiany formatu</param>
             <returns/>
         </member>
+        <member name="M:DSCore.Data.IsUnusedDefineDataInput(System.Object)">
+            <summary>Sprawdza, czy dane wejściowe definiowania danych są nieużywane (mają wartość null lub są pustą listą).</summary>
+            <param name="inputValue">Wartość wejściowa pochodząca z wykresu.</param>
+            <returns>Prawda, gdy dane wejściowe powinny być traktowane jako niepołączone lub nieużywane.</returns>
+        </member>
         <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
             <summary>Sprawdź, czy obiekt wejściowy jest pojedynczą wartością, czy jednopoziomowym typem ArrayList.</summary>
             <param name="obj">Obiekt wejściowy do sprawdzenia</param>

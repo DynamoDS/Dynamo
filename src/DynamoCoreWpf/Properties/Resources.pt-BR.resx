@@ -150,6 +150,9 @@
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
     <value>Ative modo de rede para poder entrar.</value>
   </data>
+  <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
+    <value>Ative o Modo de rede para poder usar o Package Manager.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -3815,6 +3818,9 @@ Para transformar este arquivo em um novo modelo, salve-o em uma pasta diferente 
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>Caminho de arquivo inválido fornecido. Caso o arquivo esteja arquivado, certifique-se de extraí-lo antes de o abrir.\n{0}</value>
   </data>
+  <data name="MessageHomeFileMissing" xml:space="preserve">
+    <value>This file is no longer available. It may have been moved, renamed, or deleted.\n{0}</value>
+  </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>Congelar grupo</value>
   </data>
@@ -3928,13 +3934,13 @@ Para abrir esse gráfico no Dynamo 3.3–3.6.x: instale o pacote PythonNet do Pa
     <value>Sincronização automática com seleção de nós.</value>
   </data>
   <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
-    <value>This file is currently open in another instance of Dynamo.
-To avoid data loss or corruption, please choose one of the following actions:
- • Save As — opens an independent copy you can edit safely.
- • Cancel — does not open the file.</value>
+    <value>Esse arquivo está aberto atualmente em outra instância do Dynamo.
+Para evitar a perda ou a corrupção dos dados, escolha uma das ações a seguir:
+ • Salvar como – abre uma cópia independente que pode ser editada de forma segura.
+ • Cancelar – não abre o arquivo.</value>
   </data>
   <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
-    <value>File already open in another Dynamo instance</value>
+    <value>O arquivo já está aberto em outra instância do Dynamo</value>
   </data>
   <data name="GraphLockSaveAsButton" xml:space="preserve">
     <value>Salvar como</value>

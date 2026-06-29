@@ -347,6 +347,11 @@
             <param name="list">A ArrayList de objetos a serem reformatados</param>
             <returns/>
         </member>
+        <member name="M:DSCore.Data.IsUnusedDefineDataInput(System.Object)">
+            <summary>Verifica se a entrada Definir dados não é usada (nula ou uma vista vazia).</summary>
+            <param name="inputValue">O valor de entrada proveniente do gráfico.</param>
+            <returns>True quando a entrada deve ser tratada como não conectada ou não usada.</returns>
+        </member>
         <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
             <summary>Verificar se o objeto de entrada é um valor único ou uma ArrayList de nível único.</summary>
             <param name="obj">O objeto de entrada para avaliar</param>

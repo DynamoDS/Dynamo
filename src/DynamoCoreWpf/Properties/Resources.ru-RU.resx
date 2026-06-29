@@ -150,6 +150,9 @@
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
     <value>Включите сетевой режим, чтобы иметь возможность входить в систему.</value>
   </data>
+  <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
+    <value>Включите сетевой режим, чтобы использовать Package Manager.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -3815,6 +3818,9 @@
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>Указан неверный путь к файлу. Если файл находится в архиве, перед открытием его следует извлечь.\n{0}</value>
   </data>
+  <data name="MessageHomeFileMissing" xml:space="preserve">
+    <value>This file is no longer available. It may have been moved, renamed, or deleted.\n{0}</value>
+  </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>Заморозить группу</value>
   </data>
@@ -3928,13 +3934,13 @@
     <value>Автоматическая синхронизация с выбором узла.</value>
   </data>
   <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
-    <value>This file is currently open in another instance of Dynamo.
-To avoid data loss or corruption, please choose one of the following actions:
- • Save As — opens an independent copy you can edit safely.
- • Cancel — does not open the file.</value>
+    <value>Этот файл сейчас открыт в другом экземпляре Dynamo.
+Во избежание потери или повреждения данных выберите одно из следующих действий:
+ • «Сохранить как» — будет открыта отдельная копия, которую можно безопасно редактировать.
+ • «Отмена» — файл не будет открыт.</value>
   </data>
   <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
-    <value>File already open in another Dynamo instance</value>
+    <value>Файл уже открыт в другом экземпляре Dynamo</value>
   </data>
   <data name="GraphLockSaveAsButton" xml:space="preserve">
     <value>Сохранить как</value>

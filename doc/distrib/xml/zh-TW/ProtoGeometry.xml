@@ -1328,7 +1328,7 @@
             <search>move,by amount</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Translate(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>依輸入向量的方向和大小轉換物件。</summary>
+            <summary>沿輸入向量的方向和大小平移物件。</summary>
             <search>move,along vector,movebyvector</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Translate(Autodesk.DesignScript.Geometry.Vector,System.Double)">

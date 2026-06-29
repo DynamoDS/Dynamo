@@ -621,6 +621,9 @@ Dans les workflows de Generative Design, ce noeud doit être utilisé pour contr
   <data name="DefineDataDisplayValueMessage" xml:space="preserve">
     <value>Sélectionner les types</value>
   </data>
+  <data name="DefineDataMissingUpstreamConnectionInfoMessage" xml:space="preserve">
+    <value>Aucune connexion en amont. Connectez un nœud au port d'entrée pour fournir une valeur par défaut et définir le type de données. Pour choisir un type sans données en amont, désactivez l'option de détection automatique du type et utilisez le menu déroulant.</value>
+  </data>
   <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
     <value>Spécificateur de format pour les valeurs numériques, reportez-vous à l'aide sur les noeuds étendus pour plus d'informations.
 Valeur par défaut: G</value>

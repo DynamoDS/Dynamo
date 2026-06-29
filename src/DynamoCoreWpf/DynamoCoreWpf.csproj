@@ -59,7 +59,7 @@
 
     <Target Name="NpmRunBuildHomePage" BeforeTargets="BeforeBuild">
         <PropertyGroup>
-            <PackageVersion>1.0.31</PackageVersion>
+            <PackageVersion>1.0.32</PackageVersion>
             <PackageName>DynamoHome</PackageName>
         </PropertyGroup>
         <Exec Command="$(PowerShellCommand) -ExecutionPolicy Bypass -File &quot;$(SolutionDir)pkgexist.ps1&quot; &quot;$(PackageName)&quot; &quot;$(PackageVersion)&quot;" ConsoleToMSBuild="true">
@@ -2209,6 +2209,55 @@
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
     <Copy SourceFiles="@(ExternTuneUpPkg)" DestinationFolder="$(OutputPath)\Built-In Packages\packages\TuneUp\%(RecursiveDir)" />
 	<Copy SourceFiles="@(DistribSamples)" DestinationFolder="$(OutputPath)\Samples" SkipUnchangedFiles="True" />
+  </Target>
+  <!--
+    DynamoMCP built-in package (DYN-10553). Consumed as a signed NuGet (id DynamoVisualProgramming.DynamoMCP)
+    published by the DynamoMCP repo to nuget.org (mirrors PythonNet3Engine's NuGet-consume pattern):
+      * ExcludeAssets="all"      -> files only, no compile/runtime refs (preserves MCPServer's isolated ALC)
+      * GeneratePathProperty="true" -> exposes $(PkgDynamoVisualProgramming_DynamoMCP)
+    Hard-pinned to an exact version so a transitive bump can't pull a DynamoMCP built against a
+    different DynamoVisualProgramming.* API. Bump in lockstep with the DynamoMCP release for this line.
+  -->
+  <ItemGroup>
+    <PackageReference Include="DynamoVisualProgramming.DynamoMCP" Version="[0.4.1]" GeneratePathProperty="true" ExcludeAssets="all" />
+  </ItemGroup>
+  <!--
+    The NuGet wraps the assembled package under bin\, so $(PkgDynamoVisualProgramming_DynamoMCP)\bin IS
+    the package layout (pkg.json + bin\ + bin\mcp_server\ + extra\). Copy it verbatim into Built-In Packages.
+  -->
+  <Target Name="BuildDynamoMcpDynamoPackage" AfterTargets="Build">
+    <PropertyGroup>
+      <DynamoMcpDestRoot>$(OutputPath)\Built-In Packages\packages\DynamoMCP\</DynamoMcpDestRoot>
+    </PropertyGroup>
+    <ItemGroup>
+      <DynamoMcpPkg Include="$(PkgDynamoVisualProgramming_DynamoMCP)\bin\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(DynamoMcpPkg)" DestinationFolder="$(DynamoMcpDestRoot)%(RecursiveDir)" SkipUnchangedFiles="True" />
+  </Target>
+  <!--
+    DynamoAssistant (Autodesk Assistant) built-in package (DYN-10450). Consumed as a signed NuGet
+    (id DynamoVisualProgramming.DynamoAssistant) published by the Dynamo-AutodeskAssistant repo to
+    nuget.org (mirrors DynamoMCP / PythonNet3Engine's NuGet-consume pattern):
+      * ExcludeAssets="all"      -> files only, no compile/runtime refs
+      * GeneratePathProperty="true" -> exposes $(PkgDynamoVisualProgramming_DynamoAssistant)
+    Hard-pinned to an exact version so a transitive bump can't pull an AA built against a
+    different DynamoVisualProgramming.* API. Bump in lockstep with the AA release for this line.
+  -->
+  <ItemGroup>
+    <PackageReference Include="DynamoVisualProgramming.DynamoAssistant" Version="[0.3.1]" GeneratePathProperty="true" ExcludeAssets="all" />
+  </ItemGroup>
+  <!--
+    The NuGet wraps the assembled package under bin\, so $(PkgDynamoVisualProgramming_DynamoAssistant)\bin IS
+    the package layout (pkg.json + bin\ + extra\). Copy it verbatim into Built-In Packages.
+  -->
+  <Target Name="BuildDynamoAssistantDynamoPackage" AfterTargets="Build">
+    <PropertyGroup>
+      <DynamoAssistantDestRoot>$(OutputPath)\Built-In Packages\packages\DynamoAssistant\</DynamoAssistantDestRoot>
+    </PropertyGroup>
+    <ItemGroup>
+      <DynamoAssistantPkg Include="$(PkgDynamoVisualProgramming_DynamoAssistant)\bin\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(DynamoAssistantPkg)" DestinationFolder="$(DynamoAssistantDestRoot)%(RecursiveDir)" SkipUnchangedFiles="True" />
   </Target>
   <Target Name="CopyPMWizardHtmlFiles" AfterTargets="Build">
     <ItemGroup>
