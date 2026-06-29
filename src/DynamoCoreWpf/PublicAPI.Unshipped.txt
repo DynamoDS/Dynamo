@@ -33,6 +33,9 @@ Dynamo.ViewModels.PreferencesViewModel.AutoSyncDocumentBrowserIsChecked.get -> b
 Dynamo.ViewModels.PreferencesViewModel.AutoSyncDocumentBrowserIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowPythonAutoMigrationNotificationIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowPythonAutoMigrationNotificationIsChecked.set -> void
+Dynamo.Wpf.UI.CustomSaveFileDialog.FileOk -> event System.ComponentModel.CancelEventHandler
+Dynamo.Wpf.UI.CustomSaveFileDialog.OverwritePrompt.get -> bool
+Dynamo.Wpf.UI.CustomSaveFileDialog.OverwritePrompt.set -> void
 Dynamo.Wpf.UI.ToastManager
 Dynamo.Wpf.UI.ToastManager.CloseRealTimeInfoWindow() -> void
 Dynamo.Wpf.UI.ToastManager.CreateRealTimeInfoWindow(string content, bool stayOpen = false, string headerText = "", string hyperlinkText = "", System.Uri hyperlinkUri = null, System.Uri fileLinkUri = null) -> void

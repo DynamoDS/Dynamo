@@ -16,16 +16,19 @@ namespace Dynamo.Wpf.Services
     {
         private readonly Func<Window> ownerProvider;
         private readonly string productNameProvider;
+        private readonly Func<IFileSaver> dialogFactory;
 
         /// <summary>
         /// Initializes a WPF graph-lock prompt.
         /// </summary>
         /// <param name="ownerProvider">Provides the owner window when a prompt is shown.</param>
         /// <param name="productNameProvider">Provides the product name for save-dialog filters.</param>
-        internal WpfGraphLockUserPrompt(Func<Window> ownerProvider, string productNameProvider)
+        /// <param name="dialogFactory">Optional factory for the save dialog; defaults to <see cref="CustomSaveFileDialog"/>.</param>
+        internal WpfGraphLockUserPrompt(Func<Window> ownerProvider, string productNameProvider, Func<IFileSaver> dialogFactory = null)
         {
             this.ownerProvider = ownerProvider;
             this.productNameProvider = productNameProvider;
+            this.dialogFactory = dialogFactory ?? (() => new CustomSaveFileDialog());
         }
 
         /// <summary>
@@ -70,31 +73,49 @@ namespace Dynamo.Wpf.Services
                 ? string.Format(Resources.FileDialogDynamoCustomNode, productName, "*.dyf")
                 : string.Format(Resources.FileDialogDynamoWorkspace, productName, "*.dyn");
 
-            var dialog = new CustomSaveFileDialog
-            {
-                AddExtension = true,
-                DefaultExt = defaultExt,
-                Filter = filter,
-                FileName = Path.GetFileName(graphPath),
-                OverwritePrompt = false,
-            };
+            var normalizedSourcePath = Path.GetFullPath(graphPath);
+
+            var dialog = dialogFactory();
+            dialog.AddExtension = true;
+            dialog.DefaultExt = defaultExt;
+            dialog.Filter = filter;
+            dialog.FileName = Path.GetFileName(graphPath);
+            dialog.OverwritePrompt = false;
 
             if (Directory.Exists(directory))
             {
                 dialog.InitialDirectory = directory;
             }
 
-            // Prevent the dialog from closing as long as the chosen path matches the original.
             dialog.FileOk += (sender, e) =>
             {
-                if (string.Equals(dialog.FileName, graphPath, StringComparison.OrdinalIgnoreCase))
+                var chosenPath = Path.GetFullPath(dialog.FileName);
+
+                // Block saving over the locked source file
+                if (string.Equals(chosenPath, normalizedSourcePath, StringComparison.OrdinalIgnoreCase))
                 {
                     System.Windows.Forms.MessageBox.Show(
-                        "This file is currently open in another instance of Dynamo.\nTo avoid data loss or corruption, please choose a different file name.",
-                        "File already open in another Dynamo instance",
+                        Resources.GraphLockSaveAsSameFileMessage,
+                        Resources.GraphLockFileAlreadyOpenTitle,
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning);
                     e.Cancel = true;
+                    return;
+                }
+
+                // OverwritePrompt is false so we must replicate the OS overwrite warning
+                // for any other existing file the user may have chosen.
+                if (File.Exists(chosenPath))
+                {
+                    var confirm = System.Windows.Forms.MessageBox.Show(
+                        Path.GetFileName(chosenPath) + Resources.ConfirmReplaceFileMessage,
+                        Resources.ConfirmReplaceFileTitle,
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning);
+                    if (confirm != DialogResult.Yes)
+                    {
+                        e.Cancel = true;
+                    }
                 }
             };
 

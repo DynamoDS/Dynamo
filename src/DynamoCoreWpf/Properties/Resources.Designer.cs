@@ -520,6 +520,25 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  already exists.
+        /// Do you want to replace it?.
+        /// </summary>
+        public static string ConfirmReplaceFileMessage {
+            get {
+                return ResourceManager.GetString("ConfirmReplaceFileMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Confirm Save As.
+        /// </summary>
+        public static string ConfirmReplaceFileTitle {
+            get {
+                return ResourceManager.GetString("ConfirmReplaceFileTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Break Connection.
         /// </summary>
         public static string ConnectorContextMenuHeaderBreakConnection {
@@ -3768,6 +3787,16 @@ namespace Dynamo.Wpf.Properties {
         public static string GraphLockSaveAsButton {
             get {
                 return ResourceManager.GetString("GraphLockSaveAsButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This file is currently open in another instance of Dynamo.
+        /// To avoid data loss or corruption, please choose a different file name..
+        /// </summary>
+        public static string GraphLockSaveAsSameFileMessage {
+            get {
+                return ResourceManager.GetString("GraphLockSaveAsSameFileMessage", resourceCulture);
             }
         }
         
