@@ -1430,6 +1430,8 @@ namespace Dynamo.PackageManager.Tests
             var packageDirectories = pathManager.PackagesDirectories;
             var defaultUserDefinitions = pathManager.DefaultUserDefinitions;
             var userDefinitions = pathManager.DefinitionDirectories;
+            var commonDefinitions = Path.Combine(pathManager.CommonDataDirectory, PathManager.DefinitionsDirectoryName);
+            var expectedDefinitionDirectoryCount = Directory.Exists(commonDefinitions) ? 3 : 2;
 
             // Assert
             const string ExpectedToken = @"%BuiltInPackages%";
@@ -1438,9 +1440,13 @@ namespace Dynamo.PackageManager.Tests
             Assert.IsFalse(packageDirectories.Contains(ExpectedToken));
             Assert.IsTrue(packageDirectories.Contains(PathManager.BuiltinPackagesDirectory));
             Assert.AreNotEqual(ExpectedToken, defaultUserDefinitions);
-            Assert.AreEqual(2, userDefinitions.Count());
+            Assert.AreEqual(expectedDefinitionDirectoryCount, userDefinitions.Count());
             Assert.IsFalse(userDefinitions.Contains(ExpectedToken));
             Assert.IsTrue(userDefinitions.Contains(PathManager.BuiltinPackagesDirectory));
+            if (Directory.Exists(commonDefinitions))
+            {
+                Assert.IsTrue(userDefinitions.Contains(commonDefinitions));
+            }
         }
 
         [Test]
