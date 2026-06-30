@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -703,6 +703,24 @@ namespace Dynamo.Tests
             {
                 CurrentDynamoModel.Paste(); // Nope, paste should not crash Dynamo.
             });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void DSVarArgFunctionPortsReportInputAndOutputTypes()
+        {
+            var concatNode = new DSVarArgFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("DSCore.String.Concat@string[]"));
+
+            Assert.AreEqual("string[]", concatNode.InPorts[0].GetInputPortType());
+            Assert.AreEqual("string", concatNode.OutPorts[0].GetOutPortType());
+
+            var joinNode = new DSVarArgFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("DSCore.String.Join@string,string[]"));
+            joinNode.VarInputController.AddInputToModel();
+
+            Assert.AreEqual("string", joinNode.InPorts[0].GetInputPortType());
+            Assert.AreEqual("string[]", joinNode.InPorts[1].GetInputPortType());
+            Assert.AreEqual("string[]", joinNode.InPorts[2].GetInputPortType());
+            Assert.AreEqual("string", joinNode.OutPorts[0].GetOutPortType());
         }
 
         /// <summary>
