@@ -1842,7 +1842,7 @@
             of the three points of a triangle</summary>
             <param name="points">Elenco di punti</param>
             <param name="indices">Flat list of point indices</param>
-            <returns>Mesh</returns>
+            <returns>Retino</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ImportFile(System.String)">
             <summary>Importa un file, analizzandolo in una serie di mesh.

@@ -1333,7 +1333,7 @@
             <search>move,by amount</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Translate(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>入力 Vector の方向と大きさでオブジェクトを変換します。</summary>
+            <summary>入力された Vector の方向と大きさでオブジェクトを移動します。</summary>
             <search>move,along vector,movebyvector</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Translate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
@@ -1407,7 +1407,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.DistanceTo(Autodesk.DesignScript.Geometry.Geometry)">
             <summary>このジオメトリから別のジオメトリへの距離を取得します。</summary>
-            <param name="entity">他のジオメトリ</param>
+            <param name="entity">他の Geometry</param>
             <returns>距離</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.ClosestPointTo(Autodesk.DesignScript.Geometry.Geometry)">
@@ -1848,7 +1848,7 @@
             of the three points of a triangle</summary>
             <param name="points">点群のリスト</param>
             <param name="indices">Flat list of point indices</param>
-            <returns>メッシュ</returns>
+            <returns>Mesh</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ImportFile(System.String)">
             <summary>ファイルをインポートし、いくつかのメッシュに解析します。

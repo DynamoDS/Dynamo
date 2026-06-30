@@ -546,7 +546,7 @@
             direction.</summary>
             <param name="direction">位移方向。</param>
             <param name="distance">沿著指定方向的位移距離。</param>
-            <returns>已轉換的幾何圖形。</returns>
+            <returns>轉換幾何圖形。</returns>
             <search>move,along vector,distance</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem)">
@@ -1328,7 +1328,7 @@
             <search>move,by amount</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Translate(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>依輸入向量的方向和大小轉換物件。</summary>
+            <summary>沿輸入向量的方向和大小平移物件。</summary>
             <search>move,along vector,movebyvector</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Translate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
