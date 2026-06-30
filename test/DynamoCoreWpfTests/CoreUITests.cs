@@ -1543,5 +1543,38 @@ namespace DynamoCoreWpfTests
                 System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
             onDeactivated.Invoke(window, new object[] { EventArgs.Empty });
         }
+
+        [Test]
+        [Category("DynamoUI")]
+        public void WhenWorkspaceExceedsMaxExportDimensionThenSaveImageIsBlocked()
+        {
+            // Place nodes far enough apart to exceed the export size limit.
+            var firstNode = new DoubleInput { X = 0, Y = 0 };
+            var secondNode = new DoubleInput { X = WorkspaceView.MaxExportDimension + 500, Y = 0 };
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(firstNode, false);
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(secondNode, false);
+            DispatcherUtil.DoEvents();
+
+            var workspace = View.ChildOfType<WorkspaceView>();
+            Assert.IsNotNull(workspace, "WorkspaceView cannot be found");
+
+            // Assert the workspace is flagged as invalid for export.
+            Assert.AreEqual(
+                WorkspaceView.ExportImageResult.NotValidAsImage,
+                workspace.IsWorkSpaceRenderValidAsImage(true));
+
+            // Assert no file is written when the save command is issued.
+            string path = Path.Combine(TempFolder, "oversized-output.png");
+            ViewModel.SaveImageCommand.Execute(path);
+            Assert.False(File.Exists(path));
+
+            // The export-as-image command path must surface a toast notification on failure.
+            ViewModel.ToastManager.CloseRealTimeInfoWindow(); // ensure clean starting state
+            Assert.IsFalse(ViewModel.ToastManager.PopupIsVisible, "No toast expected before export.");
+
+            ViewModel.ValidateWorkSpaceBeforeToExportAsImageCommand.Execute(null);
+            DispatcherUtil.DoEvents();
+            Assert.IsTrue( ViewModel.ToastManager.PopupIsVisible, "Expected a toast notification when image export fails as NotValidAsImage.");
+        }
     }
 }
