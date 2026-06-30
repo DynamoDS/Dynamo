@@ -547,7 +547,7 @@
             direction.</summary>
             <param name="direction">Richtung der Verschiebung</param>
             <param name="distance">Strecke der Verschiebung in der angegebenen Richtung</param>
-            <returns>Transformierte Geometrie.</returns>
+            <returns>Transformierte Geometrie</returns>
             <search>move,along vector,distance</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.CoordinateSystem.Transform(Autodesk.DesignScript.Geometry.CoordinateSystem)">

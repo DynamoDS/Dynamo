@@ -1055,7 +1055,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.SweepAsSurface(Autodesk.DesignScript.Geometry.Curve,System.Boolean)">
             <summary>Táhne tuto křivku podél křivky trajektorie a tím vytváří povrch</summary>
-            <param name="path">Trajektorie, která představuje trajektorii tažení</param>
+            <param name="path">Trajektorie, která reprezentuje trajektorii tažení</param>
             <param name="cutEndOff">Odřízněte konec tažení a nastavte jej kolmo k trajektorii.</param>
             <returns>Povrch, který je výsledkem tažení křivky podél trajektorie</returns>
             <search>sweep1,curve2surf</search>
@@ -1333,7 +1333,7 @@
             <search>move,by amount</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Translate(Autodesk.DesignScript.Geometry.Vector)">
-            <summary>Převést objekt ve směru a velikosti vstupního vektoru.</summary>
+            <summary>Přesune objekt ve směru a dle velikosti vstupního vektoru.</summary>
             <search>move,along vector,movebyvector</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.Translate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
