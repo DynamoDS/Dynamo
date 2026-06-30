@@ -543,7 +543,6 @@ namespace Dynamo.UI.Views
             var jsonSerializer = Newtonsoft.Json.JsonSerializer.Create(jsonSerializerSettings);
             var rootObj = JObject.FromObject(payload, jsonSerializer);
 
-            // Include payload.versions[*].compatibility_matrix for the "Copy from" dropdown.
             try
             {
                 var header = await TryGetPackageHeaderAsync(vm);
@@ -553,6 +552,10 @@ namespace Dynamo.UI.Views
                     {
                         payloadObj["versions"] = header.versions != null
                             ? JToken.FromObject(header.versions, jsonSerializer)
+                            : new JArray();
+
+                        payloadObj["maintainers"] = header.maintainers != null
+                            ? JToken.FromObject(header.maintainers, jsonSerializer)
                             : new JArray();
                     }
                 }
