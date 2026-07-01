@@ -2219,7 +2219,7 @@
     different DynamoVisualProgramming.* API. Bump in lockstep with the DynamoMCP release for this line.
   -->
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.DynamoMCP" Version="[0.4.1]" GeneratePathProperty="true" ExcludeAssets="all" />
+    <PackageReference Include="DynamoVisualProgramming.DynamoMCP" Version="[0.4.2]" GeneratePathProperty="true" ExcludeAssets="all" />
   </ItemGroup>
   <!--
     The NuGet wraps the assembled package under bin\, so $(PkgDynamoVisualProgramming_DynamoMCP)\bin IS
