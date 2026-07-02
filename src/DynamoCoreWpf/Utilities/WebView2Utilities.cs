@@ -114,6 +114,80 @@ namespace Dynamo.Wpf.Utilities
     public static class WebView2Utilities
     {
         /// <summary>
+        /// Chromium/Edge command-line switches that suppress the background network activity the
+        /// hosted WebView2 (Microsoft Edge) runtime performs by default. These are applied to every
+        /// startup WebView2 surface when Dynamo is launched with <c>--NoNetworkMode</c> so the Edge
+        /// platform does not open outbound connections that Dynamo's first-party network gates cannot
+        /// control.
+        ///
+        /// Suppressed runtime features and why:
+        ///   --disable-background-networking : umbrella switch that turns off Edge background traffic
+        ///                                     (component/feature fetches, GCM, etc.).
+        ///   --disable-component-update      : blocks Edge component/CRL updater downloads.
+        ///   --disable-domain-reliability    : stops domain-reliability beacon uploads to Google/Microsoft.
+        ///   --disable-sync                  : disables profile sync network calls.
+        ///   --disable-translate             : disables the translate language-detection service call.
+        ///   --disable-default-apps          : prevents default web-app installation traffic.
+        ///   --no-pings                      : disables hyperlink auditing pings.
+        ///   --disable-features=OptimizationGuideModelDownloading,MediaRouter :
+        ///                                     suppresses Edge ML model downloads and media-router discovery.
+        ///
+        /// Note: NetworkService is intentionally NOT disabled. Turning it off breaks the runtime's
+        /// ability to render even local (NavigateToString / virtual-host-mapped) content, which every
+        /// startup surface relies on. The switches above stop the runtime's own outbound traffic while
+        /// leaving local rendering intact.
+        /// </summary>
+        public const string NoNetworkAdditionalBrowserArguments =
+            "--disable-background-networking " +
+            "--disable-component-update " +
+            "--disable-domain-reliability " +
+            "--disable-sync " +
+            "--disable-translate " +
+            "--disable-default-apps " +
+            "--no-pings " +
+            "--disable-features=OptimizationGuideModelDownloading,MediaRouter";
+
+        /// <summary>
+        /// Returns the additional browser arguments to apply to a WebView2 surface for the supplied
+        /// no-network state. Returns <see cref="NoNetworkAdditionalBrowserArguments"/> when
+        /// <paramref name="noNetworkMode"/> is true, otherwise null (WebView2 default behavior).
+        /// </summary>
+        /// <param name="noNetworkMode">Whether Dynamo was started in no-network mode.</param>
+        /// <returns>The Edge command-line switches string, or null when no-network mode is off.</returns>
+        public static string GetNoNetworkBrowserArguments(bool noNetworkMode)
+        {
+            return noNetworkMode ? NoNetworkAdditionalBrowserArguments : null;
+        }
+
+        /// <summary>
+        /// Centralized entry point that applies the no-network WebView2 policy to the supplied creation
+        /// properties. When <paramref name="noNetworkMode"/> is true the hardened Edge command-line
+        /// switches are set on <see cref="CoreWebView2CreationProperties.AdditionalBrowserArguments"/>
+        /// so they take effect before the CoreWebView2 environment is created. When false the properties
+        /// are left untouched, preserving default startup behavior.
+        ///
+        /// Use this from every startup WebView2 surface to avoid per-view drift.
+        /// </summary>
+        /// <param name="creationProperties">The creation properties to configure. Must not be null.</param>
+        /// <param name="noNetworkMode">Whether Dynamo was started in no-network mode.</param>
+        /// <param name="logFn">Optional diagnostics callback invoked (without opening any network connection) when the policy is applied.</param>
+        public static void ApplyNoNetworkPolicy(CoreWebView2CreationProperties creationProperties, bool noNetworkMode, Action<string> logFn = null)
+        {
+            if (creationProperties == null)
+            {
+                throw new ArgumentNullException(nameof(creationProperties));
+            }
+
+            if (!noNetworkMode)
+            {
+                return;
+            }
+
+            creationProperties.AdditionalBrowserArguments = NoNetworkAdditionalBrowserArguments;
+            logFn?.Invoke($"[NoNetworkMode] Applied hardened WebView2 startup policy: {NoNetworkAdditionalBrowserArguments}");
+        }
+
+        /// <summary>
         /// Validate if the WebView2 Evergreen Runtime is installed in the computer, otherwise it will show a MessageBox about installing the Runtime and then exit Dynamo
         /// </summary>
         /// <returns></returns>

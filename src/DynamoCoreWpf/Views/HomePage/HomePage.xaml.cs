@@ -173,6 +173,11 @@ namespace Dynamo.UI.Views
                 UserDataFolder = DynamoModel.IsTestMode ? TestUtilities.UserDataFolderDuringTests(nameof(HomePage)) : webBrowserUserDataFolder.FullName
             };
 
+            // Suppress WebView2 runtime background networking when Dynamo is in no-network mode.
+            var noNetworkMode = startPage?.DynamoViewModel?.Model?.NoNetworkMode ?? false;
+            WebView2Utilities.ApplyNoNetworkPolicy(dynWebView.CreationProperties, noNetworkMode,
+                msg => startPage?.DynamoViewModel?.Model?.Logger?.Log(msg));
+
             //ContentRendered ensures that the webview2 component is visible.
             try
             {
