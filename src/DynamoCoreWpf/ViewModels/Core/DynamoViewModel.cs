@@ -954,11 +954,11 @@ namespace Dynamo.ViewModels
             IsIDSDKInitialized();
 
             // In no-network mode, do not allocate the connectivity-check HttpClient at all.
-            // CheckOnlineAccess already short-circuits when NoNetworkMode is true.
             if (!Model.NoNetworkMode)
             {
                 NetworkUtilities.InitInternetCheck();
             }
+            // CheckOnlineAccess already short-circuits when NoNetworkMode is true.
             CheckOnlineAccess();
         }
 
@@ -4830,8 +4830,10 @@ namespace Dynamo.ViewModels
             if (!AskUserToSaveWorkspacesOrCancel(shutdownParams.AllowCancellation))
                 return false;
 
-
-            NetworkUtilities.StopInternetCheck();
+            if (!Model.NoNetworkMode)
+            {
+                NetworkUtilities.StopInternetCheck();
+            }
 
             // 'shutdownSequenceInitiated' is marked as true here indicating
             // that the shutdown may not be stopped.
