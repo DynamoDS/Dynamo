@@ -39,7 +39,7 @@ Dynamo.Wpf.UI.ToastManager.CreateRealTimeInfoWindow(string content, bool stayOpe
 Dynamo.Wpf.UI.ToastManager.ToastManager(System.Windows.UIElement rootElement) -> void
 Dynamo.Wpf.Utilities.DynamoWebView2.ConfigureSettings(bool enableZoomControl = false, bool enableDevTools = false, bool enableContextMenu = false) -> void
 Dynamo.UI.Views.SplashScreen.SplashScreen(bool enableSignInButton, bool noNetworkMode) -> void
-static Dynamo.Wpf.Utilities.WebView2Utilities.ApplyNoNetworkPolicy(Microsoft.Web.WebView2.Core.CoreWebView2CreationProperties creationProperties, bool noNetworkMode, System.Action<string> logFn = null) -> void
+static Dynamo.Wpf.Utilities.WebView2Utilities.ApplyNoNetworkPolicy(Microsoft.Web.WebView2.Wpf.CoreWebView2CreationProperties creationProperties, bool noNetworkMode, System.Action<string> logFn = null) -> void
 static Dynamo.Wpf.Utilities.WebView2Utilities.GetNoNetworkBrowserArguments(bool noNetworkMode) -> string
 const Dynamo.Wpf.Utilities.WebView2Utilities.NoNetworkAdditionalBrowserArguments = "--disable-background-networking --disable-component-update --disable-domain-reliability --disable-sync --disable-translate --disable-default-apps --no-pings --disable-features=OptimizationGuideModelDownloading,MediaRouter" -> string
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.FileLinkUri.get -> System.Uri
