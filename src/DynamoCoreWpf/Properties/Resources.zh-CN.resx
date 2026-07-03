@@ -3817,7 +3817,7 @@
     <value>提供的文件路径无效。如果文件已存档，请确保在打开之前将其解压缩。\n{0}</value>
   </data>
   <data name="MessageHomeFileMissing" xml:space="preserve">
-    <value>This file is no longer available. It may have been moved, renamed, or deleted.\n{0}</value>
+    <value>此文件不再可用。它可能已被移动、重命名或删除。\n{0}</value>
   </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>冻结组</value>

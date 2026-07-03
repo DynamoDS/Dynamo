@@ -3819,7 +3819,7 @@ Dynamo を再起動してアンインストールを完了します。
     <value>指定されたファイル パスが無効です。ファイルがアーカイブされている場合は、開く前に必ず解凍してください。\n{0}</value>
   </data>
   <data name="MessageHomeFileMissing" xml:space="preserve">
-    <value>This file is no longer available. It may have been moved, renamed, or deleted.\n{0}</value>
+    <value>このファイルは使用できなくなりました。移動、名前変更、または削除が行われた可能性があります。\n{0}</value>
   </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>グループをフリーズ</value>

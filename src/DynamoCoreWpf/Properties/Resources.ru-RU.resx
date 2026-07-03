@@ -3819,7 +3819,7 @@
     <value>Указан неверный путь к файлу. Если файл находится в архиве, перед открытием его следует извлечь.\n{0}</value>
   </data>
   <data name="MessageHomeFileMissing" xml:space="preserve">
-    <value>This file is no longer available. It may have been moved, renamed, or deleted.\n{0}</value>
+    <value>Этот файл больше не доступен. Возможно, он перемещен, переименован или удален.\n{0}</value>
   </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>Заморозить группу</value>
