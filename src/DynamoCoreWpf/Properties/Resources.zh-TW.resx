@@ -3818,7 +3818,7 @@
     <value>提供的檔案路徑無效。如果檔案已歸檔，開啟之前請務必先解壓縮。\n{0}</value>
   </data>
   <data name="MessageHomeFileMissing" xml:space="preserve">
-    <value>This file is no longer available. It may have been moved, renamed, or deleted.\n{0}</value>
+    <value>此檔案無法再使用。可能已移動、更名或刪除。\n{0}</value>
   </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>凍結群組</value>

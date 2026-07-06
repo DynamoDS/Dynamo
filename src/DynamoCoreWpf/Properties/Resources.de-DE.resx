@@ -3817,7 +3817,7 @@ Führen Sie #Download und Installation=https://www.autodesk.com/de/support/techn
     <value>Ungültiger Dateipfad angegeben. Falls die Datei archiviert ist, stellen Sie sicher, dass Sie sie vor dem Öffnen extrahieren.\n{0}</value>
   </data>
   <data name="MessageHomeFileMissing" xml:space="preserve">
-    <value>This file is no longer available. It may have been moved, renamed, or deleted.\n{0}</value>
+    <value>Diese Datei ist nicht mehr verfügbar. Sie wurde möglicherweise verschoben, umbenannt oder gelöscht.\n{0}</value>
   </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>Gruppe einfrieren</value>
