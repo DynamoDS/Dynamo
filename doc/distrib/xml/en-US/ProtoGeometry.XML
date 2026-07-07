@@ -3866,7 +3866,7 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double)">
             <summary>
-            Create a Solid Sphere cetered at the input Point, with given radius.
+            Create a Solid Sphere centered at the input Point, with given radius.
             </summary>
             <search>Brep,brep</search>
         </member>
