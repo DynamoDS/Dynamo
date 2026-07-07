@@ -291,7 +291,7 @@ namespace CoreNodeModels.Input
         }
 
         // If the value field in the slider has a number greater than
-        // long.Maxvalue (or MinValue), the value will be changed to long.MaxValue (or MinValue)
+        // long.MaxValue (or MinValue), the value will be changed to long.MaxValue (or MinValue)
         // The property setter is overridden here to update the UI, in case the value is changed. 
         public override long Value
         {
@@ -313,21 +313,20 @@ namespace CoreNodeModels.Input
 
             switch (name)
             {
-                case "Min":
+                case nameof(Min):
                 case "MinText":
-                case "Max":
+                case nameof(Max):
                 case "MaxText":
-                case "Step":
+                case nameof(Step):
                 case "StepText":
-                case "Value":
+                case nameof(Value):
                 case "ValueText":
                     if (string.IsNullOrEmpty(value))
                         return false;
 
-                    // Only accept strict 64-bit integer literals (no decimal point, no thousands
-                    // separators). Distinguish "not an integer" from "integer literal outside the
-                    // Int64 range" so the user gets an accurate message for each, and reject the
-                    // edit (keep the last valid value) in both cases.
+                    // Reject anything that isn't a strict Int64 literal (no decimals/thousands
+                    // separators). Distinguish out-of-range from non-numeric so the user gets
+                    // an accurate error message; both cases keep the last valid value.
                     if (!TryParseInt64(value, out long parsed, out bool isOutOfRange))
                     {
                         Info(Resources.IntegerSliderNonIntegerInputMessage, true);
