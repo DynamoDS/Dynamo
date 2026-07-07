@@ -59,9 +59,6 @@ static Dynamo.Wpf.Properties.Resources.DynamoSplashScreenFailed.get -> string
 static Dynamo.Wpf.Properties.Resources.DocumentationBrowserAutoSyncLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.DocumentationBrowserPreferences.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoSplashScreen.get -> string
-static Dynamo.Wpf.Properties.Resources.GraphLockFileAlreadyOpenMessage.get -> string
-static Dynamo.Wpf.Properties.Resources.GraphLockFileAlreadyOpenTitle.get -> string
-static Dynamo.Wpf.Properties.Resources.GraphLockSaveAsButton.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageBoxDontShowAgainLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.OfflineStatusTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.OnlineStatusTooltip.get -> string
