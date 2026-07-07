@@ -3813,7 +3813,7 @@ Pour transformer ce fichier en nouveau gabarit, enregistrez-le dans un autre dos
     <value>Le chemin d'accès fourni est incorrect. Si le fichier est archivé, assurez-vous de l'extraire avant de l'ouvrir.\n{0}</value>
   </data>
   <data name="MessageHomeFileMissing" xml:space="preserve">
-    <value>This file is no longer available. It may have been moved, renamed, or deleted.\n{0}</value>
+    <value>Ce fichier n'est plus disponible. Il a peut-être été déplacé, renommé ou supprimé.\n{0}</value>
   </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>Geler le groupe</value>

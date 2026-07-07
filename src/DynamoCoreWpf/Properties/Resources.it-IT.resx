@@ -3801,7 +3801,7 @@ Per trasformare questo file in un nuovo modello, salvarlo in un'altra cartella e
     <value>Percorso del file specificato non valido. Se il file è archiviato, assicurarsi di estrarlo prima di aprirlo.\n{0}</value>
   </data>
   <data name="MessageHomeFileMissing" xml:space="preserve">
-    <value>This file is no longer available. It may have been moved, renamed, or deleted.\n{0}</value>
+    <value>Questo file non è più disponibile. Potrebbe essere stato spostato, rinominato o eliminato.\n{0}</value>
   </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>Congela gruppo</value>
