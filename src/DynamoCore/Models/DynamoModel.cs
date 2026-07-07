@@ -2440,9 +2440,9 @@ namespace Dynamo.Models
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return;
+                Logger.Log(ex);
             }
         }
 
