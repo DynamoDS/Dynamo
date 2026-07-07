@@ -85,7 +85,7 @@
         "TypeName": "bool",
         "TypeRank": 0,
         "DefaultValue": "false",
-        "Description": "Closed rule\ntrue = closed curves allowed\nfalse = open curves allowed"
+        "Description": "Closed rule\ntrue = curves must be closed\nfalse = open curves allowed"
       },
       "Id": "01aea9183a734898b9d37e5efadd0919",
       "NodeType": "InputNode",
@@ -2317,7 +2317,7 @@
       },
       {
         "Id": "a4e7bab50f804226a58b34748879b6eb",
-        "Title": "ADDITIONAL COMMENTS\n_____________________________________________________ \n\nCustom nodes are typically found in the Add-ons section of the Library.\r\nThis custom node is located under:\r\nAdd-ons → Standards → Curve → Curve_Validate\r\n\r\nIf it does not appear:\r\n\r\nCheck that the .dyf file is in your custom nodes folder\r\n\r\nGo to:\r\nPackages → Package Manager → Package Settings → Package/Lirary Search Paths\r\nVerify the folder path is listed or add a new path\r\nRestart Dynamo after adding new custom nodes\n",
+        "Title": "ADDITIONAL COMMENTS\n_____________________________________________________ \n\nCustom nodes are typically found in the Add-ons section of the Library.\r\nThis custom node is located under:\r\nAdd-ons → Standards → Curve → Curve_Validate\r\n\r\nIf it does not appear:\r\n\r\nCheck that the .dyf file is in your custom nodes folder\r\n\r\nGo to:\r\nPackages → Package Manager → Package Settings → Package/Library Search Paths\r\nVerify the folder path is listed or add a new path\r\nRestart Dynamo after adding new custom nodes\n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
