@@ -330,9 +330,7 @@ namespace CoreNodeModels.Input
                     // edit (keep the last valid value) in both cases.
                     if (!TryParseInt64(value, out long parsed, out bool isOutOfRange))
                     {
-                        Info(isOutOfRange
-                            ? Resources.IntegerSliderInfoMessage
-                            : Resources.IntegerSliderNonIntegerInputMessage, true);
+                        Info(Resources.IntegerSliderNonIntegerInputMessage, true);
 
                         // The textbox is OneWay-bound and already displays the rejected text.
                         // Nothing reverts it automatically since Min/Max/Step/Value never changed.
@@ -343,7 +341,14 @@ namespace CoreNodeModels.Input
                         return false;
                     }
 
-                    ClearInfoMessages();
+                    if (isOutOfRange)
+                    {
+                        Info(Resources.IntegerSliderInfoMessage, true);
+                    }
+                    else
+                    {
+                        ClearInfoMessages();
+                    }
 
                     switch (name)
                     {
@@ -371,10 +376,12 @@ namespace CoreNodeModels.Input
         }
 
         /// <summary>
-        /// Attempts to parse a strict 64-bit integer literal. If <paramref name="value"/> is a
-        /// well-formed integer (optional sign followed only by digits) that exceeds the Int64
-        /// range, <paramref name="isOutOfRange"/> is set to true; the method still returns false
-        /// in that case so the caller can tell "not an integer" apart from "integer too large".
+        /// Attempts to parse a strict 64-bit integer literal. Returns false only when
+        /// <paramref name="value"/> is not an integer literal at all (contains a decimal point,
+        /// letters, etc.). If <paramref name="value"/> is a well-formed integer (optional sign
+        /// followed only by digits) that exceeds the Int64 range, <paramref name="isOutOfRange"/>
+        /// is set to true and <paramref name="result"/> is clamped to Int64.MaxValue/MinValue,
+        /// matching how the slider already clamps values dragged or set past Min/Max.
         /// </summary>
         private static bool TryParseInt64(string value, out long result, out bool isOutOfRange)
         {
@@ -387,6 +394,8 @@ namespace CoreNodeModels.Input
             if (start < value.Length && value.Skip(start).All(char.IsDigit))
             {
                 isOutOfRange = true;
+                result = value[0] == '-' ? long.MinValue : long.MaxValue;
+                return true;
             }
 
             result = 0;
