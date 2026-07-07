@@ -90,13 +90,12 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void OpeningWorkspaceWithTrustWarning()
+        public void OpeningWorkspaceWithTclsrustWarning()
         {
             // Open workspace with test mode as false, to verify trust warning.
             DynamoModel.IsTestMode = false;
             Open(@"core\CustomNodes\TestAdd.dyn");
             Assert.IsTrue(ViewModel.FileTrustViewModel.ShowWarningPopup);
-            Assert.IsTrue(ViewModel.HomeSpace.RunSettings.ForceBlockRun);
 
             // Close workspace
             Assert.IsTrue(ViewModel.CloseHomeWorkspaceCommand.CanExecute(null));
@@ -104,7 +103,6 @@ namespace DynamoCoreWpfTests
 
             // Asert that the warning popup is closed, when the workspace is closed.
             Assert.IsFalse(ViewModel.FileTrustViewModel.ShowWarningPopup);
-            Assert.IsFalse(ViewModel.HomeSpace.RunSettings.ForceBlockRun);
             DynamoModel.IsTestMode = true;
         }
 

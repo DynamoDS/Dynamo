@@ -147,7 +147,7 @@ namespace Dynamo.Wpf.Views.FileTrust
             fileTrustWarningViewModel.AllowOneTimeTrust = true;
             fileTrustWarningViewModel.ShowWarningPopup = false;
 
-            dynViewModel.HomeSpace.RunSettings.ForceBlockRun = false;
+            RunSettings.ForceBlockRun = false;
             if (FileTrustWarningCheckBox.IsChecked.Value == true)
             {
                 if (dynViewModel.PreferenceSettings.AddTrustedLocation(fileTrustWarningViewModel.DynFileDirectoryName))
@@ -196,7 +196,7 @@ namespace Dynamo.Wpf.Views.FileTrust
         {
             if (dynViewModel.FileTrustViewModel.ShowWarningPopup == !activate &&
                !string.IsNullOrEmpty(dynViewModel.FileTrustViewModel.DynFileDirectoryName) &&
-               dynViewModel.HomeSpace.RunSettings.ForceBlockRun)
+               RunSettings.ForceBlockRun == true)
                 IsOpen = activate;
         }
 
