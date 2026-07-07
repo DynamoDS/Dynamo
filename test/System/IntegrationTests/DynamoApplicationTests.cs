@@ -165,10 +165,7 @@ namespace IntegrationTests
         }
 
         // This test is Explicit because it launches the full DynamoSandbox process tree (including
-        // WebView2/Edge child processes) and inspects live OS TCP tables. That is environment
-        // sensitive: corporate proxies, VPNs, endpoint-protection agents and OS-level services can
-        // open connections attributed to child processes, producing false positives on shared CI.
-        // Run it on a clean, isolated machine when auditing the --NoNetworkMode guarantee.
+        // WebView2/Edge child processes) and inspects live OS TCP tables.
         [Test, Explicit("Network-egress audit; run on a clean, isolated machine. See comment above.")]
         [Category("NetworkAudit")]
         public void WhenDynamoStartsWithNoNetworkModeThenNoOutboundConnectionsAreOpened()
@@ -200,8 +197,7 @@ namespace IntegrationTests
         }
 
         /// <summary>
-        /// Returns the set of process ids belonging to <paramref name="rootPid"/> and its descendants
-        /// (e.g. the msedgewebview2.exe children spawned by Dynamo's WebView2 surfaces).
+        /// Returns the set of process ids belonging to <paramref name="rootPid"/> and its descendants.
         /// </summary>
         private static HashSet<int> GetProcessTreePids(int rootPid)
         {
