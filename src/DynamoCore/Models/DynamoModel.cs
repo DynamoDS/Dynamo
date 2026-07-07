@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -2198,7 +2199,7 @@ namespace Dynamo.Models
                 // These kind of exceptions indicate that file is not accessible
                 if (ex is IOException || ex is UnauthorizedAccessException)
                 {
-                    throw ex;
+                    ExceptionDispatchInfo.Capture(ex).Throw();
                 }
 
                 XmlDocument xmlDoc;
@@ -2210,7 +2211,7 @@ namespace Dynamo.Models
                 }
                 else
                 {
-                    throw ex;
+                    ExceptionDispatchInfo.Capture(ex).Throw();
                 }
             }
         }
