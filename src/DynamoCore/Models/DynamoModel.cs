@@ -2192,7 +2192,6 @@ namespace Dynamo.Models
             if (DynamoUtilities.PathHelper.isValidJson(filePath, out fileContents, out ex))
             {
                 OpenJsonFileFromPath(fileContents, filePath, forceManualExecutionMode, forceBlockRun: forceBlockRun);
-                return;
             }
             else
             {
@@ -2208,7 +2207,6 @@ namespace Dynamo.Models
                 if (ex is JsonReaderException && DynamoUtilities.PathHelper.isValidXML(filePath, out xmlDoc, out ex))
                 {
                     OpenXmlFileFromPath(xmlDoc, filePath, forceManualExecutionMode, forceBlockRun: forceBlockRun);
-                    return;
                 }
                 else
                 {
@@ -2407,8 +2405,7 @@ namespace Dynamo.Models
         /// execution mode specified in the file and set manual mode</param>
         /// <param name="isTemplate">When true, marks the opened workspace as a template (for example when opened via <see cref="OpenTemplateFromPath"/>).</param>
         /// <param name="forceBlockRun">Set this to true to block the graph from running after opening.</param>
-        /// <returns>True if workspace was opened successfully</returns>
-        private bool OpenXmlFileFromPath(XmlDocument xmlDoc, string filePath, bool forceManualExecutionMode, bool isTemplate = false, bool forceBlockRun = false)
+        private void OpenXmlFileFromPath(XmlDocument xmlDoc, string filePath, bool forceManualExecutionMode, bool isTemplate = false, bool forceBlockRun = false)
         {
             try
             {
@@ -2421,8 +2418,6 @@ namespace Dynamo.Models
                         Logger.Log("File is not saved in the backup folder {0}: ", pathManager.BackupDirectory);
                     }
                 }
-
-                var workspaceOpened = false;
 
                 WorkspaceInfo workspaceInfo;
                 if (WorkspaceInfo.FromXmlDocument(xmlDoc, filePath, IsTestMode, forceManualExecutionMode, Logger, out workspaceInfo))
@@ -2441,15 +2436,13 @@ namespace Dynamo.Models
                             // Set up workspace cameras here
                             OnWorkspaceOpening(xmlDoc);
                             SetPeriodicEvaluation(ws);
-                            workspaceOpened = true;
                         }
                     }
                 }
-                return workspaceOpened;
             }
             catch (Exception)
             {
-                return false;
+                return;
             }
         }
 
