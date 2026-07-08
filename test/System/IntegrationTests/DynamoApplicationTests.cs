@@ -1,16 +1,15 @@
+using Dynamo.Applications;
+using Dynamo.Logging;
+using Dynamo.Models;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Dynamo.Applications;
-using Dynamo.Logging;
-using Dynamo.Models;
-using NUnit.Framework;
 using static Dynamo.Models.DynamoModel;
 
 namespace IntegrationTests
@@ -204,15 +203,24 @@ namespace IntegrationTests
         private static HashSet<int> GetProcessTreePids(int rootPid)
         {
             var pids = new HashSet<int> { rootPid };
-            var all = Process.GetProcesses();
 
             // Build a parent-map by walking every process's parent id via WMI-free heuristic:
             // repeatedly add processes whose parent is already in the set until it stabilizes.
             var parentById = new Dictionary<int, int>();
-            foreach (var p in all)
+            foreach (var process in Process.GetProcesses())
             {
-                try { parentById[p.Id] = GetParentProcessId(p.Id); }
-                catch { /* process may have exited; ignore */ }
+                try
+                {
+                    parentById[process.Id] = GetParentProcessId(process.Id);
+                }
+                catch
+                {
+                    /* process may have exited; ignore */
+                }
+                finally
+                {
+                    process.Dispose();
+                }
             }
 
             bool added = true;
@@ -229,7 +237,7 @@ namespace IntegrationTests
         }
 
         /// <summary>
-        /// Snapshots the IPv4 TCP table and returns any connection owned by a process in
+        /// Snapshots the IPv4 and IPv6 TCP tables and returns any connection owned by a process in
         /// <paramref name="treePids"/> whose remote endpoint is not loopback and is in a state that
         /// indicates an actual outbound connection attempt.
         /// </summary>
@@ -242,6 +250,7 @@ namespace IntegrationTests
                 var remote = row.RemoteEndPoint.Address;
                 if (IPAddress.IsLoopback(remote)) return false;
                 if (remote.Equals(IPAddress.Any)) return false; // 0.0.0.0 == listening, not outbound
+                if (remote.Equals(IPAddress.IPv6Any)) return false; // :: == listening, not outbound
 
                 // Only flag states that represent a real outbound connection.
                 return row.State == MibTcpState.Established ||
@@ -253,7 +262,7 @@ namespace IntegrationTests
             }
         }
 
-        #region Managed TCP table (avoids unmanaged interop)
+        #region Win32 interop for per-PID TCP ownership
 
         private enum MibTcpState
         {
@@ -273,20 +282,139 @@ namespace IntegrationTests
             public int OwningPid { get; }
         }
 
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MIB_TCPROW_OWNER_PID
+        {
+            public uint state;
+            public uint localAddr;
+            public uint localPort;
+            public uint remoteAddr;
+            public uint remotePort;
+            public uint owningPid;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MIB_TCP6ROW_OWNER_PID
+        {
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+            public byte[] localAddr;
+            public uint localScopeId;
+            public uint localPort;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+            public byte[] remoteAddr;
+            public uint remoteScopeId;
+            public uint remotePort;
+            public uint state;
+            public uint owningPid;
+        }
+
+        [DllImport("iphlpapi.dll", SetLastError = true)]
+        private static extern uint GetExtendedTcpTable(IntPtr pTcpTable, ref int pdwSize,
+            bool bOrder, int ulAf, int tableClass, int reserved);
+
+        private const int AF_INET = 2;
+        private const int AF_INET6 = 23;
+        private const int TCP_TABLE_OWNER_PID_ALL = 5;
+        private const uint ERROR_INSUFFICIENT_BUFFER = 122;
+
         private static IEnumerable<TcpRow> GetTcpTable()
         {
             var rows = new List<TcpRow>();
-            var connections = IPGlobalProperties.GetIPGlobalProperties().GetActiveTcpConnections();
+            rows.AddRange(GetTcpTableV4());
+            rows.AddRange(GetTcpTableV6());
+            return rows;
+        }
 
-            foreach (var c in connections)
+        private static IEnumerable<TcpRow> GetTcpTableV4()
+        {
+            var rows = new List<TcpRow>();
+            int size = 0;
+
+            var result = GetExtendedTcpTable(IntPtr.Zero, ref size, true, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0);
+            if (result != ERROR_INSUFFICIENT_BUFFER || size <= 0)
             {
-                rows.Add(new TcpRow(
-                    (MibTcpState)c.State,
-                    c.RemoteEndPoint,
-                    -1));
+                throw new InvalidOperationException($"GetExtendedTcpTable(AF_INET) failed to get buffer size. Win32 error: {result}");
+            }
+
+            IntPtr table = Marshal.AllocHGlobal(size);
+            try
+            {
+                result = GetExtendedTcpTable(table, ref size, true, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0);
+                if (result != 0)
+                {
+                    throw new InvalidOperationException($"GetExtendedTcpTable(AF_INET) failed to query table. Win32 error: {result}");
+                }
+
+                int rowCount = Marshal.ReadInt32(table);
+                IntPtr rowPtr = IntPtr.Add(table, sizeof(int));
+                int rowSize = Marshal.SizeOf<MIB_TCPROW_OWNER_PID>();
+
+                for (int i = 0; i < rowCount; i++)
+                {
+                    var row = Marshal.PtrToStructure<MIB_TCPROW_OWNER_PID>(rowPtr);
+                    var remoteAddress = new IPAddress(row.remoteAddr);
+                    int remotePort = ParsePort(row.remotePort);
+
+                    rows.Add(new TcpRow((MibTcpState)row.state,
+                        new IPEndPoint(remoteAddress, remotePort), (int)row.owningPid));
+                    rowPtr = IntPtr.Add(rowPtr, rowSize);
+                }
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(table);
             }
 
             return rows;
+        }
+
+        private static IEnumerable<TcpRow> GetTcpTableV6()
+        {
+            var rows = new List<TcpRow>();
+            int size = 0;
+
+            var result = GetExtendedTcpTable(IntPtr.Zero, ref size, true, AF_INET6, TCP_TABLE_OWNER_PID_ALL, 0);
+            if (result != ERROR_INSUFFICIENT_BUFFER || size <= 0)
+            {
+                throw new InvalidOperationException($"GetExtendedTcpTable(AF_INET6) failed to get buffer size. Win32 error: {result}");
+            }
+
+            IntPtr table = Marshal.AllocHGlobal(size);
+            try
+            {
+                result = GetExtendedTcpTable(table, ref size, true, AF_INET6, TCP_TABLE_OWNER_PID_ALL, 0);
+                if (result != 0)
+                {
+                    throw new InvalidOperationException($"GetExtendedTcpTable(AF_INET6) failed to query table. Win32 error: {result}");
+                }
+
+                int rowCount = Marshal.ReadInt32(table);
+                IntPtr rowPtr = IntPtr.Add(table, sizeof(int));
+                int rowSize = Marshal.SizeOf<MIB_TCP6ROW_OWNER_PID>();
+
+                for (int i = 0; i < rowCount; i++)
+                {
+                    var row = Marshal.PtrToStructure<MIB_TCP6ROW_OWNER_PID>(rowPtr);
+                    var remoteAddress = new IPAddress(row.remoteAddr, row.remoteScopeId);
+                    int remotePort = ParsePort(row.remotePort);
+
+                    rows.Add(new TcpRow((MibTcpState)row.state,
+                        new IPEndPoint(remoteAddress, remotePort), (int)row.owningPid));
+                    rowPtr = IntPtr.Add(rowPtr, rowSize);
+                }
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(table);
+            }
+
+            return rows;
+        }
+
+        private static int ParsePort(uint networkOrderPort)
+        {
+            // Ports are stored in network byte order in the low 16 bits.
+            return ((int)(networkOrderPort & 0xFF) << 8) | (int)((networkOrderPort >> 8) & 0xFF);
         }
 
         [DllImport("ntdll.dll")]

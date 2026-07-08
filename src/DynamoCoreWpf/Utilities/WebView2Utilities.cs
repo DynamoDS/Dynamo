@@ -137,7 +137,7 @@ namespace Dynamo.Wpf.Utilities
         /// startup surface relies on. The switches above stop the runtime's own outbound traffic while
         /// leaving local rendering intact.
         /// </summary>
-        public const string NoNetworkAdditionalBrowserArguments =
+        public static readonly string NoNetworkAdditionalBrowserArguments =
             "--disable-background-networking " +
             "--disable-component-update " +
             "--disable-domain-reliability " +
