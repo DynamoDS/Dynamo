@@ -172,14 +172,17 @@ namespace IntegrationTests
         public void WhenDynamoStartsWithNoNetworkModeThenNoOutboundConnectionsAreOpened()
         {
             var coreDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            Process dynamoSandbox = null;
+            using var dynamoSandbox = Process.Start(new ProcessStartInfo(
+                Path.Join(coreDirectory, "DynamoSandbox.exe"), "--NoNetworkMode")
+            { UseShellExecute = true });
+
+            if (dynamoSandbox == null)
+            {
+                Assert.Fail("Failed to start DynamoSandbox process.");
+            }
 
             try
             {
-                dynamoSandbox = Process.Start(new ProcessStartInfo(
-                    Path.Join(coreDirectory, "DynamoSandbox.exe"), "--NoNetworkMode")
-                { UseShellExecute = true });
-
                 // Give startup (splash + home page + WebView2 children) time to settle.
                 dynamoSandbox.WaitForInputIdle(30_000);
                 Thread.Sleep(TimeSpan.FromSeconds(30));
@@ -193,23 +196,16 @@ namespace IntegrationTests
             }
             finally
             {
-                if (dynamoSandbox != null)
+                try
                 {
-                    try
+                    if (!dynamoSandbox.HasExited)
                     {
-                        if (!dynamoSandbox.HasExited)
-                        {
-                            dynamoSandbox.Kill(entireProcessTree: true);
-                        }
+                        dynamoSandbox.Kill(entireProcessTree: true);
                     }
-                    catch (InvalidOperationException)
-                    {
-                        // Process already exited (or cannot be killed).
-                    }
-                    finally
-                    {
-                        dynamoSandbox.Dispose();
-                    }
+                }
+                catch (InvalidOperationException)
+                {
+                    // Process already exited (or cannot be killed).
                 }
             }
         }
