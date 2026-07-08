@@ -301,9 +301,10 @@ namespace IntegrationTests
             IntPtr table = Marshal.AllocHGlobal(size);
             try
             {
-                if (GetExtendedTcpTable(table, ref size, true, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) != 0)
+                var result = GetExtendedTcpTable(table, ref size, true, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0);
+                if (result != 0)
                 {
-                    return rows;
+                    throw new InvalidOperationException($"GetExtendedTcpTable failed with error code {result}.");
                 }
 
                 int rowCount = Marshal.ReadInt32(table);
