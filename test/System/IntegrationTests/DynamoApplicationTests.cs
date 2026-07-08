@@ -218,13 +218,10 @@ namespace IntegrationTests
             while (added)
             {
                 added = false;
-                foreach (var kvp in parentById)
+                foreach (var kvp in parentById.Where(kvp => !pids.Contains(kvp.Key) && pids.Contains(kvp.Value)))
                 {
-                    if (!pids.Contains(kvp.Key) && pids.Contains(kvp.Value))
-                    {
-                        pids.Add(kvp.Key);
-                        added = true;
-                    }
+                    pids.Add(kvp.Key);
+                    added = true;
                 }
             }
             return pids;
