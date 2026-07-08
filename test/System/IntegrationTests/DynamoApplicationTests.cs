@@ -234,21 +234,21 @@ namespace IntegrationTests
         /// </summary>
         private static IEnumerable<string> GetNonLoopbackTcpConnections(HashSet<int> treePids)
         {
-            foreach (var row in GetTcpTable())
+            foreach (var row in GetTcpTable().Where(row =>
             {
-                if (!treePids.Contains(row.OwningPid)) continue;
+                if (!treePids.Contains(row.OwningPid)) return false;
 
                 var remote = row.RemoteEndPoint.Address;
-                if (IPAddress.IsLoopback(remote)) continue;
-                if (remote.Equals(IPAddress.Any)) continue; // 0.0.0.0 == listening, not outbound
+                if (IPAddress.IsLoopback(remote)) return false;
+                if (remote.Equals(IPAddress.Any)) return false; // 0.0.0.0 == listening, not outbound
 
                 // Only flag states that represent a real outbound connection.
-                if (row.State == MibTcpState.Established ||
-                    row.State == MibTcpState.SynSent ||
-                    row.State == MibTcpState.SynReceived)
-                {
-                    yield return $"pid {row.OwningPid} -> {row.RemoteEndPoint} ({row.State})";
-                }
+                return row.State == MibTcpState.Established ||
+                       row.State == MibTcpState.SynSent ||
+                       row.State == MibTcpState.SynReceived;
+            }))
+            {
+                yield return $"pid {row.OwningPid} -> {row.RemoteEndPoint} ({row.State})";
             }
         }
 
