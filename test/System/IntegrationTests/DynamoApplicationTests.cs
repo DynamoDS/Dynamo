@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Dynamo.Applications;
@@ -252,7 +253,7 @@ namespace IntegrationTests
             }
         }
 
-        #region Win32 interop for per-PID TCP ownership
+        #region Managed TCP table (avoids unmanaged interop)
 
         private enum MibTcpState
         {
@@ -272,57 +273,19 @@ namespace IntegrationTests
             public int OwningPid { get; }
         }
 
-        [StructLayout(LayoutKind.Sequential)]
-        private struct MIB_TCPROW_OWNER_PID
-        {
-            public uint state;
-            public uint localAddr;
-            public uint localPort;
-            public uint remoteAddr;
-            public uint remotePort;
-            public uint owningPid;
-        }
-
-        [DllImport("iphlpapi.dll", SetLastError = true)]
-        private static extern uint GetExtendedTcpTable(IntPtr pTcpTable, ref int pdwSize,
-            bool bOrder, int ulAf, int tableClass, int reserved);
-
-        private const int AF_INET = 2;
-        private const int TCP_TABLE_OWNER_PID_ALL = 5;
-
         private static IEnumerable<TcpRow> GetTcpTable()
         {
             var rows = new List<TcpRow>();
-            int size = 0;
-            GetExtendedTcpTable(IntPtr.Zero, ref size, true, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0);
-            IntPtr table = Marshal.AllocHGlobal(size);
-            try
-            {
-                var result = GetExtendedTcpTable(table, ref size, true, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0);
-                if (result != 0)
-                {
-                    throw new InvalidOperationException($"GetExtendedTcpTable failed with error code {result}.");
-                }
+            var connections = IPGlobalProperties.GetIPGlobalProperties().GetActiveTcpConnections();
 
-                int rowCount = Marshal.ReadInt32(table);
-                IntPtr rowPtr = IntPtr.Add(table, sizeof(int));
-                int rowSize = Marshal.SizeOf<MIB_TCPROW_OWNER_PID>();
-
-                for (int i = 0; i < rowCount; i++)
-                {
-                    var r = Marshal.PtrToStructure<MIB_TCPROW_OWNER_PID>(rowPtr);
-                    var remoteAddress = new IPAddress(r.remoteAddr);
-                    // Ports are stored in network byte order in the low 16 bits.
-                    int remotePort = ((int)(r.remotePort & 0xFF) << 8) | (int)((r.remotePort >> 8) & 0xFF);
-                    rows.Add(new TcpRow((MibTcpState)r.state,
-                        new IPEndPoint(remoteAddress, remotePort), (int)r.owningPid));
-                    rowPtr = IntPtr.Add(rowPtr, rowSize);
-                }
-            }
-            finally
+            foreach (var c in connections)
             {
-                Marshal.FreeHGlobal(table);
+                rows.Add(new TcpRow(
+                    (MibTcpState)c.State,
+                    c.RemoteEndPoint,
+                    -1));
             }
+
             return rows;
         }
 
