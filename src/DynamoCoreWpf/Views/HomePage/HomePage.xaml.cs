@@ -162,6 +162,8 @@ namespace Dynamo.UI.Views
         {
             string htmlString = string.Empty;   
             string jsonString = string.Empty;
+            var homePageViewModel = this.startPage;
+            var logger = homePageViewModel?.DynamoViewModel?.Model?.Logger;
 
             // When executing Dynamo as Sandbox or inside any host like Revit, FormIt, Civil3D the WebView2 cache folder will be located in the AppData folder
             var userDataDir = new DirectoryInfo(GetUserDirectory());
@@ -174,9 +176,9 @@ namespace Dynamo.UI.Views
             };
 
             // Suppress WebView2 runtime background networking when Dynamo is in no-network mode.
-            var noNetworkMode = startPage?.DynamoViewModel?.Model?.NoNetworkMode ?? false;
+            var noNetworkMode = homePageViewModel?.DynamoViewModel?.Model?.NoNetworkMode ?? false;
             WebView2Utilities.ApplyNoNetworkPolicy(dynWebView.CreationProperties, noNetworkMode,
-                msg => startPage?.DynamoViewModel?.Model?.Logger?.Log(msg));
+                msg => logger?.Log(msg));
 
             //ContentRendered ensures that the webview2 component is visible.
             try
@@ -219,7 +221,7 @@ namespace Dynamo.UI.Views
                 }
                 catch (Exception ex)
                 {
-                    this.startPage.DynamoViewModel.Model.Logger.Log(ex.Message);
+                    logger?.Log(ex.Message);
                 }
 
                 // Exposing commands to the React front-end
@@ -238,7 +240,7 @@ namespace Dynamo.UI.Views
             }
             catch (ObjectDisposedException ex)
             {
-                this.startPage.DynamoViewModel.Model.Logger.Log(ex.Message);
+                logger?.Log(ex.Message);
             }
         }
 
