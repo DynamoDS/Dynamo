@@ -6,6 +6,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.UI;
 using Dynamo.ViewModels;
+using System;
 using System.Text.RegularExpressions;
 using System.Windows;
 using CoreNodeModels.Input;
@@ -43,14 +44,15 @@ namespace CoreNodeModelsWpf.Controls
             }
         }
 
-        private static readonly Regex IntegerInputPattern = new Regex(@"^-?\d*$", RegexOptions.Compiled);
-        private void RestrictToIntegerInput(TextBox textBox)
+        private static readonly Regex IntegerInputPattern = new Regex(@"^-?\d*$", RegexOptions.Compiled, TimeSpan.FromMilliseconds(100));
+
+        private static void RestrictToIntegerInput(TextBox textBox)
         {
             textBox.PreviewTextInput += IntegerTextBox_PreviewTextInput;
             DataObject.AddPastingHandler(textBox, IntegerTextBox_Pasting);
         }
 
-        private void IntegerTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        private static void IntegerTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             var textBox = sender as TextBox;
             if (textBox == null) return;
@@ -58,7 +60,7 @@ namespace CoreNodeModelsWpf.Controls
             e.Handled = !IsValidIntegerText(GetProposedText(textBox, e.Text));
         }
 
-        private void IntegerTextBox_Pasting(object sender, DataObjectPastingEventArgs e)
+        private static void IntegerTextBox_Pasting(object sender, DataObjectPastingEventArgs e)
         {
             var textBox = sender as TextBox;
             if (textBox == null || !e.DataObject.GetDataPresent(typeof(string)))
