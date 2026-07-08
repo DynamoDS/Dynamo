@@ -168,6 +168,7 @@ namespace IntegrationTests
         // WebView2/Edge child processes) and inspects live OS TCP tables.
         [Test, Explicit("Network-egress audit; run on a clean, isolated machine. See comment above.")]
         [Category("NetworkAudit")]
+        [Platform("win")]
         public void WhenDynamoStartsWithNoNetworkModeThenNoOutboundConnectionsAreOpened()
         {
             var coreDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
