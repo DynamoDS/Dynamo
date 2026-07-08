@@ -3933,18 +3933,6 @@ Para abrir este gráfico en Dynamo 3.3–3.6.x, instale el paquete PythonNet des
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>Sincronización automática con selección de nodos.</value>
   </data>
-  <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
-    <value>Este archivo está abierto en otra instancia de Dynamo.
-Para evitar la pérdida o el deterioro de los datos, elija una de las siguientes opciones:
- • Guardar como: abre una copia independiente que puede editar de forma segura.
- • Cancelar: no se abre el archivo.</value>
-  </data>
-  <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
-    <value>El archivo ya está abierto en otra instancia de Dynamo</value>
-  </data>
-  <data name="GraphLockSaveAsButton" xml:space="preserve">
-    <value>Guardar como</value>
-  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\ViewModels\Watch3D\compiledShaders\psDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
