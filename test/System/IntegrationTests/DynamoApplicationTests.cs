@@ -193,7 +193,24 @@ namespace IntegrationTests
             }
             finally
             {
-                dynamoSandbox?.Kill(entireProcessTree: true);
+                if (dynamoSandbox != null)
+                {
+                    try
+                    {
+                        if (!dynamoSandbox.HasExited)
+                        {
+                            dynamoSandbox.Kill(entireProcessTree: true);
+                        }
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        // Process already exited (or cannot be killed).
+                    }
+                    finally
+                    {
+                        dynamoSandbox.Dispose();
+                    }
+                }
             }
         }
 
