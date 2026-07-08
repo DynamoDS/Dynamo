@@ -226,17 +226,16 @@ namespace IntegrationTests
             var parentById = new Dictionary<int, int>();
             foreach (var process in Process.GetProcesses())
             {
-                try
+                using (process)
                 {
-                    parentById[process.Id] = GetParentProcessId(process.Id);
-                }
-                catch
-                {
-                    /* process may have exited; ignore */
-                }
-                finally
-                {
-                    process.Dispose();
+                    try
+                    {
+                        parentById[process.Id] = GetParentProcessId(process.Id);
+                    }
+                    catch
+                    {
+                        /* process may have exited; ignore */
+                    }
                 }
             }
 
