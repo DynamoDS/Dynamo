@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
@@ -289,30 +290,29 @@ namespace IntegrationTests
             return rows;
         }
 
-        [DllImport("ntdll.dll")]
-        private static extern int NtQueryInformationProcess(IntPtr processHandle, int processInformationClass,
-            ref PROCESS_BASIC_INFORMATION processInformation, int processInformationLength, out int returnLength);
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct PROCESS_BASIC_INFORMATION
-        {
-            public IntPtr Reserved1;
-            public IntPtr PebBaseAddress;
-            public IntPtr Reserved2_0;
-            public IntPtr Reserved2_1;
-            public IntPtr UniqueProcessId;
-            public IntPtr InheritedFromUniqueProcessId;
-        }
-
         private static int GetParentProcessId(int pid)
         {
-            using var process = Process.GetProcessById(pid);
-            var pbi = new PROCESS_BASIC_INFORMATION();
-            if (NtQueryInformationProcess(process.Handle, 0, ref pbi, Marshal.SizeOf(pbi), out _) != 0)
+            try
             {
-                return 0;
+                using var searcher = new ManagementObjectSearcher(
+                    $"SELECT ParentProcessId FROM Win32_Process WHERE ProcessId = {pid}");
+                using var results = searcher.Get();
+
+                foreach (ManagementObject obj in results)
+                {
+                    var value = obj["ParentProcessId"];
+                    if (value != null)
+                    {
+                        return Convert.ToInt32(value);
+                    }
+                }
             }
-            return pbi.InheritedFromUniqueProcessId.ToInt32();
+            catch
+            {
+                // Keep previous behavior: return 0 if parent PID cannot be determined.
+            }
+
+            return 0;
         }
 
         #endregion
