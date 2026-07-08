@@ -200,7 +200,7 @@ namespace Dynamo.Wpf.Utilities
             // leave the local crash artifacts in place instead.
             if (model?.NoNetworkMode == true)
             {
-                model?.Logger?.LogWarning("CER crash report upload was skipped because Dynamo is running in no-network mode.", WarningLevel.Mild);
+                model.Logger?.LogWarning("CER crash report upload was skipped because Dynamo is running in no-network mode.", WarningLevel.Mild);
                 return false;
             }
 
