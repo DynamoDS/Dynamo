@@ -3742,36 +3742,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This file is currently open in another instance of Dynamo.
-        ///To avoid data loss or corruption, please choose one of the following actions:
-        /// • Save As — opens an independent copy you can edit safely.
-        /// • Cancel — does not open the file..
-        /// </summary>
-        public static string GraphLockFileAlreadyOpenMessage {
-            get {
-                return ResourceManager.GetString("GraphLockFileAlreadyOpenMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to File already open in another Dynamo instance.
-        /// </summary>
-        public static string GraphLockFileAlreadyOpenTitle {
-            get {
-                return ResourceManager.GetString("GraphLockFileAlreadyOpenTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Save As.
-        /// </summary>
-        public static string GraphLockSaveAsButton {
-            get {
-                return ResourceManager.GetString("GraphLockSaveAsButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Add Group to This Group.
         /// </summary>
         public static string GroupContextMenuAddGroupToGroup {
@@ -6614,7 +6584,7 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("PackageManagerNoNetworkModeToolTip", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to No validation errors.
         /// </summary>
@@ -10370,33 +10340,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reset imported settings.
-        /// </summary>
-        public static string SplashScreenResetSettingsTooltip {
-            get {
-                return ResourceManager.GetString("SplashScreenResetSettingsTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Settings imported. To apply the settings, launch Dynamo, then close it and restart it..
-        /// </summary>
-        public static string SplashScreenSettingsImportedRestartMessage {
-            get {
-                return ResourceManager.GetString("SplashScreenSettingsImportedRestartMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Imported settings have been reset..
-        /// </summary>
-        public static string SplashScreenSettingsResetSuccess {
-            get {
-                return ResourceManager.GetString("SplashScreenSettingsResetSuccess", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Don&apos;t show this again.
         /// </summary>
         public static string SplashScreenShowScreenAgainLabel {
@@ -11372,6 +11315,37 @@ namespace Dynamo.Wpf.Properties {
         public static string ZoomLevel {
             get {
                 return ResourceManager.GetString("ZoomLevel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Settings imported. To apply the settings, launch Dynamo, then close it and restart it.
+        /// </summary>
+        public static string SplashScreenSettingsImportedRestartMessage
+        {
+            get
+            {
+                return ResourceManager.GetString("SplashScreenSettingsImportedRestartMessage", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to Reset imported settings.
+        /// </summary>
+        public static string SplashScreenResetSettingsTooltip
+        {
+            get
+            {
+                return ResourceManager.GetString("SplashScreenResetSettingsTooltip", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to Imported settings have been reset.
+        /// </summary>
+        public static string SplashScreenSettingsResetSuccess
+        {
+            get
+            {
+                return ResourceManager.GetString("SplashScreenSettingsResetSuccess", resourceCulture);
             }
         }
     }

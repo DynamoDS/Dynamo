@@ -392,7 +392,7 @@ namespace Dynamo.UI.Prompts
         }
 
         internal static MessageBoxResult Show(Window owner, string messageBoxText, string caption, MessageBoxButton button, IEnumerable<string> buttonNames,
-            MessageBoxImage icon, double? maxWidth = null)
+            MessageBoxImage icon)
         {
             var dynamoMessageBox = new DynamoMessageBox
             {
@@ -402,10 +402,6 @@ namespace Dynamo.UI.Prompts
                 MessageBoxImage = icon
             };
             SetOwnerWindow(owner, dynamoMessageBox);
-            if (maxWidth != null)
-            {
-                dynamoMessageBox.MaxWidth = maxWidth.Value;
-            }
             dynamoMessageBox.ConfigureButtons(button, buttonNames);
             dynamoMessageBox.ShowDialog();
             return dynamoMessageBox.CustomDialogResult;

@@ -25,7 +25,6 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Graph.Workspaces.Locking;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -49,7 +48,6 @@ using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.ViewModels.Watch3D;
-using Dynamo.Wpf.Services;
 using DynamoMLDataPipeline;
 using DynamoServices;
 using DynamoUtilities;
@@ -874,8 +872,6 @@ namespace Dynamo.ViewModels
             this.ShowStartPage = !DynamoModel.IsTestMode;
 
             this.BrandingResourceProvider = startConfiguration.BrandingResourceProvider ?? new DefaultBrandingResourceProvider();
-
-            this.model.GraphLockManager?.SetPrompt(new WpfGraphLockUserPrompt(() => Owner, BrandingResourceProvider.ProductName));
 
             // commands should be initialized before adding any WorkspaceViewModel
             InitializeDelegateCommands();
@@ -2251,9 +2247,6 @@ namespace Dynamo.ViewModels
                     filePath = parameters as string;
                 }
 
-                // Remember whether we are on the start page so we can return to it if the user cancels.
-                bool startPageVisibleBeforeOpen = ShowStartPage;
-
                 var directoryName = Path.GetDirectoryName(filePath);
 
                 // Decide whether the trust warning is needed and block the run BEFORE opening, so an
@@ -2262,30 +2255,6 @@ namespace Dynamo.ViewModels
 
                 // Execute graph open command
                 ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode, isTemplate, displayTrustWarning));
-
-                // The file is already open in another Dynamo instance
-                // On cancel: nothing is opened, so hide any trust warnings and restore the start-page state
-                if (Model.LastGraphLockOpenOutcome == GraphLockOutcome.Cancelled)
-                {
-                    if (FileTrustViewModel != null)
-                    {
-                        FileTrustViewModel.ShowWarningPopup = false;
-                    }
-                    ShowStartPage = startPageVisibleBeforeOpen;
-                    return;
-                }
-
-                // On Save as: the model is opened as a copy at a different location,
-                // re-evaluate the trust state for that copy (popup only).
-                if (Model.LastGraphLockOpenOutcome == GraphLockOutcome.RedirectedToCopy)
-                {
-                    var openedPath = Model.CurrentWorkspace?.FileName;
-                    if (!string.IsNullOrEmpty(openedPath))
-                    {
-                        directoryName = Path.GetDirectoryName(openedPath);
-                        displayTrustWarning = ShouldForceBlockRun(openedPath);
-                    }
-                }
 
                 // Apply annotation updates based on the preference setting
                 RefreshAnnotationDescriptions();
@@ -2386,15 +2355,14 @@ namespace Dynamo.ViewModels
 
                 var directoryName = Path.GetDirectoryName(filePath);
 
-                // Display trust warning when file is not among trust location and warning feature is on
+                // Decide whether the trust warning is needed and block the run BEFORE inserting, so an
+                // untrusted graph cannot start running before the user has accepted the warning.
                 bool displayTrustWarning = ShouldForceBlockRun(filePath);
 
-                // Execute graph open command
+                // Execute graph insert command
                 ExecuteCommand(new DynamoModel.InsertFileCommand(filePath, forceManualMode, displayTrustWarning));
-
                 this.FitViewCommand.Execute(null);
 
-                // Only show trust warning popup when current opened workspace is homeworkspace and not custom node workspace
                 if (currentWorkspaceViewModel?.IsHomeSpace ?? false)
                 {
                     UpdateFileTrustWarningUi(displayTrustWarning, directoryName);
