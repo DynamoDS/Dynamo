@@ -181,7 +181,7 @@ namespace IntegrationTests
                 { UseShellExecute = true });
 
                 // Give startup (splash + home page + WebView2 children) time to settle.
-                dynamoSandbox.WaitForInputIdle();
+                dynamoSandbox.WaitForInputIdle(30_000);
                 Thread.Sleep(TimeSpan.FromSeconds(30));
 
                 var treePids = GetProcessTreePids(dynamoSandbox.Id);
