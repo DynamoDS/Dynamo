@@ -178,7 +178,7 @@ namespace IntegrationTests
             try
             {
                 dynamoSandbox = Process.Start(new ProcessStartInfo(
-                    Path.Combine(coreDirectory, "DynamoSandbox.exe"), "--NoNetworkMode")
+                    Path.Join(coreDirectory, "DynamoSandbox.exe"), "--NoNetworkMode")
                 { UseShellExecute = true });
 
                 // Give startup (splash + home page + WebView2 children) time to settle.
