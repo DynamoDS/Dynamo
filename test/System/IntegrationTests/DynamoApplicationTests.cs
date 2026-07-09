@@ -172,14 +172,11 @@ namespace IntegrationTests
         public void WhenDynamoStartsWithNoNetworkModeThenNoOutboundConnectionsAreOpened()
         {
             var coreDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            using var dynamoSandbox = Process.Start(new ProcessStartInfo(
+            var startedProcess = Process.Start(new ProcessStartInfo(
                 Path.Join(coreDirectory, "DynamoSandbox.exe"), "--NoNetworkMode")
             { UseShellExecute = true });
-
-            if (dynamoSandbox == null)
-            {
-                Assert.Fail("Failed to start DynamoSandbox process.");
-            }
+            using var dynamoSandbox = startedProcess
+                ?? throw new AssertionException("Failed to start DynamoSandbox process.");
 
             try
             {
