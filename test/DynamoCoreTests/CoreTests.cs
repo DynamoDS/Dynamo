@@ -733,6 +733,15 @@ namespace Dynamo.Tests
             Assert.AreEqual("double[]", curveMapperNode.OutPorts[1].GetOutPortType());
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void StringInputOutputReportsPortType()
+        {
+            var stringNode = new StringInput();
+
+            Assert.AreEqual("string", stringNode.OutPorts[0].GetOutPortType());
+        }
+
         /// <summary>
         ///     Pasting an Input or Output node into the Home Workspace converts them
         ///     to a Code Block node.
