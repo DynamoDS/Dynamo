@@ -763,7 +763,7 @@
                                     <Style TargetType="ToolTip" BasedOn="{StaticResource GenericToolTipLight}">
                                         <Setter Property="Visibility" Value="Collapsed" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding PlacementTarget.DataContext.DynamoViewModel.NoNetworkMode, RelativeSource={RelativeSource Self}}" Value="True">
+                                            <DataTrigger Binding="{Binding PlacementTarget.IsEnabled, RelativeSource={RelativeSource Self}}" Value="False">
                                                 <Setter Property="Visibility" Value="Visible" />
                                                 <Setter Property="Content" Value="{x:Static p:Resources.PackageManagerNoNetworkModeToolTip}" />
                                             </DataTrigger>
