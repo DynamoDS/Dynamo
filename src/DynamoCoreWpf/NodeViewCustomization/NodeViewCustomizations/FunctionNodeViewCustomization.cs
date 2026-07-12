@@ -1,5 +1,7 @@
 using System;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -61,6 +63,22 @@ namespace Dynamo.Wpf
 
             publishCustomNodeItem.Command = nodeView.ViewModel.DynamoViewModel.PublishSelectedNodesCommand;
             publishCustomNodeItem.CommandParameter = functionNodeModel;
+
+            ToolTipService.SetShowOnDisabled(publishCustomNodeItem, true);
+            var tooltipStyle = new Style(typeof(ToolTip));
+            tooltipStyle.Setters.Add(new Setter(UIElement.VisibilityProperty, Visibility.Collapsed));
+            var disabledTrigger = new DataTrigger
+            {
+                Binding = new Binding("PlacementTarget.IsEnabled")
+                {
+                    RelativeSource = new RelativeSource(RelativeSourceMode.Self)
+                },
+                Value = false
+            };
+            disabledTrigger.Setters.Add(new Setter(UIElement.VisibilityProperty, Visibility.Visible));
+            disabledTrigger.Setters.Add(new Setter(ContentControl.ContentProperty, Resources.PackageManagerNoNetworkModeToolTip));
+            tooltipStyle.Triggers.Add(disabledTrigger);
+            publishCustomNodeItem.ToolTip = new ToolTip { Style = tooltipStyle };
         }
 
         private void EditCustomNodeProperties()
