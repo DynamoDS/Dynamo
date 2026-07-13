@@ -755,6 +755,7 @@
                     <MenuItem Name="Publish"
                               Command="{Binding DynamoViewModel.PublishCurrentWorkspaceCommand}"
                               Header="{x:Static p:Resources.ContextMenuPublishCustomNode}"
+                              Tag="{Binding DynamoViewModel.NoNetworkMode}"
                               ToolTipService.ShowOnDisabled="True"
                               Visibility="{Binding Path=IsHomeSpace, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
                         <MenuItem.ToolTip>
@@ -763,7 +764,7 @@
                                     <Style TargetType="ToolTip" BasedOn="{StaticResource GenericToolTipLight}">
                                         <Setter Property="Visibility" Value="Collapsed" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding PlacementTarget.IsEnabled, RelativeSource={RelativeSource Self}}" Value="False">
+                                            <DataTrigger Binding="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}" Value="True">
                                                 <Setter Property="Visibility" Value="Visible" />
                                                 <Setter Property="Content" Value="{x:Static p:Resources.PackageManagerNoNetworkModeToolTip}" />
                                             </DataTrigger>
