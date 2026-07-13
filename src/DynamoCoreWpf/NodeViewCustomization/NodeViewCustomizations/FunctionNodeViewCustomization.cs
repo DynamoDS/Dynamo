@@ -64,20 +64,26 @@ namespace Dynamo.Wpf
             publishCustomNodeItem.Command = nodeView.ViewModel.DynamoViewModel.PublishSelectedNodesCommand;
             publishCustomNodeItem.CommandParameter = functionNodeModel;
 
+            // Tag carries the NoNetworkMode flag so the tooltip trigger is scoped to that
+            // specific reason. Triggering on IsEnabled alone would show a misleading
+            // "no-network" message when the command is disabled for other reasons
+            // (e.g. no auth provider, empty selection).
+            publishCustomNodeItem.Tag = dynamoViewModel.NoNetworkMode;
+
             ToolTipService.SetShowOnDisabled(publishCustomNodeItem, true);
             var tooltipStyle = new Style(typeof(ToolTip));
             tooltipStyle.Setters.Add(new Setter(UIElement.VisibilityProperty, Visibility.Collapsed));
-            var disabledTrigger = new DataTrigger
+            var noNetworkTrigger = new DataTrigger
             {
-                Binding = new Binding("PlacementTarget.IsEnabled")
+                Binding = new Binding("PlacementTarget.Tag")
                 {
                     RelativeSource = new RelativeSource(RelativeSourceMode.Self)
                 },
-                Value = false
+                Value = true
             };
-            disabledTrigger.Setters.Add(new Setter(UIElement.VisibilityProperty, Visibility.Visible));
-            disabledTrigger.Setters.Add(new Setter(ContentControl.ContentProperty, Resources.PackageManagerNoNetworkModeToolTip));
-            tooltipStyle.Triggers.Add(disabledTrigger);
+            noNetworkTrigger.Setters.Add(new Setter(UIElement.VisibilityProperty, Visibility.Visible));
+            noNetworkTrigger.Setters.Add(new Setter(ContentControl.ContentProperty, Resources.PackageManagerNoNetworkModeToolTip));
+            tooltipStyle.Triggers.Add(noNetworkTrigger);
             publishCustomNodeItem.ToolTip = new ToolTip { Style = tooltipStyle };
         }
 
