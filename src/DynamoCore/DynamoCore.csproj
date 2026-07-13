@@ -131,6 +131,7 @@
         <LibGSecondary Include="$(LibGSecondaryPackagePath)\tools\netstandard2.1\$(LibGOsToken)\$(LIBGVerSecondary)\*" />
         <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
         <TemplateFiles Include="$(SolutionDir)..\doc\distrib\Templates\**\*.*" />
+        <DefinitionFiles Include="$(SolutionDir)..\doc\distrib\Definitions\**\*.*" />
 		<NodeHelpCsCZMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\cs-CZ\**\*.md" />
 		<NodeHelpDeDEMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\de-DE\**\*.md" />
 		<NodeHelpEnUSMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\en-US\**\*.md" />
@@ -223,6 +224,7 @@
     <Copy SourceFiles="@(LibGMain)" DestinationFolder="$(OutputPath)$(LIBGVerMain)\" />
     <Copy SourceFiles="@(SampleFiles)" DestinationFolder="$(OutputPath)samples\%(RecursiveDir)" />
     <Copy SourceFiles="@(TemplateFiles)" DestinationFolder="$(OutputPath)templates\%(RecursiveDir)" />
+    <Copy SourceFiles="@(DefinitionFiles)" DestinationFolder="$(OutputPath)definitions\%(RecursiveDir)" />
     <Copy SourceFiles="@(LocalizedResources)" DestinationFolder="$(OutputPath)%(RecursiveDir)" />
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\Operators.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="$(ProjectDir)\BuiltInAndOperators\BuiltIn.xml" DestinationFolder="$(OutputPath)\$(UICulture)" />

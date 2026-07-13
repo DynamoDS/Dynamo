@@ -1430,6 +1430,7 @@ namespace Dynamo.PackageManager.Tests
             var packageDirectories = pathManager.PackagesDirectories;
             var defaultUserDefinitions = pathManager.DefaultUserDefinitions;
             var userDefinitions = pathManager.DefinitionDirectories;
+            var commonDefinitions = Path.Combine(pathManager.CommonDataDirectory, PathManager.DefinitionsDirectoryName);
 
             // Assert
             const string ExpectedToken = @"%BuiltInPackages%";
@@ -1438,9 +1439,12 @@ namespace Dynamo.PackageManager.Tests
             Assert.IsFalse(packageDirectories.Contains(ExpectedToken));
             Assert.IsTrue(packageDirectories.Contains(PathManager.BuiltinPackagesDirectory));
             Assert.AreNotEqual(ExpectedToken, defaultUserDefinitions);
-            Assert.AreEqual(2, userDefinitions.Count());
+            Assert.IsTrue(Directory.Exists(commonDefinitions),
+                "Shipped definitions folder should be copied to the DynamoCore output directory during build.");
+            Assert.AreEqual(3, userDefinitions.Count());
             Assert.IsFalse(userDefinitions.Contains(ExpectedToken));
             Assert.IsTrue(userDefinitions.Contains(PathManager.BuiltinPackagesDirectory));
+            Assert.IsTrue(userDefinitions.Contains(commonDefinitions));
         }
 
         [Test]
