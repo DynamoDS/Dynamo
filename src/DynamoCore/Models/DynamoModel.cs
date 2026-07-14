@@ -2481,6 +2481,15 @@ namespace Dynamo.Models
             }
         }
 
+        private void NotifyLegacyTraceDataWarningIfNeeded(WorkspaceModel workspace)
+        {
+            if (IsTestMode || IsHeadless)
+                return;
+
+            if (workspace?.ContainsLegacyTraceData == true)
+                OnRequestNotification(Resources.LegacyTraceDataWarning, true);
+        }
+
         private void OpenWorkspace(WorkspaceModel ws)
         {
             // TODO: #4258
@@ -2504,6 +2513,7 @@ namespace Dynamo.Models
             AddWorkspace(ws);
             CurrentWorkspace = ws;
             OnWorkspaceOpened(ws);
+            NotifyLegacyTraceDataWarningIfNeeded(ws);
         }
 
         private void InsertWorkspace(WorkspaceModel ws, ExtraWorkspaceViewInfo viewInfo = null)
@@ -2615,14 +2625,7 @@ namespace Dynamo.Models
             workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : string.Empty;
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
             workspace.IsTemplate = isTemplate;
-            if (!IsTestMode && !IsHeadless)
-            {
-                if (workspace.ContainsLegacyTraceData)
-                {
-                    OnRequestNotification(Resources.LegacyTraceDataWarning, true);
-                }
-            }
-
+          
             if (workspace is HomeWorkspaceModel homeWorkspace)
             {
                 homeWorkspace.EnableLegacyPolyCurveBehavior ??= PreferenceSettings.DefaultEnableLegacyPolyCurveBehavior;
@@ -2756,11 +2759,7 @@ namespace Dynamo.Models
             Guid deterministicId = GuidUtility.Create(GuidUtility.UrlNamespace, workspaceInfo.Name);
 
             var loadedTraceData = Utils.LoadTraceDataFromXmlDocument(xmlDoc, out var containsLegacyTraceData);
-            if (!IsTestMode && !IsHeadless)
-            {
-                if (containsLegacyTraceData) OnRequestNotification(Resources.LegacyTraceDataWarning, true);
-            }
-
+         
             var newWorkspace = new HomeWorkspaceModel(
                 deterministicId,
                 EngineController,
