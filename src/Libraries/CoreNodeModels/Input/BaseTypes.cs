@@ -19,6 +19,7 @@ namespace CoreNodeModels.Input
     [NodeName("String")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("StringInputNodeDescription", typeof(Resources))]
+    [OutPortTypes("string")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("Dynamo.Nodes.StringInput", "Dynamo.Nodes.dynStringInput", "DSCoreNodesUI.Input.StringInput")]
     public class StringInput : String
