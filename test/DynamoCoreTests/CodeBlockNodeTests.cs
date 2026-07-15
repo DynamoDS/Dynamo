@@ -397,6 +397,72 @@ b = c[w][x][y][z];";
 
         [Test]
         [Category("UnitTests")]
+        public void FunctionCall_ThrowsWarning_WhenUnresolvedCallInsideFunctionBody()
+        {
+            // Regression test for DYN-10693: an unresolved function call inside a function
+            // definition body must be reported when the graph is opened, just like an
+            // unresolved call at the code block top level. Previously the warning was
+            // silently suppressed because function bodies were only compiled in the first
+            // pass (where the "function not found" warning is deliberately gated off).
+            string openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\testfunction_nodefn_in_body.dyn");
+            OpenModelInManualMode(openPath);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var guid = "fc9995f7-4e98-4e9d-81d3-877f9fe6a329";
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse(guid));
+
+            Assert.IsNotNull(cbn);
+            Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
+            Assert.AreEqual(1, cbn.Infos.Count);
+            Assert.True(cbn.Infos.Any(x => x.State == ElementState.PersistentWarning
+                && x.Message.Contains("MissingFunc")));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void FunctionCall_NoWarning_WhenForwardReferenceInsideFunctionBody()
+        {
+            // Regression guard for DYN-10693: a call inside a function definition body to a
+            // function defined in another code block node is a valid forward reference and
+            // must not raise a "function not found" warning once all definitions are compiled.
+            string openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\testfunction_forwardref_in_body.dyn");
+            OpenModelInManualMode(openPath);
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var guid = "fc9995f7-4e98-4e9d-81d3-877f9fe6a329";
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse(guid));
+
+            Assert.IsNotNull(cbn);
+            Assert.AreEqual(ElementState.Active, cbn.State);
+            Assert.AreEqual(0, cbn.Infos.Count);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void FunctionCall_NoWarning_WhenForwardReferenceWithinSameCodeBlock()
+        {
+            // Regression guard for DYN-10693: a function body that calls another function defined
+            // later in the same code block node is a valid forward reference and must not warn.
+            string openPath = Path.Combine(TestDirectory,
+                @"core\dsevaluation\testfunction_forwardref_samecbn.dyn");
+            OpenModelInManualMode(openPath);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            var guid = "fc9995f7-4e98-4e9d-81d3-877f9fe6a329";
+            var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
+                Guid.Parse(guid));
+
+            Assert.IsNotNull(cbn);
+            Assert.AreEqual(ElementState.Active, cbn.State);
+            Assert.AreEqual(0, cbn.Infos.Count);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void ImperativeFunctionCall_ThrowsWarning_WithoutFunctionDef()
         {
             string openPath = Path.Combine(TestDirectory,

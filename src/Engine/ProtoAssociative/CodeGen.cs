@@ -1798,13 +1798,33 @@ namespace ProtoAssociative
                     }
                     else
                     {
-                        // Log "function not found" warning for CBNs only after compiling all function definition nodes in the first pass
-                        // in CodeBlockNode.RecompileCodeBlockAST(). If not compiling CBNs log these warnings by default.
+                        string message = String.Format(ProtoCore.Properties.Resources.kMethodNotFound, procName);
+                        // If not compiling CBNs, log the "function not found" warning by default. When
+                        // compiling CBNs, only log it directly once the first pass is over (in
+                        // CodeBlockNode.RecompileCodeBlockAST).
                         if (core.IsParsingCodeBlockNode && !core.IsCodeBlockNodeFirstPass ||
                             !core.IsParsingCodeBlockNode)
                         {
-                            string message = String.Format(ProtoCore.Properties.Resources.kMethodNotFound, procName);
                             buildStatus.LogWarning(WarningID.FunctionNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
+                        }
+                        else if (globalProcIndex != Constants.kGlobalScope)
+                        {
+                            // First pass of a CBN compile, inside a function body: the callee might be
+                            // defined later in this CBN or in a sibling CBN not compiled yet. Function
+                            // bodies are only compiled in this pass, so instead of suppressing the
+                            // warning (which would drop it forever) defer it and re-check once every
+                            // definition has been registered. Top-level calls are not deferred here -
+                            // they are re-checked when the statements are recompiled in the second
+                            // pass. See DYN-10693.
+                            core.DeferredFunctionResolutions.Add(new Core.DeferredFunctionResolution
+                            {
+                                FunctionName = procName,
+                                ArgumentTypes = new List<ProtoCore.Type>(arglist),
+                                Message = message,
+                                FileName = core.CurrentDSFileName,
+                                Line = funcCall.line,
+                                Column = funcCall.col
+                            });
                         }
                     }
 

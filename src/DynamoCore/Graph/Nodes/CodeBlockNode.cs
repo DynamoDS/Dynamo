@@ -48,6 +48,11 @@ namespace Dynamo.Graph.Nodes
         private bool shouldFocus = true;
         internal ParseParam ParseParam { get; private set; }
 
+        // Function calls inside this CBN's function bodies that could not be resolved during the
+        // first-pass compile. They are captured here and re-checked during the second pass
+        // (RecompileCodeBlockAST), once every function definition has been registered. See DYN-10693.
+        private IList<ProtoCore.Core.DeferredFunctionResolution> deferredFunctionResolutions;
+
         /// <summary>
         /// The NodeType property provides a name which maps to the 
         /// server type for the node. This property should only be
@@ -724,6 +729,13 @@ namespace Dynamo.Graph.Nodes
 
                 buildStatus = CompilerUtils.PreCompile(string.Empty, core, codeblock, out blockId);
 
+                // Re-check function calls that were deferred during the first pass now that every
+                // function definition has been registered, and warn about any still unresolved. This
+                // reports unresolved calls inside function bodies - which are only compiled in the
+                // first pass - while leaving genuine forward references unwarned. See DYN-10693.
+                core.LogUnresolvedDeferredFunctionWarnings(deferredFunctionResolutions);
+                deferredFunctionResolutions = null;
+
                 core.IsParsingCodeBlockNode = parsingCbnFlag;
                 core.IsParsingPreloadedAssembly = parsingPreloadFlag;
 
@@ -788,6 +800,11 @@ namespace Dynamo.Graph.Nodes
 
             try
             {
+                // Start each compile with an empty deferred-resolution buffer so unresolved-call
+                // candidates never leak across code block nodes (e.g. if a prior compile bailed out
+                // before draining it). See DYN-10693.
+                libraryServices?.LibraryManagementCore?.DeferredFunctionResolutions.Clear();
+
                 var priorNames = libraryServices.GetPriorNames();
 
                 if (CompilerUtils.PreCompileCodeBlock(libraryServices.LibraryManagementCore, ParseParam, priorNames))
@@ -854,6 +871,16 @@ namespace Dynamo.Graph.Nodes
                         warningMessage = string.Join("\n", warnings.Select(m => m.Message));
                     }
                 }
+
+                // Capture any function calls this CBN deferred during a first-pass compile (unresolved
+                // calls inside function bodies) so they can be re-checked during the second pass, once
+                // all function definitions have been registered. The buffer is transient scratch space
+                // shared by the compile core, so drain it into this node and clear it. See DYN-10693.
+                var precompileCore = libraryServices.LibraryManagementCore;
+                deferredFunctionResolutions = precompileCore.DeferredFunctionResolutions.Count > 0
+                    ? precompileCore.DeferredFunctionResolutions.ToList()
+                    : null;
+                precompileCore.DeferredFunctionResolutions.Clear();
 
                 if (ParseParam.UnboundIdentifiers != null)
                 {
