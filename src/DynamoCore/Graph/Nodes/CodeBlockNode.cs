@@ -803,7 +803,7 @@ namespace Dynamo.Graph.Nodes
                 // Start each compile with an empty deferred-resolution buffer so unresolved-call
                 // candidates never leak across code block nodes (e.g. if a prior compile bailed out
                 // before draining it). See DYN-10693.
-                libraryServices?.LibraryManagementCore?.DeferredFunctionResolutions.Clear();
+                libraryServices.LibraryManagementCore.DeferredFunctionResolutions.Clear();
 
                 var priorNames = libraryServices.GetPriorNames();
 

@@ -198,6 +198,25 @@ namespace ProtoCore
         internal IList<DeferredFunctionResolution> DeferredFunctionResolutions { get; } = new List<DeferredFunctionResolution>();
 
         /// <summary>
+        /// Buffers an unresolved function call encountered while compiling a code block node function
+        /// body during the first pass, so it can be re-checked once every definition is registered.
+        /// See DYN-10693.
+        /// </summary>
+        internal void AddDeferredFunctionResolution(string functionName, IEnumerable<Type> argumentTypes,
+            string message, string fileName, int line, int column)
+        {
+            DeferredFunctionResolutions.Add(new DeferredFunctionResolution
+            {
+                FunctionName = functionName,
+                ArgumentTypes = new List<Type>(argumentTypes),
+                Message = message,
+                FileName = fileName,
+                Line = line,
+                Column = column
+            });
+        }
+
+        /// <summary>
         /// Re-evaluates the supplied unresolved function-call candidates now that every function
         /// definition has been registered, logging a <see cref="BuildData.WarningID.FunctionNotFound"/>
         /// warning for each one that still cannot be resolved. Candidates that now resolve are

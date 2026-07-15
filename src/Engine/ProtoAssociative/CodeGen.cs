@@ -1816,15 +1816,8 @@ namespace ProtoAssociative
                             // definition has been registered. Top-level calls are not deferred here -
                             // they are re-checked when the statements are recompiled in the second
                             // pass. See DYN-10693.
-                            core.DeferredFunctionResolutions.Add(new Core.DeferredFunctionResolution
-                            {
-                                FunctionName = procName,
-                                ArgumentTypes = new List<ProtoCore.Type>(arglist),
-                                Message = message,
-                                FileName = core.CurrentDSFileName,
-                                Line = funcCall.line,
-                                Column = funcCall.col
-                            });
+                            core.AddDeferredFunctionResolution(procName, arglist, message,
+                                core.CurrentDSFileName, funcCall.line, funcCall.col);
                         }
                     }
 
