@@ -198,22 +198,35 @@ namespace ProtoCore
         internal IList<DeferredFunctionResolution> DeferredFunctionResolutions { get; } = new List<DeferredFunctionResolution>();
 
         /// <summary>
-        /// Buffers an unresolved function call encountered while compiling a code block node function
-        /// body during the first pass, so it can be re-checked once every definition is registered.
-        /// See DYN-10693.
+        /// Emits or defers a "function not found" warning for an unresolved global function call.
+        /// The warning is logged immediately outside code block node compilation, or during a CBN's
+        /// second pass. During a CBN's first pass a call inside a function body is deferred and
+        /// re-checked later (see <see cref="LogUnresolvedDeferredFunctionWarnings"/>), because the
+        /// callee might be defined later in this CBN or in a sibling CBN not yet compiled; a
+        /// top-level call is left to be re-checked when the statements are recompiled in the second
+        /// pass. This is shared by the associative and imperative code generators. See DYN-10693.
         /// </summary>
-        internal void AddDeferredFunctionResolution(string functionName, IEnumerable<Type> argumentTypes,
-            string message, string fileName, int line, int column)
+        internal void LogOrDeferFunctionNotFound(string functionName, IEnumerable<Type> argumentTypes,
+            int line, int column, GraphNode graphNode, int globalProcIndex)
         {
-            DeferredFunctionResolutions.Add(new DeferredFunctionResolution
+            var message = string.Format(Properties.Resources.kMethodNotFound, functionName);
+            if (IsParsingCodeBlockNode && !IsCodeBlockNodeFirstPass || !IsParsingCodeBlockNode)
             {
-                FunctionName = functionName,
-                ArgumentTypes = new List<Type>(argumentTypes),
-                Message = message,
-                FileName = fileName,
-                Line = line,
-                Column = column
-            });
+                BuildStatus.LogWarning(BuildData.WarningID.FunctionNotFound, message,
+                    CurrentDSFileName, line, column, graphNode);
+            }
+            else if (globalProcIndex != Constants.kGlobalScope)
+            {
+                DeferredFunctionResolutions.Add(new DeferredFunctionResolution
+                {
+                    FunctionName = functionName,
+                    ArgumentTypes = new List<Type>(argumentTypes),
+                    Message = message,
+                    FileName = CurrentDSFileName,
+                    Line = line,
+                    Column = column
+                });
+            }
         }
 
         /// <summary>
