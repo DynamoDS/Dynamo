@@ -3931,18 +3931,6 @@ Installieren Sie das PythonNet-Paket aus dem Package Manager, um dieses Diagramm
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>Automatisch mit Blockauswahl synchronisieren.</value>
   </data>
-  <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
-    <value>Diese Datei ist derzeit in einer anderen Instanz von Dynamo geöffnet.
-Um Datenverlust oder -beschädigung zu vermeiden, wählen Sie eine der folgenden Maßnahmen:
- • Speichern unter: Öffnet eine unabhängige Kopie, die Sie sicher bearbeiten können.
- • Abbrechen: Die Datei wird nicht geöffnet.</value>
-  </data>
-  <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
-    <value>Datei ist bereits in einer anderen Dynamo-Instanz geöffnet</value>
-  </data>
-  <data name="GraphLockSaveAsButton" xml:space="preserve">
-    <value>Speichern unter</value>
-  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\ViewModels\Watch3D\compiledShaders\psDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

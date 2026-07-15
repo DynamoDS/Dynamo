@@ -3933,18 +3933,6 @@
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>Автоматическая синхронизация с выбором узла.</value>
   </data>
-  <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
-    <value>Этот файл сейчас открыт в другом экземпляре Dynamo.
-Во избежание потери или повреждения данных выберите одно из следующих действий:
- • «Сохранить как» — будет открыта отдельная копия, которую можно безопасно редактировать.
- • «Отмена» — файл не будет открыт.</value>
-  </data>
-  <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
-    <value>Файл уже открыт в другом экземпляре Dynamo</value>
-  </data>
-  <data name="GraphLockSaveAsButton" xml:space="preserve">
-    <value>Сохранить как</value>
-  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\ViewModels\Watch3D\compiledShaders\psDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

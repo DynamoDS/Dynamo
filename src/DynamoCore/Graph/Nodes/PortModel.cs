@@ -473,17 +473,19 @@ namespace Dynamo.Graph.Nodes
         {
             if (PortType == PortType.Output) return null;
 
-            if (Owner is DSFunction ztNode)
+            if (Owner is DSFunctionBase ztNode)
             {
                 var fd = ztNode.Controller.Definition;
                 string type;
+                var parameters = fd.Parameters.ToList();
                 // In the case of a node for an instance method, the first port
                 // type is the declaring class type of the method itself.
                 if (fd.Type == FunctionType.InstanceMethod || fd.Type == FunctionType.InstanceProperty)
                 {
                     if (Index > 0)
                     {
-                        var param = fd.Parameters.ElementAt(Index - 1);
+                        var paramIndex = ztNode is DSVarArgFunction ? Math.Min(Index - 1, parameters.Count - 1) : Index - 1;
+                        var param = parameters.ElementAt(paramIndex);
                         type = param.Type.ToString();
                     }
                     else
@@ -493,7 +495,8 @@ namespace Dynamo.Graph.Nodes
                 }
                 else
                 {
-                    var param = fd.Parameters.ElementAt(Index);
+                    var paramIndex = ztNode is DSVarArgFunction ? Math.Min(Index, parameters.Count - 1) : Index;
+                    var param = parameters.ElementAt(paramIndex);
                     type = param.Type.ToString();
                 }
                 return type;
@@ -548,7 +551,7 @@ namespace Dynamo.Graph.Nodes
         {
             if (PortType == PortType.Input) return null;
 
-            if (Owner is DSFunction ztNode)
+            if (Owner is DSFunctionBase ztNode)
             {
                 var fd = ztNode.Controller.Definition;
 

@@ -3932,18 +3932,6 @@ Otevření tohoto grafu v aplikaci Dynamo 3.3–3.6.x: Ze správce balíčků na
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>Automaticky synchronizovat s výběrem uzlů.</value>
   </data>
-  <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
-    <value>Tento soubor je otevřen v jiné instanci aplikace Dynamo.
-Chcete-li zabránit ztrátě nebo poškození dat, zvolte jednu z následujících akcí:
- • Uložit jako – otevře nezávislou kopii, kterou můžete bezpečně upravovat.
- • Storno – neotevře soubor vůbec.</value>
-  </data>
-  <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
-    <value>Soubor je již otevřen v jiné instanci aplikace Dynamo.</value>
-  </data>
-  <data name="GraphLockSaveAsButton" xml:space="preserve">
-    <value>Uložit jako</value>
-  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\ViewModels\Watch3D\compiledShaders\psDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

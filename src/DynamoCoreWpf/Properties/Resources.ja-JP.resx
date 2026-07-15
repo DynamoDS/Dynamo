@@ -3933,18 +3933,6 @@ Dynamo を再起動してアンインストールを完了します。
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>ノード選択による自動同期。</value>
   </data>
-  <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
-    <value>このファイルは現在、Dynamo の別のインスタンスで開かれています。
-データの損失や破損を回避できるように、次のいずれかの操作を選択してください。
- • 名前を付けて保存: 安全に編集できる独立したコピーが開かれます。
- • キャンセル: ファイルは開かれません。</value>
-  </data>
-  <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
-    <value>ファイルは既に別の Dynamo インスタンスで開かれています</value>
-  </data>
-  <data name="GraphLockSaveAsButton" xml:space="preserve">
-    <value>名前を付けて保存</value>
-  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\ViewModels\Watch3D\compiledShaders\psDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
