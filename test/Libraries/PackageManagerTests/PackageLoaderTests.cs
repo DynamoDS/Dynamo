@@ -595,7 +595,7 @@ namespace Dynamo.PackageManager.Tests
             var matchingNodes = CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x =>
             {
                 Console.WriteLine($"val {x.Value}, name {x.Value.Name}, pkginfo {x.Value.PackageInfo}, packagemember {x.Value.IsPackageMember}");
-                return x.Value.PackageInfo.Equals(packageInfo);
+                return x.Value.PackageInfo != null && x.Value.PackageInfo.Equals(packageInfo);
             }
             ).ToList();
             //the node should have the correct package info and should be marked a packageMember.
@@ -763,7 +763,7 @@ namespace Dynamo.PackageManager.Tests
             var matchingNodes = CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x =>
             {
                 Console.WriteLine($"val{x.Value}, name{x.Value.Name}, pkginfo{x.Value.PackageInfo}, packagemember{x.Value.IsPackageMember}");
-                return x.Value.PackageInfo.Equals(packageInfo);
+                return x.Value.PackageInfo != null && x.Value.PackageInfo.Equals(packageInfo);
             }
             ).ToList();
             //the node should have the correct package info and should be marked a packageMember.
@@ -773,7 +773,7 @@ namespace Dynamo.PackageManager.Tests
             var cninst = CurrentDynamoModel.CustomNodeManager.CreateCustomNodeInstance(matchingNodes.FirstOrDefault().Key, null, true);
             this.CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(cninst);
 
-            matchingNodes = CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x => x.Value.PackageInfo.Equals(packageInfo)).ToList();
+            matchingNodes = CurrentDynamoModel.CustomNodeManager.NodeInfos.Where(x => x.Value.PackageInfo != null && x.Value.PackageInfo.Equals(packageInfo)).ToList();
             Assert.AreEqual(1, matchingNodes.Count);
             Assert.IsTrue(matchingNodes.All(x => x.Value.IsPackageMember == true));
 
