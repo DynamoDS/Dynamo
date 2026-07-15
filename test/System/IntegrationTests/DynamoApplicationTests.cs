@@ -204,6 +204,10 @@ namespace IntegrationTests
                 {
                     // Process already exited (or cannot be killed).
                 }
+                catch (System.ComponentModel.Win32Exception)
+                {
+                    // Avoid masking assertion failures with teardown-only process kill failures.
+                }
             }
         }
 
@@ -223,11 +227,22 @@ namespace IntegrationTests
                 {
                     try
                     {
-                        parentById[process.Id] = GetParentProcessId(process.Id);
+                        if (TryGetParentProcessId(process, out var parentPid))
+                        {
+                            parentById[process.Id] = parentPid;
+                        }
                     }
-                    catch
+                    catch (InvalidOperationException)
                     {
-                        /* process may have exited; ignore */
+                        // Process may have exited between snapshot and lookup.
+                    }
+                    catch (ArgumentException)
+                    {
+                        // Process id may no longer be valid by the time it is inspected.
+                    }
+                    catch (System.ComponentModel.Win32Exception)
+                    {
+                        // Access restrictions can prevent querying some processes.
                     }
                 }
             }
@@ -337,22 +352,10 @@ namespace IntegrationTests
         private static IEnumerable<TcpRow> GetTcpTableV4()
         {
             var rows = new List<TcpRow>();
-            int size = 0;
-
-            var result = GetExtendedTcpTable(IntPtr.Zero, ref size, true, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0);
-            if (result != ERROR_INSUFFICIENT_BUFFER || size <= 0)
-            {
-                throw new InvalidOperationException($"GetExtendedTcpTable(AF_INET) failed to get buffer size. Win32 error: {result}");
-            }
-
-            IntPtr table = Marshal.AllocHGlobal(size);
+            IntPtr table = IntPtr.Zero;
             try
             {
-                result = GetExtendedTcpTable(table, ref size, true, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0);
-                if (result != 0)
-                {
-                    throw new InvalidOperationException($"GetExtendedTcpTable(AF_INET) failed to query table. Win32 error: {result}");
-                }
+                table = QueryTcpTableWithRetry(AF_INET);
 
                 int rowCount = Marshal.ReadInt32(table);
                 IntPtr rowPtr = IntPtr.Add(table, sizeof(int));
@@ -371,7 +374,10 @@ namespace IntegrationTests
             }
             finally
             {
-                Marshal.FreeHGlobal(table);
+                if (table != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(table);
+                }
             }
 
             return rows;
@@ -380,22 +386,10 @@ namespace IntegrationTests
         private static IEnumerable<TcpRow> GetTcpTableV6()
         {
             var rows = new List<TcpRow>();
-            int size = 0;
-
-            var result = GetExtendedTcpTable(IntPtr.Zero, ref size, true, AF_INET6, TCP_TABLE_OWNER_PID_ALL, 0);
-            if (result != ERROR_INSUFFICIENT_BUFFER || size <= 0)
-            {
-                throw new InvalidOperationException($"GetExtendedTcpTable(AF_INET6) failed to get buffer size. Win32 error: {result}");
-            }
-
-            IntPtr table = Marshal.AllocHGlobal(size);
+            IntPtr table = IntPtr.Zero;
             try
             {
-                result = GetExtendedTcpTable(table, ref size, true, AF_INET6, TCP_TABLE_OWNER_PID_ALL, 0);
-                if (result != 0)
-                {
-                    throw new InvalidOperationException($"GetExtendedTcpTable(AF_INET6) failed to query table. Win32 error: {result}");
-                }
+                table = QueryTcpTableWithRetry(AF_INET6);
 
                 int rowCount = Marshal.ReadInt32(table);
                 IntPtr rowPtr = IntPtr.Add(table, sizeof(int));
@@ -414,10 +408,43 @@ namespace IntegrationTests
             }
             finally
             {
-                Marshal.FreeHGlobal(table);
+                if (table != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(table);
+                }
             }
 
             return rows;
+        }
+
+        private static IntPtr QueryTcpTableWithRetry(int addressFamily)
+        {
+            int size = 0;
+
+            for (int attempt = 0; attempt < 3; attempt++)
+            {
+                var probeResult = GetExtendedTcpTable(IntPtr.Zero, ref size, true, addressFamily, TCP_TABLE_OWNER_PID_ALL, 0);
+                if (probeResult != ERROR_INSUFFICIENT_BUFFER || size <= 0)
+                {
+                    throw new InvalidOperationException($"GetExtendedTcpTable(AF={addressFamily}) failed to get buffer size. Win32 error: {probeResult}");
+                }
+
+                IntPtr table = Marshal.AllocHGlobal(size);
+                var queryResult = GetExtendedTcpTable(table, ref size, true, addressFamily, TCP_TABLE_OWNER_PID_ALL, 0);
+                if (queryResult == 0)
+                {
+                    return table;
+                }
+
+                Marshal.FreeHGlobal(table);
+
+                if (queryResult != ERROR_INSUFFICIENT_BUFFER)
+                {
+                    throw new InvalidOperationException($"GetExtendedTcpTable(AF={addressFamily}) failed to query table. Win32 error: {queryResult}");
+                }
+            }
+
+            throw new InvalidOperationException($"GetExtendedTcpTable(AF={addressFamily}) failed after retries due to concurrent table growth.");
         }
 
         private static int ParsePort(uint networkOrderPort)
@@ -441,15 +468,45 @@ namespace IntegrationTests
             public IntPtr InheritedFromUniqueProcessId;
         }
 
-        private static int GetParentProcessId(int pid)
+        private static bool TryGetParentProcessId(Process process, out int parentPid)
         {
-            using var process = Process.GetProcessById(pid);
+            parentPid = 0;
+
             var pbi = new PROCESS_BASIC_INFORMATION();
             if (NtQueryInformationProcess(process.Handle, 0, ref pbi, Marshal.SizeOf(pbi), out _) != 0)
             {
-                return 0;
+                return false;
             }
-            return pbi.InheritedFromUniqueProcessId.ToInt32();
+
+            int candidateParentPid = pbi.InheritedFromUniqueProcessId.ToInt32();
+            if (candidateParentPid <= 0)
+            {
+                return false;
+            }
+
+            try
+            {
+                using var parent = Process.GetProcessById(candidateParentPid);
+                if (parent.StartTime > process.StartTime)
+                {
+                    return false;
+                }
+            }
+            catch (ArgumentException)
+            {
+                return false;
+            }
+            catch (InvalidOperationException)
+            {
+                return false;
+            }
+            catch (System.ComponentModel.Win32Exception)
+            {
+                return false;
+            }
+
+            parentPid = candidateParentPid;
+            return true;
         }
 
         #endregion
