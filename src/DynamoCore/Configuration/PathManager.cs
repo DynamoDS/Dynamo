@@ -225,6 +225,12 @@ namespace Dynamo.Core
                 {
                     definitionDirectories.Add(commonDefinitionsDirectory);
                 }
+                else if (!Directory.Exists(commonDefinitionsDirectory))
+                {
+                    // Diagnostic only: log the missing shared definitions folder so the omission
+                    // is visible. Does not change the returned directories.
+                    Trace.TraceWarning("Expected shared definitions folder not found at: " + commonDefinitionsDirectory);
+                }
 
                 return definitionDirectories;
             }
