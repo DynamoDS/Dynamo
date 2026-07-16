@@ -221,6 +221,7 @@ namespace IntegrationTests
         private static HashSet<int> GetProcessTreePids(int rootPid)
         {
             var pids = new HashSet<int> { rootPid };
+            var unknownParentLookupPids = new List<int>();
 
             // Build a parent-map by walking every process's parent id via WMI-free heuristic:
             // repeatedly add processes whose parent is already in the set until it stabilizes.
@@ -231,9 +232,14 @@ namespace IntegrationTests
                 {
                     try
                     {
-                        if (TryGetParentProcessId(process, out var parentPid))
+                        var lookup = GetParentProcessId(process, out var parentPid);
+                        if (lookup == ParentLookupResult.Found)
                         {
                             parentById[process.Id] = parentPid;
+                        }
+                        else if (lookup == ParentLookupResult.Unknown)
+                        {
+                            unknownParentLookupPids.Add(process.Id);
                         }
                     }
                     catch (InvalidOperationException)
@@ -249,6 +255,14 @@ namespace IntegrationTests
                         // Access restrictions can prevent querying some processes.
                     }
                 }
+            }
+
+            if (unknownParentLookupPids.Count > 0)
+            {
+                Assert.Fail(
+                    "Unable to resolve parent PID for one or more processes while auditing --NoNetworkMode. " +
+                    "Failing closed to avoid a false pass. Indeterminate process IDs: " +
+                    string.Join(", ", unknownParentLookupPids.OrderBy(pid => pid)));
             }
 
             bool added = true;
@@ -472,20 +486,27 @@ namespace IntegrationTests
             public IntPtr InheritedFromUniqueProcessId;
         }
 
-        private static bool TryGetParentProcessId(Process process, out int parentPid)
+        private enum ParentLookupResult
+        {
+            Found,
+            NoParent,
+            Unknown,
+        }
+
+        private static ParentLookupResult GetParentProcessId(Process process, out int parentPid)
         {
             parentPid = 0;
 
             var pbi = new PROCESS_BASIC_INFORMATION();
             if (NtQueryInformationProcess(process.Handle, 0, ref pbi, Marshal.SizeOf(pbi), out _) != 0)
             {
-                return false;
+                return ParentLookupResult.Unknown;
             }
 
             int candidateParentPid = pbi.InheritedFromUniqueProcessId.ToInt32();
             if (candidateParentPid <= 0)
             {
-                return false;
+                return ParentLookupResult.NoParent;
             }
 
             try
@@ -493,24 +514,24 @@ namespace IntegrationTests
                 using var parent = Process.GetProcessById(candidateParentPid);
                 if (parent.StartTime > process.StartTime)
                 {
-                    return false;
+                    return ParentLookupResult.Unknown;
                 }
             }
             catch (ArgumentException)
             {
-                return false;
+                return ParentLookupResult.Unknown;
             }
             catch (InvalidOperationException)
             {
-                return false;
+                return ParentLookupResult.Unknown;
             }
             catch (System.ComponentModel.Win32Exception)
             {
-                return false;
+                return ParentLookupResult.Unknown;
             }
 
             parentPid = candidateParentPid;
-            return true;
+            return ParentLookupResult.Found;
         }
 
         #endregion
