@@ -61,12 +61,24 @@ namespace Dynamo.UI.Prompts
 
         private void configure_adp_button_Click(object sender, RoutedEventArgs e)
         {
-            IntPtr handle = new IntPtr();
-            if (Owner != null)
+            // Parent the ADP consent dialog to this prompt (not its Owner). The ADP dialog
+            // runs a native modal loop that disables its parent window for the loop's lifetime.
+            // Using this window's handle ensures this prompt is disabled while the consent
+            // dialog is up, preventing the user from closing it mid-modal - a race that leaves
+            // the WebView2 host window orphaned and can crash the process (DYN-10055).
+            var handle = new WindowInteropHelper(this).Handle;
+
+            // Belt-and-suspenders: disable the button so it cannot be invoked again while the
+            // blocking consent dialog call is in flight.
+            configure_adp_button.IsEnabled = false;
+            try
             {
-                handle = new WindowInteropHelper(Owner).Handle;
+                AnalyticsService.ShowADPConsentDialog(handle);
             }
-            AnalyticsService.ShowADPConsentDialog(handle);
+            finally
+            {
+                configure_adp_button.IsEnabled = true;
+            }
         }
 
         private void CloseButton_OnClick(object sender, RoutedEventArgs e)
