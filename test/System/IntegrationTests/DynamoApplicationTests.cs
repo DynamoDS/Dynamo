@@ -166,6 +166,10 @@ namespace IntegrationTests
 
         // This test is Explicit because it launches the full DynamoSandbox process tree (including
         // WebView2/Edge child processes) and inspects live OS TCP tables.
+        //
+        // TODO(QA): This OS/TCP-level audit needs a clean, isolated agent to avoid VPN/proxy/EDR
+        // false positives, so it is not run per-PR. QA owns the follow-up to migrate it to the AGT
+        // suite (which already provides a controlled sandbox-launch environment).
         [Test, Explicit("Network-egress audit; run on a clean, isolated machine. See comment above.")]
         [Category("NetworkAudit")]
         [Platform("win")]
