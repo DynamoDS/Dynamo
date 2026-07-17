@@ -230,29 +230,31 @@ namespace IntegrationTests
             {
                 using (process)
                 {
+                    var pid = process.Id;
                     try
                     {
                         var lookup = GetParentProcessId(process, out var parentPid);
                         if (lookup == ParentLookupResult.Found)
                         {
-                            parentById[process.Id] = parentPid;
+                            parentById[pid] = parentPid;
                         }
                         else if (lookup == ParentLookupResult.Unknown)
                         {
-                            unknownParentLookupPids.Add(process.Id);
+                            unknownParentLookupPids.Add(pid);
                         }
                     }
-                    catch (InvalidOperationException)
+                    catch (InvalidOperationException ex)
                     {
                         // Process may have exited between snapshot and lookup.
+                        TestContext.Progress.WriteLine(
+                            $"[NetworkAudit] Skipping exited PID {pid}: {ex.GetType().Name} - {ex.Message}");
                     }
-                    catch (ArgumentException)
-                    {
-                        // Process id may no longer be valid by the time it is inspected.
-                    }
-                    catch (System.ComponentModel.Win32Exception)
+                    catch (System.ComponentModel.Win32Exception ex)
                     {
                         // Access restrictions can prevent querying some processes.
+                        TestContext.Progress.WriteLine(
+                            $"[NetworkAudit] Unable to inspect PID {pid}, failing closed: {ex.GetType().Name} - {ex.Message}");
+                        unknownParentLookupPids.Add(pid);
                     }
                 }
             }
@@ -497,25 +499,28 @@ namespace IntegrationTests
         {
             parentPid = 0;
 
-            var pbi = new PROCESS_BASIC_INFORMATION();
-            if (NtQueryInformationProcess(process.Handle, 0, ref pbi, Marshal.SizeOf(pbi), out _) != 0)
-            {
-                return ParentLookupResult.Unknown;
-            }
-
-            int candidateParentPid = pbi.InheritedFromUniqueProcessId.ToInt32();
-            if (candidateParentPid <= 0)
-            {
-                return ParentLookupResult.NoParent;
-            }
-
             try
             {
+                var pbi = new PROCESS_BASIC_INFORMATION();
+                if (NtQueryInformationProcess(process.Handle, 0, ref pbi, Marshal.SizeOf(pbi), out _) != 0)
+                {
+                    return ParentLookupResult.Unknown;
+                }
+
+                int candidateParentPid = pbi.InheritedFromUniqueProcessId.ToInt32();
+                if (candidateParentPid <= 0)
+                {
+                    return ParentLookupResult.NoParent;
+                }
+
                 using var parent = Process.GetProcessById(candidateParentPid);
                 if (parent.StartTime > process.StartTime)
                 {
                     return ParentLookupResult.Unknown;
                 }
+
+                parentPid = candidateParentPid;
+                return ParentLookupResult.Found;
             }
             catch (ArgumentException)
             {
@@ -529,9 +534,6 @@ namespace IntegrationTests
             {
                 return ParentLookupResult.Unknown;
             }
-
-            parentPid = candidateParentPid;
-            return ParentLookupResult.Found;
         }
 
         #endregion
