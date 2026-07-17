@@ -9,47 +9,73 @@ namespace Dynamo.Utilities
     {
         private readonly HashSet<T> set = new HashSet<T>();
 
+        // Guards all access to the underlying set. Infos entries are mutated on the
+        // scheduler thread (HomeWorkspaceModel.OnUpdateGraphCompleted) while being
+        // enumerated on the UI thread (NodeViewModel.UpdateBubbleContent), so the raw
+        // HashSet must not be touched from two threads at once. See DYN-9493.
+        private readonly object syncRoot = new object();
+
         /// <summary>
-        /// Event raised when items are added or removed from the hash set. 
-        /// Currently, it is possible for listeners to determine if items are added, 
+        /// Event raised when items are added or removed from the hash set.
+        /// Currently, it is possible for listeners to determine if items are added,
         /// however, removed items cannot be accessed from the NotifyCollectionChangedEventArgs argument.
         /// </summary>
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
         public void Add(T item)
         {
-            set.Add(item);
+            lock (syncRoot)
+            {
+                set.Add(item);
+            }
+            // Raise the event outside the lock: handlers (e.g. UpdateBubbleContent)
+            // marshal synchronously onto the UI thread, which may itself enumerate this
+            // collection and take the lock. Firing under the lock risks a deadlock.
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
         }
 
         public void RemoveWhere(Predicate<T> match)
         {
-            set.RemoveWhere(match);
+            lock (syncRoot)
+            {
+                set.RemoveWhere(match);
+            }
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         public bool Any(Func<T, bool> match)
         {
-            return set.Any(match);
+            lock (syncRoot)
+            {
+                return set.Any(match);
+            }
         }
 
         public void AddRange(IEnumerable<T> range)
         {
-            foreach (var item in range)
+            lock (syncRoot)
             {
-                set.Add(item);
+                foreach (var item in range)
+                {
+                    set.Add(item);
+                }
             }
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, range));
         }
 
         public int Count
         {
-            get { return set.Count; }
+            get { lock (syncRoot) { return set.Count; } }
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            return set.GetEnumerator();
+            // Return a snapshot taken under the lock so callers can enumerate safely
+            // even if the set is mutated on another thread mid-enumeration.
+            lock (syncRoot)
+            {
+                return set.ToList().GetEnumerator();
+            }
         }
     }
 }
