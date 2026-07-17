@@ -2625,7 +2625,7 @@ namespace Dynamo.Models
             workspace.FromJsonGraphId = string.IsNullOrEmpty(filePath) ? WorkspaceModel.ComputeGraphIdFromJson(fileContents) : string.Empty;
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
             workspace.IsTemplate = isTemplate;
-          
+
             if (workspace is HomeWorkspaceModel homeWorkspace)
             {
                 homeWorkspace.EnableLegacyPolyCurveBehavior ??= PreferenceSettings.DefaultEnableLegacyPolyCurveBehavior;
@@ -2759,7 +2759,7 @@ namespace Dynamo.Models
             Guid deterministicId = GuidUtility.Create(GuidUtility.UrlNamespace, workspaceInfo.Name);
 
             var loadedTraceData = Utils.LoadTraceDataFromXmlDocument(xmlDoc, out var containsLegacyTraceData);
-         
+
             var newWorkspace = new HomeWorkspaceModel(
                 deterministicId,
                 EngineController,
@@ -2776,6 +2776,12 @@ namespace Dynamo.Models
                 IsTestMode,
                 LinterManager
                );
+
+            // ContainsLegacyTraceData is only set on the workspace for the JSON path (in
+            // SerializationConverters). For XML files it is computed here but never assigned, so
+            // the centralized NotifyLegacyTraceDataWarningIfNeeded check in OpenWorkspace never
+            // fires. Propagate it so legacy XML graphs also surface the warning.
+            newWorkspace.ContainsLegacyTraceData = containsLegacyTraceData;
 
             RegisterHomeWorkspace(newWorkspace);
 
