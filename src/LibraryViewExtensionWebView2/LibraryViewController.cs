@@ -369,6 +369,13 @@ namespace Dynamo.LibraryViewExtensionWebView2
                     };
                 }
 
+                // Suppress WebView2 runtime background networking when Dynamo is in no-network mode.
+                if (dynamoViewModel?.Model?.NoNetworkMode == true)
+                {
+                    this.browser.CreationProperties ??= new CoreWebView2CreationProperties();
+                    WebView2Utilities.ApplyNoNetworkPolicy(this.browser.CreationProperties, true, LogToDynamoConsole);
+                }
+
                 try
                 {
                     await browser.Initialize(LogToDynamoConsole);
