@@ -226,6 +226,11 @@ namespace Dynamo.UI.Views
                 UserDataFolder = webBrowserUserDataFolder.FullName
             };
 
+            // Defense in depth: the Package Manager is disabled in no-network mode so this wizard is
+            // normally unreachable, but harden the WebView2 surface anyway if it is ever shown.
+            WebView2Utilities.ApplyNoNetworkPolicy(dynWebView.CreationProperties,
+                publishPackageViewModel?.DynamoViewModel?.Model?.NoNetworkMode ?? false);
+
             // Pre-generate the html temp file
             string tempFilePath = GetFileFromRelativePath(htmlRelativeFilePath);
 
