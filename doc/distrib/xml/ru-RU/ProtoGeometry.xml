@@ -2873,7 +2873,7 @@
             <summary>Получение значения радиуса сферы.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>Создание твердотельного шара с заданным радиусом, центрированного во входной точке.</summary>
+            <summary>Create a Solid Sphere centered at the input Point, with given radius.</summary>
             <search>Brep,brep</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByFourPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">

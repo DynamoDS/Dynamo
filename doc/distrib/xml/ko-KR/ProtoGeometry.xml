@@ -2871,7 +2871,7 @@
             <summary>구의 반지름을 반환합니다.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>입력 점을 중심으로 지정된 반지름을 사용하여 솔리드 구를 만듭니다.</summary>
+            <summary>Create a Solid Sphere centered at the input Point, with given radius.</summary>
             <search>Brep,brep</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByFourPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">

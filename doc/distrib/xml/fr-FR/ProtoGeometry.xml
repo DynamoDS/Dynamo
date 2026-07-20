@@ -2871,7 +2871,7 @@
             <summary>Renvoyer le rayon de la sphère.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>Créer une sphère solide centrée au niveau du point d'entrée, avec un rayon donné.</summary>
+            <summary>Create a Solid Sphere centered at the input Point, with given radius.</summary>
             <search>Brep,brep</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByFourPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">

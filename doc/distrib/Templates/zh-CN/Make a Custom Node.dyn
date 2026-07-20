@@ -3612,7 +3612,7 @@
       },
       {
         "Id": "c58f8dba2e78425780e476a1cf51e11e",
-        "Title": "关联的文件\n_____________________________________________________\n\nCurveValidate.dyf\n",
+        "Title": "ASSOCIATED FILE(S)\n_____________________________________________________ \n\nCurve_Validate.dyf\n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3672,7 +3672,7 @@
       },
       {
         "Id": "3a1bbb44014c4cbaa7946c1d55a5aaf7",
-        "Title": "其他注释\n_____________________________________________________\n\n自定义节点通常位于 Library 的“Add-ons”部分。\r\n此自定义节点位于：\r\nAdd-ons → Standards → Curve → Curve_Validate\r\n\r\n如果未显示:\r\n\r\n检查 .dyf 文件是否位于自定义节点文件夹中\r\n\r\n转到:\r\n软件包 → Package Manager →软件包设置 → 软件包/库搜索路径\r\n确认文件夹路径已列出或添加新路径\r\n添加新的自定义节点后重新启动 Dynamo\n",
+        "Title": "ADDITIONAL COMMENTS\n_____________________________________________________ \n\nCustom nodes are typically found in the Add-ons section of the Library.\r\nThis custom node is located under:\r\nAdd-ons → Templates → Curve → Curve_Validate\r\n\r\nIf it does not appear:\r\n\r\nCheck that the .dyf file is in your custom nodes folder\r\n\r\nGo to:\r\nPackages → Package Manager → Package Settings → Package/Library Search Paths\r\nVerify the folder path is listed or add a new path\r\nRestart Dynamo after adding new custom nodes\n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
