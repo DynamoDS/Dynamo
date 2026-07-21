@@ -82,7 +82,7 @@ $excludedFiles = @(
     "JsonPointer.Net.dll",
     "Json.More.dll",
     "DynamoPlayer.*.dll",
-    # DynamoAssistant built-in package (DYN-10450) — versioned independently of Dynamo, signed in its own pipeline.
+    # AutodeskAssistant built-in package (DYN-10450) — versioned independently of Dynamo, signed in its own pipeline.
     "AutodeskAssistantViewExtension.dll",
     "AutodeskAssistantViewExtension.resources.dll",
     "AdpSDKCSharpWrapper.dll",
