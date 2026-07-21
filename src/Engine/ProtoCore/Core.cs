@@ -187,6 +187,7 @@ namespace ProtoCore
             internal string FileName { get; set; }
             internal int Line { get; set; }
             internal int Column { get; set; }
+            internal GraphNode GraphNode { get; set; }
         }
 
         /// <summary>
@@ -194,6 +195,14 @@ namespace ProtoCore
         /// bodies during the first pass. These are re-evaluated (see
         /// <see cref="LogUnresolvedDeferredFunctionWarnings"/>) after all function definitions are
         /// registered. See DYN-10693.
+        /// <para>
+        /// This is transient scratch space filled and drained within a single CBN precompilation.
+        /// Like the rest of the precompilation state on this shared core (for example the
+        /// <see cref="IsParsingCodeBlockNode"/> / <see cref="IsCodeBlockNodeFirstPass"/> flags and
+        /// <c>ResetForPrecompilation</c>), it relies on CBN compilation being sequential on a given
+        /// core; it is deliberately not synchronized, and adding a lock here alone would not make the
+        /// wider operation thread-safe.
+        /// </para>
         /// </summary>
         internal IList<DeferredFunctionResolution> DeferredFunctionResolutions { get; } = new List<DeferredFunctionResolution>();
 
@@ -210,7 +219,7 @@ namespace ProtoCore
             int line, int column, GraphNode graphNode, int globalProcIndex)
         {
             var message = string.Format(Properties.Resources.kMethodNotFound, functionName);
-            if (IsParsingCodeBlockNode && !IsCodeBlockNodeFirstPass || !IsParsingCodeBlockNode)
+            if (!(IsParsingCodeBlockNode && IsCodeBlockNodeFirstPass))
             {
                 BuildStatus.LogWarning(BuildData.WarningID.FunctionNotFound, message,
                     CurrentDSFileName, line, column, graphNode);
@@ -224,7 +233,8 @@ namespace ProtoCore
                     Message = message,
                     FileName = CurrentDSFileName,
                     Line = line,
-                    Column = column
+                    Column = column,
+                    GraphNode = graphNode
                 });
             }
         }
@@ -249,7 +259,7 @@ namespace ProtoCore
                 if (procNode == null)
                 {
                     BuildStatus.LogWarning(BuildData.WarningID.FunctionNotFound, candidate.Message,
-                        candidate.FileName, candidate.Line, candidate.Column);
+                        candidate.FileName, candidate.Line, candidate.Column, candidate.GraphNode);
                 }
             }
         }

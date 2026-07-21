@@ -441,7 +441,7 @@ b = c[w][x][y][z];";
         // guid used by the function-warning test fixtures. Shared by the DYN-10693 regression tests.
         private CodeBlockNodeModel OpenSingleFunctionCbn(string dynFileName, int expectedNodeCount)
         {
-            OpenModelInManualMode(Path.Combine(TestDirectory, @"core\dsevaluation", dynFileName));
+            OpenModelInManualMode(Path.Combine(TestDirectory, "core", "dsevaluation", dynFileName));
             Assert.AreEqual(expectedNodeCount, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             var cbn = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<CodeBlockNodeModel>(
