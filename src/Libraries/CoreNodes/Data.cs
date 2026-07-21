@@ -59,7 +59,7 @@ namespace DSCore
 
                 case JTokenType.Array:
                     var arr = token as JArray;
-                    return arr.Select(ToNative);
+                    return new ArrayList(arr.Select(ToNative).ToList());
                 case JTokenType.Null:
                     return null;
                 case JTokenType.Integer:
@@ -666,6 +666,21 @@ namespace DSCore
         public static Dictionary<string, object> EvaluateDefineDataNode([ArbitraryDimensionArrayImport] object inputValue,
             string typeString, bool isList, bool isAutoMode, string playerValue)
         {
+            // If the player value is present, prefer it over upstream input (including null).
+            if (!string.IsNullOrEmpty(playerValue))
+            {
+                try
+                {
+                    inputValue = ParseJSON(playerValue);
+                }
+                catch (Exception ex)
+                {
+                    dynamoLogger?.Log("A Player value failed to deserialize with this exception: " + ex.Message);
+
+                    var warning = Properties.Resources.Exception_Deserialize_Unsupported_Cache;
+                    return DefineDataResult(inputValue, false, false, DataNodeDynamoTypeList.First(), warning);
+                }
+            }
 
             if (inputValue == null)
             {
@@ -681,23 +696,6 @@ namespace DSCore
             {
                 var warning = Properties.Resources.DefineDataSupportedInputValueExceptionMessage;
                 return DefineDataResult(inputValue, false, false, DataNodeDynamoTypeList.First(), warning);
-            }
-
-            // If the playerValue is not empty, then we assume it was set by the player.
-            // In that case, we need to parse it to get the actual value replace the inputValue.
-            if (!string.IsNullOrEmpty(playerValue))
-            {
-                try
-                {
-                    inputValue = ParseJSON(playerValue);
-                }
-                catch (Exception ex)    
-                {
-                    dynamoLogger?.Log("A Player value failed to deserialize with this exception: " + ex.Message);
-
-                    var warning = Properties.Resources.Exception_Deserialize_Unsupported_Cache;
-                    return DefineDataResult(inputValue, false, false, DataNodeDynamoTypeList.First(), warning);
-                }
             }
 
             // Currently working around passing the type as a string from the node - can be developed further to pass directly the type value

@@ -946,5 +946,38 @@ namespace Dynamo.Tests
             ex = Assert.Throws<Exception>(() => DSCore.Data.EvaluateDefineDataNode(detectTypeInput, booleanString, false, false, ""));
             Assert.That(ex.Message.Split("{")[0].StartsWith(DSCore.Properties.Resources.DefineDataUnexpectedInputExceptionMessage.Split("{")[0]));
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EvaluateDefineDataNodeUsesPlayerJsonArrayAsList()
+        {
+            var result = DSCore.Data.EvaluateDefineDataNode(
+                "ignored-upstream-value",
+                typeof(double).ToString(),
+                true,
+                false,
+                "[0.0, 1.0, 2.0]");
+
+            var output = result[">"] as ArrayList;
+            Assert.IsNotNull(output, "Player JSON array should parse to ArrayList for list validation.");
+            CollectionAssert.AreEqual(new[] { 0.0, 1.0, 2.0 }, output.Cast<double>().ToArray());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void EvaluateDefineDataNodeUsesPlayerValueWhenUpstreamIsNull()
+        {
+            var result = DSCore.Data.EvaluateDefineDataNode(
+                null,
+                typeof(double).ToString(),
+                true,
+                false,
+                "[3.0, 4.0]");
+
+            var output = result[">"] as ArrayList;
+            Assert.IsNotNull(output, "Player value should be evaluated even when upstream input is null.");
+            CollectionAssert.AreEqual(new[] { 3.0, 4.0 }, output.Cast<double>().ToArray());
+            Assert.IsNotNull(result["Validation"]);
+        }
     }
 }
