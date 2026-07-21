@@ -59,7 +59,7 @@
 
     <Target Name="NpmRunBuildHomePage" BeforeTargets="BeforeBuild">
         <PropertyGroup>
-            <PackageVersion>1.0.30</PackageVersion>
+            <PackageVersion>1.0.32</PackageVersion>
             <PackageName>DynamoHome</PackageName>
         </PropertyGroup>
         <Exec Command="$(PowerShellCommand) -ExecutionPolicy Bypass -File &quot;$(SolutionDir)pkgexist.ps1&quot; &quot;$(PackageName)&quot; &quot;$(PackageVersion)&quot;" ConsoleToMSBuild="true">
@@ -483,7 +483,7 @@
       <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.4841" />
+      <PackageReference Include="DynamoVisualProgramming.LibG_232_0_0" Version="4.0.0.5334" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
     <PackageReference Include="Greg" Version="3.0.2.8780" />
@@ -569,7 +569,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Services\WpfGraphLockUserPrompt.cs" />
     <Compile Include="UI\CustomSaveFileDialog.cs" />
     <Compile Include="UI\ToastManager.cs" />
     <Compile Include="UI\GuidedTour\CustomRichTextBox.cs" />
@@ -2209,6 +2208,55 @@
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
     <Copy SourceFiles="@(ExternTuneUpPkg)" DestinationFolder="$(OutputPath)\Built-In Packages\packages\TuneUp\%(RecursiveDir)" />
 	<Copy SourceFiles="@(DistribSamples)" DestinationFolder="$(OutputPath)\Samples" SkipUnchangedFiles="True" />
+  </Target>
+  <!--
+    DynamoMCP built-in package (DYN-10553). Consumed as a signed NuGet (id DynamoVisualProgramming.DynamoMCP)
+    published by the DynamoMCP repo to nuget.org (mirrors PythonNet3Engine's NuGet-consume pattern):
+      * ExcludeAssets="all"      -> files only, no compile/runtime refs (preserves MCPServer's isolated ALC)
+      * GeneratePathProperty="true" -> exposes $(PkgDynamoVisualProgramming_DynamoMCP)
+    Hard-pinned to an exact version so a transitive bump can't pull a DynamoMCP built against a
+    different DynamoVisualProgramming.* API. Bump in lockstep with the DynamoMCP release for this line.
+  -->
+  <ItemGroup>
+    <PackageReference Include="DynamoVisualProgramming.DynamoMCP" Version="[0.5.4]" GeneratePathProperty="true" ExcludeAssets="all" />
+  </ItemGroup>
+  <!--
+    The NuGet wraps the assembled package under bin\, so $(PkgDynamoVisualProgramming_DynamoMCP)\bin IS
+    the package layout (pkg.json + bin\ + bin\mcp_server\ + extra\). Copy it verbatim into Built-In Packages.
+  -->
+  <Target Name="BuildDynamoMcpDynamoPackage" AfterTargets="Build">
+    <PropertyGroup>
+      <DynamoMcpDestRoot>$(OutputPath)\Built-In Packages\packages\DynamoMCP\</DynamoMcpDestRoot>
+    </PropertyGroup>
+    <ItemGroup>
+      <DynamoMcpPkg Include="$(PkgDynamoVisualProgramming_DynamoMCP)\bin\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(DynamoMcpPkg)" DestinationFolder="$(DynamoMcpDestRoot)%(RecursiveDir)" SkipUnchangedFiles="True" />
+  </Target>
+  <!--
+    AutodeskAssistant (Autodesk Assistant) built-in package (DYN-10450). Consumed as a signed NuGet
+    (id DynamoVisualProgramming.AutodeskAssistant) published by the Dynamo-AutodeskAssistant repo to
+    nuget.org (mirrors DynamoMCP / PythonNet3Engine's NuGet-consume pattern):
+      * ExcludeAssets="all"      -> files only, no compile/runtime refs
+      * GeneratePathProperty="true" -> exposes $(PkgDynamoVisualProgramming_AutodeskAssistant)
+    Hard-pinned to an exact version so a transitive bump can't pull an AA built against a
+    different DynamoVisualProgramming.* API. Bump in lockstep with the AA release for this line.
+  -->
+  <ItemGroup>
+    <PackageReference Include="DynamoVisualProgramming.AutodeskAssistant" Version="[0.3.4]" GeneratePathProperty="true" ExcludeAssets="all" />
+  </ItemGroup>
+  <!--
+    The NuGet wraps the assembled package under bin\, so $(PkgDynamoVisualProgramming_AutodeskAssistant)\bin IS
+    the package layout (pkg.json + bin\ + extra\). Copy it verbatim into Built-In Packages.
+  -->
+  <Target Name="BuildAutodeskAssistantDynamoPackage" AfterTargets="Build">
+    <PropertyGroup>
+      <AutodeskAssistantDestRoot>$(OutputPath)\Built-In Packages\packages\AutodeskAssistant\</AutodeskAssistantDestRoot>
+    </PropertyGroup>
+    <ItemGroup>
+      <AutodeskAssistantPkg Include="$(PkgDynamoVisualProgramming_AutodeskAssistant)\bin\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(AutodeskAssistantPkg)" DestinationFolder="$(AutodeskAssistantDestRoot)%(RecursiveDir)" SkipUnchangedFiles="True" />
   </Target>
   <Target Name="CopyPMWizardHtmlFiles" AfterTargets="Build">
     <ItemGroup>

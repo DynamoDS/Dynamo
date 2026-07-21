@@ -2188,11 +2188,31 @@ namespace Dynamo.Nodes
                 stack.Children.Add(border);
             }
 
+            // Hardcoded to fit ~10 items. Calculating dynamically adds noise
+            // with little benefit since item height rarely changes.
+            const int maxHeight = 200;
+            stack.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            bool needsScroll = stack.DesiredSize.Height > maxHeight;
+
+            UIElement content;
+            if (needsScroll)
+            {
+                content = new ScrollViewer
+                {
+                    MaxHeight = maxHeight,
+                    Content = stack,
+                };
+            }
+            else
+            {
+                content = stack;
+            }
+
             return new Border
             {
                 Background = _midGreyBrush,
-                Padding = new Thickness(10),
-                Child = stack
+                Padding = new Thickness(10,10,!needsScroll ? 10 : 1,10),
+                Child = content
             };
         }
 

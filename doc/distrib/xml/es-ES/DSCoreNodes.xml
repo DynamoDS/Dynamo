@@ -347,6 +347,11 @@
             <param name="list">La ArrayList de objetos a los que se va a aplicar un nuevo formato</param>
             <returns/>
         </member>
+        <member name="M:DSCore.Data.IsUnusedDefineDataInput(System.Object)">
+            <summary>Comprueba que no se utiliza la entrada de "Define data" (lista vacía o nula).</summary>
+            <param name="inputValue">El valor de entrada del gráfico.</param>
+            <returns>Devuelve "True" (verdadero) cuando la entrada se debe tratar como no conectada o no utilizada.</returns>
+        </member>
         <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
             <summary>Compruebe si el objeto de entrada es un valor único o una ArrayList de un solo nivel.</summary>
             <param name="obj">El objeto de entrada que se va a evaluar</param>

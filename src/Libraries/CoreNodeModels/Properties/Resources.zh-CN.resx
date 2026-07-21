@@ -621,6 +621,9 @@
   <data name="DefineDataDisplayValueMessage" xml:space="preserve">
     <value>选择类型</value>
   </data>
+  <data name="DefineDataMissingUpstreamConnectionInfoMessage" xml:space="preserve">
+    <value>无上游连接。将节点连接到输入端口以提供默认值并设置数据类型。要选择不含上游数据的类型，请禁用“自动检测类型”，然后使用下拉菜单。</value>
+  </data>
   <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
     <value>数字值的格式说明符，请参见扩展节点帮助以获取详细信息。
 默认值: G</value>

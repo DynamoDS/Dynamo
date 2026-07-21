@@ -23,8 +23,8 @@ using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Graph.Workspaces.Locking;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -48,7 +48,6 @@ using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using Dynamo.Wpf.ViewModels.FileTrust;
 using Dynamo.Wpf.ViewModels.Watch3D;
-using Dynamo.Wpf.Services;
 using DynamoMLDataPipeline;
 using DynamoServices;
 using DynamoUtilities;
@@ -275,6 +274,12 @@ namespace Dynamo.ViewModels
                 }
             }
         }
+
+        /// <summary>
+        /// Indicates whether Dynamo was started in no-network mode.
+        /// When true, all Package Manager entry points are disabled.
+        /// </summary>
+        public bool NoNetworkMode => model.NoNetworkMode;
 
         /// <summary>
         /// Check for online access and update OnlineAccess property.
@@ -868,8 +873,6 @@ namespace Dynamo.ViewModels
 
             this.BrandingResourceProvider = startConfiguration.BrandingResourceProvider ?? new DefaultBrandingResourceProvider();
 
-            this.model.GraphLockManager?.SetPrompt(new WpfGraphLockUserPrompt(() => Owner, BrandingResourceProvider.ProductName));
-
             // commands should be initialized before adding any WorkspaceViewModel
             InitializeDelegateCommands();
 
@@ -946,7 +949,12 @@ namespace Dynamo.ViewModels
             MLDataPipelineExtension = model.ExtensionManager.Extensions.OfType<DynamoMLDataPipelineExtension>().FirstOrDefault();
             IsIDSDKInitialized();
 
-            NetworkUtilities.InitInternetCheck();
+            // In no-network mode, do not allocate the connectivity-check HttpClient at all.
+            if (!Model.NoNetworkMode)
+            {
+                NetworkUtilities.InitInternetCheck();
+            }
+            // CheckOnlineAccess already short-circuits when NoNetworkMode is true.
             CheckOnlineAccess();
         }
 
@@ -2239,9 +2247,6 @@ namespace Dynamo.ViewModels
                     filePath = parameters as string;
                 }
 
-                // Remember whether we are on the start page so we can return to it if the user cancels.
-                bool startPageVisibleBeforeOpen = ShowStartPage;
-
                 var directoryName = Path.GetDirectoryName(filePath);
 
                 // Decide whether the trust warning is needed and block the run BEFORE opening, so an
@@ -2250,30 +2255,6 @@ namespace Dynamo.ViewModels
 
                 // Execute graph open command
                 ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode, isTemplate, displayTrustWarning));
-
-                // The file is already open in another Dynamo instance
-                // On cancel: nothing is opened, so hide any trust warnings and restore the start-page state
-                if (Model.LastGraphLockOpenOutcome == GraphLockOutcome.Cancelled)
-                {
-                    if (FileTrustViewModel != null)
-                    {
-                        FileTrustViewModel.ShowWarningPopup = false;
-                    }
-                    ShowStartPage = startPageVisibleBeforeOpen;
-                    return;
-                }
-
-                // On Save as: the model is opened as a copy at a different location,
-                // re-evaluate the trust state for that copy (popup only).
-                if (Model.LastGraphLockOpenOutcome == GraphLockOutcome.RedirectedToCopy)
-                {
-                    var openedPath = Model.CurrentWorkspace?.FileName;
-                    if (!string.IsNullOrEmpty(openedPath))
-                    {
-                        directoryName = Path.GetDirectoryName(openedPath);
-                        displayTrustWarning = ShouldForceBlockRun(openedPath);
-                    }
-                }
 
                 // Apply annotation updates based on the preference setting
                 RefreshAnnotationDescriptions();
@@ -2374,15 +2355,14 @@ namespace Dynamo.ViewModels
 
                 var directoryName = Path.GetDirectoryName(filePath);
 
-                // Display trust warning when file is not among trust location and warning feature is on
+                // Decide whether the trust warning is needed and block the run BEFORE inserting, so an
+                // untrusted graph cannot start running before the user has accepted the warning.
                 bool displayTrustWarning = ShouldForceBlockRun(filePath);
 
-                // Execute graph open command
+                // Execute graph insert command
                 ExecuteCommand(new DynamoModel.InsertFileCommand(filePath, forceManualMode, displayTrustWarning));
-
                 this.FitViewCommand.Execute(null);
 
-                // Only show trust warning popup when current opened workspace is homeworkspace and not custom node workspace
                 if (currentWorkspaceViewModel?.IsHomeSpace ?? false)
                 {
                     UpdateFileTrustWarningUi(displayTrustWarning, directoryName);
@@ -2830,7 +2810,7 @@ namespace Dynamo.ViewModels
             {
                 Model.Logger.Log(string.Format(Properties.Resources.SavingInProgress, path));
                 var hasSaved = false;
-                if (path.Contains(Model.PathManager.TemplatesDirectory))
+                if (IsPathInTemplateDirectoryTree(path, Model.PathManager.TemplatesDirectory))
                 {
                     // Give user notifications
                     DynamoMessageBox.Show(Owner, WpfResources.WorkspaceSaveTemplateDirectoryBlockMsg, WpfResources.WorkspaceSaveTemplateDirectoryBlockTitle,
@@ -2875,6 +2855,50 @@ namespace Dynamo.ViewModels
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning);
             }
+        }
+
+        internal static bool IsPathInTemplateDirectoryTree(string path, string templatesDirectory)
+        {
+            if (string.IsNullOrEmpty(path) || string.IsNullOrEmpty(templatesDirectory))
+            {
+                return false;
+            }
+
+            try
+            {
+                var templateRootDirectory = GetTemplateRootDirectory(templatesDirectory);
+                var templateRootPath = Path.GetFullPath(templateRootDirectory).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                var savePath = Path.GetFullPath(path);
+
+                return savePath.Equals(templateRootPath, StringComparison.OrdinalIgnoreCase) ||
+                    savePath.StartsWith(templateRootPath + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) ||
+                    savePath.StartsWith(templateRootPath + Path.AltDirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
+            }
+            catch (ArgumentException)
+            {
+                return false;
+            }
+            catch (IOException)
+            {
+                return false;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
+        }
+
+        private static string GetTemplateRootDirectory(string templatesDirectory)
+        {
+            var directoryInfo = new DirectoryInfo(templatesDirectory);
+            if (directoryInfo.Parent != null &&
+                directoryInfo.Name.Length == 5 && directoryInfo.Name[2] == '-' &&
+                string.Equals(directoryInfo.Parent.Name, Configurations.TemplatesAsString, StringComparison.OrdinalIgnoreCase))
+            {
+                return directoryInfo.Parent.FullName;
+            }
+
+            return directoryInfo.FullName;
         }
 
         /// <summary>
@@ -4590,23 +4614,90 @@ namespace Dynamo.ViewModels
             return BackgroundPreviewViewModel != null &&
                     !CurrentSpaceViewModel.HasSelection;
         }
-        private void FitCanvasToSelectedNodes(List<NodeViewModel> nodes)
+
+        private readonly struct HomeEndCandidate
         {
-            var nodeSet = new HashSet<NodeModel>(nodes.Select(nvm => nvm.NodeModel));
-            var groups = CurrentSpaceViewModel.Annotations.Where(a => a.Nodes.Any(n => nodeSet.Contains(n)));
-            nodes.ForEach((ele) => DynamoSelection.Instance.Selection.Add(ele.NodeModel));
-            groups.ToList().ForEach((grp) => DynamoSelection.Instance.Selection.Add(grp.AnnotationModel));
+            public HomeEndCandidate(double left, double right, IReadOnlyList<ISelectable> models)
+            {
+                Left = left;
+                Right = right;
+                Models = models;
+            }
+
+            public double Left { get; }
+            public double Right { get; }
+            public IReadOnlyList<ISelectable> Models { get; }
+        }
+
+        private IEnumerable<HomeEndCandidate> BuildHomeEndCandidates()
+        {
+            var workspace = CurrentSpaceViewModel;
+            var annotations = workspace.Annotations;
+
+            foreach (var nvm in workspace.Nodes)
+            {
+                var models = new List<ISelectable> { nvm.NodeModel };
+                foreach (var avm in annotations.Where(a => a.AnnotationModel.ContainsModel(nvm.NodeModel)))
+                {
+                    models.Add(avm.AnnotationModel);
+                }
+                yield return new HomeEndCandidate(nvm.X, nvm.X + nvm.ActualWidth, models);
+            }
+
+            foreach (var noteVM in workspace.Notes)
+            {
+                if (annotations.Any(a => a.AnnotationModel.ContainsModel(noteVM.Model)))
+                {
+                    continue;
+                }
+                yield return new HomeEndCandidate(
+                    noteVM.Left,
+                    noteVM.Left + noteVM.Model.Width,
+                    new ISelectable[] { noteVM.Model });
+            }
+
+            foreach (var avm in annotations)
+            {
+                var hasNodes = avm.Nodes.OfType<NodeModel>().Any();
+                if (hasNodes)
+                {
+                    continue;
+                }
+                var hasNotes = avm.Nodes.OfType<NoteModel>().Any();
+                if (!hasNotes)
+                {
+                    continue;
+                }
+                yield return new HomeEndCandidate(
+                    avm.Left,
+                    avm.Left + avm.Width,
+                    new ISelectable[] { avm.AnnotationModel });
+            }
+        }
+
+        private void FitCanvasToSelectedCandidates(IEnumerable<HomeEndCandidate> candidates)
+        {
+            foreach (var candidate in candidates)
+            {
+                foreach (var model in candidate.Models)
+                {
+                    DynamoSelection.Instance.Selection.Add(model);
+                }
+            }
             FitViewCommand.Execute(true);
             DynamoSelection.Instance.ClearSelection();
         }
+
         internal void GoToLeftMostNode(object parameter)
         {
-            if (CurrentSpaceViewModel.Nodes.Count > 0)
+            var candidates = BuildHomeEndCandidates().ToList();
+            if (candidates.Count == 0)
             {
-                double minX = CurrentSpaceViewModel.Nodes.Min(x => x.X);
-                var nodes = CurrentSpaceViewModel.Nodes.Where(x => x.X <= minX + tolerance).ToList();
-                FitCanvasToSelectedNodes(nodes);
+                return;
             }
+            double minLeft = candidates.Min(c => c.Left);
+            var winners = candidates.Where(c => c.Left <= minLeft + tolerance);
+            FitCanvasToSelectedCandidates(winners);
         }
         internal bool CanGoToLeftMostNode(object obj)
         {
@@ -4614,12 +4705,14 @@ namespace Dynamo.ViewModels
         }
         internal void GoToRightMostNode(object parameter)
         {
-            if (CurrentSpaceViewModel.Nodes.Count > 0)
+            var candidates = BuildHomeEndCandidates().ToList();
+            if (candidates.Count == 0)
             {
-                double maxX = CurrentSpaceViewModel.Nodes.Max(x => x.X + x.ActualWidth);
-                var nodes = CurrentSpaceViewModel.Nodes.Where(x => x.X + x.ActualWidth >= maxX - tolerance).ToList();
-                FitCanvasToSelectedNodes(nodes);         
+                return;
             }
+            double maxRight = candidates.Max(c => c.Right);
+            var winners = candidates.Where(c => c.Right >= maxRight - tolerance);
+            FitCanvasToSelectedCandidates(winners);
         }
         internal bool CanGoToRightMostNode(object obj)
         {
@@ -4705,8 +4798,10 @@ namespace Dynamo.ViewModels
             if (!AskUserToSaveWorkspacesOrCancel(shutdownParams.AllowCancellation))
                 return false;
 
-
-            NetworkUtilities.StopInternetCheck();
+            if (!Model.NoNetworkMode)
+            {
+                NetworkUtilities.StopInternetCheck();
+            }
 
             // 'shutdownSequenceInitiated' is marked as true here indicating
             // that the shutdown may not be stopped.

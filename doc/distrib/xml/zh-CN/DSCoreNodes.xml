@@ -347,6 +347,11 @@
             <param name="list">要重新格式化的对象的数组列表</param>
             <returns/>
         </member>
+        <member name="M:DSCore.Data.IsUnusedDefineDataInput(System.Object)">
+            <summary>检查是否未使用“定义数据”输入(Null 或空列表)。</summary>
+            <param name="inputValue">图表中的输入值。</param>
+            <returns>当输入应视为未连接或未使用时为 True。</returns>
+        </member>
         <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
             <summary>检查输入对象是单个值还是单层 ArrayList。</summary>
             <param name="obj">要计算的输入对象</param>

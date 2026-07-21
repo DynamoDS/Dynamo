@@ -124,11 +124,28 @@ namespace Dynamo.UI.Views
             }
         }
 
-        private void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private async void DynamoViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if(e.PropertyName == nameof(startPage.DynamoViewModel.ShowStartPage) && dynWebView?.CoreWebView2 != null)
             {
-                dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.setShowStartPageChanged('{startPage.DynamoViewModel.ShowStartPage}')");
+                try
+                {
+                    if (startPage.DynamoViewModel.ShowStartPage)
+                    {
+                        await startPage.RefreshTemplateFilesAsync();
+                        startPage.RefreshRecentFiles();
+
+                        await SendTemplateData();
+                        await SendRecentGraphsData();
+                    }
+
+                    await dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.setShowStartPageChanged('{startPage.DynamoViewModel.ShowStartPage}')");
+                }
+                catch (Exception ex)
+                {
+                    startPage?.DynamoViewModel?.Model?.Logger?.Log("Failed to update Dynamo Home visibility state.");
+                    startPage?.DynamoViewModel?.Model?.Logger?.Log(ex);
+                }
             }
         }
 
@@ -145,6 +162,8 @@ namespace Dynamo.UI.Views
         {
             string htmlString = string.Empty;   
             string jsonString = string.Empty;
+            var homePageViewModel = this.startPage;
+            var logger = homePageViewModel?.DynamoViewModel?.Model?.Logger;
 
             // When executing Dynamo as Sandbox or inside any host like Revit, FormIt, Civil3D the WebView2 cache folder will be located in the AppData folder
             var userDataDir = new DirectoryInfo(GetUserDirectory());
@@ -155,6 +174,11 @@ namespace Dynamo.UI.Views
             {
                 UserDataFolder = DynamoModel.IsTestMode ? TestUtilities.UserDataFolderDuringTests(nameof(HomePage)) : webBrowserUserDataFolder.FullName
             };
+
+            // Suppress WebView2 runtime background networking when Dynamo is in no-network mode.
+            var noNetworkMode = homePageViewModel?.DynamoViewModel?.Model?.NoNetworkMode ?? false;
+            WebView2Utilities.ApplyNoNetworkPolicy(dynWebView.CreationProperties, noNetworkMode,
+                msg => logger?.Log(msg));
 
             //ContentRendered ensures that the webview2 component is visible.
             try
@@ -197,7 +221,7 @@ namespace Dynamo.UI.Views
                 }
                 catch (Exception ex)
                 {
-                    this.startPage.DynamoViewModel.Model.Logger.Log(ex.Message);
+                    logger?.Log(ex.Message);
                 }
 
                 // Exposing commands to the React front-end
@@ -216,7 +240,7 @@ namespace Dynamo.UI.Views
             }
             catch (ObjectDisposedException ex)
             {
-                this.startPage.DynamoViewModel.Model.Logger.Log(ex.Message);
+                logger?.Log(ex.Message);
             }
         }
 
@@ -338,11 +362,8 @@ namespace Dynamo.UI.Views
         /// </summary>
         private async Task SendTemplateData()
         {
-            var items = startPage.TemplateFiles?.DistinctBy(x => x.ContextData).ToList();
-            if (items != null && items.Any())
-            {
-                await LoadTemplates(items);
-            }
+            var items = startPage.TemplateFiles?.DistinctBy(x => x.ContextData).ToList() ?? new List<StartPageListItem>();
+            await LoadTemplates(items);
         }
 
         private async Task SendRecentGraphsData()
@@ -361,14 +382,12 @@ namespace Dynamo.UI.Views
             }
 
             // Load recent files
-            var recentFiles = startPage.RecentFiles?.DistinctBy(x => x.ContextData).ToList();
-            if (recentFiles != null && recentFiles.Any())
-            {
-                await LoadGraphs(recentFiles);
-            }
+            var recentFiles = startPage.RecentFiles?.DistinctBy(x => x.ContextData).ToList() ?? new List<StartPageListItem>();
+            await LoadGraphs(recentFiles);
 
             if (startPage.DynamoViewModel != null && startPage.DynamoViewModel.RecentFiles != null)
             {
+                startPage.DynamoViewModel.RecentFiles.CollectionChanged -= RecentFiles_CollectionChanged;
                 startPage.DynamoViewModel.RecentFiles.CollectionChanged += RecentFiles_CollectionChanged;
             }
         }
@@ -535,6 +554,11 @@ namespace Dynamo.UI.Views
         #region Relay Commands
         internal void OpenFile(string path)
         {
+            _ = OpenFileAsync(path);
+        }
+
+        private async Task OpenFileAsync(string path)
+        {
             if (String.IsNullOrEmpty(path)) return;
             if (DynamoModel.IsTestMode)
             {
@@ -542,13 +566,31 @@ namespace Dynamo.UI.Views
                 return;
             }
 
-            var dvm = this.startPage.DynamoViewModel;
-            var openArg = IsListedHomePageTemplate(path)
-                ? (object)Tuple.Create(path, false, true)
-                : path;
-            if (dvm.OpenCommand.CanExecute(openArg))
+            try
             {
-                dvm.OpenCommand.Execute(openArg);
+                if (startPage.HandleMissingFilePath(path))
+                {
+                    var recentFiles = startPage.RecentFiles?.DistinctBy(x => x.ContextData).ToList() ?? new List<StartPageListItem>();
+                    var templateFiles = startPage.TemplateFiles?.DistinctBy(x => x.ContextData).ToList() ?? new List<StartPageListItem>();
+
+                    await LoadGraphs(recentFiles);
+                    await LoadTemplates(templateFiles);
+                    return;
+                }
+
+                var dvm = this.startPage.DynamoViewModel;
+                var openArg = IsListedHomePageTemplate(path)
+                    ? (object)Tuple.Create(path, false, true)
+                    : path;
+                if (dvm.OpenCommand.CanExecute(openArg))
+                {
+                    dvm.OpenCommand.Execute(openArg);
+                }
+            }
+            catch (Exception ex)
+            {
+                startPage?.DynamoViewModel?.Model?.Logger?.Log("Failed to open file from Dynamo Home.");
+                startPage?.DynamoViewModel?.Model?.Logger?.Log(ex);
             }
         }
 

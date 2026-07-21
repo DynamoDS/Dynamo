@@ -150,6 +150,9 @@
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
     <value>Включите сетевой режим, чтобы иметь возможность входить в систему.</value>
   </data>
+  <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
+    <value>Включите сетевой режим, чтобы использовать Package Manager.</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -3815,6 +3818,9 @@
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>Указан неверный путь к файлу. Если файл находится в архиве, перед открытием его следует извлечь.\n{0}</value>
   </data>
+  <data name="MessageHomeFileMissing" xml:space="preserve">
+    <value>Этот файл больше не доступен. Возможно, он перемещен, переименован или удален.\n{0}</value>
+  </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>Заморозить группу</value>
   </data>
@@ -3926,18 +3932,6 @@
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>Автоматическая синхронизация с выбором узла.</value>
-  </data>
-  <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
-    <value>This file is currently open in another instance of Dynamo.
-To avoid data loss or corruption, please choose one of the following actions:
- • Save As — opens an independent copy you can edit safely.
- • Cancel — does not open the file.</value>
-  </data>
-  <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
-    <value>File already open in another Dynamo instance</value>
-  </data>
-  <data name="GraphLockSaveAsButton" xml:space="preserve">
-    <value>Сохранить как</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

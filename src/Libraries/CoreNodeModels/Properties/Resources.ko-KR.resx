@@ -621,6 +621,9 @@
   <data name="DefineDataDisplayValueMessage" xml:space="preserve">
     <value>유형 선택</value>
   </data>
+  <data name="DefineDataMissingUpstreamConnectionInfoMessage" xml:space="preserve">
+    <value>업스트림 연결이 없습니다. 기본값을 제공하고 데이터 유형을 설정하려면 노드를 입력 포트에 연결합니다. 업스트림 데이터 없이 유형을 선택하려면 자동 탐지 유형을 끄고 드롭다운 메뉴를 사용합니다.</value>
+  </data>
   <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
     <value>숫자 값에 대한 형식 지정자에 대한 자세한 내용은 확장 노드 도움말을 참조하십시오.
 기본값: G</value>

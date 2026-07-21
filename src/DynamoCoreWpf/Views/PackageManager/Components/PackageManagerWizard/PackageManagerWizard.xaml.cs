@@ -226,6 +226,11 @@ namespace Dynamo.UI.Views
                 UserDataFolder = webBrowserUserDataFolder.FullName
             };
 
+            // Defense in depth: the Package Manager is disabled in no-network mode so this wizard is
+            // normally unreachable, but harden the WebView2 surface anyway if it is ever shown.
+            WebView2Utilities.ApplyNoNetworkPolicy(dynWebView.CreationProperties,
+                publishPackageViewModel?.DynamoViewModel?.Model?.NoNetworkMode ?? false);
+
             // Pre-generate the html temp file
             string tempFilePath = GetFileFromRelativePath(htmlRelativeFilePath);
 
@@ -543,23 +548,30 @@ namespace Dynamo.UI.Views
             var jsonSerializer = Newtonsoft.Json.JsonSerializer.Create(jsonSerializerSettings);
             var rootObj = JObject.FromObject(payload, jsonSerializer);
 
-            // Include payload.versions[*].compatibility_matrix for the "Copy from" dropdown.
-            try
+            if (rootObj["payload"] is JObject payloadObj)
             {
-                var header = await TryGetPackageHeaderAsync(vm);
-                if (header != null)
+                // Present with safe defaults so the frontend always has a consistent shape
+                payloadObj["versions"] = new JArray();
+                payloadObj["maintainers"] = new JArray();
+
+                try
                 {
-                    if (rootObj["payload"] is JObject payloadObj)
+                    var header = await TryGetPackageHeaderAsync(vm);
+                    if (header != null)
                     {
                         payloadObj["versions"] = header.versions != null
-                            ? JToken.FromObject(header.versions, jsonSerializer)
+                                ? JToken.FromObject(header.versions, jsonSerializer)
+                                : new JArray();
+
+                        payloadObj["maintainers"] = header.maintainers != null
+                            ? JToken.FromObject(header.maintainers, jsonSerializer)
                             : new JArray();
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                LogMessage(ex);
+                catch (Exception ex)
+                {
+                    LogMessage(ex);
+                }
             }
 
             var jsonPayload = rootObj.ToString(Newtonsoft.Json.Formatting.None);

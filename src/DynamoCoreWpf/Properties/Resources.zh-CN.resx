@@ -150,6 +150,9 @@
   <data name="SignInOfflineButtonContentToolTip" xml:space="preserve">
     <value>启用网络模式以便能够登录。</value>
   </data>
+  <data name="PackageManagerNoNetworkModeToolTip" xml:space="preserve">
+    <value>启用网络模式以便能够使用 Package Manager。</value>
+  </data>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
@@ -3813,6 +3816,9 @@
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>提供的文件路径无效。如果文件已存档，请确保在打开之前将其解压缩。\n{0}</value>
   </data>
+  <data name="MessageHomeFileMissing" xml:space="preserve">
+    <value>此文件不再可用。它可能已被移动、重命名或删除。\n{0}</value>
+  </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
     <value>冻结组</value>
   </data>
@@ -3924,18 +3930,6 @@
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>与节点选择自动同步。</value>
-  </data>
-  <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
-    <value>This file is currently open in another instance of Dynamo.
-To avoid data loss or corruption, please choose one of the following actions:
- • Save As — opens an independent copy you can edit safely.
- • Cancel — does not open the file.</value>
-  </data>
-  <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
-    <value>File already open in another Dynamo instance</value>
-  </data>
-  <data name="GraphLockSaveAsButton" xml:space="preserve">
-    <value>另存为</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

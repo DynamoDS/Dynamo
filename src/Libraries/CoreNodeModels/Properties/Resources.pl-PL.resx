@@ -621,6 +621,9 @@ W procesach roboczych projektowania generatywnego ten węzeł powinien służyć
   <data name="DefineDataDisplayValueMessage" xml:space="preserve">
     <value>Wybierz typy</value>
   </data>
+  <data name="DefineDataMissingUpstreamConnectionInfoMessage" xml:space="preserve">
+    <value>Brak połączenia nadrzędnego. Połącz węzeł z portem wejściowym, aby podać wartość domyślną i ustawić typ danych. Aby wybrać typ bez wysyłania danych, wyłącz opcję Automatyczne wykrywanie typu i użyj menu rozwijanego.</value>
+  </data>
   <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
     <value>Specyfikator formatu dla wartości liczbowych, zobacz rozszerzoną pomoc węzła, aby uzyskać więcej informacji.
 Wartość domyślna: G</value>

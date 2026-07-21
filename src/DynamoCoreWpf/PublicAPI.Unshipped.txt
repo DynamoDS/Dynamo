@@ -21,6 +21,7 @@ Dynamo.PackageManager.ViewModels.PackageManagerSearchElementViewModel.IsUninstal
 Dynamo.UI.Controls.StartPageViewModel.TemplateFiles.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.UI.Controls.StartPageListItem>
 Dynamo.UI.Views.ScriptObject.ResetSettings() -> void
 Dynamo.UI.Views.ScriptObject.ScriptObject(System.Action<bool> requestLaunchDynamo, System.Action<string> requestImportSettings, System.Func<bool> requestSignIn, System.Func<bool> requestSignOut, System.Action requestResetSettings) -> void
+Dynamo.ViewModels.DynamoViewModel.NoNetworkMode.get -> bool
 Dynamo.ViewModels.DynamoViewModel.OnlineAccess.get -> bool
 Dynamo.ViewModels.DynamoViewModel.PythonEngineUpgradeToastRequested -> System.Action<string, bool, string>
 Dynamo.ViewModels.DynamoViewModel.ToastManager.get -> Dynamo.Wpf.UI.ToastManager
@@ -37,6 +38,11 @@ Dynamo.Wpf.UI.ToastManager.CloseRealTimeInfoWindow() -> void
 Dynamo.Wpf.UI.ToastManager.CreateRealTimeInfoWindow(string content, bool stayOpen = false, string headerText = "", string hyperlinkText = "", System.Uri hyperlinkUri = null, System.Uri fileLinkUri = null) -> void
 Dynamo.Wpf.UI.ToastManager.ToastManager(System.Windows.UIElement rootElement) -> void
 Dynamo.Wpf.Utilities.DynamoWebView2.ConfigureSettings(bool enableZoomControl = false, bool enableDevTools = false, bool enableContextMenu = false) -> void
+Dynamo.UI.Views.SplashScreen.SplashScreen(bool enableSignInButton, bool noNetworkMode) -> void
+static Dynamo.Wpf.Utilities.WebView2Utilities.ApplyNoNetworkPolicy(Microsoft.Web.WebView2.Wpf.CoreWebView2CreationProperties creationProperties, bool noNetworkMode, System.Action<string> logFn = null) -> void
+static Dynamo.Wpf.Utilities.WebView2Utilities.GetNoNetworkBrowserArguments(bool noNetworkMode) -> string
+static Dynamo.Wpf.Utilities.WebView2Utilities.GetNoNetworkUserDataFolder(string userDataFolder) -> string
+static readonly Dynamo.Wpf.Utilities.WebView2Utilities.NoNetworkAdditionalBrowserArguments -> string
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.FileLinkUri.get -> System.Uri
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.FileLinkUri.set -> void
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.HeaderContent.get -> string
@@ -58,9 +64,6 @@ static Dynamo.Wpf.Properties.Resources.DynamoSplashScreenFailed.get -> string
 static Dynamo.Wpf.Properties.Resources.DocumentationBrowserAutoSyncLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.DocumentationBrowserPreferences.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoSplashScreen.get -> string
-static Dynamo.Wpf.Properties.Resources.GraphLockFileAlreadyOpenMessage.get -> string
-static Dynamo.Wpf.Properties.Resources.GraphLockFileAlreadyOpenTitle.get -> string
-static Dynamo.Wpf.Properties.Resources.GraphLockSaveAsButton.get -> string
 static Dynamo.Wpf.Properties.Resources.MessageBoxDontShowAgainLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.OfflineStatusTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.OnlineStatusTooltip.get -> string

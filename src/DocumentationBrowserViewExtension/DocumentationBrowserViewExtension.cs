@@ -132,6 +132,10 @@ namespace Dynamo.DocumentationBrowser
             {
                 this.BrowserView.WebBrowserUserDataFolder = webBrowserUserDataFolder.FullName;
             }
+
+            // Propagate the no-network state so the browser's WebView2 surface can suppress
+            // Edge background networking when Dynamo is launched with --NoNetworkMode.
+            this.BrowserView.NoNetworkMode = viewStartupParams.NoNetworkMode;
         }
 
         public override void Loaded(ViewLoadedParams viewLoadedParams)
