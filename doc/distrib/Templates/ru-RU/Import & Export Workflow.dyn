@@ -148,7 +148,7 @@
       "Replication": "Disabled",
       "Description": "Возможность выбрать файл в системе и возврат пути к нему",
       "HintPath": null,
-      "InputValue": "..\\..\\..\\..\\..\\..\\Desktop\\Excel_Export_Example.xlsx"
+      "InputValue": ""
     },
     {
       "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
@@ -382,8 +382,8 @@
       ],
       "Replication": "Disabled",
       "Description": "Возможность выбрать файл в системе и возврат пути к нему",
-      "HintPath": "C:\\Users\\ChloePegeot\\Desktop\\Excel_Import_Example.xlsx",
-      "InputValue": "..\\..\\..\\..\\..\\..\\Desktop\\Excel_Import_Example.xlsx"
+      "HintPath": null,
+      "InputValue": ""
     },
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
@@ -1090,8 +1090,8 @@
       ],
       "Replication": "Disabled",
       "Description": "Возможность выбрать файл в системе и возврат пути к нему",
-      "HintPath": "..\\Data\\CSV_Import_Example.csv",
-      "InputValue": "..\\Data\\CSV_Import_Example.csv"
+      "HintPath": null,
+      "InputValue": ""
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1527,7 +1527,7 @@
       "Replication": "Disabled",
       "Description": "Возможность выбрать файл в системе и возврат пути к нему",
       "HintPath": null,
-      "InputValue": "..\\..\\..\\..\\..\\..\\Desktop\\CSV_Export_Example"
+      "InputValue": ""
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -2142,7 +2142,7 @@
       "Replication": "Disabled",
       "Description": "Возможность выбрать файл в системе и возврат пути к нему",
       "HintPath": null,
-      "InputValue": "..\\..\\..\\..\\..\\..\\Desktop\\Geometry_Import_Example.sat"
+      "InputValue": ""
     },
     {
       "ConcreteType": "CoreNodeModels.Input.FileObject, CoreNodeModels",
@@ -2230,8 +2230,8 @@
       ],
       "Replication": "Disabled",
       "Description": "Возможность выбрать файл в системе и возврат пути к нему",
-      "HintPath": "C:\\Users\\ChloePegeot\\Desktop\\Geometry_Export_Example.sat",
-      "InputValue": "..\\..\\..\\..\\..\\..\\Desktop\\Geometry_Export_Example.sat"
+      "HintPath": null,
+      "InputValue": ""
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -3879,13 +3879,13 @@
           "34cba3ead253497689eea54feb2ef3be"
         ],
         "HasNestedGroups": false,
-        "Left": 6668.52380924283,
-        "Top": -46.48516317177496,
+        "Left": 6582.3071161198895,
+        "Top": -47.98616824402609,
         "Width": 70.0,
         "Height": 151.0,
         "FontSize": 60.0,
         "GroupStyleId": "07655dc1-2d65-4fed-8d6a-37235d3e3a8d",
-        "InitialTop": 55.51483682822504,
+        "InitialTop": 54.01383175597391,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
         "IsOptionalInPortsCollapsed": false,
@@ -5486,8 +5486,8 @@
         "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": 6678.52380924283,
-        "Top": 63.51483682822504,
+        "Left": 6592.3071161198895,
+        "Top": 62.01383175597391,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -6313,7 +6313,7 @@
       },
       {
         "Id": "ca89f1011618458fb63a13fef8ca2241",
-        "Title": "СВЯЗАННЫЕ ФАЙЛЫ\n_____________________________________________________ \n\nExcel_Import_Example.xlsx\nCSV_Import_Example.csv\nGeometry_Import_Example.sat\n",
+        "Title": "СВЯЗАННЫЕ ФАЙЛЫ\n_____________________________________________________ \n\nН/Д\n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

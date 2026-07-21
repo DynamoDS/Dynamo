@@ -3612,7 +3612,7 @@
       },
       {
         "Id": "c58f8dba2e78425780e476a1cf51e11e",
-        "Title": "FICHIER(S) ASSOCIÉ(S)\n_____________________________________________________ \n\nCurveValidate.dyf\n",
+        "Title": "ASSOCIATED FILE(S)\n_____________________________________________________ \n\nCurve_Validate.dyf\n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3672,7 +3672,7 @@
       },
       {
         "Id": "3a1bbb44014c4cbaa7946c1d55a5aaf7",
-        "Title": "COMMENTAIRES ADDITIONNELS\n_____________________________________________________ \n\nLes noeuds personnalisés se trouvent généralement dans la section Modules complémentaires de la bibliothèque.\r\nCe noeud personnalisé se trouve sous:\r\nModules complémentaires → Standards → Curve → Curve_Validate\r\n\r\nS'il n'apparaît pas:\r\n\r\nVérifiez que le fichier .dyf se trouve dans votre dossier de noeuds personnalisés\r\n\r\nAccéder à:\r\nPaquets → Gestionnaire de paquets → Paramètres des paquets → Chemins de recherche de paquets/bibliothèque\r\nVérifiez que le chemin d'accès au dossier est répertorié ou ajoutez un nouveau chemin\r\nRedémarrez Dynamo après avoir ajouté de nouveaux noeuds personnalisés\n",
+        "Title": "ADDITIONAL COMMENTS\n_____________________________________________________ \n\nCustom nodes are typically found in the Add-ons section of the Library.\r\nThis custom node is located under:\r\nAdd-ons → Templates → Curve → Curve_Validate\r\n\r\nIf it does not appear:\r\n\r\nCheck that the .dyf file is in your custom nodes folder\r\n\r\nGo to:\r\nPackages → Package Manager → Package Settings → Package/Library Search Paths\r\nVerify the folder path is listed or add a new path\r\nRestart Dynamo after adding new custom nodes\n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

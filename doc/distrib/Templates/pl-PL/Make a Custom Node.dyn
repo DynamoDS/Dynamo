@@ -3612,7 +3612,7 @@
       },
       {
         "Id": "c58f8dba2e78425780e476a1cf51e11e",
-        "Title": "SKOJARZONE PLIKI\n_____________________________________________________ \n\nCurveValidate.dyf\n",
+        "Title": "ASSOCIATED FILE(S)\n_____________________________________________________ \n\nCurve_Validate.dyf\n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3672,7 +3672,7 @@
       },
       {
         "Id": "3a1bbb44014c4cbaa7946c1d55a5aaf7",
-        "Title": "UWAGI DODATKOWE\n_____________________________________________________ \n\nWęzły niestandardowe znajdują się zazwyczaj w sekcji Dodatki w bibliotece.\r\nTen węzeł niestandardowy znajduje się w kategorii:\r\nDodatki → Standardy → Krzywa → Curve_Validate\r\n\r\nJeśli go tam nie ma:\r\n\r\nSprawdź, czy plik DYF znajduje się w folderze węzłów niestandardowych.\r\n\r\nPrzejdź do:\r\nPakiety → Menedżer pakietów → Ustawienia pakietów → Ścieżki wyszukiwania pakietów/biblioteki\r\nSprawdź, czy ścieżka folderu znajduje się na liście, lub dodaj nową ścieżkę.\r\nPo dodaniu nowych węzłów niestandardowych uruchom ponownie dodatek Dynamo.\n",
+        "Title": "ADDITIONAL COMMENTS\n_____________________________________________________ \n\nCustom nodes are typically found in the Add-ons section of the Library.\r\nThis custom node is located under:\r\nAdd-ons → Templates → Curve → Curve_Validate\r\n\r\nIf it does not appear:\r\n\r\nCheck that the .dyf file is in your custom nodes folder\r\n\r\nGo to:\r\nPackages → Package Manager → Package Settings → Package/Library Search Paths\r\nVerify the folder path is listed or add a new path\r\nRestart Dynamo after adding new custom nodes\n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
