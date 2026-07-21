@@ -229,7 +229,8 @@ namespace Dynamo.Wpf.Utilities
             if (!string.Equals(isolatedFolder, creationProperties.UserDataFolder, StringComparison.Ordinal))
             {
                 creationProperties.UserDataFolder = isolatedFolder;
-                logFn?.Invoke($"[NoNetworkMode] Redirected WebView2 user data folder to isolated profile: {isolatedFolder}");
+                // Log only the leaf folder name (not the absolute path) to avoid recording the user-profile path.
+                logFn?.Invoke($"[NoNetworkMode] Redirected WebView2 user data folder to isolated profile: {Path.GetFileName(isolatedFolder)}");
             }
 
             logFn?.Invoke($"[NoNetworkMode] Applied hardened WebView2 startup policy: {NoNetworkAdditionalBrowserArguments}");
@@ -263,12 +264,16 @@ namespace Dynamo.Wpf.Utilities
         }
 
         /// <summary>
-        /// Returns the user data folder path for WebView2 (used in SplashScreen, HomePage, PackageManagerWizard)
+        /// Returns the fixed WebView2 user data folder shared by every startup surface (SplashScreen,
+        /// HomePage, PackageManagerWizard) AND every Dynamo instance on the machine. It is NOT per-process
+        /// or per-instance. WebView2 requires all environments sharing a user data folder to use matching
+        /// <see cref="CoreWebView2CreationProperties.AdditionalBrowserArguments"/>, so callers needing an
+        /// isolated profile (e.g. no-network mode) must redirect via <see cref="GetNoNetworkUserDataFolder"/>
+        /// instead of assuming this path is exclusive to them.
         /// </summary>
-        /// <returns>user data folder path for WebView2</returns>
+        /// <returns>The shared WebView2 user data folder path.</returns>
         internal static string GetTempDirectory()
         {
-            // Create a temp folder unique to this Dynamo instance based on process id
             string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             string tmpDataFolder = Path.Combine(
                 localAppData,
