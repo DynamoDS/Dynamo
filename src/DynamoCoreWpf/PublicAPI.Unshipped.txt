@@ -41,6 +41,7 @@ Dynamo.Wpf.Utilities.DynamoWebView2.ConfigureSettings(bool enableZoomControl = f
 Dynamo.UI.Views.SplashScreen.SplashScreen(bool enableSignInButton, bool noNetworkMode) -> void
 static Dynamo.Wpf.Utilities.WebView2Utilities.ApplyNoNetworkPolicy(Microsoft.Web.WebView2.Wpf.CoreWebView2CreationProperties creationProperties, bool noNetworkMode, System.Action<string> logFn = null) -> void
 static Dynamo.Wpf.Utilities.WebView2Utilities.GetNoNetworkBrowserArguments(bool noNetworkMode) -> string
+static Dynamo.Wpf.Utilities.WebView2Utilities.GetNoNetworkUserDataFolder(string userDataFolder) -> string
 static readonly Dynamo.Wpf.Utilities.WebView2Utilities.NoNetworkAdditionalBrowserArguments -> string
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.FileLinkUri.get -> System.Uri
 Dynamo.Wpf.Views.GuidedTour.RealTimeInfoWindow.FileLinkUri.set -> void
