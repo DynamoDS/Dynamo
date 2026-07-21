@@ -98,5 +98,53 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(WebView2Utilities.NoNetworkAdditionalBrowserArguments, WebView2Utilities.GetNoNetworkBrowserArguments(true));
             Assert.IsNull(WebView2Utilities.GetNoNetworkBrowserArguments(false));
         }
+
+        [Test]
+        public void WhenNoNetworkModeEnabledThenUserDataFolderIsRedirectedToIsolatedProfile()
+        {
+            // Arrange
+            var creationProperties = new CoreWebView2CreationProperties
+            {
+                UserDataFolder = @"C:\Users\test\AppData\Local\Temp\Dynamo\WebView2"
+            };
+
+            // Act
+            WebView2Utilities.ApplyNoNetworkPolicy(creationProperties, noNetworkMode: true);
+
+            // Assert - the hardened profile must never share a folder with the default-args profile,
+            // otherwise CoreWebView2 creation fails with 0x8007139F when both are used at once.
+            Assert.AreEqual(@"C:\Users\test\AppData\Local\Temp\Dynamo\WebView2-NoNetwork", creationProperties.UserDataFolder);
+        }
+
+        [Test]
+        public void WhenNoNetworkModeDisabledThenUserDataFolderIsLeftUntouched()
+        {
+            // Arrange
+            const string original = @"C:\Users\test\AppData\Local\Temp\Dynamo\WebView2";
+            var creationProperties = new CoreWebView2CreationProperties { UserDataFolder = original };
+
+            // Act
+            WebView2Utilities.ApplyNoNetworkPolicy(creationProperties, noNetworkMode: false);
+
+            // Assert - default behavior must be preserved when the flag is off.
+            Assert.AreEqual(original, creationProperties.UserDataFolder);
+        }
+
+        [Test]
+        public void GetNoNetworkUserDataFolderReturnsIsolatedSiblingFolder()
+        {
+            // Assert
+            Assert.AreEqual(@"C:\data\WebView2-NoNetwork", WebView2Utilities.GetNoNetworkUserDataFolder(@"C:\data\WebView2"));
+            // A trailing separator must not produce a nested empty segment.
+            Assert.AreEqual(@"C:\data\WebView2-NoNetwork", WebView2Utilities.GetNoNetworkUserDataFolder(@"C:\data\WebView2\"));
+        }
+
+        [Test]
+        public void GetNoNetworkUserDataFolderReturnsInputWhenNullOrEmpty()
+        {
+            // Assert - a surface that never set a UserDataFolder must not gain a spurious one.
+            Assert.IsNull(WebView2Utilities.GetNoNetworkUserDataFolder(null));
+            Assert.AreEqual(string.Empty, WebView2Utilities.GetNoNetworkUserDataFolder(string.Empty));
+        }
     }
 }

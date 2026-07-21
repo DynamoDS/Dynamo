@@ -148,6 +148,12 @@ namespace Dynamo.Wpf.Utilities
             "--disable-features=OptimizationGuideModelDownloading,MediaRouter";
 
         /// <summary>
+        /// Suffix appended to a WebView2 user data folder when Dynamo runs in no-network mode so the
+        /// hardened Edge profile is isolated from the default (non-hardened) profile.
+        /// </summary>
+        internal const string NoNetworkUserDataFolderSuffix = "-NoNetwork";
+
+        /// <summary>
         /// Returns the additional browser arguments to apply to a WebView2 surface for the supplied
         /// no-network state. Returns <see cref="NoNetworkAdditionalBrowserArguments"/> when
         /// <paramref name="noNetworkMode"/> is true, otherwise null (WebView2 default behavior).
@@ -160,13 +166,44 @@ namespace Dynamo.Wpf.Utilities
         }
 
         /// <summary>
+        /// Returns an isolated sibling of <paramref name="userDataFolder"/> dedicated to no-network launches
+        /// (the folder name gets the <see cref="NoNetworkUserDataFolderSuffix"/> suffix). This keeps the
+        /// hardened WebView2 profile from sharing a user data folder with a default (non-hardened) profile.
+        ///
+        /// The Edge browser process is keyed by its user data folder, and WebView2 forbids two environments
+        /// on the same folder from being created with different
+        /// <see cref="CoreWebView2CreationProperties.AdditionalBrowserArguments"/>. When a default-args
+        /// msedgewebview2.exe process (for example another Dynamo instance running in normal mode) is already
+        /// holding the folder, creating the hardened environment on it fails with HRESULT 0x8007139F
+        /// (ERROR_INVALID_STATE). Using a separate folder avoids the collision.
+        /// </summary>
+        /// <param name="userDataFolder">The base user data folder. Returned unchanged when null or empty.</param>
+        /// <returns>The isolated no-network user data folder path.</returns>
+        public static string GetNoNetworkUserDataFolder(string userDataFolder)
+        {
+            if (string.IsNullOrEmpty(userDataFolder))
+            {
+                return userDataFolder;
+            }
+
+            // Suffix the folder name (not a nested segment) so the result is a sibling of the default profile.
+            var trimmed = userDataFolder.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            return trimmed + NoNetworkUserDataFolderSuffix;
+        }
+
+        /// <summary>
         /// Centralized entry point that applies the no-network WebView2 policy to the supplied creation
         /// properties. When <paramref name="noNetworkMode"/> is true the hardened Edge command-line
         /// switches are set on <see cref="CoreWebView2CreationProperties.AdditionalBrowserArguments"/>
-        /// so they take effect before the CoreWebView2 environment is created. When false the properties
-        /// are left untouched, preserving default startup behavior.
+        /// so they take effect before the CoreWebView2 environment is created, and the
+        /// <see cref="CoreWebView2CreationProperties.UserDataFolder"/> is redirected to an isolated
+        /// no-network profile (see <see cref="GetNoNetworkUserDataFolder"/>) so the hardened arguments
+        /// cannot collide with a default (non-hardened) environment sharing the same folder - a collision
+        /// that otherwise fails CoreWebView2 creation with HRESULT 0x8007139F (ERROR_INVALID_STATE).
+        /// When false the properties are left untouched, preserving default startup behavior.
         ///
-        /// Use this from every startup WebView2 surface to avoid per-view drift.
+        /// Use this from every startup WebView2 surface (call it after setting UserDataFolder) to avoid
+        /// per-view drift.
         /// </summary>
         /// <param name="creationProperties">The creation properties to configure. Must not be null.</param>
         /// <param name="noNetworkMode">Whether Dynamo was started in no-network mode.</param>
@@ -184,6 +221,18 @@ namespace Dynamo.Wpf.Utilities
             }
 
             creationProperties.AdditionalBrowserArguments = NoNetworkAdditionalBrowserArguments;
+
+            // Isolate the WebView2 profile so the hardened arguments never share a user data folder with a
+            // default-args environment (e.g. another Dynamo instance in normal mode). Sharing one folder
+            // with mismatched arguments fails CoreWebView2 creation with 0x8007139F (ERROR_INVALID_STATE).
+            var isolatedFolder = GetNoNetworkUserDataFolder(creationProperties.UserDataFolder);
+            if (!string.Equals(isolatedFolder, creationProperties.UserDataFolder, StringComparison.Ordinal))
+            {
+                creationProperties.UserDataFolder = isolatedFolder;
+                // Log only the leaf folder name (not the absolute path) to avoid recording the user-profile path.
+                logFn?.Invoke($"[NoNetworkMode] Redirected WebView2 user data folder to isolated profile: {Path.GetFileName(isolatedFolder)}");
+            }
+
             logFn?.Invoke($"[NoNetworkMode] Applied hardened WebView2 startup policy: {NoNetworkAdditionalBrowserArguments}");
         }
 
@@ -215,12 +264,16 @@ namespace Dynamo.Wpf.Utilities
         }
 
         /// <summary>
-        /// Returns the user data folder path for WebView2 (used in SplashScreen, HomePage, PackageManagerWizard)
+        /// Returns the fixed WebView2 user data folder shared by every startup surface (SplashScreen,
+        /// HomePage, PackageManagerWizard) AND every Dynamo instance on the machine. It is NOT per-process
+        /// or per-instance. WebView2 requires all environments sharing a user data folder to use matching
+        /// <see cref="CoreWebView2CreationProperties.AdditionalBrowserArguments"/>, so callers needing an
+        /// isolated profile (e.g. no-network mode) must redirect via <see cref="GetNoNetworkUserDataFolder"/>
+        /// instead of assuming this path is exclusive to them.
         /// </summary>
-        /// <returns>user data folder path for WebView2</returns>
+        /// <returns>The shared WebView2 user data folder path.</returns>
         internal static string GetTempDirectory()
         {
-            // Create a temp folder unique to this Dynamo instance based on process id
             string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             string tmpDataFolder = Path.Combine(
                 localAppData,
