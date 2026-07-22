@@ -59,12 +59,7 @@ namespace DSCore
 
                 case JTokenType.Array:
                     var arr = (JArray)token;
-                    var nativeArray = new ArrayList(arr.Count);
-                    foreach (var item in arr)
-                    {
-                        nativeArray.Add(ToNative(item));
-                    }
-                    return nativeArray;
+                    return arr.Select(ToNative);
                 case JTokenType.Null:
                     return null;
                 case JTokenType.Integer:
@@ -676,7 +671,23 @@ namespace DSCore
             {
                 try
                 {
-                    inputValue = ParseJSON(playerValue);
+                    var parsedValue = ParseJSON(playerValue);
+
+                    // ParseJSON returns IEnumerable<object> for JSON arrays; DefineData expects ArrayList for list semantics.
+                    if (parsedValue is IEnumerable parsedEnumerable && parsedValue is not string && parsedValue is not ArrayList && parsedValue is not IDictionary)
+                    {
+                        var parsedArrayList = new ArrayList();
+                        foreach (var item in parsedEnumerable)
+                        {
+                            parsedArrayList.Add(item);
+                        }
+
+                        inputValue = parsedArrayList;
+                    }
+                    else
+                    {
+                        inputValue = parsedValue;
+                    }
                 }
                 catch (Exception ex)
                 {
