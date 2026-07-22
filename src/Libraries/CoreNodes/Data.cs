@@ -78,7 +78,7 @@ namespace DSCore
         }
 
         /// <summary>
-        /// Parse implementation for converting JObject types to specific Dynamo objects (ie Geometry, Color, Images, etc) 
+        /// Parse implementation for converting JObject types to specific Dynamo objects (ie Geometry, Color, Images, etc)
         /// </summary>
         /// <param name="jObject"></param>
         /// <returns></returns>
@@ -210,7 +210,7 @@ namespace DSCore
             using StringWriter writer = new(sb, CultureInfo.InvariantCulture);
             using MaxDepthJsonTextWriter jsonWriter = new(writer);
             JsonSerializer.Create(settings).Serialize(jsonWriter, values);
-            
+
             return writer.ToString();
         }
 
@@ -449,7 +449,7 @@ namespace DSCore
         #region Remember node functions
 
         /// <summary>
-        /// Helper function to determine if object can be cached or if it is null, "null" string, or empty list.  
+        /// Helper function to determine if object can be cached or if it is null, "null" string, or empty list.
         /// </summary>
         /// <param name="inputObject">Object to check</param>
         /// <returns></returns>
@@ -742,7 +742,7 @@ namespace DSCore
                         // We couldn't find a Dynamo data type that fits, so we throw
                         var warning = string.Format(Properties.Resources.DefineDataUnsupportedDataTypeExceptionMessage, valueType.Name);
                         return DefineDataResult(inputValue, false, updateList, inputType, warning);
-                       
+
                     }
                     return DefineDataResult(inputValue, false, updateList, inputType, string.Empty);
                 }
@@ -764,7 +764,7 @@ namespace DSCore
                 }
 
                 return DefineDataResult(inputValue, isSupportedType, false, type, string.Empty);
-                
+
             }
         }
 
@@ -778,7 +778,7 @@ namespace DSCore
                     var values = ConcatenateUniqueDataTypes(inputValue);
                     return $"List of {values}";
                 }
-               
+
                 return inputValue.GetType().FullName;
             }
             catch (Exception) { return string.Empty; }
@@ -788,7 +788,7 @@ namespace DSCore
         {
             if (type == null) return string.Empty;
 
-            var typeFullName = type.Type.FullName;  
+            var typeFullName = type.Type.FullName;
             return isList ? $"List of {typeFullName}" : typeFullName;
         }
 
@@ -888,9 +888,9 @@ namespace DSCore
                 if (node.Type == likelyAncestor.Type) continue; // skip self
 
                 // if at least one node type is not related to the likely ancestor, bail
-                likelyAncestor = FindCommonAncestorBetweenTwoNodes(node, likelyAncestor); 
+                likelyAncestor = FindCommonAncestorBetweenTwoNodes(node, likelyAncestor);
 
-                if (likelyAncestor == null) break; 
+                if (likelyAncestor == null) break;
             }
 
             return likelyAncestor;
@@ -898,7 +898,7 @@ namespace DSCore
 
         /// <summary>
         /// Recursive function to try and find a common ancestor between two dynamo types
-        /// Climbs up the hierarchical tree of the likelyAncestor until it 
+        /// Climbs up the hierarchical tree of the likelyAncestor until it
         /// </summary>
         /// <param name="node">Check if this node is derived from the likely ancestor</param>
         /// <param name="likelyAncestor">The likely ancestor that the node should be deriving from</param>
@@ -912,7 +912,7 @@ namespace DSCore
                 return FindCommonAncestorBetweenTwoNodes(node, likelyAncestor.Parent);
             }
 
-            return likelyAncestor; 
+            return likelyAncestor;
         }
 
         /// <summary>
@@ -1004,11 +1004,11 @@ namespace DSCore
             {
                 if (inputValue is not ArrayList arrayList) return false;
 
-                foreach (var item in arrayList) 
+                foreach (var item in arrayList)
                 {
                     if (!IsItemOfType(item, type))
                     {
-                        return false; 
+                        return false;
                     }
                 }
 
