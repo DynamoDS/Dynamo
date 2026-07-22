@@ -58,8 +58,13 @@ namespace DSCore
                     return dict;
 
                 case JTokenType.Array:
-                    var arr = token as JArray;
-                    return new ArrayList(arr.Select(ToNative).ToList());
+                    var arr = (JArray)token;
+                    var nativeArray = new ArrayList(arr.Count);
+                    foreach (var item in arr)
+                    {
+                        nativeArray.Add(ToNative(item));
+                    }
+                    return nativeArray;
                 case JTokenType.Null:
                     return null;
                 case JTokenType.Integer:
