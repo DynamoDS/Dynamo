@@ -504,14 +504,11 @@ namespace ProtoImperative
                             }
                             else
                             {
-                                // Log "function not found" warning for CBNs only after compiling all function definition nodes in the first pass
-                                // in CodeBlockNode.RecompileCodeBlockAST(). If not compiling CBNs log these warnings by default.
-                                if (core.IsParsingCodeBlockNode && !core.IsCodeBlockNodeFirstPass ||
-                                    !core.IsParsingCodeBlockNode)
-                                {
-                                    string message = String.Format(ProtoCore.Properties.Resources.kMethodNotFound, procName);
-                                    buildStatus.LogWarning(WarningID.FunctionNotFound, message, core.CurrentDSFileName, funcCall.line, funcCall.col, graphNode);
-                                }
+                                // Log the "function not found" warning now, or - during a CBN first
+                                // pass, for a call inside a function body - defer it for re-checking
+                                // once every definition is registered. Shared with the associative
+                                // path. See DYN-10693.
+                                core.LogOrDeferFunctionNotFound(procName, arglist, funcCall.line, funcCall.col, graphNode, globalProcIndex);
                             }
                         }
                         inferedType.UID = (int)PrimitiveType.Null;
