@@ -160,3 +160,4 @@ Read `.claude/` for comprehensive skills, rules, and templates:
 - [Dynamo Coding Standards](https://github.com/DynamoDS/Dynamo/wiki/Coding-Standards)
 - [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes)
 - [Developer Resources](https://developer.dynamobim.org/)
+- [`--NoNetworkMode` startup contract](doc/distrib/no-network-mode.md) -- what the no-network flag gates, and how WebView2 surfaces are hardened at startup
