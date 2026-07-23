@@ -53,14 +53,18 @@ namespace Dynamo.Utilities
 
         public void AddRange(IEnumerable<T> range)
         {
+            // Materialize once before taking the lock so a lazy/side-effecting enumerable
+            // is not evaluated while syncRoot is held, and so the event args carry the
+            // actual added items rather than the enumerable itself. See DYN-9493.
+            var items = range as IList<T> ?? range.ToList();
             lock (syncRoot)
             {
-                foreach (var item in range)
+                foreach (var item in items)
                 {
                     set.Add(item);
                 }
             }
-            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, range));
+            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, items));
         }
 
         public int Count
