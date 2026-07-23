@@ -6,6 +6,10 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.UI;
 using Dynamo.ViewModels;
+using System;
+using System.Text.RegularExpressions;
+using System.Windows;
+using CoreNodeModels.Input;
 
 namespace CoreNodeModelsWpf.Controls
 {
@@ -29,6 +33,58 @@ namespace CoreNodeModelsWpf.Controls
                 nodeUI.ViewModel.DynamoViewModel.OnRequestReturnFocusToView();
             };
 
+            // DynamoSlider is shared with DoubleSlider, which still needs the decimal point,
+            // so the integer-only keystroke/paste filter is only applied for integer sliders.
+            if (nodeModel is IntegerSlider64Bit)
+            {
+                RestrictToIntegerInput(MinTb);
+                RestrictToIntegerInput(MaxTb);
+                RestrictToIntegerInput(StepTb);
+                RestrictToIntegerInput(ValTb);
+            }
+        }
+
+        private static readonly Regex IntegerInputPattern = new Regex(@"^-?\d*$", RegexOptions.Compiled, TimeSpan.FromMilliseconds(100));
+
+        private static void RestrictToIntegerInput(TextBox textBox)
+        {
+            textBox.PreviewTextInput += IntegerTextBox_PreviewTextInput;
+            DataObject.AddPastingHandler(textBox, IntegerTextBox_Pasting);
+        }
+
+        private static void IntegerTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (textBox == null) return;
+
+            e.Handled = !IsValidIntegerText(GetProposedText(textBox, e.Text));
+        }
+
+        private static void IntegerTextBox_Pasting(object sender, DataObjectPastingEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (textBox == null || !e.DataObject.GetDataPresent(typeof(string)))
+            {
+                e.CancelCommand();
+                return;
+            }
+
+            var pastedText = (string)e.DataObject.GetData(typeof(string));
+            if (!IsValidIntegerText(GetProposedText(textBox, pastedText)))
+            {
+                e.CancelCommand();
+            }
+        }
+
+        private static string GetProposedText(TextBox textBox, string newText)
+        {
+            var text = textBox.Text.Remove(textBox.SelectionStart, textBox.SelectionLength);
+            return text.Insert(textBox.SelectionStart, newText);
+        }
+
+        private static bool IsValidIntegerText(string text)
+        {
+            return IntegerInputPattern.IsMatch(text);
         }
 
         #region Event Handlers
