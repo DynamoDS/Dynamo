@@ -24,23 +24,36 @@ namespace Dynamo.Utilities
 
         public void Add(T item)
         {
+            bool added;
             lock (syncRoot)
             {
-                set.Add(item);
+                added = set.Add(item);
             }
-            // Raise the event outside the lock: handlers (e.g. UpdateBubbleContent)
-            // marshal synchronously onto the UI thread, which may itself enumerate this
-            // collection and take the lock. Firing under the lock risks a deadlock.
-            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
+            // Only notify when the set actually changed: HashSet.Add returns false for a
+            // duplicate, and raising CollectionChanged then would trigger redundant UI
+            // updates (e.g. UpdateBubbleContent) for a no-op. Raise the event outside the
+            // lock: handlers marshal synchronously onto the UI thread, which may itself
+            // enumerate this collection and take the lock, so firing under the lock risks
+            // a deadlock.
+            if (added)
+            {
+                CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
+            }
         }
 
         public void RemoveWhere(Predicate<T> match)
         {
+            int removed;
             lock (syncRoot)
             {
-                set.RemoveWhere(match);
+                removed = set.RemoveWhere(match);
             }
-            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            // Only raise a reset when something was actually removed, to keep change
+            // notifications accurate and avoid redundant UI work on a no-op.
+            if (removed > 0)
+            {
+                CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            }
         }
 
         public bool Any(Func<T, bool> match)
@@ -60,14 +73,23 @@ namespace Dynamo.Utilities
             // overload is selected; IList<T> does not derive from the non-generic IList
             // and would bind to the (action, object) overload instead. See DYN-9493.
             var items = range as List<T> ?? range.ToList();
+            var added = new List<T>(items.Count);
             lock (syncRoot)
             {
                 foreach (var item in items)
                 {
-                    set.Add(item);
+                    if (set.Add(item))
+                    {
+                        added.Add(item);
+                    }
                 }
             }
-            CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, items));
+            // Report only the items that were actually added (HashSet.Add skips
+            // duplicates) and skip the notification entirely when nothing changed.
+            if (added.Count > 0)
+            {
+                CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, added));
+            }
         }
 
         public int Count
