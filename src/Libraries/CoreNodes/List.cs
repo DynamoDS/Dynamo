@@ -377,7 +377,15 @@ namespace DSCore
         [IsVisibleInDynamoLibrary(true)]
         public static object MinimumItem(IEnumerable<object> list)
         {
-            return list.Min<object, object>(DoubleConverter);
+            var comparer = new ObjectComparer();
+            object min = null;
+            foreach (var item in list)
+            {
+                if (item == null) continue;
+                if (min == null || comparer.Compare(item, min) < 0)
+                    min = item;
+            }
+            return min;
         }
 
         /// <summary>
@@ -389,7 +397,15 @@ namespace DSCore
         [IsVisibleInDynamoLibrary(true)]
         public static object MaximumItem(IEnumerable<object> list)
         {
-            return list.Max<object, object>(DoubleConverter);
+            var comparer = new ObjectComparer();
+            object max = null;
+            foreach (var item in list)
+            {
+                if (item == null) continue;
+                if (max == null || comparer.Compare(item, max) > 0)
+                    max = item;
+            }
+            return max;
         }
 
         /// <summary>
