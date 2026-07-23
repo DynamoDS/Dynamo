@@ -58,7 +58,6 @@ namespace ProtoCore
         protected ProtoCore.DSASM.ProcedureNode localProcedure;
         protected ProtoCore.AST.Node localFunctionDefNode;
         protected ProtoCore.AST.Node localCodeBlockNode;
-        protected bool emitDebugInfo = true;
 
         protected List<ProtoCore.DSASM.ProcedureNode> functionCallStack;
         protected bool IsAssociativeArrayIndexing { get; set; }
@@ -197,14 +196,6 @@ namespace ProtoCore
 
         protected void SetStackIndex(ProtoCore.DSASM.SymbolNode symbol)
         {
-            if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.Expression)
-            {
-                //Set the index of the symbol relative to the watching stack
-                symbol.index = core.watchBaseOffset;
-                core.watchBaseOffset += 1; 
-                return;
-            }
-
             int langblockOffset = 0;
             bool isGlobal = null == localProcedure;
 
@@ -328,27 +319,6 @@ namespace ProtoCore
         {
             string desc = "blockname";
             return blockScope.ToString() + "_" + construct + "_" + desc;
-        }
-
-        protected ProtoCore.DSASM.DebugInfo GetDebugObject(int line, int col, int eline, int ecol, int nextStep_a, int nextStep_b = ProtoCore.DSASM.Constants.kInvalidIndex)
-        {
-            ProtoCore.DSASM.DebugInfo debug = null;
-
-            if (core.Options.EmitBreakpoints)
-            {
-                if ( (core.Options.IDEDebugMode || core.Options.WatchTestMode || core.Options.IsDeltaExecution)
-                    && ProtoCore.DSASM.Constants.kInvalidIndex != line
-                    && ProtoCore.DSASM.Constants.kInvalidIndex != col)
-                {
-                    debug = new ProtoCore.DSASM.DebugInfo(line, col, eline, ecol, core.CurrentDSFileName);
-                    debug.nextStep.Add(nextStep_a);
-
-                    if (ProtoCore.DSASM.Constants.kInvalidIndex != nextStep_b)
-                        debug.nextStep.Add(nextStep_b);
-                }
-            }
-
-            return debug;
         }
 
         abstract protected void EmitGetterSetterForIdentList(
@@ -969,11 +939,6 @@ namespace ProtoCore
             symbol = null;
             isAccessible = false;
             CodeBlock currentCodeBlock = codeBlock;
-            if (core.Options.RunMode == DSASM.InterpreterMode.Expression)
-            {
-                int tempBlockId = context.CurrentBlockId;
-                currentCodeBlock = ProtoCore.Utils.CoreUtils.GetCodeBlock(core.CodeBlockList, tempBlockId);
-            }
 
             if (classScope != Constants.kGlobalScope)
             {
@@ -1004,17 +969,6 @@ namespace ProtoCore
                 if ((int)PrimitiveType.Void == classScope)
                 {
                     return false;
-                }
-
-                if (core.Options.RunMode == ProtoCore.DSASM.InterpreterMode.Expression)
-                {
-                    //Search local variables in the class member function first
-                    if (functionScope != Constants.kGlobalScope)
-                    {
-                        symbol = core.GetFirstVisibleSymbol(name, classScope, functionScope, currentCodeBlock);
-                        isAccessible = symbol != null;
-                        return isAccessible;
-                    }
                 }
 
                 ClassNode thisClass = core.ClassTable.ClassNodes[classScope];
@@ -1147,7 +1101,6 @@ namespace ProtoCore
             instr.op3 = StackValue.BuildBlockIndex(blockId);
 
             ++pc;
-            instr.debug = GetDebugObject(line, col, endLine, endCol, entrypoint);
             AppendInstruction(instr);
         }
 
@@ -1176,7 +1129,6 @@ namespace ProtoCore
             instr.op2 = StackValue.BuildClassIndex(type);
 
             ++pc;
-            instr.debug = GetDebugObject(line, col, endline, endcol, entrypoint);
             AppendInstruction(instr, line, col);
         }
 
@@ -1190,7 +1142,6 @@ namespace ProtoCore
             instr.op1 = StackValue.BuildLabelIndex(L1);
 
             ++pc;
-            instr.debug = GetDebugObject(line, col, eline, ecol, L1);
             AppendInstruction(instr, line, col);
         }
 
@@ -1204,12 +1155,6 @@ namespace ProtoCore
             instr.op1 = StackValue.BuildLabelIndex(label);
 
             ++pc;
-            if (core.DebuggerProperties.breakOptions.HasFlag(DebugProperties.BreakpointOptions.EmitInlineConditionalBreakpoint))
-            {
-                instr.debug = null;
-            }
-            else
-                instr.debug = GetDebugObject(line, col, eline, ecol, label);
 
             AppendInstruction(instr, line, col);
         }
@@ -1281,7 +1226,6 @@ namespace ProtoCore
             Validity.Assert(op.IsVariableIndex || op.IsMemberVariableIndex || op.IsRegister);
 
             ++pc;
-            instr.debug = GetDebugObject(line, col, eline, ecol, pc);
             AppendInstruction(instr, line, col);
         }
 
@@ -1324,19 +1268,6 @@ namespace ProtoCore
             instr.op3 = StackValue.BuildBlockIndex(blockId);
 
             ++pc;
-
-            bool outputBreakpoint = false;
-            DebugProperties.BreakpointOptions options = core.DebuggerProperties.breakOptions;
-            if (options.HasFlag(DebugProperties.BreakpointOptions.EmitPopForTempBreakpoint))
-                outputBreakpoint = true;
-
-            // Do not emit breakpoints for null or var type declarations
-            if (!core.DebuggerProperties.breakOptions.HasFlag(DebugProperties.BreakpointOptions.SuppressNullVarDeclarationBreakpoint))
-            {
-                // Don't need no pop for temp (unless caller demands it).
-                if (outputBreakpoint || !symbol.name.StartsWith("%"))
-                    instr.debug = GetDebugObject(line, col, eline, ecol, pc);
-            }
             AppendInstruction(instr, line, col);
         }
 
@@ -1360,44 +1291,7 @@ namespace ProtoCore
             instr.op3 = StackValue.BuildBlockIndex(blockId);
 
             ++pc;
-
-            bool outputBreakpoint = false;
-            DebugProperties.BreakpointOptions options = core.DebuggerProperties.breakOptions;
-            if (options.HasFlag(DebugProperties.BreakpointOptions.EmitPopForTempBreakpoint))
-                outputBreakpoint = true;
-
-            // Do not emit breakpoints for null or var type declarations
-            if (!core.DebuggerProperties.breakOptions.HasFlag(DebugProperties.BreakpointOptions.SuppressNullVarDeclarationBreakpoint))
-            {
-                // Don't need no pop for temp (unless caller demands it).
-                if (outputBreakpoint || !symbol.name.StartsWith("%"))
-                    instr.debug = GetDebugObject(line, col, eline, ecol, pc);
-            }
             AppendInstruction(instr, line, col);
-        }
-
-        protected void EmitPopForSymbolW(SymbolNode symbol,
-            int blockId,
-            int line = ProtoCore.DSASM.Constants.kInvalidIndex,
-            int col = ProtoCore.DSASM.Constants.kInvalidIndex,
-            int eline = ProtoCore.DSASM.Constants.kInvalidIndex,
-            int ecol = ProtoCore.DSASM.Constants.kInvalidIndex)
-        {
-            Validity.Assert(symbol != null);
-            if (symbol == null)
-            {
-                return;
-            }
-
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.POPW;
-            instr.op1 = BuildOperand(symbol);
-            instr.op2 = StackValue.BuildClassIndex(symbol.classScope);
-            instr.op3 = StackValue.BuildBlockIndex(blockId);
-
-            ++pc;
-
-            AppendInstruction(instr);
         }
 
         protected void EmitPushBlockID(int blockID)
@@ -1446,11 +1340,7 @@ namespace ProtoCore
 
         private void AppendInstruction(Instruction instr, int line = Constants.kInvalidIndex, int col = Constants.kInvalidIndex)
         {
-            if (DSASM.InterpreterMode.Expression == core.Options.RunMode)
-            {
-                core.ExprInterpreterExe.iStreamCanvas.instrList.Add(instr);
-            }
-            else if(!core.IsParsingCodeBlockNode && !core.IsParsingPreloadedAssembly)
+            if(!core.IsParsingCodeBlockNode && !core.IsParsingPreloadedAssembly)
             {
                 codeBlock.instrStream.instrList.Add(instr);
 
@@ -1488,31 +1378,8 @@ namespace ProtoCore
             instr.op3 = StackValue.BuildBlockIndex(blockId);
 
             ++pc;
-
-            DebugProperties.BreakpointOptions options = core.DebuggerProperties.breakOptions;
-            if (options.HasFlag(DebugProperties.BreakpointOptions.EmitIdentifierBreakpoint))
-            {
-                instr.debug = GetDebugObject(identNode.line, identNode.col,
-                    identNode.endLine, identNode.endCol, pc);
-            }
-
             AppendInstruction(instr, identNode.line, identNode.col);
         }
-
-        protected void EmitPushForSymbolW(SymbolNode symbol, int blockId, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex)
-        {
-            SetEntry();
-            Instruction instr = new Instruction();
-            instr.opCode = ProtoCore.DSASM.OpCode.PUSHW;
-            instr.op1 = BuildOperand(symbol);
-            instr.op2 = StackValue.BuildClassIndex(symbol.classScope);
-            instr.op3 = StackValue.BuildBlockIndex(blockId);
-
-            ++pc;
-            //instr.debug = GetDebugObject(line, col, pc);
-            AppendInstruction(instr);
-        }
-
         
         protected void EmitPushm(StackValue op, int classIndex, int blockId, int line = ProtoCore.DSASM.Constants.kInvalidIndex, int col = ProtoCore.DSASM.Constants.kInvalidIndex,
             int eline = ProtoCore.DSASM.Constants.kInvalidIndex, int ecol = ProtoCore.DSASM.Constants.kInvalidIndex)
@@ -1525,7 +1392,6 @@ namespace ProtoCore
             instr.op3 = StackValue.BuildBlockIndex(blockId);
 
             ++pc;
-            instr.debug = GetDebugObject(line, col, eline, ecol, pc);
             AppendInstruction(instr, line, col);
         }
 
@@ -1539,10 +1405,6 @@ namespace ProtoCore
             instr.op2 = StackValue.BuildBlockIndex(blockId);
 
             ++pc;
-            if (emitDebugInfo)
-            {
-                instr.debug = GetDebugObject(line, col, endline, endcol, pc);
-            }
             AppendInstruction(instr, line, col);
         }
 
@@ -1556,10 +1418,6 @@ namespace ProtoCore
             instr.op2 = StackValue.BuildBlockIndex(blockId);
 
             ++pc;
-            if (emitDebugInfo)
-            {
-                instr.debug = GetDebugObject(line, col, endline, endcol, pc);
-            }
             AppendInstruction(instr, line, col);
         }
 
@@ -1607,7 +1465,6 @@ namespace ProtoCore
             instr.opCode = opcode;
 
             ++pc;
-            instr.debug = GetDebugObject(line, col, eline, ecol, pc);
             AppendInstruction(instr, line, col);
         }
 
@@ -1619,7 +1476,6 @@ namespace ProtoCore
             instr.opCode = opcode;
 
             ++pc;
-            instr.debug = GetDebugObject(line, col, eline, ecol, pc);
             AppendInstruction(instr, line, col);
         }
 

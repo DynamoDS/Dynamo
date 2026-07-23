@@ -67,13 +67,10 @@ namespace ProtoCore
 
             GenerateSSA = true;
             ExecuteSSA = true;
-            GCTempVarsOnDebug = true;
 
             DumpFunctionResolverLogic = false; 
             BuildOptErrorAsWarning = false;
             ExecutionMode = ExecutionMode.Serial;
-            IDEDebugMode = false;
-            WatchTestMode = false;
             IncludeDirectories = new List<string>();
             RootModulePathName = Path.GetFullPath(@".");
             staticCycleCheck = true;
@@ -91,14 +88,9 @@ namespace ProtoCore
         public bool DumpIL { get; private set; }
         public bool GenerateSSA { get; set; }
         public bool ExecuteSSA { get; set; }
-        public bool GCTempVarsOnDebug { get; set; }
         public bool Verbose { get; set; }
-        public bool SuppressBuildOutput { get; set; }
         public bool BuildOptErrorAsWarning { get; set; }
-        public bool IDEDebugMode { get; set; }      //set to true if two way mapping b/w DesignScript and JIL code is needed
-        public bool WatchTestMode { get; set; }     // set to true when running automation tests for expression interpreter
         public ExecutionMode ExecutionMode { get; set; }
-        public string FormatToPrintFloatingPoints { get; set; }
         public bool staticCycleCheck { get; set; }
         public bool dynamicCycleCheck { get; set; }
         public bool DumpFunctionResolverLogic { get; set; }
@@ -106,7 +98,6 @@ namespace ProtoCore
         public bool SuppressFunctionResolutionWarning { get; set; }
         public bool AssociativeToImperativePropagation { get; set; }
         public bool IsDeltaExecution { get; set; }
-        public InterpreterMode RunMode { get; set; }
 
         /// <summary>
         /// TODO: Aparajit: This flag is true for Delta AST compilation
@@ -280,14 +271,6 @@ namespace ProtoCore
         // otherwize the inferedtype information will be lost
         public Type InferedType;
 
-
-        /// <summary>
-        /// Debugger properties generated at compile time.
-        /// This is copied to the RuntimeCore after compilation
-        /// </summary>
-        public DebugProperties DebuggerProperties;
-
-
         public bool builtInsLoaded { get; set; }
         public List<string> LoadedDLLs = new List<string>();
         public int deltaCompileStartPC { get; set; }
@@ -389,8 +372,6 @@ namespace ProtoCore
         {
             Options.ApplyUpdate = false;
 
-            Options.RunMode = InterpreterMode.Normal;
-
             // The main codeblock never goes out of scope
             // Resetting CodeBlockIndex means getting the number of main codeblocks that dont go out of scope.
             // As of the current requirements, there is only 1 main scope, the rest are nested within.
@@ -407,7 +388,6 @@ namespace ProtoCore
 
             // Remove inactive graphnodes in the list
             GraphNodeCallList.RemoveAll(g => !g.isActive);
-            ExprInterpreterExe = null;
         }
 
         public void ResetForPrecompilation()
@@ -445,17 +425,6 @@ namespace ProtoCore
 
         // TODO Jun: Cleansify me - i dont need to be here
         public AssociativeNode AssocNode { get; set; }
-        public int watchStartPC { get; set; }
-
-
-        //
-        // TODO Jun: This is the expression interpreters executable. 
-        //           It must be moved to its own core, whre each core is an instance of a compiler+interpreter
-        //
-        public Executable ExprInterpreterExe { get; set; }
-        public int watchFunctionScope { get; set; }
-        public int watchBaseOffset { get; set; }
-        public List<SymbolNode> watchSymbolList { get; set; }
 
         public CodeGen assocCodegen { get; set; }
 
@@ -474,12 +443,6 @@ namespace ProtoCore
             ClassIndex = Constants.kInvalidIndex;
 
             FunctionTable = new FunctionTable();
-
-
-            watchFunctionScope = Constants.kInvalidIndex;
-            watchSymbolList = new List<SymbolNode>();
-            watchBaseOffset = 0;
-
 
             GlobOffset = 0;
             GlobHeapOffset = 0;
@@ -511,8 +474,6 @@ namespace ProtoCore
             DynamicVariableTable = new DynamicVariableTable();
             DynamicFunctionTable = new DynamicFunctionTable();
 
-            watchStartPC = Constants.kInvalidIndex;
-
             deltaCompileStartPC = Constants.kInvalidIndex;
 
             BuildStatus = new BuildStatus(this, null, Options.BuildOptErrorAsWarning);
@@ -523,16 +484,10 @@ namespace ProtoCore
             SSAExprUID = 0;
             ExpressionUID = 0;
 
-            ExprInterpreterExe = null;
-            Options.RunMode = InterpreterMode.Normal;
-
             assocCodegen = null;
 
             // Default execution log is Console.Out.
             ExecutionLog = Console.Out;
-
-            DebuggerProperties = new DebugProperties();
-
 
             ParsingMode = ParseMode.Normal;
 
@@ -570,8 +525,7 @@ namespace ProtoCore
                 // CodeBlockType.Function is a temporary block type which is set when
                 // the compile is generating code for function defintion node and will
                 // be set back to Associative.
-                var isSearchBoundry = searchBlock.blockType == CodeBlockType.Function ||
-                    (Options.RunMode == InterpreterMode.Expression && searchBlock.parent == null);
+                var isSearchBoundry = searchBlock.blockType == CodeBlockType.Function;
 
                 if (isSearchBoundry)
                 {
@@ -592,9 +546,7 @@ namespace ProtoCore
             // Search variable might be defined in function. 
             // If we are not in class defintion, then just stop here, otherwise
             // we should search global block's symbol table.
-            if (searchBlock != null && 
-                (searchBlock.blockType == CodeBlockType.Function || (Options.RunMode == InterpreterMode.Expression && searchBlock.parent == null)) && 
-                classscope == Constants.kGlobalScope)
+            if (searchBlock?.blockType == CodeBlockType.Function && classscope == Constants.kGlobalScope)
             {
                 symbolIndex = searchBlock.symbolTable.IndexOf(name, classscope, function);
             }
@@ -669,57 +621,6 @@ namespace ProtoCore
             }
         }
 
-
-        public void GenerateExprExe()
-        {
-            // TODO Jun: Determine if we really need another executable for the expression interpreter
-            Validity.Assert(null == ExprInterpreterExe);
-            ExprInterpreterExe = new Executable();
-            ExprInterpreterExe.FunctionTable = FunctionTable;
-            ExprInterpreterExe.DynamicVarTable = DynamicVariableTable;
-            ExprInterpreterExe.FuncPointerTable = FunctionPointerTable;
-            ExprInterpreterExe.DynamicFuncTable = DynamicFunctionTable;
-            ExprInterpreterExe.ContextDataMngr = ContextDataManager;
-            ExprInterpreterExe.Configurations = Configurations;
-            ExprInterpreterExe.CodeToLocation = CodeToLocation;
-            ExprInterpreterExe.CurrentDSFileName = CurrentDSFileName;
-           
-            // Copy all tables
-            ExprInterpreterExe.classTable = DSExecutable.classTable;
-            ExprInterpreterExe.procedureTable = DSExecutable.procedureTable;
-            ExprInterpreterExe.runtimeSymbols = DSExecutable.runtimeSymbols;
-          
-
-            ExprInterpreterExe.TypeSystem = TypeSystem;
-            
-            // Copy all instruction streams
-            // TODO Jun: What method to copy all? Use that
-            ExprInterpreterExe.instrStreamList = new InstructionStream[DSExecutable.instrStreamList.Length];
-            for (int i = 0; i < DSExecutable.instrStreamList.Length; ++i)
-            {
-                if (null != DSExecutable.instrStreamList[i])
-                {
-                    ExprInterpreterExe.instrStreamList[i] = new InstructionStream(DSExecutable.instrStreamList[i].language, this);
-                    //ExprInterpreterExe.instrStreamList[i] = new InstructionStream(DSExecutable.instrStreamList[i].language, DSExecutable.instrStreamList[i].dependencyGraph, this);
-                    for (int j = 0; j < DSExecutable.instrStreamList[i].instrList.Count; ++j)
-                    {
-                        ExprInterpreterExe.instrStreamList[i].instrList.Add(DSExecutable.instrStreamList[i].instrList[j]);
-                    }
-                }
-            }
-        }
-
-
-        public void GenerateExprExeInstructions(int blockScope)
-        {
-            // Append the expression instruction at the end of the current block
-            for (int n = 0; n < ExprInterpreterExe.iStreamCanvas.instrList.Count; ++n)
-            {
-                ExprInterpreterExe.instrStreamList[blockScope].instrList.Add(ExprInterpreterExe.iStreamCanvas.instrList[n]);
-            }
-        }
-
-
         public void GenerateExecutable()
         {
             Validity.Assert(CodeBlockList.Count >= 0);
@@ -759,7 +660,6 @@ namespace ProtoCore
                 BfsBuildInstructionStreams(CodeBlockList[n], DSExecutable.instrStreamList);
             }
 
-            GenerateExprExe();
             DSExecutable.FunctionTable = FunctionTable;
             DSExecutable.DynamicVarTable = DynamicVariableTable;
             DSExecutable.DynamicFuncTable = DynamicFunctionTable;

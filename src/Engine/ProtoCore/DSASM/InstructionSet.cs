@@ -74,12 +74,10 @@ namespace ProtoCore.DSASM
         PUSH,
         PUSHBLOCK,      // Push construction block id in imperative code
         PUSHM,
-        PUSHW,
         PUSHDEP,        // Push symbols in left-hand-side identifier list in impertiave langauge block
         PUSHREPGUIDE,   // Push replicaion guide to the stack
         PUSHLEVEL,      // Push at-level to the stak
         POP,
-        POPW,
         POPM,
         POPREPGUIDES,   // Pop replication guides from stack and save to the core
 
@@ -1085,42 +1083,5 @@ namespace ProtoCore.DSASM
         public Operand op1;     // Comment Jun: Aliasing StackValue to Operand only here ... to make it clear that an instruction has operands
         public Operand op2;
         public Operand op3;
-        public DebugInfo debug;
-    }
-
-    public class DebugInfo
-    {
-        public ProtoCore.CodeModel.CodeRange Location { get; set; }
-        public List<int> nextStep;
-
-        public DebugInfo(int line, int col, int eline, int ecol, string file = null)
-        {
-            InitializeDebugInfo(line, col, eline, ecol, file);
-        }
-
-        private void InitializeDebugInfo(int line, int col, int eline, int ecol, string file)
-        {
-            nextStep = new List<int>();
-
-            CodeModel.CodeFile sourceLocation = new CodeModel.CodeFile { FilePath = file };
-            ProtoCore.CodeModel.CodeRange range = new CodeModel.CodeRange
-            {
-                StartInclusive = new CodeModel.CodePoint
-                {
-                    LineNo = line,
-                    CharNo = col,
-                    SourceLocation = sourceLocation
-                },
-
-                EndExclusive = new CodeModel.CodePoint
-                {
-                    LineNo = eline,
-                    CharNo = ecol,
-                    SourceLocation = sourceLocation
-                }
-            };
-
-            Location = range;
-        }
     }
 }
