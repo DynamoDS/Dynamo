@@ -55,8 +55,11 @@ namespace Dynamo.Utilities
         {
             // Materialize once before taking the lock so a lazy/side-effecting enumerable
             // is not evaluated while syncRoot is held, and so the event args carry the
-            // actual added items rather than the enumerable itself. See DYN-9493.
-            var items = range as IList<T> ?? range.ToList();
+            // actual added items rather than the enumerable itself. Typed as List<T>
+            // (not IList<T>) so the NotifyCollectionChangedEventArgs(action, IList)
+            // overload is selected; IList<T> does not derive from the non-generic IList
+            // and would bind to the (action, object) overload instead. See DYN-9493.
+            var items = range as List<T> ?? range.ToList();
             lock (syncRoot)
             {
                 foreach (var item in items)
