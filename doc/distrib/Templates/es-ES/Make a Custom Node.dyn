@@ -3612,7 +3612,7 @@
       },
       {
         "Id": "c58f8dba2e78425780e476a1cf51e11e",
-        "Title": "ARCHIVO(S) ASOCIADO(S)\n_____________________________________________________ \n\nCurveValidate.dyf\n",
+        "Title": "ARCHIVO(S) ASOCIADO(S)\n_____________________________________________________ \n\nCurve_Validate.dyf\n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3672,7 +3672,7 @@
       },
       {
         "Id": "3a1bbb44014c4cbaa7946c1d55a5aaf7",
-        "Title": "COMENTARIOS ADICIONALES\n_____________________________________________________ \n\nLos nodos personalizados se encuentran normalmente en la sección de complementos de la biblioteca.\r\nEste nodo personalizado se encuentra en:\r\nAdd-ons → Standards → Curve → Curve_Validate\r\n\r\nSi no aparece, realice lo siguiente:\r\n\r\nCompruebe que el archivo .dyf se encuentre en la carpeta de nodos personalizados.\r\n\r\nAcceda a la siguiente ubicación:\r\nPaquetes → Package Manager → Configuración de paquetes → Rutas de búsqueda de paquetes/bibliotecas\r\nCompruebe que la ruta de la carpeta aparece en la lista o añada una nueva ruta.\r\nReinicie Dynamo después de añadir nuevos nodos personalizados.\n",
+        "Title": "COMENTARIOS ADICIONALES\n_____________________________________________________ \n\nLos nodos personalizados se encuentran normalmente en la sección de complementos de la biblioteca.\r\nEste nodo personalizado se encuentra en:\r\nAdd-ons → Templates → Curve → Curve_Validate\r\n\r\nSi no aparece, realice lo siguiente:\r\n\r\nCompruebe que el archivo .dyf se encuentre en la carpeta de nodos personalizados.\r\n\r\nAcceda a la siguiente ubicación:\r\nPaquetes → Package Manager → Configuración de paquetes → Rutas de búsqueda de paquetes/bibliotecas\r\nCompruebe que la ruta de la carpeta aparece en la lista o añada una nueva ruta.\r\nReinicie Dynamo después de añadir nuevos nodos personalizados.\n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

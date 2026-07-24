@@ -2866,7 +2866,7 @@
             <summary>返回圓球的半徑。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius(Autodesk.DesignScript.Geometry.Point,System.Double)">
-            <summary>使用給定的半徑建立中心在輸入點的實體圓球。</summary>
+            <summary>Create a Solid Sphere centered at the input Point, with given radius.</summary>
             <search>Brep,brep</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Sphere.ByFourPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
