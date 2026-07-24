@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Dynamo.Utilities;
 using NUnit.Framework;
@@ -50,7 +49,7 @@ namespace DynamoUtilitiesTests
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (InvalidOperationException ex)
                 {
                     caught = ex;
                 }
@@ -80,17 +79,20 @@ namespace DynamoUtilitiesTests
                 }
             });
 
+            long checksum = 0;
             var reader = Task.Run(() =>
             {
                 try
                 {
                     for (int i = 0; i < iterations; i++)
                     {
-                        var c = set.Count;
-                        var any = set.Any(x => x > 0);
+                        // Consume both reads so the calls genuinely exercise Count/Any
+                        // under contention rather than being dead code.
+                        checksum += set.Count;
+                        checksum += set.Any(x => x > 0) ? 1 : 0;
                     }
                 }
-                catch (Exception ex)
+                catch (InvalidOperationException ex)
                 {
                     caught = ex;
                 }
@@ -100,6 +102,7 @@ namespace DynamoUtilitiesTests
 
             // Assert
             Assert.IsNull(caught, "Reading Count/Any while the set was mutated on another thread threw: " + caught);
+            Assert.GreaterOrEqual(checksum, 0);
         }
 
         [Test, Category("UnitTests")]
