@@ -3612,7 +3612,7 @@
       },
       {
         "Id": "c58f8dba2e78425780e476a1cf51e11e",
-        "Title": "FILE ASSOCIATI\n_____________________________________________________ \n\nCurveValidate.dyf\n",
+        "Title": "FILE ASSOCIATI\n_____________________________________________________ \n\nCurve_Validate.dyf\n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3672,7 +3672,7 @@
       },
       {
         "Id": "3a1bbb44014c4cbaa7946c1d55a5aaf7",
-        "Title": "COMMENTI AGGIUNTIVI\n_____________________________________________________ \n\nI nodi personalizzati si trovano in genere nella sezione Moduli aggiuntivi della libreria.\nQuesto nodo personalizzato si trova in:\nModuli aggiuntivi → Standard → Curva → Curve_Validate\n\nSe non viene visualizzato:\n\nVerificare che il file .dyf si trovi nella cartella dei nodi personalizzati\n\nAccedere a:\nPacchetti → Package Manager → Impostazioni pacchetto → Percorsi di ricerca di pacchetti/librerie\nVerificare che il percorso della cartella sia presente nell'elenco o aggiungere un nuovo percorso\nRiavviare Dynamo dopo l'aggiunta di nuovi nodi personalizzati\n",
+        "Title": "COMMENTI AGGIUNTIVI\n_____________________________________________________ \n\nI nodi personalizzati si trovano in genere nella sezione Moduli aggiuntivi della libreria.\nQuesto nodo personalizzato si trova in:\nModuli aggiuntivi → Modelli → Curva → Curve_Validate\n\nSe non viene visualizzato:\n\nVerificare che il file .dyf si trovi nella cartella dei nodi personalizzati\n\nAccedere a:\nPacchetti → Package Manager → Impostazioni pacchetto → Percorsi di ricerca di pacchetti/librerie.\nVerificare che il percorso della cartella sia presente nell'elenco o aggiungere un nuovo percorso.\nRiavviare Dynamo dopo l'aggiunta di nuovi nodi personalizzati.\n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

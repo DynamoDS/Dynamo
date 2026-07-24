@@ -3612,7 +3612,7 @@
       },
       {
         "Id": "c58f8dba2e78425780e476a1cf51e11e",
-        "Title": "FICHIER(S) ASSOCIÉ(S)\n_____________________________________________________ \n\nCurveValidate.dyf\n",
+        "Title": "FICHIER(S) ASSOCIÉ(S)\n_____________________________________________________ \n\nCurve_Validate.dyf\n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3672,7 +3672,7 @@
       },
       {
         "Id": "3a1bbb44014c4cbaa7946c1d55a5aaf7",
-        "Title": "COMMENTAIRES ADDITIONNELS\n_____________________________________________________ \n\nLes noeuds personnalisés se trouvent généralement dans la section Modules complémentaires de la bibliothèque.\r\nCe noeud personnalisé se trouve sous:\r\nModules complémentaires → Standards → Curve → Curve_Validate\r\n\r\nS'il n'apparaît pas:\r\n\r\nVérifiez que le fichier .dyf se trouve dans votre dossier de noeuds personnalisés\r\n\r\nAccéder à:\r\nPaquets → Gestionnaire de paquets → Paramètres des paquets → Chemins de recherche de paquets/bibliothèque\r\nVérifiez que le chemin d'accès au dossier est répertorié ou ajoutez un nouveau chemin\r\nRedémarrez Dynamo après avoir ajouté de nouveaux noeuds personnalisés\n",
+        "Title": "COMMENTAIRES SUPPLÉMENTAIRES\n_____________________________________________________ \n\nLes noeuds personnalisés se trouvent généralement dans la section Modules complémentaires de la bibliothèque.\r\nCe noeud personnalisé se trouve sous:\r\nModules complémentaires → Gabarits → Curve → Curve_Validate\r\n\r\nS'il n'apparaît pas:\r\n\r\nVérifiez que le fichier .dyf se trouve dans votre dossier de noeuds personnalisés\r\n\r\nAccédez à:\r\nPaquets → Gestionnaire de paquets → Paramètres des paquets → Chemins de recherche de paquets/bibliothèque\r\nVérifiez que le chemin d'accès au dossier est répertorié ou ajoutez un nouveau chemin\r\nRedémarrez Dynamo après avoir ajouté de nouveaux noeuds personnalisés\n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
