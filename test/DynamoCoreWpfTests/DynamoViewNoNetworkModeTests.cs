@@ -103,7 +103,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void AutodeskAssistantExtensionIsDisabledWhenIDSDKIsNotInitialized()
+        public void AssistantAndMcpTabsAreDisabledWhenIDSDKIsNotInitialized()
         {
             var pathResolver = new TestPathResolver();
             DynamoModel modelWithUninitializedIDSDK = null;
@@ -131,12 +131,16 @@ namespace DynamoCoreWpfTests
 
                 viewWithUninitializedIDSDK = new DynamoView(viewModelWithUninitializedIDSDK);
 
-                var shouldDisable = viewWithUninitializedIDSDK.DisableExtensionWhenNoNetworkMode(
-                    DynamoView.AutodeskAssistantExtensionId,
-                    "Autodesk Assistant",
-                    "added");
+                // Simulate the extension having loaded its tab into the sidebar.
+                var assistantTab = new System.Windows.Controls.TabItem { Uid = DynamoView.AutodeskAssistantExtensionId };
+                var mcpTab = new System.Windows.Controls.TabItem { Uid = DynamoView.McpViewExtensionId };
+                viewModelWithUninitializedIDSDK.SideBarTabItems.Add(assistantTab);
+                viewModelWithUninitializedIDSDK.SideBarTabItems.Add(mcpTab);
 
-                Assert.IsTrue(shouldDisable);
+                viewWithUninitializedIDSDK.DisableExtensionTabsWhenIDSDKNotInitialized();
+
+                Assert.IsFalse(assistantTab.IsEnabled);
+                Assert.IsFalse(mcpTab.IsEnabled);
             }
             finally
             {
@@ -154,50 +158,54 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void McpViewExtensionIsDisabledWhenIDSDKIsNotInitialized()
+        public void AssistantAndMcpTabsAreNotDisabledWhenIDSDKIsInitialized()
         {
             var pathResolver = new TestPathResolver();
-            DynamoModel modelWithUninitializedIDSDK = null;
-            DynamoViewModel viewModelWithUninitializedIDSDK = null;
-            DynamoView viewWithUninitializedIDSDK = null;
+            DynamoModel modelWithNullAuthProvider = null;
+            DynamoViewModel viewModelWithNullAuthProvider = null;
+            DynamoView viewWithNullAuthProvider = null;
 
             try
             {
-                modelWithUninitializedIDSDK = DynamoModel.Start(new DynamoModel.DefaultStartConfiguration()
+                // When AuthProvider is null (host environment or no IDSDK configured),
+                // IsIDSDKInitialized() returns true — tabs should remain enabled.
+                modelWithNullAuthProvider = DynamoModel.Start(new DynamoModel.DefaultStartConfiguration()
                 {
                     PathResolver = pathResolver,
                     StartInTestMode = true,
                     GeometryFactoryPath = preloader.GeometryFactoryPath,
                     ProcessMode = Dynamo.Scheduler.TaskProcessMode.Synchronous,
-                    NoNetworkMode = false,
-                    AuthProvider = new IDSDKManager()
+                    NoNetworkMode = false
                 });
 
-                viewModelWithUninitializedIDSDK = DynamoViewModel.Start(new DynamoViewModel.StartConfiguration()
+                viewModelWithNullAuthProvider = DynamoViewModel.Start(new DynamoViewModel.StartConfiguration()
                 {
-                    DynamoModel = modelWithUninitializedIDSDK
+                    DynamoModel = modelWithNullAuthProvider
                 });
 
-                viewWithUninitializedIDSDK = new DynamoView(viewModelWithUninitializedIDSDK);
+                viewWithNullAuthProvider = new DynamoView(viewModelWithNullAuthProvider);
 
-                var shouldDisable = viewWithUninitializedIDSDK.DisableExtensionWhenNoNetworkMode(
-                    DynamoView.McpViewExtensionId,
-                    "Dynamo MCP View Extension",
-                    "added");
+                var assistantTab = new System.Windows.Controls.TabItem { Uid = DynamoView.AutodeskAssistantExtensionId };
+                var mcpTab = new System.Windows.Controls.TabItem { Uid = DynamoView.McpViewExtensionId };
+                viewModelWithNullAuthProvider.SideBarTabItems.Add(assistantTab);
+                viewModelWithNullAuthProvider.SideBarTabItems.Add(mcpTab);
 
-                Assert.IsTrue(shouldDisable);
+                viewWithNullAuthProvider.DisableExtensionTabsWhenIDSDKNotInitialized();
+
+                Assert.IsTrue(assistantTab.IsEnabled);
+                Assert.IsTrue(mcpTab.IsEnabled);
             }
             finally
             {
-                if (viewWithUninitializedIDSDK != null && viewWithUninitializedIDSDK.IsLoaded)
+                if (viewWithNullAuthProvider != null && viewWithNullAuthProvider.IsLoaded)
                 {
-                    viewWithUninitializedIDSDK.Close();
+                    viewWithNullAuthProvider.Close();
                 }
 
-                if (viewModelWithUninitializedIDSDK != null)
+                if (viewModelWithNullAuthProvider != null)
                 {
                     var shutdownParams = new DynamoViewModel.ShutdownParams(shutdownHost: false, allowCancellation: false);
-                    viewModelWithUninitializedIDSDK.PerformShutdownSequence(shutdownParams);
+                    viewModelWithNullAuthProvider.PerformShutdownSequence(shutdownParams);
                 }
             }
         }

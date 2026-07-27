@@ -1422,6 +1422,7 @@ namespace Dynamo.Controls
                     Log(ext.Name + ": " + exc.Message);
                 }
             }
+            DisableExtensionTabsWhenIDSDKNotInitialized();
             EnsureGraphPropertiesBinding();
         }
 
@@ -3403,25 +3404,38 @@ namespace Dynamo.Controls
 
         internal bool DisableExtensionWhenNoNetworkMode(string extensionId, string extensionName, string action)
         {
-            if (!string.Equals(extensionId, AutodeskAssistantExtensionId, StringComparison.OrdinalIgnoreCase) &&
-                !string.Equals(extensionId, McpViewExtensionId, StringComparison.OrdinalIgnoreCase))
-            {
-                return false;
-            }
-
-            if (dynamoViewModel.Model.NoNetworkMode)
+            if (dynamoViewModel.Model.NoNetworkMode &&
+                (string.Equals(extensionId, AutodeskAssistantExtensionId, StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(extensionId, McpViewExtensionId, StringComparison.OrdinalIgnoreCase)))
             {
                 Log($"Package/Extension {extensionName} not {action} because NoNetworkMode flag is active");
-                return true;
-            }
 
-            if (!dynamoViewModel.Model.AuthenticationManager.IsIDSDKInitialized())
-            {
-                Log($"Package/Extension {extensionName} not {action} because IDSDK is not initialized");
                 return true;
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Disables (but keeps visible) the Autodesk Assistant and MCP sidebar tabs when IDSDK is
+        /// not initialized, preventing the cascade of native error dialogs that occur when the user
+        /// opens the Assistant without Autodesk Identity installed.
+        /// </summary>
+        internal void DisableExtensionTabsWhenIDSDKNotInitialized()
+        {
+            if (dynamoViewModel.Model.AuthenticationManager.IsIDSDKInitialized())
+                return;
+
+            foreach (var extensionId in new[] { AutodeskAssistantExtensionId, McpViewExtensionId })
+            {
+                var tab = dynamoViewModel.SideBarTabItems.OfType<TabItem>()
+                    .SingleOrDefault(t => string.Equals(t.Uid, extensionId, StringComparison.OrdinalIgnoreCase));
+                if (tab != null)
+                {
+                    tab.IsEnabled = false;
+                    Log($"Extension tab {tab.Header} disabled because IDSDK is not initialized");
+                }
+            }
         }
     }
 }
