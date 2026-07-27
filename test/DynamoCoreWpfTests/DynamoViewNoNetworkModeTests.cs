@@ -1,4 +1,5 @@
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Models;
 using Dynamo.ViewModels;
 using NUnit.Framework;
@@ -99,6 +100,106 @@ namespace DynamoCoreWpfTests
                 "added");
 
             Assert.IsFalse(shouldDisable);
+        }
+
+        [Test]
+        public void AutodeskAssistantExtensionIsDisabledWhenIDSDKIsNotInitialized()
+        {
+            var pathResolver = new TestPathResolver();
+            DynamoModel modelWithUninitializedIDSDK = null;
+            DynamoViewModel viewModelWithUninitializedIDSDK = null;
+            DynamoView viewWithUninitializedIDSDK = null;
+
+            try
+            {
+                // IDSDKManager.IsIDSDKInitialized returns false when the native IDSDK library
+                // is not installed (e.g. test environments, VMs without Autodesk Identity).
+                modelWithUninitializedIDSDK = DynamoModel.Start(new DynamoModel.DefaultStartConfiguration()
+                {
+                    PathResolver = pathResolver,
+                    StartInTestMode = true,
+                    GeometryFactoryPath = preloader.GeometryFactoryPath,
+                    ProcessMode = Dynamo.Scheduler.TaskProcessMode.Synchronous,
+                    NoNetworkMode = false,
+                    AuthProvider = new IDSDKManager()
+                });
+
+                viewModelWithUninitializedIDSDK = DynamoViewModel.Start(new DynamoViewModel.StartConfiguration()
+                {
+                    DynamoModel = modelWithUninitializedIDSDK
+                });
+
+                viewWithUninitializedIDSDK = new DynamoView(viewModelWithUninitializedIDSDK);
+
+                var shouldDisable = viewWithUninitializedIDSDK.DisableExtensionWhenNoNetworkMode(
+                    DynamoView.AutodeskAssistantExtensionId,
+                    "Autodesk Assistant",
+                    "added");
+
+                Assert.IsTrue(shouldDisable);
+            }
+            finally
+            {
+                if (viewWithUninitializedIDSDK != null && viewWithUninitializedIDSDK.IsLoaded)
+                {
+                    viewWithUninitializedIDSDK.Close();
+                }
+
+                if (viewModelWithUninitializedIDSDK != null)
+                {
+                    var shutdownParams = new DynamoViewModel.ShutdownParams(shutdownHost: false, allowCancellation: false);
+                    viewModelWithUninitializedIDSDK.PerformShutdownSequence(shutdownParams);
+                }
+            }
+        }
+
+        [Test]
+        public void McpViewExtensionIsDisabledWhenIDSDKIsNotInitialized()
+        {
+            var pathResolver = new TestPathResolver();
+            DynamoModel modelWithUninitializedIDSDK = null;
+            DynamoViewModel viewModelWithUninitializedIDSDK = null;
+            DynamoView viewWithUninitializedIDSDK = null;
+
+            try
+            {
+                modelWithUninitializedIDSDK = DynamoModel.Start(new DynamoModel.DefaultStartConfiguration()
+                {
+                    PathResolver = pathResolver,
+                    StartInTestMode = true,
+                    GeometryFactoryPath = preloader.GeometryFactoryPath,
+                    ProcessMode = Dynamo.Scheduler.TaskProcessMode.Synchronous,
+                    NoNetworkMode = false,
+                    AuthProvider = new IDSDKManager()
+                });
+
+                viewModelWithUninitializedIDSDK = DynamoViewModel.Start(new DynamoViewModel.StartConfiguration()
+                {
+                    DynamoModel = modelWithUninitializedIDSDK
+                });
+
+                viewWithUninitializedIDSDK = new DynamoView(viewModelWithUninitializedIDSDK);
+
+                var shouldDisable = viewWithUninitializedIDSDK.DisableExtensionWhenNoNetworkMode(
+                    DynamoView.McpViewExtensionId,
+                    "Dynamo MCP View Extension",
+                    "added");
+
+                Assert.IsTrue(shouldDisable);
+            }
+            finally
+            {
+                if (viewWithUninitializedIDSDK != null && viewWithUninitializedIDSDK.IsLoaded)
+                {
+                    viewWithUninitializedIDSDK.Close();
+                }
+
+                if (viewModelWithUninitializedIDSDK != null)
+                {
+                    var shutdownParams = new DynamoViewModel.ShutdownParams(shutdownHost: false, allowCancellation: false);
+                    viewModelWithUninitializedIDSDK.PerformShutdownSequence(shutdownParams);
+                }
+            }
         }
     }
 }

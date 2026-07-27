@@ -3403,12 +3403,21 @@ namespace Dynamo.Controls
 
         internal bool DisableExtensionWhenNoNetworkMode(string extensionId, string extensionName, string action)
         {
-            if (dynamoViewModel.Model.NoNetworkMode &&
-                (string.Equals(extensionId, AutodeskAssistantExtensionId, StringComparison.OrdinalIgnoreCase) ||
-                 string.Equals(extensionId, McpViewExtensionId, StringComparison.OrdinalIgnoreCase)))
+            if (!string.Equals(extensionId, AutodeskAssistantExtensionId, StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(extensionId, McpViewExtensionId, StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            if (dynamoViewModel.Model.NoNetworkMode)
             {
                 Log($"Package/Extension {extensionName} not {action} because NoNetworkMode flag is active");
+                return true;
+            }
 
+            if (!dynamoViewModel.Model.AuthenticationManager.IsIDSDKInitialized())
+            {
+                Log($"Package/Extension {extensionName} not {action} because IDSDK is not initialized");
                 return true;
             }
 
