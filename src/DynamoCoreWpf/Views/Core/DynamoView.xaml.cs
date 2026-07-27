@@ -537,6 +537,9 @@ namespace Dynamo.Controls
         /// <returns>True if the control was added, false if it already existed</returns>
         internal bool AddOrFocusExtensionControl(IViewExtension viewExtension, UIElement content)
         {
+            if (DisableExtensionWhenNoNetworkMode(viewExtension.UniqueId, viewExtension.Name, "opened"))
+                return false;
+
             var window = ExtensionWindows.ContainsKey(viewExtension.Name) ? ExtensionWindows[viewExtension.Name] : null;
             var tab = FindExtensionTab(viewExtension);
             var addExtensionControl = window == null && tab == null;
