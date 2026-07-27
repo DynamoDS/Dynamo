@@ -132,15 +132,68 @@ namespace DynamoCoreWpfTests
                 viewWithUninitializedIDSDK = new DynamoView(viewModelWithUninitializedIDSDK);
 
                 // Simulate the extension having loaded its tab into the sidebar.
+                // Adding to SideBarTabItems triggers CollectionChanged → DisableExtensionTabsWhenIDSDKNotInitialized automatically.
                 var assistantTab = new System.Windows.Controls.TabItem { Uid = DynamoView.AutodeskAssistantExtensionId };
                 var mcpTab = new System.Windows.Controls.TabItem { Uid = DynamoView.McpViewExtensionId };
                 viewModelWithUninitializedIDSDK.SideBarTabItems.Add(assistantTab);
                 viewModelWithUninitializedIDSDK.SideBarTabItems.Add(mcpTab);
 
-                viewWithUninitializedIDSDK.DisableExtensionTabsWhenIDSDKNotInitialized();
-
                 Assert.IsFalse(assistantTab.IsEnabled);
                 Assert.IsFalse(mcpTab.IsEnabled);
+            }
+            finally
+            {
+                if (viewWithUninitializedIDSDK != null && viewWithUninitializedIDSDK.IsLoaded)
+                {
+                    viewWithUninitializedIDSDK.Close();
+                }
+
+                if (viewModelWithUninitializedIDSDK != null)
+                {
+                    var shutdownParams = new DynamoViewModel.ShutdownParams(shutdownHost: false, allowCancellation: false);
+                    viewModelWithUninitializedIDSDK.PerformShutdownSequence(shutdownParams);
+                }
+            }
+        }
+
+        [Test]
+        public void AssistantTabRemainsDisabledWhenReAddedToSidebarAfterWorkspaceOpen()
+        {
+            var pathResolver = new TestPathResolver();
+            DynamoModel modelWithUninitializedIDSDK = null;
+            DynamoViewModel viewModelWithUninitializedIDSDK = null;
+            DynamoView viewWithUninitializedIDSDK = null;
+
+            try
+            {
+                modelWithUninitializedIDSDK = DynamoModel.Start(new DynamoModel.DefaultStartConfiguration()
+                {
+                    PathResolver = pathResolver,
+                    StartInTestMode = true,
+                    GeometryFactoryPath = preloader.GeometryFactoryPath,
+                    ProcessMode = Dynamo.Scheduler.TaskProcessMode.Synchronous,
+                    NoNetworkMode = false,
+                    AuthProvider = new IDSDKManager()
+                });
+
+                viewModelWithUninitializedIDSDK = DynamoViewModel.Start(new DynamoViewModel.StartConfiguration()
+                {
+                    DynamoModel = modelWithUninitializedIDSDK
+                });
+
+                viewWithUninitializedIDSDK = new DynamoView(viewModelWithUninitializedIDSDK);
+
+                // Initial add — extension loads its tab during startup.
+                var assistantTab = new System.Windows.Controls.TabItem { Uid = DynamoView.AutodeskAssistantExtensionId };
+                viewModelWithUninitializedIDSDK.SideBarTabItems.Add(assistantTab);
+                Assert.IsFalse(assistantTab.IsEnabled, "Tab should be disabled on initial add");
+
+                // Simulate the extension removing and re-adding its tab (e.g. on workspace open).
+                viewModelWithUninitializedIDSDK.SideBarTabItems.Remove(assistantTab);
+                var reAddedTab = new System.Windows.Controls.TabItem { Uid = DynamoView.AutodeskAssistantExtensionId };
+                viewModelWithUninitializedIDSDK.SideBarTabItems.Add(reAddedTab);
+
+                Assert.IsFalse(reAddedTab.IsEnabled, "Re-added tab should still be disabled when IDSDK is not initialized");
             }
             finally
             {

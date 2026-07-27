@@ -1019,6 +1019,10 @@ namespace Dynamo.Controls
         private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.HideOrShowRightSideBar(e.Action);
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                DisableExtensionTabsWhenIDSDKNotInitialized();
+            }
         }
 
         private TabItem FindExtensionTab(IViewExtension viewExtension)
