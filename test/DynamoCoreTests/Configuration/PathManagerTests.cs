@@ -54,8 +54,8 @@ namespace Dynamo.Tests.Configuration
                 PathManager.PreferenceItem.Templates, blockedTemplateLocation);
 
             Assert.That(updated, Is.False, "An unusable location should be rejected.");
-            Assert.That(pathManager.TemplatesDirectory, Is.Not.Null.And.Not.Empty,
-                "A rejected templates location must leave a usable fallback, not null.");
+            Assert.That(pathManager.TemplatesDirectory, Is.EqualTo(pathManager.DefaultTemplatesDirectory),
+                "A rejected templates location must leave the default in effect, not null.");
         }
     }
 }
