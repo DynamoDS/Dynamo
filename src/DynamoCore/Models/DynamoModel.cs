@@ -1909,7 +1909,14 @@ namespace Dynamo.Models
 
 
             UpdatePreferenceItemLocation(PreferenceItem.Backup, PreferenceSettings.BackupLocation);
-            UpdatePreferenceItemLocation(PreferenceItem.Templates, PreferenceSettings.TemplateFilePath);
+            if (!UpdatePreferenceItemLocation(PreferenceItem.Templates, PreferenceSettings.TemplateFilePath))
+            {
+                // The preferred templates location could not be used, so the default stays
+                // in effect. This previously failed silently and only surfaced downstream as
+                // a null templates directory. See DYN-10661.
+                Logger?.Log("Could not use templates location '" + PreferenceSettings.TemplateFilePath +
+                    "'. Falling back to '" + pathManager.TemplatesDirectory + "'.", LogLevel.File);
+            }
         }
         internal bool UpdatePreferenceItemLocation(PreferenceItem item, string newLocation)
         {
