@@ -435,11 +435,6 @@ namespace Dynamo.Controls
 
         private void DynamoViewModel_RequestEnableShortcutBarItems(bool enable)
         {
-            if (!(saveThisButton is null))
-            {
-                saveThisButton.IsEnabled = enable;
-                saveButton.IsEnabled = enable;
-            }
             if (!(exportMenu is null))
             {
                 exportMenu.IsEnabled = enable;
@@ -471,12 +466,6 @@ namespace Dynamo.Controls
 
         private void OnWorkspaceOpened(WorkspaceModel workspace)
         {
-            if (!(saveThisButton is null))
-            {
-                saveThisButton.IsEnabled = true;
-                saveButton.IsEnabled = true;
-            }
-
             if (!(exportMenu is null))
             {
                 exportMenu.IsEnabled = true;
