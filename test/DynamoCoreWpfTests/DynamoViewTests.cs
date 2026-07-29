@@ -152,9 +152,16 @@ namespace DynamoCoreWpfTests
             // Regression test for DYN-10717: closing the only open workspace returns to the
             // start page; the Save/Save As menu items should remain enabled for the fresh
             // workspace left behind (Ctrl+S already worked in this state before the fix).
-            DynamoModel.IsTestMode = false;
-            ViewModel.CloseHomeWorkspaceCommand.Execute(null);
-            DynamoModel.IsTestMode = true;
+            var wasTestMode = DynamoModel.IsTestMode;
+            try
+            {
+                DynamoModel.IsTestMode = false;
+                ViewModel.CloseHomeWorkspaceCommand.Execute(null);
+            }
+            finally
+            {
+                DynamoModel.IsTestMode = wasTestMode;
+            }
 
             Assert.IsTrue(ViewModel.ShowStartPage);
             Assert.IsTrue(View.saveThisButton.IsEnabled);
