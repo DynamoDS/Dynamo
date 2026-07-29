@@ -137,6 +137,31 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void WhenDynamoLaunchesThenSaveMenuItemsAreEnabled()
+        {
+            // Regression test for DYN-10717: the File > Save and Save As menu items were
+            // hardcoded IsEnabled="False" in XAML and only re-enabled via events that never
+            // fire for the workspace created at startup (it is never "Opened" from a file).
+            Assert.IsTrue(View.saveThisButton.IsEnabled);
+            Assert.IsTrue(View.saveButton.IsEnabled);
+        }
+
+        [Test]
+        public void WhenLastWorkspaceIsClosedThenSaveMenuItemsRemainEnabled()
+        {
+            // Regression test for DYN-10717: closing the only open workspace returns to the
+            // start page; the Save/Save As menu items should remain enabled for the fresh
+            // workspace left behind (Ctrl+S already worked in this state before the fix).
+            DynamoModel.IsTestMode = false;
+            ViewModel.CloseHomeWorkspaceCommand.Execute(null);
+            DynamoModel.IsTestMode = true;
+
+            Assert.IsTrue(ViewModel.ShowStartPage);
+            Assert.IsTrue(View.saveThisButton.IsEnabled);
+            Assert.IsTrue(View.saveButton.IsEnabled);
+        }
+
+        [Test]
         public void ElementBinding_SaveAs()
         {
             var prebindingPathInTestDir = @"core\callsite\trace_test-prebinding.dyn";
