@@ -2031,7 +2031,7 @@
         {
           "Id": "fc1e45acc4054e71a773de29a08e6cbd",
           "Name": "filePath",
-          "Description": "string",
+          "Description": "The name of the file to export the geometry to\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2983,7 +2983,7 @@
       "ScaleFactor": 0.01,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "4.3.0.5034",
+      "Version": "4.0.0.3076",
       "RunType": "Manual",
       "RunPeriod": "1000"
     },
