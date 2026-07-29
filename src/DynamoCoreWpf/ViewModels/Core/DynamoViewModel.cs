@@ -72,6 +72,7 @@ namespace Dynamo.ViewModels
         private readonly DynamoModel model;
         private Point transformOrigin;
         private bool showStartPage = false;
+        private bool isGuidedTourActive = false;
         private PreferencesViewModel preferencesViewModel;
         private string dynamoMLDataPath = string.Empty;
         private const string dynamoMLDataFileName = "DynamoMLDataPipeline.json";
@@ -3247,7 +3248,21 @@ namespace Dynamo.ViewModels
 
         internal bool CanShowSaveDialogIfNeededAndSaveResultCommand(object parameter)
         {
-            return true;
+            return !isGuidedTourActive;
+        }
+
+        /// <summary>
+        /// Blocks or unblocks the Save/Save As commands (menu items, shortcut bar, and
+        /// Ctrl+S/Ctrl+Shift+S) while a guided tour is active. Unlike ShowStartPage, this is
+        /// not tied to workspace-creation flows, so it can safely gate CanExecute without
+        /// resurrecting DYN-10717 (Save/Save As stuck disabled on a fresh workspace).
+        /// </summary>
+        /// <param name="isActive">Whether a guided tour is currently active.</param>
+        internal void SetGuidedTourActive(bool isActive)
+        {
+            isGuidedTourActive = isActive;
+            ShowSaveDialogIfNeededAndSaveResultCommand.RaiseCanExecuteChanged();
+            ShowSaveDialogAndSaveResultCommand.RaiseCanExecuteChanged();
         }
 
         public void ShowSaveDialogAndSaveResult(object parameter)
@@ -3371,7 +3386,7 @@ namespace Dynamo.ViewModels
 
         internal bool CanShowSaveDialogAndSaveResult(object parameter)
         {
-            return true;
+            return !isGuidedTourActive;
         }
 
         public void ToggleFullscreenWatchShowing(object parameter)

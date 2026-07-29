@@ -164,6 +164,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 GuideFlowEvents.OnGuidedTourStart(tourName);
                 dynamoViewModel.ToastManager?.CloseRealTimeInfoWindow();
                 dynamoViewModel.OnEnableShortcutBarItems(false);
+                dynamoViewModel.SetGuidedTourActive(true);
                 Logging.Analytics.TrackScreenView("InteractiveGuidedTours");
                 Logging.Analytics.TrackEvent(Logging.Actions.Start, Logging.Categories.GuidedTourOperations, Resources.ResourceManager.GetString(currentGuide.GuideNameResource, System.Globalization.CultureInfo.InvariantCulture).Replace("_", ""), currentGuide.SequenceOrder);
             }
@@ -257,6 +258,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
                 }
 
                 dynamoViewModel.OnEnableShortcutBarItems(true);
+                dynamoViewModel.SetGuidedTourActive(false);
 
                 //Hide guide background overlay
                 guideBackgroundElement.Visibility = Visibility.Hidden;
