@@ -353,7 +353,7 @@
         </member>
         <member name="M:DSCore.Data.DynamoJObjectToNative(Newtonsoft.Json.Linq.JObject)">
             <summary>
-            Parse implementation for converting JObject types to specific Dynamo objects (ie Geometry, Color, Images, etc)
+            Parse implementation for converting JObject types to specific Dynamo objects (ie Geometry, Color, Images, etc) 
             </summary>
             <param name="jObject"></param>
             <returns></returns>
@@ -378,7 +378,7 @@
         </member>
         <member name="M:DSCore.Data.CanObjectBeCached(System.Object)">
             <summary>
-            Helper function to determine if object can be cached or if it is null, "null" string, or empty list.
+            Helper function to determine if object can be cached or if it is null, "null" string, or empty list.  
             </summary>
             <param name="inputObject">Object to check</param>
             <returns></returns>
@@ -485,7 +485,7 @@
         <member name="M:DSCore.Data.FindCommonAncestorBetweenTwoNodes(DSCore.Data.DataNodeDynamoType,DSCore.Data.DataNodeDynamoType)">
             <summary>
             Recursive function to try and find a common ancestor between two dynamo types
-            Climbs up the hierarchical tree of the likelyAncestor until it
+            Climbs up the hierarchical tree of the likelyAncestor until it 
             </summary>
             <param name="node">Check if this node is derived from the likely ancestor</param>
             <param name="likelyAncestor">The likely ancestor that the node should be deriving from</param>
