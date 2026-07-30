@@ -73,6 +73,7 @@ namespace Dynamo.ViewModels
         private Point transformOrigin;
         private bool showStartPage = false;
         private bool isGuidedTourActive = false;
+        private WorkspaceModel saveCommandsTrackedWorkspace;
         private PreferencesViewModel preferencesViewModel;
         private string dynamoMLDataPath = string.Empty;
         private const string dynamoMLDataFileName = "DynamoMLDataPipeline.json";
@@ -429,6 +430,9 @@ namespace Dynamo.ViewModels
 
                 if(ShowInsertDialogAndInsertResultCommand != null)
                     ShowInsertDialogAndInsertResultCommand.RaiseCanExecuteChanged();
+
+                ShowSaveDialogIfNeededAndSaveResultCommand?.RaiseCanExecuteChanged();
+                ShowSaveDialogAndSaveResultCommand?.RaiseCanExecuteChanged();
             }
         }
 
@@ -899,6 +903,7 @@ namespace Dynamo.ViewModels
             SubscribeModelUiEvents();
             SubscribeModelChangedHandlers();
             SubscribeModelBackupFileSaveEvent();
+            TrackWorkspaceForSaveCommands(model.CurrentWorkspace);
 
             InitializeAutomationSettings(startConfiguration.CommandFilePath);
 
@@ -1305,6 +1310,32 @@ namespace Dynamo.ViewModels
             model.PropertyChanged -= _model_PropertyChanged;
             model.WorkspaceCleared -= ModelWorkspaceCleared;
             model.RequestCancelActiveStateForNode -= this.CancelActiveState;
+            TrackWorkspaceForSaveCommands(null);
+        }
+
+        /// <summary>
+        /// Keeps the Save command's CanExecute in sync with the current workspace's dirty
+        /// flag: unsubscribes from the previously tracked workspace and subscribes to the
+        /// new one, then re-evaluates CanExecute immediately (the new workspace may already
+        /// differ in HasUnsavedChanges from the old one).
+        /// </summary>
+        private void TrackWorkspaceForSaveCommands(WorkspaceModel workspace)
+        {
+            if (saveCommandsTrackedWorkspace != null)
+                saveCommandsTrackedWorkspace.PropertyChanged -= SaveCommandsTrackedWorkspace_PropertyChanged;
+
+            saveCommandsTrackedWorkspace = workspace;
+
+            if (saveCommandsTrackedWorkspace != null)
+                saveCommandsTrackedWorkspace.PropertyChanged += SaveCommandsTrackedWorkspace_PropertyChanged;
+
+            ShowSaveDialogIfNeededAndSaveResultCommand?.RaiseCanExecuteChanged();
+        }
+
+        private void SaveCommandsTrackedWorkspace_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(WorkspaceModel.HasUnsavedChanges))
+                ShowSaveDialogIfNeededAndSaveResultCommand.RaiseCanExecuteChanged();
         }
 
         private void SubscribeDispatcherHandlers()
@@ -1483,6 +1514,7 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("ViewingHomespace");
                     if (this.PublishCurrentWorkspaceCommand != null)
                         this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
+                    TrackWorkspaceForSaveCommands(model.CurrentWorkspace);
                     RaisePropertyChanged("IsPanning");
                     RaisePropertyChanged("IsOrbiting");
                     //RaisePropertyChanged("RunEnabled");
@@ -3246,9 +3278,14 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// "Save" is only meaningful when there is something new to persist, so it is also
+        /// gated on the current workspace's dirty flag (unlike "Save As", which can always
+        /// save a copy regardless of whether anything changed).
+        /// </summary>
         internal bool CanShowSaveDialogIfNeededAndSaveResultCommand(object parameter)
         {
-            return !isGuidedTourActive;
+            return !isGuidedTourActive && !ShowStartPage && (Model.CurrentWorkspace?.HasUnsavedChanges ?? false);
         }
 
         /// <summary>
@@ -3386,7 +3423,7 @@ namespace Dynamo.ViewModels
 
         internal bool CanShowSaveDialogAndSaveResult(object parameter)
         {
-            return !isGuidedTourActive;
+            return !isGuidedTourActive && !ShowStartPage;
         }
 
         public void ToggleFullscreenWatchShowing(object parameter)

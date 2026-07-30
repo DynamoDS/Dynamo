@@ -444,7 +444,6 @@ namespace Dynamo.Controls
             {
                 shortcutBar.IsNewButtonEnabled = enable;
                 shortcutBar.IsOpenButtonEnabled = enable;
-                shortcutBar.IsSaveButtonEnabled = enable;
                 shortcutBar.IsLoginMenuEnabled = enable;
                 shortcutBar.IsExportMenuEnabled = enable;
                 shortcutBar.IsNotificationCenterEnabled = enable;
@@ -472,7 +471,6 @@ namespace Dynamo.Controls
             }
             if (!(shortcutBar is null))
             {
-                ShortcutBar.IsSaveButtonEnabled = true;
                 shortcutBar.IsExportMenuEnabled = true;
             }
 

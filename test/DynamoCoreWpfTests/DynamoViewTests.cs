@@ -137,21 +137,30 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void WhenDynamoLaunchesThenSaveMenuItemsAreEnabled()
+        public void WhenDynamoLaunchesThenSaveAsIsEnabledButSaveIsDisabledUntilDirty()
         {
-            // Regression test for DYN-10717: the File > Save and Save As menu items were
-            // hardcoded IsEnabled="False" in XAML and only re-enabled via events that never
-            // fire for the workspace created at startup (it is never "Opened" from a file).
-            Assert.IsTrue(View.saveThisButton.IsEnabled);
+            // Regression test for DYN-10717, updated per Jira thread consensus (comments on
+            // 2026-07-29): the bug was the File > Save/Save As menu items being hardcoded
+            // IsEnabled="False" forever, independent of the underlying command state. The
+            // fix keeps them driven by a shared CanExecute instead. "Save As" is enabled on
+            // a fresh workspace; plain "Save" is additionally gated on the dirty flag, since
+            // there is nothing new to persist until the graph changes.
+            Assert.IsFalse(View.saveThisButton.IsEnabled);
             Assert.IsTrue(View.saveButton.IsEnabled);
+
+            ViewModel.HomeSpace.HasUnsavedChanges = true;
+
+            Assert.IsTrue(View.saveThisButton.IsEnabled);
         }
 
         [Test]
-        public void WhenLastWorkspaceIsClosedThenSaveMenuItemsRemainEnabled()
+        public void WhenLastWorkspaceIsClosedThenSaveMenuItemsAreDisabled()
         {
-            // Regression test for DYN-10717: closing the only open workspace returns to the
-            // start page; the Save/Save As menu items should remain enabled for the fresh
-            // workspace left behind (Ctrl+S already worked in this state before the fix).
+            // Regression test for DYN-10717, updated per Jira thread consensus (comments on
+            // 2026-07-29): closing the only open workspace returns to the Start Page (Home
+            // tab), where Save/Save As should be disabled -- confirmed as intended behavior,
+            // not the bug. The bug was the inconsistency between the menu, hotkey, and
+            // toolbar, which is now resolved via the shared CanExecute.
             var wasTestMode = DynamoModel.IsTestMode;
             try
             {
@@ -164,8 +173,8 @@ namespace DynamoCoreWpfTests
             }
 
             Assert.IsTrue(ViewModel.ShowStartPage);
-            Assert.IsTrue(View.saveThisButton.IsEnabled);
-            Assert.IsTrue(View.saveButton.IsEnabled);
+            Assert.IsFalse(View.saveThisButton.IsEnabled);
+            Assert.IsFalse(View.saveButton.IsEnabled);
         }
 
         [Test]
