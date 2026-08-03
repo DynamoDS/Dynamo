@@ -20,6 +20,7 @@ using NUnit.Framework;
 using DynamoMLDataPipeline;
 using Dynamo.Wpf.UI;
 using Dynamo.Wpf.UI.GuidedTour;
+using DynamoCoreWpfTests.Utility;
 
 
 namespace DynamoCoreWpfTests
@@ -137,16 +138,42 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(View.saveButton.IsEnabled);
         }
 
+        /// <summary>
+        /// Asserts that the File menu's Save/Save As MenuItems are bound to the expected commands
+        /// and that IsEnabled reflects the live CanExecute() -- this is the actual regression
+        /// surface for DYN-10717 (the menu items had a hardcoded IsEnabled="False" in XAML that
+        /// never tracked CanExecute at all).
+        /// </summary>
+        private void AssertSaveMenuItemsReflectCanExecute()
+        {
+            DispatcherUtil.DoEvents();
+
+            Assert.AreSame(ViewModel.ShowSaveDialogIfNeededAndSaveResultCommand, View.saveThisButton.Command,
+                "saveThisButton is not bound to ShowSaveDialogIfNeededAndSaveResultCommand");
+            Assert.AreSame(ViewModel.ShowSaveDialogAndSaveResultCommand, View.saveButton.Command,
+                "saveButton is not bound to ShowSaveDialogAndSaveResultCommand");
+
+            var expectedSave = ViewModel.ShowSaveDialogIfNeededAndSaveResultCommand.CanExecute(null);
+            var expectedSaveAs = ViewModel.ShowSaveDialogAndSaveResultCommand.CanExecute(null);
+
+            Assert.AreEqual(expectedSave, View.saveThisButton.IsEnabled,
+                $"saveThisButton.IsEnabled ({View.saveThisButton.IsEnabled}) does not reflect ShowSaveDialogIfNeededAndSaveResultCommand.CanExecute() ({expectedSave})");
+            Assert.AreEqual(expectedSaveAs, View.saveButton.IsEnabled,
+                $"saveButton.IsEnabled ({View.saveButton.IsEnabled}) does not reflect ShowSaveDialogAndSaveResultCommand.CanExecute() ({expectedSaveAs})");
+        }
+
         [Test]
         public void WhenDynamoLaunchesThenSaveAsIsEnabledButSaveIsDisabledUntilDirty()
         {
             // Regression test for DYN-10717: Save/Save As enablement is driven by a shared CanExecute (menu, hotkey, toolbar all in sync), with "Save" additionally gated on the workspace's dirty flag.
             Assert.IsFalse(ViewModel.ShowSaveDialogIfNeededAndSaveResultCommand.CanExecute(null));
             Assert.IsTrue(ViewModel.ShowSaveDialogAndSaveResultCommand.CanExecute(null));
+            AssertSaveMenuItemsReflectCanExecute();
 
             ViewModel.HomeSpace.HasUnsavedChanges = true;
 
             Assert.IsTrue(ViewModel.ShowSaveDialogIfNeededAndSaveResultCommand.CanExecute(null));
+            AssertSaveMenuItemsReflectCanExecute();
         }
 
         [Test]
@@ -167,6 +194,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(ViewModel.ShowStartPage);
             Assert.IsFalse(ViewModel.ShowSaveDialogIfNeededAndSaveResultCommand.CanExecute(null));
             Assert.IsFalse(ViewModel.ShowSaveDialogAndSaveResultCommand.CanExecute(null));
+            AssertSaveMenuItemsReflectCanExecute();
         }
 
         [Test]
@@ -176,6 +204,7 @@ namespace DynamoCoreWpfTests
             ViewModel.HomeSpace.HasUnsavedChanges = true;
             Assert.IsTrue(ViewModel.ShowSaveDialogIfNeededAndSaveResultCommand.CanExecute(null));
             Assert.IsTrue(ViewModel.ShowSaveDialogAndSaveResultCommand.CanExecute(null));
+            AssertSaveMenuItemsReflectCanExecute();
 
             try
             {
@@ -183,6 +212,7 @@ namespace DynamoCoreWpfTests
 
                 Assert.IsFalse(ViewModel.ShowSaveDialogIfNeededAndSaveResultCommand.CanExecute(null));
                 Assert.IsFalse(ViewModel.ShowSaveDialogAndSaveResultCommand.CanExecute(null));
+                AssertSaveMenuItemsReflectCanExecute();
             }
             finally
             {
@@ -191,6 +221,7 @@ namespace DynamoCoreWpfTests
 
             Assert.IsTrue(ViewModel.ShowSaveDialogIfNeededAndSaveResultCommand.CanExecute(null));
             Assert.IsTrue(ViewModel.ShowSaveDialogAndSaveResultCommand.CanExecute(null));
+            AssertSaveMenuItemsReflectCanExecute();
         }
 
         [Test]

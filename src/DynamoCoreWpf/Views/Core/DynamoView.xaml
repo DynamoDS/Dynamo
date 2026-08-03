@@ -354,11 +354,13 @@
                         <MenuItem Name="saveThisButton"
                                   Command="{Binding ShowSaveDialogIfNeededAndSaveResultCommand}"
                                   Header="{x:Static p:Resources.DynamoViewFileMenuSave}"
-                                  InputGestureText="Ctrl + S" />
+                                  InputGestureText="Ctrl + S"
+                                  IsEnabled="{Binding CanSaveWorkspace}" />
                         <MenuItem Name="saveButton"
                                   Command="{Binding ShowSaveDialogAndSaveResultCommand}"
                                   Header="{x:Static p:Resources.DynamoViewFileMenuSaveAs}"
-                                  InputGestureText="Ctrl + Shift + S" />
+                                  InputGestureText="Ctrl + Shift + S"
+                                  IsEnabled="{Binding CanSaveWorkspaceAs}" />
                         <Separator />
                         <MenuItem Name="importLibrary"
                                   Command="{Binding Path=DataContext.ImportLibraryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"

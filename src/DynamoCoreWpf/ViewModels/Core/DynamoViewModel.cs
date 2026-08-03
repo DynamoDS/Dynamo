@@ -430,8 +430,7 @@ namespace Dynamo.ViewModels
                 if(ShowInsertDialogAndInsertResultCommand != null)
                     ShowInsertDialogAndInsertResultCommand.RaiseCanExecuteChanged();
 
-                ShowSaveDialogIfNeededAndSaveResultCommand?.RaiseCanExecuteChanged();
-                ShowSaveDialogAndSaveResultCommand?.RaiseCanExecuteChanged();
+                NotifySaveCommandsChanged();
             }
         }
 
@@ -1332,13 +1331,13 @@ namespace Dynamo.ViewModels
             if (saveCommandsTrackedWorkspace != null)
                 saveCommandsTrackedWorkspace.PropertyChanged += SaveCommandsTrackedWorkspace_PropertyChanged;
 
-            ShowSaveDialogIfNeededAndSaveResultCommand?.RaiseCanExecuteChanged();
+            NotifySaveCommandsChanged();
         }
 
         private void SaveCommandsTrackedWorkspace_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(WorkspaceModel.HasUnsavedChanges))
-                ShowSaveDialogIfNeededAndSaveResultCommand.RaiseCanExecuteChanged();
+                NotifySaveCommandsChanged();
         }
 
         private void SubscribeDispatcherHandlers()
@@ -3292,6 +3291,20 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Whether the current workspace can be saved via the "Save" menu item, hotkey, and
+        /// toolbar button. Bound directly (rather than relying solely on the command's
+        /// CanExecute-driven IsEnabled coercion) because WPF's MenuItem does not reliably
+        /// coerce IsEnabled when the very first CanExecute evaluation is false.
+        /// </summary>
+        public bool CanSaveWorkspace => CanShowSaveDialogIfNeededAndSaveResultCommand(null);
+
+        /// <summary>
+        /// Whether the current workspace can be saved via the "Save As" menu item and hotkey.
+        /// Bound directly for the same reason as <see cref="CanSaveWorkspace"/>.
+        /// </summary>
+        public bool CanSaveWorkspaceAs => CanShowSaveDialogAndSaveResult(null);
+
+        /// <summary>
         /// Keeps the Save/Save As commands (menu items, shortcut bar, and Ctrl+S/Ctrl+Shift+S)
         /// in sync with the guided tour state. Unlike ShowStartPage, this is not tied to
         /// workspace-creation flows, so it can safely gate CanExecute without resurrecting
@@ -3299,8 +3312,20 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void OnGuidedTourStateChanged(GuidedTourStateEventArgs args)
         {
+            NotifySaveCommandsChanged();
+        }
+
+        /// <summary>
+        /// Raises change notifications for the Save/Save As commands and their bound
+        /// CanSaveWorkspace(As) properties, keeping the menu items, hotkeys, and toolbar
+        /// button in sync.
+        /// </summary>
+        private void NotifySaveCommandsChanged()
+        {
             ShowSaveDialogIfNeededAndSaveResultCommand?.RaiseCanExecuteChanged();
             ShowSaveDialogAndSaveResultCommand?.RaiseCanExecuteChanged();
+            RaisePropertyChanged(nameof(CanSaveWorkspace));
+            RaisePropertyChanged(nameof(CanSaveWorkspaceAs));
         }
 
         public void ShowSaveDialogAndSaveResult(object parameter)
