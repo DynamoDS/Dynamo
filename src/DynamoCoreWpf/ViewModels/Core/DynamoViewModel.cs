@@ -72,7 +72,6 @@ namespace Dynamo.ViewModels
         private readonly DynamoModel model;
         private Point transformOrigin;
         private bool showStartPage = false;
-        private bool isGuidedTourActive = false;
         private WorkspaceModel saveCommandsTrackedWorkspace;
         private PreferencesViewModel preferencesViewModel;
         private string dynamoMLDataPath = string.Empty;
@@ -904,6 +903,8 @@ namespace Dynamo.ViewModels
             SubscribeModelChangedHandlers();
             SubscribeModelBackupFileSaveEvent();
             TrackWorkspaceForSaveCommands(model.CurrentWorkspace);
+            GuideFlowEvents.GuidedTourStart += OnGuidedTourStateChanged;
+            GuideFlowEvents.GuidedTourFinish += OnGuidedTourStateChanged;
 
             InitializeAutomationSettings(startConfiguration.CommandFilePath);
 
@@ -1311,6 +1312,8 @@ namespace Dynamo.ViewModels
             model.WorkspaceCleared -= ModelWorkspaceCleared;
             model.RequestCancelActiveStateForNode -= this.CancelActiveState;
             TrackWorkspaceForSaveCommands(null);
+            GuideFlowEvents.GuidedTourStart -= OnGuidedTourStateChanged;
+            GuideFlowEvents.GuidedTourFinish -= OnGuidedTourStateChanged;
         }
 
         /// <summary>
@@ -3285,21 +3288,19 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal bool CanShowSaveDialogIfNeededAndSaveResultCommand(object parameter)
         {
-            return !isGuidedTourActive && !ShowStartPage && (Model.CurrentWorkspace?.HasUnsavedChanges ?? false);
+            return !GuideFlowEvents.IsAnyGuideActive && !ShowStartPage && (Model.CurrentWorkspace?.HasUnsavedChanges ?? false);
         }
 
         /// <summary>
-        /// Blocks or unblocks the Save/Save As commands (menu items, shortcut bar, and
-        /// Ctrl+S/Ctrl+Shift+S) while a guided tour is active. Unlike ShowStartPage, this is
-        /// not tied to workspace-creation flows, so it can safely gate CanExecute without
-        /// resurrecting DYN-10717 (Save/Save As stuck disabled on a fresh workspace).
+        /// Keeps the Save/Save As commands (menu items, shortcut bar, and Ctrl+S/Ctrl+Shift+S)
+        /// in sync with the guided tour state. Unlike ShowStartPage, this is not tied to
+        /// workspace-creation flows, so it can safely gate CanExecute without resurrecting
+        /// DYN-10717 (Save/Save As stuck disabled on a fresh workspace).
         /// </summary>
-        /// <param name="isActive">Whether a guided tour is currently active.</param>
-        internal void SetGuidedTourActive(bool isActive)
+        private void OnGuidedTourStateChanged(GuidedTourStateEventArgs args)
         {
-            isGuidedTourActive = isActive;
-            ShowSaveDialogIfNeededAndSaveResultCommand.RaiseCanExecuteChanged();
-            ShowSaveDialogAndSaveResultCommand.RaiseCanExecuteChanged();
+            ShowSaveDialogIfNeededAndSaveResultCommand?.RaiseCanExecuteChanged();
+            ShowSaveDialogAndSaveResultCommand?.RaiseCanExecuteChanged();
         }
 
         public void ShowSaveDialogAndSaveResult(object parameter)
@@ -3423,7 +3424,7 @@ namespace Dynamo.ViewModels
 
         internal bool CanShowSaveDialogAndSaveResult(object parameter)
         {
-            return !isGuidedTourActive && !ShowStartPage;
+            return !GuideFlowEvents.IsAnyGuideActive && !ShowStartPage;
         }
 
         public void ToggleFullscreenWatchShowing(object parameter)

@@ -19,6 +19,7 @@ using Dynamo.Wpf.Views;
 using NUnit.Framework;
 using DynamoMLDataPipeline;
 using Dynamo.Wpf.UI;
+using Dynamo.Wpf.UI.GuidedTour;
 
 
 namespace DynamoCoreWpfTests
@@ -171,17 +172,22 @@ namespace DynamoCoreWpfTests
         [Test]
         public void WhenGuidedTourIsActiveThenSaveMenuItemsAreDisabledUntilExit()
         {
-            // Regression test for DYN-10717: Save/Save As must be disabled while a guided tour is active, and re-enabled once it ends.
+            // Regression test for DYN-10717: Save/Save As must be disabled while a guided tour is active (via GuideFlowEvents.IsAnyGuideActive), and re-enabled once it ends.
             ViewModel.HomeSpace.HasUnsavedChanges = true;
             Assert.IsTrue(ViewModel.ShowSaveDialogIfNeededAndSaveResultCommand.CanExecute(null));
             Assert.IsTrue(ViewModel.ShowSaveDialogAndSaveResultCommand.CanExecute(null));
 
-            ViewModel.SetGuidedTourActive(true);
+            try
+            {
+                GuideFlowEvents.OnGuidedTourStart("test");
 
-            Assert.IsFalse(ViewModel.ShowSaveDialogIfNeededAndSaveResultCommand.CanExecute(null));
-            Assert.IsFalse(ViewModel.ShowSaveDialogAndSaveResultCommand.CanExecute(null));
-
-            ViewModel.SetGuidedTourActive(false);
+                Assert.IsFalse(ViewModel.ShowSaveDialogIfNeededAndSaveResultCommand.CanExecute(null));
+                Assert.IsFalse(ViewModel.ShowSaveDialogAndSaveResultCommand.CanExecute(null));
+            }
+            finally
+            {
+                GuideFlowEvents.OnGuidedTourFinish("test");
+            }
 
             Assert.IsTrue(ViewModel.ShowSaveDialogIfNeededAndSaveResultCommand.CanExecute(null));
             Assert.IsTrue(ViewModel.ShowSaveDialogAndSaveResultCommand.CanExecute(null));
