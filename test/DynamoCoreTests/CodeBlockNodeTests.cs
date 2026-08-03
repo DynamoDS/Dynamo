@@ -437,6 +437,42 @@ b = c[w][x][y][z];";
             Assert.AreEqual(0, cbn.Infos.Count);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void FunctionCall_KeepsWarning_WhenCodeBlockIsEditedAfterUnresolvedCallInBody()
+        {
+            // Regression test for DYN-10693: editing a code block node that redefines the same
+            // function must not lose the "function not found" warning raised for an unresolved
+            // call inside the function body. The previously compiled definition stayed active on
+            // the precompilation core, so the redefinition was skipped and its body was never
+            // traversed, silently dropping the warning on every recompile after the first.
+            var cbn = OpenSingleFunctionCbn("testfunction_nodefn_in_body.dyn", expectedNodeCount: 1);
+            Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
+
+            cbn.SetCodeContent("def tostr(x)\n{\nreturn = MissingFunc(x);\n};\ntostr(2.718);",
+                CurrentDynamoModel.CurrentWorkspace.ElementResolver);
+
+            Assert.AreEqual(ElementState.PersistentWarning, cbn.State);
+            Assert.True(cbn.Infos.Any(x => x.State == ElementState.PersistentWarning
+                && x.Message.Contains("MissingFunc")));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void FunctionCall_NoWarning_WhenForwardReferenceInSameCodeBlockIsEdited()
+        {
+            // Regression guard for DYN-10693: recompiling a code block node that redefines its own
+            // functions must not report a valid forward reference between them as unresolved.
+            var cbn = OpenSingleFunctionCbn("testfunction_forwardref_samecbn.dyn", expectedNodeCount: 1);
+            Assert.AreEqual(ElementState.Active, cbn.State);
+
+            cbn.SetCodeContent("def a()\n{\nreturn = b();\n};\ndef b()\n{\nreturn = 43;\n};\na();",
+                CurrentDynamoModel.CurrentWorkspace.ElementResolver);
+
+            Assert.AreEqual(ElementState.Active, cbn.State);
+            Assert.AreEqual(0, cbn.Infos.Count);
+        }
+
         // Opens a graph under core\dsevaluation and returns the code block node with the well-known
         // guid used by the function-warning test fixtures. Shared by the DYN-10693 regression tests.
         private CodeBlockNodeModel OpenSingleFunctionCbn(string dynFileName, int expectedNodeCount)
