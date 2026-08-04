@@ -480,6 +480,15 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The input must match the Date Time format..
+        /// </summary>
+        public static string DateTimeNodeInputInvalidFormat {
+            get {
+                return ResourceManager.GetString("DateTimeNodeInputInvalidFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Validates the data type of an input and returns it.
         /// </summary>
         public static string DefineDataDescription {
