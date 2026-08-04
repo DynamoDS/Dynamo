@@ -48,7 +48,7 @@ namespace CoreNodeModelsWpf
             }
             catch (FormatException)
             {
-                return new ValidationResult(false, Resources.NumberNodeInputMustBeNumeric);
+                return new ValidationResult(false, Resources.IntegerSliderInputMustBeInteger);
             }
             catch (OverflowException)
             {

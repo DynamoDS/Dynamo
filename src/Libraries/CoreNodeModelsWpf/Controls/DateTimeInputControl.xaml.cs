@@ -1,4 +1,3 @@
-using CoreNodeModelsWpf.Converters;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,10 +18,9 @@ namespace CoreNodeModelsWpf.Controls
 
         private void DateTimeInputControl_Loaded(object sender, RoutedEventArgs e)
         {
-            var binding = new System.Windows.Data.Binding(nameof(CoreNodeModels.Input.DateTime.Value))
+            var binding = new System.Windows.Data.Binding(nameof(CoreNodeModels.Input.DateTime.ValueText))
             {
                 Mode = BindingMode.TwoWay,
-                Converter = new StringToDateTimeConverter(),
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit,
                 NotifyOnValidationError = false
             };

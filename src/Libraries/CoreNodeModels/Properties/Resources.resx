@@ -585,7 +585,10 @@
     <value>The input must be numeric.</value>
   </data>
   <data name="DateTimeNodeInputInvalidFormat" xml:space="preserve">
-    <value>The input must match the Date Time format.</value>
+    <value>The input must match the Date Time format and be a valid date/time.</value>
+  </data>
+  <data name="IntegerSliderInputMustBeInteger" xml:space="preserve">
+    <value>The input must be an integer.</value>
   </data>
   <data name="ColorPaletteDescription" xml:space="preserve">
     <value>Select a Color from the palette</value>

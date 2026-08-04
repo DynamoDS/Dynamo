@@ -25,6 +25,23 @@ namespace CoreNodeModels.Input
             ShouldDisplayPreviewCore = false;
         }
 
+        public string ValueText
+        {
+            get
+            { return Value.ToString(PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture); }
+            set { }
+        }
+
+        public override System.DateTime Value
+        {
+            get { return base.Value; }
+            set
+            {
+                base.Value = value;
+                RaisePropertyChanged(nameof(ValueText));
+            }
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -96,7 +113,8 @@ namespace CoreNodeModels.Input
 
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
         {
-            if (updateValueParams.PropertyName == nameof(Value))
+            if (updateValueParams.PropertyName == nameof(Value)
+                || updateValueParams.PropertyName == nameof(ValueText))
             {
                 if (TryParseDateTime(updateValueParams.PropertyValue, out var parsed))
                 {
