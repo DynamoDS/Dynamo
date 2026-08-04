@@ -117,6 +117,7 @@ namespace CoreNodeModels.Input
             {
                 case "Min":
                 case "MinText":
+                    ClearErrorsAndWarnings();
                     Min = ConvertStringToDouble(value);
                     return true; // UpdateValueCore handled.
                 case "Max":
@@ -125,10 +126,12 @@ namespace CoreNodeModels.Input
                     return true; // UpdateValueCore handled.
                 case "Value":
                 case "ValueText":
+                    ClearErrorsAndWarnings();
                     Value = ConvertStringToDouble(value);
                     return true; // UpdateValueCore handled.
                 case "Step":
                 case "StepText":
+                    ClearErrorsAndWarnings();
                     Step = ConvertStringToDouble(value);
                     return true;
             }
@@ -153,6 +156,8 @@ namespace CoreNodeModels.Input
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
             base.DeserializeCore(element, context); //Base implementation must be called.
+
+            ClearErrorsAndWarnings();
 
             foreach (XmlNode subNode in element.ChildNodes)
             {

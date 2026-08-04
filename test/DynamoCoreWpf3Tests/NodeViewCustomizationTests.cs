@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using CoreNodeModels.Input;
 using CoreNodeModelsWpf.Controls;
-using CoreNodeModelsWpf.Nodes;
+using CoreNodeModelsWpf;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;

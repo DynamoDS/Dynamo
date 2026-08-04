@@ -1,11 +1,14 @@
-﻿using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Input;
-using System.Windows.Shapes;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Nodes;
 using Dynamo.UI;
 using Dynamo.ViewModels;
+using System;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
+using System.Windows.Input;
+using System.Windows.Shapes;
 
 namespace CoreNodeModelsWpf.Controls
 {
@@ -29,6 +32,36 @@ namespace CoreNodeModelsWpf.Controls
                 nodeUI.ViewModel.DynamoViewModel.OnRequestReturnFocusToView();
             };
 
+        }
+
+        public void BindValidatedTextBoxes(Func<ValidationRule> ruleFactory)
+        {
+            BindField(ValTb, "ValueText", ruleFactory());
+            BindField(MinTb, "MinText", ruleFactory());
+            BindField(MaxTb, "MaxText", ruleFactory());
+            BindField(StepTb, "StepText", ruleFactory());
+        }
+
+        private static ValidationRule CloneStep(ValidationRule template)
+        {
+            template.ValidationStep = ValidationStep.RawProposedValue;
+            return template;
+        }
+
+        private static void BindField(DynamoTextBox textBox, string propertyName, ValidationRule validationRule)
+        {
+            var binding = new Binding(propertyName)
+            {
+                Mode = BindingMode.TwoWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit,
+                NotifyOnValidationError = false
+            };
+
+            validationRule.ValidationStep = ValidationStep.RawProposedValue;
+            binding.ValidationRules.Add(validationRule);
+
+            textBox.BindToProperty(binding);
+            Validation.SetErrorTemplate(textBox, null);
         }
 
         #region Event Handlers

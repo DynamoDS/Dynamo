@@ -1,5 +1,7 @@
-﻿using System.Windows;
-using System.Windows.Forms;
+using CoreNodeModelsWpf.Converters;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace CoreNodeModelsWpf.Controls
@@ -12,15 +14,25 @@ namespace CoreNodeModelsWpf.Controls
         public DateTimeInputControl()
         {
             InitializeComponent();
+            Loaded += DateTimeInputControl_Loaded;
         }
 
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        private void DateTimeInputControl_Loaded(object sender, RoutedEventArgs e)
         {
-            var picker = new DateTimePicker
+            var binding = new System.Windows.Data.Binding(nameof(CoreNodeModels.Input.DateTime.Value))
             {
-                Format = DateTimePickerFormat.Time,
-                ShowUpDown = true,
+                Mode = BindingMode.TwoWay,
+                Converter = new StringToDateTimeConverter(),
+                UpdateSourceTrigger = UpdateSourceTrigger.Explicit,
+                NotifyOnValidationError = false
             };
+            var rule = new DateTimeValidationRule
+            {
+                ValidationStep = ValidationStep.RawProposedValue
+            };
+            binding.ValidationRules.Add(rule);
+            DateTimeTb.BindToProperty(binding);
+            Validation.SetErrorTemplate(DateTimeTb, null);
         }
     }
 }

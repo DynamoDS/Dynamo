@@ -1,10 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
 using Dynamo.Configuration;
+using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Xml;
 
 namespace CoreNodeModels.Input
 {
@@ -92,12 +94,42 @@ namespace CoreNodeModels.Input
             };
         }
 
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
+        {
+            if (updateValueParams.PropertyName == nameof(Value))
+            {
+                if (TryParseDateTime(updateValueParams.PropertyValue, out var parsed))
+                {
+                    ClearErrorsAndWarnings();
+                    Value = System.DateTime.SpecifyKind(parsed, DateTimeKind.Utc);
+                }
+                return true;
+            }
+            return base.UpdateValueCore(updateValueParams);
+        }
+
+        internal static bool TryParseDateTime(string text, out System.DateTime parsed)
+        {
+            return System.DateTime.TryParseExact(
+                text,
+                PreferenceSettings.DefaultDateFormat,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out parsed);
+        }
+
         protected override System.DateTime DeserializeValue(string val)
         {
             System.DateTime result;
             result = System.DateTime.TryParseExact(val, PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out result) ?
                 result : PreferenceSettings.DynamoDefaultTime;
             return System.DateTime.SpecifyKind(result, DateTimeKind.Utc);
+        }
+
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
+        {
+            base.DeserializeCore(nodeElement, context); 
+            ClearErrorsAndWarnings();
         }
 
         protected override string SerializeValue()

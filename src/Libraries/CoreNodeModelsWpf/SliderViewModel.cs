@@ -20,21 +20,25 @@ namespace CoreNodeModelsWpf
         public string MaxText
         {
             get { return SliderBase<T>.ConvertNumberToString(model.Max); }
+            set { }
         }
 
         public string MinText
         {
             get { return SliderBase<T>.ConvertNumberToString(model.Min); }
+            set { }
         }
 
         public string StepText
         {
             get { return SliderBase<T>.ConvertNumberToString(model.Step); }
+            set { }
         }
 
         public string ValueText
         {
             get { return SliderBase<T>.ConvertNumberToString(model.Value); }
+            set { }
         }
 
         public T Max

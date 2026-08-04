@@ -315,19 +315,22 @@ namespace CoreNodeModels.Input
             {
                 case nameof(Min):
                 case "MinText":
+                    ClearErrorsAndWarnings();
                     Min = ConvertStringToInt64(value);
                     return true; // UpdateValueCore handled.
                 case nameof(Max):
                 case "MaxText":
+                    ClearErrorsAndWarnings();
                     Max = ConvertStringToInt64(value);
                     return true; // UpdateValueCore handled.
                 case nameof(Value):
                 case "ValueText":
-                    UpdateNodeInfo(value);
+                    ClearErrorsAndWarnings();
                     Value = ConvertStringToInt64(value);
                     return true; // UpdateValueCore handled.
                 case nameof(Step):
                 case "StepText":
+                    ClearErrorsAndWarnings();
                     Step = ConvertStringToInt64(value);
                     return true;
             }
@@ -389,6 +392,8 @@ namespace CoreNodeModels.Input
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
             base.DeserializeCore(element, context); //Base implementation must be called.
+
+            ClearErrorsAndWarnings();
 
             foreach (XmlNode subNode in element.ChildNodes)
             {
