@@ -537,7 +537,8 @@ namespace Dynamo.Controls
         /// <returns>True if the control was added, false if it already existed</returns>
         internal bool AddOrFocusExtensionControl(IViewExtension viewExtension, UIElement content)
         {
-            if (DisableExtensionWhenNoNetworkMode(viewExtension.UniqueId, viewExtension.Name, "opened"))
+            if (DisableExtensionWhenNoNetworkMode(viewExtension.UniqueId, viewExtension.Name, "opened") ||
+                DisableExtensionWhenIDSDKNotInitialized(viewExtension.UniqueId, viewExtension.Name, "opened"))
                 return false;
 
             var window = ExtensionWindows.ContainsKey(viewExtension.Name) ? ExtensionWindows[viewExtension.Name] : null;
@@ -1022,10 +1023,6 @@ namespace Dynamo.Controls
         private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.HideOrShowRightSideBar(e.Action);
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                DisableExtensionTabsWhenIDSDKNotInitialized();
-            }
         }
 
         private TabItem FindExtensionTab(IViewExtension viewExtension)
@@ -1416,7 +1413,8 @@ namespace Dynamo.Controls
             {
                 try
                 {
-                    if (DisableExtensionWhenNoNetworkMode(ext.UniqueId, ext.Name, "loaded"))
+                    if (DisableExtensionWhenNoNetworkMode(ext.UniqueId, ext.Name, "loaded") ||
+                        DisableExtensionWhenIDSDKNotInitialized(ext.UniqueId, ext.Name, "loaded"))
                     {
                         continue;
                     }
@@ -1429,7 +1427,6 @@ namespace Dynamo.Controls
                     Log(ext.Name + ": " + exc.Message);
                 }
             }
-            DisableExtensionTabsWhenIDSDKNotInitialized();
             EnsureGraphPropertiesBinding();
         }
 
@@ -3424,25 +3421,22 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// Disables (but keeps visible) the Autodesk Assistant and MCP sidebar tabs when IDSDK is
-        /// not initialized, preventing the cascade of native error dialogs that occur when the user
-        /// opens the Assistant without Autodesk Identity installed.
+        /// Prevents the Autodesk Assistant and MCP View extensions from being loaded or opened when
+        /// Autodesk Identity (IDSDK) is not initialized, so the native "Create Assistant" call chain
+        /// that requires Identity never fires and cannot cascade into a series of error dialogs.
         /// </summary>
-        internal void DisableExtensionTabsWhenIDSDKNotInitialized()
+        internal bool DisableExtensionWhenIDSDKNotInitialized(string extensionId, string extensionName, string action)
         {
-            if (dynamoViewModel.Model.AuthenticationManager.IsIDSDKInitialized())
-                return;
-
-            foreach (var extensionId in new[] { AutodeskAssistantExtensionId, McpViewExtensionId })
+            if ((string.Equals(extensionId, AutodeskAssistantExtensionId, StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(extensionId, McpViewExtensionId, StringComparison.OrdinalIgnoreCase)) &&
+                !dynamoViewModel.Model.AuthenticationManager.IsIDSDKInitialized())
             {
-                var tab = dynamoViewModel.SideBarTabItems.OfType<TabItem>()
-                    .SingleOrDefault(t => string.Equals(t.Uid, extensionId, StringComparison.OrdinalIgnoreCase));
-                if (tab != null)
-                {
-                    tab.IsEnabled = false;
-                    Log($"Extension tab {tab.Header} disabled because IDSDK is not initialized");
-                }
+                Log($"Package/Extension {extensionName} not {action} because Autodesk Identity (IDSDK) is not initialized");
+
+                return true;
             }
+
+            return false;
         }
     }
 }
