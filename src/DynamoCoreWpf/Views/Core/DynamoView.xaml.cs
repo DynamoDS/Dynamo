@@ -530,53 +530,70 @@ namespace Dynamo.Controls
 
             if (addExtensionControl)
             {
-                var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == viewExtension.UniqueId);
-                // Create default settings if they do not currently exist
-                if (settings == null)
-                {
-                    settings = new ViewExtensionSettings()
-                    {
-                        Name = viewExtension.Name,
-                        UniqueId = viewExtension.UniqueId,
-                        DisplayMode = ViewExtensionDisplayMode.DockRight
-                    };
-                    this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Add(settings);
-                }
-
-                if (this.dynamoViewModel.PreferenceSettings.EnablePersistExtensions)
-                {
-                    settings.IsOpen = true;
-                }
-
-                if (settings.DisplayMode == ViewExtensionDisplayMode.FloatingWindow)
-                {
-                    window = AddExtensionWindow(viewExtension, content, settings.WindowSettings);
-                }
-                else
-                {
-                    tab = AddExtensionTab(viewExtension, content);
-                }
+                CreateExtensionControl(viewExtension, content);
             }
             else
             {
-                // Set focus on the existing control
-                if (window != null)
-                {
-                    window.Focus();
-                }
-                else if (tab != null)
-                {
-                    // Make sure the extension bar is visible
-                    if (ExtensionsCollapsed)
-                    {
-                        ToggleExtensionBarCollapseStatus();
-                    }
-
-                    tabDynamic.SelectedItem = tab;
-                }
+                FocusExtensionControl(window, tab);
             }
 
             return addExtensionControl;
+        }
+
+        /// <summary>
+        /// Creates a new extension control (as a floating window or a tab, per its settings)
+        /// for a view extension that isn't currently open.
+        /// </summary>
+        private void CreateExtensionControl(IViewExtension viewExtension, UIElement content)
+        {
+            var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == viewExtension.UniqueId);
+            // Create default settings if they do not currently exist
+            if (settings == null)
+            {
+                settings = new ViewExtensionSettings()
+                {
+                    Name = viewExtension.Name,
+                    UniqueId = viewExtension.UniqueId,
+                    DisplayMode = ViewExtensionDisplayMode.DockRight
+                };
+                this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Add(settings);
+            }
+
+            if (this.dynamoViewModel.PreferenceSettings.EnablePersistExtensions)
+            {
+                settings.IsOpen = true;
+            }
+
+            if (settings.DisplayMode == ViewExtensionDisplayMode.FloatingWindow)
+            {
+                AddExtensionWindow(viewExtension, content, settings.WindowSettings);
+            }
+            else
+            {
+                AddExtensionTab(viewExtension, content);
+            }
+        }
+
+        /// <summary>
+        /// Sets focus on an already-open extension control, whether it's a floating window
+        /// or a tab (making sure the extension bar is visible first, for the tab case).
+        /// </summary>
+        private void FocusExtensionControl(ExtensionWindow window, TabItem tab)
+        {
+            if (window != null)
+            {
+                window.Focus();
+            }
+            else if (tab != null)
+            {
+                // Make sure the extension bar is visible
+                if (ExtensionsCollapsed)
+                {
+                    ToggleExtensionBarCollapseStatus();
+                }
+
+                tabDynamic.SelectedItem = tab;
+            }
         }
 
         private ExtensionWindow AddExtensionWindow(IViewExtension viewExtension, UIElement content, WindowSettings windowSettings)

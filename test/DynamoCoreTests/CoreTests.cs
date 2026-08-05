@@ -868,7 +868,7 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, "core", "LacingTest.dyn");
             OpenModel(openPath);
 
-            Assert.AreEqual(false, CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+            Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
 
             var node = CurrentDynamoModel.CurrentWorkspace.Nodes.First();
 
@@ -878,7 +878,7 @@ namespace Dynamo.Tests
             // match that C# would otherwise prefer, and it assumes a group is already open.
             CurrentDynamoModel.CurrentWorkspace.RecordModelsForModification(new ModelBase[] { node });
 
-            Assert.AreEqual(true, CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
         }
 
         /// <summary>
@@ -894,20 +894,20 @@ namespace Dynamo.Tests
             string openPath = Path.Combine(TestDirectory, "core", "LacingTest.dyn");
             OpenModel(openPath);
 
-            Assert.AreEqual(false, CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+            Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
 
             var node = CurrentDynamoModel.CurrentWorkspace.Nodes.First();
             var newPosition = $"{node.X + 100};{node.Y}";
             CurrentDynamoModel.ExecuteCommand(new DynCmd.UpdateModelValueCommand(Guid.Empty, node.GUID, nameof(NodeModel.Position), newPosition));
-            Assert.AreEqual(true, CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
 
             // Undo the only change made since open -- back to the saved state, so clean again.
             CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Undo));
-            Assert.AreEqual(false, CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+            Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
 
             // Redo re-applies the change -- dirty again.
             CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Redo));
-            Assert.AreEqual(true, CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
         }
 
         /// <summary>
@@ -924,11 +924,11 @@ namespace Dynamo.Tests
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.Take(2).ToList();
             CurrentDynamoModel.ExecuteCommand(new DynCmd.UpdateModelValueCommand(Guid.Empty, nodes[0].GUID, nameof(NodeModel.Position), $"{nodes[0].X + 10};{nodes[0].Y}"));
             CurrentDynamoModel.ExecuteCommand(new DynCmd.UpdateModelValueCommand(Guid.Empty, nodes[1].GUID, nameof(NodeModel.Position), $"{nodes[1].X + 10};{nodes[1].Y}"));
-            Assert.AreEqual(true, CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
 
             // Undo only the second change -- still dirty, since we're not back at the saved depth.
             CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Undo));
-            Assert.AreEqual(true, CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
         }
 
         // SaveImage
