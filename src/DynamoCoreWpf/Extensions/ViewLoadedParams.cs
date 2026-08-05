@@ -87,6 +87,15 @@ namespace Dynamo.Wpf.Extensions
         }
 
         /// <summary>
+        /// Indicates whether Autodesk Identity (IDSDK) is currently initialized. View extensions
+        /// that depend on Autodesk Identity (e.g. sign-in, Autodesk Assistant) can use this to keep
+        /// their own UI (buttons, panels) in sync with Dynamo's IDSDK gating, without duplicating
+        /// the native initialization check or triggering the warning dialog Dynamo shows on its own
+        /// sign-in path.
+        /// </summary>
+        public bool IsIDSDKInitialized => dynamoViewModel.IsIDSDKInitialized(showWarning: false);
+
+        /// <summary>
         /// Adds a menu item to the extensions menu
         /// Items will be ordered alphabetically
         /// </summary>

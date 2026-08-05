@@ -1428,19 +1428,15 @@ namespace Dynamo.Controls
                         continue;
                     }
 
-                    // The extension is still allowed to register its Extensions-menu entry below, so the
-                    // entry point stays visible; only the automatic re-open of a previously-open panel is
-                    // skipped, and the entry point it just registered is greyed out.
+                    // The extension is still allowed to run Loaded() below, so any UI it registers
+                    // (menu items, toolbar buttons) stays visible; only the automatic re-open of a
+                    // previously-open panel is skipped. Extensions that depend on IDSDK are expected to
+                    // gate their own entry points via ViewLoadedParams.IsIDSDKInitialized.
                     var idsdkNotInitialized = DisableExtensionWhenIDSDKNotInitialized(ext.UniqueId, ext.Name, "re-opened");
-                    var menuItemsBeforeLoad = GetExtensionsMenuItems();
 
                     ext.Loaded(loadedParams);
 
-                    if (idsdkNotInitialized)
-                    {
-                        DisableNewExtensionMenuItems(menuItemsBeforeLoad);
-                    }
-                    else
+                    if (!idsdkNotInitialized)
                     {
                         ReOpenSavedExtensionOnDynamoStartup(ext);
                     }
@@ -1451,32 +1447,6 @@ namespace Dynamo.Controls
                 }
             }
             EnsureGraphPropertiesBinding();
-        }
-
-        /// <summary>
-        /// Returns the current items of the Extensions menu, used to detect which menu item(s)
-        /// an extension registers during its Loaded() call.
-        /// </summary>
-        internal IReadOnlyCollection<MenuItem> GetExtensionsMenuItems()
-        {
-            var extensionsMenu = titleBar?.ChildOfType<Menu>()?.Items.OfType<MenuItem>()
-                .FirstOrDefault(item => item.Header.ToString() == Wpf.Properties.Resources.DynamoViewExtensionsMenu);
-
-            return extensionsMenu?.Items.OfType<MenuItem>().ToList() ?? (IReadOnlyCollection<MenuItem>)Array.Empty<MenuItem>();
-        }
-
-        /// <summary>
-        /// Disables (but keeps visible) any Extensions-menu item(s) added since <paramref name="menuItemsBeforeLoad"/>
-        /// was captured, so the entry point for an extension that can't be safely opened right now
-        /// (e.g. Autodesk Assistant/MCP without IDSDK initialized) stays visible but unclickable.
-        /// </summary>
-        internal void DisableNewExtensionMenuItems(IReadOnlyCollection<MenuItem> menuItemsBeforeLoad)
-        {
-            foreach (var menuItem in GetExtensionsMenuItems().Except(menuItemsBeforeLoad))
-            {
-                menuItem.IsEnabled = false;
-                Log($"Extension menu item {menuItem.Header} disabled because Autodesk Identity (IDSDK) is not initialized");
-            }
         }
 
         /// <summary>
