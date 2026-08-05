@@ -866,7 +866,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 For more information, please refer to <http://unlicense.org>
 
-Humanizer v.3.0.10:
+Humanizer v.3.0.1:
 https://github.com/Humanizr/Humanizer
 https://github.com/Humanizr/Humanizer/blob/main/license.txt
 The MIT License (MIT)
@@ -896,9 +896,9 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-JsonSchema.Net v.9.2.0:
-JsonPointer.Net v.7.0.1:
-Json.More.Net v.3.0.1:
+JsonSchema.Net v.8.0.5:
+JsonPointer.Net v.6.0.1:
+Json.More.Net v.2.2.0:
 https://github.com/gregsdennis/json-everything
 https://github.com/gregsdennis/json-everything/blob/master/LICENSE
 The MIT License (MIT)
