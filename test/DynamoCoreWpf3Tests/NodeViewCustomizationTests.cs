@@ -1,13 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
 using CoreNodeModels.Input;
-using CoreNodeModelsWpf.Controls;
 using CoreNodeModelsWpf;
+using CoreNodeModelsWpf.Controls;
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -17,6 +11,13 @@ using Dynamo.Nodes;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace DynamoCoreWpfTests
 {
@@ -502,6 +503,66 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(NodeModelAssemblyLoader.ContainsNodeViewCustomizationType(dyncorewpfAssem));
             //this assembly contains some builtin nodeviewcustomizations and this methd should return true.
             Assert.IsFalse(NodeModelAssemblyLoader.ContainsNodeViewCustomizationType(dyncoreAssem));
+        }
+
+
+
+
+
+        [Test]
+        [Category("UnitTests")]
+        public static void WhenInteger64InputIsNonIntegerThenValidationFails()
+        {
+            var rule = new Integer64ValidationRule();
+            Assert.IsFalse(rule.Validate("m", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsFalse(rule.Validate("1.5", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsFalse(rule.Validate("", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsFalse(rule.Validate(" ", CultureInfo.InvariantCulture).IsValid);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void WhenInteger64InputIsValidOrGroupedThenValidationPasses()
+        {
+            var rule = new Integer64ValidationRule();
+            Assert.IsTrue(rule.Validate("0", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsTrue(rule.Validate("2500", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsTrue(rule.Validate("2,500", CultureInfo.InvariantCulture).IsValid);
+            Assert.IsTrue(rule.Validate("-2,500", CultureInfo.InvariantCulture).IsValid);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void WhenInteger64InputOverflowsThenValidationFailsWithRangeMessage()
+        {
+            var rule = new Integer64ValidationRule();
+            var result = rule.Validate("9223372036854775808", CultureInfo.InvariantCulture); // long.MaxValue + 1
+            Assert.IsFalse(result.IsValid);
+            Assert.AreEqual(CoreNodeModels.Properties.Resources.IntegerSliderInfoMessage, result.ErrorContent);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void WhenDateTimeInputMatchesDefaultFormatThenValidationPasses()
+        {
+            var rule = new DateTimeValidationRule();
+            var text = new System.DateTime(2000, 1, 1, 12, 0, 0)
+                .ToString(PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture);
+            Assert.IsTrue(rule.Validate(text, CultureInfo.InvariantCulture).IsValid);
+            Assert.IsTrue(CoreNodeModels.Input.DateTime.TryParseDateTime(text, out _));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void WhenDateTimeInputIsInvalidThenValidationFails()
+        {
+            var rule = new DateTimeValidationRule();
+            var result = rule.Validate("not-a-date", CultureInfo.InvariantCulture);
+            Assert.IsFalse(result.IsValid);
+            Assert.AreEqual(
+                CoreNodeModels.Properties.Resources.DateTimeNodeInputInvalidFormat,
+                result.ErrorContent);
+            Assert.IsFalse(CoreNodeModels.Input.DateTime.TryParseDateTime("not-a-date", out _));
         }
     }
 
