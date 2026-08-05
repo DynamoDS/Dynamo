@@ -1,9 +1,7 @@
 using System;
-using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Controls;
 using CoreNodeModels.Properties;
-using Dynamo.Configuration;
 
 namespace CoreNodeModelsWpf
 {
@@ -33,6 +31,8 @@ namespace CoreNodeModelsWpf
     /// </summary>
     public class Integer64ValidationRule : ValidationRule
     {
+        private const NumberStyles IntegerStyles = NumberStyles.Integer | NumberStyles.AllowThousands;
+
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
             var text = value as string;
@@ -43,7 +43,7 @@ namespace CoreNodeModelsWpf
 
             try
             {
-                Convert.ToInt64(text, CultureInfo.InvariantCulture);
+                long.Parse(text, IntegerStyles, CultureInfo.InvariantCulture);
                 return ValidationResult.ValidResult;
             }
             catch (FormatException)
@@ -65,7 +65,7 @@ namespace CoreNodeModelsWpf
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
             var text = value as string;
-            if (DateTime.TryParseExact(text, PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
+            if (CoreNodeModels.Input.DateTime.TryParseDateTime(text, out _))
             {
                 return ValidationResult.ValidResult;
             }

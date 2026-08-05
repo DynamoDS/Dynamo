@@ -122,6 +122,7 @@ namespace CoreNodeModels.Input
                     return true; // UpdateValueCore handled.
                 case "Max":
                 case "MaxText":
+                    ClearErrorsAndWarnings();
                     Max = ConvertStringToDouble(value);
                     return true; // UpdateValueCore handled.
                 case "Value":
@@ -184,6 +185,9 @@ namespace CoreNodeModels.Input
                             break;
                     }
                 }
+
+                // Value's equality guard can skip notify, force UI to drop uncommitted invalid text
+                RaisePropertyChanged(nameof(Value));
 
                 break;
             }

@@ -291,7 +291,7 @@ namespace CoreNodeModels.Input
         }
 
         // If the value field in the slider has a number greater than
-        // long.Maxvalue (or MinValue), the value will be changed to long.MaxValue (or MinValue)
+        // long.MaxValue (or MinValue), the value will be changed to long.MaxValue (or MinValue)
         // The property setter is overridden here to update the UI, in case the value is changed. 
         public override long Value
         {
@@ -336,18 +336,6 @@ namespace CoreNodeModels.Input
             }
 
             return base.UpdateValueCore(updateValueParams);
-        }
-
-        private void UpdateNodeInfo(string value)
-        {
-            if (IsValueInt64(value))
-            {
-                ClearInfoMessages();
-            }
-            else
-            {
-                Info(Resources.IntegerSliderInfoMessage, true);
-            }
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)

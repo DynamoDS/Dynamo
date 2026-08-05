@@ -17,6 +17,9 @@ namespace CoreNodeModelsWpf
     {
         private SliderBase<T> model;
 
+        // These text setters are intentionally empty. Bindings are TwoWay so
+        // ValidateWithoutUpdate() can run; DynamoTextBox writes the model via
+        // UpdateModelValueCommand. Implementing these would double-commit on every edit.
         public string MaxText
         {
             get { return SliderBase<T>.ConvertNumberToString(model.Max); }

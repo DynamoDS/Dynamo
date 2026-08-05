@@ -18,6 +18,8 @@ namespace CoreNodeModelsWpf.Controls
 
         private void DateTimeInputControl_Loaded(object sender, RoutedEventArgs e)
         {
+            Loaded -= DateTimeInputControl_Loaded;
+
             var binding = new System.Windows.Data.Binding(nameof(CoreNodeModels.Input.DateTime.ValueText))
             {
                 Mode = BindingMode.TwoWay,

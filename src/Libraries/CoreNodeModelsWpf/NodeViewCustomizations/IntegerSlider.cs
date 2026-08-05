@@ -14,6 +14,8 @@ namespace CoreNodeModelsWpf.NodeViewCustomizations
                 DataContext = new SliderViewModel<int>(model)
             };
 
+            slider.BindValidatedTextBoxes();
+
             nodeView.inputGrid.Children.Add(slider);
         }
 

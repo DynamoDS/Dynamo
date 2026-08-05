@@ -25,10 +25,17 @@ namespace CoreNodeModels.Input
             ShouldDisplayPreviewCore = false;
         }
 
+        /// <summary>
+        /// Display text for the DateTime input. Bound TwoWay so WPF validation can run;
+        /// the setter is intentionally empty — commits go through UpdateModelValueCommand.
+        /// </summary>
+        [JsonIgnore]
         public string ValueText
         {
             get
             { return Value.ToString(PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture); }
+            // Required for TwoWay binding / ValidateWithoutUpdate. Do not write the model here —
+            // DynamoTextBox commits via UpdateModelValueCommand; a real setter would double-commit.
             set { }
         }
 
@@ -116,17 +123,27 @@ namespace CoreNodeModels.Input
             if (updateValueParams.PropertyName == nameof(Value)
                 || updateValueParams.PropertyName == nameof(ValueText))
             {
-                if (TryParseDateTime(updateValueParams.PropertyValue, out var parsed))
+                if (!TryParseDateTime(updateValueParams.PropertyValue, out var parsed))
                 {
-                    ClearErrorsAndWarnings();
-                    Value = System.DateTime.SpecifyKind(parsed, DateTimeKind.Utc);
+                    Error(Properties.Resources.DateTimeNodeInputInvalidFormat);
+                    return false;
                 }
+
+                ClearErrorsAndWarnings();
+                Value = System.DateTime.SpecifyKind(parsed, DateTimeKind.Utc);
                 return true;
             }
             return base.UpdateValueCore(updateValueParams);
         }
 
-        internal static bool TryParseDateTime(string text, out System.DateTime parsed)
+        /// <summary>
+        /// Parses <paramref name="text"/> using <see cref="PreferenceSettings.DefaultDateFormat"/>
+        /// and the invariant culture.
+        /// </summary>
+        /// <param name="text">The date/time string to parse.</param>
+        /// <param name="parsed">When this method returns, the parsed value if successful; otherwise default.</param>
+        /// <returns>Return <c>true</c> if <paramref name="text"/> matches the expected format; otherwise <c>false</c>.</returns>
+        public static bool TryParseDateTime(string text, out System.DateTime parsed)
         {
             return System.DateTime.TryParseExact(
                 text,
@@ -138,9 +155,7 @@ namespace CoreNodeModels.Input
 
         protected override System.DateTime DeserializeValue(string val)
         {
-            System.DateTime result;
-            result = System.DateTime.TryParseExact(val, PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out result) ?
-                result : PreferenceSettings.DynamoDefaultTime;
+            var result = TryParseDateTime(val, out var parsed) ? parsed : PreferenceSettings.DynamoDefaultTime;
             return System.DateTime.SpecifyKind(result, DateTimeKind.Utc);
         }
 
