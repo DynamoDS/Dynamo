@@ -114,16 +114,19 @@ namespace Dynamo.Wpf.Extensions
         /// <returns></returns>
         public void AddToExtensionsSideBar(IViewExtension viewExtension, ContentControl contentControl)
         {
-            bool added = dynamoView.AddOrFocusExtensionControl(viewExtension, contentControl);
+            var result = dynamoView.AddOrFocusExtensionControl(viewExtension, contentControl);
 
-            if (added)
+            switch (result)
             {
-                dynamoViewModel.Model.Logger.Log($"{viewExtension.Name} : {Wpf.Properties.Resources.ExtensionAdded}");
-            }
-            else
-            {
-                dynamoViewModel.Model.Logger.Log($"{viewExtension.Name} : {Wpf.Properties.Resources.ExtensionAlreadyPresent}");
-
+                case DynamoView.ExtensionControlResult.Added:
+                    dynamoViewModel.Model.Logger.Log($"{viewExtension.Name} : {Wpf.Properties.Resources.ExtensionAdded}");
+                    break;
+                case DynamoView.ExtensionControlResult.AlreadyPresent:
+                    dynamoViewModel.Model.Logger.Log($"{viewExtension.Name} : {Wpf.Properties.Resources.ExtensionAlreadyPresent}");
+                    break;
+                case DynamoView.ExtensionControlResult.Blocked:
+                    // Already logged by DisableExtensionWhenNoNetworkMode/DisableExtensionWhenIDSDKNotInitialized.
+                    break;
             }
         }
 

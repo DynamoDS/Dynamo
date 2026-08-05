@@ -529,17 +529,27 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
+        /// Result of <see cref="AddOrFocusExtensionControl"/>, distinguishing a genuinely blocked
+        /// extension (NoNetworkMode/IDSDK) from one that was simply already open.
+        /// </summary>
+        internal enum ExtensionControlResult
+        {
+            Added,
+            AlreadyPresent,
+            Blocked
+        }
+
+        /// <summary>
         /// Adds an extension control or if it already exists it makes sure it is focused.
         /// The control may be added as a window or a tab in the extension bar depending on settings.
         /// </summary>
         /// <param name="viewExtension">View extension adding the content</param>
         /// <param name="content">Control being added</param>
-        /// <returns>True if the control was added, false if it already existed</returns>
-        internal bool AddOrFocusExtensionControl(IViewExtension viewExtension, UIElement content)
+        internal ExtensionControlResult AddOrFocusExtensionControl(IViewExtension viewExtension, UIElement content)
         {
             if (DisableExtensionWhenNoNetworkMode(viewExtension.UniqueId, viewExtension.Name, "opened") ||
                 DisableExtensionWhenIDSDKNotInitialized(viewExtension.UniqueId, viewExtension.Name, "opened"))
-                return false;
+                return ExtensionControlResult.Blocked;
 
             var window = ExtensionWindows.ContainsKey(viewExtension.Name) ? ExtensionWindows[viewExtension.Name] : null;
             var tab = FindExtensionTab(viewExtension);
@@ -593,7 +603,7 @@ namespace Dynamo.Controls
                 }
             }
 
-            return addExtensionControl;
+            return addExtensionControl ? ExtensionControlResult.Added : ExtensionControlResult.AlreadyPresent;
         }
 
         private ExtensionWindow AddExtensionWindow(IViewExtension viewExtension, UIElement content, WindowSettings windowSettings)
@@ -1413,14 +1423,27 @@ namespace Dynamo.Controls
             {
                 try
                 {
-                    if (DisableExtensionWhenNoNetworkMode(ext.UniqueId, ext.Name, "loaded") ||
-                        DisableExtensionWhenIDSDKNotInitialized(ext.UniqueId, ext.Name, "loaded"))
+                    if (DisableExtensionWhenNoNetworkMode(ext.UniqueId, ext.Name, "loaded"))
                     {
                         continue;
                     }
 
+                    // The extension is still allowed to register its Extensions-menu entry below, so the
+                    // entry point stays visible; only the automatic re-open of a previously-open panel is
+                    // skipped, and the entry point it just registered is greyed out.
+                    var idsdkNotInitialized = DisableExtensionWhenIDSDKNotInitialized(ext.UniqueId, ext.Name, "re-opened");
+                    var menuItemsBeforeLoad = GetExtensionsMenuItems();
+
                     ext.Loaded(loadedParams);
-                    ReOpenSavedExtensionOnDynamoStartup(ext);
+
+                    if (idsdkNotInitialized)
+                    {
+                        DisableNewExtensionMenuItems(menuItemsBeforeLoad);
+                    }
+                    else
+                    {
+                        ReOpenSavedExtensionOnDynamoStartup(ext);
+                    }
                 }
                 catch (Exception exc)
                 {
@@ -1428,6 +1451,32 @@ namespace Dynamo.Controls
                 }
             }
             EnsureGraphPropertiesBinding();
+        }
+
+        /// <summary>
+        /// Returns the current items of the Extensions menu, used to detect which menu item(s)
+        /// an extension registers during its Loaded() call.
+        /// </summary>
+        internal IReadOnlyCollection<MenuItem> GetExtensionsMenuItems()
+        {
+            var extensionsMenu = titleBar?.ChildOfType<Menu>()?.Items.OfType<MenuItem>()
+                .FirstOrDefault(item => item.Header.ToString() == Wpf.Properties.Resources.DynamoViewExtensionsMenu);
+
+            return extensionsMenu?.Items.OfType<MenuItem>().ToList() ?? (IReadOnlyCollection<MenuItem>)Array.Empty<MenuItem>();
+        }
+
+        /// <summary>
+        /// Disables (but keeps visible) any Extensions-menu item(s) added since <paramref name="menuItemsBeforeLoad"/>
+        /// was captured, so the entry point for an extension that can't be safely opened right now
+        /// (e.g. Autodesk Assistant/MCP without IDSDK initialized) stays visible but unclickable.
+        /// </summary>
+        internal void DisableNewExtensionMenuItems(IReadOnlyCollection<MenuItem> menuItemsBeforeLoad)
+        {
+            foreach (var menuItem in GetExtensionsMenuItems().Except(menuItemsBeforeLoad))
+            {
+                menuItem.IsEnabled = false;
+                Log($"Extension menu item {menuItem.Header} disabled because Autodesk Identity (IDSDK) is not initialized");
+            }
         }
 
         /// <summary>
@@ -3429,7 +3478,7 @@ namespace Dynamo.Controls
         {
             if ((string.Equals(extensionId, AutodeskAssistantExtensionId, StringComparison.OrdinalIgnoreCase) ||
                  string.Equals(extensionId, McpViewExtensionId, StringComparison.OrdinalIgnoreCase)) &&
-                !dynamoViewModel.Model.AuthenticationManager.IsIDSDKInitialized())
+                !dynamoViewModel.IsIDSDKInitialized(showWarning: false))
             {
                 Log($"Package/Extension {extensionName} not {action} because Autodesk Identity (IDSDK) is not initialized");
 

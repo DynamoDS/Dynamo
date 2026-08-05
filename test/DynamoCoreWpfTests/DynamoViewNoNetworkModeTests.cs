@@ -111,10 +111,15 @@ namespace DynamoCoreWpfTests
             // initial load (e.g. from IExtensionStorageAccess.WorkspaceOpened), which bypasses
             // the DisableExtensionWhenNoNetworkMode guard in DynamoLoadedViewExtensionHandler.
             // AddOrFocusExtensionControl must block these late attempts in NoNetworkMode.
+            //
+            // This is specifically exercising NoNetworkMode, not the IDSDK gate: the fixture's
+            // DynamoModel has no AuthProvider configured, so AuthenticationManager.IsIDSDKInitialized()
+            // is unconditionally true (see AuthenticationManager.IsIDSDKInitialized) and can't be
+            // the reason AddOrFocusExtensionControl returns Blocked here.
             var stubExtension = new StubViewExtension(DynamoView.AutodeskAssistantExtensionId);
-            var added = View.AddOrFocusExtensionControl(stubExtension, null);
+            var result = View.AddOrFocusExtensionControl(stubExtension, null);
 
-            Assert.IsFalse(added);
+            Assert.AreEqual(DynamoView.ExtensionControlResult.Blocked, result);
             Assert.IsFalse(ViewModel.SideBarTabItems
                 .OfType<System.Windows.Controls.TabItem>()
                 .Any(t => string.Equals(t.Uid, DynamoView.AutodeskAssistantExtensionId,
