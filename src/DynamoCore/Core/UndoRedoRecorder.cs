@@ -60,6 +60,15 @@ namespace Dynamo.Core
         /// Notifies the UI that the undo/redo state has changed so that undo/redo buttons can be enabled/disabled.
         /// </summary>
         void UpdateUndoRedoStack();
+
+        /// <summary>
+        /// UndoRedoRecorder calls this method right after recording a fresh user
+        /// modification (e.g. a node/note/group being moved or resized) so the
+        /// client can mark itself as having unsaved changes. Not called during
+        /// undo/redo replay itself, which goes through DeleteModel/CreateModel/
+        /// ReloadModel instead.
+        /// </summary>
+        void MarkAsModified();
     }
 
     internal class UndoRedoRecorder : LogSourceBase
@@ -221,17 +230,26 @@ namespace Dynamo.Core
 
         /// <summary>
         /// Record the given model right before it is modified. This results
-        /// in a modification action to be recorded under the current action 
+        /// in a modification action to be recorded under the current action
         /// group. Undoing this action will result in the model being reverted
         /// to the states that it was in before the modification took place.
         /// </summary>
         /// <param name="model">The model to be recorded.</param>
-        public void RecordModificationForUndo(ModelBase model)
+        /// <param name="markAsModified">
+        /// Whether this recording represents a real content change that should mark the
+        /// workspace dirty (e.g. a node/note/group drag or resize). Pass false for recordings
+        /// that exist purely to make an incidental action (like a selection change) undoable,
+        /// since that state is never written to the saved file (DYN-10717).
+        /// </param>
+        public void RecordModificationForUndo(ModelBase model, bool markAsModified = true)
         {
             RecordActionInternal(currentActionGroup,
                 model, UserAction.Modification);
 
             redoStack.Clear(); // Wipe out the redo-stack.
+
+            if (markAsModified)
+                undoClient.MarkAsModified();
         }
 
         /// <summary>
@@ -269,6 +287,14 @@ namespace Dynamo.Core
 
         public bool CanUndo { get { return undoStack.Count > 0; } }
         public bool CanRedo { get { return redoStack.Count > 0; } }
+
+        /// <summary>
+        /// The number of action groups currently on the undo stack. Used by the owning
+        /// workspace to detect when Undo/Redo has returned to the exact position it was
+        /// at when last saved, so it can correctly report having no unsaved changes again
+        /// (DYN-10717) instead of a one-way "dirty" flag that Undo never clears.
+        /// </summary>
+        internal int UndoStackDepth { get { return undoStack.Count; } }
 
         #endregion
 

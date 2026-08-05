@@ -192,6 +192,37 @@ namespace Dynamo.Tests.ModelsTest
         }
 
         /// <summary>
+        /// Regression test for DYN-10717: selecting or deselecting a model must not mark the
+        /// workspace as having unsaved changes. Selection is undo-tracked for UX purposes only
+        /// (so Ctrl+Z can restore it) and is never written to the saved file, so it must not
+        /// affect the Save button's dirty-flag gating.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void SelectModelImplDoesNotMarkWorkspaceDirtyTest()
+        {
+            //Arrange
+            string openPath = Path.Combine(TestDirectory, @"core\DetailedPreviewMargin_Test.dyn");
+            RunModel(openPath);
+
+            var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
+            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+            CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges = false;
+
+            //Act -- select the node
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.SelectModelCommand(addNode.GUID, ModifierKeys.None));
+
+            //Assert
+            Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+
+            //Act -- clear the selection
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.SelectModelCommand(Guid.Empty, ModifierKeys.None));
+
+            //Assert
+            Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+        }
+
+        /// <summary>
         /// This test method will execute the SelectModelImpl method from the DynamoModel class and does not crash
         /// </summary>
         [Test]

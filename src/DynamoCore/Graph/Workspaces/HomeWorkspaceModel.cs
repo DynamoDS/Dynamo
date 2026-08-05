@@ -925,10 +925,10 @@ namespace Dynamo.Graph.Workspaces
                 cbn.ProcessCodeDirect(cbn.RecompileCodeBlockAST);
             }
             // This method is intended to be called only during opening of an existing workspace
-            // and therefore if the workspace is set as dirty on account of CBN precompilation, 
+            // and therefore if the workspace is set as dirty on account of CBN precompilation,
             // the workspace should be reverted to a clean state as it's undesirable to have unsaved
             // changes for a workspace that is newly opened.
-            HasUnsavedChanges = false;
+            MarkAsSaved();
         }
 
         internal bool TryGetMatchingWorkspaceData(string uniqueId, out Dictionary<string, string> data)

@@ -292,6 +292,7 @@ namespace Dynamo.Graph.Workspaces
         private readonly List<AnnotationModel> annotations;
         internal readonly List<PresetModel> presets;
         private readonly UndoRedoRecorder undoRecorder;
+        private int savedUndoStackDepth;
         private static List<ModelBase> savedModels = null;
         private double scaleFactor = 1.0;
         private bool hasNodeInSyncWithDefinition;
@@ -430,7 +431,7 @@ namespace Dynamo.Graph.Workspaces
         internal virtual void OnSaved()
         {
             LastSaved = DateTime.Now;
-            HasUnsavedChanges = false;
+            MarkAsSaved();
 
             if (Saved != null)
                 Saved();
@@ -1451,7 +1452,7 @@ namespace Dynamo.Graph.Workspaces
             FileName = info.FileName;
             Zoom = info.Zoom;
 
-            HasUnsavedChanges = false;
+            MarkAsSaved();
             IsReadOnly = DynamoUtilities.PathHelper.IsReadOnlyPath(fileName);
             LastSaved = DateTime.Now;
 
