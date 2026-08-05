@@ -223,6 +223,38 @@ namespace Dynamo.Tests.ModelsTest
         }
 
         /// <summary>
+        /// Regression test for a PR review comment on DYN-10717: since selection changes are
+        /// still recorded on the undo stack (so Ctrl+Z can restore selection), undoing then
+        /// redoing a selection-only action group must not incorrectly mark the workspace
+        /// dirty, even though the undo-stack depth changes across the Undo/Redo cycle.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void UndoRedoOfSelectionOnlyChangeDoesNotMarkWorkspaceDirtyTest()
+        {
+            //Arrange
+            string openPath = Path.Combine(TestDirectory, "core", "DetailedPreviewMargin_Test.dyn");
+            RunModel(openPath);
+
+            var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
+            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+            CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges = false;
+
+            //Act -- select the node, then undo and redo that selection change
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.SelectModelCommand(addNode.GUID, ModifierKeys.None));
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Undo));
+
+            //Assert
+            Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+
+            //Act -- redo the selection change
+            CurrentDynamoModel.ExecuteCommand(new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Redo));
+
+            //Assert
+            Assert.IsFalse(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+        }
+
+        /// <summary>
         /// This test method will execute the SelectModelImpl method from the DynamoModel class and does not crash
         /// </summary>
         [Test]

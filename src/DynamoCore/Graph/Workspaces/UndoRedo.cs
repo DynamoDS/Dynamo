@@ -60,7 +60,7 @@ namespace Dynamo.Graph.Workspaces
             if (null != undoRecorder)
             {
                 undoRecorder.Undo();
-                UpdateHasUnsavedChangesFromUndoStackDepth();
+                UpdateHasUnsavedChangesFromSavedStateAffectingDepth();
 
                 // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7883
                 // Request run for every undo action
@@ -73,7 +73,7 @@ namespace Dynamo.Graph.Workspaces
             if (null != undoRecorder)
             {
                 undoRecorder.Redo();
-                UpdateHasUnsavedChangesFromUndoStackDepth();
+                UpdateHasUnsavedChangesFromSavedStateAffectingDepth();
 
                 // http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7883
                 // Request run for every redo action
@@ -86,7 +86,7 @@ namespace Dynamo.Graph.Workspaces
             if (null != undoRecorder)
                 undoRecorder.Clear();
 
-            savedUndoStackDepth = 0;
+            savedUndoDepth = 0;
         }
 
         /// <summary>
@@ -98,12 +98,12 @@ namespace Dynamo.Graph.Workspaces
         internal void MarkAsSaved()
         {
             HasUnsavedChanges = false;
-            savedUndoStackDepth = undoRecorder?.UndoStackDepth ?? 0;
+            savedUndoDepth = undoRecorder?.SavedStateAffectingUndoDepth ?? 0;
         }
 
-        private void UpdateHasUnsavedChangesFromUndoStackDepth()
+        private void UpdateHasUnsavedChangesFromSavedStateAffectingDepth()
         {
-            HasUnsavedChanges = undoRecorder.UndoStackDepth != savedUndoStackDepth;
+            HasUnsavedChanges = undoRecorder.SavedStateAffectingUndoDepth != savedUndoDepth;
         }
 
         // See RecordModelsForModification below for more details.

@@ -84,6 +84,7 @@ namespace Dynamo.Core
 
         private const string UserActionAttrib = "UserAction";
         private const string ActionGroup = "ActionGroup";
+        private const string AffectsSavedStateAttrib = "AffectsSavedState";
 
         private readonly IUndoRedoRecorderClient undoClient;
         private readonly XmlDocument document = new XmlDocument();
@@ -210,6 +211,7 @@ namespace Dynamo.Core
             RecordActionInternal(currentActionGroup,
                 model, UserAction.Creation);
 
+            currentActionGroup.SetAttribute(AffectsSavedStateAttrib, bool.TrueString);
             redoStack.Clear(); // Wipe out the redo-stack.
         }
 
@@ -225,6 +227,7 @@ namespace Dynamo.Core
             RecordActionInternal(currentActionGroup,
                 model, UserAction.Deletion);
 
+            currentActionGroup.SetAttribute(AffectsSavedStateAttrib, bool.TrueString);
             redoStack.Clear(); // Wipe out the redo-stack.
         }
 
@@ -249,7 +252,10 @@ namespace Dynamo.Core
             redoStack.Clear(); // Wipe out the redo-stack.
 
             if (markAsModified)
+            {
+                currentActionGroup.SetAttribute(AffectsSavedStateAttrib, bool.TrueString);
                 undoClient.MarkAsModified();
+            }
         }
 
         /// <summary>
@@ -289,12 +295,20 @@ namespace Dynamo.Core
         public bool CanRedo { get { return redoStack.Count > 0; } }
 
         /// <summary>
-        /// The number of action groups currently on the undo stack. Used by the owning
-        /// workspace to detect when Undo/Redo has returned to the exact position it was
-        /// at when last saved, so it can correctly report having no unsaved changes again
-        /// (DYN-10717) instead of a one-way "dirty" flag that Undo never clears.
+        /// The number of action groups currently on the undo stack that actually affect
+        /// what would be written to the saved file (i.e. were recorded via
+        /// RecordCreationForUndo/RecordDeletionForUndo, or RecordModificationForUndo with
+        /// markAsModified: true) -- action groups recorded purely to make an incidental,
+        /// non-persisted action undoable (e.g. a selection change) are excluded. Used by
+        /// the owning workspace to detect when Undo/Redo has returned to the exact content
+        /// position it was at when last saved, so it can correctly report having no unsaved
+        /// changes again (DYN-10717) instead of a one-way "dirty" flag that Undo never
+        /// clears, without being fooled by undoing/redoing a non-content action group.
         /// </summary>
-        internal int UndoStackDepth { get { return undoStack.Count; } }
+        internal int SavedStateAffectingUndoDepth
+        {
+            get { return undoStack.Count(group => group.GetAttribute(AffectsSavedStateAttrib) == bool.TrueString); }
+        }
 
         #endregion
 
@@ -447,6 +461,13 @@ namespace Dynamo.Core
                 }
             }
 
+            // UndoActionGroup rebuilds a fresh XmlElement rather than reusing "actionGroup",
+            // so the AffectsSavedState tag must be explicitly carried over -- otherwise a
+            // later Redo of this same group would never be recognized as re-dirtying the
+            // workspace (DYN-10717).
+            if (actionGroup.GetAttribute(AffectsSavedStateAttrib) == bool.TrueString)
+                newGroup.SetAttribute(AffectsSavedStateAttrib, bool.TrueString);
+
             redoStack.Push(newGroup); // Place the states on the redo-stack.
         }
 
@@ -492,6 +513,12 @@ namespace Dynamo.Core
                         break;
                 }
             }
+
+            // See the matching comment in UndoActionGroup -- the tag must be carried over
+            // for a subsequent Undo of this redone group to correctly clear the dirty
+            // flag again (DYN-10717).
+            if (actionGroup.GetAttribute(AffectsSavedStateAttrib) == bool.TrueString)
+                newGroup.SetAttribute(AffectsSavedStateAttrib, bool.TrueString);
 
             undoStack.Push(newGroup);
         }
