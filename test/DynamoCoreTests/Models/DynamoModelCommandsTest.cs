@@ -202,7 +202,7 @@ namespace Dynamo.Tests.ModelsTest
         public void SelectModelImplDoesNotMarkWorkspaceDirtyTest()
         {
             //Arrange
-            string openPath = Path.Combine(TestDirectory, @"core\DetailedPreviewMargin_Test.dyn");
+            string openPath = Path.Combine(TestDirectory, "core", "DetailedPreviewMargin_Test.dyn");
             RunModel(openPath);
 
             var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));

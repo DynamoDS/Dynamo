@@ -865,13 +865,18 @@ namespace Dynamo.Tests
         [Test]
         public void TestFileDirtyOnNodeModification()
         {
-            string openPath = Path.Combine(TestDirectory, @"core\LacingTest.dyn");
+            string openPath = Path.Combine(TestDirectory, "core", "LacingTest.dyn");
             OpenModel(openPath);
 
             Assert.AreEqual(false, CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
 
             var node = CurrentDynamoModel.CurrentWorkspace.Nodes.First();
-            CurrentDynamoModel.CurrentWorkspace.RecordModelsForModification(new List<ModelBase> { node });
+
+            // Passed as ModelBase[] (not List<ModelBase>) to unambiguously call the public
+            // RecordModelsForModification(IEnumerable<ModelBase>) overload, which opens its
+            // own action group -- the internal List<ModelBase> overload is an exact-type
+            // match that C# would otherwise prefer, and it assumes a group is already open.
+            CurrentDynamoModel.CurrentWorkspace.RecordModelsForModification(new ModelBase[] { node });
 
             Assert.AreEqual(true, CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
         }
@@ -886,7 +891,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestUndoRedoRestoresHasUnsavedChangesToSavedState()
         {
-            string openPath = Path.Combine(TestDirectory, @"core\LacingTest.dyn");
+            string openPath = Path.Combine(TestDirectory, "core", "LacingTest.dyn");
             OpenModel(openPath);
 
             Assert.AreEqual(false, CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
@@ -913,7 +918,7 @@ namespace Dynamo.Tests
         [Test]
         public void TestUndoingOneOfTwoChangesStaysDirty()
         {
-            string openPath = Path.Combine(TestDirectory, @"core\LacingTest.dyn");
+            string openPath = Path.Combine(TestDirectory, "core", "LacingTest.dyn");
             OpenModel(openPath);
 
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes.Take(2).ToList();
