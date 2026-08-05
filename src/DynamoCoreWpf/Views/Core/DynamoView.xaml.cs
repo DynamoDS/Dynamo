@@ -3440,9 +3440,10 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// Prevents the Autodesk Assistant and MCP View extensions from being loaded or opened when
+        /// Prevents the Autodesk Assistant and MCP View extensions from being (re-)opened when
         /// Autodesk Identity (IDSDK) is not initialized, so the native "Create Assistant" call chain
         /// that requires Identity never fires and cannot cascade into a series of error dialogs.
+        /// Loaded() itself still runs regardless, so the extension can register its own UI.
         /// </summary>
         internal bool DisableExtensionWhenIDSDKNotInitialized(string extensionId, string extensionName, string action)
         {
