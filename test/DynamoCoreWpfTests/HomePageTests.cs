@@ -174,9 +174,10 @@ namespace DynamoCoreWpfTests
         public void IsSampleGraphPathExcludesDirectoriesAndUnsupportedFiles()
         {
             // Arrange
-            var directoryPath = GetTestDirectory(ExecutingDirectory);
-            var dynPath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\nodeLocationTest.dyn");
-            var unrelatedPath = Path.Combine(GetTestDirectory(ExecutingDirectory), "readme.txt");
+var testDirectory = GetTestDirectory(ExecutingDirectory);
+var directoryPath = testDirectory;
+var dynPath = Path.Combine(testDirectory, "core", "nodeLocationTest.dyn");
+var unrelatedPath = Path.Combine(testDirectory, "readme.txt");
 
             // Assert
             Assert.IsTrue(Directory.Exists(directoryPath));
