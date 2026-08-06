@@ -596,7 +596,7 @@ namespace Dynamo.Controls
             }
         }
 
-        private ExtensionWindow AddExtensionWindow(IViewExtension viewExtension, UIElement content, WindowSettings windowSettings)
+        private void AddExtensionWindow(IViewExtension viewExtension, UIElement content, WindowSettings windowSettings)
         {
             ExtensionWindow window;
             if (windowSettings == null)
@@ -641,8 +641,6 @@ namespace Dynamo.Controls
             window.Show();
 
             ExtensionWindows.Add(viewExtension.Name, window);
-
-            return window;
         }
 
         private void ExtensionWindow_Closing(object sender, CancelEventArgs e)
@@ -669,7 +667,7 @@ namespace Dynamo.Controls
             }
         }
 
-        private TabItem AddExtensionTab(IViewExtension viewExtension, UIElement content)
+        private void AddExtensionTab(IViewExtension viewExtension, UIElement content)
         {
             // creates a new tab item
             var tab = new TabItem();
@@ -692,8 +690,6 @@ namespace Dynamo.Controls
             dynamoViewModel.SideBarTabItems.Insert(dynamoViewModel.SideBarTabItems.Count, tab);
 
             tabDynamic.SelectedItem = tab;
-
-            return tab;
         }
         private void UpdateNodeIcons_Click(object sender, RoutedEventArgs e)
         {

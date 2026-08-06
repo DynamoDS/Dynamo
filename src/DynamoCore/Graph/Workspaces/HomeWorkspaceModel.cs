@@ -528,47 +528,66 @@ namespace Dynamo.Graph.Workspaces
             {
                 foreach (var node in Nodes)
                 {
-                    externalFilesDictionary.TryGetValue(node.GUID, out var serializedDependencyInfo);
-
-                    // Check for the file path string value at each of the output ports of all nodes in the workspace.
-                    foreach (var port in node.OutPorts)
-                    {
-                        var id = node.GetAstIdentifierForOutputIndex(port.Index)?.Name;
-                        var mirror = EngineController.GetMirror(id);
-                        var data = mirror?.GetData().Data;
-
-                        if (data is string dataString && dataString.Contains(@"\"))
-                        {
-                            // Check if the value exists on disk
-                            DynamoUtilities.PathHelper.FileInfoAtPath(dataString, out bool fileExists, out string fileSize);
-                            if (fileExists)
-                            {
-                                var externalFilePath = System.IO.Path.GetFullPath(dataString);
-                                var externalFileName = System.IO.Path.GetFileName(dataString);
-
-                                if (!externalFiles.ContainsKey(externalFilePath))
-                                {
-                                    externalFiles[externalFilePath] = new DependencyInfo(externalFileName, dataString, ReferenceType.External);
-                                }
-
-                                externalFiles[externalFilePath].AddDependent(node.GUID);
-                                externalFiles[externalFilePath].Size = fileSize;
-                            }
-                            // Read the serialized value for that node.
-                            else if (serializedDependencyInfo != null && dataString.Contains(serializedDependencyInfo.Name))
-                            {
-                                if (!externalFiles.ContainsKey(serializedDependencyInfo.Name))
-                                {
-                                    externalFiles[serializedDependencyInfo.Name] = new DependencyInfo(serializedDependencyInfo.Name, ReferenceType.External);
-                                }
-                                externalFiles[serializedDependencyInfo.Name].AddDependent(node.GUID);
-                            }
-                        }
-                    }
+                    CollectExternalFileReferencesForNode(node, externalFiles);
                 }
             }
 
             return externalFiles.Values.ToList<INodeLibraryDependencyInfo>();
+        }
+
+        /// <summary>
+        /// Checks each output port of the given node for a file path value, recording any
+        /// found as an external file reference.
+        /// </summary>
+        private void CollectExternalFileReferencesForNode(NodeModel node, Dictionary<object, DependencyInfo> externalFiles)
+        {
+            externalFilesDictionary.TryGetValue(node.GUID, out var serializedDependencyInfo);
+
+            // Check for the file path string value at each of the output ports of all nodes in the workspace.
+            foreach (var port in node.OutPorts)
+            {
+                var id = node.GetAstIdentifierForOutputIndex(port.Index)?.Name;
+                var mirror = EngineController.GetMirror(id);
+                var data = mirror?.GetData().Data;
+
+                if (data is string dataString && dataString.Contains(@"\"))
+                {
+                    RecordExternalFileReference(node, dataString, serializedDependencyInfo, externalFiles);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Records the given output value as an external file reference, either because it
+        /// exists on disk, or -- if not -- because it matches a previously serialized
+        /// dependency for this node.
+        /// </summary>
+        private void RecordExternalFileReference(NodeModel node, string dataString, DependencyInfo serializedDependencyInfo, Dictionary<object, DependencyInfo> externalFiles)
+        {
+            // Check if the value exists on disk
+            DynamoUtilities.PathHelper.FileInfoAtPath(dataString, out bool fileExists, out string fileSize);
+            if (fileExists)
+            {
+                var externalFilePath = System.IO.Path.GetFullPath(dataString);
+                var externalFileName = System.IO.Path.GetFileName(dataString);
+
+                if (!externalFiles.ContainsKey(externalFilePath))
+                {
+                    externalFiles[externalFilePath] = new DependencyInfo(externalFileName, dataString, ReferenceType.External);
+                }
+
+                externalFiles[externalFilePath].AddDependent(node.GUID);
+                externalFiles[externalFilePath].Size = fileSize;
+            }
+            // Read the serialized value for that node.
+            else if (serializedDependencyInfo != null && dataString.Contains(serializedDependencyInfo.Name))
+            {
+                if (!externalFiles.ContainsKey(serializedDependencyInfo.Name))
+                {
+                    externalFiles[serializedDependencyInfo.Name] = new DependencyInfo(serializedDependencyInfo.Name, ReferenceType.External);
+                }
+                externalFiles[serializedDependencyInfo.Name].AddDependent(node.GUID);
+            }
         }
 
         /// <summary>
