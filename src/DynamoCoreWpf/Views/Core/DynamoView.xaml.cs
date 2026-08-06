@@ -2529,7 +2529,13 @@ namespace Dynamo.Controls
                                 sampleFiles.Add(path);
                             }
                         }
-                        SamplesMenu.Items.Add(dirItem);
+
+                        // Skip folders with no sample graphs directly under them so the Samples
+                        // menu does not show empty, unopenable submenus (DYN-10736).
+                        if (dirItem.Items.Count > 0)
+                        {
+                            SamplesMenu.Items.Add(dirItem);
+                        }
                     }
                 }
 
