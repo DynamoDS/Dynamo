@@ -307,7 +307,7 @@ namespace Dynamo.Graph.Workspaces
         private List<INodeLibraryDependencyInfo> externalFileReferences;
         private Dictionary<Guid, PackageInfo> nodePackageDictionary = new Dictionary<Guid, PackageInfo>();
         private Dictionary<Guid, DependencyInfo> localDefinitionsDictionary = new Dictionary<Guid, DependencyInfo>();
-        private protected Dictionary<Guid, DependencyInfo> externalFilesDictionary = new Dictionary<Guid, DependencyInfo>();
+        private protected readonly Dictionary<Guid, DependencyInfo> externalFilesDictionary = new Dictionary<Guid, DependencyInfo>();
         private readonly string customNodeExtension = ".dyf";
 
         /// <summary>

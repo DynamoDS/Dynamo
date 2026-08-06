@@ -544,9 +544,9 @@ namespace Dynamo.Graph.Workspaces
             externalFilesDictionary.TryGetValue(node.GUID, out var serializedDependencyInfo);
 
             // Check for the file path string value at each of the output ports of all nodes in the workspace.
-            foreach (var port in node.OutPorts)
+            var outputIdentifierNames = node.OutPorts.Select(port => node.GetAstIdentifierForOutputIndex(port.Index)?.Name);
+            foreach (var id in outputIdentifierNames)
             {
-                var id = node.GetAstIdentifierForOutputIndex(port.Index)?.Name;
                 var mirror = EngineController.GetMirror(id);
                 var data = mirror?.GetData().Data;
 
