@@ -2636,7 +2636,7 @@ namespace Dynamo.Models
 
                 if (string.IsNullOrEmpty(workspace.FileName))
                 {
-                    workspace.HasUnsavedChanges = true;
+                    workspace.MarkAsIndependentlyModified();
                 }
 
                 RunType runType = RunType.Manual;

@@ -101,7 +101,7 @@ namespace Dynamo.Graph.Workspaces
 
             if (args.PropertyName == "Category" || args.PropertyName == "Description")
             {
-                HasUnsavedChanges = true;
+                MarkAsIndependentlyModified();
                 OnInfoChanged();
             }
         }

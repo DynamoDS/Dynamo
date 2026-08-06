@@ -327,10 +327,10 @@ namespace Dynamo.GraphMetadata
         }
 
         private void MarkCurrentWorkspaceModified()
-        { 
+        {
             if (currentWorkspace != null && !string.IsNullOrEmpty(currentWorkspace.FileName))
             {
-                currentWorkspace.HasUnsavedChanges = true;
+                currentWorkspace.MarkAsIndependentlyModified();
             }
         }
 

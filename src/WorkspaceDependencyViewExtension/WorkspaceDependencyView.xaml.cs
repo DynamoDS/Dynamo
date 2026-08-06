@@ -237,8 +237,8 @@ namespace Dynamo.WorkspaceDependency
                     info.Version = new Version(targetInfo.VersionName);
                     info.State = PackageDependencyState.Loaded;
                     info.Path = targetInfo.RootDirectory;
-                    // Mark the current workspace dirty for save
-                    currentWorkspace.HasUnsavedChanges = true;
+                    // Mark the current workspace dirty for save.
+                    currentWorkspace.MarkAsIndependentlyModified();
                     dependencyViewExtension.DependencyRegen(currentWorkspace);
                 }
             }

@@ -1549,7 +1549,7 @@ namespace Dynamo.Core
                         IsVisibleInDynamoLibrary = true
                     });
 
-                newWorkspace.HasUnsavedChanges = true;
+                newWorkspace.MarkAsIndependentlyModified();
 
                 RegisterCustomNodeWorkspace(newWorkspace);
 

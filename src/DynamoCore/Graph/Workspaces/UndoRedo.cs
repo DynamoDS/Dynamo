@@ -97,9 +97,9 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         internal void MarkAsSaved()
         {
-            // Goes through the public setter (not SetHasUnsavedChangesCore) specifically so
-            // it also resets independentDirtyFlag -- a save clears both undo-tracked and
-            // independently-flagged (administrative) dirty state.
+            // A save clears both undo-tracked and independently-flagged (administrative)
+            // dirty state. independentDirtyFlag must be reset explicitly here
+            independentDirtyFlag = false;
             HasUnsavedChanges = false;
             savedUndoDepth = undoRecorder?.SavedStateAffectingUndoDepth ?? 0;
         }
@@ -107,11 +107,9 @@ namespace Dynamo.Graph.Workspaces
         private void UpdateHasUnsavedChangesFromSavedStateAffectingDepth()
         {
             // OR in independentDirtyFlag rather than overwriting: the undo stack being back
-            // at its saved position only means undo-tracked content is clean again -- it says
-            // nothing about workspace-level/administrative state that was marked dirty
-            // outside the undo-recording system (DYN-10717).
+            // at its saved position only means undo-tracked content is clean again
             bool undoDepthIndicatesUnsaved = undoRecorder.SavedStateAffectingUndoDepth != savedUndoDepth;
-            SetHasUnsavedChangesCore(undoDepthIndicatesUnsaved || independentDirtyFlag);
+            HasUnsavedChanges = undoDepthIndicatesUnsaved || independentDirtyFlag;
         }
 
         // See RecordModelsForModification below for more details.
@@ -890,16 +888,9 @@ namespace Dynamo.Graph.Workspaces
         // Explicit implementation (rather than matching the public/implicit style of
         // the other IUndoRedoRecorderClient members above) so this stays an internal
         // implementation detail of the undo/dirty-flag wiring, not new public API.
-        //
-        // Uses SetHasUnsavedChangesCore rather than the public HasUnsavedChanges setter:
-        // this is called for a tagged, undo-tracked modification, whose dirtiness is fully
-        // accounted for by the undo-depth tracking already (the tagged group was just
-        // pushed). Going through the public setter would also latch independentDirtyFlag,
-        // which would then never get cleared by Undo -- defeating the ability to clear the
-        // dirty flag by undoing the very change that set it (DYN-10717).
         void IUndoRedoRecorderClient.MarkAsModified()
         {
-            SetHasUnsavedChangesCore(true);
+            HasUnsavedChanges = true;
         }
 
         /// <summary>

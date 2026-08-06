@@ -1074,29 +1074,26 @@ namespace Dynamo.Graph.Workspaces
             }
             set
             {
-                // This public setter is used both by genuine "no unsaved changes" resets
-                // (e.g. AskUserToSaveWorkspaceOrCancel) and by the many workspace-level/
-                // administrative call sites that mark this workspace dirty independently of
-                // the undo-recording system -- so it tracks that independent state too.
-                // Undo/Redo's own depth-driven updates go through SetHasUnsavedChangesCore
-                // instead, specifically to avoid poisoning this flag (DYN-10717).
-                independentDirtyFlag = value;
-                SetHasUnsavedChangesCore(value);
+                // Deliberately does NOT touch independentDirtyFlag: the overwhelming
+                // majority of existing call sites set this redundantly alongside an
+                // already-tagged undo recording. Only MarkAsIndependentlyModified 
+				// and MarkAsSaved touch independentDirtyFlag (DYN-10717).
+                hasUnsavedChanges = value;
+                RaisePropertyChanged("HasUnsavedChanges");
             }
         }
 
         /// <summary>
-        /// Sets the backing HasUnsavedChanges state without touching independentDirtyFlag.
-        /// Used internally by the undo-depth-driven recompute and by the tagged-modification
-        /// notification (IUndoRedoRecorderClient.MarkAsModified), so that a change tracked
-        /// entirely via the undo-recording system doesn't also get latched into
-        /// independentDirtyFlag, which would otherwise defeat Undo's ability to clear the
-        /// dirty flag again (DYN-10717).
+        /// Marks this workspace as having unsaved changes due to a workspace-level or
+        /// administrative change that is not tracked by the undo/redo system. Unlike
+        /// setting <see cref="HasUnsavedChanges"/> directly, this ensures the flag cannot be
+        /// silently cleared by an unrelated Undo/Redo operation that returns the undo stack
+        /// to its last-saved position (DYN-10717).
         /// </summary>
-        private void SetHasUnsavedChangesCore(bool value)
+        public void MarkAsIndependentlyModified()
         {
-            hasUnsavedChanges = value;
-            RaisePropertyChanged("HasUnsavedChanges");
+            independentDirtyFlag = true;
+            HasUnsavedChanges = true;
         }
 
         /// <summary>

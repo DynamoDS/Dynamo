@@ -947,7 +947,7 @@ namespace Dynamo.Tests
 
             // Simulate a workspace-level/administrative change that doesn't go through the
             // tagged undo-recording system (e.g. LinterViewModel.ActiveLinter, GeometryScalingPopup).
-            CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges = true;
+            CurrentDynamoModel.CurrentWorkspace.MarkAsIndependentlyModified();
 
             var node = CurrentDynamoModel.CurrentWorkspace.Nodes.First();
             CurrentDynamoModel.CurrentWorkspace.RecordModelsForModification(new ModelBase[] { node });
