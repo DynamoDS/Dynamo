@@ -931,6 +931,34 @@ namespace Dynamo.Tests
             Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
         }
 
+        /// <summary>
+        /// Regression test for a PR review comment on DYN-10717: HasUnsavedChanges can be set
+        /// directly by workspace-level/administrative code paths that never go through the
+        /// tagged undo-recording system (e.g. a unit-conversion node's selected units,
+        /// geometry scale factor, active linter, or custom graph metadata). Undoing an
+        /// unrelated, separately-tracked edit back to the exact saved undo-stack depth must
+        /// not silently wipe out that independent dirty signal.
+        /// </summary>
+        [Test]
+        public void TestIndependentDirtyFlagSurvivesUnrelatedUndo()
+        {
+            string openPath = Path.Combine(TestDirectory, "core", "LacingTest.dyn");
+            OpenModel(openPath);
+
+            // Simulate a workspace-level/administrative change that doesn't go through the
+            // tagged undo-recording system (e.g. LinterViewModel.ActiveLinter, GeometryScalingPopup).
+            CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges = true;
+
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.First();
+            CurrentDynamoModel.CurrentWorkspace.RecordModelsForModification(new ModelBase[] { node });
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Undo));
+
+            // Even though the tagged/tracked edit was fully undone (back to the saved
+            // undo-depth), the independent administrative dirty flag must keep the
+            // workspace marked unsaved.
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+        }
+
         // SaveImage
 
         //[Test]

@@ -286,6 +286,18 @@ namespace Dynamo.Graph.Workspaces
         private string author = "None provided";
         private string description;
         private bool hasUnsavedChanges;
+
+        /// <summary>
+        /// Tracks whether something marked this workspace dirty independently of the
+        /// undo-stack depth tracking (e.g. workspace-level/administrative state such as a
+        /// unit-conversion node's selected units, geometry scale factor, active linter, or
+        /// custom graph metadata -- none of which go through the tagged undo-recording
+        /// system). UpdateHasUnsavedChangesFromSavedStateAffectingDepth() ORs this in rather
+        /// than letting undo-depth comparisons blindly overwrite it, so an unrelated
+        /// undo/redo can never silently discard a real, independently-flagged unsaved change
+        /// (DYN-10717).
+        /// </summary>
+        private bool independentDirtyFlag;
         private bool isReadOnly;
         private readonly List<NodeModel> nodes;
         private readonly List<NoteModel> notes;
@@ -1053,6 +1065,7 @@ namespace Dynamo.Graph.Workspaces
                     if (!File.Exists(this.FileName)) // but the filename is invalid
                     {
                         this.fileName = string.Empty;
+                        independentDirtyFlag = true;
                         hasUnsavedChanges = true;
                     }
                 }
@@ -1061,9 +1074,29 @@ namespace Dynamo.Graph.Workspaces
             }
             set
             {
-                hasUnsavedChanges = value;
-                RaisePropertyChanged("HasUnsavedChanges");
+                // This public setter is used both by genuine "no unsaved changes" resets
+                // (e.g. AskUserToSaveWorkspaceOrCancel) and by the many workspace-level/
+                // administrative call sites that mark this workspace dirty independently of
+                // the undo-recording system -- so it tracks that independent state too.
+                // Undo/Redo's own depth-driven updates go through SetHasUnsavedChangesCore
+                // instead, specifically to avoid poisoning this flag (DYN-10717).
+                independentDirtyFlag = value;
+                SetHasUnsavedChangesCore(value);
             }
+        }
+
+        /// <summary>
+        /// Sets the backing HasUnsavedChanges state without touching independentDirtyFlag.
+        /// Used internally by the undo-depth-driven recompute and by the tagged-modification
+        /// notification (IUndoRedoRecorderClient.MarkAsModified), so that a change tracked
+        /// entirely via the undo-recording system doesn't also get latched into
+        /// independentDirtyFlag, which would otherwise defeat Undo's ability to clear the
+        /// dirty flag again (DYN-10717).
+        /// </summary>
+        private void SetHasUnsavedChangesCore(bool value)
+        {
+            hasUnsavedChanges = value;
+            RaisePropertyChanged("HasUnsavedChanges");
         }
 
         /// <summary>
