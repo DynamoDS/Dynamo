@@ -1074,10 +1074,6 @@ namespace Dynamo.Graph.Workspaces
             }
             set
             {
-                // Deliberately does NOT touch independentDirtyFlag: the overwhelming
-                // majority of existing call sites set this redundantly alongside an
-                // already-tagged undo recording. Only MarkAsIndependentlyModified 
-				// and MarkAsSaved touch independentDirtyFlag (DYN-10717).
                 hasUnsavedChanges = value;
                 RaisePropertyChanged("HasUnsavedChanges");
             }

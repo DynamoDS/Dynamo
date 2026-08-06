@@ -327,7 +327,6 @@ namespace Dynamo.Models
                 models.Add(modelBase);
             }
 
-            // markAsModified: false -- see AddSelectionAndRecordUndo.
             WorkspaceModel.RecordModelsForModification(models, CurrentWorkspace.UndoRecorder, markAsModified: false);
 
             DynamoSelection.Instance.ClearSelection();

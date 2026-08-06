@@ -461,10 +461,6 @@ namespace Dynamo.Core
                 }
             }
 
-            // UndoActionGroup rebuilds a fresh XmlElement rather than reusing "actionGroup",
-            // so the AffectsSavedState tag must be explicitly carried over -- otherwise a
-            // later Redo of this same group would never be recognized as re-dirtying the
-            // workspace (DYN-10717).
             if (actionGroup.GetAttribute(AffectsSavedStateAttrib) == bool.TrueString)
                 newGroup.SetAttribute(AffectsSavedStateAttrib, bool.TrueString);
 
@@ -514,9 +510,6 @@ namespace Dynamo.Core
                 }
             }
 
-            // See the matching comment in UndoActionGroup -- the tag must be carried over
-            // for a subsequent Undo of this redone group to correctly clear the dirty
-            // flag again (DYN-10717).
             if (actionGroup.GetAttribute(AffectsSavedStateAttrib) == bool.TrueString)
                 newGroup.SetAttribute(AffectsSavedStateAttrib, bool.TrueString);
 
