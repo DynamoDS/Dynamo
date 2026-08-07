@@ -83,4 +83,9 @@ static Dynamo.Wpf.Properties.Resources.SplashScreenResetSettingsTooltip.get -> s
 static Dynamo.Wpf.Properties.Resources.SplashScreenSettingsImportedRestartMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.SplashScreenSettingsResetSuccess.get -> string
 static Dynamo.Wpf.Properties.Resources.ToastHyperlinkPathText.get -> string
+static Dynamo.Wpf.Properties.Resources.LegacyAssistantExtensionBlockedTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.LegacyAssistantExtensionBlockedShortDescription.get -> string
+static Dynamo.Wpf.Properties.Resources.LegacyAssistantExtensionBlockedDetailedDescription.get -> string
+static Dynamo.Wpf.Properties.Resources.LegacyAssistantExtensionsModalTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.LegacyAssistantExtensionsModalMessage.get -> string
 static readonly Dynamo.PackageManager.UI.PackageManagerTabControl.SuppressHomeEndWhenSelectedProperty -> System.Windows.DependencyProperty

@@ -6836,7 +6836,55 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("PackagePathAutoAddNotificationDetailedDescription", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Extension Not Loaded.
+        /// </summary>
+        public static string LegacyAssistantExtensionBlockedTitle {
+            get {
+                return ResourceManager.GetString("LegacyAssistantExtensionBlockedTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to An outdated copy of {0} was found and was not loaded..
+        /// </summary>
+        public static string LegacyAssistantExtensionBlockedShortDescription {
+            get {
+                return ResourceManager.GetString("LegacyAssistantExtensionBlockedShortDescription", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo now includes {0} as a built-in extension. Delete the following to complete your upgrade, then restart Dynamo:
+        ///{1}.
+        /// </summary>
+        public static string LegacyAssistantExtensionBlockedDetailedDescription {
+            get {
+                return ResourceManager.GetString("LegacyAssistantExtensionBlockedDetailedDescription", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Outdated Autodesk Assistant / DynamoMCP Files Found.
+        /// </summary>
+        public static string LegacyAssistantExtensionsModalTitle {
+            get {
+                return ResourceManager.GetString("LegacyAssistantExtensionsModalTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo now includes Autodesk Assistant and DynamoMCP as built-in features. Older copies were found outside the built-in location and were not loaded. Delete the following, then restart Dynamo:
+        ///
+        ///{0}.
+        /// </summary>
+        public static string LegacyAssistantExtensionsModalMessage {
+            get {
+                return ResourceManager.GetString("LegacyAssistantExtensionsModalMessage", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to A library (*.dll, *.ds) was recently imported into Dynamo. Its path was automatically added to &quot;Preferences &gt; Node and Package Paths...&quot;.
         /// </summary>

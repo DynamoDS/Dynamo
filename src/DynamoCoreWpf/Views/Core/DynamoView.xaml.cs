@@ -1560,6 +1560,8 @@ namespace Dynamo.Controls
             sharedViewExtensionLoadedParams = new ViewLoadedParams(this, dynamoViewModel);
             this.DynamoLoadedViewExtensionHandler(sharedViewExtensionLoadedParams, viewExtensionManager.ViewExtensions);
 
+            NotifyLegacyAssistantExtensionsBlocked();
+
             BackgroundPreview = new Watch3DView { Name = BackgroundPreviewName };
             background_grid.Children.Add(BackgroundPreview);
             BackgroundPreview.DataContext = dynamoViewModel.BackgroundPreviewViewModel;
@@ -3457,6 +3459,39 @@ namespace Dynamo.Controls
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// DYN-10745: raises a notification for each Autodesk Assistant / DynamoMCP view
+        /// extension that LegacyAssistantExtensionGuard blocked at startup, then shows one
+        /// consolidated dialog listing every file or folder blocked by either gate (package or
+        /// view extension) so the user can complete their upgrade to Dynamo 4.2. Package-layer
+        /// blocks already raise their own notification via LibraryLoadFailedException, so only
+        /// the modal (not a second notification) covers them here.
+        /// Remove this method, and its call site above, once DYN-10739 lands the permanent fix.
+        /// </summary>
+        private void NotifyLegacyAssistantExtensionsBlocked()
+        {
+            foreach (var blocked in LegacyAssistantExtensionGuard.BlockedViewExtensions)
+            {
+                var paths = string.Join(Environment.NewLine,
+                    new[] { blocked.ManifestPath, blocked.AssemblyPath }.Where(p => !string.IsNullOrEmpty(p)));
+
+                dynamoViewModel.Model.Logger.LogNotification(
+                    "Dynamo",
+                    Wpf.Properties.Resources.LegacyAssistantExtensionBlockedTitle,
+                    string.Format(Wpf.Properties.Resources.LegacyAssistantExtensionBlockedShortDescription, blocked.DisplayName),
+                    string.Format(Wpf.Properties.Resources.LegacyAssistantExtensionBlockedDetailedDescription, blocked.DisplayName, paths));
+            }
+
+            if (!LegacyAssistantExtensionGuard.HasBlockedPaths) return;
+
+            var allPaths = string.Join(Environment.NewLine, LegacyAssistantExtensionGuard.AllBlockedPaths);
+            MessageBoxService.Show(
+                string.Format(Wpf.Properties.Resources.LegacyAssistantExtensionsModalMessage, allPaths),
+                Wpf.Properties.Resources.LegacyAssistantExtensionsModalTitle,
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
         }
     }
 }
