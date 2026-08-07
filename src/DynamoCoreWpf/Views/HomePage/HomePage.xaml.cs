@@ -557,6 +557,24 @@ namespace Dynamo.UI.Views
             _ = OpenFileAsync(path);
         }
 
+        /// <summary>
+        /// Determines whether the given path points at an openable graph file rather than a
+        /// folder or unrelated file. Directories can reach here as childless sample folder
+        /// cards on the home page (DYN-10736); they are not graphs and must not be treated as
+        /// a missing/openable file.
+        /// </summary>
+        internal static bool IsSampleGraphPath(string path)
+        {
+            if (string.IsNullOrEmpty(path) || Directory.Exists(path))
+            {
+                return false;
+            }
+
+            var extension = Path.GetExtension(path);
+            return extension.Equals(".dyn", StringComparison.OrdinalIgnoreCase) ||
+                extension.Equals(".dyf", StringComparison.OrdinalIgnoreCase);
+        }
+
         private async Task OpenFileAsync(string path)
         {
             if (String.IsNullOrEmpty(path)) return;
@@ -568,6 +586,13 @@ namespace Dynamo.UI.Views
 
             try
             {
+                // A childless sample folder can still reach here as a card; it is not a graph
+                // to open, so bail out instead of reporting it as a missing file (DYN-10736).
+                if (!IsSampleGraphPath(path))
+                {
+                    return;
+                }
+
                 if (startPage.HandleMissingFilePath(path))
                 {
                     var recentFiles = startPage.RecentFiles?.DistinctBy(x => x.ContextData).ToList() ?? new List<StartPageListItem>();
