@@ -1,5 +1,5 @@
-using System;
 using System.Globalization;
+using System.Numerics;
 using System.Windows.Controls;
 using CoreNodeModels.Properties;
 
@@ -41,19 +41,14 @@ namespace CoreNodeModelsWpf
                 return new ValidationResult(false, Resources.NumberNodeInputMustBeNumeric);
             }
 
-            try
+            if (long.TryParse(text, IntegerStyles, CultureInfo.InvariantCulture, out _))
             {
-                long.Parse(text, IntegerStyles, CultureInfo.InvariantCulture);
                 return ValidationResult.ValidResult;
             }
-            catch (FormatException)
-            {
-                return new ValidationResult(false, Resources.IntegerSliderInputMustBeInteger);
-            }
-            catch (OverflowException)
-            {
-                return new ValidationResult(false, Resources.IntegerSliderInfoMessage);
-            }
+
+            return BigInteger.TryParse(text, IntegerStyles, CultureInfo.InvariantCulture, out _)
+                ? new ValidationResult(false, Resources.IntegerSliderInfoMessage)
+                : new ValidationResult(false, Resources.IntegerSliderInputMustBeInteger);
         }
     }
 
