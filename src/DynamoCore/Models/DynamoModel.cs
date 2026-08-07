@@ -720,6 +720,11 @@ namespace Dynamo.Models
             NoNetworkMode = config.NoNetworkMode;
             HostAnalyticsInfo = config.HostAnalyticsInfo;
 
+            // DYN-10745: disabled in test mode since the suite routinely loads packages and
+            // extensions from directories outside Built-In Packages. Remove with DYN-10739.
+            LegacyAssistantExtensionGuard.Reset();
+            LegacyAssistantExtensionGuard.IsEnabled = !IsTestMode;
+
             DebugSettings = new DebugSettings();
             if (Logger == null)
             {
