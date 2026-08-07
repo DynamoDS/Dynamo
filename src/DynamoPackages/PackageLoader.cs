@@ -571,7 +571,7 @@ namespace Dynamo.PackageManager
                 // Remove this block once DYN-10739 lands the permanent fix.
                 if (LegacyAssistantExtensionGuard.IsEnabled &&
                     LegacyAssistantExtensionGuard.TryGetRestrictedPackageDisplayName(discoveredPackage.Name, out var restrictedDisplayName) &&
-                    !discoveredPackage.BuiltInPackage)
+                    LegacyAssistantExtensionGuard.IsOutsideBuiltInPackages(discoveredPackage.RootDirectory))
                 {
                     LegacyAssistantExtensionGuard.RecordBlockedPackage(discoveredPackage.RootDirectory);
                     throw new LibraryLoadFailedException(directory,

@@ -1704,6 +1704,41 @@ namespace Dynamo.PackageManager.Tests
         }
 
         [Test]
+        public void LegacyDynamoMcpPackageInSiblingDirectoryWithSimilarNameIsNotLoaded()
+        {
+            // Regression test for a review finding: relying on Package.BuiltInPackage's plain
+            // StartsWith check would misclassify "...\Packages Old\DynamoMCP" as being under
+            // "...\Packages" merely because it shares a string prefix. The guard must instead
+            // require a real directory-separator boundary (LegacyAssistantExtensionGuard.IsOutsideBuiltInPackages).
+            var originalBuiltinPackagesDirectory = PathManager.BuiltinPackagesDirectory;
+            var originalEnabled = LegacyAssistantExtensionGuard.IsEnabled;
+            try
+            {
+                LegacyAssistantExtensionGuard.IsEnabled = true;
+                LegacyAssistantExtensionGuard.Reset();
+
+                var scratchRoot = Path.Combine(TempFolder, "legacy_boundary_" + Guid.NewGuid().ToString("N"));
+                var trustedPackagesRoot = Path.Combine(scratchRoot, "Packages");
+                PathManager.BuiltinPackagesDirectory = trustedPackagesRoot;
+
+                var siblingPackagesRoot = trustedPackagesRoot + "Old";
+                var packageDir = WriteLegacyDynamoMcpPackage(siblingPackagesRoot);
+
+                var loader = GetPackageLoader();
+                var pkg = loader.ScanPackageDirectory(packageDir);
+
+                Assert.IsNull(pkg);
+                CollectionAssert.Contains(LegacyAssistantExtensionGuard.AllBlockedPaths, packageDir);
+            }
+            finally
+            {
+                LegacyAssistantExtensionGuard.IsEnabled = originalEnabled;
+                PathManager.BuiltinPackagesDirectory = originalBuiltinPackagesDirectory;
+                LegacyAssistantExtensionGuard.Reset();
+            }
+        }
+
+        [Test]
         public void UnrestrictedPackageOutsideBuiltInIsStillLoadedWithGuardEnabled()
         {
             // The guard must only restrict Autodesk Assistant / DynamoMCP; every other
