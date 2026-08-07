@@ -27,16 +27,13 @@ namespace CoreNodeModels.Input
 
         /// <summary>
         /// Display text for the DateTime input. Bound TwoWay so WPF validation can run;
-        /// the setter is intentionally empty — commits go through UpdateModelValueCommand.
+        /// the setter intentionally discard the value — commits go through UpdateModelValueCommand.
         /// </summary>
         [JsonIgnore]
         public string ValueText
         {
-            get
-            { return Value.ToString(PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture); }
-            // Required for TwoWay binding / ValidateWithoutUpdate. Do not write the model here —
-            // DynamoTextBox commits via UpdateModelValueCommand; a real setter would double-commit.
-            set { }
+            get => Value.ToString(PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture);
+            set => _ = value;
         }
 
         public override System.DateTime Value
