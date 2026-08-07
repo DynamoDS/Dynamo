@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Dynamo.Core;
 
@@ -104,8 +105,26 @@ namespace Dynamo.Utilities
             if (string.IsNullOrEmpty(path)) return true;
 
             var builtInDirectory = PathManager.BuiltinPackagesDirectory;
-            return string.IsNullOrEmpty(builtInDirectory) ||
-                !path.StartsWith(builtInDirectory, StringComparison.OrdinalIgnoreCase);
+            if (string.IsNullOrEmpty(builtInDirectory)) return true;
+
+            string fullPath;
+            string fullBuiltInDirectory;
+            try
+            {
+                fullPath = Path.GetFullPath(path);
+                fullBuiltInDirectory = Path.GetFullPath(builtInDirectory)
+                    .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            }
+            catch (Exception ex) when (ex is ArgumentException || ex is NotSupportedException || ex is PathTooLongException)
+            {
+                return true;
+            }
+
+            // A plain StartsWith would let a sibling like "Built-In PackagesOld" pass as if it
+            // were under "Built-In Packages" -- require an exact match or a directory-separator
+            // boundary right after the prefix.
+            return !fullPath.Equals(fullBuiltInDirectory, StringComparison.OrdinalIgnoreCase) &&
+                !fullPath.StartsWith(fullBuiltInDirectory + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase);
         }
 
         internal static void RecordBlockedPackage(string directory)

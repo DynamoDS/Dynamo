@@ -95,6 +95,36 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void WhenPathIsUnderSimilarlyNamedSiblingDirectoryThenIsOutside()
+        {
+            // A plain StartsWith would let "Built-In PackagesOld" pass as if it were under
+            // "Built-In Packages" -- the check must require a directory-separator boundary.
+            PathManager.BuiltinPackagesDirectory = @"C:\Dynamo\Built-In Packages";
+
+            Assert.IsTrue(LegacyAssistantExtensionGuard.IsOutsideBuiltInPackages(@"C:\Dynamo\Built-In PackagesOld\AutodeskAssistant"));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenPathEqualsBuiltinPackagesDirectoryExactlyThenIsNotOutside()
+        {
+            PathManager.BuiltinPackagesDirectory = @"C:\Dynamo\Built-In Packages";
+
+            Assert.IsFalse(LegacyAssistantExtensionGuard.IsOutsideBuiltInPackages(@"C:\Dynamo\Built-In Packages"));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WhenPathContainsDotDotSegmentsEscapingBuiltinDirectoryThenIsOutside()
+        {
+            PathManager.BuiltinPackagesDirectory = @"C:\Dynamo\Built-In Packages";
+
+            Assert.IsTrue(LegacyAssistantExtensionGuard.IsOutsideBuiltInPackages(
+                @"C:\Dynamo\Built-In Packages\Packages\AutodeskAssistant\..\..\..\Escaped"));
+        }
+
+        [Test]
+        [Category("UnitTests")]
         [TestCase(null)]
         [TestCase("")]
         public void WhenPathIsNullOrEmptyThenIsOutside(string path)

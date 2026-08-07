@@ -192,9 +192,11 @@ namespace DynamoCoreWpfTests
 
                 var manifestDirectory = Path.Combine(GetTestDirectory(ExecutingDirectory),
                     @"DynamoCoreWpf2Tests\ViewExtensions\Sample Manifests");
-                // Treat the fixture's own folder as the trusted built-in location, so the
-                // guard should NOT record a block for it.
-                PathManager.BuiltinPackagesDirectory = manifestDirectory;
+                // The fixture's AssemblyPath is "..\bin\...", mirroring a real built-in package
+                // layout where the manifest and its assembly are sibling subfolders of a shared
+                // package root. Treat that shared root -- not the manifest's own folder -- as the
+                // trusted built-in location, so the guard should NOT record a block for it.
+                PathManager.BuiltinPackagesDirectory = Path.GetDirectoryName(manifestDirectory);
 
                 var extensionManager = View.viewExtensionManager;
                 var loader = extensionManager.ExtensionLoader;
@@ -203,6 +205,41 @@ namespace DynamoCoreWpfTests
                 loader.Load(manifestPath);
 
                 Assert.AreEqual(0, LegacyAssistantExtensionGuard.BlockedViewExtensions.Count);
+            }
+            finally
+            {
+                LegacyAssistantExtensionGuard.IsEnabled = originalEnabled;
+                PathManager.BuiltinPackagesDirectory = originalBuiltinPackagesDirectory;
+                LegacyAssistantExtensionGuard.Reset();
+            }
+        }
+
+        [Test]
+        public void LegacyAutodeskAssistantWithAssemblyPathEscapingBuiltInPackagesIsBlocked()
+        {
+            RaiseLoadedEvent(this.View);
+
+            var originalEnabled = LegacyAssistantExtensionGuard.IsEnabled;
+            var originalBuiltinPackagesDirectory = PathManager.BuiltinPackagesDirectory;
+            try
+            {
+                LegacyAssistantExtensionGuard.IsEnabled = true;
+                LegacyAssistantExtensionGuard.Reset();
+
+                var manifestDirectory = Path.Combine(GetTestDirectory(ExecutingDirectory),
+                    @"DynamoCoreWpf2Tests\ViewExtensions\Sample Manifests");
+                // The manifest itself lives under the trusted built-in location, but its
+                // AssemblyPath climbs out via ".." -- the resolved assembly path must be
+                // checked independently of the manifest path.
+                PathManager.BuiltinPackagesDirectory = manifestDirectory;
+
+                var extensionManager = View.viewExtensionManager;
+                var loader = extensionManager.ExtensionLoader;
+                var manifestPath = Path.Combine(manifestDirectory,
+                    "LegacyAutodeskAssistant_EscapingAssemblyPath_ViewExtensionDefinition.xml");
+
+                Assert.IsNull(loader.Load(manifestPath));
+                Assert.AreEqual(1, LegacyAssistantExtensionGuard.BlockedViewExtensions.Count);
             }
             finally
             {
