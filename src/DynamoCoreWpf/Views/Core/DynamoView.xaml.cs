@@ -529,14 +529,28 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
+        /// Result of <see cref="AddOrFocusExtensionControl"/>, distinguishing a genuinely blocked
+        /// extension (NoNetworkMode/IDSDK) from one that was simply already open.
+        /// </summary>
+        internal enum ExtensionControlResult
+        {
+            Added,
+            AlreadyPresent,
+            Blocked
+        }
+
+        /// <summary>
         /// Adds an extension control or if it already exists it makes sure it is focused.
         /// The control may be added as a window or a tab in the extension bar depending on settings.
         /// </summary>
         /// <param name="viewExtension">View extension adding the content</param>
         /// <param name="content">Control being added</param>
-        /// <returns>True if the control was added, false if it already existed</returns>
-        internal bool AddOrFocusExtensionControl(IViewExtension viewExtension, UIElement content)
+        internal ExtensionControlResult AddOrFocusExtensionControl(IViewExtension viewExtension, UIElement content)
         {
+            if (DisableExtensionWhenNoNetworkMode(viewExtension.UniqueId, viewExtension.Name, "opened") ||
+                DisableExtensionWhenIDSDKNotInitialized(viewExtension.UniqueId, viewExtension.Name, "opened"))
+                return ExtensionControlResult.Blocked;
+
             var window = ExtensionWindows.ContainsKey(viewExtension.Name) ? ExtensionWindows[viewExtension.Name] : null;
             var tab = FindExtensionTab(viewExtension);
             var addExtensionControl = window == null && tab == null;
@@ -589,7 +603,7 @@ namespace Dynamo.Controls
                 }
             }
 
-            return addExtensionControl;
+            return addExtensionControl ? ExtensionControlResult.Added : ExtensionControlResult.AlreadyPresent;
         }
 
         private ExtensionWindow AddExtensionWindow(IViewExtension viewExtension, UIElement content, WindowSettings windowSettings)
@@ -1414,8 +1428,18 @@ namespace Dynamo.Controls
                         continue;
                     }
 
+                    // The extension is still allowed to run Loaded() below, so any UI it registers
+                    // (menu items, toolbar buttons) stays visible; only the automatic re-open of a
+                    // previously-open panel is skipped. Extensions that depend on IDSDK are expected to
+                    // gate their own entry points via ViewLoadedParams.IsIDSDKInitialized.
+                    var idsdkNotInitialized = DisableExtensionWhenIDSDKNotInitialized(ext.UniqueId, ext.Name, "re-opened");
+
                     ext.Loaded(loadedParams);
-                    ReOpenSavedExtensionOnDynamoStartup(ext);
+
+                    if (!idsdkNotInitialized)
+                    {
+                        ReOpenSavedExtensionOnDynamoStartup(ext);
+                    }
                 }
                 catch (Exception exc)
                 {
@@ -2505,7 +2529,13 @@ namespace Dynamo.Controls
                                 sampleFiles.Add(path);
                             }
                         }
-                        SamplesMenu.Items.Add(dirItem);
+
+                        // Skip folders with no sample graphs directly under them so the Samples
+                        // menu does not show empty, unopenable submenus (DYN-10736).
+                        if (dirItem.Items.Count > 0)
+                        {
+                            SamplesMenu.Items.Add(dirItem);
+                        }
                     }
                 }
 
@@ -3408,6 +3438,26 @@ namespace Dynamo.Controls
                  string.Equals(extensionId, McpViewExtensionId, StringComparison.OrdinalIgnoreCase)))
             {
                 Log($"Package/Extension {extensionName} not {action} because NoNetworkMode flag is active");
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Prevents the Autodesk Assistant and MCP View extensions from being (re-)opened when
+        /// Autodesk Identity (IDSDK) is not initialized, so the native "Create Assistant" call chain
+        /// that requires Identity never fires and cannot cascade into a series of error dialogs.
+        /// Loaded() itself still runs regardless, so the extension can register its own UI.
+        /// </summary>
+        internal bool DisableExtensionWhenIDSDKNotInitialized(string extensionId, string extensionName, string action)
+        {
+            if ((string.Equals(extensionId, AutodeskAssistantExtensionId, StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(extensionId, McpViewExtensionId, StringComparison.OrdinalIgnoreCase)) &&
+                !dynamoViewModel.IsIDSDKInitialized(showWarning: false))
+            {
+                Log($"Package/Extension {extensionName} not {action} because Autodesk Identity (IDSDK) is not initialized");
 
                 return true;
             }
