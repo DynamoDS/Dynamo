@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
@@ -6163,6 +6163,269 @@ s = 1;
             Assert.Less(pcA, pcB, "Node A must have a lower PC than node B");
             Assert.Less(pcB, pcC, "Node B must have a lower PC than node C");
         }
+
+
+        #region DYN-10740
+
+        /// <summary>
+        /// DYN-10740 diagnostic helper.
+        ///
+        /// The reported crash surfaced as the "Unhandled exception in Dynamo engine" dialog with a
+        /// blank message, followed by only three stack frames: LiveRunner.SynchronizeInternal,
+        /// UpdateGraphAsyncTask.HandleTaskExecutionCore and AsyncTask.Execute.
+        ///
+        /// GenericTaskDialog renders Exception.Message, a blank line, then Exception.StackTrace, so the
+        /// blank first line in the reported screenshot meant Message was empty. At the time the only
+        /// exception ProtoCore constructed with an empty message was CompilerInternalException, thrown
+        /// by the single-argument Validity.Assert(bool) overload, which is how the failure was traced
+        /// to ProtoCore. Validity.Assert now composes a message naming the condition, member, file and
+        /// line, so that empty-message signature no longer applies - the message reported below
+        /// identifies the broken invariant directly.
+        /// </summary>
+        private void AssertGraphUpdateDoesNotFailInternally(Action updateGraph, string scenario)
+        {
+            try
+            {
+                updateGraph();
+            }
+            catch (Exception exception)
+            {
+                Assert.Fail(
+                    scenario + " threw " + exception.GetType().Name + " out of LiveRunner.UpdateGraph."
+                    + Environment.NewLine + "Message: \"" + exception.Message + "\""
+                    + Environment.NewLine
+                    + "A CompilerInternalException here is a Validity.Assert failure inside ProtoCore, "
+                    + "the DYN-10740 failure mode; its message names the invariant that broke."
+                    + Environment.NewLine + "StackTrace:" + Environment.NewLine + exception.StackTrace);
+            }
+        }
+
+        /// <summary>
+        /// DYN-10740 theory 1: SynchronizeInternal ends by calling
+        /// GetGraphNodesAtScope(kInvalidPC, kInvalidPC) and calling RemoveAll on the result, guarded
+        /// only by CodeBlockList.Any(). GetGraphNodesAtScope returns null when the global scope has no
+        /// entry in graphNodeMap, and every other call site in the codebase null-checks it. A subtree
+        /// containing only a function definition produces a code block without global-scope graph
+        /// nodes, so a following sync exercises that unguarded path.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenSubtreeDefinesOnlyAFunctionThenFollowingSyncDoesNotFailInternally()
+        {
+            var guidFunc = Guid.NewGuid();
+            var addedFunc = TestFrameWork.CreateSubTreeFromCode(guidFunc, "def dyn10740(){return = 1;}");
+
+            AssertGraphUpdateDoesNotFailInternally(
+                () => liveRunner.UpdateGraph(new GraphSyncData(null, new List<Subtree> { addedFunc }, null)),
+                "Adding a function-definition-only subtree");
+
+            // Re-send the same subtree unchanged. Nothing needs recompiling, so the delta AST list is
+            // empty and SynchronizeInternal skips compilation but still runs the tail bookkeeping.
+            var modifiedFunc = new Subtree(addedFunc.AstNodes, guidFunc);
+
+            AssertGraphUpdateDoesNotFailInternally(
+                () => liveRunner.UpdateGraph(new GraphSyncData(null, null, new List<Subtree> { modifiedFunc })),
+                "Re-sending an unchanged function-definition-only subtree");
+        }
+
+        /// <summary>
+        /// DYN-10740 theory 2: ChangeSetApplier.ApplyChangeSetForceExecute asserts that
+        /// MarkGraphNodesDirtyAtGlobalScope found a graph node for the force-executed ASTs, and that
+        /// helper only matches nodes whose isActive is true. ChangeSetApplier.Apply processes the
+        /// deleted set before the force-execute set, so deleting a subtree and force-executing it in
+        /// the same sync deactivates the graph nodes the assert then requires to be present.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenSubtreeIsDeletedAndForceExecutedInSameSyncThenEngineDoesNotFailInternally()
+        {
+            var guidA = Guid.NewGuid();
+            var addedA = TestFrameWork.CreateSubTreeFromCode(guidA, "dyn10740a = 1;");
+
+            liveRunner.UpdateGraph(new GraphSyncData(null, new List<Subtree> { addedA }, null));
+            AssertValue("dyn10740a", 1);
+
+            // The same subtree arrives as deleted and as a force-executed modification in one sync.
+            var deletedA = new Subtree(addedA.AstNodes, guidA);
+            var forceExecutedA = new Subtree(addedA.AstNodes, guidA) { ForceExecution = true };
+
+            AssertGraphUpdateDoesNotFailInternally(
+                () => liveRunner.UpdateGraph(new GraphSyncData(
+                    new List<Subtree> { deletedA },
+                    null,
+                    new List<Subtree> { forceExecutedA })),
+                "Deleting and force-executing the same subtree in one sync");
+        }
+
+        /// <summary>
+        /// DYN-10740 theory 3: the DYN-5128 fix (nodes executing twice after wire reconnect) added a
+        /// force-recompile path that deactivates a subtree's cached graph nodes and injects stamped
+        /// clones. SetValueForModifiedNodes then asserts the graph node it finds has a valid startpc.
+        /// Combining that recompile path with a deletion in the same sync exercises both at once.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenUpstreamIsModifiedAndAnotherSubtreeDeletedThenEngineDoesNotFailInternally()
+        {
+            var guidA = Guid.NewGuid();
+            var guidB = Guid.NewGuid();
+            var guidC = Guid.NewGuid();
+            var guidD = Guid.NewGuid();
+
+            var addedA = TestFrameWork.CreateSubTreeFromCode(guidA, "dyn10740a = 1;");
+            var addedB = TestFrameWork.CreateSubTreeFromCode(guidB, "dyn10740b = dyn10740a + 10;");
+            var addedC = TestFrameWork.CreateSubTreeFromCode(guidC, "dyn10740c = dyn10740b + 100;");
+            var addedD = TestFrameWork.CreateSubTreeFromCode(guidD, "dyn10740d = 5;");
+
+            liveRunner.UpdateGraph(new GraphSyncData(null,
+                new List<Subtree> { addedA, addedB, addedC, addedD }, null));
+            AssertValue("dyn10740c", 111);
+
+            // A changes structurally; B and C are re-sent unchanged, reusing the same AstNodes
+            // references so they compare equal and take the DYN-5128 force-recompile path. D is
+            // deleted in the same sync.
+            var modifiedA = TestFrameWork.CreateSubTreeFromCode(guidA, "dyn10740a = 2;");
+            var unchangedB = new Subtree(addedB.AstNodes, guidB);
+            var unchangedC = new Subtree(addedC.AstNodes, guidC);
+            var deletedD = new Subtree(addedD.AstNodes, guidD);
+
+            AssertGraphUpdateDoesNotFailInternally(
+                () => liveRunner.UpdateGraph(new GraphSyncData(
+                    new List<Subtree> { deletedD },
+                    null,
+                    new List<Subtree> { modifiedA, unchangedB, unchangedC })),
+                "Structurally modifying an upstream subtree while deleting another");
+
+            AssertValue("dyn10740b", 12);
+            AssertValue("dyn10740c", 112);
+        }
+
+        /// <summary>
+        /// DYN-10740 theory 4, the closest analogue to the reported repro. Asking the Assistant to
+        /// arrange the nodes so they do not overlap changes only node positions, so every node is
+        /// re-sent as a modified subtree while nothing has semantically changed. Code block nodes
+        /// arrive with DeltaComputation set to false (see EngineController.VerifyGraphSyncData), which
+        /// routes them past the delta-computation branch the other subtrees take. The graph shape
+        /// mirrors the attached Home.dyn: literal-list code blocks feeding a downstream chain.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenEverySubtreeIsResentUnchangedThenEngineDoesNotFailInternally()
+        {
+            var guidCoords = Guid.NewGuid();
+            var guidNames = Guid.NewGuid();
+            var guidOffset = Guid.NewGuid();
+            var guidResult = Guid.NewGuid();
+
+            // Code block subtrees, as produced by the Assistant when it writes literal lists.
+            var addedCoords = TestFrameWork.CreateSubTreeFromCode(guidCoords,
+                "dyn10740xs = [11.57, -7.69, 14.52, 6.63];");
+            addedCoords.DeltaComputation = false;
+            var addedNames = TestFrameWork.CreateSubTreeFromCode(guidNames,
+                "dyn10740names = [\"Bedroom 1\", \"Closet\", \"Bathroom 1\", \"Bedroom 2\"];");
+            addedNames.DeltaComputation = false;
+
+            // Downstream consumers, as produced by regular nodes.
+            var addedOffset = TestFrameWork.CreateSubTreeFromCode(guidOffset, "dyn10740pts = dyn10740xs + 1;");
+            var addedResult = TestFrameWork.CreateSubTreeFromCode(guidResult, "dyn10740out = dyn10740names;");
+
+            liveRunner.UpdateGraph(new GraphSyncData(null,
+                new List<Subtree> { addedCoords, addedNames, addedOffset, addedResult }, null));
+
+            // Re-send every subtree as modified with identical ASTs, which is a layout-only change.
+            var resentCoords = new Subtree(addedCoords.AstNodes, guidCoords) { DeltaComputation = false };
+            var resentNames = new Subtree(addedNames.AstNodes, guidNames) { DeltaComputation = false };
+            var resentOffset = new Subtree(addedOffset.AstNodes, guidOffset);
+            var resentResult = new Subtree(addedResult.AstNodes, guidResult);
+
+            AssertGraphUpdateDoesNotFailInternally(
+                () => liveRunner.UpdateGraph(new GraphSyncData(null, null,
+                    new List<Subtree> { resentCoords, resentNames, resentOffset, resentResult })),
+                "Re-sending every subtree unchanged, as a layout-only update does");
+        }
+
+        /// <summary>
+        /// DYN-10740 theory 5: as above, but the Assistant also prunes a node while relaying out the
+        /// graph, so one subtree is deleted in the same sync that re-sends the rest unchanged. This
+        /// combines the redefinition bookkeeping at the end of SynchronizeInternal with the deletion
+        /// path in ChangeSetApplier.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenGraphIsResentUnchangedWhileOneSubtreeIsDeletedThenEngineDoesNotFailInternally()
+        {
+            var guidCoords = Guid.NewGuid();
+            var guidOffset = Guid.NewGuid();
+            var guidSpare = Guid.NewGuid();
+
+            var addedCoords = TestFrameWork.CreateSubTreeFromCode(guidCoords, "dyn10740xs = [1, 2, 3];");
+            addedCoords.DeltaComputation = false;
+            var addedOffset = TestFrameWork.CreateSubTreeFromCode(guidOffset, "dyn10740pts = dyn10740xs + 1;");
+            var addedSpare = TestFrameWork.CreateSubTreeFromCode(guidSpare, "dyn10740spare = dyn10740xs;");
+
+            liveRunner.UpdateGraph(new GraphSyncData(null,
+                new List<Subtree> { addedCoords, addedOffset, addedSpare }, null));
+
+            var resentCoords = new Subtree(addedCoords.AstNodes, guidCoords) { DeltaComputation = false };
+            var resentOffset = new Subtree(addedOffset.AstNodes, guidOffset);
+            var deletedSpare = new Subtree(addedSpare.AstNodes, guidSpare);
+
+            AssertGraphUpdateDoesNotFailInternally(
+                () => liveRunner.UpdateGraph(new GraphSyncData(
+                    new List<Subtree> { deletedSpare },
+                    null,
+                    new List<Subtree> { resentCoords, resentOffset })),
+                "Re-sending the graph unchanged while deleting one subtree");
+        }
+
+
+        /// <summary>
+        /// DYN-10740 theory 6, the mechanism the first five tests all missed. ChangeSetApplier.Apply
+        /// runs its phases in a fixed order: Deleted, then Modified, then ForceExecute. The Modified
+        /// phase deactivates every graph node listed in RemovedBinaryNodesFromModification, and the
+        /// ForceExecute phase then asserts it can still find an *active* graph node for each AST in
+        /// ForceExecuteASTList. Any AST that lands in both lists therefore guarantees the assert fires.
+        ///
+        /// The DYN-5128 force-recompile block puts a subtree's cached binary nodes into the first list
+        /// when the subtree is non-input, structurally unchanged, and some *other* non-input subtree
+        /// did change. UpdateCachedASTList independently puts the same cached objects into the second
+        /// list whenever the subtree carries ForceExecution. Unlike the older path, which guards with
+        /// "else if (!st.ForceExecution)", the DYN-5128 block has no ForceExecution check - so both
+        /// lists end up holding the same object references.
+        ///
+        /// A slider cannot expose this because sliders are input nodes and are excluded by the
+        /// block's !IsInput test. It needs a *non-input* node that force-executes, which is why the
+        /// reported graph (no slider) could hit it and ordinary test graphs do not.
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void WhenUnchangedForceExecutedNonInputSubtreeAccompaniesStructuralChangeThenEngineDoesNotFailInternally()
+        {
+            var guidA = Guid.NewGuid();
+            var guidF = Guid.NewGuid();
+
+            var addedA = TestFrameWork.CreateSubTreeFromCode(guidA, "dyn10740a = 1;");
+            var addedF = TestFrameWork.CreateSubTreeFromCode(guidF, "dyn10740f = dyn10740a + 1;");
+
+            liveRunner.UpdateGraph(new GraphSyncData(null,
+                new List<Subtree> { addedA, addedF }, null));
+            AssertValue("dyn10740f", 2);
+
+            // A changes structurally, so anyNonInputActuallyModified is true. F is re-sent with the
+            // very same AstNodes reference, so it compares unchanged, and it force-executes. Subtree
+            // defaults IsInput to false, which is the non-input case the DYN-5128 block fails to guard.
+            var modifiedA = TestFrameWork.CreateSubTreeFromCode(guidA, "dyn10740a = 2;");
+            var forceExecutedF = new Subtree(addedF.AstNodes, guidF) { ForceExecution = true };
+
+            AssertGraphUpdateDoesNotFailInternally(
+                () => liveRunner.UpdateGraph(new GraphSyncData(null, null,
+                    new List<Subtree> { modifiedA, forceExecutedF })),
+                "Force-executing an unchanged non-input subtree alongside a structural change");
+
+            AssertValue("dyn10740f", 3);
+        }
+
+        #endregion
 
     }
 
