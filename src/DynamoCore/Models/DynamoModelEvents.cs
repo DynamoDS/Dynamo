@@ -360,12 +360,52 @@ namespace Dynamo.Models
         {
             if (!e.EvaluationSucceeded)
             {
+                // Record the failure before handing the dialog off to the dispatcher. When a UI
+                // dispatcher is attached the queued action runs later - and may never run at all if
+                // the application is already tearing down - so logging from inside
+                // DisplayEngineFailureMessage is not guaranteed to reach the log file. See DYN-10740,
+                // where the only evidence of the failure was a crash dialog with a blank message and
+                // the log file contained nothing at all.
+                LogEngineFailure(e.Error);
+
                 Action showFailureMessage = () => DisplayEngineFailureMessage(e.Error);
                 OnRequestDispatcherBeginInvoke(showFailureMessage);
             }
 
             if (EvaluationCompleted != null)
                 EvaluationCompleted(sender, e);
+        }
+
+        /// <summary>
+        /// Prefix written ahead of an unhandled engine evaluation failure in the Dynamo log.
+        /// </summary>
+        internal const string EngineFailureLogPrefix = "Dynamo engine failure: ";
+
+        /// <summary>
+        /// Writes an unhandled engine evaluation failure to the Dynamo log so the failure remains
+        /// diagnosable from a user's log file even when the crash dialog is dismissed or never shown.
+        /// </summary>
+        /// <remarks>
+        /// The exception type is logged explicitly and the full <see cref="Exception.ToString"/> text
+        /// is included, because <see cref="Exception.Message"/> alone can be empty; the type and the
+        /// stack trace are what identify the failing invariant in that case. Nothing beyond what the
+        /// exception itself carries is written, so no workspace content or user file path is added.
+        /// </remarks>
+        /// <param name="exception">The exception that ended the evaluation. May be null.</param>
+        private void LogEngineFailure(Exception exception)
+        {
+            if (Logger == null)
+                return;
+
+            if (exception == null)
+            {
+                Logger.Log(EngineFailureLogPrefix + "evaluation reported failure without an exception.",
+                    LogLevel.Console);
+                return;
+            }
+
+            Logger.Log(EngineFailureLogPrefix + exception.GetType().FullName + Environment.NewLine +
+                exception.ToString(), LogLevel.Console);
         }
 
         /// <summary>
