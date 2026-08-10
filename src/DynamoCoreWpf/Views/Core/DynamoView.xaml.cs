@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -236,7 +237,8 @@ namespace Dynamo.Controls
             {
                 try
                 {
-                    if (DisableExtensionWhenNoNetworkMode(ext.UniqueId, ext.Name, "added"))
+                    if (DisableExtensionWhenNoNetworkMode(ext.UniqueId, ext.Name, "added") ||
+                        DisableExtensionWhenMcpTokenValidationUnavailable(ext.UniqueId, ext.Name, "added"))
                     {
                         continue;
                     }
@@ -548,6 +550,7 @@ namespace Dynamo.Controls
         internal ExtensionControlResult AddOrFocusExtensionControl(IViewExtension viewExtension, UIElement content)
         {
             if (DisableExtensionWhenNoNetworkMode(viewExtension.UniqueId, viewExtension.Name, "opened") ||
+                DisableExtensionWhenMcpTokenValidationUnavailable(viewExtension.UniqueId, viewExtension.Name, "opened") ||
                 DisableExtensionWhenIDSDKNotInitialized(viewExtension.UniqueId, viewExtension.Name, "opened"))
                 return ExtensionControlResult.Blocked;
 
@@ -1423,7 +1426,8 @@ namespace Dynamo.Controls
             {
                 try
                 {
-                    if (DisableExtensionWhenNoNetworkMode(ext.UniqueId, ext.Name, "loaded"))
+                    if (DisableExtensionWhenNoNetworkMode(ext.UniqueId, ext.Name, "loaded") ||
+                        DisableExtensionWhenMcpTokenValidationUnavailable(ext.UniqueId, ext.Name, "loaded"))
                     {
                         continue;
                     }
@@ -3458,6 +3462,46 @@ namespace Dynamo.Controls
                 !dynamoViewModel.IsIDSDKInitialized(showWarning: false))
             {
                 Log($"Package/Extension {extensionName} not {action} because Autodesk Identity (IDSDK) is not initialized");
+
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Withholds the Autodesk Assistant and MCP View extensions when Autodesk Identity (IDSDK)
+        /// in this process cannot validate MCP bearer tokens. Without this, both extensions load and
+        /// look healthy while every MCP tool call is rejected with HTTP 401, which is a worse failure
+        /// mode than the feature simply not being offered (DYN-10773 / DYN-10775).
+        /// <para>
+        /// Deliberately shaped like <see cref="DisableExtensionWhenNoNetworkMode"/> rather than
+        /// <see cref="DisableExtensionWhenIDSDKNotInitialized"/>: this condition cannot be recovered
+        /// from within the session, so there is nothing useful to leave behind in the UI.
+        /// </para>
+        /// <para>
+        /// Blocks only on a definitive <see cref="McpTokenValidationAvailability.Unavailable"/>.
+        /// <see cref="McpTokenValidationAvailability.Unknown"/> — IDSDK not mapped into the process,
+        /// so nothing can be concluded — deliberately fails open.
+        /// </para>
+        /// </summary>
+        /// <param name="extensionId">Unique id of the extension being considered.</param>
+        /// <param name="extensionName">Display name, used only for the log line.</param>
+        /// <param name="action">The action being suppressed, e.g. "added" or "loaded".</param>
+        /// <returns>True when the extension must not be offered.</returns>
+        internal bool DisableExtensionWhenMcpTokenValidationUnavailable(string extensionId, string extensionName, string action)
+        {
+            if ((string.Equals(extensionId, AutodeskAssistantExtensionId, StringComparison.OrdinalIgnoreCase) ||
+                 string.Equals(extensionId, McpViewExtensionId, StringComparison.OrdinalIgnoreCase)) &&
+                IdsdkMcpTokenValidation.GetAvailability() == McpTokenValidationAvailability.Unavailable)
+            {
+                Log(string.Format(
+                    CultureInfo.CurrentCulture,
+                    Res.ExtensionNotOfferedMcpTokenValidationUnavailable,
+                    extensionName,
+                    action,
+                    IdsdkMcpTokenValidation.IdsdkModuleName,
+                    IdsdkMcpTokenValidation.McpValidateTokenExport));
 
                 return true;
             }

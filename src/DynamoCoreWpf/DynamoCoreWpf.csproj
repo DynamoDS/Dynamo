@@ -630,6 +630,7 @@
     <Compile Include="Utilities\CrashReportTool.cs" />
     <Compile Include="Utilities\CrashUtilities.cs" />
     <Compile Include="Utilities\GroupStyleItemSelector.cs" />
+    <Compile Include="Utilities\IdsdkMcpTokenValidation.cs" />
     <Compile Include="Utilities\LibraryDragAndDrop.cs" />
     <Compile Include="Utilities\MessageBoxUtilities.cs" />
     <Compile Include="Utilities\NetworkUtilities.cs" />
