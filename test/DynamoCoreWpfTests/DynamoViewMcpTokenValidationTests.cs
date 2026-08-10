@@ -9,8 +9,9 @@ namespace DynamoCoreWpfTests
 {
     /// <summary>
     /// Covers the DYN-10775 gate: when Autodesk Identity (IDSDK) in this process cannot validate
-    /// MCP bearer tokens, Autodesk Assistant and the MCP view extension must not be offered,
-    /// because every MCP tool call would be rejected with HTTP 401 (DYN-10773).
+    /// MCP bearer tokens, the Autodesk Assistant and MCP view extension panels must not be opened
+    /// or auto-re-opened, because every MCP tool call would be rejected with HTTP 401 (DYN-10773).
+    /// The extensions still load and register their own UI; only opening a panel is blocked.
     /// <para>
     /// These tests drive <see cref="IdsdkMcpTokenValidation"/> through its test seam rather than
     /// relying on the machine's real IDSDK. That is deliberate: the sibling
@@ -37,7 +38,7 @@ namespace DynamoCoreWpfTests
             var shouldDisable = View.DisableExtensionWhenMcpTokenValidationUnavailable(
                 DynamoView.AutodeskAssistantExtensionId,
                 "Autodesk Assistant",
-                "added");
+                "re-opened");
 
             Assert.IsTrue(shouldDisable);
         }
@@ -50,7 +51,7 @@ namespace DynamoCoreWpfTests
             var shouldDisable = View.DisableExtensionWhenMcpTokenValidationUnavailable(
                 DynamoView.McpViewExtensionId,
                 "Dynamo MCP View Extension",
-                "added");
+                "re-opened");
 
             Assert.IsTrue(shouldDisable);
         }
@@ -63,7 +64,7 @@ namespace DynamoCoreWpfTests
             var shouldDisable = View.DisableExtensionWhenMcpTokenValidationUnavailable(
                 DynamoView.AutodeskAssistantExtensionId,
                 "Autodesk Assistant",
-                "added");
+                "re-opened");
 
             Assert.IsFalse(shouldDisable);
         }
@@ -79,7 +80,7 @@ namespace DynamoCoreWpfTests
             var shouldDisable = View.DisableExtensionWhenMcpTokenValidationUnavailable(
                 DynamoView.AutodeskAssistantExtensionId,
                 "Autodesk Assistant",
-                "added");
+                "re-opened");
 
             Assert.IsFalse(shouldDisable);
         }
@@ -92,7 +93,7 @@ namespace DynamoCoreWpfTests
             var shouldDisable = View.DisableExtensionWhenMcpTokenValidationUnavailable(
                 UnrelatedExtensionId,
                 "Some Other Extension",
-                "added");
+                "re-opened");
 
             Assert.IsFalse(shouldDisable);
         }
@@ -117,26 +118,6 @@ namespace DynamoCoreWpfTests
                 .OfType<System.Windows.Controls.TabItem>()
                 .Any(t => string.Equals(t.Uid, DynamoView.AutodeskAssistantExtensionId,
                     StringComparison.OrdinalIgnoreCase)));
-        }
-
-        [Test]
-        public void WhenMcpTokenValidationIsUnavailableThenViewLoadedParamsReportsItUnavailable()
-        {
-            IdsdkMcpTokenValidation.SetAvailabilityForTesting(McpTokenValidationAvailability.Unavailable);
-
-            var loadedParams = new ViewLoadedParams(View, ViewModel);
-
-            Assert.IsFalse(loadedParams.IsMcpTokenValidationAvailable);
-        }
-
-        [Test]
-        public void WhenMcpTokenValidationIsUnknownThenViewLoadedParamsReportsItAvailable()
-        {
-            IdsdkMcpTokenValidation.SetAvailabilityForTesting(McpTokenValidationAvailability.Unknown);
-
-            var loadedParams = new ViewLoadedParams(View, ViewModel);
-
-            Assert.IsTrue(loadedParams.IsMcpTokenValidationAvailable);
         }
 
         [Test]

@@ -10,7 +10,6 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Visualization;
-using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Watch3D;
 
 namespace Dynamo.Wpf.Extensions
@@ -95,22 +94,6 @@ namespace Dynamo.Wpf.Extensions
         /// sign-in path.
         /// </summary>
         public bool IsIDSDKInitialized => dynamoViewModel.IsIDSDKInitialized(showWarning: false);
-
-        /// <summary>
-        /// Indicates whether Autodesk Identity (IDSDK) in this process is able to validate MCP
-        /// bearer tokens. When this is <c>false</c>, an MCP server running in this process will
-        /// reject every request with HTTP 401, so view extensions that depend on MCP (Autodesk
-        /// Assistant, the DynamoMCP view extension) should keep their own entry points disabled
-        /// rather than let the user reach a feature that cannot work.
-        /// <para>
-        /// This is a stronger signal than <see cref="IsIDSDKInitialized"/>: Dynamo's own IDSDK can
-        /// be initialized and still lack the MCP validation API entirely (DYN-10773). Reports
-        /// <c>true</c> when the capability cannot be determined, so it never disables a feature on
-        /// a guess.
-        /// </para>
-        /// </summary>
-        public bool IsMcpTokenValidationAvailable =>
-            IdsdkMcpTokenValidation.GetAvailability() != McpTokenValidationAvailability.Unavailable;
 
         /// <summary>
         /// Adds a menu item to the extensions menu

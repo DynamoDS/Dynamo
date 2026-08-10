@@ -237,8 +237,7 @@ namespace Dynamo.Controls
             {
                 try
                 {
-                    if (DisableExtensionWhenNoNetworkMode(ext.UniqueId, ext.Name, "added") ||
-                        DisableExtensionWhenMcpTokenValidationUnavailable(ext.UniqueId, ext.Name, "added"))
+                    if (DisableExtensionWhenNoNetworkMode(ext.UniqueId, ext.Name, "added"))
                     {
                         continue;
                     }
@@ -1426,8 +1425,7 @@ namespace Dynamo.Controls
             {
                 try
                 {
-                    if (DisableExtensionWhenNoNetworkMode(ext.UniqueId, ext.Name, "loaded") ||
-                        DisableExtensionWhenMcpTokenValidationUnavailable(ext.UniqueId, ext.Name, "loaded"))
+                    if (DisableExtensionWhenNoNetworkMode(ext.UniqueId, ext.Name, "loaded"))
                     {
                         continue;
                     }
@@ -1437,10 +1435,11 @@ namespace Dynamo.Controls
                     // previously-open panel is skipped. Extensions that depend on IDSDK are expected to
                     // gate their own entry points via ViewLoadedParams.IsIDSDKInitialized.
                     var idsdkNotInitialized = DisableExtensionWhenIDSDKNotInitialized(ext.UniqueId, ext.Name, "re-opened");
+                    var mcpTokenValidationUnavailable = DisableExtensionWhenMcpTokenValidationUnavailable(ext.UniqueId, ext.Name, "re-opened");
 
                     ext.Loaded(loadedParams);
 
-                    if (!idsdkNotInitialized)
+                    if (!idsdkNotInitialized && !mcpTokenValidationUnavailable)
                     {
                         ReOpenSavedExtensionOnDynamoStartup(ext);
                     }
@@ -3470,14 +3469,14 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// Withholds the Autodesk Assistant and MCP View extensions when Autodesk Identity (IDSDK)
-        /// in this process cannot validate MCP bearer tokens. Without this, both extensions load and
-        /// look healthy while every MCP tool call is rejected with HTTP 401, which is a worse failure
-        /// mode than the feature simply not being offered (DYN-10773 / DYN-10775).
+        /// Prevents the Autodesk Assistant and MCP View extensions from being (re-)opened when
+        /// Autodesk Identity (IDSDK) in this process cannot validate MCP bearer tokens, so the user
+        /// is not led into a panel where every MCP tool call is rejected with HTTP 401 (DYN-10773).
         /// <para>
-        /// Deliberately shaped like <see cref="DisableExtensionWhenNoNetworkMode"/> rather than
-        /// <see cref="DisableExtensionWhenIDSDKNotInitialized"/>: this condition cannot be recovered
-        /// from within the session, so there is nothing useful to leave behind in the UI.
+        /// Deliberately shaped like <see cref="DisableExtensionWhenIDSDKNotInitialized"/> rather than
+        /// <see cref="DisableExtensionWhenNoNetworkMode"/>: <c>Startup()</c> and <c>Loaded()</c> still
+        /// run, so an extension keeps whatever UI it registers and can present its own disabled state.
+        /// Only opening the panel — and the automatic re-open of a previously-open one — is blocked.
         /// </para>
         /// <para>
         /// Blocks only on a definitive <see cref="McpTokenValidationAvailability.Unavailable"/>.
@@ -3487,8 +3486,8 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="extensionId">Unique id of the extension being considered.</param>
         /// <param name="extensionName">Display name, used only for the log line.</param>
-        /// <param name="action">The action being suppressed, e.g. "added" or "loaded".</param>
-        /// <returns>True when the extension must not be offered.</returns>
+        /// <param name="action">The action being suppressed, e.g. "opened" or "re-opened".</param>
+        /// <returns>True when the extension's panel must not be opened.</returns>
         internal bool DisableExtensionWhenMcpTokenValidationUnavailable(string extensionId, string extensionName, string action)
         {
             if ((string.Equals(extensionId, AutodeskAssistantExtensionId, StringComparison.OrdinalIgnoreCase) ||
