@@ -5,9 +5,11 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.Utilities;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.UI.GuidedTour;
 using DynamoCoreWpfTests.Utility;
@@ -145,6 +147,106 @@ namespace DynamoCoreWpfTests
             var loader = extensionManager.ExtensionLoader;
             // Once IsEnabled set to false, loader will skip the loading and expect to return null.
             Assert.IsNull(loader.Load(Path.Combine(GetTestDirectory(ExecutingDirectory), @"DynamoCoreWpf2Tests\ViewExtensions\Sample Manifests\Sample_ViewExtensionDefinition.xml")));
+        }
+
+        // DYN-10745 band-aid tests. Remove along with LegacyAssistantExtensionGuard once
+        // DYN-10739 lands the permanent fix.
+        [Test]
+        public void LegacyAutodeskAssistantOutsideBuiltInPackagesIsNotLoaded()
+        {
+            RaiseLoadedEvent(this.View);
+
+            var originalEnabled = LegacyAssistantExtensionGuard.IsEnabled;
+            try
+            {
+                LegacyAssistantExtensionGuard.IsEnabled = true;
+                LegacyAssistantExtensionGuard.Reset();
+
+                var extensionManager = View.viewExtensionManager;
+                var loader = extensionManager.ExtensionLoader;
+                var manifestPath = Path.Combine(GetTestDirectory(ExecutingDirectory),
+                    @"DynamoCoreWpf2Tests\ViewExtensions\Sample Manifests\LegacyAutodeskAssistant_ViewExtensionDefinition.xml");
+
+                Assert.IsNull(loader.Load(manifestPath));
+                Assert.AreEqual(1, LegacyAssistantExtensionGuard.BlockedViewExtensions.Count);
+                Assert.AreEqual("Autodesk Assistant", LegacyAssistantExtensionGuard.BlockedViewExtensions[0].DisplayName);
+            }
+            finally
+            {
+                LegacyAssistantExtensionGuard.IsEnabled = originalEnabled;
+                LegacyAssistantExtensionGuard.Reset();
+            }
+        }
+
+        [Test]
+        public void LegacyAutodeskAssistantUnderBuiltInPackagesIsNotBlocked()
+        {
+            RaiseLoadedEvent(this.View);
+
+            var originalEnabled = LegacyAssistantExtensionGuard.IsEnabled;
+            var originalBuiltinPackagesDirectory = PathManager.BuiltinPackagesDirectory;
+            try
+            {
+                LegacyAssistantExtensionGuard.IsEnabled = true;
+                LegacyAssistantExtensionGuard.Reset();
+
+                var manifestDirectory = Path.Combine(GetTestDirectory(ExecutingDirectory),
+                    @"DynamoCoreWpf2Tests\ViewExtensions\Sample Manifests");
+                // The fixture's AssemblyPath is "..\bin\...", mirroring a real built-in package
+                // layout where the manifest and its assembly are sibling subfolders of a shared
+                // package root. Treat that shared root -- not the manifest's own folder -- as the
+                // trusted built-in location, so the guard should NOT record a block for it.
+                PathManager.BuiltinPackagesDirectory = Path.GetDirectoryName(manifestDirectory);
+
+                var extensionManager = View.viewExtensionManager;
+                var loader = extensionManager.ExtensionLoader;
+                var manifestPath = Path.Combine(manifestDirectory, "LegacyAutodeskAssistant_ViewExtensionDefinition.xml");
+
+                loader.Load(manifestPath);
+
+                Assert.AreEqual(0, LegacyAssistantExtensionGuard.BlockedViewExtensions.Count);
+            }
+            finally
+            {
+                LegacyAssistantExtensionGuard.IsEnabled = originalEnabled;
+                PathManager.BuiltinPackagesDirectory = originalBuiltinPackagesDirectory;
+                LegacyAssistantExtensionGuard.Reset();
+            }
+        }
+
+        [Test]
+        public void LegacyAutodeskAssistantWithAssemblyPathEscapingBuiltInPackagesIsBlocked()
+        {
+            RaiseLoadedEvent(this.View);
+
+            var originalEnabled = LegacyAssistantExtensionGuard.IsEnabled;
+            var originalBuiltinPackagesDirectory = PathManager.BuiltinPackagesDirectory;
+            try
+            {
+                LegacyAssistantExtensionGuard.IsEnabled = true;
+                LegacyAssistantExtensionGuard.Reset();
+
+                var manifestDirectory = Path.Combine(GetTestDirectory(ExecutingDirectory),
+                    @"DynamoCoreWpf2Tests\ViewExtensions\Sample Manifests");
+                // The manifest itself lives under the trusted built-in location, but its
+                // AssemblyPath climbs out via ".." -- the resolved assembly path must be
+                // checked independently of the manifest path.
+                PathManager.BuiltinPackagesDirectory = manifestDirectory;
+
+                var extensionManager = View.viewExtensionManager;
+                var loader = extensionManager.ExtensionLoader;
+                var manifestPath = Path.Combine(manifestDirectory,
+                    "LegacyAutodeskAssistant_EscapingAssemblyPath_ViewExtensionDefinition.xml");
+
+                Assert.IsNull(loader.Load(manifestPath));
+                Assert.AreEqual(1, LegacyAssistantExtensionGuard.BlockedViewExtensions.Count);
+            }
+            finally
+            {
+                LegacyAssistantExtensionGuard.IsEnabled = originalEnabled;
+                PathManager.BuiltinPackagesDirectory = originalBuiltinPackagesDirectory;
+                LegacyAssistantExtensionGuard.Reset();
+            }
         }
 
         [Test]

@@ -13,6 +13,7 @@ using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Search.SearchElements;
+using Dynamo.Utilities;
 using Moq;
 using NUnit.Framework;
 
@@ -1598,5 +1599,169 @@ namespace Dynamo.PackageManager.Tests
 
         }
 
+        // DYN-10745 band-aid tests. Remove along with LegacyAssistantExtensionGuard once
+        // DYN-10739 lands the permanent fix.
+        private string WriteLegacyDynamoMcpPackage(string packagesRoot)
+        {
+            var packageDir = Path.Combine(packagesRoot, "DynamoMCP");
+            Directory.CreateDirectory(Path.Combine(packageDir, "bin"));
+            File.WriteAllText(Path.Combine(packageDir, "pkg.json"),
+                "{\"file_hash\":null,\"name\":\"DynamoMCP\",\"version\":\"0.5.4\",\"description\":\"\",\"group\":\"\"," +
+                "\"keywords\":[],\"dependencies\":[],\"license\":\"Apache-2.0\",\"contents\":\"\"," +
+                "\"engine_version\":\"4.2.0\",\"engine_metadata\":\"\",\"engine\":\"dynamo\",\"node_libraries\":[]}");
+            return packageDir;
+        }
+
+        [Test]
+        public void LegacyDynamoMcpPackageOutsideBuiltInIsNotLoaded()
+        {
+            var originalEnabled = LegacyAssistantExtensionGuard.IsEnabled;
+            try
+            {
+                LegacyAssistantExtensionGuard.IsEnabled = true;
+                LegacyAssistantExtensionGuard.Reset();
+
+                var packagesRoot = Path.Combine(TempFolder, "legacy_mcp_" + Guid.NewGuid().ToString("N"));
+                var packageDir = WriteLegacyDynamoMcpPackage(packagesRoot);
+
+                var loader = GetPackageLoader();
+                var pkg = loader.ScanPackageDirectory(packageDir);
+
+                Assert.IsNull(pkg);
+                // The real built-in DynamoMCP package may also be loaded in this environment;
+                // what matters is that the legacy copy specifically was never added.
+                Assert.IsFalse(loader.LocalPackages.Any(p => p.RootDirectory == packageDir));
+                CollectionAssert.Contains(LegacyAssistantExtensionGuard.AllBlockedPaths, packageDir);
+            }
+            finally
+            {
+                LegacyAssistantExtensionGuard.IsEnabled = originalEnabled;
+                LegacyAssistantExtensionGuard.Reset();
+            }
+        }
+
+        [Test]
+        public void LegacyDynamoMcpPackageDoesNotPolluteAssemblyResolutionPaths()
+        {
+            var originalEnabled = LegacyAssistantExtensionGuard.IsEnabled;
+            try
+            {
+                LegacyAssistantExtensionGuard.IsEnabled = true;
+                LegacyAssistantExtensionGuard.Reset();
+
+                var packagesRoot = Path.Combine(TempFolder, "legacy_mcp_" + Guid.NewGuid().ToString("N"));
+                WriteLegacyDynamoMcpPackage(packagesRoot);
+
+                var pathManager = new Mock<IPathManager>();
+                pathManager.SetupGet(x => x.PackagesDirectories).Returns(new List<string> { packagesRoot });
+
+                var loader = new PackageLoader(pathManager.Object);
+                loader.LoadAll(new LoadPackageParams { Preferences = new PreferenceSettings() });
+
+                Assert.IsFalse(loader.LocalPackages.Any(p => p.Name == "DynamoMCP"));
+                // The rejected package's bin directory must never be added as an assembly
+                // resolution path -- that is the DLL-load-order conflict this guard prevents.
+                pathManager.Verify(x => x.AddResolutionPath(It.Is<string>(p => p.Contains("DynamoMCP"))), Times.Never);
+            }
+            finally
+            {
+                LegacyAssistantExtensionGuard.IsEnabled = originalEnabled;
+                LegacyAssistantExtensionGuard.Reset();
+            }
+        }
+
+        [Test]
+        public void LegacyDynamoAssistantPackageNameIsAlsoBlocked()
+        {
+            // Autodesk Assistant's package identity churned across DYN-10450 (AutodeskAssistant
+            // -> DynamoAssistant -> back to AutodeskAssistant); a pre-rename install must still
+            // be caught.
+            var originalEnabled = LegacyAssistantExtensionGuard.IsEnabled;
+            try
+            {
+                LegacyAssistantExtensionGuard.IsEnabled = true;
+                LegacyAssistantExtensionGuard.Reset();
+
+                var packagesRoot = Path.Combine(TempFolder, "legacy_dynamoassistant_" + Guid.NewGuid().ToString("N"));
+                var packageDir = Path.Combine(packagesRoot, "DynamoAssistant");
+                Directory.CreateDirectory(Path.Combine(packageDir, "bin"));
+                File.WriteAllText(Path.Combine(packageDir, "pkg.json"),
+                    "{\"file_hash\":null,\"name\":\"DynamoAssistant\",\"version\":\"0.3.3\",\"description\":\"\",\"group\":\"\"," +
+                    "\"keywords\":[],\"dependencies\":[],\"license\":\"Apache-2.0\",\"contents\":\"\"," +
+                    "\"engine_version\":\"4.1.0\",\"engine_metadata\":\"\",\"engine\":\"dynamo\",\"node_libraries\":[]}");
+
+                var loader = GetPackageLoader();
+                var pkg = loader.ScanPackageDirectory(packageDir);
+
+                Assert.IsNull(pkg);
+                CollectionAssert.Contains(LegacyAssistantExtensionGuard.AllBlockedPaths, packageDir);
+            }
+            finally
+            {
+                LegacyAssistantExtensionGuard.IsEnabled = originalEnabled;
+                LegacyAssistantExtensionGuard.Reset();
+            }
+        }
+
+        [Test]
+        public void LegacyDynamoMcpPackageInSiblingDirectoryWithSimilarNameIsNotLoaded()
+        {
+            // Regression test for a review finding: relying on Package.BuiltInPackage's plain
+            // StartsWith check would misclassify "...\Packages Old\DynamoMCP" as being under
+            // "...\Packages" merely because it shares a string prefix. The guard must instead
+            // require a real directory-separator boundary (LegacyAssistantExtensionGuard.IsOutsideBuiltInPackages).
+            var originalBuiltinPackagesDirectory = PathManager.BuiltinPackagesDirectory;
+            var originalEnabled = LegacyAssistantExtensionGuard.IsEnabled;
+            try
+            {
+                LegacyAssistantExtensionGuard.IsEnabled = true;
+                LegacyAssistantExtensionGuard.Reset();
+
+                var scratchRoot = Path.Combine(TempFolder, "legacy_boundary_" + Guid.NewGuid().ToString("N"));
+                var trustedPackagesRoot = Path.Combine(scratchRoot, "Packages");
+                PathManager.BuiltinPackagesDirectory = trustedPackagesRoot;
+
+                var siblingPackagesRoot = trustedPackagesRoot + "Old";
+                var packageDir = WriteLegacyDynamoMcpPackage(siblingPackagesRoot);
+
+                var loader = GetPackageLoader();
+                var pkg = loader.ScanPackageDirectory(packageDir);
+
+                Assert.IsNull(pkg);
+                CollectionAssert.Contains(LegacyAssistantExtensionGuard.AllBlockedPaths, packageDir);
+            }
+            finally
+            {
+                LegacyAssistantExtensionGuard.IsEnabled = originalEnabled;
+                PathManager.BuiltinPackagesDirectory = originalBuiltinPackagesDirectory;
+                LegacyAssistantExtensionGuard.Reset();
+            }
+        }
+
+        [Test]
+        public void UnrestrictedPackageOutsideBuiltInIsStillLoadedWithGuardEnabled()
+        {
+            // The guard must only restrict Autodesk Assistant / DynamoMCP; every other
+            // package's normal load path is unaffected.
+            var originalEnabled = LegacyAssistantExtensionGuard.IsEnabled;
+            try
+            {
+                LegacyAssistantExtensionGuard.IsEnabled = true;
+                LegacyAssistantExtensionGuard.Reset();
+
+                var pkgDir = Path.Combine(PackagesDirectory, "Custom Rounding");
+                var loader = GetPackageLoader();
+                var pkg = loader.ScanPackageDirectory(pkgDir);
+
+                Assert.IsNotNull(pkg);
+                Assert.AreEqual("Custom Rounding", pkg.Name);
+                Assert.IsFalse(LegacyAssistantExtensionGuard.HasBlockedPaths);
+            }
+            finally
+            {
+                LegacyAssistantExtensionGuard.IsEnabled = originalEnabled;
+                LegacyAssistantExtensionGuard.Reset();
+            }
+        }
     }
 }

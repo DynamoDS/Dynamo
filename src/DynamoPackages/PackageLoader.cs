@@ -565,6 +565,20 @@ namespace Dynamo.PackageManager
                     throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.NoHeaderPackage, headerPath));
                 }
 
+                // DYN-10745: Dynamo 4.2 ships Autodesk Assistant and DynamoMCP as built-in
+                // packages. Refuse any copy of either found outside Built-In Packages, so it
+                // can't displace the built-in one or pollute assembly resolution order.
+                // Remove this block once DYN-10739 lands the permanent fix.
+                if (LegacyAssistantExtensionGuard.IsEnabled &&
+                    LegacyAssistantExtensionGuard.TryGetRestrictedPackageDisplayName(discoveredPackage.Name, out var restrictedDisplayName) &&
+                    LegacyAssistantExtensionGuard.IsOutsideBuiltInPackages(discoveredPackage.RootDirectory))
+                {
+                    LegacyAssistantExtensionGuard.RecordBlockedPackage(discoveredPackage.RootDirectory);
+                    throw new LibraryLoadFailedException(directory,
+                        String.Format(Properties.Resources.LegacyAssistantPackageBlocked,
+                            restrictedDisplayName, discoveredPackage.RootDirectory));
+                }
+
                 // prevent loading unsigned packages if the certificates are required on package dlls
                 if (checkCertificates)
                 {

@@ -757,6 +757,9 @@ Parameter name: {0}</value>
   <data name="DuplicatedNewerPackage" xml:space="preserve">
     <value>A newer version of the package called {0} version {2} was found at {1} with version {3}. The newer version has been ignored.</value>
   </data>
+  <data name="LegacyAssistantPackageBlocked" xml:space="preserve">
+    <value>An outdated copy of {0} was found at {1}. Dynamo now includes {0} as a built-in package, so the older copy was not loaded. Delete the folder to complete your upgrade.</value>
+  </data>
   <data name="Autocomplete" xml:space="preserve">
     <value>Autocomplete</value>
   </data>

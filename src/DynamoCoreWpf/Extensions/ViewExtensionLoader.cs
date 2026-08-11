@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Xml;
 using Dynamo.Logging;
+using Dynamo.Utilities;
 using DynamoUtilities;
 
 namespace Dynamo.Wpf.Extensions
@@ -44,6 +45,8 @@ namespace Dynamo.Wpf.Extensions
 
         public IViewExtension Load(string extensionPath)
         {
+            extensionPath = Path.GetFullPath(extensionPath);
+
             var document = new XmlDocument();
             document.Load(extensionPath);
 
@@ -61,7 +64,7 @@ namespace Dynamo.Wpf.Extensions
             {
                 if (item.Name == "AssemblyPath")
                 {
-                    path = Path.Combine(path, item.InnerText);
+                    path = Path.GetFullPath(Path.Combine(path, item.InnerText));
                     definition.AssemblyPath = path;
                 }
                 else if (item.Name == "TypeName")
@@ -83,6 +86,20 @@ namespace Dynamo.Wpf.Extensions
                 {
                     definition.RequiresSignedEntryPoint = true;
                 }
+            }
+
+            // DYN-10745: Dynamo 4.2 ships Autodesk Assistant and DynamoMCP as built-in
+            // extensions. Refuse to load either from any location outside Built-In Packages,
+            // before the assembly ever gets loaded. Remove this block once DYN-10739 lands
+            // the permanent fix.
+            if (LegacyAssistantExtensionGuard.IsEnabled &&
+                LegacyAssistantExtensionGuard.TryGetRestrictedViewExtensionDisplayName(definition.TypeName, out var restrictedDisplayName) &&
+                (LegacyAssistantExtensionGuard.IsOutsideBuiltInPackages(extensionPath) ||
+                 LegacyAssistantExtensionGuard.IsOutsideBuiltInPackages(definition.AssemblyPath)))
+            {
+                LegacyAssistantExtensionGuard.RecordBlockedViewExtension(restrictedDisplayName, extensionPath, definition.AssemblyPath);
+                Log($"Not loading outdated copy of {restrictedDisplayName}. Found at {extensionPath} and {definition.AssemblyPath}");
+                return null;
             }
 
             var extension = Load(definition);

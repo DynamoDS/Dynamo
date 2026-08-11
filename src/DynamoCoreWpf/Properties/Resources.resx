@@ -2357,6 +2357,24 @@ Do you want to install the latest Dynamo update?</value>
   <data name="PackagePathAutoAddNotificationDetailedDescription" xml:space="preserve">
     <value>The import path "{0}" was added to "Node and Package Paths". If you want to update or remove this path, please open "Dynamo &gt; Preferences &gt;Package Manager &gt; Node and Package Paths..."</value>
   </data>
+  <data name="LegacyAssistantExtensionBlockedTitle" xml:space="preserve">
+    <value>Extension Not Loaded</value>
+  </data>
+  <data name="LegacyAssistantExtensionBlockedShortDescription" xml:space="preserve">
+    <value>An outdated copy of {0} was found and was not loaded.</value>
+  </data>
+  <data name="LegacyAssistantExtensionBlockedDetailedDescription" xml:space="preserve">
+    <value>Dynamo now includes {0} as a built-in extension. Delete the following to complete your upgrade, then restart Dynamo:
+{1}</value>
+  </data>
+  <data name="LegacyAssistantExtensionsModalTitle" xml:space="preserve">
+    <value>Outdated Autodesk Assistant / DynamoMCP Files Found</value>
+  </data>
+  <data name="LegacyAssistantExtensionsModalMessage" xml:space="preserve">
+    <value>Dynamo now includes Autodesk Assistant and DynamoMCP as built-in features. Older copies were found outside the built-in location and were not loaded. Delete the following, then restart Dynamo:
+
+{0}</value>
+  </data>
   <data name="NodeContextMenuIsInput" xml:space="preserve">
     <value>Is Input</value>
   </data>

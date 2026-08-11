@@ -559,7 +559,16 @@ namespace Dynamo.Properties {
                 return ResourceManager.GetString("DuplicatedNewerPackage", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to An outdated copy of {0} was found at {1}. Dynamo now includes {0} as a built-in package, so the older copy was not loaded. Delete the folder to complete your upgrade..
+        /// </summary>
+        public static string LegacyAssistantPackageBlocked {
+            get {
+                return ResourceManager.GetString("LegacyAssistantPackageBlocked", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to An older version of the package called {0} version {2} was found at {1} with version {3}. The older version has been ignored..
         /// </summary>
