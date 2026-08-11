@@ -110,8 +110,11 @@ namespace DynamoCoreWpfTests
             // call is blocked — only the MCP token validation gate can.
             IdsdkMcpTokenValidation.SetAvailabilityForTesting(McpTokenValidationAvailability.Unavailable);
 
+            // Real content rather than null: if the gate ever stops blocking, AddOrFocusExtensionControl
+            // goes on to use it, and a NullReferenceException here would mask the actual regression
+            // (the gate letting the extension through) behind a confusing failure.
             var stubExtension = new StubViewExtension(DynamoView.AutodeskAssistantExtensionId);
-            var result = View.AddOrFocusExtensionControl(stubExtension, null);
+            var result = View.AddOrFocusExtensionControl(stubExtension, new System.Windows.Controls.ContentControl());
 
             Assert.AreEqual(DynamoView.ExtensionControlResult.Blocked, result);
             Assert.IsFalse(ViewModel.SideBarTabItems
