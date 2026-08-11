@@ -2329,8 +2329,8 @@ Do you want to install the latest Dynamo update?</value>
     <value>No new tab is added, as the extension is already present in the extensions side bar.</value>
   </data>
   <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
-    <value>Package/Extension {0} not {1} because Autodesk Identity (IDSDK) in this process cannot validate MCP tokens ({2} does not export {3}); every request would be rejected with HTTP 401.</value>
-    <comment>{0} = extension name, {1} = the suppressed action (e.g. "added"), {2} = native library file name, {3} = native export name. {2} and {3} are technical identifiers and must not be translated.</comment>
+    <value>Package/Extension {0} not offered because Autodesk Identity (IDSDK) in this process cannot validate MCP tokens ({1} does not export {2}); every request would be rejected with HTTP 401.</value>
+    <comment>{0} = extension name, {1} = native library file name, {2} = native export name. {1} and {2} are technical identifiers and must not be translated.</comment>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
     <value>{1} cannot be loaded.

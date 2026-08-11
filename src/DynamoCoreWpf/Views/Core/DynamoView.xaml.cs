@@ -548,9 +548,15 @@ namespace Dynamo.Controls
         /// <param name="content">Control being added</param>
         internal ExtensionControlResult AddOrFocusExtensionControl(IViewExtension viewExtension, UIElement content)
         {
+            // Order matters. DisableExtensionWhenIDSDKNotInitialized reads
+            // IDSDKManager.IsIDSDKInitialized, whose getter calls Initialize() as a side effect —
+            // and that is what maps AdskIdentitySDK.dll into the process. The MCP probe can only
+            // return a definitive answer once the module is mapped, so it must run after it;
+            // otherwise it reports Unknown and fails open. Same reasoning as the comment in
+            // DynamoLoadedViewExtensionHandler.
             if (DisableExtensionWhenNoNetworkMode(viewExtension.UniqueId, viewExtension.Name, "opened") ||
-                DisableExtensionWhenMcpTokenValidationUnavailable(viewExtension.UniqueId, viewExtension.Name, "opened") ||
-                DisableExtensionWhenIDSDKNotInitialized(viewExtension.UniqueId, viewExtension.Name, "opened"))
+                DisableExtensionWhenIDSDKNotInitialized(viewExtension.UniqueId, viewExtension.Name, "opened") ||
+                DisableExtensionWhenMcpTokenValidationUnavailable(viewExtension.UniqueId, viewExtension.Name))
                 return ExtensionControlResult.Blocked;
 
             var window = ExtensionWindows.ContainsKey(viewExtension.Name) ? ExtensionWindows[viewExtension.Name] : null;
@@ -1444,7 +1450,7 @@ namespace Dynamo.Controls
 
                     ext.Loaded(loadedParams);
 
-                    if (!idsdkNotInitialized && !DisableExtensionWhenMcpTokenValidationUnavailable(ext.UniqueId, ext.Name, "re-opened"))
+                    if (!idsdkNotInitialized && !DisableExtensionWhenMcpTokenValidationUnavailable(ext.UniqueId, ext.Name))
                     {
                         ReOpenSavedExtensionOnDynamoStartup(ext);
                     }
@@ -3491,9 +3497,8 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="extensionId">Unique id of the extension being considered.</param>
         /// <param name="extensionName">Display name, used only for the log line.</param>
-        /// <param name="action">The action being suppressed, e.g. "opened" or "re-opened".</param>
         /// <returns>True when the extension's panel must not be opened.</returns>
-        internal bool DisableExtensionWhenMcpTokenValidationUnavailable(string extensionId, string extensionName, string action)
+        internal bool DisableExtensionWhenMcpTokenValidationUnavailable(string extensionId, string extensionName)
         {
             if ((string.Equals(extensionId, AutodeskAssistantExtensionId, StringComparison.OrdinalIgnoreCase) ||
                  string.Equals(extensionId, McpViewExtensionId, StringComparison.OrdinalIgnoreCase)) &&
@@ -3503,7 +3508,6 @@ namespace Dynamo.Controls
                     CultureInfo.CurrentCulture,
                     Res.ExtensionNotOfferedMcpTokenValidationUnavailable,
                     extensionName,
-                    action,
                     IdsdkMcpTokenValidation.IdsdkModuleName,
                     IdsdkMcpTokenValidation.McpValidateTokenExport));
 

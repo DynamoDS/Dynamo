@@ -137,7 +137,9 @@ namespace Dynamo.Wpf.Utilities
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         private static extern IntPtr GetModuleHandle(string lpModuleName);
 
+        // GetProcAddress has no Unicode variant — export names are always ANSI. The explicit
+        // LPStr keeps CA2101 satisfied without changing the marshaling CharSet.Ansi already picks.
         [DllImport("kernel32.dll", CharSet = CharSet.Ansi, BestFitMapping = false, SetLastError = true)]
-        private static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
+        private static extern IntPtr GetProcAddress(IntPtr hModule, [MarshalAs(UnmanagedType.LPStr)] string lpProcName);
     }
 }

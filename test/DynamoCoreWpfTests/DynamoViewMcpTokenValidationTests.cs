@@ -24,6 +24,16 @@ namespace DynamoCoreWpfTests
     {
         private const string UnrelatedExtensionId = "11111111-1111-1111-1111-111111111111";
 
+        // Reset before each test as well as after. The probe result is process-global static
+        // state, so anything else in this assembly that sets it and fails to clean up would
+        // otherwise silently decide these tests' outcomes. NUnit runs the base fixture's
+        // [SetUp] Start() first, then this.
+        [SetUp]
+        public void ResetMcpTokenValidationProbeBeforeTest()
+        {
+            IdsdkMcpTokenValidation.SetAvailabilityForTesting(null);
+        }
+
         [TearDown]
         public void ResetMcpTokenValidationProbe()
         {
@@ -37,8 +47,7 @@ namespace DynamoCoreWpfTests
 
             var shouldDisable = View.DisableExtensionWhenMcpTokenValidationUnavailable(
                 DynamoView.AutodeskAssistantExtensionId,
-                "Autodesk Assistant",
-                "re-opened");
+                "Autodesk Assistant");
 
             Assert.IsTrue(shouldDisable);
         }
@@ -50,8 +59,7 @@ namespace DynamoCoreWpfTests
 
             var shouldDisable = View.DisableExtensionWhenMcpTokenValidationUnavailable(
                 DynamoView.McpViewExtensionId,
-                "Dynamo MCP View Extension",
-                "re-opened");
+                "Dynamo MCP View Extension");
 
             Assert.IsTrue(shouldDisable);
         }
@@ -63,8 +71,7 @@ namespace DynamoCoreWpfTests
 
             var shouldDisable = View.DisableExtensionWhenMcpTokenValidationUnavailable(
                 DynamoView.AutodeskAssistantExtensionId,
-                "Autodesk Assistant",
-                "re-opened");
+                "Autodesk Assistant");
 
             Assert.IsFalse(shouldDisable);
         }
@@ -79,8 +86,7 @@ namespace DynamoCoreWpfTests
 
             var shouldDisable = View.DisableExtensionWhenMcpTokenValidationUnavailable(
                 DynamoView.AutodeskAssistantExtensionId,
-                "Autodesk Assistant",
-                "re-opened");
+                "Autodesk Assistant");
 
             Assert.IsFalse(shouldDisable);
         }
@@ -92,8 +98,7 @@ namespace DynamoCoreWpfTests
 
             var shouldDisable = View.DisableExtensionWhenMcpTokenValidationUnavailable(
                 UnrelatedExtensionId,
-                "Some Other Extension",
-                "re-opened");
+                "Some Other Extension");
 
             Assert.IsFalse(shouldDisable);
         }
