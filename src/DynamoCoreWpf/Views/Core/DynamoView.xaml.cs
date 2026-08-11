@@ -1434,12 +1434,17 @@ namespace Dynamo.Controls
                     // (menu items, toolbar buttons) stays visible; only the automatic re-open of a
                     // previously-open panel is skipped. Extensions that depend on IDSDK are expected to
                     // gate their own entry points via ViewLoadedParams.IsIDSDKInitialized.
+                    //
+                    // The IDSDK check runs first and, as a side effect, forces IDSDK initialization —
+                    // so it must run before Loaded(). The MCP token-validation check is re-evaluated
+                    // immediately before the re-open decision instead, since its Unknown state is
+                    // deliberately re-probed on each call: if Loaded() is what causes the ADP wrapper
+                    // to finish mapping, that must be reflected before deciding whether to re-open.
                     var idsdkNotInitialized = DisableExtensionWhenIDSDKNotInitialized(ext.UniqueId, ext.Name, "re-opened");
-                    var mcpTokenValidationUnavailable = DisableExtensionWhenMcpTokenValidationUnavailable(ext.UniqueId, ext.Name, "re-opened");
 
                     ext.Loaded(loadedParams);
 
-                    if (!idsdkNotInitialized && !mcpTokenValidationUnavailable)
+                    if (!idsdkNotInitialized && !DisableExtensionWhenMcpTokenValidationUnavailable(ext.UniqueId, ext.Name, "re-opened"))
                     {
                         ReOpenSavedExtensionOnDynamoStartup(ext);
                     }
