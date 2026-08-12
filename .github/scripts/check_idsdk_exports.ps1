@@ -144,8 +144,10 @@ function Get-PEExportedName {
     $rvaToOffset = {
         param([uint32]$rva)
         foreach ($section in $sections) {
-            # VirtualSize can be 0 in object files; fall back to the raw size.
-            $span = if ($section.VirtualSize -gt 0) { $section.VirtualSize } else { $section.SizeOfRawData }
+            # VirtualSize can be smaller than SizeOfRawData due to file/section alignment padding
+            # (or 0 in object files), so a valid RVA can exceed VirtualSize but still fall inside
+            # the section's raw data. Use the larger of the two as the span.
+            $span = [Math]::Max($section.VirtualSize, $section.SizeOfRawData)
             if ($rva -ge $section.VirtualAddress -and $rva -lt ($section.VirtualAddress + $span)) {
                 return [int]($section.PointerToRawData + ($rva - $section.VirtualAddress))
             }
