@@ -2064,6 +2064,9 @@ Chcete nainstalovat nejnovější aktualizaci aplikace Dynamo?</value>
   <data name="ExtensionAlreadyPresent" xml:space="preserve">
     <value>Nebyla přidána žádná nová karta, protože rozšíření se již nachází na bočním panelu rozšíření.</value>
   </data>
+  <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
+    <value>Package/Extension {0} not offered because Autodesk Identity (IDSDK) in this process cannot validate MCP tokens ({1} does not export {2}); every request would be rejected with HTTP 401.</value>
+  </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
     <value>{1} nelze načíst.
 Instalace tohoto uzlu je v konfliktu s jednou nebo více definicemi uzlů, které již v aktuálně načteném {0} existují. 

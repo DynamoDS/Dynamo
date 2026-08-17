@@ -2064,6 +2064,9 @@
   <data name="ExtensionAlreadyPresent" xml:space="preserve">
     <value>未加入新頁籤，因為該延伸已經位於延伸側邊列中。</value>
   </data>
+  <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
+    <value>Package/Extension {0} not offered because Autodesk Identity (IDSDK) in this process cannot validate MCP tokens ({1} does not export {2}); every request would be rejected with HTTP 401.</value>
+  </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
     <value>無法載入 {1}。
 安裝它將會與 {0} (目前已載入) 已存在的一個或多個節點定義發生衝突。
