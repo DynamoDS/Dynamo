@@ -215,7 +215,19 @@ namespace Dynamo.Core
 
         public IEnumerable<string> DefinitionDirectories
         {
-            get { return RootDirectories.Select(path => TransformPath(path, DefinitionsDirectoryName)); }
+            get
+            {
+                var definitionDirectories = RootDirectories.Select(path => TransformPath(path, DefinitionsDirectoryName)).ToList();
+                var commonDefinitionsDirectory = Path.Combine(commonDataDir, DefinitionsDirectoryName);
+
+                if (Directory.Exists(commonDefinitionsDirectory) &&
+                    !definitionDirectories.Contains(commonDefinitionsDirectory, StringComparer.OrdinalIgnoreCase))
+                {
+                    definitionDirectories.Add(commonDefinitionsDirectory);
+                }
+
+                return definitionDirectories;
+            }
         }
 
         [Obsolete("This property will be removed in a future version of Dynamo.", false)]

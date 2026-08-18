@@ -3931,18 +3931,6 @@
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>与节点选择自动同步。</value>
   </data>
-  <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
-    <value>此文件当前已在 Dynamo 的其他实例中打开。
-为避免数据丢失或损坏，请选择以下操作之一:
- • 另存为 — 打开可以安全编辑的独立副本。
- • 取消 — 不打开文件。</value>
-  </data>
-  <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
-    <value>文件已在其他 Dynamo 实例中打开</value>
-  </data>
-  <data name="GraphLockSaveAsButton" xml:space="preserve">
-    <value>另存为</value>
-  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\ViewModels\Watch3D\compiledShaders\psDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

@@ -263,7 +263,18 @@ namespace ProtoScript.Runners
                 // Mark all graphnodes dirty which are associated with the force exec ASTs
                 var firstDirtyNode = ProtoCore.AssociativeEngine.Utils.MarkGraphNodesDirtyAtGlobalScope(
                     runtimeCore, changeSet.ForceExecuteASTList);
-                Validity.Assert(firstDirtyNode != null);
+
+                // MarkGraphNodesDirtyAtGlobalScope only matches graph nodes that are still active,
+                // and ApplyChangeSetModified has already run by this point, so every force-executed
+                // AST whose graph nodes it deactivated has nothing left to mark dirty. This used to
+                // fail a bare assert and reach the user as an engine failure dialog with no message
+                // at all (DYN-10740). It is not a fatal condition: whatever replaced the deactivated
+                // graph nodes is compiled later in this same sync and will execute, so the request
+                // to re-execute is already satisfied. Leave the entrypoint to the code generator.
+                if (firstDirtyNode == null)
+                {
+                    return;
+                }
 
                 // If the only ASTs to execute are force exec, then set the entrypoint here.
                 // Otherwise the entrypoint is set by the code generator when the new ASTs are compiled
@@ -774,7 +785,14 @@ namespace ProtoScript.Runners
         /// </summary>
         /// <param name="st"></param>
         /// <param name="modifiedASTList"></param>
-        private void UpdateCachedASTList(Subtree st, List<AssociativeNode> modifiedASTList)
+        /// <param name="subtreeWasForceRecompiled">
+        /// True when the caller has already scheduled this subtree's cached graph nodes for
+        /// deactivation and replaced them with freshly compiled clones. Those clones re-execute the
+        /// subtree on their own, so its cached ASTs must not also be added to ForceExecuteASTList -
+        /// they refer to the graph nodes being deactivated, and marking them dirty is impossible.
+        /// </param>
+        private void UpdateCachedASTList(Subtree st, List<AssociativeNode> modifiedASTList,
+            bool subtreeWasForceRecompiled = false)
         {
             List<AssociativeNode> removedModifiedNodes = new List<AssociativeNode>();
 
@@ -838,7 +856,7 @@ namespace ProtoScript.Runners
                 else
                 {
                     var unmodifiedASTs = GetUnmodifiedASTList(oldSubTree.AstNodes, st.AstNodes);
-                    if (st.ForceExecution)
+                    if (st.ForceExecution && !subtreeWasForceRecompiled)
                     {
                         // Get the cached AST and append it to the changeSet
                         csData.ForceExecuteASTList.AddRange(unmodifiedASTs);
@@ -928,6 +946,10 @@ namespace ProtoScript.Runners
                     var modifiedASTList = GetModifiedNodes(modifiedSubTree, redefinitionAllowed, out modifiedInputAST);
                     csData.ModifiedNodesForRuntimeSetValue.AddRange(modifiedInputAST);
 
+                    // Set when the force-recompile path below replaces this subtree's cached graph
+                    // nodes, so UpdateCachedASTList knows not to also force-execute them.
+                    bool subtreeWasForceRecompiled = false;
+
                     // If another non-input subtree was structurally modified and this non-input
                     // subtree appears unchanged, force-recompile it so its new graph node lands
                     // at a PC higher than the recompiled upstream node. Also deactivate the old
@@ -945,6 +967,7 @@ namespace ProtoScript.Runners
                             // These originals stay untouched: DeactivateGraphnodes/ReActivateGraphNodesInCycle
                             // only read OriginalAstID, which clones preserve, so deactivation still matches.
                             csData.RemovedBinaryNodesFromModification.AddRange(cachedBinaryNodes);
+                            subtreeWasForceRecompiled = cachedBinaryNodes.Count > 0;
                             // Clone before stamping/injecting. cachedBinaryNodes are the live objects held in
                             // currentSubTreeList; mutating them or handing them to the compiler (which writes
                             // back UIDs and SSA-transforms in place) would corrupt the cached subtree and leak
@@ -989,7 +1012,8 @@ namespace ProtoScript.Runners
                         bnode.guid = modifiedSubTrees[n].GUID;
                         bnode.IsInputExpression = true;
                     }
-                    UpdateCachedASTList(modifiedSubTree, modifiedSubTree.ModifiedAstNodes);
+                    UpdateCachedASTList(modifiedSubTree, modifiedSubTree.ModifiedAstNodes,
+                        subtreeWasForceRecompiled);
                 }
                 else
                 {

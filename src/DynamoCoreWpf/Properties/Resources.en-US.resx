@@ -2328,6 +2328,10 @@ Do you want to install the latest Dynamo update?</value>
   <data name="ExtensionAlreadyPresent" xml:space="preserve">
     <value>No new tab is added, as the extension is already present in the extensions side bar.</value>
   </data>
+  <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
+    <value>Package/Extension {0} not offered because Autodesk Identity (IDSDK) in this process cannot validate MCP tokens ({1} does not export {2}); every request would be rejected with HTTP 401.</value>
+    <comment>{0} = extension name, {1} = native library file name, {2} = native export name. {1} and {2} are technical identifiers and must not be translated.</comment>
+  </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
     <value>{1} cannot be loaded.
 Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
@@ -4300,17 +4304,5 @@ To open this graph in Dynamo 3.3–3.6.x: Install the PythonNet package from the
   </data>
   <data name="DocumentationBrowserAutoSyncLabel" xml:space="preserve">
     <value>Auto‑sync with node selection.</value>
-  </data>
-  <data name="GraphLockFileAlreadyOpenMessage" xml:space="preserve">
-    <value>This file is currently open in another instance of Dynamo.
-To avoid data loss or corruption, please choose one of the following actions:
- • Save As — opens an independent copy you can edit safely.
- • Cancel — does not open the file.</value>
-  </data>
-  <data name="GraphLockFileAlreadyOpenTitle" xml:space="preserve">
-    <value>File already open in another Dynamo instance</value>
-  </data>
-  <data name="GraphLockSaveAsButton" xml:space="preserve">
-    <value>Save As</value>
   </data>
 </root>

@@ -1,11 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using Dynamo.Applications;
 using Dynamo.Logging;
 using Dynamo.Models;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Runtime.InteropServices;
+using System.Threading;
 using static Dynamo.Models.DynamoModel;
 
 namespace IntegrationTests
@@ -159,5 +163,379 @@ namespace IntegrationTests
 
             model.ShutDown(false);
         }
+
+        // This test is Explicit because it launches the full DynamoSandbox process tree (including
+        // WebView2/Edge child processes) and inspects live OS TCP tables.
+        //
+        // TODO(QA): This OS/TCP-level audit needs a clean, isolated agent to avoid VPN/proxy/EDR
+        // false positives, so it is not run per-PR. QA owns the follow-up to migrate it to the AGT
+        // suite (which already provides a controlled sandbox-launch environment).
+        [Test, Explicit("Network-egress audit; run on a clean, isolated machine. See comment above.")]
+        [Category("NetworkAudit")]
+        [Platform("win")]
+        public void WhenDynamoStartsWithNoNetworkModeThenNoOutboundConnectionsAreOpened()
+        {
+            var coreDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            var startedProcess = Process.Start(new ProcessStartInfo(
+                Path.Join(coreDirectory, "DynamoSandbox.exe"), "--NoNetworkMode")
+            { UseShellExecute = true });
+            using var dynamoSandbox = startedProcess
+                ?? throw new AssertionException("Failed to start DynamoSandbox process.");
+
+            try
+            {
+                // Give startup (splash + home page + WebView2 children) time to settle.
+                dynamoSandbox.WaitForInputIdle(30_000);
+                Thread.Sleep(TimeSpan.FromSeconds(30));
+
+                var treePids = GetProcessTreePids(dynamoSandbox.Id);
+                var offenders = GetNonLoopbackTcpConnections(treePids).ToList();
+
+                Assert.IsEmpty(offenders,
+                    "Dynamo opened outbound connections in --NoNetworkMode: " +
+                    string.Join(", ", offenders));
+            }
+            finally
+            {
+                try
+                {
+                    if (!dynamoSandbox.HasExited)
+                    {
+                        dynamoSandbox.Kill(entireProcessTree: true);
+                    }
+                }
+                catch (InvalidOperationException)
+                {
+                    // Process already exited (or cannot be killed).
+                }
+                catch (System.ComponentModel.Win32Exception)
+                {
+                    // Avoid masking assertion failures with teardown-only process kill failures.
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the set of process ids belonging to <paramref name="rootPid"/> and its descendants.
+        /// </summary>
+        private static HashSet<int> GetProcessTreePids(int rootPid)
+        {
+            var pids = new HashSet<int> { rootPid };
+            var unknownParentLookupPids = new List<int>();
+
+            // Build a parent-map by walking every process's parent id via WMI-free heuristic:
+            // repeatedly add processes whose parent is already in the set until it stabilizes.
+            var parentById = new Dictionary<int, int>();
+            foreach (var process in Process.GetProcesses())
+            {
+                using (process)
+                {
+                    var pid = process.Id;
+                    try
+                    {
+                        var lookup = GetParentProcessId(process, out var parentPid);
+                        if (lookup == ParentLookupResult.Found)
+                        {
+                            parentById[pid] = parentPid;
+                        }
+                        else if (lookup == ParentLookupResult.Unknown)
+                        {
+                            unknownParentLookupPids.Add(pid);
+                        }
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        // Process may have exited between snapshot and lookup.
+                        TestContext.Progress.WriteLine(
+                            $"[NetworkAudit] Skipping exited PID {pid}: {ex.GetType().Name} - {ex.Message}");
+                    }
+                    catch (System.ComponentModel.Win32Exception ex)
+                    {
+                        // Access restrictions can prevent querying some processes.
+                        TestContext.Progress.WriteLine(
+                            $"[NetworkAudit] Unable to inspect PID {pid}, failing closed: {ex.GetType().Name} - {ex.Message}");
+                        unknownParentLookupPids.Add(pid);
+                    }
+                }
+            }
+
+            if (unknownParentLookupPids.Count > 0)
+            {
+                Assert.Fail(
+                    "Unable to resolve parent PID for one or more processes while auditing --NoNetworkMode. " +
+                    "Failing closed to avoid a false pass. Indeterminate process IDs: " +
+                    string.Join(", ", unknownParentLookupPids.OrderBy(pid => pid)));
+            }
+
+            bool added = true;
+            while (added)
+            {
+                added = false;
+                foreach (var kvp in parentById.Where(kvp => !pids.Contains(kvp.Key) && pids.Contains(kvp.Value)))
+                {
+                    pids.Add(kvp.Key);
+                    added = true;
+                }
+            }
+            return pids;
+        }
+
+        /// <summary>
+        /// Snapshots the IPv4 and IPv6 TCP tables and returns any connection owned by a process in
+        /// <paramref name="treePids"/> whose remote endpoint is not loopback and is in a state that
+        /// indicates an actual outbound connection attempt.
+        /// </summary>
+        private static IEnumerable<string> GetNonLoopbackTcpConnections(HashSet<int> treePids)
+        {
+            foreach (var row in GetTcpTable().Where(row =>
+            {
+                if (!treePids.Contains(row.OwningPid)) return false;
+
+                var remote = row.RemoteEndPoint.Address;
+                if (IPAddress.IsLoopback(remote)) return false;
+                if (remote.Equals(IPAddress.Any)) return false; // 0.0.0.0 == listening, not outbound
+                if (remote.Equals(IPAddress.IPv6Any)) return false; // :: == listening, not outbound
+
+                // Only flag states that represent a real outbound connection.
+                return row.State == MibTcpState.Established ||
+                       row.State == MibTcpState.SynSent ||
+                       row.State == MibTcpState.SynReceived;
+            }))
+            {
+                yield return $"pid {row.OwningPid} -> {row.RemoteEndPoint} ({row.State})";
+            }
+        }
+
+        #region Win32 interop for per-PID TCP ownership
+
+        private enum MibTcpState
+        {
+            Closed = 1, Listen = 2, SynSent = 3, SynReceived = 4, Established = 5,
+            FinWait1 = 6, FinWait2 = 7, CloseWait = 8, Closing = 9, LastAck = 10,
+            TimeWait = 11, DeleteTcb = 12
+        }
+
+        private readonly struct TcpRow
+        {
+            public TcpRow(MibTcpState state, IPEndPoint remote, int pid)
+            {
+                State = state; RemoteEndPoint = remote; OwningPid = pid;
+            }
+            public MibTcpState State { get; }
+            public IPEndPoint RemoteEndPoint { get; }
+            public int OwningPid { get; }
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MIB_TCPROW_OWNER_PID
+        {
+            public uint state;
+            public uint localAddr;
+            public uint localPort;
+            public uint remoteAddr;
+            public uint remotePort;
+            public uint owningPid;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MIB_TCP6ROW_OWNER_PID
+        {
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+            public byte[] localAddr;
+            public uint localScopeId;
+            public uint localPort;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+            public byte[] remoteAddr;
+            public uint remoteScopeId;
+            public uint remotePort;
+            public uint state;
+            public uint owningPid;
+        }
+
+        [DllImport("iphlpapi.dll", SetLastError = true)]
+        private static extern uint GetExtendedTcpTable(IntPtr pTcpTable, ref int pdwSize,
+            bool bOrder, int ulAf, int tableClass, int reserved);
+
+        private const int AF_INET = 2;
+        private const int AF_INET6 = 23;
+        private const int TCP_TABLE_OWNER_PID_ALL = 5;
+        private const uint ERROR_INSUFFICIENT_BUFFER = 122;
+
+        private static IEnumerable<TcpRow> GetTcpTable()
+        {
+            var rows = new List<TcpRow>();
+            rows.AddRange(GetTcpTableV4());
+            rows.AddRange(GetTcpTableV6());
+            return rows;
+        }
+
+        private static IEnumerable<TcpRow> GetTcpTableV4()
+        {
+            var rows = new List<TcpRow>();
+            IntPtr table = IntPtr.Zero;
+            try
+            {
+                table = QueryTcpTableWithRetry(AF_INET);
+
+                int rowCount = Marshal.ReadInt32(table);
+                IntPtr rowPtr = IntPtr.Add(table, sizeof(int));
+                int rowSize = Marshal.SizeOf<MIB_TCPROW_OWNER_PID>();
+
+                for (int i = 0; i < rowCount; i++)
+                {
+                    var row = Marshal.PtrToStructure<MIB_TCPROW_OWNER_PID>(rowPtr);
+                    var remoteAddress = new IPAddress(row.remoteAddr);
+                    int remotePort = ParsePort(row.remotePort);
+
+                    rows.Add(new TcpRow((MibTcpState)row.state,
+                        new IPEndPoint(remoteAddress, remotePort), (int)row.owningPid));
+                    rowPtr = IntPtr.Add(rowPtr, rowSize);
+                }
+            }
+            finally
+            {
+                if (table != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(table);
+                }
+            }
+
+            return rows;
+        }
+
+        private static IEnumerable<TcpRow> GetTcpTableV6()
+        {
+            var rows = new List<TcpRow>();
+            IntPtr table = IntPtr.Zero;
+            try
+            {
+                table = QueryTcpTableWithRetry(AF_INET6);
+
+                int rowCount = Marshal.ReadInt32(table);
+                IntPtr rowPtr = IntPtr.Add(table, sizeof(int));
+                int rowSize = Marshal.SizeOf<MIB_TCP6ROW_OWNER_PID>();
+
+                for (int i = 0; i < rowCount; i++)
+                {
+                    var row = Marshal.PtrToStructure<MIB_TCP6ROW_OWNER_PID>(rowPtr);
+                    var remoteAddress = new IPAddress(row.remoteAddr, row.remoteScopeId);
+                    int remotePort = ParsePort(row.remotePort);
+
+                    rows.Add(new TcpRow((MibTcpState)row.state,
+                        new IPEndPoint(remoteAddress, remotePort), (int)row.owningPid));
+                    rowPtr = IntPtr.Add(rowPtr, rowSize);
+                }
+            }
+            finally
+            {
+                if (table != IntPtr.Zero)
+                {
+                    Marshal.FreeHGlobal(table);
+                }
+            }
+
+            return rows;
+        }
+
+        private static IntPtr QueryTcpTableWithRetry(int addressFamily)
+        {
+            int size = 0;
+
+            for (int attempt = 0; attempt < 3; attempt++)
+            {
+                var probeResult = GetExtendedTcpTable(IntPtr.Zero, ref size, true, addressFamily, TCP_TABLE_OWNER_PID_ALL, 0);
+                if (probeResult != ERROR_INSUFFICIENT_BUFFER || size <= 0)
+                {
+                    throw new InvalidOperationException($"GetExtendedTcpTable(AF={addressFamily}) failed to get buffer size. Win32 error: {probeResult}");
+                }
+
+                IntPtr table = Marshal.AllocHGlobal(size);
+                var queryResult = GetExtendedTcpTable(table, ref size, true, addressFamily, TCP_TABLE_OWNER_PID_ALL, 0);
+                if (queryResult == 0)
+                {
+                    return table;
+                }
+
+                Marshal.FreeHGlobal(table);
+
+                if (queryResult != ERROR_INSUFFICIENT_BUFFER)
+                {
+                    throw new InvalidOperationException($"GetExtendedTcpTable(AF={addressFamily}) failed to query table. Win32 error: {queryResult}");
+                }
+            }
+
+            throw new InvalidOperationException($"GetExtendedTcpTable(AF={addressFamily}) failed after retries due to concurrent table growth.");
+        }
+
+        private static int ParsePort(uint networkOrderPort)
+        {
+            // Ports are stored in network byte order in the low 16 bits.
+            return ((int)(networkOrderPort & 0xFF) << 8) | (int)((networkOrderPort >> 8) & 0xFF);
+        }
+
+        [DllImport("ntdll.dll")]
+        private static extern int NtQueryInformationProcess(IntPtr processHandle, int processInformationClass,
+            ref PROCESS_BASIC_INFORMATION processInformation, int processInformationLength, out int returnLength);
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct PROCESS_BASIC_INFORMATION
+        {
+            public IntPtr Reserved1;
+            public IntPtr PebBaseAddress;
+            public IntPtr Reserved2_0;
+            public IntPtr Reserved2_1;
+            public IntPtr UniqueProcessId;
+            public IntPtr InheritedFromUniqueProcessId;
+        }
+
+        private enum ParentLookupResult
+        {
+            Found,
+            NoParent,
+            Unknown,
+        }
+
+        private static ParentLookupResult GetParentProcessId(Process process, out int parentPid)
+        {
+            parentPid = 0;
+
+            try
+            {
+                var pbi = new PROCESS_BASIC_INFORMATION();
+                if (NtQueryInformationProcess(process.Handle, 0, ref pbi, Marshal.SizeOf(pbi), out _) != 0)
+                {
+                    return ParentLookupResult.Unknown;
+                }
+
+                int candidateParentPid = pbi.InheritedFromUniqueProcessId.ToInt32();
+                if (candidateParentPid <= 0)
+                {
+                    return ParentLookupResult.NoParent;
+                }
+
+                using var parent = Process.GetProcessById(candidateParentPid);
+                if (parent.StartTime > process.StartTime)
+                {
+                    return ParentLookupResult.Unknown;
+                }
+
+                parentPid = candidateParentPid;
+                return ParentLookupResult.Found;
+            }
+            catch (ArgumentException)
+            {
+                return ParentLookupResult.Unknown;
+            }
+            catch (InvalidOperationException)
+            {
+                return ParentLookupResult.Unknown;
+            }
+            catch (System.ComponentModel.Win32Exception)
+            {
+                return ParentLookupResult.Unknown;
+            }
+        }
+
+        #endregion
     }
 }

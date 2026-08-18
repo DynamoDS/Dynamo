@@ -148,7 +148,7 @@
       "Replication": "Disabled",
       "Description": "Umożliwia wybranie pliku w systemie i zwraca jego ścieżkę.",
       "HintPath": null,
-      "InputValue": "..\\..\\..\\..\\..\\..\\Desktop\\Excel_Export_Example.xlsx"
+      "InputValue": "Nie wybrano pliku."
     },
     {
       "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
@@ -269,165 +269,6 @@
       "Description": "Po określeniu listy podaje pierwszy element na liście oraz nową listę zawierającą wszystkie elementy z wyjątkiem pierwszego.\n\nList.Deconstruct (list: var[]..[]): var[]..[]"
     },
     {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "4b3fe08c16754910864933a52563d847",
-      "NodeType": "FunctionNode",
-      "Inputs": [
-        {
-          "Id": "b203c45fc1a94ab9bca454f35eb407c5",
-          "Name": "lists",
-          "Description": "Lista list do transpozycji\n\nvar[]..[]",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "dc398e5b6abc4b2596d168d46a881e5e",
-          "Name": "lists",
-          "Description": "Lista transponowanych list",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "FunctionSignature": "DSCore.List.Transpose@var[]..[]",
-      "Replication": "Auto",
-      "Description": "Zamienia wiersze i kolumny na liście list. Jeśli niektóre wiersze są krótsze od innych, w wynikowej tablicy są wstawiane wartości null, aby zawsze była ona prostokątna.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
-    },
-    {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "Id": "ed993b30fa464d7aa7f67d4cc8517818",
-      "NodeType": "FunctionNode",
-      "Inputs": [
-        {
-          "Id": "ef53eb298db74b9297daada03dc7dbcb",
-          "Name": "filePath",
-          "Description": "string",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "d8fb055e79894220b83287dff4fb8b1f",
-          "Name": "sheetName",
-          "Description": "string",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "2be4692720df4c4ca48daad5951fa160",
-          "Name": "wiersz początkowy",
-          "Description": "int\nWartość domyślna: 0",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "df47c9b62ea542e0be014db525cf0249",
-          "Name": "startColumn(Kolumna) początkowa",
-          "Description": "int\nWartość domyślna: 0",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "49695987845b404ba4264ca7ff9bb41b",
-          "Name": "readAsString",
-          "Description": "bool\nWartość domyślna: false",
-          "UsingDefaultValue": true,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "f1cc463cd0374cab8350223d986ce214",
-          "Name": "var[][]",
-          "Description": "var[][]",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "FunctionSignature": "DSOffice.Data.OpenXMLImportExcel@string,string,int,int,bool",
-      "Replication": "Auto",
-      "Description": "Data.OpenXMLImportExcel (filePath: string, sheetName: string, startRow: int = 0, startColumn: int = 0, readAsString: bool = false): var[][]"
-    },
-    {
-      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "Id": "74b92cb8e2234b98aed324a085de9993",
-      "NodeType": "ExtensionNode",
-      "Inputs": [],
-      "Outputs": [
-        {
-          "Id": "d58d443a2aeb4a47b20c5fb5eee40014",
-          "Name": "",
-          "Description": "Ścieżka pliku",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Umożliwia wybranie pliku w systemie i zwraca jego ścieżkę.",
-      "HintPath": "C:\\Użytkownicy\\ChloePegeot\\Desktop\\Excel_Import_Example.xlsx",
-      "InputValue": "..\\..\\..\\..\\..\\..\\Desktop\\Excel_Import_Example.xlsx"
-    },
-    {
-      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
-      "SerializedWidth": 0.0,
-      "SerializedHeight": 0.0,
-      "Id": "32dbab73ed0f4de8998de64932d218c1",
-      "NodeType": "StringInputNode",
-      "Inputs": [],
-      "Outputs": [
-        {
-          "Id": "2cede70b9fab4904b868ed8066f8c0f8",
-          "Name": "",
-          "Description": "String",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Tworzy ciąg.",
-      "InputValue": "Arkusz1"
-    },
-    {
-      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
-      "Id": "95290eb7e8734f058d9abff5bc0f0201",
-      "NodeType": "BooleanInputNode",
-      "Inputs": [],
-      "Outputs": [
-        {
-          "Id": "f71080ad5e0c451b8ac399489b20f711",
-          "Name": "",
-          "Description": "Boolean",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Umożliwia wybranie prawdy (True) lub fałszu (False).",
-      "InputValue": false
-    },
-    {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
       "WatchWidth": 200.0,
       "WatchHeight": 200.0,
@@ -437,7 +278,7 @@
         {
           "Id": "bf1841bc5eac4d4a8f754170a563bc26",
           "Name": "",
-          "Description": "Węzeł, którego dane wyjściowe mają zostać wyświetlone",
+          "Description": "Węzeł, którego dane wyjściowe mają zostać pokazane",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -456,7 +297,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Wizualizuje dane wyjściowe węzła."
+      "Description": "Wizualizuje dane wyjściowe węzła"
     },
     {
       "ConcreteType": "CoreNodeModels.Logic.And, CoreNodeModels",
@@ -495,7 +336,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Iloczyn logiczny: zwraca wartość prawda (True) pod warunkiem, że wszystkie wartości wejściowe są prawdziwe. Jeżeli któraś z nich jest fałszywa, zwraca wartość fałsz (False)."
+      "Description": "Logiczne I: zwraca wartość prawda (True), tylko jeśli wszystkie wartości wejściowe są prawdziwe. Jeżeli któraś z nich jest fałszywa, zwraca wartość fałsz (False)."
     },
     {
       "ConcreteType": "CoreNodeModels.Logic.And, CoreNodeModels",
@@ -534,7 +375,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Iloczyn logiczny: zwraca wartość prawda (True) pod warunkiem, że wszystkie wartości wejściowe są prawdziwe. Jeżeli któraś z nich jest fałszywa, zwraca wartość fałsz (False)."
+      "Description": "Logiczne I: zwraca wartość prawda (True), tylko jeśli wszystkie wartości wejściowe są prawdziwe. Jeżeli któraś z nich jest fałszywa, zwraca wartość fałsz (False)."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -562,7 +403,7 @@
         {
           "Id": "0e781982b7d147a3aaa1825c4d75e5f3",
           "Name": "ignoreCase",
-          "Description": "Czy porównanie uwzględnia wielkość liter?\n\nbool\nWartość domyślna: false",
+          "Description": "Czy porównanie uwzględnia\n\nbool\nWartość domyślna: false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -573,7 +414,7 @@
         {
           "Id": "95014187fcf34a88a915496f68f8c772",
           "Name": "bool",
-          "Description": "Czy ciąg zawiera podciąg?",
+          "Description": "Czy ciąg zawiera podciąg",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -582,7 +423,7 @@
       ],
       "FunctionSignature": "DSCore.String.Contains@string,string,bool",
       "Replication": "Auto",
-      "Description": "Określa, czy dany ciąg zawiera określony podciąg.\n\nString.Contains (string: string, searchFor: string, ignoreCase: bool = false): bool"
+      "Description": "Określa, czy dany ciąg zawiera dany podciąg.\n\nString.Contains (string: string, searchFor: string, ignoreCase: bool = false): bool"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -592,7 +433,7 @@
         {
           "Id": "a9ba12f2ed0e4187bf7463f36cd9c190",
           "Name": "x",
-          "Description": "Obiekt typu podstawowego do porównania (np. bool, int, double, string)\n\nvar[]..[]",
+          "Description": "Obiekt typu podstawowego do porównania (np. wartość logiczna, liczba całkowita, liczba typu double, ciąg itp.)\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -601,7 +442,7 @@
         {
           "Id": "f55d31699404497d8f95ce20c6a8732c",
           "Name": "y",
-          "Description": "Obiekt typu podstawowego do porównania (np. bool, int, double, string)\n\nvar[]..[]",
+          "Description": "Obiekt typu podstawowego do porównania (np. wartość logiczna, liczba całkowita, liczba typu double, ciąg itp.)\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -621,7 +462,7 @@
       ],
       "FunctionSignature": "==@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Sprawdza, czy wartości x i y są równe.\n\n== (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Sprawdza, czy x i y są równe\n\n== (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -631,7 +472,7 @@
         {
           "Id": "9f0c094fa6f6496cbc32b613fa6e1867",
           "Name": "list",
-          "Description": "Lista do filtrowania\n\nvar[]..[]",
+          "Description": "Lista do filtrowania.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -639,8 +480,8 @@
         },
         {
           "Id": "e8c1aa1b0180418ca927af60fa1535ae",
-          "Name": "maska",
-          "Description": "Lista wartości logicznych reprezentujących maskę\n\nvar[]..[]",
+          "Name": "mask",
+          "Description": "Lista wartości logicznych reprezentujących maskę.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -650,8 +491,8 @@
       "Outputs": [
         {
           "Id": "99a53962b867421796375dacfb3a1ade",
-          "Name": "uwzględniane",
-          "Description": "Elementy, których indeks maski ma wartość prawda (True).",
+          "Name": "in",
+          "Description": "Elementy, których indeks maski ma wartość prawda.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -659,8 +500,8 @@
         },
         {
           "Id": "837f23283e3640cba05e8e16dfbe25a4",
-          "Name": "nieuwzględniane",
-          "Description": "Elementy, których indeks maski ma wartość fałsz (False).",
+          "Name": "out",
+          "Description": "Elementy, których indeks maski ma wartość fałsz.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -681,7 +522,7 @@
         {
           "Id": "9bdfa707caa845f6a0f22f097d83856e",
           "Name": "",
-          "Description": "Węzeł, którego dane wyjściowe mają zostać wyświetlone",
+          "Description": "Węzeł, którego dane wyjściowe mają zostać pokazane",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -700,7 +541,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Wizualizuje dane wyjściowe węzła."
+      "Description": "Wizualizuje dane wyjściowe węzła"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -712,7 +553,7 @@
         {
           "Id": "4002cef3625c4961a2cf26707d3343e8",
           "Name": "",
-          "Description": "Węzeł, którego dane wyjściowe mają zostać wyświetlone",
+          "Description": "Węzeł, którego dane wyjściowe mają zostać pokazane",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -731,7 +572,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Wizualizuje dane wyjściowe węzła."
+      "Description": "Wizualizuje dane wyjściowe węzła"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -807,7 +648,7 @@
         {
           "Id": "4e17b2eb16d4415e94bbc95e72612886",
           "Name": "ignoreCase",
-          "Description": "Czy porównanie uwzględnia wielkość liter?\n\nbool\nWartość domyślna: false",
+          "Description": "Czy porównanie uwzględnia\n\nbool\nWartość domyślna: false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -818,7 +659,7 @@
         {
           "Id": "56c1d65d90934cb0b61984f2c80c4190",
           "Name": "bool",
-          "Description": "Czy ciąg zawiera podciąg?",
+          "Description": "Czy ciąg zawiera podciąg",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -827,7 +668,7 @@
       ],
       "FunctionSignature": "DSCore.String.Contains@string,string,bool",
       "Replication": "Auto",
-      "Description": "Określa, czy dany ciąg zawiera określony podciąg.\n\nString.Contains (string: string, searchFor: string, ignoreCase: bool = false): bool"
+      "Description": "Określa, czy dany ciąg zawiera dany podciąg.\n\nString.Contains (string: string, searchFor: string, ignoreCase: bool = false): bool"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -855,7 +696,7 @@
         {
           "Id": "cf0027f8931a4f40b83c57ba13385f1c",
           "Name": "ignoreCase",
-          "Description": "Czy porównanie uwzględnia wielkość liter?\n\nbool\nWartość domyślna: false",
+          "Description": "Czy porównanie uwzględnia\n\nbool\nWartość domyślna: false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -866,7 +707,7 @@
         {
           "Id": "3e5c3683faf942e2add04fbde697bc07",
           "Name": "bool",
-          "Description": "Czy ciąg zawiera podciąg?",
+          "Description": "Czy ciąg zawiera podciąg",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -875,7 +716,7 @@
       ],
       "FunctionSignature": "DSCore.String.Contains@string,string,bool",
       "Replication": "Auto",
-      "Description": "Określa, czy dany ciąg zawiera określony podciąg.\n\nString.Contains (string: string, searchFor: string, ignoreCase: bool = false): bool"
+      "Description": "Określa, czy dany ciąg zawiera dany podciąg.\n\nString.Contains (string: string, searchFor: string, ignoreCase: bool = false): bool"
     },
     {
       "ConcreteType": "CoreNodeModels.Logic.Or, CoreNodeModels",
@@ -914,7 +755,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Suma logiczna: zwraca wartość prawda (True), jeśli dowolne z danych wejściowych są prawdziwe. Jeśli żadne nie są prawdziwe, zwraca wartość fałsz (False)."
+      "Description": "Logiczne LUB: zwraca wartość prawda (True), jeśli któreś z danych wejściowych są prawdziwe. Jeśli żadne nie są prawdziwe, zwraca wartość fałsz (Fałsz)."
     },
     {
       "ConcreteType": "CoreNodeModels.Logic.Or, CoreNodeModels",
@@ -953,7 +794,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Suma logiczna: zwraca wartość prawda (True), jeśli dowolne z danych wejściowych są prawdziwe. Jeśli żadne nie są prawdziwe, zwraca wartość fałsz (False)."
+      "Description": "Logiczne LUB: zwraca wartość prawda (True), jeśli któreś z danych wejściowych są prawdziwe. Jeśli żadne nie są prawdziwe, zwraca wartość fałsz (Fałsz)."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -971,7 +812,7 @@
         },
         {
           "Id": "d99904888cfc459d9725f505a7537049",
-          "Name": "indeks",
+          "Name": "index",
           "Description": "Indeks elementu do pobrania.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -982,7 +823,7 @@
       "Outputs": [
         {
           "Id": "226e042b6ef54454bbe03319141cc2e0",
-          "Name": "element",
+          "Name": "item",
           "Description": "Element na liście o danym indeksie.",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -1010,7 +851,7 @@
         },
         {
           "Id": "3e5cdd4efdf44da5846d2c82354bb85c",
-          "Name": "indeks",
+          "Name": "index",
           "Description": "Indeks elementu do pobrania.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -1021,7 +862,7 @@
       "Outputs": [
         {
           "Id": "fb7d19539d174d4384adb3ae77552471",
-          "Name": "element",
+          "Name": "item",
           "Description": "Element na liście o danym indeksie.",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -1049,7 +890,7 @@
         },
         {
           "Id": "f6f7799d785d4aacac1c7c1b195709bf",
-          "Name": "indeks",
+          "Name": "index",
           "Description": "Indeks elementu do pobrania.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -1060,7 +901,7 @@
       "Outputs": [
         {
           "Id": "3a8b3b79aecb41d3864ea4162d515a73",
-          "Name": "element",
+          "Name": "item",
           "Description": "Element na liście o danym indeksie.",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -1089,9 +930,9 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umożliwia wybranie pliku w systemie i zwraca jego ścieżkę.",
-      "HintPath": "..\\Data\\CSV_Import_Example.csv",
-      "InputValue": "..\\Data\\CSV_Import_Example.csv"
+      "Description": "Umożliwia wybranie pliku w systemie i zwraca jego ścieżkę",
+      "HintPath": null,
+      "InputValue": "Nie wybrano pliku."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1109,7 +950,7 @@
         },
         {
           "Id": "600590ba7ac541a0ba9b110b7e176aeb",
-          "Name": "transpozycja",
+          "Name": "transpose",
           "Description": "bool\nWartość domyślna: false",
           "UsingDefaultValue": true,
           "Level": 2,
@@ -1160,7 +1001,7 @@
         {
           "Id": "09b2644c499c4d64a8e9af376d1238d3",
           "Name": "list",
-          "Description": "Lista transponowanych list",
+          "Description": "Lista przestawionych list",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1188,7 +1029,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umożliwia wybranie prawdy (True) lub fałszu (False).",
+      "Description": "Umożliwia wybór między wartością prawdziwą (True) i fałszywą (False)",
       "InputValue": false
     },
     {
@@ -1208,7 +1049,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umożliwia wybranie prawdy (True) lub fałszu (False).",
+      "Description": "Umożliwia wybór między wartością prawdziwą (True) i fałszywą (False)",
       "InputValue": true
     },
     {
@@ -1219,7 +1060,7 @@
         {
           "Id": "e0929515cbc94fdfaf8751dc4d0cea75",
           "Name": "string",
-          "Description": "Ciąg, którego litery mają zostać zmienione na wielkie\n\nstring",
+          "Description": "Ciąg, w którym wszystkie litery mają zostać zmienione na wielkie\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1230,7 +1071,7 @@
         {
           "Id": "1da284581cc545bdaf6c42831658f8a4",
           "Name": "string",
-          "Description": "Ciąg złożony z wielkich liter",
+          "Description": "Ciąg tekstowy złożony z wielkich liter",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1239,7 +1080,7 @@
       ],
       "FunctionSignature": "DSCore.String.ToUpper@string",
       "Replication": "Auto",
-      "Description": "Konwertuje wszystkie litery ciągu na wielkie.\n\nString.ToUpper (string: string): string"
+      "Description": "Zmienia wszystkie litery ciągu na wielkie.\n\nString.ToUpper (string: string): string"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1388,7 +1229,7 @@
         {
           "Id": "8d9cdd9761c2455ea74f8061ae0a96f9",
           "Name": "lists",
-          "Description": "Lista list do transpozycji\n\nvar[]..[]",
+          "Description": "Lista list do przestawienia\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1399,7 +1240,7 @@
         {
           "Id": "70ebb90f33a847738ed2c96910772002",
           "Name": "lists",
-          "Description": "Lista transponowanych list",
+          "Description": "Lista przestawionych list",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1408,7 +1249,7 @@
       ],
       "FunctionSignature": "DSCore.List.Transpose@var[]..[]",
       "Replication": "Auto",
-      "Description": "Zamienia wiersze i kolumny na liście list. Jeśli niektóre wiersze są krótsze od innych, w wynikowej tablicy są wstawiane wartości null, aby zawsze była ona prostokątna.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
+      "Description": "Zamienia wiersze i kolumny na liście list. Jeśli niektóre wiersze są krótsze od innych, w wynikowej tablicy wstawiane są wartości null, tak aby tablica zawsze była prostokątna.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1426,7 +1267,7 @@
         },
         {
           "Id": "fd2ce9598e104bfca2400ca5597d740f",
-          "Name": "indeks",
+          "Name": "index",
           "Description": "Indeks elementu do pobrania.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -1437,7 +1278,7 @@
       "Outputs": [
         {
           "Id": "029ac554f89b454a817d1de9be0b0880",
-          "Name": "element",
+          "Name": "item",
           "Description": "Element na liście o danym indeksie.",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -1525,9 +1366,9 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umożliwia wybranie pliku w systemie i zwraca jego ścieżkę.",
+      "Description": "Umożliwia wybranie pliku w systemie i zwraca jego ścieżkę",
       "HintPath": null,
-      "InputValue": "..\\..\\..\\..\\..\\..\\Desktop\\CSV_Export_Example"
+      "InputValue": "Nie wybrano pliku."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1566,7 +1407,7 @@
         {
           "Id": "73916ba8dcf74938ab96d6cff7c58004",
           "Name": "groupedValues",
-          "Description": "Wyświetla listy podrzędne z elementami zgrupowanymi według podobnych wartości.",
+          "Description": "Lista list podrzędnych z elementami zgrupowanymi według podobnych wartości",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1575,7 +1416,7 @@
         {
           "Id": "60c76b0a60df4263ae366caa0aae1d5f",
           "Name": "groupedIndices",
-          "Description": "Wyświetla listy podrzędne z oryginalnymi indeksami zgrupowanych wartości.",
+          "Description": "lista list podrzędnych z oryginalnymi indeksami zgrupowanych wartości",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1604,7 +1445,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Tworzy liczbę.",
+      "Description": "Tworzy numer.",
       "InputValue": 0.0
     },
     {
@@ -1624,20 +1465,20 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umożliwia wybranie prawdy (True) lub fałszu (False).",
+      "Description": "Umożliwia wybór między wartością prawdziwą (True) i fałszywą (False)",
       "InputValue": false
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
-      "WatchWidth": 297.0,
-      "WatchHeight": 230.0,
+      "WatchWidth": 296.8,
+      "WatchHeight": 230.4,
       "Id": "9481bd38719b4d05b9823342d673afd6",
       "NodeType": "ExtensionNode",
       "Inputs": [
         {
           "Id": "48b925d39611464ea10736c3e4ca361d",
           "Name": "",
-          "Description": "Węzeł, którego dane wyjściowe mają zostać wyświetlone",
+          "Description": "Węzeł, którego dane wyjściowe mają zostać pokazane",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1656,7 +1497,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Wizualizuje dane wyjściowe węzła."
+      "Description": "Wizualizuje dane wyjściowe węzła"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -1668,7 +1509,7 @@
         {
           "Id": "9d802168e4464ad2900708a2894e87cd",
           "Name": "",
-          "Description": "Węzeł, którego dane wyjściowe mają zostać wyświetlone",
+          "Description": "Węzeł, którego dane wyjściowe mają zostać pokazane",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1687,7 +1528,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Wizualizuje dane wyjściowe węzła."
+      "Description": "Wizualizuje dane wyjściowe węzła"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1696,7 +1537,7 @@
       "Inputs": [
         {
           "Id": "3b4d3205c76f4c48a197cc9d7eff90e3",
-          "Name": "lista",
+          "Name": "list",
           "Description": "Lista, z której zostanie pobrany element.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -1705,7 +1546,7 @@
         },
         {
           "Id": "682d990a82f140439cdfbae90eaa2e24",
-          "Name": "indeks",
+          "Name": "index",
           "Description": "Indeks elementu do pobrania.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -1716,7 +1557,7 @@
       "Outputs": [
         {
           "Id": "2367689d629e40fd9e5ab05e8ec322de",
-          "Name": "element",
+          "Name": "item",
           "Description": "Element na liście o danym indeksie.",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -1745,7 +1586,7 @@
         {
           "Id": "395b44ac4e8d49fb9f03b4d6b9cfd9e3",
           "Name": "amount",
-          "Description": "Warstwy zagnieżdżenia list przeznaczone do usunięcia. Wartość –1 powoduje usunięcie wszystkich zagnieżdżeń list.\n\nint\nWartość domyślna: -1",
+          "Description": "Warstwy zagnieżdżenia listy do usunięcia (-1 spowoduje usunięcie wszystkich zagnieżdżeń listy)\n\nint\nWartość domyślna: -1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1756,7 +1597,7 @@
         {
           "Id": "47c7f7350b7d49ce969dc2e316cfa582",
           "Name": "list",
-          "Description": "Spłaszczona lista według wartości amount (ilość)",
+          "Description": "Spłaszczona lista według ilości",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1777,7 +1618,7 @@
         {
           "Id": "c0c2e580d77e4d04bd6b60346c80cd5a",
           "Name": "",
-          "Description": "Węzeł, którego dane wyjściowe mają zostać wyświetlone",
+          "Description": "Węzeł, którego dane wyjściowe mają zostać pokazane",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1796,7 +1637,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Wizualizuje dane wyjściowe węzła."
+      "Description": "Wizualizuje dane wyjściowe węzła"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1951,7 +1792,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Tworzy wartości będące liczbami całkowitymi (integer).",
+      "Description": "Tworzy wartości liczb całkowitych",
       "InputValue": 1
     },
     {
@@ -1975,7 +1816,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Tworzy wartości będące liczbami całkowitymi (integer).",
+      "Description": "Tworzy wartości liczb całkowitych",
       "InputValue": 0
     },
     {
@@ -1997,7 +1838,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Tworzy ciąg.",
+      "Description": "Tworzy ciąg znaków.",
       "InputValue": "Arkusz eksportu"
     },
     {
@@ -2021,7 +1862,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Tworzy wartości będące liczbami całkowitymi (integer).",
+      "Description": "Tworzy wartości liczb całkowitych",
       "InputValue": 0
     },
     {
@@ -2034,7 +1875,7 @@
         {
           "Id": "7406c2a29cd04f73be24c91f7f272374",
           "Name": "",
-          "Description": "Węzeł, którego dane wyjściowe mają zostać wyświetlone",
+          "Description": "Węzeł, którego dane wyjściowe mają zostać pokazane",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2053,7 +1894,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Wizualizuje dane wyjściowe węzła."
+      "Description": "Wizualizuje dane wyjściowe węzła"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -2062,7 +1903,7 @@
       "Inputs": [
         {
           "Id": "07d66756ca2844208d737bfa059bce0f",
-          "Name": "obiect",
+          "Name": "object",
           "Description": "Obiekt, którego typ należy zbadać\n\nvar",
           "UsingDefaultValue": false,
           "Level": 2,
@@ -2074,7 +1915,7 @@
         {
           "Id": "251861ad328c46d6bae45caa4de0376f",
           "Name": "string",
-          "Description": "Typ obiektu",
+          "Description": "Typ obiektu.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2083,7 +1924,7 @@
       ],
       "FunctionSignature": "DSCore.Object.Type@var",
       "Replication": "Auto",
-      "Description": "Zwraca typ obiektu w postaci ciągu (string).\n\nObject.Type (object: var): string"
+      "Description": "Zwraca typ obiektu w postaci ciągu.\n\nObject.Type (object: var): string"
     },
     {
       "ConcreteType": "GeometryUI.ImportFromSATWithUnits, GeometryUI",
@@ -2093,7 +1934,7 @@
         {
           "Id": "5ef499e8041342d48c3842d54a1dd0c1",
           "Name": "file|filePath",
-          "Description": "Ścieżka pliku lub obiekt pliku, z którego należy zaimportować plik SAT.",
+          "Description": "Ścieżka pliku lub obiekt pliku, z którego należy zaimportować plik .SAT.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2102,7 +1943,7 @@
         {
           "Id": "2722c854c9e347d29c7215f206ba6d51",
           "Name": "dynamoUnit",
-          "Description": "Długość jednostki Forge. Jeśli zostanie pozostawiona jako wartość null, geometria zostanie zaimportowana bez jednostek.",
+          "Description": "Długość jednostki forge, w razie pozostawienia wartości null geometria zostanie zaimportowana jako niemianowana.",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -2121,7 +1962,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Importuje geometrię ze ścieżki pliku SAT. Ustawiając wartość wejściową dynamoUnit, można dopasować sposób interpretowania innych liczb w pliku dodatku Dynamo."
+      "Description": "Importuje geometrię ze ścieżki pliku SAT. Ustaw wartość wejściową dynamoUnit, aby dopasować sposób interpretowania innych liczb w pliku dodatku Dynamo."
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
@@ -2140,9 +1981,9 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umożliwia wybranie pliku w systemie i zwraca jego ścieżkę.",
+      "Description": "Umożliwia wybranie pliku w systemie i zwraca jego ścieżkę",
       "HintPath": null,
-      "InputValue": "..\\..\\..\\..\\..\\..\\Desktop\\Geometry_Import_Example.sat"
+      "InputValue": "Nie wybrano pliku."
     },
     {
       "ConcreteType": "CoreNodeModels.Input.FileObject, CoreNodeModels",
@@ -2152,7 +1993,7 @@
         {
           "Id": "7a1e8230e5fd4ee6a700d3b2a71c35e8",
           "Name": "path",
-          "Description": "Ścieżka do pliku w postaci ciągu",
+          "Description": "Ścieżka do pliku w postaci ciągu.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2171,7 +2012,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Tworzy obiekt pliku z określonej ścieżki."
+      "Description": "Tworzy obiekt pliku z określonej ścieżki"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -2181,7 +2022,7 @@
         {
           "Id": "8b1fdb5a55234b3daa810167243b314e",
           "Name": "geometry",
-          "Description": "Geometria[]",
+          "Description": "Geometry[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2210,7 +2051,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.ExportToSAT@Autodesk.DesignScript.Geometry.Geometry[],string",
       "Replication": "Auto",
-      "Description": "Eksportuje określoną geometrię do podanej ścieżki do pliku SAT.\nGeometry.ExportToSAT (geometry: Geometry[], filePath: string): string"
+      "Description": "Exports a list of specified geometry to the given SAT file path\n\nGeometry.ExportToSAT (geometry: Geometry[], filePath: string): string"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
@@ -2229,9 +2070,9 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umożliwia wybranie pliku w systemie i zwraca jego ścieżkę.",
-      "HintPath": "C:\\Users\\ChloePegeot\\Desktop\\Geometry_Export_Example.sat",
-      "InputValue": "..\\..\\..\\..\\..\\..\\Desktop\\Geometry_Export_Example.sat"
+      "Description": "Umożliwia wybranie pliku w systemie i zwraca jego ścieżkę",
+      "HintPath": null,
+      "InputValue": "Nie wybrano pliku."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -2276,7 +2117,7 @@
         },
         {
           "Id": "8e3fbc4983e74a3a845c7c86ccdfd67c",
-          "Name": "zamountc",
+          "Name": "zamount",
           "Description": "double\nWartość domyślna: 1",
           "UsingDefaultValue": true,
           "Level": 2,
@@ -2328,7 +2169,7 @@
         {
           "Id": "6aec60973d4745b782e055c82294aa25",
           "Name": "Plane",
-          "Description": "Płaszczyzna na płaszczyźnie XY świata.",
+          "Description": "Płaszczyzna na płaszczyźnie XY świata",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2363,7 +2204,7 @@
         {
           "Id": "63762fa6b0004d5a9e43e5274a6d339a",
           "Name": "",
-          "Description": "Przychodzące obiekty geometrii",
+          "Description": "Przychodzące obiekty geometrii.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2374,7 +2215,7 @@
         {
           "Id": "1c26aa9e782148f6a5b461c9aebb0bc6",
           "Name": "",
-          "Description": "Przychodzące obiekty geometrii",
+          "Description": "Przychodzące obiekty geometrii.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2382,7 +2223,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Wyświetla dynamiczny podgląd geometrii."
+      "Description": "Wyświetla podgląd dynamiczny geometrii"
     },
     {
       "ConcreteType": "UnitsUI.Units, UnitsNodeModels",
@@ -2403,7 +2244,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Wybiera typ jednostki."
+      "Description": "Wybierz typ jednostki"
     },
     {
       "ConcreteType": "Watch3DNodeModels.Watch3D, Watch3DNodeModels",
@@ -2429,7 +2270,7 @@
         {
           "Id": "dedcf0734958458994d53ef030eec043",
           "Name": "",
-          "Description": "Przychodzące obiekty geometrii",
+          "Description": "Przychodzące obiekty geometrii.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2440,7 +2281,7 @@
         {
           "Id": "2c6f0fd36a1e4e68af5a6e45e1ca9587",
           "Name": "",
-          "Description": "Przychodzące obiekty geometrii",
+          "Description": "Przychodzące obiekty geometrii.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2448,7 +2289,166 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Wyświetla dynamiczny podgląd geometrii."
+      "Description": "Wyświetla podgląd dynamiczny geometrii"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "006aa0c8601c477bbc92d7d6bf96ab11",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "506e8f12ee2c4e8a9aeea6f13e6ea749",
+          "Name": "lists",
+          "Description": "Lista list do przestawienia\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7d92eb30a7d849bfa8d607bb20f1e20a",
+          "Name": "lists",
+          "Description": "Lista przestawionych list",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.List.Transpose@var[]..[]",
+      "Replication": "Auto",
+      "Description": "Zamienia wiersze i kolumny na liście list. Jeśli niektóre wiersze są krótsze od innych, w wynikowej tablicy wstawiane są wartości null, tak aby tablica zawsze była prostokątna.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "e35a60efe1244af78e516c9b9ecb1254",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "924d3f389fbc42b0ac3c17801b1c2327",
+          "Name": "filePath",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "07efe25459d04632b038bce946a42fb2",
+          "Name": "sheetName",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "82756a9077854a1f9a45a33d76c81390",
+          "Name": "startRow",
+          "Description": "int\nWartość domyślna: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cd5874975f60419f9fdae6b5925fcc7e",
+          "Name": "startColumn",
+          "Description": "int\nWartość domyślna: 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f3cba77195324009a133597a98069eb5",
+          "Name": "readAsString",
+          "Description": "bool\nWartość domyślna: false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b7850679eda346d7a7ee7ab9a16bb3dd",
+          "Name": "var[][]",
+          "Description": "var[][]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSOffice.Data.OpenXMLImportExcel@string,string,int,int,bool",
+      "Replication": "Auto",
+      "Description": "Data.OpenXMLImportExcel (filePath: string, sheetName: string, startRow: int = 0, startColumn: int = 0, readAsString: bool = false): var[][]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "Id": "dab4146ad241428cb52bfe957c755901",
+      "NodeType": "ExtensionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d15d7602f7eb459389bfdee40da688d5",
+          "Name": "",
+          "Description": "Ścieżka pliku",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Umożliwia wybranie pliku w systemie i zwraca jego ścieżkę",
+      "HintPath": "",
+      "InputValue": "Nie wybrano pliku."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "SerializedWidth": 0.0,
+      "SerializedHeight": 0.0,
+      "Id": "f38c3beea5294c7492db87f855d9de0b",
+      "NodeType": "StringInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "4987a060dcf4468b92f0261202606d41",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Tworzy ciąg znaków.",
+      "InputValue": "Arkusz1"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "Id": "20d6f2a3a4384ec9b778a5440ac213ca",
+      "NodeType": "BooleanInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "44465e06966d42c69c2c208192279996",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Umożliwia wybór między wartością prawdziwą (True) i fałszywą (False)",
+      "InputValue": false
     }
   ],
   "Connectors": [
@@ -2516,30 +2516,6 @@
       "Start": "a1622fcda8d54afc94a88bab7a4759ec",
       "End": "fd43424583cb44c1ad25bb37deea7321",
       "Id": "6252b5e0d66f41f9a8492bf1d0bf0ef2",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "f1cc463cd0374cab8350223d986ce214",
-      "End": "605efa08b21e4ec2b96fe1d0bf81a81f",
-      "Id": "60b20336603245fc839f6ee925e7aa1d",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "d58d443a2aeb4a47b20c5fb5eee40014",
-      "End": "ef53eb298db74b9297daada03dc7dbcb",
-      "Id": "b831df045d644f13ba2fdabdd702823d",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "2cede70b9fab4904b868ed8066f8c0f8",
-      "End": "d8fb055e79894220b83287dff4fb8b1f",
-      "Id": "7ce9feb194c04cabaae39a346ad1dd6b",
-      "IsHidden": "False"
-    },
-    {
-      "Start": "f71080ad5e0c451b8ac399489b20f711",
-      "End": "49695987845b404ba4264ca7ff9bb41b",
-      "Id": "3cf9ec75f95a47159dd791f4c4c524e8",
       "IsHidden": "False"
     },
     {
@@ -2949,6 +2925,30 @@
       "End": "2722c854c9e347d29c7215f206ba6d51",
       "Id": "9dd13b11acc74b4a9ad49715e2ed262c",
       "IsHidden": "False"
+    },
+    {
+      "Start": "b7850679eda346d7a7ee7ab9a16bb3dd",
+      "End": "605efa08b21e4ec2b96fe1d0bf81a81f",
+      "Id": "319454b311e24cafb44a5e8a86643e21",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "d15d7602f7eb459389bfdee40da688d5",
+      "End": "924d3f389fbc42b0ac3c17801b1c2327",
+      "Id": "2c2d6ea4785344d4ba535df100a17062",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4987a060dcf4468b92f0261202606d41",
+      "End": "07efe25459d04632b038bce946a42fb2",
+      "Id": "3d12052fb3ed4752b1195f1cfbec50b5",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "44465e06966d42c69c2c208192279996",
+      "End": "f3cba77195324009a133597a98069eb5",
+      "Id": "dd59c25385c24a84b0398a8604f7e98e",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
@@ -3008,8 +3008,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 3705.5671731078164,
-        "Y": 297.15888961675944
+        "X": 3846.345575554787,
+        "Y": 320.32495584221033
       },
       {
         "Id": "eaea9a99701b40e58b6123dc5e4791d5",
@@ -3018,8 +3018,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 3363.5134362575536,
-        "Y": 485.29218601677815
+        "X": 3504.2918387045243,
+        "Y": 508.45825224222904
       },
       {
         "Id": "3456a78cd5d84fd3ae423c32155b2d47",
@@ -3028,8 +3028,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 4187.641609858128,
-        "Y": -277.7449530437243
+        "X": 4328.420012305098,
+        "Y": -254.57888681827347
       },
       {
         "Id": "04890089cfcc43d2b6be902aa805ed6b",
@@ -3038,8 +3038,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 3362.462375754578,
-        "Y": 295.6698361475884
+        "X": 3503.2407782015484,
+        "Y": 318.8359023730393
       },
       {
         "Id": "d67a19759462481d8bf2a46e623f1389",
@@ -3048,8 +3048,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 6762.3071161198895,
-        "Y": 155.0138317559739
+        "X": 6903.085518566861,
+        "Y": 178.1798979814248
       },
       {
         "Id": "7411bb4b30b243ac9eb0cdc042b96ab4",
@@ -3058,8 +3058,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 6763.23150907512,
-        "Y": 670.9052404875786
+        "X": 6904.009911522091,
+        "Y": 694.0713067130295
       },
       {
         "Id": "c48b2a8d816a4ec69f3823efcfe4f455",
@@ -3068,8 +3068,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 2863.5191745600728,
-        "Y": 408.7403194747319
+        "X": 3004.2975770070434,
+        "Y": 431.9063857001828
       },
       {
         "Id": "fe6b123e962b4040b6cfea6985d1601c",
@@ -3078,8 +3078,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 2508.541748629328,
-        "Y": 441.38936890683954
+        "X": 2649.3201510762988,
+        "Y": 464.5554351322904
       },
       {
         "Id": "9a0dcc8321954ca2a62b03ee1b802262",
@@ -3088,58 +3088,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 2516.88395907021,
-        "Y": 261.1920221573404
-      },
-      {
-        "Id": "4b3fe08c16754910864933a52563d847",
-        "Name": "List.Transpose",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": 2055.27264608208,
-        "Y": 206.6987119893613
-      },
-      {
-        "Id": "ed993b30fa464d7aa7f67d4cc8517818",
-        "Name": "Data.OpenXMLImportExcel",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": 1500.8456794980998,
-        "Y": 269.33244124007774
-      },
-      {
-        "Id": "74b92cb8e2234b98aed324a085de9993",
-        "Name": "Ścieżka pliku",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": 982.8334437267645,
-        "Y": 146.9833651270028
-      },
-      {
-        "Id": "32dbab73ed0f4de8998de64932d218c1",
-        "Name": "String",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": 984.8894824459624,
-        "Y": 304.5647102803764
-      },
-      {
-        "Id": "95290eb7e8734f058d9abff5bc0f0201",
-        "Name": "Boolean",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "ShowGeometry": true,
-        "X": 986.94552116516,
-        "Y": 549.9046226684566
+        "X": 2657.6623615171807,
+        "Y": 284.35808838279127
       },
       {
         "Id": "ff8a505c1f374455adf33f32ea73d75a",
@@ -3153,7 +3103,7 @@
       },
       {
         "Id": "c82103290124472eb7b8f24bfe9886f2",
-        "Name": "I",
+        "Name": "Oraz",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -3163,7 +3113,7 @@
       },
       {
         "Id": "a8291326ebdb4701a4b1f3573737ffec",
-        "Name": "I",
+        "Name": "Oraz",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -3303,7 +3253,7 @@
       },
       {
         "Id": "efaaa3893bd949adaad9b5cf40f643fe",
-        "Name": "Ścieżka pliku",
+        "Name": "File Path",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -3358,58 +3308,58 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 3085.171823346267,
-        "Y": 3604.867839433516
+        "X": 3087.0942351843955,
+        "Y": 3534.358541951872
       },
       {
         "Id": "7138b0a590714397954835fb537203f3",
-        "Name": "Blok kodu",
+        "Name": "Code Block",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 3085.171823346267,
-        "Y": 3770.890225912413
+        "X": 3087.0942351843955,
+        "Y": 3700.380928430769
       },
       {
         "Id": "3f9f1ff00a3e4fb98f3228d739428fc9",
-        "Name": "Blok kodu",
+        "Name": "Code Block",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 3085.171823346267,
-        "Y": 4023.617382691489
+        "X": 3087.0942351843955,
+        "Y": 3953.1080852098453
       },
       {
         "Id": "3e9d7cd9b1d34e30b8f2170fb73db3be",
-        "Name": "Blok kodu",
+        "Name": "Code Block",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 3085.171823346267,
-        "Y": 4175.253675822796
+        "X": 3087.0942351843955,
+        "Y": 4104.744378341153
       },
       {
         "Id": "55b932a1056e40fdb8c26b6a59408974",
-        "Name": "Blok kodu",
+        "Name": "Code Block",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 3085.171823346267,
-        "Y": 4337.421812681447
+        "X": 3087.0942351843955,
+        "Y": 4266.912515199803
       },
       {
         "Id": "7e73291ea8574d2eaf9b6d8f15bc01d1",
-        "Name": "Blok kodu",
+        "Name": "Code Block",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 3085.171823346267,
-        "Y": 4514.612880623063
+        "X": 3087.0942351843955,
+        "Y": 4444.103583141419
       },
       {
         "Id": "4ab39b125bed4ca29fca02ca67f704bf",
@@ -3463,7 +3413,7 @@
       },
       {
         "Id": "884693a20f824b99b999a4e8ba213c21",
-        "Name": "Ścieżka pliku",
+        "Name": "File Path",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -3478,18 +3428,18 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 4139.062865901616,
-        "Y": 418.6185055763923
+        "X": 4279.841268348586,
+        "Y": 441.7845718018432
       },
       {
         "Id": "d7e7c0a73e6c4b8791f04cdd6b7b7d84",
-        "Name": "Liczba",
+        "Name": "Number",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 3795.533088267852,
-        "Y": 489.6803313288484
+        "X": 3936.3114907148224,
+        "Y": 512.8463975542993
       },
       {
         "Id": "8176df6f1c6a417a816696c414e81b04",
@@ -3498,28 +3448,28 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 3737.794327634323,
-        "Y": 665.2556478314634
+        "X": 3878.5727300812937,
+        "Y": 688.4217140569143
       },
       {
         "Id": "9481bd38719b4d05b9823342d673afd6",
-        "Name": "Obserwacja",
+        "Name": "Watch",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 4776.689677134478,
-        "Y": -301.49460058198724
+        "X": 4917.468079581449,
+        "Y": -278.3285343565364
       },
       {
         "Id": "9a5fdadbdfd94667b8b998abe1ae82f0",
-        "Name": "Obserwacja",
+        "Name": "Watch",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 4772.3415592849415,
-        "Y": 991.8589537111836
+        "X": 4913.119961731913,
+        "Y": 1015.0250199366344
       },
       {
         "Id": "4d267f4680c344cbbca95e1a8ca47d54",
@@ -3528,8 +3478,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 4791.976216696553,
-        "Y": 419.31684997036416
+        "X": 4932.754619143523,
+        "Y": 442.48291619581505
       },
       {
         "Id": "8ce5f1f8cbcb4d0e811535078253f07d",
@@ -3538,18 +3488,18 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 5252.058343181984,
-        "Y": 417.8432645243855
+        "X": 5392.836745628954,
+        "Y": 441.0093307498364
       },
       {
         "Id": "5601851f846d4ec1ab282f64b4766d3c",
-        "Name": "Obserwacja",
+        "Name": "Watch",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 6047.1028063723115,
-        "Y": -259.6384479093599
+        "X": 6187.881208819283,
+        "Y": -236.47238168390908
       },
       {
         "Id": "f9cce61d8e174c5098842634bc0f448f",
@@ -3558,8 +3508,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 5658.11972031032,
-        "Y": 415.59992186677175
+        "X": 5798.898122757291,
+        "Y": 438.76598809222264
       },
       {
         "Id": "00fe003252ce4041a786e5325cd1a444",
@@ -3568,28 +3518,28 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 7374.1145991640915,
-        "Y": 338.11106831106304
+        "X": 7514.893001611063,
+        "Y": 361.2771345365139
       },
       {
         "Id": "9720d963938746abb3aa701597f8ef5a",
-        "Name": "Suwak liczby całkowitej",
+        "Name": "Integer Slider",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 4787.811642361248,
-        "Y": 588.6381999053615
+        "X": 4928.590044808219,
+        "Y": 611.8042661308124
       },
       {
         "Id": "fc6bb4e5a44a4df9b0192abcc8b5dfe0",
-        "Name": "Suwak liczby całkowitej",
+        "Name": "Integer Slider",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 5253.160676452265,
-        "Y": 595.2107469272905
+        "X": 5393.939078899235,
+        "Y": 618.3768131527414
       },
       {
         "Id": "9c3b221cad134ac09ce6b64076fa4685",
@@ -3598,22 +3548,22 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 6763.23150907512,
-        "Y": 315.62457597675734
+        "X": 6904.009911522091,
+        "Y": 338.79064220220823
       },
       {
         "Id": "2940ff5bf22c4baf9fb65227b00bf755",
-        "Name": "Suwak liczby całkowitej",
+        "Name": "Integer Slider",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 6763.23150907512,
-        "Y": 479.32184839857246
+        "X": 6904.009911522091,
+        "Y": 502.48791462402335
       },
       {
         "Id": "690450cf8d914fb6a73a9cb04c8238f7",
-        "Name": "Obserwacja",
+        "Name": "Watch",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -3643,13 +3593,13 @@
       },
       {
         "Id": "b7e4de2883b1447f909017eef2e7ad1d",
-        "Name": "Ścieżka pliku",
+        "Name": "File Path",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 1026.123904060346,
-        "Y": 6251.401326993985
+        "X": 1025.0150004977922,
+        "Y": 6187.466568158244
       },
       {
         "Id": "627cdb41004f47078afefe146dfbe148",
@@ -3673,7 +3623,7 @@
       },
       {
         "Id": "519d88f27e6e4eca97ddea49812bf835",
-        "Name": "Ścieżka pliku",
+        "Name": "File Path",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -3693,7 +3643,7 @@
       },
       {
         "Id": "e44dd63cea4b4378975b8b353f266bb9",
-        "Name": "Blok kodu",
+        "Name": "Code Block",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -3703,7 +3653,7 @@
       },
       {
         "Id": "4698b7e72f3442feac4e90ad7009e223",
-        "Name": "Płaszczyzna.XY",
+        "Name": "Plane.XY",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -3740,6 +3690,56 @@
         "ShowGeometry": true,
         "X": 4270.5715856064435,
         "Y": 6371.233281045223
+      },
+      {
+        "Id": "006aa0c8601c477bbc92d7d6bf96ab11",
+        "Name": "List.Transpose",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2199.2323745719254,
+        "Y": 223.10960005383163
+      },
+      {
+        "Id": "e35a60efe1244af78e516c9b9ecb1254",
+        "Name": "Data.OpenXMLImportExcel",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1644.8054079879453,
+        "Y": 285.74332930454807
+      },
+      {
+        "Id": "dab4146ad241428cb52bfe957c755901",
+        "Name": "File Path",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1194.059822220425,
+        "Y": 161.29217037885405
+      },
+      {
+        "Id": "f38c3beea5294c7492db87f855d9de0b",
+        "Name": "String",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1196.1158609396227,
+        "Y": 318.87351553222766
+      },
+      {
+        "Id": "20d6f2a3a4384ec9b778a5440ac213ca",
+        "Name": "Boolean",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1198.1718996588204,
+        "Y": 530.5801029184001
       }
     ],
     "Annotations": [
@@ -3756,13 +3756,13 @@
           "0881ee38125247cf8991ca5be7324912"
         ],
         "HasNestedGroups": false,
-        "Left": 895.0931232080977,
-        "Top": 20.395875503344655,
-        "Width": 70.0,
-        "Height": 151.0,
+        "Left": 1034.1457693442715,
+        "Top": 7.417920359849575,
+        "Width": 69.59999999999991,
+        "Height": 151.4,
         "FontSize": 60.0,
         "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
-        "InitialTop": 122.39587550334466,
+        "InitialTop": 109.41792035984957,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
         "IsOptionalInPortsCollapsed": false,
@@ -3770,34 +3770,6 @@
         "HasToggledOptionalInPorts": false,
         "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFFFB8D8"
-      },
-      {
-        "Id": "9983d2a7eb804562ad7c0ab3b41442fb",
-        "Title": "",
-        "DescriptionText": "W przypadku odczytywania liczb należy ustawić wartość false.\r\nPodczas czytania tekstu należy ustawić wartość true.",
-        "IsExpanded": true,
-        "WidthAdjustment": 0.0,
-        "HeightAdjustment": 0.0,
-        "UserSetWidth": 0.0,
-        "UserSetHeight": 0.0,
-        "Nodes": [
-          "95290eb7e8734f058d9abff5bc0f0201"
-        ],
-        "HasNestedGroups": false,
-        "Left": 976.94552116516,
-        "Top": 453.90462266845657,
-        "Width": 214.0,
-        "Height": 228.0,
-        "FontSize": 36.0,
-        "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
-        "InitialTop": 549.9046226684566,
-        "InitialHeight": 145.0,
-        "TextblockHeight": 86.0,
-        "IsOptionalInPortsCollapsed": false,
-        "IsUnconnectedOutPortsCollapsed": false,
-        "HasToggledOptionalInPorts": false,
-        "HasToggledUnconnectedOutPorts": false,
-        "Background": "#FFB9F9E1"
       },
       {
         "Id": "f4b1690f92d8435987bcb6cf4c17b439",
@@ -3818,15 +3790,15 @@
           "308c5ba4e8694f6389c44651abb2b76c"
         ],
         "HasNestedGroups": false,
-        "Left": 3352.462375754578,
-        "Top": 166.15888961675944,
-        "Width": 1124.6004901470378,
-        "Height": 631.096758214704,
+        "Left": 3493.2407782015484,
+        "Top": 188.72495584221036,
+        "Width": 1124.6004901470374,
+        "Height": 629.896758214704,
         "FontSize": 36.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
-        "InitialTop": 239.15888961675944,
-        "InitialHeight": 571.096758214704,
-        "TextblockHeight": 63.0,
+        "InitialTop": 261.92495584221035,
+        "InitialHeight": 571.496758214704,
+        "TextblockHeight": 63.199999999999996,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -3851,15 +3823,15 @@
           "f6cdcb741d604b9bb99d934405330cc7"
         ],
         "HasNestedGroups": false,
-        "Left": 6752.3071161198895,
-        "Top": -47.98616824402609,
-        "Width": 902.807483044202,
-        "Height": 850.8914087316047,
+        "Left": 6833.48551856686,
+        "Top": -25.4201020185752,
+        "Width": 961.807483044202,
+        "Height": 849.6914087316047,
         "FontSize": 36.0,
         "GroupStyleId": "07655dc1-2d65-4fed-8d6a-37235d3e3a8d",
-        "InitialTop": 25.01383175597391,
-        "InitialHeight": 790.8914087316047,
-        "TextblockHeight": 63.0,
+        "InitialTop": 47.779897981424796,
+        "InitialHeight": 791.2914087316046,
+        "TextblockHeight": 63.199999999999996,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -3879,13 +3851,13 @@
           "34cba3ead253497689eea54feb2ef3be"
         ],
         "HasNestedGroups": false,
-        "Left": 6668.52380924283,
-        "Top": -46.48516317177496,
-        "Width": 70.0,
-        "Height": 151.0,
+        "Left": 6723.085518566861,
+        "Top": -24.8201020185752,
+        "Width": 69.60000000000036,
+        "Height": 151.4,
         "FontSize": 60.0,
         "GroupStyleId": "07655dc1-2d65-4fed-8d6a-37235d3e3a8d",
-        "InitialTop": 55.51483682822504,
+        "InitialTop": 77.1798979814248,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
         "IsOptionalInPortsCollapsed": false,
@@ -3910,15 +3882,15 @@
           "a6386abab9b84c7e822b09fb1d99a8de"
         ],
         "HasNestedGroups": false,
-        "Left": 2498.541748629328,
-        "Top": 130.19202215734038,
-        "Width": 616.9774259307446,
-        "Height": 443.19734674949916,
+        "Left": 2639.3201510762988,
+        "Top": 152.7580883827913,
+        "Width": 615.7774259307448,
+        "Height": 441.9973467494992,
         "FontSize": 36.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
-        "InitialTop": 203.19202215734038,
-        "InitialHeight": 383.19734674949916,
-        "TextblockHeight": 63.0,
+        "InitialTop": 225.9580883827913,
+        "InitialHeight": 383.59734674949914,
+        "TextblockHeight": 63.199999999999996,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -3938,13 +3910,13 @@
           "a4d7a09d6f7346a88cd266e08af876ba"
         ],
         "HasNestedGroups": false,
-        "Left": 3270.2459447298434,
-        "Top": 169.1979335082532,
-        "Width": 70.0,
-        "Height": 151.0,
+        "Left": 3411.024347176814,
+        "Top": 192.36399973370408,
+        "Width": 69.59999999999991,
+        "Height": 151.39999999999998,
         "FontSize": 60.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
-        "InitialTop": 271.1979335082532,
+        "InitialTop": 294.3639997337041,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
         "IsOptionalInPortsCollapsed": false,
@@ -3966,13 +3938,13 @@
           "310246e9910c4c43a5b9c08e657c1269"
         ],
         "HasNestedGroups": false,
-        "Left": 2414.6008169261604,
-        "Top": 129.51602173628578,
-        "Width": 70.0,
-        "Height": 151.0,
+        "Left": 2555.379219373131,
+        "Top": 152.68208796173667,
+        "Width": 69.59999999999991,
+        "Height": 151.39999999999998,
         "FontSize": 60.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
-        "InitialTop": 231.51602173628578,
+        "InitialTop": 254.68208796173667,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
         "IsOptionalInPortsCollapsed": false,
@@ -3980,34 +3952,6 @@
         "HasToggledOptionalInPorts": false,
         "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB9F9E1"
-      },
-      {
-        "Id": "348c68587b6e4bae9c3085977dd256d2",
-        "Title": "Opisy",
-        "DescriptionText": "",
-        "IsExpanded": true,
-        "WidthAdjustment": 0.0,
-        "HeightAdjustment": 0.0,
-        "UserSetWidth": 0.0,
-        "UserSetHeight": 0.0,
-        "Nodes": [
-          "fe52fd5891da4bcea449c5177a0bd7e6"
-        ],
-        "HasNestedGroups": false,
-        "Left": 3036.671823346267,
-        "Top": 3473.867839433516,
-        "Width": 311.0,
-        "Height": 122.0,
-        "FontSize": 36.0,
-        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
-        "InitialTop": 3546.867839433516,
-        "InitialHeight": 145.0,
-        "TextblockHeight": 63.0,
-        "IsOptionalInPortsCollapsed": false,
-        "IsUnconnectedOutPortsCollapsed": false,
-        "HasToggledOptionalInPorts": false,
-        "HasToggledUnconnectedOutPorts": false,
-        "Background": "#FFB5B5B5"
       },
       {
         "Id": "fd5bb39349724d7ab97ea7ae7ce4543d",
@@ -4022,13 +3966,13 @@
           "c1ef7f086fe7434b97f9e225c19e8cee"
         ],
         "HasNestedGroups": false,
-        "Left": 896.2573120681936,
-        "Top": 2702.0836841454197,
-        "Width": 70.0,
-        "Height": 151.0,
+        "Left": 838.6441324770667,
+        "Top": 2623.6483250658503,
+        "Width": 69.60000000000002,
+        "Height": 151.4000000000001,
         "FontSize": 60.0,
         "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
-        "InitialTop": 2804.0836841454197,
+        "InitialTop": 2725.6483250658503,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
         "IsOptionalInPortsCollapsed": false,
@@ -4056,14 +4000,14 @@
         ],
         "HasNestedGroups": false,
         "Left": 2213.024768678484,
-        "Top": 2695.6848869754867,
-        "Width": 1151.2650221324348,
-        "Height": 566.012989429024,
+        "Top": 2695.484886975487,
+        "Width": 1150.065022132435,
+        "Height": 564.4129894290236,
         "FontSize": 36.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
         "InitialTop": 2768.6848869754867,
         "InitialHeight": 506.01298942902395,
-        "TextblockHeight": 63.0,
+        "TextblockHeight": 63.199999999999996,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -4085,14 +4029,14 @@
         ],
         "HasNestedGroups": false,
         "Left": 6053.359116585374,
-        "Top": 2955.448075944776,
-        "Width": 1033.4959343448045,
-        "Height": 233.0,
+        "Top": 2955.2480759447762,
+        "Width": 1034.0959343448048,
+        "Height": 232.19999999999982,
         "FontSize": 36.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
         "InitialTop": 3028.448075944776,
         "InitialHeight": 145.0,
-        "TextblockHeight": 63.0,
+        "TextblockHeight": 63.199999999999996,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -4113,14 +4057,14 @@
         ],
         "HasNestedGroups": false,
         "Left": 7730.357781000359,
-        "Top": 2646.1076849326905,
-        "Width": 255.0,
-        "Height": 304.0,
+        "Top": 2645.5076849326906,
+        "Width": 254.39999999999964,
+        "Height": 303.4000000000001,
         "FontSize": 36.0,
         "GroupStyleId": "07655dc1-2d65-4fed-8d6a-37235d3e3a8d",
         "InitialTop": 2785.1076849326905,
         "InitialHeight": 145.0,
-        "TextblockHeight": 129.0,
+        "TextblockHeight": 129.6,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -4148,14 +4092,14 @@
         ],
         "HasNestedGroups": false,
         "Left": 4298.738532469024,
-        "Top": 3919.7362741248985,
-        "Width": 1620.6686568465884,
-        "Height": 694.9675065261649,
+        "Top": 3919.5362741248987,
+        "Width": 1621.2686568465888,
+        "Height": 693.7675065261651,
         "FontSize": 36.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
         "InitialTop": 3992.7362741248985,
         "InitialHeight": 606.0951378495188,
-        "TextblockHeight": 63.0,
+        "TextblockHeight": 63.199999999999996,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -4177,14 +4121,14 @@
         ],
         "HasNestedGroups": false,
         "Left": 4240.395226795548,
-        "Top": 2731.031930020381,
-        "Width": 241.0,
-        "Height": 561.5998705372986,
+        "Top": 2731.831930020381,
+        "Width": 240.80000000000018,
+        "Height": 559.3998705372983,
         "FontSize": 36.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
         "InitialTop": 2929.031930020381,
         "InitialHeight": 314.59987053729856,
-        "TextblockHeight": 188.0,
+        "TextblockHeight": 187.2,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -4206,14 +4150,14 @@
         ],
         "HasNestedGroups": false,
         "Left": 8175.8989426863955,
-        "Top": 2516.442959765734,
-        "Width": 298.9830159323101,
+        "Top": 2516.242959765734,
+        "Width": 300.3830159323097,
         "Height": 733.4857306120211,
         "FontSize": 36.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
         "InitialTop": 2641.442959765734,
         "InitialHeight": 461.48573061202114,
-        "TextblockHeight": 115.0,
+        "TextblockHeight": 115.2,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -4232,18 +4176,20 @@
         "Nodes": [
           "efaaa3893bd949adaad9b5cf40f643fe",
           "301bdfcc08a34d9f8c99c39c32b0b850",
-          "7d22f32c792644d98c799ae7727c7a14"
+          "7d22f32c792644d98c799ae7727c7a14",
+          "659cc1f62a3049f28a5f37b9fc4fa89c",
+          "562eb0dc7ea54317bebd0ed83d0b4f07"
         ],
         "HasNestedGroups": false,
-        "Left": 981.74999093525,
-        "Top": 2697.6745048975367,
-        "Width": 1001.3564559977276,
-        "Height": 401.69365650362715,
+        "Left": 929.34999093525,
+        "Top": 2624.6745048975367,
+        "Width": 1073.3564559977276,
+        "Height": 472.89365650362697,
         "FontSize": 36.0,
         "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
-        "InitialTop": 2770.6745048975367,
-        "InitialHeight": 341.69365650362715,
-        "TextblockHeight": 63.0,
+        "InitialTop": 2697.8745048975366,
+        "InitialHeight": 414.49365650362734,
+        "TextblockHeight": 63.199999999999996,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -4267,15 +4213,15 @@
           "3b4d0d6c3bb1493081d29dfd39388219"
         ],
         "HasNestedGroups": false,
-        "Left": 4773.663944026293,
-        "Top": 342.59992186677175,
-        "Width": 1091.4557762840268,
-        "Height": 384.6108250605188,
+        "Left": 4914.4423464732645,
+        "Top": 365.56598809222265,
+        "Width": 1091.255776284027,
+        "Height": 383.0108250605188,
         "FontSize": 36.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
-        "InitialTop": 415.59992186677175,
+        "InitialTop": 438.76598809222264,
         "InitialHeight": 324.6108250605188,
-        "TextblockHeight": 63.0,
+        "TextblockHeight": 63.199999999999996,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -4295,15 +4241,15 @@
           "5601851f846d4ec1ab282f64b4766d3c"
         ],
         "HasNestedGroups": false,
-        "Left": 6037.1028063723115,
-        "Top": -384.6384479093599,
-        "Width": 297.0,
+        "Left": 6177.881208819283,
+        "Top": -361.67238168390907,
+        "Width": 298.39999999999964,
         "Height": 417.0,
         "FontSize": 36.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
-        "InitialTop": -259.6384479093599,
+        "InitialTop": -236.47238168390908,
         "InitialHeight": 145.0,
-        "TextblockHeight": 115.0,
+        "TextblockHeight": 115.2,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -4323,15 +4269,15 @@
           "3456a78cd5d84fd3ae423c32155b2d47"
         ],
         "HasNestedGroups": false,
-        "Left": 4177.641609858128,
-        "Top": -393.7449530437243,
-        "Width": 297.0,
-        "Height": 408.0,
+        "Left": 4318.420012305098,
+        "Top": -370.9788868182735,
+        "Width": 298.39999999999964,
+        "Height": 408.20000000000005,
         "FontSize": 36.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
-        "InitialTop": -277.7449530437243,
+        "InitialTop": -254.57888681827347,
         "InitialHeight": 145.0,
-        "TextblockHeight": 106.0,
+        "TextblockHeight": 106.4,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -4351,13 +4297,13 @@
           "9481bd38719b4d05b9823342d673afd6"
         ],
         "HasNestedGroups": false,
-        "Left": 4766.689677134478,
-        "Top": -383.49460058198724,
-        "Width": 394.0,
-        "Height": 404.0,
+        "Left": 4907.468079581449,
+        "Top": -360.3285343565364,
+        "Width": 395.1999999999998,
+        "Height": 404.2,
         "FontSize": 36.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
-        "InitialTop": -301.49460058198724,
+        "InitialTop": -278.3285343565364,
         "InitialHeight": 145.0,
         "TextblockHeight": 72.0,
         "IsOptionalInPortsCollapsed": false,
@@ -4379,13 +4325,13 @@
           "86a7baae7d834b948fe6aceb7b3fb9b4"
         ],
         "HasNestedGroups": false,
-        "Left": 5948.15215067707,
-        "Top": -381.1922369839267,
-        "Width": 70.0,
-        "Height": 151.0,
+        "Left": 6088.930553124041,
+        "Top": -358.02617075847587,
+        "Width": 69.60000000000036,
+        "Height": 151.4,
         "FontSize": 60.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
-        "InitialTop": -279.1922369839267,
+        "InitialTop": -256.02617075847587,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
         "IsOptionalInPortsCollapsed": false,
@@ -4407,13 +4353,13 @@
           "09b44aaa2f8b470ebbae84d8acf7af96"
         ],
         "HasNestedGroups": false,
-        "Left": 4658.806584269295,
-        "Top": 346.5240127045414,
-        "Width": 70.0,
-        "Height": 151.0,
+        "Left": 4799.584986716265,
+        "Top": 369.6900789299923,
+        "Width": 69.60000000000036,
+        "Height": 151.39999999999998,
         "FontSize": 60.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
-        "InitialTop": 448.5240127045414,
+        "InitialTop": 471.6900789299923,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
         "IsOptionalInPortsCollapsed": false,
@@ -4435,13 +4381,13 @@
           "4bb81adba55f413c968dce3682747052"
         ],
         "HasNestedGroups": false,
-        "Left": 4658.806584269295,
-        "Top": -383.59873917813434,
-        "Width": 70.0,
-        "Height": 151.0,
+        "Left": 4799.584986716265,
+        "Top": -360.4326729526835,
+        "Width": 69.60000000000036,
+        "Height": 151.4,
         "FontSize": 60.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
-        "InitialTop": -281.59873917813434,
+        "InitialTop": -258.4326729526835,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
         "IsOptionalInPortsCollapsed": false,
@@ -4463,13 +4409,13 @@
           "2bcf7f2e3f82413595307ae32f6d0563"
         ],
         "HasNestedGroups": false,
-        "Left": 4090.867550859867,
-        "Top": -396.1713009670425,
-        "Width": 70.0,
-        "Height": 151.0,
+        "Left": 4231.645953306837,
+        "Top": -373.00523474159166,
+        "Width": 69.60000000000036,
+        "Height": 151.4,
         "FontSize": 60.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
-        "InitialTop": -294.1713009670425,
+        "InitialTop": -271.00523474159166,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
         "IsOptionalInPortsCollapsed": false,
@@ -4491,15 +4437,15 @@
           "9a5fdadbdfd94667b8b998abe1ae82f0"
         ],
         "HasNestedGroups": false,
-        "Left": 4762.3415592849415,
-        "Top": 852.8589537111836,
-        "Width": 297.0,
-        "Height": 431.0,
+        "Left": 4903.119961731913,
+        "Top": 875.4250199366344,
+        "Width": 298.39999999999964,
+        "Height": 431.4,
         "FontSize": 36.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
-        "InitialTop": 991.8589537111836,
+        "InitialTop": 1015.0250199366344,
         "InitialHeight": 145.0,
-        "TextblockHeight": 129.0,
+        "TextblockHeight": 129.6,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -4519,13 +4465,13 @@
           "eef0e25676de4f2a9ebe6d7d9dd58f06"
         ],
         "HasNestedGroups": false,
-        "Left": 4667.617375083789,
-        "Top": 851.9274563988704,
-        "Width": 70.0,
-        "Height": 151.0,
+        "Left": 4808.395777530759,
+        "Top": 875.0935226243212,
+        "Width": 69.60000000000036,
+        "Height": 151.39999999999998,
         "FontSize": 60.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
-        "InitialTop": 953.9274563988704,
+        "InitialTop": 977.0935226243212,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
         "IsOptionalInPortsCollapsed": false,
@@ -4549,8 +4495,8 @@
         "HasNestedGroups": false,
         "Left": 2117.838008945975,
         "Top": 2699.77095924856,
-        "Width": 70.0,
-        "Height": 151.0,
+        "Width": 69.59999999999991,
+        "Height": 151.4000000000001,
         "FontSize": 60.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
         "InitialTop": 2801.77095924856,
@@ -4577,8 +4523,8 @@
         "HasNestedGroups": false,
         "Left": 4150.139285131741,
         "Top": 2737.155642902203,
-        "Width": 70.0,
-        "Height": 151.0,
+        "Width": 69.60000000000036,
+        "Height": 151.4000000000001,
         "FontSize": 60.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
         "InitialTop": 2839.155642902203,
@@ -4605,8 +4551,8 @@
         "HasNestedGroups": false,
         "Left": 5961.549380767956,
         "Top": 2955.5579488222966,
-        "Width": 70.0,
-        "Height": 151.0,
+        "Width": 69.60000000000036,
+        "Height": 151.4000000000001,
         "FontSize": 60.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
         "InitialTop": 3057.5579488222966,
@@ -4633,8 +4579,8 @@
         "HasNestedGroups": false,
         "Left": 4214.0452406067625,
         "Top": 3920.2153368692575,
-        "Width": 70.0,
-        "Height": 151.0,
+        "Width": 69.60000000000036,
+        "Height": 151.4000000000001,
         "FontSize": 60.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
         "InitialTop": 4022.2153368692575,
@@ -4661,8 +4607,8 @@
         "HasNestedGroups": false,
         "Left": 2946.7959211098746,
         "Top": 3324.5615004333213,
-        "Width": 70.0,
-        "Height": 151.0,
+        "Width": 69.59999999999991,
+        "Height": 151.4000000000001,
         "FontSize": 60.0,
         "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
         "InitialTop": 3426.5615004333213,
@@ -4689,8 +4635,8 @@
         "HasNestedGroups": false,
         "Left": 7643.366492052499,
         "Top": 2647.0474646546973,
-        "Width": 70.0,
-        "Height": 151.0,
+        "Width": 69.60000000000036,
+        "Height": 151.4000000000001,
         "FontSize": 60.0,
         "GroupStyleId": "07655dc1-2d65-4fed-8d6a-37235d3e3a8d",
         "InitialTop": 2749.0474646546973,
@@ -4717,8 +4663,8 @@
         "HasNestedGroups": false,
         "Left": 8091.696043286644,
         "Top": 2519.5919822702026,
-        "Width": 70.0,
-        "Height": 151.0,
+        "Width": 69.60000000000036,
+        "Height": 151.4000000000001,
         "FontSize": 60.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
         "InitialTop": 2621.5919822702026,
@@ -4745,14 +4691,14 @@
         ],
         "HasNestedGroups": false,
         "Left": 8623.176311964015,
-        "Top": 2457.8493788593055,
-        "Width": 674.3858466876427,
-        "Height": 443.56059208743136,
+        "Top": 2457.6493788593057,
+        "Width": 674.185846687642,
+        "Height": 442.7605920874312,
         "FontSize": 36.0,
         "GroupStyleId": "07655dc1-2d65-4fed-8d6a-37235d3e3a8d",
         "InitialTop": 2530.8493788593055,
         "InitialHeight": 355.56059208743136,
-        "TextblockHeight": 63.0,
+        "TextblockHeight": 63.199999999999996,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -4774,8 +4720,8 @@
         "HasNestedGroups": false,
         "Left": 8538.57436848165,
         "Top": 2456.4219246519965,
-        "Width": 70.0,
-        "Height": 151.0,
+        "Width": 69.60000000000036,
+        "Height": 151.4000000000001,
         "FontSize": 60.0,
         "GroupStyleId": "07655dc1-2d65-4fed-8d6a-37235d3e3a8d",
         "InitialTop": 2558.4219246519965,
@@ -4801,14 +4747,14 @@
         ],
         "HasNestedGroups": false,
         "Left": 2527.966224992412,
-        "Top": 2294.5928514215716,
-        "Width": 297.0,
+        "Top": 2294.392851421572,
+        "Width": 298.4000000000001,
         "Height": 365.0,
         "FontSize": 36.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
         "InitialTop": 2367.5928514215716,
         "InitialHeight": 145.0,
-        "TextblockHeight": 63.0,
+        "TextblockHeight": 63.199999999999996,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -4830,8 +4776,8 @@
         "HasNestedGroups": false,
         "Left": 2440.4078005712827,
         "Top": 2294.7737137252066,
-        "Width": 70.0,
-        "Height": 151.0,
+        "Width": 69.59999999999991,
+        "Height": 151.4000000000001,
         "FontSize": 60.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
         "InitialTop": 2396.7737137252066,
@@ -4858,8 +4804,8 @@
         "HasNestedGroups": false,
         "Left": 3289.5857186872454,
         "Top": 5617.316876014108,
-        "Width": 70.0,
-        "Height": 151.0,
+        "Width": 69.59999999999991,
+        "Height": 151.39999999999964,
         "FontSize": 60.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
         "InitialTop": 5719.316876014108,
@@ -4887,8 +4833,8 @@
         "HasNestedGroups": false,
         "Left": 3390.239660385553,
         "Top": 5615.586632184678,
-        "Width": 641.1788482979719,
-        "Height": 379.1625232982278,
+        "Width": 642.578848297972,
+        "Height": 378.962523298228,
         "FontSize": 36.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
         "InitialTop": 5697.586632184678,
@@ -4915,8 +4861,8 @@
         "HasNestedGroups": false,
         "Left": 4157.693711648443,
         "Top": 5963.166031415201,
-        "Width": 70.0,
-        "Height": 151.0,
+        "Width": 69.60000000000036,
+        "Height": 151.39999999999964,
         "FontSize": 60.0,
         "GroupStyleId": "07655dc1-2d65-4fed-8d6a-37235d3e3a8d",
         "InitialTop": 6065.166031415201,
@@ -4943,8 +4889,8 @@
         "HasNestedGroups": false,
         "Left": 3289.5857186872454,
         "Top": 6080.760297598091,
-        "Width": 70.0,
-        "Height": 151.0,
+        "Width": 69.59999999999991,
+        "Height": 151.39999999999964,
         "FontSize": 60.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
         "InitialTop": 6182.760297598091,
@@ -4969,13 +4915,13 @@
           "35956a635b264500984d0da3580379d4"
         ],
         "HasNestedGroups": false,
-        "Left": 933.2556672159099,
-        "Top": 6056.377074071222,
-        "Width": 70.0,
-        "Height": 151.0,
+        "Left": 873.7766093562973,
+        "Top": 6040.926075523823,
+        "Width": 69.60000000000002,
+        "Height": 151.39999999999964,
         "FontSize": 60.0,
         "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
-        "InitialTop": 6158.377074071222,
+        "InitialTop": 6142.926075523823,
         "InitialHeight": 145.0,
         "TextblockHeight": 92.0,
         "IsOptionalInPortsCollapsed": false,
@@ -5000,14 +4946,14 @@
         ],
         "HasNestedGroups": false,
         "Left": 3398.5215970382333,
-        "Top": 6079.882873436116,
-        "Width": 537.2732639301048,
-        "Height": 366.01016678095493,
+        "Top": 6079.682873436116,
+        "Width": 538.4732639301046,
+        "Height": 364.01016678095493,
         "FontSize": 36.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
         "InitialTop": 6152.882873436116,
         "InitialHeight": 297.82178584851954,
-        "TextblockHeight": 63.0,
+        "TextblockHeight": 63.199999999999996,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -5029,18 +4975,19 @@
           "08c663e8183e4f29a2f30980bd63a90b",
           "b7e4de2883b1447f909017eef2e7ad1d",
           "627cdb41004f47078afefe146dfbe148",
-          "eab216a3eba540209f079b6d59c9aec1"
+          "eab216a3eba540209f079b6d59c9aec1",
+          "38b94337c8ea409792674c13e4114cff"
         ],
         "HasNestedGroups": false,
-        "Left": 1016.1239040603459,
-        "Top": 6058.967598541426,
-        "Width": 1846.935943481133,
-        "Height": 626.6613775267633,
+        "Left": 963.8150004977922,
+        "Top": 6041.466568158245,
+        "Width": 1899.044847043687,
+        "Height": 642.3624079099445,
         "FontSize": 36.0,
         "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
-        "InitialTop": 6131.967598541426,
-        "InitialHeight": 399.13612493745495,
-        "TextblockHeight": 63.0,
+        "InitialTop": 6114.666568158244,
+        "InitialHeight": 416.4371553206365,
+        "TextblockHeight": 63.199999999999996,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -5063,14 +5010,14 @@
         ],
         "HasNestedGroups": false,
         "Left": 4260.5715856064435,
-        "Top": 5964.375098135352,
-        "Width": 811.4323595669621,
-        "Height": 738.8581829098703,
+        "Top": 5964.1750981353525,
+        "Width": 810.6323595669619,
+        "Height": 737.2581829098699,
         "FontSize": 36.0,
         "GroupStyleId": "07655dc1-2d65-4fed-8d6a-37235d3e3a8d",
         "InitialTop": 6037.375098135352,
         "InitialHeight": 478.85818290987027,
-        "TextblockHeight": 63.0,
+        "TextblockHeight": 63.199999999999996,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -5098,14 +5045,14 @@
         ],
         "HasNestedGroups": false,
         "Left": -154.88739111652865,
-        "Top": -468.4713367548075,
-        "Width": 617.1583808086601,
-        "Height": 611.5576759946011,
+        "Top": -468.6713367548075,
+        "Width": 617.3583808086601,
+        "Height": 611.3576759946012,
         "FontSize": 36.0,
         "GroupStyleId": "00000000-0000-0000-0000-000000000000",
         "InitialTop": -395.4713367548075,
         "InitialHeight": 518.6623795843702,
-        "TextblockHeight": 63.0,
+        "TextblockHeight": 63.199999999999996,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -5126,14 +5073,14 @@
         ],
         "HasNestedGroups": false,
         "Left": 505.3823740771336,
-        "Top": 113.36823989649491,
-        "Width": 314.0,
-        "Height": 203.0,
+        "Top": 112.96823989649491,
+        "Width": 314.4,
+        "Height": 203.4,
         "FontSize": 36.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
         "InitialTop": 209.3682398964949,
         "InitialHeight": 145.0,
-        "TextblockHeight": 86.0,
+        "TextblockHeight": 86.4,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -5154,14 +5101,14 @@
         ],
         "HasNestedGroups": false,
         "Left": 512.9819793812258,
-        "Top": 333.8982410962457,
-        "Width": 263.0,
+        "Top": 333.69824109624574,
+        "Width": 262.4,
         "Height": 137.0,
         "FontSize": 36.0,
         "GroupStyleId": "00000000-0000-0000-0000-000000000000",
         "InitialTop": 406.8982410962457,
         "InitialHeight": 145.00000000000006,
-        "TextblockHeight": 63.0,
+        "TextblockHeight": 63.199999999999996,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -5184,7 +5131,7 @@
         "Left": 505.3823740771336,
         "Top": -74.24311112723382,
         "Width": 320.0,
-        "Height": 175.0,
+        "Height": 174.6,
         "FontSize": 36.0,
         "GroupStyleId": "07655dc1-2d65-4fed-8d6a-37235d3e3a8d",
         "InitialTop": 7.756888872766183,
@@ -5210,14 +5157,14 @@
         ],
         "HasNestedGroups": false,
         "Left": 502.96497639338077,
-        "Top": -464.4074220024506,
-        "Width": 315.0,
+        "Top": -464.8074220024506,
+        "Width": 314.4,
         "Height": 189.0,
         "FontSize": 36.0,
         "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
         "InitialTop": -368.4074220024506,
         "InitialHeight": 145.0,
-        "TextblockHeight": 86.0,
+        "TextblockHeight": 86.4,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -5238,14 +5185,14 @@
         ],
         "HasNestedGroups": false,
         "Left": 503.14170551697316,
-        "Top": -253.18062146324223,
-        "Width": 319.0,
-        "Height": 166.0,
+        "Top": -253.38062146324222,
+        "Width": 319.20000000000005,
+        "Height": 165.79999999999998,
         "FontSize": 36.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
         "InitialTop": -180.18062146324223,
         "InitialHeight": 145.0,
-        "TextblockHeight": 63.0,
+        "TextblockHeight": 63.199999999999996,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -5280,56 +5227,24 @@
           "db48ecda86834c68bb0e6553d7e80236",
           "99f12c669a17459ca456b37cd92af6fd",
           "6c69c997e97e4e54ae07d871bb8902ef",
-          "c5a18186e68d4fe1b13efe857df27c55"
+          "c5a18186e68d4fe1b13efe857df27c55",
+          "95185c480aa64589a1db5650b23e19c2"
         ],
         "HasNestedGroups": true,
-        "Left": 885.0931232080977,
-        "Top": -469.1713009670425,
-        "Width": 6780.021475955994,
-        "Height": 1768.0302546782261,
+        "Left": 1024.1457693442715,
+        "Top": -446.20523474159165,
+        "Width": 6781.1472322667905,
+        "Height": 1768.030254678226,
         "FontSize": 36.0,
         "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
-        "InitialTop": -396.1713009670425,
+        "InitialTop": -373.00523474159166,
         "InitialHeight": 1483.3535542931709,
-        "TextblockHeight": 63.0,
+        "TextblockHeight": 63.199999999999996,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
         "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB5B5B5"
-      },
-      {
-        "Id": "2a1255582b5b4f7ea0fc763079d426c7",
-        "Title": "Importuj z programu Excel",
-        "DescriptionText": "Importuje dane z pliku programu Excel (XLSX) do dodatku Dynamo, przekształcając wiersze i kolumny arkuszy kalkulacyjnych w listy o określonej strukturze na potrzeby przetwarzania, sprawdzania poprawności i manipulowania. Typowe zastosowania obejmują przygotowywanie zestawień, parametrów i ilości dla następczych procesów roboczych.",
-        "IsExpanded": true,
-        "WidthAdjustment": 0.0,
-        "HeightAdjustment": 0.0,
-        "UserSetWidth": 0.0,
-        "UserSetHeight": 0.0,
-        "Nodes": [
-          "4b3fe08c16754910864933a52563d847",
-          "ed993b30fa464d7aa7f67d4cc8517818",
-          "74b92cb8e2234b98aed324a085de9993",
-          "32dbab73ed0f4de8998de64932d218c1",
-          "727199b6f454448b9d7e6cf272337fa5",
-          "9983d2a7eb804562ad7c0ab3b41442fb"
-        ],
-        "HasNestedGroups": true,
-        "Left": 966.94552116516,
-        "Top": 22.6987119893613,
-        "Width": 1338.82712491692,
-        "Height": 674.2059106790953,
-        "FontSize": 36.0,
-        "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
-        "InitialTop": 104.6987119893613,
-        "InitialHeight": 605.2059106790953,
-        "TextblockHeight": 72.0,
-        "IsOptionalInPortsCollapsed": false,
-        "IsUnconnectedOutPortsCollapsed": false,
-        "HasToggledOptionalInPorts": false,
-        "HasToggledUnconnectedOutPorts": false,
-        "Background": "#FFFFB8D8"
       },
       {
         "Id": "7d3a590016784e22b24b396f4e1efac2",
@@ -5361,18 +5276,19 @@
           "c37c09d746b840138951472163098fdb",
           "ed6bb7fcf0fb4e26b64276c70c157e04",
           "691e3d7b9ca043ca87737d332d16ad4e",
-          "a8ec6d4d9f0e472c9b55bd7c2d6c43fe"
+          "a8ec6d4d9f0e472c9b55bd7c2d6c43fe",
+          "acd3658bfe4e4871ad245c8f46b533ef"
         ],
         "HasNestedGroups": true,
-        "Left": 886.2573120681936,
-        "Top": 2221.5928514215716,
-        "Width": 8421.304846583464,
-        "Height": 2408.110929229492,
+        "Left": 828.6441324770667,
+        "Top": 2221.192851421572,
+        "Width": 8478.718026174589,
+        "Height": 2407.110929229492,
         "FontSize": 36.0,
         "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
-        "InitialTop": 2294.5928514215716,
+        "InitialTop": 2294.392851421572,
         "InitialHeight": 2276.2385605528457,
-        "TextblockHeight": 63.0,
+        "TextblockHeight": 63.199999999999996,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
@@ -5395,17 +5311,16 @@
           "3e9d7cd9b1d34e30b8f2170fb73db3be",
           "55b932a1056e40fdb8c26b6a59408974",
           "7e73291ea8574d2eaf9b6d8f15bc01d1",
-          "fe52fd5891da4bcea449c5177a0bd7e6",
-          "348c68587b6e4bae9c3085977dd256d2"
+          "fe52fd5891da4bcea449c5177a0bd7e6"
         ],
-        "HasNestedGroups": true,
-        "Left": 3026.671823346267,
-        "Top": 3319.867839433516,
-        "Width": 331.0,
-        "Height": 1326.7450411895466,
+        "HasNestedGroups": false,
+        "Left": 3038.5942351843955,
+        "Top": 3322.358541951872,
+        "Width": 317.6999999999998,
+        "Height": 1251.9450411895468,
         "FontSize": 36.0,
         "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
-        "InitialTop": 3473.867839433516,
+        "InitialTop": 3476.358541951872,
         "InitialHeight": 1142.7450411895466,
         "TextblockHeight": 144.0,
         "IsOptionalInPortsCollapsed": false,
@@ -5434,20 +5349,55 @@
           "d4aa517eb2da45f58d2ad5e64e2f2d2e"
         ],
         "HasNestedGroups": true,
-        "Left": 923.2556672159099,
-        "Top": 5542.586632184678,
-        "Width": 4158.748277957496,
-        "Height": 1175.6466488605447,
+        "Left": 863.7766093562973,
+        "Top": 5542.386632184678,
+        "Width": 4217.4273358171085,
+        "Height": 1174.0466488605443,
         "FontSize": 36.0,
         "GroupStyleId": "00000000-0000-0000-0000-000000000000",
         "InitialTop": 5615.586632184678,
         "InitialHeight": 878.517091294203,
-        "TextblockHeight": 63.0,
+        "TextblockHeight": 63.199999999999996,
         "IsOptionalInPortsCollapsed": false,
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
         "HasToggledUnconnectedOutPorts": false,
         "Background": "#FFB5B5B5"
+      },
+      {
+        "Id": "95185c480aa64589a1db5650b23e19c2",
+        "Title": "Importuj z programu Excel",
+        "DescriptionText": "Importuje dane z pliku programu Excel (XLSX) do dodatku Dynamo, przekształcając wiersze i kolumny arkuszy kalkulacyjnych w listy o określonej strukturze na potrzeby przetwarzania, sprawdzania poprawności i manipulowania. Typowe zastosowania obejmują przygotowywanie zestawień, parametrów i ilości dla następczych procesów roboczych.",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
+        "Nodes": [
+          "006aa0c8601c477bbc92d7d6bf96ab11",
+          "e35a60efe1244af78e516c9b9ecb1254",
+          "dab4146ad241428cb52bfe957c755901",
+          "f38c3beea5294c7492db87f855d9de0b",
+          "20d6f2a3a4384ec9b778a5440ac213ca",
+          "6cbf13c04e064ae4bcd20c9485827d5d",
+          "52526b296d7749a39a9f8cde50769836",
+          "06c6913666764c269ebdd026dfe12e19"
+        ],
+        "HasNestedGroups": false,
+        "Left": 1127.659822220425,
+        "Top": 6.49217037885407,
+        "Width": 1321.9725523515006,
+        "Height": 654.2879325395461,
+        "FontSize": 36.0,
+        "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
+        "InitialTop": 88.49217037885407,
+        "InitialHeight": 602.2879325395463,
+        "TextblockHeight": 72.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
+        "Background": "#FFFFB8D8"
       },
       {
         "Id": "0881ee38125247cf8991ca5be7324912",
@@ -5460,8 +5410,8 @@
         "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": 905.0931232080977,
-        "Top": 130.39587550334466,
+        "Left": 1044.1457693442715,
+        "Top": 117.41792035984957,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -5486,8 +5436,8 @@
         "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": 6678.52380924283,
-        "Top": 63.51483682822504,
+        "Left": 6733.085518566861,
+        "Top": 85.1798979814248,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -5512,8 +5462,8 @@
         "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": 3280.2459447298434,
-        "Top": 279.1979335082532,
+        "Left": 3421.024347176814,
+        "Top": 302.3639997337041,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -5538,8 +5488,8 @@
         "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": 2557.38395907021,
-        "Top": 211.19202215734038,
+        "Left": 2698.0623615171803,
+        "Top": 233.9580883827913,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -5565,8 +5515,8 @@
         "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": 2424.6008169261604,
-        "Top": 239.51602173628578,
+        "Left": 2565.379219373131,
+        "Top": 262.68208796173667,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -5581,33 +5531,6 @@
         "Background": "#FFC1D676"
       },
       {
-        "Id": "727199b6f454448b9d7e6cf272337fa5",
-        "Title": "Aby odczytać kolumny listy, użyj węzła List.Transpose.\n\nAby odczytać wiersze listy, nie transponuj danych.",
-        "DescriptionText": null,
-        "IsExpanded": true,
-        "WidthAdjustment": 0.0,
-        "HeightAdjustment": 0.0,
-        "UserSetWidth": 0.0,
-        "UserSetHeight": 0.0,
-        "Nodes": [],
-        "HasNestedGroups": false,
-        "Left": 1995.77264608208,
-        "Top": 112.6987119893613,
-        "Width": 0.0,
-        "Height": 0.0,
-        "FontSize": 36.0,
-        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
-        "InitialTop": 0.0,
-        "InitialHeight": 0.0,
-        "TextblockHeight": 0.0,
-        "IsOptionalInPortsCollapsed": false,
-        "IsUnconnectedOutPortsCollapsed": false,
-        "HasToggledOptionalInPorts": false,
-        "HasToggledUnconnectedOutPorts": false,
-        "Background": "#FFC1D676",
-        "PinnedNode": "4b3fe08c16754910864933a52563d847"
-      },
-      {
         "Id": "c1ef7f086fe7434b97f9e225c19e8cee",
         "Title": "",
         "DescriptionText": null,
@@ -5618,8 +5541,8 @@
         "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": 906.2573120681936,
-        "Top": 2812.0836841454197,
+        "Left": 848.6441324770667,
+        "Top": 2733.6483250658503,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -5644,8 +5567,8 @@
         "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": 3046.671823346267,
-        "Top": 3554.867839433516,
+        "Left": 3048.5942351843955,
+        "Top": 3484.358541951872,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -5670,8 +5593,8 @@
         "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": 3694.0671731078164,
-        "Top": 247.15888961675944,
+        "Left": 3834.745575554787,
+        "Top": 269.92495584221035,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -5697,8 +5620,8 @@
         "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": 4783.663944026293,
-        "Top": 554.411236194648,
+        "Left": 4924.4423464732645,
+        "Top": 577.5773024200989,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -5723,8 +5646,8 @@
         "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": 5638.11972031032,
-        "Top": 365.59992186677175,
+        "Left": 5778.498122757291,
+        "Top": 388.3659880922226,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -5750,8 +5673,8 @@
         "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": 5958.15215067707,
-        "Top": -271.1922369839267,
+        "Left": 6098.930553124041,
+        "Top": -248.02617075847587,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -5776,8 +5699,8 @@
         "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": 4668.806584269295,
-        "Top": 456.5240127045414,
+        "Left": 4809.584986716265,
+        "Top": 479.6900789299923,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -5802,8 +5725,8 @@
         "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": 4668.806584269295,
-        "Top": -273.59873917813434,
+        "Left": 4809.584986716265,
+        "Top": -250.4326729526835,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -5828,8 +5751,8 @@
         "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": 4100.867550859867,
-        "Top": -286.1713009670425,
+        "Left": 4241.645953306837,
+        "Top": -263.00523474159166,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -5854,8 +5777,8 @@
         "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": 4677.617375083789,
-        "Top": 961.9274563988704,
+        "Left": 4818.395777530759,
+        "Top": 985.0935226243212,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -6218,8 +6141,8 @@
         "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": 943.2556672159099,
-        "Top": 6166.377074071222,
+        "Left": 883.7766093562973,
+        "Top": 6150.926075523823,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -6261,7 +6184,7 @@
       },
       {
         "Id": "6df0f9e569ad4b44acd9139afc1aff4a",
-        "Title": "WERSJA DODATKU DYNAMO\n_____________________________________________________ \n\n4.1.0\n",
+        "Title": "DYNAMO VERSION\n_____________________________________________________ \n\n4.2.0\n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -6313,7 +6236,7 @@
       },
       {
         "Id": "ca89f1011618458fb63a13fef8ca2241",
-        "Title": "SKOJARZONE PLIKI\n_____________________________________________________ \n\nExcel_Import_Example.xlsx\nCSV_Import_Example.csv\nGeometry_Import_Example.sat\n",
+        "Title": "SKOJARZONE PLIKI\n_____________________________________________________ \n\nBrak\n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -6582,8 +6505,8 @@
         "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": 6814.3071161198895,
-        "Top": 33.01383175597391,
+        "Left": 6843.48551856686,
+        "Top": 55.779897981424796,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -6609,8 +6532,35 @@
         "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": 1698.1317618718115,
-        "Top": 2574.8455071894027,
+        "Left": 1721.5064469329777,
+        "Top": 2705.8745048975366,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
+        "Background": "#FFC1D676",
+        "PinnedNode": "301bdfcc08a34d9f8c99c39c32b0b850"
+      },
+      {
+        "Id": "3dddd26295384e9fa2f04f3cf32da2a1",
+        "Title": "Wskazówki: dodaj węzeł obserwacyjny po wprowadzeniu danych wejściowych, aby sprawdzić, w jaki sposób plik jest importowany.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 1718.8820289640473,
+        "Top": 2638.9835745985765,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -6625,8 +6575,8 @@
         "Background": "#FFC1D676"
       },
       {
-        "Id": "3dddd26295384e9fa2f04f3cf32da2a1",
-        "Title": "Wskazówki: dodaj węzeł obserwacyjny po wprowadzeniu danych wejściowych, aby sprawdzić, w jaki sposób plik jest importowany.",
+        "Id": "562eb0dc7ea54317bebd0ed83d0b4f07",
+        "Title": "Click Browse and select your own CSV (.csv) file before running this graph",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -6635,8 +6585,8 @@
         "UserSetHeight": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": 1696.7146835440292,
-        "Top": 2642.006394428579,
+        "Left": 939.34999093525,
+        "Top": 2706.7423031107414,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -6648,11 +6598,120 @@
         "IsUnconnectedOutPortsCollapsed": false,
         "HasToggledOptionalInPorts": false,
         "HasToggledUnconnectedOutPorts": false,
-        "Background": "#FFC1D676"
+        "Background": "#FFC1D676",
+        "PinnedNode": "efaaa3893bd949adaad9b5cf40f643fe"
+      },
+      {
+        "Id": "38b94337c8ea409792674c13e4114cff",
+        "Title": "Click Browse and select your own SAT (.sat) file before running this graph",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 973.8150004977922,
+        "Top": 6122.666568158244,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
+        "Background": "#FFC1D676",
+        "PinnedNode": "b7e4de2883b1447f909017eef2e7ad1d"
+      },
+      {
+        "Id": "6cbf13c04e064ae4bcd20c9485827d5d",
+        "Title": "Aby odczytać kolumny listy, użyj węzła List.Transpose.\n\nAby odczytać wiersze listy, nie transponuj danych.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 2139.6323745719255,
+        "Top": 129.5096000538316,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
+        "Background": "#FFC1D676",
+        "PinnedNode": "006aa0c8601c477bbc92d7d6bf96ab11"
+      },
+      {
+        "Id": "52526b296d7749a39a9f8cde50769836",
+        "Title": "Click Browse and select your own Excel (.xlsx) file before running this graph",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 1137.659822220425,
+        "Top": 96.49217037885407,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
+        "Background": "#FFC1D676",
+        "PinnedNode": "dab4146ad241428cb52bfe957c755901"
+      },
+      {
+        "Id": "06c6913666764c269ebdd026dfe12e19",
+        "Title": "W przypadku odczytywania liczb należy ustawić wartość false.\r\nPodczas czytania tekstu należy ustawić wartość true.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "UserSetWidth": 0.0,
+        "UserSetHeight": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 1190.1718996588204,
+        "Top": 465.78010291839996,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "IsOptionalInPortsCollapsed": false,
+        "IsUnconnectedOutPortsCollapsed": false,
+        "HasToggledOptionalInPorts": false,
+        "HasToggledUnconnectedOutPorts": false,
+        "Background": "#FFC1D676",
+        "PinnedNode": "20d6f2a3a4384ec9b778a5440ac213ca"
       }
     ],
-    "X": 318.31265798789235,
-    "Y": 124.31345710772163,
-    "Zoom": 0.09206401543549131
+    "X": 190.17485721976902,
+    "Y": 127.61397307354594,
+    "Zoom": 0.08303325266415204
   }
 }

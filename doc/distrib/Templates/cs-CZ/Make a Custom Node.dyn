@@ -3572,7 +3572,7 @@
       },
       {
         "Id": "80d3e5b600f3449f95320541bc845e02",
-        "Title": "VERZE APLIKACE DYNAMO\n_____________________________________________________ \n\n4.1.0\n",
+        "Title": "DYNAMO VERSION\n_____________________________________________________ \n\n4.2.0\n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3672,7 +3672,7 @@
       },
       {
         "Id": "3a1bbb44014c4cbaa7946c1d55a5aaf7",
-        "Title": "DALŠÍ KOMENTÁŘE\n_____________________________________________________ \n\nVlastní uzly se obvykle nacházejí v knihovně v části Doplňky.\r\nTento vlastní uzel se nachází v umístění:\r\nDoplňky → Normy → Křivka → Curve_Validate\r\n\r\nPokud se nezobrazí:\r\n\r\nZkontrolujte, zda je soubor .dyf ve složce vlastních uzlů.\r\n\r\nPřejděte na:\r\nBalíčky → Package Manager → Nastavení balíčku → Vyhledávací cesty balíčku/knihovny\r\nOvěřte, zda je cesta ke složce uvedena, nebo přidejte novou cestu.\r\nPo přidání nových vlastních uzlů restartujte aplikaci Dynamo\n",
+        "Title": "DALŠÍ KOMENTÁŘE\n_____________________________________________________ \n\nVlastní uzly se obvykle nacházejí v knihovně v části Doplňky.\r\nTento vlastní uzel se nachází v umístění:\r\nDoplňky → Šablony → Křivka → Curve_Validate\r\n\r\nPokud se nezobrazí:\r\n\r\nZkontrolujte, zda je soubor .dyf ve složce vlastních uzlů.\r\n\r\nPřejděte na:\r\nBalíčky → Package Manager → Nastavení balíčku → Vyhledávací cesty balíčku/knihovny\r\nOvěřte, zda je cesta ke složce uvedena, nebo přidejte novou cestu.\r\nPo přidání nových vlastních uzlů restartujte aplikaci Dynamo\n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

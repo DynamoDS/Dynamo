@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Utilities;
+using Dynamo.Wpf.Utilities;
 using DynamoUtilities;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
@@ -29,6 +30,13 @@ namespace Dynamo.DocumentationBrowser
 
         internal string WebBrowserUserDataFolder { get; set; }
         internal string FallbackDirectoryName { get; set; }
+
+        /// <summary>
+        /// When true, the documentation browser's WebView2 surface is initialized with hardened Edge
+        /// command-line switches that suppress the runtime's background networking. Set by the view
+        /// extension during load from the Dynamo model's no-network state.
+        /// </summary>
+        internal bool NoNetworkMode { get; set; }
 
         //Path in which the virtual folder for loading images will be created
         internal string VirtualFolderPath { get; set; }
@@ -166,6 +174,13 @@ namespace Dynamo.DocumentationBrowser
                     {
                         UserDataFolder = DynamoModel.IsTestMode ? TestUtilities.UserDataFolderDuringTests(nameof(DocumentationBrowserView)) : WebBrowserUserDataFolder
                     };
+                }
+
+                // Suppress WebView2 runtime background networking when Dynamo is in no-network mode.
+                if (NoNetworkMode)
+                {
+                    documentationBrowser.CreationProperties ??= new CoreWebView2CreationProperties();
+                    WebView2Utilities.ApplyNoNetworkPolicy(documentationBrowser.CreationProperties, true, Log);
                 }
 
                 try

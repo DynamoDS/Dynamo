@@ -27,6 +27,7 @@ Shared constraints for all C#/.NET work in the Dynamo repository.
 - Security analyzers CA2327, CA2328, CA2329, CA2330 are treated as **errors**.
 - Never commit secrets, API keys, or credentials to source code.
 - No new network connections without documentation and no-network mode testing.
+  See [`doc/distrib/no-network-mode.md`](../../doc/distrib/no-network-mode.md) for the `--NoNetworkMode` startup contract, including how WebView2 surfaces are hardened.
 - No data collection without user consent checks.
 - User-facing strings must go in `.resx` files for localization.
 

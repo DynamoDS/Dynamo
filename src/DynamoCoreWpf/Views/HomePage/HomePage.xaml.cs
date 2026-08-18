@@ -162,6 +162,8 @@ namespace Dynamo.UI.Views
         {
             string htmlString = string.Empty;   
             string jsonString = string.Empty;
+            var homePageViewModel = this.startPage;
+            var logger = homePageViewModel?.DynamoViewModel?.Model?.Logger;
 
             // When executing Dynamo as Sandbox or inside any host like Revit, FormIt, Civil3D the WebView2 cache folder will be located in the AppData folder
             var userDataDir = new DirectoryInfo(GetUserDirectory());
@@ -172,6 +174,11 @@ namespace Dynamo.UI.Views
             {
                 UserDataFolder = DynamoModel.IsTestMode ? TestUtilities.UserDataFolderDuringTests(nameof(HomePage)) : webBrowserUserDataFolder.FullName
             };
+
+            // Suppress WebView2 runtime background networking when Dynamo is in no-network mode.
+            var noNetworkMode = homePageViewModel?.DynamoViewModel?.Model?.NoNetworkMode ?? false;
+            WebView2Utilities.ApplyNoNetworkPolicy(dynWebView.CreationProperties, noNetworkMode,
+                msg => logger?.Log(msg));
 
             //ContentRendered ensures that the webview2 component is visible.
             try
@@ -214,7 +221,7 @@ namespace Dynamo.UI.Views
                 }
                 catch (Exception ex)
                 {
-                    this.startPage.DynamoViewModel.Model.Logger.Log(ex.Message);
+                    logger?.Log(ex.Message);
                 }
 
                 // Exposing commands to the React front-end
@@ -233,7 +240,7 @@ namespace Dynamo.UI.Views
             }
             catch (ObjectDisposedException ex)
             {
-                this.startPage.DynamoViewModel.Model.Logger.Log(ex.Message);
+                logger?.Log(ex.Message);
             }
         }
 
@@ -550,6 +557,24 @@ namespace Dynamo.UI.Views
             _ = OpenFileAsync(path);
         }
 
+        /// <summary>
+        /// Determines whether the given path points at an openable graph file rather than a
+        /// folder or unrelated file. Directories can reach here as childless sample folder
+        /// cards on the home page (DYN-10736); they are not graphs and must not be treated as
+        /// a missing/openable file.
+        /// </summary>
+        internal static bool IsSampleGraphPath(string path)
+        {
+            if (string.IsNullOrEmpty(path) || Directory.Exists(path))
+            {
+                return false;
+            }
+
+            var extension = Path.GetExtension(path);
+            return extension.Equals(".dyn", StringComparison.OrdinalIgnoreCase) ||
+                extension.Equals(".dyf", StringComparison.OrdinalIgnoreCase);
+        }
+
         private async Task OpenFileAsync(string path)
         {
             if (String.IsNullOrEmpty(path)) return;
@@ -561,6 +586,13 @@ namespace Dynamo.UI.Views
 
             try
             {
+                // A childless sample folder can still reach here as a card; it is not a graph
+                // to open, so bail out instead of reporting it as a missing file (DYN-10736).
+                if (!IsSampleGraphPath(path))
+                {
+                    return;
+                }
+
                 if (startPage.HandleMissingFilePath(path))
                 {
                     var recentFiles = startPage.RecentFiles?.DistinctBy(x => x.ContextData).ToList() ?? new List<StartPageListItem>();

@@ -101,8 +101,8 @@ namespace Dynamo.Tests.ModelsTests
 
         private void AssertHeadlessTrustPreconditions()
         {
-           Assert.IsFalse(DynamoModel.IsTestMode);
-           Assert.IsFalse(CurrentDynamoModel.PreferenceSettings.DisableTrustWarnings);
+            Assert.IsFalse(DynamoModel.IsTestMode);
+            Assert.IsFalse(CurrentDynamoModel.PreferenceSettings.DisableTrustWarnings);
         }
 
         private string CopyDynToUntrustedTemp(string path)

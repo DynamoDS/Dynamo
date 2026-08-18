@@ -20,6 +20,7 @@ namespace CoreNodeModels
     [NodeSearchTags("CurveMapperSearchTags", typeof(Properties.Resources))]
     [InPortNames("x-MinLimit", "x-MaxLimit", "y-MinLimit", "y-MaxLimit", "values")]
     [InPortTypes("int", "int", "int", "int", "double")]
+    [OutPortTypes("double[]", "double[]")]
 
     public class CurveMapperNodeModel : NodeModel
     {
