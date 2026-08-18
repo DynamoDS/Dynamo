@@ -1,4 +1,5 @@
 Dynamo.Wpf.Extensions.ViewLoadedParams.IsIDSDKInitialized.get -> bool
+static Dynamo.Wpf.Properties.Resources.ExtensionNotOfferedMcpTokenValidationUnavailable.get -> string
 Dynamo.Controls.NetworkStatusIconConverter
 Dynamo.Controls.NetworkStatusIconConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NetworkStatusIconConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object

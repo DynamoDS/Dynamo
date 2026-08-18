@@ -134,7 +134,9 @@ namespace Dynamo.Wpf.Extensions
                     dynamoViewModel.Model.Logger.Log($"{viewExtension.Name} : {Wpf.Properties.Resources.ExtensionAlreadyPresent}");
                     break;
                 case DynamoView.ExtensionControlResult.Blocked:
-                    // Already logged by DisableExtensionWhenNoNetworkMode/DisableExtensionWhenIDSDKNotInitialized.
+                    // Already logged by DisableExtensionWhenNoNetworkMode /
+                    // DisableExtensionWhenMcpTokenValidationUnavailable /
+                    // DisableExtensionWhenIDSDKNotInitialized.
                     break;
             }
         }

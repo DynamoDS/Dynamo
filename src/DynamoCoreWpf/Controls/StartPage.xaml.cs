@@ -319,7 +319,14 @@ namespace Dynamo.UI.Controls
                             SampleFileEntry sampleFileEntry =
                                 new SampleFileEntry(directory.Name, directory.FullName);
                             WalkDirectoryTree(directory, sampleFileEntry);
-                            rootProperty.AddChildSampleFile(sampleFileEntry);
+
+                            // Only surface folders that actually contain sample graphs (directly or
+                            // in a nested subfolder); otherwise the entry renders as a clickable file
+                            // on the home page even though there is nothing to open (DYN-10736).
+                            if (sampleFileEntry.Children != null && sampleFileEntry.Children.Any())
+                            {
+                                rootProperty.AddChildSampleFile(sampleFileEntry);
+                            }
                         }
                     }
                 }
