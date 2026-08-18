@@ -123,11 +123,13 @@ namespace Dynamo.UI.Controls
             switch (state)
             {
                 case EditorStateMachine.State.Editing:
-                    EnableInputOutputPorts(false); 
+                    EnableInputOutputPorts(false);
+                    nodeViewModel.DynamoViewModel.IsCodeBlockEditorActive = true;
                     break;
 
                 case EditorStateMachine.State.Commited:
-                    EnableInputOutputPorts(true); 
+                    EnableInputOutputPorts(true);
+                    nodeViewModel.DynamoViewModel.IsCodeBlockEditorActive = false;
                     break;
             }
         }
