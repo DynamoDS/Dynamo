@@ -2065,6 +2065,9 @@ Möchten Sie das neueste Update für Dynamo installieren?</value>
   <data name="ExtensionAlreadyPresent" xml:space="preserve">
     <value>Es wurde keine neue Registerkarte hinzugefügt, da die Erweiterung bereits auf der Erweiterungsseitenleiste vorhanden ist.</value>
   </data>
+  <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
+    <value>Package/Extension {0} not offered because Autodesk Identity (IDSDK) in this process cannot validate MCP tokens ({1} does not export {2}); every request would be rejected with HTTP 401.</value>
+  </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
     <value>{1} kann nicht geladen werden.
 Die Installation führt zu Konflikten mit einer oder mehreren Blockdefinitionen, die bereits in {0} vorhanden sind (derzeit geladen). 

@@ -2063,6 +2063,9 @@
   <data name="ExtensionAlreadyPresent" xml:space="preserve">
     <value>확장이 이미 확장 사이트바에 있어 새 탭이 추가되지 않습니다.</value>
   </data>
+  <data name="ExtensionNotOfferedMcpTokenValidationUnavailable" xml:space="preserve">
+    <value>Package/Extension {0} not offered because Autodesk Identity (IDSDK) in this process cannot validate MCP tokens ({1} does not export {2}); every request would be rejected with HTTP 401.</value>
+  </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
     <value>{1}을(를) 로드할 수 없습니다.
 이것을 설치하면 현재 로드되어 있고 {0}에 이미 존재하는 하나 이상의 노드 정의와 충돌하게 됩니다. 
