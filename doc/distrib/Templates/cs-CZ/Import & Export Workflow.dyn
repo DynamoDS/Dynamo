@@ -336,7 +336,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Booleovské AND: vrací hodnotu true, pouze pokud oba vstupy mají hodnotu true. Pokud má kterýkoli z nich hodnotu false, vrací false."
+      "Description": "Booleovské AND: vrací hodnotu true, pouze pokud oba vstupy mají hodnotu true. Pokud má kterýkoli z nich hodnotu false, vrací False."
     },
     {
       "ConcreteType": "CoreNodeModels.Logic.And, CoreNodeModels",
@@ -375,7 +375,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Booleovské AND: vrací hodnotu true, pouze pokud oba vstupy mají hodnotu true. Pokud má kterýkoli z nich hodnotu false, vrací false."
+      "Description": "Booleovské AND: vrací hodnotu true, pouze pokud oba vstupy mají hodnotu true. Pokud má kterýkoli z nich hodnotu false, vrací False."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -414,7 +414,7 @@
         {
           "Id": "95014187fcf34a88a915496f68f8c772",
           "Name": "bool",
-          "Description": "Určuje, zda řetězec obsahuje dílčí řetězec",
+          "Description": "Určuje, zda řetězec obsahuje podřetězec",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -492,7 +492,7 @@
         {
           "Id": "99a53962b867421796375dacfb3a1ade",
           "Name": "in",
-          "Description": "Položky, jejichž index masky je true (pravda)",
+          "Description": "Položky, jejichž maskované indexy mají hodnotu true.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -501,7 +501,7 @@
         {
           "Id": "837f23283e3640cba05e8e16dfbe25a4",
           "Name": "out",
-          "Description": "Položky, jejichž index masky je false (nepravda)",
+          "Description": "Položky, jejichž maskované indexy mají hodnotu false.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -659,7 +659,7 @@
         {
           "Id": "56c1d65d90934cb0b61984f2c80c4190",
           "Name": "bool",
-          "Description": "Určuje, zda řetězec obsahuje dílčí řetězec",
+          "Description": "Určuje, zda řetězec obsahuje podřetězec",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -707,7 +707,7 @@
         {
           "Id": "3e5c3683faf942e2add04fbde697bc07",
           "Name": "bool",
-          "Description": "Určuje, zda řetězec obsahuje dílčí řetězec",
+          "Description": "Určuje, zda řetězec obsahuje podřetězec",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -755,7 +755,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Booleovské OR: vrací hodnotu true, pokud má hodnotu true kterýkoli ze vstupů. Pokud nemá ani jeden vstup hodnotu true, vrací hodnotu false."
+      "Description": "Booleovské OR: vrací hodnotu true, pokud má hodnotu true kterýkoli ze vstupů. Pokud nemá ani jeden vstup hodnotu true, vrací hodnotu False."
     },
     {
       "ConcreteType": "CoreNodeModels.Logic.Or, CoreNodeModels",
@@ -794,7 +794,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Booleovské OR: vrací hodnotu true, pokud má hodnotu true kterýkoli ze vstupů. Pokud nemá ani jeden vstup hodnotu true, vrací hodnotu false."
+      "Description": "Booleovské OR: vrací hodnotu true, pokud má hodnotu true kterýkoli ze vstupů. Pokud nemá ani jeden vstup hodnotu true, vrací hodnotu False."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -804,7 +804,7 @@
         {
           "Id": "01a91c7c3afd49fdb0947b7a93539004",
           "Name": "list",
-          "Description": "Seznam k načtení položky.\n\nvar[]..[]",
+          "Description": "Seznam, ze kterého se načte položka.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -824,7 +824,7 @@
         {
           "Id": "226e042b6ef54454bbe03319141cc2e0",
           "Name": "item",
-          "Description": "Položka v seznamu v daném indexu",
+          "Description": "Položka v seznamu na daném indexu.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -833,7 +833,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Vrátí položku z daného seznamu, která se nachází v zadaném indexu.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Vrátí položku z daného seznamu, která se nachází na zadaném indexu.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -843,7 +843,7 @@
         {
           "Id": "3c85987633764637a8919e6ffed600fe",
           "Name": "list",
-          "Description": "Seznam k načtení položky.\n\nvar[]..[]",
+          "Description": "Seznam, ze kterého se načte položka.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -863,7 +863,7 @@
         {
           "Id": "fb7d19539d174d4384adb3ae77552471",
           "Name": "item",
-          "Description": "Položka v seznamu v daném indexu",
+          "Description": "Položka v seznamu na daném indexu.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -872,7 +872,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Vrátí položku z daného seznamu, která se nachází v zadaném indexu.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Vrátí položku z daného seznamu, která se nachází na zadaném indexu.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -882,7 +882,7 @@
         {
           "Id": "c2a1c0acd4b84f6b879d6291929d4ada",
           "Name": "list",
-          "Description": "Seznam k načtení položky.\n\nvar[]..[]",
+          "Description": "Seznam, ze kterého se načte položka.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -902,7 +902,7 @@
         {
           "Id": "3a8b3b79aecb41d3864ea4162d515a73",
           "Name": "item",
-          "Description": "Položka v seznamu v daném indexu",
+          "Description": "Položka v seznamu na daném indexu.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -911,7 +911,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Vrátí položku z daného seznamu, která se nachází v zadaném indexu.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Vrátí položku z daného seznamu, která se nachází na zadaném indexu.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
@@ -930,7 +930,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umožňuje vybrat soubor v systému a vrací cestu k tomuto souboru.",
+      "Description": "Umožňuje vybrat soubor v systému a vrací cestu k tomuto souboru",
       "HintPath": null,
       "InputValue": "Není vybrán žádný soubor."
     },
@@ -1029,7 +1029,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umožňuje výběr mezi hodnotami true a false.",
+      "Description": "Umožňuje výběr mezi hodnotami True a False",
       "InputValue": false
     },
     {
@@ -1049,7 +1049,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umožňuje výběr mezi hodnotami true a false.",
+      "Description": "Umožňuje výběr mezi hodnotami True a False",
       "InputValue": true
     },
     {
@@ -1071,7 +1071,7 @@
         {
           "Id": "1da284581cc545bdaf6c42831658f8a4",
           "Name": "string",
-          "Description": "Řetězec velkými písmeny",
+          "Description": "Řetězec psaný velkými písmeny",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1099,7 +1099,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
+      "Description": "Umožňuje přímou tvorbu kódu DesignScript.",
       "Code": "\"-\";"
     },
     {
@@ -1119,7 +1119,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
+      "Description": "Umožňuje přímou tvorbu kódu DesignScript.",
       "Code": "// one output list\n[\"GA\",\"DET\",\"STRUCT\"];"
     },
     {
@@ -1139,7 +1139,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
+      "Description": "Umožňuje přímou tvorbu kódu DesignScript.",
       "Code": "0;"
     },
     {
@@ -1159,7 +1159,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
+      "Description": "Umožňuje přímou tvorbu kódu DesignScript.",
       "Code": "1;"
     },
     {
@@ -1179,7 +1179,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
+      "Description": "Umožňuje přímou tvorbu kódu DesignScript.",
       "Code": "2;"
     },
     {
@@ -1249,7 +1249,7 @@
       ],
       "FunctionSignature": "DSCore.List.Transpose@var[]..[]",
       "Replication": "Auto",
-      "Description": "Vymění řádky a sloupce v seznamu seznamů. Pokud jsou v seznamu řádky, které jsou kratší než jiné řádky, jsou na zbývající volná místa ve výsledném poli vloženy nulové hodnoty, aby bylo pole vždy obdélníkové.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
+      "Description": "Vymění řádky a sloupce v seznamu seznamů. Pokud jsou v seznamu řádky, které jsou kratší než jiné řádky, jsou na zbývající volná místa ve výsledném poli vloženy hodnoty null, aby bylo pole vždy obdélníkové.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1259,7 +1259,7 @@
         {
           "Id": "c5605a0e9a1d4ebba5e7394025e256b7",
           "Name": "list",
-          "Description": "Seznam k načtení položky.\n\nvar[]..[]",
+          "Description": "Seznam, ze kterého se načte položka.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1279,7 +1279,7 @@
         {
           "Id": "029ac554f89b454a817d1de9be0b0880",
           "Name": "item",
-          "Description": "Položka v seznamu v daném indexu",
+          "Description": "Položka v seznamu na daném indexu.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1288,7 +1288,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Vrátí položku z daného seznamu, která se nachází v zadaném indexu.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Vrátí položku z daného seznamu, která se nachází na zadaném indexu.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1366,7 +1366,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umožňuje vybrat soubor v systému a vrací cestu k tomuto souboru.",
+      "Description": "Umožňuje vybrat soubor v systému a vrací cestu k tomuto souboru",
       "HintPath": null,
       "InputValue": "Není vybrán žádný soubor."
     },
@@ -1465,7 +1465,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umožňuje výběr mezi hodnotami true a false.",
+      "Description": "Umožňuje výběr mezi hodnotami True a False",
       "InputValue": false
     },
     {
@@ -1538,7 +1538,7 @@
         {
           "Id": "3b4d3205c76f4c48a197cc9d7eff90e3",
           "Name": "list",
-          "Description": "Seznam k načtení položky.\n\nvar[]..[]",
+          "Description": "Seznam, ze kterého se načte položka.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1558,7 +1558,7 @@
         {
           "Id": "2367689d629e40fd9e5ab05e8ec322de",
           "Name": "item",
-          "Description": "Položka v seznamu v daném indexu",
+          "Description": "Položka v seznamu na daném indexu.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1567,7 +1567,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Vrátí položku z daného seznamu, která se nachází v zadaném indexu.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Vrátí položku z daného seznamu, která se nachází na zadaném indexu.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1597,7 +1597,7 @@
         {
           "Id": "47c7f7350b7d49ce969dc2e316cfa582",
           "Name": "list",
-          "Description": "Vyrovnaný seznam o určité množství",
+          "Description": "Seznam vyrovnaný o určité množství",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1792,7 +1792,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Vytváří celočíselné hodnoty.",
+      "Description": "Vytváří celočíselné hodnoty",
       "InputValue": 1
     },
     {
@@ -1816,7 +1816,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Vytváří celočíselné hodnoty.",
+      "Description": "Vytváří celočíselné hodnoty",
       "InputValue": 0
     },
     {
@@ -1862,7 +1862,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Vytváří celočíselné hodnoty.",
+      "Description": "Vytváří celočíselné hodnoty",
       "InputValue": 0
     },
     {
@@ -1915,7 +1915,7 @@
         {
           "Id": "251861ad328c46d6bae45caa4de0376f",
           "Name": "string",
-          "Description": "Typ objektu",
+          "Description": "Typ objektu.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1943,7 +1943,7 @@
         {
           "Id": "2722c854c9e347d29c7215f206ba6d51",
           "Name": "dynamoUnit",
-          "Description": "Pokud je délka jednotky kování nulová, geometrie bude importována bez jednotek.",
+          "Description": "Pokud má délka jednotky kování hodnotu null, geometrie bude importována bez jednotek.",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1981,7 +1981,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umožňuje vybrat soubor v systému a vrací cestu k tomuto souboru.",
+      "Description": "Umožňuje vybrat soubor v systému a vrací cestu k tomuto souboru",
       "HintPath": null,
       "InputValue": "Není vybrán žádný soubor."
     },
@@ -2004,7 +2004,7 @@
         {
           "Id": "b71270bbbeaf449d884051ccf4f01964",
           "Name": "file",
-          "Description": "Souborový objekt",
+          "Description": "Objekt souboru",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2012,7 +2012,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Vytvoří objekt souboru z dané cesty."
+      "Description": "Vytvoří objekt souboru z dané cesty"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -2070,7 +2070,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umožňuje vybrat soubor v systému a vrací cestu k tomuto souboru.",
+      "Description": "Umožňuje vybrat soubor v systému a vrací cestu k tomuto souboru",
       "HintPath": null,
       "InputValue": "Není vybrán žádný soubor."
     },
@@ -2129,7 +2129,7 @@
         {
           "Id": "72e6947e56974449afe7ae5658f82cca",
           "Name": "Geometry",
-          "Description": "Geometrie",
+          "Description": "Geometry",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2157,7 +2157,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
+      "Description": "Umožňuje přímou tvorbu kódu DesignScript.",
       "Code": "5;"
     },
     {
@@ -2223,7 +2223,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Zobrazuje dynamický náhled geometrie."
+      "Description": "Zobrazuje dynamický náhled geometrie"
     },
     {
       "ConcreteType": "UnitsUI.Units, UnitsNodeModels",
@@ -2289,7 +2289,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Zobrazuje dynamický náhled geometrie."
+      "Description": "Zobrazuje dynamický náhled geometrie"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -2319,7 +2319,7 @@
       ],
       "FunctionSignature": "DSCore.List.Transpose@var[]..[]",
       "Replication": "Auto",
-      "Description": "Vymění řádky a sloupce v seznamu seznamů. Pokud jsou v seznamu řádky, které jsou kratší než jiné řádky, jsou na zbývající volná místa ve výsledném poli vloženy nulové hodnoty, aby bylo pole vždy obdélníkové.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
+      "Description": "Vymění řádky a sloupce v seznamu seznamů. Pokud jsou v seznamu řádky, které jsou kratší než jiné řádky, jsou na zbývající volná místa ve výsledném poli vloženy hodnoty null, aby bylo pole vždy obdélníkové.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -2404,7 +2404,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umožňuje vybrat soubor v systému a vrací cestu k tomuto souboru.",
+      "Description": "Umožňuje vybrat soubor v systému a vrací cestu k tomuto souboru",
       "HintPath": "",
       "InputValue": "Není vybrán žádný soubor."
     },
@@ -2447,7 +2447,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Umožňuje výběr mezi hodnotami true a false.",
+      "Description": "Umožňuje výběr mezi hodnotami True a False",
       "InputValue": false
     }
   ],

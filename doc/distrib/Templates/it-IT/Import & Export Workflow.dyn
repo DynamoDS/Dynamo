@@ -385,7 +385,7 @@
         {
           "Id": "ca75ee7ffa554647aaf489b175e956d3",
           "Name": "string",
-          "Description": "Stringa nella quale eseguire la ricerca string",
+          "Description": "Stringa nella quale eseguire la ricerca\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -394,7 +394,7 @@
         {
           "Id": "9e22fff71ecb4f6599951058392f6597",
           "Name": "searchFor",
-          "Description": "Sottostringa da ricercare string",
+          "Description": "Sottostringa da ricercare\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -403,7 +403,7 @@
         {
           "Id": "0e781982b7d147a3aaa1825c4d75e5f3",
           "Name": "ignoreCase",
-          "Description": "Determina se il confronto tiene conto delle maiuscole e minuscole bool Valore di fefault: false",
+          "Description": "Determina se il confronto tiene conto delle maiuscole e minuscole\n\nbool\nValore di default: false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -423,7 +423,7 @@
       ],
       "FunctionSignature": "DSCore.String.Contains@string,string,bool",
       "Replication": "Auto",
-      "Description": "Determina se la stringa data contiene la sottostringa data. String.Contains (string: string, searchFor: string, ignoreCase: bool = false): bool"
+      "Description": "Determina se la stringa data contiene la sottostringa data.\n\nString.Contains (string: string, searchFor: string, ignoreCase: bool = false): bool"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -433,7 +433,7 @@
         {
           "Id": "a9ba12f2ed0e4187bf7463f36cd9c190",
           "Name": "x",
-          "Description": "Oggetto di tipo di base da confrontare (ad esempio bool, int, double, string e così via) var[]..[]",
+          "Description": "Oggetto di tipo di base da confrontare (ad esempio bool, int, double, string e così via)\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -442,7 +442,7 @@
         {
           "Id": "f55d31699404497d8f95ce20c6a8732c",
           "Name": "y",
-          "Description": "Oggetto di tipo di base da confrontare (ad esempio bool, int, double, string e così via) var[]..[]",
+          "Description": "Oggetto di tipo di base da confrontare (ad esempio bool, int, double, string e così via)\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -462,7 +462,7 @@
       ],
       "FunctionSignature": "==@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Confronta se x e y sono uguali == (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Confronta se x e y sono uguali\n\n== (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -630,7 +630,7 @@
         {
           "Id": "dbdb1b8cf65846e89220b03b176f4240",
           "Name": "string",
-          "Description": "Stringa nella quale eseguire la ricerca string",
+          "Description": "Stringa nella quale eseguire la ricerca\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -639,7 +639,7 @@
         {
           "Id": "b108dfa9c44241daac8cb1bc7a0e5492",
           "Name": "searchFor",
-          "Description": "Sottostringa da ricercare string",
+          "Description": "Sottostringa da ricercare\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -648,7 +648,7 @@
         {
           "Id": "4e17b2eb16d4415e94bbc95e72612886",
           "Name": "ignoreCase",
-          "Description": "Determina se il confronto tiene conto delle maiuscole e minuscole bool Valore di fefault: false",
+          "Description": "Determina se il confronto tiene conto delle maiuscole e minuscole\n\nbool\nValore di default: false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -668,7 +668,7 @@
       ],
       "FunctionSignature": "DSCore.String.Contains@string,string,bool",
       "Replication": "Auto",
-      "Description": "Determina se la stringa data contiene la sottostringa data. String.Contains (string: string, searchFor: string, ignoreCase: bool = false): bool"
+      "Description": "Determina se la stringa data contiene la sottostringa data.\n\nString.Contains (string: string, searchFor: string, ignoreCase: bool = false): bool"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -678,7 +678,7 @@
         {
           "Id": "85e5465927b942bdadd42d660f6ac9fd",
           "Name": "string",
-          "Description": "Stringa nella quale eseguire la ricerca string",
+          "Description": "Stringa nella quale eseguire la ricerca\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -687,7 +687,7 @@
         {
           "Id": "a3d89298dfd84cf79ee1967d94d6fa57",
           "Name": "searchFor",
-          "Description": "Sottostringa da ricercare string",
+          "Description": "Sottostringa da ricercare\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -696,7 +696,7 @@
         {
           "Id": "cf0027f8931a4f40b83c57ba13385f1c",
           "Name": "ignoreCase",
-          "Description": "Determina se il confronto tiene conto delle maiuscole e minuscole bool Valore di fefault: false",
+          "Description": "Determina se il confronto tiene conto delle maiuscole e minuscole\n\nbool\nValore di default: false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -716,7 +716,7 @@
       ],
       "FunctionSignature": "DSCore.String.Contains@string,string,bool",
       "Replication": "Auto",
-      "Description": "Determina se la stringa data contiene la sottostringa data. String.Contains (string: string, searchFor: string, ignoreCase: bool = false): bool"
+      "Description": "Determina se la stringa data contiene la sottostringa data.\n\nString.Contains (string: string, searchFor: string, ignoreCase: bool = false): bool"
     },
     {
       "ConcreteType": "CoreNodeModels.Logic.Or, CoreNodeModels",
@@ -1060,7 +1060,7 @@
         {
           "Id": "e0929515cbc94fdfaf8751dc4d0cea75",
           "Name": "string",
-          "Description": "Stringa da convertire in maiuscole string",
+          "Description": "Stringa da convertire in maiuscole\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1080,7 +1080,7 @@
       ],
       "FunctionSignature": "DSCore.String.ToUpper@string",
       "Replication": "Auto",
-      "Description": "Converte la stringa specificata in tutti i caratteri maiuscoli. String.ToUpper (string: string): string"
+      "Description": "Converte la stringa specificata in tutti i caratteri maiuscoli.\n\nString.ToUpper (string: string): string"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1201,7 +1201,7 @@
         {
           "Id": "d01a599adc694791900f66f1458f4eb1",
           "Name": "first",
-          "Description": "Prima voce dell&apos;elenco (tipo: var[]..[])",
+          "Description": "Prima voce dell'elenco (tipo: var[]..[])",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1586,7 +1586,7 @@
         {
           "Id": "395b44ac4e8d49fb9f03b4d6b9cfd9e3",
           "Name": "amount",
-          "Description": "Livelli di nidificazione dell'elenco da rimuovere (-1 rimuoverà tutte le nidificazioni dell'elenco) int Valore di default: -1",
+          "Description": "Livelli di nidificazione dell'elenco da rimuovere (-1 rimuoverà tutte le nidificazioni dell'elenco)\n\nint\nValore di default: -1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1606,7 +1606,7 @@
       ],
       "FunctionSignature": "DSCore.List.Flatten@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Riduce di un determinato numero di livelli la nidificazione di un elenco di elenchi. List.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
+      "Description": "Riduce di un determinato numero di livelli la nidificazione di un elenco di elenchi.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -1676,7 +1676,7 @@
         {
           "Id": "b8c282c76acc4c3c9a819314042bbbdb",
           "Name": "list",
-          "Description": "Elenco con l&apos;elemento inserito",
+          "Description": "Elenco con l'elemento inserito",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,

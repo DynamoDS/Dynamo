@@ -1597,7 +1597,7 @@
         {
           "Id": "47c7f7350b7d49ce969dc2e316cfa582",
           "Name": "list",
-          "Description": "依數量展開清單",
+          "Description": "依數量展開的清單",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,

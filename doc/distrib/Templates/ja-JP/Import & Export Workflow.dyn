@@ -1722,7 +1722,7 @@
         {
           "Id": "2f9a1ba02a6c4034ac0e5dff00d90595",
           "Name": "startRow",
-          "Description": "int\n既定値 : 0",
+          "Description": "int\n既定値: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1731,7 +1731,7 @@
         {
           "Id": "d20ba9f965d442e4aab5636a7713e622",
           "Name": "startColumn",
-          "Description": "int\n既定値 : 0",
+          "Description": "int\n既定値: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -2129,7 +2129,7 @@
         {
           "Id": "72e6947e56974449afe7ae5658f82cca",
           "Name": "Geometry",
-          "Description": "ジオメトリ",
+          "Description": "Geometry",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2347,7 +2347,7 @@
         {
           "Id": "82756a9077854a1f9a45a33d76c81390",
           "Name": "startRow",
-          "Description": "int\n既定値 : 0",
+          "Description": "int\n既定値: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -2356,7 +2356,7 @@
         {
           "Id": "cd5874975f60419f9fdae6b5925fcc7e",
           "Name": "startColumn",
-          "Description": "int\n既定値 : 0",
+          "Description": "int\n既定値: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
