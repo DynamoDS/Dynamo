@@ -186,5 +186,41 @@ namespace DynamoCoreWpfTests
             // Assert
             Assert.AreEqual(3, group1.Nodes.Count(), "Expected group to have 3 nodes after double click.");
         }
+
+        [Test]
+        public void DoubleClickOnCollapsedGroupAddsNodeToWorkspaceButNotToGroup()
+        {
+            // Arrange
+            Open(@"core\annotationViewModelTests\groupsTestFile.dyn");
+
+            var groupGuid = new Guid("8324afb7-2d77-4a75-aa5e-f10e59964c2b");
+            var ws = this.Model.CurrentWorkspace;
+            var groupModel = ws.Annotations.FirstOrDefault(a => a.GUID == groupGuid);
+            Assert.IsNotNull(groupModel, "Expected annotation group present in workspace.");
+
+            var annotationView = NodeViewWithGuid(groupGuid.ToString());
+            Assert.IsNotNull(annotationView, "Expected annotation view to exist.");
+
+            // Ensure the annotation is collapsed
+            annotationView.ViewModel.IsExpanded = false;
+            Assert.IsFalse(annotationView.ViewModel.IsExpanded, "Test precondition: annotation should be collapsed.");
+
+            var initialWorkspaceNodeCount = ws.Nodes.Count();
+            var initialGroupNodeCount = groupModel.Nodes.Count();
+
+            var workspaceView = View.WorkspaceTabs.ChildrenOfType<WorkspaceView>().First();
+            var workspaceViewModel = workspaceView.ViewModel;
+
+            // Click position inside the group's model area (below the text)
+            var clickPosition = new Point(groupModel.X + 1, groupModel.Y + groupModel.TextBlockHeight + 1);
+
+            // Act
+            workspaceViewModel.HandleAnnotationDoubleClick(clickPosition, groupModel);
+            DispatcherUtil.DoEvents();
+
+            // Assert
+            Assert.AreEqual(initialWorkspaceNodeCount + 1, ws.Nodes.Count(), "A new node should be created in the workspace.");
+            Assert.AreEqual(initialGroupNodeCount, groupModel.Nodes.Count(), "Collapsed group should NOT receive the new node.");
+        }
     }
 }
