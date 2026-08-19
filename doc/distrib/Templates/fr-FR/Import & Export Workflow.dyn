@@ -278,7 +278,7 @@
         {
           "Id": "bf1841bc5eac4d4a8f754170a563bc26",
           "Name": "",
-          "Description": "Afficher la sortie de ce noeud",
+          "Description": "Noeud dont la sortie doit être affichée",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -297,7 +297,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualise la sortie du noeud"
+      "Description": "Visualise la sortie d'un noeud"
     },
     {
       "ConcreteType": "CoreNodeModels.Logic.And, CoreNodeModels",
@@ -453,7 +453,7 @@
         {
           "Id": "26622224f58b468c953fbf8fef9c1426",
           "Name": "bool",
-          "Description": "Résultat de la vérification d&apos;égalité",
+          "Description": "Résultat de la vérification d'égalité",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -492,7 +492,7 @@
         {
           "Id": "99a53962b867421796375dacfb3a1ade",
           "Name": "in",
-          "Description": "Eléments dont l&apos;index de masque est True.",
+          "Description": "Eléments dont l'index de masque est True.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -501,7 +501,7 @@
         {
           "Id": "837f23283e3640cba05e8e16dfbe25a4",
           "Name": "out",
-          "Description": "Eléments dont l&apos;index de masque est False.",
+          "Description": "Eléments dont l'index de masque est False.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -522,7 +522,7 @@
         {
           "Id": "9bdfa707caa845f6a0f22f097d83856e",
           "Name": "",
-          "Description": "Afficher la sortie de ce noeud",
+          "Description": "Noeud dont la sortie doit être affichée",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -541,7 +541,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualise la sortie du noeud"
+      "Description": "Visualise la sortie d'un noeud"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -553,7 +553,7 @@
         {
           "Id": "4002cef3625c4961a2cf26707d3343e8",
           "Name": "",
-          "Description": "Afficher la sortie de ce noeud",
+          "Description": "Noeud dont la sortie doit être affichée",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -572,7 +572,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualise la sortie du noeud"
+      "Description": "Visualise la sortie d'un noeud"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -824,7 +824,7 @@
         {
           "Id": "226e042b6ef54454bbe03319141cc2e0",
           "Name": "item",
-          "Description": "Elément de la liste au niveau de l'index donné.",
+          "Description": "Élément de la liste au niveau de l'index donné.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -863,7 +863,7 @@
         {
           "Id": "fb7d19539d174d4384adb3ae77552471",
           "Name": "item",
-          "Description": "Elément de la liste au niveau de l'index donné.",
+          "Description": "Élément de la liste au niveau de l'index donné.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -902,7 +902,7 @@
         {
           "Id": "3a8b3b79aecb41d3864ea4162d515a73",
           "Name": "item",
-          "Description": "Elément de la liste au niveau de l'index donné.",
+          "Description": "Élément de la liste au niveau de l'index donné.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -951,7 +951,7 @@
         {
           "Id": "600590ba7ac541a0ba9b110b7e176aeb",
           "Name": "transpose",
-          "Description": "bool\nValeur par défaut : false",
+          "Description": "bool\nValeur par défaut: false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1279,7 +1279,7 @@
         {
           "Id": "029ac554f89b454a817d1de9be0b0880",
           "Name": "item",
-          "Description": "Elément de la liste au niveau de l'index donné.",
+          "Description": "Élément de la liste au niveau de l'index donné.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1478,7 +1478,7 @@
         {
           "Id": "48b925d39611464ea10736c3e4ca361d",
           "Name": "",
-          "Description": "Afficher la sortie de ce noeud",
+          "Description": "Noeud dont la sortie doit être affichée",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1497,7 +1497,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualise la sortie du noeud"
+      "Description": "Visualise la sortie d'un noeud"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -1509,7 +1509,7 @@
         {
           "Id": "9d802168e4464ad2900708a2894e87cd",
           "Name": "",
-          "Description": "Afficher la sortie de ce noeud",
+          "Description": "Noeud dont la sortie doit être affichée",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1528,7 +1528,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualise la sortie du noeud"
+      "Description": "Visualise la sortie d'un noeud"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1558,7 +1558,7 @@
         {
           "Id": "2367689d629e40fd9e5ab05e8ec322de",
           "Name": "item",
-          "Description": "Elément de la liste au niveau de l'index donné.",
+          "Description": "Élément de la liste au niveau de l'index donné.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1618,7 +1618,7 @@
         {
           "Id": "c0c2e580d77e4d04bd6b60346c80cd5a",
           "Name": "",
-          "Description": "Afficher la sortie de ce noeud",
+          "Description": "Noeud dont la sortie doit être affichée",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1637,7 +1637,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualise la sortie du noeud"
+      "Description": "Visualise la sortie d'un noeud"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1676,7 +1676,7 @@
         {
           "Id": "b8c282c76acc4c3c9a819314042bbbdb",
           "Name": "list",
-          "Description": "Liste avec l&apos;élément inséré",
+          "Description": "Liste avec l'élément inséré",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1722,7 +1722,7 @@
         {
           "Id": "2f9a1ba02a6c4034ac0e5dff00d90595",
           "Name": "startRow",
-          "Description": "int\nValeur par défaut : 0",
+          "Description": "int\nValeur par défaut: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1731,7 +1731,7 @@
         {
           "Id": "d20ba9f965d442e4aab5636a7713e622",
           "Name": "startColumn",
-          "Description": "int\nValeur par défaut : 0",
+          "Description": "int\nValeur par défaut: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1740,7 +1740,7 @@
         {
           "Id": "ec3bc71533d24ca2a3ee47c93e11ded1",
           "Name": "overWrite",
-          "Description": "bool\nValeur par défaut : false",
+          "Description": "bool\nValeur par défaut: false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1749,7 +1749,7 @@
         {
           "Id": "64599734116e413ca71df51bc8494546",
           "Name": "writeAsString",
-          "Description": "bool\nValeur par défaut : false",
+          "Description": "bool\nValeur par défaut: false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1875,7 +1875,7 @@
         {
           "Id": "7406c2a29cd04f73be24c91f7f272374",
           "Name": "",
-          "Description": "Afficher la sortie de ce noeud",
+          "Description": "Noeud dont la sortie doit être affichée",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1894,7 +1894,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualise la sortie du noeud"
+      "Description": "Visualise la sortie d'un noeud"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -2129,7 +2129,7 @@
         {
           "Id": "72e6947e56974449afe7ae5658f82cca",
           "Name": "Geometry",
-          "Description": "Géométrie",
+          "Description": "Geometry",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2347,7 +2347,7 @@
         {
           "Id": "82756a9077854a1f9a45a33d76c81390",
           "Name": "startRow",
-          "Description": "int\nValeur par défaut : 0",
+          "Description": "int\nValeur par défaut: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -2356,7 +2356,7 @@
         {
           "Id": "cd5874975f60419f9fdae6b5925fcc7e",
           "Name": "startColumn",
-          "Description": "int\nValeur par défaut : 0",
+          "Description": "int\nValeur par défaut: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -2365,7 +2365,7 @@
         {
           "Id": "f3cba77195324009a133597a98069eb5",
           "Name": "readAsString",
-          "Description": "bool\nValeur par défaut : false",
+          "Description": "bool\nValeur par défaut: false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -5061,7 +5061,7 @@
       },
       {
         "Id": "fdad461d0b3f4f37965cd36ea5dac80d",
-        "Title": "Réviser",
+        "Title": "Révision",
         "DescriptionText": "SORTIES DE DÉBOGAGE ET DE VÉRIFICATION, UTILISÉES POUR VÉRIFIER LES RÉSULTATS SANS AFFECTER LES SORTIES PRINCIPALES",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

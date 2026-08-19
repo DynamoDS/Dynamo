@@ -336,7 +336,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Boolescher UND-Operator: Gibt nur dann True zurück, wenn beide Eingaben korrekt sind. Ist mindestens eine Eingabe falsch, wird False zurückgegeben."
+      "Description": "Boolescher AND-Operator: Gibt nur dann True zurück, wenn alle Eingaben korrekt sind. Ist mindestens eine Eingabe falsch, wird False zurückgegeben."
     },
     {
       "ConcreteType": "CoreNodeModels.Logic.And, CoreNodeModels",
@@ -375,7 +375,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Boolescher UND-Operator: Gibt nur dann True zurück, wenn beide Eingaben korrekt sind. Ist mindestens eine Eingabe falsch, wird False zurückgegeben."
+      "Description": "Boolescher AND-Operator: Gibt nur dann True zurück, wenn alle Eingaben korrekt sind. Ist mindestens eine Eingabe falsch, wird False zurückgegeben."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -472,7 +472,7 @@
         {
           "Id": "9f0c094fa6f6496cbc32b613fa6e1867",
           "Name": "list",
-          "Description": "Zu filternde Liste\n\nvar[]..[]",
+          "Description": "Zu filternde Liste.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -492,7 +492,7 @@
         {
           "Id": "99a53962b867421796375dacfb3a1ade",
           "Name": "in",
-          "Description": "Elemente mit Maskenindex true",
+          "Description": "Elemente mit Maskenindex True.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -501,7 +501,7 @@
         {
           "Id": "837f23283e3640cba05e8e16dfbe25a4",
           "Name": "out",
-          "Description": "Elemente mit Maskenindex false",
+          "Description": "Elemente mit Maskenindex False.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -824,7 +824,7 @@
         {
           "Id": "226e042b6ef54454bbe03319141cc2e0",
           "Name": "item",
-          "Description": "Element am angegebenen Index in der Liste",
+          "Description": "Element am angegebenen Index in der Liste.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -863,7 +863,7 @@
         {
           "Id": "fb7d19539d174d4384adb3ae77552471",
           "Name": "item",
-          "Description": "Element am angegebenen Index in der Liste",
+          "Description": "Element am angegebenen Index in der Liste.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -902,7 +902,7 @@
         {
           "Id": "3a8b3b79aecb41d3864ea4162d515a73",
           "Name": "item",
-          "Description": "Element am angegebenen Index in der Liste",
+          "Description": "Element am angegebenen Index in der Liste.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1279,7 +1279,7 @@
         {
           "Id": "029ac554f89b454a817d1de9be0b0880",
           "Name": "item",
-          "Description": "Element am angegebenen Index in der Liste",
+          "Description": "Element am angegebenen Index in der Liste.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1558,7 +1558,7 @@
         {
           "Id": "2367689d629e40fd9e5ab05e8ec322de",
           "Name": "item",
-          "Description": "Element am angegebenen Index in der Liste",
+          "Description": "Element am angegebenen Index in der Liste.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1915,7 +1915,7 @@
         {
           "Id": "251861ad328c46d6bae45caa4de0376f",
           "Name": "string",
-          "Description": "Typ des Objekts",
+          "Description": "Typ des Objekts.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1943,7 +1943,7 @@
         {
           "Id": "2722c854c9e347d29c7215f206ba6d51",
           "Name": "dynamoUnit",
-          "Description": "Eine Forge-Einheitenlänge; die Geometrie wird ohne Einheit importiert, wenn sie null ist.",
+          "Description": "Forge-Einheitenlänge; die Geometrie wird ohne Einheit importiert, wenn diese Null lautet.",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -2129,7 +2129,7 @@
         {
           "Id": "72e6947e56974449afe7ae5658f82cca",
           "Name": "Geometry",
-          "Description": "Geometrie",
+          "Description": "Geometry",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2169,7 +2169,7 @@
         {
           "Id": "6aec60973d4745b782e055c82294aa25",
           "Name": "Plane",
-          "Description": "Ebene an XY-Ebene der Welt",
+          "Description": "Ebene auf XY-Ebene der Welt",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,

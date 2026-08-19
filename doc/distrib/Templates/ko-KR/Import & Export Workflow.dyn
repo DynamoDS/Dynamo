@@ -472,7 +472,7 @@
         {
           "Id": "9f0c094fa6f6496cbc32b613fa6e1867",
           "Name": "list",
-          "Description": "필터링할 리스트입니다.\n\nvar[]..[]",
+          "Description": "필터링할 리스트.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -481,7 +481,7 @@
         {
           "Id": "e8c1aa1b0180418ca927af60fa1535ae",
           "Name": "mask",
-          "Description": "마스크를 나타내는 부울 리스트입니다.\n\nvar[]..[]",
+          "Description": "마스크를 나타내는 부울 리스트.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -755,7 +755,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "부울 OR: 입력 중 하나가 true인 경우 True를 반환합니다. 모두가 true가 아니면 False를 반환합니다."
+      "Description": "부울 OR: 입력 중 하나가 true인 경우 True를 반환합니다. 모든 입력이 true가 아니면 False를 반환합니다."
     },
     {
       "ConcreteType": "CoreNodeModels.Logic.Or, CoreNodeModels",
@@ -794,7 +794,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "부울 OR: 입력 중 하나가 true인 경우 True를 반환합니다. 모두가 true가 아니면 False를 반환합니다."
+      "Description": "부울 OR: 입력 중 하나가 true인 경우 True를 반환합니다. 모든 입력이 true가 아니면 False를 반환합니다."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -813,7 +813,7 @@
         {
           "Id": "d99904888cfc459d9725f505a7537049",
           "Name": "index",
-          "Description": "가져올 항목의 인덱스입니다.\n\nint",
+          "Description": "가져올 항목의 색인입니다.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -824,7 +824,7 @@
         {
           "Id": "226e042b6ef54454bbe03319141cc2e0",
           "Name": "item",
-          "Description": "지정된 인덱스의 리스트에 있는 항목.",
+          "Description": "지정된 색인의 리스트에 있는 항목.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -833,7 +833,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "지정된 인덱스에 위치한 지정된 리스트에서 항목을 반환합니다.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "지정된 색인에 있는 지정된 리스트에서 항목을 반환합니다.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -852,7 +852,7 @@
         {
           "Id": "3e5cdd4efdf44da5846d2c82354bb85c",
           "Name": "index",
-          "Description": "가져올 항목의 인덱스입니다.\n\nint",
+          "Description": "가져올 항목의 색인입니다.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -863,7 +863,7 @@
         {
           "Id": "fb7d19539d174d4384adb3ae77552471",
           "Name": "item",
-          "Description": "지정된 인덱스의 리스트에 있는 항목.",
+          "Description": "지정된 색인의 리스트에 있는 항목.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -872,7 +872,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "지정된 인덱스에 위치한 지정된 리스트에서 항목을 반환합니다.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "지정된 색인에 있는 지정된 리스트에서 항목을 반환합니다.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -891,7 +891,7 @@
         {
           "Id": "f6f7799d785d4aacac1c7c1b195709bf",
           "Name": "index",
-          "Description": "가져올 항목의 인덱스입니다.\n\nint",
+          "Description": "가져올 항목의 색인입니다.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -902,7 +902,7 @@
         {
           "Id": "3a8b3b79aecb41d3864ea4162d515a73",
           "Name": "item",
-          "Description": "지정된 인덱스의 리스트에 있는 항목.",
+          "Description": "지정된 색인의 리스트에 있는 항목.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -911,7 +911,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "지정된 인덱스에 위치한 지정된 리스트에서 항목을 반환합니다.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "지정된 색인에 있는 지정된 리스트에서 항목을 반환합니다.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
@@ -930,7 +930,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "시스템에서 파일을 선택하여 해당 파일 경로를 반환할 수 있습니다",
+      "Description": "시스템에서 파일을 선택하여 해당 파일의 경로를 반환할 수 있습니다.",
       "HintPath": null,
       "InputValue": "선택한 파일이 없습니다."
     },
@@ -1060,7 +1060,7 @@
         {
           "Id": "e0929515cbc94fdfaf8751dc4d0cea75",
           "Name": "string",
-          "Description": "대문자로 변환할 문자열\n\nstring",
+          "Description": "대문자로 변환할 문자열\n\n문자열",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1268,7 +1268,7 @@
         {
           "Id": "fd2ce9598e104bfca2400ca5597d740f",
           "Name": "index",
-          "Description": "가져올 항목의 인덱스입니다.\n\nint",
+          "Description": "가져올 항목의 색인입니다.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1279,7 +1279,7 @@
         {
           "Id": "029ac554f89b454a817d1de9be0b0880",
           "Name": "item",
-          "Description": "지정된 인덱스의 리스트에 있는 항목.",
+          "Description": "지정된 색인의 리스트에 있는 항목.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1288,7 +1288,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "지정된 인덱스에 위치한 지정된 리스트에서 항목을 반환합니다.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "지정된 색인에 있는 지정된 리스트에서 항목을 반환합니다.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1366,7 +1366,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "시스템에서 파일을 선택하여 해당 파일 경로를 반환할 수 있습니다",
+      "Description": "시스템에서 파일을 선택하여 해당 파일의 경로를 반환할 수 있습니다.",
       "HintPath": null,
       "InputValue": "선택한 파일이 없습니다."
     },
@@ -1547,7 +1547,7 @@
         {
           "Id": "682d990a82f140439cdfbae90eaa2e24",
           "Name": "index",
-          "Description": "가져올 항목의 인덱스입니다.\n\nint",
+          "Description": "가져올 항목의 색인입니다.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1558,7 +1558,7 @@
         {
           "Id": "2367689d629e40fd9e5ab05e8ec322de",
           "Name": "item",
-          "Description": "지정된 인덱스의 리스트에 있는 항목.",
+          "Description": "지정된 색인의 리스트에 있는 항목.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1567,7 +1567,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "지정된 인덱스에 위치한 지정된 리스트에서 항목을 반환합니다.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "지정된 색인에 있는 지정된 리스트에서 항목을 반환합니다.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1792,7 +1792,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "정수 값을 생성합니다",
+      "Description": "정수 값을 생성합니다.",
       "InputValue": 1
     },
     {
@@ -1816,7 +1816,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "정수 값을 생성합니다",
+      "Description": "정수 값을 생성합니다.",
       "InputValue": 0
     },
     {
@@ -1862,7 +1862,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "정수 값을 생성합니다",
+      "Description": "정수 값을 생성합니다.",
       "InputValue": 0
     },
     {
@@ -1915,7 +1915,7 @@
         {
           "Id": "251861ad328c46d6bae45caa4de0376f",
           "Name": "string",
-          "Description": "객체 유형.",
+          "Description": "객체 유형",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1943,7 +1943,7 @@
         {
           "Id": "2722c854c9e347d29c7215f206ba6d51",
           "Name": "dynamoUnit",
-          "Description": "단조 단위 길이, null일 경우 형상을 무단위로 가져옵니다.",
+          "Description": "단조 단위 길이, null이면 형상을 단위 없이 가져옵니다.",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1962,7 +1962,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "SAT 파일 경로에서 형상을 가져옵니다. dynamoUnit 입력을 Dynamo 파일의 다른 번호를 해석하는 방법과 일치하도록 설정하십시오."
+      "Description": "SAT 파일 경로에서 형상을 가져옵니다. Dynamo 파일에서 다른 번호를 해석하는 방법과 일치하도록 dynamoUnit 입력을 설정합니다."
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
@@ -1981,7 +1981,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "시스템에서 파일을 선택하여 해당 파일 경로를 반환할 수 있습니다",
+      "Description": "시스템에서 파일을 선택하여 해당 파일의 경로를 반환할 수 있습니다.",
       "HintPath": null,
       "InputValue": "선택한 파일이 없습니다."
     },
@@ -1993,7 +1993,7 @@
         {
           "Id": "7a1e8230e5fd4ee6a700d3b2a71c35e8",
           "Name": "path",
-          "Description": "파일 경로를 문자열로 전환합니다.",
+          "Description": "문자열로 표현된 파일 경로입니다.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2012,7 +2012,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "지정된 경로에서 파일 객체를 작성합니다"
+      "Description": "지정된 경로에서 파일 객체를 작성합니다."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -2070,7 +2070,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "시스템에서 파일을 선택하여 해당 파일 경로를 반환할 수 있습니다",
+      "Description": "시스템에서 파일을 선택하여 해당 파일의 경로를 반환할 수 있습니다.",
       "HintPath": null,
       "InputValue": "선택한 파일이 없습니다."
     },
@@ -2129,7 +2129,7 @@
         {
           "Id": "72e6947e56974449afe7ae5658f82cca",
           "Name": "Geometry",
-          "Description": "형상",
+          "Description": "Geometry",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2204,7 +2204,7 @@
         {
           "Id": "63762fa6b0004d5a9e43e5274a6d339a",
           "Name": "",
-          "Description": "수신 형상 객체입니다.",
+          "Description": "수신 형상 객체.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2215,7 +2215,7 @@
         {
           "Id": "1c26aa9e782148f6a5b461c9aebb0bc6",
           "Name": "",
-          "Description": "수신 형상 객체입니다.",
+          "Description": "수신 형상 객체.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2223,7 +2223,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "형상의 동적 미리보기를 표시합니다"
+      "Description": "형상의 동적 미리보기를 표시합니다."
     },
     {
       "ConcreteType": "UnitsUI.Units, UnitsNodeModels",
@@ -2270,7 +2270,7 @@
         {
           "Id": "dedcf0734958458994d53ef030eec043",
           "Name": "",
-          "Description": "수신 형상 객체입니다.",
+          "Description": "수신 형상 객체.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2281,7 +2281,7 @@
         {
           "Id": "2c6f0fd36a1e4e68af5a6e45e1ca9587",
           "Name": "",
-          "Description": "수신 형상 객체입니다.",
+          "Description": "수신 형상 객체.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2289,7 +2289,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "형상의 동적 미리보기를 표시합니다"
+      "Description": "형상의 동적 미리보기를 표시합니다."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -2404,7 +2404,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "시스템에서 파일을 선택하여 해당 파일 경로를 반환할 수 있습니다",
+      "Description": "시스템에서 파일을 선택하여 해당 파일의 경로를 반환할 수 있습니다.",
       "HintPath": "",
       "InputValue": "선택한 파일이 없습니다."
     },
