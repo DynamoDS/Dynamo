@@ -223,6 +223,7 @@ namespace Dynamo.Nodes
 
                     if (expr.HasValidationError && nvm != null)
                     {
+                        nvm.NodeModel.ClearErrorsAndWarnings();
                         nvm.NodeModel.Error(expr.ValidationError.ErrorContent as string);
                     }
                 }
